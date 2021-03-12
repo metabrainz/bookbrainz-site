@@ -23,23 +23,22 @@ import * as bootstrap from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
-const {Col, Grid, Row} = bootstrap;
+const { Col, Grid, Row } = bootstrap;
 
 function Footer(props) {
-	const {repositoryUrl, siteRevision} = props;
+	const { repositoryUrl, siteRevision } = props;
 
 	return (
 		<footer className="footer">
 			<Grid fluid>
 				<Row>
 					<Col xs={4}>
-						<small>{'Tested with '}
+						<small>
+							{'Tested with '}
 							<a
 								href="https://www.browserstack.com/"
 								rel="noopener noreferrer"
-								target="_blank"
-							>
+								target="_blank">
 								<img
 									alt="BrowserStack Logo"
 									height="25"
@@ -49,13 +48,16 @@ function Footer(props) {
 						</small>
 					</Col>
 					<Col className="text-center" xs={4}>
-						<small>Cover image by{' '}
+						<small>
+							Cover image by{' '}
 							<a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">
 								Stewart Butterfield
-							</a> (
+							</a>{' '}
+							(
 							<a href="https://creativecommons.org/licenses/by/2.0/deed.en">
 								CC-BY-2.0
-							</a>)
+							</a>
+							)
 						</small>
 					</Col>
 					<Col className="text-right" xs={4}>
@@ -67,9 +69,8 @@ function Footer(props) {
 				<Row className="text-center">
 					<small>
 						Alpha Software —{' '}
-						<a href={`${repositoryUrl}commit/${siteRevision}`}>
-							{siteRevision}
-						</a> —&nbsp;
+						<a href={`${repositoryUrl}commit/${siteRevision}`}>{siteRevision}</a>{' '}
+						—&nbsp;
 						<a href="https://tickets.metabrainz.org/projects/BB/issues/">
 							Report a Bug
 						</a>
@@ -83,7 +84,7 @@ function Footer(props) {
 Footer.displayName = 'Footer';
 Footer.propTypes = {
 	repositoryUrl: PropTypes.string.isRequired,
-	siteRevision: PropTypes.string.isRequired
+	siteRevision: PropTypes.string.isRequired,
 };
 
 export default Footer;

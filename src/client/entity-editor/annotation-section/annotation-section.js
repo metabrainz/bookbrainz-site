@@ -16,14 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Col, Row} from 'react-bootstrap';
-import {convertMapToObject, formatDate} from '../../helpers/utils';
+import { Col, Row } from 'react-bootstrap';
+import { convertMapToObject, formatDate } from '../../helpers/utils';
 
 import CustomInput from '../../input';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {connect} from 'react-redux';
-import {debounceUpdateAnnotation} from './actions';
+import { connect } from 'react-redux';
+import { debounceUpdateAnnotation } from './actions';
 
 /**
  * Container component. The AnnotationSection component contains a
@@ -37,10 +37,7 @@ import {debounceUpdateAnnotation} from './actions';
  * @returns {ReactElement} React element containing the rendered
  *          AnnotationSection.
  */
-function AnnotationSection({
-	annotation,
-	onAnnotationChange
-}) {
+function AnnotationSection({ annotation, onAnnotationChange }) {
 	const annotationLabel = (
 		<span>
 			Annotation
@@ -50,9 +47,7 @@ function AnnotationSection({
 
 	return (
 		<div>
-			<h2>
-				Annotation
-			</h2>
+			<h2>Annotation</h2>
 			<Row>
 				<Col md={6} mdOffset={3}>
 					<CustomInput
@@ -63,13 +58,17 @@ function AnnotationSection({
 						type="textarea"
 						onChange={onAnnotationChange}
 					/>
-					{
-						annotation && annotation.lastRevision &&
-						<p className="small text-muted">Last modified: {formatDate(new Date(annotation.lastRevision.createdAt))}</p>
-					}
+					{annotation && annotation.lastRevision && (
+						<p className="small text-muted">
+							Last modified: {formatDate(new Date(annotation.lastRevision.createdAt))}
+						</p>
+					)}
 					<p className="help-block">
-						Annotations allow you to enter freeform data that does not otherwise fit in the above form.
-						<b> Do not submit any copyrighted text here.</b> The contents will be made available to the public under <a href="https://musicbrainz.org/doc/About/Data_License">open licenses</a>.
+						Annotations allow you to enter freeform data that does not otherwise fit in
+						the above form.
+						<b> Do not submit any copyrighted text here.</b> The contents will be made
+						available to the public under{' '}
+						<a href="https://musicbrainz.org/doc/About/Data_License">open licenses</a>.
 					</p>
 				</Col>
 			</Row>
@@ -79,20 +78,18 @@ function AnnotationSection({
 AnnotationSection.displayName = 'AnnotationSection';
 AnnotationSection.propTypes = {
 	annotation: PropTypes.object.isRequired,
-	onAnnotationChange: PropTypes.func.isRequired
+	onAnnotationChange: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(rootState) {
 	return {
-		annotation: convertMapToObject(rootState.get('annotationSection'))
+		annotation: convertMapToObject(rootState.get('annotationSection')),
 	};
 }
 
-
 function mapDispatchToProps(dispatch) {
 	return {
-		onAnnotationChange: (event) =>
-			dispatch(debounceUpdateAnnotation(event.target.value))
+		onAnnotationChange: (event) => dispatch(debounceUpdateAnnotation(event.target.value)),
 	};
 }
 

@@ -16,22 +16,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as React from 'react';
-import {get as _get, has} from 'lodash';
+import { get as _get, has } from 'lodash';
 import CustomInput from '../../input';
 import Select from 'react-select';
 import ValidationLabel from '../common/validation-label';
 
-
 type Props = {
-	error?: boolean,
-	options: any[],
-	label: string,
-	currentValue: any,
-	onChange: any,
-	valueProperty?: string,
-	[propName: string]: any
+	error?: boolean;
+	options: any[];
+	label: string;
+	currentValue: any;
+	onChange: any;
+	valueProperty?: string;
+	[propName: string]: any;
 };
 
 /**
@@ -57,24 +55,16 @@ function MergeField({
 	valueProperty,
 	...rest
 }: Props) {
-	const labelComponent = <ValidationLabel error={error} >{label}</ValidationLabel>;
+	const labelComponent = <ValidationLabel error={error}>{label}</ValidationLabel>;
 	if (options.length <= 1) {
 		const value = _get(options, `[0][${valueProperty}]`, '');
-		return (
-			<CustomInput
-				readOnly
-				label={labelComponent}
-				value={value}
-				{...rest}
-			/>
-		);
+		return <CustomInput readOnly label={labelComponent} value={value} {...rest} />;
 	}
 	const onChangeReturnValue = function onChangeReturnValue(selectObject) {
 		let value;
 		if (has(selectObject, 'value') && has(selectObject, 'label')) {
-			({value} = selectObject);
-		}
-		else {
+			({ value } = selectObject);
+		} else {
 			value = selectObject;
 		}
 		return onChange(value);
@@ -96,7 +86,7 @@ MergeField.displayName = 'MergeField';
 
 MergeField.defaultProps = {
 	error: false,
-	valueProperty: 'label'
+	valueProperty: 'label',
 };
 
 export default MergeField;

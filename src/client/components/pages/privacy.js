@@ -19,8 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 import React from 'react';
 
-
-const {PageHeader} = bootstrap;
+const { PageHeader } = bootstrap;
 
 /**
  * Renders a page containing a link to the current MusicBrainz privacy
@@ -40,11 +39,9 @@ function PrivacyPage() {
 			</p>
 
 			<p>
-				While this currently does not apply to BookBrainz, it
-				gives an idea of what can be expected when it gets updated
-				to cover all MetaBrainz projects. If you&rsquo;re happy
-				using MusicBrainz, we aim to make you just as comfortable
-				using BookBrainz.
+				While this currently does not apply to BookBrainz, it gives an idea of what can be
+				expected when it gets updated to cover all MetaBrainz projects. If you&rsquo;re
+				happy using MusicBrainz, we aim to make you just as comfortable using BookBrainz.
 			</p>
 		</div>
 	);

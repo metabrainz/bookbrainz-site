@@ -20,10 +20,9 @@
 
 import * as bootstrap from 'react-bootstrap';
 import React from 'react';
-import {hot} from 'react-hot-loader';
+import { hot } from 'react-hot-loader';
 
-
-const {Alert, Button, PageHeader} = bootstrap;
+const { Alert, Button, PageHeader } = bootstrap;
 
 /**
  * Renders a page allowing the user to sign in to MusicBrainz to
@@ -35,23 +34,18 @@ function RegistrationAuth() {
 		<div>
 			<PageHeader>Register</PageHeader>
 			<p>
-				To sign up as an editor of BookBrainz, you need to first
-				have a MusicBrainz account. Please click the button below
-				to sign in or register with MusicBrainz. You’ll then be
-				redirected back to BookBrainz to continue registration!
+				To sign up as an editor of BookBrainz, you need to first have a MusicBrainz account.
+				Please click the button below to sign in or register with MusicBrainz. You’ll then
+				be redirected back to BookBrainz to continue registration!
 			</p>
 			<Alert bsStyle="warning">
-				If you already registered for BookBrainz, and your account
-				isn’t linked to a MusicBrainz account, please contact us using
-				one of the links on our homepage instead of registering. We’ll
-				update your account details to link your account so that you
-				can sign in.
+				If you already registered for BookBrainz, and your account isn’t linked to a
+				MusicBrainz account, please contact us using one of the links on our homepage
+				instead of registering. We’ll update your account details to link your account so
+				that you can sign in.
 			</Alert>
 			<div className="text-center">
-				<Button
-					href="/auth"
-					type="submit"
-				>
+				<Button href="/auth" type="submit">
 					<img
 						alt="MusicBrainz"
 						className="margin-right-0-5"

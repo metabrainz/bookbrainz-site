@@ -24,55 +24,53 @@ import {
 	debouncedUpdateEndDate,
 	updateArea,
 	updateEnded,
-	updateType
+	updateType,
 } from './actions';
-import {Checkbox, Col, Row} from 'react-bootstrap';
+import { Checkbox, Col, Row } from 'react-bootstrap';
 import {
 	validatePublisherSectionBeginDate,
-	validatePublisherSectionEndDate
+	validatePublisherSectionEndDate,
 } from '../validators/publisher';
 
 import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
-import type {Dispatch} from 'redux';
+import type { Dispatch } from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
-import type {Map} from 'immutable';
+import type { Map } from 'immutable';
 import Select from 'react-select';
-import {connect} from 'react-redux';
-import {isNullDate} from '../../helpers/utils';
-
+import { connect } from 'react-redux';
+import { isNullDate } from '../../helpers/utils';
 
 type PublisherType = {
-	label: string,
-	id: number
+	label: string;
+	id: number;
 };
 
 type Area = {
-	disambiguation: string | null | undefined,
-	id: string | number,
-	text: string,
-	type: string
+	disambiguation: string | null | undefined;
+	id: string | number;
+	text: string;
+	type: string;
 };
 
-
 type StateProps = {
-	areaValue: Map<string, any>,
-	beginDateValue: string,
-	endDateValue: string,
-	endedChecked: boolean,
-	typeValue: number
+	areaValue: Map<string, any>;
+	beginDateValue: string;
+	endDateValue: string;
+	endedChecked: boolean;
+	typeValue: number;
 };
 
 type DispatchProps = {
-	onAreaChange: (arg: Area | null | undefined) => unknown,
-	onBeginDateChange: (arg: string) => unknown,
-	onEndDateChange: (arg: string) => unknown,
-	onEndedChange: (arg: React.FormEvent<Checkbox>) => unknown,
-	onTypeChange: (obj: {value: number} | null) => unknown
+	onAreaChange: (arg: Area | null | undefined) => unknown;
+	onBeginDateChange: (arg: string) => unknown;
+	onEndDateChange: (arg: string) => unknown;
+	onEndedChange: (arg: React.FormEvent<Checkbox>) => unknown;
+	onTypeChange: (obj: { value: number } | null) => unknown;
 };
 
 type OwnProps = {
-	publisherTypes: Array<PublisherType>
+	publisherTypes: Array<PublisherType>;
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -119,23 +117,26 @@ function PublisherSection({
 	onBeginDateChange,
 	onEndDateChange,
 	onEndedChange,
-	onTypeChange
+	onTypeChange,
 }: Props) {
 	const publisherTypesForDisplay = publisherTypes.map((type) => ({
 		label: type.label,
-		value: type.id
+		value: type.id,
 	}));
 
-	const {isValid: isValidBeginDate, errorMessage: errorMessageBeginDate} = validatePublisherSectionBeginDate(beginDateValue);
-	const {isValid: isValidEndDate, errorMessage: errorMessageEndDate} = validatePublisherSectionEndDate(beginDateValue, endDateValue, endedChecked);
+	const {
+		isValid: isValidBeginDate,
+		errorMessage: errorMessageBeginDate,
+	} = validatePublisherSectionBeginDate(beginDateValue);
+	const {
+		isValid: isValidEndDate,
+		errorMessage: errorMessageEndDate,
+	} = validatePublisherSectionEndDate(beginDateValue, endDateValue, endedChecked);
 	return (
 		<form>
-			<h2>
-				What else do you know about the Publisher?
-			</h2>
+			<h2>What else do you know about the Publisher?</h2>
 			<p className="text-muted">
-				All fields optional — leave something blank if you don&rsquo;t
-				know it
+				All fields optional — leave something blank if you don&rsquo;t know it
 			</p>
 			<Row>
 				<Col md={6} mdOffset={3}>
@@ -176,14 +177,11 @@ function PublisherSection({
 				</Col>
 			</Row>
 			<div className="text-center">
-				<Checkbox
-					defaultChecked={endedChecked}
-					onChange={onEndedChange}
-				>
+				<Checkbox defaultChecked={endedChecked} onChange={onEndedChange}>
 					Dissolved?
 				</Checkbox>
 			</div>
-			{endedChecked &&
+			{endedChecked && (
 				<div>
 					<Row>
 						<Col md={6} mdOffset={3}>
@@ -200,7 +198,7 @@ function PublisherSection({
 						</Col>
 					</Row>
 				</div>
-			}
+			)}
 		</form>
 	);
 }
@@ -214,7 +212,7 @@ function mapStateToProps(rootState): StateProps {
 		beginDateValue: state.get('beginDate'),
 		endDateValue: state.get('endDate'),
 		endedChecked: state.get('ended'),
-		typeValue: state.get('type')
+		typeValue: state.get('type'),
 	};
 }
 
@@ -224,12 +222,9 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onBeginDateChange: (beginDate) => {
 			dispatch(debouncedUpdateBeginDate(beginDate));
 		},
-		onEndDateChange: (endDate) =>
-			dispatch(debouncedUpdateEndDate(endDate)),
-		onEndedChange: (event) =>
-			dispatch(updateEnded((event.target as any).checked)),
-		onTypeChange: (value) =>
-			dispatch(updateType(value && value.value))
+		onEndDateChange: (endDate) => dispatch(debouncedUpdateEndDate(endDate)),
+		onEndedChange: (event) => dispatch(updateEnded((event.target as any).checked)),
+		onTypeChange: (value) => dispatch(updateType(value && value.value)),
 	};
 }
 

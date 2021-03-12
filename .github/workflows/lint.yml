@@ -2,34 +2,34 @@
 
 name: Lint
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
-  # Triggers the workflow on push events for the master branch
-  push:
-    branches: [ master ]
-  # Triggers the workflow on pull request events in the context of the fork
-  # trying to sidestep limitations here: https://github.com/wearerequired/lint-action/issues/13
-  pull_request_target:
+    # Triggers the workflow on push events for the master branch
+    push:
+        branches: [master]
+    # Triggers the workflow on pull request events in the context of the fork
+    # trying to sidestep limitations here: https://github.com/wearerequired/lint-action/issues/13
+    pull_request_target:
 
 jobs:
-  run-linters:
-    name: Run linters
-    runs-on: ubuntu-latest
+    run-linters:
+        name: Run linters
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          # Also check out Lobes bootstrap theme submodule
-          submodules: true
-          
-      - name: NPM install
-        uses: bahmutov/npm-install@v1 
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+              with:
+                  # Also check out Lobes bootstrap theme submodule
+                  submodules: true
 
-      - name: Run linters
-        uses: wearerequired/lint-action@feature/pull_request_target
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Enable linters with auto-fix
-          auto_fix: true
-          eslint: true
+            - name: NPM install
+              uses: bahmutov/npm-install@v1
+
+            - name: Run linters
+              uses: wearerequired/lint-action@feature/pull_request_target
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+                  # Enable linters with auto-fix
+                  auto_fix: true
+                  eslint: true

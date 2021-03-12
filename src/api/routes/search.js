@@ -16,11 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import 	* as search from '../../common/helpers/search';
-import {snakeCase as _snakeCase} from 'lodash';
+import * as search from '../../common/helpers/search';
+import { snakeCase as _snakeCase } from 'lodash';
 import express from 'express';
-import {formatSearchResponse} from '../helpers/formatEntityData';
-
+import { formatSearchResponse } from '../helpers/formatEntityData';
 
 const router = express.Router();
 
@@ -74,7 +73,7 @@ const router = express.Router();
  */
 
 router.get('/', async (req, res) => {
-	const {orm} = req.app.locals;
+	const { orm } = req.app.locals;
 	if (req.query.q) {
 		const query = req.query.q;
 		const type = req.query.type || null;
@@ -83,12 +82,10 @@ router.get('/', async (req, res) => {
 		const searchResult = await search.searchByName(orm, query, _snakeCase(type), size, from);
 		const formattedSearchResult = await formatSearchResponse(searchResult);
 		res.status(200).send(formattedSearchResult);
-	}
-	else {
+	} else {
 		const errMsg = 'Invalid Query';
-		res.status(400).send({message: errMsg});
+		res.status(400).send({ message: errMsg });
 	}
 });
-
 
 export default router;

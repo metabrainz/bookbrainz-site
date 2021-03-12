@@ -21,12 +21,11 @@ import * as utilsHelper from '../../helpers/utils';
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import {startCase as _startCase} from 'lodash';
-import {genEntityIconHTMLElement} from '../../helpers/entity';
+import { startCase as _startCase } from 'lodash';
+import { genEntityIconHTMLElement } from '../../helpers/entity';
 
-
-const {PageHeader, Table} = bootstrap;
-const {formatDate} = utilsHelper;
+const { PageHeader, Table } = bootstrap;
+const { formatDate } = utilsHelper;
 
 /**
  * Renders the document and displays the topEditors table.
@@ -35,42 +34,32 @@ const {formatDate} = utilsHelper;
  */
 
 function TopEditorsTable(props) {
-	const {editors} = props;
+	const { editors } = props;
 	return (
 		<div>
 			<div>
 				<h2>Top 10 Editors</h2>
 			</div>
-			<Table
-				bordered
-				condensed
-				striped
-			>
+			<Table bordered condensed striped>
 				<thead>
 					<tr>
-						<th className="col-sm-1" >#</th>
-						<th className="col-sm-5" >Editor&apos;s Name</th>
-						<th className="col-sm-3" >Total Revisions</th>
-						<th className="col-sm-3" >Registration Date</th>
+						<th className="col-sm-1">#</th>
+						<th className="col-sm-5">Editor&apos;s Name</th>
+						<th className="col-sm-3">Total Revisions</th>
+						<th className="col-sm-3">Registration Date</th>
 					</tr>
 				</thead>
 				<tbody>
-					{
-						editors.map((editor, i) => (
-							<tr key={editor.id}>
-								<td>{i + 1}</td>
-								<td>
-									<a	href={`/editor/${editor.id}`}>
-										{editor.name}
-									</a>
-								</td>
-								<td>{editor.totalRevisions}</td>
-								<td>
-									{formatDate(new Date(editor.createdAt))}
-								</td>
-							</tr>
-						))
-					}
+					{editors.map((editor, i) => (
+						<tr key={editor.id}>
+							<td>{i + 1}</td>
+							<td>
+								<a href={`/editor/${editor.id}`}>{editor.name}</a>
+							</td>
+							<td>{editor.totalRevisions}</td>
+							<td>{formatDate(new Date(editor.createdAt))}</td>
+						</tr>
+					))}
 				</tbody>
 			</Table>
 		</div>
@@ -78,7 +67,7 @@ function TopEditorsTable(props) {
 }
 
 TopEditorsTable.propTypes = {
-	editors: PropTypes.array.isRequired
+	editors: PropTypes.array.isRequired,
 };
 
 /**
@@ -88,39 +77,33 @@ TopEditorsTable.propTypes = {
  */
 
 function EntityCountTable(props) {
-	const {allEntities, last30DaysEntities} = props;
+	const { allEntities, last30DaysEntities } = props;
 	return (
 		<div>
 			<div>
 				<h2>Total Entities</h2>
 			</div>
-			<Table
-				bordered
-				condensed
-				striped
-			>
+			<Table bordered condensed striped>
 				<thead>
 					<tr>
-						<th className="col-sm-1" >#</th>
-						<th className="col-sm-5" >Entity Type</th>
-						<th className="col-sm-3" >Total</th>
-						<th className="col-sm-3" >Added in Last 30 days</th>
+						<th className="col-sm-1">#</th>
+						<th className="col-sm-5">Entity Type</th>
+						<th className="col-sm-3">Total</th>
+						<th className="col-sm-3">Added in Last 30 days</th>
 					</tr>
 				</thead>
 				<tbody>
-					{
-						allEntities.map((entity, i) => (
-							<tr key={entity.modelName}>
-								<td>{i + 1}</td>
-								<td>
-									{genEntityIconHTMLElement(entity.modelName)}
-									{_startCase(entity.modelName)}
-								</td>
-								<td>{entity.Count}</td>
-								<td>{last30DaysEntities[entity.modelName]}</td>
-							</tr>
-						))
-					}
+					{allEntities.map((entity, i) => (
+						<tr key={entity.modelName}>
+							<td>{i + 1}</td>
+							<td>
+								{genEntityIconHTMLElement(entity.modelName)}
+								{_startCase(entity.modelName)}
+							</td>
+							<td>{entity.Count}</td>
+							<td>{last30DaysEntities[entity.modelName]}</td>
+						</tr>
+					))}
 				</tbody>
 			</Table>
 		</div>
@@ -129,7 +112,7 @@ function EntityCountTable(props) {
 
 EntityCountTable.propTypes = {
 	allEntities: PropTypes.array.isRequired,
-	last30DaysEntities: PropTypes.object.isRequired
+	last30DaysEntities: PropTypes.object.isRequired,
 };
 
 /**
@@ -139,15 +122,12 @@ EntityCountTable.propTypes = {
  */
 
 function StatisticsPage(props) {
-	const {allEntities, last30DaysEntities, topEditors} = props;
+	const { allEntities, last30DaysEntities, topEditors } = props;
 	return (
 		<div>
 			<PageHeader>Statistics of BookBrainz</PageHeader>
-			<TopEditorsTable editors={topEditors}/>
-			<EntityCountTable
-				allEntities={allEntities}
-				last30DaysEntities={last30DaysEntities}
-			/>
+			<TopEditorsTable editors={topEditors} />
+			<EntityCountTable allEntities={allEntities} last30DaysEntities={last30DaysEntities} />
 		</div>
 	);
 }
@@ -156,7 +136,7 @@ StatisticsPage.displayName = 'StatisticsPage';
 StatisticsPage.propTypes = {
 	allEntities: PropTypes.array.isRequired,
 	last30DaysEntities: PropTypes.object.isRequired,
-	topEditors: PropTypes.array.isRequired
+	topEditors: PropTypes.array.isRequired,
 };
 
 export default StatisticsPage;

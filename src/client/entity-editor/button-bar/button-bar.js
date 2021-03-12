@@ -16,20 +16,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Col, Row} from 'react-bootstrap';
-import {
-	showAliasEditor,
-	showIdentifierEditor
-} from './actions';
-import {validateAliases, validateIdentifiers} from '../validators/common';
+import { Col, Row } from 'react-bootstrap';
+import { showAliasEditor, showIdentifierEditor } from './actions';
+import { validateAliases, validateIdentifiers } from '../validators/common';
 
 import AliasButton from './alias-button';
 import IdentifierButton from './identifier-button';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {addAliasRow} from '../alias-editor/actions';
-import {addIdentifierRow} from '../identifier-editor/actions';
-import {connect} from 'react-redux';
+import { addAliasRow } from '../alias-editor/actions';
+import { addIdentifierRow } from '../identifier-editor/actions';
+import { connect } from 'react-redux';
 
 /**
  * Container component. This component renders three buttons in a horizontal
@@ -54,7 +51,7 @@ function ButtonBar({
 	numAliases,
 	numIdentifiers,
 	onAliasButtonClick,
-	onIdentifierButtonClick
+	onIdentifierButtonClick,
 }) {
 	return (
 		<div>
@@ -86,17 +83,18 @@ ButtonBar.propTypes = {
 	numAliases: PropTypes.number.isRequired,
 	numIdentifiers: PropTypes.number.isRequired,
 	onAliasButtonClick: PropTypes.func.isRequired,
-	onIdentifierButtonClick: PropTypes.func.isRequired
+	onIdentifierButtonClick: PropTypes.func.isRequired,
 };
 
-function mapStateToProps(rootState, {identifierTypes}) {
+function mapStateToProps(rootState, { identifierTypes }) {
 	return {
 		aliasesInvalid: !validateAliases(rootState.get('aliasEditor')),
 		identifiersInvalid: !validateIdentifiers(
-			rootState.get('identifierEditor'), identifierTypes
+			rootState.get('identifierEditor'),
+			identifierTypes
 		),
 		numAliases: rootState.get('aliasEditor').size,
-		numIdentifiers: rootState.get('identifierEditor').size
+		numIdentifiers: rootState.get('identifierEditor').size,
 	};
 }
 
@@ -109,7 +107,7 @@ function mapDispatchToProps(dispatch) {
 		onIdentifierButtonClick: () => {
 			dispatch(showIdentifierEditor());
 			dispatch(addIdentifierRow());
-		}
+		},
 	};
 }
 

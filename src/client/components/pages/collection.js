@@ -17,26 +17,25 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import {faPencilAlt, faPlus, faTimesCircle, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt, faPlus, faTimesCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import AddEntityToCollectionModal from './parts/add-entity-to-collection-modal';
 import AuthorTable from './entities/author-table';
 import DeleteOrRemoveCollaborationModal from './parts/delete-or-remove-collaboration-modal';
-import {ENTITY_TYPE_ICONS} from '../../helpers/entity';
+import { ENTITY_TYPE_ICONS } from '../../helpers/entity';
 import EditionGroupTable from './entities/editionGroup-table';
 import EditionTable from './entities/edition-table';
 import EntityImage from './entities/image';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import PublisherTable from './entities/publisher-table';
 import React from 'react';
 import WorkTable from './entities/work-table';
 import _ from 'lodash';
-import {formatDate} from '../../helpers/utils';
+import { formatDate } from '../../helpers/utils';
 import request from 'superagent';
 
-
-const {Alert, Badge, Button, Col, Row} = bootstrap;
+const { Alert, Badge, Button, Col, Row } = bootstrap;
 
 function getEntityTable(entityType) {
 	const tables = {
@@ -44,7 +43,7 @@ function getEntityTable(entityType) {
 		Edition: EditionTable,
 		EditionGroup: EditionGroupTable,
 		Publisher: PublisherTable,
-		Work: WorkTable
+		Work: WorkTable,
 	};
 	return tables[entityType];
 }
@@ -55,44 +54,42 @@ function getEntityKey(entityType) {
 		Edition: 'editions',
 		EditionGroup: 'editionGroups',
 		Publisher: 'publishers',
-		Work: 'works'
+		Work: 'works',
 	};
 	return keys[entityType];
 }
 
-function CollectionAttributes({collection}) {
+function CollectionAttributes({ collection }) {
 	return (
 		<div>
-			{
-				collection.description.length ?
-					<Row>
-						<Col md={12}>
-							<dt>Description</dt>
-							<dd>{collection.description}</dd>
-						</Col>
-					</Row> : null
-			}
+			{collection.description.length ? (
+				<Row>
+					<Col md={12}>
+						<dt>Description</dt>
+						<dd>{collection.description}</dd>
+					</Col>
+				</Row>
+			) : null}
 			<Row>
 				<Col md={3}>
 					<dt>Owner</dt>
-					<dd><a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a></dd>
+					<dd>
+						<a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a>
+					</dd>
 				</Col>
-				{
-					collection.collaborators.length ?
-						<Col md={3}>
-							<dt>Collaborator{collection.collaborators.length > 1 ? 's' : null}</dt>
-							<dd>
-								{
-									collection.collaborators.map((collaborator, id) =>
-										(
-											<a href={`/editor/${collaborator.id}`} key={collaborator.id}>
-												{collaborator.text}{id === collection.collaborators.length - 1 ? null : ', '}
-											</a>
-										))
-								}
-							</dd>
-						</Col> : null
-				}
+				{collection.collaborators.length ? (
+					<Col md={3}>
+						<dt>Collaborator{collection.collaborators.length > 1 ? 's' : null}</dt>
+						<dd>
+							{collection.collaborators.map((collaborator, id) => (
+								<a href={`/editor/${collaborator.id}`} key={collaborator.id}>
+									{collaborator.text}
+									{id === collection.collaborators.length - 1 ? null : ', '}
+								</a>
+							))}
+						</dd>
+					</Col>
+				) : null}
 				<Col md={3}>
 					<dt>Privacy</dt>
 					<dd>{collection.public ? 'Public' : 'Private'}</dd>
@@ -115,7 +112,7 @@ function CollectionAttributes({collection}) {
 }
 CollectionAttributes.displayName = 'CollectionAttributes';
 CollectionAttributes.propTypes = {
-	collection: PropTypes.object.isRequired
+	collection: PropTypes.object.isRequired,
 };
 
 class CollectionPage extends React.Component {
@@ -125,11 +122,11 @@ class CollectionPage extends React.Component {
 			entities: this.props.entities,
 			message: {
 				text: null,
-				type: null
+				type: null,
 			},
 			selectedEntities: [],
 			showAddEntityModal: false,
-			showDeleteModal: false
+			showDeleteModal: false,
 		};
 
 		this.entityKey = getEntityKey(this.props.collection.entityType);
@@ -142,25 +139,26 @@ class CollectionPage extends React.Component {
 		this.handleCloseAddEntityModal = this.handleCloseAddEntityModal.bind(this);
 		this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
-		this.closeAddEntityModalShowMessageAndRefreshTable = this.closeAddEntityModalShowMessageAndRefreshTable.bind(this);
+		this.closeAddEntityModalShowMessageAndRefreshTable = this.closeAddEntityModalShowMessageAndRefreshTable.bind(
+			this
+		);
 	}
 
 	searchResultsCallback(newResults) {
-		this.setState({entities: newResults});
+		this.setState({ entities: newResults });
 	}
 
 	toggleRow(bbid) {
 		// eslint-disable-next-line react/no-access-state-in-setstate
 		const oldSelected = this.state.selectedEntities;
 		let newSelected;
-		if (oldSelected.find(selectedBBID => selectedBBID === bbid)) {
-			newSelected = oldSelected.filter(selectedBBID => selectedBBID !== bbid);
-		}
-		else {
+		if (oldSelected.find((selectedBBID) => selectedBBID === bbid)) {
+			newSelected = oldSelected.filter((selectedBBID) => selectedBBID !== bbid);
+		} else {
 			newSelected = [...oldSelected, bbid];
 		}
 		this.setState({
-			selectedEntities: newSelected
+			selectedEntities: newSelected,
 		});
 	}
 
@@ -168,64 +166,82 @@ class CollectionPage extends React.Component {
 		if (this.state.selectedEntities.length) {
 			const bbids = this.state.selectedEntities;
 			const submissionUrl = `/collection/${this.props.collection.id}/remove`;
-			request.post(submissionUrl)
-				.send({bbids})
-				.then((res) => {
-					this.setState({
-						message: {
-							text: `Removed ${bbids.length} ${_.kebabCase(this.props.collection.entityType)}${bbids.length > 1 ? 's' : ''}`,
-							type: 'success'
-						},
-						selectedEntities: []
-					}, this.pagerElementRef.triggerSearch);
-				}, (error) => {
-					this.setState({
-						message: {
-							text: 'Something went wrong! Please try again later',
-							type: 'danger'
-						}
-					});
-				});
-		}
-		else {
+			request
+				.post(submissionUrl)
+				.send({ bbids })
+				.then(
+					(res) => {
+						this.setState(
+							{
+								message: {
+									text: `Removed ${bbids.length} ${_.kebabCase(
+										this.props.collection.entityType
+									)}${bbids.length > 1 ? 's' : ''}`,
+									type: 'success',
+								},
+								selectedEntities: [],
+							},
+							this.pagerElementRef.triggerSearch
+						);
+					},
+					(error) => {
+						this.setState({
+							message: {
+								text: 'Something went wrong! Please try again later',
+								type: 'danger',
+							},
+						});
+					}
+				);
+		} else {
 			this.setState({
 				message: {
 					text: `No ${_.kebabCase(this.props.collection.entityType)} selected`,
-					type: 'danger'
-				}
+					type: 'danger',
+				},
 			});
 		}
 	}
 
 	handleShowDeleteModal() {
-		this.setState({showDeleteModal: true});
+		this.setState({ showDeleteModal: true });
 	}
 
 	handleCloseDeleteModal() {
-		this.setState({showDeleteModal: false});
+		this.setState({ showDeleteModal: false });
 	}
 
 	handleShowAddEntityModal() {
-		this.setState({showAddEntityModal: true});
+		this.setState({ showAddEntityModal: true });
 	}
 
 	handleCloseAddEntityModal() {
-		this.setState({showAddEntityModal: false});
+		this.setState({ showAddEntityModal: false });
 	}
 
 	handleAlertDismiss() {
-		this.setState({message: {}});
+		this.setState({ message: {} });
 	}
 
 	closeAddEntityModalShowMessageAndRefreshTable(message) {
-		this.setState({
-			message,
-			showAddEntityModal: false
-		}, this.pagerElementRef.triggerSearch);
+		this.setState(
+			{
+				message,
+				showAddEntityModal: false,
+			},
+			this.pagerElementRef.triggerSearch
+		);
 	}
 
 	render() {
-		const messageComponent = this.state.message.text ? <Alert bsStyle={this.state.message.type} className="margin-top-1" onDismiss={this.handleAlertDismiss}>{this.state.message.text}</Alert> : null;
+		const messageComponent = this.state.message.text ? (
+			<Alert
+				bsStyle={this.state.message.type}
+				className="margin-top-1"
+				onDismiss={this.handleAlertDismiss}>
+				{this.state.message.text}
+			</Alert>
+		) : null;
 		const EntityTable = getEntityTable(this.props.collection.entityType);
 		const propsForTable = {
 			[this.entityKey]: this.state.entities,
@@ -233,7 +249,7 @@ class CollectionPage extends React.Component {
 			selectedEntities: this.state.selectedEntities,
 			showAdd: false,
 			showAddedAtColumn: true,
-			showCheckboxes: Boolean(this.props.isOwner) || Boolean(this.props.isCollaborator)
+			showCheckboxes: Boolean(this.props.isOwner) || Boolean(this.props.isCollaborator),
 		};
 		return (
 			<div>
@@ -259,78 +275,76 @@ class CollectionPage extends React.Component {
 					</Col>
 					<Col md={10}>
 						<h1>{this.props.collection.name}</h1>
-						<CollectionAttributes collection={this.props.collection}/>
+						<CollectionAttributes collection={this.props.collection} />
 					</Col>
 				</Row>
-				<EntityTable{...propsForTable}/>
+				<EntityTable {...propsForTable} />
 				{messageComponent}
 				<div className="margin-top-1 text-left">
-					{
-						this.props.isCollaborator || this.props.isOwner ?
-							<Button
-								bsSize="small"
-								bsStyle="success"
-								title={`Add ${this.props.collection.entityType}`}
-								onClick={this.handleShowAddEntityModal}
-							>
-								<FontAwesomeIcon icon={faPlus}/>
-								&nbsp;Add {_.lowerCase(this.props.collection.entityType)}
-							</Button> : null
-					}
-					{
-						(this.props.isCollaborator || this.props.isOwner) && this.state.entities.length ?
-							<Button
-								bsSize="small"
-								bsStyle="danger"
-								disabled={!this.state.selectedEntities.length}
-								title={`Remove selected ${_.kebabCase(this.props.collection.entityType)}s`}
-								onClick={this.handleRemoveEntities}
-							>
-								<FontAwesomeIcon icon={faTimesCircle}/>
-								&nbsp;Remove <Badge>{this.state.selectedEntities.length}</Badge> selected&nbsp;
-								{_.kebabCase(this.props.collection.entityType)}{this.state.selectedEntities.length > 1 ? 's' : null}
-							</Button> : null
-					}
-					{
-						this.props.isOwner ?
-							<Button
-								bsSize="small"
-								bsStyle="warning"
-								href={`/collection/${this.props.collection.id}/edit`}
-								title="Edit Collection"
-							>
-								<FontAwesomeIcon icon={faPencilAlt}/>&nbsp;Edit collection
-							</Button> : null
-					}
-					{
-						this.props.isOwner ?
-							<Button
-								bsSize="small"
-								bsStyle="danger"
-								title="Delete Collection"
-								onClick={this.handleShowDeleteModal}
-							>
-								<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;Delete collection
-							</Button> : null
-					}
-					{
-						this.props.isCollaborator ?
-							<Button
-								bsSize="small"
-								bsStyle="warning"
-								title="Remove yourself as a collaborator"
-								onClick={this.handleShowDeleteModal}
-							>
-								<FontAwesomeIcon icon={faTimesCircle}/>&nbsp;Stop collaboration
-							</Button> : null
-					}
+					{this.props.isCollaborator || this.props.isOwner ? (
+						<Button
+							bsSize="small"
+							bsStyle="success"
+							title={`Add ${this.props.collection.entityType}`}
+							onClick={this.handleShowAddEntityModal}>
+							<FontAwesomeIcon icon={faPlus} />
+							&nbsp;Add {_.lowerCase(this.props.collection.entityType)}
+						</Button>
+					) : null}
+					{(this.props.isCollaborator || this.props.isOwner) &&
+					this.state.entities.length ? (
+						<Button
+							bsSize="small"
+							bsStyle="danger"
+							disabled={!this.state.selectedEntities.length}
+							title={`Remove selected ${_.kebabCase(
+								this.props.collection.entityType
+							)}s`}
+							onClick={this.handleRemoveEntities}>
+							<FontAwesomeIcon icon={faTimesCircle} />
+							&nbsp;Remove <Badge>{this.state.selectedEntities.length}</Badge>{' '}
+							selected&nbsp;
+							{_.kebabCase(this.props.collection.entityType)}
+							{this.state.selectedEntities.length > 1 ? 's' : null}
+						</Button>
+					) : null}
+					{this.props.isOwner ? (
+						<Button
+							bsSize="small"
+							bsStyle="warning"
+							href={`/collection/${this.props.collection.id}/edit`}
+							title="Edit Collection">
+							<FontAwesomeIcon icon={faPencilAlt} />
+							&nbsp;Edit collection
+						</Button>
+					) : null}
+					{this.props.isOwner ? (
+						<Button
+							bsSize="small"
+							bsStyle="danger"
+							title="Delete Collection"
+							onClick={this.handleShowDeleteModal}>
+							<FontAwesomeIcon icon={faTrashAlt} />
+							&nbsp;Delete collection
+						</Button>
+					) : null}
+					{this.props.isCollaborator ? (
+						<Button
+							bsSize="small"
+							bsStyle="warning"
+							title="Remove yourself as a collaborator"
+							onClick={this.handleShowDeleteModal}>
+							<FontAwesomeIcon icon={faTimesCircle} />
+							&nbsp;Stop collaboration
+						</Button>
+					) : null}
 				</div>
 				<div id="pageWithPagination">
 					<PagerElement
 						from={this.props.from}
 						nextEnabled={this.props.nextEnabled}
 						paginationUrl={this.paginationUrl}
-						ref={(ref) => this.pagerElementRef = ref}
+						ref={(ref) => (this.pagerElementRef = ref)}
 						results={this.state.entities}
 						searchResultsCallback={this.searchResultsCallback}
 						size={this.props.size}
@@ -340,7 +354,6 @@ class CollectionPage extends React.Component {
 		);
 	}
 }
-
 
 CollectionPage.displayName = 'CollectionPage';
 CollectionPage.propTypes = {
@@ -352,7 +365,7 @@ CollectionPage.propTypes = {
 	nextEnabled: PropTypes.bool.isRequired,
 	showCheckboxes: PropTypes.bool,
 	size: PropTypes.number,
-	userId: PropTypes.number
+	userId: PropTypes.number,
 };
 CollectionPage.defaultProps = {
 	entities: [],
@@ -361,7 +374,7 @@ CollectionPage.defaultProps = {
 	isOwner: false,
 	showCheckboxes: false,
 	size: 20,
-	userId: null
+	userId: null,
 };
 
 export default CollectionPage;

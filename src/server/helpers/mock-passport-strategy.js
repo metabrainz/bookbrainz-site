@@ -3,10 +3,8 @@
  * License: MIT
  */
 
-
 import passport from 'passport';
 import util from 'util';
-
 
 function StrategyMock(options, verify) {
 	this.name = 'mock';
@@ -20,20 +18,18 @@ util.inherits(StrategyMock, passport.Strategy);
 StrategyMock.prototype.authenticate = function authenticate(req) {
 	if (this.passAuthentication) {
 		const user = {
-			id: this.userId
+			id: this.userId,
 		};
 
 		req.user = user;
 		this.verify(user, (err, resident) => {
 			if (err) {
 				this.fail(err);
-			}
-			else {
+			} else {
 				this.success(resident);
 			}
 		});
-	}
-	else {
+	} else {
 		this.fail('Unauthorized');
 	}
 };

@@ -21,12 +21,11 @@ import CustomInput from '../../input';
 import ValidationLabel from './validation-label';
 import VirtualizedSelect from 'react-virtualized-select';
 
-
 type Props = {
-	empty?: boolean,
-	error?: boolean,
-	tooltipText?: string,
-	[propName: string]: any
+	empty?: boolean;
+	error?: boolean;
+	tooltipText?: string;
+	[propName: string]: any;
 };
 
 /**
@@ -42,19 +41,15 @@ type Props = {
  *        component to indicate that the field is empty.
  * @returns {Object} A React component containing the rendered input.
  */
-function LanguageField({
-	empty,
-	error,
-	tooltipText,
-	...rest
-}: Props) {
-	const label =
-		<ValidationLabel empty={empty} error={error}>Language</ValidationLabel>
-	;
-
+function LanguageField({ empty, error, tooltipText, ...rest }: Props) {
+	const label = (
+		<ValidationLabel empty={empty} error={error}>
+			Language
+		</ValidationLabel>
+	);
 	return (
 		<CustomInput label={label} tooltipText={tooltipText}>
-			<VirtualizedSelect {...rest}/>
+			<VirtualizedSelect {...rest} />
 		</CustomInput>
 	);
 }
@@ -62,7 +57,7 @@ LanguageField.displayName = 'LanguageField';
 LanguageField.defaultProps = {
 	empty: false,
 	error: false,
-	tooltipText: null
+	tooltipText: null,
 };
 
 export default LanguageField;

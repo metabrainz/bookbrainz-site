@@ -18,35 +18,29 @@
 
 import * as Immutable from 'immutable';
 import {
-	ADD_IDENTIFIER_ROW, REMOVE_EMPTY_IDENTIFIERS, REMOVE_IDENTIFIER_ROW,
-	UPDATE_IDENTIFIER_TYPE, UPDATE_IDENTIFIER_VALUE
+	ADD_IDENTIFIER_ROW,
+	REMOVE_EMPTY_IDENTIFIERS,
+	REMOVE_IDENTIFIER_ROW,
+	UPDATE_IDENTIFIER_TYPE,
+	UPDATE_IDENTIFIER_VALUE,
 } from './actions';
-
 
 const EMPTY_IDENTIFIER = Immutable.Map({
 	type: null,
-	value: ''
+	value: '',
 });
 
 type State = Immutable.OrderedMap<string, any>;
 
-function reducer(
-	state: State = Immutable.OrderedMap(),
-	action
-) {
-	const {type, payload} = action;
+function reducer(state: State = Immutable.OrderedMap(), action) {
+	const { type, payload } = action;
 	switch (type) {
 		case ADD_IDENTIFIER_ROW:
 			return state.set(payload, EMPTY_IDENTIFIER);
-		case UPDATE_IDENTIFIER_VALUE:
-		{
-			const updatedValue = state.setIn(
-				[payload.rowId, 'value'], payload.value
-			);
+		case UPDATE_IDENTIFIER_VALUE: {
+			const updatedValue = state.setIn([payload.rowId, 'value'], payload.value);
 			if (payload.suggestedType) {
-				return updatedValue.setIn(
-					[payload.rowId, 'type'], payload.suggestedType.id
-				);
+				return updatedValue.setIn([payload.rowId, 'type'], payload.suggestedType.id);
 			}
 
 			return updatedValue;
@@ -56,8 +50,9 @@ function reducer(
 		case REMOVE_IDENTIFIER_ROW:
 			return state.delete(payload);
 		case REMOVE_EMPTY_IDENTIFIERS:
-			return state.filterNot(identifier =>
-				identifier.get('value') === '' && identifier.get('type') === null);
+			return state.filterNot(
+				(identifier) => identifier.get('value') === '' && identifier.get('type') === null
+			);
 		// no default
 	}
 	return state;

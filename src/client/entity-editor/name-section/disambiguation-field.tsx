@@ -21,11 +21,10 @@ import * as React from 'react';
 import CustomInput from '../../input';
 import ValidationLabel from '../common/validation-label';
 
-
 type Props = {
-	empty?: boolean,
-	error?: boolean,
-	required?: boolean
+	empty?: boolean;
+	error?: boolean;
+	required?: boolean;
 };
 
 /**
@@ -38,18 +37,11 @@ type Props = {
  *        down to the child input element.
  * @returns {Object} a React component containing the rendered input
  */
-function DisambiguationField({
-	empty,
-	error,
-	required,
-	...rest
-}: Props) {
+function DisambiguationField({ empty, error, required, ...rest }: Props) {
 	const label = (
 		<ValidationLabel empty={empty} error={error}>
 			Disambiguation
-			{required || null ? null :
-				<span className="text-muted"> (optional)</span>
-			}
+			{required || null ? null : <span className="text-muted"> (optional)</span>}
 		</ValidationLabel>
 	);
 
@@ -66,7 +58,7 @@ DisambiguationField.displayName = 'DisambiguationField';
 DisambiguationField.defaultProps = {
 	empty: false,
 	error: false,
-	required: false
+	required: false,
 };
 
 export default DisambiguationField;

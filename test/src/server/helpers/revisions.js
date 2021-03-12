@@ -7,44 +7,50 @@ import {
 	createEditor,
 	createPublisher,
 	createWork,
-	truncateEntities
+	truncateEntities,
 } from '../../../test-helpers/create-entities';
 import {
 	getAssociatedEntityRevisions,
 	getOrderedRevisionForEditorPage,
 	getOrderedRevisions,
-	getOrderedRevisionsForEntityPage
+	getOrderedRevisionsForEntityPage,
 } from '../../../../src/server/helpers/revisions';
 
 import chai from 'chai';
-import {date} from 'faker';
+import { date } from 'faker';
 import isSorted from 'chai-sorted';
 import orm from '../../../bookbrainz-data';
 
-
-const {expect} = chai;
+const { expect } = chai;
 chai.use(isSorted);
 
 const {
-	AuthorData, AuthorRevision, Revision, AliasSet,
-	EditionData, EditionRevision, EditionGroupData, EditionGroupRevision,
-	Note, PublisherData, PublisherRevision, WorkData, WorkRevision
+	AuthorData,
+	AuthorRevision,
+	Revision,
+	AliasSet,
+	EditionData,
+	EditionRevision,
+	EditionGroupData,
+	EditionGroupRevision,
+	Note,
+	PublisherData,
+	PublisherRevision,
+	WorkData,
+	WorkRevision,
 } = orm;
-
 
 describe('getOrderedRevisions', () => {
 	before(async () => {
 		const editor = await createEditor();
 		const editorJSON = editor.toJSON();
 		const revisionAttribs = {
-			authorId: editorJSON.id
+			authorId: editorJSON.id,
 		};
 		const promiseArray = [];
 		for (let id = 1; id <= 50; id++) {
 			revisionAttribs.createdAt = date.recent();
-			promiseArray.push(
-				new Revision(revisionAttribs).save(null, {method: 'insert'})
-			);
+			promiseArray.push(new Revision(revisionAttribs).save(null, { method: 'insert' }));
 		}
 		await Promise.all(promiseArray);
 	});
@@ -54,7 +60,7 @@ describe('getOrderedRevisions', () => {
 		const from = 0;
 		const size = 50;
 		const orderedRevisions = await getOrderedRevisions(from, size, orm);
-		orderedRevisions.forEach(revision => {
+		orderedRevisions.forEach((revision) => {
 			expect(revision).to.have.keys(
 				'createdAt',
 				'editor',
@@ -87,8 +93,14 @@ describe('getOrderedRevisions', () => {
 
 describe('getAssociatedEntityRevisions', () => {
 	// eslint-disable-next-line one-var
-	let aliasSetId, authorJSON, editionGroupJSON, editionJSON,
-		editorJSON, expectedDefaultAliasId, publisherJSON, workJSON;
+	let aliasSetId,
+		authorJSON,
+		editionGroupJSON,
+		editionJSON,
+		editorJSON,
+		expectedDefaultAliasId,
+		publisherJSON,
+		workJSON;
 	beforeEach(async () => {
 		const author = await createAuthor();
 		const edition = await createEdition();
@@ -105,7 +117,7 @@ describe('getAssociatedEntityRevisions', () => {
 
 		// In each revision, we will change the alias of entity to AuthorJSON alias.
 		// We need expectedDefaultAliasId to check the test
-		const aliasSet = await new AliasSet().where({id: authorJSON.aliasSetId}).fetch();
+		const aliasSet = await new AliasSet().where({ id: authorJSON.aliasSetId }).fetch();
 		const aliasSetJSON = aliasSet.toJSON();
 		aliasSetId = aliasSetJSON.id;
 		expectedDefaultAliasId = aliasSetJSON.defaultAliasId;
@@ -114,55 +126,87 @@ describe('getAssociatedEntityRevisions', () => {
 
 	it('should return formatted revisions array after adding entity (1 revision with 1 entity revised)', async () => {
 		// here author is revised
-		const revision = await new Revision({authorId: editorJSON.id})
-			.save(null, {method: 'insert'});
+		const revision = await new Revision({ authorId: editorJSON.id }).save(null, {
+			method: 'insert',
+		});
 		// we can ignore other fields expect aliasSetId. We are interested in fetching alias only
-		const authorData = await new AuthorData({aliasSetId}).save(null, {method: 'insert'});
-		await new AuthorRevision({bbid: authorJSON.bbid, dataId: authorData.id, id: revision.id}).save(null, {method: 'insert'});
+		const authorData = await new AuthorData({ aliasSetId }).save(null, { method: 'insert' });
+		await new AuthorRevision({
+			bbid: authorJSON.bbid,
+			dataId: authorData.id,
+			id: revision.id,
+		}).save(null, { method: 'insert' });
 
 		const formattedRevision = [
 			{
 				authorId: editorJSON.id,
 				entities: [],
-				revisionId: revision.id
-			}
+				revisionId: revision.id,
+			},
 		];
 		const revisionsWithEntities = await getAssociatedEntityRevisions(formattedRevision, orm);
 
 		expect(revisionsWithEntities.length).to.be.equal(1);
 		expect(revisionsWithEntities[0].entities.length).to.be.equal(1);
-		expect(revisionsWithEntities[0].entities[0].defaultAlias.id).to.be.equal(expectedDefaultAliasId);
+		expect(revisionsWithEntities[0].entities[0].defaultAlias.id).to.be.equal(
+			expectedDefaultAliasId
+		);
 	});
 
 	it('should return formatted revisions array after adding entities (1 revision with multiple (different type) entities revised)', async () => {
 		// here author, work, edition, editionGroup, publisher is revised
-		const revision = await new Revision({authorId: editorJSON.id})
-			.save(null, {method: 'insert'});
+		const revision = await new Revision({ authorId: editorJSON.id }).save(null, {
+			method: 'insert',
+		});
 		const revisionId = revision.id;
 
 		// We are interested in fetching alias only, we can ignore other fields.
 		// setting each entity's alias to author's alias
-		const authorData = await new AuthorData({aliasSetId}).save(null, {method: 'insert'});
-		await new AuthorRevision({bbid: authorJSON.bbid, dataId: authorData.id, id: revisionId}).save(null, {method: 'insert'});
+		const authorData = await new AuthorData({ aliasSetId }).save(null, { method: 'insert' });
+		await new AuthorRevision({
+			bbid: authorJSON.bbid,
+			dataId: authorData.id,
+			id: revisionId,
+		}).save(null, { method: 'insert' });
 
-		const editionData = await new EditionData({aliasSetId}).save(null, {method: 'insert'});
-		await new EditionRevision({bbid: editionJSON.bbid, dataId: editionData.id, id: revisionId}).save(null, {method: 'insert'});
+		const editionData = await new EditionData({ aliasSetId }).save(null, { method: 'insert' });
+		await new EditionRevision({
+			bbid: editionJSON.bbid,
+			dataId: editionData.id,
+			id: revisionId,
+		}).save(null, { method: 'insert' });
 
-		const editionGroupData = await new EditionGroupData({aliasSetId}).save(null, {method: 'insert'});
-		await new EditionGroupRevision({bbid: editionGroupJSON.bbid, dataId: editionGroupData.id, id: revisionId}).save(null, {method: 'insert'});
+		const editionGroupData = await new EditionGroupData({ aliasSetId }).save(null, {
+			method: 'insert',
+		});
+		await new EditionGroupRevision({
+			bbid: editionGroupJSON.bbid,
+			dataId: editionGroupData.id,
+			id: revisionId,
+		}).save(null, { method: 'insert' });
 
-		const publisherData = await new PublisherData({aliasSetId}).save(null, {method: 'insert'});
-		await new PublisherRevision({bbid: publisherJSON.bbid, dataId: publisherData.id, id: revisionId}).save(null, {method: 'insert'});
+		const publisherData = await new PublisherData({ aliasSetId }).save(null, {
+			method: 'insert',
+		});
+		await new PublisherRevision({
+			bbid: publisherJSON.bbid,
+			dataId: publisherData.id,
+			id: revisionId,
+		}).save(null, { method: 'insert' });
 
-		const workData = await new WorkData({aliasSetId}).save(null, {method: 'insert'});
-		await new WorkRevision({bbid: workJSON.bbid, dataId: workData.id, id: revisionId}).save(null, {method: 'insert'});
+		const workData = await new WorkData({ aliasSetId }).save(null, { method: 'insert' });
+		await new WorkRevision({
+			bbid: workJSON.bbid,
+			dataId: workData.id,
+			id: revisionId,
+		}).save(null, { method: 'insert' });
 
 		const formattedRevision = [
 			{
 				authorId: editorJSON.id,
 				entities: [],
-				revisionId
-			}
+				revisionId,
+			},
 		];
 		const revisionsWithEntities = await getAssociatedEntityRevisions(formattedRevision, orm);
 
@@ -173,97 +217,136 @@ describe('getAssociatedEntityRevisions', () => {
 		});
 	});
 
-	it('should return formatted revisions array after adding entities ' +
-		'(1 revision with multiple entities ( same type ) revised)', async () => {
-		// here work and work2 are revised.
-		const work2 = await createWork();
-		const workJSON2 = work2.toJSON();
+	it(
+		'should return formatted revisions array after adding entities ' +
+			'(1 revision with multiple entities ( same type ) revised)',
+		async () => {
+			// here work and work2 are revised.
+			const work2 = await createWork();
+			const workJSON2 = work2.toJSON();
 
-		const revision = await new Revision({authorId: editorJSON.id})
-			.save(null, {method: 'insert'});
-		const revisionId = revision.id;
+			const revision = await new Revision({ authorId: editorJSON.id }).save(null, {
+				method: 'insert',
+			});
+			const revisionId = revision.id;
 
-		// We are interested in fetching alias only, we can ignore other fields.
-		// setting each entity's alias to author's alias
-		const workData = await new WorkData({aliasSetId}).save(null, {method: 'insert'});
-		await new WorkRevision({bbid: workJSON.bbid, dataId: workData.id, id: revisionId}).save(null, {method: 'insert'});
+			// We are interested in fetching alias only, we can ignore other fields.
+			// setting each entity's alias to author's alias
+			const workData = await new WorkData({ aliasSetId }).save(null, { method: 'insert' });
+			await new WorkRevision({
+				bbid: workJSON.bbid,
+				dataId: workData.id,
+				id: revisionId,
+			}).save(null, { method: 'insert' });
 
-		const workData2 = await new WorkData({aliasSetId}).save(null, {method: 'insert'});
-		await new WorkRevision({bbid: workJSON2.bbid, dataId: workData2.id, id: revisionId}).save(null, {method: 'insert'});
+			const workData2 = await new WorkData({ aliasSetId }).save(null, { method: 'insert' });
+			await new WorkRevision({
+				bbid: workJSON2.bbid,
+				dataId: workData2.id,
+				id: revisionId,
+			}).save(null, { method: 'insert' });
 
-		const formattedRevision = [
-			{
-				authorId: editorJSON.id,
-				entities: [],
-				revisionId
-			}
-		];
-		const revisionsWithEntities = await getAssociatedEntityRevisions(formattedRevision, orm);
+			const formattedRevision = [
+				{
+					authorId: editorJSON.id,
+					entities: [],
+					revisionId,
+				},
+			];
+			const revisionsWithEntities = await getAssociatedEntityRevisions(
+				formattedRevision,
+				orm
+			);
 
-		expect(revisionsWithEntities.length).to.be.equal(1);
-		expect(revisionsWithEntities[0].entities.length).to.be.equal(2);
-		revisionsWithEntities[0].entities.forEach((entity) => {
-			expect(entity.defaultAlias.id).to.be.equal(expectedDefaultAliasId);
-		});
-	});
+			expect(revisionsWithEntities.length).to.be.equal(1);
+			expect(revisionsWithEntities[0].entities.length).to.be.equal(2);
+			revisionsWithEntities[0].entities.forEach((entity) => {
+				expect(entity.defaultAlias.id).to.be.equal(expectedDefaultAliasId);
+			});
+		}
+	);
 
 	it('should return formatted revisions array after adding entities (5 revision each with single entity revised)', async () => {
 		// here author, work, edition, editionGroup, publisher is revised
 
 		// We are interested in fetching alias only, we can ignore other fields.
 		// setting each entity's alias to author's alias
-		const revision1 = await new Revision({authorId: editorJSON.id})
-			.save(null, {method: 'insert'});
-		let data = await new AuthorData({aliasSetId}).save(null, {method: 'insert'});
-		await new AuthorRevision({bbid: authorJSON.bbid, dataId: data.id, id: revision1.id}).save(null, {method: 'insert'});
+		const revision1 = await new Revision({ authorId: editorJSON.id }).save(null, {
+			method: 'insert',
+		});
+		let data = await new AuthorData({ aliasSetId }).save(null, { method: 'insert' });
+		await new AuthorRevision({
+			bbid: authorJSON.bbid,
+			dataId: data.id,
+			id: revision1.id,
+		}).save(null, { method: 'insert' });
 
-		const revision2 = await new Revision({authorId: editorJSON.id})
-			.save(null, {method: 'insert'});
-		data = await new EditionData({aliasSetId}).save(null, {method: 'insert'});
-		await new EditionRevision({bbid: editionJSON.bbid, dataId: data.id, id: revision2.id}).save(null, {method: 'insert'});
+		const revision2 = await new Revision({ authorId: editorJSON.id }).save(null, {
+			method: 'insert',
+		});
+		data = await new EditionData({ aliasSetId }).save(null, { method: 'insert' });
+		await new EditionRevision({
+			bbid: editionJSON.bbid,
+			dataId: data.id,
+			id: revision2.id,
+		}).save(null, { method: 'insert' });
 
+		const revision3 = await new Revision({ authorId: editorJSON.id }).save(null, {
+			method: 'insert',
+		});
+		data = await new EditionGroupData({ aliasSetId }).save(null, { method: 'insert' });
+		await new EditionGroupRevision({
+			bbid: editionGroupJSON.bbid,
+			dataId: data.id,
+			id: revision3.id,
+		}).save(null, { method: 'insert' });
 
-		const revision3 = await new Revision({authorId: editorJSON.id})
-			.save(null, {method: 'insert'});
-		data = await new EditionGroupData({aliasSetId}).save(null, {method: 'insert'});
-		await new EditionGroupRevision({bbid: editionGroupJSON.bbid, dataId: data.id, id: revision3.id}).save(null, {method: 'insert'});
+		const revision4 = await new Revision({ authorId: editorJSON.id }).save(null, {
+			method: 'insert',
+		});
+		data = await new PublisherData({ aliasSetId }).save(null, { method: 'insert' });
+		await new PublisherRevision({
+			bbid: publisherJSON.bbid,
+			dataId: data.id,
+			id: revision4.id,
+		}).save(null, { method: 'insert' });
 
-		const revision4 = await new Revision({authorId: editorJSON.id})
-			.save(null, {method: 'insert'});
-		data = await new PublisherData({aliasSetId}).save(null, {method: 'insert'});
-		await new PublisherRevision({bbid: publisherJSON.bbid, dataId: data.id, id: revision4.id}).save(null, {method: 'insert'});
-
-		const revision5 = await new Revision({authorId: editorJSON.id})
-			.save(null, {method: 'insert'});
-		data = await new WorkData({aliasSetId}).save(null, {method: 'insert'});
-		await new WorkRevision({bbid: workJSON.bbid, dataId: data.id, id: revision5.id}).save(null, {method: 'insert'});
+		const revision5 = await new Revision({ authorId: editorJSON.id }).save(null, {
+			method: 'insert',
+		});
+		data = await new WorkData({ aliasSetId }).save(null, { method: 'insert' });
+		await new WorkRevision({
+			bbid: workJSON.bbid,
+			dataId: data.id,
+			id: revision5.id,
+		}).save(null, { method: 'insert' });
 
 		const formattedRevision = [
 			{
 				authorId: editorJSON.id,
 				entities: [],
-				revisionId: revision1.id
+				revisionId: revision1.id,
 			},
 			{
 				authorId: editorJSON.id,
 				entities: [],
-				revisionId: revision2.id
+				revisionId: revision2.id,
 			},
 			{
 				authorId: editorJSON.id,
 				entities: [],
-				revisionId: revision3.id
+				revisionId: revision3.id,
 			},
 			{
 				authorId: editorJSON.id,
 				entities: [],
-				revisionId: revision4.id
+				revisionId: revision4.id,
 			},
 			{
 				authorId: editorJSON.id,
 				entities: [],
-				revisionId: revision5.id
-			}
+				revisionId: revision5.id,
+			},
 		];
 		const revisionsWithEntities = await getAssociatedEntityRevisions(formattedRevision, orm);
 
@@ -284,25 +367,23 @@ describe('getOrderedRevisionForEditorPage', () => {
 		const editor = await createEditor();
 		editorJSON = editor.toJSON();
 		const revisionAttribs = {
-			authorId: editorJSON.id
+			authorId: editorJSON.id,
 		};
 		const promiseArray = [];
 		for (let i = 1; i <= 50; i++) {
 			revisionAttribs.createdAt = date.recent();
-			promiseArray.push(
-				new Revision(revisionAttribs).save(null, {method: 'insert'})
-			);
+			promiseArray.push(new Revision(revisionAttribs).save(null, { method: 'insert' }));
 		}
 		await Promise.all(promiseArray);
 		req = {
 			app: {
 				locals: {
-					orm
-				}
+					orm,
+				},
 			},
 			params: {
-				id: editorJSON.id
-			}
+				id: editorJSON.id,
+			},
 		};
 	});
 	after(truncateEntities);
@@ -311,7 +392,7 @@ describe('getOrderedRevisionForEditorPage', () => {
 		const from = 0;
 		const size = 50;
 		const orderedRevisions = await getOrderedRevisionForEditorPage(from, size, req);
-		orderedRevisions.forEach(revision => {
+		orderedRevisions.forEach((revision) => {
 			expect(revision).to.have.keys(
 				'createdAt',
 				'editor',
@@ -346,8 +427,7 @@ describe('getOrderedRevisionForEditorPage', () => {
 		req.params.id = '98765';
 		try {
 			await getOrderedRevisionForEditorPage(0, 10, req);
-		}
-		catch (err) {
+		} catch (err) {
 			const expectedError = new error.NotFoundError('Editor not found', req);
 			expect(err.message).to.equal(expectedError.message);
 		}
@@ -358,22 +438,20 @@ describe('getOrderedRevisionForEditorPage', () => {
 		const editorJSON2 = editor.toJSON();
 		const revision = await new Revision({
 			authorId: editorJSON2.id,
-			createdAt: date.recent()
-		}).save(null, {method: 'insert'});
+			createdAt: date.recent(),
+		}).save(null, { method: 'insert' });
 
 		const noteAttrib = {
 			authorId: editorJSON2.id,
 			content: 'note content',
-			revisionId: revision.id
+			revisionId: revision.id,
 		};
 
 		// Creating 10 notes for this new revision
 		const promiseArray = [];
 		for (let i = 1; i <= 10; i++) {
 			noteAttrib.postedAt = date.recent();
-			promiseArray.push(
-				new Note(noteAttrib).save(null, {method: 'insert'})
-			);
+			promiseArray.push(new Note(noteAttrib).save(null, { method: 'insert' }));
 		}
 		await Promise.all(promiseArray);
 
@@ -411,22 +489,31 @@ describe('getOrderedRevisionsForEntityPage', () => {
 
 		// starting from 2 because one revision is created while creating the author
 		for (let i = 2; i <= numberOfRevisions; i++) {
-			const revision = await new Revision({authorId: editorJSON.id, createdAt: date.recent()}).save(null, {method: 'insert'});
-			const authorData = await new AuthorData({aliasSetId: authorJSON.aliasSetId}).save(null, {method: 'insert'});
-			await new AuthorRevision({bbid: authorJSON.bbid, dataId: authorData.id, id: revision.id}).save(null, {method: 'insert'});
+			const revision = await new Revision({
+				authorId: editorJSON.id,
+				createdAt: date.recent(),
+			}).save(null, { method: 'insert' });
+			const authorData = await new AuthorData({
+				aliasSetId: authorJSON.aliasSetId,
+			}).save(null, { method: 'insert' });
+			await new AuthorRevision({
+				bbid: authorJSON.bbid,
+				dataId: authorData.id,
+				id: revision.id,
+			}).save(null, { method: 'insert' });
 		}
-		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, 0, numberOfRevisions, AuthorRevision, authorJSON.bbid);
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(
+			orm,
+			0,
+			numberOfRevisions,
+			AuthorRevision,
+			authorJSON.bbid
+		);
 
 		expect(orderedRevisions.length).to.equal(numberOfRevisions);
 		expect(orderedRevisions).to.be.descendingBy('createdAt');
 		orderedRevisions.forEach((revision) => {
-			expect(revision).to.have.keys(
-				'createdAt',
-				'editor',
-				'notes',
-				'revisionId',
-				'isMerge'
-			);
+			expect(revision).to.have.keys('createdAt', 'editor', 'notes', 'revisionId', 'isMerge');
 		});
 	});
 
@@ -437,23 +524,32 @@ describe('getOrderedRevisionsForEntityPage', () => {
 
 		// starting from 2 because one revision is created while creating the work
 		for (let i = 2; i <= numberOfRevisions; i++) {
-			const revision = await new Revision({authorId: editorJSON.id, createdAt: date.recent()}).save(null, {method: 'insert'});
-			const data = await new WorkData({aliasSetId: workJSON.aliasSetId}).save(null, {method: 'insert'});
-			await new WorkRevision({bbid: workJSON.bbid, dataId: data.id, id: revision.id}).save(null, {method: 'insert'});
+			const revision = await new Revision({
+				authorId: editorJSON.id,
+				createdAt: date.recent(),
+			}).save(null, { method: 'insert' });
+			const data = await new WorkData({ aliasSetId: workJSON.aliasSetId }).save(null, {
+				method: 'insert',
+			});
+			await new WorkRevision({
+				bbid: workJSON.bbid,
+				dataId: data.id,
+				id: revision.id,
+			}).save(null, { method: 'insert' });
 		}
 
-		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, 0, numberOfRevisions, WorkRevision, workJSON.bbid);
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(
+			orm,
+			0,
+			numberOfRevisions,
+			WorkRevision,
+			workJSON.bbid
+		);
 
 		expect(orderedRevisions.length).to.equal(numberOfRevisions);
 		expect(orderedRevisions).to.be.descendingBy('createdAt');
 		orderedRevisions.forEach((revision) => {
-			expect(revision).to.have.keys(
-				'createdAt',
-				'editor',
-				'notes',
-				'revisionId',
-				'isMerge'
-			);
+			expect(revision).to.have.keys('createdAt', 'editor', 'notes', 'revisionId', 'isMerge');
 		});
 	});
 
@@ -464,23 +560,32 @@ describe('getOrderedRevisionsForEntityPage', () => {
 
 		// starting from 2 because one revision is created while creating the work
 		for (let i = 2; i <= numberOfRevisions; i++) {
-			const revision = await new Revision({authorId: editorJSON.id, createdAt: date.recent()}).save(null, {method: 'insert'});
-			const data = await new EditionData({aliasSetId: editionJSON.aliasSetId}).save(null, {method: 'insert'});
-			await new EditionRevision({bbid: editionJSON.bbid, dataId: data.id, id: revision.id}).save(null, {method: 'insert'});
+			const revision = await new Revision({
+				authorId: editorJSON.id,
+				createdAt: date.recent(),
+			}).save(null, { method: 'insert' });
+			const data = await new EditionData({ aliasSetId: editionJSON.aliasSetId }).save(null, {
+				method: 'insert',
+			});
+			await new EditionRevision({
+				bbid: editionJSON.bbid,
+				dataId: data.id,
+				id: revision.id,
+			}).save(null, { method: 'insert' });
 		}
 
-		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, 0, numberOfRevisions, EditionRevision, editionJSON.bbid);
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(
+			orm,
+			0,
+			numberOfRevisions,
+			EditionRevision,
+			editionJSON.bbid
+		);
 
 		expect(orderedRevisions.length).to.equal(numberOfRevisions);
 		expect(orderedRevisions).to.be.descendingBy('createdAt');
 		orderedRevisions.forEach((revision) => {
-			expect(revision).to.have.keys(
-				'createdAt',
-				'editor',
-				'notes',
-				'revisionId',
-				'isMerge'
-			);
+			expect(revision).to.have.keys('createdAt', 'editor', 'notes', 'revisionId', 'isMerge');
 		});
 	});
 
@@ -491,23 +596,32 @@ describe('getOrderedRevisionsForEntityPage', () => {
 
 		// starting from 2 because one revision is created while creating the publisher
 		for (let i = 2; i <= numberOfRevisions; i++) {
-			const revision = await new Revision({authorId: editorJSON.id, createdAt: date.recent()}).save(null, {method: 'insert'});
-			const data = await new PublisherData({aliasSetId: publisherJSON.aliasSetId}).save(null, {method: 'insert'});
-			await new PublisherRevision({bbid: publisherJSON.bbid, dataId: data.id, id: revision.id}).save(null, {method: 'insert'});
+			const revision = await new Revision({
+				authorId: editorJSON.id,
+				createdAt: date.recent(),
+			}).save(null, { method: 'insert' });
+			const data = await new PublisherData({
+				aliasSetId: publisherJSON.aliasSetId,
+			}).save(null, { method: 'insert' });
+			await new PublisherRevision({
+				bbid: publisherJSON.bbid,
+				dataId: data.id,
+				id: revision.id,
+			}).save(null, { method: 'insert' });
 		}
 
-		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, 0, numberOfRevisions, PublisherRevision, publisherJSON.bbid);
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(
+			orm,
+			0,
+			numberOfRevisions,
+			PublisherRevision,
+			publisherJSON.bbid
+		);
 
 		expect(orderedRevisions.length).to.equal(numberOfRevisions);
 		expect(orderedRevisions).to.be.descendingBy('createdAt');
 		orderedRevisions.forEach((revision) => {
-			expect(revision).to.have.keys(
-				'createdAt',
-				'editor',
-				'notes',
-				'revisionId',
-				'isMerge'
-			);
+			expect(revision).to.have.keys('createdAt', 'editor', 'notes', 'revisionId', 'isMerge');
 		});
 	});
 
@@ -518,23 +632,32 @@ describe('getOrderedRevisionsForEntityPage', () => {
 
 		// starting from 2 because one revision is created while creating the editionGroup
 		for (let i = 2; i <= numberOfRevisions; i++) {
-			const revision = await new Revision({authorId: editorJSON.id, createdAt: date.recent()}).save(null, {method: 'insert'});
-			const data = await new EditionGroupData({aliasSetId: editionGroupJSON.aliasSetId}).save(null, {method: 'insert'});
-			await new EditionGroupRevision({bbid: editionGroupJSON.bbid, dataId: data.id, id: revision.id}).save(null, {method: 'insert'});
+			const revision = await new Revision({
+				authorId: editorJSON.id,
+				createdAt: date.recent(),
+			}).save(null, { method: 'insert' });
+			const data = await new EditionGroupData({
+				aliasSetId: editionGroupJSON.aliasSetId,
+			}).save(null, { method: 'insert' });
+			await new EditionGroupRevision({
+				bbid: editionGroupJSON.bbid,
+				dataId: data.id,
+				id: revision.id,
+			}).save(null, { method: 'insert' });
 		}
 
-		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, 0, numberOfRevisions, EditionGroupRevision, editionGroupJSON.bbid);
+		const orderedRevisions = await getOrderedRevisionsForEntityPage(
+			orm,
+			0,
+			numberOfRevisions,
+			EditionGroupRevision,
+			editionGroupJSON.bbid
+		);
 
 		expect(orderedRevisions.length).to.equal(numberOfRevisions);
 		expect(orderedRevisions).to.be.descendingBy('createdAt');
 		orderedRevisions.forEach((revision) => {
-			expect(revision).to.have.keys(
-				'createdAt',
-				'editor',
-				'notes',
-				'revisionId',
-				'isMerge'
-			);
+			expect(revision).to.have.keys('createdAt', 'editor', 'notes', 'revisionId', 'isMerge');
 		});
 	});
 
@@ -547,20 +670,24 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		const noteAttrib = {
 			authorId: editorJSON.id,
 			content: 'note content',
-			revisionID
+			revisionID,
 		};
 
 		// create 10 notes for the revision
 		const promiseArray = [];
 		for (let i = 1; i <= 10; i++) {
 			noteAttrib.postedAt = date.recent();
-			promiseArray.push(
-				new Note(noteAttrib).save(null, {method: 'insert'})
-			);
+			promiseArray.push(new Note(noteAttrib).save(null, { method: 'insert' }));
 		}
 		await Promise.all(promiseArray);
 
-		const orderedRevision = await getOrderedRevisionsForEntityPage(orm, 0, 10, AuthorRevision, authorJSON.bbid);
+		const orderedRevision = await getOrderedRevisionsForEntityPage(
+			orm,
+			0,
+			10,
+			AuthorRevision,
+			authorJSON.bbid
+		);
 
 		expect(orderedRevision.length).to.be.equal(1);
 		expect(orderedRevision[0].notes.length).to.be.equal(10);
@@ -581,10 +708,17 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		const revisionID2 = author2JSON.revisionId;
 
 		// Let's pretend author2 was merged into author1
-		await orm.bookshelf.knex('bookbrainz.entity_redirect')
-			.insert({source_bbid: author2JSON.bbid, target_bbid: author1JSON.bbid});
+		await orm.bookshelf
+			.knex('bookbrainz.entity_redirect')
+			.insert({ source_bbid: author2JSON.bbid, target_bbid: author1JSON.bbid });
 
-		const orderedRevision = await getOrderedRevisionsForEntityPage(orm, 0, 10, AuthorRevision, author1JSON.bbid);
+		const orderedRevision = await getOrderedRevisionsForEntityPage(
+			orm,
+			0,
+			10,
+			AuthorRevision,
+			author1JSON.bbid
+		);
 
 		expect(orderedRevision.length).to.be.equal(2);
 		expect(orderedRevision[0].revisionId).to.be.equal(revisionID2);
@@ -604,13 +738,18 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		const revisionID3 = author3JSON.revisionId;
 
 		// Let's pretend author3 was merged into author2 and author2 was merged into author1
-		await orm.bookshelf.knex('bookbrainz.entity_redirect')
-			.insert([
-				{source_bbid: author3JSON.bbid, target_bbid: author2JSON.bbid},
-				{source_bbid: author2JSON.bbid, target_bbid: author1JSON.bbid}
-			]);
+		await orm.bookshelf.knex('bookbrainz.entity_redirect').insert([
+			{ source_bbid: author3JSON.bbid, target_bbid: author2JSON.bbid },
+			{ source_bbid: author2JSON.bbid, target_bbid: author1JSON.bbid },
+		]);
 
-		const orderedRevision = await getOrderedRevisionsForEntityPage(orm, 0, 10, AuthorRevision, author1JSON.bbid);
+		const orderedRevision = await getOrderedRevisionsForEntityPage(
+			orm,
+			0,
+			10,
+			AuthorRevision,
+			author1JSON.bbid
+		);
 
 		expect(orderedRevision.length).to.be.equal(3);
 		expect(orderedRevision[0].revisionId).to.be.equal(revisionID3);

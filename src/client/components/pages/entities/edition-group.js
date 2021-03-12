@@ -27,11 +27,16 @@ import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+const {
+	deletedEntityMessage,
+	getTypeAttribute,
+	getEntityUrl,
+	ENTITY_TYPE_ICONS,
+	getSortNameOfDefaultAlias,
+} = entityHelper;
+const { Col, Row } = bootstrap;
 
-const {deletedEntityMessage, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
-const {Col, Row} = bootstrap;
-
-function EditionGroupAttributes({editionGroup}) {
+function EditionGroupAttributes({ editionGroup }) {
 	if (editionGroup.deleted) {
 		return deletedEntityMessage;
 	}
@@ -58,11 +63,10 @@ function EditionGroupAttributes({editionGroup}) {
 }
 EditionGroupAttributes.displayName = 'EditionGroupAttributes';
 EditionGroupAttributes.propTypes = {
-	editionGroup: PropTypes.object.isRequired
+	editionGroup: PropTypes.object.isRequired,
 };
 
-
-function EditionGroupDisplayPage({entity, identifierTypes, user}) {
+function EditionGroupDisplayPage({ entity, identifierTypes, user }) {
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
@@ -75,21 +79,22 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 				<Col md={10}>
-					<EntityTitle entity={entity}/>
-					<EditionGroupAttributes editionGroup={entity}/>
+					<EntityTitle entity={entity} />
+					<EditionGroupAttributes editionGroup={entity} />
 				</Col>
 			</Row>
-			<EntityAnnotation entity={entity}/>
-			{!entity.deleted &&
-			<React.Fragment>
-				<EditionTable editions={entity.editions} entity={entity}/>
-				<EntityLinks
-					entity={entity}
-					identifierTypes={identifierTypes}
-					urlPrefix={urlPrefix}
-				/>
-			</React.Fragment>}
-			<hr className="margin-top-d40"/>
+			<EntityAnnotation entity={entity} />
+			{!entity.deleted && (
+				<React.Fragment>
+					<EditionTable editions={entity.editions} entity={entity} />
+					<EntityLinks
+						entity={entity}
+						identifierTypes={identifierTypes}
+						urlPrefix={urlPrefix}
+					/>
+				</React.Fragment>
+			)}
+			<hr className="margin-top-d40" />
 			<EntityFooter
 				bbid={entity.bbid}
 				deleted={entity.deleted}
@@ -105,10 +110,10 @@ EditionGroupDisplayPage.displayName = 'EditionGroupDisplayPage';
 EditionGroupDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired
+	user: PropTypes.object.isRequired,
 };
 EditionGroupDisplayPage.defaultProps = {
-	identifierTypes: []
+	identifierTypes: [],
 };
 
 export default EditionGroupDisplayPage;

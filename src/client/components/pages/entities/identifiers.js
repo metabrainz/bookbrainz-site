@@ -20,38 +20,27 @@ import IdentifierLink from './identifiers-links';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
-function EntityIdentifiers({identifiers, identifierTypes}) {
+function EntityIdentifiers({ identifiers, identifierTypes }) {
 	return (
 		<div>
 			<h2>Identifiers</h2>
-			{
-				identifiers &&
+			{identifiers &&
 				identifierTypes.map((type) => {
-					const identifierValues =
-						identifiers
-							.filter(
-								(identifier) => identifier.type.id === type.id || identifier.typeId === type.id
-							)
-							.map(
-								(identifier) => (
-									<dd key={identifier.id}>
-										<IdentifierLink
-											typeId={type.id}
-											value={identifier.value}
-										/>
-									</dd>
-								)
-							);
+					const identifierValues = identifiers
+						.filter(
+							(identifier) =>
+								identifier.type.id === type.id || identifier.typeId === type.id
+						)
+						.map((identifier) => (
+							<dd key={identifier.id}>
+								<IdentifierLink typeId={type.id} value={identifier.value} />
+							</dd>
+						));
 					if (!identifierValues.length) {
 						return null;
 					}
-					return [
-						<dt key={type.id}>{type.label}</dt>,
-						identifierValues
-					];
-				})
-			}
+					return [<dt key={type.id}>{type.label}</dt>, identifierValues];
+				})}
 		</div>
 	);
 }
@@ -59,10 +48,10 @@ function EntityIdentifiers({identifiers, identifierTypes}) {
 EntityIdentifiers.displayName = 'EntityIdentifiers';
 EntityIdentifiers.propTypes = {
 	identifierTypes: PropTypes.array.isRequired,
-	identifiers: PropTypes.array
+	identifiers: PropTypes.array,
 };
 EntityIdentifiers.defaultProps = {
-	identifiers: []
+	identifiers: [],
 };
 
 export default EntityIdentifiers;

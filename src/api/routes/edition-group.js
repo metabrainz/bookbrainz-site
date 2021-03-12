@@ -20,26 +20,21 @@ import * as utils from '../helpers/utils';
 import {
 	formatQueryParameters,
 	loadEntityRelationshipsForBrowse,
-	validateBrowseRequestQueryParameters
+	validateBrowseRequestQueryParameters,
 } from '../helpers/middleware';
 import {
 	getEditionGroupBasicInfo,
 	getEntityAliases,
 	getEntityIdentifiers,
-	getEntityRelationships
+	getEntityRelationships,
 } from '../helpers/formatEntityData';
-import {Router} from 'express';
-import {makeEntityLoader} from '../helpers/entityLoader';
-import {toLower} from 'lodash';
-
+import { Router } from 'express';
+import { makeEntityLoader } from '../helpers/entityLoader';
+import { toLower } from 'lodash';
 
 const router = Router();
 
-const editionGroupBasicRelations = [
-	'defaultAlias.language',
-	'disambiguation',
-	'editionGroupType'
-];
+const editionGroupBasicRelations = ['defaultAlias.language', 'disambiguation', 'editionGroupType'];
 
 const editionGroupError = 'Edition Group not found';
 
@@ -120,12 +115,14 @@ const editionGroupError = 'Edition Group not found';
  *          description: Invalid BBID
  */
 
-router.get('/:bbid',
+router.get(
+	'/:bbid',
 	makeEntityLoader('EditionGroup', editionGroupBasicRelations, editionGroupError),
 	async (req, res) => {
 		const editionGroupBasicInfo = await getEditionGroupBasicInfo(res.locals.entity);
 		return res.status(200).send(editionGroupBasicInfo);
-	});
+	}
+);
 
 /**
  *	@swagger
@@ -157,12 +154,14 @@ router.get('/:bbid',
  *         description: Invalid BBID
  */
 
-router.get('/:bbid/aliases',
+router.get(
+	'/:bbid/aliases',
 	makeEntityLoader('EditionGroup', utils.aliasesRelations, editionGroupError),
 	async (req, res) => {
 		const editionGroupAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(editionGroupAliasesList);
-	});
+	}
+);
 
 /**
  *	@swagger
@@ -194,13 +193,14 @@ router.get('/:bbid/aliases',
  *         description: Invalid BBID
  */
 
-router.get('/:bbid/identifiers',
+router.get(
+	'/:bbid/identifiers',
 	makeEntityLoader('EditionGroup', utils.identifiersRelations, editionGroupError),
 	async (req, res) => {
 		const editionGroupIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(editionGroupIdentifiersList);
-	});
-
+	}
+);
 
 /**
  *	@swagger
@@ -232,12 +232,14 @@ router.get('/:bbid/identifiers',
  *         description: Invalid BBID
  */
 
-router.get('/:bbid/relationships',
+router.get(
+	'/:bbid/relationships',
 	makeEntityLoader('EditionGroup', utils.relationshipsRelations, editionGroupError),
 	async (req, res) => {
 		const editionGroupRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(editionGroupRelationshipList);
-	});
+	}
+);
 
 /**
  *	@swagger
@@ -276,13 +278,16 @@ router.get('/:bbid/relationships',
  *         description: Invalid BBID passed in the query params OR Multiple browsed entities passed in parameters
  */
 
-router.get('/',
+router.get(
+	'/',
 	formatQueryParameters(),
 	validateBrowseRequestQueryParameters(['edition']),
 	// As we're loading the browsed entity, also load the related EditionGroups from the ORM models to avoid fetching it twice
 	makeEntityLoader(
 		null,
-		utils.relationshipsRelations.concat(editionGroupBasicRelations.map(rel => `editionGroup.${rel}`)),
+		utils.relationshipsRelations.concat(
+			editionGroupBasicRelations.map((rel) => `editionGroup.${rel}`)
+		),
 		'Entity not found',
 		true
 	),
@@ -290,32 +295,39 @@ router.get('/',
 	async (req, res) => {
 		function relationshipsFilterMethod(relatedEntity) {
 			if (req.query.type) {
-				const editionGroupTypeMatched = toLower(relatedEntity.editionGroupType) === toLower(req.query.type);
+				const editionGroupTypeMatched =
+					toLower(relatedEntity.editionGroupType) === toLower(req.query.type);
 				return editionGroupTypeMatched;
 			}
 			return true;
 		}
 		// editionGroupRelationsList will always be empty. Because edition is the only validLinkedEnitity
 		const editionGroupRelationshipList = await utils.getBrowsedRelationships(
-			req.app.locals.orm, res.locals, 'EditionGroup',
-			getEditionGroupBasicInfo, editionGroupBasicRelations, relationshipsFilterMethod
+			req.app.locals.orm,
+			res.locals,
+			'EditionGroup',
+			getEditionGroupBasicInfo,
+			editionGroupBasicRelations,
+			relationshipsFilterMethod
 		);
 
 		if (req.query.modelType === 'Edition') {
-			const {entity: edition} = res.locals;
-			const {editionGroup} = edition;
+			const { entity: edition } = res.locals;
+			const { editionGroup } = edition;
 			// an edition will belong to only one edition-group
 			const editionGroupArray = [getEditionGroupBasicInfo(editionGroup)];
-			editionGroupArray
-				.filter(relationshipsFilterMethod)
-				.forEach((filteredEditionGroup) => {
-					editionGroupRelationshipList.push({entity: filteredEditionGroup, relationship: {}});
+			editionGroupArray.filter(relationshipsFilterMethod).forEach((filteredEditionGroup) => {
+				editionGroupRelationshipList.push({
+					entity: filteredEditionGroup,
+					relationship: {},
 				});
+			});
 		}
 		return res.status(200).send({
 			bbid: req.query.bbid,
-			editionGroups: editionGroupRelationshipList
+			editionGroups: editionGroupRelationshipList,
 		});
-	});
+	}
+);
 
 export default router;

@@ -17,17 +17,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as React from 'react';
 // eslint-disable-next-line import/named
-import {FontAwesomeIconProps as FAProps, FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst} from 'lodash';
+import { FontAwesomeIconProps as FAProps, FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst } from 'lodash';
 import {
-	faBook, faGlobe, faGripVertical, faPenNib, faUniversity, faUser, faUserCircle, faWindowRestore
+	faBook,
+	faGlobe,
+	faGripVertical,
+	faPenNib,
+	faUniversity,
+	faUser,
+	faUserCircle,
+	faWindowRestore,
 } from '@fortawesome/free-solid-svg-icons';
-import {format, isValid, parseISO} from 'date-fns';
-import {dateObjectToISOString} from './utils';
-
+import { format, isValid, parseISO } from 'date-fns';
+import { dateObjectToISOString } from './utils';
 
 export function extractAttribute(attr, path) {
 	if (attr) {
@@ -40,15 +45,15 @@ export function extractAttribute(attr, path) {
 }
 
 export function getLanguageAttribute(entity) {
-	const languages = entity.languageSet && entity.languageSet.languages ?
-		entity.languageSet.languages.map(
-			(language) => language.name
-		).join(', ') : '?';
-	return {data: languages, title: 'Languages'};
+	const languages =
+		entity.languageSet && entity.languageSet.languages
+			? entity.languageSet.languages.map((language) => language.name).join(', ')
+			: '?';
+	return { data: languages, title: 'Languages' };
 }
 
 export function getTypeAttribute(entityType) {
-	return {data: extractAttribute(entityType, 'label'), title: 'Type'};
+	return { data: extractAttribute(entityType, 'label'), title: 'Type' };
 }
 
 /**
@@ -77,14 +82,11 @@ export function transformISODateForDisplay(ISODateString) {
 		default:
 			return ISODateString;
 	}
-	const parsedDate = parseISO(ISODateString, {additionalDigits: 2});
+	const parsedDate = parseISO(ISODateString, { additionalDigits: 2 });
 	if (!isValid(parsedDate)) {
 		return ISODateString;
 	}
-	return format(
-		parsedDate,
-		formatting
-	);
+	return format(parsedDate, formatting);
 }
 
 /**
@@ -100,7 +102,7 @@ export function transformISODateForSelect(dateValue) {
 	}
 	return {
 		label: transformISODateForDisplay(dateString),
-		value: dateString
+		value: dateString,
 	};
 }
 
@@ -124,18 +126,16 @@ function isArea(entity) {
  * @param {object} area - The Area entity to transfrom
  * @returns {object} option - A react-select option
  */
-export function areaToOption(
-	area: {comment: string, id: number, name: string} | null
-) {
+export function areaToOption(area: { comment: string; id: number; name: string } | null) {
 	if (!area) {
 		return null;
 	}
-	const {id} = area;
+	const { id } = area;
 	return {
 		disambiguation: area.comment,
 		id,
 		text: area.name,
-		type: 'area'
+		type: 'area',
 		// value: id
 	};
 }
@@ -154,12 +154,10 @@ export function entityToOption(entity) {
 	}
 
 	return {
-		disambiguation: entity.disambiguation ?
-			entity.disambiguation.comment : null,
+		disambiguation: entity.disambiguation ? entity.disambiguation.comment : null,
 		id: entity.bbid,
-		text: entity.defaultAlias ?
-			entity.defaultAlias.name : '(unnamed)',
-		type: entity.type
+		text: entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)',
+		type: entity.type,
 	};
 }
 
@@ -175,7 +173,11 @@ export function getEntityLabel(entity, returnHTML = true) {
 			deletedEntityName = entity.parentAlias.name;
 		}
 		if (returnHTML) {
-			return <span className="text-muted deleted" title={`Deleted ${entity.type}`}>{deletedEntityName}</span>;
+			return (
+				<span className="text-muted deleted" title={`Deleted ${entity.type}`}>
+					{deletedEntityName}
+				</span>
+			);
 		}
 		return `${deletedEntityName}`;
 	}
@@ -186,7 +188,8 @@ export function getEntityLabel(entity, returnHTML = true) {
 }
 
 export function getEditionReleaseDate(edition) {
-	const hasReleaseEvents = edition.releaseEventSet &&
+	const hasReleaseEvents =
+		edition.releaseEventSet &&
 		edition.releaseEventSet.releaseEvents &&
 		edition.releaseEventSet.releaseEvents.length;
 
@@ -198,17 +201,14 @@ export function getEditionReleaseDate(edition) {
 }
 
 export function getEditionPublishers(edition) {
-	const hasPublishers = edition.publisherSet &&
-		edition.publisherSet.publishers.length > 0;
+	const hasPublishers = edition.publisherSet && edition.publisherSet.publishers.length > 0;
 
 	if (hasPublishers) {
-		return edition.publisherSet.publishers.map(
-			(publisher) => (
-				<a href={`/publisher/${publisher.bbid}`} key={publisher.bbid}>
-					{_get(publisher, 'defaultAlias.name', publisher.bbid)}
-				</a>
-			)
-		);
+		return edition.publisherSet.publishers.map((publisher) => (
+			<a href={`/publisher/${publisher.bbid}`} key={publisher.bbid}>
+				{_get(publisher, 'defaultAlias.name', publisher.bbid)}
+			</a>
+		));
 	}
 
 	return '?';
@@ -223,10 +223,14 @@ export function getEntityDisambiguation(entity) {
 }
 
 export function getEntitySecondaryAliases(entity) {
-	if (entity.aliasSet && Array.isArray(entity.aliasSet.aliases) && entity.aliasSet.aliases.length > 1) {
+	if (
+		entity.aliasSet &&
+		Array.isArray(entity.aliasSet.aliases) &&
+		entity.aliasSet.aliases.length > 1
+	) {
 		const aliases = entity.aliasSet.aliases
-			.filter(item => item.id !== entity.defaultAlias.id)
-			.map(item => item.name)
+			.filter((item) => item.id !== entity.defaultAlias.id)
+			.map((item) => item.name)
 			.join(', ');
 		return <h4>{aliases}</h4>;
 	}
@@ -249,20 +253,23 @@ export const ENTITY_TYPE_ICONS = {
 	EditionGroup: faWindowRestore,
 	Editor: faUserCircle,
 	Publisher: faUniversity,
-	Work: faPenNib
+	Work: faPenNib,
 };
 
 type FASize = FAProps['size'];
 export function genEntityIconHTMLElement(entityType: string, size: FASize = '1x', margin = true) {
 	const correctCaseEntityType = upperFirst(entityType);
-	if (!ENTITY_TYPE_ICONS[correctCaseEntityType]) { return null; }
+	if (!ENTITY_TYPE_ICONS[correctCaseEntityType]) {
+		return null;
+	}
 	return (
 		<FontAwesomeIcon
 			className={margin ? 'margin-right-0-3' : ''}
 			icon={ENTITY_TYPE_ICONS[correctCaseEntityType]}
 			size={size}
 			title={correctCaseEntityType}
-		/>);
+		/>
+	);
 }
 
 export function getSortNameOfDefaultAlias(entity) {
@@ -271,9 +278,9 @@ export function getSortNameOfDefaultAlias(entity) {
 
 export function getISBNOfEdition(entity) {
 	if (entity.identifierSet && entity.identifierSet.identifiers) {
-		const {identifiers} = entity.identifierSet;
+		const { identifiers } = entity.identifierSet;
 		return identifiers.find(
-			identifier =>
+			(identifier) =>
 				identifier.type.label === 'ISBN-13' || identifier.type.label === 'ISBN-10'
 		);
 	}
@@ -284,7 +291,6 @@ export function getEditionFormat(entity) {
 	return (entity.editionFormat && entity.editionFormat.label) || '?';
 }
 
-
 /**
  * Remove the all relationships which are belongs to given relationshipTypeId.
  *
@@ -293,10 +299,12 @@ export function getEditionFormat(entity) {
  * @returns {array} retrun the all relationships after removing the relatioships for given relationshipTypeId
  */
 export function filterOutRelationshipTypeById(entity, relationshipTypeId: number) {
-	return (Array.isArray(entity.relationships) &&
-				entity.relationships.filter((relation) => relation.typeId !== relationshipTypeId)) || [];
+	return (
+		(Array.isArray(entity.relationships) &&
+			entity.relationships.filter((relation) => relation.typeId !== relationshipTypeId)) ||
+		[]
+	);
 }
-
 
 /**
  * Get an array of all targets from relationships of an entity belongs to given relationshipTypeId
@@ -309,11 +317,9 @@ export function getRelationshipTargetByTypeId(entity, relationshipTypeId: number
 	let targets = [];
 	if (Array.isArray(entity.relationships)) {
 		targets = entity.relationships
-			.filter(
-				(relation) => relation.typeId === relationshipTypeId
-			)
+			.filter((relation) => relation.typeId === relationshipTypeId)
 			.map((relation) => {
-				const {target} = relation;
+				const { target } = relation;
 				return target;
 			});
 	}
@@ -331,11 +337,9 @@ export function getRelationshipSourceByTypeId(entity, relationshipTypeId: number
 	let sources = [];
 	if (Array.isArray(entity.relationships)) {
 		sources = entity.relationships
-			.filter(
-				(relation) => relation.typeId === relationshipTypeId
-			)
+			.filter((relation) => relation.typeId === relationshipTypeId)
 			.map((relation) => {
-				const {source} = relation;
+				const { source } = relation;
 				return source;
 			});
 	}
@@ -344,10 +348,13 @@ export function getRelationshipSourceByTypeId(entity, relationshipTypeId: number
 
 export const deletedEntityMessage = (
 	<p>
-		This entity has been deleted by an editor.
-		This is most likely because it was added accidentally or incorrectly.
-		<br/>The edit history has been preserved, and you can see the revisions by clicking the history button below.
-		<br/>If you’re sure this entity should still exist, you will be able to
-		restore it to a previous revision in a future version of BookBrainz, but that’s not quite ready yet.
+		This entity has been deleted by an editor. This is most likely because it was added
+		accidentally or incorrectly.
+		<br />
+		The edit history has been preserved, and you can see the revisions by clicking the history
+		button below.
+		<br />
+		If you’re sure this entity should still exist, you will be able to restore it to a previous
+		revision in a future version of BookBrainz, but that’s not quite ready yet.
 	</p>
 );

@@ -16,13 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {
-	extractChildProps,
-	extractLayoutProps
-} from '../helpers/props';
+import { extractChildProps, extractLayoutProps } from '../helpers/props';
 
 import AboutPage from '../../client/components/pages/about';
-import {AppContainer} from 'react-hot-loader';
+import { AppContainer } from 'react-hot-loader';
 import ContributePage from '../../client/components/pages/contribute';
 import DevelopPage from '../../client/components/pages/develop';
 import HelpPage from '../../client/components/pages/help';
@@ -32,7 +29,6 @@ import LicensingPage from '../../client/components/pages/licensing';
 import PrivacyPage from '../../client/components/pages/privacy';
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
@@ -47,7 +43,7 @@ const pageMap = {
 	Help: HelpPage,
 	Index,
 	Licensing: LicensingPage,
-	Privacy: PrivacyPage
+	Privacy: PrivacyPage,
 };
 
 const Child = pageMap[page] || Index;
@@ -55,7 +51,7 @@ const Child = pageMap[page] || Index;
 const markup = (
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
-			<Child {...extractChildProps(props)}/>
+			<Child {...extractChildProps(props)} />
 		</Layout>
 	</AppContainer>
 );

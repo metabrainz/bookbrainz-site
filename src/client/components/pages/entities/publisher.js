@@ -27,12 +27,18 @@ import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+const {
+	deletedEntityMessage,
+	extractAttribute,
+	getTypeAttribute,
+	getEntityUrl,
+	ENTITY_TYPE_ICONS,
+	getSortNameOfDefaultAlias,
+	transformISODateForDisplay,
+} = entityHelper;
+const { Col, Row } = bootstrap;
 
-const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
-	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias, transformISODateForDisplay} = entityHelper;
-const {Col, Row} = bootstrap;
-
-function PublisherAttributes({publisher}) {
+function PublisherAttributes({ publisher }) {
 	if (publisher.deleted) {
 		return deletedEntityMessage;
 	}
@@ -76,11 +82,10 @@ function PublisherAttributes({publisher}) {
 }
 PublisherAttributes.displayName = 'PublisherAttributes';
 PublisherAttributes.propTypes = {
-	publisher: PropTypes.object.isRequired
+	publisher: PropTypes.object.isRequired,
 };
 
-
-function PublisherDisplayPage({entity, identifierTypes, user}) {
+function PublisherDisplayPage({ entity, identifierTypes, user }) {
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
@@ -93,21 +98,22 @@ function PublisherDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 				<Col md={10}>
-					<EntityTitle entity={entity}/>
-					<PublisherAttributes publisher={entity}/>
+					<EntityTitle entity={entity} />
+					<PublisherAttributes publisher={entity} />
 				</Col>
 			</Row>
-			<EntityAnnotation entity={entity}/>
-			{!entity.deleted &&
-			<React.Fragment>
-				<EditionTable editions={entity.editions} entity={entity}/>
-				<EntityLinks
-					entity={entity}
-					identifierTypes={identifierTypes}
-					urlPrefix={urlPrefix}
-				/>
-			</React.Fragment>}
-			<hr className="margin-top-d40"/>
+			<EntityAnnotation entity={entity} />
+			{!entity.deleted && (
+				<React.Fragment>
+					<EditionTable editions={entity.editions} entity={entity} />
+					<EntityLinks
+						entity={entity}
+						identifierTypes={identifierTypes}
+						urlPrefix={urlPrefix}
+					/>
+				</React.Fragment>
+			)}
+			<hr className="margin-top-d40" />
 			<EntityFooter
 				bbid={entity.bbid}
 				deleted={entity.deleted}
@@ -123,10 +129,10 @@ PublisherDisplayPage.displayName = 'PublisherDisplayPage';
 PublisherDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired
+	user: PropTypes.object.isRequired,
 };
 PublisherDisplayPage.defaultProps = {
-	identifierTypes: []
+	identifierTypes: [],
 };
 
 export default PublisherDisplayPage;

@@ -16,13 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Alert, Button, Col, Row} from 'react-bootstrap';
-import {debounceUpdateRevisionNote, submit} from './actions';
+import { Alert, Button, Col, Row } from 'react-bootstrap';
+import { debounceUpdateRevisionNote, submit } from './actions';
 import CustomInput from '../../input';
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 
 /**
  * Container component. The SubmissionSection component contains a button for
@@ -44,15 +44,8 @@ import {connect} from 'react-redux';
  * @returns {ReactElement} React element containing the rendered
  *          SubmissionSection.
  */
-function SubmissionSection({
-	errorText,
-	formValid,
-	onNoteChange,
-	onSubmit,
-	submitted
-}) {
-	const errorAlertClass =
-		classNames('text-center', 'margin-top-1', {hidden: !errorText});
+function SubmissionSection({ errorText, formValid, onNoteChange, onSubmit, submitted }) {
+	const errorAlertClass = classNames('text-center', 'margin-top-1', { hidden: !errorText });
 
 	const editNoteLabel = (
 		<span>
@@ -63,9 +56,7 @@ function SubmissionSection({
 
 	return (
 		<div>
-			<h2>
-				Submit Your Edit
-			</h2>
+			<h2>Submit Your Edit</h2>
 			<Row>
 				<Col md={6} mdOffset={3}>
 					<CustomInput
@@ -84,11 +75,7 @@ function SubmissionSection({
 				</Col>
 			</Row>
 			<div className="text-center margin-top-1">
-				<Button
-					bsStyle="success"
-					disabled={!formValid || submitted}
-					onClick={onSubmit}
-				>
+				<Button bsStyle="success" disabled={!formValid || submitted} onClick={onSubmit}>
 					Submit
 				</Button>
 			</div>
@@ -104,24 +91,22 @@ SubmissionSection.propTypes = {
 	formValid: PropTypes.bool.isRequired,
 	onNoteChange: PropTypes.func.isRequired,
 	onSubmit: PropTypes.func.isRequired,
-	submitted: PropTypes.bool.isRequired
+	submitted: PropTypes.bool.isRequired,
 };
 
-function mapStateToProps(rootState, {validate, identifierTypes}) {
+function mapStateToProps(rootState, { validate, identifierTypes }) {
 	const state = rootState.get('submissionSection');
 	return {
 		errorText: state.get('submitError'),
 		formValid: validate(rootState, identifierTypes),
-		submitted: state.get('submitted')
+		submitted: state.get('submitted'),
 	};
 }
 
-
-function mapDispatchToProps(dispatch, {submissionUrl}) {
+function mapDispatchToProps(dispatch, { submissionUrl }) {
 	return {
-		onNoteChange: (event) =>
-			dispatch(debounceUpdateRevisionNote(event.target.value)),
-		onSubmit: () => dispatch(submit(submissionUrl))
+		onNoteChange: (event) => dispatch(debounceUpdateRevisionNote(event.target.value)),
+		onSubmit: () => dispatch(submit(submissionUrl)),
 	};
 }
 

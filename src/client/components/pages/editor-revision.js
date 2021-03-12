@@ -21,12 +21,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import RevisionsTable from './parts/revisions-table';
 
-
 class EditorRevisionPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			results: this.props.results
+			results: this.props.results,
 		};
 
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
@@ -34,7 +33,7 @@ class EditorRevisionPage extends React.Component {
 	}
 
 	searchResultsCallback(newResults) {
-		this.setState({results: newResults});
+		this.setState({ results: newResults });
 	}
 
 	render() {
@@ -60,7 +59,6 @@ class EditorRevisionPage extends React.Component {
 	}
 }
 
-
 EditorRevisionPage.displayName = 'EditorRevisionPage';
 EditorRevisionPage.propTypes = {
 	from: PropTypes.number,
@@ -70,7 +68,7 @@ EditorRevisionPage.propTypes = {
 	showRevisionEditor: PropTypes.bool,
 	showRevisionNote: PropTypes.bool,
 	size: PropTypes.number,
-	tableHeading: PropTypes.string
+	tableHeading: PropTypes.string,
 };
 EditorRevisionPage.defaultProps = {
 	from: 0,
@@ -79,7 +77,7 @@ EditorRevisionPage.defaultProps = {
 	showRevisionEditor: false,
 	showRevisionNote: true,
 	size: 20,
-	tableHeading: 'Recent Activity'
+	tableHeading: 'Recent Activity',
 };
 
 export default EditorRevisionPage;

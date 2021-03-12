@@ -19,26 +19,26 @@
 
 import * as _ from 'lodash';
 import {
-	createAuthor, createEditor,
-	createWork, getRandomUUID, truncateEntities
+	createAuthor,
+	createEditor,
+	createWork,
+	getRandomUUID,
+	truncateEntities,
 } from '../../../test-helpers/create-entities';
 
 import app from '../../../../src/api/app';
-import {browseWorkBasicTests} from '../helpers';
+import { browseWorkBasicTests } from '../helpers';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
 
-
-const {Language, Relationship, RelationshipSet, RelationshipType, Revision} = orm;
+const { Language, Relationship, RelationshipSet, RelationshipType, Revision } = orm;
 chai.use(chaiHttp);
-const {expect} = chai;
-
+const { expect } = chai;
 
 const aBBID = getRandomUUID();
 const bBBID = getRandomUUID();
 const inValidBBID = 'akjd-adjjk-23123';
-
 
 describe('GET /work', () => {
 	before(() => createWork(aBBID));
@@ -62,10 +62,7 @@ describe('GET /work', () => {
 		const res = await chai.request(app).get(`/work/${aBBID}/aliases`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
-		expect(res.body).to.have.all.keys(
-			'bbid',
-			'aliases'
-		);
+		expect(res.body).to.have.all.keys('bbid', 'aliases');
 		expect(res.body.aliases).to.be.an('array');
 		expect(res.body.aliases).to.have.lengthOf(1);
 	});
@@ -74,10 +71,7 @@ describe('GET /work', () => {
 		const res = await chai.request(app).get(`/work/${aBBID}/identifiers`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
-		expect(res.body).to.have.all.keys(
-			'bbid',
-			'identifiers'
-		);
+		expect(res.body).to.have.all.keys('bbid', 'identifiers');
 		expect(res.body.identifiers).to.be.an('array');
 		expect(res.body.identifiers).to.have.lengthOf(1);
 	});
@@ -86,10 +80,7 @@ describe('GET /work', () => {
 		const res = await chai.request(app).get(`/work/${aBBID}/relationships`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
-		expect(res.body).to.have.all.keys(
-			'bbid',
-			'relationships'
-		);
+		expect(res.body).to.have.all.keys('bbid', 'relationships');
 		expect(res.body.relationships).to.be.an('array');
 		expect(res.body.relationships).to.have.lengthOf(1);
 	});
@@ -139,7 +130,6 @@ describe('GET /work', () => {
 			});
 	});
 
-
 	it('should throw a 404 error if trying to access aliases of a Work that does not exist', function (done) {
 		chai.request(app)
 			.get(`/work/${bBBID}/aliases`)
@@ -182,32 +172,24 @@ describe('Browse Works', () => {
 			isoCode2b: 'eng',
 			isoCode2t: 'eng',
 			isoCode3: 'eng',
-			name: 'English'
+			name: 'English',
 		};
-		const englishLanguage = await new Language(englishAttrib)
-			.save(null, {method: 'insert'});
-		const englishLanguageSet = await orm.func.language.updateLanguageSet(
-			orm,
-			null,
-			null,
-			[{id: englishLanguage.id}]
-		);
+		const englishLanguage = await new Language(englishAttrib).save(null, { method: 'insert' });
+		const englishLanguageSet = await orm.func.language.updateLanguageSet(orm, null, null, [
+			{ id: englishLanguage.id },
+		]);
 		const frenchAttrib = {
 			frequency: 2,
 			isoCode1: 'fr',
 			isoCode2b: 'fre',
 			isoCode2t: 'fra',
 			isoCode3: 'fra',
-			name: 'French'
+			name: 'French',
 		};
-		const frenchLanguage = await new Language(frenchAttrib)
-			.save(null, {method: 'insert'});
-		const frenchLanguageSet = await orm.func.language.updateLanguageSet(
-			orm,
-			null,
-			null,
-			[{id: frenchLanguage.id}]
-		);
+		const frenchLanguage = await new Language(frenchAttrib).save(null, { method: 'insert' });
+		const frenchLanguageSet = await orm.func.language.updateLanguageSet(orm, null, null, [
+			{ id: frenchLanguage.id },
+		]);
 
 		// create 4 works
 		// 2 of French Language (of 2 different workType)
@@ -233,8 +215,9 @@ describe('Browse Works', () => {
 
 		// Now create a revision which forms the relationship b/w author and works
 		const editor = await createEditor();
-		const revision = await new Revision({authorId: editor.id})
-			.save(null, {method: 'insert'});
+		const revision = await new Revision({ authorId: editor.id }).save(null, {
+			method: 'insert',
+		});
 
 		const relationshipTypeData = {
 			description: 'test descryption',
@@ -243,32 +226,35 @@ describe('Browse Works', () => {
 			linkPhrase: 'test phrase',
 			reverseLinkPhrase: 'test reverse link phrase',
 			sourceEntityType: 'Author',
-			targetEntityType: 'Work'
+			targetEntityType: 'Work',
 		};
-		await new RelationshipType(relationshipTypeData)
-			.save(null, {method: 'insert'});
+		await new RelationshipType(relationshipTypeData).save(null, { method: 'insert' });
 
 		const relationshipsPromise = [];
 		for (const workBBID of workBBIDs) {
 			const relationshipData = {
 				sourceBbid: author.get('bbid'),
 				targetBbid: workBBID,
-				typeId: relationshipTypeData.id
+				typeId: relationshipTypeData.id,
 			};
 			relationshipsPromise.push(
-				new Relationship(relationshipData)
-					.save(null, {method: 'insert'})
+				new Relationship(relationshipData).save(null, { method: 'insert' })
 			);
 		}
 		const relationships = await Promise.all(relationshipsPromise);
 
 		const authorRelationshipSet = await new RelationshipSet()
-			.save(null, {method: 'insert'})
-			.then((model) => model.relationships().attach(relationships).then(() => model));
+			.save(null, { method: 'insert' })
+			.then((model) =>
+				model
+					.relationships()
+					.attach(relationships)
+					.then(() => model)
+			);
 
 		author.set('relationshipSetId', authorRelationshipSet.id);
 		author.set('revisionId', revision.id);
-		await author.save(null, {method: 'update'});
+		await author.save(null, { method: 'update' });
 	});
 	after(truncateEntities);
 
@@ -276,7 +262,9 @@ describe('Browse Works', () => {
 		chai.request(app)
 			.get(`/work?author=${author.get('bbid')}&edition=${author.get('bbid')}`)
 			.end(function (err, res) {
-				if (err) { return done(err); }
+				if (err) {
+					return done(err);
+				}
 				expect(res).to.have.status(400);
 				return done();
 			});
@@ -299,7 +287,9 @@ describe('Browse Works', () => {
 	});
 
 	it('should return list of works associated with the author (with Type Filter)', async () => {
-		const res = await chai.request(app).get(`/work?author=${author.get('bbid')}&type=Work+Type+1`);
+		const res = await chai
+			.request(app)
+			.get(`/work?author=${author.get('bbid')}&type=Work+Type+1`);
 		await browseWorkBasicTests(res);
 		// 2 work of Work Type 1 was created
 		expect(res.body.works.length).to.equal(2);
@@ -309,7 +299,9 @@ describe('Browse Works', () => {
 	});
 
 	it('should return list of works associated with the author (with Type Filter and Language Filter)', async () => {
-		const res = await chai.request(app).get(`/work?author=${author.get('bbid')}&type=Work+Type+1&language=fra`);
+		const res = await chai
+			.request(app)
+			.get(`/work?author=${author.get('bbid')}&type=Work+Type+1&language=fra`);
 		await browseWorkBasicTests(res);
 		// 1 work of Work Type 1 and French Language was created
 		expect(res.body.works.length).to.equal(1);
@@ -320,7 +312,9 @@ describe('Browse Works', () => {
 	});
 
 	it('should return 0 works (with Incorrect Type Filter and  Incorrect Language Filter)', async () => {
-		const res = await chai.request(app).get(`/work?author=${author.get('bbid')}&type=incorrectType&language=incorrectLan`);
+		const res = await chai
+			.request(app)
+			.get(`/work?author=${author.get('bbid')}&type=incorrectType&language=incorrectLan`);
 		await browseWorkBasicTests(res);
 		expect(res.body.works.length).to.equal(0);
 	});
@@ -333,7 +327,9 @@ describe('Browse Works', () => {
 	});
 
 	it('should allow params to be case insensitive', async () => {
-		const res = await chai.request(app).get(`/WoRK?aUThOr=${author.get('bbid')}&tYPe=WoRK+TyPe+1&LAnguage=fRA`);
+		const res = await chai
+			.request(app)
+			.get(`/WoRK?aUThOr=${author.get('bbid')}&tYPe=WoRK+TyPe+1&LAnguage=fRA`);
 		await browseWorkBasicTests(res);
 		// 1 work of Work Type 1 and French Language was created
 		expect(res.body.works.length).to.equal(1);
@@ -347,7 +343,9 @@ describe('Browse Works', () => {
 		chai.request(app)
 			.get('/work?author=1212121')
 			.end(function (err, res) {
-				if (err) { return done(err); }
+				if (err) {
+					return done(err);
+				}
 				expect(res).to.have.status(400);
 				return done();
 			});
@@ -357,7 +355,9 @@ describe('Browse Works', () => {
 		chai.request(app)
 			.get(`/work?author=${aBBID}`)
 			.end(function (err, res) {
-				if (err) { return done(err); }
+				if (err) {
+					return done(err);
+				}
 				expect(res).to.have.status(404);
 				return done();
 			});
@@ -367,7 +367,9 @@ describe('Browse Works', () => {
 		chai.request(app)
 			.get(`/work?edition-group=${aBBID}`)
 			.end(function (err, res) {
-				if (err) { return done(err); }
+				if (err) {
+					return done(err);
+				}
 				expect(res).to.have.status(400);
 				return done();
 			});

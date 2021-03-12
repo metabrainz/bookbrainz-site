@@ -16,18 +16,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import _ from 'lodash';
-import {format} from 'date-fns';
-import {isIterable} from '../../types';
-
+import { format } from 'date-fns';
+import { isIterable } from '../../types';
 
 export interface DateObject {
 	day: string | null;
 	month: string | null;
 	year: string | null;
 }
-
 
 /**
  * Injects entity model object with a default alias name property.
@@ -39,8 +36,8 @@ export function injectDefaultAliasName(instance: Record<string, any>) {
 	if (instance && instance.name) {
 		return Object.assign({}, instance, {
 			defaultAlias: {
-				name: instance.name
-			}
+				name: instance.name,
+			},
 		});
 	}
 	return instance;
@@ -63,7 +60,7 @@ export function labelsForAuthor(isGroup) {
 		beginDateLabel: isGroup ? 'Date founded' : 'Date of birth',
 		endAreaLabel: isGroup ? 'Place of dissolution' : 'Place of death',
 		endDateLabel: isGroup ? 'Date of dissolution' : 'Date of death',
-		endedLabel: isGroup ? 'Dissolved?' : 'Died?'
+		endedLabel: isGroup ? 'Dissolved?' : 'Died?',
 	};
 }
 
@@ -82,7 +79,7 @@ export function getTodayDate(): DateObject {
 	const year = date.getFullYear().toString();
 	const month = (date.getMonth() + 1).toString();
 	const day = date.getDate().toString();
-	return {day, month, year};
+	return { day, month, year };
 }
 
 /**
@@ -97,7 +94,7 @@ export function ISODateStringToObject(value: string | DateObject): DateObject {
 		if (_.isPlainObject(value) && _.has(value, 'year')) {
 			return value;
 		}
-		return {day: '', month: '', year: ''};
+		return { day: '', month: '', year: '' };
 	}
 	const date = value ? value.split('-') : [];
 	// A leading minus sign denotes a BC date
@@ -110,7 +107,7 @@ export function ISODateStringToObject(value: string | DateObject): DateObject {
 	return {
 		day: date.length > 2 ? date[2] : '',
 		month: date.length > 1 ? date[1] : '',
-		year: date.length > 0 ? date[0] : ''
+		year: date.length > 0 ? date[0] : '',
 	};
 }
 
@@ -129,7 +126,6 @@ export function isNullDate(date: string | DateObject): boolean {
 	return isNullYear && isNullMonth && isNullDay;
 }
 
-
 /**
  * Format a {day, month, year} object into an ISO 8601-2004 string (±YYYYYY-MM-DD)
  * @function dateObjectToISOString
@@ -141,7 +137,10 @@ export function dateObjectToISOString(value: DateObject) {
 		return null;
 	}
 	// if year is missing or not a number, return invalid date
-	if ((!isNullDate(value) && (_.isNil(value.year) || value.year === '')) || !Number.isInteger(Number(value.year))) {
+	if (
+		(!isNullDate(value) && (_.isNil(value.year) || value.year === '')) ||
+		!Number.isInteger(Number(value.year))
+	) {
 		return '+XXXXXX';
 	}
 
@@ -149,14 +148,17 @@ export function dateObjectToISOString(value: DateObject) {
 
 	const isCommonEraDate = Math.sign(numericYear) > -1;
 	// Convert to ISO 8601:2004 extended for BCE years (±YYYYYY)
-	let date = `${isCommonEraDate ? '+' : '-'}${_.padStart(Math.abs(numericYear).toString(), 6, '0')}`;
+	let date = `${isCommonEraDate ? '+' : '-'}${_.padStart(
+		Math.abs(numericYear).toString(),
+		6,
+		'0'
+	)}`;
 	if (value.month) {
 		date += `-${value.month}`;
 		if (value.day) {
 			date += `-${value.day}`;
 		}
-	}
-	else if (value.day) {
+	} else if (value.day) {
 		date += `-XX-${value.day}`;
 	}
 	return date;

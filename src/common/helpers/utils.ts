@@ -1,12 +1,10 @@
-
 /**
  * Regular expression for valid BookBrainz UUIDs (bbid)
  *
  * @type {RegExp}
  * @private
  */
-const _bbidRegex =
-	/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+const _bbidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 /**
  * Tests if a BookBrainz UUID is valid
@@ -18,7 +16,6 @@ export function isValidBBID(bbid: string): boolean {
 	return _bbidRegex.test(bbid);
 }
 
-
 /**
  * Returns all entity models defined in bookbrainz-data-js
  *
@@ -26,13 +23,13 @@ export function isValidBBID(bbid: string): boolean {
  * @returns {object} - Object mapping model name to the entity model
  */
 export function getEntityModels(orm: any) {
-	const {Author, Edition, EditionGroup, Publisher, Work} = orm;
+	const { Author, Edition, EditionGroup, Publisher, Work } = orm;
 	return {
 		Author,
 		Edition,
 		EditionGroup,
 		Publisher,
-		Work
+		Work,
 	};
 }
 
@@ -68,12 +65,11 @@ type Unresolved<T> = {
 export function makePromiseFromObject<T>(obj: Unresolved<T>): Promise<T> {
 	const keys = Object.keys(obj);
 	const values = Object.values(obj);
-	return Promise.all(values)
-	  .then(resolved => {
-			const res = {};
-			for (let i = 0; i < keys.length; i += 1) {
-				res[keys[i]] = resolved[i];
-			}
-			return res as T;
-	  });
+	return Promise.all(values).then((resolved) => {
+		const res = {};
+		for (let i = 0; i < keys.length; i += 1) {
+			res[keys[i]] = resolved[i];
+		}
+		return res as T;
+	});
 }

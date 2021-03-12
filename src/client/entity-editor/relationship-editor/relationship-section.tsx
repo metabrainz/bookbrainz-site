@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as Immutable from 'immutable';
 import * as React from 'react';
 
@@ -27,32 +26,31 @@ import {
 	hideRelationshipEditor,
 	removeRelationship,
 	showRelationshipEditor,
-	undoLastSave
+	undoLastSave,
 } from './actions';
-import {Button, ButtonGroup, Col, Row} from 'react-bootstrap';
+import { Button, ButtonGroup, Col, Row } from 'react-bootstrap';
 import type {
 	Entity,
 	EntityType,
 	LanguageOption,
 	RelationshipForDisplay,
 	RelationshipType,
-	Relationship as _Relationship
+	Relationship as _Relationship,
 } from './types';
-import {faPencilAlt, faPlus, faTimes, faUndo} from '@fortawesome/free-solid-svg-icons';
-import type {Dispatch} from 'redux'; // eslint-disable-line import/named
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { faPencilAlt, faPlus, faTimes, faUndo } from '@fortawesome/free-solid-svg-icons';
+import type { Dispatch } from 'redux'; // eslint-disable-line import/named
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import Relationship from './relationship';
 import RelationshipEditor from './relationship-editor';
 import _ from 'lodash';
-import {connect} from 'react-redux';
-
+import { connect } from 'react-redux';
 
 type RelationshipListProps = {
-	contextEntity: Entity,
-	relationships: Array<RelationshipForDisplay>,
-	onEdit: (number) => unknown,
-	onRemove: (number) => unknown
+	contextEntity: Entity;
+	relationships: Array<RelationshipForDisplay>;
+	onEdit: (number) => unknown;
+	onRemove: (number) => unknown;
 };
 
 /* In the ButtonGroup below we are forced to use an 'href' attribute to turn them into <a> elements
@@ -60,13 +58,16 @@ type RelationshipListProps = {
    https://getbootstrap.com/docs/3.4/components/#with-%3Cbutton%3E-elements
 */
 
-export function RelationshipList(
-	{contextEntity, relationships, onEdit, onRemove}: RelationshipListProps
-) {
+export function RelationshipList({
+	contextEntity,
+	relationships,
+	onEdit,
+	onRemove,
+}: RelationshipListProps) {
 	/* eslint-disable react/jsx-no-bind */
 	const renderedRelationships = _.map(
 		relationships,
-		({relationshipType, sourceEntity, targetEntity}, rowID) => (
+		({ relationshipType, sourceEntity, targetEntity }, rowID) => (
 			<Row className="margin-top-d5" key={rowID}>
 				<Col md={onEdit || onRemove ? 8 : 12}>
 					<Relationship
@@ -77,34 +78,32 @@ export function RelationshipList(
 						targetEntity={targetEntity}
 					/>
 				</Col>
-				{(onEdit || onRemove) &&
+				{(onEdit || onRemove) && (
 					<Col className="text-right" md={4}>
 						<ButtonGroup justified>
-							{onEdit &&
+							{onEdit && (
 								<Button
 									bsStyle="warning"
 									href="#"
 									role="button"
-									onClick={onEdit.bind(this, rowID)}
-								>
-									<FontAwesomeIcon icon={faPencilAlt}/>
+									onClick={onEdit.bind(this, rowID)}>
+									<FontAwesomeIcon icon={faPencilAlt} />
 									<span>&nbsp;Edit</span>
 								</Button>
-							}
-							{onRemove &&
+							)}
+							{onRemove && (
 								<Button
 									bsStyle="danger"
 									href="#"
 									role="button"
-									onClick={onRemove.bind(this, rowID)}
-								>
-									<FontAwesomeIcon icon={faTimes}/>
+									onClick={onRemove.bind(this, rowID)}>
+									<FontAwesomeIcon icon={faTimes} />
 									<span>&nbsp;Remove</span>
 								</Button>
-							}
+							)}
 						</ButtonGroup>
 					</Col>
-				}
+				)}
 			</Row>
 		)
 	);
@@ -115,55 +114,69 @@ export function RelationshipList(
 }
 
 type OwnProps = {
-	entity: Entity,
-	entityType: EntityType,
-	languageOptions: Array<LanguageOption>,
-	relationshipTypes: Array<RelationshipType>,
+	entity: Entity;
+	entityType: EntityType;
+	languageOptions: Array<LanguageOption>;
+	relationshipTypes: Array<RelationshipType>;
 };
 
 type StateProps = {
-	canEdit: boolean,
-	entityName: string,
-	relationships: Immutable.List<any>,
-	relationshipEditorProps: Immutable.Map<string, any>,
-	showEditor: boolean,
-	undoPossible: boolean
+	canEdit: boolean;
+	entityName: string;
+	relationships: Immutable.List<any>;
+	relationshipEditorProps: Immutable.Map<string, any>;
+	showEditor: boolean;
+	undoPossible: boolean;
 };
 
 type DispatchProps = {
-	onAddRelationship: () => unknown,
-	onEditorClose: () => unknown,
-	onEditorAdd: (_Relationship) => unknown,
-	onEdit: (number) => unknown,
-	onRemove: (number) => unknown,
-	onUndo: () => unknown
+	onAddRelationship: () => unknown;
+	onEditorClose: () => unknown;
+	onEditorAdd: (_Relationship) => unknown;
+	onEdit: (number) => unknown;
+	onRemove: (number) => unknown;
+	onUndo: () => unknown;
 };
 
 type Props = OwnProps & StateProps & DispatchProps;
 
-
 function RelationshipSection({
-	canEdit, entity, entityType, entityName, languageOptions, showEditor, relationships,
-	relationshipEditorProps, relationshipTypes, onAddRelationship,
-	onEditorClose, onEditorAdd, onEdit, onRemove, onUndo, undoPossible
+	canEdit,
+	entity,
+	entityType,
+	entityName,
+	languageOptions,
+	showEditor,
+	relationships,
+	relationshipEditorProps,
+	relationshipTypes,
+	onAddRelationship,
+	onEditorClose,
+	onEditorAdd,
+	onEdit,
+	onRemove,
+	onUndo,
+	undoPossible,
 }: Props) {
 	const baseEntity = {
 		bbid: _.get(entity, 'bbid'),
 		defaultAlias: {
-			name: entityName
+			name: entityName,
 		},
 		disambiguation: _.get(entity, ['disambiguation', 'comment']),
-		type: _.upperFirst(entityType)
+		type: _.upperFirst(entityType),
 	};
 	const relationshipsObject = relationships.toJS();
 
 	/* If one of the relationships is to a new entity (in creation),
 	update that new entity's name to replace "New Entity" */
 	if (typeof baseEntity.bbid === 'undefined') {
-		_.forEach(relationshipsObject, relationship => {
-			const {sourceEntity, targetEntity} = relationship;
+		_.forEach(relationshipsObject, (relationship) => {
+			const { sourceEntity, targetEntity } = relationship;
 			const defaultAliasPath = ['defaultAlias', 'name'];
-			const newEntity = [sourceEntity, targetEntity].find(({bbid}) => bbid === baseEntity.bbid);
+			const newEntity = [sourceEntity, targetEntity].find(
+				({ bbid }) => bbid === baseEntity.bbid
+			);
 			const newRelationshipName = newEntity && _.get(newEntity, defaultAliasPath);
 			const baseEntityName = _.get(baseEntity, defaultAliasPath);
 			if (newRelationshipName !== baseEntityName) {
@@ -174,15 +187,13 @@ function RelationshipSection({
 
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		label: language.name,
-		value: language.id
+		value: language.id,
 	}));
 
 	const editor = (
 		<RelationshipEditor
 			baseEntity={baseEntity}
-			initRelationship={
-				relationshipEditorProps && relationshipEditorProps.toJS()
-			}
+			initRelationship={relationshipEditorProps && relationshipEditorProps.toJS()}
 			languageOptions={languageOptionsForDisplay}
 			relationshipTypes={relationshipTypes}
 			onAdd={onEditorAdd}
@@ -205,46 +216,33 @@ function RelationshipSection({
 					/>
 				</Col>
 			</Row>
-			{canEdit &&
+			{canEdit && (
 				<Row className="margin-top-1">
-					<Col
-						className="text-center"
-						md={4}
-						mdOffset={4}
-					>
-						<Button
-							bsStyle="success"
-							onClick={onAddRelationship}
-						>
-							<FontAwesomeIcon icon={faPlus}/>
+					<Col className="text-center" md={4} mdOffset={4}>
+						<Button bsStyle="success" onClick={onAddRelationship}>
+							<FontAwesomeIcon icon={faPlus} />
 							<span>&nbsp;Add relationship</span>
 						</Button>
 					</Col>
 				</Row>
-			}
-			{undoPossible && canEdit &&
+			)}
+			{undoPossible && canEdit && (
 				<Row className="margin-top-d5">
-					<Col
-						className="text-center"
-						md={4}
-						mdOffset={4}
-					>
-						<Button
-							onClick={onUndo}
-						>
-							<FontAwesomeIcon icon={faUndo}/>
+					<Col className="text-center" md={4} mdOffset={4}>
+						<Button onClick={onUndo}>
+							<FontAwesomeIcon icon={faUndo} />
 							<span>&nbsp;Undo last action</span>
 						</Button>
 					</Col>
 				</Row>
-			}
+			)}
 		</div>
 	);
 }
 
 RelationshipSection.displayName = 'RelationshipSection';
 RelationshipSection.propTypes = {
-	languageOptions: PropTypes.array.isRequired
+	languageOptions: PropTypes.array.isRequired,
 };
 
 function mapStateToProps(rootState): StateProps {
@@ -255,7 +253,7 @@ function mapStateToProps(rootState): StateProps {
 		relationshipEditorProps: state.get('relationshipEditorProps'),
 		relationships: state.get('relationships'),
 		showEditor: state.get('relationshipEditorVisible'),
-		undoPossible: state.get('lastRelationships') !== null
+		undoPossible: state.get('lastRelationships') !== null,
 	};
 }
 
@@ -266,10 +264,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onEditorAdd: (data) => dispatch(addRelationship(data)),
 		onEditorClose: () => dispatch(hideRelationshipEditor()),
 		onRemove: (rowID) => dispatch(removeRelationship(rowID)),
-		onUndo: () => dispatch(undoLastSave())
+		onUndo: () => dispatch(undoLastSave()),
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(
-	RelationshipSection
-);
+export default connect(mapStateToProps, mapDispatchToProps)(RelationshipSection);

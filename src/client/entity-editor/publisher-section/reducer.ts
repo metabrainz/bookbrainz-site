@@ -16,26 +16,28 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as Immutable from 'immutable';
 import {
-	Action, UPDATE_AREA, UPDATE_BEGIN_DATE, UPDATE_ENDED, UPDATE_END_DATE,
-	UPDATE_TYPE
+	Action,
+	UPDATE_AREA,
+	UPDATE_BEGIN_DATE,
+	UPDATE_ENDED,
+	UPDATE_END_DATE,
+	UPDATE_TYPE,
 } from './actions';
-
 
 type State = Immutable.Map<string, any>;
 
 function reducer(
 	state: State = Immutable.Map({
-		beginDate: {day: '', month: '', year: ''},
-		endDate: {day: '', month: '', year: ''},
+		beginDate: { day: '', month: '', year: '' },
+		endDate: { day: '', month: '', year: '' },
 		ended: false,
-		type: null
+		type: null,
 	}),
 	action: Action
 ): State {
-	const {type, payload} = action;
+	const { type, payload } = action;
 	switch (type) {
 		case UPDATE_AREA:
 			return state.set('area', Immutable.fromJS(payload));

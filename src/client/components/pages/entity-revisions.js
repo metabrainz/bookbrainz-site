@@ -17,12 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {genEntityIconHTMLElement, getEntityLabel, getEntityUrl} from '../../helpers/entity';
+import { genEntityIconHTMLElement, getEntityLabel, getEntityUrl } from '../../helpers/entity';
 import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import React from 'react';
 import RevisionsTable from './parts/revisions-table';
-
 
 /**
  * The class is derived from the React Component base class and
@@ -37,7 +36,7 @@ class EntityRevisions extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			results: this.props.revisions
+			results: this.props.revisions,
 		};
 
 		// React does not autobind non-React class methods
@@ -47,7 +46,7 @@ class EntityRevisions extends React.Component {
 	}
 
 	searchResultsCallback(newResults) {
-		this.setState({results: newResults});
+		this.setState({ results: newResults });
 	}
 
 	/**
@@ -56,13 +55,13 @@ class EntityRevisions extends React.Component {
 	 * @returns {ReactElement} a HTML document which is a part of Revision page
 	 */
 	renderHeader() {
-		const {entity} = this.props;
+		const { entity } = this.props;
 		return (
 			<div>
 				Revision History
 				<h3>
 					for&nbsp;
-					<a href={getEntityUrl(entity)} >
+					<a href={getEntityUrl(entity)}>
 						{genEntityIconHTMLElement(entity.type)}
 						{getEntityLabel(entity)}
 					</a>
@@ -70,7 +69,6 @@ class EntityRevisions extends React.Component {
 			</div>
 		);
 	}
-
 
 	/**
 	 * Renders the EntityRevisions page, which is a list of all the revisions
@@ -105,7 +103,7 @@ EntityRevisions.propTypes = {
 	entity: PropTypes.shape({
 		defaultAlias: PropTypes.object,
 		disambiguation: PropTypes.object,
-		type: PropTypes.string
+		type: PropTypes.string,
 	}).isRequired,
 	from: PropTypes.number,
 	nextEnabled: PropTypes.bool.isRequired,
@@ -113,14 +111,14 @@ EntityRevisions.propTypes = {
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
 	showRevisionNote: PropTypes.bool,
-	size: PropTypes.number
+	size: PropTypes.number,
 };
 EntityRevisions.defaultProps = {
 	from: 0,
 	showEntities: false,
 	showRevisionEditor: false,
 	showRevisionNote: false,
-	size: 20
+	size: 20,
 };
 
 export default EntityRevisions;

@@ -24,9 +24,8 @@ import {
 	HIDE_RELATIONSHIP_EDITOR,
 	REMOVE_RELATIONSHIP,
 	SHOW_RELATIONSHIP_EDITOR,
-	UNDO_LAST_SAVE
+	UNDO_LAST_SAVE,
 } from './actions';
-
 
 function reducer(
 	state = Immutable.Map({
@@ -34,39 +33,39 @@ function reducer(
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
-		relationships: Immutable.OrderedMap()
+		relationships: Immutable.OrderedMap(),
 	}),
 	action
 ) {
 	switch (action.type) {
 		case SHOW_RELATIONSHIP_EDITOR:
-			return state.set('relationshipEditorVisible', true)
+			return state
+				.set('relationshipEditorVisible', true)
 				.set('relationshipEditorProps', null);
 		case HIDE_RELATIONSHIP_EDITOR:
 			return state.set('relationshipEditorVisible', false);
 		case ADD_RELATIONSHIP: {
-			const rowID = state.getIn(
-				['relationshipEditorProps', 'rowID'],
-				action.payload.rowID
-			);
-			return state.setIn(
-				['relationships', rowID],
-				Immutable.fromJS({rowID, ...action.payload.data})
-			)
+			const rowID = state.getIn(['relationshipEditorProps', 'rowID'], action.payload.rowID);
+			return state
+				.setIn(
+					['relationships', rowID],
+					Immutable.fromJS({ rowID, ...action.payload.data })
+				)
 				.set('relationshipEditorProps', null)
 				.set('relationshipEditorVisible', false)
 				.set('lastRelationships', state.get('relationships'));
 		}
 		case EDIT_RELATIONSHIP:
-			return state.set(
-				'relationshipEditorProps',
-				state.getIn(['relationships', action.payload])
-			).set('relationshipEditorVisible', true);
+			return state
+				.set('relationshipEditorProps', state.getIn(['relationships', action.payload]))
+				.set('relationshipEditorVisible', true);
 		case REMOVE_RELATIONSHIP:
-			return state.deleteIn(['relationships', action.payload])
+			return state
+				.deleteIn(['relationships', action.payload])
 				.set('lastRelationships', state.get('relationships'));
 		case UNDO_LAST_SAVE:
-			return state.set('relationships', state.get('lastRelationships'))
+			return state
+				.set('relationships', state.get('lastRelationships'))
 				.set('lastRelationships', null);
 		// no default
 	}

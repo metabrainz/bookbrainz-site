@@ -1,11 +1,11 @@
 template: |
-  ## :books: Changes since last version
+    ## :books: Changes since last version
 
-  $CHANGES
+    $CHANGES
 
-  ##### :clap: Many thanks to everyone who participated in this release :point_down:
-  $CONTRIBUTORS
+    ##### :clap: Many thanks to everyone who participated in this release :point_down:
+    $CONTRIBUTORS
 
 replacers:
-  - search: '/BB-(\d+)/g'
-    replace: 'https://tickets.metabrainz.org/browse/BB-$1'
+    - search: '/BB-(\d+)/g'
+      replace: 'https://tickets.metabrainz.org/browse/BB-$1'

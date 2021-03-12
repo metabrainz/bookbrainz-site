@@ -20,20 +20,19 @@
 
 import * as utils from './utils';
 
-import {ENTITY_TYPE_ICONS} from '../../client/helpers/entity';
+import { ENTITY_TYPE_ICONS } from '../../client/helpers/entity';
 import _ from 'lodash';
 
-
 type EntityInRelationship = {
-	bbid: string,
-	defaultAlias?: {name: string},
-	type: string
+	bbid: string;
+	defaultAlias?: { name: string };
+	type: string;
 };
 
 type Relationship = {
-	source: EntityInRelationship,
-	target: EntityInRelationship,
-	type: {displayTemplate: string, linkPhrase: string}
+	source: EntityInRelationship;
+	target: EntityInRelationship;
+	type: { displayTemplate: string; linkPhrase: string };
 };
 
 /**
@@ -63,36 +62,31 @@ type Relationship = {
  */
 function renderRelationship(relationship: Relationship) {
 	const inputsInvalid =
-		!relationship.source || !relationship.target ||
+		!relationship.source ||
+		!relationship.target ||
 		!_.isString(_.get(relationship, 'type.linkPhrase'));
 	if (inputsInvalid) {
 		/* eslint-disable prefer-template */
 		throw new TypeError(
-			'Invalid inputs to renderRelationship:\n' +
-			JSON.stringify(relationship, null, 2)
+			'Invalid inputs to renderRelationship:\n' + JSON.stringify(relationship, null, 2)
 		);
 		/* eslint-enable prefer-template */
 	}
 
 	function template(data) {
-		return (
-			`${data.entities[0]} ` +
-			`${relationship.type.linkPhrase} ` +
-			`${data.entities[1]}`
-		);
+		return `${data.entities[0]} ` + `${relationship.type.linkPhrase} ` + `${data.entities[1]}`;
 	}
 
 	const data = {
-		entities: [
-			relationship.source,
-			relationship.target
-		].map((entity) => {
+		entities: [relationship.source, relationship.target].map((entity) => {
 			// Linkify source and target based on default alias
 			const name = _.get(entity, 'defaultAlias.name', '(unnamed)');
-			const entityIcon = `<i class="fa fa-${ENTITY_TYPE_ICONS[entity.type]} margin-right-0-5"></i>`;
+			const entityIcon = `<i class="fa fa-${
+				ENTITY_TYPE_ICONS[entity.type]
+			} margin-right-0-5"></i>`;
 			// eslint-disable-next-line prefer-template
 			return entityIcon + `<a href="${utils.getEntityLink(entity)}">${name}</a>`;
-		})
+		}),
 	};
 
 	return template(data);

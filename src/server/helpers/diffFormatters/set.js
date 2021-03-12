@@ -19,9 +19,8 @@
 import * as base from './base';
 import _ from 'lodash';
 
-
 export function formatNewSet(change, label, itemProp, transformerFunc) {
-	const {rhs} = change;
+	const { rhs } = change;
 	if (rhs[itemProp] && rhs[itemProp].length > 0) {
 		return [base.formatRow('N', label, null, transformerFunc(rhs))];
 	}
@@ -30,34 +29,32 @@ export function formatNewSet(change, label, itemProp, transformerFunc) {
 }
 
 export function formatItemAddOrDelete(change, label, transformerFunc) {
-	return [
-		base.formatChange(change.item, label, transformerFunc)
-	];
+	return [base.formatChange(change.item, label, transformerFunc)];
 }
 
 export function formatItemModified(change, label, formattedProps) {
 	if (change.path.length > 3 && _.includes(formattedProps, change.path[3])) {
-		return [
-			base.formatChange(change, label, (side) => side && [side])
-		];
+		return [base.formatChange(change, label, (side) => side && [side])];
 	}
 
 	return [];
 }
 
 export function format(
-	change, setProp, itemProp, newSetFormatter, addDeleteFormatter,
+	change,
+	setProp,
+	itemProp,
+	newSetFormatter,
+	addDeleteFormatter,
 	modifyFormatter
 ) {
-	const setAdded =
-		change.kind === 'N' && _.isEqual(change.path, [setProp]);
+	const setAdded = change.kind === 'N' && _.isEqual(change.path, [setProp]);
 	if (setAdded) {
 		return newSetFormatter(change);
 	}
 
 	const itemAddDeleteModify =
-		change.path.length > 1 && change.path[0] === setProp &&
-			change.path[1] === itemProp;
+		change.path.length > 1 && change.path[0] === setProp && change.path[1] === itemProp;
 	if (itemAddDeleteModify) {
 		if (change.kind === 'A') {
 			// Item added to or deleted from set
@@ -74,6 +71,7 @@ export function format(
 }
 
 export function changed(change, setProp, itemProp) {
-	return _.isEqual(change.path, [setProp]) ||
-		_.isEqual(change.path.slice(0, 2), [setProp, itemProp]);
+	return (
+		_.isEqual(change.path, [setProp]) || _.isEqual(change.path.slice(0, 2), [setProp, itemProp])
+	);
 }

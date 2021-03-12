@@ -18,7 +18,6 @@
 
 import _ from 'lodash';
 
-
 export function formatRow(kind, key, lhs, rhs) {
 	if (_.isNil(lhs) && _.isNil(rhs)) {
 		return [];
@@ -28,7 +27,7 @@ export function formatRow(kind, key, lhs, rhs) {
 		return {
 			key,
 			kind: 'N',
-			rhs
+			rhs,
 		};
 	}
 
@@ -36,7 +35,7 @@ export function formatRow(kind, key, lhs, rhs) {
 		return {
 			key,
 			kind: 'D',
-			lhs
+			lhs,
 		};
 	}
 
@@ -44,35 +43,20 @@ export function formatRow(kind, key, lhs, rhs) {
 		key,
 		kind,
 		lhs,
-		rhs
+		rhs,
 	};
 }
 
 export function formatChange(change, label, transformer) {
-	return formatRow(
-		change.kind,
-		label,
-		transformer(change.lhs),
-		transformer(change.rhs)
-	);
+	return formatRow(change.kind, label, transformer(change.lhs), transformer(change.rhs));
 }
 
 export function formatGenderChange(change) {
-	return formatChange(
-		change,
-		'Gender',
-		(side) => side && [side.name]
-	);
+	return formatChange(change, 'Gender', (side) => side && [side.name]);
 }
 
 export function formatEndedChange(change) {
-	return [
-		formatChange(
-			change,
-			'Ended',
-			(side) => [_.isNull(side) || (side ? 'Yes' : 'No')]
-		)
-	];
+	return [formatChange(change, 'Ended', (side) => [_.isNull(side) || (side ? 'Yes' : 'No')])];
 }
 
 export function formatTypeChange(change, label) {
@@ -88,6 +72,6 @@ export function formatAreaChange(change, label) {
 		change,
 		label || 'Area',
 		// eslint-disable-next-line
-		(side) => typeof side === 'string' ? [side] : side && [side.name]
+		(side) => (typeof side === 'string' ? [side] : side && [side.name])
 	);
 }

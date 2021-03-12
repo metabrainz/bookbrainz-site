@@ -16,22 +16,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {AppContainer} from 'react-hot-loader';
+import { AppContainer } from 'react-hot-loader';
 import ErrorPage from '../components/pages/error';
 import Layout from '../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {extractLayoutProps} from '../helpers/props';
-
+import { extractLayoutProps } from '../helpers/props';
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const markup = (
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
-			<ErrorPage
-				error={props.error}
-			/>
+			<ErrorPage error={props.error} />
 		</Layout>
 	</AppContainer>
 );

@@ -17,12 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {
-	extractChildProps,
-	extractEditorProps,
-	extractLayoutProps
-} from '../../helpers/props';
-import {AppContainer} from 'react-hot-loader';
+import { extractChildProps, extractEditorProps, extractLayoutProps } from '../../helpers/props';
+import { AppContainer } from 'react-hot-loader';
 import CollectionsPage from '../../components/pages/collections';
 import EditorContainer from '../../containers/editor';
 import EditorRevisionPage from '../../components/pages/editor-revision';
@@ -30,7 +26,6 @@ import Layout from '../../containers/layout';
 import ProfileTab from '../../components/pages/parts/editor-profile';
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
@@ -40,34 +35,17 @@ const page = pageTarget ? pageTarget.innerHTML : '';
 
 let tab;
 if (page === 'revisions') {
-	tab = (
-		<EditorRevisionPage
-			{...extractChildProps(props)}
-		/>);
-}
-else if (page === 'collections') {
-	tab = (
-		<CollectionsPage
-			{...extractChildProps(props)}
-		/>);
-}
-else {
-	tab = (
-		<ProfileTab
-			user={props.user}
-			{...extractChildProps(props)}
-		/>
-	);
+	tab = <EditorRevisionPage {...extractChildProps(props)} />;
+} else if (page === 'collections') {
+	tab = <CollectionsPage {...extractChildProps(props)} />;
+} else {
+	tab = <ProfileTab user={props.user} {...extractChildProps(props)} />;
 }
 
 const markup = (
 	<AppContainer>
-		<Layout {...extractLayoutProps(props)} >
-			<EditorContainer
-				{...extractEditorProps(props)}
-			>
-				{tab}
-			</EditorContainer>
+		<Layout {...extractLayoutProps(props)}>
+			<EditorContainer {...extractEditorProps(props)}>{tab}</EditorContainer>
 		</Layout>
 	</AppContainer>
 );

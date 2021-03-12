@@ -16,8 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import type {Relationship} from './types';
-
+import type { Relationship } from './types';
 
 export const SHOW_RELATIONSHIP_EDITOR = 'SHOW_RELATIONSHIP_EDITOR';
 export const HIDE_RELATIONSHIP_EDITOR = 'HIDE_RELATIONSHIP_EDITOR';
@@ -27,46 +26,46 @@ export const REMOVE_RELATIONSHIP = 'REMOVE_RELATIONSHIP';
 export const UNDO_LAST_SAVE = 'UNDO_LAST_SAVE';
 
 export type Action = {
-	type: string,
-	payload?: unknown
+	type: string;
+	payload?: unknown;
 };
 
 export function showRelationshipEditor(): Action {
 	return {
-		type: SHOW_RELATIONSHIP_EDITOR
+		type: SHOW_RELATIONSHIP_EDITOR,
 	};
 }
 
 export function hideRelationshipEditor(): Action {
 	return {
-		type: HIDE_RELATIONSHIP_EDITOR
+		type: HIDE_RELATIONSHIP_EDITOR,
 	};
 }
 
 let nextRowID = 0;
 export function addRelationship(data: Relationship): Action {
 	return {
-		payload: {data, rowID: `n${nextRowID++}`},
-		type: ADD_RELATIONSHIP
+		payload: { data, rowID: `n${nextRowID++}` },
+		type: ADD_RELATIONSHIP,
 	};
 }
 
 export function editRelationship(rowID: number): Action {
 	return {
 		payload: rowID,
-		type: EDIT_RELATIONSHIP
+		type: EDIT_RELATIONSHIP,
 	};
 }
 
 export function removeRelationship(rowID: number): Action {
 	return {
 		payload: rowID,
-		type: REMOVE_RELATIONSHIP
+		type: REMOVE_RELATIONSHIP,
 	};
 }
 
 export function undoLastSave(): Action {
 	return {
-		type: UNDO_LAST_SAVE
+		type: UNDO_LAST_SAVE,
 	};
 }

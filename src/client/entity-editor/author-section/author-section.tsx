@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as React from 'react';
 
 import {
@@ -27,72 +26,67 @@ import {
 	updateEndArea,
 	updateEnded,
 	updateGender,
-	updateType
+	updateType,
 } from './actions';
-import {Checkbox, Col, Row} from 'react-bootstrap';
-import {isNullDate, labelsForAuthor} from '../../helpers/utils';
-import {
-	validateAuthorSectionBeginDate,
-	validateAuthorSectionEndDate
-} from '../validators/author';
+import { Checkbox, Col, Row } from 'react-bootstrap';
+import { isNullDate, labelsForAuthor } from '../../helpers/utils';
+import { validateAuthorSectionBeginDate, validateAuthorSectionEndDate } from '../validators/author';
 
 import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
-import type {Dispatch} from 'redux';
+import type { Dispatch } from 'redux';
 
 import EntitySearchFieldOption from '../common/entity-search-field-option';
-import type {Map} from 'immutable';
+import type { Map } from 'immutable';
 import Select from 'react-select';
-import {connect} from 'react-redux';
-
+import { connect } from 'react-redux';
 
 type AuthorType = {
-	label: string,
-	id: number
+	label: string;
+	id: number;
 };
 
 type GenderOptions = {
-	name: string,
-	id: number
+	name: string;
+	id: number;
 };
 
 type Area = {
-	disambiguation: string | null | undefined,
-	id: string | number,
-	text: string,
-	type: string
+	disambiguation: string | null | undefined;
+	id: string | number;
+	text: string;
+	type: string;
 };
 
-
 type StateProps = {
-	beginAreaLabel: string,
-	beginAreaValue: Map<string, any>,
-	beginDateLabel: string,
-	beginDateValue: string,
-	endAreaLabel: string,
-	endAreaValue: Map<string, any>,
-	endDateLabel: string,
-	endDateValue: string,
-	endedChecked: boolean,
-	endedLabel: string,
-	genderShow: boolean,
-	genderValue: number,
-	typeValue: number
+	beginAreaLabel: string;
+	beginAreaValue: Map<string, any>;
+	beginDateLabel: string;
+	beginDateValue: string;
+	endAreaLabel: string;
+	endAreaValue: Map<string, any>;
+	endDateLabel: string;
+	endDateValue: string;
+	endedChecked: boolean;
+	endedLabel: string;
+	genderShow: boolean;
+	genderValue: number;
+	typeValue: number;
 };
 
 type DispatchProps = {
-	onBeginAreaChange: (arg: Area | null | undefined) => unknown,
-	onBeginDateChange: (arg: string) => unknown,
-	onEndAreaChange: (arg: Area | null | undefined) => unknown,
-	onEndDateChange: (arg: string) => unknown,
-	onEndedChange: (arg: React.FormEvent<Checkbox>) => unknown,
-	onGenderChange: (obj: {value: number} | null) => unknown,
-	onTypeChange: (obj: {value: number} | null) => unknown
+	onBeginAreaChange: (arg: Area | null | undefined) => unknown;
+	onBeginDateChange: (arg: string) => unknown;
+	onEndAreaChange: (arg: Area | null | undefined) => unknown;
+	onEndDateChange: (arg: string) => unknown;
+	onEndedChange: (arg: React.FormEvent<Checkbox>) => unknown;
+	onGenderChange: (obj: { value: number } | null) => unknown;
+	onTypeChange: (obj: { value: number } | null) => unknown;
 };
 
 type OwnProps = {
-	authorTypes: Array<AuthorType>,
-	genderOptions: Array<GenderOptions>
+	authorTypes: Array<AuthorType>;
+	genderOptions: Array<GenderOptions>;
 };
 
 export type Props = StateProps & DispatchProps & OwnProps;
@@ -156,32 +150,36 @@ function AuthorSection({
 	onEndDateChange,
 	onEndedChange,
 	onGenderChange,
-	onTypeChange
+	onTypeChange,
 }: Props) {
 	const genderOptionsForDisplay = genderOptions.map((gender) => ({
 		label: gender.name,
-		value: gender.id
+		value: gender.id,
 	}));
 
 	const authorTypesForDisplay = authorTypes.map((type) => ({
 		label: type.label,
-		value: type.id
+		value: type.id,
 	}));
 
-	const currentAuthorType = typeValue ? authorTypes.find(type => type.id === typeValue) : {id: 1, label: 'Person'};
+	const currentAuthorType = typeValue
+		? authorTypes.find((type) => type.id === typeValue)
+		: { id: 1, label: 'Person' };
 
-	const {isValid: isValidDob, errorMessage: dobError} = validateAuthorSectionBeginDate(beginDateValue);
-	const {isValid: isValidDod, errorMessage: dodError} = validateAuthorSectionEndDate(beginDateValue, endDateValue, currentAuthorType.label);
-
+	const { isValid: isValidDob, errorMessage: dobError } = validateAuthorSectionBeginDate(
+		beginDateValue
+	);
+	const { isValid: isValidDod, errorMessage: dodError } = validateAuthorSectionEndDate(
+		beginDateValue,
+		endDateValue,
+		currentAuthorType.label
+	);
 
 	return (
 		<form>
-			<h2>
-				What else do you know about the Author?
-			</h2>
+			<h2>What else do you know about the Author?</h2>
 			<p className="text-muted">
-				All fields optional — leave something blank if you don&rsquo;t
-				know it
+				All fields optional — leave something blank if you don&rsquo;t know it
 			</p>
 			<Row>
 				<Col md={6} mdOffset={3}>
@@ -197,10 +195,7 @@ function AuthorSection({
 			</Row>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<CustomInput
-						groupClassName={genderShow ? null : 'hidden'}
-						label="Gender"
-					>
+					<CustomInput groupClassName={genderShow ? null : 'hidden'} label="Gender">
 						<Select
 							instanceId="gender"
 							options={genderOptionsForDisplay}
@@ -235,14 +230,11 @@ function AuthorSection({
 				</Col>
 			</Row>
 			<div className="text-center">
-				<Checkbox
-					defaultChecked={endedChecked}
-					onChange={onEndedChange}
-				>
+				<Checkbox defaultChecked={endedChecked} onChange={onEndedChange}>
 					{endedLabel}
 				</Checkbox>
 			</div>
-			{endedChecked &&
+			{endedChecked && (
 				<div>
 					<Row>
 						<Col md={6} mdOffset={3}>
@@ -269,13 +261,13 @@ function AuthorSection({
 						</Col>
 					</Row>
 				</div>
-			}
+			)}
 		</form>
 	);
 }
 AuthorSection.displayName = 'AuthorSection';
 
-function mapStateToProps(rootState, {authorTypes}: OwnProps): StateProps {
+function mapStateToProps(rootState, { authorTypes }: OwnProps): StateProps {
 	const state = rootState.get('authorSection');
 
 	const typeValue = state.get('type');
@@ -294,7 +286,7 @@ function mapStateToProps(rootState, {authorTypes}: OwnProps): StateProps {
 		beginAreaLabel,
 		endedLabel,
 		endDateLabel,
-		endAreaLabel
+		endAreaLabel,
 	} = labelsForAuthor(isGroup);
 
 	return {
@@ -310,24 +302,19 @@ function mapStateToProps(rootState, {authorTypes}: OwnProps): StateProps {
 		endedLabel,
 		genderShow: !isGroup,
 		genderValue: state.get('gender'),
-		typeValue
+		typeValue,
 	};
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onBeginAreaChange: (value) => dispatch(updateBeginArea(value)),
-		onBeginDateChange: (beginDate) =>
-			dispatch(debouncedUpdateBeginDate(beginDate)),
+		onBeginDateChange: (beginDate) => dispatch(debouncedUpdateBeginDate(beginDate)),
 		onEndAreaChange: (value) => dispatch(updateEndArea(value)),
-		onEndDateChange: (endDate) =>
-			dispatch(debouncedUpdateEndDate(endDate)),
-		onEndedChange: (event) =>
-			dispatch(updateEnded((event.target as any).checked)),
-		onGenderChange: (value) =>
-			dispatch(updateGender(value && value.value)),
-		onTypeChange: (value) =>
-			dispatch(updateType(value && value.value))
+		onEndDateChange: (endDate) => dispatch(debouncedUpdateEndDate(endDate)),
+		onEndedChange: (event) => dispatch(updateEnded((event.target as any).checked)),
+		onGenderChange: (value) => dispatch(updateGender(value && value.value)),
+		onTypeChange: (value) => dispatch(updateType(value && value.value)),
 	};
 }
 

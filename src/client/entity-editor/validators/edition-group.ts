@@ -16,18 +16,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
-import {get, validatePositiveInteger} from './base';
+import { get, validatePositiveInteger } from './base';
 import {
 	validateAliases,
 	validateIdentifiers,
 	validateNameSection,
-	validateSubmissionSection
+	validateSubmissionSection,
 } from './common';
 
 import _ from 'lodash';
-import type {_IdentifierType} from '../../../types';
-
+import type { _IdentifierType } from '../../../types';
 
 export function validateEditionGroupSectionType(value: any): boolean {
 	return validatePositiveInteger(value);
@@ -38,16 +36,15 @@ export function validateEditionGroupSection(data: any): boolean {
 }
 
 export function validateForm(
-	formData: any, identifierTypes?: Array<_IdentifierType> | null | undefined
+	formData: any,
+	identifierTypes?: Array<_IdentifierType> | null | undefined
 ): boolean {
 	const conditions = [
 		validateAliases(get(formData, 'aliasEditor', {})),
-		validateIdentifiers(
-			get(formData, 'identifierEditor', {}), identifierTypes
-		),
+		validateIdentifiers(get(formData, 'identifierEditor', {}), identifierTypes),
 		validateNameSection(get(formData, 'nameSection', {})),
 		validateEditionGroupSection(get(formData, 'editionGroupSection', {})),
-		validateSubmissionSection(get(formData, 'submissionSection', {}))
+		validateSubmissionSection(get(formData, 'submissionSection', {})),
 	];
 
 	return _.every(conditions);

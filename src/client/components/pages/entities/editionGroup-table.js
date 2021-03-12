@@ -23,31 +23,39 @@ import * as utilHelper from '../../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+const { Table } = bootstrap;
 
-const {Table} = bootstrap;
+const { getEntityDisambiguation, getEntityLabel } = entityHelper;
 
-const {getEntityDisambiguation, getEntityLabel} = entityHelper;
-
-function EditionGroupTableRow({editionGroup, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
+function EditionGroupTableRow({
+	editionGroup,
+	showAddedAtColumn,
+	showCheckboxes,
+	selectedEntities,
+	onToggleRow,
+}) {
 	const name = getEntityLabel(editionGroup);
 	const disambiguation = getEntityDisambiguation(editionGroup);
-	const editionGroupType = editionGroup.editionGroupType ? editionGroup.editionGroupType.label : '?';
-	const addedAt = showAddedAtColumn ? utilHelper.formatDate(new Date(editionGroup.addedAt), true) : null;
+	const editionGroupType = editionGroup.editionGroupType
+		? editionGroup.editionGroupType.label
+		: '?';
+	const addedAt = showAddedAtColumn
+		? utilHelper.formatDate(new Date(editionGroup.addedAt), true)
+		: null;
 
 	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
 			<td>
-				{
-					showCheckboxes ?
-						<input
-							checked={selectedEntities.find(bbid => bbid === editionGroup.bbid)}
-							className="checkboxes"
-							id={editionGroup.bbid}
-							type="checkbox"
-							onClick={() => onToggleRow(editionGroup.bbid)}
-						/> : null
-				}
+				{showCheckboxes ? (
+					<input
+						checked={selectedEntities.find((bbid) => bbid === editionGroup.bbid)}
+						className="checkboxes"
+						id={editionGroup.bbid}
+						type="checkbox"
+						onClick={() => onToggleRow(editionGroup.bbid)}
+					/>
+				) : null}
 				<a href={`/edition-group/${editionGroup.bbid}`}>{name}</a>
 				{disambiguation}
 			</td>
@@ -62,15 +70,21 @@ EditionGroupTableRow.propTypes = {
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool.isRequired,
-	showCheckboxes: PropTypes.bool
+	showCheckboxes: PropTypes.bool,
 };
 EditionGroupTableRow.defaultProps = {
 	onToggleRow: null,
 	selectedEntities: [],
-	showCheckboxes: false
+	showCheckboxes: false,
 };
 
-function EditionGroupTable({editionGroups, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
+function EditionGroupTable({
+	editionGroups,
+	showAddedAtColumn,
+	showCheckboxes,
+	selectedEntities,
+	onToggleRow,
+}) {
 	let tableContent;
 	if (editionGroups.length) {
 		tableContent = (
@@ -80,30 +94,25 @@ function EditionGroupTable({editionGroups, showAddedAtColumn, showCheckboxes, se
 						<tr>
 							<th>Name</th>
 							<th>Type</th>
-							{
-								showAddedAtColumn ? <th>Added at</th> : null
-							}
+							{showAddedAtColumn ? <th>Added at</th> : null}
 						</tr>
 					</thead>
 					<tbody>
-						{
-							editionGroups.map((editionGroup) => (
-								<EditionGroupTableRow
-									editionGroup={editionGroup}
-									key={editionGroup.bbid}
-									selectedEntities={selectedEntities}
-									showAddedAtColumn={showAddedAtColumn}
-									showCheckboxes={showCheckboxes}
-									onToggleRow={onToggleRow}
-								/>
-							))
-						}
+						{editionGroups.map((editionGroup) => (
+							<EditionGroupTableRow
+								editionGroup={editionGroup}
+								key={editionGroup.bbid}
+								selectedEntities={selectedEntities}
+								showAddedAtColumn={showAddedAtColumn}
+								showCheckboxes={showCheckboxes}
+								onToggleRow={onToggleRow}
+							/>
+						))}
 					</tbody>
 				</Table>
 			</React.Fragment>
 		);
-	}
-	else {
+	} else {
 		tableContent = <span>No edition groups</span>;
 	}
 	return (
@@ -119,13 +128,13 @@ EditionGroupTable.propTypes = {
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool,
-	showCheckboxes: PropTypes.bool
+	showCheckboxes: PropTypes.bool,
 };
 EditionGroupTable.defaultProps = {
 	onToggleRow: null,
 	selectedEntities: [],
 	showAddedAtColumn: false,
-	showCheckboxes: false
+	showCheckboxes: false,
 };
 
 export default EditionGroupTable;

@@ -23,18 +23,16 @@ import * as handler from '../helpers/handler';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
-import {escapeProps, generateProps} from '../helpers/props';
+import { escapeProps, generateProps } from '../helpers/props';
 import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import RegisterAuthPage from '../../client/components/pages/registration-auth';
-import RegisterDetailPage from
-	'../../client/components/forms/registration-details';
+import RegisterDetailPage from '../../client/components/forms/registration-details';
 import _ from 'lodash';
 import express from 'express';
 import log from 'log';
 import target from '../templates/target';
-
 
 const router = express.Router();
 
@@ -48,11 +46,11 @@ router.get('/', (req, res) => {
 
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
-			<RegisterAuthPage/>
+			<RegisterAuthPage />
 		</Layout>
 	);
 
-	return res.send(target({markup, title: 'Register'}));
+	return res.send(target({ markup, title: 'Register' }));
 });
 
 router.get('/details', middleware.loadGenders, (req, res) => {
@@ -66,35 +64,33 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 	}
 
 	const gender = _.find(res.locals.genders, {
-		name: _.capitalize(req.session.mbProfile.gender)
+		name: _.capitalize(req.session.mbProfile.gender),
 	});
 
 	const props = generateProps(req, res, {
 		gender,
 		genders: res.locals.genders,
-		name: req.session.mbProfile.sub
+		name: req.session.mbProfile.sub,
 	});
 
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
-			<RegisterDetailPage
-				gender={props.gender}
-				genders={props.genders}
-				name={props.name}
-			/>
+			<RegisterDetailPage gender={props.gender} genders={props.genders} name={props.name} />
 		</Layout>
 	);
 
-	return res.send(target({
-		markup,
-		props: escapeProps(props),
-		script: '/js/registrationDetails.js',
-		title: 'Register'
-	}));
+	return res.send(
+		target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/registrationDetails.js',
+			title: 'Register',
+		})
+	);
 });
 
 router.post('/handler', (req, res) => {
-	const {Editor, EditorType} = req.app.locals.orm;
+	const { Editor, EditorType } = req.app.locals.orm;
 
 	// Check whether the user is logged in - if so, redirect to profile page
 	if (req.user) {
@@ -106,8 +102,8 @@ router.post('/handler', (req, res) => {
 	}
 
 	// Fetch the default EditorType from the database
-	const registerPromise = EditorType.forge({label: 'Editor'})
-		.fetch({require: true})
+	const registerPromise = EditorType.forge({ label: 'Editor' })
+		.fetch({ require: true })
 		.then(
 			// Create a new Editor and add to the database
 			(editorType) =>
@@ -116,9 +112,8 @@ router.post('/handler', (req, res) => {
 					genderId: req.body.gender,
 					metabrainzUserId: req.session.mbProfile.metabrainz_user_id,
 					name: req.body.displayName,
-					typeId: editorType.id
-				})
-					.save()
+					typeId: editorType.id,
+				}).save()
 		)
 		.then((editor) => {
 			req.session.mbProfile = null;
@@ -128,9 +123,7 @@ router.post('/handler', (req, res) => {
 			const editorForES = {};
 			editorForES.bbid = editorJSON.id;
 			editorForES.aliasSet = {
-				aliases: [
-					{name: editorJSON.name}
-				]
+				aliases: [{ name: editorJSON.name }],
 			};
 			editorForES.type = 'Editor';
 			return editorForES;
@@ -138,11 +131,11 @@ router.post('/handler', (req, res) => {
 		.catch((err) => {
 			log.debug(err);
 
-			if (_.isMatch(err, {constraint: 'editor_name_key'})) {
+			if (_.isMatch(err, { constraint: 'editor_name_key' })) {
 				throw new error.FormSubmissionError(
 					'That username already exists - please try using another,' +
-					' or contact us to have your existing BookBrainz account' +
-					' linked to a MusicBrainz account.'
+						' or contact us to have your existing BookBrainz account' +
+						' linked to a MusicBrainz account.'
 				);
 			}
 

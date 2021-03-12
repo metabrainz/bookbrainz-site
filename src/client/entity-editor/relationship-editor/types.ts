@@ -19,48 +19,48 @@
 export type EntityType = string;
 
 export type Entity = {
-	bbid: string,
+	bbid: string;
 	defaultAlias?: {
-		name: string
-	},
-	type: EntityType
+		name: string;
+	};
+	type: EntityType;
 };
 
 export type RelationshipType = {
-	id: number,
-	childOrder: number,
-	deprecated: boolean,
-	depth?: number,
-	description: string,
-	label: string,
-	linkPhrase: string,
-	parentId: number,
-	reverseLinkPhrase: string,
-	sourceEntityType: EntityType,
-	targetEntityType: EntityType
+	id: number;
+	childOrder: number;
+	deprecated: boolean;
+	depth?: number;
+	description: string;
+	label: string;
+	linkPhrase: string;
+	parentId: number;
+	reverseLinkPhrase: string;
+	sourceEntityType: EntityType;
+	targetEntityType: EntityType;
 };
 
 export type Relationship = {
-	relationshipType: RelationshipType,
-	sourceEntity: Entity,
-	targetEntity: Entity
+	relationshipType: RelationshipType;
+	sourceEntity: Entity;
+	targetEntity: Entity;
 };
 
 export type RelationshipWithLabel = {
-	label: string,
-	relationshipType: RelationshipType,
-	sourceEntity: Entity,
-	targetEntity: Entity
+	label: string;
+	relationshipType: RelationshipType;
+	sourceEntity: Entity;
+	targetEntity: Entity;
 };
 
 export type RelationshipForDisplay = {
-	relationshipType: RelationshipType,
-	sourceEntity: Entity,
-	targetEntity: Entity,
-	rowID: number
+	relationshipType: RelationshipType;
+	sourceEntity: Entity;
+	targetEntity: Entity;
+	rowID: number;
 };
 
 export type LanguageOption = {
-	name: string,
-	id: number
+	name: string;
+	id: number;
 };

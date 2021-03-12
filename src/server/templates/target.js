@@ -38,21 +38,13 @@ const favicon = `
 	<meta name='theme-color'
 		content='#754e37'/>
 		`;
-export default ({
-	title,
-	markup,
-	page,
-	props,
-	script
-}) => {
-	const pageScript =
-		`<script id='page' type='application/json'>${page}</script>`;
+export default ({ title, markup, page, props, script }) => {
+	const pageScript = `<script id='page' type='application/json'>${page}</script>`;
 	return `
 	<!DOCTYPE html>
 	<html>
 		<head>
-			<title>${title ? `${title} – BookBrainz` :
-		'BookBrainz – The Open Book Database'}</title>
+			<title>${title ? `${title} – BookBrainz` : 'BookBrainz – The Open Book Database'}</title>
 			<link rel='stylesheet' href='/stylesheets/bundle.css' />
 			<link rel='stylesheet' href='/stylesheets/style.css' />
 			<meta name='viewport'
@@ -64,9 +56,12 @@ export default ({
 			<div id='target'>${markup}</div>
 			<script src='/js/bundle.js'></script>
 			${page ? pageScript : ''}
-			${props && script ?
-		`<script id='props' type='application/json'> ${props}</script>
-				<script src='${script}'></script>` : ''}
+			${
+				props && script
+					? `<script id='props' type='application/json'> ${props}</script>
+				<script src='${script}'></script>`
+					: ''
+			}
 		</body>
 	  </html>
 	`;

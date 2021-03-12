@@ -17,14 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {entityToOption, genEntityIconHTMLElement} from '../../helpers/entity';
-import {Async} from 'react-select';
+import { entityToOption, genEntityIconHTMLElement } from '../../helpers/entity';
+import { Async } from 'react-select';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SelectWrapper from './select-wrapper';
 import _ from 'lodash';
 import request from 'superagent';
-
 
 class EntitySearch extends React.Component {
 	constructor(props) {
@@ -43,31 +42,26 @@ class EntitySearch extends React.Component {
 			.get('/search/autocomplete')
 			.query({
 				q: query,
-				type: _.snakeCase(this.props.type)
+				type: _.snakeCase(this.props.type),
 			})
 			.then((response) => ({
-				options: response.body.map(entityToOption)
+				options: response.body.map(entityToOption),
 			}));
 	}
 
 	renderOption(option) {
 		return (
 			<div>
-				{option.type && genEntityIconHTMLElement(option.type)}
-				{' '}
-				{option.text}
-				{
-					option.disambiguation &&
-					<span className="disambig">
-						({option.disambiguation})
-					</span>
-				}
+				{option.type && genEntityIconHTMLElement(option.type)} {option.text}
+				{option.disambiguation && (
+					<span className="disambig">({option.disambiguation})</span>
+				)}
 			</div>
 		);
 	}
 
 	render() {
-		const {defaultValue, ...props} = this.props;
+		const { defaultValue, ...props } = this.props;
 
 		return (
 			<SelectWrapper
@@ -77,7 +71,7 @@ class EntitySearch extends React.Component {
 				labelAttribute="text"
 				loadOptions={this.fetchOptions}
 				optionRenderer={this.renderOption}
-				ref={(ref) => this.select = ref}
+				ref={(ref) => (this.select = ref)}
 				{...props}
 			/>
 		);
@@ -87,13 +81,13 @@ class EntitySearch extends React.Component {
 EntitySearch.displayName = 'EntitySearch';
 EntitySearch.propTypes = {
 	defaultValue: PropTypes.shape({
-		bbid: PropTypes.string
+		bbid: PropTypes.string,
 	}),
-	type: PropTypes.string
+	type: PropTypes.string,
 };
 EntitySearch.defaultProps = {
 	defaultValue: null,
-	type: null
+	type: null,
 };
 
 export default EntitySearch;

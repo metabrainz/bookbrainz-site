@@ -18,37 +18,38 @@
 
 import * as Immutable from 'immutable';
 import {
-	IDENTIFIER_TYPES, INVALID_IDENTIFIER, INVALID_IDENTIFIERS, VALID_IDENTIFIER,
-	VALID_IDENTIFIERS
+	IDENTIFIER_TYPES,
+	INVALID_IDENTIFIER,
+	INVALID_IDENTIFIERS,
+	VALID_IDENTIFIER,
+	VALID_IDENTIFIERS,
 } from './data';
+import { testValidatePositiveIntegerFunc, testValidateStringFunc } from './helpers';
 import {
-	testValidatePositiveIntegerFunc, testValidateStringFunc
-} from './helpers';
-import {
-	validateIdentifier, validateIdentifierType, validateIdentifierValue,
-	validateIdentifiers
+	validateIdentifier,
+	validateIdentifierType,
+	validateIdentifierValue,
+	validateIdentifiers,
 } from '../../../../../src/client/entity-editor/validators/common';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-
 chai.use(chaiAsPromised);
-const {expect} = chai;
-
+const { expect } = chai;
 
 function describeValidateIdentifierValueNoIdentifierTypes() {
 	testValidateStringFunc(validateIdentifierValue);
 }
 
 function describeValidateIdentifierValueWithIdentifierTypes() {
-	it('should pass a non-empty string value that matches the validation regular expression', () => { // eslint-disable-line max-len
-		const result = validateIdentifierValue(
-			'B076KQRJV1', 1, IDENTIFIER_TYPES
-		);
+	it('should pass a non-empty string value that matches the validation regular expression', () => {
+		// eslint-disable-line max-len
+		const result = validateIdentifierValue('B076KQRJV1', 1, IDENTIFIER_TYPES);
 		expect(result).to.be.true;
 	});
 
-	it('should reject a non-empty string value that doesn\'t match the validation regular expression', () => { // eslint-disable-line max-len
+	it("should reject a non-empty string value that doesn't match the validation regular expression", () => {
+		// eslint-disable-line max-len
 		const result = validateIdentifierValue('B076K1', 1, IDENTIFIER_TYPES);
 		expect(result).to.be.false;
 	});
@@ -79,7 +80,8 @@ function describeValidateIdentifierTypeWithIdentifierTypes() {
 		expect(result).to.be.true;
 	});
 
-	it('should reject any positive integer value which isn\'t a type ID', () => { // eslint-disable-line max-len
+	it("should reject any positive integer value which isn't a type ID", () => {
+		// eslint-disable-line max-len
 		const result = validateIdentifierType(1000, IDENTIFIER_TYPES);
 		expect(result).to.be.false;
 	});
@@ -112,32 +114,25 @@ function describeValidateIdentifier() {
 	});
 
 	it('should pass a valid Immutable.Map', () => {
-		const result = validateIdentifier(
-			Immutable.fromJS(VALID_IDENTIFIER), IDENTIFIER_TYPES
-		);
+		const result = validateIdentifier(Immutable.fromJS(VALID_IDENTIFIER), IDENTIFIER_TYPES);
 		expect(result).to.be.true;
 	});
 
 	it('should reject an Object with an invalid value', () => {
 		const result = validateIdentifier(
-			{...VALID_IDENTIFIER, value: 'B076QRJV1'}, IDENTIFIER_TYPES
+			{ ...VALID_IDENTIFIER, value: 'B076QRJV1' },
+			IDENTIFIER_TYPES
 		);
 		expect(result).to.be.false;
 	});
 
 	it('should reject an Object with an invalid type', () => {
-		const result = validateIdentifier(
-			{...VALID_IDENTIFIER, type: 5},
-			IDENTIFIER_TYPES
-		);
+		const result = validateIdentifier({ ...VALID_IDENTIFIER, type: 5 }, IDENTIFIER_TYPES);
 		expect(result).to.be.false;
 	});
 
 	it('should reject an invalid Immutable.Map', () => {
-		const result = validateIdentifier(
-			Immutable.fromJS(INVALID_IDENTIFIER),
-			IDENTIFIER_TYPES
-		);
+		const result = validateIdentifier(Immutable.fromJS(INVALID_IDENTIFIER), IDENTIFIER_TYPES);
 		expect(result).to.be.false;
 	});
 
@@ -152,18 +147,15 @@ function describeValidateIdentifier() {
 	});
 }
 
-
 function describeValidateIdentifiers() {
 	it('should pass an Object of two valid Objects', () => {
 		const result = validateIdentifiers(VALID_IDENTIFIERS, IDENTIFIER_TYPES);
 		expect(result).to.be.true;
 	});
 
-	it('should pass an Immutable.Map of valid Immutable.Maps', () => { // eslint-disable-line max-len
-		const result = validateIdentifiers(
-			Immutable.fromJS(VALID_IDENTIFIERS),
-			IDENTIFIER_TYPES
-		);
+	it('should pass an Immutable.Map of valid Immutable.Maps', () => {
+		// eslint-disable-line max-len
+		const result = validateIdentifiers(Immutable.fromJS(VALID_IDENTIFIERS), IDENTIFIER_TYPES);
 		expect(result).to.be.true;
 	});
 
@@ -177,19 +169,15 @@ function describeValidateIdentifiers() {
 		expect(result).to.be.true;
 	});
 
-	it('should reject an Object containing one invalid Object', () => { // eslint-disable-line max-len
-		const result = validateIdentifiers(
-			INVALID_IDENTIFIERS,
-			IDENTIFIER_TYPES
-		);
+	it('should reject an Object containing one invalid Object', () => {
+		// eslint-disable-line max-len
+		const result = validateIdentifiers(INVALID_IDENTIFIERS, IDENTIFIER_TYPES);
 		expect(result).to.be.false;
 	});
 
-	it('should reject an Immutable.Map containing one invalid Immutable.Map', () => { // eslint-disable-line max-len
-		const result = validateIdentifiers(
-			Immutable.fromJS(INVALID_IDENTIFIERS),
-			IDENTIFIER_TYPES
-		);
+	it('should reject an Immutable.Map containing one invalid Immutable.Map', () => {
+		// eslint-disable-line max-len
+		const result = validateIdentifiers(Immutable.fromJS(INVALID_IDENTIFIERS), IDENTIFIER_TYPES);
 		expect(result).to.be.false;
 	});
 
@@ -203,7 +191,6 @@ function describeValidateIdentifiers() {
 		expect(result).to.be.false;
 	});
 }
-
 
 function tests() {
 	describe(

@@ -17,17 +17,16 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import {faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
-import {lowerCase, uniqBy} from 'lodash';
+import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { lowerCase, uniqBy } from 'lodash';
 import EntitySearchFieldOption from '../../../entity-editor/common/entity-search-field-option';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {genEntityIconHTMLElement} from '../../../helpers/entity';
+import { genEntityIconHTMLElement } from '../../../helpers/entity';
 import request from 'superagent';
 
-
-const {Alert, Badge, Button, ButtonGroup, Col, Modal, Row} = bootstrap;
+const { Alert, Badge, Button, ButtonGroup, Col, Modal, Row } = bootstrap;
 
 class AddEntityToCollectionModal extends React.Component {
 	constructor(props) {
@@ -35,7 +34,7 @@ class AddEntityToCollectionModal extends React.Component {
 
 		this.state = {
 			entities: [],
-			error: null
+			error: null,
 		};
 
 		this.handleAddEntity = this.handleAddEntity.bind(this);
@@ -47,12 +46,15 @@ class AddEntityToCollectionModal extends React.Component {
 	}
 
 	getCleanedEntities() {
-		return uniqBy(this.state.entities.filter(entity => entity && entity.id !== null), 'id');
+		return uniqBy(
+			this.state.entities.filter((entity) => entity && entity.id !== null),
+			'id'
+		);
 	}
 
 	handleAddEntity() {
-		this.setState(prevState => ({
-			entities: [...prevState.entities, {id: null, name: ''}]
+		this.setState((prevState) => ({
+			entities: [...prevState.entities, { id: null, name: '' }],
 		}));
 	}
 
@@ -61,10 +63,9 @@ class AddEntityToCollectionModal extends React.Component {
 		if (!newEnt) {
 			newEntity = {
 				id: null,
-				name: ''
+				name: '',
 			};
-		}
-		else {
+		} else {
 			newEntity = newEnt;
 		}
 
@@ -72,46 +73,54 @@ class AddEntityToCollectionModal extends React.Component {
 			const newEntities = prevState.entities;
 			newEntities[index] = newEntity;
 			return {
-				entities: newEntities
+				entities: newEntities,
 			};
 		});
 	}
 
 	handleRemoveEntity(index) {
-		this.setState(prevState => ({
-			entities: prevState.entities.splice(index, 1) && prevState.entities
+		this.setState((prevState) => ({
+			entities: prevState.entities.splice(index, 1) && prevState.entities,
 		}));
 	}
 
 	handleAlertDismiss() {
-		this.setState({error: null});
+		this.setState({ error: null });
 	}
 
 	handleSubmit() {
 		const cleanedEntities = this.getCleanedEntities();
-		const bbids = cleanedEntities.map(entity => entity.id);
+		const bbids = cleanedEntities.map((entity) => entity.id);
 		if (bbids.length) {
-			request.post(`/collection/${this.props.collectionId}/add`)
-				.send({bbids})
-				.then((res) => {
-					this.setState({
-						entities: [],
-						error: null
-					}, () => {
-						this.props.closeModalAndShowMessage({
-							text: `Added ${bbids.length} ${lowerCase(this.props.collectionType)}${bbids.length > 1 ? 's' : ''}`,
-							type: 'success'
+			request
+				.post(`/collection/${this.props.collectionId}/add`)
+				.send({ bbids })
+				.then(
+					(res) => {
+						this.setState(
+							{
+								entities: [],
+								error: null,
+							},
+							() => {
+								this.props.closeModalAndShowMessage({
+									text: `Added ${bbids.length} ${lowerCase(
+										this.props.collectionType
+									)}${bbids.length > 1 ? 's' : ''}`,
+									type: 'success',
+								});
+							}
+						);
+					},
+					(error) => {
+						this.setState({
+							error: 'Something went wrong! Please try again later',
 						});
-					});
-				}, (error) => {
-					this.setState({
-						error: 'Something went wrong! Please try again later'
-					});
-				});
-		}
-		else {
+					}
+				);
+		} else {
 			this.setState({
-				error: `No ${lowerCase(this.props.collectionType)} selected`
+				error: `No ${lowerCase(this.props.collectionType)} selected`,
 			});
 		}
 	}
@@ -123,63 +132,55 @@ class AddEntityToCollectionModal extends React.Component {
 
 		let errorComponent = null;
 		if (this.state.error) {
-			errorComponent =
-				(
-					<div className="text-center margin-top-1">
-						<Alert bsStyle="danger" onDismiss={this.handleAlertDismiss}>{this.state.error}</Alert>
-					</div>
-				);
+			errorComponent = (
+				<div className="text-center margin-top-1">
+					<Alert bsStyle="danger" onDismiss={this.handleAlertDismiss}>
+						{this.state.error}
+					</Alert>
+				</div>
+			);
 		}
 		const cleanedEntities = this.getCleanedEntities();
 
 		/* eslint-disable react/jsx-no-bind */
 		const addEntityToCollectionForm = (
 			<Row>
-				<Col
-					id="addEntityToCollection"
-					md={12}
-				>
-					<form
-						className="padding-sides-0"
-					>
-						{
-							this.state.entities.map((entity, index) => {
-								const buttonAfter = (
-									<Button
-										bsSize="small"
-										bsStyle="danger"
-										type="button"
-										onClick={() => this.handleRemoveEntity(index)}
-									>
-										<FontAwesomeIcon icon={faTimes}/>&nbsp;Remove
-									</Button>
-								);
-								return (
-									<div key={entity.id}>
-										<EntitySearchFieldOption
-											buttonAfter={buttonAfter}
-											instanceId="entitySearchField"
-											label={`Select ${this.props.collectionType}`}
-											name={this.props.collectionType}
-											type={this.props.collectionType}
-											value={entity}
-											onChange={(newEntity) => this.handleChangeEntity(newEntity, index)}
-										/>
-									</div>
-								);
-							})
-						}
+				<Col id="addEntityToCollection" md={12}>
+					<form className="padding-sides-0">
+						{this.state.entities.map((entity, index) => {
+							const buttonAfter = (
+								<Button
+									bsSize="small"
+									bsStyle="danger"
+									type="button"
+									onClick={() => this.handleRemoveEntity(index)}>
+									<FontAwesomeIcon icon={faTimes} />
+									&nbsp;Remove
+								</Button>
+							);
+							return (
+								<div key={entity.id}>
+									<EntitySearchFieldOption
+										buttonAfter={buttonAfter}
+										instanceId="entitySearchField"
+										label={`Select ${this.props.collectionType}`}
+										name={this.props.collectionType}
+										type={this.props.collectionType}
+										value={entity}
+										onChange={(newEntity) =>
+											this.handleChangeEntity(newEntity, index)
+										}
+									/>
+								</div>
+							);
+						})}
 					</form>
 				</Col>
 			</Row>
 		);
 
 		return (
-			<Modal
-				bsSize="large"
-				show={this.props.show}
-				onHide={this.props.onCloseModal}
-			>
+			<Modal bsSize="large" show={this.props.show} onHide={this.props.onCloseModal}>
 				<Modal.Header closeButton>
 					<Modal.Title>
 						Add {lowerCase(this.props.collectionType)}s to the collection
@@ -191,22 +192,18 @@ class AddEntityToCollectionModal extends React.Component {
 				</Modal.Body>
 				<Modal.Footer>
 					<ButtonGroup>
-						<Button
-							bsStyle="primary"
-							type="button"
-							onClick={this.handleAddEntity}
-						>
-							<FontAwesomeIcon icon={faPlus}/>
+						<Button bsStyle="primary" type="button" onClick={this.handleAddEntity}>
+							<FontAwesomeIcon icon={faPlus} />
 							&nbsp;Add another {lowerCase(this.props.collectionType)}
 						</Button>
 						<Button
 							bsStyle="success"
 							disabled={!cleanedEntities.length}
-							onClick={this.handleSubmit}
-						>
-							<FontAwesomeIcon icon={faPlus}/>
+							onClick={this.handleSubmit}>
+							<FontAwesomeIcon icon={faPlus} />
 							&nbsp;Add <Badge>{cleanedEntities.length}</Badge>&nbsp;
-							{lowerCase(this.props.collectionType)}{cleanedEntities.length > 1 ? 's' : ''} to the collection
+							{lowerCase(this.props.collectionType)}
+							{cleanedEntities.length > 1 ? 's' : ''} to the collection
 						</Button>
 					</ButtonGroup>
 				</Modal.Footer>
@@ -221,7 +218,6 @@ AddEntityToCollectionModal.propTypes = {
 	collectionId: PropTypes.string.isRequired,
 	collectionType: PropTypes.string.isRequired,
 	onCloseModal: PropTypes.func.isRequired,
-	show: PropTypes.bool.isRequired
+	show: PropTypes.bool.isRequired,
 };
 export default AddEntityToCollectionModal;
-

@@ -16,20 +16,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {extractChildProps, extractLayoutProps} from '../helpers/props';
-import {AppContainer} from 'react-hot-loader';
+import { extractChildProps, extractLayoutProps } from '../helpers/props';
+import { AppContainer } from 'react-hot-loader';
 import Layout from '../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import RevisionsPage from '../components/pages/revisions';
-
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const markup = (
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
-			<RevisionsPage {...extractChildProps(props)}/>
+			<RevisionsPage {...extractChildProps(props)} />
 		</Layout>
 	</AppContainer>
 );

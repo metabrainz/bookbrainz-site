@@ -19,11 +19,10 @@
 
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
-import {kebabCase as _kebabCase, has, isFunction} from 'lodash';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons';
-import {genEntityIconHTMLElement} from '../../helpers/entity';
-
+import { kebabCase as _kebabCase, has, isFunction } from 'lodash';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
+import { genEntityIconHTMLElement } from '../../helpers/entity';
 
 class LinkedEntity extends React.Component<any, any> {
 	static displayName = 'LinkedEntity';
@@ -31,11 +30,11 @@ class LinkedEntity extends React.Component<any, any> {
 	static propTypes = {
 		className: PropTypes.string,
 		onSelect: PropTypes.func.isRequired,
-		option: PropTypes.object.isRequired
+		option: PropTypes.object.isRequired,
 	};
 
 	static defaultProps = {
-		className: ''
+		className: '',
 	};
 
 	constructor(props) {
@@ -60,9 +59,10 @@ class LinkedEntity extends React.Component<any, any> {
 		const type = option && option.type;
 		const id = option && option.id;
 		if (type && id) {
-			url = type.toLowerCase() === 'area' ?
-				`//musicbrainz.org/area/${id}` :
-				`/${_kebabCase(type)}/${id}`;
+			url =
+				type.toLowerCase() === 'area'
+					? `//musicbrainz.org/area/${id}`
+					: `/${_kebabCase(type)}/${id}`;
 		}
 		if (url) {
 			window.open(url, '_blank');
@@ -78,27 +78,27 @@ class LinkedEntity extends React.Component<any, any> {
 
 	render() {
 		const option = this.getSafeOptionValue(this.props.option);
-		const {disambiguation, text, type, unnamedText, language} = option;
+		const { disambiguation, text, type, unnamedText, language } = option;
 
 		const nameComponent = text || <i>{unnamedText}</i>;
 
 		return (
 			<div className={this.props.className} onClick={this.handleParentEvent}>
-				{
-					type && genEntityIconHTMLElement(type)
-				}
+				{type && genEntityIconHTMLElement(type)}
 				&nbsp;
 				{nameComponent}
 				&nbsp;&nbsp;
-				{
-					disambiguation &&
-					<span className="disambig"><small>({disambiguation})</small></span>
-				}
-				{' '}
+				{disambiguation && (
+					<span className="disambig">
+						<small>({disambiguation})</small>
+					</span>
+				)}{' '}
 				<a onClick={this.handleChildEvent}>
-					<FontAwesomeIcon icon={faExternalLinkAlt}/>
+					<FontAwesomeIcon icon={faExternalLinkAlt} />
 				</a>
-				<span className="text-muted small" style={{float: 'right'}}>{language}</span>
+				<span className="text-muted small" style={{ float: 'right' }}>
+					{language}
+				</span>
 			</div>
 		);
 	}

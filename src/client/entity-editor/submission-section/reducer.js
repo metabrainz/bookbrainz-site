@@ -16,17 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {
-	SET_SUBMITTED, SET_SUBMIT_ERROR, UPDATE_REVISION_NOTE
-} from './actions';
+import { SET_SUBMITTED, SET_SUBMIT_ERROR, UPDATE_REVISION_NOTE } from './actions';
 import Immutable from 'immutable';
-
 
 function reducer(
 	state = Immutable.Map({
 		note: '',
 		submitError: '',
-		submitted: false
+		submitted: false,
 	}),
 	action
 ) {

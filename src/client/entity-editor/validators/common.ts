@@ -20,12 +20,11 @@ import {
 	get,
 	validateOptionalString,
 	validatePositiveInteger,
-	validateRequiredString
+	validateRequiredString,
 } from './base';
 
-import {Iterable} from 'immutable';
+import { Iterable } from 'immutable';
 import _ from 'lodash';
-
 
 export function validateMultiple(
 	values: any[],
@@ -35,13 +34,11 @@ export function validateMultiple(
 	let every = (object, predicate) => _.every(object, predicate);
 	if (Iterable.isIterable(values)) {
 		every = (object, predicate) => object.every(predicate);
-	}
-	else if (!_.isObject(values)) {
+	} else if (!_.isObject(values)) {
 		return false;
 	}
 
-	return every(values, (value) =>
-		validationFunction(value, additionalArgs));
+	return every(values, (value) => validationFunction(value, additionalArgs));
 }
 
 export function validateAliasName(value: any): boolean {
@@ -69,18 +66,18 @@ export function validateAlias(value: any): boolean {
 	);
 }
 
-export const validateAliases = _.partial(
-	validateMultiple, _.partial.placeholder, validateAlias
-);
+export const validateAliases = _.partial(validateMultiple, _.partial.placeholder, validateAlias);
 
 export type IdentifierType = {
-	id: number,
-	label: string,
-	validationRegex: string
+	id: number;
+	label: string;
+	validationRegex: string;
 };
 
 export function validateIdentifierValue(
-	value: any, typeId: unknown, types?: Array<IdentifierType> | null | undefined
+	value: any,
+	typeId: unknown,
+	types?: Array<IdentifierType> | null | undefined
 ): boolean {
 	if (!validateRequiredString(value)) {
 		return false;
@@ -100,7 +97,8 @@ export function validateIdentifierValue(
 }
 
 export function validateIdentifierType(
-	typeId: any, types?: Array<IdentifierType> | null | undefined
+	typeId: any,
+	types?: Array<IdentifierType> | null | undefined
 ): boolean {
 	if (!validatePositiveInteger(typeId, true)) {
 		return false;
@@ -116,21 +114,24 @@ export function validateIdentifierType(
 }
 
 export function validateIdentifier(
-	identifier: any, types?: Array<IdentifierType> | null | undefined
+	identifier: any,
+	types?: Array<IdentifierType> | null | undefined
 ): boolean {
 	const value = get(identifier, 'value');
 	const type = get(identifier, 'type');
 
-	return (
-		validateIdentifierValue(value, type, types) &&
-		validateIdentifierType(type, types)
-	);
+	return validateIdentifierValue(value, type, types) && validateIdentifierType(type, types);
 }
 
-type ValidateIdentifiersFunc = (identifiers: any[], types?: Array<IdentifierType> | null | undefined) => boolean;
+type ValidateIdentifiersFunc = (
+	identifiers: any[],
+	types?: Array<IdentifierType> | null | undefined
+) => boolean;
 export const validateIdentifiers: ValidateIdentifiersFunc = _.partial(
-	validateMultiple, _.partial.placeholder,
-	validateIdentifier, _.partial.placeholder
+	validateMultiple,
+	_.partial.placeholder,
+	validateIdentifier,
+	_.partial.placeholder
 );
 
 export function validateNameSectionName(value: any): boolean {
@@ -149,9 +150,7 @@ export function validateNameSectionDisambiguation(value: any): boolean {
 	return validateOptionalString(value);
 }
 
-export function validateNameSection(
-	values: any
-): boolean {
+export function validateNameSection(values: any): boolean {
 	return (
 		validateNameSectionName(get(values, 'name', null)) &&
 		validateNameSectionSortName(get(values, 'sortName', null)) &&
@@ -168,9 +167,7 @@ export function validateSubmissionSectionAnnotation(value: any): boolean {
 	return validateOptionalString(value);
 }
 
-export function validateSubmissionSection(
-	data: any
-): boolean {
+export function validateSubmissionSection(data: any): boolean {
 	return (
 		validateSubmissionSectionNote(get(data, 'note', null)) &&
 		validateSubmissionSectionAnnotation(get(data, 'annotation.content', null))

@@ -1,62 +1,62 @@
 language: node_js
 node_js:
-  - "node"
-  - "lts/*"
-  - "10"
+    - 'node'
+    - 'lts/*'
+    - '10'
 
 notifications:
-  email: false
-  irc:
-    channels:
-      - "chat.freenode.net#metabrainz"
-    on_success: always
-    on_failure: always
-    template:
-      - "Project %{repository_name} build #%{build_number}: %{result} in %{elapsed_time}: %{build_url}"
+    email: false
+    irc:
+        channels:
+            - 'chat.freenode.net#metabrainz'
+        on_success: always
+        on_failure: always
+        template:
+            - 'Project %{repository_name} build #%{build_number}: %{result} in %{elapsed_time}: %{build_url}'
 
 cache:
-  directories:
-    - node_modules
+    directories:
+        - node_modules
 
 services:
-  - postgresql
-  - elasticsearch
+    - postgresql
+    - elasticsearch
 
 addons:
-  postgresql: "12"
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - postgresql-12
-      - postgresql-client-12
-      - g++-4.8
+    postgresql: '12'
+    apt:
+        sources:
+            - ubuntu-toolchain-r-test
+        packages:
+            - postgresql-12
+            - postgresql-client-12
+            - g++-4.8
 
 env:
-  global:
-    - CXX=g++-4.8
+    global:
+        - CXX=g++-4.8
 
 before_install:
-  - sudo service postgresql stop
-  - printf "local all all trust\nhost all all 127.0.0.1 trust" > pg_hba.conf
-  - sudo chown postgres pg_hba.conf
-  - sudo mv pg_hba.conf /etc/postgresql/12/main
-  - sed -e 's/^port.*/port = 5432/' /etc/postgresql/12/main/postgresql.conf > postgresql.conf
-  - sudo chown postgres postgresql.conf
-  - sudo mv postgresql.conf /etc/postgresql/12/main
-  - sudo service postgresql start 12
+    - sudo service postgresql stop
+    - printf "local all all trust\nhost all all 127.0.0.1 trust" > pg_hba.conf
+    - sudo chown postgres pg_hba.conf
+    - sudo mv pg_hba.conf /etc/postgresql/12/main
+    - sed -e 's/^port.*/port = 5432/' /etc/postgresql/12/main/postgresql.conf > postgresql.conf
+    - sudo chown postgres postgresql.conf
+    - sudo mv postgresql.conf /etc/postgresql/12/main
+    - sudo service postgresql start 12
 
 before_script:
-  - psql -c 'CREATE DATABASE bookbrainz_test;' -U postgres
-  - psql -c 'CREATE EXTENSION "uuid-ossp"; CREATE SCHEMA musicbrainz; CREATE SCHEMA bookbrainz;' -d bookbrainz_test -U postgres
-  - psql -f sql/schemas/musicbrainz.sql -d bookbrainz_test -U postgres
-  - psql -f sql/schemas/bookbrainz.sql -d bookbrainz_test -U postgres
-  - psql -f sql/scripts/create_triggers.sql -d bookbrainz_test -U postgres
-  - ./node_modules/.bin/eslint -v
-  - sleep 5
+    - psql -c 'CREATE DATABASE bookbrainz_test;' -U postgres
+    - psql -c 'CREATE EXTENSION "uuid-ossp"; CREATE SCHEMA musicbrainz; CREATE SCHEMA bookbrainz;' -d bookbrainz_test -U postgres
+    - psql -f sql/schemas/musicbrainz.sql -d bookbrainz_test -U postgres
+    - psql -f sql/schemas/bookbrainz.sql -d bookbrainz_test -U postgres
+    - psql -f sql/scripts/create_triggers.sql -d bookbrainz_test -U postgres
+    - ./node_modules/.bin/eslint -v
+    - sleep 5
 
 script:
-  - npm run-script test-ci
+    - npm run-script test-ci
 
 after_script:
-  - npm install -g coveralls && coveralls < coverage/lcov.info
+    - npm install -g coveralls && coveralls < coverage/lcov.info

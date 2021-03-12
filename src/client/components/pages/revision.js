@@ -23,30 +23,27 @@ import * as utilsHelper from '../../helpers/utils';
 
 import CustomInput from '../../input';
 import EntityLink from '../entity-link';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
-import {faCodeBranch} from '@fortawesome/free-solid-svg-icons';
+import { faCodeBranch } from '@fortawesome/free-solid-svg-icons';
 import request from 'superagent';
-import {transformISODateForDisplay} from '../../helpers/entity';
+import { transformISODateForDisplay } from '../../helpers/entity';
 
-
-const {Badge, Button, Col, ListGroup, ListGroupItem, Row} = bootstrap;
-const {formatDate} = utilsHelper;
+const { Badge, Button, Col, ListGroup, ListGroupItem, Row } = bootstrap;
+const { formatDate } = utilsHelper;
 
 class RevisionPage extends React.Component {
 	static formatValueList(list, isChangeADate) {
 		if (!list) {
 			return null;
 		}
-		return list.map(
-			(val, idx) => {
-				const formattedValue = isChangeADate ? transformISODateForDisplay(val) : val.toString();
-				// eslint-disable-next-line react/no-array-index-key
-				return <div key={`${idx}${val}`}>{formattedValue}</div>;
-			}
-		);
+		return list.map((val, idx) => {
+			const formattedValue = isChangeADate ? transformISODateForDisplay(val) : val.toString();
+			// eslint-disable-next-line react/no-array-index-key
+			return <div key={`${idx}${val}`}>{formattedValue}</div>;
+		});
 	}
 
 	static formatChange(change) {
@@ -56,9 +53,7 @@ class RevisionPage extends React.Component {
 				<tr className="success" key={change.key}>
 					<th scope="row">{change.key}</th>
 					<td> — </td>
-					<td>
-						{RevisionPage.formatValueList(change.rhs, isChangeADate)}
-					</td>
+					<td>{RevisionPage.formatValueList(change.rhs, isChangeADate)}</td>
 				</tr>
 			);
 		}
@@ -67,12 +62,8 @@ class RevisionPage extends React.Component {
 			return (
 				<tr className="warning" key={change.key}>
 					<th scope="row">{change.key}</th>
-					<td>
-						{RevisionPage.formatValueList(change.lhs, isChangeADate)}
-					</td>
-					<td>
-						{RevisionPage.formatValueList(change.rhs, isChangeADate)}
-					</td>
+					<td>{RevisionPage.formatValueList(change.lhs, isChangeADate)}</td>
+					<td>{RevisionPage.formatValueList(change.rhs, isChangeADate)}</td>
 				</tr>
 			);
 		}
@@ -81,9 +72,7 @@ class RevisionPage extends React.Component {
 			return (
 				<tr className="danger" key={change.key}>
 					<th scope="row">{change.key}</th>
-					<td>
-						{RevisionPage.formatValueList(change.lhs, isChangeADate)}
-					</td>
+					<td>{RevisionPage.formatValueList(change.lhs, isChangeADate)}</td>
 					<td> — </td>
 				</tr>
 			);
@@ -93,10 +82,7 @@ class RevisionPage extends React.Component {
 	}
 
 	static formatDiff(diff) {
-		const result = diff.changes.map(
-			(change) =>
-				RevisionPage.formatChange(change)
-		);
+		const result = diff.changes.map((change) => RevisionPage.formatChange(change));
 
 		return _.compact(result);
 	}
@@ -105,18 +91,14 @@ class RevisionPage extends React.Component {
 		return (
 			<div key={diff.entity.bbid}>
 				<h3>
-					{diff.isNew &&
-					<Badge className="new margin-right-0-5">+ New</Badge>}
-					<EntityLink
-						entity={diff.entity}
-					/>
+					{diff.isNew && <Badge className="new margin-right-0-5">+ New</Badge>}
+					<EntityLink entity={diff.entity} />
 				</h3>
 				{diff.changes.length ? (
 					<table className="table table-bordered text-center">
-						<tbody>
-							{RevisionPage.formatDiff(diff)}
-						</tbody>
-					</table>) : null}
+						<tbody>{RevisionPage.formatDiff(diff)}</tbody>
+					</table>
+				) : null}
 			</div>
 		);
 	}
@@ -126,9 +108,8 @@ class RevisionPage extends React.Component {
 		if (_.get(author, ['titleUnlock', 'title'], null)) {
 			const authorTitle = author.titleUnlock.title;
 			title = `${authorTitle.title}: ${authorTitle.description}`;
-		}
-		else {
-			title = 'No Title Set: This user hasn\'t selected a title';
+		} else {
+			title = "No Title Set: This user hasn't selected a title";
 		}
 		return title;
 	}
@@ -141,22 +122,23 @@ class RevisionPage extends React.Component {
 	handleSubmit(event) {
 		event.preventDefault();
 		const data = {
-			note: this.noteInput.getValue()
+			note: this.noteInput.getValue(),
 		};
-		request.post(`/revision/${this.props.revision.id}/note`)
+		request
+			.post(`/revision/${this.props.revision.id}/note`)
 			.send(data)
 			.then(() => {
 				location.reload();
 			})
 			.catch((res) => {
 				// TODO: Add proper error handling.
-				const {error} = res.body;
+				const { error } = res.body;
 				return error;
 			});
 	}
 
 	render() {
-		const {revision, diffs, user} = this.props;
+		const { revision, diffs, user } = this.props;
 		let regularDiffs = diffs;
 		let mergeDiffDivs;
 
@@ -164,8 +146,8 @@ class RevisionPage extends React.Component {
 			/**
 			 * Separate entities between merged and not merged
 			 */
-			const mergeDiffs = _.filter(diffs, diff => diff.entityRevision.isMerge);
-			regularDiffs = _.filter(diffs, diff => !diff.entityRevision.isMerge);
+			const mergeDiffs = _.filter(diffs, (diff) => diff.entityRevision.isMerge);
+			regularDiffs = _.filter(diffs, (diff) => !diff.entityRevision.isMerge);
 
 			/**
 			 * We sort the merged entities diffs by number of changes.
@@ -186,25 +168,18 @@ class RevisionPage extends React.Component {
 
 		const diffDivs = regularDiffs.map(RevisionPage.getEntityDiff);
 
-		const editorTitle =
-			RevisionPage.formatTitle(revision.author);
+		const editorTitle = RevisionPage.formatTitle(revision.author);
 
 		let revisionNotes = revision.notes.map((note) => {
 			const timeCreated = formatDate(new Date(note.postedAt), true);
-			const noteAuthorTitle =
-				RevisionPage.formatTitle(note.author);
+			const noteAuthorTitle = RevisionPage.formatTitle(note.author);
 			return (
-				<ListGroupItem
-					key={note.id}
-				>
+				<ListGroupItem key={note.id}>
 					<div className="revision-note">
 						<p className="note-content">{note.content}</p>
 						<p className="text-right">
 							—&nbsp;
-							<a
-								href={`/editor/${note.author.id}`}
-								title={noteAuthorTitle}
-							>
+							<a href={`/editor/${note.author.id}`} title={noteAuthorTitle}>
 								{note.author.name}
 							</a>
 							, {`${timeCreated}`}
@@ -226,12 +201,10 @@ class RevisionPage extends React.Component {
 					{revision.isMerge && (
 						<div className="mergedEntities">
 							<h3>
-								<span
-									className="round-color-icon"
-									title="Merge revision"
-								>
+								<span className="round-color-icon" title="Merge revision">
 									<FontAwesomeIcon
-										flip="vertical" icon={faCodeBranch}
+										flip="vertical"
+										icon={faCodeBranch}
 										transform="shrink-4"
 									/>
 								</span>
@@ -245,28 +218,20 @@ class RevisionPage extends React.Component {
 					{diffDivs}
 					<p className="text-right">
 						Created by&nbsp;
-						<a
-							href={`/editor/${revision.author.id}`}
-							title={editorTitle}
-						>
+						<a href={`/editor/${revision.author.id}`} title={editorTitle}>
 							{revision.author.name}
 						</a>
 						, {dateRevisionCreated}
 					</p>
 
 					<h3>Revision Notes</h3>
-					<ListGroup>
-						{revisionNotes}
-					</ListGroup>
-					{user &&
-						<form
-							className="margin-top-2"
-							onSubmit={this.handleSubmit}
-						>
+					<ListGroup>{revisionNotes}</ListGroup>
+					{user && (
+						<form className="margin-top-2" onSubmit={this.handleSubmit}>
 							<CustomInput
 								autocomplete="off"
 								label="Add Note"
-								ref={(ref) => this.noteInput = ref}
+								ref={(ref) => (this.noteInput = ref)}
 								rows="6"
 								type="textarea"
 							/>
@@ -274,12 +239,11 @@ class RevisionPage extends React.Component {
 								bsStyle="primary"
 								className="pull-right margin-top-1"
 								title="Submit revision note"
-								type="submit"
-							>
+								type="submit">
 								Submit
 							</Button>
 						</form>
-					}
+					)}
 				</Col>
 			</Row>
 		);
@@ -290,10 +254,10 @@ RevisionPage.displayName = 'RevisionPage';
 RevisionPage.propTypes = {
 	diffs: PropTypes.any.isRequired,
 	revision: PropTypes.any.isRequired,
-	user: PropTypes.object
+	user: PropTypes.object,
 };
 RevisionPage.defaultProps = {
-	user: null
+	user: null,
 };
 
 export default RevisionPage;

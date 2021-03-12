@@ -17,31 +17,30 @@
  */
 
 import * as React from 'react';
-import {Action, updateType} from './actions';
-import {Col, Row} from 'react-bootstrap';
+import { Action, updateType } from './actions';
+import { Col, Row } from 'react-bootstrap';
 
 import CustomInput from '../../input';
-import type {Dispatch} from 'redux';
-import type {Map} from 'immutable';
+import type { Dispatch } from 'redux';
+import type { Map } from 'immutable';
 import Select from 'react-select';
-import {connect} from 'react-redux';
-
+import { connect } from 'react-redux';
 
 type EditionGroupType = {
-	label: string,
-	id: number
+	label: string;
+	id: number;
 };
 
 type StateProps = {
-	typeValue: Map<string, any>
+	typeValue: Map<string, any>;
 };
 
 type DispatchProps = {
-	onTypeChange: (obj: {value: number} | null) => unknown
+	onTypeChange: (obj: { value: number } | null) => unknown;
 };
 
 type OwnProps = {
-	editionGroupTypes: Array<EditionGroupType>
+	editionGroupTypes: Array<EditionGroupType>;
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -61,31 +60,21 @@ type Props = StateProps & DispatchProps & OwnProps;
  * @returns {ReactElement} React element containing the rendered
  *          EditionGroupSection.
  */
-function EditionGroupSection({
-	editionGroupTypes,
-	typeValue,
-	onTypeChange
-}: Props) {
+function EditionGroupSection({ editionGroupTypes, typeValue, onTypeChange }: Props) {
 	const editionGroupTypesForDisplay = editionGroupTypes.map((type) => ({
 		label: type.label,
-		value: type.id
+		value: type.id,
 	}));
 
 	return (
 		<form>
-			<h2>
-				What else do you know about the Edition Group?
-			</h2>
+			<h2>What else do you know about the Edition Group?</h2>
 			<p className="text-muted">
-				All fields optional — leave something blank if you don&rsquo;t
-				know it
+				All fields optional — leave something blank if you don&rsquo;t know it
 			</p>
 			<Row>
 				<Col md={6} mdOffset={3}>
-					<CustomInput
-						label="Type"
-						tooltipText="Physical format of the Edition Group"
-					>
+					<CustomInput label="Type" tooltipText="Physical format of the Edition Group">
 						<Select
 							instanceId="editionGroupType"
 							options={editionGroupTypesForDisplay}
@@ -104,13 +93,13 @@ function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('editionGroupSection');
 
 	return {
-		typeValue: state.get('type')
+		typeValue: state.get('type'),
 	};
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		onTypeChange: (value) => dispatch(updateType(value && value.value))
+		onTypeChange: (value) => dispatch(updateType(value && value.value)),
 	};
 }
 

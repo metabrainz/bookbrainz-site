@@ -16,19 +16,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
-import {get, validateDate, validatePositiveInteger, validateUUID} from './base';
+import { get, validateDate, validatePositiveInteger, validateUUID } from './base';
 import {
 	validateAliases,
 	validateIdentifiers,
 	validateNameSection,
-	validateSubmissionSection
+	validateSubmissionSection,
 } from './common';
 
-import {Iterable} from 'immutable';
+import { Iterable } from 'immutable';
 import _ from 'lodash';
-import type {_IdentifierType} from '../../../types';
-
+import type { _IdentifierType } from '../../../types';
 
 export function validateEditionSectionDepth(value: any): boolean {
 	return validatePositiveInteger(value);
@@ -54,8 +52,7 @@ export function validateEditionSectionLanguages(values: any): boolean {
 	let every = (object, predicate) => _.every(object, predicate);
 	if (Iterable.isIterable(values)) {
 		every = (object, predicate) => object.every(predicate);
-	}
-	else if (!_.isObject(values)) {
+	} else if (!_.isObject(values)) {
 		return false;
 	}
 
@@ -66,7 +63,10 @@ export function validateEditionSectionPages(value: any): boolean {
 	return validatePositiveInteger(value);
 }
 
-export function validateEditionSectionEditionGroup(value: any, editionGroupRequired: boolean | null | undefined): boolean {
+export function validateEditionSectionEditionGroup(
+	value: any,
+	editionGroupRequired: boolean | null | undefined
+): boolean {
 	return validateUUID(get(value, 'id', null), editionGroupRequired);
 }
 
@@ -79,8 +79,8 @@ export function validateEditionSectionPublisher(value: any): boolean {
 }
 
 export function validateEditionSectionReleaseDate(value: any) {
-	const {isValid, errorMessage} = validateDate(value);
-	return {errorMessage, isValid};
+	const { isValid, errorMessage } = validateDate(value);
+	return { errorMessage, isValid };
 }
 
 export function validateEditionSectionStatus(value: any): boolean {
@@ -115,16 +115,15 @@ export function validateEditionSection(data: any): boolean {
 }
 
 export function validateForm(
-	formData: any, identifierTypes?: Array<_IdentifierType> | null | undefined
+	formData: any,
+	identifierTypes?: Array<_IdentifierType> | null | undefined
 ): boolean {
 	const conditions = [
 		validateAliases(get(formData, 'aliasEditor', {})),
-		validateIdentifiers(
-			get(formData, 'identifierEditor', {}), identifierTypes
-		),
+		validateIdentifiers(get(formData, 'identifierEditor', {}), identifierTypes),
 		validateNameSection(get(formData, 'nameSection', {})),
 		validateEditionSection(get(formData, 'editionSection', {})),
-		validateSubmissionSection(get(formData, 'submissionSection', {}))
+		validateSubmissionSection(get(formData, 'submissionSection', {})),
 	];
 
 	return _.every(conditions);

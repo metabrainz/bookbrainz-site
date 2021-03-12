@@ -18,130 +18,107 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
-import {genEntityIconHTMLElement, getEntityLabel, getEntityUrl} from '../../../helpers/entity';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { genEntityIconHTMLElement, getEntityLabel, getEntityUrl } from '../../../helpers/entity';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {faCodeBranch} from '@fortawesome/free-solid-svg-icons';
+import { faCodeBranch } from '@fortawesome/free-solid-svg-icons';
 
-
-const {Table} = bootstrap;
-const {formatDate} = utilsHelper;
-
+const { Table } = bootstrap;
+const { formatDate } = utilsHelper;
 
 function RevisionsTable(props) {
-	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading} = props;
+	const { results, showEntities, showRevisionNote, showRevisionEditor, tableHeading } = props;
 
 	const tableCssClasses = 'table table-striped';
 	return (
-
 		<div>
 			<div>
 				<h1 className="text-center">{tableHeading}</h1>
 			</div>
-			<hr className="thin"/>
-			{
-				results.length > 0 ?
-					<Table
-						responsive
-						className={tableCssClasses}
-					>
-						<thead>
-							<tr>
-								<th className="col-sm-2">Revision ID</th>
-								{
-									showEntities ?
-										<th className="col-sm-5">Modified entities</th> : null
-								}
-								{
-									showRevisionEditor ?
-										<th className="col-sm-3">User</th> : null
-								}
-								{
-									showRevisionNote ?
-										<th className="col-sm-3">Note</th> : null
-								}
-								<th className="col-sm-2">Date</th>
-							</tr>
-						</thead>
+			<hr className="thin" />
+			{results.length > 0 ? (
+				<Table responsive className={tableCssClasses}>
+					<thead>
+						<tr>
+							<th className="col-sm-2">Revision ID</th>
+							{showEntities ? <th className="col-sm-5">Modified entities</th> : null}
+							{showRevisionEditor ? <th className="col-sm-3">User</th> : null}
+							{showRevisionNote ? <th className="col-sm-3">Note</th> : null}
+							<th className="col-sm-2">Date</th>
+						</tr>
+					</thead>
 
-						<tbody>
-							{
-								results.map((revision) => (
-									<tr key={revision.revisionId}>
-										<td>
-											<a
-												href={`/revision/${revision.revisionId}`}
-												title={`${revision.isMerge ? 'Merge revision' : 'Revision'} ${revision.revisionId}`}
-											>
-												#{revision.revisionId}
-												{revision.isMerge &&
-													<span
-														className="round-color-icon"
-														style={{marginLeft: '0.5em'}}
-													>
-														<FontAwesomeIcon
-															flip="vertical" icon={faCodeBranch}
-															transform="shrink-4"
-														/>
-													</span>
-												}
-											</a>
-										</td>
-										{
-											showEntities ?
-												<td>
-													{revision.entities.map(entity => (
-														<div key={`${revision.revisionId}-${entity.bbid}`}>
-															<a href={getEntityUrl(entity)} >
-																{genEntityIconHTMLElement(entity.type)}
-																{getEntityLabel(entity)}
-															</a>
-														</div>
-													))}
-												</td> : null
-										}
-										{
-											showRevisionEditor ?
-												<td>
-													<a href={`/editor/${revision.editor.id}`} >
-														{revision.editor.name}
+					<tbody>
+						{results.map((revision) => (
+							<tr key={revision.revisionId}>
+								<td>
+									<a
+										href={`/revision/${revision.revisionId}`}
+										title={`${
+											revision.isMerge ? 'Merge revision' : 'Revision'
+										} ${revision.revisionId}`}>
+										#{revision.revisionId}
+										{revision.isMerge && (
+											<span
+												className="round-color-icon"
+												style={{ marginLeft: '0.5em' }}>
+												<FontAwesomeIcon
+													flip="vertical"
+													icon={faCodeBranch}
+													transform="shrink-4"
+												/>
+											</span>
+										)}
+									</a>
+								</td>
+								{showEntities ? (
+									<td>
+										{revision.entities.map((entity) => (
+											<div key={`${revision.revisionId}-${entity.bbid}`}>
+												<a href={getEntityUrl(entity)}>
+													{genEntityIconHTMLElement(entity.type)}
+													{getEntityLabel(entity)}
+												</a>
+											</div>
+										))}
+									</td>
+								) : null}
+								{showRevisionEditor ? (
+									<td>
+										<a href={`/editor/${revision.editor.id}`}>
+											{revision.editor.name}
+										</a>
+									</td>
+								) : null}
+								{showRevisionNote ? (
+									<td>
+										{revision.notes.map((note) => (
+											<div className="revision-note clearfix" key={note.id}>
+												<span className="note-content">
+													{note.content}
+													<a
+														className="note-author pull-right"
+														href={`/editor/${note.author.id}`}>
+														—{note.author.name}
 													</a>
-												</td> : null
-										}
-										{
-											showRevisionNote ?
-												<td>
-													{
-														revision.notes.map(note => (
-															<div className="revision-note clearfix" key={note.id}>
-																<span className="note-content">
-																	{note.content}
-																	<a
-																		className="note-author pull-right" href={`/editor/${note.author.id}`}
-																	>
-																		—{note.author.name}
-																	</a>
-																</span>
-															</div>
-														))
-													}
-												</td> : null
-										}
-										<td>{formatDate(new Date(revision.createdAt), true)}</td>
-									</tr>
-								))
-							}
-						</tbody>
-					</Table> :
-
-					<div>
-						<h4> No revisions to show</h4>
-						<hr className="wide"/>
-					</div>
-			}
+												</span>
+											</div>
+										))}
+									</td>
+								) : null}
+								<td>{formatDate(new Date(revision.createdAt), true)}</td>
+							</tr>
+						))}
+					</tbody>
+				</Table>
+			) : (
+				<div>
+					<h4> No revisions to show</h4>
+					<hr className="wide" />
+				</div>
+			)}
 		</div>
-
 	);
 }
 
@@ -150,18 +127,15 @@ RevisionsTable.propTypes = {
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
 	showRevisionNote: PropTypes.bool,
-	tableHeading: PropTypes.node
+	tableHeading: PropTypes.node,
 };
 RevisionsTable.defaultProps = {
 	showEntities: false,
 	showRevisionEditor: false,
 	showRevisionNote: false,
-	tableHeading: 'Recent Activity'
-
+	tableHeading: 'Recent Activity',
 };
 
-
 RevisionsTable.displayName = 'RevisionsTable';
-
 
 export default RevisionsTable;

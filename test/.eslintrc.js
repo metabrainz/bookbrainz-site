@@ -1,12 +1,11 @@
 /* eslint-disable import/unambiguous, import/no-commonjs, no-magic-numbers */
 /* eslint-disable no-inline-comments */
 
-
 module.exports = {
 	env: {
-		mocha: true
+		mocha: true,
 	},
 	rules: {
-		'no-unused-expressions': 0
-	}
+		'no-unused-expressions': 0,
+	},
 };

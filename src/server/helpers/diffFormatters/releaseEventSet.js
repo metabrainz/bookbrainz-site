@@ -18,21 +18,16 @@
 
 import * as set from './set';
 
-
 function formatNewReleaseEventSet(change) {
 	function transformer(rhs) {
 		return rhs.releaseEvents.map((releaseEvent) => releaseEvent.date);
 	}
 
-	return set.formatNewSet(
-		change, 'Release Date', 'releaseEvents', transformer
-	);
+	return set.formatNewSet(change, 'Release Date', 'releaseEvents', transformer);
 }
 
 function formatReleaseEventAddOrDelete(change) {
-	return set.formatItemAddOrDelete(
-		change, 'Release Date', (side) => side && [side.date]
-	);
+	return set.formatItemAddOrDelete(change, 'Release Date', (side) => side && [side.date]);
 }
 
 function formatReleaseEventModified(change) {
@@ -41,7 +36,9 @@ function formatReleaseEventModified(change) {
 
 export function format(change) {
 	return set.format(
-		change, 'releaseEventSet', 'releaseEvents',
+		change,
+		'releaseEventSet',
+		'releaseEvents',
 		formatNewReleaseEventSet,
 		formatReleaseEventAddOrDelete,
 		formatReleaseEventModified

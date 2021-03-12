@@ -16,25 +16,23 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
-import type {Map} from 'immutable';
+import type { Map } from 'immutable';
 import _ from 'lodash';
 import request from 'superagent';
-
 
 export const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
 export const UPDATE_REVISION_NOTE = 'UPDATE_REVISION_NOTE';
 export const SET_SUBMITTED = 'SET_SUBMITTED';
 
 export type Action = {
-	type: string,
-	payload?: unknown,
+	type: string;
+	payload?: unknown;
 	meta?: {
-		debounce?: string
-	},
-	error?: string,
-	submitted?: boolean,
-	value?: string
+		debounce?: string;
+	};
+	error?: string;
+	submitted?: boolean;
+	value?: string;
 };
 
 /**
@@ -48,7 +46,7 @@ export type Action = {
 export function setSubmitError(error: string): Action {
 	return {
 		error,
-		type: SET_SUBMIT_ERROR
+		type: SET_SUBMIT_ERROR,
 	};
 }
 
@@ -62,7 +60,7 @@ export function setSubmitError(error: string): Action {
 export function setSubmitted(submitted: boolean): Action {
 	return {
 		submitted,
-		type: SET_SUBMITTED
+		type: SET_SUBMITTED,
 	};
 }
 
@@ -76,17 +74,17 @@ export function setSubmitted(submitted: boolean): Action {
  */
 export function debounceUpdateRevisionNote(value: string): Action {
 	return {
-		meta: {debounce: 'keystroke'},
+		meta: { debounce: 'keystroke' },
 		type: UPDATE_REVISION_NOTE,
-		value
+		value,
 	};
 }
 
 type Response = {
 	body: {
-		bbid: string,
-		alert?: string
-	}
+		bbid: string;
+		alert?: string;
+	};
 };
 
 function postSubmission(url: string, data: Map<string, any>): Promise<void> {
@@ -97,7 +95,9 @@ function postSubmission(url: string, data: Map<string, any>): Promise<void> {
 	 */
 
 	const [, submissionEntity] = url.split('/');
-	return request.post(url).send(Object.fromEntries(data as unknown as Iterable<any[]>))
+	return request
+		.post(url)
+		.send(Object.fromEntries((data as unknown) as Iterable<any[]>))
 		.then((response: Response) => {
 			if (!response.body) {
 				window.location.replace('/login');
@@ -107,34 +107,26 @@ function postSubmission(url: string, data: Map<string, any>): Promise<void> {
 			if (response.body.alert) {
 				const alertParam = `?alert=${response.body.alert}`;
 				window.location.href = `${redirectUrl}${alertParam}`;
-			}
-			else {
+			} else {
 				window.location.href = redirectUrl;
 			}
 		});
 }
 
 type SubmitResult = (arg1: (Action) => unknown, arg2: () => Map<string, any>) => unknown;
-export function submit(
-	submissionUrl: string
-): SubmitResult {
+export function submit(submissionUrl: string): SubmitResult {
 	return (dispatch, getState) => {
 		const rootState = getState();
 		dispatch(setSubmitted(true));
-		return postSubmission(submissionUrl, rootState)
-			.catch(
-				(error: {message: string}) => {
-					/*
-					 * Use server-set message first, otherwise internal
-					 * superagent message
-					 */
-					const message =
-						_.get(error, ['response', 'body', 'error'], null) ||
-						error.message;
-					// If there was an error submitting the form, make the submit button clickable again
-					dispatch(setSubmitted(false));
-					return dispatch(setSubmitError(message));
-				}
-			);
+		return postSubmission(submissionUrl, rootState).catch((error: { message: string }) => {
+			/*
+			 * Use server-set message first, otherwise internal
+			 * superagent message
+			 */
+			const message = _.get(error, ['response', 'body', 'error'], null) || error.message;
+			// If there was an error submitting the form, make the submit button clickable again
+			dispatch(setSubmitted(false));
+			return dispatch(setSubmitError(message));
+		});
 	};
 }

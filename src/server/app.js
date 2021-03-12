@@ -23,10 +23,10 @@ import * as auth from './helpers/auth';
 import * as error from '../common/helpers/error';
 import * as search from '../common/helpers/search';
 import * as serverErrorHelper from './helpers/error';
-import {existsSync, readFileSync} from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
-import {get as _get} from 'lodash';
+import { get as _get } from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
 import compression from 'compression';
 import config from '../common/helpers/config';
@@ -40,7 +40,6 @@ import redis from 'connect-redis';
 import routes from './routes';
 import serveStatic from 'serve-static';
 import session from 'express-session';
-
 
 // Initialize log-to-stdout  writer
 logNode();
@@ -60,10 +59,12 @@ if (app.get('env') !== 'testing') {
 	app.use(logger('dev'));
 }
 
-app.use(express.json({limit: '10mb'}));
-app.use(express.urlencoded({
-	extended: false
-}));
+app.use(express.json({ limit: '10mb' }));
+app.use(
+	express.urlencoded({
+		extended: false,
+	})
+);
 app.use(compression());
 
 // Set up serving of static assets
@@ -80,8 +81,7 @@ if (process.env.NODE_ENV === 'development') {
 
 	app.use(webpackDevMiddleware(compiler));
 	app.use(webpackHotMiddleware(compiler));
-}
-else {
+} else {
 	app.use(serveStatic(path.join(rootDir, 'static/js')));
 }
 app.use(express.static(path.join(rootDir, 'static')));
@@ -90,21 +90,20 @@ app.use(express.static(path.join(rootDir, 'static')));
 const sessionOptions = {
 	cookie: {
 		maxAge: _get(config, 'session.maxAge', 2592000000),
-		secure: _get(config, 'session.secure', false)
+		secure: _get(config, 'session.secure', false),
 	},
 	resave: false,
 	saveUninitialized: false,
-	secret: config.session.secret
+	secret: config.session.secret,
 };
 if (process.env.NODE_ENV !== 'test') {
 	const RedisStore = redis(session);
 	sessionOptions.store = new RedisStore({
 		host: _get(config, 'session.redis.host', 'localhost'),
-		port: _get(config, 'session.redis.port', 6379)
+		port: _get(config, 'session.redis.port', 6379),
 	});
 }
 app.use(session(sessionOptions));
-
 
 if (config.influx) {
 	initInflux(app, config);
@@ -123,8 +122,7 @@ const gitRevisionFilePath = '.git-version';
 if (existsSync(gitRevisionFilePath)) {
 	try {
 		siteRevision = readFileSync(gitRevisionFilePath).toString();
-	}
-	catch (err) {
+	} catch (err) {
 		debug(err);
 	}
 }
@@ -143,7 +141,7 @@ app.use((req, res, next) => {
 		res.locals.alerts.push({
 			level: 'danger',
 			message: `We are currently experiencing technical difficulties;
-				signing in and signing up are disabled until this is resolved.`
+				signing in and signing up are disabled until this is resolved.`,
 		});
 		req.signUpDisabled = true;
 	}
@@ -163,10 +161,10 @@ app.use((req, res, next) => {
 });
 
 // Error handler; arity MUST be 4 or express doesn't treat it as such
-app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+app.use((err, req, res, next) => {
+	// eslint-disable-line no-unused-vars
 	serverErrorHelper.renderError(req, res, err);
 });
-
 
 const DEFAULT_PORT = 9099;
 app.set('port', process.env.PORT || DEFAULT_PORT); // eslint-disable-line no-process-env,max-len
@@ -183,8 +181,7 @@ function cleanupFunction() {
 			if (err) {
 				debug('Error while closing server connections');
 				reject(err);
-			}
-			else {
+			} else {
 				debug('Closed all server connections. Bye bye!');
 				resolve();
 			}
@@ -192,7 +189,9 @@ function cleanupFunction() {
 		// force-kill after X milliseconds.
 		if (config.site.forceExitAfterMs) {
 			setTimeout(() => {
-				reject(new Error(`Cleanup function timed out after ${config.site.forceExitAfterMs} ms`));
+				reject(
+					new Error(`Cleanup function timed out after ${config.site.forceExitAfterMs} ms`)
+				);
 			}, config.site.forceExitAfterMs);
 		}
 	});

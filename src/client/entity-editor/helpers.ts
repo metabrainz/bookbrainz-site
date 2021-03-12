@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import AuthorSection from './author-section/author-section';
 import AuthorSectionMerge from './author-section/author-section-merge';
 import EditionGroupSection from './edition-group-section/edition-group-section';
@@ -31,7 +30,7 @@ import aliasEditorReducer from './alias-editor/reducer';
 import annotationSectionReducer from './annotation-section/reducer';
 import authorSectionReducer from './author-section/reducer';
 import buttonBarReducer from './button-bar/reducer';
-import {combineReducers} from 'redux-immutable';
+import { combineReducers } from 'redux-immutable';
 import editionGroupSectionReducer from './edition-group-section/reducer';
 import editionSectionReducer from './edition-section/reducer';
 import identifierEditorReducer from './identifier-editor/reducer';
@@ -39,25 +38,22 @@ import nameSectionReducer from './name-section/reducer';
 import publisherSectionReducer from './publisher-section/reducer';
 import relationshipSectionReducer from './relationship-editor/reducer';
 import submissionSectionReducer from './submission-section/reducer';
-import {validateForm as validateAuthorForm} from './validators/author';
-import {validateForm as validateEditionForm} from './validators/edition';
-import {
-	validateForm as validateEditionGroupForm
-} from './validators/edition-group';
-import {validateForm as validatePublisherForm} from './validators/publisher';
-import {validateForm as validateWorkForm} from './validators/work';
+import { validateForm as validateAuthorForm } from './validators/author';
+import { validateForm as validateEditionForm } from './validators/edition';
+import { validateForm as validateEditionGroupForm } from './validators/edition-group';
+import { validateForm as validatePublisherForm } from './validators/publisher';
+import { validateForm as validateWorkForm } from './validators/work';
 import workSectionReducer from './work-section/reducer';
 
-
 export function isAliasEmpty(
-	nameValue: string, sortNameValue: string, languageValue: number | null | undefined
+	nameValue: string,
+	sortNameValue: string,
+	languageValue: number | null | undefined
 ): boolean {
 	return !(nameValue.length || sortNameValue.length || languageValue);
 }
 
-export function isRequiredDisambiguationEmpty(
-	required: boolean, disambiguation: string
-): boolean {
+export function isRequiredDisambiguationEmpty(required: boolean, disambiguation: string): boolean {
 	return required ? !disambiguation : false;
 }
 
@@ -67,7 +63,7 @@ export function getEntitySection(entityType: string) {
 		edition: EditionSection,
 		editionGroup: EditionGroupSection,
 		publisher: PublisherSection,
-		work: WorkSection
+		work: WorkSection,
 	};
 
 	return SECTION_MAP[entityType];
@@ -79,7 +75,7 @@ export function getEntitySectionMerge(entityType: string) {
 		edition: EditionSectionMerge,
 		editionGroup: EditionGroupSectionMerge,
 		publisher: PublisherSectionMerge,
-		work: WorkSectionMerge
+		work: WorkSectionMerge,
 	};
 
 	return SECTION_MAP[entityType];
@@ -91,7 +87,7 @@ function getEntitySectionReducer(entityType: string) {
 		edition: editionSectionReducer,
 		editionGroup: editionGroupSectionReducer,
 		publisher: publisherSectionReducer,
-		work: workSectionReducer
+		work: workSectionReducer,
 	};
 
 	return SECTION_REDUCER_MAP[entityType];
@@ -103,7 +99,7 @@ export function getValidator(entityType: string) {
 		edition: validateEditionForm,
 		editionGroup: validateEditionGroupForm,
 		publisher: validatePublisherForm,
-		work: validateWorkForm
+		work: validateWorkForm,
 	};
 
 	return VALIDATOR_MAP[entityType];
@@ -125,14 +121,13 @@ export function createRootReducer(entityType: string) {
 		identifierEditor: identifierEditorReducer,
 		nameSection: nameSectionReducer,
 		relationshipSection: relationshipSectionReducer,
-		submissionSection: submissionSectionReducer
+		submissionSection: submissionSectionReducer,
 	});
 }
 
-type ReduxWindow = typeof window & {__REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any};
+type ReduxWindow = typeof window & { __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any };
 export function shouldDevToolsBeInjected(): boolean {
 	return Boolean(
-		typeof window === 'object' &&
-		(window as ReduxWindow).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+		typeof window === 'object' && (window as ReduxWindow).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
 	);
 }

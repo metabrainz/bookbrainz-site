@@ -21,8 +21,7 @@ import * as testData from '../data/test-data.js';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
-
-const Achievement =	rewire('../src/server/helpers/achievement.js');
+const Achievement = rewire('../src/server/helpers/achievement.js');
 
 const thresholdI = 1;
 const thresholdII = 10;
@@ -34,7 +33,11 @@ function rewireTypeCreation(threshold) {
 
 function getRevAttrPromise(rev) {
 	return common.getAttrPromise(
-		Achievement, orm, true, 'limitedEdition', `Limited Edition ${rev}`
+		Achievement,
+		orm,
+		true,
+		'limitedEdition',
+		`Limited Edition ${rev}`
 	);
 }
 

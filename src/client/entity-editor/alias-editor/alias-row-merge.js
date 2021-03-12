@@ -19,14 +19,13 @@
 import {
 	validateAliasLanguage,
 	validateAliasName,
-	validateAliasSortName
+	validateAliasSortName,
 } from '../validators/common';
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import {connect} from 'react-redux';
-import {removeAliasRow} from './actions';
-
+import { connect } from 'react-redux';
+import { removeAliasRow } from './actions';
 
 /**
  * Container component. The AliasRowMerge component renders a single Row containing
@@ -54,11 +53,14 @@ const AliasRowMerge = ({
 	nameValue,
 	sortNameValue,
 	primaryChecked,
-	onRemoveButtonClick
+	onRemoveButtonClick,
 }) => (
 	<div className="margin-bottom-1">
 		{nameValue} <small>({sortNameValue})</small>
-		&nbsp;<small className="text-muted">{primaryChecked && 'Primary'} {languageOptions[languageValue]}</small>
+		&nbsp;
+		<small className="text-muted">
+			{primaryChecked && 'Primary'} {languageOptions[languageValue]}
+		</small>
 	</div>
 );
 
@@ -69,32 +71,29 @@ AliasRowMerge.propTypes = {
 	nameValue: PropTypes.string.isRequired,
 	onRemoveButtonClick: PropTypes.func.isRequired,
 	primaryChecked: PropTypes.bool.isRequired,
-	sortNameValue: PropTypes.string.isRequired
+	sortNameValue: PropTypes.string.isRequired,
 };
 AliasRowMerge.defaultProps = {
-	languageValue: null
+	languageValue: null,
 };
 
-function mapDispatchToProps(dispatch, {index}) {
+function mapDispatchToProps(dispatch, { index }) {
 	return {
-		onRemoveButtonClick: () =>
-			dispatch(removeAliasRow(index))
+		onRemoveButtonClick: () => dispatch(removeAliasRow(index)),
 	};
 }
 
-function mapStateToProps(rootState, {index}) {
+function mapStateToProps(rootState, { index }) {
 	const state = rootState.get('aliasEditor');
 	return {
 		languageValue: state.getIn([index, 'language']),
 		nameValue: state.getIn([index, 'name']),
 		primaryChecked: state.getIn([index, 'primary']),
-		sortNameValue: state.getIn([index, 'sortName'])
+		sortNameValue: state.getIn([index, 'sortName']),
 	};
 }
 
-
 export default connect(mapStateToProps, mapDispatchToProps)(AliasRowMerge);
-
 
 /* <Col sm={9}>
 	{nameValue} <small>({sortNameValue})</small>

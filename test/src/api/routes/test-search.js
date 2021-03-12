@@ -17,18 +17,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as search from '../../../../src/common/helpers/search';
-import {aliasData, createEditionGroup, createWork, truncateEntities} from '../../../test-helpers/create-entities';
+import {
+	aliasData,
+	createEditionGroup,
+	createWork,
+	truncateEntities,
+} from '../../../test-helpers/create-entities';
 import app from '../../../../src/api/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
-import {searchBasicTests} from '../helpers';
-
+import { searchBasicTests } from '../helpers';
 
 chai.use(chaiHttp);
-const {expect} = chai;
+const { expect } = chai;
 
 const searchString = 'name';
 
@@ -54,48 +57,50 @@ describe('GET /search', () => {
 		const res = await chai.request(app).get(`/search?q=${searchString}`);
 		await searchBasicTests(res);
 		expect(res.body.searchResult).to.be.of.length(4);
-	 });
-	 it('should return search result for given query (with type query)', async () => {
+	});
+	it('should return search result for given query (with type query)', async () => {
 		const res = await chai.request(app).get(`/search?q=${searchString}&type=work`);
-		 await searchBasicTests(res);
-		 expect(res.body.searchResult).to.be.of.length(2);
-	 });
+		await searchBasicTests(res);
+		expect(res.body.searchResult).to.be.of.length(2);
+	});
 
-	 it('should return search result for given query (with an offset)', async () => {
-		 const res = await chai.request(app).get(`/search?q=${searchString}`);
-		 const res2 = await chai.request(app).get(`/search?q=${searchString}&from=2`);
-		 const allResult = res.body.searchResult;
-		 const actualResult = res2.body.searchResult;
-		 const expectedResult = allResult.slice(2, 4);
-		 await searchBasicTests(res2);
-		 expect(actualResult.length).to.equal(2);
-		 expect(actualResult).to.deep.equal(expectedResult);
-	 });
+	it('should return search result for given query (with an offset)', async () => {
+		const res = await chai.request(app).get(`/search?q=${searchString}`);
+		const res2 = await chai.request(app).get(`/search?q=${searchString}&from=2`);
+		const allResult = res.body.searchResult;
+		const actualResult = res2.body.searchResult;
+		const expectedResult = allResult.slice(2, 4);
+		await searchBasicTests(res2);
+		expect(actualResult.length).to.equal(2);
+		expect(actualResult).to.deep.equal(expectedResult);
+	});
 
-	 it('should return search result for given query (with both offset and size)', async () => {
-		 const res = await chai.request(app).get(`/search?q=${searchString}`);
-		 const res2 = await chai.request(app).get(`/search?q=${searchString}&from=2&size=1`);
-		 const allResult = res.body.searchResult;
-		 const actualResult = res2.body.searchResult;
-		 const expectedResult = allResult.slice(2, 3);
-		 await searchBasicTests(res2);
-		 expect(actualResult.length).to.equal(1);
-		 expect(actualResult).to.deep.equal(expectedResult);
-	 });
+	it('should return search result for given query (with both offset and size)', async () => {
+		const res = await chai.request(app).get(`/search?q=${searchString}`);
+		const res2 = await chai.request(app).get(`/search?q=${searchString}&from=2&size=1`);
+		const allResult = res.body.searchResult;
+		const actualResult = res2.body.searchResult;
+		const expectedResult = allResult.slice(2, 3);
+		await searchBasicTests(res2);
+		expect(actualResult.length).to.equal(1);
+		expect(actualResult).to.deep.equal(expectedResult);
+	});
 
-	 it('should return no result for a type whose entity do not exist', async () => {
-		 const res = await chai.request(app).get(`/search?q=${searchString}&type=publisher`);
-		 await searchBasicTests(res);
-		 expect(res.body.searchResult).to.be.of.length(0);
-	 });
+	it('should return no result for a type whose entity do not exist', async () => {
+		const res = await chai.request(app).get(`/search?q=${searchString}&type=publisher`);
+		await searchBasicTests(res);
+		expect(res.body.searchResult).to.be.of.length(0);
+	});
 
-	 it('should throw 400 error if no search query is passed', (done) => {
-		 chai.request(app)
-			 .get('/search?q=')
-			 .end((err, res) => {
-				 if (err) { return done(err); }
-				 expect(res).to.have.status(400);
-				 return done();
-			 });
-	 });
+	it('should throw 400 error if no search query is passed', (done) => {
+		chai.request(app)
+			.get('/search?q=')
+			.end((err, res) => {
+				if (err) {
+					return done(err);
+				}
+				expect(res).to.have.status(400);
+				return done();
+			});
+	});
 });

@@ -19,11 +19,11 @@
 export const UPDATE_ANNOTATION = 'UPDATE_ANNOTATION';
 
 export type Action = {
-	type: string,
-	value?: unknown,
+	type: string;
+	value?: unknown;
 	meta?: {
-		debounce?: string
-	}
+		debounce?: string;
+	};
 };
 
 /**
@@ -36,8 +36,8 @@ export type Action = {
  */
 export function debounceUpdateAnnotation(value: string): Action {
 	return {
-		meta: {debounce: 'keystroke'},
+		meta: { debounce: 'keystroke' },
 		type: UPDATE_ANNOTATION,
-		value
+		value,
 	};
 }

@@ -22,12 +22,11 @@ import Entity from './entity';
 import LinkedEntity from './linked-entity';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {Async as SelectAsync} from 'react-select';
+import { Async as SelectAsync } from 'react-select';
 import ValidationLabel from '../common/validation-label';
 import _ from 'lodash';
 import makeImmutable from './make-immutable';
 import request from 'superagent';
-
 
 const ImmutableAsyncSelect = makeImmutable(SelectAsync);
 
@@ -68,20 +67,20 @@ class EntitySearchFieldOption extends React.Component {
 		}
 		const id = this.isArea(entity) ? entity.id : entity.bbid;
 		const languageId = _.get(entity, ['defaultAlias', 'languageId']);
-		const language = this.props.languageOptions.find(index => index.value === languageId);
+		const language = this.props.languageOptions.find((index) => index.value === languageId);
 		return {
 			disambiguation: _.get(entity, ['disambiguation', 'comment']),
 			id,
 			language: language && language.label,
 			text: _.get(entity, ['defaultAlias', 'name']),
-			type: entity.type
+			type: entity.type,
 		};
 	}
 
 	async fetchOptions(query) {
 		if (!query) {
 			return {
-				options: []
+				options: [],
 			};
 		}
 		let manipulatedQuery = query;
@@ -90,19 +89,21 @@ class EntitySearchFieldOption extends React.Component {
 		if (regexpResults && regexpResults.length) {
 			manipulatedQuery = regexpResults[1];
 		}
-		const response = await request
-			.get('/search/autocomplete')
-			.query({
-				q: manipulatedQuery,
-				type: this.props.type
-			});
+		const response = await request.get('/search/autocomplete').query({
+			q: manipulatedQuery,
+			type: this.props.type,
+		});
 		return {
-			options: response.body.map(this.entityToOption)
+			options: response.body.map(this.entityToOption),
 		};
 	}
 
 	render() {
-		const labelElement = <ValidationLabel empty={this.props.empty} error={this.props.error}>{this.props.label}</ValidationLabel>;
+		const labelElement = (
+			<ValidationLabel empty={this.props.empty} error={this.props.error}>
+				{this.props.label}
+			</ValidationLabel>
+		);
 		return (
 			<CustomInput label={labelElement} tooltipText={this.props.tooltipText} {...this.props}>
 				<ImmutableAsyncSelect
@@ -126,16 +127,13 @@ EntitySearchFieldOption.propTypes = {
 	label: PropTypes.string.isRequired,
 	languageOptions: PropTypes.array,
 	tooltipText: PropTypes.string,
-	type: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.arrayOf(PropTypes.string)
-	]).isRequired
+	type: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]).isRequired,
 };
 EntitySearchFieldOption.defaultProps = {
 	empty: true,
 	error: false,
 	languageOptions: [],
-	tooltipText: null
+	tooltipText: null,
 };
 
 export default EntitySearchFieldOption;

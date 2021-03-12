@@ -24,9 +24,8 @@ import DragAndDrop from '../../input/drag-and-drop';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
-const {Row} = bootstrap;
-const {Sticky, StickyContainer} = ReactSticky;
+const { Row } = bootstrap;
+const { Sticky, StickyContainer } = ReactSticky;
 
 /**
  * Renders the document and displays the 'Editor Achievements Tab'.
@@ -41,7 +40,7 @@ class EditorAchievementTab extends React.Component {
 		super(props);
 		this.state = {
 			achievement: props.achievement,
-			editor: props.editor
+			editor: props.editor,
 		};
 	}
 
@@ -54,7 +53,7 @@ class EditorAchievementTab extends React.Component {
 	renderAchievements() {
 		const achievements = [];
 		const locked = [];
-		this.state.achievement.model.forEach(achievement => {
+		this.state.achievement.model.forEach((achievement) => {
 			const achievementHTML = (
 				<Achievement
 					achievement={achievement}
@@ -64,8 +63,7 @@ class EditorAchievementTab extends React.Component {
 			);
 			if (achievement.unlocked) {
 				achievements.push(achievementHTML);
-			}
-			else {
+			} else {
 				locked.push(achievementHTML);
 			}
 		});
@@ -87,20 +85,17 @@ class EditorAchievementTab extends React.Component {
 				<form
 					className="form-horizontal padding-bottom-1"
 					id="rankSelectForm"
-					method="post"
-				>
+					method="post">
 					<div className="dnd-container">
-						<DragAndDrop name="rank1"/>
-						<DragAndDrop name="rank2"/>
-						<DragAndDrop name="rank3"/>
+						<DragAndDrop name="rank1" />
+						<DragAndDrop name="rank2" />
+						<DragAndDrop name="rank3" />
 					</div>
 					<span className="margin-left-1">
 						<button className="btn btn-success" type="submit">
 							Update
 						</button>
-						<span className="margin-left-1">
-							click badge to unset
-						</span>
+						<span className="margin-left-1">click badge to unset</span>
 					</span>
 				</form>
 			);
@@ -113,25 +108,19 @@ class EditorAchievementTab extends React.Component {
 					<div id="achievementsForm">
 						<StickyContainer>
 							<Sticky topOffset={-80}>
-								{
-									({style}) => {
-										const updatedStyle = {
-											...style,
-											background: 'white',
-											borderBottom: '1px solid #ebe2df',
-											flex: '1',
-											marginTop: STICKY_TOP_MARGIN,
-											zIndex: 10
-										};
-										return (
-											<div style={updatedStyle}>
-												{rankUpdate}
-											</div>
-										);
-									}
-								}
+								{({ style }) => {
+									const updatedStyle = {
+										...style,
+										background: 'white',
+										borderBottom: '1px solid #ebe2df',
+										flex: '1',
+										marginTop: STICKY_TOP_MARGIN,
+										zIndex: 10,
+									};
+									return <div style={updatedStyle}>{rankUpdate}</div>;
+								}}
 							</Sticky>
-							<div className="margin-left-2 margin-right-2" style={{zIndex: 1}}>
+							<div className="margin-left-2 margin-right-2" style={{ zIndex: 1 }}>
 								<div className="h1">Unlocked Achievements</div>
 								{achievements}
 								<div className="h1">Locked Achievements</div>
@@ -148,13 +137,13 @@ class EditorAchievementTab extends React.Component {
 EditorAchievementTab.displayName = 'EditorAchievementTab';
 EditorAchievementTab.propTypes = {
 	achievement: PropTypes.shape({
-		model: PropTypes.array
+		model: PropTypes.array,
 	}).isRequired,
 	editor: PropTypes.shape({
 		authenticated: PropTypes.bool,
-		id: PropTypes.number
+		id: PropTypes.number,
 	}).isRequired,
-	isOwner: PropTypes.bool.isRequired
+	isOwner: PropTypes.bool.isRequired,
 };
 
 export default EditorAchievementTab;

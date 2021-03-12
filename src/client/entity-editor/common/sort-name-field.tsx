@@ -17,10 +17,9 @@
  */
 
 import * as React from 'react';
-import {Button} from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import CustomInput from '../../input';
 import ValidationLabel from '../common/validation-label';
-
 
 /**
  * Removes all period characters (dots) from the input string, returning a new
@@ -36,9 +35,30 @@ function stripDot(name: string): string {
 function makeSortName(name: string): string {
 	const articles = ['a', 'an', 'the', 'los', 'las', 'el', 'la'];
 	const suffixes = [
-		'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi',
-		'xii', 'xiii', 'xiv', 'xv', 'jr', 'junior', 'sr', 'senior', 'phd', 'md',
-		'dmd', 'dds', 'esq'
+		'i',
+		'ii',
+		'iii',
+		'iv',
+		'v',
+		'vi',
+		'vii',
+		'viii',
+		'ix',
+		'x',
+		'xi',
+		'xii',
+		'xiii',
+		'xiv',
+		'xv',
+		'jr',
+		'junior',
+		'sr',
+		'senior',
+		'phd',
+		'md',
+		'dmd',
+		'dds',
+		'esq',
 	];
 
 	/*
@@ -69,13 +89,11 @@ function makeSortName(name: string): string {
 	 * From here on, it is assumed that the sort name is for a person
 	 * Split suffixes
 	 */
-	const isWordSuffix =
-		words.map((word) => suffixes.includes(stripDot(word).toLowerCase()));
+	const isWordSuffix = words.map((word) => suffixes.includes(stripDot(word).toLowerCase()));
 	const lastSuffix = isWordSuffix.lastIndexOf(false) + 1;
 
 	// Test this to check that splice will not have a 0 deleteCount
-	const suffixWords =
-		lastSuffix < words.length ? words.splice(lastSuffix) : [];
+	const suffixWords = lastSuffix < words.length ? words.splice(lastSuffix) : [];
 
 	// Rearrange names to (last name, other names)
 	const INDEX_BEFORE_END = -1;
@@ -90,15 +108,15 @@ function makeSortName(name: string): string {
 
 type onChangeParamType = {
 	target: {
-		value: string
-	}
+		value: string;
+	};
 };
 
 type Props = {
-	empty?: boolean,
-	error?: boolean,
-	onChange?: (onChangeParamType) => unknown,
-	storedNameValue: string
+	empty?: boolean;
+	error?: boolean;
+	onChange?: (onChangeParamType) => unknown;
+	storedNameValue: string;
 };
 
 /**
@@ -118,13 +136,7 @@ type Props = {
  *        generate the sort name when the 'Guess Sort Name' button is clicked.
  * @returns {Object} a React component containing the rendered input
  */
-function SortNameField({
-	empty,
-	error,
-	onChange,
-	storedNameValue,
-	...rest
-}: Props) {
+function SortNameField({ empty, error, onChange, storedNameValue, ...rest }: Props) {
 	let input;
 
 	function handleGuessClick() {
@@ -134,7 +146,7 @@ function SortNameField({
 		}
 
 		if (onChange) {
-			onChange({target: {value: generatedSortName}});
+			onChange({ target: { value: generatedSortName } });
 		}
 	}
 
@@ -144,7 +156,7 @@ function SortNameField({
 		}
 
 		if (onChange) {
-			onChange({target: {value: storedNameValue}});
+			onChange({ target: { value: storedNameValue } });
 		}
 	}
 
@@ -154,17 +166,25 @@ function SortNameField({
 		</ValidationLabel>
 	);
 
-	const guessButton =
-		<Button bsStyle="primary" onClick={handleGuessClick}>Guess</Button>;
+	const guessButton = (
+		<Button bsStyle="primary" onClick={handleGuessClick}>
+			Guess
+		</Button>
+	);
 
-	const copyButton =
-		<Button bsStyle="primary" onClick={handleCopyClick}>Copy</Button>;
+	const copyButton = (
+		<Button bsStyle="primary" onClick={handleCopyClick}>
+			Copy
+		</Button>
+	);
 
 	return (
 		<CustomInput
 			buttonAfter={[guessButton, ' ', copyButton]}
 			label={label}
-			ref={(node) => { input = node; }}
+			ref={(node) => {
+				input = node;
+			}}
 			tooltipText="Alphabetical sorting name. Examples: 'Dickens, Charles', 'Christmas Carol, A'.
 			<br>You can try to fill it automatically with the guess button"
 			type="text"
@@ -177,7 +197,7 @@ SortNameField.displayName = 'SortNameField';
 SortNameField.defaultProps = {
 	empty: false,
 	error: false,
-	onChange: null
+	onChange: null,
 };
 
 export default SortNameField;

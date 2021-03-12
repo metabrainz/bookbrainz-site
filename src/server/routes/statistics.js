@@ -19,7 +19,7 @@
 import * as commonUtils from '../../common/helpers/utils';
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
-import {escapeProps, generateProps} from '../helpers/props';
+import { escapeProps, generateProps } from '../helpers/props';
 import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -28,13 +28,12 @@ import _ from 'lodash';
 import express from 'express';
 import target from '../templates/target';
 
-
 const router = express.Router();
 
 /* Get Statistics Page */
 router.get('/', async (req, res) => {
-	const {orm} = req.app.locals;
-	const {Editor} = orm;
+	const { orm } = req.app.locals;
+	const { Editor } = orm;
 
 	const entityModels = commonUtils.getEntityModels(orm);
 
@@ -53,22 +52,20 @@ router.get('/', async (req, res) => {
 	for (const modelName in entityModels) {
 		const model = entityModels[modelName];
 		queryPromises1.push(
-			model.query((qb) => {
-				qb
-					.leftJoin(
+			model
+				.query((qb) => {
+					qb.leftJoin(
 						'bookbrainz.revision',
 						`bookbrainz.${_.snakeCase(modelName)}.revision_id`,
 						'bookbrainz.revision.id'
-					)
-					.where('master', true);
-			})
-				.count().then((Count) =>
-					 ({Count, modelName}))
+					).where('master', true);
+				})
+				.count()
+				.then((Count) => ({ Count, modelName }))
 		);
 	}
 	const allEntities = await Promise.all(queryPromises1);
-	allEntities.sort((a, b) =>
-		b.Count - a.Count);
+	allEntities.sort((a, b) => b.Count - a.Count);
 
 	/*
 	 *	Here We are fetching count of master revision
@@ -80,19 +77,18 @@ router.get('/', async (req, res) => {
 		const model = entityModels[modelName];
 
 		queryPromises2.push(
-			model.query((qb) => {
-				qb
-					.leftJoin(
+			model
+				.query((qb) => {
+					qb.leftJoin(
 						'bookbrainz.revision',
 						`bookbrainz.${_.snakeCase(modelName)}.revision_id`,
 						'bookbrainz.revision.id'
 					)
-					.where('master', true)
-					.where('bookbrainz.revision.created_at', '>=',
-						utils.getDateBeforeDays(30));
-			})
-				.count().then((Count) =>
-					 ({Count, modelName}))
+						.where('master', true)
+						.where('bookbrainz.revision.created_at', '>=', utils.getDateBeforeDays(30));
+				})
+				.count()
+				.then((Count) => ({ Count, modelName }))
 		);
 	}
 	const last30DaysEntitiesHelper = await Promise.all(queryPromises2);
@@ -105,20 +101,16 @@ router.get('/', async (req, res) => {
 	 *	Fetch the top 10 Editors on the basis of total revisions
 	 */
 	const getTopEditors = new Editor()
-		.query((q) =>
-			q.orderBy('total_revisions', 'desc')
-			 .limit(10))
+		.query((q) => q.orderBy('total_revisions', 'desc').limit(10))
 		.fetchAll()
-		.then((collection) =>
-			collection.models.map((model) =>
-				model.attributes));
+		.then((collection) => collection.models.map((model) => model.attributes));
 
 	const topEditors = await getTopEditors;
 
 	const props = generateProps(req, res, {
 		allEntities,
 		last30DaysEntities,
-		topEditors
+		topEditors,
 	});
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
@@ -129,12 +121,14 @@ router.get('/', async (req, res) => {
 			/>
 		</Layout>
 	);
-	res.send(target({
-		markup,
-		props: escapeProps(props),
-		script: '/js/statistics.js',
-		title: 'Statistics'
-	}));
+	res.send(
+		target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/statistics.js',
+			title: 'Statistics',
+		})
+	);
 });
 
 export default router;

@@ -35,11 +35,10 @@ import testSprinter from './test-sprinter.js';
 import testTimeTraveller from './test-time-traveller.js';
 import testWorkerBee from './test-worker-bee.js';
 
-
 chai.use(chaiAsPromised);
-const {expect} = chai;
+const { expect } = chai;
 
-const Achievement =	rewire('../src/server/helpers/achievement.js');
+const Achievement = rewire('../src/server/helpers/achievement.js');
 const awardAchievement = Achievement.__get__('awardAchievement');
 const awardTitle = Achievement.__get__('awardTitle');
 
@@ -48,10 +47,11 @@ function tests() {
 		afterEach(testData.truncate);
 
 		it('should award achievements', () => {
-			const unlockPromise = testData.createEditor()
+			const unlockPromise = testData
+				.createEditor()
 				.then(() => testData.createRevisionist())
-				.then(
-					() => awardAchievement(
+				.then(() =>
+					awardAchievement(
 						orm,
 						testData.editorAttribs.id,
 						testData.revisionistIAttribs.name
@@ -66,7 +66,7 @@ function tests() {
 				expect(unlockPromise).to.eventually.have.nested.property(
 					'Revisionist I.achievementId',
 					testData.revisionistIAttribs.id
-				)
+				),
 			]);
 		});
 
@@ -83,9 +83,10 @@ function tests() {
 		// });
 
 		it('should reject invalid editors', () => {
-			const unlockPromise = testData.createRevisionist()
-				.then(
-					() => awardAchievement(
+			const unlockPromise = testData
+				.createRevisionist()
+				.then(() =>
+					awardAchievement(
 						orm,
 						testData.editorAttribs.id,
 						testData.revisionistIAttribs.name
@@ -96,9 +97,10 @@ function tests() {
 		});
 
 		it('should reject invalid achievements', () => {
-			const unlockPromise = testData.createEditor()
-				.then(
-					() => awardAchievement(
+			const unlockPromise = testData
+				.createEditor()
+				.then(() =>
+					awardAchievement(
 						orm,
 						testData.editorAttribs.id,
 						testData.revisionistIAttribs.name
@@ -112,14 +114,13 @@ function tests() {
 		afterEach(testData.truncate);
 
 		it('should award titles', () => {
-			const unlockPromise = testData.createEditor()
+			const unlockPromise = testData
+				.createEditor()
 				.then(() => testData.createRevisionist())
-				.then(
-					() => awardTitle(
-						orm,
-						testData.editorAttribs.id,
-						{titleName: testData.revisionistAttribs.title}
-					)
+				.then(() =>
+					awardTitle(orm, testData.editorAttribs.id, {
+						titleName: testData.revisionistAttribs.title,
+					})
 				);
 
 			return Promise.all([
@@ -130,32 +131,26 @@ function tests() {
 				expect(unlockPromise).to.eventually.have.nested.property(
 					'Revisionist.titleId',
 					testData.revisionistAttribs.id
-				)
+				),
 			]);
 		});
 
 		it('should reject invalid editors', () => {
-			const unlockPromise = testData.createRevisionist()
-				.then(
-					() => awardTitle(
-						orm,
-						testData.editorAttribs.id,
-						{titleName: testData.revisionistAttribs.title}
-					)
-				);
+			const unlockPromise = testData.createRevisionist().then(() =>
+				awardTitle(orm, testData.editorAttribs.id, {
+					titleName: testData.revisionistAttribs.title,
+				})
+			);
 
 			return expect(unlockPromise).to.eventually.be.rejected;
 		});
 
 		it('should reject invalid titles', () => {
-			const unlockPromise = testData.createEditor()
-				.then(
-					() => awardTitle(
-						orm,
-						testData.editorAttribs.id,
-						{titleName: testData.revisionistAttribs.title}
-					)
-				);
+			const unlockPromise = testData.createEditor().then(() =>
+				awardTitle(orm, testData.editorAttribs.id, {
+					titleName: testData.revisionistAttribs.title,
+				})
+			);
 
 			return expect(unlockPromise).to.eventually.be.rejected;
 		});

@@ -19,7 +19,6 @@
 import log from 'log';
 import status from 'http-status';
 
-
 export class SiteError extends Error {
 	constructor(message) {
 		super();
@@ -46,8 +45,8 @@ export class SiteError extends Error {
 class PathError extends SiteError {
 	constructor(message, req) {
 		super(message);
-		this.detailedMessage = this.constructor.detailedMessage &&
-				this.constructor.detailedMessage(req);
+		this.detailedMessage =
+			this.constructor.detailedMessage && this.constructor.detailedMessage(req);
 	}
 }
 
@@ -102,7 +101,7 @@ export class NotFoundError extends PathError {
 	static detailedMessage(req) {
 		return [
 			`No content exists at the path requested: ${req.path}`,
-			'Please make sure you have entered in the correct address!'
+			'Please make sure you have entered in the correct address!',
 		];
 	}
 }
@@ -121,7 +120,7 @@ export class PermissionDeniedError extends PathError {
 			`You do not have permission to access the following path:
 			${req.path}`,
 			`Please make sure you have entered in the correct credentials and
-			address!`
+			address!`,
 		];
 	}
 }
@@ -146,9 +145,9 @@ export function getErrorToSend(err) {
 export function sendErrorAsJSON(res, err) {
 	const errorToSend = getErrorToSend(err);
 
-	res.status(
-		errorToSend.status || status.INTERNAL_SERVER_ERROR
-	).send({error: errorToSend.message});
+	res.status(errorToSend.status || status.INTERNAL_SERVER_ERROR).send({
+		error: errorToSend.message,
+	});
 }
 
 export class AwardNotUnlockedError extends Error {
@@ -190,4 +189,3 @@ export class ConflictError extends SiteError {
 		return status.CONFLICT;
 	}
 }
-

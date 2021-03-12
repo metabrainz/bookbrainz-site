@@ -18,21 +18,17 @@
  */
 
 import * as React from 'react';
-import {Iterable} from 'immutable';
+import { Iterable } from 'immutable';
 import _ from 'lodash';
-import {isIterable} from '../../../types';
+import { isIterable } from '../../../types';
 
+function makeImmutable<T extends Record<string, unknown>>(
+	WrappedComponent: React.ComponentType<T>
+): React.FC<T> {
+	function immutableComponent(propsIm: T): React.ReactElement {
+		const propsJS = _.mapValues(propsIm, (value) => (isIterable(value) ? value.toJS() : value));
 
-function makeImmutable<T extends Record<string, unknown>>(WrappedComponent: React.ComponentType<T>): React.FC<T> {
-	function immutableComponent(
-		propsIm: T
-	): React.ReactElement {
-		const propsJS = _.mapValues(
-			propsIm,
-			(value) => (isIterable(value) ? value.toJS() : value)
-		);
-
-		return <WrappedComponent {...propsJS}/>;
+		return <WrappedComponent {...propsJS} />;
 	}
 
 	immutableComponent.displayName = 'pureJS.immutableComponent';

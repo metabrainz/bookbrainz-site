@@ -16,12 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as React from 'react';
-import {faCheck, faExclamationTriangle, faTimes} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import type {IconDefinition} from '@fortawesome/fontawesome-svg-core';
-
+import { faCheck, faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
 type OptionalBool = boolean | null | undefined;
 function icon(empty: OptionalBool, error: OptionalBool, warn: OptionalBool): IconDefinition | null {
@@ -62,12 +60,12 @@ function contextualColor(
 }
 
 type Props = {
-	children?: React.ReactNode,
-	empty?: boolean,
-	error?: boolean,
-	errorMessage?: '',
-	warn?: boolean,
-	warnMessage?: ''
+	children?: React.ReactNode;
+	empty?: boolean;
+	error?: boolean;
+	errorMessage?: '';
+	warn?: boolean;
+	warnMessage?: '';
 };
 
 /**
@@ -84,20 +82,16 @@ type Props = {
  *        error validating the contents of the associated input field.
  * @returns {Object} A React component containing the rendered input.
  */
-function ValidationLabel({
-	children,
-	empty,
-	error,
-	errorMessage,
-	warn,
-	warnMessage
-}: Props) {
-	const warnElement = (warn && !empty && !error) &&
-		<span className={contextualColor(empty, error, warn)}> {warnMessage} </span>;
-	const errorElement = errorMessage &&
-		<span className={contextualColor(empty, error, warn)}> {errorMessage} </span>;
-	const iconElement = icon(empty, error, warn) &&
-		<FontAwesomeIcon className="margin-left-0-5" icon={icon(empty, error, warn)}/>;
+function ValidationLabel({ children, empty, error, errorMessage, warn, warnMessage }: Props) {
+	const warnElement = warn && !empty && !error && (
+		<span className={contextualColor(empty, error, warn)}> {warnMessage} </span>
+	);
+	const errorElement = errorMessage && (
+		<span className={contextualColor(empty, error, warn)}> {errorMessage} </span>
+	);
+	const iconElement = icon(empty, error, warn) && (
+		<FontAwesomeIcon className="margin-left-0-5" icon={icon(empty, error, warn)} />
+	);
 
 	return (
 		<span className={contextualColor(empty, error, warn)}>
@@ -115,7 +109,7 @@ ValidationLabel.defaultProps = {
 	error: false,
 	errorMessage: '',
 	warn: false,
-	warnMessage: ''
+	warnMessage: '',
 };
 
 export default ValidationLabel;

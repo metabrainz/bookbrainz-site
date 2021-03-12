@@ -18,21 +18,16 @@
 
 import * as set from './set';
 
-
 function formatNewPublisherSet(change) {
 	function transformer(rhs) {
 		return rhs.publishers.map((publisher) => publisher.bbid);
 	}
 
-	return set.formatNewSet(
-		change, 'Publisher', 'publishers', transformer
-	);
+	return set.formatNewSet(change, 'Publisher', 'publishers', transformer);
 }
 
 function formatPublisherAddOrDelete(change) {
-	return set.formatItemAddOrDelete(
-		change, 'Publisher', (side) => side && [side.bbid]
-	);
+	return set.formatItemAddOrDelete(change, 'Publisher', (side) => side && [side.bbid]);
 }
 
 function formatPublisherModified(change) {
@@ -41,7 +36,9 @@ function formatPublisherModified(change) {
 
 export function format(change) {
 	return set.format(
-		change, 'publisherSet', 'publishers',
+		change,
+		'publisherSet',
+		'publishers',
 		formatNewPublisherSet,
 		formatPublisherAddOrDelete,
 		formatPublisherModified

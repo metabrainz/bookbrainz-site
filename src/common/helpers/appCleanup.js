@@ -1,4 +1,3 @@
-
 /* eslint-disable no-console */
 /* eslint-disable no-process-exit */
 /* eslint-disable no-use-before-define */
@@ -14,15 +13,17 @@
 
 function cleanupOnExit(cleanupPromise) {
 	process.on('asyncExit', () => {
-		cleanupPromise().then(() => {
-			console.log('Cleanup process finished');
-			// eslint-disable-next-line node/no-process-exit
-			process.exit(0);
-		}).catch((error) => {
-			console.log(error);
-			// eslint-disable-next-line node/no-process-exit
-			process.exit(1);
-		});
+		cleanupPromise()
+			.then(() => {
+				console.log('Cleanup process finished');
+				// eslint-disable-next-line node/no-process-exit
+				process.exit(0);
+			})
+			.catch((error) => {
+				console.log(error);
+				// eslint-disable-next-line node/no-process-exit
+				process.exit(1);
+			});
 	});
 
 	function terminateHandler(code) {
@@ -49,8 +50,7 @@ function cleanupOnExit(cleanupPromise) {
 			process.removeListener('SIGQUIT', cleanupHandler);
 			process.removeListener('SIGTERM', terminateHandler);
 			process.removeListener('SIGINT', terminateHandler);
-		}
-		else {
+		} else {
 			process.off('exit', cleanupHandler);
 			process.off('SIGHUP', cleanupHandler);
 			process.off('SIGQUIT', cleanupHandler);

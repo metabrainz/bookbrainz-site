@@ -22,7 +22,6 @@ import * as testData from '../data/test-data';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
-
 const Achievement = rewire('../src/server/helpers/achievement.js');
 
 const thresholdI = 1;
@@ -38,9 +37,7 @@ function getAttrPromise() {
 }
 
 function getRevAttrPromise(rev) {
-	return common.getAttrPromise(
-		Achievement, orm, true, 'authorCreator', `Author Creator ${rev}`
-	);
+	return common.getAttrPromise(Achievement, orm, true, 'authorCreator', `Author Creator ${rev}`);
 }
 
 function expectIds(rev) {

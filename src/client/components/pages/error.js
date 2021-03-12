@@ -19,18 +19,17 @@
 import * as bootstrap from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {hot} from 'react-hot-loader';
+import { hot } from 'react-hot-loader';
 
-
-const {Button, Grid, Row} = bootstrap;
+const { Button, Grid, Row } = bootstrap;
 
 /**
  * Links to different pages
  */
 
 function ErrorPage(props) {
-	const {error} = props;
-	let {detailedMessage} = error;
+	const { error } = props;
+	let { detailedMessage } = error;
 
 	if (typeof detailedMessage === 'string') {
 		detailedMessage = [detailedMessage];
@@ -55,19 +54,12 @@ function ErrorPage(props) {
 					detailedMessage.map((message, idx) => (
 						// eslint-disable-next-line react/no-array-index-key
 						<Row key={`detailedMsg${idx}`}>
-							<span>
-								{message}
-							</span>
+							<span>{message}</span>
 						</Row>
-					))
-				}
+					))}
 			</div>
 			<Row className="margin-top-1">
-				<Button
-					bsSize="small"
-					bsStyle="link"
-					href="/"
-				>
+				<Button bsSize="small" bsStyle="link" href="/">
 					Return to Main Page
 				</Button>
 			</Row>
@@ -79,8 +71,8 @@ ErrorPage.propTypes = {
 	error: PropTypes.shape({
 		detailedMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
 		message: PropTypes.string,
-		status: PropTypes.number
-	}).isRequired
+		status: PropTypes.number,
+	}).isRequired,
 };
 
 // Export as hot module (see https://github.com/gaearon/react-hot-loader)

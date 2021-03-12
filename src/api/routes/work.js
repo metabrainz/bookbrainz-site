@@ -20,18 +20,17 @@ import * as utils from '../helpers/utils';
 import {
 	formatQueryParameters,
 	loadEntityRelationshipsForBrowse,
-	validateBrowseRequestQueryParameters
+	validateBrowseRequestQueryParameters,
 } from '../helpers/middleware';
 import {
 	getEntityAliases,
 	getEntityIdentifiers,
 	getEntityRelationships,
-	getWorkBasicInfo
+	getWorkBasicInfo,
 } from '../helpers/formatEntityData';
-import {Router} from 'express';
-import {makeEntityLoader} from '../helpers/entityLoader';
-import {toLower} from 'lodash';
-
+import { Router } from 'express';
+import { makeEntityLoader } from '../helpers/entityLoader';
+import { toLower } from 'lodash';
 
 const router = Router();
 
@@ -39,7 +38,7 @@ const workBasicRelations = [
 	'defaultAlias.language',
 	'languageSet.languages',
 	'disambiguation',
-	'workType'
+	'workType',
 ];
 
 const workError = 'Work not found';
@@ -130,13 +129,10 @@ const workError = 'Work not found';
  *         description: Invalid BBID
  */
 
-router.get('/:bbid',
-	makeEntityLoader('Work', workBasicRelations, workError),
-	async (req, res) => {
-		const workBasicInfo = await getWorkBasicInfo(res.locals.entity);
-		return res.status(200).send(workBasicInfo);
-	});
-
+router.get('/:bbid', makeEntityLoader('Work', workBasicRelations, workError), async (req, res) => {
+	const workBasicInfo = await getWorkBasicInfo(res.locals.entity);
+	return res.status(200).send(workBasicInfo);
+});
 
 /**
  *@swagger
@@ -168,13 +164,14 @@ router.get('/:bbid',
  *          description: Invalid BBID
  */
 
-
-router.get('/:bbid/aliases',
+router.get(
+	'/:bbid/aliases',
 	makeEntityLoader('Work', utils.aliasesRelations, workError),
 	async (req, res) => {
 		const workAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(workAliasesList);
-	});
+	}
+);
 
 /**
  *	@swagger
@@ -206,13 +203,14 @@ router.get('/:bbid/aliases',
  *         description: Invalid BBID
  */
 
-router.get('/:bbid/identifiers',
+router.get(
+	'/:bbid/identifiers',
 	makeEntityLoader('Work', utils.identifiersRelations, workError),
 	async (req, res) => {
 		const workIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(workIdentifiersList);
-	});
-
+	}
+);
 
 /**
  *	@swagger
@@ -244,12 +242,14 @@ router.get('/:bbid/identifiers',
  *         description: Invalid BBID
  */
 
-router.get('/:bbid/relationships',
+router.get(
+	'/:bbid/relationships',
 	makeEntityLoader('Work', utils.relationshipsRelations, workError),
 	async (req, res) => {
 		const workRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(workRelationshipList);
-	});
+	}
+);
 
 /**
  *	@swagger
@@ -315,7 +315,8 @@ router.get('/:bbid/relationships',
  *         description: Invalid BBID passed in the query params OR Multiple browsed entities passed in parameters
  */
 
-router.get('/',
+router.get(
+	'/',
 	formatQueryParameters(),
 	validateBrowseRequestQueryParameters(['author', 'edition', 'work', 'publisher']),
 	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
@@ -334,13 +335,18 @@ router.get('/',
 		}
 
 		const workRelationshipList = await utils.getBrowsedRelationships(
-			req.app.locals.orm, res.locals, 'Work',
-			getWorkBasicInfo, workBasicRelations, relationshipsFilterMethod
+			req.app.locals.orm,
+			res.locals,
+			'Work',
+			getWorkBasicInfo,
+			workBasicRelations,
+			relationshipsFilterMethod
 		);
 		return res.status(200).send({
 			bbid: req.query.bbid,
-			works: workRelationshipList
+			works: workRelationshipList,
 		});
-	});
+	}
+);
 
 export default router;

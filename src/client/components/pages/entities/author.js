@@ -24,19 +24,25 @@ import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
 import EntityTitle from './title';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {kebabCase as _kebabCase} from 'lodash';
-import {faPlus} from '@fortawesome/free-solid-svg-icons';
-import {labelsForAuthor} from '../../../helpers/utils';
+import { kebabCase as _kebabCase } from 'lodash';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { labelsForAuthor } from '../../../helpers/utils';
 
+const {
+	deletedEntityMessage,
+	extractAttribute,
+	getTypeAttribute,
+	getEntityUrl,
+	ENTITY_TYPE_ICONS,
+	getSortNameOfDefaultAlias,
+	transformISODateForDisplay,
+} = entityHelper;
+const { Button, Col, Row } = bootstrap;
 
-const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
-	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias, transformISODateForDisplay} = entityHelper;
-const {Button, Col, Row} = bootstrap;
-
-function AuthorAttributes({author}) {
+function AuthorAttributes({ author }) {
 	if (author.deleted) {
 		return deletedEntityMessage;
 	}
@@ -49,12 +55,7 @@ function AuthorAttributes({author}) {
 	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(author);
 
 	const isGroup = type === 'Group';
-	const {
-		beginDateLabel,
-		beginAreaLabel,
-		endDateLabel,
-		endAreaLabel
-	} = labelsForAuthor(isGroup);
+	const { beginDateLabel, beginAreaLabel, endDateLabel, endAreaLabel } = labelsForAuthor(isGroup);
 	const showGender = !isGroup;
 	return (
 		<div>
@@ -69,12 +70,12 @@ function AuthorAttributes({author}) {
 					<dl>
 						<dt>Type</dt>
 						<dd>{type}</dd>
-						{showGender &&
+						{showGender && (
 							<React.Fragment>
 								<dt>Gender</dt>
 								<dd>{gender}</dd>
 							</React.Fragment>
-						}
+						)}
 					</dl>
 				</Col>
 				<Col md={3}>
@@ -85,8 +86,7 @@ function AuthorAttributes({author}) {
 						<dd>{beginArea}</dd>
 					</dl>
 				</Col>
-				{
-					author.ended &&
+				{author.ended && (
 					<Col md={3}>
 						<dl>
 							<dt>{endDateLabel}</dt>
@@ -95,18 +95,17 @@ function AuthorAttributes({author}) {
 							<dd>{endArea}</dd>
 						</dl>
 					</Col>
-				}
+				)}
 			</Row>
 		</div>
 	);
 }
 AuthorAttributes.displayName = 'AuthorAttributes';
 AuthorAttributes.propTypes = {
-	author: PropTypes.object.isRequired
+	author: PropTypes.object.isRequired,
 };
 
-
-function AuthorDisplayPage({entity, identifierTypes, user}) {
+function AuthorDisplayPage({ entity, identifierTypes, user }) {
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
@@ -119,27 +118,28 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 				<Col md={10}>
-					<EntityTitle entity={entity}/>
-					<AuthorAttributes author={entity}/>
+					<EntityTitle entity={entity} />
+					<AuthorAttributes author={entity} />
 				</Col>
 			</Row>
-			<EntityAnnotation entity={entity}/>
-			{!entity.deleted &&
-			<React.Fragment>
-				<EntityLinks
-					entity={entity}
-					identifierTypes={identifierTypes}
-					urlPrefix={urlPrefix}
-				/>
-				<Button
-					bsStyle="success"
-					className="margin-top-d15"
-					href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
-				>
-					<FontAwesomeIcon className="margin-right-0-5" icon={faPlus}/>Add Work
-				</Button>
-			</React.Fragment>}
-			<hr className="margin-top-d40"/>
+			<EntityAnnotation entity={entity} />
+			{!entity.deleted && (
+				<React.Fragment>
+					<EntityLinks
+						entity={entity}
+						identifierTypes={identifierTypes}
+						urlPrefix={urlPrefix}
+					/>
+					<Button
+						bsStyle="success"
+						className="margin-top-d15"
+						href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}>
+						<FontAwesomeIcon className="margin-right-0-5" icon={faPlus} />
+						Add Work
+					</Button>
+				</React.Fragment>
+			)}
+			<hr className="margin-top-d40" />
 			<EntityFooter
 				bbid={entity.bbid}
 				deleted={entity.deleted}
@@ -155,11 +155,10 @@ AuthorDisplayPage.displayName = 'AuthorDisplayPage';
 AuthorDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired
-
+	user: PropTypes.object.isRequired,
 };
 AuthorDisplayPage.defaultProps = {
-	identifierTypes: []
+	identifierTypes: [],
 };
 
 export default AuthorDisplayPage;

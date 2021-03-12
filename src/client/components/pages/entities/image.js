@@ -18,48 +18,30 @@
 
 import * as bootstrap from 'react-bootstrap';
 
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {faSlash} from '@fortawesome/free-solid-svg-icons';
+import { faSlash } from '@fortawesome/free-solid-svg-icons';
 
+const { Image } = bootstrap;
 
-const {Image} = bootstrap;
-
-function EntityImage({backupIcon, deleted, imageUrl}) {
+function EntityImage({ backupIcon, deleted, imageUrl }) {
 	if (imageUrl) {
-		return (
-			<Image
-				responsive
-				src={imageUrl}
-			/>
-		);
+		return <Image responsive src={imageUrl} />;
 	}
 
 	if (deleted) {
 		return (
 			<div className="entity-display-icon fa-layers fa-fw">
-				<FontAwesomeIcon
-					icon={backupIcon}
-					key="entityIcon"
-					size="5x"
-					stack="1x"
-				/>,
-				<FontAwesomeIcon
-					icon={faSlash}
-					key="deletedIcon"
-					size="5x"
-					stack="1x"
-				/>
-			</div>);
+				<FontAwesomeIcon icon={backupIcon} key="entityIcon" size="5x" stack="1x" />,
+				<FontAwesomeIcon icon={faSlash} key="deletedIcon" size="5x" stack="1x" />
+			</div>
+		);
 	}
 
 	return (
 		<div className="entity-display-icon">
-			<FontAwesomeIcon
-				icon={backupIcon}
-				size="5x"
-			/>
+			<FontAwesomeIcon icon={backupIcon} size="5x" />
 		</div>
 	);
 }
@@ -68,11 +50,11 @@ EntityImage.displayName = 'EntityImage';
 EntityImage.propTypes = {
 	backupIcon: PropTypes.object.isRequired,
 	deleted: PropTypes.bool,
-	imageUrl: PropTypes.string
+	imageUrl: PropTypes.string,
 };
 
 EntityImage.defaultProps = {
 	deleted: false,
-	imageUrl: ''
+	imageUrl: '',
 };
 export default EntityImage;

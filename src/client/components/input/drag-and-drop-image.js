@@ -19,7 +19,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 /**
  * This class is derived from the React Component base class and renders
  * an image which supports drag and drop functionality.
@@ -46,7 +45,7 @@ class DragAndDropImage extends React.Component {
 		const data = {
 			id: this.props.achievementId,
 			name: this.props.achievementName,
-			src: this.props.src
+			src: this.props.src,
 		};
 		ev.dataTransfer.setData('text', JSON.stringify(data));
 	}
@@ -73,7 +72,7 @@ DragAndDropImage.propTypes = {
 	achievementId: PropTypes.number.isRequired,
 	achievementName: PropTypes.string.isRequired,
 	height: PropTypes.string.isRequired,
-	src: PropTypes.string.isRequired
+	src: PropTypes.string.isRequired,
 };
 
 export default DragAndDropImage;

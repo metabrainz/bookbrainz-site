@@ -17,18 +17,17 @@
  */
 
 import * as error from '../../common/helpers/error';
-import {flatMap} from 'lodash';
-
+import { flatMap } from 'lodash';
 
 function getRevisionModels(orm) {
-	const {AuthorRevision, EditionRevision, EditionGroupRevision, PublisherRevision, WorkRevision} = orm;
-	return [
+	const {
 		AuthorRevision,
-		EditionGroupRevision,
 		EditionRevision,
+		EditionGroupRevision,
 		PublisherRevision,
-		WorkRevision
-	];
+		WorkRevision,
+	} = orm;
+	return [AuthorRevision, EditionGroupRevision, EditionRevision, PublisherRevision, WorkRevision];
 }
 
 interface EntityProps {
@@ -49,9 +48,9 @@ interface EntityProps {
  * @returns {array} - The modified revisions array
  */
 export async function getAssociatedEntityRevisions(revisions, orm) {
-	const revisionIDs = revisions.map(({revisionId}) => revisionId);
+	const revisionIDs = revisions.map(({ revisionId }) => revisionId);
 	const RevisionModels = getRevisionModels(orm);
-	const {Entity} = orm;
+	const { Entity } = orm;
 	for (let i = 0; i < RevisionModels.length; i++) {
 		const EntityRevision = RevisionModels[i];
 		const entityRevisions = await new EntityRevision()
@@ -62,9 +61,7 @@ export async function getAssociatedEntityRevisions(revisions, orm) {
 				merge: false,
 				remove: false,
 				require: false,
-				withRelated: [
-					'data.aliasSet.defaultAlias'
-				]
+				withRelated: ['data.aliasSet.defaultAlias'],
 			})
 			.catch(EntityRevision.NotFoundError, (err) => {
 				// eslint-disable-next-line no-console
@@ -74,19 +71,25 @@ export async function getAssociatedEntityRevisions(revisions, orm) {
 			const entityRevisionsJSON = entityRevisions.toJSON();
 			for (let index = 0; index < entityRevisionsJSON.length; index++) {
 				const entityRevision = entityRevisionsJSON[index];
-				const entity = await new Entity({bbid: entityRevision.bbid}).fetch();
+				const entity = await new Entity({ bbid: entityRevision.bbid }).fetch();
 				const type = entity.get('type');
 				const bbid = entity.get('bbid');
-				const entityProps: EntityProps = {bbid, type};
+				const entityProps: EntityProps = { bbid, type };
 				if (entityRevision.data) {
 					entityProps.defaultAlias = entityRevision.data.aliasSet.defaultAlias;
 				}
 				// Fetch the parent alias only if data property is nullish, i.e. it is deleted
 				else {
-					entityProps.parentAlias = await orm.func.entity.getEntityParentAlias(orm, type, bbid);
+					entityProps.parentAlias = await orm.func.entity.getEntityParentAlias(
+						orm,
+						type,
+						bbid
+					);
 				}
 				// Find the revision by id and attach the current entity to it
-				const revisionIndex = revisions.findIndex(rev => rev.revisionId === entityRevision.id);
+				const revisionIndex = revisions.findIndex(
+					(rev) => rev.revisionId === entityRevision.id
+				);
 				revisions[revisionIndex].entities.push(entityProps);
 			}
 		}
@@ -104,22 +107,19 @@ export async function getAssociatedEntityRevisions(revisions, orm) {
  * @returns {array} - orderedRevisions
  */
 export async function getOrderedRevisions(from, size, orm) {
-	const {Revision} = orm;
-	const revisions = await new Revision().orderBy('created_at', 'DESC')
-		.fetchPage({
-			limit: size,
-			offset: from,
-			withRelated: [
-				'author'
-			]
-		});
+	const { Revision } = orm;
+	const revisions = await new Revision().orderBy('created_at', 'DESC').fetchPage({
+		limit: size,
+		offset: from,
+		withRelated: ['author'],
+	});
 	const revisionsJSON = revisions.toJSON();
 
 	/* Massage the revisions to match the expected format */
-	const formattedRevisions = revisionsJSON.map(rev => {
+	const formattedRevisions = revisionsJSON.map((rev) => {
 		delete rev.authorId;
-		const {author: editor, id: revisionId, ...otherProps} = rev;
-		return {editor, entities: [], revisionId, ...otherProps};
+		const { author: editor, id: revisionId, ...otherProps } = rev;
+		return { editor, entities: [], revisionId, ...otherProps };
 	});
 
 	/* Fetch associated ${entity}_revisions and last know alias for deleted entities */
@@ -140,14 +140,12 @@ export async function getOrderedRevisions(from, size, orm) {
  * and then add associated entities in that array;
  */
 export async function getOrderedRevisionForEditorPage(from, size, req) {
-	const {Editor, Revision} = req.app.locals.orm;
+	const { Editor, Revision } = req.app.locals.orm;
 
 	// If editor isn't present, throw an error
-	await new Editor({id: req.params.id})
-		.fetch()
-		.catch(Editor.NotFoundError, () => {
-			throw new error.NotFoundError('Editor not found', req);
-		});
+	await new Editor({ id: req.params.id }).fetch().catch(Editor.NotFoundError, () => {
+		throw new error.NotFoundError('Editor not found', req);
+	});
 	const revisions = await new Revision()
 		.query('where', 'author_id', '=', parseInt(req.params.id, 10))
 		.orderBy('created_at', 'DESC')
@@ -156,24 +154,26 @@ export async function getOrderedRevisionForEditorPage(from, size, req) {
 			offset: from,
 			withRelated: [
 				{
-					'notes'(q) {
+					notes(q) {
 						q.orderBy('note.posted_at');
-					}
+					},
 				},
-				'notes.author'
-			]
+				'notes.author',
+			],
 		});
 	const revisionsJSON = revisions.toJSON();
-	const formattedRevisions = revisionsJSON.map(rev => {
+	const formattedRevisions = revisionsJSON.map((rev) => {
 		delete rev.authorId;
-		const {author: editor, id: revisionId, ...otherProps} = rev;
-		return {editor, entities: [], revisionId, ...otherProps};
+		const { author: editor, id: revisionId, ...otherProps } = rev;
+		return { editor, entities: [], revisionId, ...otherProps };
 	});
 
-	const orderedRevisions = await getAssociatedEntityRevisions(formattedRevisions, req.app.locals.orm);
+	const orderedRevisions = await getAssociatedEntityRevisions(
+		formattedRevisions,
+		req.app.locals.orm
+	);
 	return orderedRevisions;
 }
-
 
 /**
  * @name recursivelyGetMergedEntitiesBBIDs
@@ -190,29 +190,43 @@ export async function getOrderedRevisionForEditorPage(from, size, req) {
  */
 async function recursivelyGetMergedEntitiesBBIDs(orm: any, bbids: string[]) {
 	const returnValue: string[] = [];
-	await Promise.all(bbids.map(async (bbid) => {
-		let thisLevelBBIDs = await orm.bookshelf.knex
-			.select('source_bbid')
-			.from('bookbrainz.entity_redirect')
-			.where('target_bbid', bbid);
+	await Promise.all(
+		bbids.map(async (bbid) => {
+			let thisLevelBBIDs = await orm.bookshelf.knex
+				.select('source_bbid')
+				.from('bookbrainz.entity_redirect')
+				.where('target_bbid', bbid);
 			// Flatten the returned array of objects
-		thisLevelBBIDs = flatMap(thisLevelBBIDs, 'source_bbid');
-		const nextLevelBBIDs = await recursivelyGetMergedEntitiesBBIDs(orm, thisLevelBBIDs);
-		returnValue.push(...thisLevelBBIDs, ...nextLevelBBIDs);
-	}));
+			thisLevelBBIDs = flatMap(thisLevelBBIDs, 'source_bbid');
+			const nextLevelBBIDs = await recursivelyGetMergedEntitiesBBIDs(orm, thisLevelBBIDs);
+			returnValue.push(...thisLevelBBIDs, ...nextLevelBBIDs);
+		})
+	);
 	return returnValue;
 }
 
-export async function getOrderedRevisionsForEntityPage(orm: any, from: number, size: number, RevisionModel, bbid: string) {
+export async function getOrderedRevisionsForEntityPage(
+	orm: any,
+	from: number,
+	size: number,
+	RevisionModel,
+	bbid: string
+) {
 	const otherMergedBBIDs = await recursivelyGetMergedEntitiesBBIDs(orm, [bbid]);
 
 	const revisions = await new RevisionModel()
 		.query((qb) => {
 			qb.distinct(`${RevisionModel.prototype.tableName}.id`, 'revision.created_at');
 			qb.whereIn('bbid', [bbid, ...otherMergedBBIDs]);
-			qb.join('bookbrainz.revision', `${RevisionModel.prototype.tableName}.id`, '=', 'bookbrainz.revision.id');
+			qb.join(
+				'bookbrainz.revision',
+				`${RevisionModel.prototype.tableName}.id`,
+				'=',
+				'bookbrainz.revision.id'
+			);
 			qb.orderBy('revision.created_at', 'DESC');
-		}).fetchPage({
+		})
+		.fetchPage({
 			limit: size,
 			offset: from,
 			withRelated: [
@@ -220,21 +234,20 @@ export async function getOrderedRevisionsForEntityPage(orm: any, from: number, s
 				{
 					'revision.notes'(q) {
 						q.orderBy('note.posted_at');
-					}
+					},
 				},
-				'revision.notes.author'
-			]
+				'revision.notes.author',
+			],
 		});
 
 	const revisionsJSON = revisions ? revisions.toJSON() : [];
-	return revisionsJSON.map(rev => {
-		const {revision} = rev;
+	return revisionsJSON.map((rev) => {
+		const { revision } = rev;
 		const editor = revision.author;
 		const revisionId = revision.id;
 		delete revision.author;
 		delete revision.authorId;
 		delete revision.id;
-		return {editor, revisionId, ...revision};
+		return { editor, revisionId, ...revision };
 	});
 }
-

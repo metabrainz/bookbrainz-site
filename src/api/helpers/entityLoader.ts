@@ -19,7 +19,6 @@
 import * as commonUtils from '../../common/helpers/utils';
 import log from 'log';
 
-
 /**
  * This is a middleware function to load entity detail according to given relations
  *
@@ -44,19 +43,18 @@ import log from 'log';
  */
 export function makeEntityLoader(modelName, relations, errMessage, isBrowse) {
 	return async (req, res, next) => {
-		const {orm} = req.app.locals;
+		const { orm } = req.app.locals;
 		const bbid = isBrowse ? req.query.bbid : req.params.bbid;
 		const model = isBrowse ? req.query.modelType : modelName;
 		if (commonUtils.isValidBBID(bbid)) {
 			try {
 				res.locals.entity = await orm.func.entity.getEntity(orm, model, bbid, relations);
 				return next();
-			}
-			catch (err) {
+			} catch (err) {
 				log.error(err);
-				return res.status(404).send({context: err, message: errMessage});
+				return res.status(404).send({ context: err, message: errMessage });
 			}
 		}
-		return res.status(400).send({message: 'BBID is not valid uuid'});
+		return res.status(400).send({ message: 'BBID is not valid uuid' });
 	};
 }

@@ -16,13 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {DateObject, ISODateStringToObject, isNullDate} from '../../helpers/utils';
-import {Iterable} from 'immutable';
+import { DateObject, ISODateStringToObject, isNullDate } from '../../helpers/utils';
+import { Iterable } from 'immutable';
 import _ from 'lodash';
-import {dateValidator} from './date';
-import {isIterable} from '../../../types';
+import { dateValidator } from './date';
+import { isIterable } from '../../../types';
 import validator from 'validator';
-
 
 export function get(
 	object: any,
@@ -59,9 +58,7 @@ export function validateRequiredString(value: any): boolean {
 	return Boolean(value);
 }
 
-export function validatePositiveInteger(
-	value: any, required = false
-): boolean {
+export function validatePositiveInteger(value: any, required = false): boolean {
 	if (absentAndRequired(value, required)) {
 		return false;
 	}
@@ -78,23 +75,28 @@ export function validateDate(value: string | DateObject) {
 	// We expect a string but accept both ISO date strings and {year,month,date} objects
 	if (_.isString(value)) {
 		dateObject = ISODateStringToObject(value);
-	}
-	else {
+	} else {
 		dateObject = value;
 	}
 	const year = _.get(dateObject, 'year', null);
 	const month = _.get(dateObject, 'month', null);
 	const day = _.get(dateObject, 'day', null);
-	const {isValid, errorMessage} = dateValidator(day, month, year);
-	return {errorMessage, isValid};
+	const { isValid, errorMessage } = dateValidator(day, month, year);
+	return { errorMessage, isValid };
 }
 
-
-export function dateIsBefore(beginValue: string | DateObject, endValue: string | DateObject): boolean {
+export function dateIsBefore(
+	beginValue: string | DateObject,
+	endValue: string | DateObject
+): boolean {
 	const beginDateObject = ISODateStringToObject(beginValue);
 	const endDateObject = ISODateStringToObject(endValue);
-	if (isNullDate(beginDateObject) || isNullDate(endDateObject) || !validateDate(beginDateObject).isValid ||
-		!validateDate(endDateObject).isValid) {
+	if (
+		isNullDate(beginDateObject) ||
+		isNullDate(endDateObject) ||
+		!validateDate(beginDateObject).isValid ||
+		!validateDate(endDateObject).isValid
+	) {
 		return true;
 	}
 
@@ -108,29 +110,22 @@ export function dateIsBefore(beginValue: string | DateObject, endValue: string |
 
 	if (beginYear < endYear) {
 		return true;
-	}
-	else if (beginYear > endYear) {
+	} else if (beginYear > endYear) {
 		return false;
-	}
-	else if (beginMonth > endMonth) {
+	} else if (beginMonth > endMonth) {
 		return false;
-	}
-	else if (beginMonth < endMonth) {
+	} else if (beginMonth < endMonth) {
 		return true;
-	}
-	else if (beginDay > endDay) {
+	} else if (beginDay > endDay) {
 		return false;
-	}
-	else if (beginDay < endDay) {
+	} else if (beginDay < endDay) {
 		return true;
 	}
 
 	return false;
 }
 
-export function validateUUID(
-	value: unknown, required = false
-): boolean {
+export function validateUUID(value: unknown, required = false): boolean {
 	if (absentAndRequired(value, required)) {
 		return false;
 	}

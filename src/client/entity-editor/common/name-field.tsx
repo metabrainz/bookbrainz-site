@@ -16,17 +16,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as React from 'react';
 import CustomInput from '../../input';
 import ValidationLabel from '../common/validation-label';
 
-
 type Props = {
-	empty?: boolean,
-	error?: boolean,
-	tooltipText?: string,
-	warn?: boolean
+	empty?: boolean;
+	error?: boolean;
+	tooltipText?: string;
+	warn?: boolean;
 };
 
 /**
@@ -42,29 +40,21 @@ type Props = {
  *        component to indicate that the field is empty.
  * @returns {Object} a React component containing the rendered input
  */
-function NameField({
-	empty,
-	error,
-	tooltipText,
-	warn,
-	...rest
-}: Props) {
+function NameField({ empty, error, tooltipText, warn, ...rest }: Props) {
 	const label = (
 		<ValidationLabel empty={empty} error={error} warn={warn}>
 			Name
 		</ValidationLabel>
 	);
 
-	return (
-		<CustomInput label={label} tooltipText={tooltipText} type="text" {...rest}/>
-	);
+	return <CustomInput label={label} tooltipText={tooltipText} type="text" {...rest} />;
 }
 NameField.displayName = 'NameField';
 NameField.defaultProps = {
 	empty: false,
 	error: false,
 	tooltipText: null,
-	warn: false
+	warn: false,
 };
 
 export default NameField;

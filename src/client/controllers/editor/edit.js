@@ -17,13 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {AppContainer} from 'react-hot-loader';
+import { AppContainer } from 'react-hot-loader';
 import Layout from '../../containers/layout';
 import ProfileForm from '../../components/forms/profile';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {extractLayoutProps} from '../../helpers/props';
-
+import { extractLayoutProps } from '../../helpers/props';
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
@@ -31,16 +30,11 @@ const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 ReactDOM.hydrate(
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
-			<ProfileForm
-				editor={props.editor}
-				genders={props.genders}
-				titles={props.titles}
-			/>
+			<ProfileForm editor={props.editor} genders={props.genders} titles={props.titles} />
 		</Layout>
 	</AppContainer>,
 	document.getElementById('target')
 );
-
 
 /*
  * As we are not exporting a component,
@@ -51,4 +45,3 @@ ReactDOM.hydrate(
 if (module.hot) {
 	module.hot.accept();
 }
-

@@ -16,9 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {lookupAndBrowseRequestSlowDown, searchRequestSlowDown} from './helpers/rateLimiter';
-import {Router} from 'express';
-import {allowOnlyGetMethod} from './helpers/utils';
+import { lookupAndBrowseRequestSlowDown, searchRequestSlowDown } from './helpers/rateLimiter';
+import { Router } from 'express';
+import { allowOnlyGetMethod } from './helpers/utils';
 import authorRouter from './routes/author';
 import editionGroupRouter from './routes/edition-group';
 import editionRouter from './routes/edition';

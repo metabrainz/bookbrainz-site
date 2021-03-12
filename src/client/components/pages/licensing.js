@@ -20,92 +20,70 @@ import * as bootstrap from 'react-bootstrap';
 
 import React from 'react';
 
-
-const {PageHeader} = bootstrap;
+const { PageHeader } = bootstrap;
 
 function LicensingPage() {
 	const CC0Link = 'http://creativecommons.org/publicdomain/zero/1.0/';
 	const CC0Image = 'http://i.creativecommons.org/p/zero/1.0/88x31.png';
 
 	const CCBYSALink = 'http://creativecommons.org/licenses/by-sa/4.0/';
-	const CCBYSAImage =
-		'https://i.creativecommons.org/l/by-sa/4.0/88x31.png';
+	const CCBYSAImage = 'https://i.creativecommons.org/l/by-sa/4.0/88x31.png';
 
 	return (
 		<div>
 			<PageHeader>Licensing</PageHeader>
 
-			<p>The BookBrainz core data is licensed under the&nbsp;
-				<a href={CC0Link}>
-					Creative Commons CC0
-				</a> license. The core data includes the following
-				information:
+			<p>
+				The BookBrainz core data is licensed under the&nbsp;
+				<a href={CC0Link}>Creative Commons CC0</a> license. The core data includes the
+				following information:
 			</p>
 
 			<ul>
 				<li>
-					<b>Author</b>&nbsp;
-					BBID, aliases, type, begin and end dates, gender and
+					<b>Author</b>&nbsp; BBID, aliases, type, begin and end dates, gender and
 					disambiguation comment
 				</li>
 				<li>
-					<b>Edition Group</b>&nbsp;
-					BBID, aliases, type and disambiguation comment
+					<b>Edition Group</b>&nbsp; BBID, aliases, type and disambiguation comment
 				</li>
 				<li>
-					<b>Edition</b>&nbsp;
-					BBID, aliases, begin and end dates, language, status
-					and disambiguation comment
-				</li>
-				<li>
-					<b>Publisher</b>&nbsp;
-					BBID, aliases, type, begin and end dates and
+					<b>Edition</b>&nbsp; BBID, aliases, begin and end dates, language, status and
 					disambiguation comment
 				</li>
 				<li>
-					<b>Work</b>&nbsp;
-					BBID, aliases, languages, type, disambiguation comment
+					<b>Publisher</b>&nbsp; BBID, aliases, type, begin and end dates and
+					disambiguation comment
 				</li>
 				<li>
-					<b>Relationship</b>&nbsp;
-					ID, type, and entity and text associations
+					<b>Work</b>&nbsp; BBID, aliases, languages, type, disambiguation comment
+				</li>
+				<li>
+					<b>Relationship</b>&nbsp; ID, type, and entity and text associations
 				</li>
 			</ul>
 
 			<p>
 				Other publically available data is licensed under the&nbsp;
-				<a href={CCBYSALink}>
-					Creative Commons CC BY-SA
-				</a> license. If you have any queries about licensing of
-				the public data, please <a href="mailto:bookbrainz@metabrainz.org">ask for clarification</a>.
-				Please see the links below for more details about CC0 and CC BY-SA.
+				<a href={CCBYSALink}>Creative Commons CC BY-SA</a> license. If you have any queries
+				about licensing of the public data, please{' '}
+				<a href="mailto:bookbrainz@metabrainz.org">ask for clarification</a>. Please see the
+				links below for more details about CC0 and CC BY-SA.
 			</p>
 
 			<div className="row margin-top-2">
 				<div className="col-md-4 col-md-offset-2 text-center">
-					<a
-						href={CC0Link}
-						rel="license"
-					>
+					<a href={CC0Link} rel="license">
 						<div>
-							<img
-								alt="CC0"
-								src={CC0Image}
-							/>
+							<img alt="CC0" src={CC0Image} />
 						</div>
 						CC0
 					</a>
 				</div>
 				<div className="col-md-4 text-center">
-					<a
-						href={CCBYSALink}
-						rel="license"
-					>
+					<a href={CCBYSALink} rel="license">
 						<div>
-							<img
-								alt="Creative Commons License"
-								src={CCBYSAImage}
-							/>
+							<img alt="Creative Commons License" src={CCBYSAImage} />
 						</div>
 						CC BY-SA
 					</a>

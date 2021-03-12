@@ -17,12 +17,11 @@
  */
 
 import * as commonUtils from '../../common/helpers/utils';
-import {camelCase, isString, snakeCase, upperFirst} from 'lodash';
+import { camelCase, isString, snakeCase, upperFirst } from 'lodash';
 
 import ElasticSearch from '@elastic/elasticsearch';
 import httpStatus from 'http-status';
 import log from 'log';
-
 
 const _index = 'bookbrainz';
 const _bulkIndexSize = 10000;
@@ -34,71 +33,77 @@ const _maxJitter = 75;
 let _client = null;
 
 async function _fetchEntityModelsForESResults(orm, results) {
-	const {Area, Editor, UserCollection} = orm;
+	const { Area, Editor, UserCollection } = orm;
 
 	if (!results.hits) {
 		return null;
 	}
 
-	const processedResults = await Promise.all(results.hits.map(async (hit) => {
-		const entityStub = hit._source;
+	const processedResults = await Promise.all(
+		results.hits.map(async (hit) => {
+			const entityStub = hit._source;
 
-		// Special cases first
-		if (entityStub.type === 'Area') {
-			const area = await Area.forge({gid: entityStub.bbid})
-				.fetch({withRelated: ['areaType']});
+			// Special cases first
+			if (entityStub.type === 'Area') {
+				const area = await Area.forge({ gid: entityStub.bbid }).fetch({
+					withRelated: ['areaType'],
+				});
 
-			const areaJSON = area.toJSON();
-			const areaParents = await area.parents();
-			areaJSON.defaultAlias = {
-				name: areaJSON.name
-			};
-			areaJSON.type = 'Area';
-			areaJSON.disambiguation = {
-				comment: `${areaJSON.areaType?.name}${areaParents?.length ? ' - ' : ''}${areaParents?.map(parent => parent.name).join(', ')}`
-			};
-			return areaJSON;
-		}
-		if (entityStub.type === 'Editor') {
-			const editor = await Editor.forge({id: entityStub.bbid})
-				.fetch();
+				const areaJSON = area.toJSON();
+				const areaParents = await area.parents();
+				areaJSON.defaultAlias = {
+					name: areaJSON.name,
+				};
+				areaJSON.type = 'Area';
+				areaJSON.disambiguation = {
+					comment: `${areaJSON.areaType?.name}${
+						areaParents?.length ? ' - ' : ''
+					}${areaParents?.map((parent) => parent.name).join(', ')}`,
+				};
+				return areaJSON;
+			}
+			if (entityStub.type === 'Editor') {
+				const editor = await Editor.forge({ id: entityStub.bbid }).fetch();
 
-			const editorJSON = editor.toJSON();
-			editorJSON.defaultAlias = {
-				name: editorJSON.name
-			};
-			editorJSON.type = 'Editor';
-			editorJSON.bbid = entityStub.bbid;
-			return editorJSON;
-		}
-		if (entityStub.type === 'Collection') {
-			const collection = await UserCollection.forge({id: entityStub.bbid})
-				.fetch();
+				const editorJSON = editor.toJSON();
+				editorJSON.defaultAlias = {
+					name: editorJSON.name,
+				};
+				editorJSON.type = 'Editor';
+				editorJSON.bbid = entityStub.bbid;
+				return editorJSON;
+			}
+			if (entityStub.type === 'Collection') {
+				const collection = await UserCollection.forge({ id: entityStub.bbid }).fetch();
 
-			const collectionJSON = collection.toJSON();
-			collectionJSON.defaultAlias = {
-				name: collectionJSON.name
-			};
-			collectionJSON.type = 'Collection';
-			collectionJSON.bbid = entityStub.bbid;
-			return collectionJSON;
-		}
-		// Regular entity
-		const model = commonUtils.getEntityModelByType(orm, entityStub.type);
-		const entity = await model.forge({bbid: entityStub.bbid})
-			.fetch({require: false, withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases']});
+				const collectionJSON = collection.toJSON();
+				collectionJSON.defaultAlias = {
+					name: collectionJSON.name,
+				};
+				collectionJSON.type = 'Collection';
+				collectionJSON.bbid = entityStub.bbid;
+				return collectionJSON;
+			}
+			// Regular entity
+			const model = commonUtils.getEntityModelByType(orm, entityStub.type);
+			const entity = await model.forge({ bbid: entityStub.bbid }).fetch({
+				require: false,
+				withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases'],
+			});
 
-		return entity?.toJSON();
-	})).catch(err => log.error(err));
+			return entity?.toJSON();
+		})
+	).catch((err) => log.error(err));
 	return processedResults;
 }
 
 // Returns the results of a search translated to entity objects
 function _searchForEntities(orm, dslQuery) {
-	return _client.search(dslQuery)
+	return _client
+		.search(dslQuery)
 		.then((searchResponse) => searchResponse.body?.hits)
 		.then((results) => _fetchEntityModelsForESResults(orm, results))
-		.catch(error => log.error(error));
+		.catch((error) => log.error(error));
 }
 
 async function _bulkIndexEntities(entities) {
@@ -116,8 +121,8 @@ async function _bulkIndexEntities(entities) {
 				index: {
 					_id: entity.bbid,
 					_index,
-					_type: snakeCase(entity.type)
-				}
+					_type: snakeCase(entity.type),
+				},
 			});
 			accumulator.push(entity);
 
@@ -128,7 +133,7 @@ async function _bulkIndexEntities(entities) {
 
 		// eslint-disable-next-line no-await-in-loop
 		const response = await _client.bulk({
-			body: bulkOperations
+			body: bulkOperations,
 		});
 
 		/*
@@ -150,13 +155,12 @@ async function _bulkIndexEntities(entities) {
 				return accumulator;
 			}, []);
 
-
 			if (entitiesToIndex.length) {
 				operationSucceeded = false;
 
 				const jitter = Math.random() * _maxJitter;
 				// eslint-disable-next-line no-await-in-loop
-				await new Promise(resolve => setTimeout(resolve, _retryDelay + jitter));
+				await new Promise((resolve) => setTimeout(resolve, _retryDelay + jitter));
 			}
 		}
 	}
@@ -185,33 +189,31 @@ export function autocomplete(orm, query, type) {
 	if (commonUtils.isValidBBID(query)) {
 		queryBody = {
 			ids: {
-				values: [query]
-			}
+				values: [query],
+			},
 		};
-	}
-	else {
+	} else {
 		queryBody = {
 			match: {
 				'aliasSet.aliases.name.autocomplete': {
 					minimum_should_match: '80%',
-					query
-				}
-			}
+					query,
+				},
+			},
 		};
 	}
 
 	const dslQuery = {
 		body: {
-			query: queryBody
+			query: queryBody,
 		},
-		index: _index
+		index: _index,
 	};
 
 	if (type) {
 		if (Array.isArray(type)) {
 			dslQuery.type = type.map(snakeCase);
-		}
-		else {
+		} else {
 			dslQuery.type = snakeCase(type);
 		}
 	}
@@ -226,7 +228,7 @@ export function indexEntity(entity) {
 			body: entity,
 			id: entity.bbid,
 			index: _index,
-			type: snakeCase(entity.type)
+			type: snakeCase(entity.type),
 		});
 	}
 }
@@ -235,17 +237,17 @@ export function deleteEntity(entity) {
 	return _client.delete({
 		id: entity.bbid,
 		index: _index,
-		type: snakeCase(entity.type)
+		type: snakeCase(entity.type),
 	});
 }
 
 export function refreshIndex() {
-	return _client.indices.refresh({index: _index});
+	return _client.indices.refresh({ index: _index });
 }
 
 /* eslint camelcase: 0, no-magic-numbers: 1 */
 export async function generateIndex(orm) {
-	const {Area, Author, Edition, EditionGroup, Editor, Publisher, UserCollection, Work} = orm;
+	const { Area, Author, Edition, EditionGroup, Editor, Publisher, UserCollection, Work } = orm;
 	const indexMappings = {
 		mappings: {
 			_default_: {
@@ -256,116 +258,92 @@ export async function generateIndex(orm) {
 								fields: {
 									autocomplete: {
 										analyzer: 'edge',
-										type: 'text'
+										type: 'text',
 									},
 									search: {
 										analyzer: 'trigrams',
-										type: 'text'
-									}
+										type: 'text',
+									},
 								},
-								type: 'text'
-							}
+								type: 'text',
+							},
 						},
-						type: 'object'
+						type: 'object',
 					},
 					'disambiguation.comment': {
 						analyzer: 'trigrams',
-						type: 'text'
-					}
-				}
-			}
+						type: 'text',
+					},
+				},
+			},
 		},
 		settings: {
 			analysis: {
 				analyzer: {
 					edge: {
-						filter: [
-							'asciifolding',
-							'lowercase'
-						],
+						filter: ['asciifolding', 'lowercase'],
 						tokenizer: 'edge_ngram_tokenizer',
-						type: 'custom'
+						type: 'custom',
 					},
 					trigrams: {
-						filter: [
-							'asciifolding',
-							'lowercase'
-						],
+						filter: ['asciifolding', 'lowercase'],
 						tokenizer: 'trigrams',
-						type: 'custom'
-					}
+						type: 'custom',
+					},
 				},
 				tokenizer: {
 					edge_ngram_tokenizer: {
 						max_gram: 10,
 						min_gram: 2,
-						token_chars: [
-							'letter',
-							'digit'
-						],
-						type: 'edge_ngram'
+						token_chars: ['letter', 'digit'],
+						type: 'edge_ngram',
 					},
 					trigrams: {
 						max_gram: 3,
 						min_gram: 1,
-						type: 'ngram'
-					}
-				}
-			}
-		}
+						type: 'ngram',
+					},
+				},
+			},
+		},
 	};
 
 	// First, drop index and recreate
-	const mainIndexExistsRequest = await _client.indices.exists({index: _index});
+	const mainIndexExistsRequest = await _client.indices.exists({ index: _index });
 	const mainIndexExists = mainIndexExistsRequest?.body;
 
 	if (mainIndexExists) {
-		await _client.indices.delete({index: _index});
+		await _client.indices.delete({ index: _index });
 	}
 
-	await _client.indices.create(
-		{body: indexMappings, index: _index}
-	);
+	await _client.indices.create({ body: indexMappings, index: _index });
 
-	const baseRelations = [
-		'annotation',
-		'disambiguation',
-		'defaultAlias',
-		'aliasSet.aliases'
-	];
+	const baseRelations = ['annotation', 'disambiguation', 'defaultAlias', 'aliasSet.aliases'];
 
 	const entityBehaviors = [
 		{
 			model: Author,
-			relations: [
-				'gender',
-				'authorType',
-				'beginArea',
-				'endArea'
-			]
+			relations: ['gender', 'authorType', 'beginArea', 'endArea'],
 		},
 		{
 			model: Edition,
-			relations: [
-				'editionGroup',
-				'editionFormat',
-				'editionStatus'
-			]
+			relations: ['editionGroup', 'editionFormat', 'editionStatus'],
 		},
-		{model: EditionGroup, relations: ['editionGroupType']},
-		{model: Publisher, relations: ['publisherType', 'area']},
-		{model: Work, relations: ['workType']}
+		{ model: EditionGroup, relations: ['editionGroupType'] },
+		{ model: Publisher, relations: ['publisherType', 'area'] },
+		{ model: Work, relations: ['workType'] },
 	];
 
 	// Update the indexed entries for each entity type
-	const behaviorPromise = entityBehaviors.map(
-		(behavior) => behavior.model.forge()
+	const behaviorPromise = entityBehaviors.map((behavior) =>
+		behavior.model
+			.forge()
 			.query((qb) => {
 				qb.where('master', true);
 				qb.whereNotNull('data_id');
 			})
 			.fetchAll({
-				withRelated: baseRelations.concat(behavior.relations)
+				withRelated: baseRelations.concat(behavior.relations),
 			})
 	);
 	const entityLists = await Promise.all(behaviorPromise);
@@ -377,23 +355,23 @@ export async function generateIndex(orm) {
 	}
 	await Promise.all(listIndexes);
 
-	const areaCollection = await Area.forge()
-		.fetchAll();
+	const areaCollection = await Area.forge().fetchAll();
 
 	const areas = areaCollection.toJSON();
 
 	/** To index names, we use aliasSet.aliases.name and bbid, which Areas don't have.
 	 * We massage the area to return a similar format as BB entities
 	 */
-	const processedAreas = areas.map((area) => new Object({
-		aliasSet: {
-			aliases: [
-				{name: area.name}
-			]
-		},
-		bbid: area.gid,
-		type: 'Area'
-	}));
+	const processedAreas = areas.map(
+		(area) =>
+			new Object({
+				aliasSet: {
+					aliases: [{ name: area.name }],
+				},
+				bbid: area.gid,
+				type: 'Area',
+			})
+	);
 	await _processEntityListForBulk(processedAreas);
 
 	const editorCollection = await Editor.forge()
@@ -405,50 +383,52 @@ export async function generateIndex(orm) {
 	/** To index names, we use aliasSet.aliases.name and bbid, which Editors don't have.
 	 * We massage the editor to return a similar format as BB entities
 	 */
-	const processedEditors = editors.map((editor) => new Object({
-		aliasSet: {
-			aliases: [
-				{name: editor.name}
-			]
-		},
-		bbid: editor.id,
-		type: 'Editor'
-	}));
+	const processedEditors = editors.map(
+		(editor) =>
+			new Object({
+				aliasSet: {
+					aliases: [{ name: editor.name }],
+				},
+				bbid: editor.id,
+				type: 'Editor',
+			})
+	);
 	await _processEntityListForBulk(processedEditors);
 
-	const userCollections = await UserCollection.forge()
-		.fetchAll();
+	const userCollections = await UserCollection.forge().fetchAll();
 	const userCollectionsJSON = userCollections.toJSON();
 
 	/** To index names, we use aliasSet.aliases.name and bbid, which UserCollections don't have.
 	 * We massage the editor to return a similar format as BB entities
 	 */
-	const processedCollections = userCollectionsJSON.map((collection) => new Object({
-		aliasSet: {
-			aliases: [
-				{name: collection.name}
-			]
-		},
-		bbid: collection.id,
-		id: collection.id,
-		type: 'Collection'
-	}));
+	const processedCollections = userCollectionsJSON.map(
+		(collection) =>
+			new Object({
+				aliasSet: {
+					aliases: [{ name: collection.name }],
+				},
+				bbid: collection.id,
+				id: collection.id,
+				type: 'Collection',
+			})
+	);
 	await _processEntityListForBulk(processedCollections);
 
 	await refreshIndex();
 }
 
 export async function checkIfExists(orm, name, type) {
-	const {bookshelf} = orm;
+	const { bookshelf } = orm;
 	const bbids = await new Promise((resolve, reject) => {
 		bookshelf.transaction(async (transacting) => {
 			try {
 				const result = await orm.func.alias.getBBIDsWithMatchingAlias(
-					transacting, snakeCase(type), name
+					transacting,
+					snakeCase(type),
+					name
 				);
 				resolve(result);
-			}
-			catch (error) {
+			} catch (error) {
 				reject(error);
 			}
 		});
@@ -461,11 +441,11 @@ export async function checkIfExists(orm, name, type) {
 		'disambiguation',
 		'identifierSet.identifiers.type',
 		'relationshipSet.relationships.type',
-		'revision.revision'
+		'revision.revision',
 	];
 	return Promise.all(
-		bbids.map(
-			bbid => orm.func.entity.getEntity(orm, upperFirst(camelCase(type)), bbid, baseRelations)
+		bbids.map((bbid) =>
+			orm.func.entity.getEntity(orm, upperFirst(camelCase(type)), bbid, baseRelations)
 		)
 	);
 }
@@ -479,31 +459,29 @@ export function searchByName(orm, name, type, size, from) {
 					fields: [
 						'aliasSet.aliases.name^3',
 						'aliasSet.aliases.name.search',
-						'disambiguation.comment'
+						'disambiguation.comment',
 					],
 					minimum_should_match: '80%',
 					query: name,
-					type: 'cross_fields'
-				}
+					type: 'cross_fields',
+				},
 			},
-			size
+			size,
 		},
-		index: _index
+		index: _index,
 	};
 
 	let modifiedType;
 	if (type === 'all_entities') {
 		modifiedType = ['author', 'edition', 'edition_group', 'work', 'publisher'];
-	}
-	else {
+	} else {
 		modifiedType = type;
 	}
 
 	if (modifiedType) {
 		if (Array.isArray(modifiedType)) {
 			dslQuery.type = modifiedType.map(snakeCase);
-		}
-		else {
+		} else {
 			dslQuery.type = snakeCase(modifiedType);
 		}
 	}
@@ -520,14 +498,13 @@ export async function init(orm, options) {
 
 	// Automatically index on app startup if we haven't already
 	try {
-		const mainIndexExists = await _client.indices.exists({index: _index});
+		const mainIndexExists = await _client.indices.exists({ index: _index });
 		if (mainIndexExists) {
 			return null;
 		}
 
 		return generateIndex(orm);
-	}
-	catch (error) {
+	} catch (error) {
 		return null;
 	}
 }

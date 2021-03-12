@@ -25,14 +25,14 @@ import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
 
 type Props = {
-	entityTypes: any[],
-	from?: number,
-	initialResults?: any[],
-	nextEnabled: boolean,
-	query?: string,
-	resultsPerPage?: number,
-	type?: string,
-	user: Record<string, unknown>
+	entityTypes: any[];
+	from?: number;
+	initialResults?: any[];
+	nextEnabled: boolean;
+	query?: string;
+	resultsPerPage?: number;
+	type?: string;
+	user: Record<string, unknown>;
 };
 
 type State = {
@@ -52,7 +52,7 @@ class SearchPage extends React.Component<Props, State> {
 		query: PropTypes.string,
 		resultsPerPage: PropTypes.number,
 		type: PropTypes.string,
-		user: PropTypes.object.isRequired
+		user: PropTypes.object.isRequired,
 	};
 
 	static defaultProps = {
@@ -60,7 +60,7 @@ class SearchPage extends React.Component<Props, State> {
 		initialResults: [],
 		query: '',
 		resultsPerPage: 20,
-		type: null
+		type: null,
 	};
 
 	/**
@@ -76,7 +76,7 @@ class SearchPage extends React.Component<Props, State> {
 		this.state = {
 			query: props.query,
 			results: props.initialResults,
-			type: props.type
+			type: props.type,
 		};
 
 		this.paginationUrl = './search/search';
@@ -92,7 +92,7 @@ class SearchPage extends React.Component<Props, State> {
 	 * @param {string} type - Entity type selected from dropdown
 	 */
 	handleSearch = (query: string, type: string) => {
-		this.setState({query, type});
+		this.setState({ query, type });
 	};
 
 	/**
@@ -102,7 +102,7 @@ class SearchPage extends React.Component<Props, State> {
 	 * @param {array} newResults - The array of results from the  query
 	 */
 	searchResultsCallback = (newResults: any[]) => {
-		this.setState({results: newResults});
+		this.setState({ results: newResults });
 	};
 
 	/**
@@ -133,7 +133,7 @@ class SearchPage extends React.Component<Props, State> {
 	 * @returns {object} - JSX to render.
 	 */
 	render() {
-		const {type, query, results} = this.state;
+		const { type, query, results } = this.state;
 		const querySearchParams = `q=${query}${type ? `&type=${type}` : ''}`;
 		return (
 			<div id="pageWithPagination">
@@ -143,10 +143,7 @@ class SearchPage extends React.Component<Props, State> {
 					type={type}
 					onSearch={this.handleSearch}
 				/>
-				<SearchResults
-					results={this.state.results}
-					user={this.props.user}
-				/>
+				<SearchResults results={this.state.results} user={this.props.user} />
 				<PagerElement
 					from={this.props.from}
 					nextEnabled={this.props.nextEnabled}

@@ -24,11 +24,11 @@ export const HIDE_IDENTIFIER_EDITOR = 'HIDE_IDENTIFIER_EDITOR';
 export const REMOVE_EMPTY_IDENTIFIERS = 'REMOVE_EMPTY_IDENTIFIERS';
 
 export type Action = {
-	type: string,
-	payload?: unknown,
+	type: string;
+	payload?: unknown;
 	meta?: {
-		debounce?: string
-	}
+		debounce?: string;
+	};
 };
 
 /**
@@ -41,7 +41,7 @@ export type Action = {
  */
 export function hideIdentifierEditor(): Action {
 	return {
-		type: HIDE_IDENTIFIER_EDITOR
+		type: HIDE_IDENTIFIER_EDITOR,
 	};
 }
 
@@ -61,7 +61,7 @@ export function addIdentifierRow(): Action {
 	 */
 	return {
 		payload: `n${nextIdentifierRowId++}`,
-		type: ADD_IDENTIFIER_ROW
+		type: ADD_IDENTIFIER_ROW,
 	};
 }
 
@@ -75,7 +75,7 @@ export function addIdentifierRow(): Action {
 export function removeIdentifierRow(rowId: number): Action {
 	return {
 		payload: rowId,
-		type: REMOVE_IDENTIFIER_ROW
+		type: REMOVE_IDENTIFIER_ROW,
 	};
 }
 
@@ -93,16 +93,18 @@ export function removeIdentifierRow(rowId: number): Action {
  * @returns {Action} The resulting UPDATE_IDENTIFIER_VALUE action.
  */
 export function debouncedUpdateIdentifierValue(
-	rowId: number, value: string, suggestedType: number
+	rowId: number,
+	value: string,
+	suggestedType: number
 ): Action {
 	return {
-		meta: {debounce: 'keystroke'},
+		meta: { debounce: 'keystroke' },
 		payload: {
 			rowId,
 			suggestedType,
-			value
+			value,
 		},
-		type: UPDATE_IDENTIFIER_VALUE
+		type: UPDATE_IDENTIFIER_VALUE,
 	};
 }
 
@@ -118,9 +120,9 @@ export function updateIdentifierType(rowId: number, value: number): Action {
 	return {
 		payload: {
 			rowId,
-			value
+			value,
 		},
-		type: UPDATE_IDENTIFIER_TYPE
+		type: UPDATE_IDENTIFIER_TYPE,
 	};
 }
 
@@ -131,6 +133,6 @@ export function updateIdentifierType(rowId: number, value: number): Action {
  */
 export function removeEmptyIdentifiers(): Action {
 	return {
-		type: REMOVE_EMPTY_IDENTIFIERS
+		type: REMOVE_EMPTY_IDENTIFIERS,
 	};
 }

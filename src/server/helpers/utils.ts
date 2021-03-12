@@ -21,14 +21,13 @@
 
 import _ from 'lodash';
 
-
 /**
  * Returns an API path for interacting with the given Bookshelf entity model
  *
  * @param {object} entity - Entity object
  * @returns {string} - URL path to interact with entity
  */
-export function getEntityLink(entity: {type: string, bbid: string}): string {
+export function getEntityLink(entity: { type: string; bbid: string }): string {
 	return `/${_.kebabCase(entity.type)}/${entity.bbid}`;
 }
 
@@ -39,18 +38,13 @@ export function getDateBeforeDays(days) {
 }
 
 export function filterIdentifierTypesByEntityType(
-	identifierTypes: Array<{id: number, entityType: string}>,
+	identifierTypes: Array<{ id: number; entityType: string }>,
 	entityType: string
 ): Array<Record<string, unknown>> {
-	return identifierTypes.filter(
-		(type) => type.entityType === entityType
-	);
+	return identifierTypes.filter((type) => type.entityType === entityType);
 }
 
-export function filterIdentifierTypesByEntity(
-	identifierTypes: any[],
-	entity: any
-): any[] {
+export function filterIdentifierTypesByEntity(identifierTypes: any[], entity: any): any[] {
 	const typesOnEntity = new Set();
 
 	if (!entity.identifierSet || entity.identifierSet.identifiers.length < 1) {
@@ -84,7 +78,7 @@ export function filterIdentifierTypesByEntity(
  * the tagged template literal replaced with their corresponding values
  * from the newly passed in object.
  */
-type templateFuncType = (values: {[propName: string]: string}) => string;
+type templateFuncType = (values: { [propName: string]: string }) => string;
 export function template(strings: Array<string>): templateFuncType {
 	// eslint-disable-next-line prefer-reflect, prefer-rest-params
 	const keys = Array.prototype.slice.call(arguments, 1);
@@ -124,7 +118,7 @@ export function createEntityPageTitle(
 
 	// Accept template with a "name" replacement field
 	if (entity && entity.defaultAlias && entity.defaultAlias.name) {
-		title = templateForNamed({name: entity.defaultAlias.name});
+		title = templateForNamed({ name: entity.defaultAlias.name });
 	}
 
 	return title;
@@ -144,14 +138,14 @@ export function incrementEditorEditCountById(
 	id: number,
 	transacting: any
 ): Promise<Record<string, unknown>> {
-	const {Editor} = orm;
-	return new Editor({id})
-		.fetch({require: true, transacting})
+	const { Editor } = orm;
+	return new Editor({ id })
+		.fetch({ require: true, transacting })
 		.then((editor) => {
 			editor.incrementEditCount();
-			return editor.save(null, {transacting});
+			return editor.save(null, { transacting });
 		})
-		.catch(Editor.NotFoundError, err => new Promise((resolve, reject) => reject(err)));
+		.catch(Editor.NotFoundError, (err) => new Promise((resolve, reject) => reject(err)));
 }
 
 /**
@@ -163,9 +157,13 @@ export function incrementEditorEditCountById(
 export function getAdditionalRelations(modelType) {
 	if (modelType === 'Work') {
 		return ['disambiguation', 'workType', 'languageSet.languages'];
-	}
-	else if (modelType === 'Edition') {
-		return ['disambiguation', 'releaseEventSet.releaseEvents', 'identifierSet.identifiers.type', 'editionFormat'];
+	} else if (modelType === 'Edition') {
+		return [
+			'disambiguation',
+			'releaseEventSet.releaseEvents',
+			'identifierSet.identifiers.type',
+			'editionFormat',
+		];
 	}
 	return [];
 }
@@ -177,12 +175,12 @@ export function getNextEnabledAndResultsArray(array, size) {
 		}
 		return {
 			newResultsArray: array,
-			nextEnabled: true
+			nextEnabled: true,
 		};
 	}
 	return {
 		newResultsArray: array,
-		nextEnabled: false
+		nextEnabled: false,
 	};
 }
 
@@ -193,14 +191,13 @@ export function getNextEnabledAndResultsArray(array, size) {
  * @returns {Object} the formatted data
  */
 export function entityToOption(entity) {
-	return _.isNil(entity) ? null :
-		{
-			defaultAlias: entity.defaultAlias,
-			disambiguation: entity.disambiguation ?
-				entity.disambiguation.comment : null,
-			id: entity.bbid,
-			text: entity.defaultAlias ?
-				entity.defaultAlias.name : '(unnamed)',
-			type: entity.type
-		};
+	return _.isNil(entity)
+		? null
+		: {
+				defaultAlias: entity.defaultAlias,
+				disambiguation: entity.disambiguation ? entity.disambiguation.comment : null,
+				id: entity.bbid,
+				text: entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)',
+				type: entity.type,
+		  };
 }

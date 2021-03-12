@@ -16,14 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 export const UPDATE_TYPE = 'UPDATE_TYPE';
 
 export type Action = {
-	type: string,
-	payload?: unknown
+	type: string;
+	payload?: unknown;
 };
-
 
 /**
  * Produces an action indicating that the publisher type for the publisher
@@ -35,6 +33,6 @@ export type Action = {
 export function updateType(newType: number | null | undefined): Action {
 	return {
 		payload: newType,
-		type: UPDATE_TYPE
+		type: UPDATE_TYPE,
 	};
 }

@@ -24,50 +24,48 @@ import {
 	debouncedUpdateEndDate,
 	updateArea,
 	updateEnded,
-	updateType
+	updateType,
 } from './actions';
-import {entityToOption, transformISODateForSelect} from '../../helpers/entity';
+import { entityToOption, transformISODateForSelect } from '../../helpers/entity';
 import {
 	validatePublisherSectionBeginDate,
-	validatePublisherSectionEndDate
+	validatePublisherSectionEndDate,
 } from '../validators/publisher';
 
-import type {Dispatch} from 'redux';
+import type { Dispatch } from 'redux';
 import Entity from '../common/entity';
 import LinkedEntity from '../common/linked-entity';
-import type {Map} from 'immutable';
+import type { Map } from 'immutable';
 import MergeField from '../common/merge-field';
 import _ from 'lodash';
-import {connect} from 'react-redux';
-import {convertMapToObject} from '../../helpers/utils';
-
+import { connect } from 'react-redux';
+import { convertMapToObject } from '../../helpers/utils';
 
 type Area = {
-	disambiguation: string | null | undefined,
-	id: string | number,
-	text: string,
-	type: string
+	disambiguation: string | null | undefined;
+	id: string | number;
+	text: string;
+	type: string;
 };
 
-
 type StateProps = {
-	areaValue: Map<string, any>,
-	beginDateValue: string,
-	endDateValue: string,
-	endedChecked: boolean,
-	typeValue: number
+	areaValue: Map<string, any>;
+	beginDateValue: string;
+	endDateValue: string;
+	endedChecked: boolean;
+	typeValue: number;
 };
 
 type DispatchProps = {
-	onAreaChange: (arg: Area | null | undefined) => unknown,
-	onBeginDateChange: (arg: string) => unknown,
-	onEndDateChange: (arg: string) => unknown,
-	onEndedChange: (arg: boolean) => unknown,
-	onTypeChange: (value: number | null) => unknown
+	onAreaChange: (arg: Area | null | undefined) => unknown;
+	onBeginDateChange: (arg: string) => unknown;
+	onEndDateChange: (arg: string) => unknown;
+	onEndedChange: (arg: boolean) => unknown;
+	onTypeChange: (value: number | null) => unknown;
 };
 
 type OwnProps = {
-	mergingEntities: any[],
+	mergingEntities: any[];
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -113,7 +111,7 @@ function PublisherSectionMerge({
 	onBeginDateChange,
 	onEndDateChange,
 	onEndedChange,
-	onTypeChange
+	onTypeChange,
 }: Props) {
 	const areaOptions = [];
 	const typeOptions = [];
@@ -121,12 +119,18 @@ function PublisherSectionMerge({
 	const endDateOptions = [];
 	const endedOptions = [];
 
-	mergingEntities.forEach(entity => {
-		const typeOption = entity.publisherType && {label: entity.publisherType.label, value: entity.publisherType.id};
+	mergingEntities.forEach((entity) => {
+		const typeOption = entity.publisherType && {
+			label: entity.publisherType.label,
+			value: entity.publisherType.id,
+		};
 		if (typeOption && !_.find(typeOptions, ['value', typeOption.value])) {
 			typeOptions.push(typeOption);
 		}
-		const area = !_.isNil(entity.area) && {label: entity.area.name, value: entityToOption(entity.area)};
+		const area = !_.isNil(entity.area) && {
+			label: entity.area.name,
+			value: entityToOption(entity.area),
+		};
 		if (area && !_.find(areaOptions, ['value.id', area.value.id])) {
 			areaOptions.push(area);
 		}
@@ -134,7 +138,10 @@ function PublisherSectionMerge({
 		if (beginDate && !_.find(beginDateOptions, ['value', beginDate.value])) {
 			beginDateOptions.push(beginDate);
 		}
-		const ended = !_.isNil(entity.ended) && {label: entity.ended ? 'Yes' : 'No', value: entity.ended};
+		const ended = !_.isNil(entity.ended) && {
+			label: entity.ended ? 'Yes' : 'No',
+			value: entity.ended,
+		};
 		if (ended && !_.find(endedOptions, ['value', ended.value])) {
 			endedOptions.push(ended);
 		}
@@ -147,8 +154,14 @@ function PublisherSectionMerge({
 	const formattedBeginDateValue = transformISODateForSelect(beginDateValue);
 	const formattedEndDateValue = endedChecked ? transformISODateForSelect(endDateValue) : '';
 
-	const {isValid: isValidBeginDate, errorMessage: errorMessageBeginDate} = validatePublisherSectionBeginDate(beginDateValue);
-	const {isValid: isValidEndDate, errorMessage: errorMessageEndDate} = validatePublisherSectionEndDate(beginDateValue, endDateValue, endedChecked);
+	const {
+		isValid: isValidBeginDate,
+		errorMessage: errorMessageBeginDate,
+	} = validatePublisherSectionBeginDate(beginDateValue);
+	const {
+		isValid: isValidEndDate,
+		errorMessage: errorMessageEndDate,
+	} = validatePublisherSectionEndDate(beginDateValue, endDateValue, endedChecked);
 
 	return (
 		<form>
@@ -180,7 +193,7 @@ function PublisherSectionMerge({
 				options={endedOptions}
 				onChange={onEndedChange}
 			/>
-			{endedChecked &&
+			{endedChecked && (
 				<MergeField
 					currentValue={formattedEndDateValue}
 					error={!isValidEndDate}
@@ -189,7 +202,7 @@ function PublisherSectionMerge({
 					options={endDateOptions}
 					onChange={onEndDateChange}
 				/>
-			}
+			)}
 		</form>
 	);
 }
@@ -203,7 +216,7 @@ function mapStateToProps(rootState): StateProps {
 		beginDateValue: state.get('beginDate'),
 		endDateValue: state.get('endDate'),
 		endedChecked: state.get('ended'),
-		typeValue: convertMapToObject(state.get('type'))
+		typeValue: convertMapToObject(state.get('type')),
 	};
 }
 
@@ -213,12 +226,9 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onBeginDateChange: (beginDate) => {
 			dispatch(debouncedUpdateBeginDate(beginDate));
 		},
-		onEndDateChange: (endDate) =>
-			dispatch(debouncedUpdateEndDate(endDate)),
-		onEndedChange: (value) =>
-			dispatch(updateEnded(value)),
-		onTypeChange: (value) =>
-			dispatch(updateType(value))
+		onEndDateChange: (endDate) => dispatch(debouncedUpdateEndDate(endDate)),
+		onEndedChange: (value) => dispatch(updateEnded(value)),
+		onTypeChange: (value) => dispatch(updateType(value)),
 	};
 }
 

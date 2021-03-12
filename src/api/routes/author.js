@@ -18,12 +18,20 @@
 
 import * as utils from '../helpers/utils';
 
-import {formatQueryParameters, loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
-import {getAuthorBasicInfo, getEntityAliases, getEntityIdentifiers, getEntityRelationships} from '../helpers/formatEntityData';
-import {Router} from 'express';
-import {makeEntityLoader} from '../helpers/entityLoader';
-import {toLower} from 'lodash';
-
+import {
+	formatQueryParameters,
+	loadEntityRelationshipsForBrowse,
+	validateBrowseRequestQueryParameters,
+} from '../helpers/middleware';
+import {
+	getAuthorBasicInfo,
+	getEntityAliases,
+	getEntityIdentifiers,
+	getEntityRelationships,
+} from '../helpers/formatEntityData';
+import { Router } from 'express';
+import { makeEntityLoader } from '../helpers/entityLoader';
+import { toLower } from 'lodash';
 
 const router = Router();
 
@@ -33,7 +41,7 @@ const authorBasicRelations = [
 	'authorType',
 	'gender',
 	'beginArea',
-	'endArea'
+	'endArea',
 ];
 
 const authorError = 'Author not found';
@@ -102,7 +110,6 @@ const authorError = 'Author not found';
  *                        example: 'Author'
  */
 
-
 /**
  *@swagger
  *'/author/{bbid}':
@@ -132,13 +139,14 @@ const authorError = 'Author not found';
  *         description: Invalid BBID
  */
 
-router.get('/:bbid',
+router.get(
+	'/:bbid',
 	makeEntityLoader('Author', authorBasicRelations, authorError),
 	async (req, res) => {
 		const authorBasicInfo = await getAuthorBasicInfo(res.locals.entity);
 		return res.status(200).send(authorBasicInfo);
-	});
-
+	}
+);
 
 /**
  *	@swagger
@@ -169,12 +177,14 @@ router.get('/:bbid',
  *         description: Invalid BBID
  */
 
-router.get('/:bbid/aliases',
+router.get(
+	'/:bbid/aliases',
 	makeEntityLoader('Author', utils.aliasesRelations, authorError),
 	async (req, res) => {
 		const authorAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(authorAliasesList);
-	});
+	}
+);
 
 /**
  *	@swagger
@@ -204,12 +214,14 @@ router.get('/:bbid/aliases',
  *       400:
  *         description: Invalid BBID
  */
-router.get('/:bbid/identifiers',
+router.get(
+	'/:bbid/identifiers',
 	makeEntityLoader('Author', utils.identifiersRelations, authorError),
 	async (req, res) => {
 		const authorIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(authorIdentifiersList);
-	});
+	}
+);
 
 /**
  *	@swagger
@@ -240,12 +252,14 @@ router.get('/:bbid/identifiers',
  *         description: Invalid BBID
  */
 
-router.get('/:bbid/relationships',
+router.get(
+	'/:bbid/relationships',
 	makeEntityLoader('Author', utils.relationshipsRelations, authorError),
 	async (req, res) => {
 		const authorRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(authorRelationshipList);
-	});
+	}
+);
 
 /**
  *	@swagger
@@ -305,9 +319,16 @@ router.get('/:bbid/relationships',
  *         description: Invalid BBID passed in the query params OR Multiple browsed entities passed in parameters
  */
 
-router.get('/',
+router.get(
+	'/',
 	formatQueryParameters(),
-	validateBrowseRequestQueryParameters(['edition', 'author', 'edition-group', 'work', 'publisher']),
+	validateBrowseRequestQueryParameters([
+		'edition',
+		'author',
+		'edition-group',
+		'work',
+		'publisher',
+	]),
 	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res) => {
@@ -320,14 +341,19 @@ router.get('/',
 		}
 
 		const authorRelationshipList = await utils.getBrowsedRelationships(
-			req.app.locals.orm, res.locals, 'Author',
-			getAuthorBasicInfo, authorBasicRelations, relationshipsFilterMethod
+			req.app.locals.orm,
+			res.locals,
+			'Author',
+			getAuthorBasicInfo,
+			authorBasicRelations,
+			relationshipsFilterMethod
 		);
 
 		return res.status(200).send({
 			authors: authorRelationshipList,
-			bbid: req.query.bbid
+			bbid: req.query.bbid,
 		});
-	});
+	}
+);
 
 export default router;

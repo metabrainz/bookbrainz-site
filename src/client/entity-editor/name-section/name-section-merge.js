@@ -20,15 +20,15 @@ import {
 	debouncedUpdateDisambiguationField,
 	debouncedUpdateNameField,
 	debouncedUpdateSortNameField,
-	updateLanguageField
+	updateLanguageField,
 } from './actions';
 
 import MergeField from '../common/merge-field';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
-import {connect} from 'react-redux';
-import {entityTypeProperty} from '../../helpers/react-validators';
+import { connect } from 'react-redux';
+import { entityTypeProperty } from '../../helpers/react-validators';
 
 /**
  * Container component. The NameSectionMerge component contains input fields for
@@ -68,32 +68,40 @@ function NameSectionMerge({
 	onLanguageChange,
 	onNameChange,
 	onSortNameChange,
-	onDisambiguationChange
+	onDisambiguationChange,
 }) {
 	const nameOptions = [];
 	const sortNameOptions = [];
 	const languageSelectOptions = [];
 	const disambiguationOptions = [];
 
-	mergingEntities.forEach(entity => {
+	mergingEntities.forEach((entity) => {
 		if (_.findIndex(nameOptions, ['label', entity.defaultAlias.name]) === -1) {
-			nameOptions.push({label: entity.defaultAlias.name, value: entity.defaultAlias.name});
+			nameOptions.push({ label: entity.defaultAlias.name, value: entity.defaultAlias.name });
 		}
 		if (_.findIndex(sortNameOptions, ['label', entity.defaultAlias.sortName]) === -1) {
-			sortNameOptions.push({label: entity.defaultAlias.sortName, value: entity.defaultAlias.sortName});
+			sortNameOptions.push({
+				label: entity.defaultAlias.sortName,
+				value: entity.defaultAlias.sortName,
+			});
 		}
 		const matchingLanguage = languageOptions
-			.filter(language => language.id === entity.defaultAlias.languageId)
+			.filter((language) => language.id === entity.defaultAlias.languageId)
 			.map((language) => ({
 				label: language.name,
-				value: language.id
+				value: language.id,
 			}));
 		if (_.findIndex(languageSelectOptions, ['value', matchingLanguage[0].value]) === -1) {
 			languageSelectOptions.push(matchingLanguage[0]);
 		}
-		if (!_.isNil(entity.disambiguation) &&
-			disambiguationOptions.indexOf(entity.disambiguation) === -1) {
-			disambiguationOptions.push({label: entity.disambiguation.comment, value: entity.disambiguation.comment});
+		if (
+			!_.isNil(entity.disambiguation) &&
+			disambiguationOptions.indexOf(entity.disambiguation) === -1
+		) {
+			disambiguationOptions.push({
+				label: entity.disambiguation.comment,
+				value: entity.disambiguation.comment,
+			});
 		}
 	});
 
@@ -103,7 +111,9 @@ function NameSectionMerge({
 				currentValue={nameValue}
 				label="Name"
 				options={nameOptions}
-				tooltipText={`Prefered name of the ${_.capitalize(entityType)} in their original language.
+				tooltipText={`Prefered name of the ${_.capitalize(
+					entityType
+				)} in their original language.
 				Other names (full name, name in another language) are added as 'aliases'.`}
 				valueProperty="value"
 				onChange={onNameChange}
@@ -146,11 +156,11 @@ NameSectionMerge.propTypes = {
 	onLanguageChange: PropTypes.func.isRequired,
 	onNameChange: PropTypes.func.isRequired,
 	onSortNameChange: PropTypes.func.isRequired,
-	sortNameValue: PropTypes.string.isRequired
+	sortNameValue: PropTypes.string.isRequired,
 };
 NameSectionMerge.defaultProps = {
 	disambiguationDefaultValue: null,
-	languageValue: null
+	languageValue: null,
 };
 
 function mapStateToProps(rootState) {
@@ -159,7 +169,7 @@ function mapStateToProps(rootState) {
 		disambiguationDefaultValue: state.get('disambiguation'),
 		languageValue: state.get('language'),
 		nameValue: state.get('name'),
-		sortNameValue: state.get('sortName')
+		sortNameValue: state.get('sortName'),
 	};
 }
 
@@ -168,12 +178,9 @@ function mapDispatchToProps(dispatch) {
 		onDisambiguationChange: (option) => {
 			dispatch(debouncedUpdateDisambiguationField(option));
 		},
-		onLanguageChange: (option) =>
-			dispatch(updateLanguageField(option)),
-		onNameChange: (option) =>
-			dispatch(debouncedUpdateNameField(option)),
-		onSortNameChange: (option) =>
-			dispatch(debouncedUpdateSortNameField(option))
+		onLanguageChange: (option) => dispatch(updateLanguageField(option)),
+		onNameChange: (option) => dispatch(debouncedUpdateNameField(option)),
+		onSortNameChange: (option) => dispatch(debouncedUpdateSortNameField(option)),
 	};
 }
 

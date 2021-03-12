@@ -27,31 +27,29 @@ import {
 	VALID_ALIASES,
 	VALID_IDENTIFIERS,
 	VALID_NAME_SECTION,
-	VALID_SUBMISSION_SECTION
+	VALID_SUBMISSION_SECTION,
 } from './data';
 import {
 	validateEditionGroupSection,
 	validateEditionGroupSectionType,
-	validateForm
+	validateForm,
 } from '../../../../../src/client/entity-editor/validators/edition-group';
 
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {testValidatePositiveIntegerFunc} from './helpers';
-
+import { testValidatePositiveIntegerFunc } from './helpers';
 
 chai.use(chaiAsPromised);
-const {expect} = chai;
-
+const { expect } = chai;
 
 function describeValidateEditionGroupSectionType() {
 	testValidatePositiveIntegerFunc(validateEditionGroupSectionType, false);
 }
 
 const VALID_EDITION_GROUP_SECTION = {
-	type: 1
+	type: 1,
 };
-const INVALID_EDITION_GROUP_SECTION = {...VALID_EDITION_GROUP_SECTION, type: {}};
+const INVALID_EDITION_GROUP_SECTION = { ...VALID_EDITION_GROUP_SECTION, type: {} };
 
 function describeValidateEditionGroupSection() {
 	it('should pass a valid Object', () => {
@@ -60,24 +58,20 @@ function describeValidateEditionGroupSection() {
 	});
 
 	it('should pass a valid Immutable.Map', () => {
-		const result = validateEditionGroupSection(
-			Immutable.fromJS(VALID_EDITION_GROUP_SECTION)
-		);
+		const result = validateEditionGroupSection(Immutable.fromJS(VALID_EDITION_GROUP_SECTION));
 		expect(result).to.be.true;
 	});
 
 	it('should reject an Object with an invalid type', () => {
 		const result = validateEditionGroupSection({
 			...VALID_EDITION_GROUP_SECTION,
-			type: {}
+			type: {},
 		});
 		expect(result).to.be.false;
 	});
 
 	it('should reject an invalid Immutable.Map', () => {
-		const result = validateEditionGroupSection(
-			Immutable.fromJS(INVALID_EDITION_GROUP_SECTION)
-		);
+		const result = validateEditionGroupSection(Immutable.fromJS(INVALID_EDITION_GROUP_SECTION));
 		expect(result).to.be.false;
 	});
 
@@ -92,14 +86,13 @@ function describeValidateEditionGroupSection() {
 	});
 }
 
-
 function describeValidateForm() {
 	const validForm = {
 		aliasEditor: VALID_ALIASES,
 		editionGroupSection: VALID_EDITION_GROUP_SECTION,
 		identifierEditor: VALID_IDENTIFIERS,
 		nameSection: VALID_NAME_SECTION,
-		submissionSection: VALID_SUBMISSION_SECTION
+		submissionSection: VALID_SUBMISSION_SECTION,
 	};
 
 	it('should pass a valid Object', () => {
@@ -108,10 +101,7 @@ function describeValidateForm() {
 	});
 
 	it('should pass a valid Immutable.Map', () => {
-		const result = validateForm(
-			Immutable.fromJS(validForm),
-			IDENTIFIER_TYPES
-		);
+		const result = validateForm(Immutable.fromJS(validForm), IDENTIFIER_TYPES);
 		expect(result).to.be.true;
 	});
 
@@ -119,7 +109,7 @@ function describeValidateForm() {
 		const result = validateForm(
 			{
 				...validForm,
-				aliasEditor: INVALID_ALIASES
+				aliasEditor: INVALID_ALIASES,
 			},
 			IDENTIFIER_TYPES
 		);
@@ -130,8 +120,9 @@ function describeValidateForm() {
 		const result = validateForm(
 			{
 				...validForm,
-				identifierEditor: INVALID_IDENTIFIERS
-			}, IDENTIFIER_TYPES
+				identifierEditor: INVALID_IDENTIFIERS,
+			},
+			IDENTIFIER_TYPES
 		);
 		expect(result).to.be.false;
 	});
@@ -140,7 +131,7 @@ function describeValidateForm() {
 		const result = validateForm(
 			{
 				...validForm,
-				nameSection: INVALID_NAME_SECTION
+				nameSection: INVALID_NAME_SECTION,
 			},
 			IDENTIFIER_TYPES
 		);
@@ -151,7 +142,7 @@ function describeValidateForm() {
 		const result = validateForm(
 			{
 				...validForm,
-				editionGroupSection: INVALID_EDITION_GROUP_SECTION
+				editionGroupSection: INVALID_EDITION_GROUP_SECTION,
 			},
 			IDENTIFIER_TYPES
 		);
@@ -162,7 +153,7 @@ function describeValidateForm() {
 		const result = validateForm(
 			{
 				...validForm,
-				submissionSection: EMPTY_SUBMISSION_SECTION
+				submissionSection: EMPTY_SUBMISSION_SECTION,
 			},
 			IDENTIFIER_TYPES
 		);
@@ -171,14 +162,11 @@ function describeValidateForm() {
 
 	const invalidForm = {
 		...validForm,
-		nameSection: INVALID_NAME_SECTION
+		nameSection: INVALID_NAME_SECTION,
 	};
 
 	it('should reject an invalid Immutable.Map', () => {
-		const result = validateForm(
-			Immutable.fromJS(invalidForm),
-			IDENTIFIER_TYPES
-		);
+		const result = validateForm(Immutable.fromJS(invalidForm), IDENTIFIER_TYPES);
 		expect(result).to.be.false;
 	});
 
@@ -193,20 +181,10 @@ function describeValidateForm() {
 	});
 }
 
-
 function tests() {
-	describe(
-		'validateEditionGroupSectionType',
-		describeValidateEditionGroupSectionType
-	);
-	describe(
-		'validateEditionGroupSection',
-		describeValidateEditionGroupSection
-	);
-	describe(
-		'validateForm',
-		describeValidateForm
-	);
+	describe('validateEditionGroupSectionType', describeValidateEditionGroupSectionType);
+	describe('validateEditionGroupSection', describeValidateEditionGroupSection);
+	describe('validateForm', describeValidateForm);
 }
 
 describe('validateEditionGroupSection* functions', tests);

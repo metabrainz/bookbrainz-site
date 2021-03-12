@@ -16,12 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button} from 'react-bootstrap';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { Button } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {faTimes} from '@fortawesome/free-solid-svg-icons';
-
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Presentational component. The AliasButton component renders a button
@@ -34,21 +33,17 @@ import {faTimes} from '@fortawesome/free-solid-svg-icons';
  *        AliasEditor - used to determine the correct button label.
  * @returns {ReactElement} React element containing the rendered AliasButton.
  */
-function AliasButton({
-	aliasesInvalid,
-	numAliases,
-	...props
-}) {
+function AliasButton({ aliasesInvalid, numAliases, ...props }) {
 	let text = 'Add aliases…';
 	if (numAliases === 1) {
 		text = 'Edit 1 alias…';
-	}
-	else if (numAliases > 1) {
+	} else if (numAliases > 1) {
 		text = `Edit ${numAliases} aliases…`;
 	}
 
-	const iconElement = aliasesInvalid &&
-		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes}/>;
+	const iconElement = aliasesInvalid && (
+		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes} />
+	);
 
 	return (
 		<Button bsStyle="link" {...props}>
@@ -60,7 +55,7 @@ function AliasButton({
 AliasButton.displayName = 'AliasButton';
 AliasButton.propTypes = {
 	aliasesInvalid: PropTypes.bool.isRequired,
-	numAliases: PropTypes.number.isRequired
+	numAliases: PropTypes.number.isRequired,
 };
 
 export default AliasButton;

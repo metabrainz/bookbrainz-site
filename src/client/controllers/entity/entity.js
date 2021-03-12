@@ -16,13 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {
-	extractChildProps,
-	extractEntityProps,
-	extractLayoutProps
-} from '../../helpers/props';
+import { extractChildProps, extractEntityProps, extractLayoutProps } from '../../helpers/props';
 
-import {AppContainer} from 'react-hot-loader';
+import { AppContainer } from 'react-hot-loader';
 import AuthorPage from '../../components/pages/entities/author';
 import EditionGroupPage from '../../components/pages/entities/edition-group';
 import EditionPage from '../../components/pages/entities/edition';
@@ -33,13 +29,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import WorkPage from '../../components/pages/entities/work';
 
-
 const entityComponents = {
 	author: AuthorPage,
 	edition: EditionPage,
 	editionGroup: EditionGroupPage,
 	publisher: PublisherPage,
-	work: WorkPage
+	work: WorkPage,
 };
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
@@ -54,19 +49,15 @@ if (page === 'revisions') {
 	markup = (
 		<AppContainer>
 			<Layout {...extractLayoutProps(props)}>
-				<EntityRevisions
-					entity={props.entity}
-					{...extractChildProps(props)}
-				/>
+				<EntityRevisions entity={props.entity} {...extractChildProps(props)} />
 			</Layout>
 		</AppContainer>
 	);
-}
-else {
+} else {
 	markup = (
 		<AppContainer>
 			<Layout {...extractLayoutProps(props)}>
-				<Child {...extractEntityProps(props)}/>
+				<Child {...extractEntityProps(props)} />
 			</Layout>
 		</AppContainer>
 	);

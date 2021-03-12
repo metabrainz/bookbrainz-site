@@ -20,18 +20,17 @@ import * as utils from '../helpers/utils';
 import {
 	formatQueryParameters,
 	loadEntityRelationshipsForBrowse,
-	validateBrowseRequestQueryParameters
+	validateBrowseRequestQueryParameters,
 } from '../helpers/middleware';
 import {
 	getEditionBasicInfo,
 	getEntityAliases,
 	getEntityIdentifiers,
-	getEntityRelationships
+	getEntityRelationships,
 } from '../helpers/formatEntityData';
-import {Router} from 'express';
-import {makeEntityLoader} from '../helpers/entityLoader';
-import {toLower} from 'lodash';
-
+import { Router } from 'express';
+import { makeEntityLoader } from '../helpers/entityLoader';
+import { toLower } from 'lodash';
 
 const router = Router();
 
@@ -41,7 +40,7 @@ const editionBasicRelations = [
 	'disambiguation',
 	'editionFormat',
 	'editionStatus',
-	'releaseEventSet.releaseEvents'
+	'releaseEventSet.releaseEvents',
 ];
 
 const editionError = 'Edition not found';
@@ -124,7 +123,6 @@ const editionError = 'Edition not found';
  *
  */
 
-
 /**
  *
  * @swagger
@@ -155,13 +153,14 @@ const editionError = 'Edition not found';
  *          description: Invalid BBID
  */
 
-
-router.get('/:bbid',
+router.get(
+	'/:bbid',
 	makeEntityLoader('Edition', editionBasicRelations, editionError),
 	async (req, res) => {
 		const editionBasicInfo = await getEditionBasicInfo(res.locals.entity);
 		return res.status(200).send(editionBasicInfo);
-	});
+	}
+);
 
 /**
  *	@swagger
@@ -192,12 +191,14 @@ router.get('/:bbid',
  *         description: Invalid BBID
  */
 
-router.get('/:bbid/aliases',
+router.get(
+	'/:bbid/aliases',
 	makeEntityLoader('Edition', utils.aliasesRelations, editionError),
 	async (req, res) => {
 		const editionAliasesList = await getEntityAliases(res.locals.entity);
 		return res.status(200).send(editionAliasesList);
-	});
+	}
+);
 
 /**
  *	@swagger
@@ -228,12 +229,14 @@ router.get('/:bbid/aliases',
  *         description: Invalid BBID
  */
 
-router.get('/:bbid/identifiers',
+router.get(
+	'/:bbid/identifiers',
 	makeEntityLoader('Edition', utils.identifiersRelations, editionError),
 	async (req, res) => {
 		const editionIdentifiersList = await getEntityIdentifiers(res.locals.entity);
 		return res.status(200).send(editionIdentifiersList);
-	});
+	}
+);
 
 /**
  *	@swagger
@@ -264,12 +267,14 @@ router.get('/:bbid/identifiers',
  *         description: Invalid BBID
  */
 
-router.get('/:bbid/relationships',
+router.get(
+	'/:bbid/relationships',
 	makeEntityLoader('Edition', utils.relationshipsRelations, editionError),
 	async (req, res) => {
 		const editionRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(editionRelationshipList);
-	});
+	}
+);
 
 /**
  *	@swagger
@@ -342,21 +347,33 @@ router.get('/:bbid/relationships',
  *         description: Invalid BBID passed in the query params OR Multiple browsed entities passed in parameters
  */
 
-router.get('/',
+router.get(
+	'/',
 	formatQueryParameters(),
-	validateBrowseRequestQueryParameters(['author', 'edition', 'edition-group', 'work', 'publisher']),
+	validateBrowseRequestQueryParameters([
+		'author',
+		'edition',
+		'edition-group',
+		'work',
+		'publisher',
+	]),
 	(req, res, next) => {
 		// As we're loading the browsed entity, also load the related Editions from the ORM models to avoid fetching it twice
 		let extraRelationships = [];
 		if (req.query.modelType === 'EditionGroup') {
-			extraRelationships = editionBasicRelations.map(rel => `editions.${rel}`);
+			extraRelationships = editionBasicRelations.map((rel) => `editions.${rel}`);
 		}
 		// Publisher().editions() is not a regular model relationship so we can't load it withRelated 'editions.xyz'
 		// Consider rewriting the model method to use .through() (https://bookshelfjs.org/api.html#Model-instance-through)
 		// Until then, we can't optimise this part and the Publisher will be loaded twice from DB
 		// if (req.query.modelType === 'Publisher') {}
 
-		makeEntityLoader(null, utils.relationshipsRelations.concat(extraRelationships), 'Entity not found', true)(req, res, next);
+		makeEntityLoader(
+			null,
+			utils.relationshipsRelations.concat(extraRelationships),
+			'Entity not found',
+			true
+		)(req, res, next);
 	},
 	loadEntityRelationshipsForBrowse(),
 	async (req, res) => {
@@ -364,48 +381,60 @@ router.get('/',
 			let editionFormatMatched = true;
 			let editionLanguageMatched = true;
 			if (req.query.format) {
-				editionFormatMatched = toLower(relatedEntity.editionFormat) === toLower(req.query.format);
+				editionFormatMatched =
+					toLower(relatedEntity.editionFormat) === toLower(req.query.format);
 			}
 			if (req.query.language) {
-				editionLanguageMatched = relatedEntity.languages.includes(toLower(req.query.language));
+				editionLanguageMatched = relatedEntity.languages.includes(
+					toLower(req.query.language)
+				);
 			}
 			return editionFormatMatched && editionLanguageMatched;
 		}
 
 		const editionRelationshipList = await utils.getBrowsedRelationships(
-			req.app.locals.orm, res.locals, 'Edition',
-			getEditionBasicInfo, editionBasicRelations, relationshipsFilterMethod
+			req.app.locals.orm,
+			res.locals,
+			'Edition',
+			getEditionBasicInfo,
+			editionBasicRelations,
+			relationshipsFilterMethod
 		);
 
 		if (req.query.modelType === 'EditionGroup') {
-			const {editions} = res.locals.entity;
-			editions.map(edition => getEditionBasicInfo(edition))
+			const { editions } = res.locals.entity;
+			editions
+				.map((edition) => getEditionBasicInfo(edition))
 				.filter(relationshipsFilterMethod)
 				.forEach((filteredEdition) => {
 					// added relationship to make the output consistent
-					editionRelationshipList.push({entity: filteredEdition, relationship: {}});
+					editionRelationshipList.push({ entity: filteredEdition, relationship: {} });
 				});
 		}
 
 		if (req.query.modelType === 'Publisher') {
 			// Relationship between Edition and Publisher is defined differently than your normal relationship
 			// See note above in middleware about refactoring Publisher().editions()
-			const {Publisher} = req.app.locals.orm;
-			const {bbid} = req.query;
-			const editions = await new Publisher({bbid}).editions({withRelated: editionBasicRelations});
+			const { Publisher } = req.app.locals.orm;
+			const { bbid } = req.query;
+			const editions = await new Publisher({ bbid }).editions({
+				withRelated: editionBasicRelations,
+			});
 			const editionsJSON = editions.toJSON();
-			editionsJSON.map(edition => getEditionBasicInfo(edition))
+			editionsJSON
+				.map((edition) => getEditionBasicInfo(edition))
 				.filter(relationshipsFilterMethod)
 				.forEach((filteredEdition) => {
 					// added relationship to make the output consistent
-					editionRelationshipList.push({entity: filteredEdition, relationship: {}});
+					editionRelationshipList.push({ entity: filteredEdition, relationship: {} });
 				});
 		}
 
 		return res.status(200).send({
 			bbid: req.query.bbid,
-			editions: editionRelationshipList
+			editions: editionRelationshipList,
 		});
-	});
+	}
+);
 
 export default router;

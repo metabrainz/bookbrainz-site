@@ -16,12 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button} from 'react-bootstrap';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { Button } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {faTimes} from '@fortawesome/free-solid-svg-icons';
-
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Presentational component. The IdentifierButton component renders a button
@@ -37,21 +36,17 @@ import {faTimes} from '@fortawesome/free-solid-svg-icons';
  * @returns {ReactElement} React element containing the rendered
  *          IdentifierButton.
  */
-function IdentifierButton({
-	identifiersInvalid,
-	numIdentifiers,
-	...props
-}) {
+function IdentifierButton({ identifiersInvalid, numIdentifiers, ...props }) {
 	let text = 'Add identifiers (eg. ISBN, Wikidata ID)…';
 	if (numIdentifiers === 1) {
 		text = 'Edit 1 identifier (eg. ISBN, Wikidata ID)…';
-	}
-	else if (numIdentifiers > 1) {
+	} else if (numIdentifiers > 1) {
 		text = `Edit ${numIdentifiers} identifiers (eg. ISBN, Wikidata ID)…`;
 	}
 
-	const iconElement = identifiersInvalid &&
-		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes}/>;
+	const iconElement = identifiersInvalid && (
+		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes} />
+	);
 
 	return (
 		<Button bsStyle="link" {...props}>
@@ -63,7 +58,7 @@ function IdentifierButton({
 IdentifierButton.displayName = 'IdentifierButton';
 IdentifierButton.propTypes = {
 	identifiersInvalid: PropTypes.bool.isRequired,
-	numIdentifiers: PropTypes.number.isRequired
+	numIdentifiers: PropTypes.number.isRequired,
 };
 
 export default IdentifierButton;

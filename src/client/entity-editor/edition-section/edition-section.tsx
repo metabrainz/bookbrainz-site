@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as React from 'react';
 import {
 	Action,
@@ -32,13 +31,13 @@ import {
 	updateFormat,
 	updateLanguages,
 	updatePublisher,
-	updateStatus
+	updateStatus,
 } from './actions';
 
-import {Alert, Button, Col, ListGroup, ListGroupItem, Row} from 'react-bootstrap';
-import {DateObject, isNullDate} from '../../helpers/utils';
-import type {List, Map} from 'immutable';
-import {faClone, faExternalLinkAlt, faSearch} from '@fortawesome/free-solid-svg-icons';
+import { Alert, Button, Col, ListGroup, ListGroupItem, Row } from 'react-bootstrap';
+import { DateObject, isNullDate } from '../../helpers/utils';
+import type { List, Map } from 'immutable';
+import { faClone, faExternalLinkAlt, faSearch } from '@fortawesome/free-solid-svg-icons';
 import {
 	validateEditionSectionDepth,
 	validateEditionSectionEditionGroup,
@@ -46,90 +45,89 @@ import {
 	validateEditionSectionPages,
 	validateEditionSectionReleaseDate,
 	validateEditionSectionWeight,
-	validateEditionSectionWidth
+	validateEditionSectionWidth,
 } from '../validators/edition';
 import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
-import type {Dispatch} from 'redux';
+import type { Dispatch } from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import LanguageField from '../common/language-field';
 import LinkedEntity from '../common/linked-entity';
 import NumericField from '../common/numeric-field';
 import Select from 'react-select';
 import _ from 'lodash';
-import {connect} from 'react-redux';
-import {entityToOption} from '../../../server/helpers/utils';
+import { connect } from 'react-redux';
+import { entityToOption } from '../../../server/helpers/utils';
 import makeImmutable from '../common/make-immutable';
-
 
 const ImmutableLanguageField = makeImmutable(LanguageField);
 
 type EditionFormat = {
-	label: string,
-	id: number
+	label: string;
+	id: number;
 };
 
 type EditionStatus = {
-	label: string,
-	id: number
+	label: string;
+	id: number;
 };
 
 type LanguageOption = {
-	name: string,
-	id: number
+	name: string;
+	id: number;
 };
 
 type Publisher = {
-	value: string,
-	id: number
+	value: string;
+	id: number;
 };
 
 type EditionGroup = {
-	value: string,
-	id: number
+	value: string;
+	id: number;
 };
 
 type OwnProps = {
-	languageOptions: Array<LanguageOption>,
-	editionFormats: Array<EditionFormat>,
-	editionStatuses: Array<EditionStatus>
+	languageOptions: Array<LanguageOption>;
+	editionFormats: Array<EditionFormat>;
+	editionStatuses: Array<EditionStatus>;
 };
 
 type OptionalNumber = number | null | undefined;
-type OptionalBool = boolean| null | undefined;
+type OptionalBool = boolean | null | undefined;
 type StateProps = {
-	depthValue: OptionalNumber,
-	formatValue: OptionalNumber,
-	heightValue: OptionalNumber,
-	languageValues: List<LanguageOption>,
-	pagesValue: OptionalNumber,
-	physicalVisible: OptionalBool,
-	publisherValue: Map<string, any>,
-	editionGroupRequired: OptionalBool,
-	editionGroupVisible: OptionalBool,
-	editionGroupValue: Map<string, any>,
-	matchingNameEditionGroups: any[] | null | undefined,
-	releaseDateValue: DateObject | null | undefined,
-	statusValue: OptionalNumber,
-	weightValue: OptionalNumber,
-	widthValue: OptionalNumber
+	depthValue: OptionalNumber;
+	formatValue: OptionalNumber;
+	heightValue: OptionalNumber;
+	languageValues: List<LanguageOption>;
+	pagesValue: OptionalNumber;
+	physicalVisible: OptionalBool;
+	publisherValue: Map<string, any>;
+	editionGroupRequired: OptionalBool;
+	editionGroupVisible: OptionalBool;
+	editionGroupValue: Map<string, any>;
+	matchingNameEditionGroups: any[] | null | undefined;
+	releaseDateValue: DateObject | null | undefined;
+	statusValue: OptionalNumber;
+	weightValue: OptionalNumber;
+	widthValue: OptionalNumber;
 };
 
 type DispatchProps = {
-	onDepthChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
-	onFormatChange: (obj: {value: number} | null | undefined) => unknown,
-	onHeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
-	onLanguagesChange: (arg: Array<LanguageOption>) => unknown,
-	onPagesChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
-	onPhysicalButtonClick: () => unknown,
-	onPublisherChange: (arg: Publisher) => unknown,
-	onToggleShowEditionGroupSection: (showEGSection: boolean) => unknown,
-	onEditionGroupChange: (arg: EditionGroup) => unknown,
-	onReleaseDateChange: (arg: string) => unknown,
-	onStatusChange: (obj: {value: number} | null | undefined) => unknown,
-	onWeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
-	onWidthChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown
+	onDepthChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown;
+	onFormatChange: (obj: { value: number } | null | undefined) => unknown;
+	onHeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown;
+	onLanguagesChange: (arg: Array<LanguageOption>) => unknown;
+	onPagesChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown;
+	onPhysicalButtonClick: () => unknown;
+	onPublisherChange: (arg: Publisher) => unknown;
+	onToggleShowEditionGroupSection: (showEGSection: boolean) => unknown;
+	onEditionGroupChange: (arg: EditionGroup) => unknown;
+	onReleaseDateChange: (arg: string) => unknown;
+	onStatusChange: (obj: { value: number } | null | undefined) => unknown;
+	onWeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown;
+	onWidthChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown;
 };
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -185,31 +183,33 @@ function EditionSection({
 	releaseDateValue,
 	statusValue,
 	weightValue,
-	widthValue
+	widthValue,
 }: Props) {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		label: language.name,
-		value: language.id
+		value: language.id,
 	}));
 
 	const editionFormatsForDisplay = editionFormats.map((format) => ({
 		label: format.label,
-		value: format.id
+		value: format.id,
 	}));
 
 	const editionStatusesForDisplay = editionStatuses.map((status) => ({
 		label: status.label,
-		value: status.id
+		value: status.id,
 	}));
 
-	const {isValid: isValidReleaseDate, errorMessage: dateErrorMessage} = validateEditionSectionReleaseDate(releaseDateValue);
+	const {
+		isValid: isValidReleaseDate,
+		errorMessage: dateErrorMessage,
+	} = validateEditionSectionReleaseDate(releaseDateValue);
 
-	const hasmatchingNameEditionGroups = Array.isArray(matchingNameEditionGroups) && matchingNameEditionGroups.length > 0;
+	const hasmatchingNameEditionGroups =
+		Array.isArray(matchingNameEditionGroups) && matchingNameEditionGroups.length > 0;
 
 	const showAutoCreateEditionGroupMessage =
-		!editionGroupValue &&
-		!editionGroupVisible &&
-		!editionGroupRequired;
+		!editionGroupValue && !editionGroupVisible && !editionGroupRequired;
 
 	const showMatchingEditionGroups = hasmatchingNameEditionGroups && !editionGroupValue;
 
@@ -233,9 +233,9 @@ function EditionSection({
 					bsStyle="primary"
 					className="wrap"
 					// eslint-disable-next-line react/jsx-no-bind
-					onClick={onToggleShowEditionGroupSection.bind(this, false)}
-				>
-					<FontAwesomeIcon icon={faClone}/>&nbsp;Automatically create an Edition Group
+					onClick={onToggleShowEditionGroupSection.bind(this, false)}>
+					<FontAwesomeIcon icon={faClone} />
+					&nbsp;Automatically create an Edition Group
 				</Button>
 			</Col>
 		</React.Fragment>
@@ -243,62 +243,67 @@ function EditionSection({
 
 	return (
 		<form>
-			<h2>
-				What else do you know about the Edition?
-			</h2>
+			<h2>What else do you know about the Edition?</h2>
 			<p className="text-muted">
-				Edition Group is required — this cannot be blank. You can search for and choose an existing Edition Group,
-				or choose to automatically create one instead.
+				Edition Group is required — this cannot be blank. You can search for and choose an
+				existing Edition Group, or choose to automatically create one instead.
 			</p>
 			<Row className="margin-bottom-3">
-				{
-					showAutoCreateEditionGroupMessage ?
-						<Col md={6} mdOffset={showMatchingEditionGroups ? 0 : 3}>
-							<Alert bsStyle="success">
-								<p>A new Edition Group with the same name will be created automatically.</p>
-								<br/>
-								<Button
-									block
-									bsStyle="success"
-									className="wrap"
-									// eslint-disable-next-line react/jsx-no-bind
-									onClick={onToggleShowEditionGroupSection.bind(this, true)}
-								>
-									<FontAwesomeIcon icon={faSearch}/>&nbsp;Search for an existing Edition Group
-								</Button>
-							</Alert>
-						</Col> :
-						getEditionGroupSearchSelect()
-				}
-				{showMatchingEditionGroups &&
+				{showAutoCreateEditionGroupMessage ? (
+					<Col md={6} mdOffset={showMatchingEditionGroups ? 0 : 3}>
+						<Alert bsStyle="success">
+							<p>
+								A new Edition Group with the same name will be created
+								automatically.
+							</p>
+							<br />
+							<Button
+								block
+								bsStyle="success"
+								className="wrap"
+								// eslint-disable-next-line react/jsx-no-bind
+								onClick={onToggleShowEditionGroupSection.bind(this, true)}>
+								<FontAwesomeIcon icon={faSearch} />
+								&nbsp;Search for an existing Edition Group
+							</Button>
+						</Alert>
+					</Col>
+				) : (
+					getEditionGroupSearchSelect()
+				)}
+				{showMatchingEditionGroups && (
 					<Col md={6}>
 						<Alert bsStyle="warning">
-							{matchingNameEditionGroups.length > 1 ?
-								'Edition Groups with the same name as this Edition already exist' :
-								'An existing Edition Group with the same name as this Edition already exists'
-							}
-							<br/>
-							Please review the Edition Groups below and select the one that corresponds to your Edition.
-							<br/>
+							{matchingNameEditionGroups.length > 1
+								? 'Edition Groups with the same name as this Edition already exist'
+								: 'An existing Edition Group with the same name as this Edition already exists'}
+							<br />
+							Please review the Edition Groups below and select the one that
+							corresponds to your Edition.
+							<br />
 							<small>
-								If no Edition Group is selected, a new one will be created automatically.
-								<br/>
-								Click on the <FontAwesomeIcon icon={faExternalLinkAlt}/> icon open in a new tab, and click an item to select.
+								If no Edition Group is selected, a new one will be created
+								automatically.
+								<br />
+								Click on the <FontAwesomeIcon icon={faExternalLinkAlt} /> icon open
+								in a new tab, and click an item to select.
 							</small>
 							<ListGroup className="margin-top-1">
-								{matchingNameEditionGroups.map(eg => (
+								{matchingNameEditionGroups.map((eg) => (
 									<ListGroupItem key={eg.bbid}>
-										<LinkedEntity option={entityToOption(eg)} onSelect={onEditionGroupChange}/>
+										<LinkedEntity
+											option={entityToOption(eg)}
+											onSelect={onEditionGroupChange}
+										/>
 									</ListGroupItem>
 								))}
 							</ListGroup>
 						</Alert>
 					</Col>
-				}
+				)}
 			</Row>
 			<p className="text-muted">
-				Below fields are optional — leave something blank if you
-				don&rsquo;t know it
+				Below fields are optional — leave something blank if you don&rsquo;t know it
 			</p>
 			<Row>
 				<Col md={6} mdOffset={3}>
@@ -341,7 +346,9 @@ function EditionSection({
 			</Row>
 			<Row>
 				<Col md={3} mdOffset={3}>
-					<CustomInput label="Format" tooltipText="The type of printing and binding of the edition, or digital equivalent">
+					<CustomInput
+						label="Format"
+						tooltipText="The type of printing and binding of the edition, or digital equivalent">
 						<Select
 							instanceId="editionFormat"
 							options={editionFormatsForDisplay}
@@ -351,7 +358,9 @@ function EditionSection({
 					</CustomInput>
 				</Col>
 				<Col md={3}>
-					<CustomInput label="Status" tooltipText="Has the work been published, or is it in a draft stage?">
+					<CustomInput
+						label="Status"
+						tooltipText="Has the work been published, or is it in a draft stage?">
 						<Select
 							instanceId="editionStatus"
 							options={editionStatusesForDisplay}
@@ -361,8 +370,7 @@ function EditionSection({
 					</CustomInput>
 				</Col>
 			</Row>
-			{
-				physicalVisible &&
+			{physicalVisible && (
 				<Row>
 					<Col md={3} mdOffset={3}>
 						<NumericField
@@ -409,20 +417,16 @@ function EditionSection({
 						/>
 					</Col>
 				</Row>
-			}
-			{
-				!physicalVisible &&
+			)}
+			{!physicalVisible && (
 				<Row>
 					<Col className="text-center" md={4} mdOffset={4}>
-						<Button
-							bsStyle="link"
-							onClick={onPhysicalButtonClick}
-						>
+						<Button bsStyle="link" onClick={onPhysicalButtonClick}>
 							Add physical data…
 						</Button>
 					</Col>
 				</Row>
-			}
+			)}
 		</form>
 	);
 }
@@ -448,31 +452,32 @@ function mapStateToProps(rootState: RootState): StateProps {
 		releaseDateValue: state.get('releaseDate'),
 		statusValue: state.get('status'),
 		weightValue: state.get('weight'),
-		widthValue: state.get('width')
+		widthValue: state.get('width'),
 	};
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		onDepthChange: (event) => dispatch(debouncedUpdateDepth(
-			event.target.value ? parseInt(event.target.value, 10) : null
-		)),
+		onDepthChange: (event) =>
+			dispatch(
+				debouncedUpdateDepth(event.target.value ? parseInt(event.target.value, 10) : null)
+			),
 		onEditionGroupChange: (value) => dispatch(updateEditionGroup(value)),
-		onFormatChange: (value: {value: number} | null) =>
+		onFormatChange: (value: { value: number } | null) =>
 			dispatch(updateFormat(value && value.value)),
-		onHeightChange: (event) => dispatch(debouncedUpdateHeight(
-			event.target.value ? parseInt(event.target.value, 10) : null
-		)),
-		onLanguagesChange: (values: Array<LanguageOption>) =>
-			dispatch(updateLanguages(values)),
-		onPagesChange: (event) => dispatch(debouncedUpdatePages(
-			event.target.value ? parseInt(event.target.value, 10) : null
-		)),
+		onHeightChange: (event) =>
+			dispatch(
+				debouncedUpdateHeight(event.target.value ? parseInt(event.target.value, 10) : null)
+			),
+		onLanguagesChange: (values: Array<LanguageOption>) => dispatch(updateLanguages(values)),
+		onPagesChange: (event) =>
+			dispatch(
+				debouncedUpdatePages(event.target.value ? parseInt(event.target.value, 10) : null)
+			),
 		onPhysicalButtonClick: () => dispatch(showPhysical()),
 		onPublisherChange: (value) => dispatch(updatePublisher(value)),
-		onReleaseDateChange: (releaseDate) =>
-			dispatch(debouncedUpdateReleaseDate(releaseDate)),
-		onStatusChange: (value: {value: number} | null) =>
+		onReleaseDateChange: (releaseDate) => dispatch(debouncedUpdateReleaseDate(releaseDate)),
+		onStatusChange: (value: { value: number } | null) =>
 			dispatch(updateStatus(value && value.value)),
 		onToggleShowEditionGroupSection: (showEGSection: boolean) => {
 			if (showEGSection === false) {
@@ -480,12 +485,14 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			}
 			return dispatch(toggleShowEditionGroup(showEGSection));
 		},
-		onWeightChange: (event) => dispatch(debouncedUpdateWeight(
-			event.target.value ? parseInt(event.target.value, 10) : null
-		)),
-		onWidthChange: (event) => dispatch(debouncedUpdateWidth(
-			event.target.value ? parseInt(event.target.value, 10) : null
-		))
+		onWeightChange: (event) =>
+			dispatch(
+				debouncedUpdateWeight(event.target.value ? parseInt(event.target.value, 10) : null)
+			),
+		onWidthChange: (event) =>
+			dispatch(
+				debouncedUpdateWidth(event.target.value ? parseInt(event.target.value, 10) : null)
+			),
 	};
 }
 

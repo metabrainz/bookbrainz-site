@@ -17,20 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
-import {faCircleNotch} from '@fortawesome/free-solid-svg-icons';
-
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 function LoadingSpinner() {
 	return (
 		<div className="loading-background">
-			<FontAwesomeIcon
-				spin
-				className="loading-spinner"
-				icon={faCircleNotch}
-				size="2x"
-			/>
+			<FontAwesomeIcon spin className="loading-spinner" icon={faCircleNotch} size="2x" />
 		</div>
 	);
 }

@@ -29,68 +29,67 @@ import {
 	updateEditionGroup,
 	updateFormat,
 	updatePublisher,
-	updateStatus
+	updateStatus,
 } from './actions';
 
-import type {List, Map} from 'immutable';
-import {entityToOption, transformISODateForSelect} from '../../helpers/entity';
+import type { List, Map } from 'immutable';
+import { entityToOption, transformISODateForSelect } from '../../helpers/entity';
 
 import CustomInput from '../../input';
-import type {Dispatch} from 'redux';
+import type { Dispatch } from 'redux';
 import Entity from '../common/entity';
 import LinkedEntity from '../common/linked-entity';
 import MergeField from '../common/merge-field';
 import Select from 'react-select';
 import _ from 'lodash';
-import {connect} from 'react-redux';
-import {convertMapToObject} from '../../helpers/utils';
-
+import { connect } from 'react-redux';
+import { convertMapToObject } from '../../helpers/utils';
 
 type LanguageOption = {
-	name: string,
-	id: number
+	name: string;
+	id: number;
 };
 
 type Publisher = {
-	value: string,
-	id: number
+	value: string;
+	id: number;
 };
 
 type EditionGroup = {
-	value: string,
-	id: number
+	value: string;
+	id: number;
 };
 
 type OwnProps = {
-	mergingEntities: any[]
+	mergingEntities: any[];
 };
 
 type OptionalNumber = number | null | undefined;
 type StateProps = {
-	depthValue: OptionalNumber,
-	formatValue: OptionalNumber,
-	heightValue: OptionalNumber,
-	languageValues: List<LanguageOption>,
-	pagesValue: OptionalNumber,
-	publisherValue: Map<string, any>,
-	editionGroupValue: Map<string, any>,
-	releaseDateValue: Record<string, unknown> | null | undefined,
-	statusValue: OptionalNumber,
-	weightValue: OptionalNumber,
-	widthValue: OptionalNumber
+	depthValue: OptionalNumber;
+	formatValue: OptionalNumber;
+	heightValue: OptionalNumber;
+	languageValues: List<LanguageOption>;
+	pagesValue: OptionalNumber;
+	publisherValue: Map<string, any>;
+	editionGroupValue: Map<string, any>;
+	releaseDateValue: Record<string, unknown> | null | undefined;
+	statusValue: OptionalNumber;
+	weightValue: OptionalNumber;
+	widthValue: OptionalNumber;
 };
 
 type DispatchProps = {
-	onDepthChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
-	onFormatChange: (arg: number | null | undefined) => unknown,
-	onHeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
-	onPagesChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
-	onPublisherChange: (arg: Publisher) => unknown,
-	onEditionGroupChange: (arg: EditionGroup) => unknown,
-	onReleaseDateChange: (arg: string | null | undefined) => unknown,
-	onStatusChange: (arg: number | null | undefined) => unknown,
-	onWeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
-	onWidthChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown
+	onDepthChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown;
+	onFormatChange: (arg: number | null | undefined) => unknown;
+	onHeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown;
+	onPagesChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown;
+	onPublisherChange: (arg: Publisher) => unknown;
+	onEditionGroupChange: (arg: EditionGroup) => unknown;
+	onReleaseDateChange: (arg: string | null | undefined) => unknown;
+	onStatusChange: (arg: number | null | undefined) => unknown;
+	onWeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown;
+	onWidthChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown;
 };
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -151,7 +150,7 @@ function EditionSectionMerge({
 	releaseDateValue,
 	statusValue,
 	weightValue,
-	widthValue
+	widthValue,
 }: Props) {
 	const editionGroupOptions = [];
 	const releaseDateOptions = [];
@@ -164,47 +163,60 @@ function EditionSectionMerge({
 	const weightOptions = [];
 	const widthOptions = [];
 
-	mergingEntities.forEach(entity => {
-		const depth = !_.isNil(entity.depth) && {label: entity.depth, value: entity.depth};
+	mergingEntities.forEach((entity) => {
+		const depth = !_.isNil(entity.depth) && { label: entity.depth, value: entity.depth };
 		if (depth && !_.find(depthOptions, ['value', depth.value])) {
 			depthOptions.push(depth);
 		}
 		const editionGroup = !_.isNil(entity.editionGroup) && entityToOption(entity.editionGroup);
-		const editionGroupOption = editionGroup && {label: editionGroup.text, value: editionGroup};
-		if (editionGroupOption && !_.find(editionGroupOptions, ['value.id', editionGroupOption.value.id])) {
+		const editionGroupOption = editionGroup && {
+			label: editionGroup.text,
+			value: editionGroup,
+		};
+		if (
+			editionGroupOption &&
+			!_.find(editionGroupOptions, ['value.id', editionGroupOption.value.id])
+		) {
 			editionGroupOptions.push(editionGroupOption);
 		}
-		const format = entity.editionFormat && {label: entity.editionFormat.label, value: entity.editionFormat.id};
+		const format = entity.editionFormat && {
+			label: entity.editionFormat.label,
+			value: entity.editionFormat.id,
+		};
 		if (format && !_.find(formatOptions, ['value', format.value])) {
 			formatOptions.push(format);
 		}
-		const height = !_.isNil(entity.height) && {label: entity.height, value: entity.height};
+		const height = !_.isNil(entity.height) && { label: entity.height, value: entity.height };
 		if (height && !_.find(heightOptions, ['value', height.value])) {
 			heightOptions.push(height);
 		}
-		const pages = !_.isNil(entity.pages) && {label: entity.pages, value: entity.pages};
+		const pages = !_.isNil(entity.pages) && { label: entity.pages, value: entity.pages };
 		if (pages && !_.find(pagesOptions, ['value', pages.value])) {
 			pagesOptions.push(pages);
 		}
 		const publisher = entityToOption(_.get(entity, 'publisherSet.publishers[0]'));
-		const publisherOption = publisher && {label: publisher.text, value: publisher};
+		const publisherOption = publisher && { label: publisher.text, value: publisher };
 		if (publisherOption && !_.find(publisherOptions, ['value.id', publisherOption.value.id])) {
 			publisherOptions.push(publisherOption);
 		}
 		const releaseEventDate = _.get(entity, 'releaseEventSet.releaseEvents[0].date');
-		const releaseDate = !_.isNil(releaseEventDate) && transformISODateForSelect(releaseEventDate);
+		const releaseDate =
+			!_.isNil(releaseEventDate) && transformISODateForSelect(releaseEventDate);
 		if (releaseDate && !_.find(releaseDateOptions, ['value', releaseDate.value])) {
 			releaseDateOptions.push(releaseDate);
 		}
-		const statusOption = entity.editionStatus && {label: entity.editionStatus.label, value: entity.editionStatus.id};
+		const statusOption = entity.editionStatus && {
+			label: entity.editionStatus.label,
+			value: entity.editionStatus.id,
+		};
 		if (statusOption && !_.find(statusOptions, ['value', statusOption.value])) {
 			statusOptions.push(statusOption);
 		}
-		const weight = !_.isNil(entity.weight) && {label: entity.weight, value: entity.weight};
+		const weight = !_.isNil(entity.weight) && { label: entity.weight, value: entity.weight };
 		if (weight && !_.find(weightOptions, ['value', weight.value])) {
 			weightOptions.push(weight);
 		}
-		const width = !_.isNil(entity.width) && {label: entity.width, value: entity.width};
+		const width = !_.isNil(entity.width) && { label: entity.width, value: entity.width };
 		if (width && !_.find(widthOptions, ['value', width.value])) {
 			widthOptions.push(width);
 		}
@@ -304,35 +316,37 @@ function mapStateToProps(rootState: RootState): StateProps {
 		releaseDateValue: state.get('releaseDate'),
 		statusValue: state.get('status'),
 		weightValue: state.get('weight'),
-		widthValue: state.get('width')
+		widthValue: state.get('width'),
 	};
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		onDepthChange: (event) => dispatch(debouncedUpdateDepth(
-			event.target.value ? parseInt(event.target.value, 10) : null
-		)),
+		onDepthChange: (event) =>
+			dispatch(
+				debouncedUpdateDepth(event.target.value ? parseInt(event.target.value, 10) : null)
+			),
 		onEditionGroupChange: (value) => dispatch(updateEditionGroup(value)),
-		onFormatChange: (value: number) =>
-			dispatch(updateFormat(value)),
-		onHeightChange: (event) => dispatch(debouncedUpdateHeight(
-			event.target.value ? parseInt(event.target.value, 10) : null
-		)),
-		onPagesChange: (event) => dispatch(debouncedUpdatePages(
-			event.target.value ? parseInt(event.target.value, 10) : null
-		)),
+		onFormatChange: (value: number) => dispatch(updateFormat(value)),
+		onHeightChange: (event) =>
+			dispatch(
+				debouncedUpdateHeight(event.target.value ? parseInt(event.target.value, 10) : null)
+			),
+		onPagesChange: (event) =>
+			dispatch(
+				debouncedUpdatePages(event.target.value ? parseInt(event.target.value, 10) : null)
+			),
 		onPublisherChange: (value) => dispatch(updatePublisher(value)),
-		onReleaseDateChange: (dateString) =>
-			dispatch(debouncedUpdateReleaseDate(dateString)),
-		onStatusChange: (value: number) =>
-			dispatch(updateStatus(value)),
-		onWeightChange: (event) => dispatch(debouncedUpdateWeight(
-			event.target.value ? parseInt(event.target.value, 10) : null
-		)),
-		onWidthChange: (event) => dispatch(debouncedUpdateWidth(
-			event.target.value ? parseInt(event.target.value, 10) : null
-		))
+		onReleaseDateChange: (dateString) => dispatch(debouncedUpdateReleaseDate(dateString)),
+		onStatusChange: (value: number) => dispatch(updateStatus(value)),
+		onWeightChange: (event) =>
+			dispatch(
+				debouncedUpdateWeight(event.target.value ? parseInt(event.target.value, 10) : null)
+			),
+		onWidthChange: (event) =>
+			dispatch(
+				debouncedUpdateWidth(event.target.value ? parseInt(event.target.value, 10) : null)
+			),
 	};
 }
 

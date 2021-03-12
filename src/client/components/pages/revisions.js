@@ -21,12 +21,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import RevisionsTable from './parts/revisions-table';
 
-
 class RevisionsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			results: this.props.results
+			results: this.props.results,
 		};
 
 		// React does not autobind non-React class methods
@@ -35,7 +34,7 @@ class RevisionsPage extends React.Component {
 	}
 
 	searchResultsCallback(newResults) {
-		this.setState({results: newResults});
+		this.setState({ results: newResults });
 	}
 
 	render() {
@@ -59,7 +58,6 @@ class RevisionsPage extends React.Component {
 	}
 }
 
-
 RevisionsPage.displayName = 'RevisionsPage';
 RevisionsPage.propTypes = {
 	from: PropTypes.number,
@@ -67,14 +65,14 @@ RevisionsPage.propTypes = {
 	results: PropTypes.array,
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
-	size: PropTypes.number
+	size: PropTypes.number,
 };
 RevisionsPage.defaultProps = {
 	from: 0,
 	results: [],
 	showEntities: true,
 	showRevisionEditor: true,
-	size: 20
+	size: 20,
 };
 
 export default RevisionsPage;

@@ -21,13 +21,12 @@ import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 class CollectionsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			querySearchParams: '',
-			results: this.props.results
+			results: this.props.results,
 		};
 
 		this.handleTypeChange = this.handleTypeChange.bind(this);
@@ -36,12 +35,12 @@ class CollectionsPage extends React.Component {
 	}
 
 	searchResultsCallback(newResults) {
-		this.setState({results: newResults});
+		this.setState({ results: newResults });
 	}
 
 	handleTypeChange(type) {
 		const querySearchParams = type ? `type=${type}` : '';
-		this.setState({querySearchParams});
+		this.setState({ querySearchParams });
 	}
 
 	render() {
@@ -71,7 +70,6 @@ class CollectionsPage extends React.Component {
 	}
 }
 
-
 CollectionsPage.displayName = 'CollectionsPage';
 CollectionsPage.propTypes = {
 	entityTypes: PropTypes.array.isRequired,
@@ -83,7 +81,7 @@ CollectionsPage.propTypes = {
 	showOwner: PropTypes.bool,
 	showPrivacy: PropTypes.bool,
 	size: PropTypes.number,
-	tableHeading: PropTypes.string
+	tableHeading: PropTypes.string,
 };
 CollectionsPage.defaultProps = {
 	from: 0,
@@ -93,7 +91,7 @@ CollectionsPage.defaultProps = {
 	showOwner: false,
 	showPrivacy: false,
 	size: 20,
-	tableHeading: 'Collections'
+	tableHeading: 'Collections',
 };
 
 export default CollectionsPage;

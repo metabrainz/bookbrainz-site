@@ -16,35 +16,33 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as set from './set';
-
 
 function formatNewLanguageSet(change) {
 	function transformer(rhs) {
 		return rhs.languages.map((language) => language.name);
 	}
 
-	return set.formatNewSet(
-		change, 'Languages', 'languages', transformer
-	);
+	return set.formatNewSet(change, 'Languages', 'languages', transformer);
 }
 
 function formatLanguageAddOrDelete(change) {
 	return set.formatItemAddOrDelete(
-		change, `Language ${change.index}`, (side) => side && [side.name]
+		change,
+		`Language ${change.index}`,
+		(side) => side && [side.name]
 	);
 }
 
 function formatLanguageModified(change) {
-	return set.formatItemModified(
-		change, `Language ${change.path[2]}`, ['name']
-	);
+	return set.formatItemModified(change, `Language ${change.path[2]}`, ['name']);
 }
 
 export function format(change) {
 	return set.format(
-		change, 'languageSet', 'languages',
+		change,
+		'languageSet',
+		'languages',
 		formatNewLanguageSet,
 		formatLanguageAddOrDelete,
 		formatLanguageModified

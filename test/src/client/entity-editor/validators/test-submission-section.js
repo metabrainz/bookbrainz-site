@@ -18,25 +18,22 @@
 
 import * as Immutable from 'immutable';
 
-import {EMPTY_SUBMISSION_SECTION, VALID_SUBMISSION_SECTION} from './data';
+import { EMPTY_SUBMISSION_SECTION, VALID_SUBMISSION_SECTION } from './data';
 import {
 	validateSubmissionSection,
-	validateSubmissionSectionNote
+	validateSubmissionSectionNote,
 } from '../../../../../src/client/entity-editor/validators/common';
 
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import {testValidateStringFunc} from './helpers';
-
+import { testValidateStringFunc } from './helpers';
 
 chai.use(chaiAsPromised);
-const {expect} = chai;
-
+const { expect } = chai;
 
 function describeValidateSubmissionSectionNote() {
 	testValidateStringFunc(validateSubmissionSectionNote, false);
 }
-
 
 function describeValidateSubmissionSection() {
 	it('should pass a valid Object', () => {
@@ -45,30 +42,22 @@ function describeValidateSubmissionSection() {
 	});
 
 	it('should pass a valid Immutable.Map', () => {
-		const result = validateSubmissionSection(
-			Immutable.fromJS(VALID_SUBMISSION_SECTION)
-		);
+		const result = validateSubmissionSection(Immutable.fromJS(VALID_SUBMISSION_SECTION));
 		expect(result).to.be.true;
 	});
 
 	it('should pass an Object with an empty note', () => {
-		const result = validateSubmissionSection(
-			{...VALID_SUBMISSION_SECTION, note: null}
-		);
+		const result = validateSubmissionSection({ ...VALID_SUBMISSION_SECTION, note: null });
 		expect(result).to.be.true;
 	});
 
 	it('should pass an empty note Immutable.Map', () => {
-		const result = validateSubmissionSection(
-			Immutable.fromJS(EMPTY_SUBMISSION_SECTION)
-		);
+		const result = validateSubmissionSection(Immutable.fromJS(EMPTY_SUBMISSION_SECTION));
 		expect(result).to.be.true;
 	});
 
 	it('should reject any other non-null data type', () => {
-		const result = validateSubmissionSection(
-			{...VALID_SUBMISSION_SECTION, note: 1}
-		);
+		const result = validateSubmissionSection({ ...VALID_SUBMISSION_SECTION, note: 1 });
 		expect(result).to.be.false;
 	});
 
@@ -78,12 +67,8 @@ function describeValidateSubmissionSection() {
 	});
 }
 
-
 function tests() {
-	describe(
-		'validateSubmissionSectionNote',
-		describeValidateSubmissionSectionNote
-	);
+	describe('validateSubmissionSectionNote', describeValidateSubmissionSectionNote);
 	describe('validateSubmissionSection', describeValidateSubmissionSection);
 }
 

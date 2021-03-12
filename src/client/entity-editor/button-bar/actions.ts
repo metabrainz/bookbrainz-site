@@ -20,11 +20,11 @@ export const SHOW_ALIAS_EDITOR = 'SHOW_ALIAS_EDITOR';
 export const SHOW_IDENTIFIER_EDITOR = 'SHOW_IDENTIFIER_EDITOR';
 
 export type Action = {
-	type: string,
-	payload?: unknown,
+	type: string;
+	payload?: unknown;
 	meta?: {
-		debounce?: string
-	}
+		debounce?: string;
+	};
 };
 
 /**
@@ -36,7 +36,7 @@ export type Action = {
  */
 export function showAliasEditor(): Action {
 	return {
-		type: SHOW_ALIAS_EDITOR
+		type: SHOW_ALIAS_EDITOR,
 	};
 }
 
@@ -50,6 +50,6 @@ export function showAliasEditor(): Action {
  */
 export function showIdentifierEditor(): Action {
 	return {
-		type: SHOW_IDENTIFIER_EDITOR
+		type: SHOW_IDENTIFIER_EDITOR,
 	};
 }

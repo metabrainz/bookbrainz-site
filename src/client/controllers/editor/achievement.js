@@ -18,17 +18,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {
-	extractEditorProps,
-	extractLayoutProps
-} from '../../helpers/props';
+import { extractEditorProps, extractLayoutProps } from '../../helpers/props';
 import AchievementsTab from '../../components/pages/parts/editor-achievements';
-import {AppContainer} from 'react-hot-loader';
+import { AppContainer } from 'react-hot-loader';
 import EditorContainer from '../../containers/editor';
 import Layout from '../../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
-
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
@@ -36,9 +32,7 @@ const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 ReactDOM.hydrate(
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
-			<EditorContainer
-				{...extractEditorProps(props)}
-			>
+			<EditorContainer {...extractEditorProps(props)}>
 				<AchievementsTab
 					achievement={props.achievement}
 					editor={props.editor}
@@ -49,7 +43,6 @@ ReactDOM.hydrate(
 	</AppContainer>,
 	document.getElementById('target')
 );
-
 
 /*
  * As we are not exporting a component,

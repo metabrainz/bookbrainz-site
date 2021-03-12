@@ -18,7 +18,7 @@
 
 import * as error from '../../common/helpers/error';
 import * as propHelpers from '../../client/helpers/props';
-import {escapeProps, generateProps} from './props';
+import { escapeProps, generateProps } from './props';
 import ErrorPage from '../../client/components/pages/error';
 import Layout from '../../client/containers/layout';
 import React from 'react';
@@ -26,28 +26,25 @@ import ReactDOMServer from 'react-dom/server';
 import status from 'http-status';
 import target from '../templates/target';
 
-
 export function renderError(req, res, err) {
 	const errorToSend = error.getErrorToSend(err);
 	const props = generateProps(req, res, {
-		error: errorToSend
+		error: errorToSend,
 	});
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
-			<ErrorPage
-				error={props.error}
-			/>
+			<ErrorPage error={props.error} />
 		</Layout>
 	);
 	if (errorToSend.message) {
 		res.statusMessage = errorToSend.message;
 	}
-	res.status(
-		errorToSend.status || status.INTERNAL_SERVER_ERROR
-	).send(target({
-		markup,
-		page: 'Error',
-		props: escapeProps(props),
-		script: '/js/error.js'
-	}));
+	res.status(errorToSend.status || status.INTERNAL_SERVER_ERROR).send(
+		target({
+			markup,
+			page: 'Error',
+			props: escapeProps(props),
+			script: '/js/error.js',
+		})
+	);
 }

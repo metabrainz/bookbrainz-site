@@ -27,14 +27,14 @@ import {
 	VALID_ALIASES,
 	VALID_IDENTIFIERS,
 	VALID_NAME_SECTION,
-	VALID_SUBMISSION_SECTION
+	VALID_SUBMISSION_SECTION,
 } from './data';
 import {
 	testValidateAreaFunc,
 	testValidateBooleanFunc,
 	testValidateDateFunc,
 	testValidateEndDateFunc,
-	testValidatePositiveIntegerFunc
+	testValidatePositiveIntegerFunc,
 } from './helpers';
 import {
 	validateAuthorSection,
@@ -45,16 +45,14 @@ import {
 	validateAuthorSectionEnded,
 	validateAuthorSectionGender,
 	validateAuthorSectionType,
-	validateForm
+	validateForm,
 } from '../../../../../src/client/entity-editor/validators/author';
 
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-
 chai.use(chaiAsPromised);
-const {expect} = chai;
-
+const { expect } = chai;
 
 function describeValidateAuthorSectionBeginArea() {
 	testValidateAreaFunc(validateAuthorSectionBeginArea, false);
@@ -91,9 +89,9 @@ const VALID_AUTHOR_SECTION = {
 	endDate: '',
 	ended: true,
 	gender: 1,
-	type: 1
+	type: 1,
 };
-const INVALID_AUTHOR_SECTION = {...VALID_AUTHOR_SECTION, type: {}};
+const INVALID_AUTHOR_SECTION = { ...VALID_AUTHOR_SECTION, type: {} };
 
 function describeValidateAuthorSection() {
 	it('should pass a valid Object', () => {
@@ -102,16 +100,14 @@ function describeValidateAuthorSection() {
 	});
 
 	it('should pass a valid Immutable.Map', () => {
-		const result = validateAuthorSection(
-			Immutable.fromJS(VALID_AUTHOR_SECTION)
-		);
+		const result = validateAuthorSection(Immutable.fromJS(VALID_AUTHOR_SECTION));
 		expect(result).to.be.true;
 	});
 
 	it('should reject an Object with an invalid area', () => {
 		const result = validateAuthorSection({
 			...VALID_AUTHOR_SECTION,
-			beginArea: {id: null}
+			beginArea: { id: null },
 		});
 		expect(result).to.be.false;
 	});
@@ -119,7 +115,7 @@ function describeValidateAuthorSection() {
 	it('should reject an Object with an invalid begin date', () => {
 		const result = validateAuthorSection({
 			...VALID_AUTHOR_SECTION,
-			beginDate: {day: '100', month: '21', year: '2012'}
+			beginDate: { day: '100', month: '21', year: '2012' },
 		});
 		expect(result).to.be.false;
 	});
@@ -127,7 +123,7 @@ function describeValidateAuthorSection() {
 	it('should reject an Object with an invalid area', () => {
 		const result = validateAuthorSection({
 			...VALID_AUTHOR_SECTION,
-			endArea: {id: null}
+			endArea: { id: null },
 		});
 		expect(result).to.be.false;
 	});
@@ -135,7 +131,7 @@ function describeValidateAuthorSection() {
 	it('should reject an Object with an invalid end date', () => {
 		const result = validateAuthorSection({
 			...VALID_AUTHOR_SECTION,
-			endDate: {day: '', month: '', year: 'aaaa'}
+			endDate: { day: '', month: '', year: 'aaaa' },
 		});
 		expect(result).to.be.false;
 	});
@@ -143,7 +139,7 @@ function describeValidateAuthorSection() {
 	it('should reject an Object with an invalid ended flag', () => {
 		const result = validateAuthorSection({
 			...VALID_AUTHOR_SECTION,
-			ended: 1
+			ended: 1,
 		});
 		expect(result).to.be.false;
 	});
@@ -151,7 +147,7 @@ function describeValidateAuthorSection() {
 	it('should reject an Object with an invalid type', () => {
 		const result = validateAuthorSection({
 			...VALID_AUTHOR_SECTION,
-			type: {}
+			type: {},
 		});
 		expect(result).to.be.false;
 	});
@@ -159,15 +155,13 @@ function describeValidateAuthorSection() {
 	it('should reject an Object with an invalid gender', () => {
 		const result = validateAuthorSection({
 			...VALID_AUTHOR_SECTION,
-			gender: {}
+			gender: {},
 		});
 		expect(result).to.be.false;
 	});
 
 	it('should reject an invalid Immutable.Map', () => {
-		const result = validateAuthorSection(
-			Immutable.fromJS(INVALID_AUTHOR_SECTION)
-		);
+		const result = validateAuthorSection(Immutable.fromJS(INVALID_AUTHOR_SECTION));
 		expect(result).to.be.false;
 	});
 
@@ -177,11 +171,10 @@ function describeValidateAuthorSection() {
 	});
 
 	it('should pass a empty value  object', () => {
-		const result = validateAuthorSection({day: '', month: '', year: ''});
+		const result = validateAuthorSection({ day: '', month: '', year: '' });
 		expect(result).to.be.true;
 	});
 }
-
 
 function describeValidateForm() {
 	const validForm = {
@@ -189,7 +182,7 @@ function describeValidateForm() {
 		authorSection: VALID_AUTHOR_SECTION,
 		identifierEditor: VALID_IDENTIFIERS,
 		nameSection: VALID_NAME_SECTION,
-		submissionSection: VALID_SUBMISSION_SECTION
+		submissionSection: VALID_SUBMISSION_SECTION,
 	};
 
 	it('should pass a valid Object', () => {
@@ -198,10 +191,7 @@ function describeValidateForm() {
 	});
 
 	it('should pass a valid Immutable.Map', () => {
-		const result = validateForm(
-			Immutable.fromJS(validForm),
-			IDENTIFIER_TYPES
-		);
+		const result = validateForm(Immutable.fromJS(validForm), IDENTIFIER_TYPES);
 		expect(result).to.be.true;
 	});
 
@@ -209,7 +199,7 @@ function describeValidateForm() {
 		const result = validateForm(
 			{
 				...validForm,
-				aliasEditor: INVALID_ALIASES
+				aliasEditor: INVALID_ALIASES,
 			},
 			IDENTIFIER_TYPES
 		);
@@ -220,8 +210,9 @@ function describeValidateForm() {
 		const result = validateForm(
 			{
 				...validForm,
-				identifierEditor: INVALID_IDENTIFIERS
-			}, IDENTIFIER_TYPES
+				identifierEditor: INVALID_IDENTIFIERS,
+			},
+			IDENTIFIER_TYPES
 		);
 		expect(result).to.be.false;
 	});
@@ -230,7 +221,7 @@ function describeValidateForm() {
 		const result = validateForm(
 			{
 				...validForm,
-				nameSection: INVALID_NAME_SECTION
+				nameSection: INVALID_NAME_SECTION,
 			},
 			IDENTIFIER_TYPES
 		);
@@ -241,7 +232,7 @@ function describeValidateForm() {
 		const result = validateForm(
 			{
 				...validForm,
-				authorSection: INVALID_AUTHOR_SECTION
+				authorSection: INVALID_AUTHOR_SECTION,
 			},
 			IDENTIFIER_TYPES
 		);
@@ -252,7 +243,7 @@ function describeValidateForm() {
 		const result = validateForm(
 			{
 				...validForm,
-				submissionSection: EMPTY_SUBMISSION_SECTION
+				submissionSection: EMPTY_SUBMISSION_SECTION,
 			},
 			IDENTIFIER_TYPES
 		);
@@ -261,15 +252,11 @@ function describeValidateForm() {
 
 	const invalidForm = {
 		...validForm,
-		authorSection: INVALID_AUTHOR_SECTION
-
+		authorSection: INVALID_AUTHOR_SECTION,
 	};
 
 	it('should reject an invalid Immutable.Map', () => {
-		const result = validateForm(
-			Immutable.fromJS(invalidForm),
-			IDENTIFIER_TYPES
-		);
+		const result = validateForm(Immutable.fromJS(invalidForm), IDENTIFIER_TYPES);
 		expect(result).to.be.false;
 	});
 
@@ -284,44 +271,16 @@ function describeValidateForm() {
 	});
 }
 
-
 function tests() {
-	describe(
-		'validateAuthorSectionBeginArea',
-		describeValidateAuthorSectionBeginArea
-	);
-	describe(
-		'validateAuthorSectionBeginDate',
-		describeValidateAuthorSectionBeginDate
-	);
-	describe(
-		'validateAuthorSectionEndArea',
-		describeValidateAuthorSectionEndArea
-	);
-	describe(
-		'validateAuthorSectionEndDate',
-		describeValidateAuthorSectionEndDate
-	);
-	describe(
-		'validateAuthorSectionEnded',
-		describeValidateAuthorSectionEnded
-	);
-	describe(
-		'validateAuthorSectionGender',
-		describeValidateAuthorSectionGender
-	);
-	describe(
-		'validateAuthorSectionType',
-		describeValidateAuthorSectionType
-	);
-	describe(
-		'validateAuthorSection',
-		describeValidateAuthorSection
-	);
-	describe(
-		'validateForm',
-		describeValidateForm
-	);
+	describe('validateAuthorSectionBeginArea', describeValidateAuthorSectionBeginArea);
+	describe('validateAuthorSectionBeginDate', describeValidateAuthorSectionBeginDate);
+	describe('validateAuthorSectionEndArea', describeValidateAuthorSectionEndArea);
+	describe('validateAuthorSectionEndDate', describeValidateAuthorSectionEndDate);
+	describe('validateAuthorSectionEnded', describeValidateAuthorSectionEnded);
+	describe('validateAuthorSectionGender', describeValidateAuthorSectionGender);
+	describe('validateAuthorSectionType', describeValidateAuthorSectionType);
+	describe('validateAuthorSection', describeValidateAuthorSection);
+	describe('validateForm', describeValidateForm);
 }
 
 describe('validateAuthorSection* functions', tests);

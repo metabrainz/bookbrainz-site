@@ -16,24 +16,28 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Checkbox, Col, Row} from 'react-bootstrap';
+import { Button, Checkbox, Col, Row } from 'react-bootstrap';
 import {
-	debouncedUpdateAliasName, debouncedUpdateAliasSortName, removeAliasRow,
-	updateAliasLanguage, updateAliasPrimary
+	debouncedUpdateAliasName,
+	debouncedUpdateAliasSortName,
+	removeAliasRow,
+	updateAliasLanguage,
+	updateAliasPrimary,
 } from './actions';
 import {
-	validateAliasLanguage, validateAliasName, validateAliasSortName
+	validateAliasLanguage,
+	validateAliasName,
+	validateAliasSortName,
 } from '../validators/common';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SortNameField from '../common/sort-name-field';
-import {connect} from 'react-redux';
-import {faTimes} from '@fortawesome/free-solid-svg-icons';
-import {isAliasEmpty} from '../helpers';
-
+import { connect } from 'react-redux';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { isAliasEmpty } from '../helpers';
 
 /**
  * Container component. The AliasRow component renders a single Row containing
@@ -73,7 +77,7 @@ const AliasRow = ({
 	onNameChange,
 	onSortNameChange,
 	onRemoveButtonClick,
-	onPrimaryClick
+	onPrimaryClick,
 }) => (
 	<div>
 		<Row>
@@ -81,9 +85,7 @@ const AliasRow = ({
 				<NameField
 					autoFocus
 					defaultValue={nameValue}
-					empty={
-						isAliasEmpty(nameValue, sortNameValue, languageValue)
-					}
+					empty={isAliasEmpty(nameValue, sortNameValue, languageValue)}
 					error={!validateAliasName(nameValue)}
 					onChange={onNameChange}
 				/>
@@ -91,9 +93,7 @@ const AliasRow = ({
 			<Col md={4}>
 				<SortNameField
 					defaultValue={sortNameValue}
-					empty={
-						isAliasEmpty(nameValue, sortNameValue, languageValue)
-					}
+					empty={isAliasEmpty(nameValue, sortNameValue, languageValue)}
 					error={!validateAliasSortName(sortNameValue)}
 					storedNameValue={nameValue}
 					onChange={onSortNameChange}
@@ -101,9 +101,7 @@ const AliasRow = ({
 			</Col>
 			<Col md={4}>
 				<LanguageField
-					empty={
-						isAliasEmpty(nameValue, sortNameValue, languageValue)
-					}
+					empty={isAliasEmpty(nameValue, sortNameValue, languageValue)}
 					error={!validateAliasLanguage(languageValue)}
 					instanceId="language"
 					options={languageOptions}
@@ -114,10 +112,7 @@ const AliasRow = ({
 		</Row>
 		<Row>
 			<Col md={2} mdOffset={5}>
-				<Checkbox
-					defaultChecked={primaryChecked}
-					onChange={onPrimaryClick}
-				>
+				<Checkbox defaultChecked={primaryChecked} onChange={onPrimaryClick}>
 					Primary
 				</Checkbox>
 			</Col>
@@ -126,14 +121,13 @@ const AliasRow = ({
 					block
 					bsStyle="danger"
 					className="margin-top-d5"
-					onClick={onRemoveButtonClick}
-				>
-					<FontAwesomeIcon icon={faTimes}/>
+					onClick={onRemoveButtonClick}>
+					<FontAwesomeIcon icon={faTimes} />
 					<span>&nbsp;Remove</span>
 				</Button>
 			</Col>
 		</Row>
-		<hr/>
+		<hr />
 	</div>
 );
 AliasRow.displayName = 'AliasEditor.AliasRow';
@@ -147,36 +141,31 @@ AliasRow.propTypes = {
 	onRemoveButtonClick: PropTypes.func.isRequired,
 	onSortNameChange: PropTypes.func.isRequired,
 	primaryChecked: PropTypes.bool.isRequired,
-	sortNameValue: PropTypes.string.isRequired
+	sortNameValue: PropTypes.string.isRequired,
 };
 AliasRow.defaultProps = {
-	languageValue: null
+	languageValue: null,
 };
 
-function mapDispatchToProps(dispatch, {index}) {
+function mapDispatchToProps(dispatch, { index }) {
 	return {
-		onLanguageChange: (value) =>
-			dispatch(updateAliasLanguage(index, value && value.value)),
-		onNameChange: (event) =>
-			dispatch(debouncedUpdateAliasName(index, event.target.value)),
-		onPrimaryClick: (event) =>
-			dispatch(updateAliasPrimary(index, event.target.checked)),
-		onRemoveButtonClick: () =>
-			dispatch(removeAliasRow(index)),
+		onLanguageChange: (value) => dispatch(updateAliasLanguage(index, value && value.value)),
+		onNameChange: (event) => dispatch(debouncedUpdateAliasName(index, event.target.value)),
+		onPrimaryClick: (event) => dispatch(updateAliasPrimary(index, event.target.checked)),
+		onRemoveButtonClick: () => dispatch(removeAliasRow(index)),
 		onSortNameChange: (event) =>
-			dispatch(debouncedUpdateAliasSortName(index, event.target.value))
+			dispatch(debouncedUpdateAliasSortName(index, event.target.value)),
 	};
 }
 
-function mapStateToProps(rootState, {index}) {
+function mapStateToProps(rootState, { index }) {
 	const state = rootState.get('aliasEditor');
 	return {
 		languageValue: state.getIn([index, 'language']),
 		nameValue: state.getIn([index, 'name']),
 		primaryChecked: state.getIn([index, 'primary']),
-		sortNameValue: state.getIn([index, 'sortName'])
+		sortNameValue: state.getIn([index, 'sortName']),
 	};
 }
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(AliasRow);

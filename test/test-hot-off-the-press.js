@@ -21,22 +21,18 @@ import * as testData from '../data/test-data.js';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
-
 const Achievement = rewire('../src/server/helpers/achievement.js');
 
 const hotOffThePressThreshold = -7;
 
 function rewireEditionDateDifference(threshold) {
 	return common.rewire(Achievement, {
-		getEditionDateDifference: () =>
-			Promise.resolve(threshold)
+		getEditionDateDifference: () => Promise.resolve(threshold),
 	});
 }
 
 function getRevAttrPromise() {
-	return common.getAttrPromise(
-		Achievement, orm, false, 'hotOffThePress', 'Hot Off the Press'
-	);
+	return common.getAttrPromise(Achievement, orm, false, 'hotOffThePress', 'Hot Off the Press');
 }
 
 function expectIds(rev) {
@@ -44,10 +40,7 @@ function expectIds(rev) {
 }
 
 export default function tests() {
-	beforeEach(
-		() => testData.createEditor()
-			.then(() => testData.createHotOffThePress())
-	);
+	beforeEach(() => testData.createEditor().then(() => testData.createHotOffThePress()));
 	afterEach(testData.truncate);
 
 	const test1 = common.testAchievement(
@@ -55,15 +48,12 @@ export default function tests() {
 		getRevAttrPromise(),
 		expectIds('')
 	);
-	it('should be given to someone with edition revision released this week',
-		test1);
+	it('should be given to someone with edition revision released this week', test1);
 
 	const test2 = common.testAchievement(
 		rewireEditionDateDifference(hotOffThePressThreshold - 1),
-		common.getAttrPromise(
-			Achievement, orm, false, 'timeTraveller', 'Time Traveller'
-		),
+		common.getAttrPromise(Achievement, orm, false, 'timeTraveller', 'Time Traveller'),
 		common.expectFalse()
 	);
-	it('shouldn\'t be given when edition revision released a week ago', test2);
+	it("shouldn't be given when edition revision released a week ago", test2);
 }

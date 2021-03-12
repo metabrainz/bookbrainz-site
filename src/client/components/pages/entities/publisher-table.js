@@ -23,33 +23,44 @@ import * as utilHelper from '../../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+const { Table } = bootstrap;
+const {
+	transformISODateForDisplay,
+	extractAttribute,
+	getEntityDisambiguation,
+	getEntityLabel,
+} = entityHelper;
 
-const {Table} = bootstrap;
-const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
-
-function PublisherTableRow({showAddedAtColumn, publisher, showCheckboxes, selectedEntities, onToggleRow}) {
+function PublisherTableRow({
+	showAddedAtColumn,
+	publisher,
+	showCheckboxes,
+	selectedEntities,
+	onToggleRow,
+}) {
 	const name = getEntityLabel(publisher);
 	const disambiguation = getEntityDisambiguation(publisher);
 	const publisherType = publisher.publisherType ? publisher.publisherType.label : '?';
 	const area = publisher.area ? publisher.area.name : '?';
 	const beginDate = transformISODateForDisplay(extractAttribute(publisher.beginDate));
 	const endDate = transformISODateForDisplay(extractAttribute(publisher.endDate));
-	const addedAt = showAddedAtColumn ? utilHelper.formatDate(new Date(publisher.addedAt), true) : null;
+	const addedAt = showAddedAtColumn
+		? utilHelper.formatDate(new Date(publisher.addedAt), true)
+		: null;
 
 	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
 			<td>
-				{
-					showCheckboxes ?
-						<input
-							checked={selectedEntities.find(bbid => bbid === publisher.bbid)}
-							className="checkboxes"
-							id={publisher.bbid}
-							type="checkbox"
-							onClick={() => onToggleRow(publisher.bbid)}
-						/> : null
-				}
+				{showCheckboxes ? (
+					<input
+						checked={selectedEntities.find((bbid) => bbid === publisher.bbid)}
+						className="checkboxes"
+						id={publisher.bbid}
+						type="checkbox"
+						onClick={() => onToggleRow(publisher.bbid)}
+					/>
+				) : null}
 				<a href={`/publisher/${publisher.bbid}`}>{name}</a>
 				{disambiguation}
 			</td>
@@ -67,15 +78,21 @@ PublisherTableRow.propTypes = {
 	publisher: PropTypes.object.isRequired,
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool.isRequired,
-	showCheckboxes: PropTypes.bool
+	showCheckboxes: PropTypes.bool,
 };
 PublisherTableRow.defaultProps = {
 	onToggleRow: null,
 	selectedEntities: [],
-	showCheckboxes: false
+	showCheckboxes: false,
 };
 
-function PublisherTable({showAddedAtColumn, publishers, showCheckboxes, selectedEntities, onToggleRow}) {
+function PublisherTable({
+	showAddedAtColumn,
+	publishers,
+	showCheckboxes,
+	selectedEntities,
+	onToggleRow,
+}) {
 	let tableContent;
 	if (publishers.length) {
 		tableContent = (
@@ -83,35 +100,30 @@ function PublisherTable({showAddedAtColumn, publishers, showCheckboxes, selected
 				<Table striped>
 					<thead>
 						<tr>
-							<th style={{width: '50%'}}>Name</th>
+							<th style={{ width: '50%' }}>Name</th>
 							<th>Area</th>
 							<th>Type</th>
 							<th>Date founded</th>
 							<th>Date dissolved</th>
-							{
-								showAddedAtColumn ? <th>Added at</th> : null
-							}
+							{showAddedAtColumn ? <th>Added at</th> : null}
 						</tr>
 					</thead>
 					<tbody>
-						{
-							publishers.map((publisher) => (
-								<PublisherTableRow
-									key={publisher.bbid}
-									publisher={publisher}
-									selectedEntities={selectedEntities}
-									showAddedAtColumn={showAddedAtColumn}
-									showCheckboxes={showCheckboxes}
-									onToggleRow={onToggleRow}
-								/>
-							))
-						}
+						{publishers.map((publisher) => (
+							<PublisherTableRow
+								key={publisher.bbid}
+								publisher={publisher}
+								selectedEntities={selectedEntities}
+								showAddedAtColumn={showAddedAtColumn}
+								showCheckboxes={showCheckboxes}
+								onToggleRow={onToggleRow}
+							/>
+						))}
 					</tbody>
 				</Table>
 			</React.Fragment>
 		);
-	}
-	else {
+	} else {
 		tableContent = <span>No publishers</span>;
 	}
 	return (
@@ -127,13 +139,13 @@ PublisherTable.propTypes = {
 	publishers: PropTypes.array.isRequired,
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool,
-	showCheckboxes: PropTypes.bool
+	showCheckboxes: PropTypes.bool,
 };
 PublisherTable.defaultProps = {
 	onToggleRow: null,
 	selectedEntities: [],
 	showAddedAtColumn: false,
-	showCheckboxes: false
+	showCheckboxes: false,
 };
 
 export default PublisherTable;

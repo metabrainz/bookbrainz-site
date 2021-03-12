@@ -17,25 +17,24 @@
  */
 
 import * as React from 'react';
-import {Action, updateType} from './actions';
-import type {Dispatch} from 'redux';
+import { Action, updateType } from './actions';
+import type { Dispatch } from 'redux';
 import EditionTable from '../../components/pages/entities/edition-table';
-import type {Map} from 'immutable';
+import type { Map } from 'immutable';
 import MergeField from '../common/merge-field';
-import {find as _find} from 'lodash';
-import {connect} from 'react-redux';
-
+import { find as _find } from 'lodash';
+import { connect } from 'react-redux';
 
 type StateProps = {
-	typeValue: Map<string, any>
+	typeValue: Map<string, any>;
 };
 
 type DispatchProps = {
-	onTypeChange: (value: number | null) => unknown
+	onTypeChange: (value: number | null) => unknown;
 };
 
 type OwnProps = {
-	mergingEntities: any[]
+	mergingEntities: any[];
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -54,16 +53,15 @@ type Props = StateProps & DispatchProps & OwnProps;
  * @returns {ReactElement} React element containing the rendered
  *          EditionGroupSectionMerge.
  */
-function EditionGroupSectionMerge({
-	typeValue,
-	mergingEntities,
-	onTypeChange
-}: Props) {
+function EditionGroupSectionMerge({ typeValue, mergingEntities, onTypeChange }: Props) {
 	const typeOptions = [];
 	const editions = [];
 
-	mergingEntities.forEach(entity => {
-		const typeOption = entity.editionGroupType && {label: entity.editionGroupType.label, value: entity.editionGroupType.id};
+	mergingEntities.forEach((entity) => {
+		const typeOption = entity.editionGroupType && {
+			label: entity.editionGroupType.label,
+			value: entity.editionGroupType.id,
+		};
 		if (typeOption && !_find(typeOptions, ['value', typeOption.value])) {
 			typeOptions.push(typeOption);
 		}
@@ -78,11 +76,7 @@ function EditionGroupSectionMerge({
 				options={typeOptions}
 				onChange={onTypeChange}
 			/>
-			<EditionTable
-				editions={editions}
-				entity={mergingEntities[0]}
-				showAdd={false}
-			/>
+			<EditionTable editions={editions} entity={mergingEntities[0]} showAdd={false} />
 		</form>
 	);
 }
@@ -92,13 +86,13 @@ function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('editionGroupSection');
 
 	return {
-		typeValue: state.get('type')
+		typeValue: state.get('type'),
 	};
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		onTypeChange: (value: number) => dispatch(updateType(value))
+		onTypeChange: (value: number) => dispatch(updateType(value)),
 	};
 }
 

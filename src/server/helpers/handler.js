@@ -20,7 +20,6 @@
 import * as error from '../../common/helpers/error';
 import log from 'log';
 
-
 export async function sendPromiseResult(response, promise, processingCallback) {
 	try {
 		const result = await promise;
@@ -31,8 +30,7 @@ export async function sendPromiseResult(response, promise, processingCallback) {
 		}
 
 		return result;
-	}
-	catch (err) {
+	} catch (err) {
 		log.error(err);
 		return error.sendErrorAsJSON(response, err);
 	}

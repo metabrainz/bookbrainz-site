@@ -16,9 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {existsSync, readFileSync} from 'fs';
-import {normalize} from 'path';
-
+import { existsSync, readFileSync } from 'fs';
+import { normalize } from 'path';
 
 let configContents;
 
@@ -32,10 +31,8 @@ function useDefaultConfig() {
 		configFileBasename = 'test';
 	}
 	try {
-		configContents =
-			readFileSync(`config/${configFileBasename}.json`);
-	}
-	catch (err) {
+		configContents = readFileSync(`config/${configFileBasename}.json`);
+	} catch (err) {
 		throw Error(`Could not find required configuration file \
 config/${configFileBasename}.json If you don't have a \
 config/${configFileBasename}.json file, you should copy, \
@@ -52,23 +49,24 @@ function checkConfigOverwrite() {
 	// Check for '--config' followed by 'configPathFile'
 	if (configIndex !== -1) {
 		let configFilePath = args[configIndex + 1];
-		if (!configFilePath) { throw Error('Missing configuration file path'); }
+		if (!configFilePath) {
+			throw Error('Missing configuration file path');
+		}
 
 		configFilePath = normalize(configFilePath);
 		if (existsSync(configFilePath)) {
 			configContents = readFileSync(configFilePath);
-		}
-		else {
+		} else {
 			throw Error(`${configFilePath} does not exist`);
 		}
+	} else {
+		useDefaultConfig();
 	}
-	else { useDefaultConfig(); }
 }
 
 try {
 	checkConfigOverwrite();
-}
-catch (exception) {
+} catch (exception) {
 	// eslint-disable-next-line no-console
 	console.log(`${exception.toString()}. Using Default configuration instead.`);
 	useDefaultConfig();

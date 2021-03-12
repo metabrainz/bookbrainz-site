@@ -34,7 +34,6 @@ import searchRouter from './routes/search';
 import statisticsRouter from './routes/statistics';
 import workRouter from './routes/entity/work';
 
-
 function initRootRoutes(app) {
 	app.use('/', indexRouter);
 	app.use('/', authRouter);

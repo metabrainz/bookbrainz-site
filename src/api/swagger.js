@@ -1,10 +1,9 @@
 /* eslint-disable no-process-env */
 
-import {Router} from 'express';
+import { Router } from 'express';
 
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-
 
 const router = Router();
 const API_VERSION = process.env.API_VERSION || '1';
@@ -17,24 +16,26 @@ const swaggerOptions = {
 			contact: {
 				email: 'bookbrainz@metabrainz.org',
 				name: 'BookBrainz',
-				url: 'https://bookbrainz.org/'
+				url: 'https://bookbrainz.org/',
 			},
 			description: `OpenAPI 3 documentation for the BookBrainz REST API.<br/>
 			Breaking changes to the API will be announced <a href="https://blog.metabrainz.org/category/bookbrainz/" target="_blank">on our blog</a>.`,
 			title: 'BookBrainz API Documentation',
-			version: '0.2.0'
+			version: '0.2.0',
 		},
 		openapi: '3.0.3',
-		servers: [{
-			url: '/{version}',
-			variables: {
-				version: {
-					default: API_VERSION,
-					enum: ['1', API_VERSION]
-				}
-			}
-		}]
-	}
+		servers: [
+			{
+				url: '/{version}',
+				variables: {
+					version: {
+						default: API_VERSION,
+						enum: ['1', API_VERSION],
+					},
+				},
+			},
+		],
+	},
 };
 
 const swaggerUIOptions = {
@@ -42,8 +43,8 @@ const swaggerUIOptions = {
 		deepLinking: true,
 		defaultModelExpandDepth: 3,
 		defaultModelsExpandDepth: 3,
-		operationsSorter: 'alpha'
-	}
+		operationsSorter: 'alpha',
+	},
 };
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
@@ -53,6 +54,5 @@ router.get('/json', (req, res) => {
 });
 
 router.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUIOptions));
-
 
 export default router;

@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 export const UPDATE_AREA = 'UPDATE_AREA';
 export const UPDATE_TYPE = 'UPDATE_TYPE';
 export const UPDATE_BEGIN_DATE = 'UPDATE_BEGIN_DATE';
@@ -24,18 +23,18 @@ export const UPDATE_END_DATE = 'UPDATE_END_DATE';
 export const UPDATE_ENDED = 'UPDATE_ENDED';
 
 export type Action = {
-	type: string,
-	payload?: unknown,
+	type: string;
+	payload?: unknown;
 	meta?: {
-		debounce?: string
-	}
+		debounce?: string;
+	};
 };
 
 type Area = {
-	disambiguation: string | null | undefined,
-	id: string | number,
-	text: string,
-	type: string
+	disambiguation: string | null | undefined;
+	id: string | number;
+	text: string;
+	type: string;
 };
 
 /**
@@ -49,7 +48,7 @@ type Area = {
 export function updateArea(newArea: Area | null | undefined): Action {
 	return {
 		payload: newArea,
-		type: UPDATE_AREA
+		type: UPDATE_AREA,
 	};
 }
 
@@ -64,7 +63,7 @@ export function updateArea(newArea: Area | null | undefined): Action {
 export function updateType(newTypeId: number | null | undefined): Action {
 	return {
 		payload: newTypeId,
-		type: UPDATE_TYPE
+		type: UPDATE_TYPE,
 	};
 }
 
@@ -78,9 +77,9 @@ export function updateType(newTypeId: number | null | undefined): Action {
  */
 export function debouncedUpdateBeginDate(newBeginDate: string): Action {
 	return {
-		meta: {debounce: 'keystroke'},
+		meta: { debounce: 'keystroke' },
 		payload: newBeginDate,
-		type: UPDATE_BEGIN_DATE
+		type: UPDATE_BEGIN_DATE,
 	};
 }
 
@@ -94,9 +93,9 @@ export function debouncedUpdateBeginDate(newBeginDate: string): Action {
  */
 export function debouncedUpdateEndDate(newEndDate: string): Action {
 	return {
-		meta: {debounce: 'keystroke'},
+		meta: { debounce: 'keystroke' },
 		payload: newEndDate,
-		type: UPDATE_END_DATE
+		type: UPDATE_END_DATE,
 	};
 }
 
@@ -110,6 +109,6 @@ export function debouncedUpdateEndDate(newEndDate: string): Action {
 export function updateEnded(newEnded: boolean): Action {
 	return {
 		payload: newEnded,
-		type: UPDATE_ENDED
+		type: UPDATE_ENDED,
 	};
 }

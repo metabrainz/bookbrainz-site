@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import _ from 'lodash';
 
 /**
@@ -40,7 +39,7 @@ function getDefaultAlias(entity: Record<string, unknown> | null | undefined) {
 		language: _.get(entity, 'defaultAlias.language.isoCode3', null),
 		name: _.get(entity, 'defaultAlias.name', null),
 		primary: _.get(entity, 'defaultAlias.primary', null),
-		sortName: _.get(entity, 'defaultAlias.sortName', null)
+		sortName: _.get(entity, 'defaultAlias.sortName', null),
 	};
 }
 
@@ -57,7 +56,7 @@ function getDefaultAlias(entity: Record<string, unknown> | null | undefined) {
  */
 
 function getLanguages(entity: any) {
-	return _.get(entity, 'languageSet.languages', []).map(({isoCode3}) => isoCode3);
+	return _.get(entity, 'languageSet.languages', []).map(({ isoCode3 }) => isoCode3);
 }
 
 /**
@@ -88,15 +87,16 @@ function getLanguages(entity: any) {
  */
 
 export function getWorkBasicInfo(work: Record<string, unknown> | null | undefined) {
-	return _.isNil(work) ? null :
-		{
-			bbid: _.get(work, 'bbid', null),
-			defaultAlias: getDefaultAlias(work),
-			disambiguation: _.get(work, 'disambiguation.comment', null),
-			entityType: _.get(work, 'type', null),
-			languages: getLanguages(work),
-			workType: _.get(work, 'workType.label', null)
-		};
+	return _.isNil(work)
+		? null
+		: {
+				bbid: _.get(work, 'bbid', null),
+				defaultAlias: getDefaultAlias(work),
+				disambiguation: _.get(work, 'disambiguation.comment', null),
+				entityType: _.get(work, 'type', null),
+				languages: getLanguages(work),
+				workType: _.get(work, 'workType.label', null),
+		  };
 }
 
 /**
@@ -135,21 +135,24 @@ export function getWorkBasicInfo(work: Record<string, unknown> | null | undefine
  */
 
 export function getEditionBasicInfo(edition: any) {
-	return _.isNil(edition) ? null :
-		{
-			bbid: _.get(edition, 'bbid', null),
-			defaultAlias: getDefaultAlias(edition),
-			depth: _.get(edition, 'depth', null),
-			disambiguation: _.get(edition, 'disambiguation.comment', null),
-			editionFormat: _.get(edition, 'editionFormat.label', null),
-			height: _.get(edition, 'height', null),
-			languages: getLanguages(edition),
-			pages: _.get(edition, 'pages', null),
-			releaseEventDates: _.get(edition, 'releaseEventSet.releaseEvents', []).map((event) => event.date),
-			status: _.get(edition, 'editionStatus.label', null),
-			weight: _.get(edition, 'weight', null),
-			width: _.get(edition, 'width', null)
-		};
+	return _.isNil(edition)
+		? null
+		: {
+				bbid: _.get(edition, 'bbid', null),
+				defaultAlias: getDefaultAlias(edition),
+				depth: _.get(edition, 'depth', null),
+				disambiguation: _.get(edition, 'disambiguation.comment', null),
+				editionFormat: _.get(edition, 'editionFormat.label', null),
+				height: _.get(edition, 'height', null),
+				languages: getLanguages(edition),
+				pages: _.get(edition, 'pages', null),
+				releaseEventDates: _.get(edition, 'releaseEventSet.releaseEvents', []).map(
+					(event) => event.date
+				),
+				status: _.get(edition, 'editionStatus.label', null),
+				weight: _.get(edition, 'weight', null),
+				width: _.get(edition, 'width', null),
+		  };
 }
 
 /**
@@ -176,13 +179,14 @@ export function getEditionBasicInfo(edition: any) {
  */
 
 export function getEditionGroupBasicInfo(editionGroup: Record<string, unknown> | null | undefined) {
-	return _.isNil(editionGroup) ? null :
-		{
-			bbid: _.get(editionGroup, 'bbid', null),
-			defaultAlias: getDefaultAlias(editionGroup),
-			disambiguation: _.get(editionGroup, 'disambiguation.comment', null),
-			editionGroupType: _.get(editionGroup, 'editionGroupType.label')
-		};
+	return _.isNil(editionGroup)
+		? null
+		: {
+				bbid: _.get(editionGroup, 'bbid', null),
+				defaultAlias: getDefaultAlias(editionGroup),
+				disambiguation: _.get(editionGroup, 'disambiguation.comment', null),
+				editionGroupType: _.get(editionGroup, 'editionGroupType.label'),
+		  };
 }
 
 /**
@@ -215,19 +219,20 @@ export function getEditionGroupBasicInfo(editionGroup: Record<string, unknown> |
  */
 
 export function getAuthorBasicInfo(author: Record<string, unknown> | null | undefined) {
-	return _.isNil(author) ? null :
-		{
-			authorType: _.get(author, 'authorType.label', null),
-			bbid: _.get(author, 'bbid', null),
-			beginArea: _.get(author, 'beginArea.name', null),
-			beginDate: _.get(author, 'beginDate', null),
-			defaultAlias: getDefaultAlias(author),
-			disambiguation: _.get(author, 'disambiguation.comment', null),
-			endArea: _.get(author, 'endArea.name', null),
-			endDate: _.get(author, 'endDate', null),
-			ended: _.get(author, 'ended', null),
-			gender: _.get(author, 'gender.name', null)
-		};
+	return _.isNil(author)
+		? null
+		: {
+				authorType: _.get(author, 'authorType.label', null),
+				bbid: _.get(author, 'bbid', null),
+				beginArea: _.get(author, 'beginArea.name', null),
+				beginDate: _.get(author, 'beginDate', null),
+				defaultAlias: getDefaultAlias(author),
+				disambiguation: _.get(author, 'disambiguation.comment', null),
+				endArea: _.get(author, 'endArea.name', null),
+				endDate: _.get(author, 'endDate', null),
+				ended: _.get(author, 'ended', null),
+				gender: _.get(author, 'gender.name', null),
+		  };
 }
 
 /**
@@ -258,17 +263,18 @@ export function getAuthorBasicInfo(author: Record<string, unknown> | null | unde
  */
 
 export function getPublisherBasicInfo(publisher: Record<string, unknown> | null | undefined) {
-	return _.isNil(publisher) ? null :
-		{
-			area: _.get(publisher, 'area.name', null),
-			bbid: _.get(publisher, 'bbid', null),
-			beginDate: _.get(publisher, 'beginDate', null),
-			defaultAlias: getDefaultAlias(publisher),
-			disambiguation: _.get(publisher, 'disambiguation.comment', null),
-			endDate: _.get(publisher, 'endDate', null),
-			ended: _.get(publisher, 'ended', null),
-			publisherType: _.get(publisher, 'publisherType.label', null)
-		};
+	return _.isNil(publisher)
+		? null
+		: {
+				area: _.get(publisher, 'area.name', null),
+				bbid: _.get(publisher, 'bbid', null),
+				beginDate: _.get(publisher, 'beginDate', null),
+				defaultAlias: getDefaultAlias(publisher),
+				disambiguation: _.get(publisher, 'disambiguation.comment', null),
+				endDate: _.get(publisher, 'endDate', null),
+				ended: _.get(publisher, 'ended', null),
+				publisherType: _.get(publisher, 'publisherType.label', null),
+		  };
 }
 
 /**
@@ -295,16 +301,17 @@ export function getPublisherBasicInfo(publisher: Record<string, unknown> | null 
  */
 
 export function getEntityAliases(entity: any) {
-	return _.isNil(entity) ? null :
-		{
-			aliases: _.get(entity, 'aliasSet.aliases', []).map((alias) => ({
-				language: _.get(alias, 'language.isoCode3', null),
-				name: _.get(alias, 'name', null),
-				primary: _.get(alias, 'primary', null),
-				sortName: _.get(alias, 'sortName', null)
-			})),
-			bbid: _.get(entity, 'bbid', null)
-		};
+	return _.isNil(entity)
+		? null
+		: {
+				aliases: _.get(entity, 'aliasSet.aliases', []).map((alias) => ({
+					language: _.get(alias, 'language.isoCode3', null),
+					name: _.get(alias, 'name', null),
+					primary: _.get(alias, 'primary', null),
+					sortName: _.get(alias, 'sortName', null),
+				})),
+				bbid: _.get(entity, 'bbid', null),
+		  };
 }
 
 /**
@@ -330,14 +337,15 @@ export function getEntityAliases(entity: any) {
  */
 
 export function getEntityIdentifiers(entity: any) {
-	return _.isNil(entity) ? null :
-		{
-			bbid: _.get(entity, 'bbid', null),
-			identifiers: _.get(entity, 'identifierSet.identifiers', []).map((identifier) => ({
-				type: _.get(identifier, 'type.label', null),
-				value: _.get(identifier, 'value', null)
-			}))
-		};
+	return _.isNil(entity)
+		? null
+		: {
+				bbid: _.get(entity, 'bbid', null),
+				identifiers: _.get(entity, 'identifierSet.identifiers', []).map((identifier) => ({
+					type: _.get(identifier, 'type.label', null),
+					value: _.get(identifier, 'value', null),
+				})),
+		  };
 }
 
 /**
@@ -368,38 +376,42 @@ export function getEntityIdentifiers(entity: any) {
  */
 
 export function getEntityRelationships(entity: any) {
-	return _.isNil(entity) ? null :
-		{
-			bbid: _.get(entity, 'bbid', null),
-			relationships: _.get(entity, 'relationshipSet.relationships', []).map((relationship) => {
-				const isItSourceEntity = entity.bbid === relationship.sourceBbid;
-				return {
-					direction: isItSourceEntity ? 'forward' : 'backward',
-					id: relationship.id,
-					linkPhrase: isItSourceEntity ?
-						_.get(relationship, 'type.linkPhrase', null) :
-						_.get(relationship, 'type.reverseLinkPhrase', null),
-					relationshipTypeId: _.get(relationship, 'type.id', null),
-					relationshipTypeName: _.get(relationship, 'type.label', null),
-					targetBbid: isItSourceEntity ?
-						_.get(relationship, 'targetBbid', null) :
-						_.get(relationship, 'sourceBbid', null),
-					targetEntityType: isItSourceEntity ?
-						_.kebabCase(_.get(relationship, 'type.targetEntityType', null)) :
-						_.kebabCase(_.get(relationship, 'type.sourceEntityType', null))
-				};
-			})
-		};
+	return _.isNil(entity)
+		? null
+		: {
+				bbid: _.get(entity, 'bbid', null),
+				relationships: _.get(entity, 'relationshipSet.relationships', []).map(
+					(relationship) => {
+						const isItSourceEntity = entity.bbid === relationship.sourceBbid;
+						return {
+							direction: isItSourceEntity ? 'forward' : 'backward',
+							id: relationship.id,
+							linkPhrase: isItSourceEntity
+								? _.get(relationship, 'type.linkPhrase', null)
+								: _.get(relationship, 'type.reverseLinkPhrase', null),
+							relationshipTypeId: _.get(relationship, 'type.id', null),
+							relationshipTypeName: _.get(relationship, 'type.label', null),
+							targetBbid: isItSourceEntity
+								? _.get(relationship, 'targetBbid', null)
+								: _.get(relationship, 'sourceBbid', null),
+							targetEntityType: isItSourceEntity
+								? _.kebabCase(_.get(relationship, 'type.targetEntityType', null))
+								: _.kebabCase(_.get(relationship, 'type.sourceEntityType', null)),
+						};
+					}
+				),
+		  };
 }
 
 export function formatSearchResponse(searchResult: Record<string, unknown>[] | null | undefined) {
-	return _.isNil(searchResult) ? null :
-		{
-			resultCount: searchResult.length,
-			searchResult: searchResult.map((entity) => ({
-				bbid: _.get(entity, 'bbid', null),
-				defaultAlias: getDefaultAlias(entity),
-				entityType: _.get(entity, 'type', null)
-			}))
-		};
+	return _.isNil(searchResult)
+		? null
+		: {
+				resultCount: searchResult.length,
+				searchResult: searchResult.map((entity) => ({
+					bbid: _.get(entity, 'bbid', null),
+					defaultAlias: getDefaultAlias(entity),
+					entityType: _.get(entity, 'type', null),
+				})),
+		  };
 }

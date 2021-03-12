@@ -24,26 +24,20 @@ import React from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
 
-
 function wangleID(value, idAttribute) {
 	if (_.isArray(value)) {
-		return value.map(
-			(aValue) =>
-				(_.isObject(aValue) ? aValue[idAttribute] : aValue)
-
-		);
+		return value.map((aValue) => (_.isObject(aValue) ? aValue[idAttribute] : aValue));
 	}
 
 	return _.isObject(value) ? value[idAttribute] : value;
 }
-
 
 class SelectWrapper extends React.Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			value: props.defaultValue
+			value: props.defaultValue,
 		};
 		this.currentValue = this.state.value;
 
@@ -52,7 +46,7 @@ class SelectWrapper extends React.Component {
 
 	handleChange(newValue) {
 		this.setState({
-			value: newValue
+			value: newValue,
 		});
 
 		this.currentValue = newValue;
@@ -63,8 +57,7 @@ class SelectWrapper extends React.Component {
 	}
 
 	getValue() {
-		const childValue = _.isNil(this.props.value) ?
-			this.currentValue : this.props.value;
+		const childValue = _.isNil(this.props.value) ? this.currentValue : this.props.value;
 
 		return wangleID(childValue, this.props.idAttribute);
 	}
@@ -89,16 +82,13 @@ class SelectWrapper extends React.Component {
 
 		return (
 			<div className="form-group">
-				{
-					label &&
-					<label className={labelClasses}>{label}</label>
-				}
+				{label && <label className={labelClasses}>{label}</label>}
 				<div className={wrapperClassName}>
 					<Child
 						{...props}
 						labelKey={labelAttribute}
 						multi={multiple}
-						ref={(ref) => this.select = ref}
+						ref={(ref) => (this.select = ref)}
 						value={childValue}
 						valueKey={idAttribute}
 						onChange={this.handleChange}
@@ -111,11 +101,7 @@ class SelectWrapper extends React.Component {
 SelectWrapper.displayName = 'SelectWrapper';
 SelectWrapper.propTypes = {
 	base: PropTypes.any.isRequired,
-	defaultValue: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.number,
-		PropTypes.object
-	]),
+	defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]),
 	idAttribute: PropTypes.string.isRequired,
 	label: PropTypes.string,
 	labelAttribute: PropTypes.string.isRequired,
@@ -123,12 +109,8 @@ SelectWrapper.propTypes = {
 	multiple: PropTypes.bool,
 	name: PropTypes.string,
 	onChange: PropTypes.func,
-	value: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.number,
-		PropTypes.object
-	]),
-	wrapperClassName: PropTypes.string
+	value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]),
+	wrapperClassName: PropTypes.string,
 };
 SelectWrapper.defaultProps = {
 	defaultValue: null,
@@ -138,7 +120,7 @@ SelectWrapper.defaultProps = {
 	name: null,
 	onChange: null,
 	value: null,
-	wrapperClassName: null
+	wrapperClassName: null,
 };
 
 export default SelectWrapper;

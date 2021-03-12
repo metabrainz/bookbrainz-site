@@ -24,10 +24,9 @@ import * as error from '../../common/helpers/error';
 import * as languageSetFormatter from '../helpers/diffFormatters/languageSet';
 import * as propHelpers from '../../client/helpers/props';
 import * as publisherSetFormatter from '../helpers/diffFormatters/publisherSet';
-import * as releaseEventSetFormatter from
-	'../helpers/diffFormatters/releaseEventSet';
+import * as releaseEventSetFormatter from '../helpers/diffFormatters/releaseEventSet';
 
-import {escapeProps, generateProps} from '../helpers/props';
+import { escapeProps, generateProps } from '../helpers/props';
 
 import Layout from '../../client/containers/layout';
 import React from 'react';
@@ -36,9 +35,8 @@ import RevisionPage from '../../client/components/pages/revision';
 import _ from 'lodash';
 import express from 'express';
 import log from 'log';
-import {makePromiseFromObject} from '../../common/helpers/utils';
+import { makePromiseFromObject } from '../../common/helpers/utils';
 import target from '../templates/target';
-
 
 const router = express.Router();
 
@@ -63,13 +61,11 @@ function formatAuthorChange(change) {
 		return baseFormatter.formatTypeChange(change, 'Author Type');
 	}
 
-	if (_.isEqual(change.path, ['beginArea']) ||
-			_.isEqual(change.path, ['beginArea', 'name'])) {
+	if (_.isEqual(change.path, ['beginArea']) || _.isEqual(change.path, ['beginArea', 'name'])) {
 		return baseFormatter.formatAreaChange(change, 'Begin Area');
 	}
 
-	if (_.isEqual(change.path, ['endArea']) ||
-			_.isEqual(change.path, ['endArea', 'name'])) {
+	if (_.isEqual(change.path, ['endArea']) || _.isEqual(change.path, ['endArea', 'name'])) {
 		return baseFormatter.formatAreaChange(change, 'End Area');
 	}
 
@@ -93,13 +89,13 @@ function formatEditionChange(change) {
 		return languageSetFormatter.format(change);
 	}
 
-	if (_.isEqual(change.path, ['width']) ||
-			_.isEqual(change.path, ['height']) ||
-			_.isEqual(change.path, ['depth']) ||
-			_.isEqual(change.path, ['weight'])) {
-		return baseFormatter.formatScalarChange(
-			change, _.startCase(change.path[0])
-		);
+	if (
+		_.isEqual(change.path, ['width']) ||
+		_.isEqual(change.path, ['height']) ||
+		_.isEqual(change.path, ['depth']) ||
+		_.isEqual(change.path, ['weight'])
+	) {
+		return baseFormatter.formatScalarChange(change, _.startCase(change.path[0]));
 	}
 
 	if (_.isEqual(change.path, ['pages'])) {
@@ -134,8 +130,7 @@ function formatPublisherChange(change) {
 		return baseFormatter.formatTypeChange(change, 'Publisher Type');
 	}
 
-	if (_.isEqual(change.path, ['area']) ||
-			_.isEqual(change.path, ['area', 'name'])) {
+	if (_.isEqual(change.path, ['area']) || _.isEqual(change.path, ['area', 'name'])) {
 		return baseFormatter.formatAreaChange(change);
 	}
 
@@ -164,41 +159,57 @@ function formatEditionGroupChange(change) {
 
 function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 	// entityRevisions - collection of *entityType*_revisions matching id
-	return Promise.all(entityRevisions.map(
-		(revision) =>
-			revision.parent()
-				.then(
-					(parent) => makePromiseFromObject({
+	return Promise.all(
+		entityRevisions.map((revision) =>
+			revision.parent().then(
+				(parent) =>
+					makePromiseFromObject({
 						changes: revision.diff(parent),
 						entity: revision.related('entity'),
-						entityAlias: revision.get('dataId') ?
-							revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
-							orm.func.entity.getEntityParentAlias(
-								orm, entityType, revision.get('bbid')
-							),
+						entityAlias: revision.get('dataId')
+							? revision.related('data').fetch({
+									require: false,
+									withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases'],
+							  })
+							: orm.func.entity.getEntityParentAlias(
+									orm,
+									entityType,
+									revision.get('bbid')
+							  ),
 						isNew: !parent,
-						revision
+						revision,
 					}),
-					// If calling .parent() is rejected (no parent rev), we still want to go ahead without the parent
-					() => makePromiseFromObject({
+				// If calling .parent() is rejected (no parent rev), we still want to go ahead without the parent
+				() =>
+					makePromiseFromObject({
 						changes: revision.diff(null),
 						entity: revision.related('entity'),
-						entityAlias: revision.get('dataId') ?
-							revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
-							orm.func.entity.getEntityParentAlias(
-								orm, entityType, revision.get('bbid')
-							),
+						entityAlias: revision.get('dataId')
+							? revision.related('data').fetch({
+									require: false,
+									withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases'],
+							  })
+							: orm.func.entity.getEntityParentAlias(
+									orm,
+									entityType,
+									revision.get('bbid')
+							  ),
 						isNew: true,
-						revision
+						revision,
 					})
-				)
-	));
+			)
+		)
+	);
 }
 
 router.get('/:id', async (req, res, next) => {
 	const {
-		AuthorRevision, EditionRevision, EditionGroupRevision,
-		PublisherRevision, Revision, WorkRevision
+		AuthorRevision,
+		EditionRevision,
+		EditionGroupRevision,
+		PublisherRevision,
+		Revision,
+		WorkRevision,
 	} = req.app.locals.orm;
 
 	let revision;
@@ -210,29 +221,34 @@ router.get('/:id', async (req, res, next) => {
 		 */
 		return EntityRevisionModel.forge()
 			.where('id', req.params.id)
-			.fetchAll({merge: false, remove: false, require: false, withRelated: 'entity'})
-			.then((entityRevisions) => diffRevisionsWithParents(req.app.locals.orm, entityRevisions, entityType))
-			.catch(err => { log.error(err); throw err; });
+			.fetchAll({ merge: false, remove: false, require: false, withRelated: 'entity' })
+			.then((entityRevisions) =>
+				diffRevisionsWithParents(req.app.locals.orm, entityRevisions, entityType)
+			)
+			.catch((err) => {
+				log.error(err);
+				throw err;
+			});
 	}
 	try {
 		/*
-		* Here, we need to get the Revision, then get all <Entity>Revision
-		* objects with the same ID, formatting each revision individually, then
-		* concatenating the diffs
-		*/
-		revision = await new Revision({id: req.params.id})
+		 * Here, we need to get the Revision, then get all <Entity>Revision
+		 * objects with the same ID, formatting each revision individually, then
+		 * concatenating the diffs
+		 */
+		revision = await new Revision({ id: req.params.id })
 			.fetch({
 				withRelated: [
 					'author',
 					'author.titleUnlock.title',
 					{
-						'notes'(q) {
+						notes(q) {
 							q.orderBy('note.posted_at');
-						}
+						},
 					},
 					'notes.author',
-					'notes.author.titleUnlock.title'
-				]
+					'notes.author.titleUnlock.title',
+				],
 			})
 			.catch(Revision.NotFoundError, () => {
 				throw new error.NotFoundError(`Revision #${req.params.id} not found`, req);
@@ -244,58 +260,39 @@ router.get('/:id', async (req, res, next) => {
 		const publisherDiffs = await _createRevision(PublisherRevision, 'Publisher');
 		const workDiffs = await _createRevision(WorkRevision, 'Work');
 		const diffs = _.concat(
-			entityFormatter.formatEntityDiffs(
-				authorDiffs,
-				'Author',
-				formatAuthorChange
-			),
-			entityFormatter.formatEntityDiffs(
-				editionDiffs,
-				'Edition',
-				formatEditionChange
-			),
+			entityFormatter.formatEntityDiffs(authorDiffs, 'Author', formatAuthorChange),
+			entityFormatter.formatEntityDiffs(editionDiffs, 'Edition', formatEditionChange),
 			entityFormatter.formatEntityDiffs(
 				editionGroupDiffs,
 				'EditionGroup',
 				formatEditionGroupChange
 			),
-			entityFormatter.formatEntityDiffs(
-				publisherDiffs,
-				'Publisher',
-				formatPublisherChange
-			),
-			entityFormatter.formatEntityDiffs(
-				workDiffs,
-				'Work',
-				formatWorkChange
-			)
+			entityFormatter.formatEntityDiffs(publisherDiffs, 'Publisher', formatPublisherChange),
+			entityFormatter.formatEntityDiffs(workDiffs, 'Work', formatWorkChange)
 		);
 
 		const props = generateProps(req, res, {
 			diffs,
 			revision: revision.toJSON(),
-			title: 'RevisionPage'
+			title: 'RevisionPage',
 		});
 
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<RevisionPage
-					diffs={props.diffs}
-					revision={props.revision}
-					user={props.user}
-				/>
+				<RevisionPage diffs={props.diffs} revision={props.revision} user={props.user} />
 			</Layout>
 		);
 
 		const script = '/js/revision.js';
 
-		return res.send(target({
-			markup,
-			props: escapeProps(props),
-			script
-		}));
-	}
-	catch (err) {
+		return res.send(
+			target({
+				markup,
+				props: escapeProps(props),
+				script,
+			})
+		);
+	} catch (err) {
 		return next(err);
 	}
 });

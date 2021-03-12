@@ -23,7 +23,7 @@
 import * as search from '../common/helpers/search';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
-import {get as _get} from 'lodash';
+import { get as _get } from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
 import compression from 'compression';
 import config from '../common/helpers/config';
@@ -33,11 +33,9 @@ import logger from 'morgan';
 import redis from 'connect-redis';
 import session from 'express-session';
 
-
 // Initialize application
 const app = express();
 app.locals.orm = BookBrainzData(config.database);
-
 
 app.set('trust proxy', config.site.proxyTrust);
 
@@ -46,25 +44,25 @@ if (app.get('env') !== 'testing') {
 }
 
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 app.use(compression());
 
-
 const RedisStore = redis(session);
-app.use(session({
-	cookie: {
-		maxAge: _get(config, 'session.maxAge', 2592000000),
-		secure: _get(config, 'session.secure', false)
-	},
-	resave: false,
-	saveUninitialized: false,
-	secret: config.session.secret,
-	store: new RedisStore({
-		host: _get(config, 'session.redis.host', 'localhost'),
-		port: _get(config, 'session.redis.port', 6379)
+app.use(
+	session({
+		cookie: {
+			maxAge: _get(config, 'session.maxAge', 2592000000),
+			secure: _get(config, 'session.secure', false),
+		},
+		resave: false,
+		saveUninitialized: false,
+		secret: config.session.secret,
+		store: new RedisStore({
+			host: _get(config, 'session.redis.host', 'localhost'),
+			port: _get(config, 'session.redis.port', 6379),
+		}),
 	})
-}));
-
+);
 
 // Set up routes
 const mainRouter = initRoutes();
@@ -76,14 +74,13 @@ app.use('/*', (req, res) => {
 });
 // Catch 404 and forward to error handler
 mainRouter.use((req, res) => {
-	res.status(404).send({message: `Incorrect endpoint ${req.path}`});
+	res.status(404).send({ message: `Incorrect endpoint ${req.path}` });
 });
 
 // initialize elasticsearch
 // Clone object to prevent error if starting webserver and api
 // https://github.com/elastic/elasticsearch-js/issues/33
 search.init(app.locals.orm, Object.assign({}, config.search));
-
 
 const debug = Debug('bbapi');
 
@@ -102,8 +99,7 @@ function cleanupFunction() {
 			if (err) {
 				debug('Error while closing server connections');
 				reject(err);
-			}
-			else {
+			} else {
 				debug('Closed all server connections. Bye bye!');
 				resolve();
 			}
@@ -111,7 +107,9 @@ function cleanupFunction() {
 		// force-kill after X milliseconds.
 		if (config.site.forceExitAfterMs) {
 			setTimeout(() => {
-				reject(new Error(`Cleanup function timed out after ${config.site.forceExitAfterMs} ms`));
+				reject(
+					new Error(`Cleanup function timed out after ${config.site.forceExitAfterMs} ms`)
+				);
 			}, config.site.forceExitAfterMs);
 		}
 	});

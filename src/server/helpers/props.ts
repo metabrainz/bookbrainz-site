@@ -16,21 +16,24 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import jsesc from 'jsesc';
 
-
-type PassportRequest = Request & {user: any, session: any};
+type PassportRequest = Request & { user: any; session: any };
 
 // JSON.stringify that escapes characters in string output
 export function escapeProps(props) {
 	return jsesc(props, {
 		isScriptContext: true,
-		json: true
+		json: true,
 	});
 }
 
-export function generateProps<T>(req: PassportRequest, res: Response, props?: T): T & Record<string, unknown> {
+export function generateProps<T>(
+	req: PassportRequest,
+	res: Response,
+	props?: T
+): T & Record<string, unknown> {
 	const baseObject: Record<string, unknown> = {};
 	if (req.session && req.session.mergeQueue) {
 		baseObject.mergeQueue = req.session.mergeQueue;
