@@ -58,11 +58,11 @@ keeping the application state intact, for the price of increased compilation tim
 
 If you are running the server manually, you can simply run `npm run debug` in the command line.
 
-If you're using Docker and our `./develop.sh` script, you will need to modify the `docker-compose.yml` file to:
-1. change the `command` to:
+If you're using Docker and our `./develop.sh` script, you will need to modify the `docker-compose.yml` file and change a few things on the `bookbrainz-site` service defined there:
+1. change the bookbrainz-site `command` to:
     - `npm run debug` if you only want to change client files (in `src/client`)
     - `npm run debug-watch-server` if you *also* want to modify server files (in `src/server`)
-2. mount the `src` folder
+2. mount the `src` folder to the bookbrainz-site service
 
 For example:
 ```

@@ -187,7 +187,11 @@ class NameSection extends React.Component {
 											(
 												<ListGroupItem
 													bsStyle="warning"
+<<<<<<< HEAD
 													href={`/${_kebabCase(entityType)}/${match.bbid}`}
+=======
+													href={`/${_.kebabCase(entityType)}/${match.bbid}`}
+>>>>>>> 4f5e5fd75ee04e72e4009c6bbe6d0dd715776b17
 													key={`${match.bbid}`}
 													rel="noopener noreferrer" target="_blank"
 												>
