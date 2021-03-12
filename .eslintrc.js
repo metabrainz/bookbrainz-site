@@ -12,9 +12,10 @@ const options = {
 		'plugin:react/recommended',
 		'plugin:import/recommended',
 		'plugin:@typescript-eslint/recommended',
+		'plugin:prettier/recommended',
 	],
 	parser: '@typescript-eslint/parser',
-	plugins: ['react', 'import', '@typescript-eslint'],
+	plugins: ['react', 'import', '@typescript-eslint', 'prettier'],
 	root: true,
 	settings: {
 		'import/resolver': {
