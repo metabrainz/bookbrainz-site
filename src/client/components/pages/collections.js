@@ -16,32 +16,31 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import CollectionsTable from './parts/collections-table';
-import PagerElement from './parts/pager';
-import PropTypes from 'prop-types';
-import React from 'react';
-
+import CollectionsTable from "./parts/collections-table";
+import PagerElement from "./parts/pager";
+import PropTypes from "prop-types";
+import React from "react";
 
 class CollectionsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			querySearchParams: '',
-			results: this.props.results
+			querySearchParams: "",
+			results: this.props.results,
 		};
 
 		this.handleTypeChange = this.handleTypeChange.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
-		this.paginationUrl = './collections/collections';
+		this.paginationUrl = "./collections/collections";
 	}
 
 	searchResultsCallback(newResults) {
-		this.setState({results: newResults});
+		this.setState({ results: newResults });
 	}
 
 	handleTypeChange(type) {
-		const querySearchParams = type ? `type=${type}` : '';
-		this.setState({querySearchParams});
+		const querySearchParams = type ? `type=${type}` : "";
+		this.setState({ querySearchParams });
 	}
 
 	render() {
@@ -50,12 +49,16 @@ class CollectionsPage extends React.Component {
 				<CollectionsTable
 					entityTypes={this.props.entityTypes}
 					results={this.state.results}
-					showIfOwnerOrCollaborator={this.props.showIfOwnerOrCollaborator}
+					showIfOwnerOrCollaborator={
+						this.props.showIfOwnerOrCollaborator
+					}
 					showLastModified={this.props.showLastModified}
 					showOwner={this.props.showOwner}
 					showPrivacy={this.props.showPrivacy}
 					tableHeading={this.props.tableHeading}
 					onTypeChange={this.handleTypeChange}
+					user={this.props.user}
+					ownerId={this.props.editor ? this.props.editor.id : null}
 				/>
 				<PagerElement
 					from={this.props.from}
@@ -71,8 +74,7 @@ class CollectionsPage extends React.Component {
 	}
 }
 
-
-CollectionsPage.displayName = 'CollectionsPage';
+CollectionsPage.displayName = "CollectionsPage";
 CollectionsPage.propTypes = {
 	entityTypes: PropTypes.array.isRequired,
 	from: PropTypes.number,
@@ -83,7 +85,8 @@ CollectionsPage.propTypes = {
 	showOwner: PropTypes.bool,
 	showPrivacy: PropTypes.bool,
 	size: PropTypes.number,
-	tableHeading: PropTypes.string
+	tableHeading: PropTypes.string,
+	user: PropTypes.object,
 };
 CollectionsPage.defaultProps = {
 	from: 0,
@@ -93,7 +96,8 @@ CollectionsPage.defaultProps = {
 	showOwner: false,
 	showPrivacy: false,
 	size: 20,
-	tableHeading: 'Collections'
+	tableHeading: "Collections",
+	user: null,
 };
 
 export default CollectionsPage;
