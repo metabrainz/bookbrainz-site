@@ -22,7 +22,7 @@ import {
 	UPDATE_NAME_FIELD,
 	UPDATE_SEARCH_RESULTS,
 	UPDATE_SORT_NAME_FIELD,
-	UPDATE_WARN_IF_EXISTS,
+	UPDATE_WARN_IF_EXISTS
 } from './actions';
 import Immutable from 'immutable';
 
@@ -33,11 +33,11 @@ function reducer(
 		language: null,
 		name: '',
 		searchResults: null,
-		sortName: '',
+		sortName: ''
 	}),
 	action
 ) {
-	const { payload, type } = action;
+	const {payload, type} = action;
 	switch (type) {
 		case UPDATE_NAME_FIELD:
 			return state.set('name', payload);

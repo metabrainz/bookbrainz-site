@@ -20,7 +20,7 @@ import AliasRowMerge from './alias-row-merge';
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 /**
  * Container component. The AliasEditorMerge component contains a number of AliasRow
@@ -34,11 +34,11 @@ import { connect } from 'react-redux';
  *        alias.
  * @returns {ReactElement} React element containing the rendered AliasEditorMerge.
  */
-const AliasEditorMerge = ({ aliases, languageOptions }) => {
+const AliasEditorMerge = ({aliases, languageOptions}) => {
 	const languageOptionsForDisplay = {};
 	languageOptions.forEach((language) => (languageOptionsForDisplay[language.id] = language.name));
 
-	const noAliasesTextClass = classNames('text-center', { hidden: aliases.size });
+	const noAliasesTextClass = classNames('text-center', {hidden: aliases.size});
 	return (
 		<React.Fragment>
 			<h2>Aliases</h2>
@@ -60,7 +60,7 @@ const AliasEditorMerge = ({ aliases, languageOptions }) => {
 AliasEditorMerge.displayName = 'AliasEditorMerge';
 AliasEditorMerge.propTypes = {
 	aliases: PropTypes.object.isRequired,
-	languageOptions: PropTypes.array.isRequired,
+	languageOptions: PropTypes.array.isRequired
 };
 
 function mapStateToProps(rootState) {
@@ -77,7 +77,7 @@ function mapStateToProps(rootState) {
 			alias.get('sortName') !== nameSection.get('sortName')
 	);
 	return {
-		aliases: filteredAliases,
+		aliases: filteredAliases
 	};
 }
 

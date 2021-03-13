@@ -38,7 +38,7 @@ const favicon = `
 	<meta name='theme-color'
 		content='#754e37'/>
 		`;
-export default ({ title, markup, page, props, script }) => {
+export default ({title, markup, page, props, script}) => {
 	const pageScript = `<script id='page' type='application/json'>${page}</script>`;
 	return `
 	<!DOCTYPE html>

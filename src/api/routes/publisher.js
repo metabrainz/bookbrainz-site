@@ -21,18 +21,18 @@ import * as utils from '../helpers/utils';
 import {
 	formatQueryParameters,
 	loadEntityRelationshipsForBrowse,
-	validateBrowseRequestQueryParameters,
+	validateBrowseRequestQueryParameters
 } from '../helpers/middleware';
 import {
 	getEntityAliases,
 	getEntityIdentifiers,
 	getEntityRelationships,
-	getPublisherBasicInfo,
+	getPublisherBasicInfo
 } from '../helpers/formatEntityData';
 
-import { Router } from 'express';
-import { makeEntityLoader } from '../helpers/entityLoader';
-import { toLower } from 'lodash';
+import {Router} from 'express';
+import {makeEntityLoader} from '../helpers/entityLoader';
+import {toLower} from 'lodash';
 
 const router = Router();
 
@@ -40,7 +40,7 @@ const publisherBasicRelations = [
 	'defaultAlias.language',
 	'disambiguation',
 	'publisherType',
-	'area',
+	'area'
 ];
 
 const publisherError = 'Publisher not found';
@@ -371,19 +371,19 @@ router.get(
 		);
 
 		if (req.query.modelType === 'Edition') {
-			const { entity: edition } = res.locals;
+			const {entity: edition} = res.locals;
 			const publishers = edition.publisherSet ? edition.publisherSet.publishers : [];
 			publishers
 				.map((publisher) => getPublisherBasicInfo(publisher))
 				.filter(relationshipsFilterMethod)
 				.forEach((filteredEdition) => {
 					// added relationship to make the output consistent
-					publisherRelationshipList.push({ entity: filteredEdition, relationship: {} });
+					publisherRelationshipList.push({entity: filteredEdition, relationship: {}});
 				});
 		}
 		return res.status(200).send({
 			bbid: req.query.bbid,
-			publishers: publisherRelationshipList,
+			publishers: publisherRelationshipList
 		});
 	}
 );

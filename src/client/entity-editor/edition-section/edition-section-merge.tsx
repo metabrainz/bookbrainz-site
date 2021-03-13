@@ -29,21 +29,21 @@ import {
 	updateEditionGroup,
 	updateFormat,
 	updatePublisher,
-	updateStatus,
+	updateStatus
 } from './actions';
 
-import type { List, Map } from 'immutable';
-import { entityToOption, transformISODateForSelect } from '../../helpers/entity';
+import type {List, Map} from 'immutable';
+import {entityToOption, transformISODateForSelect} from '../../helpers/entity';
 
 import CustomInput from '../../input';
-import type { Dispatch } from 'redux';
+import type {Dispatch} from 'redux';
 import Entity from '../common/entity';
 import LinkedEntity from '../common/linked-entity';
 import MergeField from '../common/merge-field';
 import Select from 'react-select';
 import _ from 'lodash';
-import { connect } from 'react-redux';
-import { convertMapToObject } from '../../helpers/utils';
+import {connect} from 'react-redux';
+import {convertMapToObject} from '../../helpers/utils';
 
 type LanguageOption = {
 	name: string;
@@ -150,7 +150,7 @@ function EditionSectionMerge({
 	releaseDateValue,
 	statusValue,
 	weightValue,
-	widthValue,
+	widthValue
 }: Props) {
 	const editionGroupOptions = [];
 	const releaseDateOptions = [];
@@ -164,14 +164,14 @@ function EditionSectionMerge({
 	const widthOptions = [];
 
 	mergingEntities.forEach((entity) => {
-		const depth = !_.isNil(entity.depth) && { label: entity.depth, value: entity.depth };
+		const depth = !_.isNil(entity.depth) && {label: entity.depth, value: entity.depth};
 		if (depth && !_.find(depthOptions, ['value', depth.value])) {
 			depthOptions.push(depth);
 		}
 		const editionGroup = !_.isNil(entity.editionGroup) && entityToOption(entity.editionGroup);
 		const editionGroupOption = editionGroup && {
 			label: editionGroup.text,
-			value: editionGroup,
+			value: editionGroup
 		};
 		if (
 			editionGroupOption &&
@@ -181,21 +181,21 @@ function EditionSectionMerge({
 		}
 		const format = entity.editionFormat && {
 			label: entity.editionFormat.label,
-			value: entity.editionFormat.id,
+			value: entity.editionFormat.id
 		};
 		if (format && !_.find(formatOptions, ['value', format.value])) {
 			formatOptions.push(format);
 		}
-		const height = !_.isNil(entity.height) && { label: entity.height, value: entity.height };
+		const height = !_.isNil(entity.height) && {label: entity.height, value: entity.height};
 		if (height && !_.find(heightOptions, ['value', height.value])) {
 			heightOptions.push(height);
 		}
-		const pages = !_.isNil(entity.pages) && { label: entity.pages, value: entity.pages };
+		const pages = !_.isNil(entity.pages) && {label: entity.pages, value: entity.pages};
 		if (pages && !_.find(pagesOptions, ['value', pages.value])) {
 			pagesOptions.push(pages);
 		}
 		const publisher = entityToOption(_.get(entity, 'publisherSet.publishers[0]'));
-		const publisherOption = publisher && { label: publisher.text, value: publisher };
+		const publisherOption = publisher && {label: publisher.text, value: publisher};
 		if (publisherOption && !_.find(publisherOptions, ['value.id', publisherOption.value.id])) {
 			publisherOptions.push(publisherOption);
 		}
@@ -207,16 +207,16 @@ function EditionSectionMerge({
 		}
 		const statusOption = entity.editionStatus && {
 			label: entity.editionStatus.label,
-			value: entity.editionStatus.id,
+			value: entity.editionStatus.id
 		};
 		if (statusOption && !_.find(statusOptions, ['value', statusOption.value])) {
 			statusOptions.push(statusOption);
 		}
-		const weight = !_.isNil(entity.weight) && { label: entity.weight, value: entity.weight };
+		const weight = !_.isNil(entity.weight) && {label: entity.weight, value: entity.weight};
 		if (weight && !_.find(weightOptions, ['value', weight.value])) {
 			weightOptions.push(weight);
 		}
-		const width = !_.isNil(entity.width) && { label: entity.width, value: entity.width };
+		const width = !_.isNil(entity.width) && {label: entity.width, value: entity.width};
 		if (width && !_.find(widthOptions, ['value', width.value])) {
 			widthOptions.push(width);
 		}
@@ -316,7 +316,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 		releaseDateValue: state.get('releaseDate'),
 		statusValue: state.get('status'),
 		weightValue: state.get('weight'),
-		widthValue: state.get('width'),
+		widthValue: state.get('width')
 	};
 }
 
@@ -346,7 +346,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onWidthChange: (event) =>
 			dispatch(
 				debouncedUpdateWidth(event.target.value ? parseInt(event.target.value, 10) : null)
-			),
+			)
 	};
 }
 

@@ -20,19 +20,19 @@
 
 import * as utils from './utils';
 
-import { ENTITY_TYPE_ICONS } from '../../client/helpers/entity';
+import {ENTITY_TYPE_ICONS} from '../../client/helpers/entity';
 import _ from 'lodash';
 
 type EntityInRelationship = {
 	bbid: string;
-	defaultAlias?: { name: string };
+	defaultAlias?: {name: string};
 	type: string;
 };
 
 type Relationship = {
 	source: EntityInRelationship;
 	target: EntityInRelationship;
-	type: { displayTemplate: string; linkPhrase: string };
+	type: {displayTemplate: string; linkPhrase: string};
 };
 
 /**
@@ -86,7 +86,7 @@ function renderRelationship(relationship: Relationship) {
 			} margin-right-0-5"></i>`;
 			// eslint-disable-next-line prefer-template
 			return entityIcon + `<a href="${utils.getEntityLink(entity)}">${name}</a>`;
-		}),
+		})
 	};
 
 	return template(data);

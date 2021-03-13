@@ -19,7 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 import React from 'react';
 
-const { PageHeader } = bootstrap;
+const {PageHeader} = bootstrap;
 
 /**
  * Renders a page containing a link to the current MusicBrainz privacy

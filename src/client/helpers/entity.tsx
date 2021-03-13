@@ -19,8 +19,8 @@
 
 import * as React from 'react';
 // eslint-disable-next-line import/named
-import { FontAwesomeIconProps as FAProps, FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst } from 'lodash';
+import {FontAwesomeIconProps as FAProps, FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst} from 'lodash';
 import {
 	faBook,
 	faGlobe,
@@ -29,10 +29,10 @@ import {
 	faUniversity,
 	faUser,
 	faUserCircle,
-	faWindowRestore,
+	faWindowRestore
 } from '@fortawesome/free-solid-svg-icons';
-import { format, isValid, parseISO } from 'date-fns';
-import { dateObjectToISOString } from './utils';
+import {format, isValid, parseISO} from 'date-fns';
+import {dateObjectToISOString} from './utils';
 
 export function extractAttribute(attr, path) {
 	if (attr) {
@@ -49,11 +49,11 @@ export function getLanguageAttribute(entity) {
 		entity.languageSet && entity.languageSet.languages
 			? entity.languageSet.languages.map((language) => language.name).join(', ')
 			: '?';
-	return { data: languages, title: 'Languages' };
+	return {data: languages, title: 'Languages'};
 }
 
 export function getTypeAttribute(entityType) {
-	return { data: extractAttribute(entityType, 'label'), title: 'Type' };
+	return {data: extractAttribute(entityType, 'label'), title: 'Type'};
 }
 
 /**
@@ -82,7 +82,7 @@ export function transformISODateForDisplay(ISODateString) {
 		default:
 			return ISODateString;
 	}
-	const parsedDate = parseISO(ISODateString, { additionalDigits: 2 });
+	const parsedDate = parseISO(ISODateString, {additionalDigits: 2});
 	if (!isValid(parsedDate)) {
 		return ISODateString;
 	}
@@ -102,7 +102,7 @@ export function transformISODateForSelect(dateValue) {
 	}
 	return {
 		label: transformISODateForDisplay(dateString),
-		value: dateString,
+		value: dateString
 	};
 }
 
@@ -126,16 +126,16 @@ function isArea(entity) {
  * @param {object} area - The Area entity to transfrom
  * @returns {object} option - A react-select option
  */
-export function areaToOption(area: { comment: string; id: number; name: string } | null) {
+export function areaToOption(area: {comment: string; id: number; name: string} | null) {
 	if (!area) {
 		return null;
 	}
-	const { id } = area;
+	const {id} = area;
 	return {
 		disambiguation: area.comment,
 		id,
 		text: area.name,
-		type: 'area',
+		type: 'area'
 		// value: id
 	};
 }
@@ -157,7 +157,7 @@ export function entityToOption(entity) {
 		disambiguation: entity.disambiguation ? entity.disambiguation.comment : null,
 		id: entity.bbid,
 		text: entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)',
-		type: entity.type,
+		type: entity.type
 	};
 }
 
@@ -253,7 +253,7 @@ export const ENTITY_TYPE_ICONS = {
 	EditionGroup: faWindowRestore,
 	Editor: faUserCircle,
 	Publisher: faUniversity,
-	Work: faPenNib,
+	Work: faPenNib
 };
 
 type FASize = FAProps['size'];
@@ -278,7 +278,7 @@ export function getSortNameOfDefaultAlias(entity) {
 
 export function getISBNOfEdition(entity) {
 	if (entity.identifierSet && entity.identifierSet.identifiers) {
-		const { identifiers } = entity.identifierSet;
+		const {identifiers} = entity.identifierSet;
 		return identifiers.find(
 			(identifier) =>
 				identifier.type.label === 'ISBN-13' || identifier.type.label === 'ISBN-10'
@@ -319,7 +319,7 @@ export function getRelationshipTargetByTypeId(entity, relationshipTypeId: number
 		targets = entity.relationships
 			.filter((relation) => relation.typeId === relationshipTypeId)
 			.map((relation) => {
-				const { target } = relation;
+				const {target} = relation;
 				return target;
 			});
 	}
@@ -339,7 +339,7 @@ export function getRelationshipSourceByTypeId(entity, relationshipTypeId: number
 		sources = entity.relationships
 			.filter((relation) => relation.typeId === relationshipTypeId)
 			.map((relation) => {
-				const { source } = relation;
+				const {source} = relation;
 				return source;
 			});
 	}

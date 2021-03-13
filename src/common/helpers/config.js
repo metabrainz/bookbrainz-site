@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import { existsSync, readFileSync } from 'fs';
-import { normalize } from 'path';
+import {existsSync, readFileSync} from 'fs';
+import {normalize} from 'path';
 
 let configContents;
 

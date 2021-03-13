@@ -17,14 +17,14 @@
  */
 
 import * as React from 'react';
-import { Action, updateType } from './actions';
-import { Col, Row } from 'react-bootstrap';
+import {Action, updateType} from './actions';
+import {Col, Row} from 'react-bootstrap';
 
 import CustomInput from '../../input';
-import type { Dispatch } from 'redux';
-import type { Map } from 'immutable';
+import type {Dispatch} from 'redux';
+import type {Map} from 'immutable';
 import Select from 'react-select';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 type EditionGroupType = {
 	label: string;
@@ -36,7 +36,7 @@ type StateProps = {
 };
 
 type DispatchProps = {
-	onTypeChange: (obj: { value: number } | null) => unknown;
+	onTypeChange: (obj: {value: number} | null) => unknown;
 };
 
 type OwnProps = {
@@ -60,10 +60,10 @@ type Props = StateProps & DispatchProps & OwnProps;
  * @returns {ReactElement} React element containing the rendered
  *          EditionGroupSection.
  */
-function EditionGroupSection({ editionGroupTypes, typeValue, onTypeChange }: Props) {
+function EditionGroupSection({editionGroupTypes, typeValue, onTypeChange}: Props) {
 	const editionGroupTypesForDisplay = editionGroupTypes.map((type) => ({
 		label: type.label,
-		value: type.id,
+		value: type.id
 	}));
 
 	return (
@@ -93,13 +93,13 @@ function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('editionGroupSection');
 
 	return {
-		typeValue: state.get('type'),
+		typeValue: state.get('type')
 	};
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		onTypeChange: (value) => dispatch(updateType(value && value.value)),
+		onTypeChange: (value) => dispatch(updateType(value && value.value))
 	};
 }
 

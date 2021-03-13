@@ -29,8 +29,8 @@ class DragAndDrop extends React.Component {
 		this.state = {
 			achievement: {
 				name: 'drag badge to set',
-				src: '/images/blankbadge.svg',
-			},
+				src: '/images/blankbadge.svg'
+			}
 		};
 	}
 
@@ -39,8 +39,8 @@ class DragAndDrop extends React.Component {
 		this.setState({
 			achievement: {
 				name: 'drag badge to set',
-				src: '/images/blankbadge.svg',
-			},
+				src: '/images/blankbadge.svg'
+			}
 		});
 	}
 
@@ -49,7 +49,7 @@ class DragAndDrop extends React.Component {
 	}
 
 	addChild(data) {
-		this.setState({ achievement: data });
+		this.setState({achievement: data});
 	}
 
 	handleDrop(ev) {
@@ -89,7 +89,7 @@ class DragAndDrop extends React.Component {
 
 DragAndDrop.displayName = 'DragAndDrop';
 DragAndDrop.propTypes = {
-	name: PropTypes.string.isRequired,
+	name: PropTypes.string.isRequired
 };
 
 export default DragAndDrop;

@@ -18,20 +18,20 @@
 
 import * as React from 'react';
 
-import { Col, Panel, Row } from 'react-bootstrap';
+import {Col, Panel, Row} from 'react-bootstrap';
 
 import AliasEditorMerge from './alias-editor/alias-editor-merge';
 import AnnotationSection from './annotation-section/annotation-section';
 import Entity from './common/entity';
 import EntityIdentifiers from '../components/pages/entities/identifiers';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import NameSectionMerge from './name-section/name-section-merge';
 import RelationshipSection from './relationship-editor/relationship-section';
 import SubmissionSection from './submission-section/submission-section';
 import _ from 'lodash';
-import { connect } from 'react-redux';
-import { faAngleDoubleLeft } from '@fortawesome/free-solid-svg-icons';
-import { getEntityLink } from '../../server/helpers/utils';
+import {connect} from 'react-redux';
+import {faAngleDoubleLeft} from '@fortawesome/free-solid-svg-icons';
+import {getEntityLink} from '../../server/helpers/utils';
 
 type OwnProps = {
 	children: React.ReactElement<any>;
@@ -58,7 +58,7 @@ type Props = StateProps & OwnProps;
  * @returns {ReactElement} React element containing the rendered EntityMerge.
  */
 const EntityMerge = (props: Props) => {
-	const { children, mergingEntities, identifierSet, identifierTypes, subheading } = props;
+	const {children, mergingEntities, identifierSet, identifierTypes, subheading} = props;
 	const identifiers = _.values(identifierSet.toJS()) || [];
 	return (
 		<Panel>
@@ -68,10 +68,10 @@ const EntityMerge = (props: Props) => {
 					<div>
 						{mergingEntities.map((entity, index) => {
 							const entityForDisplay = {
-								link: getEntityLink({ bbid: entity.bbid, type: entity.type }),
+								link: getEntityLink({bbid: entity.bbid, type: entity.type}),
 								text: _.get(entity, ['defaultAlias', 'name']),
 								type: entity.type,
-								unnamedText: '(unnamed)',
+								unnamedText: '(unnamed)'
 							};
 							const isNotLast = index < mergingEntities.length - 1;
 							return (
@@ -111,7 +111,7 @@ const EntityMerge = (props: Props) => {
 					</Row>
 					<Row>
 						<Col md={5} mdOffset={1}>
-							{React.cloneElement(React.Children.only(children), { ...props })}
+							{React.cloneElement(React.Children.only(children), {...props})}
 						</Col>
 					</Row>
 					<Row>
@@ -140,7 +140,7 @@ EntityMerge.displayName = 'EntityMerge';
 
 function mapStateToProps(rootState): StateProps {
 	return {
-		identifierSet: rootState.get('identifierEditor', {}),
+		identifierSet: rootState.get('identifierEditor', {})
 	};
 }
 

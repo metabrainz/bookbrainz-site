@@ -18,8 +18,8 @@
 
 import * as handler from '../helpers/handler';
 import * as search from '../../common/helpers/search';
-import { camelCase, differenceWith, isEqual, toLower, upperFirst } from 'lodash';
-import { BadRequestError } from '../../common/helpers/error';
+import {camelCase, differenceWith, isEqual, toLower, upperFirst} from 'lodash';
+import {BadRequestError} from '../../common/helpers/error';
 
 /**
  * A handler for create or edit actions on collections.
@@ -33,13 +33,13 @@ import { BadRequestError } from '../../common/helpers/error';
  */
 export async function collectionCreateOrEditHandler(req, res, next) {
 	try {
-		const { UserCollection, UserCollectionCollaborator } = req.app.locals.orm;
+		const {UserCollection, UserCollectionCollaborator} = req.app.locals.orm;
 		const isNew = !res.locals.collection;
 		let newCollection;
 		let method;
 		if (isNew) {
 			newCollection = await new UserCollection({
-				ownerId: req.user.id,
+				ownerId: req.user.id
 			});
 			method = 'insert';
 		} else {
@@ -49,8 +49,8 @@ export async function collectionCreateOrEditHandler(req, res, next) {
 			) {
 				throw new BadRequestError('Trying to change entityType of a non empty collection');
 			}
-			newCollection = await new UserCollection({ id: req.params.collectionId }).fetch({
-				require: true,
+			newCollection = await new UserCollection({id: req.params.collectionId}).fetch({
+				require: true
 			});
 			method = 'update';
 			newCollection.set('last_modified', new Date());
@@ -59,7 +59,7 @@ export async function collectionCreateOrEditHandler(req, res, next) {
 		newCollection.set('name', req.body.name);
 		newCollection.set('public', toLower(req.body.privacy) === 'public');
 		newCollection.set('entity_type', upperFirst(camelCase(req.body.entityType)));
-		await newCollection.save(null, { method });
+		await newCollection.save(null, {method});
 
 		const oldCollaborators = res.locals.collection ? res.locals.collection.collaborators : [];
 		const newCollaborators = req.body.collaborators ? req.body.collaborators : [];
@@ -72,8 +72,8 @@ export async function collectionCreateOrEditHandler(req, res, next) {
 			collaboratorPromises.push(
 				new UserCollectionCollaborator({
 					collaboratorId: collaborator.id,
-					collectionId: newCollection.get('id'),
-				}).save(null, { method: 'insert' })
+					collectionId: newCollection.get('id')
+				}).save(null, {method: 'insert'})
 			);
 		});
 		removedCollaborators.forEach((collaborator) => {
@@ -93,11 +93,11 @@ export async function collectionCreateOrEditHandler(req, res, next) {
 			const collectionPromiseForES = new Promise((resolve) => {
 				const collectionForES = {
 					aliasSet: {
-						aliases: [{ name: newCollection.get('name') }],
+						aliases: [{name: newCollection.get('name')}]
 					},
 					bbid: newCollection.get('id'),
 					id: newCollection.get('id'),
-					type: 'Collection',
+					type: 'Collection'
 				};
 				resolve(collectionForES);
 			});

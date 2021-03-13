@@ -23,18 +23,18 @@ import {
 	createEditor,
 	createWork,
 	getRandomUUID,
-	truncateEntities,
+	truncateEntities
 } from '../../../test-helpers/create-entities';
 
 import app from '../../../../src/api/app';
-import { browseWorkBasicTests } from '../helpers';
+import {browseWorkBasicTests} from '../helpers';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
 
-const { Language, Relationship, RelationshipSet, RelationshipType, Revision } = orm;
+const {Language, Relationship, RelationshipSet, RelationshipType, Revision} = orm;
 chai.use(chaiHttp);
-const { expect } = chai;
+const {expect} = chai;
 
 const aBBID = getRandomUUID();
 const bBBID = getRandomUUID();
@@ -172,11 +172,11 @@ describe('Browse Works', () => {
 			isoCode2b: 'eng',
 			isoCode2t: 'eng',
 			isoCode3: 'eng',
-			name: 'English',
+			name: 'English'
 		};
-		const englishLanguage = await new Language(englishAttrib).save(null, { method: 'insert' });
+		const englishLanguage = await new Language(englishAttrib).save(null, {method: 'insert'});
 		const englishLanguageSet = await orm.func.language.updateLanguageSet(orm, null, null, [
-			{ id: englishLanguage.id },
+			{id: englishLanguage.id}
 		]);
 		const frenchAttrib = {
 			frequency: 2,
@@ -184,11 +184,11 @@ describe('Browse Works', () => {
 			isoCode2b: 'fre',
 			isoCode2t: 'fra',
 			isoCode3: 'fra',
-			name: 'French',
+			name: 'French'
 		};
-		const frenchLanguage = await new Language(frenchAttrib).save(null, { method: 'insert' });
+		const frenchLanguage = await new Language(frenchAttrib).save(null, {method: 'insert'});
 		const frenchLanguageSet = await orm.func.language.updateLanguageSet(orm, null, null, [
-			{ id: frenchLanguage.id },
+			{id: frenchLanguage.id}
 		]);
 
 		// create 4 works
@@ -215,8 +215,8 @@ describe('Browse Works', () => {
 
 		// Now create a revision which forms the relationship b/w author and works
 		const editor = await createEditor();
-		const revision = await new Revision({ authorId: editor.id }).save(null, {
-			method: 'insert',
+		const revision = await new Revision({authorId: editor.id}).save(null, {
+			method: 'insert'
 		});
 
 		const relationshipTypeData = {
@@ -226,25 +226,25 @@ describe('Browse Works', () => {
 			linkPhrase: 'test phrase',
 			reverseLinkPhrase: 'test reverse link phrase',
 			sourceEntityType: 'Author',
-			targetEntityType: 'Work',
+			targetEntityType: 'Work'
 		};
-		await new RelationshipType(relationshipTypeData).save(null, { method: 'insert' });
+		await new RelationshipType(relationshipTypeData).save(null, {method: 'insert'});
 
 		const relationshipsPromise = [];
 		for (const workBBID of workBBIDs) {
 			const relationshipData = {
 				sourceBbid: author.get('bbid'),
 				targetBbid: workBBID,
-				typeId: relationshipTypeData.id,
+				typeId: relationshipTypeData.id
 			};
 			relationshipsPromise.push(
-				new Relationship(relationshipData).save(null, { method: 'insert' })
+				new Relationship(relationshipData).save(null, {method: 'insert'})
 			);
 		}
 		const relationships = await Promise.all(relationshipsPromise);
 
 		const authorRelationshipSet = await new RelationshipSet()
-			.save(null, { method: 'insert' })
+			.save(null, {method: 'insert'})
 			.then((model) =>
 				model
 					.relationships()
@@ -254,7 +254,7 @@ describe('Browse Works', () => {
 
 		author.set('relationshipSetId', authorRelationshipSet.id);
 		author.set('revisionId', revision.id);
-		await author.save(null, { method: 'update' });
+		await author.save(null, {method: 'update'});
 	});
 	after(truncateEntities);
 

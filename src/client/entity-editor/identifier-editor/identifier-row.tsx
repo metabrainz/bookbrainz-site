@@ -23,17 +23,17 @@ import {
 	Action,
 	debouncedUpdateIdentifierValue,
 	removeIdentifierRow,
-	updateIdentifierType,
+	updateIdentifierType
 } from './actions';
-import { Button, Col, Row } from 'react-bootstrap';
-import { IdentifierType, validateIdentifierValue } from '../validators/common';
+import {Button, Col, Row} from 'react-bootstrap';
+import {IdentifierType, validateIdentifierValue} from '../validators/common';
 import CustomInput from '../../input';
-import type { Dispatch } from 'redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import type {Dispatch} from 'redux';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
 import ValueField from './value-field';
-import { connect } from 'react-redux';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import {connect} from 'react-redux';
+import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
 type OwnProps = {
 	index: number;
@@ -46,7 +46,7 @@ type StateProps = {
 };
 
 type DispatchProps = {
-	onTypeChange: (obj: { value: number }) => unknown;
+	onTypeChange: (obj: {value: number}) => unknown;
 	onRemoveButtonClick: () => unknown;
 	onValueChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown;
 };
@@ -81,11 +81,11 @@ function IdentifierRow({
 	typeValue,
 	onTypeChange,
 	onRemoveButtonClick,
-	onValueChange,
+	onValueChange
 }: Props) {
 	const identifierTypesForDisplay = typeOptions.map((type) => ({
 		label: type.label,
-		value: type.id,
+		value: type.id
 	}));
 
 	return (
@@ -140,24 +140,24 @@ function handleValueChange(
 	return dispatch(debouncedUpdateIdentifierValue(index, event.target.value, guessedType));
 }
 
-function mapStateToProps(rootState, { index }: OwnProps): StateProps {
+function mapStateToProps(rootState, {index}: OwnProps): StateProps {
 	const state = rootState.get('identifierEditor');
 	return {
 		typeValue: state.getIn([index, 'type']),
-		valueValue: state.getIn([index, 'value']),
+		valueValue: state.getIn([index, 'value'])
 	};
 }
 
 function mapDispatchToProps(
 	dispatch: Dispatch<Action>,
-	{ index, typeOptions }: OwnProps
+	{index, typeOptions}: OwnProps
 ): DispatchProps {
 	return {
 		onRemoveButtonClick: () => dispatch(removeIdentifierRow(index)),
-		onTypeChange: (value: { value: number }) =>
+		onTypeChange: (value: {value: number}) =>
 			dispatch(updateIdentifierType(index, value && value.value)),
 		onValueChange: (event: React.ChangeEvent<HTMLInputElement>) =>
-			handleValueChange(dispatch, event, index, typeOptions),
+			handleValueChange(dispatch, event, index, typeOptions)
 	};
 }
 

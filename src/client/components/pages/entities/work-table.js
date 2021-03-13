@@ -21,18 +21,18 @@ import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import * as utilHelper from '../../../helpers/utils';
 
-import { faPenNib, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {faPenNib, faPlus} from '@fortawesome/free-solid-svg-icons';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { kebabCase as _kebabCase } from 'lodash';
+import {kebabCase as _kebabCase} from 'lodash';
 
-const { Button, Table } = bootstrap;
+const {Button, Table} = bootstrap;
 
-const { getEntityDisambiguation, getLanguageAttribute, getEntityLabel } = entityHelper;
+const {getEntityDisambiguation, getLanguageAttribute, getEntityLabel} = entityHelper;
 
-function WorkTableRow({ showAddedAtColumn, work, showCheckboxes, selectedEntities, onToggleRow }) {
+function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(work);
 	const disambiguation = getEntityDisambiguation(work);
 	const workType = work.workType ? work.workType.label : '?';
@@ -67,12 +67,12 @@ WorkTableRow.propTypes = {
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool.isRequired,
 	showCheckboxes: PropTypes.bool,
-	work: PropTypes.object.isRequired,
+	work: PropTypes.object.isRequired
 };
 WorkTableRow.defaultProps = {
 	onToggleRow: null,
 	selectedEntities: [],
-	showCheckboxes: false,
+	showCheckboxes: false
 };
 
 function WorkTable({
@@ -82,7 +82,7 @@ function WorkTable({
 	showAdd,
 	showCheckboxes,
 	selectedEntities,
-	onToggleRow,
+	onToggleRow
 }) {
 	let tableContent;
 	if (works.length) {
@@ -165,7 +165,7 @@ WorkTable.propTypes = {
 	showAdd: PropTypes.bool,
 	showAddedAtColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool,
-	works: PropTypes.array.isRequired,
+	works: PropTypes.array.isRequired
 };
 WorkTable.defaultProps = {
 	entity: null,
@@ -173,7 +173,7 @@ WorkTable.defaultProps = {
 	selectedEntities: [],
 	showAdd: true,
 	showAddedAtColumn: false,
-	showCheckboxes: false,
+	showCheckboxes: false
 };
 
 export default WorkTable;

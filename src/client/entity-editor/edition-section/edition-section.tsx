@@ -31,13 +31,13 @@ import {
 	updateFormat,
 	updateLanguages,
 	updatePublisher,
-	updateStatus,
+	updateStatus
 } from './actions';
 
-import { Alert, Button, Col, ListGroup, ListGroupItem, Row } from 'react-bootstrap';
-import { DateObject, isNullDate } from '../../helpers/utils';
-import type { List, Map } from 'immutable';
-import { faClone, faExternalLinkAlt, faSearch } from '@fortawesome/free-solid-svg-icons';
+import {Alert, Button, Col, ListGroup, ListGroupItem, Row} from 'react-bootstrap';
+import {DateObject, isNullDate} from '../../helpers/utils';
+import type {List, Map} from 'immutable';
+import {faClone, faExternalLinkAlt, faSearch} from '@fortawesome/free-solid-svg-icons';
 import {
 	validateEditionSectionDepth,
 	validateEditionSectionEditionGroup,
@@ -45,20 +45,20 @@ import {
 	validateEditionSectionPages,
 	validateEditionSectionReleaseDate,
 	validateEditionSectionWeight,
-	validateEditionSectionWidth,
+	validateEditionSectionWidth
 } from '../validators/edition';
 import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
-import type { Dispatch } from 'redux';
+import type {Dispatch} from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LanguageField from '../common/language-field';
 import LinkedEntity from '../common/linked-entity';
 import NumericField from '../common/numeric-field';
 import Select from 'react-select';
 import _ from 'lodash';
-import { connect } from 'react-redux';
-import { entityToOption } from '../../../server/helpers/utils';
+import {connect} from 'react-redux';
+import {entityToOption} from '../../../server/helpers/utils';
 import makeImmutable from '../common/make-immutable';
 
 const ImmutableLanguageField = makeImmutable(LanguageField);
@@ -116,7 +116,7 @@ type StateProps = {
 
 type DispatchProps = {
 	onDepthChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown;
-	onFormatChange: (obj: { value: number } | null | undefined) => unknown;
+	onFormatChange: (obj: {value: number} | null | undefined) => unknown;
 	onHeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown;
 	onLanguagesChange: (arg: Array<LanguageOption>) => unknown;
 	onPagesChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown;
@@ -125,7 +125,7 @@ type DispatchProps = {
 	onToggleShowEditionGroupSection: (showEGSection: boolean) => unknown;
 	onEditionGroupChange: (arg: EditionGroup) => unknown;
 	onReleaseDateChange: (arg: string) => unknown;
-	onStatusChange: (obj: { value: number } | null | undefined) => unknown;
+	onStatusChange: (obj: {value: number} | null | undefined) => unknown;
 	onWeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown;
 	onWidthChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown;
 };
@@ -183,26 +183,26 @@ function EditionSection({
 	releaseDateValue,
 	statusValue,
 	weightValue,
-	widthValue,
+	widthValue
 }: Props) {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		label: language.name,
-		value: language.id,
+		value: language.id
 	}));
 
 	const editionFormatsForDisplay = editionFormats.map((format) => ({
 		label: format.label,
-		value: format.id,
+		value: format.id
 	}));
 
 	const editionStatusesForDisplay = editionStatuses.map((status) => ({
 		label: status.label,
-		value: status.id,
+		value: status.id
 	}));
 
 	const {
 		isValid: isValidReleaseDate,
-		errorMessage: dateErrorMessage,
+		errorMessage: dateErrorMessage
 	} = validateEditionSectionReleaseDate(releaseDateValue);
 
 	const hasmatchingNameEditionGroups =
@@ -452,7 +452,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 		releaseDateValue: state.get('releaseDate'),
 		statusValue: state.get('status'),
 		weightValue: state.get('weight'),
-		widthValue: state.get('width'),
+		widthValue: state.get('width')
 	};
 }
 
@@ -463,7 +463,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 				debouncedUpdateDepth(event.target.value ? parseInt(event.target.value, 10) : null)
 			),
 		onEditionGroupChange: (value) => dispatch(updateEditionGroup(value)),
-		onFormatChange: (value: { value: number } | null) =>
+		onFormatChange: (value: {value: number} | null) =>
 			dispatch(updateFormat(value && value.value)),
 		onHeightChange: (event) =>
 			dispatch(
@@ -477,7 +477,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onPhysicalButtonClick: () => dispatch(showPhysical()),
 		onPublisherChange: (value) => dispatch(updatePublisher(value)),
 		onReleaseDateChange: (releaseDate) => dispatch(debouncedUpdateReleaseDate(releaseDate)),
-		onStatusChange: (value: { value: number } | null) =>
+		onStatusChange: (value: {value: number} | null) =>
 			dispatch(updateStatus(value && value.value)),
 		onToggleShowEditionGroupSection: (showEGSection: boolean) => {
 			if (showEGSection === false) {
@@ -492,7 +492,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onWidthChange: (event) =>
 			dispatch(
 				debouncedUpdateWidth(event.target.value ? parseInt(event.target.value, 10) : null)
-			),
+			)
 	};
 }
 

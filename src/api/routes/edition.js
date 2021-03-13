@@ -20,17 +20,17 @@ import * as utils from '../helpers/utils';
 import {
 	formatQueryParameters,
 	loadEntityRelationshipsForBrowse,
-	validateBrowseRequestQueryParameters,
+	validateBrowseRequestQueryParameters
 } from '../helpers/middleware';
 import {
 	getEditionBasicInfo,
 	getEntityAliases,
 	getEntityIdentifiers,
-	getEntityRelationships,
+	getEntityRelationships
 } from '../helpers/formatEntityData';
-import { Router } from 'express';
-import { makeEntityLoader } from '../helpers/entityLoader';
-import { toLower } from 'lodash';
+import {Router} from 'express';
+import {makeEntityLoader} from '../helpers/entityLoader';
+import {toLower} from 'lodash';
 
 const router = Router();
 
@@ -40,7 +40,7 @@ const editionBasicRelations = [
 	'disambiguation',
 	'editionFormat',
 	'editionStatus',
-	'releaseEventSet.releaseEvents',
+	'releaseEventSet.releaseEvents'
 ];
 
 const editionError = 'Edition not found';
@@ -355,7 +355,7 @@ router.get(
 		'edition',
 		'edition-group',
 		'work',
-		'publisher',
+		'publisher'
 	]),
 	(req, res, next) => {
 		// As we're loading the browsed entity, also load the related Editions from the ORM models to avoid fetching it twice
@@ -402,23 +402,23 @@ router.get(
 		);
 
 		if (req.query.modelType === 'EditionGroup') {
-			const { editions } = res.locals.entity;
+			const {editions} = res.locals.entity;
 			editions
 				.map((edition) => getEditionBasicInfo(edition))
 				.filter(relationshipsFilterMethod)
 				.forEach((filteredEdition) => {
 					// added relationship to make the output consistent
-					editionRelationshipList.push({ entity: filteredEdition, relationship: {} });
+					editionRelationshipList.push({entity: filteredEdition, relationship: {}});
 				});
 		}
 
 		if (req.query.modelType === 'Publisher') {
 			// Relationship between Edition and Publisher is defined differently than your normal relationship
 			// See note above in middleware about refactoring Publisher().editions()
-			const { Publisher } = req.app.locals.orm;
-			const { bbid } = req.query;
-			const editions = await new Publisher({ bbid }).editions({
-				withRelated: editionBasicRelations,
+			const {Publisher} = req.app.locals.orm;
+			const {bbid} = req.query;
+			const editions = await new Publisher({bbid}).editions({
+				withRelated: editionBasicRelations
 			});
 			const editionsJSON = editions.toJSON();
 			editionsJSON
@@ -426,13 +426,13 @@ router.get(
 				.filter(relationshipsFilterMethod)
 				.forEach((filteredEdition) => {
 					// added relationship to make the output consistent
-					editionRelationshipList.push({ entity: filteredEdition, relationship: {} });
+					editionRelationshipList.push({entity: filteredEdition, relationship: {}});
 				});
 		}
 
 		return res.status(200).send({
 			bbid: req.query.bbid,
-			editions: editionRelationshipList,
+			editions: editionRelationshipList
 		});
 	}
 );

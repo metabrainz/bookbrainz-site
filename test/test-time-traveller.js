@@ -21,7 +21,7 @@ import * as testData from '../data/test-data.js';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
-const { Editor } = orm;
+const {Editor} = orm;
 
 const Achievement = rewire('../src/server/helpers/achievement.js');
 const processTimeTraveller = Achievement.__get__('processTimeTraveller');
@@ -30,7 +30,7 @@ const timeTravellerThreshold = 0;
 
 function rewireEditionDateDifference(threshold) {
 	return common.rewire(Achievement, {
-		getEditionDateDifference: () => Promise.resolve(threshold),
+		getEditionDateDifference: () => Promise.resolve(threshold)
 	});
 }
 
@@ -45,7 +45,7 @@ export default function tests() {
 	const test1 = common.testAchievement(
 		rewireEditionDateDifference(timeTravellerThreshold),
 		() =>
-			new Editor({ name: testData.editorAttribs.name })
+			new Editor({name: testData.editorAttribs.name})
 				.fetch()
 				.then((editor) => processTimeTraveller(orm, editor.id))
 				.then((edit) => edit['Time Traveller']),
@@ -56,7 +56,7 @@ export default function tests() {
 	const test2 = common.testAchievement(
 		rewireEditionDateDifference(timeTravellerThreshold - 1),
 		() =>
-			new Editor({ name: testData.editorAttribs.name })
+			new Editor({name: testData.editorAttribs.name})
 				.fetch()
 				.then((editor) => processTimeTraveller(orm, editor.id))
 				.then((edit) => edit['Time Traveller']),

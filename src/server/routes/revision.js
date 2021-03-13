@@ -26,7 +26,7 @@ import * as propHelpers from '../../client/helpers/props';
 import * as publisherSetFormatter from '../helpers/diffFormatters/publisherSet';
 import * as releaseEventSetFormatter from '../helpers/diffFormatters/releaseEventSet';
 
-import { escapeProps, generateProps } from '../helpers/props';
+import {escapeProps, generateProps} from '../helpers/props';
 
 import Layout from '../../client/containers/layout';
 import React from 'react';
@@ -35,7 +35,7 @@ import RevisionPage from '../../client/components/pages/revision';
 import _ from 'lodash';
 import express from 'express';
 import log from 'log';
-import { makePromiseFromObject } from '../../common/helpers/utils';
+import {makePromiseFromObject} from '../../common/helpers/utils';
 import target from '../templates/target';
 
 const router = express.Router();
@@ -169,7 +169,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 						entityAlias: revision.get('dataId')
 							? revision.related('data').fetch({
 									require: false,
-									withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases'],
+									withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']
 							  })
 							: orm.func.entity.getEntityParentAlias(
 									orm,
@@ -177,7 +177,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 									revision.get('bbid')
 							  ),
 						isNew: !parent,
-						revision,
+						revision
 					}),
 				// If calling .parent() is rejected (no parent rev), we still want to go ahead without the parent
 				() =>
@@ -187,7 +187,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 						entityAlias: revision.get('dataId')
 							? revision.related('data').fetch({
 									require: false,
-									withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases'],
+									withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']
 							  })
 							: orm.func.entity.getEntityParentAlias(
 									orm,
@@ -195,7 +195,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 									revision.get('bbid')
 							  ),
 						isNew: true,
-						revision,
+						revision
 					})
 			)
 		)
@@ -209,7 +209,7 @@ router.get('/:id', async (req, res, next) => {
 		EditionGroupRevision,
 		PublisherRevision,
 		Revision,
-		WorkRevision,
+		WorkRevision
 	} = req.app.locals.orm;
 
 	let revision;
@@ -221,7 +221,7 @@ router.get('/:id', async (req, res, next) => {
 		 */
 		return EntityRevisionModel.forge()
 			.where('id', req.params.id)
-			.fetchAll({ merge: false, remove: false, require: false, withRelated: 'entity' })
+			.fetchAll({merge: false, remove: false, require: false, withRelated: 'entity'})
 			.then((entityRevisions) =>
 				diffRevisionsWithParents(req.app.locals.orm, entityRevisions, entityType)
 			)
@@ -236,7 +236,7 @@ router.get('/:id', async (req, res, next) => {
 		 * objects with the same ID, formatting each revision individually, then
 		 * concatenating the diffs
 		 */
-		revision = await new Revision({ id: req.params.id })
+		revision = await new Revision({id: req.params.id})
 			.fetch({
 				withRelated: [
 					'author',
@@ -244,11 +244,11 @@ router.get('/:id', async (req, res, next) => {
 					{
 						notes(q) {
 							q.orderBy('note.posted_at');
-						},
+						}
 					},
 					'notes.author',
-					'notes.author.titleUnlock.title',
-				],
+					'notes.author.titleUnlock.title'
+				]
 			})
 			.catch(Revision.NotFoundError, () => {
 				throw new error.NotFoundError(`Revision #${req.params.id} not found`, req);
@@ -274,7 +274,7 @@ router.get('/:id', async (req, res, next) => {
 		const props = generateProps(req, res, {
 			diffs,
 			revision: revision.toJSON(),
-			title: 'RevisionPage',
+			title: 'RevisionPage'
 		});
 
 		const markup = ReactDOMServer.renderToString(
@@ -289,7 +289,7 @@ router.get('/:id', async (req, res, next) => {
 			target({
 				markup,
 				props: escapeProps(props),
-				script,
+				script
 			})
 		);
 	} catch (err) {

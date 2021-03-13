@@ -9,7 +9,7 @@ export const basicRelations = [
 	'disambiguation',
 	'identifierSet.identifiers.type',
 	'relationshipSet',
-	'revision.revision',
+	'revision.revision'
 ];
 
 export function getEntityFetchPropertiesByType(entityType) {
@@ -23,7 +23,7 @@ export function getEntityFetchPropertiesByType(entityType) {
 				'editionFormat',
 				'editionStatus',
 				'releaseEventSet.releaseEvents',
-				'publisherSet.publishers.defaultAlias',
+				'publisherSet.publishers.defaultAlias'
 			];
 		case 'EditionGroup':
 			return [
@@ -32,7 +32,7 @@ export function getEntityFetchPropertiesByType(entityType) {
 				'editions.disambiguation',
 				'editions.releaseEventSet.releaseEvents',
 				'editions.identifierSet.identifiers.type',
-				'editions.editionFormat',
+				'editions.editionFormat'
 			];
 		case 'Publisher':
 			return ['publisherType', 'area'];
@@ -87,7 +87,7 @@ function getAuthorEntityMergeSection(entities) {
 		ended:
 			!_.isNil(authorSection.endArea) ||
 			!_.isNil(authorSection.endDate) ||
-			authorSection.ended,
+			authorSection.ended
 	});
 }
 
@@ -118,15 +118,15 @@ function getEditionEntityMergeSection(entities) {
 		assignIfNotSet(editionSection, 'width', entity);
 	});
 	const languages = _.flatMap(entities, (entity) =>
-		_.get(entity, 'languageSet.languages', []).map(({ id, name }) => ({
+		_.get(entity, 'languageSet.languages', []).map(({id, name}) => ({
 			label: name,
-			value: id,
+			value: id
 		}))
 	);
 	return Object.assign(editionSection, {
 		editionGroup: utils.entityToOption(editionSection.editionGroup),
 		languages: _.uniqBy(languages, 'value'),
-		publisher: utils.entityToOption(editionSection.publisher),
+		publisher: utils.entityToOption(editionSection.publisher)
 	});
 }
 
@@ -138,7 +138,7 @@ function getEditionEntityMergeSection(entities) {
  * @returns {object} - The Edition Group merge section for the initialState
  */
 function getEditionGroupEntityMergeSection(entities) {
-	const editionGroupSection = { editions: [] };
+	const editionGroupSection = {editions: []};
 	entities.forEach((entity) => {
 		assignIfNotSet(editionGroupSection, 'type', entity, 'typeId');
 		editionGroupSection.editions.push(...entity.editions);
@@ -170,7 +170,7 @@ function getPublisherEntityMergeSection(entities) {
 		 * that endDate property will be automatically selected as the only option on the merge display page
 		 * We want to emulate this for the initialState to match, so if there's any endDate, set ended to true
 		 */
-		ended: !_.isNil(publisherSection.endDate) || publisherSection.ended,
+		ended: !_.isNil(publisherSection.endDate) || publisherSection.ended
 	});
 }
 
@@ -187,13 +187,13 @@ function getWorkEntityMergeSection(entities) {
 		assignIfNotSet(workSection, 'type', entity, 'typeId');
 	});
 	const languages = _.flatMap(entities, (entity) =>
-		_.get(entity, 'languageSet.languages', []).map(({ id, name }) => ({
+		_.get(entity, 'languageSet.languages', []).map(({id, name}) => ({
 			label: name,
-			value: id,
+			value: id
 		}))
 	);
 	return Object.assign(workSection, {
-		languages: _.uniqBy(languages, 'value'),
+		languages: _.uniqBy(languages, 'value')
 	});
 }
 

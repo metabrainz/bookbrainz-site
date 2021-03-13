@@ -37,7 +37,7 @@ class SelectWrapper extends React.Component {
 		super(props);
 
 		this.state = {
-			value: props.defaultValue,
+			value: props.defaultValue
 		};
 		this.currentValue = this.state.value;
 
@@ -46,7 +46,7 @@ class SelectWrapper extends React.Component {
 
 	handleChange(newValue) {
 		this.setState({
-			value: newValue,
+			value: newValue
 		});
 
 		this.currentValue = newValue;
@@ -110,7 +110,7 @@ SelectWrapper.propTypes = {
 	name: PropTypes.string,
 	onChange: PropTypes.func,
 	value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]),
-	wrapperClassName: PropTypes.string,
+	wrapperClassName: PropTypes.string
 };
 SelectWrapper.defaultProps = {
 	defaultValue: null,
@@ -120,7 +120,7 @@ SelectWrapper.defaultProps = {
 	name: null,
 	onChange: null,
 	value: null,
-	wrapperClassName: null,
+	wrapperClassName: null
 };
 
 export default SelectWrapper;

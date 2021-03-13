@@ -18,7 +18,7 @@
 
 import * as error from '../../common/helpers/error';
 import * as propHelpers from '../../client/helpers/props';
-import { escapeProps, generateProps } from './props';
+import {escapeProps, generateProps} from './props';
 import ErrorPage from '../../client/components/pages/error';
 import Layout from '../../client/containers/layout';
 import React from 'react';
@@ -29,7 +29,7 @@ import target from '../templates/target';
 export function renderError(req, res, err) {
 	const errorToSend = error.getErrorToSend(err);
 	const props = generateProps(req, res, {
-		error: errorToSend,
+		error: errorToSend
 	});
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
@@ -44,7 +44,7 @@ export function renderError(req, res, err) {
 			markup,
 			page: 'Error',
 			props: escapeProps(props),
-			script: '/js/error.js',
+			script: '/js/error.js'
 		})
 	);
 }

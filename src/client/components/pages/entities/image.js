@@ -18,14 +18,14 @@
 
 import * as bootstrap from 'react-bootstrap';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { faSlash } from '@fortawesome/free-solid-svg-icons';
+import {faSlash} from '@fortawesome/free-solid-svg-icons';
 
-const { Image } = bootstrap;
+const {Image} = bootstrap;
 
-function EntityImage({ backupIcon, deleted, imageUrl }) {
+function EntityImage({backupIcon, deleted, imageUrl}) {
 	if (imageUrl) {
 		return <Image responsive src={imageUrl} />;
 	}
@@ -50,11 +50,11 @@ EntityImage.displayName = 'EntityImage';
 EntityImage.propTypes = {
 	backupIcon: PropTypes.object.isRequired,
 	deleted: PropTypes.bool,
-	imageUrl: PropTypes.string,
+	imageUrl: PropTypes.string
 };
 
 EntityImage.defaultProps = {
 	deleted: false,
-	imageUrl: '',
+	imageUrl: ''
 };
 export default EntityImage;

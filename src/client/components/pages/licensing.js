@@ -20,7 +20,7 @@ import * as bootstrap from 'react-bootstrap';
 
 import React from 'react';
 
-const { PageHeader } = bootstrap;
+const {PageHeader} = bootstrap;
 
 function LicensingPage() {
 	const CC0Link = 'http://creativecommons.org/publicdomain/zero/1.0/';

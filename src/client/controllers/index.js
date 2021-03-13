@@ -16,10 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import { extractChildProps, extractLayoutProps } from '../helpers/props';
+import {extractChildProps, extractLayoutProps} from '../helpers/props';
 
 import AboutPage from '../../client/components/pages/about';
-import { AppContainer } from 'react-hot-loader';
+import {AppContainer} from 'react-hot-loader';
 import ContributePage from '../../client/components/pages/contribute';
 import DevelopPage from '../../client/components/pages/develop';
 import HelpPage from '../../client/components/pages/help';
@@ -43,7 +43,7 @@ const pageMap = {
 	Help: HelpPage,
 	Index,
 	Licensing: LicensingPage,
-	Privacy: PrivacyPage,
+	Privacy: PrivacyPage
 };
 
 const Child = pageMap[page] || Index;

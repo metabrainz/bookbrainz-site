@@ -26,13 +26,13 @@ import {
 	addInitialRelationship,
 	entityEditorMarkup,
 	generateEntityProps,
-	makeEntityCreateOrEditHandler,
+	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
 import _ from 'lodash';
-import { escapeProps } from '../../helpers/props';
+import {escapeProps} from '../../helpers/props';
 import express from 'express';
-import { makePromiseFromObject } from '../../../common/helpers/utils';
+import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
 /** ****************************
@@ -47,7 +47,7 @@ const additionalEditionProps = [
 	'weight',
 	'pages',
 	'formatId',
-	'statusId',
+	'statusId'
 ];
 
 function transformNewForm(data) {
@@ -59,7 +59,7 @@ function transformNewForm(data) {
 
 	let releaseEvents = [];
 	if (data.editionSection.releaseDate) {
-		releaseEvents = [{ date: data.editionSection.releaseDate }];
+		releaseEvents = [{date: data.editionSection.releaseDate}];
 	}
 
 	const languages = _.map(data.editionSection.languages, (language) => language.value);
@@ -81,7 +81,7 @@ function transformNewForm(data) {
 		releaseEvents,
 		statusId: data.editionSection.status && parseInt(data.editionSection.status, 10),
 		weight: data.editionSection.weight && parseInt(data.editionSection.weight, 10),
-		width: data.editionSection.width && parseInt(data.editionSection.width, 10),
+		width: data.editionSection.width && parseInt(data.editionSection.width, 10)
 	};
 }
 
@@ -92,7 +92,7 @@ function getInitialNameSection(entity) {
 		languageId: entity.defaultAlias.languageId,
 		name: entity.defaultAlias.name,
 		primary: entity.defaultAlias.primary,
-		sortName: entity.defaultAlias.sortName,
+		sortName: entity.defaultAlias.sortName
 	};
 }
 
@@ -125,30 +125,30 @@ router.get(
 	middleware.loadLanguages,
 	middleware.loadRelationshipTypes,
 	(req, res, next) => {
-		const { EditionGroup, Publisher, Work } = req.app.locals.orm;
+		const {EditionGroup, Publisher, Work} = req.app.locals.orm;
 		const propsPromise = generateEntityProps('edition', req, res, {});
 
 		// Access edition-group property: can't write req.query.edition-group as the dash makes it invalid Javascript
 		if (req.query['edition-group']) {
-			propsPromise.editionGroup = EditionGroup.forge({ bbid: req.query['edition-group'] })
-				.fetch({ require: false, withRelated: 'defaultAlias' })
+			propsPromise.editionGroup = EditionGroup.forge({bbid: req.query['edition-group']})
+				.fetch({require: false, withRelated: 'defaultAlias'})
 				.then((data) => data && utils.entityToOption(data.toJSON()));
 		}
 
 		if (req.query.publisher) {
-			propsPromise.publisher = Publisher.forge({ bbid: req.query.publisher })
-				.fetch({ require: false, withRelated: 'defaultAlias' })
+			propsPromise.publisher = Publisher.forge({bbid: req.query.publisher})
+				.fetch({require: false, withRelated: 'defaultAlias'})
 				.then((data) => data && utils.entityToOption(data.toJSON()));
 		}
 
 		if (req.query.work) {
-			propsPromise.work = Work.forge({ bbid: req.query.work })
-				.fetch({ require: false, withRelated: 'defaultAlias' })
+			propsPromise.work = Work.forge({bbid: req.query.work})
+				.fetch({require: false, withRelated: 'defaultAlias'})
 				.then((data) => data && utils.entityToOption(data.toJSON()));
 		}
 
 		function render(props) {
-			const { initialState } = props;
+			const {initialState} = props;
 
 			let relationshipTypeId;
 			let initialRelationshipIndex = 0;
@@ -194,14 +194,14 @@ router.get(
 			}
 
 			const editorMarkup = entityEditorMarkup(props);
-			const { markup } = editorMarkup;
+			const {markup} = editorMarkup;
 			const updatedProps = editorMarkup.props;
 			return res.send(
 				target({
 					markup,
 					props: escapeProps(updatedProps),
 					script: '/js/entity-editor.js',
-					title: props.heading,
+					title: props.heading
 				})
 			);
 		}
@@ -224,7 +224,7 @@ router.param(
 			'editionFormat',
 			'editionStatus',
 			'releaseEventSet.releaseEvents',
-			'publisherSet.publishers.defaultAlias',
+			'publisherSet.publishers.defaultAlias'
 		],
 		'Edition not found'
 	)
@@ -244,13 +244,13 @@ router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
 });
 
 router.get('/:bbid/revisions', (req, res, next) => {
-	const { EditionRevision } = req.app.locals.orm;
+	const {EditionRevision} = req.app.locals.orm;
 	_setEditionTitle(res);
 	entityRoutes.displayRevisions(req, res, next, EditionRevision);
 });
 
 router.get('/:bbid/revisions/revisions', (req, res, next) => {
-	const { EditionRevision } = req.app.locals.orm;
+	const {EditionRevision} = req.app.locals.orm;
 	_setEditionTitle(res);
 	entityRoutes.updateDisplayedRevisions(req, res, next, EditionRevision);
 });
@@ -261,17 +261,17 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 });
 
 router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	const { orm } = req.app.locals;
-	const { EditionHeader, EditionRevision } = orm;
+	const {orm} = req.app.locals;
+	const {EditionHeader, EditionRevision} = orm;
 	return entityRoutes.handleDelete(orm, req, res, EditionHeader, EditionRevision);
 });
 
 function editionToFormState(edition) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = edition.aliasSet
-		? edition.aliasSet.aliases.map(({ languageId, ...rest }) => ({
+		? edition.aliasSet.aliases.map(({languageId, ...rest}) => ({
 				...rest,
-				language: languageId,
+				language: languageId
 		  }))
 		: [];
 
@@ -285,22 +285,22 @@ function editionToFormState(edition) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		identifierEditorVisible: false,
+		identifierEditorVisible: false
 	};
 
 	const nameSection = _.isEmpty(defaultAliasList)
 		? {
 				language: null,
 				name: '',
-				sortName: '',
+				sortName: ''
 		  }
 		: defaultAliasList[0];
 	nameSection.disambiguation = edition.disambiguation && edition.disambiguation.comment;
 
 	const identifiers = edition.identifierSet
-		? edition.identifierSet.identifiers.map(({ type, ...rest }) => ({
+		? edition.identifierSet.identifiers.map(({type, ...rest}) => ({
 				type: type.id,
-				...rest,
+				...rest
 		  }))
 		: [];
 
@@ -338,7 +338,7 @@ function editionToFormState(edition) {
 		format: edition.editionFormat && edition.editionFormat.id,
 		height: edition.height,
 		languages: edition.languageSet
-			? edition.languageSet.languages.map(({ id, name }) => ({ label: name, value: id }))
+			? edition.languageSet.languages.map(({id, name}) => ({label: name, value: id}))
 			: [],
 		pages: edition.pages,
 		physicalVisible,
@@ -346,7 +346,7 @@ function editionToFormState(edition) {
 		releaseDate,
 		status: edition.editionStatus && edition.editionStatus.id,
 		weight: edition.weight,
-		width: edition.width,
+		width: edition.width
 	};
 
 	const relationshipSection = {
@@ -354,7 +354,7 @@ function editionToFormState(edition) {
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
-		relationships: {},
+		relationships: {}
 	};
 
 	edition.relationships.forEach(
@@ -363,7 +363,7 @@ function editionToFormState(edition) {
 				relationshipType: relationship.type,
 				rowID: relationship.id,
 				sourceEntity: relationship.source,
-				targetEntity: relationship.target,
+				targetEntity: relationship.target
 			})
 	);
 
@@ -379,7 +379,7 @@ function editionToFormState(edition) {
 		identifierEditor,
 		nameSection,
 		relationshipSection,
-		...optionalSections,
+		...optionalSections
 	};
 }
 
@@ -393,7 +393,7 @@ router.get(
 	middleware.loadEntityRelationships,
 	middleware.loadRelationshipTypes,
 	(req, res) => {
-		const { markup, props } = entityEditorMarkup(
+		const {markup, props} = entityEditorMarkup(
 			generateEntityProps('edition', req, res, {}, editionToFormState)
 		);
 
@@ -402,7 +402,7 @@ router.get(
 				markup,
 				props: escapeProps(props),
 				script: '/js/entity-editor.js',
-				title: props.heading,
+				title: props.heading
 			})
 		);
 	}

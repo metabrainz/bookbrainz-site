@@ -24,25 +24,25 @@ import * as error from '../../common/helpers/error';
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from './utils';
 
-import type { Request as $Request, Response as $Response } from 'express';
+import type {Request as $Request, Response as $Response} from 'express';
 import EntityEditor from '../../client/entity-editor/entity-editor';
 import EntityMerge from '../../client/entity-editor/entity-merge';
 import Layout from '../../client/containers/layout';
-import { Provider } from 'react-redux';
+import {Provider} from 'react-redux';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
-import { createStore } from 'redux';
-import { generateProps } from './props';
+import {createStore} from 'redux';
+import {generateProps} from './props';
 
 const {
 	createRootReducer,
 	getEntitySection,
 	getEntitySectionMerge,
-	getValidator,
+	getValidator
 } = entityEditorHelpers;
 
 type EntityAction = 'create' | 'edit';
-type PassportRequest = $Request & { user: any; session: any };
+type PassportRequest = $Request & {user: any; session: any};
 
 /**
  * Callback to get the initial state
@@ -68,7 +68,7 @@ export function generateEntityProps(
 	initialStateCallback: (entity: any) => any = () => new Object()
 ): any {
 	const entityName = _.upperFirst(entityType);
-	const { entity } = res.locals;
+	const {entity} = res.locals;
 	const isEdit = Boolean(entity);
 
 	const getFilteredIdentifierTypes = isEdit
@@ -98,7 +98,7 @@ export function generateEntityProps(
 			subheading: isEdit
 				? `Edit an existing ${entityName} on BookBrainz`
 				: `Add a new ${entityName} to BookBrainz`,
-			submissionUrl,
+			submissionUrl
 		},
 		additionalProps
 	);
@@ -127,7 +127,7 @@ export function generateEntityMergeProps(
 	additionalProps: any,
 	initialStateCallback: (entity: any) => any = () => new Object()
 ): any {
-	const { entityType, mergingEntities } = additionalProps;
+	const {entityType, mergingEntities} = additionalProps;
 	const entityName = _.startCase(entityType);
 	const entity = mergingEntities[0];
 
@@ -145,7 +145,7 @@ export function generateEntityMergeProps(
 			languageOptions: res.locals.languages,
 			requiresJS: true,
 			subheading: `You are merging ${mergingEntities.length} existing ${entityName}s:`,
-			submissionUrl,
+			submissionUrl
 		},
 		additionalProps
 	);
@@ -159,8 +159,8 @@ export function generateEntityMergeProps(
  * @param {object} props - react props
  * @returns {object} - Updated props and HTML string with markup
  */
-export function entityEditorMarkup(props: { initialState: any; entityType: string }) {
-	const { initialState, ...rest } = props;
+export function entityEditorMarkup(props: {initialState: any; entityType: string}) {
+	const {initialState, ...rest} = props;
 	const rootReducer = createRootReducer(props.entityType);
 	const store: any = createStore(rootReducer, Immutable.fromJS(initialState));
 	const EntitySection = getEntitySection(props.entityType);
@@ -179,8 +179,8 @@ export function entityEditorMarkup(props: { initialState: any; entityType: strin
 	return {
 		markup,
 		props: Object.assign({}, props, {
-			intitialState: store.getState(),
-		}),
+			intitialState: store.getState()
+		})
 	};
 }
 
@@ -190,8 +190,8 @@ export function entityEditorMarkup(props: { initialState: any; entityType: strin
  * @param {object} props - react props
  * @returns {object} - Updated props and HTML string with markup
  */
-export function entityMergeMarkup(props: { initialState: any; entityType: string }) {
-	const { initialState, ...rest } = props;
+export function entityMergeMarkup(props: {initialState: any; entityType: string}) {
+	const {initialState, ...rest} = props;
 	const rootReducer = createRootReducer(props.entityType);
 	const store: any = createStore(rootReducer, Immutable.fromJS(initialState));
 	const EntitySection = getEntitySectionMerge(props.entityType);
@@ -210,8 +210,8 @@ export function entityMergeMarkup(props: { initialState: any; entityType: string
 	return {
 		markup,
 		props: Object.assign({}, props, {
-			intitialState: store.getState(),
-		}),
+			intitialState: store.getState()
+		})
 	};
 }
 
@@ -251,7 +251,7 @@ export function makeEntityCreateOrEditHandler(
 			const err = new error.FormSubmissionError();
 			error.sendErrorAsJSON(res, err);
 		}
-		const { mergeQueue } = req.session;
+		const {mergeQueue} = req.session;
 		const isMergeOperation =
 			isMergeHandler && mergeQueue && _.size(mergeQueue.mergingEntities) >= 2;
 
@@ -284,13 +284,13 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
 	);
 	const targetEntityDetail = {
 		bbid: targetEntity.id,
-		defaultAlias: { name: targetEntity.text },
-		type: targetEntity.type,
+		defaultAlias: {name: targetEntity.text},
+		type: targetEntity.type
 	};
 
 	const sourceEntityDetail = {
-		defaultAlias: { name: '' },
-		type: _.upperFirst(props.entityType),
+		defaultAlias: {name: ''},
+		type: _.upperFirst(props.entityType)
 	};
 
 	const initialRelationship = {
@@ -304,7 +304,7 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
 		targetEntity:
 			targetEntity.type === 'EditionGroup' || targetEntity.type === 'Work'
 				? targetEntityDetail
-				: sourceEntityDetail,
+				: sourceEntityDetail
 	};
 
 	if (!props.initialState.relationshipSection) {
@@ -316,7 +316,7 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
 	}
 	props.initialState.relationshipSection.relationships = {
 		...props.initialState.relationshipSection.relationships,
-		[rowId]: initialRelationship,
+		[rowId]: initialRelationship
 	};
 
 	return props;

@@ -18,21 +18,21 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { genEntityIconHTMLElement } from '../../../helpers/entity';
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
-const { Button, DropdownButton, MenuItem, Table } = bootstrap;
-const { formatDate } = utilsHelper;
+const {Button, DropdownButton, MenuItem, Table} = bootstrap;
+const {formatDate} = utilsHelper;
 
 class CollectionsTable extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			type: '',
+			type: ''
 		};
 
 		// React does not autobind non-React class methods
@@ -40,7 +40,7 @@ class CollectionsTable extends React.Component {
 	}
 
 	handleEntitySelect(type) {
-		this.setState({ type });
+		this.setState({type});
 		this.props.onTypeChange(type);
 	}
 
@@ -51,7 +51,7 @@ class CollectionsTable extends React.Component {
 			showIfOwnerOrCollaborator,
 			showPrivacy,
 			results,
-			tableHeading,
+			tableHeading
 		} = this.props;
 		const entityTypeSelect = (
 			<DropdownButton
@@ -150,14 +150,14 @@ CollectionsTable.propTypes = {
 	showLastModified: PropTypes.bool,
 	showOwner: PropTypes.bool,
 	showPrivacy: PropTypes.bool,
-	tableHeading: PropTypes.node,
+	tableHeading: PropTypes.node
 };
 CollectionsTable.defaultProps = {
 	showIfOwnerOrCollaborator: false,
 	showLastModified: false,
 	showOwner: false,
 	showPrivacy: false,
-	tableHeading: 'Collections',
+	tableHeading: 'Collections'
 };
 
 CollectionsTable.displayName = 'CollectionsTable';

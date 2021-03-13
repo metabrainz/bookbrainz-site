@@ -17,12 +17,12 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import { faPlus, faSave, faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { trim, uniqBy } from 'lodash';
+import {faPlus, faSave, faTimes, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {trim, uniqBy} from 'lodash';
 import CustomInput from '../../input';
 import DeleteOrRemoveCollaborationModal from '../pages/parts/delete-or-remove-collaboration-modal';
 import EntitySearchFieldOption from '../../entity-editor/common/entity-search-field-option';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
@@ -30,18 +30,18 @@ import SelectWrapper from '../input/select-wrapper';
 import classNames from 'classnames';
 import request from 'superagent';
 
-const { Alert, Button, ButtonGroup, Col } = bootstrap;
+const {Alert, Button, ButtonGroup, Col} = bootstrap;
 
 class UserCollectionForm extends React.Component {
 	constructor(props) {
 		super(props);
 
-		const { collaborators, ...collection } = props.collection;
+		const {collaborators, ...collection} = props.collection;
 		this.state = {
 			collaborators,
 			collection,
 			errorText: null,
-			showModal: false,
+			showModal: false
 		};
 
 		// React does not autobind non-React class methods
@@ -60,7 +60,7 @@ class UserCollectionForm extends React.Component {
 
 		if (!this.isValid()) {
 			this.setState({
-				errorText: 'Incomplete Form',
+				errorText: 'Incomplete Form'
 			});
 			return;
 		}
@@ -76,7 +76,7 @@ class UserCollectionForm extends React.Component {
 			description,
 			entityType,
 			name,
-			privacy,
+			privacy
 		};
 
 		let submissionURL;
@@ -94,7 +94,7 @@ class UserCollectionForm extends React.Component {
 				},
 				(error) => {
 					this.setState({
-						errorText: 'Internal Error',
+						errorText: 'Internal Error'
 					});
 				}
 			);
@@ -116,13 +116,13 @@ class UserCollectionForm extends React.Component {
 
 	handleAddCollaborator() {
 		this.setState((prevState) => ({
-			collaborators: [...prevState.collaborators, { id: null, name: '' }],
+			collaborators: [...prevState.collaborators, {id: null, name: ''}]
 		}));
 	}
 
 	handleRemoveCollaborator(index) {
 		this.setState((prevState) => ({
-			collaborators: prevState.collaborators.splice(index, 1) && prevState.collaborators,
+			collaborators: prevState.collaborators.splice(index, 1) && prevState.collaborators
 		}));
 	}
 
@@ -131,7 +131,7 @@ class UserCollectionForm extends React.Component {
 		if (!newCollab) {
 			newCollaborator = {
 				id: null,
-				name: '',
+				name: ''
 			};
 		} else {
 			newCollaborator = newCollab;
@@ -141,17 +141,17 @@ class UserCollectionForm extends React.Component {
 			const newCollaborators = prevState.collaborators;
 			newCollaborators[index] = newCollaborator;
 			return {
-				collaborators: newCollaborators,
+				collaborators: newCollaborators
 			};
 		});
 	}
 
 	handleShowModal() {
-		this.setState({ showModal: true });
+		this.setState({showModal: true});
 	}
 
 	handleCloseModal() {
-		this.setState({ showModal: false });
+		this.setState({showModal: false});
 	}
 
 	render() {
@@ -160,11 +160,11 @@ class UserCollectionForm extends React.Component {
 		}
 
 		const privacyOptions = ['Private', 'Public'].map((option) => ({
-			name: option,
+			name: option
 		}));
 		const entityTypeOptions = ['Author', 'Work', 'Edition', 'Edition-Group', 'Publisher'].map(
 			(entity) => ({
-				name: entity,
+				name: entity
 			})
 		);
 		const initialName = this.state.collection.name;
@@ -176,8 +176,8 @@ class UserCollectionForm extends React.Component {
 		} else {
 			initialPrivacy = 'Public';
 		}
-		const { errorText } = this.state;
-		const errorAlertClass = classNames('text-center', 'margin-top-1', { hidden: !errorText });
+		const {errorText} = this.state;
+		const errorAlertClass = classNames('text-center', 'margin-top-1', {hidden: !errorText});
 		const submitLabel = this.props.collection.name ? 'Update collection' : 'Create collection';
 		const canEditType = this.props.collection.items.length === 0;
 
@@ -319,8 +319,8 @@ UserCollectionForm.propTypes = {
 		items: PropTypes.array,
 		name: PropTypes.string,
 		ownerId: PropTypes.number,
-		public: PropTypes.bool,
-	}),
+		public: PropTypes.bool
+	})
 };
 UserCollectionForm.defaultProps = {
 	collection: {
@@ -331,8 +331,8 @@ UserCollectionForm.defaultProps = {
 		items: [],
 		name: null,
 		ownerId: null,
-		public: false,
-	},
+		public: false
+	}
 };
 
 export default UserCollectionForm;

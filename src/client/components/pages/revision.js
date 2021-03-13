@@ -23,16 +23,16 @@ import * as utilsHelper from '../../helpers/utils';
 
 import CustomInput from '../../input';
 import EntityLink from '../entity-link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
-import { faCodeBranch } from '@fortawesome/free-solid-svg-icons';
+import {faCodeBranch} from '@fortawesome/free-solid-svg-icons';
 import request from 'superagent';
-import { transformISODateForDisplay } from '../../helpers/entity';
+import {transformISODateForDisplay} from '../../helpers/entity';
 
-const { Badge, Button, Col, ListGroup, ListGroupItem, Row } = bootstrap;
-const { formatDate } = utilsHelper;
+const {Badge, Button, Col, ListGroup, ListGroupItem, Row} = bootstrap;
+const {formatDate} = utilsHelper;
 
 class RevisionPage extends React.Component {
 	static formatValueList(list, isChangeADate) {
@@ -122,7 +122,7 @@ class RevisionPage extends React.Component {
 	handleSubmit(event) {
 		event.preventDefault();
 		const data = {
-			note: this.noteInput.getValue(),
+			note: this.noteInput.getValue()
 		};
 		request
 			.post(`/revision/${this.props.revision.id}/note`)
@@ -132,13 +132,13 @@ class RevisionPage extends React.Component {
 			})
 			.catch((res) => {
 				// TODO: Add proper error handling.
-				const { error } = res.body;
+				const {error} = res.body;
 				return error;
 			});
 	}
 
 	render() {
-		const { revision, diffs, user } = this.props;
+		const {revision, diffs, user} = this.props;
 		let regularDiffs = diffs;
 		let mergeDiffDivs;
 
@@ -254,10 +254,10 @@ RevisionPage.displayName = 'RevisionPage';
 RevisionPage.propTypes = {
 	diffs: PropTypes.any.isRequired,
 	revision: PropTypes.any.isRequired,
-	user: PropTypes.object,
+	user: PropTypes.object
 };
 RevisionPage.defaultProps = {
-	user: null,
+	user: null
 };
 
 export default RevisionPage;

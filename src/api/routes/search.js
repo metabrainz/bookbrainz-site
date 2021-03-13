@@ -17,9 +17,9 @@
  */
 
 import * as search from '../../common/helpers/search';
-import { snakeCase as _snakeCase } from 'lodash';
+import {snakeCase as _snakeCase} from 'lodash';
 import express from 'express';
-import { formatSearchResponse } from '../helpers/formatEntityData';
+import {formatSearchResponse} from '../helpers/formatEntityData';
 
 const router = express.Router();
 
@@ -73,7 +73,7 @@ const router = express.Router();
  */
 
 router.get('/', async (req, res) => {
-	const { orm } = req.app.locals;
+	const {orm} = req.app.locals;
 	if (req.query.q) {
 		const query = req.query.q;
 		const type = req.query.type || null;
@@ -84,7 +84,7 @@ router.get('/', async (req, res) => {
 		res.status(200).send(formattedSearchResult);
 	} else {
 		const errMsg = 'Invalid Query';
-		res.status(400).send({ message: errMsg });
+		res.status(400).send({message: errMsg});
 	}
 });
 

@@ -35,11 +35,11 @@ const {
 	getTypeAttribute,
 	getEntityUrl,
 	ENTITY_TYPE_ICONS,
-	getSortNameOfDefaultAlias,
+	getSortNameOfDefaultAlias
 } = entityHelper;
-const { Col, Row } = bootstrap;
+const {Col, Row} = bootstrap;
 
-function WorkAttributes({ work }) {
+function WorkAttributes({work}) {
 	if (work.deleted) {
 		return deletedEntityMessage;
 	}
@@ -73,10 +73,10 @@ function WorkAttributes({ work }) {
 }
 WorkAttributes.displayName = 'WorkAttributes';
 WorkAttributes.propTypes = {
-	work: PropTypes.object.isRequired,
+	work: PropTypes.object.isRequired
 };
 
-function WorkDisplayPage({ entity, identifierTypes, user }) {
+function WorkDisplayPage({entity, identifierTypes, user}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const editionsContainWork = getRelationshipSourceByTypeId(entity, relationshipTypeId);
@@ -123,10 +123,10 @@ WorkDisplayPage.displayName = 'WorkDisplayPage';
 WorkDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired,
+	user: PropTypes.object.isRequired
 };
 WorkDisplayPage.defaultProps = {
-	identifierTypes: [],
+	identifierTypes: []
 };
 
 export default WorkDisplayPage;

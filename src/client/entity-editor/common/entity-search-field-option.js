@@ -22,7 +22,7 @@ import Entity from './entity';
 import LinkedEntity from './linked-entity';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Async as SelectAsync } from 'react-select';
+import {Async as SelectAsync} from 'react-select';
 import ValidationLabel from '../common/validation-label';
 import _ from 'lodash';
 import makeImmutable from './make-immutable';
@@ -73,14 +73,14 @@ class EntitySearchFieldOption extends React.Component {
 			id,
 			language: language && language.label,
 			text: _.get(entity, ['defaultAlias', 'name']),
-			type: entity.type,
+			type: entity.type
 		};
 	}
 
 	async fetchOptions(query) {
 		if (!query) {
 			return {
-				options: [],
+				options: []
 			};
 		}
 		let manipulatedQuery = query;
@@ -91,10 +91,10 @@ class EntitySearchFieldOption extends React.Component {
 		}
 		const response = await request.get('/search/autocomplete').query({
 			q: manipulatedQuery,
-			type: this.props.type,
+			type: this.props.type
 		});
 		return {
-			options: response.body.map(this.entityToOption),
+			options: response.body.map(this.entityToOption)
 		};
 	}
 
@@ -127,13 +127,13 @@ EntitySearchFieldOption.propTypes = {
 	label: PropTypes.string.isRequired,
 	languageOptions: PropTypes.array,
 	tooltipText: PropTypes.string,
-	type: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]).isRequired,
+	type: PropTypes.oneOfType([PropTypes.string, PropTypes.arrayOf(PropTypes.string)]).isRequired
 };
 EntitySearchFieldOption.defaultProps = {
 	empty: true,
 	error: false,
 	languageOptions: [],
-	tooltipText: null,
+	tooltipText: null
 };
 
 export default EntitySearchFieldOption;

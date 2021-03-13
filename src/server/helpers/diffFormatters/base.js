@@ -27,7 +27,7 @@ export function formatRow(kind, key, lhs, rhs) {
 		return {
 			key,
 			kind: 'N',
-			rhs,
+			rhs
 		};
 	}
 
@@ -35,7 +35,7 @@ export function formatRow(kind, key, lhs, rhs) {
 		return {
 			key,
 			kind: 'D',
-			lhs,
+			lhs
 		};
 	}
 
@@ -43,7 +43,7 @@ export function formatRow(kind, key, lhs, rhs) {
 		key,
 		kind,
 		lhs,
-		rhs,
+		rhs
 	};
 }
 

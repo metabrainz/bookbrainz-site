@@ -24,19 +24,19 @@ import {
 	createPublisher,
 	createWork,
 	getRandomUUID,
-	truncateEntities,
+	truncateEntities
 } from '../../../test-helpers/create-entities';
 import _ from 'lodash';
 import app from '../../../../src/api/app';
-import { browsePublisherBasicTests } from '../helpers';
+import {browsePublisherBasicTests} from '../helpers';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
 
-const { PublisherSet, Relationship, RelationshipSet, RelationshipType, Revision } = orm;
+const {PublisherSet, Relationship, RelationshipSet, RelationshipType, Revision} = orm;
 
 chai.use(chaiHttp);
-const { expect } = chai;
+const {expect} = chai;
 
 const aBBID = getRandomUUID();
 const bBBID = getRandomUUID();
@@ -190,8 +190,8 @@ describe('Browse Publishers', () => {
 
 		// Now create a revision which forms the relationship b/w work and publishers
 		const editor = await createEditor();
-		const revision = await new Revision({ authorId: editor.get('id') }).save(null, {
-			method: 'insert',
+		const revision = await new Revision({authorId: editor.get('id')}).save(null, {
+			method: 'insert'
 		});
 
 		const relationshipTypeData = {
@@ -201,24 +201,24 @@ describe('Browse Publishers', () => {
 			linkPhrase: 'test phrase',
 			reverseLinkPhrase: 'test reverse link phrase',
 			sourceEntityType: 'Author',
-			targetEntityType: 'Edition',
+			targetEntityType: 'Edition'
 		};
-		await new RelationshipType(relationshipTypeData).save(null, { method: 'insert' });
+		await new RelationshipType(relationshipTypeData).save(null, {method: 'insert'});
 		const relationshipsPromise = [];
 		for (const publisherBBID of publisherBBIDs) {
 			const relationshipData = {
 				sourceBbid: work.get('bbid'),
 				targetBbid: publisherBBID,
-				typeId: relationshipTypeData.id,
+				typeId: relationshipTypeData.id
 			};
 			relationshipsPromise.push(
-				new Relationship(relationshipData).save(null, { method: 'insert' })
+				new Relationship(relationshipData).save(null, {method: 'insert'})
 			);
 		}
 		const relationships = await Promise.all(relationshipsPromise);
 
 		const workRelationshipSet = await new RelationshipSet()
-			.save(null, { method: 'insert' })
+			.save(null, {method: 'insert'})
 			.then((model) =>
 				model
 					.relationships()
@@ -228,7 +228,7 @@ describe('Browse Publishers', () => {
 
 		work.set('relationshipSetId', workRelationshipSet.get('id'));
 		work.set('revisionId', revision.id);
-		await work.save(null, { method: 'update' });
+		await work.save(null, {method: 'update'});
 	});
 	after(truncateEntities);
 
@@ -290,21 +290,19 @@ describe('Browse Publishers', () => {
 
 		// Now create a revision which forms the relationship b/w publisher and editions
 		const editor = await createEditor();
-		const revision = await new Revision({ authorId: editor.get('id') }).save(null, {
-			method: 'insert',
+		const revision = await new Revision({authorId: editor.get('id')}).save(null, {
+			method: 'insert'
 		});
-		const publisherSet = await new PublisherSet()
-			.save(null, { method: 'insert' })
-			.then((model) =>
-				model
-					.publishers()
-					.attach(publishers)
-					.then(() => model)
-			);
+		const publisherSet = await new PublisherSet().save(null, {method: 'insert'}).then((model) =>
+			model
+				.publishers()
+				.attach(publishers)
+				.then(() => model)
+		);
 
 		edition.set('publisherSetId', publisherSet.get('id'));
 		edition.set('revisionId', revision.id);
-		await edition.save(null, { method: 'update' });
+		await edition.save(null, {method: 'update'});
 
 		const res = await chai.request(app).get(`/publisher?edition=${edition.get('bbid')}`);
 		await browsePublisherBasicTests(res);

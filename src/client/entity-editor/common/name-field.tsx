@@ -40,7 +40,7 @@ type Props = {
  *        component to indicate that the field is empty.
  * @returns {Object} a React component containing the rendered input
  */
-function NameField({ empty, error, tooltipText, warn, ...rest }: Props) {
+function NameField({empty, error, tooltipText, warn, ...rest}: Props) {
 	const label = (
 		<ValidationLabel empty={empty} error={error} warn={warn}>
 			Name
@@ -54,7 +54,7 @@ NameField.defaultProps = {
 	empty: false,
 	error: false,
 	tooltipText: null,
-	warn: false,
+	warn: false
 };
 
 export default NameField;

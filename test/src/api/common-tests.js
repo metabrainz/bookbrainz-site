@@ -17,13 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import { createAuthor, getRandomUUID, truncateEntities } from '../../test-helpers/create-entities';
+import {createAuthor, getRandomUUID, truncateEntities} from '../../test-helpers/create-entities';
 import app from '../../../src/api/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 
 chai.use(chaiHttp);
-const { expect } = chai;
+const {expect} = chai;
 
 const aBBID = getRandomUUID();
 const bBBID = getRandomUUID();

@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import type { Map } from 'immutable';
+import type {Map} from 'immutable';
 import _ from 'lodash';
 import request from 'superagent';
 
@@ -46,7 +46,7 @@ export type Action = {
 export function setSubmitError(error: string): Action {
 	return {
 		error,
-		type: SET_SUBMIT_ERROR,
+		type: SET_SUBMIT_ERROR
 	};
 }
 
@@ -60,7 +60,7 @@ export function setSubmitError(error: string): Action {
 export function setSubmitted(submitted: boolean): Action {
 	return {
 		submitted,
-		type: SET_SUBMITTED,
+		type: SET_SUBMITTED
 	};
 }
 
@@ -74,9 +74,9 @@ export function setSubmitted(submitted: boolean): Action {
  */
 export function debounceUpdateRevisionNote(value: string): Action {
 	return {
-		meta: { debounce: 'keystroke' },
+		meta: {debounce: 'keystroke'},
 		type: UPDATE_REVISION_NOTE,
-		value,
+		value
 	};
 }
 
@@ -118,7 +118,7 @@ export function submit(submissionUrl: string): SubmitResult {
 	return (dispatch, getState) => {
 		const rootState = getState();
 		dispatch(setSubmitted(true));
-		return postSubmission(submissionUrl, rootState).catch((error: { message: string }) => {
+		return postSubmission(submissionUrl, rootState).catch((error: {message: string}) => {
 			/*
 			 * Use server-set message first, otherwise internal
 			 * superagent message

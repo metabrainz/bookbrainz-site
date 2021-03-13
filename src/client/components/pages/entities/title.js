@@ -21,9 +21,9 @@ import * as entityHelper from '../../../helpers/entity';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const { getEntitySecondaryAliases, getEntityDisambiguation, getEntityLabel } = entityHelper;
+const {getEntitySecondaryAliases, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-function EntityTitle({ entity }) {
+function EntityTitle({entity}) {
 	const aliases = getEntitySecondaryAliases(entity);
 	const disambiguation = getEntityDisambiguation(entity);
 	const label = getEntityLabel(entity);
@@ -40,7 +40,7 @@ function EntityTitle({ entity }) {
 }
 EntityTitle.displayName = 'EntityTitle';
 EntityTitle.propTypes = {
-	entity: PropTypes.object.isRequired,
+	entity: PropTypes.object.isRequired
 };
 
 export default EntityTitle;

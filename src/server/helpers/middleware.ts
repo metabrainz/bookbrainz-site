@@ -20,12 +20,12 @@
 import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
-import type { Request as $Request, Response as $Response, NextFunction } from 'express';
+import type {Request as $Request, Response as $Response, NextFunction} from 'express';
 import _ from 'lodash';
 
 function makeLoader(modelName, propName, sortFunc?) {
 	return function loaderFunc(req: $Request, res: $Response, next: NextFunction) {
-		const { orm }: any = req.app.locals;
+		const {orm}: any = req.app.locals;
 		const model = orm[modelName];
 		return model
 			.fetchAll()
@@ -62,9 +62,9 @@ export const loadLanguages = makeLoader('Language', 'languages', (a, b) => {
 });
 
 export function loadEntityRelationships(req: $Request, res: $Response, next: NextFunction) {
-	const { orm }: any = req.app.locals;
-	const { RelationshipSet } = orm;
-	const { entity } = res.locals;
+	const {orm}: any = req.app.locals;
+	const {RelationshipSet} = orm;
+	const {entity} = res.locals;
 
 	new Promise<void>((resolve) => {
 		if (!entity) {
@@ -74,9 +74,9 @@ export function loadEntityRelationships(req: $Request, res: $Response, next: Nex
 		resolve();
 	})
 		.then(() =>
-			RelationshipSet.forge({ id: entity.relationshipSetId }).fetch({
+			RelationshipSet.forge({id: entity.relationshipSetId}).fetch({
 				require: false,
-				withRelated: ['relationships.source', 'relationships.target', 'relationships.type'],
+				withRelated: ['relationships.source', 'relationships.target', 'relationships.type']
 			})
 		)
 		.then((relationshipSet) => {
@@ -92,11 +92,11 @@ export function loadEntityRelationships(req: $Request, res: $Response, next: Nex
 				);
 				const model = commonUtils.getEntityModelByType(orm, relEntity.type);
 
-				return model.forge({ bbid: redirectBbid }).fetch({
+				return model.forge({bbid: redirectBbid}).fetch({
 					require: false,
 					withRelated: ['defaultAlias'].concat(
 						utils.getAdditionalRelations(relEntity.type)
-					),
+					)
 				});
 			}
 
@@ -109,7 +109,7 @@ export function loadEntityRelationships(req: $Request, res: $Response, next: Nex
 				entity.relationships.map((relationship) =>
 					Promise.all([
 						getEntityWithAlias(relationship.source),
-						getEntityWithAlias(relationship.target),
+						getEntityWithAlias(relationship.target)
 					]).then(([source, target]) => {
 						relationship.source = source.toJSON();
 						relationship.target = target.toJSON();
@@ -134,7 +134,7 @@ export async function redirectedBbid(
 	if (!commonUtils.isValidBBID(bbid)) {
 		return next(new error.BadRequestError(`Invalid bbid: ${req.params.bbid}`, req));
 	}
-	const { orm }: any = req.app.locals;
+	const {orm}: any = req.app.locals;
 
 	try {
 		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid);
@@ -160,11 +160,11 @@ export function makeEntityLoader(
 		'disambiguation',
 		'identifierSet.identifiers.type',
 		'relationshipSet.relationships.type',
-		'revision.revision',
+		'revision.revision'
 	].concat(additionalRels);
 
 	return async (req: $Request, res: $Response, next: NextFunction, bbid: string) => {
-		const { orm }: any = req.app.locals;
+		const {orm}: any = req.app.locals;
 		if (commonUtils.isValidBBID(bbid)) {
 			try {
 				const entity = await orm.func.entity.getEntity(orm, modelName, bbid, relations);
@@ -189,19 +189,19 @@ export function makeEntityLoader(
 
 export function makeCollectionLoader() {
 	return async (req, res, next, collectionId) => {
-		const { UserCollection } = req.app.locals.orm;
+		const {UserCollection} = req.app.locals.orm;
 
 		if (commonUtils.isValidBBID(collectionId)) {
 			try {
-				const collection = await new UserCollection({ id: collectionId }).fetch({
+				const collection = await new UserCollection({id: collectionId}).fetch({
 					require: true,
-					withRelated: ['collaborators.collaborator', 'items', 'owner'],
+					withRelated: ['collaborators.collaborator', 'items', 'owner']
 				});
 				const collectionJSON = collection.toJSON();
 				// reshaping collaborators such that it can be used in EntitySearchFieldOption
 				collectionJSON.collaborators = collectionJSON.collaborators.map((collaborator) => ({
 					id: collaborator.collaborator.id,
-					text: collaborator.collaborator.name,
+					text: collaborator.collaborator.name
 				}));
 				res.locals.collection = collectionJSON;
 				return next();
@@ -215,9 +215,9 @@ export function makeCollectionLoader() {
 }
 
 export async function validateCollectionParams(req, res, next) {
-	const { collaborators = [], name, entityType } = req.body;
-	const { orm } = req.app.locals;
-	const { Editor } = orm;
+	const {collaborators = [], name, entityType} = req.body;
+	const {orm} = req.app.locals;
+	const {Editor} = orm;
 
 	if (!_.trim(name).length) {
 		return next(
@@ -245,7 +245,7 @@ export async function validateCollectionParams(req, res, next) {
 
 	const editors = await new Editor()
 		.where('id', 'in', collaboratorIds)
-		.fetchAll({ require: false });
+		.fetchAll({require: false});
 	const editorsJSON = editors.toJSON();
 	for (let i = 0; i < collaboratorIds.length; i++) {
 		const collaboratorId = collaboratorIds[i];
@@ -259,12 +259,12 @@ export async function validateCollectionParams(req, res, next) {
 }
 
 export async function validateBBIDsForCollectionAdd(req, res, next) {
-	const { Entity } = req.app.locals.orm;
-	const { bbids = [] } = req.body;
+	const {Entity} = req.app.locals.orm;
+	const {bbids = []} = req.body;
 	if (!bbids.length) {
 		return next(new error.BadRequestError('BBIDs array is empty'));
 	}
-	const { collection } = res.locals;
+	const {collection} = res.locals;
 	const collectionType = collection.entityType;
 	for (let i = 0; i < bbids.length; i++) {
 		const bbid = bbids[i];
@@ -272,7 +272,7 @@ export async function validateBBIDsForCollectionAdd(req, res, next) {
 			return next(new error.BadRequestError(`Invalid BBID ${bbid}`, req));
 		}
 	}
-	const entities = await new Entity().where('bbid', 'in', bbids).fetchAll({ require: false });
+	const entities = await new Entity().where('bbid', 'in', bbids).fetchAll({require: false});
 	const entitiesJSON = entities.toJSON();
 	for (let i = 0; i < bbids.length; i++) {
 		const bbid = bbids[i];
@@ -293,11 +293,11 @@ export async function validateBBIDsForCollectionAdd(req, res, next) {
 }
 
 export function validateBBIDsForCollectionRemove(req, res, next) {
-	const { bbids = [] } = req.body;
+	const {bbids = []} = req.body;
 	if (!bbids.length) {
 		return next(new error.BadRequestError('BBIDs array is empty'));
 	}
-	const { collection } = res.locals;
+	const {collection} = res.locals;
 	for (let i = 0; i < bbids.length; i++) {
 		const bbid = bbids[i];
 		if (!commonUtils.isValidBBID(bbid)) {
@@ -321,11 +321,11 @@ export function validateBBIDsForCollectionRemove(req, res, next) {
 }
 
 export function validateCollaboratorIdsForCollectionRemove(req, res, next) {
-	const { collaboratorIds = [] } = req.body;
+	const {collaboratorIds = []} = req.body;
 	if (!collaboratorIds.length) {
 		return next(new error.BadRequestError('CollaboratorIds array is empty'));
 	}
-	const { collection } = res.locals;
+	const {collection} = res.locals;
 	for (let i = 0; i < collaboratorIds.length; i++) {
 		const collaboratorId = collaboratorIds[i];
 		const isCollaborator = collection.collaborators.find(

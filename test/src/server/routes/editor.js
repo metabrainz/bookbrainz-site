@@ -1,15 +1,15 @@
-import { createEditor, truncateEntities } from '../../../test-helpers/create-entities';
+import {createEditor, truncateEntities} from '../../../test-helpers/create-entities';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import { getEditorActivity } from '../../../../src/server/routes/editor.js';
+import {getEditorActivity} from '../../../../src/server/routes/editor.js';
 import orm from '../../../bookbrainz-data';
 
 /* eslint sort-keys: 0 */
 chai.use(chaiHttp);
-const { expect } = chai;
+const {expect} = chai;
 
 describe('getEditorActivity', () => {
-	const { Revision } = orm;
+	const {Revision} = orm;
 	let editorJSON;
 	beforeEach(async () => {
 		const editor = await createEditor();
@@ -28,14 +28,14 @@ describe('getEditorActivity', () => {
 			'Jan-20': 0,
 			'Feb-20': 0,
 			'Mar-20': 0,
-			'Apr-20': 0,
+			'Apr-20': 0
 		};
 		expect(activity).to.deep.equal(expectedResult);
 	});
 
 	it('should return revision data for graph', async () => {
 		const revisionAttribs = {
-			authorId: editorJSON.id,
+			authorId: editorJSON.id
 		};
 		const revisionsPromiseArray = [];
 		for (let i = 0; i < 12; i++) {
@@ -43,7 +43,7 @@ describe('getEditorActivity', () => {
 			tempDate.setFullYear(2020, i, 1);
 			revisionAttribs.createdAt = tempDate;
 			revisionsPromiseArray.push(
-				new Revision(revisionAttribs).save(null, { method: 'insert' })
+				new Revision(revisionAttribs).save(null, {method: 'insert'})
 			);
 		}
 		await Promise.all(revisionsPromiseArray);
@@ -66,7 +66,7 @@ describe('getEditorActivity', () => {
 			'Sep-20': 1,
 			'Oct-20': 1,
 			'Nov-20': 1,
-			'Dec-20': 1,
+			'Dec-20': 1
 		};
 
 		expect(activity).to.deep.equal(expectedResult);
@@ -74,7 +74,7 @@ describe('getEditorActivity', () => {
 
 	it('should give count months with zero or multiple revisions', async () => {
 		const revisionAttribs = {
-			authorId: editorJSON.id,
+			authorId: editorJSON.id
 		};
 		const revisionsPromiseArray = [];
 		for (let i = 0; i < 12; i += 2) {
@@ -82,7 +82,7 @@ describe('getEditorActivity', () => {
 			tempDate.setFullYear(2020, i, 1);
 			revisionAttribs.createdAt = tempDate;
 			revisionsPromiseArray.push(
-				new Revision(revisionAttribs).save(null, { method: 'insert' })
+				new Revision(revisionAttribs).save(null, {method: 'insert'})
 			);
 		}
 		await Promise.all(revisionsPromiseArray);
@@ -105,7 +105,7 @@ describe('getEditorActivity', () => {
 			'Sep-20': 1,
 			'Oct-20': 0,
 			'Nov-20': 1,
-			'Dec-20': 0,
+			'Dec-20': 0
 		};
 
 		expect(activity).to.deep.equal(expectedResult);

@@ -16,16 +16,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import { Button, Col, Modal, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
-import { addIdentifierRow, hideIdentifierEditor, removeEmptyIdentifiers } from './actions';
-import { faPlus, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import {Button, Col, Modal, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
+import {addIdentifierRow, hideIdentifierEditor, removeEmptyIdentifiers} from './actions';
+import {faPlus, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import IdentifierRow from './identifier-row';
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 /**
  * Container component. The IdentifierEditor component contains a number of
@@ -46,8 +46,8 @@ import { connect } from 'react-redux';
  * @returns {ReactElement} React element containing the rendered
  *          IdentifierEditor.
  */
-const IdentifierEditor = ({ identifiers, identifierTypes, onAddIdentifier, onClose, show }) => {
-	const noIdentifiersTextClass = classNames('text-center', { hidden: identifiers.size });
+const IdentifierEditor = ({identifiers, identifierTypes, onAddIdentifier, onClose, show}) => {
+	const noIdentifiersTextClass = classNames('text-center', {hidden: identifiers.size});
 
 	const helpText = `identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc.
 	You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).`;
@@ -106,15 +106,15 @@ IdentifierEditor.propTypes = {
 	identifiers: PropTypes.object.isRequired,
 	onAddIdentifier: PropTypes.func.isRequired,
 	onClose: PropTypes.func.isRequired,
-	show: PropTypes.bool,
+	show: PropTypes.bool
 };
 IdentifierEditor.defaultProps = {
-	show: false,
+	show: false
 };
 
 function mapStateToProps(state) {
 	return {
-		identifiers: state.get('identifierEditor'),
+		identifiers: state.get('identifierEditor')
 	};
 }
 
@@ -124,7 +124,7 @@ function mapDispatchToProps(dispatch) {
 		onClose: () => {
 			dispatch(hideIdentifierEditor());
 			dispatch(removeEmptyIdentifiers());
-		},
+		}
 	};
 }
 

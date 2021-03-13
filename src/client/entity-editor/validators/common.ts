@@ -16,14 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {
-	get,
-	validateOptionalString,
-	validatePositiveInteger,
-	validateRequiredString,
-} from './base';
+import {get, validateOptionalString, validatePositiveInteger, validateRequiredString} from './base';
 
-import { Iterable } from 'immutable';
+import {Iterable} from 'immutable';
 import _ from 'lodash';
 
 export function validateMultiple(

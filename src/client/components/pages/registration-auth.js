@@ -20,9 +20,9 @@
 
 import * as bootstrap from 'react-bootstrap';
 import React from 'react';
-import { hot } from 'react-hot-loader';
+import {hot} from 'react-hot-loader';
 
-const { Alert, Button, PageHeader } = bootstrap;
+const {Alert, Button, PageHeader} = bootstrap;
 
 /**
  * Renders a page allowing the user to sign in to MusicBrainz to

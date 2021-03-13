@@ -22,7 +22,7 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
 chai.use(chaiAsPromised);
-const { expect } = chai;
+const {expect} = chai;
 
 export function expectFalse() {
 	return (promise) => expect(promise).to.eventually.equal(false);
@@ -35,7 +35,7 @@ export function expectIds(prop, rev) {
 			expect(promise).to.eventually.have.property(
 				'achievementId',
 				testData[`${prop}${rev}Attribs`].id
-			),
+			)
 		]);
 }
 
@@ -49,7 +49,7 @@ export function expectRevNamedIds(name, prop, rev) {
 			expect(promise).to.eventually.have.nested.property(
 				`${name} ${rev}.achievementId`,
 				testData[`${prop}${rev}Attribs`].id
-			),
+			)
 		]);
 }
 
@@ -71,7 +71,7 @@ export function expectAllNamedIds(name, prop, rev) {
 			expect(promise).to.eventually.have.nested.property(
 				`${name}.titleId`,
 				testData[`${prop}Attribs`].id
-			),
+			)
 		]);
 }
 
@@ -79,7 +79,7 @@ export function getAttrPromise(Achievement, orm, full) {
 	return () => {
 		const editorPromise = full
 			? testData.createEditor()
-			: new orm.Editor({ name: testData.editorAttribs.name }).fetch();
+			: new orm.Editor({name: testData.editorAttribs.name}).fetch();
 		return editorPromise
 			.then((editor) => Achievement.processEdit(orm, editor.id))
 			.then((editor) => {
@@ -100,7 +100,7 @@ export function rewire(Achievement, rewiring) {
 
 export function rewireTypeCreation(Achievement, name, threshold) {
 	return rewire(Achievement, {
-		getTypeCreation: testData.typeCreationHelper(`${name}_revision`, threshold),
+		getTypeCreation: testData.typeCreationHelper(`${name}_revision`, threshold)
 	});
 }
 

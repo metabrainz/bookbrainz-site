@@ -34,7 +34,7 @@ import {
 	UPDATE_STATUS,
 	UPDATE_WARN_IF_EDITION_GROUP_EXISTS,
 	UPDATE_WEIGHT,
-	UPDATE_WIDTH,
+	UPDATE_WIDTH
 } from './actions';
 
 type State = Immutable.Map<string, any>;
@@ -45,11 +45,11 @@ function reducer(
 		languages: Immutable.List([]),
 		publisher: null,
 		releaseDate: '',
-		status: null,
+		status: null
 	}),
 	action: Action
 ): State {
-	const { type, payload } = action;
+	const {type, payload} = action;
 	switch (type) {
 		case SHOW_PHYSICAL:
 			return state.set('physicalVisible', true);

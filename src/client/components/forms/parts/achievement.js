@@ -25,7 +25,7 @@ class Achievement extends React.Component {
 		super(props);
 		this.state = {
 			achievement: props.achievement,
-			unlocked: props.unlocked,
+			unlocked: props.unlocked
 		};
 	}
 
@@ -38,7 +38,7 @@ class Achievement extends React.Component {
 					achievementName={this.state.achievement.name}
 					height="100px"
 					src={this.state.achievement.badgeUrl}
-					style={{ zIndex: 2 }}
+					style={{zIndex: 2}}
 				/>
 			);
 		} else {
@@ -47,7 +47,7 @@ class Achievement extends React.Component {
 					alt={this.state.achievement.name}
 					height="100px"
 					src={this.state.achievement.badgeUrl}
-					style={{ zIndex: 2 }}
+					style={{zIndex: 2}}
 				/>
 			);
 		}
@@ -69,12 +69,12 @@ Achievement.propTypes = {
 	achievement: PropTypes.shape({
 		badgeUrl: PropTypes.string,
 		description: PropTypes.string,
-		name: PropTypes.string,
+		name: PropTypes.string
 	}).isRequired,
-	unlocked: PropTypes.bool,
+	unlocked: PropTypes.bool
 };
 Achievement.defaultProps = {
-	unlocked: false,
+	unlocked: false
 };
 
 export default Achievement;

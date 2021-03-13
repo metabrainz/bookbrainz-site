@@ -17,9 +17,9 @@
  */
 
 import * as React from 'react';
-import { faCheck, faExclamationTriangle, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import {faCheck, faExclamationTriangle, faTimes} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import type {IconDefinition} from '@fortawesome/fontawesome-svg-core';
 
 type OptionalBool = boolean | null | undefined;
 function icon(empty: OptionalBool, error: OptionalBool, warn: OptionalBool): IconDefinition | null {
@@ -82,7 +82,7 @@ type Props = {
  *        error validating the contents of the associated input field.
  * @returns {Object} A React component containing the rendered input.
  */
-function ValidationLabel({ children, empty, error, errorMessage, warn, warnMessage }: Props) {
+function ValidationLabel({children, empty, error, errorMessage, warn, warnMessage}: Props) {
 	const warnElement = warn && !empty && !error && (
 		<span className={contextualColor(empty, error, warn)}> {warnMessage} </span>
 	);
@@ -109,7 +109,7 @@ ValidationLabel.defaultProps = {
 	error: false,
 	errorMessage: '',
 	warn: false,
-	warnMessage: '',
+	warnMessage: ''
 };
 
 export default ValidationLabel;

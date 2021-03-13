@@ -23,11 +23,11 @@ import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
 import EntityTitle from './title';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import WorksTable from './work-table';
-import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
+import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons';
 
 const {
 	deletedEntityMessage,
@@ -38,11 +38,11 @@ const {
 	getLanguageAttribute,
 	getRelationshipTargetByTypeId,
 	ENTITY_TYPE_ICONS,
-	getSortNameOfDefaultAlias,
+	getSortNameOfDefaultAlias
 } = entityHelper;
-const { Col, Row } = bootstrap;
+const {Col, Row} = bootstrap;
 
-function EditionAttributes({ edition }) {
+function EditionAttributes({edition}) {
 	if (edition.deleted) {
 		return deletedEntityMessage;
 	}
@@ -104,10 +104,10 @@ function EditionAttributes({ edition }) {
 }
 EditionAttributes.displayName = 'EditionAttributes';
 EditionAttributes.propTypes = {
-	edition: PropTypes.object.isRequired,
+	edition: PropTypes.object.isRequired
 };
 
-function EditionDisplayPage({ entity, identifierTypes, user }) {
+function EditionDisplayPage({entity, identifierTypes, user}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
@@ -172,10 +172,10 @@ EditionDisplayPage.displayName = 'EditionDisplayPage';
 EditionDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired,
+	user: PropTypes.object.isRequired
 };
 EditionDisplayPage.defaultProps = {
-	identifierTypes: [],
+	identifierTypes: []
 };
 
 export default EditionDisplayPage;

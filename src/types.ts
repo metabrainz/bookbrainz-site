@@ -1,4 +1,4 @@
-import { Iterable } from 'immutable';
+import {Iterable} from 'immutable';
 
 export type _Author = {};
 

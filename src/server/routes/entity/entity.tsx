@@ -26,15 +26,15 @@ import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
-import type { Request as $Request, Response as $Response, NextFunction } from 'express';
+import type {Request as $Request, Response as $Response, NextFunction} from 'express';
 import type {
 	EntityTypeString,
 	FormLanguageT as Language,
 	FormPublisherT as Publisher,
 	FormReleaseEventT as ReleaseEvent,
-	Transaction,
+	Transaction
 } from 'bookbrainz-data/lib/func/types';
-import { escapeProps, generateProps } from '../../helpers/props';
+import {escapeProps, generateProps} from '../../helpers/props';
 import AuthorPage from '../../../client/components/pages/entities/author';
 import DeletionForm from '../../../client/components/forms/deletion';
 import EditionGroupPage from '../../../client/components/pages/entities/edition-group';
@@ -45,26 +45,26 @@ import PublisherPage from '../../../client/components/pages/entities/publisher';
 import ReactDOMServer from 'react-dom/server';
 import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
-import { getEntityLabel } from '../../../client/helpers/entity';
-import { getOrderedRevisionsForEntityPage } from '../../helpers/revisions';
+import {getEntityLabel} from '../../../client/helpers/entity';
+import {getOrderedRevisionsForEntityPage} from '../../helpers/revisions';
 import log from 'log';
 import target from '../../templates/target';
 
-type PassportRequest = $Request & { user: any; session: any };
+type PassportRequest = $Request & {user: any; session: any};
 
 const entityComponents = {
 	author: AuthorPage,
 	edition: EditionPage,
 	editionGroup: EditionGroupPage,
 	publisher: PublisherPage,
-	work: WorkPage,
+	work: WorkPage
 };
 
 export function displayEntity(req: PassportRequest, res: $Response) {
-	const { orm }: { orm?: any } = req.app.locals;
-	const { AchievementUnlock, EditorEntityVisits } = orm;
-	const { locals: resLocals }: { locals: any } = res;
-	const { entity }: { entity: any } = resLocals;
+	const {orm}: {orm?: any} = req.app.locals;
+	const {AchievementUnlock, EditorEntityVisits} = orm;
+	const {locals: resLocals}: {locals: any} = res;
+	const {entity}: {entity: any} = resLocals;
 	// Get unique identifier types for display
 	// $FlowFixMe
 	let identifierTypes = [];
@@ -76,9 +76,9 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 	if (resLocals.user) {
 		editorEntityVisitPromise = new EditorEntityVisits({
 			bbid: resLocals.entity.bbid,
-			editorId: resLocals.user.id,
+			editorId: resLocals.user.id
 		})
-			.save(null, { method: 'insert' })
+			.save(null, {method: 'insert'})
 			.then(() => achievement.processPageVisit(orm, resLocals.user.id))
 			.catch(
 				// error caused by duplicates we do not want in database
@@ -99,17 +99,17 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 		}
 		if (alertIds.length > 0) {
 			const promiseList = alertIds.map((achievementAlert) =>
-				new AchievementUnlock({ id: achievementAlert })
+				new AchievementUnlock({id: achievementAlert})
 					.fetch({
 						require: true,
-						withRelated: 'achievement',
+						withRelated: 'achievement'
 					})
 					.then((unlock) => unlock.toJSON())
 					.then((unlock) => {
 						let unlockName;
 						if (req.user.id === unlock.editorId) {
 							unlockName = {
-								name: unlock.achievement.name,
+								name: unlock.achievement.name
 							};
 						}
 						return unlockName;
@@ -131,7 +131,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 		if (EntityComponent) {
 			const props = generateProps(req, res, {
 				alert,
-				identifierTypes,
+				identifierTypes
 			});
 
 			const markup = ReactDOMServer.renderToString(
@@ -145,7 +145,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 					page: entityName,
 					props: escapeProps(props),
 					script: '/js/entity/entity.js',
-					title: `${getEntityLabel(props.entity, false)} (${_.upperFirst(entityName)})`,
+					title: `${getEntityLabel(props.entity, false)} (${_.upperFirst(entityName)})`
 				})
 			);
 		} else {
@@ -167,7 +167,7 @@ export function displayDeleteEntity(req: PassportRequest, res: $Response) {
 		target({
 			markup,
 			props: escapeProps(props),
-			script: '/js/deletion.js',
+			script: '/js/deletion.js'
 		})
 	);
 }
@@ -180,8 +180,8 @@ export async function displayRevisions(
 ) {
 	const size = _.isString(req.query.size) ? parseInt(req.query.size, 10) : 20;
 	const from = _.isString(req.query.from) ? parseInt(req.query.from, 10) : 0;
-	const { orm }: any = req.app.locals;
-	const { bbid } = req.params;
+	const {orm}: any = req.app.locals;
+	const {bbid} = req.params;
 	try {
 		// get 1 more revision than required to check nextEnabled
 		const orderedRevisions = await getOrderedRevisionsForEntityPage(
@@ -191,7 +191,7 @@ export async function displayRevisions(
 			RevisionModel,
 			bbid
 		);
-		const { newResultsArray, nextEnabled } = utils.getNextEnabledAndResultsArray(
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(
 			orderedRevisions,
 			size
 		);
@@ -201,7 +201,7 @@ export async function displayRevisions(
 			revisions: newResultsArray,
 			showRevisionEditor: true,
 			showRevisionNote: true,
-			size,
+			size
 		});
 
 		const markup = ReactDOMServer.renderToString(
@@ -214,7 +214,7 @@ export async function displayRevisions(
 				markup,
 				page: 'revisions',
 				props: escapeProps(props),
-				script: '/js/entity/entity.js',
+				script: '/js/entity/entity.js'
 			})
 		);
 	} catch (err) {
@@ -231,8 +231,8 @@ export async function updateDisplayedRevisions(
 ) {
 	const size = _.isString(req.query.size) ? parseInt(req.query.size, 10) : 20;
 	const from = _.isString(req.query.from) ? parseInt(req.query.from, 10) : 0;
-	const { orm }: any = req.app.locals;
-	const { bbid } = req.params;
+	const {orm}: any = req.app.locals;
+	const {bbid} = req.params;
 	try {
 		const orderedRevisions = await getOrderedRevisionsForEntityPage(
 			orm,
@@ -248,25 +248,25 @@ export async function updateDisplayedRevisions(
 }
 
 function _createNote(orm, content, editorID, revision, transacting) {
-	const { Note } = orm;
+	const {Note} = orm;
 	if (content) {
 		const revisionId = revision.get('id');
 		return new Note({
 			authorId: editorID,
 			content,
-			revisionId,
-		}).save(null, { transacting });
+			revisionId
+		}).save(null, {transacting});
 	}
 
 	return null;
 }
 
 export function addNoteToRevision(req: PassportRequest, res: $Response) {
-	const { orm }: { orm?: any } = req.app.locals;
-	const { Revision, bookshelf } = orm;
+	const {orm}: {orm?: any} = req.app.locals;
+	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
-	const revision = Revision.forge({ id: req.params.id });
-	const { body }: { body: any } = req;
+	const revision = Revision.forge({id: req.params.id});
+	const {body}: {body: any} = req;
 	const revisionNotePromise = bookshelf.transaction((transacting) =>
 		_createNote(orm, body.note, editorJSON.id, revision, transacting)
 	);
@@ -275,10 +275,10 @@ export function addNoteToRevision(req: PassportRequest, res: $Response) {
 
 export async function getEntityByBBID(orm: any, transacting: Transaction, bbid: string) {
 	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, transacting);
-	const entityHeader = await orm.Entity.forge({ bbid: redirectBbid }).fetch({ transacting });
+	const entityHeader = await orm.Entity.forge({bbid: redirectBbid}).fetch({transacting});
 
 	const model = commonUtils.getEntityModelByType(orm, entityHeader.get('type'));
-	return model.forge({ bbid: redirectBbid }).fetch({ transacting });
+	return model.forge({bbid: redirectBbid}).fetch({transacting});
 }
 
 async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
@@ -287,10 +287,10 @@ async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
 	}
 
 	// Get the parents of the new revision
-	const parents = await newRevision.related('parents').fetch({ transacting });
+	const parents = await newRevision.related('parents').fetch({transacting});
 
 	// Add the previous revision as a parent of this revision.
-	return parents.attach(parentRevisionIDs, { transacting });
+	return parents.attach(parentRevisionIDs, {transacting});
 }
 
 async function saveEntitiesAndFinishRevision(
@@ -313,7 +313,7 @@ async function saveEntitiesAndFinishRevision(
 
 			const shouldInsert = entityModel.get('bbid') === mainEntity.get('bbid') && isNew;
 			const method = shouldInsert ? 'insert' : 'update';
-			return entityModel.save(null, { method, transacting });
+			return entityModel.save(null, {method, transacting});
 		})
 	);
 
@@ -329,7 +329,7 @@ async function saveEntitiesAndFinishRevision(
 		entitiesSavedPromise,
 		editorUpdatePromise,
 		parentsAddedPromise,
-		notePromise,
+		notePromise
 	]);
 
 	return (
@@ -340,7 +340,7 @@ async function saveEntitiesAndFinishRevision(
 
 export async function deleteRelationships(orm: any, transacting: Transaction, mainEntity: any) {
 	const mainBBID = mainEntity.bbid;
-	const { relationshipSet } = mainEntity;
+	const {relationshipSet} = mainEntity;
 	const otherBBIDs = [];
 	const otherEntities = [];
 
@@ -368,7 +368,7 @@ export async function deleteRelationships(orm: any, transacting: Transaction, ma
 
 					const otherEntityRelationshipSet = await otherEntity
 						.relationshipSet()
-						.fetch({ require: false, transacting, withRelated: 'relationships' });
+						.fetch({require: false, transacting, withRelated: 'relationships'});
 
 					if (_.isNil(otherEntityRelationshipSet)) {
 						return;
@@ -381,7 +381,7 @@ export async function deleteRelationships(orm: any, transacting: Transaction, ma
 
 					// Filter out entites related to deleted entity
 					otherEntityRelationships = otherEntityRelationships.filter(
-						({ sourceBbid, targetBbid }) =>
+						({sourceBbid, targetBbid}) =>
 							mainBBID !== sourceBbid && mainBBID !== targetBbid
 					);
 
@@ -411,13 +411,13 @@ export async function deleteRelationships(orm: any, transacting: Transaction, ma
 function fetchOrCreateMainEntity(orm, transacting, isNew, bbid, entityType) {
 	const model = commonUtils.getEntityModelByType(orm, entityType);
 
-	const entity = model.forge({ bbid });
+	const entity = model.forge({bbid});
 
 	if (isNew) {
 		return new Promise((resolve) => resolve(entity));
 	}
 
-	return entity.fetch({ transacting });
+	return entity.fetch({transacting});
 }
 
 export function handleDelete(
@@ -427,10 +427,10 @@ export function handleDelete(
 	HeaderModel: any,
 	RevisionModel: any
 ) {
-	const { entity }: { entity?: any } = res.locals;
-	const { Revision, bookshelf } = orm;
+	const {entity}: {entity?: any} = res.locals;
+	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
-	const { body }: { body: any } = req;
+	const {body}: {body: any} = req;
 
 	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
 		if (!body.note || !body.note.length) {
@@ -442,8 +442,8 @@ export function handleDelete(
 		const otherEntities = await deleteRelationships(orm, transacting, entity);
 
 		const newRevision = await new Revision({
-			authorId: editorJSON.id,
-		}).save(null, { transacting });
+			authorId: editorJSON.id
+		}).save(null, {transacting});
 
 		/*
 		 * No trigger for deletions, so manually create the <Entity>Revision
@@ -453,16 +453,16 @@ export function handleDelete(
 		const entityRevision = await new RevisionModel({
 			bbid: entity.bbid,
 			dataId: null,
-			id: newRevision.get('id'),
+			id: newRevision.get('id')
 		}).save(null, {
 			method: 'insert',
-			transacting,
+			transacting
 		});
 
 		await new HeaderModel({
 			bbid: entity.bbid,
-			masterRevisionId: entityRevision.get('id'),
-		}).save(null, { transacting });
+			masterRevisionId: entityRevision.get('id')
+		}).save(null, {transacting});
 
 		const mainEntity = await fetchOrCreateMainEntity(
 			orm,
@@ -497,8 +497,8 @@ export async function processMergeOperation(
 	allEntities,
 	relationshipSets
 ) {
-	const { Edition, bookshelf } = orm;
-	const { mergingEntities } = session.mergeQueue;
+	const {Edition, bookshelf} = orm;
+	const {mergingEntities} = session.mergeQueue;
 	if (!mergingEntities) {
 		throw new Error('Merge handler called with no merge queue, aborting');
 	}
@@ -512,7 +512,7 @@ export async function processMergeOperation(
 	let allEntitiesReturnArray = allEntities;
 	// fetch entities we're merging to add them to to the array of modified entities
 	const entitiesToMerge = _.values(mergingEntities).filter(
-		({ bbid }) => bbid !== currentEntityBBID
+		({bbid}) => bbid !== currentEntityBBID
 	);
 
 	const entitiesModelsToMerge = await Promise.all(
@@ -532,7 +532,7 @@ export async function processMergeOperation(
 				/** Refresh RelationshipSet to fetch both existing and new relationships */
 				const refreshedrelationshipSet = await relationshipSet.refresh({
 					transacting,
-					withRelated: 'relationships',
+					withRelated: 'relationships'
 				});
 
 				/** Find relationships with entities being merge and remove them from set */
@@ -540,15 +540,15 @@ export async function processMergeOperation(
 					.related('relationships')
 					.toJSON()
 					.filter(
-						({ sourceBbid, targetBbid }) =>
+						({sourceBbid, targetBbid}) =>
 							_.includes(entitiesToMergeBBIDs, sourceBbid) ||
 							_.includes(entitiesToMergeBBIDs, targetBbid)
 					)
-					.map(({ id }) => id);
+					.map(({id}) => id);
 				if (relationshipsToRemove.length) {
 					await refreshedrelationshipSet
 						.related('relationships')
-						.detach(relationshipsToRemove, { transacting });
+						.detach(relationshipsToRemove, {transacting});
 				}
 			}
 		})
@@ -563,7 +563,7 @@ export async function processMergeOperation(
 			const entityBBID = entity.get('bbid');
 			const relationshipSet = await entity
 				.relationshipSet()
-				.fetch({ require: false, transacting, withRelated: 'relationships' });
+				.fetch({require: false, transacting, withRelated: 'relationships'});
 			if (!relationshipSet) {
 				return;
 			}
@@ -587,7 +587,7 @@ export async function processMergeOperation(
 
 					const otherEntityRelationshipSet = await entity
 						.relationshipSet()
-						.fetch({ require: false, transacting, withRelated: 'relationships' });
+						.fetch({require: false, transacting, withRelated: 'relationships'});
 					if (!otherEntityRelationshipSet) {
 						return;
 					}
@@ -597,7 +597,7 @@ export async function processMergeOperation(
 
 					// Remove relationships with entity being merged
 					const cleanedUpRelationships = otherEntityRelationships.filter(
-						({ sourceBbid, targetBbid }) =>
+						({sourceBbid, targetBbid}) =>
 							entityBBID !== sourceBbid && entityBBID !== targetBbid
 					);
 
@@ -631,10 +631,10 @@ export async function processMergeOperation(
 	if (entityType === 'EditionGroup') {
 		const editionsToSet = await Edition.query((qb) =>
 			qb.whereIn('edition_group_bbid', entitiesToMergeBBIDs).andWhere('master', true)
-		).fetchAll({ require: false, transacting });
+		).fetchAll({require: false, transacting});
 		if (editionsToSet.length) {
 			editionsToSet.forEach((editionModel) =>
-				editionModel.set({ editionGroupBbid: currentEntityBBID })
+				editionModel.set({editionGroupBbid: currentEntityBBID})
 			);
 			// Add the modified Editions to the revision
 			allEntitiesReturnArray = _.unionBy(
@@ -671,7 +671,7 @@ export async function processMergeOperation(
 						orm,
 						transacting,
 						oldPublisherSet,
-						[{ bbid: currentEntityBBID }]
+						[{bbid: currentEntityBBID}]
 					);
 					// Set the new PublisherSet on the Edition
 					edition.set('publisherSetId', newPublisherSet.get('id'));
@@ -696,16 +696,16 @@ export async function processMergeOperation(
 		 * We only want to set isMerge to true on the entities we're merging,
 		 * not the other entities potentially affected by the merge -> .where(…
 		 */
-		const newEntityRevision = await model.revision().fetch({ transacting });
+		const newEntityRevision = await model.revision().fetch({transacting});
 
 		await newEntityRevision
 			.where('bbid', currentEntityBBID)
-			.save({ isMerge: true }, { patch: true, transacting });
+			.save({isMerge: true}, {patch: true, transacting});
 
 		/* Also set dataID to null for slave entities to 'delete' them */
 		await newEntityRevision
 			.query((qb) => qb.whereIn('bbid', entitiesToMergeBBIDs))
-			.save({ dataId: null, isMerge: true }, { patch: true, transacting });
+			.save({dataId: null, isMerge: true}, {patch: true, transacting});
 
 		/** Clear the merge queue */
 		session.mergeQueue = null;
@@ -726,7 +726,7 @@ export async function processMergeOperation(
 		.insert(
 			entitiesToMergeBBIDs.map((bbid) =>
 				// eslint-disable-next-line camelcase
-				({ source_bbid: bbid, target_bbid: currentEntityBBID })
+				({source_bbid: bbid, target_bbid: currentEntityBBID})
 			)
 		);
 
@@ -753,9 +753,9 @@ async function processEditionSets(
 	const languageSetID = _.get(currentEntity, ['languageSet', 'id']);
 
 	const oldLanguageSet = await (languageSetID &&
-		orm.LanguageSet.forge({ id: languageSetID }).fetch({
+		orm.LanguageSet.forge({id: languageSetID}).fetch({
 			transacting,
-			withRelated: ['languages'],
+			withRelated: ['languages']
 		}));
 
 	const languages = _.get(body, 'languages') || [];
@@ -764,16 +764,16 @@ async function processEditionSets(
 			orm,
 			transacting,
 			oldLanguageSet,
-			languages.map((languageID) => ({ id: languageID }))
+			languages.map((languageID) => ({id: languageID}))
 		)
 		.then((set) => set && set.get('id'));
 
 	const publisherSetID = _.get(currentEntity, ['publisherSet', 'id']);
 
 	const oldPublisherSet = await (publisherSetID &&
-		orm.PublisherSet.forge({ id: publisherSetID }).fetch({
+		orm.PublisherSet.forge({id: publisherSetID}).fetch({
 			transacting,
-			withRelated: ['publishers'],
+			withRelated: ['publishers']
 		}));
 
 	const publishers = _.get(body, 'publishers') || [];
@@ -782,16 +782,16 @@ async function processEditionSets(
 			orm,
 			transacting,
 			oldPublisherSet,
-			publishers.map((publisherBBID) => ({ bbid: publisherBBID }))
+			publishers.map((publisherBBID) => ({bbid: publisherBBID}))
 		)
 		.then((set) => set && set.get('id'));
 
 	const releaseEventSetID = _.get(currentEntity, ['releaseEventSet', 'id']);
 
 	const oldReleaseEventSet = await (releaseEventSetID &&
-		orm.ReleaseEventSet.forge({ id: releaseEventSetID }).fetch({
+		orm.ReleaseEventSet.forge({id: releaseEventSetID}).fetch({
 			transacting,
-			withRelated: ['releaseEvents'],
+			withRelated: ['releaseEvents']
 		}));
 
 	const releaseEvents = _.get(body, 'releaseEvents') || [];
@@ -815,21 +815,21 @@ async function processEditionSets(
 	return commonUtils.makePromiseFromObject<ProcessEditionSetsResult>({
 		languageSetId: newLanguageSetIDPromise,
 		publisherSetId: newPublisherSetIDPromise,
-		releaseEventSetId: newReleaseEventSetIDPromise,
+		releaseEventSetId: newReleaseEventSetIDPromise
 	});
 }
 
-type ProcessWorkSetsResult = { languageSetId: number[] };
+type ProcessWorkSetsResult = {languageSetId: number[]};
 async function processWorkSets(
 	orm,
 	currentEntity: Record<string, unknown> | null | undefined,
-	body: { languages: Array<Language> },
+	body: {languages: Array<Language>},
 	transacting: Transaction
 ): Promise<ProcessWorkSetsResult> {
 	const id = _.get(currentEntity, ['languageSet', 'id']);
 
 	const oldSet = await (id &&
-		orm.LanguageSet.forge({ id }).fetch({ transacting, withRelated: ['languages'] }));
+		orm.LanguageSet.forge({id}).fetch({transacting, withRelated: ['languages']}));
 
 	const languages = _.get(body, 'languages') || [];
 	return commonUtils.makePromiseFromObject<ProcessWorkSetsResult>({
@@ -838,9 +838,9 @@ async function processWorkSets(
 				orm,
 				transacting,
 				oldSet,
-				languages.map((languageID) => ({ id: languageID }))
+				languages.map((languageID) => ({id: languageID}))
 			)
-			.then((set) => set && set.get('id')),
+			.then((set) => set && set.get('id'))
 	});
 }
 
@@ -863,12 +863,12 @@ function processEntitySets(
 }
 
 async function getNextAliasSet(orm, transacting, currentEntity, body) {
-	const { AliasSet } = orm;
+	const {AliasSet} = orm;
 
 	const id = _.get(currentEntity, ['aliasSet', 'id']);
 
 	const oldAliasSet = await (id &&
-		new AliasSet({ id }).fetch({ require: false, transacting, withRelated: ['aliases'] }));
+		new AliasSet({id}).fetch({require: false, transacting, withRelated: ['aliases']}));
 
 	return orm.func.alias.updateAliasSet(
 		orm,
@@ -880,15 +880,15 @@ async function getNextAliasSet(orm, transacting, currentEntity, body) {
 }
 
 async function getNextIdentifierSet(orm, transacting, currentEntity, body) {
-	const { IdentifierSet } = orm;
+	const {IdentifierSet} = orm;
 
 	const id = _.get(currentEntity, ['identifierSet', 'id']);
 
 	const oldIdentifierSet = await (id &&
-		new IdentifierSet({ id }).fetch({
+		new IdentifierSet({id}).fetch({
 			require: false,
 			transacting,
-			withRelated: ['identifiers'],
+			withRelated: ['identifiers']
 		}));
 
 	return orm.func.identifier.updateIdentifierSet(
@@ -900,15 +900,15 @@ async function getNextIdentifierSet(orm, transacting, currentEntity, body) {
 }
 
 async function getNextRelationshipSets(orm, transacting, currentEntity, body) {
-	const { RelationshipSet } = orm;
+	const {RelationshipSet} = orm;
 
 	const id = _.get(currentEntity, ['relationshipSet', 'id']);
 
 	const oldRelationshipSet = await (id &&
-		new RelationshipSet({ id }).fetch({
+		new RelationshipSet({id}).fetch({
 			require: false,
 			transacting,
-			withRelated: ['relationships'],
+			withRelated: ['relationships']
 		}));
 
 	return orm.func.relationship.updateRelationshipSets(
@@ -920,12 +920,11 @@ async function getNextRelationshipSets(orm, transacting, currentEntity, body) {
 }
 
 async function getNextAnnotation(orm, transacting, currentEntity, body, revision) {
-	const { Annotation } = orm;
+	const {Annotation} = orm;
 
 	const id = _.get(currentEntity, ['annotation', 'id']);
 
-	const oldAnnotation = await (id &&
-		new Annotation({ id }).fetch({ require: false, transacting }));
+	const oldAnnotation = await (id && new Annotation({id}).fetch({require: false, transacting}));
 
 	return body.annotation
 		? orm.func.annotation.updateAnnotation(
@@ -939,12 +938,12 @@ async function getNextAnnotation(orm, transacting, currentEntity, body, revision
 }
 
 async function getNextDisambiguation(orm, transacting, currentEntity, body) {
-	const { Disambiguation } = orm;
+	const {Disambiguation} = orm;
 
 	const id = _.get(currentEntity, ['disambiguation', 'id']);
 
 	const oldDisambiguation = await (id &&
-		new Disambiguation({ id }).fetch({ require: false, transacting }));
+		new Disambiguation({id}).fetch({require: false, transacting}));
 
 	return orm.func.disambiguation.updateDisambiguation(
 		orm,
@@ -985,7 +984,7 @@ async function getChangedProps(
 		identSetPromise,
 		annotationPromise,
 		disambiguationPromise,
-		entitySetIdsPromise,
+		entitySetIdsPromise
 	]);
 
 	const propsToSet = {
@@ -994,7 +993,7 @@ async function getChangedProps(
 		disambiguationId: disambiguation && disambiguation.get('id'),
 		identifierSetId: identSet && identSet.get('id'),
 		...derivedProps,
-		...entitySetIds,
+		...entitySetIds
 	};
 
 	if (isNew) {
@@ -1033,13 +1032,13 @@ function fetchEntitiesForRelationships(orm, transacting, currentEntity, relation
  * This method fetches and indexes (search) those potential new EditionGroups that may have been created automatically.
  */
 async function indexAutoCreatedEditionGroup(orm, newEdition, transacting) {
-	const { EditionGroup } = orm;
+	const {EditionGroup} = orm;
 	const bbid = newEdition.get('editionGroupBbid');
 	try {
-		const editionGroup = await new EditionGroup({ bbid }).fetch({
+		const editionGroup = await new EditionGroup({bbid}).fetch({
 			require: true,
 			transacting,
-			withRelated: 'aliasSet.aliases',
+			withRelated: 'aliasSet.aliases'
 		});
 		await search.indexEntity(editionGroup.toJSON());
 	} catch (err) {
@@ -1054,20 +1053,20 @@ export function handleCreateOrEditEntity(
 	derivedProps: Record<string, unknown>,
 	isMergeOperation: boolean
 ) {
-	const { orm }: { orm?: any } = req.app.locals;
-	const { Entity, Revision, bookshelf } = orm;
+	const {orm}: {orm?: any} = req.app.locals;
+	const {Entity, Revision, bookshelf} = orm;
 	const editorJSON = req.user;
 
-	const { body }: { body: any } = req;
-	const { locals: resLocals }: { locals: any } = res;
+	const {body}: {body: any} = req;
+	const {locals: resLocals}: {locals: any} = res;
 
 	let currentEntity:
 		| {
-				aliasSet: { id: number } | null | undefined;
-				annotation: { id: number } | null | undefined;
+				aliasSet: {id: number} | null | undefined;
+				annotation: {id: number} | null | undefined;
 				bbid: string;
-				disambiguation: { id: number } | null | undefined;
-				identifierSet: { id: number } | null | undefined;
+				disambiguation: {id: number} | null | undefined;
+				identifierSet: {id: number} | null | undefined;
 				type: EntityTypeString;
 		  }
 		| null
@@ -1079,16 +1078,16 @@ export function handleCreateOrEditEntity(
 			const isNew = !currentEntity;
 
 			if (isNew) {
-				const newEntity = await new Entity({ type: entityType }).save(null, {
-					transacting,
+				const newEntity = await new Entity({type: entityType}).save(null, {
+					transacting
 				});
 				const newEntityBBID = newEntity.get('bbid');
 				body.relationships = _.map(
 					body.relationships,
-					({ sourceBbid, targetBbid, ...others }) => ({
+					({sourceBbid, targetBbid, ...others}) => ({
 						sourceBbid: sourceBbid || newEntityBBID,
 						targetBbid: targetBbid || newEntityBBID,
-						...others,
+						...others
 					})
 				);
 
@@ -1098,8 +1097,8 @@ export function handleCreateOrEditEntity(
 			// Then, edit the entity
 			const newRevision = await new Revision({
 				authorId: editorJSON.id,
-				isMerge: isMergeOperation,
-			}).save(null, { transacting });
+				isMerge: isMergeOperation
+			}).save(null, {transacting});
 
 			const relationshipSets = await getNextRelationshipSets(
 				orm,
@@ -1186,11 +1185,11 @@ export function handleCreateOrEditEntity(
 			);
 
 			/* We need to load the aliases for search reindexing and refresh it*/
-			await savedMainEntity.load('aliasSet.aliases', { transacting });
+			await savedMainEntity.load('aliasSet.aliases', {transacting});
 
 			/* New entities will lack some attributes like 'type' required for search indexing */
 			if (isNew) {
-				await savedMainEntity.refresh({ transacting });
+				await savedMainEntity.refresh({transacting});
 
 				/* fetch and reindex EditionGroups that may have been created automatically by the ORM and not indexed */
 				if (savedMainEntity.get('type') === 'Edition') {
@@ -1238,18 +1237,18 @@ type NameSectionT = {
 };
 
 export function constructAliases(
-	aliasEditor: { [propName: string]: AliasEditorT },
+	aliasEditor: {[propName: string]: AliasEditorT},
 	nameSection: NameSectionT
 ) {
 	const aliases = _.map(
 		aliasEditor,
-		({ language: languageId, name, primary, sortName }: AliasEditorT, id) => ({
+		({language: languageId, name, primary, sortName}: AliasEditorT, id) => ({
 			default: false,
 			id,
 			languageId,
 			name,
 			primary,
-			sortName,
+			sortName
 		})
 	);
 
@@ -1260,9 +1259,9 @@ export function constructAliases(
 			languageId: nameSection.language,
 			name: nameSection.name,
 			primary: true,
-			sortName: nameSection.sortName,
+			sortName: nameSection.sortName
 		},
-		...aliases,
+		...aliases
 	];
 }
 
@@ -1271,22 +1270,22 @@ type IdentifierEditorT = {
 	value: string;
 };
 
-export function constructIdentifiers(identifierEditor: { [propName: string]: IdentifierEditorT }) {
-	return _.map(identifierEditor, ({ type: typeId, value }: IdentifierEditorT, id: string) => ({
+export function constructIdentifiers(identifierEditor: {[propName: string]: IdentifierEditorT}) {
+	return _.map(identifierEditor, ({type: typeId, value}: IdentifierEditorT, id: string) => ({
 		id,
 		typeId,
-		value,
+		value
 	}));
 }
 
 export function constructRelationships(relationshipSection) {
 	return _.map(
 		relationshipSection.relationships,
-		({ rowID, relationshipType, sourceEntity, targetEntity }) => ({
+		({rowID, relationshipType, sourceEntity, targetEntity}) => ({
 			id: rowID,
 			sourceBbid: _.get(sourceEntity, 'bbid'),
 			targetBbid: _.get(targetEntity, 'bbid'),
-			typeId: relationshipType.id,
+			typeId: relationshipType.id
 		})
 	);
 }
@@ -1304,7 +1303,7 @@ export function getDefaultAliasIndex(aliasSet) {
 	if (_.isNil(aliasSet)) {
 		return null;
 	}
-	const { aliases, defaultAliasId } = aliasSet;
+	const {aliases, defaultAliasId} = aliasSet;
 	if (!aliases || !aliases.length) {
 		return null;
 	}
@@ -1321,16 +1320,16 @@ export function getDefaultAliasIndex(aliasSet) {
 	return index > 0 ? index : 0;
 }
 
-export function areaToOption(area: { comment: string; id: number; name: string }) {
+export function areaToOption(area: {comment: string; id: number; name: string}) {
 	if (!area) {
 		return null;
 	}
-	const { id } = area;
+	const {id} = area;
 	return {
 		disambiguation: area.comment,
 		id,
 		text: area.name,
-		type: 'area',
+		type: 'area'
 	};
 }
 

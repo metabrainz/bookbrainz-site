@@ -23,15 +23,15 @@ import {
 	faGripVertical,
 	faHistory,
 	faPencilAlt,
-	faTimes,
+	faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import AddToCollectionModal from '../parts/add-to-collection-modal';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const { formatDate } = utilsHelper;
-const { Alert, Button, ButtonGroup, Col, Row } = bootstrap;
+const {formatDate} = utilsHelper;
+const {Alert, Button, ButtonGroup, Col, Row} = bootstrap;
 
 class EntityFooter extends React.Component {
 	constructor(props) {
@@ -39,9 +39,9 @@ class EntityFooter extends React.Component {
 		this.state = {
 			message: {
 				text: null,
-				type: null,
+				type: null
 			},
-			showModal: false,
+			showModal: false
 		};
 
 		this.onCloseModal = this.onCloseModal.bind(this);
@@ -51,18 +51,18 @@ class EntityFooter extends React.Component {
 	}
 
 	onCloseModal() {
-		this.setState({ showModal: false });
+		this.setState({showModal: false});
 	}
 
 	handleShowModal() {
 		if (this.props.user) {
-			this.setState({ showModal: true });
+			this.setState({showModal: true});
 		} else {
 			this.setState({
 				message: {
 					text: 'You need to be logged in',
-					type: 'danger',
-				},
+					type: 'danger'
+				}
 			});
 		}
 	}
@@ -70,12 +70,12 @@ class EntityFooter extends React.Component {
 	closeModalAndShowMessage(message) {
 		this.setState({
 			message,
-			showModal: false,
+			showModal: false
 		});
 	}
 
 	handleAlertDismiss() {
-		this.setState({ message: {} });
+		this.setState({message: {}});
 	}
 
 	render() {
@@ -159,10 +159,10 @@ EntityFooter.propTypes = {
 	entityType: PropTypes.string.isRequired,
 	entityUrl: PropTypes.string.isRequired,
 	lastModified: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]).isRequired,
-	user: PropTypes.object.isRequired,
+	user: PropTypes.object.isRequired
 };
 EntityFooter.defaultProps = {
-	deleted: false,
+	deleted: false
 };
 
 export default EntityFooter;

@@ -20,7 +20,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Relationship from '../../../entity-editor/relationship-editor/relationship';
 
-function EntityRelationships({ contextEntity, relationships }) {
+function EntityRelationships({contextEntity, relationships}) {
 	return (
 		<div>
 			<h2>Relationships</h2>
@@ -45,7 +45,7 @@ function EntityRelationships({ contextEntity, relationships }) {
 EntityRelationships.displayName = 'EntityRelationships';
 EntityRelationships.propTypes = {
 	contextEntity: PropTypes.object.isRequired,
-	relationships: PropTypes.array.isRequired,
+	relationships: PropTypes.array.isRequired
 };
 
 export default EntityRelationships;

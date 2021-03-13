@@ -22,10 +22,10 @@ import AnnotationSection from './annotation-section/annotation-section';
 import ButtonBar from './button-bar/button-bar';
 import IdentifierEditor from './identifier-editor/identifier-editor';
 import NameSection from './name-section/name-section';
-import { Panel } from 'react-bootstrap';
+import {Panel} from 'react-bootstrap';
 import RelationshipSection from './relationship-editor/relationship-section';
 import SubmissionSection from './submission-section/submission-section';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 type OwnProps = {
 	children: React.ReactElement<any>;
@@ -52,7 +52,7 @@ type Props = StateProps & OwnProps;
  * @returns {ReactElement} React element containing the rendered EntityEditor.
  */
 const EntityEditor = (props: Props) => {
-	const { aliasEditorVisible, children, heading, identifierEditorVisible } = props;
+	const {aliasEditorVisible, children, heading, identifierEditorVisible} = props;
 
 	return (
 		<Panel>
@@ -64,7 +64,7 @@ const EntityEditor = (props: Props) => {
 				<NameSection {...props} />
 				<ButtonBar {...props} />
 				<RelationshipSection {...props} />
-				{React.cloneElement(React.Children.only(children), { ...props })}
+				{React.cloneElement(React.Children.only(children), {...props})}
 				<IdentifierEditor show={identifierEditorVisible} {...props} />
 				<AnnotationSection {...props} />
 			</Panel.Body>
@@ -80,7 +80,7 @@ function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('buttonBar');
 	return {
 		aliasEditorVisible: state.get('aliasEditorVisible'),
-		identifierEditorVisible: state.get('identifierEditorVisible'),
+		identifierEditorVisible: state.get('identifierEditorVisible')
 	};
 }
 

@@ -32,7 +32,7 @@ router.get('/cb', (req, res, next) => {
 		if (authErr) {
 			res.locals.alerts.push({
 				level: 'danger',
-				message: `We encountered an error while trying to sign in: ${authErr}`,
+				message: `We encountered an error while trying to sign in: ${authErr}`
 			});
 			return next(authErr);
 		}
@@ -48,14 +48,14 @@ router.get('/cb', (req, res, next) => {
 				return next(loginErr);
 			}
 
-			const { Editor } = req.app.locals.orm;
+			const {Editor} = req.app.locals.orm;
 			// lastLoginDate is current login date with time in ISO format
 			const lastLoginDate = new Date().toISOString();
 			// Query for update activeAt with current login timestamp
 			try {
-				await Editor.where({ id: req.user.id }).save(
-					{ activeAt: lastLoginDate },
-					{ patch: true }
+				await Editor.where({id: req.user.id}).save(
+					{activeAt: lastLoginDate},
+					{patch: true}
 				);
 			} catch (error) {
 				return next(error);

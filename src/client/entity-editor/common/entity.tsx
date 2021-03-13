@@ -18,7 +18,7 @@
  */
 
 import * as React from 'react';
-import { genEntityIconHTMLElement } from '../../helpers/entity';
+import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 type EntityProps = {
 	disambiguation?: string | null | undefined;
@@ -29,7 +29,7 @@ type EntityProps = {
 	unnamedText?: string;
 };
 
-function Entity({ disambiguation, language, link, text, type, unnamedText }: EntityProps) {
+function Entity({disambiguation, language, link, text, type, unnamedText}: EntityProps) {
 	const nameComponent = text || <i>{unnamedText}</i>;
 	const contents = (
 		<span>
@@ -55,7 +55,7 @@ Entity.displayName = 'Entity';
 Entity.defaultProps = {
 	disambiguation: null,
 	link: false,
-	unnamedText: '(unnamed)',
+	unnamedText: '(unnamed)'
 };
 
 export default Entity;

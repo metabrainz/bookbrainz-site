@@ -3,9 +3,9 @@
 
 module.exports = {
 	env: {
-		browser: true,
+		browser: true
 	},
 	rules: {
-		strict: [2, 'function'],
-	},
+		strict: [2, 'function']
+	}
 };

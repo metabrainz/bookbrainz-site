@@ -21,17 +21,17 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
-import { faExternalLinkAlt, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { keys, values } from 'lodash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Line } from 'react-chartjs-2';
+import {faExternalLinkAlt, faPencilAlt} from '@fortawesome/free-solid-svg-icons';
+import {keys, values} from 'lodash';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {Line} from 'react-chartjs-2';
 import PropTypes from 'prop-types';
 import React from 'react';
 /* eslint-disable-next-line import/no-unassigned-import,sort-imports -- import this after react-chartjs-2 */
 import 'chartjs-adapter-date-fns';
 
-const { Button, Col, Image, Row } = bootstrap;
-const { formatDate } = utilsHelper;
+const {Button, Col, Image, Row} = bootstrap;
+const {formatDate} = utilsHelper;
 
 class EditorProfileTab extends React.Component {
 	constructor(props) {
@@ -43,8 +43,8 @@ class EditorProfileTab extends React.Component {
 	}
 
 	renderBasicInfo() {
-		const { user, editor } = this.props;
-		const { cachedMetabrainzName, metabrainzUserId, name, gender } = editor;
+		const {user, editor} = this.props;
+		const {cachedMetabrainzName, metabrainzUserId, name, gender} = editor;
 		const createdAtDate = formatDate(new Date(editor.createdAt), true);
 		const lastActiveDate = formatDate(new Date(editor.activeAt), true);
 
@@ -112,7 +112,7 @@ class EditorProfileTab extends React.Component {
 	}
 
 	renderStats() {
-		const { editor } = this.props;
+		const {editor} = this.props;
 
 		return (
 			<div>
@@ -130,7 +130,7 @@ class EditorProfileTab extends React.Component {
 	}
 
 	renderBadges() {
-		const { achievement } = this.props;
+		const {achievement} = this.props;
 		let achievementBsSize = 12;
 		if (achievement.length === 1) {
 			achievementBsSize = 8;
@@ -179,7 +179,7 @@ class EditorProfileTab extends React.Component {
 	}
 
 	renderActivityGraph() {
-		const { activityData, totalRevisions } = this.props.editor;
+		const {activityData, totalRevisions} = this.props.editor;
 		const months = keys(activityData);
 		const numberOfRevisions = values(activityData);
 
@@ -196,10 +196,10 @@ class EditorProfileTab extends React.Component {
 					data: numberOfRevisions,
 					hoverBackgroundColor: 'rgba(235,116,59,0.4)',
 					hoverBorderColor: 'rgba(235,116,59,1)',
-					label: 'Revisions',
-				},
+					label: 'Revisions'
+				}
 			],
-			labels: months,
+			labels: months
 		};
 
 		return (
@@ -207,7 +207,7 @@ class EditorProfileTab extends React.Component {
 				<Line
 					data={data}
 					options={{
-						responsive: true,
+						responsive: true
 					}}
 				/>
 			</div>
@@ -230,10 +230,10 @@ EditorProfileTab.displayName = 'EditorProfileTab';
 EditorProfileTab.propTypes = {
 	achievement: PropTypes.object.isRequired,
 	editor: PropTypes.object.isRequired,
-	user: PropTypes.object,
+	user: PropTypes.object
 };
 EditorProfileTab.defaultProps = {
-	user: null,
+	user: null
 };
 
 export default EditorProfileTab;

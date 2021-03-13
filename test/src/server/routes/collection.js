@@ -1,21 +1,17 @@
-import {
-	createAuthor,
-	createEditor,
-	truncateEntities,
-} from '../../../test-helpers/create-entities';
-import { generateIndex, refreshIndex, searchByName } from '../../../../src/common/helpers/search';
+import {createAuthor, createEditor, truncateEntities} from '../../../test-helpers/create-entities';
+import {generateIndex, refreshIndex, searchByName} from '../../../../src/common/helpers/search';
 
 import app from '../../../../src/server/app';
 import assertArrays from 'chai-arrays';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 chai.use(chaiHttp);
 chai.use(assertArrays);
-const { expect } = chai;
-const { UserCollection, UserCollectionCollaborator, UserCollectionItem } = orm;
+const {expect} = chai;
+const {UserCollection, UserCollectionCollaborator, UserCollectionItem} = orm;
 
 describe('POST /collection/create', () => {
 	let agent;
@@ -44,10 +40,10 @@ describe('POST /collection/create', () => {
 			description: 'some description',
 			entityType: 'Author',
 			name: 'collectionName',
-			privacy: 'public',
+			privacy: 'public'
 		};
 		const res = await agent.post('/collection/create/handler').send(data);
-		const collection = await new UserCollection({ id: res.body.id }).fetch();
+		const collection = await new UserCollection({id: res.body.id}).fetch();
 
 		expect(collection.get('id')).to.equal(res.body.id);
 		expect(collection.get('ownerId')).to.equal(collectionOwner.get('id'));
@@ -63,10 +59,10 @@ describe('POST /collection/create', () => {
 			description: 'some description',
 			entityType: 'Edition-Group',
 			name: 'collectionName',
-			privacy: 'public',
+			privacy: 'public'
 		};
 		const res = await agent.post('/collection/create/handler').send(data);
-		const collection = await new UserCollection({ id: res.body.id }).fetch();
+		const collection = await new UserCollection({id: res.body.id}).fetch();
 
 		expect(collection.get('id')).to.equal(res.body.id);
 		expect(collection.get('ownerId')).to.equal(collectionOwner.get('id'));
@@ -82,7 +78,7 @@ describe('POST /collection/create', () => {
 			description: 'some description1234',
 			entityType: 'Author',
 			name: 'shouldBeInES',
-			privacy: 'public',
+			privacy: 'public'
 		};
 		const res = await agent.post('/collection/create/handler').send(data);
 		await new Promise((resolve) => setTimeout(resolve, 500));
@@ -98,7 +94,7 @@ describe('POST /collection/create', () => {
 			description: 'some description',
 			entityType: 'incorrect',
 			name: 'collectionName',
-			privacy: 'public',
+			privacy: 'public'
 		};
 		const response = await agent.post('/collection/create/handler').send(data);
 
@@ -113,7 +109,7 @@ describe('POST /collection/create', () => {
 			description: 'some description',
 			entityType: 'Author',
 			name: '',
-			privacy: 'public',
+			privacy: 'public'
 		};
 		const response = await agent.post('/collection/create/handler').send(data);
 
@@ -125,11 +121,11 @@ describe('POST /collection/create', () => {
 
 	it('should throw error for invalid collaborator id (string)', async () => {
 		const data = {
-			collaborators: [{ id: 'abc', name: 'name' }],
+			collaborators: [{id: 'abc', name: 'name'}],
 			description: 'some description',
 			entityType: 'Author',
 			name: 'collectionName',
-			privacy: 'public',
+			privacy: 'public'
 		};
 		const response = await agent.post('/collection/create/handler').send(data);
 
@@ -141,11 +137,11 @@ describe('POST /collection/create', () => {
 
 	it('should throw error for invalid collaborator id (negative number)', async () => {
 		const data = {
-			collaborators: [{ id: -123, name: 'name' }],
+			collaborators: [{id: -123, name: 'name'}],
 			description: 'some description',
 			entityType: 'Author',
 			name: 'collectionName',
-			privacy: 'public',
+			privacy: 'public'
 		};
 		const response = await agent.post('/collection/create/handler').send(data);
 
@@ -157,11 +153,11 @@ describe('POST /collection/create', () => {
 
 	it('should throw error for incorrect collaborator id (collaborator does not exist)', async () => {
 		const data = {
-			collaborators: [{ id: 12345, name: 'name' }],
+			collaborators: [{id: 12345, name: 'name'}],
 			description: 'some description',
 			entityType: 'Author',
 			name: 'collectionName',
-			privacy: 'public',
+			privacy: 'public'
 		};
 		const response = await agent.post('/collection/create/handler').send(data);
 
@@ -179,11 +175,11 @@ describe('POST /collection/create', () => {
 			description: 'some description',
 			entityType: 'Author',
 			name: 'collectionName',
-			privacy: 'public',
+			privacy: 'public'
 		};
 		const res = await agent.post('/collection/create/handler').send(data);
-		const collection = await new UserCollection({ id: res.body.id }).fetch({
-			withRelated: ['collaborators'],
+		const collection = await new UserCollection({id: res.body.id}).fetch({
+			withRelated: ['collaborators']
 		});
 		const collectionJSON = collection.toJSON();
 		const collaboratorIds = collectionJSON.collaborators.map(
@@ -193,7 +189,7 @@ describe('POST /collection/create', () => {
 		expect(res.status).to.equal(200);
 		expect(collaboratorIds).to.be.containingAllOf([
 			collaborator1.get('id'),
-			collaborator2.get('id'),
+			collaborator2.get('id')
 		]);
 	});
 });
@@ -217,11 +213,11 @@ describe('POST collection/edit', () => {
 			description: 'some description',
 			entityType: 'Author',
 			name: 'collectionName',
-			privacy: 'public',
+			privacy: 'public'
 		};
 		const res = await agent.post('/collection/create/handler').send(data);
-		const collection = await new UserCollection({ id: res.body.id }).fetch({
-			withRelated: ['collaborators'],
+		const collection = await new UserCollection({id: res.body.id}).fetch({
+			withRelated: ['collaborators']
 		});
 		collectionJSON = collection.toJSON();
 		await generateIndex(orm);
@@ -240,12 +236,12 @@ describe('POST collection/edit', () => {
 			description: 'new description',
 			entityType: 'Edition',
 			name: 'new collection name',
-			privacy: 'private',
+			privacy: 'private'
 		};
 
 		const res = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(newData);
-		const updatedCollection = await new UserCollection({ id: collectionJSON.id }).fetch({
-			withRelated: ['collaborators'],
+		const updatedCollection = await new UserCollection({id: collectionJSON.id}).fetch({
+			withRelated: ['collaborators']
 		});
 		const updatedCollectionJSON = updatedCollection.toJSON();
 
@@ -266,12 +262,12 @@ describe('POST collection/edit', () => {
 			description: 'new description',
 			entityType: 'Edition-Group',
 			name: 'new collection name',
-			privacy: 'private',
+			privacy: 'private'
 		};
 
 		const res = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(newData);
-		const updatedCollection = await new UserCollection({ id: collectionJSON.id }).fetch({
-			withRelated: ['collaborators'],
+		const updatedCollection = await new UserCollection({id: collectionJSON.id}).fetch({
+			withRelated: ['collaborators']
 		});
 		const updatedCollectionJSON = updatedCollection.toJSON();
 
@@ -292,12 +288,12 @@ describe('POST collection/edit', () => {
 			description: 'some description',
 			entityType: 'Author',
 			name: 'collectionName',
-			privacy: 'public',
+			privacy: 'public'
 		};
 
 		const res = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(newData);
-		const updatedCollection = await new UserCollection({ id: collectionJSON.id }).fetch({
-			withRelated: ['collaborators'],
+		const updatedCollection = await new UserCollection({id: collectionJSON.id}).fetch({
+			withRelated: ['collaborators']
 		});
 		const updatedCollectionJSON = updatedCollection.toJSON();
 
@@ -308,7 +304,7 @@ describe('POST collection/edit', () => {
 		);
 		expect(collaboratorIds).to.be.containingAllOf([
 			oldCollaborator.get('id'),
-			newCollaborator.get('id'),
+			newCollaborator.get('id')
 		]);
 	});
 
@@ -318,12 +314,12 @@ describe('POST collection/edit', () => {
 			description: 'some description',
 			entityType: 'Author',
 			name: 'collectionName',
-			privacy: 'public',
+			privacy: 'public'
 		};
 
 		const res = await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(newData);
-		const updatedCollection = await new UserCollection({ id: collectionJSON.id }).fetch({
-			withRelated: ['collaborators'],
+		const updatedCollection = await new UserCollection({id: collectionJSON.id}).fetch({
+			withRelated: ['collaborators']
 		});
 		const updatedCollectionJSON = updatedCollection.toJSON();
 
@@ -336,7 +332,7 @@ describe('POST collection/edit', () => {
 			description: 'new description',
 			entityType: 'Author',
 			name: 'updatedNameInES',
-			privacy: 'public',
+			privacy: 'public'
 		};
 		await agent.post(`/collection/${collectionJSON.id}/edit/handler`).send(newData);
 		await new Promise((resolve) => setTimeout(resolve, 500));
@@ -352,7 +348,7 @@ describe('POST collection/edit', () => {
 			description: 'some description',
 			entityType: 'incorrect',
 			name: 'collectionName',
-			privacy: 'public',
+			privacy: 'public'
 		};
 		const response = await agent
 			.post(`/collection/${collectionJSON.id}/edit/handler`)
@@ -370,7 +366,7 @@ describe('POST collection/edit', () => {
 			description: 'some description',
 			entityType: 'Author',
 			name: '',
-			privacy: 'public',
+			privacy: 'public'
 		};
 		const response = await agent
 			.post(`/collection/${collectionJSON.id}/edit/handler`)
@@ -386,15 +382,15 @@ describe('POST collection/edit', () => {
 		const author = await createAuthor();
 		await new UserCollectionItem({
 			bbid: author.get('bbid'),
-			collectionId: collectionJSON.id,
-		}).save(null, { method: 'insert' });
+			collectionId: collectionJSON.id
+		}).save(null, {method: 'insert'});
 
 		const data = {
 			collaborators: [oldCollaborator.toJSON()],
 			description: 'some description',
 			entityType: 'Edition',
 			name: 'collectionName',
-			privacy: 'public',
+			privacy: 'public'
 		};
 		const response = await agent
 			.post(`/collection/${collectionJSON.id}/edit/handler`)
@@ -407,11 +403,11 @@ describe('POST collection/edit', () => {
 
 	it('should throw error for invalid collaborator id (string)', async () => {
 		const data = {
-			collaborators: [{ id: 'abc', name: 'name' }],
+			collaborators: [{id: 'abc', name: 'name'}],
 			description: 'some description',
 			entityType: 'Author',
 			name: 'collectionName',
-			privacy: 'public',
+			privacy: 'public'
 		};
 		const response = await agent
 			.post(`/collection/${collectionJSON.id}/edit/handler`)
@@ -425,11 +421,11 @@ describe('POST collection/edit', () => {
 
 	it('should throw error for invalid collaborator id (negative number)', async () => {
 		const data = {
-			collaborators: [{ id: -123, name: 'name' }],
+			collaborators: [{id: -123, name: 'name'}],
 			description: 'some description',
 			entityType: 'Author',
 			name: 'collection name',
-			privacy: 'public',
+			privacy: 'public'
 		};
 		const response = await agent
 			.post(`/collection/${collectionJSON.id}/edit/handler`)
@@ -443,11 +439,11 @@ describe('POST collection/edit', () => {
 
 	it('should throw error for incorrect collaborator id (collaborator does not exist)', async () => {
 		const data = {
-			collaborators: [{ id: 9999, name: 'name' }],
+			collaborators: [{id: 9999, name: 'name'}],
 			description: 'some description',
 			entityType: 'Author',
 			name: 'collection name',
-			privacy: 'public',
+			privacy: 'public'
 		};
 		const response = await agent
 			.post(`/collection/${collectionJSON.id}/edit/handler`)
@@ -466,12 +462,12 @@ describe('POST collection/edit', () => {
 			entityType: 'Edition',
 			name: 'collection name',
 			ownerId: editor.get('id'),
-			public: true,
+			public: true
 		};
-		const collection = await new UserCollection(data).save(null, { method: 'insert' });
+		const collection = await new UserCollection(data).save(null, {method: 'insert'});
 		const newData = {
 			...data,
-			name: 'new collection name',
+			name: 'new collection name'
 		};
 		const response = await agent
 			.post(`/collection/${collection.get('id')}/edit/handler`)
@@ -490,18 +486,18 @@ describe('POST collection/edit', () => {
 			entityType: 'Edition',
 			name: 'collection name',
 			ownerId: editor.get('id'),
-			public: true,
+			public: true
 		};
-		const collection = await new UserCollection(data).save(null, { method: 'insert' });
+		const collection = await new UserCollection(data).save(null, {method: 'insert'});
 		// making loggedInUser as collaborator
 		await new UserCollectionCollaborator({
 			collaboratorId: loggedInUser.get('id'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 
 		const newData = {
 			...data,
-			name: 'new collection name',
+			name: 'new collection name'
 		};
 		const response = await agent
 			.post(`/collection/${collection.get('id')}/edit/handler`)
@@ -542,16 +538,16 @@ describe('POST /collection/collectionID/delete', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		await generateIndex(orm);
 		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
 		const collections = await new UserCollection()
 			.where('id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const collectionsJSON = collections.toJSON();
 
 		expect(res.status).to.equal(200);
@@ -564,30 +560,30 @@ describe('POST /collection/collectionID/delete', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		await generateIndex(orm);
 		const author1 = await createAuthor();
 		const author2 = await createAuthor();
 		await new UserCollectionItem({
 			bbid: author1.get('bbid'),
-			collectionId: collection.get('id'),
+			collectionId: collection.get('id')
 		});
 		await new UserCollectionItem({
 			bbid: author2.get('bbid'),
-			collectionId: collection.get('id'),
+			collectionId: collection.get('id')
 		});
 		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
 
 		const collections = await new UserCollection()
 			.where('id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const items = await new UserCollectionItem()
 			.where('collection_id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const collectionsJSON = collections.toJSON();
 		const itemsJSON = items.toJSON();
 
@@ -602,30 +598,30 @@ describe('POST /collection/collectionID/delete', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: true,
+			public: true
 		};
 		const collaborator1 = await createEditor();
 		const collaborator2 = await createEditor();
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		await generateIndex(orm);
 		await new UserCollectionCollaborator({
 			collaboratorId: collaborator1.get('id'),
-			collectionId: collection.get('id'),
+			collectionId: collection.get('id')
 		});
 		await new UserCollectionCollaborator({
 			collaboratorId: collaborator2.get('id'),
-			collectionId: collection.get('id'),
+			collectionId: collection.get('id')
 		});
 
 		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
 		const collections = await new UserCollection()
 			.where('id', res.body.id)
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const collaborators = await new UserCollectionCollaborator()
 			.where('collection_id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const collaboratorsJSON = collaborators.toJSON();
 		const collectionsJSON = collections.toJSON();
 
@@ -641,11 +637,11 @@ describe('POST /collection/collectionID/delete', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: owner.get('id'),
-			public: true,
+			public: true
 		};
 
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		await generateIndex(orm);
 		// here loggedInUser is neither owner nor collaborator
@@ -654,7 +650,7 @@ describe('POST /collection/collectionID/delete', () => {
 			.send();
 		const collections = await new UserCollection()
 			.where('id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const collectionsJSON = collections.toJSON();
 
 		expect(collectionsJSON.length).to.equal(1);
@@ -671,15 +667,15 @@ describe('POST /collection/collectionID/delete', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: owner.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		await generateIndex(orm);
 		await new UserCollectionCollaborator({
 			collaboratorId: loggedInUser.get('id'),
-			collectionId: collection.get('id'),
+			collectionId: collection.get('id')
 		});
 
 		const response = await agent
@@ -687,7 +683,7 @@ describe('POST /collection/collectionID/delete', () => {
 			.send();
 		const collections = await new UserCollection()
 			.where('id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const collectionsJSON = collections.toJSON();
 
 		expect(collectionsJSON.length).to.equal(1);
@@ -703,10 +699,10 @@ describe('POST /collection/collectionID/delete', () => {
 			entityType: 'Author',
 			name: 'someUniqueName',
 			ownerId: loggedInUser.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		await generateIndex(orm);
 		const oldResult = await searchByName(orm, collectionData.name, 'Collection', 10, 0);
@@ -716,7 +712,7 @@ describe('POST /collection/collectionID/delete', () => {
 		const newResult = await searchByName(orm, collectionData.name, 'Collection', 10, 0);
 		const collections = await new UserCollection()
 			.where('id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const collectionsJSON = collections.toJSON();
 
 		expect(res.status).to.equal(200);
@@ -754,14 +750,14 @@ describe('POST /collection/:collectionID/add', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const author = await createAuthor();
 		const data = {
-			bbids: [author.get('bbid')],
+			bbids: [author.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
 		const item = await new UserCollectionItem()
@@ -781,24 +777,24 @@ describe('POST /collection/:collectionID/add', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: owner.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		// make logged in user collaborator of this collection
 		await new UserCollectionCollaborator({
 			collaboratorId: loggedInUser.get('id'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 		const author = await createAuthor();
 		const data = {
-			bbids: [author.get('bbid')],
+			bbids: [author.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
 		const item = await new UserCollectionItem()
 			.where('collection_id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
 		expect(res.status).to.equal(200);
@@ -814,24 +810,24 @@ describe('POST /collection/:collectionID/add', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: owner.get('id'),
-			public: false,
+			public: false
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		// make logged in user collaborator of this collection
 		await new UserCollectionCollaborator({
 			collaboratorId: loggedInUser.get('id'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 		const author = await createAuthor();
 		const data = {
-			bbids: [author.get('bbid')],
+			bbids: [author.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
 		const item = await new UserCollectionItem()
 			.where('collection_id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
 		expect(res.status).to.equal(200);
@@ -846,20 +842,20 @@ describe('POST /collection/:collectionID/add', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const author = await createAuthor();
 		const author2 = await createAuthor();
 		const data = {
-			bbids: [author.get('bbid'), author2.get('bbid')],
+			bbids: [author.get('bbid'), author2.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
 		const item = await new UserCollectionItem()
 			.where('collection_id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
 		expect(res.status).to.equal(200);
@@ -875,19 +871,19 @@ describe('POST /collection/:collectionID/add', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const author = await createAuthor();
 		const data = {
-			bbids: [author.get('bbid'), author.get('bbid')],
+			bbids: [author.get('bbid'), author.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
 		const item = await new UserCollectionItem()
 			.where('collection_id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
 		expect(res.status).to.equal(200);
@@ -903,19 +899,19 @@ describe('POST /collection/:collectionID/add', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: owner.get('id'),
-			public: false,
+			public: false
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const author = await createAuthor();
 		const data = {
-			bbids: [author.get('bbid')],
+			bbids: [author.get('bbid')]
 		};
 		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
 		const item = await new UserCollectionItem()
 			.where('collection_id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
 		expect(response.status).to.equal(403);
@@ -932,19 +928,19 @@ describe('POST /collection/:collectionID/add', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: owner.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const author = await createAuthor();
 		const data = {
-			bbids: [author.get('bbid')],
+			bbids: [author.get('bbid')]
 		};
 		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
 		const item = await new UserCollectionItem()
 			.where('collection_id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
 		expect(response.status).to.equal(403);
@@ -960,13 +956,13 @@ describe('POST /collection/:collectionID/add', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const data = {
-			bbids: ['not-a-bbid'],
+			bbids: ['not-a-bbid']
 		};
 		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
 		const item = await new UserCollectionItem()
@@ -984,13 +980,13 @@ describe('POST /collection/:collectionID/add', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const data = {
-			bbids: [uuidv4()],
+			bbids: [uuidv4()]
 		};
 		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
 		const item = await new UserCollectionItem()
@@ -1010,14 +1006,14 @@ describe('POST /collection/:collectionID/add', () => {
 			entityType: 'Edition',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const author = await createAuthor();
 		const data = {
-			bbids: [author.get('bbid')],
+			bbids: [author.get('bbid')]
 		};
 		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
 		const item = await new UserCollectionItem()
@@ -1038,13 +1034,13 @@ describe('POST /collection/:collectionID/add', () => {
 			entityType: 'Edition',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const data = {
-			bbids: [],
+			bbids: []
 		};
 		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
 		const item = await new UserCollectionItem()
@@ -1084,23 +1080,23 @@ describe('POST /collection/:collectionID/remove', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const author = await createAuthor();
 		await new UserCollectionItem({
 			bbid: author.get('bbid'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 		const data = {
-			bbids: [author.get('bbid')],
+			bbids: [author.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
 		const item = await new UserCollectionItem()
 			.where('collection_id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
 		expect(res.status).to.equal(200);
@@ -1113,23 +1109,23 @@ describe('POST /collection/:collectionID/remove', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const author = await createAuthor();
 		await new UserCollectionItem({
 			bbid: author.get('bbid'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 		const data = {
-			bbids: ['not-a-bbid'],
+			bbids: ['not-a-bbid']
 		};
 		const response = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
 		const item = await new UserCollectionItem()
 			.where('collection_id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
 		expect(response.status).to.equal(400);
@@ -1143,24 +1139,24 @@ describe('POST /collection/:collectionID/remove', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const author = await createAuthor();
 		await new UserCollectionItem({
 			bbid: author.get('bbid'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 		const author2 = await createAuthor();
 		const data = {
-			bbids: [author2.get('bbid')],
+			bbids: [author2.get('bbid')]
 		};
 		const response = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
 		const item = await new UserCollectionItem()
 			.where('collection_id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
 		expect(response.status).to.equal(400);
@@ -1177,29 +1173,29 @@ describe('POST /collection/:collectionID/remove', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: owner.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		// make logged in user collaborator of this collection
 		await new UserCollectionCollaborator({
 			collaboratorId: loggedInUser.get('id'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 		const author = await createAuthor();
 		// add author to this collection
 		await new UserCollectionItem({
 			bbid: author.get('bbid'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 		const data = {
-			bbids: [author.get('bbid')],
+			bbids: [author.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
 		const item = await new UserCollectionItem()
 			.where('collection_id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const itemJSON = item.toJSON();
 		expect(res.status).to.equal(200);
 		expect(itemJSON.length).to.equal(0);
@@ -1212,29 +1208,29 @@ describe('POST /collection/:collectionID/remove', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: owner.get('id'),
-			public: false,
+			public: false
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		// make logged in user collaborator of this collection
 		await new UserCollectionCollaborator({
 			collaboratorId: loggedInUser.get('id'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 		const author = await createAuthor();
 		// add author to this collection
 		await new UserCollectionItem({
 			bbid: author.get('bbid'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 		const data = {
-			bbids: [author.get('bbid')],
+			bbids: [author.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
 		const item = await new UserCollectionItem()
 			.where('collection_id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const itemJSON = item.toJSON();
 		expect(res.status).to.equal(200);
 		expect(itemJSON.length).to.equal(0);
@@ -1246,28 +1242,28 @@ describe('POST /collection/:collectionID/remove', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const author = await createAuthor();
 		const author2 = await createAuthor();
 		await new UserCollectionItem({
 			bbid: author.get('bbid'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 		await new UserCollectionItem({
 			bbid: author2.get('bbid'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 		const data = {
-			bbids: [author.get('bbid'), author2.get('bbid')],
+			bbids: [author.get('bbid'), author2.get('bbid')]
 		};
 		const res = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
 		const item = await new UserCollectionItem()
 			.where('collection_id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const itemJSON = item.toJSON();
 
 		expect(res.status).to.equal(200);
@@ -1281,24 +1277,24 @@ describe('POST /collection/:collectionID/remove', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: owner.get('id'),
-			public: false,
+			public: false
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const author = await createAuthor();
 		// add author to this collection
 		await new UserCollectionItem({
 			bbid: author.get('bbid'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 		const data = {
-			bbids: [author.get('bbid')],
+			bbids: [author.get('bbid')]
 		};
 		const response = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
 		const item = await new UserCollectionItem()
 			.where('collection_id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const itemJSON = item.toJSON();
 		expect(response.status).to.equal(403);
 		expect(response.res.statusMessage).to.equal(
@@ -1314,24 +1310,24 @@ describe('POST /collection/:collectionID/remove', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: owner.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const author = await createAuthor();
 		// add author to this collection
 		await new UserCollectionItem({
 			bbid: author.get('bbid'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 		const data = {
-			bbids: [author.get('bbid')],
+			bbids: [author.get('bbid')]
 		};
 		const response = await agent.post(`/collection/${collection.get('id')}/remove`).send(data);
 		const item = await new UserCollectionItem()
 			.where('collection_id', collection.get('id'))
-			.fetchAll({ require: false });
+			.fetchAll({require: false});
 		const itemJSON = item.toJSON();
 		expect(response.status).to.equal(403);
 		expect(response.res.statusMessage).to.equal(
@@ -1346,13 +1342,13 @@ describe('POST /collection/:collectionID/remove', () => {
 			entityType: 'Edition',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: true,
+			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const data = {
-			bbids: [],
+			bbids: []
 		};
 		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
 		const item = await new UserCollectionItem()
@@ -1394,19 +1390,19 @@ describe('POST /collection/collectionID/collaborator/remove', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: owner.get('id'),
-			public: false,
+			public: false
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		// make logged in user collaborator of this collection
 		await new UserCollectionCollaborator({
 			collaboratorId: loggedInUser.get('id'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 
 		const postData = {
-			collaboratorIds: [loggedInUser.get('id')],
+			collaboratorIds: [loggedInUser.get('id')]
 		};
 		const response = await agent
 			.post(`/collection/${collection.get('id')}/collaborator/remove`)
@@ -1426,25 +1422,25 @@ describe('POST /collection/collectionID/collaborator/remove', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: false,
+			public: false
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const collaborator1 = await createEditor();
 		const collaborator2 = await createEditor();
 		// make logged in user collaborator of this collection
 		await new UserCollectionCollaborator({
 			collaboratorId: collaborator1.get('id'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 		await new UserCollectionCollaborator({
 			collaboratorId: collaborator2.get('id'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 
 		const postData = {
-			collaboratorIds: [collaborator1.get('id'), collaborator2.get('id')],
+			collaboratorIds: [collaborator1.get('id'), collaborator2.get('id')]
 		};
 
 		const response = await agent
@@ -1465,24 +1461,24 @@ describe('POST /collection/collectionID/collaborator/remove', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: owner.get('id'),
-			public: false,
+			public: false
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		// make logged in user collaborator of this collection
 		await new UserCollectionCollaborator({
 			collaboratorId: loggedInUser.get('id'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 		const collaborator2 = await createEditor();
 		await new UserCollectionCollaborator({
 			collaboratorId: collaborator2.get('id'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 
 		const postData = {
-			collaboratorIds: [loggedInUser.get('id'), collaborator2.get('id')],
+			collaboratorIds: [loggedInUser.get('id'), collaborator2.get('id')]
 		};
 
 		// loggedIn user is trying to remove collaborator2
@@ -1509,20 +1505,20 @@ describe('POST /collection/collectionID/collaborator/remove', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: false,
+			public: false
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const collaborator1 = await createEditor();
 		// make logged in user collaborator of this collection
 		await new UserCollectionCollaborator({
 			collaboratorId: collaborator1.get('id'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 
 		const postData = {
-			collaboratorIds: [],
+			collaboratorIds: []
 		};
 
 		const response = await agent
@@ -1544,20 +1540,20 @@ describe('POST /collection/collectionID/collaborator/remove', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: loggedInUser.get('id'),
-			public: false,
+			public: false
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const collaborator1 = await createEditor();
 		// make logged in user collaborator of this collection
 		await new UserCollectionCollaborator({
 			collaboratorId: collaborator1.get('id'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 
 		const postData = {
-			collaboratorIds: [1234],
+			collaboratorIds: [1234]
 		};
 
 		const response = await agent
@@ -1581,20 +1577,20 @@ describe('POST /collection/collectionID/collaborator/remove', () => {
 			entityType: 'Author',
 			name: 'collection name',
 			ownerId: owner.get('id'),
-			public: false,
+			public: false
 		};
 		const collection = await new UserCollection(collectionData).save(null, {
-			method: 'insert',
+			method: 'insert'
 		});
 		const collaborator1 = await createEditor();
 		// make logged in user collaborator of this collection
 		await new UserCollectionCollaborator({
 			collaboratorId: collaborator1.get('id'),
-			collectionId: collection.get('id'),
-		}).save(null, { method: 'insert' });
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
 
 		const postData = {
-			collaboratorIds: [collaborator1.get('id')],
+			collaboratorIds: [collaborator1.get('id')]
 		};
 
 		const response = await agent

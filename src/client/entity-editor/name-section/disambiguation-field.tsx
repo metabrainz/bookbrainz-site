@@ -37,7 +37,7 @@ type Props = {
  *        down to the child input element.
  * @returns {Object} a React component containing the rendered input
  */
-function DisambiguationField({ empty, error, required, ...rest }: Props) {
+function DisambiguationField({empty, error, required, ...rest}: Props) {
 	const label = (
 		<ValidationLabel empty={empty} error={error}>
 			Disambiguation
@@ -58,7 +58,7 @@ DisambiguationField.displayName = 'DisambiguationField';
 DisambiguationField.defaultProps = {
 	empty: false,
 	error: false,
-	required: false,
+	required: false
 };
 
 export default DisambiguationField;

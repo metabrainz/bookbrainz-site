@@ -41,7 +41,7 @@ export type Action = {
  */
 export function hideIdentifierEditor(): Action {
 	return {
-		type: HIDE_IDENTIFIER_EDITOR,
+		type: HIDE_IDENTIFIER_EDITOR
 	};
 }
 
@@ -61,7 +61,7 @@ export function addIdentifierRow(): Action {
 	 */
 	return {
 		payload: `n${nextIdentifierRowId++}`,
-		type: ADD_IDENTIFIER_ROW,
+		type: ADD_IDENTIFIER_ROW
 	};
 }
 
@@ -75,7 +75,7 @@ export function addIdentifierRow(): Action {
 export function removeIdentifierRow(rowId: number): Action {
 	return {
 		payload: rowId,
-		type: REMOVE_IDENTIFIER_ROW,
+		type: REMOVE_IDENTIFIER_ROW
 	};
 }
 
@@ -98,13 +98,13 @@ export function debouncedUpdateIdentifierValue(
 	suggestedType: number
 ): Action {
 	return {
-		meta: { debounce: 'keystroke' },
+		meta: {debounce: 'keystroke'},
 		payload: {
 			rowId,
 			suggestedType,
-			value,
+			value
 		},
-		type: UPDATE_IDENTIFIER_VALUE,
+		type: UPDATE_IDENTIFIER_VALUE
 	};
 }
 
@@ -120,9 +120,9 @@ export function updateIdentifierType(rowId: number, value: number): Action {
 	return {
 		payload: {
 			rowId,
-			value,
+			value
 		},
-		type: UPDATE_IDENTIFIER_TYPE,
+		type: UPDATE_IDENTIFIER_TYPE
 	};
 }
 
@@ -133,6 +133,6 @@ export function updateIdentifierType(rowId: number, value: number): Action {
  */
 export function removeEmptyIdentifiers(): Action {
 	return {
-		type: REMOVE_EMPTY_IDENTIFIERS,
+		type: REMOVE_EMPTY_IDENTIFIERS
 	};
 }

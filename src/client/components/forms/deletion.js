@@ -17,21 +17,17 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import {
-	faExclamationTriangle,
-	faTimesCircle,
-	faTrashAlt,
-} from '@fortawesome/free-solid-svg-icons';
+import {faExclamationTriangle, faTimesCircle, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import CustomInput from '../../input';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LoadingSpinner from '../loading-spinner';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ValidationLabel from '../../entity-editor/common/validation-label';
-import { kebabCase as _kebabCase } from 'lodash';
+import {kebabCase as _kebabCase} from 'lodash';
 import request from 'superagent';
 
-const { Alert, Button, Col, Row, Panel } = bootstrap;
+const {Alert, Button, Col, Row, Panel} = bootstrap;
 
 class EntityDeletionForm extends React.Component {
 	constructor(props) {
@@ -40,7 +36,7 @@ class EntityDeletionForm extends React.Component {
 		this.state = {
 			error: null,
 			note: null,
-			waiting: false,
+			waiting: false
 		};
 
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -48,44 +44,44 @@ class EntityDeletionForm extends React.Component {
 	}
 
 	handleNoteChange(event) {
-		this.setState({ note: event.target.value });
+		this.setState({note: event.target.value});
 	}
 
 	handleSubmit(event) {
-		const { note } = this.state;
+		const {note} = this.state;
 		event.preventDefault();
 
 		if (!note || !note.length) {
 			this.setState({
 				error: `We require users to leave a note explaining the reasons why they are deleting an entity.
 				Please provide an explanation in the text area above.`,
-				waiting: false,
+				waiting: false
 			});
 			return;
 		}
 		this.setState({
 			error: null,
-			waiting: true,
+			waiting: true
 		});
 		request
 			.post(this.deleteUrl)
-			.send({ note })
+			.send({note})
 			.then(() => {
 				window.location.href = this.entityUrl;
 			})
 			.catch((res) => {
-				const { error } = res.body;
+				const {error} = res.body;
 
 				this.setState({
 					error,
-					waiting: false,
+					waiting: false
 				});
 			});
 	}
 
 	render() {
-		const { entity } = this.props;
-		const { note } = this.state;
+		const {entity} = this.props;
+		const {note} = this.state;
 
 		this.entityUrl = `/${_kebabCase(entity.type)}/${entity.bbid}`;
 		this.deleteUrl = `${this.entityUrl}/delete/handler`;
@@ -131,7 +127,7 @@ class EntityDeletionForm extends React.Component {
 											&nbsp; You’re about to delete the {entity.type}{' '}
 											{entityName}.
 										</h4>
-										<p style={{ fontSize: '1.3em' }}>
+										<p style={{fontSize: '1.3em'}}>
 											Edit the entity or merge duplicates rather than delete !
 										</p>
 									</Alert>
@@ -193,7 +189,7 @@ class EntityDeletionForm extends React.Component {
 
 EntityDeletionForm.displayName = 'EntityDeletionForm';
 EntityDeletionForm.propTypes = {
-	entity: PropTypes.object.isRequired,
+	entity: PropTypes.object.isRequired
 };
 
 export default EntityDeletionForm;

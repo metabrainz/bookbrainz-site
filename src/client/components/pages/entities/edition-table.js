@@ -20,28 +20,28 @@ import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import * as utilHelper from '../../../helpers/utils';
 
-import { faBook, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {faBook, faPlus} from '@fortawesome/free-solid-svg-icons';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { kebabCase as _kebabCase } from 'lodash';
+import {kebabCase as _kebabCase} from 'lodash';
 
 const {
 	getEditionReleaseDate,
 	getEntityLabel,
 	getEntityDisambiguation,
 	getISBNOfEdition,
-	getEditionFormat,
+	getEditionFormat
 } = entityHelper;
-const { Button, Table } = bootstrap;
+const {Button, Table} = bootstrap;
 
 function EditionTableRow({
 	edition,
 	showAddedAtColumn,
 	showCheckboxes,
 	selectedEntities,
-	onToggleRow,
+	onToggleRow
 }) {
 	const name = getEntityLabel(edition);
 	const disambiguation = getEntityDisambiguation(edition);
@@ -92,12 +92,12 @@ EditionTableRow.propTypes = {
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool.isRequired,
-	showCheckboxes: PropTypes.bool,
+	showCheckboxes: PropTypes.bool
 };
 EditionTableRow.defaultProps = {
 	onToggleRow: null,
 	selectedEntities: [],
-	showCheckboxes: false,
+	showCheckboxes: false
 };
 
 function EditionTable({
@@ -107,7 +107,7 @@ function EditionTable({
 	showAdd,
 	showCheckboxes,
 	selectedEntities,
-	onToggleRow,
+	onToggleRow
 }) {
 	let tableContent;
 	if (editions.length) {
@@ -191,7 +191,7 @@ EditionTable.propTypes = {
 	selectedEntities: PropTypes.array,
 	showAdd: PropTypes.bool,
 	showAddedAtColumn: PropTypes.bool,
-	showCheckboxes: PropTypes.bool,
+	showCheckboxes: PropTypes.bool
 };
 EditionTable.defaultProps = {
 	entity: null,
@@ -199,7 +199,7 @@ EditionTable.defaultProps = {
 	selectedEntities: [],
 	showAdd: true,
 	showAddedAtColumn: false,
-	showCheckboxes: false,
+	showCheckboxes: false
 };
 
 export default EditionTable;

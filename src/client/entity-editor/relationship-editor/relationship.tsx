@@ -18,14 +18,14 @@
 
 import * as React from 'react';
 
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import type { RelationshipType, Entity as _Entity } from './types';
+import {OverlayTrigger, Tooltip} from 'react-bootstrap';
+import type {RelationshipType, Entity as _Entity} from './types';
 import Entity from '../common/entity';
 import _ from 'lodash';
-import { getEntityLink } from '../../../server/helpers/utils';
+import {getEntityLink} from '../../../server/helpers/utils';
 
 function getEntityObjectForDisplay(entity: _Entity, makeLink: boolean) {
-	const link = makeLink && entity.bbid && getEntityLink({ bbid: entity.bbid, type: entity.type });
+	const link = makeLink && entity.bbid && getEntityLink({bbid: entity.bbid, type: entity.type});
 	let disambiguation = _.get(entity, ['disambiguation']);
 	if (_.has(disambiguation, 'comment')) {
 		disambiguation = disambiguation.comment;
@@ -35,7 +35,7 @@ function getEntityObjectForDisplay(entity: _Entity, makeLink: boolean) {
 		link,
 		text: _.get(entity, ['defaultAlias', 'name']),
 		type: entity.type,
-		unnamedText: entity.bbid ? '(unnamed)' : 'New Entity',
+		unnamedText: entity.bbid ? '(unnamed)' : 'New Entity'
 	};
 }
 
@@ -52,9 +52,9 @@ function Relationship({
 	link,
 	relationshipType,
 	sourceEntity,
-	targetEntity,
+	targetEntity
 }: RelationshipProps) {
-	const { depth, description, id, linkPhrase, reverseLinkPhrase } = relationshipType;
+	const {depth, description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
 
 	const reversed = contextEntity && _.get(contextEntity, 'bbid') === _.get(targetEntity, 'bbid');
 
@@ -85,7 +85,7 @@ function Relationship({
 Relationship.displayName = 'Relationship';
 Relationship.defaultProps = {
 	contextEntity: null, // eslint-disable-line react/default-props-match-prop-types, max-len
-	link: false, // eslint-disable-line react/default-props-match-prop-types
+	link: false // eslint-disable-line react/default-props-match-prop-types
 };
 
 export default Relationship;

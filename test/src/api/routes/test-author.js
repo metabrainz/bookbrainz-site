@@ -22,19 +22,19 @@ import {
 	createEditor,
 	createWork,
 	getRandomUUID,
-	truncateEntities,
+	truncateEntities
 } from '../../../test-helpers/create-entities';
 
 import app from '../../../../src/api/app';
-import { browseAuthorBasicTests } from '../helpers';
+import {browseAuthorBasicTests} from '../helpers';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
 
-const { Relationship, RelationshipSet, RelationshipType, Revision } = orm;
+const {Relationship, RelationshipSet, RelationshipType, Revision} = orm;
 
 chai.use(chaiHttp);
-const { expect } = chai;
+const {expect} = chai;
 
 const aBBID = getRandomUUID();
 const bBBID = getRandomUUID();
@@ -176,7 +176,7 @@ describe('Browse Author', () => {
 			const authorAttribs = {
 				bbid: authorBBID,
 				// Make type id alternate between "person" (1) and "group" (2)
-				typeId: (typeId % 2) + 1,
+				typeId: (typeId % 2) + 1
 			};
 			await createAuthor(authorBBID, authorAttribs);
 			authorBBIDs.push(authorBBID);
@@ -185,8 +185,8 @@ describe('Browse Author', () => {
 
 		// Now create a revision which forms the relationship b/w work and authors
 		const editor = await createEditor();
-		const revision = await new Revision({ authorId: editor.id }).save(null, {
-			method: 'insert',
+		const revision = await new Revision({authorId: editor.id}).save(null, {
+			method: 'insert'
 		});
 
 		const relationshipTypeData = {
@@ -196,25 +196,25 @@ describe('Browse Author', () => {
 			linkPhrase: 'test phrase',
 			reverseLinkPhrase: 'test reverse link phrase',
 			sourceEntityType: 'Author',
-			targetEntityType: 'Work',
+			targetEntityType: 'Work'
 		};
-		await new RelationshipType(relationshipTypeData).save(null, { method: 'insert' });
+		await new RelationshipType(relationshipTypeData).save(null, {method: 'insert'});
 
 		const relationshipsPromise = [];
 		for (const authorBBID of authorBBIDs) {
 			const relationshipData = {
 				sourceBbid: authorBBID,
 				targetBbid: work.get('bbid'),
-				typeId: relationshipTypeData.id,
+				typeId: relationshipTypeData.id
 			};
 			relationshipsPromise.push(
-				new Relationship(relationshipData).save(null, { method: 'insert' })
+				new Relationship(relationshipData).save(null, {method: 'insert'})
 			);
 		}
 		const relationships = await Promise.all(relationshipsPromise);
 
 		const workRelationshipSet = await new RelationshipSet()
-			.save(null, { method: 'insert' })
+			.save(null, {method: 'insert'})
 			.then((model) =>
 				model
 					.relationships()
@@ -224,7 +224,7 @@ describe('Browse Author', () => {
 
 		work.set('relationshipSetId', workRelationshipSet.id);
 		work.set('revisionId', revision.id);
-		await work.save(null, { method: 'update' });
+		await work.save(null, {method: 'update'});
 	});
 	after(truncateEntities);
 

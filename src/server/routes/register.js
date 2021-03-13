@@ -23,7 +23,7 @@ import * as handler from '../helpers/handler';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
-import { escapeProps, generateProps } from '../helpers/props';
+import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -50,7 +50,7 @@ router.get('/', (req, res) => {
 		</Layout>
 	);
 
-	return res.send(target({ markup, title: 'Register' }));
+	return res.send(target({markup, title: 'Register'}));
 });
 
 router.get('/details', middleware.loadGenders, (req, res) => {
@@ -64,13 +64,13 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 	}
 
 	const gender = _.find(res.locals.genders, {
-		name: _.capitalize(req.session.mbProfile.gender),
+		name: _.capitalize(req.session.mbProfile.gender)
 	});
 
 	const props = generateProps(req, res, {
 		gender,
 		genders: res.locals.genders,
-		name: req.session.mbProfile.sub,
+		name: req.session.mbProfile.sub
 	});
 
 	const markup = ReactDOMServer.renderToString(
@@ -84,13 +84,13 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 			markup,
 			props: escapeProps(props),
 			script: '/js/registrationDetails.js',
-			title: 'Register',
+			title: 'Register'
 		})
 	);
 });
 
 router.post('/handler', (req, res) => {
-	const { Editor, EditorType } = req.app.locals.orm;
+	const {Editor, EditorType} = req.app.locals.orm;
 
 	// Check whether the user is logged in - if so, redirect to profile page
 	if (req.user) {
@@ -102,8 +102,8 @@ router.post('/handler', (req, res) => {
 	}
 
 	// Fetch the default EditorType from the database
-	const registerPromise = EditorType.forge({ label: 'Editor' })
-		.fetch({ require: true })
+	const registerPromise = EditorType.forge({label: 'Editor'})
+		.fetch({require: true})
 		.then(
 			// Create a new Editor and add to the database
 			(editorType) =>
@@ -112,7 +112,7 @@ router.post('/handler', (req, res) => {
 					genderId: req.body.gender,
 					metabrainzUserId: req.session.mbProfile.metabrainz_user_id,
 					name: req.body.displayName,
-					typeId: editorType.id,
+					typeId: editorType.id
 				}).save()
 		)
 		.then((editor) => {
@@ -123,7 +123,7 @@ router.post('/handler', (req, res) => {
 			const editorForES = {};
 			editorForES.bbid = editorJSON.id;
 			editorForES.aliasSet = {
-				aliases: [{ name: editorJSON.name }],
+				aliases: [{name: editorJSON.name}]
 			};
 			editorForES.type = 'Editor';
 			return editorForES;
@@ -131,7 +131,7 @@ router.post('/handler', (req, res) => {
 		.catch((err) => {
 			log.debug(err);
 
-			if (_.isMatch(err, { constraint: 'editor_name_key' })) {
+			if (_.isMatch(err, {constraint: 'editor_name_key'})) {
 				throw new error.FormSubmissionError(
 					'That username already exists - please try using another,' +
 						' or contact us to have your existing BookBrainz account' +

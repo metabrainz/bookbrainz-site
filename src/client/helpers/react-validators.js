@@ -5,15 +5,15 @@ export const entityTypeProperty = PropTypes.oneOf([
 	'edition',
 	'editionGroup',
 	'publisher',
-	'work',
+	'work'
 ]);
 
 export const labeledProperty = PropTypes.shape({
 	id: PropTypes.number,
-	label: PropTypes.string,
+	label: PropTypes.string
 });
 
 export const namedProperty = PropTypes.shape({
 	id: PropTypes.number,
-	name: PropTypes.string,
+	name: PropTypes.string
 });

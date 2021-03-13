@@ -1,21 +1,17 @@
 import * as bootstrap from 'react-bootstrap';
-import {
-	faExclamationTriangle,
-	faTimesCircle,
-	faTrashAlt,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faExclamationTriangle, faTimesCircle, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import request from 'superagent';
 
-const { Alert, Button, Modal } = bootstrap;
+const {Alert, Button, Modal} = bootstrap;
 
 class DeleteOrRemoveCollaborationModal extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			error: null,
+			error: null
 		};
 
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -31,14 +27,14 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 				},
 				(error) => {
 					this.setState({
-						error: 'Something went wrong! Please try again later',
+						error: 'Something went wrong! Please try again later'
 					});
 				}
 			);
 	}
 
 	render() {
-		const { collection } = this.props;
+		const {collection} = this.props;
 		// eslint-disable-next-line one-var
 		let modalBody, modalTitle, submitButton;
 		if (this.props.isDelete) {
@@ -65,7 +61,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 		} else {
 			// loggedInUser must be collaborator here
 			this.postUrl = `/collection/${collection.id}/collaborator/remove`;
-			this.postData = { collaboratorIds: [this.props.userId] };
+			this.postData = {collaboratorIds: [this.props.userId]};
 			modalTitle = 'Remove yourself as a collaborator';
 			modalBody = (
 				<Alert bsStyle="warning">
@@ -118,10 +114,10 @@ DeleteOrRemoveCollaborationModal.propTypes = {
 	isDelete: PropTypes.bool,
 	onCloseModal: PropTypes.func.isRequired,
 	show: PropTypes.bool.isRequired,
-	userId: PropTypes.number.isRequired,
+	userId: PropTypes.number.isRequired
 };
 DeleteOrRemoveCollaborationModal.defaultProps = {
-	isDelete: true,
+	isDelete: true
 };
 
 export default DeleteOrRemoveCollaborationModal;

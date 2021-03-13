@@ -33,6 +33,6 @@ export type Action = {
 export function updateType(newType: number | null | undefined): Action {
 	return {
 		payload: newType,
-		type: UPDATE_TYPE,
+		type: UPDATE_TYPE
 	};
 }

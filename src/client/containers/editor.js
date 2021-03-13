@@ -23,10 +23,10 @@ import * as bootstrap from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const { Col, Nav, NavItem, Row } = bootstrap;
+const {Col, Nav, NavItem, Row} = bootstrap;
 
 function EditorContainer(props) {
-	const { tabActive, editor, children } = props;
+	const {tabActive, editor, children} = props;
 
 	return (
 		<div>
@@ -74,9 +74,9 @@ EditorContainer.propTypes = {
 	editor: PropTypes.shape({
 		id: PropTypes.number,
 		name: PropTypes.string,
-		title: PropTypes.object,
+		title: PropTypes.object
 	}).isRequired,
-	tabActive: PropTypes.number.isRequired,
+	tabActive: PropTypes.number.isRequired
 };
 
 export default EditorContainer;

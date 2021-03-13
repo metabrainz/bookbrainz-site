@@ -26,13 +26,13 @@ import {
 	addInitialRelationship,
 	entityEditorMarkup,
 	generateEntityProps,
-	makeEntityCreateOrEditHandler,
+	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
 import _ from 'lodash';
-import { escapeProps } from '../../helpers/props';
+import {escapeProps} from '../../helpers/props';
 import express from 'express';
-import { makePromiseFromObject } from '../../../common/helpers/utils';
+import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
 /** ****************************
@@ -56,7 +56,7 @@ function transformNewForm(data) {
 		languages,
 		note: data.submissionSection.note,
 		relationships,
-		typeId: data.workSection.type,
+		typeId: data.workSection.type
 	};
 }
 
@@ -80,20 +80,20 @@ router.get(
 	middleware.loadWorkTypes,
 	middleware.loadRelationshipTypes,
 	(req, res, next) => {
-		const { Author, Edition } = req.app.locals.orm;
+		const {Author, Edition} = req.app.locals.orm;
 		let relationshipTypeId;
 		let initialRelationshipIndex = 0;
 		const propsPromise = generateEntityProps('work', req, res, {});
 
 		if (req.query.author) {
-			propsPromise.author = Author.forge({ bbid: req.query.author })
-				.fetch({ require: false, withRelated: 'defaultAlias' })
+			propsPromise.author = Author.forge({bbid: req.query.author})
+				.fetch({require: false, withRelated: 'defaultAlias'})
 				.then((data) => data && utils.entityToOption(data.toJSON()));
 		}
 
 		if (req.query.edition) {
-			propsPromise.edition = Edition.forge({ bbid: req.query.edition })
-				.fetch({ require: false, withRelated: 'defaultAlias' })
+			propsPromise.edition = Edition.forge({bbid: req.query.edition})
+				.fetch({require: false, withRelated: 'defaultAlias'})
 				.then((data) => data && utils.entityToOption(data.toJSON()));
 		}
 
@@ -121,7 +121,7 @@ router.get(
 			}
 
 			const editorMarkup = entityEditorMarkup(props);
-			const { markup } = editorMarkup;
+			const {markup} = editorMarkup;
 			const updatedProps = editorMarkup.props;
 
 			return res.send(
@@ -129,7 +129,7 @@ router.get(
 					markup,
 					props: escapeProps(updatedProps),
 					script: '/js/entity-editor.js',
-					title: props.heading,
+					title: props.heading
 				})
 			);
 		}
@@ -165,19 +165,19 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 });
 
 router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	const { orm } = req.app.locals;
-	const { WorkHeader, WorkRevision } = orm;
+	const {orm} = req.app.locals;
+	const {WorkHeader, WorkRevision} = orm;
 	return entityRoutes.handleDelete(orm, req, res, WorkHeader, WorkRevision);
 });
 
 router.get('/:bbid/revisions', (req, res, next) => {
-	const { WorkRevision } = req.app.locals.orm;
+	const {WorkRevision} = req.app.locals.orm;
 	_setWorkTitle(res);
 	entityRoutes.displayRevisions(req, res, next, WorkRevision);
 });
 
 router.get('/:bbid/revisions/revisions', (req, res, next) => {
-	const { WorkRevision } = req.app.locals.orm;
+	const {WorkRevision} = req.app.locals.orm;
 	_setWorkTitle(res);
 	entityRoutes.updateDisplayedRevisions(req, res, next, WorkRevision);
 });
@@ -185,9 +185,9 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 function workToFormState(work) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = work.aliasSet
-		? work.aliasSet.aliases.map(({ languageId, ...rest }) => ({
+		? work.aliasSet.aliases.map(({languageId, ...rest}) => ({
 				...rest,
-				language: languageId,
+				language: languageId
 		  }))
 		: [];
 
@@ -201,22 +201,22 @@ function workToFormState(work) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		identifierEditorVisible: false,
+		identifierEditorVisible: false
 	};
 
 	const nameSection = _.isEmpty(defaultAliasList)
 		? {
 				language: null,
 				name: '',
-				sortName: '',
+				sortName: ''
 		  }
 		: defaultAliasList[0];
 	nameSection.disambiguation = work.disambiguation && work.disambiguation.comment;
 
 	const identifiers = work.identifierSet
-		? work.identifierSet.identifiers.map(({ type, ...rest }) => ({
+		? work.identifierSet.identifiers.map(({type, ...rest}) => ({
 				type: type.id,
-				...rest,
+				...rest
 		  }))
 		: [];
 
@@ -227,9 +227,9 @@ function workToFormState(work) {
 
 	const workSection = {
 		languages: work.languageSet
-			? work.languageSet.languages.map(({ id, name }) => ({ label: name, value: id }))
+			? work.languageSet.languages.map(({id, name}) => ({label: name, value: id}))
 			: [],
-		type: work.workType && work.workType.id,
+		type: work.workType && work.workType.id
 	};
 
 	const relationshipSection = {
@@ -237,7 +237,7 @@ function workToFormState(work) {
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
-		relationships: {},
+		relationships: {}
 	};
 
 	work.relationships.forEach(
@@ -246,7 +246,7 @@ function workToFormState(work) {
 				relationshipType: relationship.type,
 				rowID: relationship.id,
 				sourceEntity: relationship.source,
-				targetEntity: relationship.target,
+				targetEntity: relationship.target
 			})
 	);
 
@@ -262,7 +262,7 @@ function workToFormState(work) {
 		nameSection,
 		relationshipSection,
 		workSection,
-		...optionalSections,
+		...optionalSections
 	};
 }
 
@@ -275,7 +275,7 @@ router.get(
 	middleware.loadEntityRelationships,
 	middleware.loadRelationshipTypes,
 	(req, res) => {
-		const { markup, props } = entityEditorMarkup(
+		const {markup, props} = entityEditorMarkup(
 			generateEntityProps('work', req, res, {}, workToFormState)
 		);
 
@@ -284,7 +284,7 @@ router.get(
 				markup,
 				props: escapeProps(props),
 				script: '/js/entity-editor.js',
-				title: props.heading,
+				title: props.heading
 			})
 		);
 	}

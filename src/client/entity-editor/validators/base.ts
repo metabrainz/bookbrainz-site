@@ -16,11 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import { DateObject, ISODateStringToObject, isNullDate } from '../../helpers/utils';
-import { Iterable } from 'immutable';
+import {DateObject, ISODateStringToObject, isNullDate} from '../../helpers/utils';
+import {Iterable} from 'immutable';
 import _ from 'lodash';
-import { dateValidator } from './date';
-import { isIterable } from '../../../types';
+import {dateValidator} from './date';
+import {isIterable} from '../../../types';
 import validator from 'validator';
 
 export function get(
@@ -81,8 +81,8 @@ export function validateDate(value: string | DateObject) {
 	const year = _.get(dateObject, 'year', null);
 	const month = _.get(dateObject, 'month', null);
 	const day = _.get(dateObject, 'day', null);
-	const { isValid, errorMessage } = dateValidator(day, month, year);
-	return { errorMessage, isValid };
+	const {isValid, errorMessage} = dateValidator(day, month, year);
+	return {errorMessage, isValid};
 }
 
 export function dateIsBefore(

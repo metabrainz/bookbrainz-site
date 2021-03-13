@@ -25,11 +25,11 @@ import * as utils from '../../helpers/utils';
 import {
 	entityEditorMarkup,
 	generateEntityProps,
-	makeEntityCreateOrEditHandler,
+	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
 import _ from 'lodash';
-import { escapeProps } from '../../helpers/props';
+import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import target from '../../templates/target';
 
@@ -44,7 +44,7 @@ const additionalAuthorProps = [
 	'beginDate',
 	'endDate',
 	'ended',
-	'endAreaId',
+	'endAreaId'
 ];
 
 function transformNewForm(data) {
@@ -67,7 +67,7 @@ function transformNewForm(data) {
 		identifiers,
 		note: data.submissionSection.note,
 		relationships,
-		typeId: data.authorSection.type,
+		typeId: data.authorSection.type
 	};
 }
 
@@ -100,9 +100,9 @@ router.get(
 	middleware.loadAuthorTypes,
 	middleware.loadRelationshipTypes,
 	(req, res) => {
-		const { markup, props } = entityEditorMarkup(
+		const {markup, props} = entityEditorMarkup(
 			generateEntityProps('author', req, res, {
-				genderOptions: res.locals.genders,
+				genderOptions: res.locals.genders
 			})
 		);
 
@@ -111,7 +111,7 @@ router.get(
 				markup,
 				props: escapeProps(props),
 				script: '/js/entity-editor.js',
-				title: props.heading,
+				title: props.heading
 			})
 		);
 	}
@@ -149,19 +149,19 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 });
 
 router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	const { orm } = req.app.locals;
-	const { AuthorHeader, AuthorRevision } = orm;
+	const {orm} = req.app.locals;
+	const {AuthorHeader, AuthorRevision} = orm;
 	return entityRoutes.handleDelete(orm, req, res, AuthorHeader, AuthorRevision);
 });
 
 router.get('/:bbid/revisions', (req, res, next) => {
-	const { AuthorRevision } = req.app.locals.orm;
+	const {AuthorRevision} = req.app.locals.orm;
 	_setAuthorTitle(res);
 	entityRoutes.displayRevisions(req, res, next, AuthorRevision);
 });
 
 router.get('/:bbid/revisions/revisions', (req, res, next) => {
-	const { AuthorRevision } = req.app.locals.orm;
+	const {AuthorRevision} = req.app.locals.orm;
 	_setAuthorTitle(res);
 	entityRoutes.updateDisplayedRevisions(req, res, next, AuthorRevision);
 });
@@ -169,9 +169,9 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 function authorToFormState(author) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = author.aliasSet
-		? author.aliasSet.aliases.map(({ languageId, ...rest }) => ({
+		? author.aliasSet.aliases.map(({languageId, ...rest}) => ({
 				...rest,
-				language: languageId,
+				language: languageId
 		  }))
 		: [];
 
@@ -185,22 +185,22 @@ function authorToFormState(author) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		identifierEditorVisible: false,
+		identifierEditorVisible: false
 	};
 
 	const nameSection = _.isEmpty(defaultAliasList)
 		? {
 				language: null,
 				name: '',
-				sortName: '',
+				sortName: ''
 		  }
 		: defaultAliasList[0];
 	nameSection.disambiguation = author.disambiguation && author.disambiguation.comment;
 
 	const identifiers = author.identifierSet
-		? author.identifierSet.identifiers.map(({ type, ...rest }) => ({
+		? author.identifierSet.identifiers.map(({type, ...rest}) => ({
 				type: type.id,
-				...rest,
+				...rest
 		  }))
 		: [];
 
@@ -216,7 +216,7 @@ function authorToFormState(author) {
 		endDate: author.endDate,
 		ended: author.ended,
 		gender: author.gender && author.gender.id,
-		type: author.authorType && author.authorType.id,
+		type: author.authorType && author.authorType.id
 	};
 
 	const relationshipSection = {
@@ -224,7 +224,7 @@ function authorToFormState(author) {
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
-		relationships: {},
+		relationships: {}
 	};
 
 	author.relationships.forEach(
@@ -233,7 +233,7 @@ function authorToFormState(author) {
 				relationshipType: relationship.type,
 				rowID: relationship.id,
 				sourceEntity: relationship.source,
-				targetEntity: relationship.target,
+				targetEntity: relationship.target
 			})
 	);
 
@@ -249,7 +249,7 @@ function authorToFormState(author) {
 		identifierEditor,
 		nameSection,
 		relationshipSection,
-		...optionalSections,
+		...optionalSections
 	};
 }
 
@@ -263,13 +263,13 @@ router.get(
 	middleware.loadEntityRelationships,
 	middleware.loadRelationshipTypes,
 	(req, res) => {
-		const { markup, props } = entityEditorMarkup(
+		const {markup, props} = entityEditorMarkup(
 			generateEntityProps(
 				'author',
 				req,
 				res,
 				{
-					genderOptions: res.locals.genders,
+					genderOptions: res.locals.genders
 				},
 				authorToFormState
 			)
@@ -280,7 +280,7 @@ router.get(
 				markup,
 				props: escapeProps(props),
 				script: '/js/entity-editor.js',
-				title: props.heading,
+				title: props.heading
 			})
 		);
 	}

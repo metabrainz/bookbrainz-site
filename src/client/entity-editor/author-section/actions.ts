@@ -49,7 +49,7 @@ type Area = {
 export function updateGender(newGenderId: number | null | undefined): Action {
 	return {
 		payload: newGenderId,
-		type: UPDATE_GENDER,
+		type: UPDATE_GENDER
 	};
 }
 
@@ -63,7 +63,7 @@ export function updateGender(newGenderId: number | null | undefined): Action {
 export function updateType(newTypeId: number | null | undefined): Action {
 	return {
 		payload: newTypeId,
-		type: UPDATE_TYPE,
+		type: UPDATE_TYPE
 	};
 }
 
@@ -77,9 +77,9 @@ export function updateType(newTypeId: number | null | undefined): Action {
  */
 export function debouncedUpdateBeginDate(newBeginDate: string): Action {
 	return {
-		meta: { debounce: 'keystroke' },
+		meta: {debounce: 'keystroke'},
 		payload: newBeginDate,
-		type: UPDATE_BEGIN_DATE,
+		type: UPDATE_BEGIN_DATE
 	};
 }
 
@@ -93,7 +93,7 @@ export function debouncedUpdateBeginDate(newBeginDate: string): Action {
 export function updateBeginArea(newBeginArea: Area | null | undefined): Action {
 	return {
 		payload: newBeginArea,
-		type: UPDATE_BEGIN_AREA,
+		type: UPDATE_BEGIN_AREA
 	};
 }
 
@@ -107,9 +107,9 @@ export function updateBeginArea(newBeginArea: Area | null | undefined): Action {
  */
 export function debouncedUpdateEndDate(newEndDate: string): Action {
 	return {
-		meta: { debounce: 'keystroke' },
+		meta: {debounce: 'keystroke'},
 		payload: newEndDate,
-		type: UPDATE_END_DATE,
+		type: UPDATE_END_DATE
 	};
 }
 
@@ -123,7 +123,7 @@ export function debouncedUpdateEndDate(newEndDate: string): Action {
 export function updateEndArea(newEndArea: Area | null | undefined): Action {
 	return {
 		payload: newEndArea,
-		type: UPDATE_END_AREA,
+		type: UPDATE_END_AREA
 	};
 }
 
@@ -137,6 +137,6 @@ export function updateEndArea(newEndArea: Area | null | undefined): Action {
 export function updateEnded(newEnded: boolean): Action {
 	return {
 		payload: newEnded,
-		type: UPDATE_ENDED,
+		type: UPDATE_ENDED
 	};
 }

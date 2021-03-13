@@ -24,8 +24,8 @@ import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
 import * as utils from '../helpers/utils';
-import { eachMonthOfInterval, format, isAfter, isValid } from 'date-fns';
-import { escapeProps, generateProps } from '../helpers/props';
+import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
+import {escapeProps, generateProps} from '../helpers/props';
 import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
 import CollectionsPage from '../../client/components/pages/collections';
 import EditorContainer from '../../client/containers/editor';
@@ -37,21 +37,21 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import express from 'express';
-import { getOrderedCollectionsForEditorPage } from '../helpers/collections';
-import { getOrderedRevisionForEditorPage } from '../helpers/revisions';
+import {getOrderedCollectionsForEditorPage} from '../helpers/collections';
+import {getOrderedRevisionForEditorPage} from '../helpers/revisions';
 import target from '../templates/target';
 
 const router = express.Router();
 
 router.get('/edit', auth.isAuthenticated, async (req, res, next) => {
-	const { Editor, Gender, TitleUnlock } = req.app.locals.orm;
+	const {Editor, Gender, TitleUnlock} = req.app.locals.orm;
 
 	// Prepare three promises to be resolved in parallel to fetch the required
 	// data.
-	const editorModelPromise = new Editor({ id: parseInt(req.user.id, 10) })
+	const editorModelPromise = new Editor({id: parseInt(req.user.id, 10)})
 		.fetch({
 			require: true,
-			withRelated: ['area', 'gender'],
+			withRelated: ['area', 'gender']
 		})
 		.catch(Editor.NotFoundError, () => {
 			throw new error.NotFoundError('Editor not found', req);
@@ -61,10 +61,10 @@ router.get('/edit', auth.isAuthenticated, async (req, res, next) => {
 		.where('editor_id', parseInt(req.user.id, 10))
 		.fetchAll({
 			require: false,
-			withRelated: ['title'],
+			withRelated: ['title']
 		});
 
-	const gendersModelPromise = new Gender().fetchAll({ require: false });
+	const gendersModelPromise = new Gender().fetchAll({require: false});
 
 	// Parallel fetch the three required models. Only "editorModelPromise" has
 	// "require: true", so only that can throw a NotFoundError, which is why the
@@ -72,7 +72,7 @@ router.get('/edit', auth.isAuthenticated, async (req, res, next) => {
 	const [editorModel, titleUnlockModel, genderModel] = await Promise.all([
 		editorModelPromise,
 		titleUnlockModelPromise,
-		gendersModelPromise,
+		gendersModelPromise
 	]).catch(next);
 
 	// Convert the requested models to JSON structures.
@@ -85,7 +85,7 @@ router.get('/edit', auth.isAuthenticated, async (req, res, next) => {
 	const props = generateProps(req, res, {
 		editor: editorJSON,
 		genders: genderJSON,
-		titles: titleJSON,
+		titles: titleJSON
 	});
 
 	// Render the DOM
@@ -100,7 +100,7 @@ router.get('/edit', auth.isAuthenticated, async (req, res, next) => {
 		target({
 			markup,
 			props: escapeProps(props),
-			script: '/js/editor/edit.js',
+			script: '/js/editor/edit.js'
 		})
 	);
 });
@@ -117,7 +117,7 @@ function isCurrentUser(reqUserID, sessionUser) {
 
 router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 	async function runAsync() {
-		const { Editor } = req.app.locals.orm;
+		const {Editor} = req.app.locals.orm;
 
 		if (!isCurrentUser(req.body.id, req.user)) {
 			// Edit is for a user other than the current one
@@ -127,8 +127,8 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			);
 		}
 
-		const editor = await Editor.forge({ id: parseInt(req.user.id, 10) })
-			.fetch({ require: true })
+		const editor = await Editor.forge({id: parseInt(req.user.id, 10)})
+			.fetch({require: true})
 			.catch(Editor.NotFoundError, () => {
 				throw new error.NotFoundError('Editor not found', req);
 			});
@@ -147,7 +147,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 				bio: req.body.bio,
 				genderId: req.body.genderId,
 				name: req.body.name,
-				titleUnlockId: req.body.title,
+				titleUnlockId: req.body.title
 			})
 			.catch((err) => {
 				if (err.constraint === 'editor_name_key') {
@@ -159,10 +159,10 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 		const editorJSON = modifiedEditor.toJSON();
 		return {
 			aliasSet: {
-				aliases: [{ name: editorJSON.name }],
+				aliases: [{name: editorJSON.name}]
 			},
 			bbid: editorJSON.id,
-			type: 'Editor',
+			type: 'Editor'
 		};
 	}
 
@@ -175,9 +175,9 @@ async function getEditorTitleJSON(editorJSON, TitleUnlock) {
 		return editorJSON;
 	}
 
-	const titleUnlockModel = await new TitleUnlock({ id: unlockID }).fetch({
+	const titleUnlockModel = await new TitleUnlock({id: unlockID}).fetch({
 		require: false,
-		withRelated: ['title'],
+		withRelated: ['title']
 	});
 
 	if (titleUnlockModel !== null) {
@@ -188,12 +188,12 @@ async function getEditorTitleJSON(editorJSON, TitleUnlock) {
 }
 
 async function getIdEditorJSONPromise(userId, req) {
-	const { Editor, TitleUnlock } = req.app.locals.orm;
+	const {Editor, TitleUnlock} = req.app.locals.orm;
 
-	const editorData = await new Editor({ id: userId })
+	const editorData = await new Editor({id: userId})
 		.fetch({
 			require: true,
-			withRelated: ['type', 'gender', 'area'],
+			withRelated: ['type', 'gender', 'area']
 		})
 		.catch(Editor.NotFoundError, () => {
 			throw new error.NotFoundError('Editor not found', req);
@@ -217,7 +217,7 @@ export async function getEditorActivity(editorId, startDate, Revision, endDate =
 		.query('where', 'author_id', '=', editorId)
 		.orderBy('created_at', 'ASC')
 		.fetchAll({
-			require: false,
+			require: false
 		});
 
 	const revisionJSON = revisions ? revisions.toJSON() : [];
@@ -228,7 +228,7 @@ export async function getEditorActivity(editorId, startDate, Revision, endDate =
 
 	const allMonthsInInterval = eachMonthOfInterval({
 		end: endDate,
-		start: startDate,
+		start: startDate
 	})
 		.map((month) => format(new Date(month), 'LLL-yy'))
 		.reduce((accumulator, month) => {
@@ -236,22 +236,22 @@ export async function getEditorActivity(editorId, startDate, Revision, endDate =
 			return accumulator;
 		}, {});
 
-	return { ...allMonthsInInterval, ...revisionsCount };
+	return {...allMonthsInInterval, ...revisionsCount};
 }
 
 function achievementColToEditorGetJSON(achievementCol) {
 	if (!achievementCol) {
-		return { length: 0, model: null };
+		return {length: 0, model: null};
 	}
 
 	return {
 		length: achievementCol.length,
-		model: achievementCol.toJSON(),
+		model: achievementCol.toJSON()
 	};
 }
 
 router.get('/:id', async (req, res, next) => {
-	const { AchievementUnlock, Revision } = req.app.locals.orm;
+	const {AchievementUnlock, Revision} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
 
 	const editorJSONPromise = getIdEditorJSONPromise(userId, req);
@@ -263,12 +263,12 @@ router.get('/:id', async (req, res, next) => {
 		.orderBy('profile_rank', 'ASC')
 		.fetchAll({
 			require: false,
-			withRelated: ['achievement'],
+			withRelated: ['achievement']
 		});
 
 	const [achievementCol, editorJSON] = await Promise.all([
 		achievementColPromise,
-		editorJSONPromise,
+		editorJSONPromise
 	]).catch(next);
 
 	editorJSON.activityData = await getEditorActivity(
@@ -282,7 +282,7 @@ router.get('/:id', async (req, res, next) => {
 	const props = generateProps(req, res, {
 		achievement: achievementJSON,
 		editor: editorJSON,
-		tabActive: 0,
+		tabActive: 0
 	});
 
 	const markup = ReactDOMServer.renderToString(
@@ -299,7 +299,7 @@ router.get('/:id', async (req, res, next) => {
 			page: 'profile',
 			props: escapeProps(props),
 			script: '/js/editor/editor.js',
-			title: `${props.editor.name}'s Profile`,
+			title: `${props.editor.name}'s Profile`
 		})
 	);
 });
@@ -319,10 +319,10 @@ router.get('/:id/revisions', async (req, res, next) => {
 
 		const [orderedRevisions, editorJSON] = await Promise.all([
 			orderedRevisionsPromise,
-			editorJSONPromise,
+			editorJSONPromise
 		]);
 
-		const { newResultsArray, nextEnabled } = utils.getNextEnabledAndResultsArray(
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(
 			orderedRevisions,
 			size
 		);
@@ -335,7 +335,7 @@ router.get('/:id/revisions', async (req, res, next) => {
 			showRevisionNote: true,
 			size,
 			tabActive: 1,
-			tableHeading: 'Revision History',
+			tableHeading: 'Revision History'
 		});
 
 		const markup = ReactDOMServer.renderToString(
@@ -352,7 +352,7 @@ router.get('/:id/revisions', async (req, res, next) => {
 				page: 'revisions',
 				props: escapeProps(props),
 				script: '/js/editor/editor.js',
-				title: `${props.editor.name}'s Revisions`,
+				title: `${props.editor.name}'s Revisions`
 			})
 		);
 	} catch (err) {
@@ -381,14 +381,14 @@ function setAchievementUnlockedField(achievements, unlocks) {
 
 	const model = achievements.map((achievementType) => ({
 		...achievementType.toJSON(),
-		unlocked: unlockIDSet.has(achievementType.id),
+		unlocked: unlockIDSet.has(achievementType.id)
 	}));
 
-	return { model };
+	return {model};
 }
 
 router.get('/:id/achievements', async (req, res, next) => {
-	const { AchievementType, AchievementUnlock } = req.app.locals.orm;
+	const {AchievementType, AchievementUnlock} = req.app.locals.orm;
 
 	const userId = parseInt(req.params.id, 10);
 	const isOwner = isCurrentUser(userId, req.user);
@@ -397,14 +397,14 @@ router.get('/:id/achievements', async (req, res, next) => {
 
 	const unlocksPromise = new AchievementUnlock()
 		.where('editor_id', userId)
-		.fetchAll({ require: false });
+		.fetchAll({require: false});
 
 	const achievementTypesPromise = new AchievementType().orderBy('id', 'ASC').fetchAll();
 
 	const [unlocks, editorJSON, achievementTypes] = await Promise.all([
 		unlocksPromise,
 		editorJSONPromise,
-		achievementTypesPromise,
+		achievementTypesPromise
 	]);
 
 	const achievementJSON = setAchievementUnlockedField(achievementTypes, unlocks);
@@ -413,7 +413,7 @@ router.get('/:id/achievements', async (req, res, next) => {
 		achievement: achievementJSON,
 		editor: editorJSON,
 		isOwner,
-		tabActive: 2,
+		tabActive: 2
 	});
 
 	const markup = ReactDOMServer.renderToString(
@@ -433,19 +433,19 @@ router.get('/:id/achievements', async (req, res, next) => {
 			markup,
 			props: escapeProps(props),
 			script: '/js/editor/achievement.js',
-			title: `${props.editor.name}'s Achievements`,
+			title: `${props.editor.name}'s Achievements`
 		})
 	);
 });
 
 async function rankUpdate(orm, editorId, bodyRank, rank) {
-	const { AchievementUnlock } = orm;
+	const {AchievementUnlock} = orm;
 
 	// Get the achievement unlock which is currently in this "rank"/slot
 	const unlockToUnrank = await new AchievementUnlock({
 		editorId,
-		profileRank: rank,
-	}).fetch({ require: false });
+		profileRank: rank
+	}).fetch({require: false});
 
 	// If there's a match, then unset the rank on the unlock, and save
 	if (unlockToUnrank !== null) {
@@ -459,8 +459,8 @@ async function rankUpdate(orm, editorId, bodyRank, rank) {
 	// Then fetch the achievement to be placed in the specified rank
 	const unlockToRank = await new AchievementUnlock({
 		achievementId: parseInt(bodyRank, 10),
-		editorId,
-	}).fetch({ require: true });
+		editorId
+	}).fetch({require: true});
 
 	// TODO: this can throw, so missing error handling (but so was old code)
 
@@ -469,8 +469,8 @@ async function rankUpdate(orm, editorId, bodyRank, rank) {
 }
 
 router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
-	const { orm } = req.app.locals;
-	const { Editor } = orm;
+	const {orm} = req.app.locals;
+	const {Editor} = orm;
 	const userId = parseInt(req.params.id, 10);
 
 	async function runAsync() {
@@ -494,7 +494,7 @@ router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
 
 // eslint-disable-next-line consistent-return
 router.get('/:id/collections', async (req, res, next) => {
-	const { Editor, TitleUnlock } = req.app.locals.orm;
+	const {Editor, TitleUnlock} = req.app.locals.orm;
 
 	const DEFAULT_MAX_COLLECTIONS = 20;
 	const DEFAULT_COLLECTION_OFFSET = 0;
@@ -517,11 +517,11 @@ router.get('/:id/collections', async (req, res, next) => {
 			type,
 			req
 		);
-		const { newResultsArray, nextEnabled } = utils.getNextEnabledAndResultsArray(
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(
 			orderedCollections,
 			size
 		);
-		const editor = await new Editor({ id: req.params.id }).fetch();
+		const editor = await new Editor({id: req.params.id}).fetch();
 		const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
 
 		const props = generateProps(req, res, {
@@ -534,7 +534,7 @@ router.get('/:id/collections', async (req, res, next) => {
 			showPrivacy: true,
 			size,
 			tabActive: 3,
-			tableHeading: 'Collections',
+			tableHeading: 'Collections'
 		});
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
@@ -550,7 +550,7 @@ router.get('/:id/collections', async (req, res, next) => {
 				page: 'collections',
 				props: escapeProps(props),
 				script: '/js/editor/editor.js',
-				title: `${props.editor.name}'s Collections`,
+				title: `${props.editor.name}'s Collections`
 			})
 		);
 	} catch (err) {

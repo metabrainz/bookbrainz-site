@@ -23,16 +23,16 @@ import * as utilHelper from '../../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const { Table } = bootstrap;
+const {Table} = bootstrap;
 
-const { getEntityDisambiguation, getEntityLabel } = entityHelper;
+const {getEntityDisambiguation, getEntityLabel} = entityHelper;
 
 function EditionGroupTableRow({
 	editionGroup,
 	showAddedAtColumn,
 	showCheckboxes,
 	selectedEntities,
-	onToggleRow,
+	onToggleRow
 }) {
 	const name = getEntityLabel(editionGroup);
 	const disambiguation = getEntityDisambiguation(editionGroup);
@@ -70,12 +70,12 @@ EditionGroupTableRow.propTypes = {
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool.isRequired,
-	showCheckboxes: PropTypes.bool,
+	showCheckboxes: PropTypes.bool
 };
 EditionGroupTableRow.defaultProps = {
 	onToggleRow: null,
 	selectedEntities: [],
-	showCheckboxes: false,
+	showCheckboxes: false
 };
 
 function EditionGroupTable({
@@ -83,7 +83,7 @@ function EditionGroupTable({
 	showAddedAtColumn,
 	showCheckboxes,
 	selectedEntities,
-	onToggleRow,
+	onToggleRow
 }) {
 	let tableContent;
 	if (editionGroups.length) {
@@ -128,13 +128,13 @@ EditionGroupTable.propTypes = {
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool,
-	showCheckboxes: PropTypes.bool,
+	showCheckboxes: PropTypes.bool
 };
 EditionGroupTable.defaultProps = {
 	onToggleRow: null,
 	selectedEntities: [],
 	showAddedAtColumn: false,
-	showCheckboxes: false,
+	showCheckboxes: false
 };
 
 export default EditionGroupTable;

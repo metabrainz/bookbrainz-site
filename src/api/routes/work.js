@@ -20,17 +20,17 @@ import * as utils from '../helpers/utils';
 import {
 	formatQueryParameters,
 	loadEntityRelationshipsForBrowse,
-	validateBrowseRequestQueryParameters,
+	validateBrowseRequestQueryParameters
 } from '../helpers/middleware';
 import {
 	getEntityAliases,
 	getEntityIdentifiers,
 	getEntityRelationships,
-	getWorkBasicInfo,
+	getWorkBasicInfo
 } from '../helpers/formatEntityData';
-import { Router } from 'express';
-import { makeEntityLoader } from '../helpers/entityLoader';
-import { toLower } from 'lodash';
+import {Router} from 'express';
+import {makeEntityLoader} from '../helpers/entityLoader';
+import {toLower} from 'lodash';
 
 const router = Router();
 
@@ -38,7 +38,7 @@ const workBasicRelations = [
 	'defaultAlias.language',
 	'languageSet.languages',
 	'disambiguation',
-	'workType',
+	'workType'
 ];
 
 const workError = 'Work not found';
@@ -344,7 +344,7 @@ router.get(
 		);
 		return res.status(200).send({
 			bbid: req.query.bbid,
-			works: workRelationshipList,
+			works: workRelationshipList
 		});
 	}
 );

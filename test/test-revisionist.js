@@ -22,7 +22,7 @@ import * as testData from '../data/test-data.js';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
-const { Editor } = orm;
+const {Editor} = orm;
 
 const Achievement = rewire('../src/server/helpers/achievement.js');
 
@@ -49,9 +49,9 @@ export default function tests() {
 	const test1 = common.testAchievement(
 		rewireNothing(),
 		() =>
-			new Editor({ name: testData.editorAttribs.name })
+			new Editor({name: testData.editorAttribs.name})
 				.fetch()
-				.then((editor) => editor.set({ revisionsApplied: 1 }).save())
+				.then((editor) => editor.set({revisionsApplied: 1}).save())
 				.then((editor) => achievement.processEdit(orm, editor.id))
 				.then((edit) => edit.revisionist['Revisionist I']),
 		expectIds('I')
@@ -61,9 +61,9 @@ export default function tests() {
 	const test2 = common.testAchievement(
 		rewireNothing(),
 		() =>
-			new Editor({ name: testData.editorAttribs.name })
+			new Editor({name: testData.editorAttribs.name})
 				.fetch()
-				.then((editor) => editor.set({ revisionsApplied: 50 }).save())
+				.then((editor) => editor.set({revisionsApplied: 50}).save())
 				.then((editor) => achievement.processEdit(orm, editor.id))
 				.then((edit) => edit.revisionist),
 		expectRevNamedIds('II')
@@ -73,9 +73,9 @@ export default function tests() {
 	const test3 = common.testAchievement(
 		rewireNothing(),
 		() =>
-			new Editor({ name: testData.editorAttribs.name })
+			new Editor({name: testData.editorAttribs.name})
 				.fetch()
-				.then((editor) => editor.set({ revisionsApplied: 250 }).save())
+				.then((editor) => editor.set({revisionsApplied: 250}).save())
 				.then((editor) => achievement.processEdit(orm, editor.id))
 				.then((edit) => edit.revisionist),
 		expectAllNamedIds('III')
@@ -85,7 +85,7 @@ export default function tests() {
 	const test4 = common.testAchievement(
 		rewireNothing(),
 		() =>
-			new Editor({ name: testData.editorAttribs.name })
+			new Editor({name: testData.editorAttribs.name})
 				.fetch()
 				.then((editor) => achievement.processEdit(orm, editor.id))
 				.then((edit) => edit.revisionist['Revisionist I']),

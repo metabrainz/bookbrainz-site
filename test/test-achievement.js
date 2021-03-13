@@ -36,7 +36,7 @@ import testTimeTraveller from './test-time-traveller.js';
 import testWorkerBee from './test-worker-bee.js';
 
 chai.use(chaiAsPromised);
-const { expect } = chai;
+const {expect} = chai;
 
 const Achievement = rewire('../src/server/helpers/achievement.js');
 const awardAchievement = Achievement.__get__('awardAchievement');
@@ -66,7 +66,7 @@ function tests() {
 				expect(unlockPromise).to.eventually.have.nested.property(
 					'Revisionist I.achievementId',
 					testData.revisionistIAttribs.id
-				),
+				)
 			]);
 		});
 
@@ -119,7 +119,7 @@ function tests() {
 				.then(() => testData.createRevisionist())
 				.then(() =>
 					awardTitle(orm, testData.editorAttribs.id, {
-						titleName: testData.revisionistAttribs.title,
+						titleName: testData.revisionistAttribs.title
 					})
 				);
 
@@ -131,14 +131,14 @@ function tests() {
 				expect(unlockPromise).to.eventually.have.nested.property(
 					'Revisionist.titleId',
 					testData.revisionistAttribs.id
-				),
+				)
 			]);
 		});
 
 		it('should reject invalid editors', () => {
 			const unlockPromise = testData.createRevisionist().then(() =>
 				awardTitle(orm, testData.editorAttribs.id, {
-					titleName: testData.revisionistAttribs.title,
+					titleName: testData.revisionistAttribs.title
 				})
 			);
 
@@ -148,7 +148,7 @@ function tests() {
 		it('should reject invalid titles', () => {
 			const unlockPromise = testData.createEditor().then(() =>
 				awardTitle(orm, testData.editorAttribs.id, {
-					titleName: testData.revisionistAttribs.title,
+					titleName: testData.revisionistAttribs.title
 				})
 			);
 

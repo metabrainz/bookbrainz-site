@@ -39,7 +39,7 @@ function getDefaultAlias(entity: Record<string, unknown> | null | undefined) {
 		language: _.get(entity, 'defaultAlias.language.isoCode3', null),
 		name: _.get(entity, 'defaultAlias.name', null),
 		primary: _.get(entity, 'defaultAlias.primary', null),
-		sortName: _.get(entity, 'defaultAlias.sortName', null),
+		sortName: _.get(entity, 'defaultAlias.sortName', null)
 	};
 }
 
@@ -56,7 +56,7 @@ function getDefaultAlias(entity: Record<string, unknown> | null | undefined) {
  */
 
 function getLanguages(entity: any) {
-	return _.get(entity, 'languageSet.languages', []).map(({ isoCode3 }) => isoCode3);
+	return _.get(entity, 'languageSet.languages', []).map(({isoCode3}) => isoCode3);
 }
 
 /**
@@ -95,7 +95,7 @@ export function getWorkBasicInfo(work: Record<string, unknown> | null | undefine
 				disambiguation: _.get(work, 'disambiguation.comment', null),
 				entityType: _.get(work, 'type', null),
 				languages: getLanguages(work),
-				workType: _.get(work, 'workType.label', null),
+				workType: _.get(work, 'workType.label', null)
 		  };
 }
 
@@ -151,7 +151,7 @@ export function getEditionBasicInfo(edition: any) {
 				),
 				status: _.get(edition, 'editionStatus.label', null),
 				weight: _.get(edition, 'weight', null),
-				width: _.get(edition, 'width', null),
+				width: _.get(edition, 'width', null)
 		  };
 }
 
@@ -185,7 +185,7 @@ export function getEditionGroupBasicInfo(editionGroup: Record<string, unknown> |
 				bbid: _.get(editionGroup, 'bbid', null),
 				defaultAlias: getDefaultAlias(editionGroup),
 				disambiguation: _.get(editionGroup, 'disambiguation.comment', null),
-				editionGroupType: _.get(editionGroup, 'editionGroupType.label'),
+				editionGroupType: _.get(editionGroup, 'editionGroupType.label')
 		  };
 }
 
@@ -231,7 +231,7 @@ export function getAuthorBasicInfo(author: Record<string, unknown> | null | unde
 				endArea: _.get(author, 'endArea.name', null),
 				endDate: _.get(author, 'endDate', null),
 				ended: _.get(author, 'ended', null),
-				gender: _.get(author, 'gender.name', null),
+				gender: _.get(author, 'gender.name', null)
 		  };
 }
 
@@ -273,7 +273,7 @@ export function getPublisherBasicInfo(publisher: Record<string, unknown> | null 
 				disambiguation: _.get(publisher, 'disambiguation.comment', null),
 				endDate: _.get(publisher, 'endDate', null),
 				ended: _.get(publisher, 'ended', null),
-				publisherType: _.get(publisher, 'publisherType.label', null),
+				publisherType: _.get(publisher, 'publisherType.label', null)
 		  };
 }
 
@@ -308,9 +308,9 @@ export function getEntityAliases(entity: any) {
 					language: _.get(alias, 'language.isoCode3', null),
 					name: _.get(alias, 'name', null),
 					primary: _.get(alias, 'primary', null),
-					sortName: _.get(alias, 'sortName', null),
+					sortName: _.get(alias, 'sortName', null)
 				})),
-				bbid: _.get(entity, 'bbid', null),
+				bbid: _.get(entity, 'bbid', null)
 		  };
 }
 
@@ -343,8 +343,8 @@ export function getEntityIdentifiers(entity: any) {
 				bbid: _.get(entity, 'bbid', null),
 				identifiers: _.get(entity, 'identifierSet.identifiers', []).map((identifier) => ({
 					type: _.get(identifier, 'type.label', null),
-					value: _.get(identifier, 'value', null),
-				})),
+					value: _.get(identifier, 'value', null)
+				}))
 		  };
 }
 
@@ -396,10 +396,10 @@ export function getEntityRelationships(entity: any) {
 								: _.get(relationship, 'sourceBbid', null),
 							targetEntityType: isItSourceEntity
 								? _.kebabCase(_.get(relationship, 'type.targetEntityType', null))
-								: _.kebabCase(_.get(relationship, 'type.sourceEntityType', null)),
+								: _.kebabCase(_.get(relationship, 'type.sourceEntityType', null))
 						};
 					}
-				),
+				)
 		  };
 }
 
@@ -411,7 +411,7 @@ export function formatSearchResponse(searchResult: Record<string, unknown>[] | n
 				searchResult: searchResult.map((entity) => ({
 					bbid: _.get(entity, 'bbid', null),
 					defaultAlias: getDefaultAlias(entity),
-					entityType: _.get(entity, 'type', null),
-				})),
+					entityType: _.get(entity, 'type', null)
+				}))
 		  };
 }

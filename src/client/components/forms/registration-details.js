@@ -28,7 +28,7 @@ import ReactSelect from 'react-select';
 import SelectWrapper from '../input/select-wrapper';
 import request from 'superagent';
 
-const { Alert, Button, PageHeader } = bootstrap;
+const {Alert, Button, PageHeader} = bootstrap;
 
 class RegistrationForm extends React.Component {
 	constructor(props) {
@@ -37,7 +37,7 @@ class RegistrationForm extends React.Component {
 		this.state = {
 			error: null,
 			valid: this.isValid(),
-			waiting: false,
+			waiting: false
 		};
 
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -50,12 +50,12 @@ class RegistrationForm extends React.Component {
 		const gender = this.gender.getValue();
 		const data = {
 			displayName: this.displayName.getValue(),
-			gender: gender ? parseInt(gender, 10) : null,
+			gender: gender ? parseInt(gender, 10) : null
 		};
 
 		this.setState({
 			error: null,
-			waiting: true,
+			waiting: true
 		});
 
 		request
@@ -65,10 +65,10 @@ class RegistrationForm extends React.Component {
 				window.location.href = '/auth';
 			})
 			.catch((res) => {
-				const { error } = res.body;
+				const {error} = res.body;
 				this.setState({
 					error,
-					waiting: false,
+					waiting: false
 				});
 			});
 	}
@@ -79,7 +79,7 @@ class RegistrationForm extends React.Component {
 
 	handleChange() {
 		this.setState({
-			valid: this.isValid(),
+			valid: this.isValid()
 		});
 	}
 
@@ -163,11 +163,11 @@ RegistrationForm.displayName = 'RegistrationForm';
 RegistrationForm.propTypes = {
 	gender: validators.namedProperty, // eslint-disable-line react/no-typos
 	genders: PropTypes.arrayOf(validators.namedProperty).isRequired,
-	name: PropTypes.string,
+	name: PropTypes.string
 };
 RegistrationForm.defaultProps = {
 	gender: null,
-	name: null,
+	name: null
 };
 
 export default RegistrationForm;

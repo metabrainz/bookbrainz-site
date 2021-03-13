@@ -19,7 +19,7 @@
 import * as commonUtils from '../../common/helpers/utils';
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
-import { escapeProps, generateProps } from '../helpers/props';
+import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -32,8 +32,8 @@ const router = express.Router();
 
 /* Get Statistics Page */
 router.get('/', async (req, res) => {
-	const { orm } = req.app.locals;
-	const { Editor } = orm;
+	const {orm} = req.app.locals;
+	const {Editor} = orm;
 
 	const entityModels = commonUtils.getEntityModels(orm);
 
@@ -61,7 +61,7 @@ router.get('/', async (req, res) => {
 					).where('master', true);
 				})
 				.count()
-				.then((Count) => ({ Count, modelName }))
+				.then((Count) => ({Count, modelName}))
 		);
 	}
 	const allEntities = await Promise.all(queryPromises1);
@@ -88,7 +88,7 @@ router.get('/', async (req, res) => {
 						.where('bookbrainz.revision.created_at', '>=', utils.getDateBeforeDays(30));
 				})
 				.count()
-				.then((Count) => ({ Count, modelName }))
+				.then((Count) => ({Count, modelName}))
 		);
 	}
 	const last30DaysEntitiesHelper = await Promise.all(queryPromises2);
@@ -110,7 +110,7 @@ router.get('/', async (req, res) => {
 	const props = generateProps(req, res, {
 		allEntities,
 		last30DaysEntities,
-		topEditors,
+		topEditors
 	});
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
@@ -126,7 +126,7 @@ router.get('/', async (req, res) => {
 			markup,
 			props: escapeProps(props),
 			script: '/js/statistics.js',
-			title: 'Statistics',
+			title: 'Statistics'
 		})
 	);
 });

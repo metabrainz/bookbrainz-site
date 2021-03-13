@@ -28,16 +28,16 @@ import {
 	updateEndArea,
 	updateEnded,
 	updateGender,
-	updateType,
+	updateType
 } from './actions';
 
-import { convertMapToObject, labelsForAuthor } from '../../helpers/utils';
-import { entityToOption, transformISODateForSelect } from '../../helpers/entity';
-import type { Dispatch } from 'redux';
+import {convertMapToObject, labelsForAuthor} from '../../helpers/utils';
+import {entityToOption, transformISODateForSelect} from '../../helpers/entity';
+import type {Dispatch} from 'redux';
 import Entity from '../common/entity';
 import LinkedEntity from '../common/linked-entity';
 import MergeField from '../common/merge-field';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 type AuthorType = {
 	label: string;
@@ -153,7 +153,7 @@ function AuthorSectionMerge({
 	onEndDateChange,
 	onEndedChange,
 	onGenderChange,
-	onTypeChange,
+	onTypeChange
 }: Props) {
 	const beginAreaOptions = [];
 	const beginDateOptions = [];
@@ -166,14 +166,14 @@ function AuthorSectionMerge({
 	mergingEntities.forEach((entity) => {
 		const typeOption = !_.isNil(entity.authorType) && {
 			label: entity.authorType.label,
-			value: entity.authorType.id,
+			value: entity.authorType.id
 		};
 		if (typeOption && !_.find(typeOptions, ['value', typeOption.value])) {
 			typeOptions.push(typeOption);
 		}
 		const gender = !_.isNil(entity.gender) && {
 			label: entity.gender.name,
-			value: entity.gender.id,
+			value: entity.gender.id
 		};
 		if (gender && !_.find(genderOptions, ['value', gender.value])) {
 			genderOptions.push(gender);
@@ -184,7 +184,7 @@ function AuthorSectionMerge({
 		}
 		const beginArea = !_.isNil(entity.beginArea) && {
 			label: entity.beginArea.name,
-			value: entityToOption(entity.beginArea),
+			value: entityToOption(entity.beginArea)
 		};
 		if (beginArea && !_.find(beginAreaOptions, ['value.id', beginArea.value.id])) {
 			beginAreaOptions.push(beginArea);
@@ -192,7 +192,7 @@ function AuthorSectionMerge({
 
 		const ended = !_.isNil(entity.ended) && {
 			label: entity.ended ? 'Yes' : 'No',
-			value: entity.ended,
+			value: entity.ended
 		};
 		if (ended && !_.find(endedOptions, ['value', ended.value])) {
 			endedOptions.push(ended);
@@ -203,7 +203,7 @@ function AuthorSectionMerge({
 		}
 		const endArea = !_.isNil(entity.endArea) && {
 			label: entity.endArea.name,
-			value: entityToOption(entity.endArea),
+			value: entityToOption(entity.endArea)
 		};
 		if (endArea && !_.find(endAreaOptions, ['value.id', endArea.value.id])) {
 			endAreaOptions.push(endArea);
@@ -270,7 +270,7 @@ function AuthorSectionMerge({
 }
 AuthorSectionMerge.displayName = 'AuthorSectionMerge';
 
-export function mapStateToProps(rootState, { mergingEntities }: OwnProps): StateProps {
+export function mapStateToProps(rootState, {mergingEntities}: OwnProps): StateProps {
 	const state = rootState.get('authorSection');
 
 	const typeValue = state.get('type');
@@ -284,7 +284,7 @@ export function mapStateToProps(rootState, { mergingEntities }: OwnProps): State
 		beginAreaLabel,
 		endedLabel,
 		endDateLabel,
-		endAreaLabel,
+		endAreaLabel
 	} = labelsForAuthor(Boolean(isGroup));
 
 	return {
@@ -299,7 +299,7 @@ export function mapStateToProps(rootState, { mergingEntities }: OwnProps): State
 		endedChecked: state.get('ended'),
 		endedLabel,
 		genderValue: state.get('gender'),
-		typeValue,
+		typeValue
 	};
 }
 
@@ -311,7 +311,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onEndDateChange: (dateString) => dispatch(debouncedUpdateEndDate(dateString)),
 		onEndedChange: (value) => dispatch(updateEnded(value)),
 		onGenderChange: (value) => dispatch(updateGender(value)),
-		onTypeChange: (value) => dispatch(updateType(value)),
+		onTypeChange: (value) => dispatch(updateType(value))
 	};
 }
 

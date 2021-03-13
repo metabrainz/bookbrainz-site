@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import { get as _get } from 'lodash';
-import { loadEntity } from './middleware';
+import {get as _get} from 'lodash';
+import {loadEntity} from './middleware';
 
 export const aliasesRelations = ['aliasSet.aliases.language'];
 export const identifiersRelations = ['identifierSet.identifiers.type'];
@@ -43,7 +43,7 @@ export function allowOnlyGetMethod(req, res, next) {
 		.set('Allow', 'GET')
 		.status(405)
 		.send({
-			message: `${req.method} method for the "${req.path}" route is not supported. Only GET method is allowed`,
+			message: `${req.method} method for the "${req.path}" route is not supported. Only GET method is allowed`
 		});
 }
 
@@ -55,7 +55,7 @@ export async function getBrowsedRelationships(
 	fetchRelated,
 	filterRelationshipMethod
 ) {
-	const { entity, relationships } = locals;
+	const {entity, relationships} = locals;
 
 	if (!relationships.length > 0) {
 		return [];
@@ -82,9 +82,9 @@ export async function getBrowsedRelationships(
 				relationship: [
 					{
 						relationshipType: _get(relationship, 'type.label', null),
-						relationshipTypeID: _get(relationship, 'type.id', null),
-					},
-				],
+						relationshipTypeID: _get(relationship, 'type.id', null)
+					}
+				]
 			};
 		}
 		return null;

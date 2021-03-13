@@ -19,10 +19,10 @@
 
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
-import { kebabCase as _kebabCase, has, isFunction } from 'lodash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
-import { genEntityIconHTMLElement } from '../../helpers/entity';
+import {kebabCase as _kebabCase, has, isFunction} from 'lodash';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons';
+import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 class LinkedEntity extends React.Component<any, any> {
 	static displayName = 'LinkedEntity';
@@ -30,11 +30,11 @@ class LinkedEntity extends React.Component<any, any> {
 	static propTypes = {
 		className: PropTypes.string,
 		onSelect: PropTypes.func.isRequired,
-		option: PropTypes.object.isRequired,
+		option: PropTypes.object.isRequired
 	};
 
 	static defaultProps = {
-		className: '',
+		className: ''
 	};
 
 	constructor(props) {
@@ -78,7 +78,7 @@ class LinkedEntity extends React.Component<any, any> {
 
 	render() {
 		const option = this.getSafeOptionValue(this.props.option);
-		const { disambiguation, text, type, unnamedText, language } = option;
+		const {disambiguation, text, type, unnamedText, language} = option;
 
 		const nameComponent = text || <i>{unnamedText}</i>;
 
@@ -96,7 +96,7 @@ class LinkedEntity extends React.Component<any, any> {
 				<a onClick={this.handleChildEvent}>
 					<FontAwesomeIcon icon={faExternalLinkAlt} />
 				</a>
-				<span className="text-muted small" style={{ float: 'right' }}>
+				<span className="text-muted small" style={{float: 'right'}}>
 					{language}
 				</span>
 			</div>

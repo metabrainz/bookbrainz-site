@@ -18,16 +18,16 @@
 
 import * as React from 'react';
 
-import { Action, updateType } from './actions';
-import type { List, Map } from 'immutable';
+import {Action, updateType} from './actions';
+import type {List, Map} from 'immutable';
 
 import CustomInput from '../../input';
-import type { Dispatch } from 'redux';
+import type {Dispatch} from 'redux';
 import MergeField from '../common/merge-field';
 import Select from 'react-select';
-import { find as _find } from 'lodash';
-import { connect } from 'react-redux';
-import { convertMapToObject } from '../../helpers/utils';
+import {find as _find} from 'lodash';
+import {connect} from 'react-redux';
+import {convertMapToObject} from '../../helpers/utils';
 
 type LanguageOption = {
 	name: string;
@@ -63,13 +63,13 @@ type Props = OwnProps & StateProps & DispatchProps;
  *        a different work type is selected.
  * @returns {ReactElement} React element containing the rendered WorkSectionMerge.
  */
-function WorkSectionMerge({ languageValues, mergingEntities, typeValue, onTypeChange }: Props) {
+function WorkSectionMerge({languageValues, mergingEntities, typeValue, onTypeChange}: Props) {
 	const typeOptions = [];
 
 	mergingEntities.forEach((entity) => {
 		const typeOption = entity.workType && {
 			label: entity.workType.label,
-			value: entity.workType.id,
+			value: entity.workType.id
 		};
 		if (typeOption && !_find(typeOptions, ['value', typeOption.value])) {
 			typeOptions.push(typeOption);
@@ -98,13 +98,13 @@ function mapStateToProps(rootState: RootState): StateProps {
 
 	return {
 		languageValues: convertMapToObject(state.get('languages')),
-		typeValue: convertMapToObject(state.get('type')),
+		typeValue: convertMapToObject(state.get('type'))
 	};
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		onTypeChange: (value: number | null) => dispatch(updateType(value)),
+		onTypeChange: (value: number | null) => dispatch(updateType(value))
 	};
 }
 

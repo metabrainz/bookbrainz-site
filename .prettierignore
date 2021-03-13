@@ -5,3 +5,4 @@ coverage
 webpack.client.js
 config
 .vscode
+/src/client/stylesheets/

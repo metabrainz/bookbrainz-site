@@ -24,15 +24,15 @@ import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
 import * as utils from '../helpers/utils';
-import { escapeProps, generateProps } from '../helpers/props';
+import {escapeProps, generateProps} from '../helpers/props';
 import CollectionPage from '../../client/components/pages/collection';
 import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import UserCollectionForm from '../../client/components/forms/userCollection';
-import { collectionCreateOrEditHandler } from '../helpers/collectionRouteUtils';
+import {collectionCreateOrEditHandler} from '../helpers/collectionRouteUtils';
 import express from 'express';
-import { getCollectionItems } from '../helpers/collections';
+import {getCollectionItems} from '../helpers/collections';
 import log from 'log';
 import target from '../templates/target';
 
@@ -46,7 +46,7 @@ function getEntityRelations(entityType) {
 		'disambiguation',
 		'editionFormat',
 		'identifierSet.identifiers.type',
-		'releaseEventSet.releaseEvents',
+		'releaseEventSet.releaseEvents'
 	];
 
 	const editionGroupRelations = ['defaultAlias.language', 'disambiguation', 'editionGroupType'];
@@ -57,7 +57,7 @@ function getEntityRelations(entityType) {
 		'defaultAlias.language',
 		'disambiguation',
 		'languageSet.languages',
-		'workType',
+		'workType'
 	];
 
 	const relations = {
@@ -65,7 +65,7 @@ function getEntityRelations(entityType) {
 		Edition: editionRelations,
 		EditionGroup: editionGroupRelations,
 		Publisher: publisherRelations,
-		Work: workRelations,
+		Work: workRelations
 	};
 	return relations[entityType];
 }
@@ -82,7 +82,7 @@ router.get('/create', auth.isAuthenticated, (req, res) => {
 		target({
 			markup,
 			props: escapeProps(props),
-			script,
+			script
 		})
 	);
 });
@@ -98,8 +98,8 @@ router.param('collectionId', middleware.makeCollectionLoader());
 
 router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, res, next) => {
 	try {
-		const { collection } = res.locals;
-		const { orm } = req.app.locals;
+		const {collection} = res.locals;
+		const {orm} = req.app.locals;
 		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 		const relations = getEntityRelations(collection.entityType);
@@ -107,11 +107,11 @@ router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, 
 		// fetch 1 more bbid to check next enabled for pagination
 		const items = await getCollectionItems(collection.id, from, size + 1, orm);
 		// get next enabled for pagination
-		const { newResultsArray, nextEnabled } = utils.getNextEnabledAndResultsArray(items, size);
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(items, size);
 		// load entities from bbids
 		const entitiesPromise = newResultsArray.map(async (item) => ({
 			addedAt: item.added_at,
-			...(await orm.func.entity.getEntity(orm, collection.entityType, item.bbid, relations)),
+			...(await orm.func.entity.getEntity(orm, collection.entityType, item.bbid, relations))
 		}));
 		const entities = await Promise.all(entitiesPromise);
 		const isOwner = req.user && parseInt(collection.ownerId, 10) === parseInt(req.user?.id, 10);
@@ -129,7 +129,7 @@ router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, 
 			isOwner,
 			nextEnabled,
 			size,
-			userId,
+			userId
 		});
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
@@ -142,7 +142,7 @@ router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, 
 			target({
 				markup,
 				props: escapeProps(props),
-				script,
+				script
 			})
 		);
 	} catch (err) {
@@ -156,8 +156,8 @@ router.get(
 	auth.isAuthenticatedForCollectionView,
 	async (req, res, next) => {
 		try {
-			const { collection } = res.locals;
-			const { orm } = req.app.locals;
+			const {collection} = res.locals;
+			const {orm} = req.app.locals;
 			const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 			const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
@@ -172,7 +172,7 @@ router.get(
 					collection.entityType,
 					item.bbid,
 					relations
-				)),
+				))
 			}));
 			const entities = await Promise.all(entitiesPromise);
 			res.send(entities);
@@ -184,9 +184,9 @@ router.get(
 );
 
 router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, (req, res) => {
-	const { collection } = res.locals;
+	const {collection} = res.locals;
 	const props = generateProps(req, res, {
-		collection,
+		collection
 	});
 	const script = '/js/collection/create.js';
 	const markup = ReactDOMServer.renderToString(
@@ -198,7 +198,7 @@ router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, 
 		target({
 			markup,
 			props: escapeProps(props),
-			script,
+			script
 		})
 	);
 });
@@ -217,17 +217,17 @@ router.post(
 	auth.isCollectionOwner,
 	async (req, res, next) => {
 		try {
-			const { UserCollection } = req.app.locals.orm;
-			const { collection } = res.locals;
-			await new UserCollection({ id: collection.id }).destroy();
+			const {UserCollection} = req.app.locals.orm;
+			const {collection} = res.locals;
+			await new UserCollection({id: collection.id}).destroy();
 			const collectionPromiseForES = new Promise((resolve) => {
 				const collectionForES = {
 					aliasSet: {
-						aliases: [{ name: collection.name }],
+						aliases: [{name: collection.name}]
 					},
 					bbid: collection.id,
 					id: collection.id,
-					type: 'Collection',
+					type: 'Collection'
 				};
 				resolve(collectionForES);
 			});
@@ -245,21 +245,21 @@ router.post(
 	auth.isCollectionOwnerOrCollaborator,
 	middleware.validateBBIDsForCollectionRemove,
 	async (req, res, next) => {
-		const { bbids = [] } = req.body;
-		const { collection } = res.locals;
+		const {bbids = []} = req.body;
+		const {collection} = res.locals;
 		try {
-			const { UserCollection, UserCollectionItem } = req.app.locals.orm;
+			const {UserCollection, UserCollectionItem} = req.app.locals.orm;
 			await new UserCollectionItem()
 				.query((qb) => {
 					qb.where('collection_id', collection.id);
 					qb.whereIn('bbid', bbids);
 				})
 				.destroy();
-			await new UserCollection({ id: collection.id }).save(
+			await new UserCollection({id: collection.id}).save(
 				{
-					lastModified: new Date(),
+					lastModified: new Date()
 				},
-				{ patch: true }
+				{patch: true}
 			);
 			res.status(200).send();
 		} catch (err) {
@@ -276,23 +276,23 @@ router.post(
 	auth.isCollectionOwnerOrCollaborator,
 	middleware.validateBBIDsForCollectionAdd,
 	async (req, res, next) => {
-		const { bbids } = req.body;
-		const { collection } = res.locals;
+		const {bbids} = req.body;
+		const {collection} = res.locals;
 		try {
-			const { UserCollection, UserCollectionItem } = req.app.locals.orm;
+			const {UserCollection, UserCollectionItem} = req.app.locals.orm;
 			for (const bbid of bbids) {
 				// because of the unique constraint, we can't add duplicate entities to a collection
 				// using try catch to make sure code doesn't break if user accidentally adds duplicate entity
 				try {
 					await new UserCollectionItem({
 						bbid,
-						collectionId: collection.id,
-					}).save(null, { method: 'insert' });
-					await new UserCollection({ id: collection.id }).save(
+						collectionId: collection.id
+					}).save(null, {method: 'insert'});
+					await new UserCollection({id: collection.id}).save(
 						{
-							lastModified: new Date(),
+							lastModified: new Date()
 						},
-						{ patch: true }
+						{patch: true}
 					);
 				} catch (err) {
 					// throw error if it's not due to unique constraint
@@ -315,7 +315,7 @@ router.post(
 	middleware.validateCollaboratorIdsForCollectionRemove,
 	async (req, res, next) => {
 		try {
-			const { collection } = res.locals;
+			const {collection} = res.locals;
 			const collaboratorIdsToRemove = req.body.collaboratorIds;
 			const userId = parseInt(req.user.id, 10);
 			// user is allowed to make this change if they are owner of the collection OR they are collaborator and they want to remove themselves
@@ -337,18 +337,18 @@ router.post(
 				);
 			}
 
-			const { UserCollection, UserCollectionCollaborator } = req.app.locals.orm;
+			const {UserCollection, UserCollectionCollaborator} = req.app.locals.orm;
 			await new UserCollectionCollaborator()
 				.query((qb) => {
 					qb.where('collection_id', collection.id);
 					qb.whereIn('collaborator_id', collaboratorIdsToRemove);
 				})
 				.destroy();
-			await new UserCollection({ id: collection.id }).save(
+			await new UserCollection({id: collection.id}).save(
 				{
-					lastModified: new Date(),
+					lastModified: new Date()
 				},
-				{ patch: true }
+				{patch: true}
 			);
 			res.status(200).send();
 		} catch (err) {

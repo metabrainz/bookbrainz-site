@@ -37,7 +37,7 @@ function formatChangedDisambiguation(change) {
 }
 
 function formatNewAliasSet(change) {
-	const { rhs } = change;
+	const {rhs} = change;
 	const changes = [];
 	if (rhs.defaultAlias && rhs.defaultAliasId) {
 		changes.push(base.formatRow('N', 'Default Alias', null, [rhs.defaultAlias.name]));
@@ -63,14 +63,14 @@ function formatAliasAddOrDelete(change) {
 			change.item,
 			'Aliases',
 			(side) => side && [`${side.name} (${side.sortName})`]
-		),
+		)
 	];
 }
 
 function formatAliasModified(change) {
 	if (change.path.length > 3 && change.path[3] === 'name') {
 		return [
-			base.formatChange(change, `Alias ${change.path[2]} -> Name`, (side) => side && [side]),
+			base.formatChange(change, `Alias ${change.path[2]} -> Name`, (side) => side && [side])
 		];
 	}
 
@@ -80,7 +80,7 @@ function formatAliasModified(change) {
 				change,
 				`Alias ${change.path[2]} -> Sort Name`,
 				(side) => side && [side]
-			),
+			)
 		];
 	}
 
@@ -95,7 +95,7 @@ function formatAliasModified(change) {
 				change,
 				`Alias ${change.path[2]} -> Language`,
 				(side) => side && [side]
-			),
+			)
 		];
 	}
 
@@ -105,7 +105,7 @@ function formatAliasModified(change) {
 				change,
 				`Alias ${change.path[2]} -> Primary`,
 				(side) => !_.isNull(side) && [side.primary ? 'Yes' : 'No']
-			),
+			)
 		];
 	}
 
@@ -149,7 +149,7 @@ function formatAlias(change) {
 }
 
 function formatNewIdentifierSet(change) {
-	const { rhs } = change;
+	const {rhs} = change;
 	if (rhs.identifiers && rhs.identifiers.length > 0) {
 		return [
 			base.formatRow(
@@ -160,7 +160,7 @@ function formatNewIdentifierSet(change) {
 					(identifier) =>
 						`${identifier.type && identifier.type.label}: ${identifier.value}`
 				)
-			),
+			)
 		];
 	}
 
@@ -173,7 +173,7 @@ function formatIdentifierAddOrDelete(change) {
 			change.item,
 			`Identifier ${change.index}`,
 			(side) => side && [`${side.type.label}: ${side.value}`]
-		),
+		)
 	];
 }
 
@@ -184,7 +184,7 @@ function formatIdentifierModified(change) {
 				change,
 				`Identifier ${change.path[2]} -> Value`,
 				(side) => side && [side]
-			),
+			)
 		];
 	}
 
@@ -199,7 +199,7 @@ function formatIdentifierModified(change) {
 				change,
 				`Identifier ${change.path[2]} -> Type`,
 				(side) => side && [side]
-			),
+			)
 		];
 	}
 
@@ -233,7 +233,7 @@ function formatIdentifier(change) {
 
 function formatRelationshipAdd(entity, change) {
 	const changes = [];
-	const { rhs } = change.item;
+	const {rhs} = change.item;
 
 	if (!rhs) {
 		return changes;
@@ -290,7 +290,7 @@ function formatAddOrDeleteRelationshipSet(entity, change) {
 
 function formatRelationshipRemove(entity, change) {
 	const changes = [];
-	const { lhs } = change.item;
+	const {lhs} = change.item;
 
 	if (!lhs) {
 		return changes;
@@ -371,7 +371,7 @@ export function formatEntityDiffs(diffs, entityType, entityFormatter) {
 	return _.flatten(diffs).map((diff) => {
 		const formattedDiff = {
 			entity: diff.entity.toJSON(),
-			isNew: diff.isNew,
+			isNew: diff.isNew
 		};
 
 		formattedDiff.entity.type = entityType;

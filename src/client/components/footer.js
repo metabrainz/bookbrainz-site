@@ -23,10 +23,10 @@ import * as bootstrap from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const { Col, Grid, Row } = bootstrap;
+const {Col, Grid, Row} = bootstrap;
 
 function Footer(props) {
-	const { repositoryUrl, siteRevision } = props;
+	const {repositoryUrl, siteRevision} = props;
 
 	return (
 		<footer className="footer">
@@ -84,7 +84,7 @@ function Footer(props) {
 Footer.displayName = 'Footer';
 Footer.propTypes = {
 	repositoryUrl: PropTypes.string.isRequired,
-	siteRevision: PropTypes.string.isRequired,
+	siteRevision: PropTypes.string.isRequired
 };
 
 export default Footer;

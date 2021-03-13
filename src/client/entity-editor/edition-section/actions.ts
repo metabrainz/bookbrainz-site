@@ -63,7 +63,7 @@ export const UPDATE_WARN_IF_EDITION_GROUP_EXISTS = 'UPDATE_WARN_IF_EDITION_GROUP
 export function updateStatus(newStatusId: number | null | undefined): Action {
 	return {
 		payload: newStatusId,
-		type: UPDATE_STATUS,
+		type: UPDATE_STATUS
 	};
 }
 
@@ -78,7 +78,7 @@ export function updateStatus(newStatusId: number | null | undefined): Action {
 export function updateFormat(newFormatId: number | null | undefined): Action {
 	return {
 		payload: newFormatId,
-		type: UPDATE_FORMAT,
+		type: UPDATE_FORMAT
 	};
 }
 
@@ -93,9 +93,9 @@ export function updateFormat(newFormatId: number | null | undefined): Action {
  */
 export function debouncedUpdateReleaseDate(newReleaseDate: string | null | undefined): Action {
 	return {
-		meta: { debounce: 'keystroke' },
+		meta: {debounce: 'keystroke'},
 		payload: newReleaseDate,
-		type: UPDATE_RELEASE_DATE,
+		type: UPDATE_RELEASE_DATE
 	};
 }
 
@@ -110,7 +110,7 @@ export function debouncedUpdateReleaseDate(newReleaseDate: string | null | undef
 export function updateLanguages(newLanguages: Array<LanguageOption>): Action {
 	return {
 		payload: newLanguages,
-		type: UPDATE_LANGUAGES,
+		type: UPDATE_LANGUAGES
 	};
 }
 
@@ -122,7 +122,7 @@ export function updateLanguages(newLanguages: Array<LanguageOption>): Action {
  */
 export function showPhysical(): Action {
 	return {
-		type: SHOW_PHYSICAL,
+		type: SHOW_PHYSICAL
 	};
 }
 
@@ -137,7 +137,7 @@ export function showPhysical(): Action {
 export function toggleShowEditionGroup(showEGSection: boolean): Action {
 	return {
 		payload: showEGSection,
-		type: TOGGLE_SHOW_EDITION_GROUP,
+		type: TOGGLE_SHOW_EDITION_GROUP
 	};
 }
 
@@ -152,7 +152,7 @@ export function toggleShowEditionGroup(showEGSection: boolean): Action {
 export function updatePublisher(newPublisher: Publisher): Action {
 	return {
 		payload: newPublisher,
-		type: UPDATE_PUBLISHER,
+		type: UPDATE_PUBLISHER
 	};
 }
 
@@ -167,7 +167,7 @@ export function updatePublisher(newPublisher: Publisher): Action {
 export function updateEditionGroup(newEditionGroup: EditionGroup | null): Action {
 	return {
 		payload: newEditionGroup,
-		type: UPDATE_EDITION_GROUP,
+		type: UPDATE_EDITION_GROUP
 	};
 }
 
@@ -181,9 +181,9 @@ export function updateEditionGroup(newEditionGroup: EditionGroup | null): Action
  */
 export function debouncedUpdateWeight(value: number | null | undefined): Action {
 	return {
-		meta: { debounce: 'keystroke' },
+		meta: {debounce: 'keystroke'},
 		payload: value,
-		type: UPDATE_WEIGHT,
+		type: UPDATE_WEIGHT
 	};
 }
 
@@ -197,9 +197,9 @@ export function debouncedUpdateWeight(value: number | null | undefined): Action 
  */
 export function debouncedUpdatePages(value: number | null | undefined): Action {
 	return {
-		meta: { debounce: 'keystroke' },
+		meta: {debounce: 'keystroke'},
 		payload: value,
-		type: UPDATE_PAGES,
+		type: UPDATE_PAGES
 	};
 }
 
@@ -213,9 +213,9 @@ export function debouncedUpdatePages(value: number | null | undefined): Action {
  */
 export function debouncedUpdateWidth(value: number | null | undefined): Action {
 	return {
-		meta: { debounce: 'keystroke' },
+		meta: {debounce: 'keystroke'},
 		payload: value,
-		type: UPDATE_WIDTH,
+		type: UPDATE_WIDTH
 	};
 }
 
@@ -229,9 +229,9 @@ export function debouncedUpdateWidth(value: number | null | undefined): Action {
  */
 export function debouncedUpdateHeight(value: number | null | undefined): Action {
 	return {
-		meta: { debounce: 'keystroke' },
+		meta: {debounce: 'keystroke'},
 		payload: value,
-		type: UPDATE_HEIGHT,
+		type: UPDATE_HEIGHT
 	};
 }
 
@@ -245,8 +245,8 @@ export function debouncedUpdateHeight(value: number | null | undefined): Action 
  */
 export function debouncedUpdateDepth(value: number | null | undefined): Action {
 	return {
-		meta: { debounce: 'keystroke' },
+		meta: {debounce: 'keystroke'},
 		payload: value,
-		type: UPDATE_DEPTH,
+		type: UPDATE_DEPTH
 	};
 }

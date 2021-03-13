@@ -32,21 +32,21 @@ import {
 	faSearch,
 	faSignInAlt,
 	faSignOutAlt,
-	faUserCircle,
+	faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Footer from './../components/footer';
 import MergeQueue from '../components/pages/parts/merge-queue';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { genEntityIconHTMLElement } from '../helpers/entity';
+import {genEntityIconHTMLElement} from '../helpers/entity';
 
-const { Alert, MenuItem, Nav, Navbar, NavItem, NavDropdown } = bootstrap;
+const {Alert, MenuItem, Nav, Navbar, NavItem, NavDropdown} = bootstrap;
 
 class Layout extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = { keepMenuOpen: false, menuOpen: false };
+		this.state = {keepMenuOpen: false, menuOpen: false};
 		this.renderNavContent = this.renderNavContent.bind(this);
 		this.renderNavHeader = this.renderNavHeader.bind(this);
 		this.handleDropdownToggle = this.handleDropdownToggle.bind(this);
@@ -60,19 +60,19 @@ class Layout extends React.Component {
 
 	handleDropdownToggle(newValue) {
 		if (this.state.keepMenuOpen) {
-			this.setState({ keepMenuOpen: false, menuOpen: true });
+			this.setState({keepMenuOpen: false, menuOpen: true});
 		} else {
-			this.setState({ menuOpen: newValue });
+			this.setState({menuOpen: newValue});
 		}
 	}
 
 	handleDropdownClick(eventKey, event) {
 		event.stopPropagation();
-		this.setState({ keepMenuOpen: true }, this.handleDropdownToggle);
+		this.setState({keepMenuOpen: true}, this.handleDropdownToggle);
 	}
 
 	renderNavHeader() {
-		const { homepage } = this.props;
+		const {homepage} = this.props;
 
 		return (
 			<Navbar.Header>
@@ -99,7 +99,7 @@ class Layout extends React.Component {
 	}
 
 	renderNavContent() {
-		const { user, homepage, hideSearch } = this.props;
+		const {user, homepage, hideSearch} = this.props;
 
 		/*
 		 * GOTCHA: Usage of react-bootstrap FormGroup component inside
@@ -119,7 +119,7 @@ class Layout extends React.Component {
 			</span>
 		);
 
-		const disableSignUp = this.props.disableSignUp ? { disabled: true } : {};
+		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
 
 		return (
 			<Navbar.Collapse id="bs-example-navbar-collapse-1">
@@ -232,7 +232,7 @@ class Layout extends React.Component {
 			repositoryUrl,
 			children,
 			mergeQueue,
-			requiresJS,
+			requiresJS
 		} = this.props;
 
 		// Shallow merges parents props into child components
@@ -290,7 +290,7 @@ Layout.propTypes = {
 	repositoryUrl: PropTypes.string.isRequired,
 	requiresJS: PropTypes.bool,
 	siteRevision: PropTypes.string.isRequired,
-	user: PropTypes.object,
+	user: PropTypes.object
 };
 Layout.defaultProps = {
 	disableSignUp: false,
@@ -298,7 +298,7 @@ Layout.defaultProps = {
 	homepage: false,
 	mergeQueue: null,
 	requiresJS: false,
-	user: null,
+	user: null
 };
 
 export default Layout;

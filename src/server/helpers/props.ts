@@ -16,16 +16,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import { Request, Response } from 'express';
+import {Request, Response} from 'express';
 import jsesc from 'jsesc';
 
-type PassportRequest = Request & { user: any; session: any };
+type PassportRequest = Request & {user: any; session: any};
 
 // JSON.stringify that escapes characters in string output
 export function escapeProps(props) {
 	return jsesc(props, {
 		isScriptContext: true,
-		json: true,
+		json: true
 	});
 }
 

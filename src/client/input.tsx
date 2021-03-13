@@ -8,14 +8,14 @@ import {
 	HelpBlock,
 	InputGroup,
 	OverlayTrigger,
-	Sizes,
-	Tooltip,
+	Sizes, // eslint-disable-line import/named
+	Tooltip
 } from 'react-bootstrap';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 type Props = {
 	addonAfter?: any;
@@ -73,7 +73,7 @@ export default class Input extends React.Component<Props> {
 		tooltipText: PropTypes.string,
 		type: PropTypes.string,
 		validationState: PropTypes.string,
-		wrapperClassName: PropTypes.string,
+		wrapperClassName: PropTypes.string
 	};
 
 	static defaultProps = {
@@ -94,7 +94,7 @@ export default class Input extends React.Component<Props> {
 		tooltipText: null,
 		type: null,
 		validationState: null,
-		wrapperClassName: null,
+		wrapperClassName: null
 	};
 
 	constructor(props, context) {
@@ -122,7 +122,7 @@ export default class Input extends React.Component<Props> {
 
 	getMultipleSelectValues(selectNode) {
 		const values = [];
-		const { options } = selectNode;
+		const {options} = selectNode;
 
 		for (let i = 0; i < options.length; i++) {
 			const opt = options[i];
@@ -229,7 +229,7 @@ export default class Input extends React.Component<Props> {
 
 		return (
 			<FormGroup
-				bsClass={cx({ 'form-group': !standalone }, groupClassName)}
+				bsClass={cx({'form-group': !standalone}, groupClassName)}
 				bsSize={bsSize}
 				controlId={id}
 				name={props.name}

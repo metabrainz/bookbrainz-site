@@ -20,7 +20,7 @@ import * as bootstrap from 'react-bootstrap';
 
 import React from 'react';
 
-const { PageHeader } = bootstrap;
+const {PageHeader} = bootstrap;
 
 /**
  * Renders the document and displays the 'Develop' page.

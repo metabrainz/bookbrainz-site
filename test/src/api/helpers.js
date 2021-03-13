@@ -2,7 +2,7 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 
 chai.use(chaiHttp);
-const { expect } = chai;
+const {expect} = chai;
 
 export function searchBasicTests(res) {
 	expect(res.status).to.equal(200);

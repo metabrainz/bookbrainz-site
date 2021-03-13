@@ -24,12 +24,12 @@ import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
 import EntityTitle from './title';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { kebabCase as _kebabCase } from 'lodash';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { labelsForAuthor } from '../../../helpers/utils';
+import {kebabCase as _kebabCase} from 'lodash';
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import {labelsForAuthor} from '../../../helpers/utils';
 
 const {
 	deletedEntityMessage,
@@ -38,11 +38,11 @@ const {
 	getEntityUrl,
 	ENTITY_TYPE_ICONS,
 	getSortNameOfDefaultAlias,
-	transformISODateForDisplay,
+	transformISODateForDisplay
 } = entityHelper;
-const { Button, Col, Row } = bootstrap;
+const {Button, Col, Row} = bootstrap;
 
-function AuthorAttributes({ author }) {
+function AuthorAttributes({author}) {
 	if (author.deleted) {
 		return deletedEntityMessage;
 	}
@@ -55,7 +55,7 @@ function AuthorAttributes({ author }) {
 	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(author);
 
 	const isGroup = type === 'Group';
-	const { beginDateLabel, beginAreaLabel, endDateLabel, endAreaLabel } = labelsForAuthor(isGroup);
+	const {beginDateLabel, beginAreaLabel, endDateLabel, endAreaLabel} = labelsForAuthor(isGroup);
 	const showGender = !isGroup;
 	return (
 		<div>
@@ -102,10 +102,10 @@ function AuthorAttributes({ author }) {
 }
 AuthorAttributes.displayName = 'AuthorAttributes';
 AuthorAttributes.propTypes = {
-	author: PropTypes.object.isRequired,
+	author: PropTypes.object.isRequired
 };
 
-function AuthorDisplayPage({ entity, identifierTypes, user }) {
+function AuthorDisplayPage({entity, identifierTypes, user}) {
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
@@ -155,10 +155,10 @@ AuthorDisplayPage.displayName = 'AuthorDisplayPage';
 AuthorDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired,
+	user: PropTypes.object.isRequired
 };
 AuthorDisplayPage.defaultProps = {
-	identifierTypes: [],
+	identifierTypes: []
 };
 
 export default AuthorDisplayPage;

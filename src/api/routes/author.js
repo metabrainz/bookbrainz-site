@@ -21,17 +21,17 @@ import * as utils from '../helpers/utils';
 import {
 	formatQueryParameters,
 	loadEntityRelationshipsForBrowse,
-	validateBrowseRequestQueryParameters,
+	validateBrowseRequestQueryParameters
 } from '../helpers/middleware';
 import {
 	getAuthorBasicInfo,
 	getEntityAliases,
 	getEntityIdentifiers,
-	getEntityRelationships,
+	getEntityRelationships
 } from '../helpers/formatEntityData';
-import { Router } from 'express';
-import { makeEntityLoader } from '../helpers/entityLoader';
-import { toLower } from 'lodash';
+import {Router} from 'express';
+import {makeEntityLoader} from '../helpers/entityLoader';
+import {toLower} from 'lodash';
 
 const router = Router();
 
@@ -41,7 +41,7 @@ const authorBasicRelations = [
 	'authorType',
 	'gender',
 	'beginArea',
-	'endArea',
+	'endArea'
 ];
 
 const authorError = 'Author not found';
@@ -327,7 +327,7 @@ router.get(
 		'author',
 		'edition-group',
 		'work',
-		'publisher',
+		'publisher'
 	]),
 	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
@@ -351,7 +351,7 @@ router.get(
 
 		return res.status(200).send({
 			authors: authorRelationshipList,
-			bbid: req.query.bbid,
+			bbid: req.query.bbid
 		});
 	}
 );

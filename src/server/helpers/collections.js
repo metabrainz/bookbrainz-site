@@ -33,9 +33,9 @@ import * as error from '../../common/helpers/error';
  * If the user is not the editor, then only "Public' collections are returned
  */
 export async function getOrderedCollectionsForEditorPage(from, size, entityType, req) {
-	const { Editor, UserCollection } = req.app.locals.orm;
+	const {Editor, UserCollection} = req.app.locals.orm;
 	// If editor isn't present, throw an error
-	await new Editor({ id: req.params.id }).fetch().catch(Editor.NotFoundError, () => {
+	await new Editor({id: req.params.id}).fetch().catch(Editor.NotFoundError, () => {
 		throw new error.NotFoundError('Editor not found', req);
 	});
 
@@ -66,7 +66,7 @@ export async function getOrderedCollectionsForEditorPage(from, size, entityType,
 		.orderBy('created_at')
 		.fetchPage({
 			limit: size,
-			offset: from,
+			offset: from
 		});
 
 	const collectionsJSON = allCollections ? allCollections.toJSON() : [];
@@ -89,7 +89,7 @@ export async function getOrderedCollectionsForEditorPage(from, size, entityType,
  * @returns {array} - orderedCollections
  */
 export async function getOrderedPublicCollections(from, size, entityType, orm) {
-	const { UserCollection } = orm;
+	const {UserCollection} = orm;
 
 	const allCollections = await new UserCollection()
 		.where((builder) => {
@@ -102,7 +102,7 @@ export async function getOrderedPublicCollections(from, size, entityType, orm) {
 		.fetchPage({
 			limit: size,
 			offset: from,
-			withRelated: ['owner'],
+			withRelated: ['owner']
 		});
 
 	const collectionsJSON = allCollections ? allCollections.toJSON() : [];

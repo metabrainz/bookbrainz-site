@@ -20,7 +20,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-function IdentifierLink({ typeId, value }) {
+function IdentifierLink({typeId, value}) {
 	let link;
 	// All identifiers type IDs have been taken from database.
 	switch (typeId) {
@@ -115,7 +115,7 @@ function IdentifierLink({ typeId, value }) {
 
 IdentifierLink.propTypes = {
 	typeId: PropTypes.number.isRequired,
-	value: PropTypes.string.isRequired,
+	value: PropTypes.string.isRequired
 };
 
 export default IdentifierLink;

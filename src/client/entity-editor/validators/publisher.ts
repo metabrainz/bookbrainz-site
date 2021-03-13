@@ -16,15 +16,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import { dateIsBefore, get, validateDate, validatePositiveInteger } from './base';
+import {dateIsBefore, get, validateDate, validatePositiveInteger} from './base';
 import {
 	validateAliases,
 	validateIdentifiers,
 	validateNameSection,
-	validateSubmissionSection,
+	validateSubmissionSection
 } from './common';
 import _ from 'lodash';
-import type { _IdentifierType } from '../../../types';
+import type {_IdentifierType} from '../../../types';
 
 export function validatePublisherSectionArea(value: any): boolean {
 	if (!value) {
@@ -35,23 +35,23 @@ export function validatePublisherSectionArea(value: any): boolean {
 }
 
 export function validatePublisherSectionBeginDate(value: any) {
-	const { isValid, errorMessage } = validateDate(value);
-	return { errorMessage, isValid };
+	const {isValid, errorMessage} = validateDate(value);
+	return {errorMessage, isValid};
 }
 
 export function validatePublisherSectionEndDate(beginValue: any, endValue: any, ended: boolean) {
 	if (ended === false) {
-		return { errorMessage: 'Dissolved date will be ignored', isValid: true };
+		return {errorMessage: 'Dissolved date will be ignored', isValid: true};
 	}
-	const { isValid, errorMessage } = validateDate(endValue);
+	const {isValid, errorMessage} = validateDate(endValue);
 
 	if (isValid) {
 		if (dateIsBefore(beginValue, endValue)) {
-			return { errorMessage: '', isValid: true };
+			return {errorMessage: '', isValid: true};
 		}
-		return { errorMessage: 'Dissolved Date must be greater than Founded Date', isValid: false };
+		return {errorMessage: 'Dissolved Date must be greater than Founded Date', isValid: false};
 	}
-	return { errorMessage, isValid };
+	return {errorMessage, isValid};
 }
 
 export function validatePublisherSectionEnded(value: any): boolean {
@@ -85,7 +85,7 @@ export function validateForm(
 		validateIdentifiers(get(formData, 'identifierEditor', {}), identifierTypes),
 		validateNameSection(get(formData, 'nameSection', {})),
 		validatePublisherSection(get(formData, 'publisherSection', {})),
-		validateSubmissionSection(get(formData, 'submissionSection', {})),
+		validateSubmissionSection(get(formData, 'submissionSection', {}))
 	];
 
 	return _.every(conditions);

@@ -36,7 +36,7 @@ export type Action = {
  */
 export function showAliasEditor(): Action {
 	return {
-		type: SHOW_ALIAS_EDITOR,
+		type: SHOW_ALIAS_EDITOR
 	};
 }
 
@@ -50,6 +50,6 @@ export function showAliasEditor(): Action {
  */
 export function showIdentifierEditor(): Action {
 	return {
-		type: SHOW_IDENTIFIER_EDITOR,
+		type: SHOW_IDENTIFIER_EDITOR
 	};
 }

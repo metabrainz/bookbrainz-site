@@ -43,7 +43,7 @@ import log from 'log';
  */
 export function makeEntityLoader(modelName, relations, errMessage, isBrowse) {
 	return async (req, res, next) => {
-		const { orm } = req.app.locals;
+		const {orm} = req.app.locals;
 		const bbid = isBrowse ? req.query.bbid : req.params.bbid;
 		const model = isBrowse ? req.query.modelType : modelName;
 		if (commonUtils.isValidBBID(bbid)) {
@@ -52,9 +52,9 @@ export function makeEntityLoader(modelName, relations, errMessage, isBrowse) {
 				return next();
 			} catch (err) {
 				log.error(err);
-				return res.status(404).send({ context: err, message: errMessage });
+				return res.status(404).send({context: err, message: errMessage});
 			}
 		}
-		return res.status(400).send({ message: 'BBID is not valid uuid' });
+		return res.status(400).send({message: 'BBID is not valid uuid'});
 	};
 }

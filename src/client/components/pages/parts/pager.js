@@ -21,10 +21,10 @@ import * as utils from '../../../../server/helpers/utils';
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import { isFunction } from 'lodash';
+import {isFunction} from 'lodash';
 import request from 'superagent';
 
-const { Pager, Button, ButtonGroup, DropdownButton, MenuItem } = bootstrap;
+const {Pager, Button, ButtonGroup, DropdownButton, MenuItem} = bootstrap;
 
 class PagerElement extends React.Component {
 	constructor(props) {
@@ -33,7 +33,7 @@ class PagerElement extends React.Component {
 			from: this.props.from,
 			nextEnabled: this.props.nextEnabled,
 			results: this.props.results,
-			size: this.props.size,
+			size: this.props.size
 		};
 		this.handleClickPrevious = this.handleClickPrevious.bind(this);
 		this.handleClickNext = this.handleClickNext.bind(this);
@@ -57,7 +57,7 @@ class PagerElement extends React.Component {
 	componentDidUpdate(prevProps) {
 		if (prevProps.querySearchParams !== this.props.querySearchParams) {
 			// eslint-disable-next-line react/no-did-update-set-state
-			this.setState({ from: 0 }, this.triggerSearch);
+			this.setState({from: 0}, this.triggerSearch);
 		}
 	}
 
@@ -67,7 +67,7 @@ class PagerElement extends React.Component {
 
 	handleURLChange = () => {
 		const searchParams = new URLSearchParams(window.location.search);
-		const { from, size } = this.state;
+		const {from, size} = this.state;
 		let newFrom;
 		let newSize;
 
@@ -106,7 +106,7 @@ class PagerElement extends React.Component {
 			.get(`${this.props.paginationUrl}?${searchParams.toString()}`)
 			.then((res) => JSON.parse(res.text))
 			.then((data) => {
-				const { newResultsArray, nextEnabled } = utils.getNextEnabledAndResultsArray(
+				const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(
 					data,
 					newSize
 				);
@@ -114,7 +114,7 @@ class PagerElement extends React.Component {
 					from: newFrom,
 					nextEnabled,
 					results: newResultsArray,
-					size: newSize,
+					size: newSize
 				});
 				this.props.searchResultsCallback(newResultsArray);
 			});
@@ -189,14 +189,14 @@ PagerElement.propTypes = {
 	results: PropTypes.array,
 	searchParamsChangeCallback: PropTypes.func,
 	searchResultsCallback: PropTypes.func.isRequired,
-	size: PropTypes.number,
+	size: PropTypes.number
 };
 PagerElement.defaultProps = {
 	from: 0,
 	querySearchParams: '',
 	results: [],
 	searchParamsChangeCallback: null,
-	size: 20,
+	size: 20
 };
 
 export default PagerElement;

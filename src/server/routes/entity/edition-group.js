@@ -25,11 +25,11 @@ import * as utils from '../../helpers/utils';
 import {
 	entityEditorMarkup,
 	generateEntityProps,
-	makeEntityCreateOrEditHandler,
+	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
 import _ from 'lodash';
-import { escapeProps } from '../../helpers/props';
+import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import target from '../../templates/target';
 
@@ -51,7 +51,7 @@ function transformNewForm(data) {
 		identifiers,
 		note: data.submissionSection.note,
 		relationships,
-		typeId: data.editionGroupSection.type,
+		typeId: data.editionGroupSection.type
 	};
 }
 
@@ -83,7 +83,7 @@ router.get(
 	middleware.loadEditionGroupTypes,
 	middleware.loadRelationshipTypes,
 	(req, res) => {
-		const { markup, props } = entityEditorMarkup(
+		const {markup, props} = entityEditorMarkup(
 			generateEntityProps('editionGroup', req, res, {})
 		);
 
@@ -92,7 +92,7 @@ router.get(
 				markup,
 				props: escapeProps(props),
 				script: '/js/entity-editor.js',
-				title: props.heading,
+				title: props.heading
 			})
 		);
 	}
@@ -112,7 +112,7 @@ router.param(
 			'editions.disambiguation',
 			'editions.releaseEventSet.releaseEvents',
 			'editions.identifierSet.identifiers.type',
-			'editions.editionFormat',
+			'editions.editionFormat'
 		],
 		'Edition Group not found'
 	)
@@ -138,19 +138,19 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 });
 
 router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	const { orm } = req.app.locals;
-	const { EditionGroupHeader, EditionGroupRevision } = orm;
+	const {orm} = req.app.locals;
+	const {EditionGroupHeader, EditionGroupRevision} = orm;
 	return entityRoutes.handleDelete(orm, req, res, EditionGroupHeader, EditionGroupRevision);
 });
 
 router.get('/:bbid/revisions', (req, res, next) => {
-	const { EditionGroupRevision } = req.app.locals.orm;
+	const {EditionGroupRevision} = req.app.locals.orm;
 	_setEditionGroupTitle(res);
 	entityRoutes.displayRevisions(req, res, next, EditionGroupRevision);
 });
 
 router.get('/:bbid/revisions/revisions', (req, res, next) => {
-	const { EditionGroupRevision } = req.app.locals.orm;
+	const {EditionGroupRevision} = req.app.locals.orm;
 	_setEditionGroupTitle(res);
 	entityRoutes.updateDisplayedRevisions(req, res, next, EditionGroupRevision);
 });
@@ -158,9 +158,9 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 function editionGroupToFormState(editionGroup) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = editionGroup.aliasSet
-		? editionGroup.aliasSet.aliases.map(({ languageId, ...rest }) => ({
+		? editionGroup.aliasSet.aliases.map(({languageId, ...rest}) => ({
 				...rest,
-				language: languageId,
+				language: languageId
 		  }))
 		: [];
 
@@ -174,22 +174,22 @@ function editionGroupToFormState(editionGroup) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		identifierEditorVisible: false,
+		identifierEditorVisible: false
 	};
 
 	const nameSection = _.isEmpty(defaultAliasList)
 		? {
 				language: null,
 				name: '',
-				sortName: '',
+				sortName: ''
 		  }
 		: defaultAliasList[0];
 	nameSection.disambiguation = editionGroup.disambiguation && editionGroup.disambiguation.comment;
 
 	const identifiers = editionGroup.identifierSet
-		? editionGroup.identifierSet.identifiers.map(({ type, ...rest }) => ({
+		? editionGroup.identifierSet.identifiers.map(({type, ...rest}) => ({
 				type: type.id,
-				...rest,
+				...rest
 		  }))
 		: [];
 
@@ -199,7 +199,7 @@ function editionGroupToFormState(editionGroup) {
 	});
 
 	const editionGroupSection = {
-		type: editionGroup.editionGroupType && editionGroup.editionGroupType.id,
+		type: editionGroup.editionGroupType && editionGroup.editionGroupType.id
 	};
 
 	const relationshipSection = {
@@ -207,7 +207,7 @@ function editionGroupToFormState(editionGroup) {
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
-		relationships: {},
+		relationships: {}
 	};
 
 	editionGroup.relationships.forEach(
@@ -216,7 +216,7 @@ function editionGroupToFormState(editionGroup) {
 				relationshipType: relationship.type,
 				rowID: relationship.id,
 				sourceEntity: relationship.source,
-				targetEntity: relationship.target,
+				targetEntity: relationship.target
 			})
 	);
 
@@ -232,7 +232,7 @@ function editionGroupToFormState(editionGroup) {
 		identifierEditor,
 		nameSection,
 		relationshipSection,
-		...optionalSections,
+		...optionalSections
 	};
 }
 
@@ -245,7 +245,7 @@ router.get(
 	middleware.loadEntityRelationships,
 	middleware.loadRelationshipTypes,
 	(req, res) => {
-		const { markup, props } = entityEditorMarkup(
+		const {markup, props} = entityEditorMarkup(
 			generateEntityProps('editionGroup', req, res, {}, editionGroupToFormState)
 		);
 
@@ -254,7 +254,7 @@ router.get(
 				markup,
 				props: escapeProps(props),
 				script: '/js/entity-editor.js',
-				title: props.heading,
+				title: props.heading
 			})
 		);
 	}

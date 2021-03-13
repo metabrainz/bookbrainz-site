@@ -40,7 +40,7 @@ export type Action = {
 export function updateType(newTypeId: number | null | undefined): Action {
 	return {
 		payload: newTypeId,
-		type: UPDATE_TYPE,
+		type: UPDATE_TYPE
 	};
 }
 
@@ -55,6 +55,6 @@ export function updateType(newTypeId: number | null | undefined): Action {
 export function updateLanguages(newLanguages: Array<LanguageOption>): Action {
 	return {
 		payload: newLanguages,
-		type: UPDATE_LANGUAGES,
+		type: UPDATE_LANGUAGES
 	};
 }

@@ -25,7 +25,7 @@ import {
 	UPDATE_END_AREA,
 	UPDATE_END_DATE,
 	UPDATE_GENDER,
-	UPDATE_TYPE,
+	UPDATE_TYPE
 } from './actions';
 
 type State = Immutable.Map<string, any>;
@@ -36,11 +36,11 @@ function reducer(
 		endDate: '',
 		ended: false,
 		gender: null,
-		type: null,
+		type: null
 	}),
 	action: Action
 ): State {
-	const { type, payload } = action;
+	const {type, payload} = action;
 	switch (type) {
 		case UPDATE_GENDER:
 			return state.set('gender', payload);

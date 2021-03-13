@@ -28,16 +28,16 @@ import {
 	faEnvelope,
 	faListUl,
 	faSearch,
-	faUser,
+	faUser
 } from '@fortawesome/free-solid-svg-icons';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import RevisionsTable from './parts/revisions-table';
-import { faTwitter } from '@fortawesome/free-brands-svg-icons';
+import {faTwitter} from '@fortawesome/free-brands-svg-icons';
 
-const { Alert, Button, Col, Grid, Row } = bootstrap;
+const {Alert, Button, Col, Grid, Row} = bootstrap;
 
 class IndexPage extends React.Component {
 	constructor(props) {
@@ -107,7 +107,7 @@ class IndexPage extends React.Component {
 											style={{
 												alignItems: 'center',
 												display: 'flex',
-												justifyContent: 'center',
+												justifyContent: 'center'
 											}}>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
@@ -216,7 +216,7 @@ class IndexPage extends React.Component {
 	}
 
 	renderAboutUs() {
-		const disableSignUp = this.props.disableSignUp ? { disabled: true } : {};
+		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
 		return (
 			<React.Fragment>
 				<Row>
@@ -264,12 +264,12 @@ IndexPage.propTypes = {
 	isLoggedIn: PropTypes.bool.isRequired,
 	recent: PropTypes.array.isRequired,
 	showEntities: PropTypes.bool,
-	showRevisionEditor: PropTypes.bool,
+	showRevisionEditor: PropTypes.bool
 };
 IndexPage.defaultProps = {
 	disableSignUp: false,
 	showEntities: true,
-	showRevisionEditor: true,
+	showRevisionEditor: true
 };
 
 export default IndexPage;

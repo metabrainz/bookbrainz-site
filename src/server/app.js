@@ -23,10 +23,10 @@ import * as auth from './helpers/auth';
 import * as error from '../common/helpers/error';
 import * as search from '../common/helpers/search';
 import * as serverErrorHelper from './helpers/error';
-import { existsSync, readFileSync } from 'fs';
+import {existsSync, readFileSync} from 'fs';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
-import { get as _get } from 'lodash';
+import {get as _get} from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
 import compression from 'compression';
 import config from '../common/helpers/config';
@@ -59,10 +59,10 @@ if (app.get('env') !== 'testing') {
 	app.use(logger('dev'));
 }
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({limit: '10mb'}));
 app.use(
 	express.urlencoded({
-		extended: false,
+		extended: false
 	})
 );
 app.use(compression());
@@ -90,17 +90,17 @@ app.use(express.static(path.join(rootDir, 'static')));
 const sessionOptions = {
 	cookie: {
 		maxAge: _get(config, 'session.maxAge', 2592000000),
-		secure: _get(config, 'session.secure', false),
+		secure: _get(config, 'session.secure', false)
 	},
 	resave: false,
 	saveUninitialized: false,
-	secret: config.session.secret,
+	secret: config.session.secret
 };
 if (process.env.NODE_ENV !== 'test') {
 	const RedisStore = redis(session);
 	sessionOptions.store = new RedisStore({
 		host: _get(config, 'session.redis.host', 'localhost'),
-		port: _get(config, 'session.redis.port', 6379),
+		port: _get(config, 'session.redis.port', 6379)
 	});
 }
 app.use(session(sessionOptions));
@@ -141,7 +141,7 @@ app.use((req, res, next) => {
 		res.locals.alerts.push({
 			level: 'danger',
 			message: `We are currently experiencing technical difficulties;
-				signing in and signing up are disabled until this is resolved.`,
+				signing in and signing up are disabled until this is resolved.`
 		});
 		req.signUpDisabled = true;
 	}

@@ -19,14 +19,14 @@ import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
-import { escapeProps, generateProps } from '../helpers/props';
+import {escapeProps, generateProps} from '../helpers/props';
 import CollectionsPage from '../../client/components/pages/collections';
 import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import express from 'express';
-import { getOrderedPublicCollections } from '../helpers/collections';
+import {getOrderedPublicCollections} from '../helpers/collections';
 import target from '../templates/target';
 
 const router = express.Router();
@@ -35,7 +35,7 @@ const router = express.Router();
 // eslint-disable-next-line consistent-return
 router.get('/', async (req, res, next) => {
 	try {
-		const { orm } = req.app.locals;
+		const {orm} = req.app.locals;
 		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 		const type = req.query.type ? req.query.type : null;
@@ -46,7 +46,7 @@ router.get('/', async (req, res, next) => {
 
 		// fetch 1 more collections than required to check nextEnabled
 		const orderedRevisions = await getOrderedPublicCollections(from, size + 1, type, orm);
-		const { newResultsArray, nextEnabled } = utils.getNextEnabledAndResultsArray(
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(
 			orderedRevisions,
 			size
 		);
@@ -59,7 +59,7 @@ router.get('/', async (req, res, next) => {
 			showLastModified: true,
 			showOwner: true,
 			size,
-			tableHeading: 'Public Collections',
+			tableHeading: 'Public Collections'
 		});
 
 		/*
@@ -78,7 +78,7 @@ router.get('/', async (req, res, next) => {
 				markup,
 				props: escapeProps(props),
 				script: '/js/collections.js',
-				title: 'All Collections',
+				title: 'All Collections'
 			})
 		);
 	} catch (err) {
@@ -89,7 +89,7 @@ router.get('/', async (req, res, next) => {
 // eslint-disable-next-line consistent-return
 router.get('/collections', async (req, res, next) => {
 	try {
-		const { orm } = req.app.locals;
+		const {orm} = req.app.locals;
 		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 		const type = req.query.type ? req.query.type : null;

@@ -20,7 +20,7 @@ import * as base from './base';
 import _ from 'lodash';
 
 export function formatNewSet(change, label, itemProp, transformerFunc) {
-	const { rhs } = change;
+	const {rhs} = change;
 	if (rhs[itemProp] && rhs[itemProp].length > 0) {
 		return [base.formatRow('N', label, null, transformerFunc(rhs))];
 	}

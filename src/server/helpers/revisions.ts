@@ -17,7 +17,7 @@
  */
 
 import * as error from '../../common/helpers/error';
-import { flatMap } from 'lodash';
+import {flatMap} from 'lodash';
 
 function getRevisionModels(orm) {
 	const {
@@ -25,7 +25,7 @@ function getRevisionModels(orm) {
 		EditionRevision,
 		EditionGroupRevision,
 		PublisherRevision,
-		WorkRevision,
+		WorkRevision
 	} = orm;
 	return [AuthorRevision, EditionGroupRevision, EditionRevision, PublisherRevision, WorkRevision];
 }
@@ -48,9 +48,9 @@ interface EntityProps {
  * @returns {array} - The modified revisions array
  */
 export async function getAssociatedEntityRevisions(revisions, orm) {
-	const revisionIDs = revisions.map(({ revisionId }) => revisionId);
+	const revisionIDs = revisions.map(({revisionId}) => revisionId);
 	const RevisionModels = getRevisionModels(orm);
-	const { Entity } = orm;
+	const {Entity} = orm;
 	for (let i = 0; i < RevisionModels.length; i++) {
 		const EntityRevision = RevisionModels[i];
 		const entityRevisions = await new EntityRevision()
@@ -61,7 +61,7 @@ export async function getAssociatedEntityRevisions(revisions, orm) {
 				merge: false,
 				remove: false,
 				require: false,
-				withRelated: ['data.aliasSet.defaultAlias'],
+				withRelated: ['data.aliasSet.defaultAlias']
 			})
 			.catch(EntityRevision.NotFoundError, (err) => {
 				// eslint-disable-next-line no-console
@@ -71,10 +71,10 @@ export async function getAssociatedEntityRevisions(revisions, orm) {
 			const entityRevisionsJSON = entityRevisions.toJSON();
 			for (let index = 0; index < entityRevisionsJSON.length; index++) {
 				const entityRevision = entityRevisionsJSON[index];
-				const entity = await new Entity({ bbid: entityRevision.bbid }).fetch();
+				const entity = await new Entity({bbid: entityRevision.bbid}).fetch();
 				const type = entity.get('type');
 				const bbid = entity.get('bbid');
-				const entityProps: EntityProps = { bbid, type };
+				const entityProps: EntityProps = {bbid, type};
 				if (entityRevision.data) {
 					entityProps.defaultAlias = entityRevision.data.aliasSet.defaultAlias;
 				}
@@ -107,19 +107,19 @@ export async function getAssociatedEntityRevisions(revisions, orm) {
  * @returns {array} - orderedRevisions
  */
 export async function getOrderedRevisions(from, size, orm) {
-	const { Revision } = orm;
+	const {Revision} = orm;
 	const revisions = await new Revision().orderBy('created_at', 'DESC').fetchPage({
 		limit: size,
 		offset: from,
-		withRelated: ['author'],
+		withRelated: ['author']
 	});
 	const revisionsJSON = revisions.toJSON();
 
 	/* Massage the revisions to match the expected format */
 	const formattedRevisions = revisionsJSON.map((rev) => {
 		delete rev.authorId;
-		const { author: editor, id: revisionId, ...otherProps } = rev;
-		return { editor, entities: [], revisionId, ...otherProps };
+		const {author: editor, id: revisionId, ...otherProps} = rev;
+		return {editor, entities: [], revisionId, ...otherProps};
 	});
 
 	/* Fetch associated ${entity}_revisions and last know alias for deleted entities */
@@ -140,10 +140,10 @@ export async function getOrderedRevisions(from, size, orm) {
  * and then add associated entities in that array;
  */
 export async function getOrderedRevisionForEditorPage(from, size, req) {
-	const { Editor, Revision } = req.app.locals.orm;
+	const {Editor, Revision} = req.app.locals.orm;
 
 	// If editor isn't present, throw an error
-	await new Editor({ id: req.params.id }).fetch().catch(Editor.NotFoundError, () => {
+	await new Editor({id: req.params.id}).fetch().catch(Editor.NotFoundError, () => {
 		throw new error.NotFoundError('Editor not found', req);
 	});
 	const revisions = await new Revision()
@@ -156,16 +156,16 @@ export async function getOrderedRevisionForEditorPage(from, size, req) {
 				{
 					notes(q) {
 						q.orderBy('note.posted_at');
-					},
+					}
 				},
-				'notes.author',
-			],
+				'notes.author'
+			]
 		});
 	const revisionsJSON = revisions.toJSON();
 	const formattedRevisions = revisionsJSON.map((rev) => {
 		delete rev.authorId;
-		const { author: editor, id: revisionId, ...otherProps } = rev;
-		return { editor, entities: [], revisionId, ...otherProps };
+		const {author: editor, id: revisionId, ...otherProps} = rev;
+		return {editor, entities: [], revisionId, ...otherProps};
 	});
 
 	const orderedRevisions = await getAssociatedEntityRevisions(
@@ -234,20 +234,20 @@ export async function getOrderedRevisionsForEntityPage(
 				{
 					'revision.notes'(q) {
 						q.orderBy('note.posted_at');
-					},
+					}
 				},
-				'revision.notes.author',
-			],
+				'revision.notes.author'
+			]
 		});
 
 	const revisionsJSON = revisions ? revisions.toJSON() : [];
 	return revisionsJSON.map((rev) => {
-		const { revision } = rev;
+		const {revision} = rev;
 		const editor = revision.author;
 		const revisionId = revision.id;
 		delete revision.author;
 		delete revision.authorId;
 		delete revision.id;
-		return { editor, revisionId, ...revision };
+		return {editor, revisionId, ...revision};
 	});
 }

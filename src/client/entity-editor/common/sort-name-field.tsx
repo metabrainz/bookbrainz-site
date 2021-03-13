@@ -17,7 +17,7 @@
  */
 
 import * as React from 'react';
-import { Button } from 'react-bootstrap';
+import {Button} from 'react-bootstrap';
 import CustomInput from '../../input';
 import ValidationLabel from '../common/validation-label';
 
@@ -58,7 +58,7 @@ function makeSortName(name: string): string {
 		'md',
 		'dmd',
 		'dds',
-		'esq',
+		'esq'
 	];
 
 	/*
@@ -136,7 +136,7 @@ type Props = {
  *        generate the sort name when the 'Guess Sort Name' button is clicked.
  * @returns {Object} a React component containing the rendered input
  */
-function SortNameField({ empty, error, onChange, storedNameValue, ...rest }: Props) {
+function SortNameField({empty, error, onChange, storedNameValue, ...rest}: Props) {
 	let input;
 
 	function handleGuessClick() {
@@ -146,7 +146,7 @@ function SortNameField({ empty, error, onChange, storedNameValue, ...rest }: Pro
 		}
 
 		if (onChange) {
-			onChange({ target: { value: generatedSortName } });
+			onChange({target: {value: generatedSortName}});
 		}
 	}
 
@@ -156,7 +156,7 @@ function SortNameField({ empty, error, onChange, storedNameValue, ...rest }: Pro
 		}
 
 		if (onChange) {
-			onChange({ target: { value: storedNameValue } });
+			onChange({target: {value: storedNameValue}});
 		}
 	}
 
@@ -197,7 +197,7 @@ SortNameField.displayName = 'SortNameField';
 SortNameField.defaultProps = {
 	empty: false,
 	error: false,
-	onChange: null,
+	onChange: null
 };
 
 export default SortNameField;

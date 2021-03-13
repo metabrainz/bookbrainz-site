@@ -18,15 +18,15 @@
 
 import * as React from 'react';
 
-import { Action, updateLanguages, updateType } from './actions';
-import { Col, Row } from 'react-bootstrap';
-import type { List, Map } from 'immutable';
+import {Action, updateLanguages, updateType} from './actions';
+import {Col, Row} from 'react-bootstrap';
+import type {List, Map} from 'immutable';
 
 import CustomInput from '../../input';
-import type { Dispatch } from 'redux';
+import type {Dispatch} from 'redux';
 import LanguageField from '../common/language-field';
 import Select from 'react-select';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import makeImmutable from '../common/make-immutable';
 
 const ImmutableLanguageField = makeImmutable(LanguageField);
@@ -58,7 +58,7 @@ type StateProps = {
 
 type DispatchProps = {
 	onLanguagesChange: (arg: Array<DisplayLanguageOption>) => unknown;
-	onTypeChange: (arg: { value: number } | null) => unknown;
+	onTypeChange: (arg: {value: number} | null) => unknown;
 };
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -82,16 +82,16 @@ function WorkSection({
 	typeValue,
 	workTypes,
 	onLanguagesChange,
-	onTypeChange,
+	onTypeChange
 }: Props) {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		label: language.name,
-		value: language.id,
+		value: language.id
 	}));
 
 	const workTypesForDisplay = workTypes.map((type) => ({
 		label: type.label,
-		value: type.id,
+		value: type.id
 	}));
 
 	return (
@@ -136,7 +136,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 
 	return {
 		languageValues: state.get('languages'),
-		typeValue: state.get('type'),
+		typeValue: state.get('type')
 	};
 }
 
@@ -144,8 +144,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onLanguagesChange: (values: Array<DisplayLanguageOption>) =>
 			dispatch(updateLanguages(values)),
-		onTypeChange: (value: { value: number } | null) =>
-			dispatch(updateType(value && value.value)),
+		onTypeChange: (value: {value: number} | null) => dispatch(updateType(value && value.value))
 	};
 }
 

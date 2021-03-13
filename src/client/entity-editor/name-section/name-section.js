@@ -16,21 +16,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import { Alert, Col, ListGroup, ListGroupItem, Row } from 'react-bootstrap';
+import {Alert, Col, ListGroup, ListGroupItem, Row} from 'react-bootstrap';
 import {
 	checkIfNameExists,
 	debouncedUpdateDisambiguationField,
 	debouncedUpdateNameField,
 	debouncedUpdateSortNameField,
 	searchName,
-	updateLanguageField,
+	updateLanguageField
 } from './actions';
-import { isAliasEmpty, isRequiredDisambiguationEmpty } from '../helpers';
+import {isAliasEmpty, isRequiredDisambiguationEmpty} from '../helpers';
 import {
 	validateNameSectionDisambiguation,
 	validateNameSectionLanguage,
 	validateNameSectionName,
-	validateNameSectionSortName,
+	validateNameSectionSortName
 } from '../validators/common';
 
 import DisambiguationField from './disambiguation-field';
@@ -40,11 +40,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import SearchResults from '../../components/pages/parts/search-results';
 import SortNameField from '../common/sort-name-field';
-import { UPDATE_WARN_IF_EDITION_GROUP_EXISTS } from '../edition-section/actions';
+import {UPDATE_WARN_IF_EDITION_GROUP_EXISTS} from '../edition-section/actions';
 import _ from 'lodash';
-import { connect } from 'react-redux';
-import { entityTypeProperty } from '../../helpers/react-validators';
-import { getEntityDisambiguation } from '../../helpers/entity';
+import {connect} from 'react-redux';
+import {entityTypeProperty} from '../../helpers/react-validators';
+import {getEntityDisambiguation} from '../../helpers/entity';
 
 /**
  * Container component. The NameSection component contains input fields for
@@ -89,12 +89,12 @@ class NameSection extends React.Component {
 	*/
 	componentDidMount() {
 		if (this.props.action !== 'edit' && !_.isNil(this.nameInputRef)) {
-			this.handleNameChange({ target: { value: this.nameInputRef.value } });
+			this.handleNameChange({target: {value: this.nameInputRef.value}});
 		}
 	}
 
 	componentDidUpdate(prevProps) {
-		const { nameValue, searchForExistingEditionGroup } = this.props;
+		const {nameValue, searchForExistingEditionGroup} = this.props;
 		if (
 			prevProps.searchForExistingEditionGroup === searchForExistingEditionGroup ||
 			searchForExistingEditionGroup === false
@@ -115,7 +115,7 @@ class NameSection extends React.Component {
 		const {
 			entityType,
 			onNameChangeCheckIfEditionGroupExists,
-			searchForExistingEditionGroup,
+			searchForExistingEditionGroup
 		} = this.props;
 		// Search for Edition Groups that match the name, if the entity is an Edition
 		// Will react to name changes and searchForExistingEditionGroup (which reacts to editionGroupBBID field)
@@ -144,12 +144,12 @@ class NameSection extends React.Component {
 			onLanguageChange,
 			onSortNameChange,
 			onDisambiguationChange,
-			searchResults,
+			searchResults
 		} = this.props;
 
 		const languageOptionsForDisplay = languageOptions.map((language) => ({
 			label: language.name,
-			value: language.id,
+			value: language.id
 		}));
 
 		const warnIfExists = !_.isEmpty(exactMatches);
@@ -286,7 +286,7 @@ NameSection.propTypes = {
 	onSortNameChange: PropTypes.func.isRequired,
 	searchForExistingEditionGroup: PropTypes.bool,
 	searchResults: PropTypes.array,
-	sortNameValue: PropTypes.string.isRequired,
+	sortNameValue: PropTypes.string.isRequired
 };
 NameSection.defaultProps = {
 	action: 'create',
@@ -294,7 +294,7 @@ NameSection.defaultProps = {
 	exactMatches: null,
 	languageValue: null,
 	searchForExistingEditionGroup: true,
-	searchResults: null,
+	searchResults: null
 };
 
 function mapStateToProps(rootState) {
@@ -311,11 +311,11 @@ function mapStateToProps(rootState) {
 		nameValue: state.get('name'),
 		searchForExistingEditionGroup,
 		searchResults: state.get('searchResults'),
-		sortNameValue: state.get('sortName'),
+		sortNameValue: state.get('sortName')
 	};
 }
 
-function mapDispatchToProps(dispatch, { entity, entityType }) {
+function mapDispatchToProps(dispatch, {entity, entityType}) {
 	const entityBBID = entity && entity.bbid;
 	return {
 		onDisambiguationChange: (event) =>
@@ -338,7 +338,7 @@ function mapDispatchToProps(dispatch, { entity, entityType }) {
 		onNameChangeSearchName: _.debounce((value) => {
 			dispatch(searchName(value, entityBBID, entityType));
 		}, 500),
-		onSortNameChange: (event) => dispatch(debouncedUpdateSortNameField(event.target.value)),
+		onSortNameChange: (event) => dispatch(debouncedUpdateSortNameField(event.target.value))
 	};
 }
 

@@ -18,20 +18,20 @@
 
 import * as propHelpers from '../../client/helpers/props';
 import * as utils from '../helpers/utils';
-import { escapeProps, generateProps } from '../helpers/props';
+import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import RevisionsPage from '../../client/components/pages/revisions';
 import express from 'express';
-import { getOrderedRevisions } from '../helpers/revisions';
+import {getOrderedRevisions} from '../helpers/revisions';
 import target from '../templates/target';
 
 const router = express.Router();
 
 /* GET revisions page. */
 router.get('/', async (req, res, next) => {
-	const { orm } = req.app.locals;
+	const {orm} = req.app.locals;
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 
@@ -41,7 +41,7 @@ router.get('/', async (req, res, next) => {
 			nextEnabled,
 			results,
 			showRevisionEditor: true,
-			size,
+			size
 		});
 
 		/*
@@ -60,7 +60,7 @@ router.get('/', async (req, res, next) => {
 				markup,
 				props: escapeProps(props),
 				script: '/js/revisions.js',
-				title: 'Revisions',
+				title: 'Revisions'
 			})
 		);
 	}
@@ -68,7 +68,7 @@ router.get('/', async (req, res, next) => {
 	try {
 		// fetch 1 more revision than required to check nextEnabled
 		const orderedRevisions = await getOrderedRevisions(from, size + 1, orm);
-		const { newResultsArray, nextEnabled } = utils.getNextEnabledAndResultsArray(
+		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(
 			orderedRevisions,
 			size
 		);
@@ -80,7 +80,7 @@ router.get('/', async (req, res, next) => {
 
 // eslint-disable-next-line consistent-return
 router.get('/revisions', async (req, res, next) => {
-	const { orm } = req.app.locals;
+	const {orm} = req.app.locals;
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 

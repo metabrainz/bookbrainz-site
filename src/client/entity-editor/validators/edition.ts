@@ -16,17 +16,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import { get, validateDate, validatePositiveInteger, validateUUID } from './base';
+import {get, validateDate, validatePositiveInteger, validateUUID} from './base';
 import {
 	validateAliases,
 	validateIdentifiers,
 	validateNameSection,
-	validateSubmissionSection,
+	validateSubmissionSection
 } from './common';
 
-import { Iterable } from 'immutable';
+import {Iterable} from 'immutable';
 import _ from 'lodash';
-import type { _IdentifierType } from '../../../types';
+import type {_IdentifierType} from '../../../types';
 
 export function validateEditionSectionDepth(value: any): boolean {
 	return validatePositiveInteger(value);
@@ -79,8 +79,8 @@ export function validateEditionSectionPublisher(value: any): boolean {
 }
 
 export function validateEditionSectionReleaseDate(value: any) {
-	const { isValid, errorMessage } = validateDate(value);
-	return { errorMessage, isValid };
+	const {isValid, errorMessage} = validateDate(value);
+	return {errorMessage, isValid};
 }
 
 export function validateEditionSectionStatus(value: any): boolean {
@@ -123,7 +123,7 @@ export function validateForm(
 		validateIdentifiers(get(formData, 'identifierEditor', {}), identifierTypes),
 		validateNameSection(get(formData, 'nameSection', {})),
 		validateEditionSection(get(formData, 'editionSection', {})),
-		validateSubmissionSection(get(formData, 'submissionSection', {})),
+		validateSubmissionSection(get(formData, 'submissionSection', {}))
 	];
 
 	return _.every(conditions);

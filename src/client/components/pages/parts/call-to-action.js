@@ -20,9 +20,9 @@
 import * as bootstrap from 'react-bootstrap';
 
 import React from 'react';
-import { genEntityIconHTMLElement } from '../../../helpers/entity';
+import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
-const { Button, ButtonGroup, Col } = bootstrap;
+const {Button, ButtonGroup, Col} = bootstrap;
 
 /**
  * Renders the document and displays 'CallToAction' component.

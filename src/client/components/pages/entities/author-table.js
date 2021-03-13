@@ -22,12 +22,12 @@ import * as utilHelper from '../../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const { Table } = bootstrap;
+const {Table} = bootstrap;
 const {
 	transformISODateForDisplay,
 	extractAttribute,
 	getEntityDisambiguation,
-	getEntityLabel,
+	getEntityLabel
 } = entityHelper;
 
 function AuthorTableRow({
@@ -35,7 +35,7 @@ function AuthorTableRow({
 	showAddedAtColumn,
 	showCheckboxes,
 	selectedEntities,
-	onToggleRow,
+	onToggleRow
 }) {
 	const name = getEntityLabel(author);
 	const disambiguation = getEntityDisambiguation(author);
@@ -76,21 +76,15 @@ AuthorTableRow.propTypes = {
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool.isRequired,
-	showCheckboxes: PropTypes.bool,
+	showCheckboxes: PropTypes.bool
 };
 AuthorTableRow.defaultProps = {
 	onToggleRow: null,
 	selectedEntities: [],
-	showCheckboxes: false,
+	showCheckboxes: false
 };
 
-function AuthorTable({
-	authors,
-	showAddedAtColumn,
-	showCheckboxes,
-	selectedEntities,
-	onToggleRow,
-}) {
+function AuthorTable({authors, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
 	if (authors.length) {
 		tableContent = (
@@ -98,7 +92,7 @@ function AuthorTable({
 				<Table striped>
 					<thead>
 						<tr>
-							<th style={{ width: '50%' }}>Name</th>
+							<th style={{width: '50%'}}>Name</th>
 							<th>Gender</th>
 							<th>Type</th>
 							<th>Date of birth</th>
@@ -137,13 +131,13 @@ AuthorTable.propTypes = {
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool,
-	showCheckboxes: PropTypes.bool,
+	showCheckboxes: PropTypes.bool
 };
 AuthorTable.defaultProps = {
 	onToggleRow: null,
 	selectedEntities: [],
 	showAddedAtColumn: false,
-	showCheckboxes: false,
+	showCheckboxes: false
 };
 
 export default AuthorTable;

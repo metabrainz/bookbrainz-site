@@ -33,7 +33,7 @@ import ValidationLabel from '../common/validation-label';
  * @returns {ReactElement} A React component containing the rendered input
  *          component.
  */
-function ValueField({ error, empty, ...rest }) {
+function ValueField({error, empty, ...rest}) {
 	const label = (
 		<ValidationLabel empty={empty} error={error}>
 			Value
@@ -45,11 +45,11 @@ function ValueField({ error, empty, ...rest }) {
 ValueField.displayName = 'ValueField';
 ValueField.propTypes = {
 	empty: PropTypes.bool,
-	error: PropTypes.bool,
+	error: PropTypes.bool
 };
 ValueField.defaultProps = {
 	empty: true,
-	error: false,
+	error: false
 };
 
 export default ValueField;

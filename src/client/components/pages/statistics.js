@@ -21,11 +21,11 @@ import * as utilsHelper from '../../helpers/utils';
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import { startCase as _startCase } from 'lodash';
-import { genEntityIconHTMLElement } from '../../helpers/entity';
+import {startCase as _startCase} from 'lodash';
+import {genEntityIconHTMLElement} from '../../helpers/entity';
 
-const { PageHeader, Table } = bootstrap;
-const { formatDate } = utilsHelper;
+const {PageHeader, Table} = bootstrap;
+const {formatDate} = utilsHelper;
 
 /**
  * Renders the document and displays the topEditors table.
@@ -34,7 +34,7 @@ const { formatDate } = utilsHelper;
  */
 
 function TopEditorsTable(props) {
-	const { editors } = props;
+	const {editors} = props;
 	return (
 		<div>
 			<div>
@@ -67,7 +67,7 @@ function TopEditorsTable(props) {
 }
 
 TopEditorsTable.propTypes = {
-	editors: PropTypes.array.isRequired,
+	editors: PropTypes.array.isRequired
 };
 
 /**
@@ -77,7 +77,7 @@ TopEditorsTable.propTypes = {
  */
 
 function EntityCountTable(props) {
-	const { allEntities, last30DaysEntities } = props;
+	const {allEntities, last30DaysEntities} = props;
 	return (
 		<div>
 			<div>
@@ -112,7 +112,7 @@ function EntityCountTable(props) {
 
 EntityCountTable.propTypes = {
 	allEntities: PropTypes.array.isRequired,
-	last30DaysEntities: PropTypes.object.isRequired,
+	last30DaysEntities: PropTypes.object.isRequired
 };
 
 /**
@@ -122,7 +122,7 @@ EntityCountTable.propTypes = {
  */
 
 function StatisticsPage(props) {
-	const { allEntities, last30DaysEntities, topEditors } = props;
+	const {allEntities, last30DaysEntities, topEditors} = props;
 	return (
 		<div>
 			<PageHeader>Statistics of BookBrainz</PageHeader>
@@ -136,7 +136,7 @@ StatisticsPage.displayName = 'StatisticsPage';
 StatisticsPage.propTypes = {
 	allEntities: PropTypes.array.isRequired,
 	last30DaysEntities: PropTypes.object.isRequired,
-	topEditors: PropTypes.array.isRequired,
+	topEditors: PropTypes.array.isRequired
 };
 
 export default StatisticsPage;

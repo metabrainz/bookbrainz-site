@@ -36,8 +36,8 @@ export type Action = {
  */
 export function debounceUpdateAnnotation(value: string): Action {
 	return {
-		meta: { debounce: 'keystroke' },
+		meta: {debounce: 'keystroke'},
 		type: UPDATE_ANNOTATION,
-		value,
+		value
 	};
 }

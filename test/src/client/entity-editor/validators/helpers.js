@@ -24,13 +24,13 @@ import {
 	INVALID_DATE_PAIR,
 	INVALID_END_DATE_PAIR,
 	VALID_AREA,
-	VALID_DATE_PAIR,
+	VALID_DATE_PAIR
 } from './data';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
 chai.use(chaiAsPromised);
-const { expect } = chai;
+const {expect} = chai;
 
 export function testValidatePositiveIntegerFunc(validationFunc, required = true) {
 	it('should pass any positive integer value', () => {
@@ -105,17 +105,17 @@ export function testValidateBooleanFunc(validationFunc, required = true) {
 
 export function testValidateDateFunc(validationFunc, required = true) {
 	it('should pass a object containing a valid year value', () => {
-		const result = validationFunc({ day: '', month: '', year: '2017' }).isValid;
+		const result = validationFunc({day: '', month: '', year: '2017'}).isValid;
 		expect(result).to.be.true;
 	});
 
 	it('should pass a object containing a valid year and month value', () => {
-		const result = validationFunc({ day: '', month: '11', year: '2017' }).isValid;
+		const result = validationFunc({day: '', month: '11', year: '2017'}).isValid;
 		expect(result).to.be.true;
 	});
 
 	it('should pass a object containing a valid year, month and day value', () => {
-		const result = validationFunc({ day: '21', month: '11', year: '2017' }).isValid;
+		const result = validationFunc({day: '21', month: '11', year: '2017'}).isValid;
 		expect(result).to.be.true;
 	});
 
@@ -183,7 +183,7 @@ export function testValidateAreaFunc(validationFunc, required = true) {
 	});
 
 	it('should reject an Object with an invalid ID', () => {
-		const result = validationFunc({ ...VALID_AREA, id: null });
+		const result = validationFunc({...VALID_AREA, id: null});
 		expect(result).to.be.false;
 	});
 

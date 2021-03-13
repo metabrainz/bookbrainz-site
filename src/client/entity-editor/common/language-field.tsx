@@ -41,7 +41,7 @@ type Props = {
  *        component to indicate that the field is empty.
  * @returns {Object} A React component containing the rendered input.
  */
-function LanguageField({ empty, error, tooltipText, ...rest }: Props) {
+function LanguageField({empty, error, tooltipText, ...rest}: Props) {
 	const label = (
 		<ValidationLabel empty={empty} error={error}>
 			Language
@@ -57,7 +57,7 @@ LanguageField.displayName = 'LanguageField';
 LanguageField.defaultProps = {
 	empty: false,
 	error: false,
-	tooltipText: null,
+	tooltipText: null
 };
 
 export default LanguageField;

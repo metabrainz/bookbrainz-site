@@ -20,7 +20,7 @@ import IdentifierLink from './identifiers-links';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-function EntityIdentifiers({ identifiers, identifierTypes }) {
+function EntityIdentifiers({identifiers, identifierTypes}) {
 	return (
 		<div>
 			<h2>Identifiers</h2>
@@ -48,10 +48,10 @@ function EntityIdentifiers({ identifiers, identifierTypes }) {
 EntityIdentifiers.displayName = 'EntityIdentifiers';
 EntityIdentifiers.propTypes = {
 	identifierTypes: PropTypes.array.isRequired,
-	identifiers: PropTypes.array,
+	identifiers: PropTypes.array
 };
 EntityIdentifiers.defaultProps = {
-	identifiers: [],
+	identifiers: []
 };
 
 export default EntityIdentifiers;

@@ -45,12 +45,12 @@ export type Action = {
  */
 export function debouncedUpdateAliasName(rowId: number, value: string): Action {
 	return {
-		meta: { debounce: 'keystroke' },
+		meta: {debounce: 'keystroke'},
 		payload: {
 			rowId,
-			value,
+			value
 		},
-		type: UPDATE_ALIAS_NAME,
+		type: UPDATE_ALIAS_NAME
 	};
 }
 
@@ -66,12 +66,12 @@ export function debouncedUpdateAliasName(rowId: number, value: string): Action {
  */
 export function debouncedUpdateAliasSortName(rowId: number, value: string): Action {
 	return {
-		meta: { debounce: 'keystroke' },
+		meta: {debounce: 'keystroke'},
 		payload: {
 			rowId,
-			value,
+			value
 		},
-		type: UPDATE_ALIAS_SORT_NAME,
+		type: UPDATE_ALIAS_SORT_NAME
 	};
 }
 
@@ -87,9 +87,9 @@ export function updateAliasLanguage(rowId: number, value: number | null | undefi
 	return {
 		payload: {
 			rowId,
-			value,
+			value
 		},
-		type: UPDATE_ALIAS_LANGUAGE,
+		type: UPDATE_ALIAS_LANGUAGE
 	};
 }
 
@@ -105,9 +105,9 @@ export function updateAliasPrimary(rowId: number, value: boolean): Action {
 	return {
 		payload: {
 			rowId,
-			value,
+			value
 		},
-		type: UPDATE_ALIAS_PRIMARY,
+		type: UPDATE_ALIAS_PRIMARY
 	};
 }
 
@@ -127,7 +127,7 @@ export function addAliasRow(): Action {
 	 */
 	return {
 		payload: `n${nextAliasRowId++}`,
-		type: ADD_ALIAS_ROW,
+		type: ADD_ALIAS_ROW
 	};
 }
 
@@ -141,7 +141,7 @@ export function addAliasRow(): Action {
 export function removeAliasRow(rowId: number): Action {
 	return {
 		payload: rowId,
-		type: REMOVE_ALIAS_ROW,
+		type: REMOVE_ALIAS_ROW
 	};
 }
 
@@ -155,7 +155,7 @@ export function removeAliasRow(rowId: number): Action {
  */
 export function hideAliasEditor(): Action {
 	return {
-		type: HIDE_ALIAS_EDITOR,
+		type: HIDE_ALIAS_EDITOR
 	};
 }
 
@@ -166,6 +166,6 @@ export function hideAliasEditor(): Action {
  */
 export function removeEmptyAliases(): Action {
 	return {
-		type: REMOVE_EMPTY_ALIASES,
+		type: REMOVE_EMPTY_ALIASES
 	};
 }

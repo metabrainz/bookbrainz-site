@@ -43,14 +43,14 @@ type Props = {
  * @param {string} props.label - The text to be used for the input label.
  * @returns {Object} A React component containing the rendered input.
  */
-function NumericField({ show, label, empty, error, ...rest }: Props) {
+function NumericField({show, label, empty, error, ...rest}: Props) {
 	const labelElement = (
 		<ValidationLabel empty={empty} error={error}>
 			{label}
 		</ValidationLabel>
 	);
 
-	const groupClassName = classNames({ hidden: !show });
+	const groupClassName = classNames({hidden: !show});
 	return (
 		<CustomInput groupClassName={groupClassName} label={labelElement} type="number" {...rest} />
 	);
@@ -59,7 +59,7 @@ NumericField.displayName = 'NumericField';
 NumericField.defaultProps = {
 	empty: false,
 	error: false,
-	show: true,
+	show: true
 };
 
 export default NumericField;

@@ -3,9 +3,9 @@
 
 module.exports = {
 	env: {
-		browser: true,
+		browser: true
 	},
 	rules: {
-		'no-return-assign': 0,
-	},
+		'no-return-assign': 0
+	}
 };

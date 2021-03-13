@@ -25,11 +25,11 @@ import {
 	createPublisher,
 	createWork,
 	getRandomUUID,
-	truncateEntities,
+	truncateEntities
 } from '../../../test-helpers/create-entities';
 import _ from 'lodash';
 import app from '../../../../src/api/app';
-import { browseEditionBasicTests } from '../helpers';
+import {browseEditionBasicTests} from '../helpers';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
@@ -41,11 +41,11 @@ const {
 	Relationship,
 	RelationshipSet,
 	RelationshipType,
-	Revision,
+	Revision
 } = orm;
 
 chai.use(chaiHttp);
-const { expect } = chai;
+const {expect} = chai;
 
 const aBBID = getRandomUUID();
 const bBBID = getRandomUUID();
@@ -190,11 +190,11 @@ describe('Browse Edition', () => {
 			isoCode2b: 'eng',
 			isoCode2t: 'eng',
 			isoCode3: 'eng',
-			name: 'English',
+			name: 'English'
 		};
-		const englishLanguage = await new Language(englishAttrib).save(null, { method: 'insert' });
+		const englishLanguage = await new Language(englishAttrib).save(null, {method: 'insert'});
 		const englishLanguageSet = await orm.func.language.updateLanguageSet(orm, null, null, [
-			{ id: englishLanguage.id },
+			{id: englishLanguage.id}
 		]);
 		const frenchAttrib = {
 			frequency: 2,
@@ -202,11 +202,11 @@ describe('Browse Edition', () => {
 			isoCode2b: 'fre',
 			isoCode2t: 'fra',
 			isoCode3: 'fra',
-			name: 'French',
+			name: 'French'
 		};
-		const frenchLanguage = await new Language(frenchAttrib).save(null, { method: 'insert' });
+		const frenchLanguage = await new Language(frenchAttrib).save(null, {method: 'insert'});
 		const frenchLanguageSet = await orm.func.language.updateLanguageSet(orm, null, null, [
-			{ id: frenchLanguage.id },
+			{id: frenchLanguage.id}
 		]);
 
 		// create 4 editions. 2 of French Language and 2 of English Language
@@ -215,8 +215,8 @@ describe('Browse Edition', () => {
 		for (let formatId = 1; formatId <= 2; formatId++) {
 			await new EditionFormat({
 				id: formatId,
-				label: `Edition Format ${formatId}`,
-			}).save(null, { method: 'insert' });
+				label: `Edition Format ${formatId}`
+			}).save(null, {method: 'insert'});
 
 			const editionAttrib = {};
 
@@ -238,8 +238,8 @@ describe('Browse Edition', () => {
 
 		// Now create a revision which forms the relationship b/w author and editions
 		const editor = await createEditor();
-		const revision = await new Revision({ authorId: editor.id }).save(null, {
-			method: 'insert',
+		const revision = await new Revision({authorId: editor.id}).save(null, {
+			method: 'insert'
 		});
 
 		const relationshipTypeData = {
@@ -249,25 +249,25 @@ describe('Browse Edition', () => {
 			linkPhrase: 'test phrase',
 			reverseLinkPhrase: 'test reverse link phrase',
 			sourceEntityType: 'Author',
-			targetEntityType: 'Edition',
+			targetEntityType: 'Edition'
 		};
-		await new RelationshipType(relationshipTypeData).save(null, { method: 'insert' });
+		await new RelationshipType(relationshipTypeData).save(null, {method: 'insert'});
 
 		const relationshipsPromise = [];
 		for (const editionBBID of editionBBIDs) {
 			const relationshipData = {
 				sourceBbid: author.get('bbid'),
 				targetBbid: editionBBID,
-				typeId: relationshipTypeData.id,
+				typeId: relationshipTypeData.id
 			};
 			relationshipsPromise.push(
-				new Relationship(relationshipData).save(null, { method: 'insert' })
+				new Relationship(relationshipData).save(null, {method: 'insert'})
 			);
 		}
 		const relationships = await Promise.all(relationshipsPromise);
 
 		const authorRelationshipSet = await new RelationshipSet()
-			.save(null, { method: 'insert' })
+			.save(null, {method: 'insert'})
 			.then((model) =>
 				model
 					.relationships()
@@ -277,7 +277,7 @@ describe('Browse Edition', () => {
 
 		author.set('relationshipSetId', authorRelationshipSet.id);
 		author.set('revisionId', revision.id);
-		await author.save(null, { method: 'update' });
+		await author.save(null, {method: 'update'});
 	});
 	after(truncateEntities);
 
@@ -353,16 +353,16 @@ describe('Browse Edition', () => {
 
 		// create a revision which adds these two edition in the editionGroup
 		const editor = await createEditor();
-		const revision = await new Revision({ authorId: editor.id }).save(null, {
-			method: 'insert',
+		const revision = await new Revision({authorId: editor.id}).save(null, {
+			method: 'insert'
 		});
 
 		editionA.set('revisionId', revision.id);
 		editionA.set('editionGroupBbid', editionGroup.get('bbid'));
 		editionB.set('revisionId', revision.id);
 		editionB.set('editionGroupBbid', editionGroup.get('bbid'));
-		await editionA.save(null, { method: 'update' });
-		await editionB.save(null, { method: 'update' });
+		await editionA.save(null, {method: 'update'});
+		await editionB.save(null, {method: 'update'});
 
 		const res = await chai
 			.request(app)
@@ -379,23 +379,21 @@ describe('Browse Edition', () => {
 		// Now create a revision which forms the relationship b/w publisher and editions
 		const editor = await createEditor();
 
-		const revision = await new Revision({ authorId: editor.id }).save(null, {
-			method: 'insert',
+		const revision = await new Revision({authorId: editor.id}).save(null, {
+			method: 'insert'
 		});
-		const publisherSet = await new PublisherSet()
-			.save(null, { method: 'insert' })
-			.then((model) =>
-				model
-					.publishers()
-					.attach([publisher])
-					.then(() => model)
-			);
+		const publisherSet = await new PublisherSet().save(null, {method: 'insert'}).then((model) =>
+			model
+				.publishers()
+				.attach([publisher])
+				.then(() => model)
+		);
 
-		const revision2 = await new Revision({ authorId: editor.id }).save(null, {
-			method: 'insert',
+		const revision2 = await new Revision({authorId: editor.id}).save(null, {
+			method: 'insert'
 		});
 		const publisherSet2 = await new PublisherSet()
-			.save(null, { method: 'insert' })
+			.save(null, {method: 'insert'})
 			.then((model) =>
 				model
 					.publishers()
@@ -408,8 +406,8 @@ describe('Browse Edition', () => {
 		edition2.set('publisherSetId', publisherSet2.id);
 		edition2.set('revisionId', revision2.id);
 
-		await edition.save(null, { method: 'update' });
-		await edition2.save(null, { method: 'update' });
+		await edition.save(null, {method: 'update'});
+		await edition2.save(null, {method: 'update'});
 
 		const res = await chai.request(app).get(`/edition?publisher=${publisher.get('bbid')}`);
 		await browseEditionBasicTests(res);

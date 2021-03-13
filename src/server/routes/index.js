@@ -19,7 +19,7 @@
  */
 
 import * as propHelpers from '../../client/helpers/props';
-import { escapeProps, generateProps } from '../helpers/props';
+import {escapeProps, generateProps} from '../helpers/props';
 import AboutPage from '../../client/components/pages/about';
 import ContributePage from '../../client/components/pages/contribute';
 import DevelopPage from '../../client/components/pages/develop';
@@ -31,14 +31,14 @@ import PrivacyPage from '../../client/components/pages/privacy';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import express from 'express';
-import { getOrderedRevisions } from '../helpers/revisions';
+import {getOrderedRevisions} from '../helpers/revisions';
 import target from '../templates/target';
 
 const router = express.Router();
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
-	const { orm } = req.app.locals;
+	const {orm} = req.app.locals;
 	const numRevisionsOnHomepage = 9;
 
 	function render(recent) {
@@ -47,7 +47,7 @@ router.get('/', async (req, res, next) => {
 			homepage: true,
 			isLoggedIn: Boolean(req.user),
 			recent,
-			requireJS: Boolean(res.locals.user),
+			requireJS: Boolean(res.locals.user)
 		});
 
 		/*
@@ -66,7 +66,7 @@ router.get('/', async (req, res, next) => {
 				markup,
 				page: 'Index',
 				props: escapeProps(props),
-				script: '/js/index.js',
+				script: '/js/index.js'
 			})
 		);
 	}
@@ -96,7 +96,7 @@ function _createStaticRoute(route, title, PageComponent) {
 				page: title,
 				props: escapeProps(props),
 				script: '/js/index.js',
-				title,
+				title
 			})
 		);
 	});

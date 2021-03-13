@@ -28,8 +28,8 @@ import ReactSelect from 'react-select';
 import SearchSelect from '../input/entity-search';
 import SelectWrapper from '../input/select-wrapper';
 
-const { Alert, Button, Col, Panel, Row } = bootstrap;
-const { injectDefaultAliasName } = utilsHelper;
+const {Alert, Button, Col, Panel, Row} = bootstrap;
+const {injectDefaultAliasName} = utilsHelper;
 
 class ProfileForm extends React.Component {
 	constructor(props) {
@@ -45,7 +45,7 @@ class ProfileForm extends React.Component {
 			name: props.editor.name,
 			titleId: props.editor.titleUnlockId,
 			titles: props.titles,
-			waiting: false,
+			waiting: false
 		};
 	}
 
@@ -57,7 +57,7 @@ class ProfileForm extends React.Component {
 		if (!this.hasChanged()) {
 			return;
 		}
-		const { name, bio, areaId, titleId, genderId } = this.state;
+		const {name, bio, areaId, titleId, genderId} = this.state;
 
 		const data = {
 			areaId,
@@ -65,21 +65,21 @@ class ProfileForm extends React.Component {
 			genderId,
 			id: this.props.editor.id,
 			name: name.trim(),
-			title: titleId,
+			title: titleId
 		};
 		this.setState({
-			waiting: true,
+			waiting: true
 		});
 		try {
 			const response = await fetch('/editor/edit/handler', {
 				body: JSON.stringify(data),
 				headers: {
-					'Content-Type': 'application/json; charset=utf-8',
+					'Content-Type': 'application/json; charset=utf-8'
 				},
-				method: 'POST',
+				method: 'POST'
 			});
 			if (!response.ok) {
-				const { error } = await response.json();
+				const {error} = await response.json();
 				throw new Error(error ?? response.statusText);
 			}
 
@@ -87,18 +87,18 @@ class ProfileForm extends React.Component {
 		} catch (err) {
 			this.setState({
 				error: err,
-				waiting: false,
+				waiting: false
 			});
 		}
 	};
 
 	valid = () => {
-		const { name } = this.state;
+		const {name} = this.state;
 		return Boolean(name?.length);
 	};
 
 	hasChanged = () => {
-		const { name, bio, areaId, titleId, genderId } = this.state;
+		const {name, bio, areaId, titleId, genderId} = this.state;
 
 		return (
 			this.props.editor?.area.id !== areaId ||
@@ -110,25 +110,25 @@ class ProfileForm extends React.Component {
 	};
 
 	handleValueChange = (event) => {
-		this.setState({ [event.target.name]: event.target.value });
+		this.setState({[event.target.name]: event.target.value});
 	};
 
 	handleSelectChange = (value, idAttribute) => {
-		this.setState({ [idAttribute]: value });
+		this.setState({[idAttribute]: value});
 	};
 
 	render() {
 		const loadingElement = this.state.waiting ? <LoadingSpinner /> : null;
 		const genderOptions = this.state.genders.map((gender) => ({
 			id: gender.id,
-			name: gender.name,
+			name: gender.name
 		}));
 		const titleOptions = this.state.titles.map((unlock) => {
-			const { title } = unlock;
+			const {title} = unlock;
 			title.unlockId = unlock.id;
 			return title;
 		});
-		const { area, genderId, titleId, name, bio } = this.state;
+		const {area, genderId, titleId, name, bio} = this.state;
 
 		const transformedArea = injectDefaultAliasName(area);
 
@@ -223,14 +223,14 @@ ProfileForm.propTypes = {
 		area: validators.labeledProperty,
 		bio: PropTypes.string,
 		gender: PropTypes.shape({
-			id: PropTypes.number,
+			id: PropTypes.number
 		}),
 		id: PropTypes.number,
 		name: PropTypes.string,
-		titleUnlockId: PropTypes.number,
+		titleUnlockId: PropTypes.number
 	}).isRequired,
 	genders: PropTypes.array.isRequired,
-	titles: PropTypes.array.isRequired,
+	titles: PropTypes.array.isRequired
 };
 
 export default ProfileForm;

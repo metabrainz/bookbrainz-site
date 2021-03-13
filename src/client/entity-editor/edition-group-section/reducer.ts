@@ -17,17 +17,17 @@
  */
 
 import * as Immutable from 'immutable';
-import { Action, UPDATE_TYPE } from './actions';
+import {Action, UPDATE_TYPE} from './actions';
 
 type State = Immutable.Map<string, any>;
 
 function reducer(
 	state: State = Immutable.Map({
-		type: null,
+		type: null
 	}),
 	action: Action
 ): State {
-	const { type, payload } = action;
+	const {type, payload} = action;
 	switch (type) {
 		case UPDATE_TYPE:
 			return state.set('type', payload);

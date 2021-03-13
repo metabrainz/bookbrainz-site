@@ -22,20 +22,20 @@ import {
 	INVALID_IDENTIFIER,
 	INVALID_IDENTIFIERS,
 	VALID_IDENTIFIER,
-	VALID_IDENTIFIERS,
+	VALID_IDENTIFIERS
 } from './data';
-import { testValidatePositiveIntegerFunc, testValidateStringFunc } from './helpers';
+import {testValidatePositiveIntegerFunc, testValidateStringFunc} from './helpers';
 import {
 	validateIdentifier,
 	validateIdentifierType,
 	validateIdentifierValue,
-	validateIdentifiers,
+	validateIdentifiers
 } from '../../../../../src/client/entity-editor/validators/common';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
 chai.use(chaiAsPromised);
-const { expect } = chai;
+const {expect} = chai;
 
 function describeValidateIdentifierValueNoIdentifierTypes() {
 	testValidateStringFunc(validateIdentifierValue);
@@ -120,14 +120,14 @@ function describeValidateIdentifier() {
 
 	it('should reject an Object with an invalid value', () => {
 		const result = validateIdentifier(
-			{ ...VALID_IDENTIFIER, value: 'B076QRJV1' },
+			{...VALID_IDENTIFIER, value: 'B076QRJV1'},
 			IDENTIFIER_TYPES
 		);
 		expect(result).to.be.false;
 	});
 
 	it('should reject an Object with an invalid type', () => {
-		const result = validateIdentifier({ ...VALID_IDENTIFIER, type: 5 }, IDENTIFIER_TYPES);
+		const result = validateIdentifier({...VALID_IDENTIFIER, type: 5}, IDENTIFIER_TYPES);
 		expect(result).to.be.false;
 	});
 

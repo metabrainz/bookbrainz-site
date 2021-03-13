@@ -12,13 +12,13 @@ function init(app, config) {
 		schema: [
 			{
 				fields: {
-					duration: Influx.FieldType.INTEGER,
+					duration: Influx.FieldType.INTEGER
 				},
 				measurement: 'response_times',
-				tags: ['domain', 'path', 'status', 'verb'],
-			},
+				tags: ['domain', 'path', 'status', 'verb']
+			}
 		],
-		username: 'grafana',
+		username: 'grafana'
 	});
 
 	app.use((req, res, next) => {
@@ -28,14 +28,14 @@ function init(app, config) {
 			const duration = Date.now() - start;
 
 			const data = {
-				fields: { duration },
+				fields: {duration},
 				measurement: 'response_times',
 				tags: {
 					domain: influxConfig.domain || 'localhost',
 					path: req.path,
 					status: res.statusCode,
-					verb: req.method,
-				},
+					verb: req.method
+				}
 			};
 
 			influx.writePoints([data]).catch((err) => {

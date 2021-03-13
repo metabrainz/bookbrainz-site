@@ -20,17 +20,17 @@ import * as utils from '../helpers/utils';
 import {
 	formatQueryParameters,
 	loadEntityRelationshipsForBrowse,
-	validateBrowseRequestQueryParameters,
+	validateBrowseRequestQueryParameters
 } from '../helpers/middleware';
 import {
 	getEditionGroupBasicInfo,
 	getEntityAliases,
 	getEntityIdentifiers,
-	getEntityRelationships,
+	getEntityRelationships
 } from '../helpers/formatEntityData';
-import { Router } from 'express';
-import { makeEntityLoader } from '../helpers/entityLoader';
-import { toLower } from 'lodash';
+import {Router} from 'express';
+import {makeEntityLoader} from '../helpers/entityLoader';
+import {toLower} from 'lodash';
 
 const router = Router();
 
@@ -312,20 +312,20 @@ router.get(
 		);
 
 		if (req.query.modelType === 'Edition') {
-			const { entity: edition } = res.locals;
-			const { editionGroup } = edition;
+			const {entity: edition} = res.locals;
+			const {editionGroup} = edition;
 			// an edition will belong to only one edition-group
 			const editionGroupArray = [getEditionGroupBasicInfo(editionGroup)];
 			editionGroupArray.filter(relationshipsFilterMethod).forEach((filteredEditionGroup) => {
 				editionGroupRelationshipList.push({
 					entity: filteredEditionGroup,
-					relationship: {},
+					relationship: {}
 				});
 			});
 		}
 		return res.status(200).send({
 			bbid: req.query.bbid,
-			editionGroups: editionGroupRelationshipList,
+			editionGroups: editionGroupRelationshipList
 		});
 	}
 );

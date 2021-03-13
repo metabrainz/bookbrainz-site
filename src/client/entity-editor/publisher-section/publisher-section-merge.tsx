@@ -24,22 +24,22 @@ import {
 	debouncedUpdateEndDate,
 	updateArea,
 	updateEnded,
-	updateType,
+	updateType
 } from './actions';
-import { entityToOption, transformISODateForSelect } from '../../helpers/entity';
+import {entityToOption, transformISODateForSelect} from '../../helpers/entity';
 import {
 	validatePublisherSectionBeginDate,
-	validatePublisherSectionEndDate,
+	validatePublisherSectionEndDate
 } from '../validators/publisher';
 
-import type { Dispatch } from 'redux';
+import type {Dispatch} from 'redux';
 import Entity from '../common/entity';
 import LinkedEntity from '../common/linked-entity';
-import type { Map } from 'immutable';
+import type {Map} from 'immutable';
 import MergeField from '../common/merge-field';
 import _ from 'lodash';
-import { connect } from 'react-redux';
-import { convertMapToObject } from '../../helpers/utils';
+import {connect} from 'react-redux';
+import {convertMapToObject} from '../../helpers/utils';
 
 type Area = {
 	disambiguation: string | null | undefined;
@@ -111,7 +111,7 @@ function PublisherSectionMerge({
 	onBeginDateChange,
 	onEndDateChange,
 	onEndedChange,
-	onTypeChange,
+	onTypeChange
 }: Props) {
 	const areaOptions = [];
 	const typeOptions = [];
@@ -122,14 +122,14 @@ function PublisherSectionMerge({
 	mergingEntities.forEach((entity) => {
 		const typeOption = entity.publisherType && {
 			label: entity.publisherType.label,
-			value: entity.publisherType.id,
+			value: entity.publisherType.id
 		};
 		if (typeOption && !_.find(typeOptions, ['value', typeOption.value])) {
 			typeOptions.push(typeOption);
 		}
 		const area = !_.isNil(entity.area) && {
 			label: entity.area.name,
-			value: entityToOption(entity.area),
+			value: entityToOption(entity.area)
 		};
 		if (area && !_.find(areaOptions, ['value.id', area.value.id])) {
 			areaOptions.push(area);
@@ -140,7 +140,7 @@ function PublisherSectionMerge({
 		}
 		const ended = !_.isNil(entity.ended) && {
 			label: entity.ended ? 'Yes' : 'No',
-			value: entity.ended,
+			value: entity.ended
 		};
 		if (ended && !_.find(endedOptions, ['value', ended.value])) {
 			endedOptions.push(ended);
@@ -156,11 +156,11 @@ function PublisherSectionMerge({
 
 	const {
 		isValid: isValidBeginDate,
-		errorMessage: errorMessageBeginDate,
+		errorMessage: errorMessageBeginDate
 	} = validatePublisherSectionBeginDate(beginDateValue);
 	const {
 		isValid: isValidEndDate,
-		errorMessage: errorMessageEndDate,
+		errorMessage: errorMessageEndDate
 	} = validatePublisherSectionEndDate(beginDateValue, endDateValue, endedChecked);
 
 	return (
@@ -216,7 +216,7 @@ function mapStateToProps(rootState): StateProps {
 		beginDateValue: state.get('beginDate'),
 		endDateValue: state.get('endDate'),
 		endedChecked: state.get('ended'),
-		typeValue: convertMapToObject(state.get('type')),
+		typeValue: convertMapToObject(state.get('type'))
 	};
 }
 
@@ -228,7 +228,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		},
 		onEndDateChange: (endDate) => dispatch(debouncedUpdateEndDate(endDate)),
 		onEndedChange: (value) => dispatch(updateEnded(value)),
-		onTypeChange: (value) => dispatch(updateType(value)),
+		onTypeChange: (value) => dispatch(updateType(value))
 	};
 }
 

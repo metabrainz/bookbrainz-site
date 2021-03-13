@@ -17,13 +17,13 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import { faCircle, faCommentDots, faComments, faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faCircle, faCommentDots, faComments, faEnvelope} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import React from 'react';
-import { faTwitter } from '@fortawesome/free-brands-svg-icons';
+import {faTwitter} from '@fortawesome/free-brands-svg-icons';
 
-const { PageHeader } = bootstrap;
+const {PageHeader} = bootstrap;
 
 /**
  * Renders the document and displays the 'About' page.
@@ -78,7 +78,7 @@ function AboutPage() {
 				style={{
 					alignItems: 'center',
 					display: 'flex',
-					justifyContent: 'space-evenly',
+					justifyContent: 'space-evenly'
 				}}>
 				<FontAwesomeIcon className="margin-sides-1 contact-text" icon={faCircle} />
 				<a className="contact-text" href="//webchat.freenode.net/?channels=#metabrainz">

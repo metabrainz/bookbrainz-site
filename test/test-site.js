@@ -22,7 +22,7 @@ import chaiHttp from 'chai-http';
 import status from 'http-status';
 
 chai.use(chaiHttp);
-const { expect } = chai;
+const {expect} = chai;
 
 describe('GET /', () => {
 	it('should return 200', (done) => {

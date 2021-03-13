@@ -22,18 +22,18 @@ import {
 	REMOVE_EMPTY_IDENTIFIERS,
 	REMOVE_IDENTIFIER_ROW,
 	UPDATE_IDENTIFIER_TYPE,
-	UPDATE_IDENTIFIER_VALUE,
+	UPDATE_IDENTIFIER_VALUE
 } from './actions';
 
 const EMPTY_IDENTIFIER = Immutable.Map({
 	type: null,
-	value: '',
+	value: ''
 });
 
 type State = Immutable.OrderedMap<string, any>;
 
 function reducer(state: State = Immutable.OrderedMap(), action) {
-	const { type, payload } = action;
+	const {type, payload} = action;
 	switch (type) {
 		case ADD_IDENTIFIER_ROW:
 			return state.set(payload, EMPTY_IDENTIFIER);

@@ -17,20 +17,20 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import { faTasks, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { isNil, isString, size, values } from 'lodash';
+import {faTasks, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {isNil, isString, size, values} from 'lodash';
 import EntityLink from '../../entity-link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const { Button, ButtonGroup, ListGroup, ListGroupItem, Well } = bootstrap;
+const {Button, ButtonGroup, ListGroup, ListGroupItem, Well} = bootstrap;
 
 class MergeQueue extends React.Component {
 	constructor(props) {
 		super(props);
 
-		const { mergeQueue } = props;
+		const {mergeQueue} = props;
 		if (isNil(mergeQueue) || !size(mergeQueue.mergingEntities)) {
 			return;
 		}
@@ -38,23 +38,23 @@ class MergeQueue extends React.Component {
 		if (isNil(autoSelectedTarget) || !isString(autoSelectedTarget.bbid)) {
 			return;
 		}
-		this.state = { selectedOption: autoSelectedTarget.bbid };
+		this.state = {selectedOption: autoSelectedTarget.bbid};
 	}
 
 	state = {};
 
 	handleOptionChange = (changeEvent) => {
 		this.setState({
-			selectedOption: changeEvent.target.value,
+			selectedOption: changeEvent.target.value
 		});
 	};
 
 	render() {
-		const { mergeQueue } = this.props;
+		const {mergeQueue} = this.props;
 		if (isNil(mergeQueue)) {
 			return null;
 		}
-		const { mergingEntities } = mergeQueue;
+		const {mergingEntities} = mergeQueue;
 		const entityCount = size(mergingEntities);
 		let entityList;
 		if (entityCount === 0) {
@@ -120,7 +120,7 @@ class MergeQueue extends React.Component {
 
 MergeQueue.displayName = 'MergeQueue';
 MergeQueue.propTypes = {
-	mergeQueue: PropTypes.object.isRequired,
+	mergeQueue: PropTypes.object.isRequired
 };
 
 export default MergeQueue;

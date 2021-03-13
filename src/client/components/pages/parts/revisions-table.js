@@ -18,17 +18,17 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
-import { genEntityIconHTMLElement, getEntityLabel, getEntityUrl } from '../../../helpers/entity';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {genEntityIconHTMLElement, getEntityLabel, getEntityUrl} from '../../../helpers/entity';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { faCodeBranch } from '@fortawesome/free-solid-svg-icons';
+import {faCodeBranch} from '@fortawesome/free-solid-svg-icons';
 
-const { Table } = bootstrap;
-const { formatDate } = utilsHelper;
+const {Table} = bootstrap;
+const {formatDate} = utilsHelper;
 
 function RevisionsTable(props) {
-	const { results, showEntities, showRevisionNote, showRevisionEditor, tableHeading } = props;
+	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading} = props;
 
 	const tableCssClasses = 'table table-striped';
 	return (
@@ -62,7 +62,7 @@ function RevisionsTable(props) {
 										{revision.isMerge && (
 											<span
 												className="round-color-icon"
-												style={{ marginLeft: '0.5em' }}>
+												style={{marginLeft: '0.5em'}}>
 												<FontAwesomeIcon
 													flip="vertical"
 													icon={faCodeBranch}
@@ -127,13 +127,13 @@ RevisionsTable.propTypes = {
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
 	showRevisionNote: PropTypes.bool,
-	tableHeading: PropTypes.node,
+	tableHeading: PropTypes.node
 };
 RevisionsTable.defaultProps = {
 	showEntities: false,
 	showRevisionEditor: false,
 	showRevisionNote: false,
-	tableHeading: 'Recent Activity',
+	tableHeading: 'Recent Activity'
 };
 
 RevisionsTable.displayName = 'RevisionsTable';

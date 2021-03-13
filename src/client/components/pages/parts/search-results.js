@@ -22,16 +22,16 @@ import * as bootstrap from 'react-bootstrap';
 import {
 	differenceBy as _differenceBy,
 	kebabCase as _kebabCase,
-	startCase as _startCase,
+	startCase as _startCase
 } from 'lodash';
 
 import AddToCollectionModal from './add-to-collection-modal';
 import CallToAction from './call-to-action';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { genEntityIconHTMLElement } from '../../../helpers/entity';
+import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
-const { Alert, Badge, Button, ButtonGroup, Row, Table } = bootstrap;
+const {Alert, Badge, Button, ButtonGroup, Row, Table} = bootstrap;
 
 /**
  * Renders the document and displays the 'SearchResults' page.
@@ -45,10 +45,10 @@ class SearchResults extends React.Component {
 		this.state = {
 			message: {
 				text: null,
-				type: null,
+				type: null
 			},
 			selected: [],
-			showModal: false,
+			showModal: false
 		};
 
 		this.handleAddToCollection = this.handleAddToCollection.bind(this);
@@ -61,18 +61,18 @@ class SearchResults extends React.Component {
 	}
 
 	onCloseModal() {
-		this.setState({ showModal: false });
+		this.setState({showModal: false});
 	}
 
 	handleShowModal() {
 		if (this.props.user) {
-			this.setState({ showModal: true });
+			this.setState({showModal: true});
 		} else {
 			this.setState({
 				message: {
 					text: 'You need to be logged in',
-					type: 'danger',
-				},
+					type: 'danger'
+				}
 			});
 		}
 	}
@@ -80,12 +80,12 @@ class SearchResults extends React.Component {
 	closeModalAndShowMessage(message) {
 		this.setState({
 			message,
-			showModal: false,
+			showModal: false
 		});
 	}
 
 	handleAlertDismiss() {
-		this.setState({ message: {} });
+		this.setState({message: {}});
 	}
 
 	toggleRow(entity) {
@@ -98,12 +98,12 @@ class SearchResults extends React.Component {
 			newSelected = [...oldSelected, entity];
 		}
 		this.setState({
-			selected: newSelected,
+			selected: newSelected
 		});
 	}
 
 	handleClearSelected() {
-		this.setState({ selected: [] });
+		this.setState({selected: []});
 	}
 
 	handleAddToCollection() {
@@ -115,29 +115,29 @@ class SearchResults extends React.Component {
 			const entityTypes = ['Author', 'Edition', 'EditionGroup', 'Publisher', 'Work'];
 			if (areAllEntitiesOfSameType) {
 				if (entityTypes.includes(selectedEntities[0].type)) {
-					this.setState({ message: {}, showModal: true });
+					this.setState({message: {}, showModal: true});
 				} else {
 					this.setState({
 						message: {
 							text: `${selectedEntities[0].type} cannot be added to a collection`,
-							type: 'danger',
-						},
+							type: 'danger'
+						}
 					});
 				}
 			} else {
 				this.setState({
 					message: {
 						text: 'Selected entities should be of same type',
-						type: 'danger',
-					},
+						type: 'danger'
+					}
 				});
 			}
 		} else {
 			this.setState({
 				message: {
 					text: 'Nothing Selected',
-					type: 'danger',
-				},
+					type: 'danger'
+				}
 			});
 		}
 	}
@@ -148,7 +148,7 @@ class SearchResults extends React.Component {
 			return (
 				<div className="text-center">
 					<hr className="thin" />
-					<h2 style={{ color: '#754e37' }}>No results found</h2>
+					<h2 style={{color: '#754e37'}}>No results found</h2>
 					{!this.props.condensed && (
 						<Row>
 							<small>
@@ -241,7 +241,7 @@ class SearchResults extends React.Component {
 						/>
 					</div>
 				) : null}
-				{!this.props.condensed && <h3 style={{ color: '#754e37' }}>Search Results</h3>}
+				{!this.props.condensed && <h3 style={{color: '#754e37'}}>Search Results</h3>}
 				<hr className="thin" />
 				<Table responsive className={tableCssClasses}>
 					{!this.props.condensed && (
@@ -291,11 +291,11 @@ SearchResults.displayName = 'SearchResults';
 SearchResults.propTypes = {
 	condensed: PropTypes.bool,
 	results: PropTypes.array,
-	user: PropTypes.object.isRequired,
+	user: PropTypes.object.isRequired
 };
 SearchResults.defaultProps = {
 	condensed: false,
-	results: null,
+	results: null
 };
 
 export default SearchResults;

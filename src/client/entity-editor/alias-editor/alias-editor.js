@@ -16,16 +16,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import { Button, Col, Modal, OverlayTrigger, Row, Tooltip } from 'react-bootstrap';
-import { addAliasRow, hideAliasEditor, removeEmptyAliases } from './actions';
-import { faPlus, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import {Button, Col, Modal, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
+import {addAliasRow, hideAliasEditor, removeEmptyAliases} from './actions';
+import {faPlus, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 import AliasRow from './alias-row';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 /**
  * Container component. The AliasEditor component contains a number of AliasRow
@@ -45,13 +45,13 @@ import { connect } from 'react-redux';
  *        visible.
  * @returns {ReactElement} React element containing the rendered AliasEditor.
  */
-const AliasEditor = ({ aliases, languageOptions, onAddAlias, onClose, show }) => {
+const AliasEditor = ({aliases, languageOptions, onAddAlias, onClose, show}) => {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		label: language.name,
-		value: language.id,
+		value: language.id
 	}));
 
-	const noAliasesTextClass = classNames('text-center', { hidden: aliases.size });
+	const noAliasesTextClass = classNames('text-center', {hidden: aliases.size});
 
 	const helpText = `Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc.
 		Refer to the help page for more details and examples.`;
@@ -109,10 +109,10 @@ AliasEditor.propTypes = {
 	languageOptions: PropTypes.array.isRequired,
 	onAddAlias: PropTypes.func.isRequired,
 	onClose: PropTypes.func.isRequired,
-	show: PropTypes.bool,
+	show: PropTypes.bool
 };
 AliasEditor.defaultProps = {
-	show: false,
+	show: false
 };
 
 function mapDispatchToProps(dispatch) {
@@ -121,13 +121,13 @@ function mapDispatchToProps(dispatch) {
 		onClose: () => {
 			dispatch(hideAliasEditor());
 			dispatch(removeEmptyAliases());
-		},
+		}
 	};
 }
 
 function mapStateToProps(rootState) {
 	return {
-		aliases: rootState.get('aliasEditor'),
+		aliases: rootState.get('aliasEditor')
 	};
 }
 

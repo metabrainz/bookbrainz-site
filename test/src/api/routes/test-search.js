@@ -22,16 +22,16 @@ import {
 	aliasData,
 	createEditionGroup,
 	createWork,
-	truncateEntities,
+	truncateEntities
 } from '../../../test-helpers/create-entities';
 import app from '../../../../src/api/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
-import { searchBasicTests } from '../helpers';
+import {searchBasicTests} from '../helpers';
 
 chai.use(chaiHttp);
-const { expect } = chai;
+const {expect} = chai;
 
 const searchString = 'name';
 

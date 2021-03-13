@@ -1,35 +1,35 @@
 import * as _ from 'lodash';
-import { Button, FormControl, InputGroup } from 'react-bootstrap';
-import { ISODateStringToObject, dateObjectToISOString, getTodayDate } from '../../helpers/utils';
-import { isValid, parseISO } from 'date-fns';
+import {Button, FormControl, InputGroup} from 'react-bootstrap';
+import {ISODateStringToObject, dateObjectToISOString, getTodayDate} from '../../helpers/utils';
+import {isValid, parseISO} from 'date-fns';
 import CustomInput from '../../input';
 import DatePicker from 'react-datepicker';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ValidationLabel from './validation-label';
 import classNames from 'classnames';
-import { dateIsBefore } from '../validators/base';
-import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
-import { transformISODateForDisplay } from '../../helpers/entity';
+import {dateIsBefore} from '../validators/base';
+import {faCalendarAlt} from '@fortawesome/free-solid-svg-icons';
+import {transformISODateForDisplay} from '../../helpers/entity';
 
 class DateField extends React.Component {
 	constructor(props) {
 		super(props);
 
-		const { day, month, year } = ISODateStringToObject(this.props.defaultValue);
+		const {day, month, year} = ISODateStringToObject(this.props.defaultValue);
 		this.state = {
 			day: !day ? '' : this.padMonthOrDay(day),
 			month: !month ? '' : this.padMonthOrDay(month),
-			warn: dateIsBefore(getTodayDate(), { day, month, year }),
-			year: !year ? '' : this.formatYearForDisplay(year),
+			warn: dateIsBefore(getTodayDate(), {day, month, year}),
+			year: !year ? '' : this.formatYearForDisplay(year)
 		};
 	}
 
 	updateDate = (day, month, year) => {
-		this.props.onChangeDate(dateObjectToISOString({ day, month, year }));
+		this.props.onChangeDate(dateObjectToISOString({day, month, year}));
 
-		this.setState({ warn: dateIsBefore(getTodayDate(), { day, month, year }) });
+		this.setState({warn: dateIsBefore(getTodayDate(), {day, month, year})});
 	};
 
 	setStateCallback = () => {
@@ -38,17 +38,17 @@ class DateField extends React.Component {
 
 	handleYearChange = (event) => {
 		const year = event.target.value;
-		this.setState({ year }, this.setStateCallback);
+		this.setState({year}, this.setStateCallback);
 	};
 
 	handleMonthChange = (event) => {
 		const month = event.target.value;
-		this.setState({ month }, this.setStateCallback);
+		this.setState({month}, this.setStateCallback);
 	};
 
 	handleDayChange = (event) => {
 		const day = event.target.value;
-		this.setState({ day }, this.setStateCallback);
+		this.setState({day}, this.setStateCallback);
 	};
 
 	/**
@@ -77,17 +77,17 @@ class DateField extends React.Component {
 
 	handleYearInputBlur = (event) => {
 		const year = event.target.value;
-		this.setState({ year: this.formatYearForDisplay(year) });
+		this.setState({year: this.formatYearForDisplay(year)});
 	};
 
 	handleMonthInputBlur = (event) => {
 		const month = event.target.value;
-		this.setState({ month: this.padMonthOrDay(month) });
+		this.setState({month: this.padMonthOrDay(month)});
 	};
 
 	handleDayInputBlur = (event) => {
 		const day = event.target.value;
-		this.setState({ day: this.padMonthOrDay(day) });
+		this.setState({day: this.padMonthOrDay(day)});
 	};
 
 	handleChangeOfDatePicker = (value) => {
@@ -99,7 +99,7 @@ class DateField extends React.Component {
 			{
 				day: this.padMonthOrDay(day),
 				month: this.padMonthOrDay(month),
-				year: this.formatYearForDisplay(year),
+				year: this.formatYearForDisplay(year)
 			},
 			this.setStateCallback
 		);
@@ -120,16 +120,16 @@ class DateField extends React.Component {
 		const dateString = dateObjectToISOString({
 			day: this.state.day,
 			month: this.state.month,
-			year: this.state.year,
+			year: this.state.year
 		});
 		const selectedDate = parseISO(dateString);
-		const groupClassName = classNames({ hidden: !this.props.show });
+		const groupClassName = classNames({hidden: !this.props.show});
 		const isCommonEraDate =
 			Math.sign(this.state.year) === 1 || Math.sign(this.state.year) === 0;
 		return (
 			<div>
 				<CustomInput groupClassName={groupClassName} label={labelElement}>
-					<InputGroup style={{ width: '18em' }}>
+					<InputGroup style={{width: '18em'}}>
 						<FormControl
 							maxLength={isCommonEraDate ? 4 : 5}
 							placeholder="YYYY"
@@ -138,27 +138,27 @@ class DateField extends React.Component {
 							onBlur={this.handleYearInputBlur}
 							onChange={this.handleYearChange}
 						/>
-						<InputGroup.Addon style={{ padding: '0 0.5em' }}>-</InputGroup.Addon>
+						<InputGroup.Addon style={{padding: '0 0.5em'}}>-</InputGroup.Addon>
 						<FormControl
 							maxLength="2"
 							placeholder="MM"
-							style={{ width: '3.5em' }}
+							style={{width: '3.5em'}}
 							type="text"
 							value={this.state.month}
 							onBlur={this.handleMonthInputBlur}
 							onChange={this.handleMonthChange}
 						/>
-						<InputGroup.Addon style={{ padding: '0 0.5em' }}>-</InputGroup.Addon>
+						<InputGroup.Addon style={{padding: '0 0.5em'}}>-</InputGroup.Addon>
 						<FormControl
 							maxLength="2"
 							placeholder="DD"
-							style={{ width: '3.5em' }}
+							style={{width: '3.5em'}}
 							type="text"
 							value={this.state.day}
 							onBlur={this.handleDayInputBlur}
 							onChange={this.handleDayChange}
 						/>
-						<InputGroup.Button style={{ fontSize: 'inherit' }}>
+						<InputGroup.Button style={{fontSize: 'inherit'}}>
 							<DatePicker
 								peekNextMonth
 								showMonthDropdown
@@ -166,7 +166,7 @@ class DateField extends React.Component {
 								customInput={
 									<Button
 										bsStyle="info"
-										style={{ lineHeight: '1.75', padding: '0.375em 0.938em' }}
+										style={{lineHeight: '1.75', padding: '0.375em 0.938em'}}
 										title="Date picker">
 										<FontAwesomeIcon icon={faCalendarAlt} />
 									</Button>
@@ -193,11 +193,11 @@ DateField.propTypes = {
 	errorMessage: PropTypes.string,
 	label: PropTypes.string.isRequired,
 	onChangeDate: PropTypes.func.isRequired,
-	show: PropTypes.bool.isRequired,
+	show: PropTypes.bool.isRequired
 };
 DateField.defaultProps = {
 	defaultValue: '',
-	errorMessage: null,
+	errorMessage: null
 };
 
 export default DateField;

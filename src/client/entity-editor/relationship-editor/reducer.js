@@ -24,7 +24,7 @@ import {
 	HIDE_RELATIONSHIP_EDITOR,
 	REMOVE_RELATIONSHIP,
 	SHOW_RELATIONSHIP_EDITOR,
-	UNDO_LAST_SAVE,
+	UNDO_LAST_SAVE
 } from './actions';
 
 function reducer(
@@ -33,7 +33,7 @@ function reducer(
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
-		relationships: Immutable.OrderedMap(),
+		relationships: Immutable.OrderedMap()
 	}),
 	action
 ) {
@@ -47,10 +47,7 @@ function reducer(
 		case ADD_RELATIONSHIP: {
 			const rowID = state.getIn(['relationshipEditorProps', 'rowID'], action.payload.rowID);
 			return state
-				.setIn(
-					['relationships', rowID],
-					Immutable.fromJS({ rowID, ...action.payload.data })
-				)
+				.setIn(['relationships', rowID], Immutable.fromJS({rowID, ...action.payload.data}))
 				.set('relationshipEditorProps', null)
 				.set('relationshipEditorVisible', false)
 				.set('lastRelationships', state.get('relationships'));

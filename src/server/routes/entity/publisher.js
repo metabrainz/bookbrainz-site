@@ -24,10 +24,10 @@ import * as utils from '../../helpers/utils';
 import {
 	entityEditorMarkup,
 	generateEntityProps,
-	makeEntityCreateOrEditHandler,
+	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 import _ from 'lodash';
-import { escapeProps } from '../../helpers/props';
+import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import target from '../../templates/target';
 
@@ -54,7 +54,7 @@ function transformNewForm(data) {
 		identifiers,
 		note: data.submissionSection.note,
 		relationships,
-		typeId: data.publisherSection.type,
+		typeId: data.publisherSection.type
 	};
 }
 
@@ -87,16 +87,14 @@ router.get(
 	middleware.loadPublisherTypes,
 	middleware.loadRelationshipTypes,
 	(req, res) => {
-		const { markup, props } = entityEditorMarkup(
-			generateEntityProps('publisher', req, res, {})
-		);
+		const {markup, props} = entityEditorMarkup(generateEntityProps('publisher', req, res, {}));
 
 		return res.send(
 			target({
 				markup,
 				props: escapeProps(props),
 				script: '/js/entity-editor.js',
-				title: props.heading,
+				title: props.heading
 			})
 		);
 	}
@@ -121,16 +119,16 @@ function _setPublisherTitle(res) {
 
 router.get('/:bbid', middleware.loadEntityRelationships, (req, res, next) => {
 	// Fetch editions
-	const { Publisher } = req.app.locals.orm;
+	const {Publisher} = req.app.locals.orm;
 	const editionRelationsToFetch = [
 		'defaultAlias',
 		'disambiguation',
 		'releaseEventSet.releaseEvents',
 		'identifierSet.identifiers.type',
-		'editionFormat',
+		'editionFormat'
 	];
-	const editionsPromise = Publisher.forge({ bbid: res.locals.entity.bbid }).editions({
-		withRelated: editionRelationsToFetch,
+	const editionsPromise = Publisher.forge({bbid: res.locals.entity.bbid}).editions({
+		withRelated: editionRelationsToFetch
 	});
 
 	return editionsPromise
@@ -149,19 +147,19 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
 });
 
 router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	const { orm } = req.app.locals;
-	const { PublisherHeader, PublisherRevision } = orm;
+	const {orm} = req.app.locals;
+	const {PublisherHeader, PublisherRevision} = orm;
 	return entityRoutes.handleDelete(orm, req, res, PublisherHeader, PublisherRevision);
 });
 
 router.get('/:bbid/revisions', (req, res, next) => {
-	const { PublisherRevision } = req.app.locals.orm;
+	const {PublisherRevision} = req.app.locals.orm;
 	_setPublisherTitle(res);
 	entityRoutes.displayRevisions(req, res, next, PublisherRevision);
 });
 
 router.get('/:bbid/revisions/revisions', (req, res, next) => {
-	const { PublisherRevision } = req.app.locals.orm;
+	const {PublisherRevision} = req.app.locals.orm;
 	_setPublisherTitle(res);
 	entityRoutes.updateDisplayedRevisions(req, res, next, PublisherRevision);
 });
@@ -169,9 +167,9 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 function publisherToFormState(publisher) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = publisher.aliasSet
-		? publisher.aliasSet.aliases.map(({ languageId, ...rest }) => ({
+		? publisher.aliasSet.aliases.map(({languageId, ...rest}) => ({
 				...rest,
-				language: languageId,
+				language: languageId
 		  }))
 		: [];
 
@@ -185,22 +183,22 @@ function publisherToFormState(publisher) {
 
 	const buttonBar = {
 		aliasEditorVisible: false,
-		identifierEditorVisible: false,
+		identifierEditorVisible: false
 	};
 
 	const nameSection = _.isEmpty(defaultAliasList)
 		? {
 				language: null,
 				name: '',
-				sortName: '',
+				sortName: ''
 		  }
 		: defaultAliasList[0];
 	nameSection.disambiguation = publisher.disambiguation && publisher.disambiguation.comment;
 
 	const identifiers = publisher.identifierSet
-		? publisher.identifierSet.identifiers.map(({ type, ...rest }) => ({
+		? publisher.identifierSet.identifiers.map(({type, ...rest}) => ({
 				type: type.id,
-				...rest,
+				...rest
 		  }))
 		: [];
 
@@ -214,14 +212,14 @@ function publisherToFormState(publisher) {
 		beginDate: publisher.beginDate,
 		endDate: publisher.endDate,
 		ended: publisher.ended,
-		type: publisher.publisherType && publisher.publisherType.id,
+		type: publisher.publisherType && publisher.publisherType.id
 	};
 	const relationshipSection = {
 		canEdit: true,
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
-		relationships: {},
+		relationships: {}
 	};
 
 	publisher.relationships.forEach(
@@ -230,7 +228,7 @@ function publisherToFormState(publisher) {
 				relationshipType: relationship.type,
 				rowID: relationship.id,
 				sourceEntity: relationship.source,
-				targetEntity: relationship.target,
+				targetEntity: relationship.target
 			})
 	);
 
@@ -246,7 +244,7 @@ function publisherToFormState(publisher) {
 		nameSection,
 		publisherSection,
 		relationshipSection,
-		...optionalSections,
+		...optionalSections
 	};
 }
 
@@ -259,7 +257,7 @@ router.get(
 	middleware.loadEntityRelationships,
 	middleware.loadRelationshipTypes,
 	(req, res) => {
-		const { markup, props } = entityEditorMarkup(
+		const {markup, props} = entityEditorMarkup(
 			generateEntityProps('publisher', req, res, {}, publisherToFormState)
 		);
 
@@ -268,7 +266,7 @@ router.get(
 				markup,
 				props: escapeProps(props),
 				script: '/js/entity-editor.js',
-				title: props.heading,
+				title: props.heading
 			})
 		);
 	}

@@ -1,7 +1,7 @@
 import * as bootstrap from 'react-bootstrap';
-import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
+import {faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import CustomInput from '../../../input';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
@@ -9,7 +9,7 @@ import SelectWrapper from '../../input/select-wrapper';
 import _ from 'lodash';
 import request from 'superagent';
 
-const { Alert, Col, Button, Modal } = bootstrap;
+const {Alert, Col, Button, Modal} = bootstrap;
 
 class AddToCollectionModal extends React.Component {
 	constructor(props) {
@@ -18,10 +18,10 @@ class AddToCollectionModal extends React.Component {
 			collectionsAvailable: [],
 			message: {
 				text: null,
-				type: null,
+				type: null
 			},
 			selectedCollections: [],
-			showCollectionForm: false,
+			showCollectionForm: false
 		};
 
 		this.getCollections = this.getCollections.bind(this);
@@ -36,14 +36,14 @@ class AddToCollectionModal extends React.Component {
 	async componentDidMount() {
 		const collections = this.props.entityType ? await this.getCollections() : [];
 		// eslint-disable-next-line react/no-did-mount-set-state
-		this.setState({ collectionsAvailable: collections || [] });
+		this.setState({collectionsAvailable: collections || []});
 	}
 
 	async componentDidUpdate(prevProps) {
 		if (prevProps.entityType !== this.props.entityType) {
 			const collections = this.props.entityType ? await this.getCollections() : [];
 			// eslint-disable-next-line react/no-did-update-set-state
-			this.setState({ collectionsAvailable: collections || [] });
+			this.setState({collectionsAvailable: collections || []});
 		}
 	}
 
@@ -56,7 +56,7 @@ class AddToCollectionModal extends React.Component {
 			newSelected = [...oldSelected, collectionId];
 		}
 		this.setState({
-			selectedCollections: newSelected,
+			selectedCollections: newSelected
 		});
 	}
 
@@ -72,55 +72,55 @@ class AddToCollectionModal extends React.Component {
 			return this.setState({
 				message: {
 					text: 'Sorry, we could not fetch your collections ',
-					type: 'danger',
-				},
+					type: 'danger'
+				}
 			});
 		}
 	}
 
 	async handleAddToCollection() {
-		const { bbids } = this.props;
-		const { selectedCollections } = this.state;
+		const {bbids} = this.props;
+		const {selectedCollections} = this.state;
 		if (selectedCollections.length) {
 			try {
 				const promiseArray = [];
 				selectedCollections.forEach((collectionId) => {
 					const submissionURL = `/collection/${collectionId}/add`;
-					promiseArray.push(request.post(submissionURL).send({ bbids }));
+					promiseArray.push(request.post(submissionURL).send({bbids}));
 				});
 				await Promise.all(promiseArray);
-				this.setState({ selectedCollections: [] }, () => {
+				this.setState({selectedCollections: []}, () => {
 					this.props.closeModalAndShowMessage({
 						text: `Successfully added to selected collection${
 							selectedCollections.length > 1 ? 's' : ''
 						}`,
-						type: 'success',
+						type: 'success'
 					});
 				});
 			} catch (err) {
 				this.setState({
 					message: {
 						text: 'Something went wrong! Please try again later',
-						type: 'danger',
-					},
+						type: 'danger'
+					}
 				});
 			}
 		} else {
 			this.setState({
 				message: {
 					text: 'No collection selected',
-					type: 'danger',
-				},
+					type: 'danger'
+				}
 			});
 		}
 	}
 
 	handleShowCollectionForm() {
-		this.setState({ message: {}, showCollectionForm: true });
+		this.setState({message: {}, showCollectionForm: true});
 	}
 
 	handleShowAllCollections() {
-		this.setState({ message: {}, showCollectionForm: false });
+		this.setState({message: {}, showCollectionForm: false});
 	}
 
 	handleAddToNewCollection(evt) {
@@ -131,8 +131,8 @@ class AddToCollectionModal extends React.Component {
 				message: {
 					text:
 						'The form is incomplete. Please fill in a name and privacy option before continuing.',
-					type: 'danger',
-				},
+					type: 'danger'
+				}
 			});
 			return;
 		}
@@ -140,15 +140,15 @@ class AddToCollectionModal extends React.Component {
 		const description = this.description.getValue();
 		const name = this.name.getValue();
 		const privacy = this.privacy.getValue();
-		const { entityType } = this.props;
+		const {entityType} = this.props;
 
 		const data = {
 			description,
 			entityType,
 			name,
-			privacy,
+			privacy
 		};
-		const { bbids } = this.props;
+		const {bbids} = this.props;
 		request
 			.post('/collection/create/handler')
 			.send(data)
@@ -156,12 +156,12 @@ class AddToCollectionModal extends React.Component {
 				(res) => {
 					request
 						.post(`/collection/${res.body.id}/add`)
-						.send({ bbids })
+						.send({bbids})
 						.then(() => {
-							this.setState({ selectedCollections: [] }, () => {
+							this.setState({selectedCollections: []}, () => {
 								this.props.closeModalAndShowMessage({
 									text: `Successfully added to your new collection: ${name}`,
-									type: 'success',
+									type: 'success'
 								});
 							});
 						});
@@ -170,8 +170,8 @@ class AddToCollectionModal extends React.Component {
 					this.setState({
 						message: {
 							text: 'Something went wrong! Please try again later',
-							type: 'danger',
-						},
+							type: 'danger'
+						}
 					});
 				}
 			);
@@ -229,7 +229,7 @@ class AddToCollectionModal extends React.Component {
 		}
 
 		const privacyOptions = ['Private', 'Public'].map((option) => ({
-			name: option,
+			name: option
 		}));
 		const collectionForm = (
 			<div>
@@ -307,7 +307,7 @@ AddToCollectionModal.propTypes = {
 	entityType: PropTypes.string.isRequired,
 	handleCloseModal: PropTypes.func.isRequired,
 	show: PropTypes.bool.isRequired,
-	userId: PropTypes.number.isRequired,
+	userId: PropTypes.number.isRequired
 };
 
 export default AddToCollectionModal;

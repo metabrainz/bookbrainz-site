@@ -22,7 +22,7 @@ import * as testData from '../data/test-data.js';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
 
-const { Editor } = orm;
+const {Editor} = orm;
 
 const Achievement = rewire('../src/server/helpers/achievement.js');
 
@@ -45,7 +45,7 @@ export default function tests() {
 		() =>
 			testData
 				.sprinterHelper(sprinterThreshold)
-				.then(() => new Editor({ name: testData.editorAttribs.name }).fetch())
+				.then(() => new Editor({name: testData.editorAttribs.name}).fetch())
 				.then((editor) => achievement.processEdit(orm, editor.id))
 				.then((edit) => edit.sprinter.Sprinter),
 		expectIds('')
@@ -57,7 +57,7 @@ export default function tests() {
 		() =>
 			testData
 				.sprinterHelper(sprinterThreshold - 1)
-				.then(() => new Editor({ name: testData.editorAttribs.name }).fetch())
+				.then(() => new Editor({name: testData.editorAttribs.name}).fetch())
 				.then((editor) => achievement.processEdit(orm, editor.id))
 				.then((edit) => edit.sprinter.Sprinter),
 		common.expectFalse()

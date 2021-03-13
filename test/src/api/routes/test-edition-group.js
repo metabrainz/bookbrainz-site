@@ -22,20 +22,20 @@ import {
 	createEditionGroup,
 	createEditor,
 	getRandomUUID,
-	truncateEntities,
+	truncateEntities
 } from '../../../test-helpers/create-entities';
 
 import _ from 'lodash';
 import app from '../../../../src/api/app';
-import { browseEditionGroupBasicTests } from '../helpers';
+import {browseEditionGroupBasicTests} from '../helpers';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
 
-const { Revision } = orm;
+const {Revision} = orm;
 
 chai.use(chaiHttp);
-const { expect } = chai;
+const {expect} = chai;
 
 const aBBID = getRandomUUID();
 const bBBID = getRandomUUID();
@@ -170,18 +170,18 @@ describe('Browse EditionGroup', () => {
 		const editionGroupBbid = getRandomUUID();
 		const editionGroupAttribs = {
 			bbid: editionGroupBbid,
-			typeId: 1,
+			typeId: 1
 		};
 		await createEditionGroup(editionGroupBbid, editionGroupAttribs);
 		// create a revision which adds these two edition in the editionGroup
 		const editor = await createEditor();
-		const revision = await new Revision({ authorId: editor.id }).save(null, {
-			method: 'insert',
+		const revision = await new Revision({authorId: editor.id}).save(null, {
+			method: 'insert'
 		});
 
 		edition.set('revisionId', revision.id);
 		edition.set('editionGroupBbid', editionGroupBbid);
-		await edition.save(null, { method: 'update' });
+		await edition.save(null, {method: 'update'});
 	});
 
 	it('should return list of EditionGroups associated with the edition', async () => {

@@ -23,21 +23,21 @@ import {
 	UPDATE_BEGIN_DATE,
 	UPDATE_ENDED,
 	UPDATE_END_DATE,
-	UPDATE_TYPE,
+	UPDATE_TYPE
 } from './actions';
 
 type State = Immutable.Map<string, any>;
 
 function reducer(
 	state: State = Immutable.Map({
-		beginDate: { day: '', month: '', year: '' },
-		endDate: { day: '', month: '', year: '' },
+		beginDate: {day: '', month: '', year: ''},
+		endDate: {day: '', month: '', year: ''},
 		ended: false,
-		type: null,
+		type: null
 	}),
 	action: Action
 ): State {
-	const { type, payload } = action;
+	const {type, payload} = action;
 	switch (type) {
 		case UPDATE_AREA:
 			return state.set('area', Immutable.fromJS(payload));

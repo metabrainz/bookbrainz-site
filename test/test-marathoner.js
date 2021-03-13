@@ -36,7 +36,7 @@ function rewireEditsInDaysTwo(threshold) {
 				editPromise = Promise.resolve(0);
 			}
 			return editPromise;
-		},
+		}
 	});
 }
 
@@ -50,7 +50,7 @@ function rewireEditsInDaysThree(threshold) {
 				editPromise = Promise.resolve(0);
 			}
 			return editPromise;
-		},
+		}
 	});
 }
 

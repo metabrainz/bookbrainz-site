@@ -17,16 +17,16 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { lowerCase, uniqBy } from 'lodash';
+import {faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
+import {lowerCase, uniqBy} from 'lodash';
 import EntitySearchFieldOption from '../../../entity-editor/common/entity-search-field-option';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { genEntityIconHTMLElement } from '../../../helpers/entity';
+import {genEntityIconHTMLElement} from '../../../helpers/entity';
 import request from 'superagent';
 
-const { Alert, Badge, Button, ButtonGroup, Col, Modal, Row } = bootstrap;
+const {Alert, Badge, Button, ButtonGroup, Col, Modal, Row} = bootstrap;
 
 class AddEntityToCollectionModal extends React.Component {
 	constructor(props) {
@@ -34,7 +34,7 @@ class AddEntityToCollectionModal extends React.Component {
 
 		this.state = {
 			entities: [],
-			error: null,
+			error: null
 		};
 
 		this.handleAddEntity = this.handleAddEntity.bind(this);
@@ -54,7 +54,7 @@ class AddEntityToCollectionModal extends React.Component {
 
 	handleAddEntity() {
 		this.setState((prevState) => ({
-			entities: [...prevState.entities, { id: null, name: '' }],
+			entities: [...prevState.entities, {id: null, name: ''}]
 		}));
 	}
 
@@ -63,7 +63,7 @@ class AddEntityToCollectionModal extends React.Component {
 		if (!newEnt) {
 			newEntity = {
 				id: null,
-				name: '',
+				name: ''
 			};
 		} else {
 			newEntity = newEnt;
@@ -73,19 +73,19 @@ class AddEntityToCollectionModal extends React.Component {
 			const newEntities = prevState.entities;
 			newEntities[index] = newEntity;
 			return {
-				entities: newEntities,
+				entities: newEntities
 			};
 		});
 	}
 
 	handleRemoveEntity(index) {
 		this.setState((prevState) => ({
-			entities: prevState.entities.splice(index, 1) && prevState.entities,
+			entities: prevState.entities.splice(index, 1) && prevState.entities
 		}));
 	}
 
 	handleAlertDismiss() {
-		this.setState({ error: null });
+		this.setState({error: null});
 	}
 
 	handleSubmit() {
@@ -94,33 +94,33 @@ class AddEntityToCollectionModal extends React.Component {
 		if (bbids.length) {
 			request
 				.post(`/collection/${this.props.collectionId}/add`)
-				.send({ bbids })
+				.send({bbids})
 				.then(
 					(res) => {
 						this.setState(
 							{
 								entities: [],
-								error: null,
+								error: null
 							},
 							() => {
 								this.props.closeModalAndShowMessage({
 									text: `Added ${bbids.length} ${lowerCase(
 										this.props.collectionType
 									)}${bbids.length > 1 ? 's' : ''}`,
-									type: 'success',
+									type: 'success'
 								});
 							}
 						);
 					},
 					(error) => {
 						this.setState({
-							error: 'Something went wrong! Please try again later',
+							error: 'Something went wrong! Please try again later'
 						});
 					}
 				);
 		} else {
 			this.setState({
-				error: `No ${lowerCase(this.props.collectionType)} selected`,
+				error: `No ${lowerCase(this.props.collectionType)} selected`
 			});
 		}
 	}
@@ -218,6 +218,6 @@ AddEntityToCollectionModal.propTypes = {
 	collectionId: PropTypes.string.isRequired,
 	collectionType: PropTypes.string.isRequired,
 	onCloseModal: PropTypes.func.isRequired,
-	show: PropTypes.bool.isRequired,
+	show: PropTypes.bool.isRequired
 };
 export default AddEntityToCollectionModal;

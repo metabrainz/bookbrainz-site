@@ -3,6 +3,6 @@
 
 module.exports = {
 	rules: {
-		'func-style': 0,
-	},
+		'func-style': 0
+	}
 };

@@ -2,7 +2,7 @@ import {
 	createEditionGroup,
 	createEditor,
 	getRandomUUID,
-	truncateEntities,
+	truncateEntities
 } from '../../../../test-helpers/create-entities';
 
 import app from '../../../../../src/server/app';
@@ -10,7 +10,7 @@ import chai from 'chai';
 import chaiHttp from 'chai-http';
 
 chai.use(chaiHttp);
-const { expect } = chai;
+const {expect} = chai;
 
 describe('Edition Group routes', () => {
 	const aBBID = getRandomUUID();

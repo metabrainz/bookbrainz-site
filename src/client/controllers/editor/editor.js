@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import { extractChildProps, extractEditorProps, extractLayoutProps } from '../../helpers/props';
-import { AppContainer } from 'react-hot-loader';
+import {extractChildProps, extractEditorProps, extractLayoutProps} from '../../helpers/props';
+import {AppContainer} from 'react-hot-loader';
 import CollectionsPage from '../../components/pages/collections';
 import EditorContainer from '../../containers/editor';
 import EditorRevisionPage from '../../components/pages/editor-revision';

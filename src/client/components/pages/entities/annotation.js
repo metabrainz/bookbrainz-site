@@ -16,26 +16,26 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import { Button, Col, Collapse, Row } from 'react-bootstrap';
+import {Button, Col, Collapse, Row} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { formatDate } from '../../../helpers/utils';
+import {formatDate} from '../../../helpers/utils';
 
 class EntityAnnotation extends React.Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			open: false,
+			open: false
 		};
 	}
 
 	handleToggleCollapse = () => {
-		this.setState((prevState) => ({ open: !prevState.open }));
+		this.setState((prevState) => ({open: !prevState.open}));
 	};
 
 	render() {
-		const { annotation } = this.props.entity;
+		const {annotation} = this.props.entity;
 		if (!annotation || !annotation.content) {
 			return null;
 		}
@@ -71,7 +71,7 @@ class EntityAnnotation extends React.Component {
 }
 EntityAnnotation.displayName = 'EntityAnnotation';
 EntityAnnotation.propTypes = {
-	entity: PropTypes.object.isRequired,
+	entity: PropTypes.object.isRequired
 };
 
 export default EntityAnnotation;

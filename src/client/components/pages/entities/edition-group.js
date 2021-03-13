@@ -32,11 +32,11 @@ const {
 	getTypeAttribute,
 	getEntityUrl,
 	ENTITY_TYPE_ICONS,
-	getSortNameOfDefaultAlias,
+	getSortNameOfDefaultAlias
 } = entityHelper;
-const { Col, Row } = bootstrap;
+const {Col, Row} = bootstrap;
 
-function EditionGroupAttributes({ editionGroup }) {
+function EditionGroupAttributes({editionGroup}) {
 	if (editionGroup.deleted) {
 		return deletedEntityMessage;
 	}
@@ -63,10 +63,10 @@ function EditionGroupAttributes({ editionGroup }) {
 }
 EditionGroupAttributes.displayName = 'EditionGroupAttributes';
 EditionGroupAttributes.propTypes = {
-	editionGroup: PropTypes.object.isRequired,
+	editionGroup: PropTypes.object.isRequired
 };
 
-function EditionGroupDisplayPage({ entity, identifierTypes, user }) {
+function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
@@ -110,10 +110,10 @@ EditionGroupDisplayPage.displayName = 'EditionGroupDisplayPage';
 EditionGroupDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired,
+	user: PropTypes.object.isRequired
 };
 EditionGroupDisplayPage.defaultProps = {
-	identifierTypes: [],
+	identifierTypes: []
 };
 
 export default EditionGroupDisplayPage;

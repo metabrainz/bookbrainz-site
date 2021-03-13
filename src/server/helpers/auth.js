@@ -28,34 +28,34 @@ import passport from 'passport';
 import status from 'http-status';
 
 async function _linkMBAccount(orm, bbUserJSON, mbUserJSON) {
-	const { Editor } = orm;
-	const fetchedEditor = await new Editor({ id: bbUserJSON.id }).fetch({ require: true });
+	const {Editor} = orm;
+	const fetchedEditor = await new Editor({id: bbUserJSON.id}).fetch({require: true});
 
 	return fetchedEditor.save({
 		cachedMetabrainzName: mbUserJSON.sub,
-		metabrainzUserId: mbUserJSON.metabrainz_user_id,
+		metabrainzUserId: mbUserJSON.metabrainz_user_id
 	});
 }
 
 function _getAccountByMBUserId(orm, mbUserJSON) {
-	const { Editor } = orm;
-	return new Editor({ metabrainzUserId: mbUserJSON.metabrainz_user_id }).fetch({ require: true });
+	const {Editor} = orm;
+	return new Editor({metabrainzUserId: mbUserJSON.metabrainz_user_id}).fetch({require: true});
 }
 
 function _updateCachedMBName(bbUserModel, mbUserJSON) {
-	return bbUserModel.save({ cachedMetabrainzName: mbUserJSON.sub });
+	return bbUserModel.save({cachedMetabrainzName: mbUserJSON.sub});
 }
 
 export function init(app) {
-	const { orm } = app.locals;
+	const {orm} = app.locals;
 	try {
 		let strategy;
 		// eslint-disable-next-line no-process-env
 		if (process.env.NODE_ENV === 'test') {
-			strategy = new StrategyMock({ userId: 123456 }, async (user, done) => {
+			strategy = new StrategyMock({userId: 123456}, async (user, done) => {
 				try {
-					const linkedUser = await new orm.Editor({ id: user.id }).fetch({
-						require: true,
+					const linkedUser = await new orm.Editor({id: user.id}).fetch({
+						require: true
 					});
 
 					// Logged in, associate
@@ -69,7 +69,7 @@ export function init(app) {
 				_.assign(
 					{
 						passReqToCallback: true,
-						scope: 'profile',
+						scope: 'profile'
 					},
 					config.musicbrainz
 				),
@@ -146,7 +146,7 @@ export function isCollectionOwner(req, res, next) {
 }
 
 export function isCollectionOwnerOrCollaborator(req, res, next) {
-	const { collection } = res.locals;
+	const {collection} = res.locals;
 	if (
 		req.user.id === collection.ownerId ||
 		collection.collaborators.filter((collaborator) => collaborator.id === req.user.id).length
@@ -161,7 +161,7 @@ export function isCollectionOwnerOrCollaborator(req, res, next) {
 }
 
 export function isAuthenticatedForCollectionView(req, res, next) {
-	const { collection } = res.locals;
+	const {collection} = res.locals;
 	if (collection.public) {
 		return next();
 	}

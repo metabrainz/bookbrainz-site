@@ -27,24 +27,24 @@ import {
 	VALID_ALIASES,
 	VALID_IDENTIFIERS,
 	VALID_NAME_SECTION,
-	VALID_SUBMISSION_SECTION,
+	VALID_SUBMISSION_SECTION
 } from './data';
 import {
 	validateForm,
 	validateWorkSection,
 	validateWorkSectionLanguage,
-	validateWorkSectionType,
+	validateWorkSectionType
 } from '../../../../../src/client/entity-editor/validators/work';
 
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { testValidatePositiveIntegerFunc } from './helpers';
+import {testValidatePositiveIntegerFunc} from './helpers';
 
 chai.use(chaiAsPromised);
-const { expect } = chai;
+const {expect} = chai;
 
 function describeValidateWorkSectionLanguage() {
-	const validLanguage = { value: 1 };
+	const validLanguage = {value: 1};
 
 	it('should pass a valid Object', () => {
 		const result = validateWorkSectionLanguage(validLanguage);
@@ -57,11 +57,11 @@ function describeValidateWorkSectionLanguage() {
 	});
 
 	it('should reject an Object with an invalid value', () => {
-		const result = validateWorkSectionLanguage({ ...validLanguage, value: 'bad' });
+		const result = validateWorkSectionLanguage({...validLanguage, value: 'bad'});
 		expect(result).to.be.false;
 	});
 
-	const invalidLanguage = { value: 'bad' };
+	const invalidLanguage = {value: 'bad'};
 
 	it('should reject an invalid Immutable.Map', () => {
 		const result = validateWorkSectionLanguage(Immutable.fromJS(invalidLanguage));
@@ -84,10 +84,10 @@ function describeValidateWorkSectionType() {
 }
 
 const VALID_WORK_SECTION = {
-	language: { value: 1 },
-	type: 1,
+	language: {value: 1},
+	type: 1
 };
-const INVALID_WORK_SECTION = { ...VALID_WORK_SECTION, type: {} };
+const INVALID_WORK_SECTION = {...VALID_WORK_SECTION, type: {}};
 
 function describeValidateWorkSection() {
 	it('should pass a valid Object', () => {
@@ -103,7 +103,7 @@ function describeValidateWorkSection() {
 	it('should reject an Object with an invalid language', () => {
 		const result = validateWorkSection({
 			...VALID_WORK_SECTION,
-			language: { value: 'bad' },
+			language: {value: 'bad'}
 		});
 		expect(result).to.be.false;
 	});
@@ -111,7 +111,7 @@ function describeValidateWorkSection() {
 	it('should reject an Object with an invalid type', () => {
 		const result = validateWorkSection({
 			...VALID_WORK_SECTION,
-			type: {},
+			type: {}
 		});
 		expect(result).to.be.false;
 	});
@@ -138,7 +138,7 @@ function describeValidateForm() {
 		identifierEditor: VALID_IDENTIFIERS,
 		nameSection: VALID_NAME_SECTION,
 		submissionSection: VALID_SUBMISSION_SECTION,
-		workSection: VALID_WORK_SECTION,
+		workSection: VALID_WORK_SECTION
 	};
 
 	it('should pass a valid Object', () => {
@@ -155,7 +155,7 @@ function describeValidateForm() {
 		const result = validateForm(
 			{
 				...validForm,
-				aliasEditor: INVALID_ALIASES,
+				aliasEditor: INVALID_ALIASES
 			},
 			IDENTIFIER_TYPES
 		);
@@ -166,7 +166,7 @@ function describeValidateForm() {
 		const result = validateForm(
 			{
 				...validForm,
-				identifierEditor: INVALID_IDENTIFIERS,
+				identifierEditor: INVALID_IDENTIFIERS
 			},
 			IDENTIFIER_TYPES
 		);
@@ -177,7 +177,7 @@ function describeValidateForm() {
 		const result = validateForm(
 			{
 				...validForm,
-				nameSection: INVALID_NAME_SECTION,
+				nameSection: INVALID_NAME_SECTION
 			},
 			IDENTIFIER_TYPES
 		);
@@ -188,7 +188,7 @@ function describeValidateForm() {
 		const result = validateForm(
 			{
 				...validForm,
-				workSection: INVALID_WORK_SECTION,
+				workSection: INVALID_WORK_SECTION
 			},
 			IDENTIFIER_TYPES
 		);
@@ -199,7 +199,7 @@ function describeValidateForm() {
 		const result = validateForm(
 			{
 				...validForm,
-				submissionSection: EMPTY_SUBMISSION_SECTION,
+				submissionSection: EMPTY_SUBMISSION_SECTION
 			},
 			IDENTIFIER_TYPES
 		);
@@ -208,7 +208,7 @@ function describeValidateForm() {
 
 	const invalidForm = {
 		...validForm,
-		nameSection: INVALID_NAME_SECTION,
+		nameSection: INVALID_NAME_SECTION
 	};
 
 	it('should reject an invalid Immutable.Map', () => {

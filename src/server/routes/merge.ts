@@ -20,16 +20,16 @@ import * as auth from '../helpers/auth';
 import * as commonUtils from '../../common/helpers/utils';
 import * as entityRoutes from './entity/entity';
 import * as middleware from '../helpers/middleware';
-import { BadRequestError, ConflictError, NotFoundError } from '../../common/helpers/error';
+import {BadRequestError, ConflictError, NotFoundError} from '../../common/helpers/error';
 import {
 	basicRelations,
 	getEntityFetchPropertiesByType,
-	getEntitySectionByType,
+	getEntitySectionByType
 } from '../helpers/merge';
-import { entityMergeMarkup, generateEntityMergeProps } from '../helpers/entityRouteUtils';
+import {entityMergeMarkup, generateEntityMergeProps} from '../helpers/entityRouteUtils';
 
 import _ from 'lodash';
-import { escapeProps } from '../helpers/props';
+import {escapeProps} from '../helpers/props';
 import express from 'express';
 import renderRelationship from '../helpers/render';
 import targetTemplate from '../templates/target';
@@ -46,9 +46,9 @@ function entitiesToFormState(entities: any[]) {
 	const aliases: any[] = entities.reduce((returnValue, entity) => {
 		if (Array.isArray(_.get(entity, 'aliasSet.aliases'))) {
 			return returnValue.concat(
-				entity.aliasSet.aliases.map(({ language, ...rest }) => ({
+				entity.aliasSet.aliases.map(({language, ...rest}) => ({
 					language: language.id,
-					...rest,
+					...rest
 				}))
 			);
 		}
@@ -73,7 +73,7 @@ function entitiesToFormState(entities: any[]) {
 		disambiguation: null,
 		language: null,
 		name: '',
-		sortName: '',
+		sortName: ''
 	};
 	const hasDisambiguation = _.find(entities, 'disambiguation');
 	nameSection.disambiguation =
@@ -83,9 +83,9 @@ function entitiesToFormState(entities: any[]) {
 
 	const identifiers: any[] = entities.reduce((returnValue, entity) => {
 		if (entity.identifierSet) {
-			const mappedIdentifiers = entity.identifierSet.identifiers.map(({ type, ...rest }) => ({
+			const mappedIdentifiers = entity.identifierSet.identifiers.map(({type, ...rest}) => ({
 				type: type.id,
-				...rest,
+				...rest
 			}));
 			return returnValue.concat(mappedIdentifiers);
 		}
@@ -110,7 +110,7 @@ function entitiesToFormState(entities: any[]) {
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
-		relationships: {},
+		relationships: {}
 	};
 
 	const relationships = entities.reduce((returnValue, entity) => {
@@ -132,7 +132,7 @@ function entitiesToFormState(entities: any[]) {
 				: relationship.source,
 			targetEntity: otherEntitiesBBIDs.includes(relationship.targetBbid)
 				? targetEntity
-				: relationship.target,
+				: relationship.target
 		};
 	});
 
@@ -142,30 +142,30 @@ function entitiesToFormState(entities: any[]) {
 		}
 		return returnValue;
 	}, '');
-	const annotationSection = { content: annotations };
+	const annotationSection = {content: annotations};
 
 	const props = {
 		aliasEditor,
 		annotationSection,
 		identifierEditor,
 		nameSection,
-		relationshipSection,
+		relationshipSection
 	};
 	props[`${type}Section`] = entityTypeSection;
 	return props;
 }
 
 function loadEntityRelationships(entity, orm, transacting): Promise<any> {
-	const { RelationshipSet } = orm;
+	const {RelationshipSet} = orm;
 
 	if (!entity.relationshipSetId) {
 		return null;
 	}
 
-	return RelationshipSet.forge({ id: entity.relationshipSetId })
+	return RelationshipSet.forge({id: entity.relationshipSetId})
 		.fetch({
 			transacting,
-			withRelated: ['relationships.source', 'relationships.target', 'relationships.type'],
+			withRelated: ['relationships.source', 'relationships.target', 'relationships.type']
 		})
 		.then((relationshipSet) => {
 			entity.relationships = relationshipSet
@@ -180,7 +180,7 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 				);
 				const model = commonUtils.getEntityModelByType(orm, relEntity.type);
 
-				return model.forge({ bbid: redirectBbid }).fetch({ withRelated: 'defaultAlias' });
+				return model.forge({bbid: redirectBbid}).fetch({withRelated: 'defaultAlias'});
 			}
 
 			/**
@@ -192,7 +192,7 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 				entity.relationships.map((relationship) =>
 					Promise.all([
 						getEntityWithAlias(relationship.source),
-						getEntityWithAlias(relationship.target),
+						getEntityWithAlias(relationship.target)
 					]).then(([relationshipSource, relationshipTarget]) => {
 						relationship.source = relationshipSource.toJSON();
 						relationship.target = relationshipTarget.toJSON();
@@ -214,16 +214,16 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 
 async function getEntityByBBID(orm, transacting, bbid) {
 	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, transacting);
-	const entityHeader = await orm.Entity.forge({ bbid: redirectBbid }).fetch({ transacting });
+	const entityHeader = await orm.Entity.forge({bbid: redirectBbid}).fetch({transacting});
 	const entityType = entityHeader.get('type');
 	const model = commonUtils.getEntityModelByType(orm, entityType);
 
 	return model
-		.forge({ bbid: redirectBbid })
+		.forge({bbid: redirectBbid})
 		.fetch({
 			require: true,
 			transacting,
-			withRelated: basicRelations.concat(getEntityFetchPropertiesByType(entityType)),
+			withRelated: basicRelations.concat(getEntityFetchPropertiesByType(entityType))
 		})
 		.then(async (entity) => {
 			const entityJSON = entity.toJSON();
@@ -241,15 +241,15 @@ async function getEntityByBBID(orm, transacting, bbid) {
 }
 
 router.get('/add/:bbid', auth.isAuthenticated, async (req: PassportRequest, res, next) => {
-	const { orm }: { orm?: any } = req.app.locals;
-	let { mergeQueue } = req.session;
+	const {orm}: {orm?: any} = req.app.locals;
+	let {mergeQueue} = req.session;
 	if (_.isNil(req.params.bbid) || !commonUtils.isValidBBID(req.params.bbid)) {
 		return next(new BadRequestError(`Invalid bbid: ${req.params.bbid}`, req));
 	}
 	if (!mergeQueue) {
 		mergeQueue = {
 			entityType: '',
-			mergingEntities: {},
+			mergingEntities: {}
 		};
 		req.session.mergeQueue = mergeQueue;
 	}
@@ -271,7 +271,7 @@ router.get('/add/:bbid', auth.isAuthenticated, async (req: PassportRequest, res,
 		const conflictError = new ConflictError('You cannot merge an entity that has been deleted');
 		return next(conflictError);
 	}
-	const { bbid, type } = fetchedEntity;
+	const {bbid, type} = fetchedEntity;
 	if (type !== mergeQueue.entityType) {
 		mergeQueue.mergingEntities = {};
 		mergeQueue.entityType = _.upperFirst(type);
@@ -283,12 +283,12 @@ router.get('/add/:bbid', auth.isAuthenticated, async (req: PassportRequest, res,
 });
 
 router.get('/remove/:bbid', auth.isAuthenticated, (req: PassportRequest, res) => {
-	const { mergeQueue } = req.session;
+	const {mergeQueue} = req.session;
 	if (!mergeQueue || _.isNil(req.params.bbid)) {
 		res.redirect(req.headers.referer);
 		return;
 	}
-	const { mergingEntities } = mergeQueue;
+	const {mergingEntities} = mergeQueue;
 
 	delete mergingEntities[req.params.bbid];
 
@@ -312,13 +312,13 @@ router.get(
 	middleware.loadLanguages,
 	middleware.loadRelationshipTypes,
 	async (req: PassportRequest, res, next) => {
-		const { orm }: { orm?: any } = req.app.locals;
-		const { bookshelf } = orm;
-		const { mergeQueue } = req.session;
+		const {orm}: {orm?: any} = req.app.locals;
+		const {bookshelf} = orm;
+		const {mergeQueue} = req.session;
 		if (!mergeQueue) {
 			return next(new ConflictError('No entities selected for merge'));
 		}
-		const { mergingEntities, entityType } = mergeQueue;
+		const {mergingEntities, entityType} = mergeQueue;
 
 		const bbids = Object.keys(mergingEntities);
 		if (bbids.length < 2) {
@@ -330,7 +330,7 @@ router.get(
 		}
 
 		let mergingFetchedEntities = _.values(mergingEntities);
-		let { targetBBID } = req.params;
+		let {targetBBID} = req.params;
 		if (_.isNil(targetBBID)) {
 			targetBBID = bbids[0];
 		}
@@ -370,14 +370,14 @@ router.get(
 		});
 		res.locals.entity = mergingFetchedEntities[0];
 
-		const { markup, props } = entityMergeMarkup(
+		const {markup, props} = entityMergeMarkup(
 			generateEntityMergeProps(
 				req,
 				res,
 				{
 					entityType: _.camelCase(entityType),
 					mergingEntities: mergingFetchedEntities,
-					title: 'Merge Page',
+					title: 'Merge Page'
 				},
 				entitiesToFormState
 			)
@@ -388,7 +388,7 @@ router.get(
 				markup,
 				props: escapeProps(props),
 				script: '/js/entity-editor.js',
-				title: `Merge ${mergingFetchedEntities.length} ${_.startCase(entityType)}s`,
+				title: `Merge ${mergingFetchedEntities.length} ${_.startCase(entityType)}s`
 			})
 		);
 	}

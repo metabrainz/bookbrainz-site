@@ -17,11 +17,11 @@
  */
 
 import * as Immutable from 'immutable';
-import { INVALID_ALIAS, INVALID_ALIASES, VALID_ALIAS, VALID_ALIASES } from './data';
+import {INVALID_ALIAS, INVALID_ALIASES, VALID_ALIAS, VALID_ALIASES} from './data';
 import {
 	testValidateBooleanFunc,
 	testValidatePositiveIntegerFunc,
-	testValidateStringFunc,
+	testValidateStringFunc
 } from './helpers';
 import {
 	validateAlias,
@@ -29,13 +29,13 @@ import {
 	validateAliasName,
 	validateAliasPrimary,
 	validateAliasSortName,
-	validateAliases,
+	validateAliases
 } from '../../../../../src/client/entity-editor/validators/common';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
 chai.use(chaiAsPromised);
-const { expect } = chai;
+const {expect} = chai;
 
 function describeValidateAliasName() {
 	testValidateStringFunc(validateAliasName);
@@ -65,22 +65,22 @@ function describeValidateAlias() {
 	});
 
 	it('should reject an Object with an invalid name', () => {
-		const result = validateAlias({ ...VALID_ALIAS, name: null });
+		const result = validateAlias({...VALID_ALIAS, name: null});
 		expect(result).to.be.false;
 	});
 
 	it('should reject an Object with an invalid sort name', () => {
-		const result = validateAlias({ ...VALID_ALIAS, sortName: null });
+		const result = validateAlias({...VALID_ALIAS, sortName: null});
 		expect(result).to.be.false;
 	});
 
 	it('should reject an Object with an invalid language', () => {
-		const result = validateAlias({ ...VALID_ALIAS, language: null });
+		const result = validateAlias({...VALID_ALIAS, language: null});
 		expect(result).to.be.false;
 	});
 
 	it('should reject an Object with an invalid primary', () => {
-		const result = validateAlias({ ...VALID_ALIAS, primary: null });
+		const result = validateAlias({...VALID_ALIAS, primary: null});
 		expect(result).to.be.false;
 	});
 

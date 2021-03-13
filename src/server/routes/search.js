@@ -25,8 +25,8 @@ import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
 import * as utils from '../helpers/utils';
 
-import { keys as _keys, snakeCase as _snakeCase, isNil } from 'lodash';
-import { escapeProps, generateProps } from '../helpers/props';
+import {keys as _keys, snakeCase as _snakeCase, isNil} from 'lodash';
+import {escapeProps, generateProps} from '../helpers/props';
 
 import Layout from '../../client/containers/layout';
 import React from 'react';
@@ -42,7 +42,7 @@ const router = express.Router();
  * browser.
  */
 router.get('/', (req, res, next) => {
-	const { orm } = req.app.locals;
+	const {orm} = req.app.locals;
 	const query = req.query.q;
 	const type = req.query.type || 'allEntities';
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
@@ -52,11 +52,11 @@ router.get('/', (req, res, next) => {
 		.searchByName(orm, query, _snakeCase(type), size + 1, from)
 		.then((entities) => ({
 			initialResults: entities.filter((entity) => !isNil(entity)),
-			query,
+			query
 		}))
 		.then((searchResults) => {
 			const entityTypes = _keys(commonUtils.getEntityModels(orm));
-			const { newResultsArray, nextEnabled } = utils.getNextEnabledAndResultsArray(
+			const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(
 				searchResults.initialResults,
 				size
 			);
@@ -69,7 +69,7 @@ router.get('/', (req, res, next) => {
 				nextEnabled,
 				resultsPerPage: size,
 				...searchResults,
-				type: req.query.type,
+				type: req.query.type
 			});
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...propHelpers.extractLayoutProps(props)}>
@@ -82,7 +82,7 @@ router.get('/', (req, res, next) => {
 					markup,
 					props: escapeProps(props),
 					script: '/js/search.js',
-					title: 'Search Results',
+					title: 'Search Results'
 				})
 			);
 		})
@@ -90,11 +90,11 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/search', (req, res) => {
-	const { orm } = req.app.locals;
+	const {orm} = req.app.locals;
 	const query = req.query.q;
 	const type = req.query.type || 'allEntities';
 
-	const { size, from } = req.query;
+	const {size, from} = req.query;
 
 	const searchPromise = search.searchByName(orm, query, _snakeCase(type), size, from);
 
@@ -106,7 +106,7 @@ router.get('/search', (req, res) => {
  * filtered by collection type.
  */
 router.get('/autocomplete', (req, res) => {
-	const { orm } = req.app.locals;
+	const {orm} = req.app.locals;
 	const query = req.query.q;
 	const type = req.query.type || 'allEntities';
 
@@ -120,8 +120,8 @@ router.get('/autocomplete', (req, res) => {
  * query already exists
  */
 router.get('/exists', (req, res) => {
-	const { orm } = req.app.locals;
-	const { q, type } = req.query;
+	const {orm} = req.app.locals;
+	const {q, type} = req.query;
 
 	const searchPromise = search.checkIfExists(orm, q, _snakeCase(type));
 
@@ -134,7 +134,7 @@ router.get('/exists', (req, res) => {
  * @throws {error.PermissionDeniedError} - Thrown if user is not admin.
  */
 router.get('/reindex', auth.isAuthenticated, (req, res) => {
-	const { orm } = req.app.locals;
+	const {orm} = req.app.locals;
 	const indexPromise = new Promise((resolve) => {
 		// TODO: This is hacky, and we should replace it once we switch to SOLR.
 		const trustedUsers = ['Leftmost Cat', 'LordSputnik', 'Monkey', 'iliekcomputers'];
@@ -147,7 +147,7 @@ router.get('/reindex', auth.isAuthenticated, (req, res) => {
 		resolve();
 	})
 		.then(() => search.generateIndex(orm))
-		.then(() => ({ success: true }));
+		.then(() => ({success: true}));
 
 	handler.sendPromiseResult(res, indexPromise);
 });

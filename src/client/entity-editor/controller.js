@@ -22,14 +22,14 @@
  */
 
 import * as helpers from './helpers';
-import { applyMiddleware, compose, createStore } from 'redux';
-import { extractChildProps, extractLayoutProps } from '../helpers/props';
-import { AppContainer } from 'react-hot-loader';
+import {applyMiddleware, compose, createStore} from 'redux';
+import {extractChildProps, extractLayoutProps} from '../helpers/props';
+import {AppContainer} from 'react-hot-loader';
 import EntityEditor from './entity-editor';
 import EntityMerge from './entity-merge';
 import Immutable from 'immutable';
 import Layout from '../containers/layout';
-import { Provider } from 'react-redux';
+import {Provider} from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReduxThunk from 'redux-thunk';
@@ -40,17 +40,17 @@ const {
 	getValidator,
 	getEntitySection,
 	getEntitySectionMerge,
-	shouldDevToolsBeInjected,
+	shouldDevToolsBeInjected
 } = helpers;
 
 const KEYSTROKE_DEBOUNCE_TIME = 250;
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
-const { initialState, ...rest } = props;
+const {initialState, ...rest} = props;
 
 const rootReducer = createRootReducer(props.entityType);
-const debouncer = createDebounce({ keystroke: KEYSTROKE_DEBOUNCE_TIME });
+const debouncer = createDebounce({keystroke: KEYSTROKE_DEBOUNCE_TIME});
 const composeEnhancers = shouldDevToolsBeInjected()
 	? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
 	: compose;

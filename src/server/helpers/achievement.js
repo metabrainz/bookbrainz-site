@@ -24,7 +24,7 @@
 /* eslint prefer-spread: 1, prefer-reflect: 1, no-magic-numbers: 0 */
 import * as error from '../../common/helpers/error';
 
-import { flattenDeep, isNil } from 'lodash';
+import {flattenDeep, isNil} from 'lodash';
 import log from 'log';
 
 /**
@@ -35,11 +35,11 @@ import log from 'log';
  */
 function awardUnlock(UnlockType, awardAttribs) {
 	return new UnlockType(awardAttribs)
-		.fetch({ require: false })
+		.fetch({require: false})
 		.then((award) => {
 			if (award === null || typeof award === 'undefined') {
 				return new UnlockType(awardAttribs)
-					.save(null, { method: 'insert' })
+					.save(null, {method: 'insert'})
 					.then((unlock) => unlock.toJSON());
 			}
 			return new Promise((resolve) => resolve('Already unlocked'));
@@ -57,9 +57,9 @@ function awardUnlock(UnlockType, awardAttribs) {
  * @memberof module:Achievement
  */
 function awardAchievement(orm, editorId, achievementName) {
-	const { AchievementType, AchievementUnlock } = orm;
-	return new AchievementType({ name: achievementName })
-		.fetch({ require: false })
+	const {AchievementType, AchievementUnlock} = orm;
+	return new AchievementType({name: achievementName})
+		.fetch({require: false})
 		.then((achievementTier) => {
 			let awardPromise;
 			if (achievementTier === null) {
@@ -73,7 +73,7 @@ function awardAchievement(orm, editorId, achievementName) {
 			} else {
 				const achievementAttribs = {
 					achievementId: achievementTier.id,
-					editorId,
+					editorId
 				};
 				awardPromise = awardUnlock(AchievementUnlock, achievementAttribs)
 					.then((unlock) => {
@@ -102,11 +102,11 @@ function awardAchievement(orm, editorId, achievementName) {
  * @memberof module:Achievement
  */
 function awardTitle(orm, editorId, tier) {
-	const { TitleType, TitleUnlock } = orm;
+	const {TitleType, TitleUnlock} = orm;
 	let titlePromise;
 	if (tier.titleName) {
-		titlePromise = new TitleType({ title: tier.titleName })
-			.fetch({ require: false })
+		titlePromise = new TitleType({title: tier.titleName})
+			.fetch({require: false})
 			.then((title) => {
 				let awardPromise;
 				if (title === null) {
@@ -120,7 +120,7 @@ function awardTitle(orm, editorId, tier) {
 				} else {
 					const titleAttribs = {
 						editorId,
-						titleId: title.id,
+						titleId: title.id
 					};
 					awardPromise = awardUnlock(TitleUnlock, titleAttribs)
 						.then((unlock) => {
@@ -194,7 +194,7 @@ function testTiers(orm, signal, editorId, tiers) {
 		if (signal >= tier.threshold) {
 			tierOut = Promise.all([
 				awardAchievement(orm, editorId, tier.name),
-				awardTitle(orm, editorId, tier),
+				awardTitle(orm, editorId, tier)
 			])
 				.then(([achievementUnlock, title]) => {
 					const out = [];
@@ -243,95 +243,95 @@ function getTypeCreation(revisionType, revisionString, editor) {
 			);
 			qb.whereNull('bookbrainz.revision_parent.parent_id');
 		})
-		.fetchAll({ require: false })
+		.fetchAll({require: false})
 		.then((out) => out.length);
 }
 
 function processRevisionist(orm, editorId) {
-	const { Editor } = orm;
-	return new Editor({ id: editorId }).fetch({ require: false }).then((editor) => {
+	const {Editor} = orm;
+	return new Editor({id: editorId}).fetch({require: false}).then((editor) => {
 		const revisions = editor.get('revisionsApplied');
 		const tiers = [
 			{
 				name: 'Revisionist III',
 				threshold: 250,
-				titleName: 'Revisionist',
+				titleName: 'Revisionist'
 			},
 			{
 				name: 'Revisionist II',
-				threshold: 50,
+				threshold: 50
 			},
 			{
 				name: 'Revisionist I',
-				threshold: 1,
-			},
+				threshold: 1
+			}
 		];
 		return testTiers(orm, revisions, editorId, tiers);
 	});
 }
 
 function processAuthorCreator(orm, editorId) {
-	const { AuthorRevision } = orm;
+	const {AuthorRevision} = orm;
 	return getTypeCreation(new AuthorRevision(), 'author_revision', editorId).then((rowCount) => {
 		const tiers = [
 			{
 				name: 'Author Creator III',
 				threshold: 100,
-				titleName: 'Author Creator',
+				titleName: 'Author Creator'
 			},
 			{
 				name: 'Author Creator II',
-				threshold: 10,
+				threshold: 10
 			},
 			{
 				name: 'Author Creator I',
-				threshold: 1,
-			},
+				threshold: 1
+			}
 		];
 		return testTiers(orm, rowCount, editorId, tiers);
 	});
 }
 
 function processLimitedEdition(orm, editorId) {
-	const { EditionRevision } = orm;
+	const {EditionRevision} = orm;
 	return getTypeCreation(new EditionRevision(), 'edition_revision', editorId).then((rowCount) => {
 		const tiers = [
 			{
 				name: 'Limited Edition III',
 				threshold: 100,
-				titleName: 'Limited Edition',
+				titleName: 'Limited Edition'
 			},
 			{
 				name: 'Limited Edition II',
-				threshold: 10,
+				threshold: 10
 			},
 			{
 				name: 'Limited Edition I',
-				threshold: 1,
-			},
+				threshold: 1
+			}
 		];
 		return testTiers(orm, rowCount, editorId, tiers);
 	});
 }
 
 function processPublisher(orm, editorId) {
-	const { EditionGroupRevision } = orm;
+	const {EditionGroupRevision} = orm;
 	return getTypeCreation(new EditionGroupRevision(), 'edition_group_revision', editorId).then(
 		(rowCount) => {
 			const tiers = [
 				{
 					name: 'Publisher III',
 					threshold: 100,
-					titleName: 'Publisher',
+					titleName: 'Publisher'
 				},
 				{
 					name: 'Publisher II',
-					threshold: 10,
+					threshold: 10
 				},
 				{
 					name: 'Publisher I',
-					threshold: 1,
-				},
+					threshold: 1
+				}
 			];
 			return testTiers(orm, rowCount, editorId, tiers);
 		}
@@ -339,23 +339,23 @@ function processPublisher(orm, editorId) {
 }
 
 function processPublisherCreator(orm, editorId) {
-	const { PublisherRevision } = orm;
+	const {PublisherRevision} = orm;
 	return getTypeCreation(new PublisherRevision(), 'publisher_revision', editorId).then(
 		(rowCount) => {
 			const tiers = [
 				{
 					name: 'Publisher Creator III',
 					threshold: 100,
-					titleName: 'Publisher Creator',
+					titleName: 'Publisher Creator'
 				},
 				{
 					name: 'Publisher Creator II',
-					threshold: 10,
+					threshold: 10
 				},
 				{
 					name: 'Publisher Creator I',
-					threshold: 1,
-				},
+					threshold: 1
+				}
 			];
 			return testTiers(orm, rowCount, editorId, tiers);
 		}
@@ -363,29 +363,29 @@ function processPublisherCreator(orm, editorId) {
 }
 
 function processWorkerBee(orm, editorId) {
-	const { WorkRevision } = orm;
+	const {WorkRevision} = orm;
 	return getTypeCreation(new WorkRevision(), 'work_revision', editorId).then((rowCount) => {
 		const tiers = [
 			{
 				name: 'Worker Bee III',
 				threshold: 100,
-				titleName: 'Worker Bee',
+				titleName: 'Worker Bee'
 			},
 			{
 				name: 'Worker Bee II',
-				threshold: 10,
+				threshold: 10
 			},
 			{
 				name: 'Worker Bee I',
-				threshold: 1,
-			},
+				threshold: 1
+			}
 		];
 		return testTiers(orm, rowCount, editorId, tiers);
 	});
 }
 
 function processSprinter(orm, editorId) {
-	const { bookshelf } = orm;
+	const {bookshelf} = orm;
 	const rawSql = `SELECT * from bookbrainz.revision WHERE author_id=${editorId} \
 		and created_at > (SELECT CURRENT_DATE - INTERVAL '1 hour');`;
 
@@ -394,8 +394,8 @@ function processSprinter(orm, editorId) {
 			{
 				name: 'Sprinter',
 				threshold: 10,
-				titleName: 'Sprinter',
-			},
+				titleName: 'Sprinter'
+			}
 		];
 		return testTiers(orm, out.rowCount, editorId, tiers);
 	});
@@ -410,7 +410,7 @@ function processSprinter(orm, editorId) {
  * @returns {int} - Number of days edits were performed on
  */
 function getEditsInDays(orm, editorId, days) {
-	const { bookshelf } = orm;
+	const {bookshelf} = orm;
 	const rawSql = `SELECT DISTINCT created_at::date from bookbrainz.revision \
 		WHERE author_id=${editorId} \
 		and created_at > (SELECT CURRENT_DATE - INTERVAL '${days} days');`;
@@ -424,8 +424,8 @@ function processFunRunner(orm, editorId) {
 			{
 				name: 'Fun Runner',
 				threshold: 7,
-				titleName: 'Fun Runner',
-			},
+				titleName: 'Fun Runner'
+			}
 		];
 		return testTiers(orm, rowCount, editorId, tiers);
 	});
@@ -437,8 +437,8 @@ function processMarathoner(orm, editorId) {
 			{
 				name: 'Marathoner',
 				threshold: 30,
-				titleName: 'Marathoner',
-			},
+				titleName: 'Marathoner'
+			}
 		];
 		return testTiers(orm, rowCount, editorId, tiers);
 	});
@@ -468,8 +468,8 @@ function achievementToUnlockId(achievementUnlock) {
  * @returns {int} - Days since edition was released
  */
 function getEditionDateDifference(orm, revisionId) {
-	const { EditionRevision } = orm;
-	return new EditionRevision({ id: revisionId })
+	const {EditionRevision} = orm;
+	return new EditionRevision({id: revisionId})
 		.fetch()
 		.then((edition) => edition.related('data').fetch())
 		.then((data) => data.related('releaseEventSet').fetch())
@@ -499,12 +499,12 @@ function processTimeTraveller(orm, editorId, revisionId) {
 				{
 					name: 'Time Traveller',
 					threshold: 0,
-					titleName: 'Time Traveller',
-				},
+					titleName: 'Time Traveller'
+				}
 			];
 			return testTiers(orm, diff, editorId, tiers);
 		})
-		.catch((err) => ({ 'Time Traveller': err }));
+		.catch((err) => ({'Time Traveller': err}));
 }
 
 function processHotOffThePress(orm, editorId, revisionId) {
@@ -516,18 +516,18 @@ function processHotOffThePress(orm, editorId, revisionId) {
 					{
 						name: 'Hot Off the Press',
 						threshold: -7,
-						titleName: 'Hot Off the Press',
-					},
+						titleName: 'Hot Off the Press'
+					}
 				];
 				achievementPromise = testTiers(orm, diff, editorId, tiers);
 			} else {
 				achievementPromise = new Promise((resolve) =>
-					resolve({ 'Hot Off the Press': false })
+					resolve({'Hot Off the Press': false})
 				);
 			}
 			return achievementPromise;
 		})
-		.catch((err) => ({ 'Hot Off the Press': err }));
+		.catch((err) => ({'Hot Off the Press': err}));
 }
 
 /**
@@ -537,10 +537,10 @@ function processHotOffThePress(orm, editorId, revisionId) {
  * @returns {int} - Number of views user has
  */
 function getEntityVisits(orm, editorId) {
-	const { EditorEntityVisits } = orm;
+	const {EditorEntityVisits} = orm;
 	return new EditorEntityVisits()
 		.where('editor_id', editorId)
-		.fetchAll({ require: true })
+		.fetchAll({require: true})
 		.then((visits) => visits.length);
 }
 
@@ -550,21 +550,21 @@ function processExplorer(orm, editorId) {
 			const tiers = [
 				{
 					name: 'Explorer I',
-					threshold: 10,
+					threshold: 10
 				},
 				{
 					name: 'Explorer II',
-					threshold: 100,
+					threshold: 100
 				},
 				{
 					name: 'Explorer III',
 					threshold: 1000,
-					titleName: 'Explorer',
-				},
+					titleName: 'Explorer'
+				}
 			];
 			return testTiers(orm, visits, editorId, tiers);
 		})
-		.catch((err) => ({ Explorer: err }));
+		.catch((err) => ({Explorer: err}));
 }
 
 export async function processPageVisit(orm, userId) {
@@ -575,7 +575,7 @@ export async function processPageVisit(orm, userId) {
 
 	return {
 		alert,
-		explorer,
+		explorer
 	};
 }
 
@@ -600,7 +600,7 @@ export function processEdit(orm, userId, revisionId) {
 		processFunRunner(orm, userId),
 		processMarathoner(orm, userId),
 		processTimeTraveller(orm, userId, revisionId),
-		processHotOffThePress(orm, userId, revisionId),
+		processHotOffThePress(orm, userId, revisionId)
 	]).then(
 		([
 			revisionist,
@@ -613,7 +613,7 @@ export function processEdit(orm, userId, revisionId) {
 			funRunner,
 			marathoner,
 			timeTraveller,
-			hotOffThePress,
+			hotOffThePress
 		]) => {
 			let alert = [];
 			alert.push(
@@ -643,7 +643,7 @@ export function processEdit(orm, userId, revisionId) {
 				revisionist,
 				sprinter,
 				timeTraveller,
-				workerBee,
+				workerBee
 			};
 		}
 	);

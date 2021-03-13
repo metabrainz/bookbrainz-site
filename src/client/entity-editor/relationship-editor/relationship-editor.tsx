@@ -26,7 +26,7 @@ import {
 	HelpBlock,
 	Modal,
 	ProgressBar,
-	Row,
+	Row
 } from 'react-bootstrap';
 import type {
 	Entity,
@@ -34,19 +34,19 @@ import type {
 	LanguageOption,
 	RelationshipType,
 	RelationshipWithLabel,
-	Relationship as _Relationship,
+	Relationship as _Relationship
 } from './types';
-import { faExternalLinkAlt, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
+import {faExternalLinkAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 
 import EntitySearchFieldOption from '../common/entity-search-field-option';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ReactSelect from 'react-select';
 import Relationship from './relationship';
 import _ from 'lodash';
-import { getEntityLink } from '../../../server/helpers/utils';
+import {getEntityLink} from '../../../server/helpers/utils';
 
 function isValidRelationship(relationship: _Relationship) {
-	const { relationshipType, sourceEntity, targetEntity } = relationship;
+	const {relationshipType, sourceEntity, targetEntity} = relationship;
 
 	return (
 		relationshipType.deprecated !== true &&
@@ -64,13 +64,13 @@ function generateRelationshipSelection(
 		label: relationshipType.linkPhrase,
 		relationshipType,
 		sourceEntity: entityA,
-		targetEntity: entityB,
+		targetEntity: entityB
 	}));
 	const reverseRelationships = relationshipTypes.map((relationshipType) => ({
 		label: relationshipType.linkPhrase,
 		relationshipType,
 		sourceEntity: entityB,
-		targetEntity: entityA,
+		targetEntity: entityA
 	}));
 
 	const candidateRelationships = [...forwardRelationships, ...reverseRelationships];
@@ -84,7 +84,7 @@ function generateRelationshipSelection(
 		_.sortBy(validRels, [
 			'relationshipType.parentId',
 			'relationshipType.childOrder',
-			'relationshipType.id',
+			'relationshipType.id'
 		]),
 		'relationshipType.parentId'
 	);
@@ -99,7 +99,7 @@ function generateRelationshipSelection(
 		// Find the parent root in the sortedArray and insert its children after it
 		const parentIndex = _.findIndex(sortedRelationships, [
 			'relationshipType.id',
-			Number(parentId),
+			Number(parentId)
 		]);
 		group.forEach(
 			(rel) =>
@@ -141,7 +141,7 @@ type RelationshipModalProps = {
 	relationshipTypes: Array<RelationshipType>;
 	baseEntity: Entity;
 	initRelationship: _Relationship | null | undefined;
-	languageOptions: Array<{ label: string; value: number }>;
+	languageOptions: Array<{label: string; value: number}>;
 	onCancel?: () => unknown;
 	onClose?: () => unknown;
 	onAdd?: (_Relationship) => unknown;
@@ -161,7 +161,7 @@ function getInitState(
 		return {
 			relationship: null,
 			relationshipType: null,
-			targetEntity: null,
+			targetEntity: null
 		};
 	}
 
@@ -191,13 +191,13 @@ function getInitState(
 		id: _.get(otherEntity, ['bbid']),
 		text: _.get(otherEntity, ['defaultAlias', 'name'], '(unnamed)'),
 		type: _.get(otherEntity, ['type']),
-		value: _.get(otherEntity, ['bbid']),
+		value: _.get(otherEntity, ['bbid'])
 	};
 
 	return {
 		relationship: initRelationship,
 		relationshipType: _.get(initRelationship, ['relationshipType']),
-		targetEntity: searchFormatOtherEntity,
+		targetEntity: searchFormatOtherEntity
 	};
 }
 
@@ -230,7 +230,7 @@ class RelationshipModal extends React.Component<RelationshipModalProps, Relation
 	static defaultProps = {
 		onAdd: null,
 		onCancel: null,
-		onClose: null,
+		onClose: null
 	};
 
 	constructor(props: RelationshipModalProps) {
@@ -243,19 +243,19 @@ class RelationshipModal extends React.Component<RelationshipModalProps, Relation
 		this.setState({
 			relationship: null,
 			relationshipType: null,
-			targetEntity: value,
+			targetEntity: value
 		});
 	};
 
 	handleRelationshipTypeChange = (value: _Relationship) => {
 		this.setState({
 			relationship: value,
-			relationshipType: value.relationshipType,
+			relationshipType: value.relationshipType
 		});
 	};
 
 	handleAdd = () => {
-		const { onAdd } = this.props;
+		const {onAdd} = this.props;
 		if (onAdd) {
 			if (this.state.relationship) {
 				onAdd(this.state.relationship);
@@ -285,8 +285,8 @@ class RelationshipModal extends React.Component<RelationshipModalProps, Relation
 	}
 
 	renderEntitySelect() {
-		const { baseEntity, relationshipTypes } = this.props;
-		const { targetEntity } = this.state;
+		const {baseEntity, relationshipTypes} = this.props;
+		const {targetEntity} = this.state;
 		const types = getValidOtherEntityTypes(relationshipTypes, baseEntity);
 		if (!types.length) {
 			return null;
@@ -297,7 +297,7 @@ class RelationshipModal extends React.Component<RelationshipModalProps, Relation
 		const label = `Other Entity (${otherTypes.length ? `${otherTypes} or ` : ''}${lastType})`;
 
 		const link = targetEntity
-			? getEntityLink({ bbid: targetEntity.id, type: targetEntity.type })
+			? getEntityLink({bbid: targetEntity.id, type: targetEntity.type})
 			: '';
 		const openButton = (
 			<Button
@@ -327,15 +327,15 @@ class RelationshipModal extends React.Component<RelationshipModalProps, Relation
 	}
 
 	renderRelationshipSelect() {
-		const { baseEntity, relationshipTypes } = this.props;
+		const {baseEntity, relationshipTypes} = this.props;
 
 		const otherEntity = {
 			bbid: _.get(this.state, ['targetEntity', 'id']),
 			defaultAlias: {
-				name: _.get(this.state, ['targetEntity', 'text']),
+				name: _.get(this.state, ['targetEntity', 'text'])
 			},
 			disambiguation: _.get(this.state, ['targetEntity', 'disambiguation']),
-			type: _.get(this.state, ['targetEntity', 'type']),
+			type: _.get(this.state, ['targetEntity', 'type'])
 		};
 
 		const relationships = generateRelationshipSelection(
@@ -365,7 +365,7 @@ class RelationshipModal extends React.Component<RelationshipModalProps, Relation
 	}
 
 	render() {
-		const { onCancel, onClose, baseEntity } = this.props;
+		const {onCancel, onClose, baseEntity} = this.props;
 		const baseEntityTypeForDisplay = _.startCase(baseEntity.type);
 		const submitDisabled = this.calculateProgressAmount() < 100;
 		const entitySelect = this.renderEntitySelect();

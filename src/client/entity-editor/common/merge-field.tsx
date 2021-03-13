@@ -17,7 +17,7 @@
  */
 
 import * as React from 'react';
-import { get as _get, has } from 'lodash';
+import {get as _get, has} from 'lodash';
 import CustomInput from '../../input';
 import Select from 'react-select';
 import ValidationLabel from '../common/validation-label';
@@ -63,7 +63,7 @@ function MergeField({
 	const onChangeReturnValue = function onChangeReturnValue(selectObject) {
 		let value;
 		if (has(selectObject, 'value') && has(selectObject, 'label')) {
-			({ value } = selectObject);
+			({value} = selectObject);
 		} else {
 			value = selectObject;
 		}
@@ -86,7 +86,7 @@ MergeField.displayName = 'MergeField';
 
 MergeField.defaultProps = {
 	error: false,
-	valueProperty: 'label',
+	valueProperty: 'label'
 };
 
 export default MergeField;
