@@ -16,31 +16,32 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import CollectionsTable from "./parts/collections-table";
-import PagerElement from "./parts/pager";
-import PropTypes from "prop-types";
-import React from "react";
+import CollectionsTable from './parts/collections-table';
+import PagerElement from './parts/pager';
+import PropTypes from 'prop-types';
+import React from 'react';
+
 
 class CollectionsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			querySearchParams: "",
-			results: this.props.results,
+			querySearchParams: '',
+			results: this.props.results
 		};
 
 		this.handleTypeChange = this.handleTypeChange.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
-		this.paginationUrl = "./collections/collections";
+		this.paginationUrl = './collections/collections';
 	}
 
 	searchResultsCallback(newResults) {
-		this.setState({ results: newResults });
+		this.setState({results: newResults});
 	}
 
 	handleTypeChange(type) {
-		const querySearchParams = type ? `type=${type}` : "";
-		this.setState({ querySearchParams });
+		const querySearchParams = type ? `type=${type}` : '';
+		this.setState({querySearchParams});
 	}
 
 	render() {
@@ -48,6 +49,7 @@ class CollectionsPage extends React.Component {
 			<div id="pageWithPagination">
 				<CollectionsTable
 					entityTypes={this.props.entityTypes}
+					ownerId={this.props.editor ? this.props.editor.id : null}
 					results={this.state.results}
 					showIfOwnerOrCollaborator={
 						this.props.showIfOwnerOrCollaborator
@@ -56,9 +58,8 @@ class CollectionsPage extends React.Component {
 					showOwner={this.props.showOwner}
 					showPrivacy={this.props.showPrivacy}
 					tableHeading={this.props.tableHeading}
-					onTypeChange={this.handleTypeChange}
 					user={this.props.user}
-					ownerId={this.props.editor ? this.props.editor.id : null}
+					onTypeChange={this.handleTypeChange}
 				/>
 				<PagerElement
 					from={this.props.from}
@@ -74,8 +75,9 @@ class CollectionsPage extends React.Component {
 	}
 }
 
-CollectionsPage.displayName = "CollectionsPage";
+CollectionsPage.displayName = 'CollectionsPage';
 CollectionsPage.propTypes = {
+	editor: PropTypes.object,
 	entityTypes: PropTypes.array.isRequired,
 	from: PropTypes.number,
 	nextEnabled: PropTypes.bool.isRequired,
@@ -86,9 +88,10 @@ CollectionsPage.propTypes = {
 	showPrivacy: PropTypes.bool,
 	size: PropTypes.number,
 	tableHeading: PropTypes.string,
-	user: PropTypes.object,
+	user: PropTypes.object
 };
 CollectionsPage.defaultProps = {
+	editor: null,
 	from: 0,
 	results: [],
 	showIfOwnerOrCollaborator: false,
@@ -96,8 +99,9 @@ CollectionsPage.defaultProps = {
 	showOwner: false,
 	showPrivacy: false,
 	size: 20,
-	tableHeading: "Collections",
-	user: null,
+	tableHeading: 'Collections',
+	user: null
+
 };
 
 export default CollectionsPage;

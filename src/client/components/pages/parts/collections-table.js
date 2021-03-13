@@ -16,23 +16,24 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from "react-bootstrap";
-import * as utilsHelper from "../../../helpers/utils";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import PropTypes from "prop-types";
-import React from "react";
-import _ from "lodash";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { genEntityIconHTMLElement } from "../../../helpers/entity";
+import * as bootstrap from 'react-bootstrap';
+import * as utilsHelper from '../../../helpers/utils';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import PropTypes from 'prop-types';
+import React from 'react';
+import _ from 'lodash';
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
-const { Button, DropdownButton, MenuItem, Table } = bootstrap;
-const { formatDate } = utilsHelper;
+
+const {Button, DropdownButton, MenuItem, Table} = bootstrap;
+const {formatDate} = utilsHelper;
 
 class CollectionsTable extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			type: "",
+			type: ''
 		};
 
 		// React does not autobind non-React class methods
@@ -40,7 +41,7 @@ class CollectionsTable extends React.Component {
 	}
 
 	handleEntitySelect(type) {
-		this.setState({ type });
+		this.setState({type});
 		this.props.onTypeChange(type);
 	}
 
@@ -53,13 +54,13 @@ class CollectionsTable extends React.Component {
 			results,
 			tableHeading,
 			user,
-			ownerId,
+			ownerId
 		} = this.props;
 		const entityTypeSelect = (
 			<DropdownButton
 				bsStyle="primary"
 				id="entity-type-select"
-				title={_.startCase(this.state.type) || "Entity Type"}
+				title={_.startCase(this.state.type) || 'Entity Type'}
 				onSelect={this.handleEntitySelect}
 			>
 				{this.props.entityTypes.map((entityType) => (
@@ -68,7 +69,7 @@ class CollectionsTable extends React.Component {
 						{_.startCase(entityType)}
 					</MenuItem>
 				))}
-				<MenuItem divider />
+				<MenuItem divider/>
 				<MenuItem eventKey={null} key="allTypes">
 					All Types
 				</MenuItem>
@@ -76,7 +77,7 @@ class CollectionsTable extends React.Component {
 		);
 		const newCollectionButton = (
 			<Button bsStyle="warning" href="/collection/create" type="button">
-				<FontAwesomeIcon icon={faPlus} />
+				<FontAwesomeIcon icon={faPlus}/>
 				&nbsp;Create Collection
 			</Button>
 		);
@@ -85,8 +86,8 @@ class CollectionsTable extends React.Component {
 				<div>
 					<h1 className="text-center">{tableHeading}</h1>
 					<div className="text-right">
-						{/* 
-						1.Check if user is logged In if so checks the page ownerId with users id 	
+						{/*
+						1.Check if user is logged In if so checks the page ownerId with users id
 						OR
 						2.Check if user is logged In if so checks the page is central public collections page or not
 						*/}
@@ -96,7 +97,7 @@ class CollectionsTable extends React.Component {
 						{entityTypeSelect}
 					</div>
 				</div>
-				<hr className="thin" />
+				<hr className="thin"/>
 				{results.length > 0 ? (
 					<Table responsive className="table table-striped">
 						<thead>
@@ -104,20 +105,20 @@ class CollectionsTable extends React.Component {
 								<th className="col-sm-2">Name</th>
 								<th className="col-sm-4">Description</th>
 								<th className="col-sm-2">Entity Type</th>
-								{showPrivacy ? (
-									<th className="col-sm-2">Privacy</th>
-								) : null}
+								{showPrivacy ?
+									<th className="col-sm-2">Privacy</th> :
+								 null}
 								{showIfOwnerOrCollaborator ? (
 									<th className="col-sm-2">
 										Collaborator/Owner
 									</th>
 								) : null}
-								{showOwner ? (
-									<th className="col-sm-2">Owner</th>
-								) : null}
-								{showLastModified ? (
-									<th className="col-sm-2">Last Modified</th>
-								) : null}
+								{showOwner ?
+									<th className="col-sm-2">Owner</th> :
+								 null}
+								{showLastModified ?
+									<th className="col-sm-2">Last Modified</th> :
+								 null}
 							</tr>
 						</thead>
 
@@ -135,21 +136,21 @@ class CollectionsTable extends React.Component {
 									<td>{collection.entityType}</td>
 									{showPrivacy ? (
 										<td>
-											{collection.public
-												? "Public"
-												: "Private"}
+											{collection.public ?
+												'Public' :
+												'Private'}
 										</td>
 									) : null}
 									{showIfOwnerOrCollaborator ? (
 										<td>
-											{collection.isOwner
-												? "Owner"
-												: "Collaborator"}
+											{collection.isOwner ?
+												'Owner' :
+												'Collaborator'}
 										</td>
 									) : null}
-									{showOwner ? (
-										<td>{collection.owner.name}</td>
-									) : null}
+									{showOwner ?
+										<td>{collection.owner.name}</td> :
+									 null}
 									{showLastModified ? (
 										<td>
 											{formatDate(
@@ -167,7 +168,7 @@ class CollectionsTable extends React.Component {
 				) : (
 					<div>
 						<h4> No collections to show</h4>
-						<hr className="wide" />
+						<hr className="wide"/>
 					</div>
 				)}
 			</div>
@@ -178,25 +179,25 @@ class CollectionsTable extends React.Component {
 CollectionsTable.propTypes = {
 	entityTypes: PropTypes.array.isRequired,
 	onTypeChange: PropTypes.func.isRequired,
+	ownerId: PropTypes.number,
 	results: PropTypes.array.isRequired,
 	showIfOwnerOrCollaborator: PropTypes.bool,
 	showLastModified: PropTypes.bool,
 	showOwner: PropTypes.bool,
 	showPrivacy: PropTypes.bool,
 	tableHeading: PropTypes.node,
-	user: PropTypes.object,
-	ownerId: PropTypes.number,
+	user: PropTypes.object
 };
 CollectionsTable.defaultProps = {
+	ownerId: null,
 	showIfOwnerOrCollaborator: false,
 	showLastModified: false,
 	showOwner: false,
 	showPrivacy: false,
-	tableHeading: "Collections",
-	user: null,
-	ownerId: null,
+	tableHeading: 'Collections',
+	user: null
 };
 
-CollectionsTable.displayName = "CollectionsTable";
+CollectionsTable.displayName = 'CollectionsTable';
 
 export default CollectionsTable;
