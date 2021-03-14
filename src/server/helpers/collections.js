@@ -75,6 +75,21 @@ export async function getOrderedCollectionsForEditorPage(from, size, entityType,
 	return collectionsJSON;
 }
 
+
+/**
+ * Fetches no of entities in the collection
+ * @param {uuid} collectionId - collectionId
+ * @param {object} orm - the BookBrainz ORM, initialized during app setup
+ * @returns {number} - returns the no. of entities in this collection
+ */
+export async function getCollectionSize(collectionId, orm) {
+	const { UserCollectionItem } = orm;
+
+	const result = await UserCollectionItem.where('collection_id', collectionId).count()
+	return parseInt(result)
+}
+
+
 /**
  * Fetches public collections for Show All Collections/Index Page
  * Fetches the last 'size' number of collections with offset 'from'
@@ -136,17 +151,4 @@ export async function getCollectionItems(collectionId, from, size, orm) {
 						LIMIT ${size}
 						OFFSET ${from}`);
 	return result.rows;
-}
-
-/**
- * Fetches no of entities in the collection
- * @param {uuid} collectionId - collectionId
- * @param {object} orm - the BookBrainz ORM, initialized during app setup
- * @returns {array} - returns the no. of entities in this collection
- */
-export async function getCollectionSize(collectionId, orm) {
-	const { UserCollectionItem } = orm;
-
-	const result = await UserCollectionItem.where('collection_id', collectionId).count()
-	return parseInt(result)
 }
