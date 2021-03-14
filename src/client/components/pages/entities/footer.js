@@ -108,7 +108,7 @@ class EntityFooter extends React.Component {
 				<Row>
 					<Col md={10} mdOffset={1} className="text-center">
 						<Button
-							className="custom-width"
+							className="footer-button"
 							bsStyle="warning"
 							disabled={this.props.deleted}
 							href={`${this.props.entityUrl}/edit`}
@@ -118,7 +118,7 @@ class EntityFooter extends React.Component {
 							&nbsp;Edit
 						</Button>
 						<Button
-							className="custom-width"
+							className="footer-button"
 							bsStyle="primary"
 							href={`${this.props.entityUrl}/revisions`}
 							title="Revision History"
@@ -127,7 +127,7 @@ class EntityFooter extends React.Component {
 							&nbsp;History
 						</Button>
 						<Button
-							className="custom-width"
+							className="footer-button"
 							bsStyle="danger"
 							disabled={this.props.deleted}
 							href={`${this.props.entityUrl}/delete`}
@@ -137,7 +137,7 @@ class EntityFooter extends React.Component {
 							&nbsp;Delete
 						</Button>
 						<Button
-							className="custom-width"
+							className="footer-button"
 							bsStyle="default"
 							href={`/merge/add/${this.props.bbid}`}
 							title="Select entity for merging"
@@ -149,7 +149,7 @@ class EntityFooter extends React.Component {
 							&nbsp;Merge
 						</Button>
 						<Button
-							className="custom-width"
+							className="footer-button"
 							bsStyle="primary"
 							href="#"
 							title="Add To Collection"
