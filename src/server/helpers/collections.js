@@ -86,7 +86,7 @@ export async function getCollectionSize(collectionId, orm) {
 	const { UserCollectionItem } = orm;
 
 	const result = await UserCollectionItem.where('collection_id', collectionId).count()
-	return parseInt(result)
+	return Number(result)
 }
 
 
