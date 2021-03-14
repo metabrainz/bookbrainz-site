@@ -106,7 +106,7 @@ class EntityFooter extends React.Component {
 					</Alert>
 				) : null}
 				<Row>
-					<Col md={10} mdOffset={1} className="text-center">
+					<Col md={10} className="text-center" mdOffset={1}>
 						<Button
 							className="footer-button"
 							bsStyle="warning"
