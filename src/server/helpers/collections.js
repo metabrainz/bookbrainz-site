@@ -121,13 +121,13 @@ export async function getOrderedPublicCollections(from, size, entityType, orm) {
 
 	// We need to add the no. of entities in each collection
 	collectionsJSON.forEach((collection) => {
-		collection['noOfEntities'] = getCollectionSize(collection.id, orm)
-	})
+		collection.noOfEntities = getCollectionSize(collection.id, orm);
+	});
 	// Resolving the promises
 	await Promise.all(collectionsJSON.map(async collection => {
-		const resolvedValue = await collection.noOfEntities
-		collection['noOfEntities'] = resolvedValue;
-	}))
+		const resolvedValue = await collection.noOfEntities;
+		collection.noOfEntities = resolvedValue;
+	}));
 
 	return collectionsJSON;
 }
