@@ -33,9 +33,9 @@ import * as error from '../../common/helpers/error';
  * If the user is not the editor, then only "Public' collections are returned
  */
 export async function getOrderedCollectionsForEditorPage(from, size, entityType, req) {
-	const { Editor, UserCollection } = req.app.locals.orm;
+	const {Editor, UserCollection} = req.app.locals.orm;
 	// If editor isn't present, throw an error
-	await new Editor({ id: req.params.id })
+	await new Editor({id: req.params.id})
 		.fetch()
 		.catch(Editor.NotFoundError, () => {
 			throw new error.NotFoundError('Editor not found', req);
@@ -83,10 +83,10 @@ export async function getOrderedCollectionsForEditorPage(from, size, entityType,
  * @returns {number} - returns the no. of entities in this collection
  */
 export async function getCollectionSize(collectionId, orm) {
-	const { UserCollectionItem } = orm;
+	const {UserCollectionItem} = orm;
 
-	const result = await UserCollectionItem.where('collection_id', collectionId).count()
-	return parseInt(result)
+	const result = await UserCollectionItem.where('collection_id', collectionId).count();
+	return parseInt(result);
 }
 
 
@@ -101,7 +101,7 @@ export async function getCollectionSize(collectionId, orm) {
  * @returns {array} - orderedCollections
  */
 export async function getOrderedPublicCollections(from, size, entityType, orm) {
-	const { UserCollection } = orm;
+	const {UserCollection} = orm;
 
 	const allCollections = await new UserCollection()
 		.where((builder) => {
