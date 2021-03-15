@@ -25,16 +25,16 @@ import {
 } from '../../../../src/server/helpers/collections';
 import assertArrays from 'chai-arrays';
 import chai from 'chai';
-import {date} from 'faker';
+import { date } from 'faker';
 import isSorted from 'chai-sorted';
 import orm from '../../../bookbrainz-data';
 
 
-const {expect} = chai;
+const { expect } = chai;
 chai.use(isSorted);
 chai.use(assertArrays);
 
-const {UserCollection, UserCollectionCollaborator} = orm;
+const { UserCollection, UserCollectionCollaborator } = orm;
 
 
 describe('getOrderedPublicCollections', () => {
@@ -53,19 +53,19 @@ describe('getOrderedPublicCollections', () => {
 			collectionAttrib.lastModified = date.recent();
 			collectionAttrib.createdAt = date.recent();
 			promiseArray.push(
-				new UserCollection(collectionAttrib).save(null, {method: 'insert'})
+				new UserCollection(collectionAttrib).save(null, { method: 'insert' })
 			);
 		}
 		// create 1 private author collection
 		collectionAttrib.public = false;
 		promiseArray.push(
-			new UserCollection(collectionAttrib).save(null, {method: 'insert'})
+			new UserCollection(collectionAttrib).save(null, { method: 'insert' })
 		);
 		// create 1 public Edition collection
 		collectionAttrib.public = true;
 		collectionAttrib.entityType = 'Edition';
 		promiseArray.push(
-			new UserCollection(collectionAttrib).save(null, {method: 'insert'})
+			new UserCollection(collectionAttrib).save(null, { method: 'insert' })
 		);
 		await Promise.all(promiseArray);
 	});
@@ -83,7 +83,8 @@ describe('getOrderedPublicCollections', () => {
 				'public',
 				'createdAt',
 				'lastModified',
-				'owner'
+				'owner',
+				'noOfEntities'
 			);
 		});
 		expect(orderedCollections.length).to.equal(6);
@@ -102,7 +103,8 @@ describe('getOrderedPublicCollections', () => {
 				'public',
 				'createdAt',
 				'lastModified',
-				'owner'
+				'owner',
+				'noOfEntities'
 			);
 			expect(collection.entityType).to.equal('Author');
 		});
@@ -139,34 +141,34 @@ describe('getOrderedCollectionsForEditorPage', () => {
 		};
 
 		// create a public collections owned by editor1
-		const collection = await new UserCollection(collectionAttrib).save(null, {method: 'insert'});
+		const collection = await new UserCollection(collectionAttrib).save(null, { method: 'insert' });
 		collectionID = collection.get('id');
 
 		// create a public collections owned by editor1 and editor2 as collaborator
-		const collection2 = await new UserCollection(collectionAttrib).save(null, {method: 'insert'});
+		const collection2 = await new UserCollection(collectionAttrib).save(null, { method: 'insert' });
 		collectionID2 = collection2.get('id');
 		await new UserCollectionCollaborator({
 			collaboratorId: editor2.get('id'),
 			collectionId: collectionID2
-		}).save(null, {method: 'insert'});
+		}).save(null, { method: 'insert' });
 
 		// create a private collection owned by editor1
 		collectionAttrib.public = false;
-		const collection3 = await new UserCollection(collectionAttrib).save(null, {method: 'insert'});
+		const collection3 = await new UserCollection(collectionAttrib).save(null, { method: 'insert' });
 		collectionID3 = collection3.get('id');
 
 		// create a private collection owned by editor1 and editor2 as collaborator
-		const collection4 = await new UserCollection(collectionAttrib).save(null, {method: 'insert'});
+		const collection4 = await new UserCollection(collectionAttrib).save(null, { method: 'insert' });
 		collectionID4 = collection4.get('id');
 		await new UserCollectionCollaborator({
 			collaboratorId: editor2.get('id'),
 			collectionId: collectionID4
-		}).save(null, {method: 'insert'});
+		}).save(null, { method: 'insert' });
 
 		// create one Edition collection with editor1 as owner
 		collectionAttrib.public = true;
 		collectionAttrib.entityType = 'Edition';
-		const collection5 = await new UserCollection(collectionAttrib).save(null, {method: 'insert'});
+		const collection5 = await new UserCollection(collectionAttrib).save(null, { method: 'insert' });
 		collectionID5 = collection5.get('id');
 	});
 	after(truncateEntities);
