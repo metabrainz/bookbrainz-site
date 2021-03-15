@@ -209,7 +209,11 @@ export default class Input extends React.Component<Props> {
 		const helpIconElement = tooltipText && (
 			<OverlayTrigger
 				delayShow={50}
-				overlay={<Tooltip id={`tooltip-${id}`}>{tooltipText}</Tooltip>}
+				overlay={<Tooltip id={`tooltip-${id}`}><div
+				dangerouslySetInnerHTML={{
+					__html: tooltipText,
+				}}
+			></div></Tooltip>}
 			>
 				<FontAwesomeIcon
 					className="margin-left-0-5"
