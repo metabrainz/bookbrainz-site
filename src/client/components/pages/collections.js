@@ -51,9 +51,7 @@ class CollectionsPage extends React.Component {
 					entityTypes={this.props.entityTypes}
 					ownerId={this.props.editor ? this.props.editor.id : null}
 					results={this.state.results}
-					showIfOwnerOrCollaborator={
-						this.props.showIfOwnerOrCollaborator
-					}
+					showIfOwnerOrCollaborator={this.props.showIfOwnerOrCollaborator}
 					showLastModified={this.props.showLastModified}
 					showOwner={this.props.showOwner}
 					showPrivacy={this.props.showPrivacy}

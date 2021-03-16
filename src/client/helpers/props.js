@@ -30,7 +30,10 @@ const LAYOUT_PROPS = [
 	'user'
 ];
 
-const EDITOR_PROPS = ['editor', 'tabActive'];
+const EDITOR_PROPS = [
+	'editor',
+	'tabActive'
+];
 
 export function extractLayoutProps(props) {
 	return pick(props, LAYOUT_PROPS);
