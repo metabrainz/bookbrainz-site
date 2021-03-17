@@ -135,4 +135,4 @@ export enum RelationshipTypes {
 	WorkIsAdaptionOfWork = 67,
 	WorkIsRevisionOfWork = 68,
 	WorkIsReconstructionOfWork = 69
-};
+}
