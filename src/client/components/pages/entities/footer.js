@@ -18,13 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
-import {
-	faCodeBranch,
-	faGripVertical,
-	faHistory,
-	faPencilAlt,
-	faTimes
-} from '@fortawesome/free-solid-svg-icons';
+import {faCodeBranch, faGripVertical, faHistory, faPencilAlt, faTimes} from '@fortawesome/free-solid-svg-icons';
 import AddToCollectionModal from '../parts/add-to-collection-modal';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -32,7 +26,9 @@ import React from 'react';
 
 
 const {formatDate} = utilsHelper;
-const {Alert, Button, ButtonGroup, Col, Row} = bootstrap;
+const {
+	Alert, Button, ButtonGroup, Col, Row
+} = bootstrap;
 
 class EntityFooter extends React.Component {
 	constructor(props) {
@@ -48,9 +44,7 @@ class EntityFooter extends React.Component {
 		this.onCloseModal = this.onCloseModal.bind(this);
 		this.handleShowModal = this.handleShowModal.bind(this);
 		this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
-		this.closeModalAndShowMessage = this.closeModalAndShowMessage.bind(
-			this
-		);
+		this.closeModalAndShowMessage = this.closeModalAndShowMessage.bind(this);
 	}
 
 	onCloseModal() {
@@ -85,62 +79,58 @@ class EntityFooter extends React.Component {
 	render() {
 		return (
 			<div>
-				{this.props.user ? (
-					<div>
-						<AddToCollectionModal
-							bbids={[this.props.bbid]}
-							closeModalAndShowMessage={
-								this.closeModalAndShowMessage
-							}
-							entityType={this.props.entityType}
-							handleCloseModal={this.onCloseModal}
-							show={this.state.showModal}
-							userId={this.props.user.id}
-						/>
-					</div>
-				) : null}
-				{this.state.message.text ? (
-					<Alert
-						bsStyle={this.state.message.type}
-						onDismiss={this.handleAlertDismiss}
-					>
-						{this.state.message.text}
-					</Alert>
-				) : null}
+				{
+					this.props.user ?
+						<div>
+							<AddToCollectionModal
+								bbids={[this.props.bbid]}
+								closeModalAndShowMessage={this.closeModalAndShowMessage}
+								entityType={this.props.entityType}
+								handleCloseModal={this.onCloseModal}
+								show={this.state.showModal}
+								userId={this.props.user.id}
+							/>
+						</div> : null
+				}
+				{
+					this.state.message.text ?
+						<Alert bsStyle={this.state.message.type} onDismiss={this.handleAlertDismiss}>{this.state.message.text}</Alert> : null
+
+				}
 				<Row>
-					<Col className="text-center" md={10} mdOffset={1}>
+					<Col md={10} className="text-center" mdOffset={1}>
 						<Button
-							bsStyle="warning"
 							className="footer-button"
+							bsStyle="warning"
 							disabled={this.props.deleted}
 							href={`${this.props.entityUrl}/edit`}
 							title="Edit Entity"
 						>
-							<FontAwesomeIcon icon={faPencilAlt}/>
+							<FontAwesomeIcon icon={faPencilAlt} />
 							&nbsp;Edit
 						</Button>
 						<Button
-							bsStyle="primary"
 							className="footer-button"
+							bsStyle="primary"
 							href={`${this.props.entityUrl}/revisions`}
 							title="Revision History"
 						>
-							<FontAwesomeIcon icon={faHistory}/>
+							<FontAwesomeIcon icon={faHistory} />
 							&nbsp;History
 						</Button>
 						<Button
-							bsStyle="danger"
 							className="footer-button"
+							bsStyle="danger"
 							disabled={this.props.deleted}
 							href={`${this.props.entityUrl}/delete`}
 							title="Delete Entity"
 						>
-							<FontAwesomeIcon icon={faTimes}/>
+							<FontAwesomeIcon icon={faTimes} />
 							&nbsp;Delete
 						</Button>
 						<Button
-							bsStyle="default"
 							className="footer-button"
+							bsStyle="default"
 							href={`/merge/add/${this.props.bbid}`}
 							title="Select entity for merging"
 						>
@@ -151,13 +141,13 @@ class EntityFooter extends React.Component {
 							&nbsp;Merge
 						</Button>
 						<Button
-							bsStyle="primary"
 							className="footer-button"
+							bsStyle="primary"
 							href="#"
 							title="Add To Collection"
 							onClick={this.handleShowModal}
 						>
-							<FontAwesomeIcon icon={faGripVertical}/>
+							<FontAwesomeIcon icon={faGripVertical} />
 							&nbsp;Add to collection
 						</Button>
 					</Col>
@@ -178,10 +168,7 @@ EntityFooter.propTypes = {
 	deleted: PropTypes.bool,
 	entityType: PropTypes.string.isRequired,
 	entityUrl: PropTypes.string.isRequired,
-	lastModified: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.instanceOf(Date)
-	]).isRequired,
+	lastModified: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]).isRequired,
 	user: PropTypes.object.isRequired
 };
 EntityFooter.defaultProps = {
