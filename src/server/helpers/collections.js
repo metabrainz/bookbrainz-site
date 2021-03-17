@@ -33,9 +33,9 @@ import * as error from '../../common/helpers/error';
  * If the user is not the editor, then only "Public' collections are returned
  */
 export async function getOrderedCollectionsForEditorPage(from, size, entityType, req) {
-	const { Editor, UserCollection } = req.app.locals.orm;
+	const {Editor, UserCollection} = req.app.locals.orm;
 	// If editor isn't present, throw an error
-	await new Editor({ id: req.params.id })
+	await new Editor({id: req.params.id})
 		.fetch()
 		.catch(Editor.NotFoundError, () => {
 			throw new error.NotFoundError('Editor not found', req);
@@ -86,7 +86,7 @@ export async function getOrderedCollectionsForEditorPage(from, size, entityType,
  * @returns {array} - orderedCollections
  */
 export async function getOrderedPublicCollections(from, size, entityType, orm) {
-	const { UserCollection } = orm;
+	const {UserCollection} = orm;
 
 	const allCollections = await new UserCollection()
 		.where((builder) => {
@@ -106,13 +106,13 @@ export async function getOrderedPublicCollections(from, size, entityType, orm) {
 
 	// We need to add the no. of entities in each collection
 	collectionsJSON.forEach((collection) => {
-		collection['noOfEntities'] = getCollectionSize(collection.id, orm)
-	})
+		collection.noOfEntities = getCollectionSize(collection.id, orm);
+	});
 	// Resolving the promises
 	await Promise.all(collectionsJSON.map(async collection => {
-		const resolvedValue = await collection.noOfEntities
-		collection['noOfEntities'] = resolvedValue;
-	}))
+		const resolvedValue = await collection.noOfEntities;
+		collection.noOfEntities = resolvedValue;
+	}));
 
 	return collectionsJSON;
 }
@@ -145,8 +145,8 @@ export async function getCollectionItems(collectionId, from, size, orm) {
  * @returns {array} - returns the no. of entities in this collection
  */
 export async function getCollectionSize(collectionId, orm) {
-	const { UserCollectionItem } = orm;
+	const {UserCollectionItem} = orm;
 
-	const result = await UserCollectionItem.where('collection_id', collectionId).count()
-	return parseInt(result)
+	const result = await UserCollectionItem.where('collection_id', collectionId).count();
+	return parseInt(result);
 }
