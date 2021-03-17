@@ -225,7 +225,7 @@ function EditionSection({
 					tooltipText={
 						<>
 						Group together different Editions of the same book.
-						<br/>For example paperback, hardcover and e-book editions.
+							<br/>For example paperback, hardcover and e-book editions.
 						</>
 					}
 					type="edition-group"
