@@ -168,7 +168,7 @@ function SortNameField({
 			tooltipText={
 				<>
 				Alphabetical sorting name. Examples: &apos;Dickens, Charles&apos;, &apos;Christmas Carol, A&apos;.
-				<br/>You can try to fill it automatically with the guess button 
+					<br/>You can try to fill it automatically with the guess button
 				</>
 			}
 			type="text"
