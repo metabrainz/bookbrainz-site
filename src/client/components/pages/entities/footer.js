@@ -98,39 +98,39 @@ class EntityFooter extends React.Component {
 
 				}
 				<Row>
-					<Col md={10} className="text-center" mdOffset={1}>
+					<Col className="text-center" md={10} mdOffset={1}>
 						<Button
-							className="footer-button"
 							bsStyle="warning"
+							className="footer-button"
 							disabled={this.props.deleted}
 							href={`${this.props.entityUrl}/edit`}
 							title="Edit Entity"
 						>
-							<FontAwesomeIcon icon={faPencilAlt} />
+							<FontAwesomeIcon icon={faPencilAlt}/>
 							&nbsp;Edit
 						</Button>
 						<Button
-							className="footer-button"
 							bsStyle="primary"
+							className="footer-button"
 							href={`${this.props.entityUrl}/revisions`}
 							title="Revision History"
 						>
-							<FontAwesomeIcon icon={faHistory} />
+							<FontAwesomeIcon icon={faHistory}/>
 							&nbsp;History
 						</Button>
 						<Button
-							className="footer-button"
 							bsStyle="danger"
+							className="footer-button"
 							disabled={this.props.deleted}
 							href={`${this.props.entityUrl}/delete`}
 							title="Delete Entity"
 						>
-							<FontAwesomeIcon icon={faTimes} />
+							<FontAwesomeIcon icon={faTimes}/>
 							&nbsp;Delete
 						</Button>
 						<Button
-							className="footer-button"
 							bsStyle="default"
+							className="footer-button"
 							href={`/merge/add/${this.props.bbid}`}
 							title="Select entity for merging"
 						>
@@ -141,13 +141,13 @@ class EntityFooter extends React.Component {
 							&nbsp;Merge
 						</Button>
 						<Button
-							className="footer-button"
 							bsStyle="primary"
+							className="footer-button"
 							href="#"
 							title="Add To Collection"
 							onClick={this.handleShowModal}
 						>
-							<FontAwesomeIcon icon={faGripVertical} />
+							<FontAwesomeIcon icon={faGripVertical}/>
 							&nbsp;Add to collection
 						</Button>
 					</Col>
