@@ -222,8 +222,12 @@ function EditionSection({
 					help="Group with other Editions of the same book"
 					instanceId="edition-group"
 					label="Edition Group"
-					tooltipText="Group together different Editions of the same book.
-					<br>For example paperback, hardcover and e-book editions."
+					tooltipText={
+						<>
+						Group together different Editions of the same book.
+						<br/>For example paperback, hardcover and e-book editions.
+						</>
+					}
 					type="edition-group"
 					value={editionGroupValue}
 					onChange={onEditionGroupChange}
