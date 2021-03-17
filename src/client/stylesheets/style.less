@@ -31,11 +31,12 @@
 // @import "~react-virtualized-select/styles.css";
 // @import "~react-datepicker/dist/react-datepicker.css";
 
+
 /* Modifications to Lobes */
 /* ====================== */
 @brand-secondary: @bookbrainz;
-@disabled-bg: lighten(desaturate(@bookbrainz, 10%), 42%);
-@disabled-color: lighten(@disabled-bg, 15%);
+@disabled-bg: lighten(desaturate(@bookbrainz,10%),42%);
+@disabled-color: lighten(@disabled-bg,15%);
 
 .navbar.BookBrainz {
 	background: rgba(255, 255, 255, 1);
@@ -58,35 +59,34 @@
 }
 
 /* Overwrite button primary colour to retain default bootstrap meaning */
-@btn-primary-bg: darken(#428bca, 6.5%);
-@btn-primary-border: darken(#428bca, 6.5%);
+@btn-primary-bg:                 darken(#428bca, 6.5%);
+@btn-primary-border:             darken(#428bca, 6.5%);
 
 body {
 	margin-top: 64px;
-	margin-bottom: 64px;
+    margin-bottom: 64px;
 }
 
 @media (max-width: 600px) {
-	body {
-		margin-bottom: 128px;
-	}
+    body {
+        margin-bottom: 128px;
+    }
 }
 
+
 // We use bootstrap badges in buttons, which makes them a smidge taller than buttons with just text
-.btn.btn-sm,
-.btn.btn-xs,
-.btn-group-xs > .btn,
-.btn-group-sm > .btn {
-	.badge {
+.btn.btn-sm , .btn.btn-xs , .btn-group-xs > .btn, .btn-group-sm > .btn {
+	.badge{
 		padding: 2px 6px;
 	}
 }
 
 // Buttons in Lobes overlap for some reason, which if opacity is reduced (disabled) will look quite bad
 .btn {
-	margin-left: 0;
-	margin-right: 0;
+    margin-left: 0;
+    margin-right: 0;
 }
+
 
 /* Site-wide styling */
 /* ================= */
@@ -104,7 +104,7 @@ body {
 	width: 100%;
 	height: 100%;
 	z-index: 10;
-	background-color: rgba(0, 0, 0, 0.6);
+	background-color: rgba(0,0,0,0.6);
 }
 .loading-spinner {
 	position: absolute;
@@ -150,52 +150,44 @@ body {
 	.generate-margins(@n, (@i + 1));
 }
 .generate-margins(6);
-.margin-right-0-5 {
-	margin-right: unit(0.5, em) !important;
-}
-.margin-left-0-5 {
-	margin-left: unit(0.5, em) !important;
-}
-.margin-right-0-3 {
-	margin-right: unit(0.3, em) !important;
-}
-.margin-left-0-3 {
-	margin-left: unit(0.3, em) !important;
-}
+.margin-right-0-5 {margin-right: unit(0.5, em) !important};
+.margin-left-0-5 {margin-left: unit(0.5, em) !important};
+.margin-right-0-3 {margin-right: unit(0.3, em) !important};
+.margin-left-0-3 {margin-left: unit(0.3, em) !important};
 
 .generate-margins-d(@n, @i: 0) when (@i =< @n) {
 	.margin-top-d@{i} {
-		margin-top: unit((@i / 10), em) !important;
+		margin-top: unit((@i/10), em) !important;
 	}
 	.margin-bottom-d@{i} {
-		margin-bottom: unit((@i / 10), em) !important;
+		margin-bottom: unit((@i/10), em) !important;
 	}
 	.margin-left-d@{i} {
-		margin-left: unit((@i / 10), em) !important;
+		margin-left: unit((@i/10), em) !important;
 	}
 	.margin-right-d@{i} {
-		margin-right: unit((@i / 10), em) !important;
+		margin-right: unit((@i/10), em) !important;
 	}
 	.margin-sides-d@{i} {
-		margin-left: unit((@i / 10), em) !important;
-		margin-right: unit((@i / 10), em) !important;
+		margin-left: unit((@i/10), em) !important;
+		margin-right: unit((@i/10), em) !important;
 	}
 
 	.padding-top-d@{i} {
-		padding-top: unit((@i / 10), em) !important;
+		padding-top: unit((@i/10), em) !important;
 	}
 	.padding-bottom-d@{i} {
-		padding-bottom: unit((@i / 10), em) !important;
+		padding-bottom: unit((@i/10), em) !important;
 	}
 	.padding-left-d@{i} {
-		padding-left: unit((@i / 10), em) !important;
+		padding-left: unit((@i/10), em) !important;
 	}
 	.padding-right-d@{i} {
-		padding-right: unit((@i / 10), em) !important;
+		padding-right: unit((@i/10), em) !important;
 	}
 	.padding-sides-d@{i} {
-		padding-left: unit((@i / 10), em) !important;
-		padding-right: unit((@i / 10), em) !important;
+		padding-left: unit((@i/10), em) !important;
+		padding-right: unit((@i/10), em) !important;
 	}
 	.generate-margins-d(@n, (@i + 1));
 }
@@ -230,9 +222,9 @@ body {
  * Styling for FontAwesome icons, to fix random-sized
  * icons appear while the page is loading (FOUC).
  */
-.svg-inline--fa {
+.svg-inline--fa{
 	height: 1em;
-	vertical-align: -0.125em;
+	vertical-align: -.125em;
 }
 .fa-layers {
 	display: inline-block;
@@ -260,13 +252,13 @@ html {
 	position: absolute;
 	width: 100%;
 	background-color: #f5f5f5;
-	bottom: 0;
+    bottom: 0;
 }
 .contact-text {
 	color: rgb(180, 180, 180);
 	flex-direction: column;
-	display: flex;
-	align-items: center;
+    display: flex;
+    align-items: center;
 }
 a.contact-text:visited {
 	color: rgb(180, 180, 180);
@@ -274,20 +266,20 @@ a.contact-text:visited {
 /* index.jade */
 /* ========== */
 #background-image {
-	background: url(./Bookshelf.jpg);
+	background:url(./Bookshelf.jpg);
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
 	background-size: cover;
-	width: 100%;
-	height: 550px;
+	width:100%;
+	height:550px;
 }
 
 #background-overlay {
-	background: rgba(0, 0, 0, 0.8);
-	width: 100%;
-	height: 100%;
-	padding-top: 4em;
+	background:rgba(0, 0, 0, 0.8);
+	width:100%;
+	height:100%;
+	padding-top:4em;
 }
 
 .deleted {
@@ -321,12 +313,14 @@ a.contact-text:visited {
 	padding-right: 0 !important;
 }
 
+
 /* react-select styling */
 .Select-control {
 	height: @input-height-base;
 	border-radius: @input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
 	.transition(~"border-color ease-in-out .15s, box-shadow ease-in-out .15s");
 	.form-control-focus();
+
 }
 
 .Select-placeholder {
@@ -335,22 +329,18 @@ a.contact-text:visited {
 
 /* react-datepicker styling */
 .form-group {
-	.react-datepicker-wrapper,
-	.react-datepicker__input-container {
+	.react-datepicker-wrapper, .react-datepicker__input-container {
 		width: 100%;
 	}
 	.react-datepicker {
 		font-family: inherit;
 		font-size: inherit;
-		.react-datepicker__day-name,
-		.react-datepicker__day,
-		.react-datepicker__time-name {
+		.react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
 			width: 2.3rem;
 			line-height: 2.3rem;
 			margin: 0.2rem;
 		}
-		.react-datepicker__current-month,
-		.react-datepicker-time__header {
+		.react-datepicker__current-month, .react-datepicker-time__header {
 			font-size: inherit;
 		}
 		.react-datepicker__header__dropdown.react-datepicker__header__dropdown--select {
@@ -377,7 +367,7 @@ a.contact-text:visited {
 	margin-top: 5em;
 	margin-bottom: 5em;
 	width: 100%;
-	> :last-child:not(:only-child) {
+	>:last-child:not(:only-child) {
 		color: @brand-danger;
 	}
 }
@@ -393,6 +383,7 @@ a.contact-text:visited {
 	height: 10px;
 }
 
+
 /* Text wrapping in list-group-items (for long revision notes, for example) */
 /* ============= */
 .list-group-item {
@@ -403,29 +394,29 @@ a.contact-text:visited {
 
 hr.thin {
 	margin-top: 10px;
-	margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 hr.wide {
 	margin-top: 40px;
-	margin-bottom: 40px;
+    margin-bottom: 40px;
 }
 #pageWithPagination .pager .dropdown-menu {
 	li {
-		display: initial;
-		> a,
-		> span {
-			display: block;
-			padding: 5px 14px;
-			background-color: @dropdown-bg;
-			border: none;
-			border-radius: 0;
-		}
+	  display: initial;
+	  > a,
+	  > span {
+		display: block;
+		padding: 5px 14px;
+		background-color: @dropdown-bg;
+		border: none;
+		border-radius: 0;
+	  }
 
-		> a:hover,
-		> a:focus {
-			text-decoration: none;
-			background-color: @dropdown-link-hover-bg;
-		}
+	  > a:hover,
+	  > a:focus {
+		text-decoration: none;
+		background-color:@dropdown-link-hover-bg;
+	  }
 	}
 }
 
@@ -435,12 +426,13 @@ hr.wide {
 	}
 }
 
-.BookBrainz > .container-fluid > .navbar-header {
+.BookBrainz > .container-fluid > .navbar-header{
 	margin-left: 0px;
 	margin-right: 0px;
-	> .navbar-toggle {
+	>.navbar-toggle{
 		margin-right: 0px;
 	}
+
 }
 .revision-note {
 	&:not(:last-child) {
@@ -449,13 +441,6 @@ hr.wide {
 		padding-bottom: 0.3em;
 	}
 	.note-content {
-		quotes: "\201C""\201D";
-		&::before {
-			content: open-quote;
-		}
-		&::after {
-			content: close-quote;
-		}
 		white-space: pre-wrap;
 	}
 	.note-author {
@@ -471,10 +456,9 @@ hr.wide {
 	position: relative;
 	min-height: 3em;
 	margin: 0;
-	&.collapse {
+	&.collapse{
 		max-height: max-content;
-		&:not(.in) {
-			//, &.collapsing {
+		&:not(.in){ //, &.collapsing {
 			max-height: 3em;
 			overflow: hidden;
 			display: block;
@@ -485,42 +469,16 @@ hr.wide {
 				width: 100%;
 				content: " ";
 				height: 20px;
-				background: -moz-linear-gradient(
-					top,
-					rgba(255, 255, 255, 0) 0,
-					#fff 100%
-				);
-				background: -webkit-gradient(
-					linear,
-					left top,
-					left bottom,
-					color-stop(0, rgba(255, 255, 255, 0)),
-					color-stop(100%, #fff)
-				);
-				background: -webkit-linear-gradient(
-					top,
-					rgba(255, 255, 255, 0) 0,
-					#fff 100%
-				);
-				background: -o-linear-gradient(
-					top,
-					rgba(255, 255, 255, 0) 0,
-					#fff 100%
-				);
-				background: -ms-linear-gradient(
-					top,
-					rgba(255, 255, 255, 0) 0,
-					#fff 100%
-				);
-				background: linear-gradient(
-					top,
-					rgba(255, 255, 255, 0) 0,
-					#fff 100%
-				);
+				background: -moz-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+				background: -webkit-gradient(linear,left top,left bottom,color-stop(0,rgba(255,255,255,0)),color-stop(100%,#fff));
+				background: -webkit-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+				background: -o-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+				background: -ms-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+				background: linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
 				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#ffffff', GradientType=0);
 			}
 		}
-	}
+}
 }
 
 .btn.wrap {
@@ -532,12 +490,12 @@ hr.wide {
 		position: relative;
 		padding: 0.1em 1.5em 1em;
 		margin: 0 -1.5em;
-		background-color: fade(@disabled-bg, 15%);
+		background-color: fade(@disabled-bg,15%);
 		&:after,
 		&:before {
-			border: 0.15em solid @disabled-bg;
+			border: .15em solid @disabled-bg;
 			bottom: 0;
-			content: "";
+			content: '';
 			position: absolute;
 			top: 0;
 			width: 4em;
@@ -555,12 +513,12 @@ hr.wide {
 
 .round-color-icon {
 	border-radius: 50%;
-	display: inline-block;
+    display: inline-block;
 	width: 1em;
 	position: relative;
-	margin-right: 0.5em;
+    margin-right: 0.5em;
 	vertical-align: middle;
-	background-color: @brand-secondary;
+    background-color: @brand-secondary;
 	color: @white;
 	& > * {
 		position: absolute;
@@ -578,7 +536,7 @@ hr.wide {
 }
 
 .label-checkbox {
-	padding: 0 0.5em;
+	padding: 0 .5em;
 	vertical-align: text-top;
 }
 
@@ -586,10 +544,12 @@ hr.wide {
 	margin-right: 1em;
 	margin-left: 1em;
 	height: 18em;
-	overflow-y: scroll;
+	overflow-y:scroll;
 }
 
 .checkboxes {
-	margin-right: 0.5em !important;
+	margin-right: 0.5em !important;;
 	vertical-align: text-top;
 }
+
+
