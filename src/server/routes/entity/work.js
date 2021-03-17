@@ -91,7 +91,7 @@ router.get(
 	middleware.loadRelationshipTypes,
 	(req, res, next) => {
 		const {Author, Edition} = req.app.locals.orm;
-		let relationshipTypeId : RelationshipTypes;
+		let relationshipTypeId : typeof RelationshipTypes = RelationshipTypes;
 		let initialRelationshipIndex = 0;
 		const propsPromise = generateEntityProps(
 			'work', req, res, {}
