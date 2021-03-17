@@ -31,7 +31,6 @@ import EntityMerge from '../../client/entity-editor/entity-merge';
 import Layout from '../../client/containers/layout';
 import {Provider} from 'react-redux';
 import ReactDOMServer from 'react-dom/server';
-import {RelationshipTypes} from '../../client/entity-editor/relationship-editor/types';
 import _ from 'lodash';
 import {createStore} from 'redux';
 import {generateProps} from './props';
@@ -270,7 +269,7 @@ export function makeEntityCreateOrEditHandler(
  * add an initial relationship to entity from another enitty
  * when one entity created from other.
  * @param {object} props - props related to new entity
- * @param {RelationshipTypes} relationshipTypeId - relationshipId number for initaial relationship
+ * @param {number} relationshipTypeId - relationshipId number for initaial relationship
  * @param {object} targetEntity - details about target entitiy like edition group, publisher and author
  * @param {number} relationshipIndex - initial relationship index number
  */
