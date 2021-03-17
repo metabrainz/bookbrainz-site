@@ -18,16 +18,16 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { genEntityIconHTMLElement } from '../../../helpers/entity';
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const { Button, DropdownButton, MenuItem, Table } = bootstrap;
-const { formatDate } = utilsHelper;
+const {Button, DropdownButton, MenuItem, Table} = bootstrap;
+const {formatDate} = utilsHelper;
 
 
 class CollectionsTable extends React.Component {
@@ -42,13 +42,13 @@ class CollectionsTable extends React.Component {
 	}
 
 	handleEntitySelect(type) {
-		this.setState({ type });
+		this.setState({type});
 		this.props.onTypeChange(type);
 	}
 
 
 	render() {
-		const { showLastModified, showOwner, showIfOwnerOrCollaborator, showPrivacy, results, tableHeading } = this.props;
+		const {showLastModified, showOwner, showIfOwnerOrCollaborator, showPrivacy, results, tableHeading} = this.props;
 
 
 		const entityTypeSelect = (
@@ -67,7 +67,7 @@ class CollectionsTable extends React.Component {
 						{_.startCase(entityType)}
 					</MenuItem>
 				))}
-				<MenuItem divider />
+				<MenuItem divider/>
 				<MenuItem
 					eventKey={null}
 					key="allTypes"
@@ -82,7 +82,7 @@ class CollectionsTable extends React.Component {
 				href="/collection/create"
 				type="button"
 			>
-				<FontAwesomeIcon icon={faPlus} />
+				<FontAwesomeIcon icon={faPlus}/>
 				&nbsp;Create Collection
 			</Button>
 		);
@@ -97,7 +97,7 @@ class CollectionsTable extends React.Component {
 						{entityTypeSelect}
 					</div>
 				</div>
-				<hr className="thin" />
+				<hr className="thin"/>
 				{
 					results.length > 0 ?
 						<Table
@@ -169,7 +169,7 @@ class CollectionsTable extends React.Component {
 
 						<div>
 							<h4> No collections to show</h4>
-							<hr className="wide" />
+							<hr className="wide"/>
 						</div>
 				}
 			</div>
