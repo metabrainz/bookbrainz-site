@@ -18,535 +18,535 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
- @import "./lobes/less/theme.less";
+@import "./lobes/less/theme.less";
 
- @import "~react-select/less/select.less";
- @import "~react-virtualized/styles.css";
- @import "~react-virtualized-select/styles.css";
- @import "~react-datepicker/dist/react-datepicker.css";
- 
- /* With Webpack and less-loader, we are able to import directly from node_modules directory
-	Once we are using Webpack for dev AND prod builds, consider moving to taht style of imports */
- // @import "~react-virtualized/styles.css";
- // @import "~react-virtualized-select/styles.css";
- // @import "~react-datepicker/dist/react-datepicker.css";
- 
- 
- /* Modifications to Lobes */
- /* ====================== */
- @brand-secondary: @bookbrainz;
- @disabled-bg: lighten(desaturate(@bookbrainz,10%),42%);
- @disabled-color: lighten(@disabled-bg,15%);
- 
- .navbar.BookBrainz {
-	 background: rgba(255, 255, 255, 1);
-	 margin-bottom: 0px;
-	 .nav.navbar-nav > .disabled > a {
-		 color: @disabled-color;
-		 background: @disabled-bg;
-	 }
- }
- 
- .navbar-collapse {
-	 border: none !important;
- }
- 
- .BookBrainz .navbar-toggle {
-	 background-color: @bookbrainz;
-	 &:focus {
-		 background-color: @bookbrainz;
-	 }
- }
- 
- /* Overwrite button primary colour to retain default bootstrap meaning */
- @btn-primary-bg:                 darken(#428bca, 6.5%);
- @btn-primary-border:             darken(#428bca, 6.5%);
- 
- body {
-	 margin-top: 64px;
-	 margin-bottom: 64px;
- }
- 
- @media (max-width: 600px) {
-	 body {
-		 margin-bottom: 128px;
-	 }
- }
- 
- 
- // We use bootstrap badges in buttons, which makes them a smidge taller than buttons with just text
- .btn.btn-sm , .btn.btn-xs , .btn-group-xs > .btn, .btn-group-sm > .btn {
-	 .badge{
-		 padding: 2px 6px;
-	 }
- }
- 
- // Buttons in Lobes overlap for some reason, which if opacity is reduced (disabled) will look quite bad
- .btn {
-	 margin-left: 0;
-	 margin-right: 0;
- }
- 
- 
- /* Site-wide styling */
- /* ================= */
- .whole-page-form {
-	 margin-top: 3em;
- }
- .navbar-form .input-group-btn > .btn {
-	 padding: 6.5px 12px !important;
- }
- .loading-background {
-	 position: fixed;
-	 display: inline-block;
-	 left: 0;
-	 top: 0;
-	 width: 100%;
-	 height: 100%;
-	 z-index: 10;
-	 background-color: rgba(0,0,0,0.6);
- }
- .loading-spinner {
-	 position: absolute;
-	 left: 50%;
-	 top: 50%;
-	 margin-left: -0.5em;
-	 margin-top: -0.5em;
- }
- .generate-margins(@n, @i: 0) when (@i =< @n) {
-	 .margin-top-@{i} {
-		 margin-top: unit(@i, em) !important;
-	 }
-	 .margin-bottom-@{i} {
-		 margin-bottom: unit(@i, em) !important;
-	 }
-	 .margin-left-@{i} {
-		 margin-left: unit(@i, em) !important;
-	 }
-	 .margin-right-@{i} {
-		 margin-right: unit(@i, em) !important;
-	 }
-	 .margin-sides-@{i} {
-		 margin-left: unit(@i, em) !important;
-		 margin-right: unit(@i, em) !important;
-	 }
- 
-	 .padding-top-@{i} {
-		 padding-top: unit(@i, em) !important;
-	 }
-	 .padding-bottom-@{i} {
-		 padding-bottom: unit(@i, em) !important;
-	 }
-	 .padding-left-@{i} {
-		 padding-left: unit(@i, em) !important;
-	 }
-	 .padding-right-@{i} {
-		 padding-right: unit(@i, em) !important;
-	 }
-	 .padding-sides-@{i} {
-		 padding-left: unit(@i, em) !important;
-		 padding-right: unit(@i, em) !important;
-	 }
-	 .generate-margins(@n, (@i + 1));
- }
- .generate-margins(6);
- .margin-right-0-5 {margin-right: unit(0.5, em) !important};
- .margin-left-0-5 {margin-left: unit(0.5, em) !important};
- .margin-right-0-3 {margin-right: unit(0.3, em) !important};
- .margin-left-0-3 {margin-left: unit(0.3, em) !important};
- 
- .generate-margins-d(@n, @i: 0) when (@i =< @n) {
-	 .margin-top-d@{i} {
-		 margin-top: unit((@i/10), em) !important;
-	 }
-	 .margin-bottom-d@{i} {
-		 margin-bottom: unit((@i/10), em) !important;
-	 }
-	 .margin-left-d@{i} {
-		 margin-left: unit((@i/10), em) !important;
-	 }
-	 .margin-right-d@{i} {
-		 margin-right: unit((@i/10), em) !important;
-	 }
-	 .margin-sides-d@{i} {
-		 margin-left: unit((@i/10), em) !important;
-		 margin-right: unit((@i/10), em) !important;
-	 }
- 
-	 .padding-top-d@{i} {
-		 padding-top: unit((@i/10), em) !important;
-	 }
-	 .padding-bottom-d@{i} {
-		 padding-bottom: unit((@i/10), em) !important;
-	 }
-	 .padding-left-d@{i} {
-		 padding-left: unit((@i/10), em) !important;
-	 }
-	 .padding-right-d@{i} {
-		 padding-right: unit((@i/10), em) !important;
-	 }
-	 .padding-sides-d@{i} {
-		 padding-left: unit((@i/10), em) !important;
-		 padding-right: unit((@i/10), em) !important;
-	 }
-	 .generate-margins-d(@n, (@i + 1));
- }
- .generate-margins-d(60);
- 
- .no-sides-border {
-	 border-left: 0px;
-	 border-right: 0px;
- }
- 
- .picture-fallback-icon(@size) {
-	 font-size: @size;
-	 margin: 0.2em 0;
-	 color: #d0d0d0;
- }
- .picture-fallback-icon-small {
-	 .picture-fallback-icon(300%);
- }
- .picture-fallback-icon-large {
-	 .picture-fallback-icon(800%);
- }
- 
- // Fix to put react-bootstrap tooltips in front of modals
- .tooltip {
-	 z-index: 1050;
- }
- .tooltip-inner {
-	 max-width: 300px;
- }
- 
- /**
-  * Styling for FontAwesome icons, to fix random-sized
-  * icons appear while the page is loading (FOUC).
-  */
- .svg-inline--fa{
-	 height: 1em;
-	 vertical-align: -.125em;
- }
- .fa-layers {
-	 display: inline-block;
-	 height: 1em;
-	 position: relative;
-	 text-align: center;
-	 vertical-align: -0.125em;
-	 min-width: 1em;
-	 svg.svg-inline--fa {
-		 bottom: 0;
-		 left: 0;
-		 margin: auto;
-		 position: absolute;
-		 right: 0;
-		 top: 0;
-	 }
- }
- 
- /* Sticky footer styling */
- html {
-	 position: relative;
-	 min-height: 100%;
- }
- .footer {
-	 position: absolute;
-	 width: 100%;
-	 background-color: #f5f5f5;
-	 bottom: 0;
- }
- .contact-text {
-	 color: rgb(180, 180, 180);
-	 flex-direction: column;
-	 display: flex;
-	 align-items: center;
- }
- a.contact-text:visited {
-	 color: rgb(180, 180, 180);
- }
- /* index.jade */
- /* ========== */
- #background-image {
-	 background:url(./Bookshelf.jpg);
-	 -webkit-background-size: cover;
-	 -moz-background-size: cover;
-	 -o-background-size: cover;
-	 background-size: cover;
-	 width:100%;
-	 height:550px;
- }
- 
- #background-overlay {
-	 background:rgba(0, 0, 0, 0.8);
-	 width:100%;
-	 height:100%;
-	 padding-top:4em;
- }
- 
- .deleted {
-	 text-decoration-line: line-through;
-	 text-decoration-color: @brand-danger;
- }
- 
- /* getStarted.jade */
- /* =============== */
- .get-started-icon {
-	 margin-top: 20px;
- }
- 
- /* entity/view/*.jade */
- /* ================== */
- .entity-action {
-	 margin-left: 0.1em;
-	 margin-right: 0.1em;
- }
- 
- /* Removes padding from fixed-width "About", "Contribute" and "Develop" buttons
-	on the front page to prevent text misalignment. */
- #background-overlay [class^="col-"] > .btn {
-	 padding-left: 0 !important;
-	 padding-right: 0 !important;
- }
- 
- 
- /* react-select styling */
- .Select-control {
-	 height: @input-height-base;
-	 border-radius: @input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
-	 .transition(~"border-color ease-in-out .15s, box-shadow ease-in-out .15s");
-	 .form-control-focus();
- 
- }
- 
- .Select-placeholder {
-	 color: @input-color-placeholder;
- }
- 
- /* react-datepicker styling */
- .form-group {
-	 .react-datepicker-wrapper, .react-datepicker__input-container {
-		 width: 100%;
-	 }
-	 .react-datepicker {
-		 font-family: inherit;
-		 font-size: inherit;
-		 .react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
-			 width: 2.3rem;
-			 line-height: 2.3rem;
-			 margin: 0.2rem;
-		 }
-		 .react-datepicker__current-month, .react-datepicker-time__header {
-			 font-size: inherit;
-		 }
-		 .react-datepicker__header__dropdown.react-datepicker__header__dropdown--select {
-			 font-size: 0.9rem;
-		 }
-	 }
- }
- 
- /* entities/*.js */
- /* ============= */
- 
- .entity-display-background {
-	 background-color: #f1edeb;
- }
- 
- .entity-display-image-box {
-	 padding-right: 0px;
- }
- 
- .entity-display-icon {
-	 position: relative;
-	 min-height: 5em;
-	 line-height: initial;
-	 margin-top: 5em;
-	 margin-bottom: 5em;
-	 width: 100%;
-	 >:last-child:not(:only-child) {
-		 color: @brand-danger;
-	 }
- }
- 
- .VirtualizedSelectOption {
-	 cursor: pointer;
- }
- 
- .Select-menu-outer {
-	 z-index: 5;
- }
- .progress {
-	 height: 10px;
- }
- 
- 
- /* Text wrapping in list-group-items (for long revision notes, for example) */
- /* ============= */
- .list-group-item {
-	 word-wrap: break-word;
- }
- 
- /* Search Page */
- 
- hr.thin {
-	 margin-top: 10px;
-	 margin-bottom: 10px;
- }
- hr.wide {
-	 margin-top: 40px;
-	 margin-bottom: 40px;
- }
- #pageWithPagination .pager .dropdown-menu {
-	 li {
-	   display: initial;
-	   > a,
-	   > span {
-		 display: block;
-		 padding: 5px 14px;
-		 background-color: @dropdown-bg;
-		 border: none;
-		 border-radius: 0;
-	   }
- 
-	   > a:hover,
-	   > a:focus {
-		 text-decoration: none;
-		 background-color:@dropdown-link-hover-bg;
-	   }
-	 }
- }
- 
- @media only screen and (max-width: 600px) {
-	 #searchpage-button-group > * {
-		 width: 100%;
-	 }
- }
- 
- .BookBrainz > .container-fluid > .navbar-header{
-	 margin-left: 0px;
-	 margin-right: 0px;
-	 >.navbar-toggle{
-		 margin-right: 0px;
-	 }
- 
- }
- .revision-note {
-	 &:not(:last-child) {
-		 border-bottom: 1px solid @disabled-color;
-		 margin-bottom: 0.3em;
-		 padding-bottom: 0.3em;
-	 }
-	 .note-content {
-		 white-space: pre-wrap;
-	 }
-	 .note-author {
-		 &:extend(.small);
-		 font-style: italic;
-		 white-space: nowrap;
-		 margin-left: 0.2em;
-	 }
- }
- 
- .annotation-content {
-	 white-space: pre-wrap;
-	 position: relative;
-	 min-height: 3em;
-	 margin: 0;
-	 &.collapse{
-		 max-height: max-content;
-		 &:not(.in){ //, &.collapsing {
-			 max-height: 3em;
-			 overflow: hidden;
-			 display: block;
-			 &:after {
-				 display: block;
-				 position: absolute;
-				 bottom: 0;
-				 width: 100%;
-				 content: " ";
-				 height: 20px;
-				 background: -moz-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
-				 background: -webkit-gradient(linear,left top,left bottom,color-stop(0,rgba(255,255,255,0)),color-stop(100%,#fff));
-				 background: -webkit-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
-				 background: -o-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
-				 background: -ms-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
-				 background: linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
-				 filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#ffffff', GradientType=0);
-			 }
-		 }
- }
- }
- 
- .btn.wrap {
-	 white-space: normal;
- }
- 
- #mergePage {
-	 .mergedEntities {
-		 position: relative;
-		 padding: 0.1em 1.5em 1em;
-		 margin: 0 -1.5em;
-		 background-color: fade(@disabled-bg,15%);
-		 &:after,
-		 &:before {
-			 border: .15em solid @disabled-bg;
-			 bottom: 0;
-			 content: '';
-			 position: absolute;
-			 top: 0;
-			 width: 4em;
-		 }
-		 &:after {
-			 border-left: none;
-			 right: 0;
-		 }
-		 &:before {
-			 border-right: none;
-			 left: 0;
-		 }
-	 }
- }
- 
- .round-color-icon {
-	 border-radius: 50%;
-	 display: inline-block;
-	 width: 1em;
-	 position: relative;
-	 margin-right: 0.5em;
-	 vertical-align: middle;
-	 background-color: @brand-secondary;
-	 color: @white;
-	 & > * {
-		 position: absolute;
-		 min-width: 110%;
-		 height: 100%;
-	 }
-	 &:after {
-		 content: "";
-		 display: block;
-		 padding-bottom: 100%;
-	 }
- }
- .badge.new {
-	 background-color: @green;
- }
- 
- .label-checkbox {
-	 padding: 0 .5em;
-	 vertical-align: text-top;
- }
- 
- .addToCollectionModal-body {
-	 margin-right: 1em;
-	 margin-left: 1em;
-	 height: 18em;
-	 overflow-y:scroll;
- }
- 
- .checkboxes {
-	 margin-right: 0.5em !important;;
-	 vertical-align: text-top;
- }
- 
- .footer-button {
+@import "~react-select/less/select.less";
+@import "~react-virtualized/styles.css";
+@import "~react-virtualized-select/styles.css";
+@import "~react-datepicker/dist/react-datepicker.css";
+
+/* With Webpack and less-loader, we are able to import directly from node_modules directory
+   Once we are using Webpack for dev AND prod builds, consider moving to taht style of imports */
+// @import "~react-virtualized/styles.css";
+// @import "~react-virtualized-select/styles.css";
+// @import "~react-datepicker/dist/react-datepicker.css";
+
+
+/* Modifications to Lobes */
+/* ====================== */
+@brand-secondary: @bookbrainz;
+@disabled-bg: lighten(desaturate(@bookbrainz,10%),42%);
+@disabled-color: lighten(@disabled-bg,15%);
+
+.navbar.BookBrainz {
+	background: rgba(255, 255, 255, 1);
+	margin-bottom: 0px;
+	.nav.navbar-nav > .disabled > a {
+		color: @disabled-color;
+		background: @disabled-bg;
+	}
+}
+
+.navbar-collapse {
+	border: none !important;
+}
+
+.BookBrainz .navbar-toggle {
+	background-color: @bookbrainz;
+	&:focus {
+		background-color: @bookbrainz;
+	}
+}
+
+/* Overwrite button primary colour to retain default bootstrap meaning */
+@btn-primary-bg:                 darken(#428bca, 6.5%);
+@btn-primary-border:             darken(#428bca, 6.5%);
+
+body {
+	margin-top: 64px;
+    margin-bottom: 64px;
+}
+
+@media (max-width: 600px) {
+    body {
+        margin-bottom: 128px;
+    }
+}
+
+
+// We use bootstrap badges in buttons, which makes them a smidge taller than buttons with just text
+.btn.btn-sm , .btn.btn-xs , .btn-group-xs > .btn, .btn-group-sm > .btn {
+	.badge{
+		padding: 2px 6px;
+	}
+}
+
+// Buttons in Lobes overlap for some reason, which if opacity is reduced (disabled) will look quite bad
+.btn {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+
+/* Site-wide styling */
+/* ================= */
+.whole-page-form {
+	margin-top: 3em;
+}
+.navbar-form .input-group-btn > .btn {
+	padding: 6.5px 12px !important;
+}
+.loading-background {
+	position: fixed;
+	display: inline-block;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 10;
+	background-color: rgba(0,0,0,0.6);
+}
+.loading-spinner {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -0.5em;
+	margin-top: -0.5em;
+}
+.generate-margins(@n, @i: 0) when (@i =< @n) {
+	.margin-top-@{i} {
+		margin-top: unit(@i, em) !important;
+	}
+	.margin-bottom-@{i} {
+		margin-bottom: unit(@i, em) !important;
+	}
+	.margin-left-@{i} {
+		margin-left: unit(@i, em) !important;
+	}
+	.margin-right-@{i} {
+		margin-right: unit(@i, em) !important;
+	}
+	.margin-sides-@{i} {
+		margin-left: unit(@i, em) !important;
+		margin-right: unit(@i, em) !important;
+	}
+
+	.padding-top-@{i} {
+		padding-top: unit(@i, em) !important;
+	}
+	.padding-bottom-@{i} {
+		padding-bottom: unit(@i, em) !important;
+	}
+	.padding-left-@{i} {
+		padding-left: unit(@i, em) !important;
+	}
+	.padding-right-@{i} {
+		padding-right: unit(@i, em) !important;
+	}
+	.padding-sides-@{i} {
+		padding-left: unit(@i, em) !important;
+		padding-right: unit(@i, em) !important;
+	}
+	.generate-margins(@n, (@i + 1));
+}
+.generate-margins(6);
+.margin-right-0-5 {margin-right: unit(0.5, em) !important};
+.margin-left-0-5 {margin-left: unit(0.5, em) !important};
+.margin-right-0-3 {margin-right: unit(0.3, em) !important};
+.margin-left-0-3 {margin-left: unit(0.3, em) !important};
+
+.generate-margins-d(@n, @i: 0) when (@i =< @n) {
+	.margin-top-d@{i} {
+		margin-top: unit((@i/10), em) !important;
+	}
+	.margin-bottom-d@{i} {
+		margin-bottom: unit((@i/10), em) !important;
+	}
+	.margin-left-d@{i} {
+		margin-left: unit((@i/10), em) !important;
+	}
+	.margin-right-d@{i} {
+		margin-right: unit((@i/10), em) !important;
+	}
+	.margin-sides-d@{i} {
+		margin-left: unit((@i/10), em) !important;
+		margin-right: unit((@i/10), em) !important;
+	}
+
+	.padding-top-d@{i} {
+		padding-top: unit((@i/10), em) !important;
+	}
+	.padding-bottom-d@{i} {
+		padding-bottom: unit((@i/10), em) !important;
+	}
+	.padding-left-d@{i} {
+		padding-left: unit((@i/10), em) !important;
+	}
+	.padding-right-d@{i} {
+		padding-right: unit((@i/10), em) !important;
+	}
+	.padding-sides-d@{i} {
+		padding-left: unit((@i/10), em) !important;
+		padding-right: unit((@i/10), em) !important;
+	}
+	.generate-margins-d(@n, (@i + 1));
+}
+.generate-margins-d(60);
+
+.no-sides-border {
+	border-left: 0px;
+	border-right: 0px;
+}
+
+.picture-fallback-icon(@size) {
+	font-size: @size;
+	margin: 0.2em 0;
+	color: #d0d0d0;
+}
+.picture-fallback-icon-small {
+	.picture-fallback-icon(300%);
+}
+.picture-fallback-icon-large {
+	.picture-fallback-icon(800%);
+}
+
+// Fix to put react-bootstrap tooltips in front of modals
+.tooltip {
+	z-index: 1050;
+}
+.tooltip-inner {
+	max-width: 300px;
+}
+
+/**
+ * Styling for FontAwesome icons, to fix random-sized
+ * icons appear while the page is loading (FOUC).
+ */
+.svg-inline--fa{
+	height: 1em;
+	vertical-align: -.125em;
+}
+.fa-layers {
+	display: inline-block;
+	height: 1em;
+	position: relative;
+	text-align: center;
+	vertical-align: -0.125em;
+	min-width: 1em;
+	svg.svg-inline--fa {
+		bottom: 0;
+		left: 0;
+		margin: auto;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+}
+
+/* Sticky footer styling */
+html {
+	position: relative;
+	min-height: 100%;
+}
+.footer {
+	position: absolute;
+	width: 100%;
+	background-color: #f5f5f5;
+    bottom: 0;
+}
+.contact-text {
+	color: rgb(180, 180, 180);
+	flex-direction: column;
+    display: flex;
+    align-items: center;
+}
+a.contact-text:visited {
+	color: rgb(180, 180, 180);
+}
+/* index.jade */
+/* ========== */
+#background-image {
+	background:url(./Bookshelf.jpg);
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	width:100%;
+	height:550px;
+}
+
+#background-overlay {
+	background:rgba(0, 0, 0, 0.8);
+	width:100%;
+	height:100%;
+	padding-top:4em;
+}
+
+.deleted {
+	text-decoration-line: line-through;
+	text-decoration-color: @brand-danger;
+}
+
+/* getStarted.jade */
+/* =============== */
+.get-started-icon {
+	margin-top: 20px;
+}
+
+/* entity/view/*.jade */
+/* ================== */
+.entity-action {
+	margin-left: 0.1em;
+	margin-right: 0.1em;
+}
+
+/* Removes padding from fixed-width "About", "Contribute" and "Develop" buttons
+   on the front page to prevent text misalignment. */
+#background-overlay [class^="col-"] > .btn {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+
+/* react-select styling */
+.Select-control {
+	height: @input-height-base;
+	border-radius: @input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
+	.transition(~"border-color ease-in-out .15s, box-shadow ease-in-out .15s");
+	.form-control-focus();
+
+}
+
+.Select-placeholder {
+	color: @input-color-placeholder;
+}
+
+/* react-datepicker styling */
+.form-group {
+	.react-datepicker-wrapper, .react-datepicker__input-container {
+		width: 100%;
+	}
+	.react-datepicker {
+		font-family: inherit;
+		font-size: inherit;
+		.react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
+			width: 2.3rem;
+			line-height: 2.3rem;
+			margin: 0.2rem;
+		}
+		.react-datepicker__current-month, .react-datepicker-time__header {
+			font-size: inherit;
+		}
+		.react-datepicker__header__dropdown.react-datepicker__header__dropdown--select {
+			font-size: 0.9rem;
+		}
+	}
+}
+
+/* entities/*.js */
+/* ============= */
+
+.entity-display-background {
+	background-color: #f1edeb;
+}
+
+.entity-display-image-box {
+	padding-right: 0px;
+}
+
+.entity-display-icon {
+	position: relative;
+	min-height: 5em;
+	line-height: initial;
+	margin-top: 5em;
+	margin-bottom: 5em;
+	width: 100%;
+	>:last-child:not(:only-child) {
+		color: @brand-danger;
+	}
+}
+
+.VirtualizedSelectOption {
+	cursor: pointer;
+}
+
+.Select-menu-outer {
+	z-index: 5;
+}
+.progress {
+	height: 10px;
+}
+
+
+/* Text wrapping in list-group-items (for long revision notes, for example) */
+/* ============= */
+.list-group-item {
+	word-wrap: break-word;
+}
+
+/* Search Page */
+
+hr.thin {
+	margin-top: 10px;
+    margin-bottom: 10px;
+}
+hr.wide {
+	margin-top: 40px;
+    margin-bottom: 40px;
+}
+#pageWithPagination .pager .dropdown-menu {
+	li {
+	  display: initial;
+	  > a,
+	  > span {
+		display: block;
+		padding: 5px 14px;
+		background-color: @dropdown-bg;
+		border: none;
+		border-radius: 0;
+	  }
+
+	  > a:hover,
+	  > a:focus {
+		text-decoration: none;
+		background-color:@dropdown-link-hover-bg;
+	  }
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	#searchpage-button-group > * {
+		width: 100%;
+	}
+}
+
+.BookBrainz > .container-fluid > .navbar-header{
+	margin-left: 0px;
+	margin-right: 0px;
+	>.navbar-toggle{
+		margin-right: 0px;
+	}
+
+}
+.revision-note {
+	&:not(:last-child) {
+		border-bottom: 1px solid @disabled-color;
+		margin-bottom: 0.3em;
+		padding-bottom: 0.3em;
+	}
+	.note-content {
+		white-space: pre-wrap;
+	}
+	.note-author {
+		&:extend(.small);
+		font-style: italic;
+		white-space: nowrap;
+		margin-left: 0.2em;
+	}
+}
+
+.annotation-content {
+	white-space: pre-wrap;
+	position: relative;
+	min-height: 3em;
+	margin: 0;
+	&.collapse{
+		max-height: max-content;
+		&:not(.in){ //, &.collapsing {
+			max-height: 3em;
+			overflow: hidden;
+			display: block;
+			&:after {
+				display: block;
+				position: absolute;
+				bottom: 0;
+				width: 100%;
+				content: " ";
+				height: 20px;
+				background: -moz-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+				background: -webkit-gradient(linear,left top,left bottom,color-stop(0,rgba(255,255,255,0)),color-stop(100%,#fff));
+				background: -webkit-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+				background: -o-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+				background: -ms-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+				background: linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#ffffff', GradientType=0);
+			}
+		}
+}
+}
+
+.btn.wrap {
+	white-space: normal;
+}
+
+#mergePage {
+	.mergedEntities {
+		position: relative;
+		padding: 0.1em 1.5em 1em;
+		margin: 0 -1.5em;
+		background-color: fade(@disabled-bg,15%);
+		&:after,
+		&:before {
+			border: .15em solid @disabled-bg;
+			bottom: 0;
+			content: '';
+			position: absolute;
+			top: 0;
+			width: 4em;
+		}
+		&:after {
+			border-left: none;
+			right: 0;
+		}
+		&:before {
+			border-right: none;
+			left: 0;
+		}
+	}
+}
+
+.round-color-icon {
+	border-radius: 50%;
+    display: inline-block;
+	width: 1em;
+	position: relative;
+    margin-right: 0.5em;
+	vertical-align: middle;
+    background-color: @brand-secondary;
+	color: @white;
+	& > * {
+		position: absolute;
+		min-width: 110%;
+		height: 100%;
+	}
+	&:after {
+		content: "";
+		display: block;
+		padding-bottom: 100%;
+	}
+}
+.badge.new {
+	background-color: @green;
+}
+
+.label-checkbox {
+	padding: 0 .5em;
+	vertical-align: text-top;
+}
+
+.addToCollectionModal-body {
+	margin-right: 1em;
+	margin-left: 1em;
+	height: 18em;
+	overflow-y:scroll;
+}
+
+.checkboxes {
+	margin-right: 0.5em !important;;
+	vertical-align: text-top;
+}
+
+.footer-button {
 	max-width: 200px;
 	min-width: 175px;
 	margin-top: 8px;
