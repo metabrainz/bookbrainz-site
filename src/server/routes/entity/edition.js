@@ -159,7 +159,7 @@ router.get(
 		function render(props) {
 			const {initialState} = props;
 
-			let relationshipTypeId : number;
+			let relationshipTypeId;
 			let initialRelationshipIndex = 0;
 
 			if (props.publisher || props.editionGroup || props.work) {
