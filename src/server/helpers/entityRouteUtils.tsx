@@ -270,7 +270,7 @@ export function makeEntityCreateOrEditHandler(
  * add an initial relationship to entity from another enitty
  * when one entity created from other.
  * @param {object} props - props related to new entity
- * @param {typeof RelationshipTypes = RelationshipTypes} relationshipTypeId - relationshipId number for initaial relationship
+ * @param {RelationshipTypes} relationshipTypeId - relationshipId number for initaial relationship
  * @param {object} targetEntity - details about target entitiy like edition group, publisher and author
  * @param {number} relationshipIndex - initial relationship index number
  */

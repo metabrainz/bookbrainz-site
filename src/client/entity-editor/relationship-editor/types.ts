@@ -65,7 +65,7 @@ export type LanguageOption = {
 	id: number
 };
 
-export enum RelationshipTypes {
+export const enum RelationshipTypes {
 	AuthorWorkedOnWork = 1,
 	AuthorIllustratedEdition = 2,
 	EditionIsAnEditionOfEditionGroup = 3,
