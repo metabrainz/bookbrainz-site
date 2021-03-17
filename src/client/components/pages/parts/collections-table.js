@@ -46,11 +46,8 @@ class CollectionsTable extends React.Component {
 		this.props.onTypeChange(type);
 	}
 
-
 	render() {
 		const {showLastModified, showOwner, showIfOwnerOrCollaborator, showPrivacy, results, tableHeading} = this.props;
-
-
 		const entityTypeSelect = (
 			<DropdownButton
 				bsStyle="primary"
@@ -67,7 +64,7 @@ class CollectionsTable extends React.Component {
 						{_.startCase(entityType)}
 					</MenuItem>
 				))}
-				<MenuItem divider/>
+				<MenuItem divider />
 				<MenuItem
 					eventKey={null}
 					key="allTypes"
@@ -82,7 +79,7 @@ class CollectionsTable extends React.Component {
 				href="/collection/create"
 				type="button"
 			>
-				<FontAwesomeIcon icon={faPlus}/>
+				<FontAwesomeIcon icon={faPlus} />
 				&nbsp;Create Collection
 			</Button>
 		);
@@ -97,7 +94,7 @@ class CollectionsTable extends React.Component {
 						{entityTypeSelect}
 					</div>
 				</div>
-				<hr className="thin"/>
+				<hr className="thin" />
 				{
 					results.length > 0 ?
 						<Table
@@ -109,7 +106,6 @@ class CollectionsTable extends React.Component {
 									<th className="col-sm-2">Name</th>
 									<th className="col-sm-4">Description</th>
 									<th className="col-sm-2">Entity Type</th>
-									<th className="col-sm-2">No. of Entities</th>
 									{
 										showPrivacy ?
 											<th className="col-sm-2">Privacy</th> : null
@@ -143,7 +139,6 @@ class CollectionsTable extends React.Component {
 											</td>
 											<td>{collection.description}</td>
 											<td>{collection.entityType}</td>
-											<td>{collection.noOfEntities}</td>
 											{
 												showPrivacy ?
 													<td>{collection.public ? 'Public' : 'Private'}</td> : null
@@ -169,7 +164,7 @@ class CollectionsTable extends React.Component {
 
 						<div>
 							<h4> No collections to show</h4>
-							<hr className="wide"/>
+							<hr className="wide" />
 						</div>
 				}
 			</div>
