@@ -16,22 +16,23 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from "react-bootstrap";
-import * as utilsHelper from "../../../helpers/utils";
+import * as bootstrap from 'react-bootstrap';
+import * as utilsHelper from '../../../helpers/utils';
 import {
 	faCodeBranch,
 	faGripVertical,
 	faHistory,
 	faPencilAlt,
-	faTimes,
-} from "@fortawesome/free-solid-svg-icons";
-import AddToCollectionModal from "../parts/add-to-collection-modal";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import PropTypes from "prop-types";
-import React from "react";
+	faTimes
+} from '@fortawesome/free-solid-svg-icons';
+import AddToCollectionModal from '../parts/add-to-collection-modal';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-const { formatDate } = utilsHelper;
-const { Alert, Button, ButtonGroup, Col, Row } = bootstrap;
+
+const {formatDate} = utilsHelper;
+const {Alert, Button, ButtonGroup, Col, Row} = bootstrap;
 
 class EntityFooter extends React.Component {
 	constructor(props) {
@@ -39,9 +40,9 @@ class EntityFooter extends React.Component {
 		this.state = {
 			message: {
 				text: null,
-				type: null,
+				type: null
 			},
-			showModal: false,
+			showModal: false
 		};
 
 		this.onCloseModal = this.onCloseModal.bind(this);
@@ -53,18 +54,19 @@ class EntityFooter extends React.Component {
 	}
 
 	onCloseModal() {
-		this.setState({ showModal: false });
+		this.setState({showModal: false});
 	}
 
 	handleShowModal() {
 		if (this.props.user) {
-			this.setState({ showModal: true });
-		} else {
+			this.setState({showModal: true});
+		}
+		else {
 			this.setState({
 				message: {
-					text: "You need to be logged in",
-					type: "danger",
-				},
+					text: 'You need to be logged in',
+					type: 'danger'
+				}
 			});
 		}
 	}
@@ -72,12 +74,12 @@ class EntityFooter extends React.Component {
 	closeModalAndShowMessage(message) {
 		this.setState({
 			message,
-			showModal: false,
+			showModal: false
 		});
 	}
 
 	handleAlertDismiss() {
-		this.setState({ message: {} });
+		this.setState({message: {}});
 	}
 
 	render() {
@@ -106,39 +108,39 @@ class EntityFooter extends React.Component {
 					</Alert>
 				) : null}
 				<Row>
-					<Col md={10} className="text-center" mdOffset={1}>
+					<Col className="text-center" md={10} mdOffset={1}>
 						<Button
-							className="footer-button"
 							bsStyle="warning"
+							className="footer-button"
 							disabled={this.props.deleted}
 							href={`${this.props.entityUrl}/edit`}
 							title="Edit Entity"
 						>
-							<FontAwesomeIcon icon={faPencilAlt} />
+							<FontAwesomeIcon icon={faPencilAlt}/>
 							&nbsp;Edit
 						</Button>
 						<Button
-							className="footer-button"
 							bsStyle="primary"
+							className="footer-button"
 							href={`${this.props.entityUrl}/revisions`}
 							title="Revision History"
 						>
-							<FontAwesomeIcon icon={faHistory} />
+							<FontAwesomeIcon icon={faHistory}/>
 							&nbsp;History
 						</Button>
 						<Button
-							className="footer-button"
 							bsStyle="danger"
+							className="footer-button"
 							disabled={this.props.deleted}
 							href={`${this.props.entityUrl}/delete`}
 							title="Delete Entity"
 						>
-							<FontAwesomeIcon icon={faTimes} />
+							<FontAwesomeIcon icon={faTimes}/>
 							&nbsp;Delete
 						</Button>
 						<Button
-							className="footer-button"
 							bsStyle="default"
+							className="footer-button"
 							href={`/merge/add/${this.props.bbid}`}
 							title="Select entity for merging"
 						>
@@ -149,13 +151,13 @@ class EntityFooter extends React.Component {
 							&nbsp;Merge
 						</Button>
 						<Button
-							className="footer-button"
 							bsStyle="primary"
+							className="footer-button"
 							href="#"
 							title="Add To Collection"
 							onClick={this.handleShowModal}
 						>
-							<FontAwesomeIcon icon={faGripVertical} />
+							<FontAwesomeIcon icon={faGripVertical}/>
 							&nbsp;Add to collection
 						</Button>
 					</Col>
@@ -170,7 +172,7 @@ class EntityFooter extends React.Component {
 		);
 	}
 }
-EntityFooter.displayName = "EntityFooter";
+EntityFooter.displayName = 'EntityFooter';
 EntityFooter.propTypes = {
 	bbid: PropTypes.string.isRequired,
 	deleted: PropTypes.bool,
@@ -178,12 +180,12 @@ EntityFooter.propTypes = {
 	entityUrl: PropTypes.string.isRequired,
 	lastModified: PropTypes.oneOfType([
 		PropTypes.string,
-		PropTypes.instanceOf(Date),
+		PropTypes.instanceOf(Date)
 	]).isRequired,
-	user: PropTypes.object.isRequired,
+	user: PropTypes.object.isRequired
 };
 EntityFooter.defaultProps = {
-	deleted: false,
+	deleted: false
 };
 
 export default EntityFooter;
