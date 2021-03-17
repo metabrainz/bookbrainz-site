@@ -34,5 +34,15 @@
 			"password": "changeme"
 		},
 		"requestTimeout": 30000
+	},
+	"mailConfig" :{
+		"host":"",
+		"port":"",
+
+		"auth":{
+			"user":"",
+			"pass":""
+		}
+
 	}
 }
