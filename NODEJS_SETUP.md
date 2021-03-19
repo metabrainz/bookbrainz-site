@@ -3,7 +3,7 @@
 ### These instruction are only valid for specific cases when you do not want to use Docker (`./develop.sh`) to run the server on your machine.
 
 If for some reason you do not want to use our standard development environment (Docker), you can run the server code manually (
-regardless of whether you are running dependencies (database, search,…) with Docker or you [are running them manually](./MANUAL_INSTALL.md))
+regardless of whether you are running dependencies (database, search,…) with Docker or you [are running them manually](./DEPENDENCIES_MANUAL_INSTALL.md))
 
 ## Installing NodeJS
 

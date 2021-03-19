@@ -27,7 +27,7 @@ jobs:
               uses: bahmutov/npm-install@v1
 
             - name: Run linters
-              uses: wearerequired/lint-action@feature/pull_request_target
+              uses: wearerequired/lint-action@v1
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
                   # Enable linters with auto-fix

@@ -1,8 +1,8 @@
 <!--
 Before making a pull request, please:
 1. Read the guidelines for contributing
-1. Verify that your changes match our coding style
-1. Fill out the requested information
+2. Verify that your changes match our coding style
+3. Fill out the requested information
 -->
 
 ### Problem
