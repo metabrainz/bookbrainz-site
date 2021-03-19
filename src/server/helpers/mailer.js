@@ -1,6 +1,7 @@
 import config from '../../../config/config.json';
 import nodemailer from 'nodemailer';
 
+
 const {mailConfig} = config;
 
 async function sendEmail({from, html, subject, to}) {
