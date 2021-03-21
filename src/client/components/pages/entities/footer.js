@@ -97,53 +97,70 @@ class EntityFooter extends React.Component {
 						<Alert bsStyle={this.state.message.type} onDismiss={this.handleAlertDismiss}>{this.state.message.text}</Alert> : null
 
 				}
-				<Row>
-					<Col md={10} mdOffset={1}>
-						<ButtonGroup justified>
+				<Row className="no-gutter">
+					<Col xs={12} md={2} mdOffset={1} className="margin-top-d5">
+					
 							<Button
 								bsStyle="warning"
 								disabled={this.props.deleted}
 								href={`${this.props.entityUrl}/edit`}
 								title="Edit Entity"
+								block
 							>
+					
 								<FontAwesomeIcon icon={faPencilAlt}/>&nbsp;Edit
 							</Button>
-							<Button
+					</Col>
+					<Col xs={12} md={2} className="margin-top-d5" >
+					<Button
 								bsStyle="primary"
 								href={`${this.props.entityUrl}/revisions`}
 								title="Revision History"
+								block
 							>
 								<FontAwesomeIcon icon={faHistory}/>&nbsp;History
 							</Button>
-							<Button
+					</Col>
+					
+					<Col xs={12} md={2} className="margin-top-d5" >
+					<Button
 								bsStyle="danger"
 								disabled={this.props.deleted}
 								href={`${this.props.entityUrl}/delete`}
 								title="Delete Entity"
+								block
 							>
 								<FontAwesomeIcon icon={faTimes}/>&nbsp;Delete
 							</Button>
-							<Button
+					</Col>
+					<Col xs={12} md={2} className="margin-top-d5" >
+					<Button
 								bsStyle="default"
 								href={`/merge/add/${this.props.bbid}`}
 								title="Select entity for merging"
+								block
 							>
 								<FontAwesomeIcon flip="vertical" icon={faCodeBranch}/>
 								&nbsp;Merge
 							</Button>
-							<Button
+					</Col>
+
+
+					<Col xs={12} md={2} className="margin-top-d5" >
+					<Button
 								bsStyle="primary"
 								href="#"
 								title="Add To Collection"
 								onClick={this.handleShowModal}
+								block
 							>
 								<FontAwesomeIcon icon={faGripVertical}/>
 								&nbsp;Add to collection
 							</Button>
-						</ButtonGroup>
 					</Col>
+
 				</Row>
-				<div className="text-center margin-top-d10">
+				<div className="text-center margin-top-d5">
 					<dl>
 						<dt>Last Modified</dt>
 						<dd>{formatDate(new Date(this.props.lastModified))}</dd>
