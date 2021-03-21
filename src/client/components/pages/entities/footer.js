@@ -98,65 +98,65 @@ class EntityFooter extends React.Component {
 
 				}
 				<Row className="no-gutter">
-					<Col xs={12} md={2} mdOffset={1} className="margin-top-d5">
-					
-							<Button
-								bsStyle="warning"
-								disabled={this.props.deleted}
-								href={`${this.props.entityUrl}/edit`}
-								title="Edit Entity"
-								block
-							>
-					
-								<FontAwesomeIcon icon={faPencilAlt}/>&nbsp;Edit
-							</Button>
+					<Col className="margin-top-d5" md={2} mdOffset={1} xs={12}>
+
+						<Button
+							block
+							bsStyle="warning"
+							disabled={this.props.deleted}
+							href={`${this.props.entityUrl}/edit`}
+							title="Edit Entity"
+						>
+
+							<FontAwesomeIcon icon={faPencilAlt}/>&nbsp;Edit
+						</Button>
 					</Col>
-					<Col xs={12} md={2} className="margin-top-d5" >
-					<Button
-								bsStyle="primary"
-								href={`${this.props.entityUrl}/revisions`}
-								title="Revision History"
-								block
-							>
-								<FontAwesomeIcon icon={faHistory}/>&nbsp;History
-							</Button>
+					<Col className="margin-top-d5" md={2} xs={12} >
+						<Button
+							block
+							bsStyle="primary"
+							href={`${this.props.entityUrl}/revisions`}
+							title="Revision History"
+						>
+							<FontAwesomeIcon icon={faHistory}/>&nbsp;History
+						</Button>
 					</Col>
-					
-					<Col xs={12} md={2} className="margin-top-d5" >
-					<Button
-								bsStyle="danger"
-								disabled={this.props.deleted}
-								href={`${this.props.entityUrl}/delete`}
-								title="Delete Entity"
-								block
-							>
-								<FontAwesomeIcon icon={faTimes}/>&nbsp;Delete
-							</Button>
+
+					<Col className="margin-top-d5" md={2} xs={12} >
+						<Button
+							block
+							bsStyle="danger"
+							disabled={this.props.deleted}
+							href={`${this.props.entityUrl}/delete`}
+							title="Delete Entity"
+						>
+							<FontAwesomeIcon icon={faTimes}/>&nbsp;Delete
+						</Button>
 					</Col>
-					<Col xs={12} md={2} className="margin-top-d5" >
-					<Button
-								bsStyle="default"
-								href={`/merge/add/${this.props.bbid}`}
-								title="Select entity for merging"
-								block
-							>
-								<FontAwesomeIcon flip="vertical" icon={faCodeBranch}/>
+					<Col className="margin-top-d5" md={2} xs={12} >
+						<Button
+							block
+							bsStyle="default"
+							href={`/merge/add/${this.props.bbid}`}
+							title="Select entity for merging"
+						>
+							<FontAwesomeIcon flip="vertical" icon={faCodeBranch}/>
 								&nbsp;Merge
-							</Button>
+						</Button>
 					</Col>
 
 
-					<Col xs={12} md={2} className="margin-top-d5" >
-					<Button
-								bsStyle="primary"
-								href="#"
-								title="Add To Collection"
-								onClick={this.handleShowModal}
-								block
-							>
-								<FontAwesomeIcon icon={faGripVertical}/>
+					<Col className="margin-top-d5" md={2} xs={12} >
+						<Button
+							block
+							bsStyle="primary"
+							href="#"
+							title="Add To Collection"
+							onClick={this.handleShowModal}
+						>
+							<FontAwesomeIcon icon={faGripVertical}/>
 								&nbsp;Add to collection
-							</Button>
+						</Button>
 					</Col>
 
 				</Row>
