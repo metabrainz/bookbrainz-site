@@ -51,8 +51,8 @@ class CollectionsTable extends React.Component {
 		const entityTypeSelect = (
 			<DropdownButton
 				bsStyle="primary"
-				id="entity-type-select"
 				className="margin-bottom-d5"
+				id="entity-type-select"
 				title={_.startCase(this.state.type) || 'Entity Type'}
 				onSelect={this.handleEntitySelect}
 			>
@@ -77,9 +77,9 @@ class CollectionsTable extends React.Component {
 		const newCollectionButton = (
 			<Button
 				bsStyle="warning"
+				className="margin-bottom-d5"
 				href="/collection/create"
 				type="button"
-				className="margin-bottom-d5"
 			>
 				<FontAwesomeIcon icon={faPlus}/>
 				&nbsp;Create Collection
