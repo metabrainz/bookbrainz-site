@@ -29,6 +29,7 @@ import {
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
+import {RelationshipTypes} from '../../../client/entity-editor/relationship-editor/types';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
@@ -113,13 +114,13 @@ router.get(
 		function render(props) {
 			if (props.author) {
 				// add initial ralationship with relationshipTypeId = 8 (<Work> is written by <Author>)
-				relationshipTypeId = 8;
+				relationshipTypeId = RelationshipTypes.AuthorWroteWork;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.author);
 			}
 
 			if (props.edition) {
 				// add initial ralationship with relationshipTypeId = 10 (<Work> is contained in <Edition>)
-				relationshipTypeId = 10;
+				relationshipTypeId = RelationshipTypes.EditionContainsWork;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.edition);
 			}
 
