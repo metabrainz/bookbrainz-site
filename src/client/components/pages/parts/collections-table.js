@@ -52,6 +52,7 @@ class CollectionsTable extends React.Component {
 			<DropdownButton
 				bsStyle="primary"
 				id="entity-type-select"
+				className="margin-bottom-d5"
 				title={_.startCase(this.state.type) || 'Entity Type'}
 				onSelect={this.handleEntitySelect}
 			>
@@ -78,6 +79,7 @@ class CollectionsTable extends React.Component {
 				bsStyle="warning"
 				href="/collection/create"
 				type="button"
+				className="margin-bottom-d5"
 			>
 				<FontAwesomeIcon icon={faPlus}/>
 				&nbsp;Create Collection
