@@ -126,7 +126,7 @@ class IndexPage extends React.Component {
 												className="margin-sides-1 contact-text"
 												icon={faCircle}
 											/>
-											<a className="contact-text" href="//webchat.freenode.net/?channels=#metabrainz">
+											<a className="contact-text" href="//webchat.freenode.net/?channels=#bookbrainz">
 												<FontAwesomeIcon
 													className="contact-text"
 													icon={faCommentDots}
