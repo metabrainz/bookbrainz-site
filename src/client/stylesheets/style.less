@@ -435,13 +435,6 @@ hr.wide {
 		padding-bottom: 0.3em;
 	}
 	.note-content {
-		quotes: "\201C" "\201D";
-		&::before {
-			content: open-quote;
-		}
-		&::after {
-			content: close-quote;
-		}
 		white-space: pre-wrap;
 	}
 	.note-author {
@@ -553,4 +546,20 @@ hr.wide {
 	vertical-align: text-top;
 }
 
+
+.footer-button {
+	max-width: 200px;
+	min-width: 175px;
+	margin-top: 8px;
+} 
+
+.collection-page-buttons {
+    text-align: right;
+}
+
+@media only screen and (max-width: @screen-sm-max){
+    .collection-page-buttons {
+        text-align: center;
+    }
+}
 

@@ -95,7 +95,7 @@ class CollectionsTable extends React.Component {
 					<h1 className="text-center">
 						{tableHeading}
 					</h1>
-					<div className="text-right">
+					<div className="collection-page-buttons">
 						{showNewCollectionButton &&
 							newCollectionButton}
 						{entityTypeSelect}
