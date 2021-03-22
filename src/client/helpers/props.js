@@ -44,7 +44,9 @@ export function extractEditorProps(props) {
 }
 
 export function extractChildProps(props) {
-	return omit(props, LAYOUT_PROPS);
+	const finalProps = omit(props, LAYOUT_PROPS);
+	finalProps.user = props.user;
+	return finalProps;
 }
 
 export function extractEntityProps(props) {

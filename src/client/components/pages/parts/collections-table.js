@@ -47,7 +47,7 @@ class CollectionsTable extends React.Component {
 	}
 
 	render() {
-		const {showLastModified, showOwner, showIfOwnerOrCollaborator, showPrivacy, results, tableHeading} = this.props;
+		const {showLastModified, showOwner, showIfOwnerOrCollaborator, showPrivacy, results, tableHeading, user, ownerId} = this.props;
 		const entityTypeSelect = (
 			<DropdownButton
 				bsStyle="primary"
@@ -83,6 +83,12 @@ class CollectionsTable extends React.Component {
 				&nbsp;Create Collection
 			</Button>
 		);
+
+		// 1.Check if user is logged In if so checks the page ownerId with users id
+		// OR
+		// 2.Check if user is logged In if so checks the page is central public collections page or not
+		const showNewCollectionButton = (user && user.id === ownerId) ||
+		(user && !ownerId);
 		return (
 			<div>
 				<div>
@@ -90,7 +96,8 @@ class CollectionsTable extends React.Component {
 						{tableHeading}
 					</h1>
 					<div className="collection-page-buttons">
-						{newCollectionButton}
+						{showNewCollectionButton &&
+							newCollectionButton}
 						{entityTypeSelect}
 					</div>
 				</div>
@@ -176,19 +183,23 @@ class CollectionsTable extends React.Component {
 CollectionsTable.propTypes = {
 	entityTypes: PropTypes.array.isRequired,
 	onTypeChange: PropTypes.func.isRequired,
+	ownerId: PropTypes.number,
 	results: PropTypes.array.isRequired,
 	showIfOwnerOrCollaborator: PropTypes.bool,
 	showLastModified: PropTypes.bool,
 	showOwner: PropTypes.bool,
 	showPrivacy: PropTypes.bool,
-	tableHeading: PropTypes.node
+	tableHeading: PropTypes.node,
+	user: PropTypes.object
 };
 CollectionsTable.defaultProps = {
+	ownerId: null,
 	showIfOwnerOrCollaborator: false,
 	showLastModified: false,
 	showOwner: false,
 	showPrivacy: false,
-	tableHeading: 'Collections'
+	tableHeading: 'Collections',
+	user: null
 };
 
 

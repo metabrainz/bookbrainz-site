@@ -49,12 +49,14 @@ class CollectionsPage extends React.Component {
 			<div id="pageWithPagination">
 				<CollectionsTable
 					entityTypes={this.props.entityTypes}
+					ownerId={this.props.editor ? this.props.editor.id : null}
 					results={this.state.results}
 					showIfOwnerOrCollaborator={this.props.showIfOwnerOrCollaborator}
 					showLastModified={this.props.showLastModified}
 					showOwner={this.props.showOwner}
 					showPrivacy={this.props.showPrivacy}
 					tableHeading={this.props.tableHeading}
+					user={this.props.user}
 					onTypeChange={this.handleTypeChange}
 				/>
 				<PagerElement
@@ -71,9 +73,9 @@ class CollectionsPage extends React.Component {
 	}
 }
 
-
 CollectionsPage.displayName = 'CollectionsPage';
 CollectionsPage.propTypes = {
+	editor: PropTypes.object,
 	entityTypes: PropTypes.array.isRequired,
 	from: PropTypes.number,
 	nextEnabled: PropTypes.bool.isRequired,
@@ -83,9 +85,11 @@ CollectionsPage.propTypes = {
 	showOwner: PropTypes.bool,
 	showPrivacy: PropTypes.bool,
 	size: PropTypes.number,
-	tableHeading: PropTypes.string
+	tableHeading: PropTypes.string,
+	user: PropTypes.object
 };
 CollectionsPage.defaultProps = {
+	editor: null,
 	from: 0,
 	results: [],
 	showIfOwnerOrCollaborator: false,
@@ -93,7 +97,9 @@ CollectionsPage.defaultProps = {
 	showOwner: false,
 	showPrivacy: false,
 	size: 20,
-	tableHeading: 'Collections'
+	tableHeading: 'Collections',
+	user: null
+
 };
 
 export default CollectionsPage;
