@@ -83,6 +83,12 @@ class CollectionsTable extends React.Component {
 				&nbsp;Create Collection
 			</Button>
 		);
+
+		// 1.Check if user is logged In if so checks the page ownerId with users id
+		// OR
+		// 2.Check if user is logged In if so checks the page is central public collections page or not
+		const showNewCollectionButton = (user && user.id === ownerId) ||
+		(user && !ownerId);
 		return (
 			<div>
 				<div>
@@ -90,13 +96,7 @@ class CollectionsTable extends React.Component {
 						{tableHeading}
 					</h1>
 					<div className="text-right">
-						{/*
-						1.Check if user is logged In if so checks the page ownerId with users id
-						OR
-						2.Check if user is logged In if so checks the page is central public collections page or not
-						*/}
-						{((user && user.id === ownerId) ||
-							(user && !ownerId)) &&
+						{showNewCollectionButton &&
 							newCollectionButton}
 						{entityTypeSelect}
 					</div>
