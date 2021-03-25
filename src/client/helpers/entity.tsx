@@ -175,7 +175,7 @@ export function getEntityLabel(entity, returnHTML = true) {
 			deletedEntityName = entity.parentAlias.name;
 		}
 		if (returnHTML) {
-			return <span className="text-muted deleted" title={`Deleted ${entity.type}`}>{deletedEntityName}</span>;
+			return <span className="deleted"><span className="text-muted" title={`Deleted ${entity.type}`}>{deletedEntityName}</span></span>;
 		}
 		return `${deletedEntityName}`;
 	}
