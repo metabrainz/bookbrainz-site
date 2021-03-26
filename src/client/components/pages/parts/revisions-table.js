@@ -23,6 +23,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {faCodeBranch} from '@fortawesome/free-solid-svg-icons';
+import {sanitize} from 'dompurify';
 
 
 const {Table} = bootstrap;
@@ -117,18 +118,20 @@ function RevisionsTable(props) {
 															<div className="revision-note clearfix" key={note.id}>
 																<span className="note-content">
 																	<span
+																		// eslint-disable-next-line react/no-danger
 																		dangerouslySetInnerHTML={{
-																			__html: note.content.replace(
+																			__html: sanitize(note.content.replace(
+																				// eslint-disable-next-line max-len
 																				/((http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?)/g,
 																				'<a target="_blank" href="$1">$1</a>'
-																			)
+																			))
 																		}}
 																	/>
 																	<a
 																		className="note-author pull-right"
 																		href={`/editor/${note.author.id}`}
 																	>
-														—{note.author.name}
+																		—{note.author.name}
 																	</a>
 																</span>
 															</div>
