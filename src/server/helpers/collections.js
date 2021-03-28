@@ -104,7 +104,7 @@ export async function getOrderedPublicCollections(from, size, entityType, orm) {
 		});
 
 	const collectionsJSON = allCollections ? allCollections.toJSON() : [];
-	
+
 	return collectionsJSON;
 }
 
