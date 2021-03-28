@@ -76,8 +76,6 @@ export async function getOrderedCollectionsForEditorPage(from, size, entityType,
 }
 
 
-
-
 /**
  * Fetches public collections for Show All Collections/Index Page
  * Fetches the last 'size' number of collections with offset 'from'
