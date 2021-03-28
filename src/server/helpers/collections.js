@@ -76,18 +76,6 @@ export async function getOrderedCollectionsForEditorPage(from, size, entityType,
 }
 
 
-/**
- * Fetches no of entities in the collection
- * @param {uuid} collectionId - collectionId
- * @param {object} orm - the BookBrainz ORM, initialized during app setup
- * @returns {number} - returns the no. of entities in this collection
- */
-export async function getCollectionSize(collectionId, orm) {
-	const {UserCollectionItem} = orm;
-
-	const result = await UserCollectionItem.where('collection_id', collectionId).count();
-	return Number(result);
-}
 
 
 /**
@@ -114,21 +102,11 @@ export async function getOrderedPublicCollections(from, size, entityType, orm) {
 		.fetchPage({
 			limit: size,
 			offset: from,
+			withItemCount: true,
 			withRelated: ['owner']
 		});
 
 	const collectionsJSON = allCollections ? allCollections.toJSON() : [];
-
-	// We need to add the no. of entities in each collection
-	collectionsJSON.forEach((collection) => {
-		collection.noOfEntities = getCollectionSize(collection.id, orm);
-	});
-	// Resolving the promises
-	await Promise.all(collectionsJSON.map(async collection => {
-		const resolvedValue = await collection.noOfEntities;
-		collection.noOfEntities = resolvedValue;
-	}));
-
 	return collectionsJSON;
 }
 
