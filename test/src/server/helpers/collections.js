@@ -84,7 +84,7 @@ describe('getOrderedPublicCollections', () => {
 				'createdAt',
 				'lastModified',
 				'owner',
-				'noOfEntities'
+				'itemCount'
 			);
 		});
 		expect(orderedCollections.length).to.equal(6);
@@ -104,7 +104,7 @@ describe('getOrderedPublicCollections', () => {
 				'createdAt',
 				'lastModified',
 				'owner',
-				'noOfEntities'
+				'itemCount'
 			);
 			expect(collection.entityType).to.equal('Author');
 		});
