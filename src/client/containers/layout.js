@@ -157,6 +157,15 @@ class Layout extends React.Component {
 							title={userDropdownTitle}
 							onMouseDown={this.handleMouseDown}
 						>
+							<MenuItem href={`/editor/${user.id}/revisions`}>
+								Revisions
+							</MenuItem>
+							<MenuItem href={`/editor/${user.id}/achievements`}>
+								Achievements
+							</MenuItem>
+							<MenuItem href={`/editor/${user.id}/collections`}>
+								Collections
+							</MenuItem>
 							<MenuItem href={`/editor/${user.id}`}>
 								<FontAwesomeIcon fixedWidth icon={faInfo}/>
 								{' Profile'}
