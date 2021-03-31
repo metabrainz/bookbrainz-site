@@ -178,23 +178,22 @@ function awardListToAwardObject(awardList) {
  * @returns {object} - Returns a track of achievements keyed by achievement
  * name/title containing their respective unlockJSON each tier
  */
-function testTiers(orm, signal, editorId, tiers) {
-	const tierPromise = tiers.map((tier) => {
+async function testTiers(orm, signal, editorId, tiers) {
+	const tierPromise = tiers.map(async (tier) => {
 		let tierOut;
 		if (signal >= tier.threshold) {
-			tierOut = Promise.all([
-				awardAchievement(orm, editorId, tier.name),
-				awardTitle(orm, editorId, tier)
-			])
-				.then(([achievementUnlock, title]) => {
-					const out = [];
-					if (title) {
-						out.push(title);
-					}
-					out.push(achievementUnlock);
-					return out;
-				})
-				.catch((err) => log.debug(err));
+			try {
+			const achievementUnlock = await awardAchievement(orm, editorId, tier.name);			
+			const title= await awardTitle(orm, editorId, tier);
+			const out = [];
+			if (title) {
+				out.push(title);
+			}
+			out.push(achievementUnlock);
+			tierOut = out;
+			} catch (err) {
+				return log.debug(err);
+				}
 		}
 		else {
 			const out = {};
@@ -206,10 +205,9 @@ function testTiers(orm, signal, editorId, tiers) {
 		}
 		return tierOut;
 	});
-	return Promise.all(tierPromise)
-		.then((awardList) => awardListToAwardObject(awardList));
+	const awardList = await Promise.all(tierPromise);
+	return awardListToAwardObject(awardList);
 }
-
 /**
  * Returns number of revisions of a certain type created by a specified
  * editor
@@ -218,8 +216,8 @@ function testTiers(orm, signal, editorId, tiers) {
  * @param {int} editor - Editor id being queried
  * @returns {int} - Number of revisions of type (type)
  */
-function getTypeCreation(revisionType, revisionString, editor) {
-	return revisionType
+async function getTypeCreation(revisionType, revisionString, editor) {
+	const out = await revisionType
 		.query((qb) => {
 			qb.innerJoin('bookbrainz.revision',
 				'bookbrainz.revision.id',
@@ -233,173 +231,160 @@ function getTypeCreation(revisionType, revisionString, editor) {
 				`bookbrainz.${revisionString}.id`);
 			qb.whereNull('bookbrainz.revision_parent.parent_id');
 		})
-		.fetchAll({require: false})
-		.then((out) => out.length);
+		.fetchAll({require: false});
+	return out.length;
 }
 
-function processRevisionist(orm, editorId) {
+async function processRevisionist(orm, editorId) {
 	const {Editor} = orm;
-	return new Editor({id: editorId})
-		.fetch({require: false})
-		.then((editor) => {
-			const revisions = editor.get('revisionsApplied');
-			const tiers = [
-				{
-					name: 'Revisionist III',
-					threshold: 250,
-					titleName: 'Revisionist'
-				},
-				{
-					name: 'Revisionist II',
-					threshold: 50
-				},
-				{
-					name: 'Revisionist I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, revisions, editorId, tiers);
-		});
+	const editor= await new Editor({id: editorId})
+		.fetch({require: false});
+	const revisions = editor.get('revisionsApplied');
+	const tiers = [
+		{
+			name: 'Revisionist III',
+			threshold: 250,
+			titleName: 'Revisionist'
+		},
+		{
+			name: 'Revisionist II',
+			threshold: 50
+		},
+		{
+			name: 'Revisionist I',
+			threshold: 1
+		}
+	];
+	return testTiers(orm, revisions, editorId, tiers);	
 }
 
-function processAuthorCreator(orm, editorId) {
+async function processAuthorCreator(orm, editorId) {
 	const {AuthorRevision} = orm;
-	return getTypeCreation(new AuthorRevision(), 'author_revision', editorId)
-		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Author Creator III',
-					threshold: 100,
-					titleName: 'Author Creator'
-				},
-				{
-					name: 'Author Creator II',
-					threshold: 10
-				},
-				{
-					name: 'Author Creator I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+	const rowCount = await getTypeCreation(new AuthorRevision(), 'author_revision', editorId);	
+	const tiers = [
+		{
+			name: 'Author Creator III',
+			threshold: 100,
+			titleName: 'Author Creator'
+		},
+		{
+			name: 'Author Creator II',
+			threshold: 10
+		},
+		{
+			name: 'Author Creator I',
+			threshold: 1
+		}
+	];
+	return testTiers(orm, rowCount, editorId, tiers);
+	
 }
 
-function processLimitedEdition(orm, editorId) {
+async function processLimitedEdition(orm, editorId) {
 	const {EditionRevision} = orm;
-	return getTypeCreation(new EditionRevision(), 'edition_revision', editorId)
-		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Limited Edition III',
-					threshold: 100,
-					titleName: 'Limited Edition'
-				},
-				{
-					name: 'Limited Edition II',
-					threshold: 10
-				},
-				{
-					name: 'Limited Edition I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+	const rowCount = await getTypeCreation(new EditionRevision(), 'edition_revision', editorId);
+	const tiers = [
+		{
+			name: 'Limited Edition III',
+			threshold: 100,
+			titleName: 'Limited Edition'
+		},
+		{
+			name: 'Limited Edition II',
+			threshold: 10
+		},
+		{
+			name: 'Limited Edition I',
+			threshold: 1
+		}
+	];	
+	return testTiers(orm, rowCount, editorId, tiers);
 }
 
-function processPublisher(orm, editorId) {
+async function processPublisher(orm, editorId) {
 	const {EditionGroupRevision} = orm;
-	return getTypeCreation(new EditionGroupRevision(),
+	const rowCount = await getTypeCreation(new EditionGroupRevision(),
 		'edition_group_revision',
-		editorId)
-		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Publisher III',
-					threshold: 100,
-					titleName: 'Publisher'
-				},
-				{
-					name: 'Publisher II',
-					threshold: 10
-				},
-				{
-					name: 'Publisher I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+		editorId);
+	const tiers = [
+		{
+			name: 'Publisher III',
+			threshold: 100,
+			titleName: 'Publisher'
+		},
+		{
+			name: 'Publisher II',
+			threshold: 10
+		},
+		{
+			name: 'Publisher I',
+			threshold: 1
+		}
+	];
+	return testTiers(orm, rowCount, editorId, tiers);
 }
 
-function processPublisherCreator(orm, editorId) {
+async function processPublisherCreator(orm, editorId) {
 	const {PublisherRevision} = orm;
-	return getTypeCreation(new PublisherRevision(),
+	const rowCount = await getTypeCreation(new PublisherRevision(),
 		'publisher_revision',
-		editorId)
-		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Publisher Creator III',
-					threshold: 100,
-					titleName: 'Publisher Creator'
-				},
-				{
-					name: 'Publisher Creator II',
-					threshold: 10
-				},
-				{
-					name: 'Publisher Creator I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+		editorId);
+	const tiers = [
+		{
+			name: 'Publisher Creator III',
+			threshold: 100,
+			titleName: 'Publisher Creator'
+		},
+		{
+			name: 'Publisher Creator II',
+			threshold: 10
+		},
+		{
+			name: 'Publisher Creator I',
+			threshold: 1
+		}
+	];
+	return testTiers(orm, rowCount, editorId, tiers);
 }
 
-function processWorkerBee(orm, editorId) {
+async function processWorkerBee(orm, editorId) {
 	const {WorkRevision} = orm;
-	return getTypeCreation(new WorkRevision(),
+	const rowCount = await getTypeCreation(new WorkRevision(),
 		'work_revision',
-		editorId)
-		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Worker Bee III',
-					threshold: 100,
-					titleName: 'Worker Bee'
-				},
-				{
-					name: 'Worker Bee II',
-					threshold: 10
-				},
-				{
-					name: 'Worker Bee I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+		editorId);		
+	const tiers = [
+		{
+			name: 'Worker Bee III',
+			threshold: 100,
+			titleName: 'Worker Bee'
+		},
+		{
+			name: 'Worker Bee II',
+			threshold: 10
+		},
+		{
+			name: 'Worker Bee I',
+			threshold: 1
+		}
+	];
+	return testTiers(orm, rowCount, editorId, tiers);
 }
 
-function processSprinter(orm, editorId) {
+async function processSprinter(orm, editorId) {
 	const {bookshelf} = orm;
 	const rawSql =
 		`SELECT * from bookbrainz.revision WHERE author_id=${editorId} \
 		and created_at > (SELECT CURRENT_DATE - INTERVAL '1 hour');`;
 
-	return bookshelf.knex.raw(rawSql)
-		.then((out) => {
-			const tiers = [
-				{
-					name: 'Sprinter',
-					threshold: 10,
-					titleName: 'Sprinter'
-				}
-			];
-			return testTiers(orm, out.rowCount, editorId, tiers);
-		});
+	const out = await bookshelf.knex.raw(rawSql);
+	const tiers = [
+		{
+			name: 'Sprinter',
+			threshold: 10,
+			titleName: 'Sprinter'
+		}
+	];
+	return testTiers(orm, out.rowCount, editorId, tiers);
 }
 
 /**
