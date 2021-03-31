@@ -185,6 +185,7 @@ class DateField extends React.Component {
 								selected={isValid(selectedDate) ? selectedDate : null}
 								timeFormat="false"
 								onChange={this.handleChangeOfDatePicker}
+								popperPlacement="top-end"
 							/>
 						</InputGroup.Button>
 					</InputGroup>
