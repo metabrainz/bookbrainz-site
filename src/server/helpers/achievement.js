@@ -34,18 +34,18 @@ import log from 'log';
  * @param {object} awardAttribs - Values that are supplied to Unlock constructor
  * @returns {object} - 'already unlocked' or JSON of new unlock
  */
-function awardUnlock(UnlockType, awardAttribs) {
-	return new UnlockType(awardAttribs)
-		.fetch({require: false})
-		.then((award) => {
-			if (award === null || typeof award === 'undefined') {
-				return new UnlockType(awardAttribs)
-					.save(null, {method: 'insert'})
-					.then((unlock) => unlock.toJSON());
-			}
-			return new Promise((resolve) => resolve('Already unlocked'));
-		})
-		.catch(err => new Promise((resolve, reject) => reject(err)));
+async function awardUnlock(UnlockType, awardAttribs) {
+	try {
+		const award = await new UnlockType(awardAttribs).fetch({require: false});
+		if (award === null || typeof award === 'undefined') {
+			const unlock = await new UnlockType(awardAttribs).save(null, {method: 'insert'});
+			return unlock.toJSON();
+		}	
+		return new Promise((resolve) => resolve('Already unlocked'));	
+	} catch (err) {
+		return new Promise((resolve, reject) => reject(err))
+		
+	}
 }
 
 /**
@@ -57,36 +57,32 @@ function awardUnlock(UnlockType, awardAttribs) {
  * from awardUnlock
  * @memberof module:Achievement
  */
-function awardAchievement(orm, editorId, achievementName) {
+async function awardAchievement(orm, editorId, achievementName) {
 	const {AchievementType, AchievementUnlock} = orm;
-	return new AchievementType({name: achievementName})
-		.fetch({require: false})
-		.then((achievementTier) => {
-			let awardPromise;
-			if (achievementTier === null) {
-				awardPromise = new Promise((resolve, reject) =>
-					reject(new error.AwardNotUnlockedError(
-						`Achievement ${achievementName} not found in database`
-					)));
-			}
-			else {
-				const achievementAttribs = {
-					achievementId: achievementTier.id,
-					editorId
-				};
-				awardPromise =
-					awardUnlock(AchievementUnlock, achievementAttribs)
-						.then((unlock) => {
-							const out = {};
-							out[achievementName] = unlock;
-							return out;
-						})
-						.catch((err) => new Promise((resolve, reject) => reject(
-							new error.AwardNotUnlockedError(err.message)
-						)));
-			}
-			return awardPromise;
-		});
+	const achievementTier= await new AchievementType({name: achievementName})
+		.fetch({require: false});
+	let awardPromise;
+	if (achievementTier === null) {
+		awardPromise = new Promise((resolve, reject) =>
+			reject(new error.AwardNotUnlockedError(
+				`Achievement ${achievementName} not found in database`
+			)));
+	}
+	else {
+		try {
+			const achievementAttribs = {
+				achievementId: achievementTier.id,
+				editorId
+			};
+			const unlock = await awardUnlock(AchievementUnlock, achievementAttribs);						
+			const out = {};
+			out[achievementName] = unlock;
+			awardPromise = out;
+		} catch (err) {
+			return new Promise((resolve, reject) => reject(new error.AwardNotUnlockedError(err.message)))
+		}			
+	}
+	return awardPromise;
 }
 
 /**
@@ -98,45 +94,45 @@ function awardAchievement(orm, editorId, achievementName) {
  * awardUnlock or false if the title is not in the tier
  * @memberof module:Achievement
  */
-function awardTitle(orm, editorId, tier) {
+async function awardTitle(orm, editorId, tier) {
 	const {TitleType, TitleUnlock} = orm;
 	let titlePromise;
-	if (tier.titleName) {
-		titlePromise = new TitleType({title: tier.titleName})
-			.fetch({require: false})
-			.then((title) => {
-				let awardPromise;
-				if (title === null) {
-					awardPromise = new Promise((resolve, reject) => reject(
-						new error.AwardNotUnlockedError(
-							`Title ${tier.titleName} not found in database`
-						)
-					));
-				}
-				else {
-					const titleAttribs = {
-						editorId,
-						titleId: title.id
-					};
-					awardPromise = awardUnlock(TitleUnlock, titleAttribs)
-						.then((unlock) => {
-							const out = {};
-							out[tier.titleName] = unlock;
-							return out;
-						})
-						.catch((err) => new Promise((resolve, reject) => reject(
-							new error.AwardNotUnlockedError(err.message)
-						)));
-				}
-				return awardPromise;
-			});
+	if (tier.titleName) { 
+		const title = await new TitleType({title: tier.titleName})
+			.fetch({require: false});
+		let awardPromise;
+		if (title === null) {
+			awardPromise = new Promise((resolve, reject) => reject(
+				new error.AwardNotUnlockedError(
+					`Title ${tier.titleName} not found in database`
+				)
+			));
+		}
+		else {
+			try {
+				const titleAttribs = {
+					editorId,
+					titleId: title.id
+				};
+				const unlock = await awardUnlock(TitleUnlock, titleAttribs);
+			
+				const out = {};
+				out[tier.titleName] = unlock;
+				awardPromise = out;
+				
+			} catch (err) {
+				return new Promise((resolve, reject) => reject(
+					new error.AwardNotUnlockedError(err.message)
+				))
+			}
+		}
+	titlePromise = awardPromise;
 	}
 	else {
 		titlePromise = new Promise(resolve => resolve(false));
 	}
 	return titlePromise;
 }
-
 /**
  * In testTiers a tier is mapped to a list of achievements/titles this
  * converts it to an object keyed by achievementName where it is easier
