@@ -91,6 +91,23 @@ class CollectionsTable extends React.Component {
 		// 2.Check if user is logged In if so checks the page is central public collections page or not
 		const showNewCollectionButton = (user && user.id === ownerId) ||
 		(user && !ownerId);
+
+		const myCollectionButton = (
+			<Button
+				bsStyle="success"
+				className="margin-bottom-d5"
+				href={`/editor/${user.id}/collections`}
+				type="button"
+			>
+				&nbsp;My Collections
+			</Button>
+		);
+         
+		// Display My collections button when 
+		// 1.the user is logged in and not viewing the user's collections
+		// 2.the user is logged in and viewing public collections
+		const showMyCollectionButton = user && (user.id != ownerId || !ownerId);
+		
 		return (
 			<div>
 				<div>
@@ -98,6 +115,8 @@ class CollectionsTable extends React.Component {
 						{tableHeading}
 					</h1>
 					<div className="collection-page-buttons">
+				        {showMyCollectionButton &&
+							myCollectionButton}
 						{showNewCollectionButton &&
 							newCollectionButton}
 						{entityTypeSelect}

@@ -44,7 +44,7 @@ router.get('/', async (req, res, next) => {
 		if (!entityTypes.includes(type) && type !== null) {
 			throw new error.BadRequestError(`Type ${type} do not exist`);
 		}
-
+        const user = req.user;
 		// fetch 1 more collections than required to check nextEnabled
 		const orderedRevisions = await getOrderedPublicCollections(from, size + 1, type, orm);
 		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
@@ -57,6 +57,7 @@ router.get('/', async (req, res, next) => {
 			showLastModified: true,
 			showOwner: true,
 			size,
+			user,
 			tableHeading: 'Public Collections'
 		});
 
