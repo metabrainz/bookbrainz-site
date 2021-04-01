@@ -44,7 +44,7 @@ router.get('/', async (req, res, next) => {
 		if (!entityTypes.includes(type) && type !== null) {
 			throw new error.BadRequestError(`Type ${type} do not exist`);
 		}
-        const user = req.user;
+		const {user} = req;
 		// fetch 1 more collections than required to check nextEnabled
 		const orderedRevisions = await getOrderedPublicCollections(from, size + 1, type, orm);
 		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
