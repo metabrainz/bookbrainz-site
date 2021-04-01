@@ -32,7 +32,8 @@ const {formatDate} = utilsHelper;
 
 function RevisionsTable(props) {
 	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading} = props;
-
+	// eslint-disable-next-line max-len
+	const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
 	const tableCssClasses = 'table table-striped';
 	return (
 
@@ -121,8 +122,7 @@ function RevisionsTable(props) {
 																		// eslint-disable-next-line react/no-danger
 																		dangerouslySetInnerHTML={{
 																			__html: sanitize(note.content.replace(
-																				// eslint-disable-next-line max-len
-																				/((http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?)/g,
+																				urlRegex,
 																				'<a target="_blank" href="$1">$1</a>'
 																			))
 																		}}
