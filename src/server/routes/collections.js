@@ -57,8 +57,8 @@ router.get('/', async (req, res, next) => {
 			showLastModified: true,
 			showOwner: true,
 			size,
-			user,
-			tableHeading: 'Public Collections'
+			tableHeading: 'Public Collections',
+			user
 		});
 
 		/*
