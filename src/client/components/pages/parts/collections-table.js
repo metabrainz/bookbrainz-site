@@ -106,13 +106,8 @@ class CollectionsTable extends React.Component {
 		// Display My collections button when
 		// 1.the user is logged in and not viewing the user's collections
 		// 2.the user is logged in and viewing public collections
-<<<<<<< HEAD
 		const showMyCollectionButton = user && (user.id !== ownerId || !ownerId);
 		
-=======
-		const showMyCollectionButton = user && (user.id != ownerId || !ownerId);
-
->>>>>>> bbbdcb143ce24e87fc0ae4e2f7b65f6657d6b14b
 		return (
 			<div>
 				<div>
