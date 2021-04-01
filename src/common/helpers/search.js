@@ -202,8 +202,7 @@ export function autocomplete(orm, query, type) {
 
 	const dslQuery = {
 		body: {
-			query: queryBody,
-		    size: 10000
+			query: queryBody
 		},
 		index: _index
 	};
