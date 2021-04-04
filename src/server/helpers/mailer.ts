@@ -24,9 +24,9 @@ const {mailConfig} = config;
  * This is a dedicated mailing interface for bookbrainz mailing services
  *
  * @param {string} from - Email address of sender
- * @param {string[]} to - Email address of receiver 
+ * @param {string} to - Email address of receiver 
  * @param {string} subject- Subject of the E-mail
- * @param {string[]} html - Body of E-mail in form of HTML 
+ * @param {string} html - Body of E-mail in form of HTML 
  * @returns {object} an object containing the error message if any error will occur.
  * If entity is found successfully in the database this function set the entity data
  * at res.locals.entity and return to next function.
