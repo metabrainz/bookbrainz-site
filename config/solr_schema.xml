@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema name="bookbrainz" version="1.6">
+  <uniqueKey>id</uniqueKey>
+  <fieldType name="_nest_path_" class="solr.NestPathField" maxCharsForDocValues="-1" omitNorms="true" omitTermFreqAndPositions="true" stored="false"/>
+
+  <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
+  <fieldType name="booleans" class="solr.BoolField" sortMissingLast="true" multiValued="true"/>
+  <fieldType name="pdate" class="solr.DatePointField" docValues="true"/>
+  <fieldType name="pdates" class="solr.DatePointField" docValues="true" multiValued="true"/>
+  <fieldType name="plong" class="solr.LongPointField" docValues="true"/>
+  <fieldType name="plongs" class="solr.LongPointField" docValues="true" multiValued="true"/>
+  <fieldType name="pdoubles" class="solr.DoublePointField" docValues="true" multiValued="true"/>
+  <fieldType name="string" class="solr.StrField" sortMissingLast="true" docValues="true"/>
+  
+
+  <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100" multiValued="true">
+    <analyzer type="index">
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+    <analyzer type="query">
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.StopFilterFactory" words="stopwords.txt" ignoreCase="true"/>
+      <filter class="solr.SynonymGraphFilterFactory" expand="true" ignoreCase="true" synonyms="synonyms.txt"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+  </fieldType>
+
+  <fieldType name="text_general_autocomplete" class="solr.TextField" positionIncrementGap="100" multiValued="true">
+    <analyzer>
+      <tokenizer class="solr.EdgeNGramTokenizerFactory" minGramSize="2" maxGramSize="10"/>
+      <filter class="solr.ASCIIFoldingFilterFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  
+  <fieldType name="text_general_partial" class="solr.TextField" positionIncrementGap="100" multiValued="true">
+    <analyzer>
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.NGramFilterFactory" minGramSize="1" maxGramSize="3"/>
+      <filter class="solr.ASCIIFoldingFilterFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+  </fieldType>
+
+
+  <field name="_nest_path_" type="_nest_path_"/>
+  <field name="_root_" type="string" docValues="false" indexed="true" stored="false"/>
+  <field name="_text_" type="text_general" multiValued="true" indexed="true" stored="false"/>
+  <field name="_version_" type="plong" indexed="false" stored="false"/>
+  
+  <field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
+  <field name="name" type="text_general"/>
+  <field name="name.partial" indexed="true" stored="false" type="text_general_partial"/>
+  <field name="name.autocomplete" indexed="true" stored="false" type="text_general_autocomplete"/>
+  <field name="type" multiValued="false" required="true" type="text_general"/>
+  <field name="disambiguation" multiValued="false" type="text_general"/>
+  <field name="disambiguation.partial" multiValued="false" indexed="true" stored="false" type="text_general_partial"/>
+
+  <field name="area_type" multiValued="false" type="text_general"/>
+  
+  <field name="author_begin_area" type="text_general"/>
+  <field name="author_begin_date" type="string" multiValued="false"/>
+  <field name="author_end_date" type="string" multiValued="false"/>
+  <field name="author_ended" multiValued="false" type="boolean"/>
+  <field name="author_gender" multiValued="false" type="text_general"/>
+  <field name="author_type" multiValued="false" type="text_general"/>
+
+  <field name="collection_description" type="text_general"/>
+  <field name="collection_owner" multiValued="false" type="text_general"/>
+
+  <field name="edition_depth" multiValued="false" type="text_general"/>
+  <field name="edition_group_type" type="text_general"/>
+  <field name="edition_height" multiValued="false" type="text_general"/>
+  <field name="edition_identifiers" type="text_general"/>
+  <field name="edition_original_release_year" type="text_general"/>
+  <field name="edition_pages" multiValued="false" type="text_general"/>
+  <field name="edition_publishers" type="text_general"/>
+  <field name="edition_weight" multiValued="false" type="text_general"/>
+  <field name="edition_width" multiValued="false" type="text_general"/>
+
+  <field name="editor_active_at" multiValued="false" type="pdate"/>
+  <field name="editor_created_at" multiValued="false" type="pdate"/>
+  <field name="editor_total_revisions" multiValued="false" type="plong"/>
+
+  <field name="publisher_area" multiValued="false" type="text_general"/>
+  <field name="publisher_begin_date" multiValued="false" type="text_general"/>
+  <field name="publisher_end_date" multiValued="false" type="text_general"/>
+  <field name="publisher_ended" type="boolean"/>
+  
+  <field name="work_languages" type="text_general"/>
+  <field name="work_type" type="text_general"/>
+
+  <copyField source="name" dest="_text_"/>
+  <copyField source="name" dest="name.autocomplete"/>
+  <copyField source="name" dest="name.partial"/>
+  <copyField source="disambiguation" dest="disambiguation.partial"/>
+  <copyField source="edition_identifiers" dest="_text_"/>
+</schema>

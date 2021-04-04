@@ -32,7 +32,9 @@ import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import SearchPage from '../../client/components/pages/search';
+import config from '../../common/helpers/config';
 import express from 'express';
+import {index, searchByName, autocomplete as myAutocomplete} from '../search/search';
 import target from '../templates/target';
 
 
@@ -49,7 +51,8 @@ router.get('/', (req, res, next) => {
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 	// get 1 more results to check nextEnabled
-	search.searchByName(orm, query, _snakeCase(type), size + 1, from)
+	// search.searchByName(orm, query, _snakeCase(type), size + 1, from)
+	searchByName(orm, query, _snakeCase(type), config.search)
 		.then((entities) => ({
 			initialResults: entities.filter(entity => !isNil(entity)),
 			query
@@ -94,7 +97,8 @@ router.get('/search', (req, res) => {
 
 	const {size, from} = req.query;
 
-	const searchPromise = search.searchByName(orm, query, _snakeCase(type), size, from);
+	// const searchPromise = search.searchByName(orm, query, _snakeCase(type), size, from);
+	const searchPromise = searchByName(orm, query, _snakeCase(type), config.search);
 
 	handler.sendPromiseResult(res, searchPromise);
 });
@@ -149,5 +153,41 @@ router.get('/reindex', auth.isAuthenticated, (req, res) => {
 
 	handler.sendPromiseResult(res, indexPromise);
 });
+
+router.get('/test', auth.isAuthenticated, (req, res) => {
+	const {orm} = req.app.locals;
+
+	async function handleRequest() {
+		const NO_MATCH = -1;
+		// TODO: This is hacky, and we should replace it once we switch to SOLR.
+		const trustedUsers = ['Leftmost Cat', 'LordSputnik', 'Monkey', 'iliekcomputers'];
+		if (trustedUsers.indexOf(req.user.name) === NO_MATCH) {
+			throw new error.PermissionDeniedError(null, req);
+		}
+
+		try {
+			const responses = await index(orm, config.search, 10000);
+		} catch (err) {
+			console.log(err);
+		}
+
+		return {success: true};
+	}
+
+	handler.sendPromiseResult(res, handleRequest());
+});
+
+router.get('/testsearch', (req, res) => {
+	const {orm} = req.app.locals;
+
+	handler.sendPromiseResult(res, simpleSearch(req.query.q, req.query.type, config.search));
+});
+
+router.get('/testauto', (req, res) => {
+	const {orm} = req.app.locals;
+
+	handler.sendPromiseResult(res, myAutocomplete(req.query.q, req.query.type, config.search));
+});
+
 
 export default router;
