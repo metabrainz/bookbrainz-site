@@ -29,7 +29,7 @@ import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 
 
-const {Button, Table} = bootstrap;
+const {Button, Table, Row, Col} = bootstrap;
 
 const {getEntityDisambiguation, getLanguageAttribute, getEntityLabel} = entityHelper;
 
@@ -150,7 +150,14 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 	}
 	return (
 		<div>
-			<h2>Works</h2>
+			<Row> 
+				<Col xs={6}>
+					<h2>Works</h2>
+				</Col>
+				<Col xs={6}>
+					<h2 className="pull-right"> Total : {works.length}</h2> 
+				</Col>
+			</Row>
 			{tableContent}
 		</div>
 	);

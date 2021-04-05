@@ -23,7 +23,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Table} = bootstrap;
+const {Table, Row, Col} = bootstrap;
 const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
 function AuthorTableRow({author, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
@@ -116,7 +116,14 @@ function AuthorTable({authors, showAddedAtColumn, showCheckboxes, selectedEntiti
 	}
 	return (
 		<div>
-			<h2>Authors</h2>
+			<Row> 
+				<Col xs={6}>
+					<h2>Authors</h2>
+				</Col>
+				<Col xs={6}>
+					<h2 className="pull-right"> Total : {authors.length}</h2> 
+				</Col>
+			</Row>
 			{tableContent}
 		</div>
 	);

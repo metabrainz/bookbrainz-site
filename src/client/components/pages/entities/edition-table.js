@@ -32,7 +32,7 @@ const {
 	getEditionReleaseDate, getEntityLabel, getEntityDisambiguation,
 	getISBNOfEdition, getEditionFormat
 } = entityHelper;
-const {Button, Table} = bootstrap;
+const {Button, Table, Row, Col} = bootstrap;
 
 function EditionTableRow({edition, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(edition);
@@ -168,7 +168,14 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckbo
 	}
 	return (
 		<div>
-			<h2>Editions</h2>
+			<Row> 
+				<Col xs={6}>
+					<h2>Editions</h2>
+				</Col>
+				<Col xs={6}>
+					<h2 className="pull-right"> Total : {editions.length}</h2> 
+				</Col>
+			</Row>
 			{tableContent}
 		</div>
 	);

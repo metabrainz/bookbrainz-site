@@ -24,7 +24,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Table} = bootstrap;
+const {Table, Row, Col} = bootstrap;
 const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
 function PublisherTableRow({showAddedAtColumn, publisher, showCheckboxes, selectedEntities, onToggleRow}) {
@@ -116,7 +116,14 @@ function PublisherTable({showAddedAtColumn, publishers, showCheckboxes, selected
 	}
 	return (
 		<div>
-			<h2>Publishers</h2>
+			<Row> 
+				<Col xs={6}>
+					<h2>Publishers</h2>
+				</Col>
+				<Col xs={6}>
+					<h2 className="pull-right"> Total : {publishers.length}</h2> 
+				</Col>
+			</Row>
 			{tableContent}
 		</div>
 	);
