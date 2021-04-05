@@ -270,7 +270,7 @@ class CollectionPage extends React.Component {
 							<Button
 								bsSize="small"
 								bsStyle="success"
-								className="margin-bottom-d5"
+								className="margin-bottom-d5 margin-left-d5"
 								title={`Add ${this.props.collection.entityType}`}
 								onClick={this.handleShowAddEntityModal}
 							>
@@ -283,7 +283,7 @@ class CollectionPage extends React.Component {
 							<Button
 								bsSize="small"
 								bsStyle="danger"
-								className="margin-bottom-d5"
+								className="margin-bottom-d5 margin-left-d5"
 								disabled={!this.state.selectedEntities.length}
 								title={`Remove selected ${_.kebabCase(this.props.collection.entityType)}s`}
 								onClick={this.handleRemoveEntities}
@@ -298,7 +298,7 @@ class CollectionPage extends React.Component {
 							<Button
 								bsSize="small"
 								bsStyle="warning"
-								className="margin-bottom-d5"
+								className="margin-bottom-d5 margin-left-d5"
 								href={`/collection/${this.props.collection.id}/edit`}
 								title="Edit Collection"
 							>
@@ -310,7 +310,7 @@ class CollectionPage extends React.Component {
 							<Button
 								bsSize="small"
 								bsStyle="danger"
-								className="margin-bottom-d5"
+								className="margin-bottom-d5  margin-left-d5"
 								title="Delete Collection"
 								onClick={this.handleShowDeleteModal}
 							>
@@ -322,7 +322,7 @@ class CollectionPage extends React.Component {
 							<Button
 								bsSize="small"
 								bsStyle="warning"
-								className="margin-bottom-d5"
+								className="margin-bottom-d5  margin-left-d5"
 								title="Remove yourself as a collaborator"
 								onClick={this.handleShowDeleteModal}
 							>
