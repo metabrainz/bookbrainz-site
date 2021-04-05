@@ -116,12 +116,12 @@ function PublisherTable({showAddedAtColumn, publishers, showCheckboxes, selected
 	}
 	return (
 		<div>
-			<Row> 
+			<Row>
 				<Col xs={6}>
 					<h2>Publishers</h2>
 				</Col>
 				<Col xs={6}>
-					<h2 className="pull-right"> Total : {publishers.length}</h2> 
+					<h2 className="pull-right"> Total : {publishers.length}</h2>
 				</Col>
 			</Row>
 			{tableContent}

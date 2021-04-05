@@ -108,12 +108,12 @@ function EditionGroupTable({editionGroups, showAddedAtColumn, showCheckboxes, se
 	}
 	return (
 		<div>
-			<Row> 
+			<Row>
 				<Col xs={6}>
 					<h2>Edition Groups</h2>
 				</Col>
 				<Col xs={6}>
-					<h2 className="pull-right"> Total : {editionGroups.length}</h2> 
+					<h2 className="pull-right"> Total : {editionGroups.length}</h2>
 				</Col>
 			</Row>
 			{tableContent}

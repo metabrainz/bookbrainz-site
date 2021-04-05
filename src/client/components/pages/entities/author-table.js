@@ -116,12 +116,12 @@ function AuthorTable({authors, showAddedAtColumn, showCheckboxes, selectedEntiti
 	}
 	return (
 		<div>
-			<Row> 
+			<Row>
 				<Col xs={6}>
 					<h2>Authors</h2>
 				</Col>
 				<Col xs={6}>
-					<h2 className="pull-right"> Total : {authors.length}</h2> 
+					<h2 className="pull-right"> Total : {authors.length}</h2>
 				</Col>
 			</Row>
 			{tableContent}

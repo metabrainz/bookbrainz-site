@@ -150,12 +150,12 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 	}
 	return (
 		<div>
-			<Row> 
+			<Row>
 				<Col xs={6}>
 					<h2>Works</h2>
 				</Col>
 				<Col xs={6}>
-					<h2 className="pull-right"> Total : {works.length}</h2> 
+					<h2 className="pull-right"> Total : {works.length}</h2>
 				</Col>
 			</Row>
 			{tableContent}
