@@ -33,7 +33,7 @@ function Footer(props) {
 		<footer className="footer">
 			<Grid fluid>
 				<Row>
-					<Col xs={4}>
+					<Col xs={4} >
 						<small>{'Tested with '}
 							<a
 								href="https://www.browserstack.com/"
@@ -43,6 +43,7 @@ function Footer(props) {
 								<img
 									alt="BrowserStack Logo"
 									height="25"
+									width="95"
 									src="/images/BrowserStack.png"
 								/>
 							</a>
