@@ -34,7 +34,8 @@ const {mailConfig} = config;
  * Promise way :
  * 
  * sendEmail("abc@gmail.com", "def@gmail.com", "Revision added to Entity", "some html string")
- * .then(()=>{
+ * .then((response)=>{
+     // the response object contains details of a successful response (see https://nodemailer.com/usage)
 * 	  console.log("Email has been sent successfully")
  * 	 })
  * .catch((error)=>{
