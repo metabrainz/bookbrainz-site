@@ -45,7 +45,7 @@ const {mailConfig} = config;
  * Async/Await way :
  * 
  *  try{
- * 		await sendEmail("abc@gmail.com", "def@gmail.com", "Revision added to Entity", "some html string")
+ * 		const response = await sendEmail("abc@gmail.com", "def@gmail.com", "Revision added to Entity", "some html string")
  * 		console.log("Email has been sent successfully")
  *   }
  * 	catch (error) {
