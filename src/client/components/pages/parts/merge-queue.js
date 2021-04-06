@@ -118,7 +118,6 @@ class MergeQueue extends React.Component {
 					</Button>
 					<Button
 						bsStyle="danger"
-						className="margin-bottom-d5"
 						href="/merge/cancel"
 						title="Cancel merge"
 					>
