@@ -264,15 +264,17 @@ class CollectionPage extends React.Component {
 				</Row>
 				<EntityTable{...propsForTable}/>
 				{messageComponent}
-				<div className="margin-top-1 text-left"
-				style={{marginBottom:'1rem'}}>
+				<div
+					className="margin-top-1 text-left"
+					style={{marginBottom: '1rem'}}
+				>
 					{
 						this.props.isCollaborator || this.props.isOwner ?
 							<Button
 								bsSize="small"
 								bsStyle="success"
 								className="margin-bottom-d5"
-								style={{marginRight:'0.5rem'}}
+								style={{marginRight: '0.5rem'}}
 								title={`Add ${this.props.collection.entityType}`}
 								onClick={this.handleShowAddEntityModal}
 							>
@@ -286,8 +288,8 @@ class CollectionPage extends React.Component {
 								bsSize="small"
 								bsStyle="danger"
 								className="margin-bottom-d5"
-								style={{marginRight:'0.5rem'}}
 								disabled={!this.state.selectedEntities.length}
+								style={{marginRight: '0.5rem'}}
 								title={`Remove selected ${_.kebabCase(this.props.collection.entityType)}s`}
 								onClick={this.handleRemoveEntities}
 							>
@@ -302,8 +304,8 @@ class CollectionPage extends React.Component {
 								bsSize="small"
 								bsStyle="warning"
 								className="margin-bottom-d5"
-								style={{marginRight:'0.5rem'}}
 								href={`/collection/${this.props.collection.id}/edit`}
+								style={{marginRight: '0.5rem'}}
 								title="Edit Collection"
 							>
 								<FontAwesomeIcon icon={faPencilAlt}/>&nbsp;Edit collection
@@ -315,7 +317,7 @@ class CollectionPage extends React.Component {
 								bsSize="small"
 								bsStyle="danger"
 								className="margin-bottom-d5"
-								style={{ marginBottom:'1rem',marginRight:'0.5rem'}}
+								style={{marginBottom: '1rem', marginRight: '0.5rem'}}
 								title="Delete Collection"
 								onClick={this.handleShowDeleteModal}
 							>
