@@ -165,7 +165,7 @@ export function entityToOption(entity) {
 
 export function getEntityLabel(entity, returnHTML = true) {
 	if (entity.defaultAlias) {
-		return `${entity.defaultAlias.name} `;
+		return `${entity.defaultAlias.name}`;
 	}
 
 	// Deleted entities
