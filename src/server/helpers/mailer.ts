@@ -53,7 +53,7 @@ const {mailConfig} = config;
  * 	}
  * @description
  * This helper function  sends E-mail with attributes collected from argument in given order. 
- * It is basically using nodemailer's transporter to send the E-mail under the hood.
+ * It uses nodemailer's transporter to send the E-mail under the hood.
  * It returns a promise that should be handled using .then()/.catch() or async/await syntax.
  */
 
