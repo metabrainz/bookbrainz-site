@@ -157,6 +157,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 				throw new error.FormSubmissionError();
 			});
 
+		res.locals.user.name = req.body.name;
 		const editorJSON = modifiedEditor.toJSON();
 		return {
 			aliasSet: {
