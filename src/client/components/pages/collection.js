@@ -306,7 +306,7 @@ class CollectionPage extends React.Component {
 								href={`/collection/${this.props.collection.id}/edit`}
 								title="Edit Collection"
 							>
-								<FontAwesomeIcon icon={faPencilAlt}/>&nbsp;Edit collectionTest
+								<FontAwesomeIcon icon={faPencilAlt}/>&nbsp;Edit collection
 							</Button> : null
 					}
 					{
