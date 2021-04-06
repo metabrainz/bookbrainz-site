@@ -34,7 +34,7 @@ function ContributePage() {
 		'en/latest/style/introduction/';
 
 	return (
-		<div>
+		<div styles={{marginBottom:'1rem'}}>
 			<PageHeader>Contributing to BookBrainz</PageHeader>
 			<p className="lead">
 				There are many ways that you can contribute to the

@@ -315,7 +315,7 @@ class CollectionPage extends React.Component {
 								bsSize="small"
 								bsStyle="danger"
 								className="margin-bottom-d5"
-								style={{, marginBottom:'1rem',marginRight:'0.5rem'}}
+								style={{ marginBottom:'1rem',marginRight:'0.5rem'}}
 								title="Delete Collection"
 								onClick={this.handleShowDeleteModal}
 							>
