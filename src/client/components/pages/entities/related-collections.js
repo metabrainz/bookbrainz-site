@@ -16,76 +16,75 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+/* eslint-disable sort-imports */
 import PropTypes from 'prop-types';
-import React,{useState,useEffect} from 'react';
-import {Col,Row} from 'react-bootstrap';
+import {Col, Row} from 'react-bootstrap';
+import React, {useEffect, useState} from 'react';
 
 
-function EntityRelatedCollections ({bbid}) {
+function EntityRelatedCollections({bbid}) {
+	const [collections, setCollections] = useState([]);
 
-    let [collections, setCollections] = useState([])
-  
-    useEffect(() => {
-        getCollectionId(bbid);
-    }, [])
+	async function getCollectionId(entityId) {
+		const collectionId = await fetch(`/collection/entity/${entityId}`, {
+			headers: {
+				Accept: 'application/json',
+				'Content-Type': 'application/json'
+			}
+		});
 
-    const getCollectionId = async (bbid) => {
+		const allRelatedCollection = await collectionId.json();
+		const storeCollections = [];
 
-        let collectionId = await fetch(`/collection/entity/${bbid}`,{
-            headers : { 
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-             }
-        })
+		if (allRelatedCollection.length) {
+			allRelatedCollection.map(async (collectionItem, index) => {
+				// Fetch collection data
+				const collection = await fetch(`/collection/get/${collectionItem.collection_id}`, {
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/json'
+					}
+				});
 
-        let allRelatedCollection = await collectionId.json();
-        let storeCollections = [];  
+				const collectionData = await collection.json();
+				// Filter collections
+				if (collectionData.public) {
+					storeCollections.push(collectionData);
+				}
+				// update state when all collections are filtered
+				if (index === (allRelatedCollection.length - 1)) {
+					setCollections(storeCollections);
+				}
+			});
+		}
+	}
 
-        if(allRelatedCollection.length){
+	useEffect(() => {
+		getCollectionId(bbid);
+	}, []);
 
-            allRelatedCollection.map(async (collectionItem,index) => {
-                // Fetch collection data
-                let collection = await fetch(`/collection/get/${collectionItem.collection_id}`,{
-                    headers : { 
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                    }
-                })
-
-                let collectionData = await collection.json();
-                // Filter collections 
-                if(collectionData.public){
-                    storeCollections.push(collectionData)
-                }
-                // update state when all collections are filtered
-                if(index === (allRelatedCollection.length-1)){
-                    setCollections(storeCollections)
-                }
-            })
-        }
-}
 	return (
 		<Row>
 			<Col md={12}>
 			    <h2>Related Collections</h2>
-                    <ul className="list-unstyled">
-                        {collections.length?
-                         collections.map((collection) => (
-                            <li
-                                key={collection.id}
-                            >
-                                <a href={`/collection/${collection.id}`}>{collection.name}</a>
-                            </li>
-                        )): <h4>None</h4>}
-                    </ul>
-		    	
-		    </Col>
-        </Row>
+				<ul className="list-unstyled">
+					{collections.length ?
+						collections.map((collection) => (
+							<li
+								key={collection.id}
+							>
+								<a href={`/collection/${collection.id}`}>{collection.name}</a>
+							</li>
+						)) : <h4>None</h4>}
+				</ul>
+
+			</Col>
+		</Row>
 	);
 }
 EntityRelatedCollections.displayName = 'EntityRelatedCollections';
 EntityRelatedCollections.propTypes = {
-    bbid: PropTypes.string.isRequired,
+	bbid: PropTypes.string.isRequired
 };
 
 export default EntityRelatedCollections;

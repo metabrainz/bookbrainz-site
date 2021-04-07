@@ -24,10 +24,10 @@ import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
+import EntityRelatedCollections from './related-collections';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
-import EntityRelatedCollections from './related-collections';
 
 
 const {deletedEntityMessage, getRelationshipSourceByTypeId, getLanguageAttribute, getTypeAttribute, getEntityUrl,
@@ -100,7 +100,7 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 					editions={editionsContainWork}
 					entity={entity}
 				/>
-				<EntityRelatedCollections bbid={entity.bbid} />
+				<EntityRelatedCollections bbid={entity.bbid}/>
 				<EntityLinks
 					entity={entity}
 					identifierTypes={identifierTypes}

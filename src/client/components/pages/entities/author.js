@@ -23,6 +23,7 @@ import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
+import EntityRelatedCollections from './related-collections';
 import EntityTitle from './title';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -30,7 +31,6 @@ import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {labelsForAuthor} from '../../../helpers/utils';
-import EntityRelatedCollections from './related-collections';
 
 
 const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
@@ -127,7 +127,7 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
-				<EntityRelatedCollections bbid={entity.bbid} />
+				<EntityRelatedCollections bbid={entity.bbid}/>
 				<EntityLinks
 					entity={entity}
 					identifierTypes={identifierTypes}
