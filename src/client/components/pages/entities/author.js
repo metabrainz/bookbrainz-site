@@ -30,6 +30,7 @@ import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {labelsForAuthor} from '../../../helpers/utils';
+import EntityRelatedCollections from './related-collections';
 
 
 const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
@@ -126,6 +127,7 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
+				<EntityRelatedCollections bbid={entity.bbid} />
 				<EntityLinks
 					entity={entity}
 					identifierTypes={identifierTypes}
