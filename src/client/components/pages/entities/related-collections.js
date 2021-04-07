@@ -41,40 +41,42 @@ function EntityRelatedCollections ({bbid}) {
         let allRelatedCollection = await collectionId.json();
         let storeCollections = [];  
 
-        allRelatedCollection.map(async (collectionItem,index) => {
-            // Fetch collection data
-            let collection = await fetch(`/collection/get/${collectionItem.collection_id}`,{
-                headers : { 
-                  'Content-Type': 'application/json',
-                  'Accept': 'application/json'
-                 }
-            })
+        if(allRelatedCollection.length){
 
-            let collectionData = await collection.json();
-            // Filter collections 
-            if(collectionData.public){
-                storeCollections.push(collectionData)
-            }
-            // update state when all collections are filtered
-            if(index === (allRelatedCollection.length-1)){
-                setCollections(storeCollections)
-            }
-            console.log("First",storeCollections,storeCollections.length)
-        })
-        console.log("Second",storeCollections,storeCollections.length)
+            allRelatedCollection.map(async (collectionItem,index) => {
+                // Fetch collection data
+                let collection = await fetch(`/collection/get/${collectionItem.collection_id}`,{
+                    headers : { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                    }
+                })
+
+                let collectionData = await collection.json();
+                // Filter collections 
+                if(collectionData.public){
+                    storeCollections.push(collectionData)
+                }
+                // update state when all collections are filtered
+                if(index === (allRelatedCollection.length-1)){
+                    setCollections(storeCollections)
+                }
+            })
+        }
 }
 	return (
 		<Row>
 			<Col md={12}>
 			    <h2>Related Collections</h2>
                     <ul className="list-unstyled">
-                        {collections.map((collection) => (
+                        {collections.length?
+                         collections.map((collection) => (
                             <li
                                 key={collection.id}
                             >
                                 <a href={`/collection/${collection.id}`}>{collection.name}</a>
                             </li>
-                        ))}
+                        )): <h4>None</h4>}
                     </ul>
 		    	
 		    </Col>
