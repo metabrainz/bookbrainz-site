@@ -33,7 +33,7 @@ import ReactDOMServer from 'react-dom/server';
 import UserCollectionForm from '../../client/components/forms/userCollection';
 import {collectionCreateOrEditHandler} from '../helpers/collectionRouteUtils';
 import express from 'express';
-import {getCollectionItems} from '../helpers/collections';
+import {getCollectionItems,getEntityCollections} from '../helpers/collections';
 import log from 'log';
 import target from '../templates/target';
 
@@ -161,6 +161,16 @@ router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, 
 		log.debug(err);
 		return next(err);
 	}
+});
+
+
+
+router.get('/entity/:entityId', async (req, res, next) => {
+		const {orm} = req.app.locals;
+		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
+		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+		const items = await getEntityCollections(req.params.entityId, from, size + 1, orm);
+		return res.send(items);
 });
 
 router.get('/:collectionId/paginate', auth.isAuthenticatedForCollectionView, async (req, res, next) => {
