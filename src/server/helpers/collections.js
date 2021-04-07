@@ -127,3 +127,14 @@ export async function getCollectionItems(collectionId, from, size, orm) {
 						OFFSET ${from}`);
 	return result.rows;
 }
+
+export async function getEntityCollections(entityId, from, size, orm) {
+	const result = await orm.bookshelf.knex.raw(`
+						SELECT bookbrainz.user_collection_item.collection_id
+						FROM bookbrainz.user_collection_item
+						WHERE bbid='${entityId}'
+						ORDER BY user_collection_item.added_at ASC
+						LIMIT ${size}
+						OFFSET ${from}`);
+	return result.rows;
+}
