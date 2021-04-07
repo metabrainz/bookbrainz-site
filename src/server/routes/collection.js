@@ -164,13 +164,13 @@ router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, 
 });
 
 /* Fetch collections */
-router.get('/get/:collectionId', (req, res, next) => {
+router.get('/get/:collectionId', (req, res) => {
 	const {collection} = res.locals;
 	return res.send({id: collection.id, name: collection.name, public: collection.public});
 });
 
 /* Fetch the collectionId related to a entity" */
-router.get('/entity/:entityId', async (req, res, next) => {
+router.get('/entity/:entityId', async (req, res) => {
 	const {orm} = req.app.locals;
 	const size = req.query.size ? parseInt(req.query.size, 10) : 100;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
