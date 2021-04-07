@@ -99,7 +99,7 @@ class CollectionsTable extends React.Component {
 				href={`/editor/${user.id}/collections`}
 				type="button"
 			>
-				&nbsp;My Collections
+				My Collections
 			</Button>
 		);
 
