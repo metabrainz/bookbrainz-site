@@ -26,6 +26,7 @@ import EntityLinks from './links';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
+import EntityRelatedCollections from './related-collections';
 
 
 const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
@@ -101,6 +102,7 @@ function PublisherDisplayPage({entity, identifierTypes, user}) {
 			{!entity.deleted &&
 			<React.Fragment>
 				<EditionTable editions={entity.editions} entity={entity}/>
+				<EntityRelatedCollections bbid={entity.bbid} />
 				<EntityLinks
 					entity={entity}
 					identifierTypes={identifierTypes}

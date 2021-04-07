@@ -28,6 +28,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import WorksTable from './work-table';
 import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons';
+import EntityRelatedCollections from './related-collections';
 
 
 const {
@@ -147,6 +148,7 @@ function EditionDisplayPage({entity, identifierTypes, user}) {
 					entity={entity}
 					works={worksContainedByEdition}
 				/>
+				<EntityRelatedCollections bbid={entity.bbid} />
 				<EntityLinks
 					entity={entity}
 					identifierTypes={identifierTypes}
