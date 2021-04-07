@@ -26,6 +26,7 @@ import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
 import * as utils from '../helpers/utils';
 import {escapeProps, generateProps} from '../helpers/props';
+import {getCollectionItems, getEntityCollections} from '../helpers/collections';
 import CollectionPage from '../../client/components/pages/collection';
 import Layout from '../../client/containers/layout';
 import React from 'react';
@@ -33,7 +34,6 @@ import ReactDOMServer from 'react-dom/server';
 import UserCollectionForm from '../../client/components/forms/userCollection';
 import {collectionCreateOrEditHandler} from '../helpers/collectionRouteUtils';
 import express from 'express';
-import {getCollectionItems,getEntityCollections} from '../helpers/collections';
 import log from 'log';
 import target from '../templates/target';
 
@@ -164,18 +164,18 @@ router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, 
 });
 
 /* Fetch collections */
-router.get('/get/:collectionId', async (req, res, next) => {
-	const {collection} = res.locals;		
-	return res.send({id:collection.id,name:collection.name, public: collection.public});	
+router.get('/get/:collectionId', (req, res, next) => {
+	const {collection} = res.locals;
+	return res.send({id: collection.id, name: collection.name, public: collection.public});
 });
 
 /* Fetch the collectionId related to a entity" */
 router.get('/entity/:entityId', async (req, res, next) => {
-		const {orm} = req.app.locals;
-		const size = req.query.size ? parseInt(req.query.size, 10) : 100;
-		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
-		const items = await getEntityCollections(req.params.entityId, from, size + 1, orm);
-		return res.send(items);
+	const {orm} = req.app.locals;
+	const size = req.query.size ? parseInt(req.query.size, 10) : 100;
+	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+	const items = await getEntityCollections(req.params.entityId, from, size + 1, orm);
+	return res.send(items);
 });
 
 router.get('/:collectionId/paginate', auth.isAuthenticatedForCollectionView, async (req, res, next) => {
