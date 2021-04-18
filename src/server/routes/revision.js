@@ -168,7 +168,13 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 		(revision) =>
 			revision.parent()
 				.then(
-					(parent) => makePromiseFromObject({
+					(parent) => {
+						let dataId = revision.get('dataId');
+						let isNew = false;
+						if(!parent){
+							isNew = dataId;
+						}
+						return makePromiseFromObject({
 						changes: revision.diff(parent),
 						entity: revision.related('entity'),
 						entityAlias: revision.get('dataId') ?
@@ -176,9 +182,9 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 							orm.func.entity.getEntityParentAlias(
 								orm, entityType, revision.get('bbid')
 							),
-						isNew: !parent,
+						isNew: isNew,
 						revision
-					}),
+					})},
 					// If calling .parent() is rejected (no parent rev), we still want to go ahead without the parent
 					() => makePromiseFromObject({
 						changes: revision.diff(null),
