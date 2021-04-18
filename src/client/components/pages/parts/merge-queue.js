@@ -98,7 +98,6 @@ class MergeQueue extends React.Component {
 				<ButtonGroup>
 					<Button
 						bsStyle="success"
-						className="margin-bottom-d5"
 						disabled={isNil(this.state.selectedOption)}
 						href={`/merge/submit/${this.state.selectedOption}`}
 						title="Merge entities"
@@ -108,7 +107,6 @@ class MergeQueue extends React.Component {
 					</Button>
 					<Button
 						bsStyle="warning"
-						className="margin-bottom-d5"
 						disabled={isNil(this.state.selectedOption)}
 						href={`/merge/remove/${this.state.selectedOption}`}
 						title="Remove from merge"
