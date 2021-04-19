@@ -42,7 +42,7 @@ function Footer(props) {
 							>
 								<img
 									alt="BrowserStack Logo"
-									height="25"
+									height="22"
 									width="95"
 									src="/images/BrowserStack.png"
 								/>
