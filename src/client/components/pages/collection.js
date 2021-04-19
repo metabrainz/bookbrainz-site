@@ -264,6 +264,7 @@ class CollectionPage extends React.Component {
 				</Row>
 				<EntityTable{...propsForTable}/>
 				{messageComponent}
+
 				<div className="margin-top-1 margin-bottom-1 text-left">
 					{
 						this.props.isCollaborator || this.props.isOwner ?
@@ -285,6 +286,7 @@ class CollectionPage extends React.Component {
 								bsStyle="danger"
 								className="margin-right-d5"
 								disabled={!this.state.selectedEntities.length}
+								style={{marginRight: '0.5rem'}}
 								title={`Remove selected ${_.kebabCase(this.props.collection.entityType)}s`}
 								onClick={this.handleRemoveEntities}
 							>
@@ -300,6 +302,7 @@ class CollectionPage extends React.Component {
 								bsStyle="warning"
 								className="margin-right-d5"
 								href={`/collection/${this.props.collection.id}/edit`}
+								style={{marginRight: '0.5rem'}}
 								title="Edit Collection"
 							>
 								<FontAwesomeIcon icon={faPencilAlt}/>&nbsp;Edit collection

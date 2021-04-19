@@ -34,6 +34,7 @@ function ContributePage() {
 		'en/latest/style/introduction/';
 
 	return (
+
 		<div className="margin-bottom-1">
 			<PageHeader>Contributing to BookBrainz</PageHeader>
 			<p className="lead">
