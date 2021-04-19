@@ -8,7 +8,7 @@
 /reports
 /config/config.json
 /config/config.local.json
-/latest.sql
+latest.sql
 
 # react-hot-loader files
 /static/hot
