@@ -386,7 +386,8 @@ export function formatEntityDiffs(diffs, entityType, entityFormatter) {
 	return _.flatten(diffs).map((diff) => {
 		const formattedDiff = {
 			entity: diff.entity.toJSON(),
-			isNew: diff.isNew
+			isNew: diff.isNew,
+			isDeletion: diff.isDeletion
 		};
 
 		formattedDiff.entity.type = entityType;
