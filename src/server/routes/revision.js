@@ -184,8 +184,8 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 								orm.func.entity.getEntityParentAlias(
 									orm, entityType, revision.get('bbid')
 								),
-							isNew,
 							isDeletion,
+							isNew,
 							revision
 						});
 					},
@@ -198,8 +198,8 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 							orm.func.entity.getEntityParentAlias(
 								orm, entityType, revision.get('bbid')
 							),
+						isDeletion: false,
 						isNew: true,
-						isDeletion,
 						revision
 					})
 				)
@@ -287,7 +287,7 @@ router.get('/:id', async (req, res, next) => {
 			revision: revision.toJSON(),
 			title: 'RevisionPage'
 		});
-		
+
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
 				<RevisionPage
