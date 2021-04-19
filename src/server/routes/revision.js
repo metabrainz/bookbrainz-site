@@ -171,10 +171,9 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 					(parent) => {
 						const dataId = revision.get('dataId');
 						let isNew = false;
-						let isDeletion = false;
+						const isDeletion = !dataId;
 						if (!parent) {
 							isNew = Boolean(dataId);
-							isDeletion = !dataId;
 						}
 						return makePromiseFromObject({
 							changes: revision.diff(parent),
