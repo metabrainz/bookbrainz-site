@@ -8,6 +8,7 @@
 /reports
 /config/config.json
 /config/config.local.json
+/latest.sql
 
 # react-hot-loader files
 /static/hot
@@ -17,6 +18,10 @@
 /static/**/*.svg
 
 ### Node ###
+
+# lock files
+package-lock.json
+
 # Logs
 logs
 *.log
