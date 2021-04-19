@@ -171,8 +171,10 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 					(parent) => {
 						const dataId = revision.get('dataId');
 						let isNew = false;
+						let isDeletion = false;
 						if (!parent) {
 							isNew = dataId;
+							isDeletion = !dataId;
 						}
 						return makePromiseFromObject({
 							changes: revision.diff(parent),
@@ -183,6 +185,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 									orm, entityType, revision.get('bbid')
 								),
 							isNew,
+							isDeletion,
 							revision
 						});
 					},
@@ -196,6 +199,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 								orm, entityType, revision.get('bbid')
 							),
 						isNew: true,
+						isDeletion,
 						revision
 					})
 				)
@@ -283,7 +287,7 @@ router.get('/:id', async (req, res, next) => {
 			revision: revision.toJSON(),
 			title: 'RevisionPage'
 		});
-
+		
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
 				<RevisionPage
