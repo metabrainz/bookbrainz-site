@@ -173,7 +173,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 						let isNew = false;
 						let isDeletion = false;
 						if (!parent) {
-							isNew = dataId;
+							isNew = Boolean(dataId);
 							isDeletion = !dataId;
 						}
 						return makePromiseFromObject({
