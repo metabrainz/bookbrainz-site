@@ -47,10 +47,11 @@ class CollectionsTable extends React.Component {
 	}
 
 	render() {
-		const {showLastModified, showOwner, showIfOwnerOrCollaborator, showPrivacy, results, tableHeading} = this.props;
+		const {showLastModified, showOwner, showIfOwnerOrCollaborator, showPrivacy, results, tableHeading, user, ownerId} = this.props;
 		const entityTypeSelect = (
 			<DropdownButton
 				bsStyle="primary"
+				className="margin-bottom-d5"
 				id="entity-type-select"
 				title={_.startCase(this.state.type) || 'Entity Type'}
 				onSelect={this.handleEntitySelect}
@@ -76,6 +77,7 @@ class CollectionsTable extends React.Component {
 		const newCollectionButton = (
 			<Button
 				bsStyle="warning"
+				className="margin-bottom-d5"
 				href="/collection/create"
 				type="button"
 			>
@@ -83,14 +85,40 @@ class CollectionsTable extends React.Component {
 				&nbsp;Create Collection
 			</Button>
 		);
+
+		// 1.Check if user is logged In if so checks the page ownerId with users id
+		// OR
+		// 2.Check if user is logged In if so checks the page is central public collections page or not
+		const showNewCollectionButton = (user && user.id === ownerId) ||
+		(user && !ownerId);
+
+		const myCollectionButton = (
+			<Button
+				bsStyle="success"
+				className="margin-bottom-d5"
+				href={`/editor/${user.id}/collections`}
+				type="button"
+			>
+				My Collections
+			</Button>
+		);
+
+		// Display My collections button when
+		// 1.the user is logged in and not viewing the user's collections
+		// 2.the user is logged in and viewing public collections
+		const showMyCollectionButton = user && (user.id !== ownerId || !ownerId);
+
 		return (
 			<div>
 				<div>
 					<h1 className="text-center">
 						{tableHeading}
 					</h1>
-					<div className="text-right">
-						{newCollectionButton}
+					<div className="collection-page-buttons">
+				        {showMyCollectionButton &&
+							myCollectionButton}
+						{showNewCollectionButton &&
+							newCollectionButton}
 						{entityTypeSelect}
 					</div>
 				</div>
@@ -176,19 +204,23 @@ class CollectionsTable extends React.Component {
 CollectionsTable.propTypes = {
 	entityTypes: PropTypes.array.isRequired,
 	onTypeChange: PropTypes.func.isRequired,
+	ownerId: PropTypes.number,
 	results: PropTypes.array.isRequired,
 	showIfOwnerOrCollaborator: PropTypes.bool,
 	showLastModified: PropTypes.bool,
 	showOwner: PropTypes.bool,
 	showPrivacy: PropTypes.bool,
-	tableHeading: PropTypes.node
+	tableHeading: PropTypes.node,
+	user: PropTypes.object
 };
 CollectionsTable.defaultProps = {
+	ownerId: null,
 	showIfOwnerOrCollaborator: false,
 	showLastModified: false,
 	showOwner: false,
 	showPrivacy: false,
-	tableHeading: 'Collections'
+	tableHeading: 'Collections',
+	user: null
 };
 
 

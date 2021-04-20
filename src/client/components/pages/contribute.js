@@ -28,7 +28,7 @@ const {PageHeader} = bootstrap;
  * Contribute page
  */
 function ContributePage() {
-	const IRCLink = 'https://webchat.freenode.net/?channels=#metabrainz';
+	const IRCLink = 'https://webchat.freenode.net/?channels=#bookbrainz';
 	const styleLink =
 		'https://bookbrainz-user-guide.readthedocs.io/' +
 		'en/latest/style/introduction/';

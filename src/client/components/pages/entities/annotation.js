@@ -46,7 +46,7 @@ class EntityAnnotation extends React.Component {
 				<Col md={12}>
 					<h2>Annotation</h2>
 					<Collapse in={this.state.open}>
-						<p className="annotation-content">{stringToUrl(annotation.content)}</p>
+						<pre className="annotation-content">{stringToUrl(annotation.content)}</pre>
 					</Collapse>
 					<Button bsStyle="link" onClick={this.handleToggleCollapse}>
 						Show {this.state.open ? 'less' : 'more…'}
