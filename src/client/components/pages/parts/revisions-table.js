@@ -23,11 +23,10 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {faCodeBranch} from '@fortawesome/free-solid-svg-icons';
-import {sanitize} from 'dompurify';
 
 
 const {Table} = bootstrap;
-const {formatDate} = utilsHelper;
+const {formatDate, stringToUrl} = utilsHelper;
 
 
 function RevisionsTable(props) {
@@ -118,15 +117,7 @@ function RevisionsTable(props) {
 														revision.notes.map(note => (
 															<div className="revision-note clearfix" key={note.id}>
 																<span className="note-content">
-																	<span
-																		// eslint-disable-next-line react/no-danger
-																		dangerouslySetInnerHTML={{
-																			__html: sanitize(note.content.replace(
-																				urlRegex,
-																				'<a target="_blank" href="$1">$1</a>'
-																			))
-																		}}
-																	/>
+																	{stringToUrl(note.content)}
 																	<a
 																		className="note-author pull-right"
 																		href={`/editor/${note.author.id}`}

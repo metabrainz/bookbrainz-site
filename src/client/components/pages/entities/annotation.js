@@ -17,9 +17,9 @@
  */
 
 import {Button, Col, Collapse, Row} from 'react-bootstrap';
+import {formatDate, stringToUrl} from '../../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {formatDate} from '../../../helpers/utils';
 
 
 class EntityAnnotation extends React.Component {
@@ -46,7 +46,7 @@ class EntityAnnotation extends React.Component {
 				<Col md={12}>
 					<h2>Annotation</h2>
 					<Collapse in={this.state.open}>
-						<p className="annotation-content">{annotation.content}</p>
+						<p className="annotation-content">{stringToUrl(annotation.content)}</p>
 					</Collapse>
 					<Button bsStyle="link" onClick={this.handleToggleCollapse}>
 						Show {this.state.open ? 'less' : 'more…'}
