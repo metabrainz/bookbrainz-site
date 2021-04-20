@@ -165,11 +165,11 @@ function formatEditionGroupChange(change) {
 function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 	// entityRevisions - collection of *entityType*_revisions matching id
 	return Promise.all(entityRevisions.map(
-		(revision) =>
-			revision.parent()
+		(revision) => {
+			const dataId = revision.get('dataId');
+			return revision.parent()
 				.then(
 					(parent) => {
-						const dataId = revision.get('dataId');
 						let isNew = false;
 						const isDeletion = !dataId;
 						if (!parent) {
@@ -197,11 +197,12 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 							orm.func.entity.getEntityParentAlias(
 								orm, entityType, revision.get('bbid')
 							),
-						isDeletion: false,
-						isNew: true,
+						isDeletion: !dataId,
+						isNew: Boolean(dataId),
 						revision
 					})
-				)
+				);
+		}
 	));
 }
 
