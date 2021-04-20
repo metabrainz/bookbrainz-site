@@ -16,7 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
+/* eslint-disable no-useless-escape */
+import DOMPurify from 'dompurify';
+import React from 'react';
 import _ from 'lodash';
 import {format} from 'date-fns';
 import {isIterable} from '../../types';
@@ -160,4 +162,18 @@ export function dateObjectToISOString(value: DateObject) {
 		date += `-XX-${value.day}`;
 	}
 	return date;
+}
+
+export function stringToUrl(string: string) {
+	const addHttpRegex = /(^| )www\./ig;
+	// eslint-disable-next-line max-len
+	const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
+	let content = string.replace(addHttpRegex, '$1https://www.');
+	content = content.replace(
+		urlRegex,
+		'<a href="$1" target="_blank">$1</a>'
+	);
+	const sanitizedHtml = DOMPurify.sanitize(content);
+	// eslint-disable-next-line react/no-danger
+	return <span dangerouslySetInnerHTML={{__html: sanitizedHtml}}/>;
 }
