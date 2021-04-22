@@ -302,7 +302,8 @@ RevisionPage.displayName = 'RevisionPage';
 RevisionPage.propTypes = {
 	diffs: PropTypes.any.isRequired,
 	revision: PropTypes.any.isRequired,
-	user: PropTypes.object
+	user: PropTypes.object,
+	languageOptions: PropTypes.object
 };
 RevisionPage.defaultProps = {
 	user: null
