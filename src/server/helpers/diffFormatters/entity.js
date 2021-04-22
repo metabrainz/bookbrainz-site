@@ -94,7 +94,6 @@ function formatAliasModified(change) {
 		];
 	}
 
-	const REQUIRED_DEPTH = 4;
 	const aliasLanguageChanged =
 		change.path.length > 3 && change.path[3] === 'languageId';
 	if (aliasLanguageChanged) {
