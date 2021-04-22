@@ -38,6 +38,7 @@ import express from 'express';
 import log from 'log';
 import {makePromiseFromObject} from '../../common/helpers/utils';
 import target from '../templates/target';
+import * as middleware from '../helpers/middleware';
 
 
 const router = express.Router();
@@ -195,7 +196,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 	));
 }
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id',middleware.loadLanguages, async (req, res, next) => {
 	const {
 		AuthorRevision, EditionRevision, EditionGroupRevision,
 		PublisherRevision, Revision, WorkRevision
@@ -283,6 +284,7 @@ router.get('/:id', async (req, res, next) => {
 					diffs={props.diffs}
 					revision={props.revision}
 					user={props.user}
+					languageOptions={props.languages}
 				/>
 			</Layout>
 		);
