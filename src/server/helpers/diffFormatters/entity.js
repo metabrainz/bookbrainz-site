@@ -96,9 +96,9 @@ function formatAliasModified(change) {
 
 	const REQUIRED_DEPTH = 4;
 	const aliasLanguageChanged =
-		change.path.length > REQUIRED_DEPTH && change.path[3] === 'language' &&
-		change.path[4] === 'name';
+		change.path.length > 3 && change.path[3] === 'languageId';
 	if (aliasLanguageChanged) {
+		change.isLanguage = true;
 		return [
 			base.formatChange(
 				change,
@@ -403,7 +403,7 @@ export function formatEntityDiffs(diffs, entityType, entityFormatter) {
 				formattedDiff.entity.defaultAlias = diff.entityAlias;
 			}
 		}
-
+		
 		if (!diff.changes) {
 			formattedDiff.changes = [];
 
