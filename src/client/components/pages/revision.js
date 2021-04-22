@@ -49,7 +49,15 @@ class RevisionPage extends React.Component {
 		);
 	}
 
-	static formatChange(change) {
+	static formatChange(change,languageOptions) {	
+		if(change.isLanguage){
+			if(change.lhs){
+				const lhs = languageOptions.find(language => language.id === change.lhs[0]);
+				change.lhs = [lhs.name];
+			}
+			const rhs = languageOptions.find(language => language.id === change.rhs[0]); 
+			change.rhs = [rhs.name];
+		}
 		const isChangeADate = change.key.toLowerCase().match(/\bdate\b/);
 		if (change.kind === 'N') {
 			return (
@@ -93,9 +101,10 @@ class RevisionPage extends React.Component {
 	}
 
 	static formatDiff(diff) {
+		const languageOptions= diff.entity.languageOptions;
 		const result = diff.changes.map(
 			(change) =>
-				RevisionPage.formatChange(change)
+				RevisionPage.formatChange(change,languageOptions)
 		);
 
 		return _.compact(result);
@@ -156,7 +165,8 @@ class RevisionPage extends React.Component {
 	}
 
 	render() {
-		const {revision, diffs, user} = this.props;
+		const {revision, diffs, user, languageOptions} = this.props;
+		diffs[0].entity.languageOptions = languageOptions;
 		let regularDiffs = diffs;
 		let mergeDiffDivs;
 
