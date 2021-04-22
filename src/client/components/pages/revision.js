@@ -55,8 +55,10 @@ class RevisionPage extends React.Component {
 				const lhs = languageOptions.find(language => language.id === change.lhs[0]);
 				change.lhs = [lhs.name];
 			}
-			const rhs = languageOptions.find(language => language.id === change.rhs[0]); 
-			change.rhs = [rhs.name];
+			if(change.rhs){
+				const rhs = languageOptions.find(language => language.id === change.rhs[0]); 
+				change.rhs = [rhs.name];
+			}
 		}
 		const isChangeADate = change.key.toLowerCase().match(/\bdate\b/);
 		if (change.kind === 'N') {
