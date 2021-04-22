@@ -19,7 +19,7 @@
 import _ from 'lodash';
 
 
-export function formatRow(kind, key, lhs, rhs) {
+export function formatRow(kind, key, lhs, rhs, isLanguage) {
 	if (_.isNil(lhs) && _.isNil(rhs)) {
 		return [];
 	}
@@ -28,7 +28,8 @@ export function formatRow(kind, key, lhs, rhs) {
 		return {
 			key,
 			kind: 'N',
-			rhs
+			rhs,
+			isLanguage
 		};
 	}
 
@@ -36,7 +37,8 @@ export function formatRow(kind, key, lhs, rhs) {
 		return {
 			key,
 			kind: 'D',
-			lhs
+			lhs,
+			isLanguage
 		};
 	}
 
@@ -44,7 +46,8 @@ export function formatRow(kind, key, lhs, rhs) {
 		key,
 		kind,
 		lhs,
-		rhs
+		rhs,
+		isLanguage
 	};
 }
 
@@ -53,7 +56,8 @@ export function formatChange(change, label, transformer) {
 		change.kind,
 		label,
 		transformer(change.lhs),
-		transformer(change.rhs)
+		transformer(change.rhs),
+		change.isLanguage
 	);
 }
 
