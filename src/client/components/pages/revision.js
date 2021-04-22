@@ -49,14 +49,14 @@ class RevisionPage extends React.Component {
 		);
 	}
 
-	static formatChange(change,languageOptions) {	
-		if(change.isLanguage){
-			if(change.lhs){
+	static formatChange(change, languageOptions) {
+		if (change.isLanguage) {
+			if (change.lhs) {
 				const lhs = languageOptions.find(language => language.id === change.lhs[0]);
 				change.lhs = [lhs.name];
 			}
-			if(change.rhs){
-				const rhs = languageOptions.find(language => language.id === change.rhs[0]); 
+			if (change.rhs) {
+				const rhs = languageOptions.find(language => language.id === change.rhs[0]);
 				change.rhs = [rhs.name];
 			}
 		}
@@ -103,10 +103,10 @@ class RevisionPage extends React.Component {
 	}
 
 	static formatDiff(diff) {
-		const languageOptions= diff.entity.languageOptions;
+		const {languageOptions} = diff.entity;
 		const result = diff.changes.map(
 			(change) =>
-				RevisionPage.formatChange(change,languageOptions)
+				RevisionPage.formatChange(change, languageOptions)
 		);
 
 		return _.compact(result);
@@ -301,9 +301,9 @@ class RevisionPage extends React.Component {
 RevisionPage.displayName = 'RevisionPage';
 RevisionPage.propTypes = {
 	diffs: PropTypes.any.isRequired,
+	languageOptions: PropTypes.object.isRequired,
 	revision: PropTypes.any.isRequired,
-	user: PropTypes.object,
-	languageOptions: PropTypes.object
+	user: PropTypes.object
 };
 RevisionPage.defaultProps = {
 	user: null

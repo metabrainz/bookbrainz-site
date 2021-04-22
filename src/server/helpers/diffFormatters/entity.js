@@ -402,7 +402,7 @@ export function formatEntityDiffs(diffs, entityType, entityFormatter) {
 				formattedDiff.entity.defaultAlias = diff.entityAlias;
 			}
 		}
-		
+
 		if (!diff.changes) {
 			formattedDiff.changes = [];
 

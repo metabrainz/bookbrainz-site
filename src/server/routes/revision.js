@@ -22,6 +22,7 @@ import * as entityFormatter from '../helpers/diffFormatters/entity';
 import * as entityRoutes from './entity/entity';
 import * as error from '../../common/helpers/error';
 import * as languageSetFormatter from '../helpers/diffFormatters/languageSet';
+import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
 import * as publisherSetFormatter from '../helpers/diffFormatters/publisherSet';
 import * as releaseEventSetFormatter from
@@ -38,7 +39,6 @@ import express from 'express';
 import log from 'log';
 import {makePromiseFromObject} from '../../common/helpers/utils';
 import target from '../templates/target';
-import * as middleware from '../helpers/middleware';
 
 
 const router = express.Router();
@@ -196,7 +196,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 	));
 }
 
-router.get('/:id',middleware.loadLanguages, async (req, res, next) => {
+router.get('/:id', middleware.loadLanguages, async (req, res, next) => {
 	const {
 		AuthorRevision, EditionRevision, EditionGroupRevision,
 		PublisherRevision, Revision, WorkRevision
@@ -282,9 +282,9 @@ router.get('/:id',middleware.loadLanguages, async (req, res, next) => {
 			<Layout {...propHelpers.extractLayoutProps(props)}>
 				<RevisionPage
 					diffs={props.diffs}
+					languageOptions={props.languages}
 					revision={props.revision}
 					user={props.user}
-					languageOptions={props.languages}
 				/>
 			</Layout>
 		);

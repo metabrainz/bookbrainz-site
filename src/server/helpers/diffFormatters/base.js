@@ -26,28 +26,28 @@ export function formatRow(kind, key, lhs, rhs, isLanguage) {
 
 	if (kind === 'N' || _.isNil(lhs)) {
 		return {
+			isLanguage,
 			key,
 			kind: 'N',
-			rhs,
-			isLanguage
+			rhs
 		};
 	}
 
 	if (kind === 'D' || _.isNil(rhs)) {
 		return {
+			isLanguage,
 			key,
 			kind: 'D',
-			lhs,
-			isLanguage
+			lhs
 		};
 	}
 
 	return {
+		isLanguage,
 		key,
 		kind,
 		lhs,
-		rhs,
-		isLanguage
+		rhs
 	};
 }
 
