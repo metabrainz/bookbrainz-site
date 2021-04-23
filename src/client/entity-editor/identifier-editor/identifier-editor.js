@@ -77,7 +77,7 @@ const IdentifierEditor = ({
 			<h2>
 			Add Identifier {helpIconElement}
 			</h2>
-			
+
 			<div className={noIdentifiersTextClass}>
 				<p className="text-muted">This entity has no identifiers</p>
 			</div>
@@ -88,7 +88,7 @@ const IdentifierEditor = ({
 							index={rowId}
 							// eslint-disable-next-line react/no-array-index-key
 							key={rowId}
-					    	typeOptions={identifierTypes}
+							typeOptions={identifierTypes}
 						/>
 					)).toArray()
 				}
@@ -105,7 +105,7 @@ const IdentifierEditor = ({
 						<span>&nbsp;Add identifier</span>
 					</Button>
 				</Col>
-			</Row>				
+			</Row>
 		</>
 	);
 };
