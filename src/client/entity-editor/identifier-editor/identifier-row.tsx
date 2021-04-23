@@ -94,7 +94,7 @@ function IdentifierRow({
 	return (
 		<div>
 			<Row>
-				<Col md={4}>
+				<Col md={4} mdOffset={1}>
 					<ValueField
 						defaultValue={valueValue}
 						empty={!valueValue && typeValue === null}
@@ -114,7 +114,7 @@ function IdentifierRow({
 						/>
 					</CustomInput>
 				</Col>
-				<Col className="text-right" md={3} mdOffset={1}>
+				<Col className="text-right" md={2}>
 					<Button
 						block
 						bsStyle="danger"
@@ -126,7 +126,6 @@ function IdentifierRow({
 					</Button>
 				</Col>
 			</Row>
-			<hr/>
 		</div>
 	);
 }
