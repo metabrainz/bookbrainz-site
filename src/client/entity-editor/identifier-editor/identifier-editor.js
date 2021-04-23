@@ -73,43 +73,40 @@ const IdentifierEditor = ({
 	);
 
 	return (
-		<Modal bsSize="large" show={show} onHide={onClose}>
-			<Modal.Header>
-				<Modal.Title>
-					Identifier Editor {helpIconElement}
-				</Modal.Title>
-			</Modal.Header>
+		<>
+			<h2>
+			Add Identifier {helpIconElement}
+			</h2>
+			
+			<div className={noIdentifiersTextClass}>
+				<p className="text-muted">This entity has no identifiers</p>
+			</div>
+			<div>
+				{
+					identifiers.map((identifier, rowId) => (
+						<IdentifierRow
+							index={rowId}
+							// eslint-disable-next-line react/no-array-index-key
+							key={rowId}
+					    	typeOptions={identifierTypes}
+						/>
+					)).toArray()
+				}
+			</div>
 
-			<Modal.Body>
-				<div className={noIdentifiersTextClass}>
-					<p className="text-muted">This entity has no identifiers</p>
-				</div>
-				<div>
-					{
-						identifiers.map((identifier, rowId) => (
-							<IdentifierRow
-								index={rowId}
-								// eslint-disable-next-line react/no-array-index-key
-								key={rowId}
-								typeOptions={identifierTypes}
-							/>
-						)).toArray()
-					}
-				</div>
-				<Row>
-					<Col className="text-right" md={3} mdOffset={9}>
-						<Button bsStyle="success" onClick={onAddIdentifier}>
-							<FontAwesomeIcon icon={faPlus}/>
-							<span>&nbsp;Add identifier</span>
-						</Button>
-					</Col>
-				</Row>
-			</Modal.Body>
-
-			<Modal.Footer>
-				<Button bsStyle="primary" onClick={onClose}>Close</Button>
-			</Modal.Footer>
-		</Modal>
+			<Row className="margin-top-1">
+				<Col
+					className="text-center"
+					md={4}
+					mdOffset={4}
+				>
+					<Button bsStyle="success" onClick={onAddIdentifier}>
+						<FontAwesomeIcon icon={faPlus}/>
+						<span>&nbsp;Add identifier</span>
+					</Button>
+				</Col>
+			</Row>				
+		</>
 	);
 };
 IdentifierEditor.displayName = 'IdentifierEditor';
