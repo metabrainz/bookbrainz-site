@@ -35,8 +35,7 @@ type OwnProps = {
 };
 
 type StateProps = {
-	aliasEditorVisible: boolean,
-	identifierEditorVisible: boolean,
+	aliasEditorVisible: boolean
 };
 
 type Props = StateProps & OwnProps;
@@ -47,8 +46,6 @@ type Props = StateProps & OwnProps;
  * @param {Object} props - The properties passed to the component.
  * @param {boolean} props.aliasEditorVisible - Whether the alias editor modal
  *        should be made visible.
- * @param {boolean} props.identifierEditorVisible - Whether the identifier
- *        editor modal should be made visible.
  * @param {React.Node} props.children - The child content to wrap with this
  *        entity editor form.
  * @returns {ReactElement} React element containing the rendered EntityEditor.
@@ -57,8 +54,7 @@ const EntityEditor = (props: Props) => {
 	const {
 		aliasEditorVisible,
 		children,
-		heading,
-		identifierEditorVisible
+		heading
 	} = props;
 
 	return (
@@ -79,7 +75,7 @@ const EntityEditor = (props: Props) => {
 						{...props}
 					)
 				}
-				<IdentifierEditor show={identifierEditorVisible} {...props}/>
+				<IdentifierEditor {...props}/>
 				<AnnotationSection {...props}/>
 			</Panel.Body>
 			<Panel.Footer>
@@ -93,8 +89,7 @@ EntityEditor.displayName = 'EntityEditor';
 function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('buttonBar');
 	return {
-		aliasEditorVisible: state.get('aliasEditorVisible'),
-		identifierEditorVisible: state.get('identifierEditorVisible')
+		aliasEditorVisible: state.get('aliasEditorVisible')
 	};
 }
 
