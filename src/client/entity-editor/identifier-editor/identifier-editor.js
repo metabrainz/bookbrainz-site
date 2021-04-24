@@ -17,7 +17,7 @@
  */
 
 import {Button, Col, Modal, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
-import {addIdentifierRow, hideIdentifierEditor, removeEmptyIdentifiers} from './actions';
+import {addIdentifierRow} from './actions';
 import {faPlus, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -40,10 +40,6 @@ import {connect} from 'react-redux';
  *        identifier.
  * @param {Function} props.onAddIdentifier - A function to be called when the
  *        button to add an identifier is clicked.
- * @param {Function} props.onClose - A function to be called when the button to
- *        close the editor is clicked.
- * @param {boolean} props.show - Whether or not the editor modal should be
- *        visible.
  * @returns {ReactElement} React element containing the rendered
  *          IdentifierEditor.
  */
@@ -51,8 +47,6 @@ const IdentifierEditor = ({
 	identifiers,
 	identifierTypes,
 	onAddIdentifier,
-	onClose,
-	show
 }) => {
 	const noIdentifiersTextClass =
 		classNames('text-center', {hidden: identifiers.size});
@@ -75,11 +69,11 @@ const IdentifierEditor = ({
 	return (
 		<>
 			<h2>
-			Add Identifier {helpIconElement}
+			Add identifiers (eg. ISBN, Wikidata ID)… 
 			</h2>
 			
 			<div className={noIdentifiersTextClass}>
-				<p className="text-muted">This entity has no identifiers</p>
+				<p className="text-muted">This entity has no identifiers {helpIconElement}</p>
 			</div>
 			<div>
 				{
@@ -113,12 +107,7 @@ IdentifierEditor.displayName = 'IdentifierEditor';
 IdentifierEditor.propTypes = {
 	identifierTypes: PropTypes.array.isRequired,
 	identifiers: PropTypes.object.isRequired,
-	onAddIdentifier: PropTypes.func.isRequired,
-	onClose: PropTypes.func.isRequired,
-	show: PropTypes.bool
-};
-IdentifierEditor.defaultProps = {
-	show: false
+	onAddIdentifier: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
@@ -129,11 +118,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		onAddIdentifier: () => dispatch(addIdentifierRow()),
-		onClose: () => {
-			dispatch(hideIdentifierEditor());
-			dispatch(removeEmptyIdentifiers());
-		}
+		onAddIdentifier: () => dispatch(addIdentifierRow())
 	};
 }
 
