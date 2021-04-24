@@ -198,8 +198,7 @@ function publisherToFormState(publisher) {
 	aliases.forEach((alias) => { aliasEditor[alias.id] = alias; });
 
 	const buttonBar = {
-		aliasEditorVisible: false,
-		identifierEditorVisible: false
+		aliasEditorVisible: false
 	};
 
 	const nameSection = _.isEmpty(defaultAliasList) ? {
