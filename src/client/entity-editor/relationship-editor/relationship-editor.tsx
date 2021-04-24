@@ -32,7 +32,6 @@ import {
 import type {
 	Entity,
 	EntityType,
-	LanguageOption,
 	RelationshipType,
 	RelationshipWithLabel,
 	Relationship as _Relationship
