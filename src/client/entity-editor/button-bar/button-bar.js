@@ -17,18 +17,16 @@
  */
 
 import {Col, Row} from 'react-bootstrap';
-import {
-	showAliasEditor,
-	showIdentifierEditor
-} from './actions';
-import {validateAliases, validateIdentifiers} from '../validators/common';
 
 import AliasButton from './alias-button';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {addAliasRow} from '../alias-editor/actions';
-import {addIdentifierRow} from '../identifier-editor/actions';
 import {connect} from 'react-redux';
+import {
+	showAliasEditor
+} from './actions';
+import {validateAliases} from '../validators/common';
 
 /**
  * Container component. This component renders three buttons in a horizontal
@@ -46,7 +44,7 @@ import {connect} from 'react-redux';
 function ButtonBar({
 	aliasesInvalid,
 	numAliases,
-	onAliasButtonClick,
+	onAliasButtonClick
 }) {
 	return (
 		<div>
@@ -68,10 +66,10 @@ ButtonBar.displayName = 'ButtonBar';
 ButtonBar.propTypes = {
 	aliasesInvalid: PropTypes.bool.isRequired,
 	numAliases: PropTypes.number.isRequired,
-	onAliasButtonClick: PropTypes.func.isRequired,
+	onAliasButtonClick: PropTypes.func.isRequired
 };
 
-function mapStateToProps(rootState, {identifierTypes}) {
+function mapStateToProps(rootState) {
 	return {
 		aliasesInvalid: !validateAliases(rootState.get('aliasEditor')),
 		numAliases: rootState.get('aliasEditor').size

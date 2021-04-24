@@ -16,14 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Col, Modal, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
-import {addIdentifierRow} from './actions';
+import {Button, Col, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 import {faPlus, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import IdentifierRow from './identifier-row';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {addIdentifierRow} from './actions';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 
@@ -46,7 +46,7 @@ import {connect} from 'react-redux';
 const IdentifierEditor = ({
 	identifiers,
 	identifierTypes,
-	onAddIdentifier,
+	onAddIdentifier
 }) => {
 	const noIdentifiersTextClass =
 		classNames('text-center', {hidden: identifiers.size});
@@ -69,9 +69,9 @@ const IdentifierEditor = ({
 	return (
 		<>
 			<h2>
-			Add identifiers (eg. ISBN, Wikidata ID)… 
+				Add identifiers (eg. ISBN, Wikidata ID)…
 			</h2>
-			
+
 			<div className={noIdentifiersTextClass}>
 				<p className="text-muted">This entity has no identifiers {helpIconElement}</p>
 			</div>
@@ -82,7 +82,7 @@ const IdentifierEditor = ({
 							index={rowId}
 							// eslint-disable-next-line react/no-array-index-key
 							key={rowId}
-					    	typeOptions={identifierTypes}
+							typeOptions={identifierTypes}
 						/>
 					)).toArray()
 				}
@@ -99,7 +99,7 @@ const IdentifierEditor = ({
 						<span>&nbsp;Add identifier</span>
 					</Button>
 				</Col>
-			</Row>				
+			</Row>
 		</>
 	);
 };
