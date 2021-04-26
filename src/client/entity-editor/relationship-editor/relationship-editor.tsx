@@ -414,14 +414,14 @@ class RelationshipModal
 					<hr/>
 					<Row>
 						<Col md={10} mdOffset={1}>
-							<form>
+							<div>
 								<div>
 									{entitySelect}
 								</div>
 								<div>
 									{this.renderRelationshipSelect()}
 								</div>
-							</form>
+							</div>
 						</Col>
 					</Row>
 				</Modal.Body>
