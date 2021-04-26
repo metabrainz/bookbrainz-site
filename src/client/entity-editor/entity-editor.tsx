@@ -110,7 +110,10 @@ function mapStateToProps(rootState): StateProps {
 
 function mapDispatchToProps(dispatch, {submissionUrl}) {
 	return {
-		onSubmit: () => dispatch(submit(submissionUrl))
+		onSubmit: (event:React.FormEvent) => {
+			event.preventDefault();
+			dispatch(submit(submissionUrl));
+		}
 	};
 }
 
