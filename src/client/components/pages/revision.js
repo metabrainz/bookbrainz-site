@@ -106,7 +106,7 @@ class RevisionPage extends React.Component {
 		let deleteBadge = null;
 		if (diff.isDeletion) { 
 			if(diff.entityRevision.isMerge){
-				mergeBadge = <Badge className="deletion margin-right-0-5">Merged</Badge>;
+				mergeBadge = <Badge className="merged margin-right-0-5">Merged</Badge>;
 			}else{
 				deleteBadge = <Badge className="deletion margin-right-0-5">- Deleted</Badge>;
 			}
