@@ -134,6 +134,7 @@ class CollectionsTable extends React.Component {
 									<th className="col-sm-2">Name</th>
 									<th className="col-sm-4">Description</th>
 									<th className="col-sm-2">Entity Type</th>
+									<th className="col-sm-2">Entities</th>
 									{
 										showPrivacy ?
 											<th className="col-sm-2">Privacy</th> : null
@@ -167,6 +168,7 @@ class CollectionsTable extends React.Component {
 											</td>
 											<td>{collection.description}</td>
 											<td>{collection.entityType}</td>
+											<td>{collection.itemCount}</td>
 											{
 												showPrivacy ?
 													<td>{collection.public ? 'Public' : 'Private'}</td> : null
