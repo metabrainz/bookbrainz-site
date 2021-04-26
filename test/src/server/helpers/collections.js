@@ -200,7 +200,8 @@ describe('getOrderedCollectionsForEditorPage', () => {
 				'public',
 				'createdAt',
 				'lastModified',
-				'isOwner'
+				'isOwner',
+				'itemCount'
 			);
 		});
 	});
