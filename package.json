@@ -40,7 +40,7 @@
     "chartjs-adapter-date-fns": "^1.0.0",
     "classnames": "^2.2.5",
     "compression": "^1.7.1",
-    "connect-redis": "^3.4.2",
+    "connect-redis": "^4.0.0",
     "core-js": "^3.8.3",
     "cross-env": "^5.1.1",
     "date-fns": "^2.15.0",
@@ -80,7 +80,7 @@
     "superagent": "^5.3.1",
     "swagger-jsdoc": "^4.0.0",
     "swagger-ui-express": "^4.1.4",
-    "validator": "^9.1.2"
+    "validator": "^13.6.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.1",
