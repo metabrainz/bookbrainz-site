@@ -18,27 +18,28 @@
 
 /* eslint-disable sort-imports */
 import PropTypes from 'prop-types';
-import {Col, Row} from 'react-bootstrap';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
+
 
 function EntityRelatedCollections({collections}) {
-	return (        
-        <div>
-        <h2>Related Collections</h2>
-        {collections &&
-        <ul className="list-unstyled">
-            {collections.map((collection) => {
-                if(collection.public){
-                    return (
-                        <li key={collection.id}>
-                        	<a href={`/collection/${collection.id}`}>{collection.name}</a>
-                        </li>
-                    )                       
-                }
-            })}             
-        </ul>
-        }
-    </div>
+	return (
+		<div>
+			<h2>Related Collections</h2>
+			{collections &&
+			<ul className="list-unstyled">
+				{collections.map((collection) => {
+					if (collection.public) {
+						return (
+							<li key={collection.id}>
+								<a href={`/collection/${collection.id}`}>{collection.name}</a>
+							</li>
+						);
+					}
+					return null;
+				})}
+			</ul>
+			}
+		</div>
 	);
 }
 EntityRelatedCollections.displayName = 'EntityRelatedCollections';
