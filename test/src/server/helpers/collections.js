@@ -83,7 +83,8 @@ describe('getOrderedPublicCollections', () => {
 				'public',
 				'createdAt',
 				'lastModified',
-				'owner'
+				'owner',
+				'itemCount'
 			);
 		});
 		expect(orderedCollections.length).to.equal(6);
@@ -102,7 +103,8 @@ describe('getOrderedPublicCollections', () => {
 				'public',
 				'createdAt',
 				'lastModified',
-				'owner'
+				'owner',
+				'itemCount'
 			);
 			expect(collection.entityType).to.equal('Author');
 		});
@@ -198,7 +200,8 @@ describe('getOrderedCollectionsForEditorPage', () => {
 				'public',
 				'createdAt',
 				'lastModified',
-				'isOwner'
+				'isOwner',
+				'itemCount'
 			);
 		});
 	});

@@ -107,6 +107,8 @@ class RevisionPage extends React.Component {
 				<h3>
 					{diff.isNew &&
 					<Badge className="new margin-right-0-5">+ New</Badge>}
+					{diff.isDeletion &&
+					<Badge className="deletion margin-right-0-5">- Deleted</Badge>}
 					<EntityLink
 						entity={diff.entity}
 					/>

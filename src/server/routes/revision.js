@@ -165,20 +165,29 @@ function formatEditionGroupChange(change) {
 function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 	// entityRevisions - collection of *entityType*_revisions matching id
 	return Promise.all(entityRevisions.map(
-		(revision) =>
-			revision.parent()
+		(revision) => {
+			const dataId = revision.get('dataId');
+			return revision.parent()
 				.then(
-					(parent) => makePromiseFromObject({
-						changes: revision.diff(parent),
-						entity: revision.related('entity'),
-						entityAlias: revision.get('dataId') ?
-							revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
-							orm.func.entity.getEntityParentAlias(
-								orm, entityType, revision.get('bbid')
-							),
-						isNew: !parent,
-						revision
-					}),
+					(parent) => {
+						let isNew = false;
+						const isDeletion = !dataId;
+						if (!parent) {
+							isNew = Boolean(dataId);
+						}
+						return makePromiseFromObject({
+							changes: revision.diff(parent),
+							entity: revision.related('entity'),
+							entityAlias: dataId ?
+								revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
+								orm.func.entity.getEntityParentAlias(
+									orm, entityType, revision.get('bbid')
+								),
+							isDeletion,
+							isNew,
+							revision
+						});
+					},
 					// If calling .parent() is rejected (no parent rev), we still want to go ahead without the parent
 					() => makePromiseFromObject({
 						changes: revision.diff(null),
@@ -188,10 +197,12 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 							orm.func.entity.getEntityParentAlias(
 								orm, entityType, revision.get('bbid')
 							),
-						isNew: true,
+						isDeletion: !dataId,
+						isNew: Boolean(dataId),
 						revision
 					})
-				)
+				);
+		}
 	));
 }
 

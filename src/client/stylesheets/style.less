@@ -87,6 +87,9 @@ body {
     margin-right: 0;
 }
 
+.btn-group > .btn:not(:last-child) {
+    margin-bottom: 0.5em;
+}
 
 /* Site-wide styling */
 /* ================= */
@@ -461,6 +464,15 @@ hr.wide {
 .annotation-content {
 	white-space: pre-wrap;
 	position: relative;
+	font-family: inherit;
+	font-size: inherit;
+	padding: initial;
+	background: initial;
+	color: inherit;
+    line-height: inherit;
+	border: none;
+	border-radius: initial;
+	z-index: 1;
 	min-height: 3em;
 	margin: 0;
 	&.collapse{
@@ -540,6 +552,10 @@ hr.wide {
 }
 .badge.new {
 	background-color: @green;
+}
+
+.badge.deletion {
+	background-color: @red;
 }
 
 .label-checkbox {

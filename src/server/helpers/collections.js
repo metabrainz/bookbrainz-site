@@ -63,7 +63,8 @@ export async function getOrderedCollectionsForEditorPage(from, size, entityType,
 		.orderBy('created_at')
 		.fetchPage({
 			limit: size,
-			offset: from
+			offset: from,
+			withItemCount: true
 		});
 
 	const collectionsJSON = allCollections ? allCollections.toJSON() : [];
@@ -99,6 +100,7 @@ export async function getOrderedPublicCollections(from, size, entityType, orm) {
 		.fetchPage({
 			limit: size,
 			offset: from,
+			withItemCount: true,
 			withRelated: ['owner']
 		});
 
