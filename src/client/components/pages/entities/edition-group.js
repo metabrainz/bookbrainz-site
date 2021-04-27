@@ -84,7 +84,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 			{!entity.deleted &&
 			<React.Fragment>
 				<EditionTable editions={entity.editions} entity={entity}/>
-				<EntityRelatedCollections bbid={entity.bbid}/>
+				<EntityRelatedCollections collections={entity.collections}/>
 				<EntityLinks
 					entity={entity}
 					identifierTypes={identifierTypes}

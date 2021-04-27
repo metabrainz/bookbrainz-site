@@ -127,7 +127,7 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
-				<EntityRelatedCollections bbid={entity.bbid}/>
+				<EntityRelatedCollections collections={entity.collections}/>
 				<EntityLinks
 					entity={entity}
 					identifierTypes={identifierTypes}

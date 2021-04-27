@@ -100,7 +100,7 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 					editions={editionsContainWork}
 					entity={entity}
 				/>
-				<EntityRelatedCollections bbid={entity.bbid}/>
+				<EntityRelatedCollections collections={entity.collections}/>
 				<EntityLinks
 					entity={entity}
 					identifierTypes={identifierTypes}
