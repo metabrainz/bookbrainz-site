@@ -102,13 +102,23 @@ class RevisionPage extends React.Component {
 	}
 
 	static getEntityDiff(diff) {
+		let mergeBadge = null;
+		let deleteBadge = null;
+		if (diff.isDeletion) {
+			if (diff.entityRevision.isMerge) {
+				mergeBadge = <Badge className="merged margin-right-0-5">Merged</Badge>;
+			}
+			else {
+				deleteBadge = <Badge className="deletion margin-right-0-5">- Deleted</Badge>;
+			}
+		}
 		return (
 			<div key={diff.entity.bbid}>
 				<h3>
 					{diff.isNew &&
 					<Badge className="new margin-right-0-5">+ New</Badge>}
-					{diff.isDeletion &&
-					<Badge className="deletion margin-right-0-5">- Deleted</Badge>}
+					{mergeBadge}
+					{deleteBadge}
 					<EntityLink
 						entity={diff.entity}
 					/>
