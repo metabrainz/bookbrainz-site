@@ -26,13 +26,11 @@ import {faCodeBranch} from '@fortawesome/free-solid-svg-icons';
 
 
 const {Table} = bootstrap;
-const {formatDate, stringToUrl} = utilsHelper;
+const {formatDate, stringToHTMLWithLinks} = utilsHelper;
 
 
 function RevisionsTable(props) {
 	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading} = props;
-	// eslint-disable-next-line max-len
-	const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
 	const tableCssClasses = 'table table-striped';
 	return (
 
@@ -117,7 +115,7 @@ function RevisionsTable(props) {
 														revision.notes.map(note => (
 															<div className="revision-note clearfix" key={note.id}>
 																<span className="note-content">
-																	{stringToUrl(note.content)}
+																	{stringToHTMLWithLinks(note.content)}
 																	<a
 																		className="note-author pull-right"
 																		href={`/editor/${note.author.id}`}
