@@ -151,7 +151,8 @@ export function makeEntityLoader(modelName: string, additionalRels: Array<string
 		'identifierSet.identifiers.type',
 		'relationshipSet.relationships.type',
 		'revision.revision',
-		'collections'
+		'collections',
+		'collections.owner'
 	].concat(additionalRels);
 
 	return async (req: $Request, res: $Response, next: NextFunction, bbid: string) => {
