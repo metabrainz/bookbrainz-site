@@ -78,7 +78,7 @@ class LinkedEntity extends React.Component<any, any> {
 
 	render() {
 		const option = this.getSafeOptionValue(this.props.option);
-		const {disambiguation, text, type, unnamedText, language} = option;
+		const {disambiguation, text, type, unnamedText, language, author} = option;
 
 		const nameComponent = text || <i>{unnamedText}</i>;
 
@@ -89,10 +89,13 @@ class LinkedEntity extends React.Component<any, any> {
 				}
 				&nbsp;
 				{nameComponent}
-				&nbsp;&nbsp;
+				&nbsp;
 				{
 					disambiguation &&
-					<span className="disambig"><small>({disambiguation})</small></span>
+					<span className="disambig"><small>&nbsp;({disambiguation})&nbsp;</small></span>
+				}
+				{
+					author && `by ${author}`
 				}
 				{' '}
 				<a onClick={this.handleChildEvent}>
