@@ -25,6 +25,7 @@ import React from 'react';
 import {Async as SelectAsync} from 'react-select';
 import ValidationLabel from '../common/validation-label';
 import _ from 'lodash';
+import {getRelationshipSource, getRelationshipSourceByTypeId} from '../../helpers/entity';
 import makeImmutable from './make-immutable';
 import request from 'superagent';
 
@@ -66,10 +67,16 @@ class EntitySearchFieldOption extends React.Component {
 		if (_.isNil(entity)) {
 			return null;
 		}
+		let author = null;
+		if(entity.relationships){
+			const source = getRelationshipSourceByTypeId(entity, 8); // TypeId 8 for author
+			author = source[0].defaultAlias.name || null;
+		}
 		const id = this.isArea(entity) ? entity.id : entity.bbid;
 		const languageId = _.get(entity, ['defaultAlias', 'languageId']);
 		const language = this.props.languageOptions.find(index => index.value === languageId);
 		return {
+			author,
 			disambiguation: _.get(entity, ['disambiguation', 'comment']),
 			id,
 			language: language && language.label,
