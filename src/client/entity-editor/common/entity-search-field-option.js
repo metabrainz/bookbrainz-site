@@ -17,7 +17,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {getRelationshipSource, getRelationshipSourceByTypeId} from '../../helpers/entity';
 import CustomInput from '../../input';
 import Entity from './entity';
 import LinkedEntity from './linked-entity';
@@ -26,6 +25,7 @@ import React from 'react';
 import {Async as SelectAsync} from 'react-select';
 import ValidationLabel from '../common/validation-label';
 import _ from 'lodash';
+import {getRelationshipSourceByTypeId} from '../../helpers/entity';
 import makeImmutable from './make-immutable';
 import request from 'superagent';
 
@@ -69,7 +69,8 @@ class EntitySearchFieldOption extends React.Component {
 		}
 		let author = null;
 		if (entity.relationships) {
-			const source = getRelationshipSourceByTypeId(entity, 8); // TypeId 8 for author
+			// TypeId 8 for author
+			const source = getRelationshipSourceByTypeId(entity, 8);
 			author = source[0].defaultAlias.name || null;
 		}
 		const id = this.isArea(entity) ? entity.id : entity.bbid;
