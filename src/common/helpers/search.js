@@ -93,7 +93,6 @@ async function _fetchEntityModelsForESResults(orm, results) {
 					require: false,
 					withRelated: [
 						'relationships.source',
-						'relationships.target',
 						'relationships.type'
 					]
 				})
