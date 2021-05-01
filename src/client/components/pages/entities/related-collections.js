@@ -31,7 +31,8 @@ function EntityRelatedCollections({collections}) {
 					if (collection.public) {
 						return (
 							<li key={collection.id}>
-								<a href={`/collection/${collection.id}`}>{collection.name}</a>
+								<a href={`/collection/${collection.id}`}>{collection.name}</a> by {' '}
+								<a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a>
 							</li>
 						);
 					}
