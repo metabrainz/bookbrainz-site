@@ -144,7 +144,7 @@ class SearchResults extends React.Component {
 
 	render() {
 		let resultsArray = this.props.results;
-		if (resultsArray) {
+		if (resultsArray.length) {
 			if (resultsArray[0].type === 'Collection') {
 				resultsArray = resultsArray.filter(result => result.public);
 			}
