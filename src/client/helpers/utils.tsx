@@ -17,7 +17,7 @@
  */
 
 /* eslint-disable no-useless-escape */
-import DOMPurify from 'dompurify';
+import DOMPurify from 'isomorphic-dompurify';
 import React from 'react';
 import _ from 'lodash';
 import {format} from 'date-fns';
