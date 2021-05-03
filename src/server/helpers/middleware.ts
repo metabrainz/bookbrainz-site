@@ -97,7 +97,7 @@ export async function loadWorkTableAuthors(req: $Request, res: $Response, next: 
 			}
 		}
 		return relationship;
-	}))
+	}));
 	next();
 }
 
