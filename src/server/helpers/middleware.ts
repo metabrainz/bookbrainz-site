@@ -80,21 +80,18 @@ export async function loadWorkTableAuthors(req: $Request, res: $Response, next: 
 			.fetch({require: false, withRelated: ['defaultAlias']});
 	}
 
-	await Promise.all(entity.relationships.map(async (relationship)=>{
-		if(relationship.typeId === 10){
-
+	await Promise.all(entity.relationships.map(async (relationship) => {
+		if (relationship.typeId === 10) {
 			const relationshipSet = await RelationshipSet.forge({id: relationship.target.relationshipSetId})
 				.fetch({
 					require: false,
 					withRelated: [
-						'relationships.source',
+						'relationships.source'
 					]
-				})
+				});
 			const relationships = relationshipSet ? relationshipSet.related('relationships').toJSON() : [];
-			relationship.target.author = (relationships.filter((rel)=> rel.typeId === 8))[0]
-
-			if(relationship.target.author)
-			{
+			relationship.target.author = (relationships.filter(rel => rel.typeId === 8))[0];
+			if (relationship.target.author) {
 				const source = await getEntityWithAlias(relationship.target.author.source);
 				relationship.target.author = source.toJSON();
 			}
