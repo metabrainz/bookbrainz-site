@@ -126,7 +126,7 @@ export async function loadWorkTableAuthors(req: $Request, res: $Response, next: 
 					]
 				});
 			const relationships = relationshipSet ? relationshipSet.related('relationships').toJSON() : [];
-			relationship.target.author = (relationships.filter(rel => rel.typeId === 8))[0];
+			relationship.target.author = relationships.filter(rel => rel.typeId === 8)[0];
 			if (relationship.target.author) {
 				const source = await getEntityWithAlias(relationship.target.author.source);
 				relationship.target.author = source.toJSON();
