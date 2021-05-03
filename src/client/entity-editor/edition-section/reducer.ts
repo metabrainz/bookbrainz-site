@@ -18,7 +18,6 @@
 
 
 import * as Immutable from 'immutable';
-import * as _ from 'lodash';
 
 import {
 	Action,
