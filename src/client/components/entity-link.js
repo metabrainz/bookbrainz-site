@@ -40,7 +40,7 @@ function EntityLink({entity, inline}) {
 
 EntityLink.displayName = 'EntityLink';
 EntityLink.propTypes = {
-	entity: PropTypes.string.isRequired,
+	entity: PropTypes.object.isRequired,
 	inline: PropTypes.bool
 };
 EntityLink.defaultProps = {
