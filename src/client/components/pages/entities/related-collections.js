@@ -27,17 +27,12 @@ function EntityRelatedCollections({collections}) {
 			<h2>Related Collections</h2>
 			{collections &&
 			<ul className="list-unstyled">
-				{collections.map((collection) => {
-					if (collection.public) {
-						return (
-							<li key={collection.id}>
-								<a href={`/collection/${collection.id}`}>{collection.name}</a> by {' '}
-								<a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a>
-							</li>
-						);
-					}
-					return null;
-				})}
+				{collections.map((collection) => (
+					<li key={collection.id}>
+						<a href={`/collection/${collection.id}`}>{collection.name}</a> by {' '}
+						<a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a>
+					</li>
+				))}
 			</ul>
 			}
 		</div>
