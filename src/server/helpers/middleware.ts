@@ -68,6 +68,42 @@ export const loadLanguages = makeLoader('Language', 'languages', (a, b) => {
 	return a.name.localeCompare(b.name);
 });
 
+export async function loadWorkTableAuthors(req: $Request, res: $Response, next: NextFunction) {
+	const {orm}: any = req.app.locals;
+	const {RelationshipSet} = orm;
+	const {entity} = res.locals;
+
+	async function getEntityWithAlias(relEntity) {
+		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
+
+		return orm.Author.forge({bbid: redirectBbid})
+			.fetch({require: false, withRelated: ['defaultAlias']});
+	}
+
+	await Promise.all(entity.relationships.map(async (relationship)=>{
+		if(relationship.typeId === 10){
+
+			const relationshipSet = await RelationshipSet.forge({id: relationship.target.relationshipSetId})
+				.fetch({
+					require: false,
+					withRelated: [
+						'relationships.source',
+					]
+				})
+			const relationships = relationshipSet ? relationshipSet.related('relationships').toJSON() : [];
+			relationship.target.author = (relationships.filter((rel)=> rel.typeId === 8))[0]
+
+			if(relationship.target.author)
+			{
+				const source = await getEntityWithAlias(relationship.target.author.source);
+				relationship.target.author = source.toJSON();
+			}
+		}
+		return relationship;
+	}))
+	next();
+}
+
 export function loadEntityRelationships(req: $Request, res: $Response, next: NextFunction) {
 	const {orm}: any = req.app.locals;
 	const {RelationshipSet} = orm;
