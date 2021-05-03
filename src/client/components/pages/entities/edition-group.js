@@ -84,12 +84,12 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 			{!entity.deleted &&
 			<React.Fragment>
 				<EditionTable editions={entity.editions} entity={entity}/>
-				<EntityRelatedCollections collections={entity.collections}/>
 				<EntityLinks
 					entity={entity}
 					identifierTypes={identifierTypes}
 					urlPrefix={urlPrefix}
 				/>
+				<EntityRelatedCollections collections={entity.collections}/>
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter

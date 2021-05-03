@@ -100,12 +100,12 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 					editions={editionsContainWork}
 					entity={entity}
 				/>
-				<EntityRelatedCollections collections={entity.collections}/>
 				<EntityLinks
 					entity={entity}
 					identifierTypes={identifierTypes}
 					urlPrefix={urlPrefix}
 				/>
+				<EntityRelatedCollections collections={entity.collections}/>
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter

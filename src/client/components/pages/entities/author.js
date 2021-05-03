@@ -127,12 +127,12 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
-				<EntityRelatedCollections collections={entity.collections}/>
 				<EntityLinks
 					entity={entity}
 					identifierTypes={identifierTypes}
 					urlPrefix={urlPrefix}
 				/>
+				<EntityRelatedCollections collections={entity.collections}/>
 				<Button
 					bsStyle="success"
 					className="margin-top-d15"
