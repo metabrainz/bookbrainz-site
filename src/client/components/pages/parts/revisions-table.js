@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
+/* eslint-disable no-useless-escape */
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
 import {genEntityIconHTMLElement, getEntityLabel, getEntityUrl} from '../../../helpers/entity';
@@ -26,12 +26,11 @@ import {faCodeBranch} from '@fortawesome/free-solid-svg-icons';
 
 
 const {Table} = bootstrap;
-const {formatDate} = utilsHelper;
+const {formatDate, stringToHTMLWithLinks} = utilsHelper;
 
 
 function RevisionsTable(props) {
 	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading} = props;
-
 	const tableCssClasses = 'table table-striped';
 	return (
 
@@ -116,9 +115,10 @@ function RevisionsTable(props) {
 														revision.notes.map(note => (
 															<div className="revision-note clearfix" key={note.id}>
 																<span className="note-content">
-																	{note.content}
+																	{stringToHTMLWithLinks(note.content)}
 																	<a
-																		className="note-author pull-right" href={`/editor/${note.author.id}`}
+																		className="note-author pull-right"
+																		href={`/editor/${note.author.id}`}
 																	>
 																		—{note.author.name}
 																	</a>
