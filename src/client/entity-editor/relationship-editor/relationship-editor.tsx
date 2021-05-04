@@ -314,7 +314,7 @@ class RelationshipModal
 				<FontAwesomeIcon icon={faExternalLinkAlt}/>
 			</Button>
 		);
-		const bbid = this.props.baseEntity.bbid;
+		const bbid = this.props.baseEntity?.bbid;
 		return (
 			<EntitySearchFieldOption
 				bbid={bbid}
