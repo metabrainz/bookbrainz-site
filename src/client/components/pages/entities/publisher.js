@@ -23,6 +23,7 @@ import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
+import EntityRelatedCollections from './related-collections';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -106,6 +107,7 @@ function PublisherDisplayPage({entity, identifierTypes, user}) {
 					identifierTypes={identifierTypes}
 					urlPrefix={urlPrefix}
 				/>
+				<EntityRelatedCollections collections={entity.collections}/>
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter

@@ -27,6 +27,7 @@ import {Panel} from 'react-bootstrap';
 import RelationshipSection from './relationship-editor/relationship-section';
 import SubmissionSection from './submission-section/submission-section';
 import {connect} from 'react-redux';
+import {submit} from './submission-section/actions';
 
 
 type OwnProps = {
@@ -38,7 +39,11 @@ type StateProps = {
 	aliasEditorVisible: boolean
 };
 
-type Props = StateProps & OwnProps;
+type DispatchProps = {
+	onSubmit: () => unknown
+};
+
+type Props = StateProps & DispatchProps & OwnProps;
 
 /**
  * Container component. Renders all of the sections of the entity editing form.
@@ -48,40 +53,45 @@ type Props = StateProps & OwnProps;
  *        should be made visible.
  * @param {React.Node} props.children - The child content to wrap with this
  *        entity editor form.
+ * @param {Function} props.onSubmit - A function to be called when the
+ *        submit button is clicked.
  * @returns {ReactElement} React element containing the rendered EntityEditor.
  */
 const EntityEditor = (props: Props) => {
 	const {
 		aliasEditorVisible,
 		children,
-		heading
+		heading,
+		onSubmit
 	} = props;
 
 	return (
-		<Panel>
-			<Panel.Heading>
-				<Panel.Title componentClass="h3">
-					{heading}
-				</Panel.Title>
-			</Panel.Heading>
-			<Panel.Body>
-				<AliasEditor show={aliasEditorVisible} {...props}/>
-				<NameSection {...props}/>
-				<ButtonBar {...props}/>
-				<RelationshipSection {...props}/>
-				{
-					React.cloneElement(
-						React.Children.only(children),
-						{...props}
-					)
-				}
-				<IdentifierEditor {...props}/>
-				<AnnotationSection {...props}/>
-			</Panel.Body>
-			<Panel.Footer>
-				<SubmissionSection {...props}/>
-			</Panel.Footer>
-		</Panel>
+		<form onSubmit={onSubmit}>
+			<Panel>
+				<Panel.Heading>
+					<Panel.Title componentClass="h3">
+						{heading}
+					</Panel.Title>
+				</Panel.Heading>
+				<Panel.Body>
+					<AliasEditor show={aliasEditorVisible} {...props}/>
+					<NameSection {...props}/>
+					<ButtonBar {...props}/>
+					<RelationshipSection {...props}/>
+					{
+						React.cloneElement(
+							React.Children.only(children),
+							{...props}
+						)
+					}
+					<IdentifierEditor {...props}/>
+					<AnnotationSection {...props}/>
+				</Panel.Body>
+				<Panel.Footer>
+					<SubmissionSection {...props}/>
+				</Panel.Footer>
+			</Panel>
+		</form>
 	);
 };
 EntityEditor.displayName = 'EntityEditor';
@@ -93,4 +103,13 @@ function mapStateToProps(rootState): StateProps {
 	};
 }
 
-export default connect(mapStateToProps)(EntityEditor);
+function mapDispatchToProps(dispatch, {submissionUrl}) {
+	return {
+		onSubmit: (event:React.FormEvent) => {
+			event.preventDefault();
+			dispatch(submit(submissionUrl));
+		}
+	};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EntityEditor);

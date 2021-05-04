@@ -101,7 +101,7 @@ function WorkSection({
 	}));
 
 	return (
-		<form>
+		<div>
 			<h2>
 				What else do you know about the Work?
 			</h2>
@@ -137,7 +137,7 @@ function WorkSection({
 					/>
 				</Col>
 			</Row>
-		</form>
+		</div>
 	);
 }
 WorkSection.displayName = 'WorkSection';

@@ -163,6 +163,7 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 					<form
 						action="/search"
 						className="form-horizontal whole-page-form"
+						role="search"
 						onSubmit={this.handleSubmit}
 					>
 						<CustomInput

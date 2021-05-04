@@ -21,9 +21,13 @@
 import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
-import type {Request as $Request, Response as $Response, NextFunction} from 'express';
+import type {Response as $Response, NextFunction, Request} from 'express';
 import _ from 'lodash';
 
+
+interface $Request extends Request {
+	user: any
+}
 
 function makeLoader(modelName, propName, sortFunc?) {
 	return function loaderFunc(req: $Request, res: $Response, next: NextFunction) {
@@ -150,7 +154,8 @@ export function makeEntityLoader(modelName: string, additionalRels: Array<string
 		'disambiguation',
 		'identifierSet.identifiers.type',
 		'relationshipSet.relationships.type',
-		'revision.revision'
+		'revision.revision',
+		'collections.owner'
 	].concat(additionalRels);
 
 	return async (req: $Request, res: $Response, next: NextFunction, bbid: string) => {
@@ -163,6 +168,10 @@ export function makeEntityLoader(modelName: string, additionalRels: Array<string
 					entity.parentAlias = await orm.func.entity.getEntityParentAlias(
 						orm, modelName, bbid
 					);
+				}
+				if (entity.collections) {
+					entity.collections = entity.collections.filter(collection => collection.public === true ||
+					parseInt(collection.ownerId, 10) === parseInt(req.user?.id, 10));
 				}
 				res.locals.entity = entity;
 				return next();

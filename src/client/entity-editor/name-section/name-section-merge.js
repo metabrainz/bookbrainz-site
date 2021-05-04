@@ -98,7 +98,7 @@ function NameSectionMerge({
 	});
 
 	return (
-		<form>
+		<div>
 			<MergeField
 				currentValue={nameValue}
 				label="Name"
@@ -130,7 +130,7 @@ function NameSectionMerge({
 				tooltipText="In case there is another distinct entity with the same name"
 				onChange={onDisambiguationChange}
 			/>
-		</form>
+		</div>
 	);
 }
 
