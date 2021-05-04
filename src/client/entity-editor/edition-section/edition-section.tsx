@@ -26,8 +26,8 @@ import {
 	debouncedUpdateReleaseDate,
 	debouncedUpdateWeight,
 	debouncedUpdateWidth,
-	showPhysical,
 	hidePhysical,
+	showPhysical,
 	toggleShowEditionGroup,
 	updateEditionGroup,
 	updateFormat,
@@ -366,14 +366,14 @@ function EditionSection({
 			</Row>
 			<Row>
 				<Col md={3} mdOffset={3}>
-						<NumericField
-							addonAfter="pages"
-							defaultValue={pagesValue}
-							empty={_.isNil(pagesValue)}
-							error={!validateEditionSectionPages(pagesValue)}
-							label="Page Count"
-							onChange={onPagesChange}
-						/>
+					<NumericField
+						addonAfter="pages"
+						defaultValue={pagesValue}
+						empty={_.isNil(pagesValue)}
+						error={!validateEditionSectionPages(pagesValue)}
+						label="Page Count"
+						onChange={onPagesChange}
+					/>
 				</Col>
 			</Row>
 			{
@@ -453,13 +453,14 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		)),
 		onEditionGroupChange: (value) => dispatch(updateEditionGroup(value)),
 		onFormatChange: (value: {value: number} | null) => {
-			dispatch(updateFormat(value && value.value))
-			if(value.value === 3 || value.value === 5) {
-				dispatch(hidePhysical())
-			} else {
-				dispatch(showPhysical())
+			dispatch(updateFormat(value && value.value));
+			if (value.value === 3 || value.value === 5) {
+				dispatch(hidePhysical());
 			}
-		},	
+			else {
+				dispatch(showPhysical());
+			}
+		},
 		onHeightChange: (event) => dispatch(debouncedUpdateHeight(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),

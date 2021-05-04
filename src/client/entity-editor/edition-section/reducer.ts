@@ -45,6 +45,7 @@ function reducer(
 	state: State = Immutable.Map({
 		format: null,
 		languages: Immutable.List([]),
+		physicalVisible: true,
 		publisher: null,
 		releaseDate: '',
 		status: null
