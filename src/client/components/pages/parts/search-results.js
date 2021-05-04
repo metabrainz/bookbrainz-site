@@ -143,13 +143,7 @@ class SearchResults extends React.Component {
 	}
 
 	render() {
-		let resultsArray = this.props.results;
-		if (resultsArray.length) {
-			if (resultsArray[0].type === 'Collection') {
-				resultsArray = resultsArray.filter(result => result.public);
-			}
-		}
-		const noResults = !resultsArray || resultsArray.length === 0;
+		const noResults = !this.props.results || this.props.results.length === 0;
 		if (noResults) {
 			return (
 				<div className="text-center">
@@ -170,7 +164,7 @@ class SearchResults extends React.Component {
 			);
 		}
 
-		const results = resultsArray.map((result) => {
+		const results = this.props.results.map((result) => {
 			if (!result) {
 				return null;
 			}
