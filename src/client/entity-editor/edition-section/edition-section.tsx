@@ -27,6 +27,7 @@ import {
 	debouncedUpdateWeight,
 	debouncedUpdateWidth,
 	showPhysical,
+	hidePhysical,
 	toggleShowEditionGroup,
 	updateEditionGroup,
 	updateFormat,
@@ -122,7 +123,6 @@ type DispatchProps = {
 	onHeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
 	onLanguagesChange: (arg: Array<LanguageOption>) => unknown,
 	onPagesChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
-	onPhysicalButtonClick: () => unknown,
 	onPublisherChange: (arg: Publisher) => unknown,
 	onToggleShowEditionGroupSection: (showEGSection: boolean) => unknown,
 	onEditionGroupChange: (arg: EditionGroup) => unknown,
@@ -166,7 +166,6 @@ function EditionSection({
 	onDepthChange,
 	onFormatChange,
 	onHeightChange,
-	onPhysicalButtonClick,
 	onReleaseDateChange,
 	onPagesChange,
 	onToggleShowEditionGroupSection,
@@ -365,6 +364,18 @@ function EditionSection({
 					</CustomInput>
 				</Col>
 			</Row>
+			<Row>
+				<Col md={3} mdOffset={3}>
+						<NumericField
+							addonAfter="pages"
+							defaultValue={pagesValue}
+							empty={_.isNil(pagesValue)}
+							error={!validateEditionSectionPages(pagesValue)}
+							label="Page Count"
+							onChange={onPagesChange}
+						/>
+				</Col>
+			</Row>
 			{
 				physicalVisible &&
 				<Row>
@@ -385,14 +396,6 @@ function EditionSection({
 							label="Height"
 							onChange={onHeightChange}
 						/>
-						<NumericField
-							addonAfter="mm"
-							defaultValue={depthValue}
-							empty={_.isNil(depthValue)}
-							error={!validateEditionSectionDepth(depthValue)}
-							label="Depth"
-							onChange={onDepthChange}
-						/>
 					</Col>
 					<Col md={3}>
 						<NumericField
@@ -404,26 +407,13 @@ function EditionSection({
 							onChange={onWeightChange}
 						/>
 						<NumericField
-							addonAfter="pages"
-							defaultValue={pagesValue}
-							empty={_.isNil(pagesValue)}
-							error={!validateEditionSectionPages(pagesValue)}
-							label="Page Count"
-							onChange={onPagesChange}
+							addonAfter="mm"
+							defaultValue={depthValue}
+							empty={_.isNil(depthValue)}
+							error={!validateEditionSectionDepth(depthValue)}
+							label="Depth"
+							onChange={onDepthChange}
 						/>
-					</Col>
-				</Row>
-			}
-			{
-				!physicalVisible &&
-				<Row>
-					<Col className="text-center" md={4} mdOffset={4}>
-						<Button
-							bsStyle="link"
-							onClick={onPhysicalButtonClick}
-						>
-							Add physical data…
-						</Button>
 					</Col>
 				</Row>
 			}
@@ -462,8 +452,14 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
 		onEditionGroupChange: (value) => dispatch(updateEditionGroup(value)),
-		onFormatChange: (value: {value: number} | null) =>
-			dispatch(updateFormat(value && value.value)),
+		onFormatChange: (value: {value: number} | null) => {
+			dispatch(updateFormat(value && value.value))
+			if(value.value === 3 || value.value === 5) {
+				dispatch(hidePhysical())
+			} else {
+				dispatch(showPhysical())
+			}
+		},	
 		onHeightChange: (event) => dispatch(debouncedUpdateHeight(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
@@ -472,7 +468,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onPagesChange: (event) => dispatch(debouncedUpdatePages(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
-		onPhysicalButtonClick: () => dispatch(showPhysical()),
 		onPublisherChange: (value) => dispatch(updatePublisher(value)),
 		onReleaseDateChange: (releaseDate) =>
 			dispatch(debouncedUpdateReleaseDate(releaseDate)),

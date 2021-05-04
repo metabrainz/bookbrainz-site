@@ -21,6 +21,7 @@ import * as Immutable from 'immutable';
 
 import {
 	Action,
+	HIDE_PHYSICAL,
 	SHOW_PHYSICAL,
 	TOGGLE_SHOW_EDITION_GROUP,
 	UPDATE_DEPTH,
@@ -54,6 +55,8 @@ function reducer(
 	switch (type) {
 		case SHOW_PHYSICAL:
 			return state.set('physicalVisible', true);
+		case HIDE_PHYSICAL:
+			return state.set('physicalVisible', false);
 		case TOGGLE_SHOW_EDITION_GROUP:
 			return state.set('editionGroupVisible', payload);
 		case UPDATE_LANGUAGES:

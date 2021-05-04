@@ -51,6 +51,7 @@ export const UPDATE_WIDTH = 'UPDATE_WIDTH';
 export const UPDATE_HEIGHT = 'UPDATE_HEIGHT';
 export const UPDATE_DEPTH = 'UPDATE_DEPTH';
 export const SHOW_PHYSICAL = 'SHOW_PHYSICAL';
+export const HIDE_PHYSICAL = 'HIDE_PHYSICAL';
 export const TOGGLE_SHOW_EDITION_GROUP = 'TOGGLE_SHOW_EDITION_GROUP';
 export const UPDATE_WARN_IF_EDITION_GROUP_EXISTS = 'UPDATE_WARN_IF_EDITION_GROUP_EXISTS';
 
@@ -125,6 +126,18 @@ export function updateLanguages(newLanguages: Array<LanguageOption>): Action {
 export function showPhysical(): Action {
 	return {
 		type: SHOW_PHYSICAL
+	};
+}
+
+/**
+ * Produces an action indicating that the physical section of the edition
+ * form should be hidden.
+ *
+ * @returns {Action} The resulting HIDE_PHYSICAL action.
+ */
+export function hidePhysical(): Action {
+	return {
+		type: HIDE_PHYSICAL
 	};
 }
 
