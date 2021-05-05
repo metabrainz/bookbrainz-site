@@ -18,7 +18,6 @@
  */
 
 import * as React from 'react';
-import {Iterable} from 'immutable';
 import _ from 'lodash';
 import {isIterable} from '../../../types';
 

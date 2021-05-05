@@ -246,7 +246,7 @@ function EditionSection({
 	);
 
 	return (
-		<form>
+		<div>
 			<h2>
 				What else do you know about the Edition?
 			</h2>
@@ -427,7 +427,7 @@ function EditionSection({
 					</Col>
 				</Row>
 			}
-		</form>
+		</div>
 	);
 }
 EditionSection.displayName = 'EditionSection';

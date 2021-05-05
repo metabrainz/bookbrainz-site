@@ -129,7 +129,7 @@ function PublisherSection({
 	const {isValid: isValidBeginDate, errorMessage: errorMessageBeginDate} = validatePublisherSectionBeginDate(beginDateValue);
 	const {isValid: isValidEndDate, errorMessage: errorMessageEndDate} = validatePublisherSectionEndDate(beginDateValue, endDateValue, endedChecked);
 	return (
-		<form>
+		<div>
 			<h2>
 				What else do you know about the Publisher?
 			</h2>
@@ -201,7 +201,7 @@ function PublisherSection({
 					</Row>
 				</div>
 			}
-		</form>
+		</div>
 	);
 }
 PublisherSection.displayName = 'PublisherSection';

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Ben Ockmore
+ * Copyright (C) 2021  Akash Gupta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,35 +16,31 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {genEntityIconHTMLElement, getEntityLabel} from '../helpers/entity';
+/* eslint-disable sort-imports */
 import PropTypes from 'prop-types';
 import React from 'react';
-import {kebabCase as _kebabCase} from 'lodash';
 
 
-function EntityLink({entity, inline}) {
-	let bbidElement = <div className="small">({entity.bbid})</div>;
-	if (inline) {
-		bbidElement = <span className="small">({entity.bbid})</span>;
-	}
+function EntityRelatedCollections({collections}) {
 	return (
-		<span>
-			<a href={`/${_kebabCase(entity.type)}/${entity.bbid}`}>
-				{genEntityIconHTMLElement(entity.type)}
-				{getEntityLabel(entity)}
-			</a>
-			{bbidElement}
-		</span>
+		<div>
+			<h2>Related Collections</h2>
+			{collections &&
+			<ul className="list-unstyled">
+				{collections.map((collection) => (
+					<li key={collection.id}>
+						<a href={`/collection/${collection.id}`}>{collection.name}</a> by {' '}
+						<a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a>
+					</li>
+				))}
+			</ul>
+			}
+		</div>
 	);
 }
-
-EntityLink.displayName = 'EntityLink';
-EntityLink.propTypes = {
-	entity: PropTypes.object.isRequired,
-	inline: PropTypes.bool
-};
-EntityLink.defaultProps = {
-	inline: false
+EntityRelatedCollections.displayName = 'EntityRelatedCollections';
+EntityRelatedCollections.propTypes = {
+	collections: PropTypes.object.isRequired
 };
 
-export default EntityLink;
+export default EntityRelatedCollections;

@@ -105,7 +105,7 @@ class ProfileForm extends React.Component {
 	hasChanged = () => {
 		const {name, bio, areaId, titleId, genderId} = this.state;
 
-		return this.props.editor?.area.id !== areaId ||
+		return this.props.editor?.area?.id !== areaId ||
 			this.props.editor?.bio !== bio ||
 			this.props.editor?.gender?.id !== genderId ||
 			this.props.editor?.name !== name ||

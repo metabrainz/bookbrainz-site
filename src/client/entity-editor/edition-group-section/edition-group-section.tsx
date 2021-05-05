@@ -72,7 +72,7 @@ function EditionGroupSection({
 	}));
 
 	return (
-		<form>
+		<div>
 			<h2>
 				What else do you know about the Edition Group?
 			</h2>
@@ -95,7 +95,7 @@ function EditionGroupSection({
 					</CustomInput>
 				</Col>
 			</Row>
-		</form>
+		</div>
 	);
 }
 EditionGroupSection.displayName = 'EditionGroupSection';

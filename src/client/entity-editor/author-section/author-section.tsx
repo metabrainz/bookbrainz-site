@@ -175,7 +175,7 @@ function AuthorSection({
 
 
 	return (
-		<form>
+		<div>
 			<h2>
 				What else do you know about the Author?
 			</h2>
@@ -270,7 +270,7 @@ function AuthorSection({
 					</Row>
 				</div>
 			}
-		</form>
+		</div>
 	);
 }
 AuthorSection.displayName = 'AuthorSection';

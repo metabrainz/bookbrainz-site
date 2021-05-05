@@ -32,7 +32,7 @@ import classNames from 'classnames';
 import request from 'superagent';
 
 
-const {Alert, Button, ButtonGroup, Col} = bootstrap;
+const {Alert, Button, Col} = bootstrap;
 
 class UserCollectionForm extends React.Component {
 	constructor(props) {

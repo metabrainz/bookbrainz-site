@@ -27,7 +27,7 @@ import React from 'react';
 
 const {formatDate} = utilsHelper;
 const {
-	Alert, Button, ButtonGroup, Col, Row
+	Alert, Button, Col, Row
 } = bootstrap;
 
 class EntityFooter extends React.Component {
