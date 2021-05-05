@@ -186,7 +186,7 @@ class NameSection extends React.Component {
 					</Col>
 				</Row>
 				<Row>
-				    <Col md={6} mdOffset={3}>
+					<Col md={6} mdOffset={3}>
 						{isRequiredDisambiguationEmpty(
 							warnIfExists,
 							disambiguationDefaultValue
