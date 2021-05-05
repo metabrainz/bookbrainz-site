@@ -510,9 +510,9 @@ async function processHotOffThePress(orm, editorId, revisionId) {
 			}];
 			return testTiers(orm, diff, editorId, tiers);
 		}
-		else {
-			return {'Hot Off the Press': false};
-		}
+
+		return {'Hot Off the Press': false};
+
 		return achievementPromise;
 	}
 	catch (err) {
