@@ -480,7 +480,7 @@ async function getEditionDateDifference(orm, revisionId) {
 		return differencePromise;
 	}
 	catch (err) {
-		return new Promise((resolve, reject) => reject(new Error('no date attribute')));
+		throw new Error('no date attribute');
 	}
 }
 async function processTimeTraveller(orm, editorId, revisionId) {
