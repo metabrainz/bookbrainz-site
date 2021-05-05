@@ -80,7 +80,7 @@ async function awardAchievement(orm, editorId, achievementName) {
 			awardPromise = out;
 		}
 		catch (err) {
-			return new Promise((resolve, reject) => reject(new error.AwardNotUnlockedError(err.message)));
+			throw new error.AwardNotUnlockedError(err.message);
 		}
 	}
 	return awardPromise;
