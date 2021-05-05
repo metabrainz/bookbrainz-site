@@ -171,7 +171,22 @@ class NameSection extends React.Component {
 							onChange={this.handleNameChange}
 						/>
 					</Col>
+				</Row>
+				<Row>
 					<Col md={6} mdOffset={3}>
+						<SortNameField
+							defaultValue={sortNameValue}
+							empty={isAliasEmpty(
+								nameValue, sortNameValue, languageValue
+							)}
+							error={!validateNameSectionSortName(sortNameValue)}
+							storedNameValue={nameValue}
+							onChange={onSortNameChange}
+						/>
+					</Col>
+				</Row>
+				<Row>
+				    <Col md={6} mdOffset={3}>
 						{isRequiredDisambiguationEmpty(
 							warnIfExists,
 							disambiguationDefaultValue
@@ -212,19 +227,6 @@ class NameSection extends React.Component {
 							</Col>
 						</Row>
 				}
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<SortNameField
-							defaultValue={sortNameValue}
-							empty={isAliasEmpty(
-								nameValue, sortNameValue, languageValue
-							)}
-							error={!validateNameSectionSortName(sortNameValue)}
-							storedNameValue={nameValue}
-							onChange={onSortNameChange}
-						/>
-					</Col>
-				</Row>
 				<Row>
 					<Col md={6} mdOffset={3}>
 						<LanguageField
