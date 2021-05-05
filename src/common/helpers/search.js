@@ -86,7 +86,7 @@ async function _fetchEntityModelsForESResults(orm, results) {
 		// Regular entity
 		const model = commonUtils.getEntityModelByType(orm, entityStub.type);
 		const entity = await model.forge({bbid: entityStub.bbid})
-			.fetch({require: false, withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases']});
+			.fetch({require: false, withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases', 'identifierSet.identifiers']});
 
 		return entity?.toJSON();
 	})).catch(err => log.error(err));
@@ -332,7 +332,8 @@ export async function generateIndex(orm) {
 		'annotation',
 		'disambiguation',
 		'defaultAlias',
-		'aliasSet.aliases'
+		'aliasSet.aliases',
+		'identifierSet.identifiers'
 	];
 
 	const entityBehaviors = [
@@ -480,7 +481,8 @@ export function searchByName(orm, name, type, size, from) {
 					fields: [
 						'aliasSet.aliases.name^3',
 						'aliasSet.aliases.name.search',
-						'disambiguation.comment'
+						'disambiguation.comment',
+						'identifierSet.identifiers.value'
 					],
 					minimum_should_match: '80%',
 					query: name,
