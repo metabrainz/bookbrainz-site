@@ -417,7 +417,7 @@ export async function generateIndex(orm) {
 	}));
 	await _processEntityListForBulk(processedEditors);
 
-	const userCollections = await UserCollection.forge()
+	const userCollections = await UserCollection.forge().where({public: true})
 		.fetchAll();
 	const userCollectionsJSON = userCollections.toJSON();
 
