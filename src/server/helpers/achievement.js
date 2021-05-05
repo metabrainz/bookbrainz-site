@@ -511,9 +511,7 @@ async function processHotOffThePress(orm, editorId, revisionId) {
 			achievementPromise = testTiers(orm, diff, editorId, tiers);
 		}
 		else {
-			achievementPromise = new Promise(resolve => resolve(
-				{'Hot Off the Press': false}
-			));
+			return {'Hot Off the Press': false};
 		}
 		return achievementPromise;
 	}
