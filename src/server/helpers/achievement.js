@@ -508,7 +508,7 @@ async function processHotOffThePress(orm, editorId, revisionId) {
 				threshold: -7,
 				titleName: 'Hot Off the Press'
 			}];
-			achievementPromise = testTiers(orm, diff, editorId, tiers);
+			return testTiers(orm, diff, editorId, tiers);
 		}
 		else {
 			return {'Hot Off the Press': false};
