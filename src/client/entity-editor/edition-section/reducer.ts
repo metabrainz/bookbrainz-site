@@ -21,8 +21,8 @@ import * as Immutable from 'immutable';
 
 import {
 	Action,
-	HIDE_PHYSICAL,
-	SHOW_PHYSICAL,
+	DISABLE_PHYSICAL,
+	ENABLE_PHYSICAL,
 	TOGGLE_SHOW_EDITION_GROUP,
 	UPDATE_DEPTH,
 	UPDATE_EDITION_GROUP,
@@ -45,7 +45,7 @@ function reducer(
 	state: State = Immutable.Map({
 		format: null,
 		languages: Immutable.List([]),
-		physicalVisible: true,
+		physicalEnable: true,
 		publisher: null,
 		releaseDate: '',
 		status: null
@@ -54,10 +54,10 @@ function reducer(
 ): State {
 	const {type, payload} = action;
 	switch (type) {
-		case SHOW_PHYSICAL:
-			return state.set('physicalVisible', true);
-		case HIDE_PHYSICAL:
-			return state.set('physicalVisible', false);
+		case ENABLE_PHYSICAL:
+			return state.set('physicalEnable', true);
+		case DISABLE_PHYSICAL:
+			return state.set('physicalEnable', false);
 		case TOGGLE_SHOW_EDITION_GROUP:
 			return state.set('editionGroupVisible', payload);
 		case UPDATE_LANGUAGES:

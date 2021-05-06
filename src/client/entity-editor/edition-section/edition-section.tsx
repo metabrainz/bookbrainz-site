@@ -26,8 +26,8 @@ import {
 	debouncedUpdateReleaseDate,
 	debouncedUpdateWeight,
 	debouncedUpdateWidth,
-	hidePhysical,
-	showPhysical,
+	disablePhysical,
+	enablePhysical,
 	toggleShowEditionGroup,
 	updateEditionGroup,
 	updateFormat,
@@ -105,7 +105,7 @@ type StateProps = {
 	heightValue: OptionalNumber,
 	languageValues: List<LanguageOption>,
 	pagesValue: OptionalNumber,
-	physicalVisible: OptionalBool,
+	physicalEnable: OptionalBool,
 	publisherValue: Map<string, any>,
 	editionGroupRequired: OptionalBool,
 	editionGroupVisible: OptionalBool,
@@ -175,7 +175,7 @@ function EditionSection({
 	onWeightChange,
 	onWidthChange,
 	pagesValue,
-	physicalVisible,
+	physicalEnable,
 	editionGroupRequired,
 	editionGroupValue,
 	editionGroupVisible,
@@ -377,12 +377,12 @@ function EditionSection({
 				</Col>
 			</Row>
 			{
-				physicalVisible &&
 				<Row>
 					<Col md={3} mdOffset={3}>
 						<NumericField
 							addonAfter="mm"
 							defaultValue={widthValue}
+							disabled={!physicalEnable}
 							empty={_.isNil(widthValue)}
 							error={!validateEditionSectionWidth(widthValue)}
 							label="Width"
@@ -391,6 +391,7 @@ function EditionSection({
 						<NumericField
 							addonAfter="mm"
 							defaultValue={heightValue}
+							disabled={!physicalEnable}
 							empty={_.isNil(heightValue)}
 							error={!validateEditionSectionHeight(heightValue)}
 							label="Height"
@@ -401,6 +402,7 @@ function EditionSection({
 						<NumericField
 							addonAfter="g"
 							defaultValue={weightValue}
+							disabled={!physicalEnable}
 							empty={_.isNil(weightValue)}
 							error={!validateEditionSectionWeight(weightValue)}
 							label="Weight"
@@ -409,6 +411,7 @@ function EditionSection({
 						<NumericField
 							addonAfter="mm"
 							defaultValue={depthValue}
+							disabled={!physicalEnable}
 							empty={_.isNil(depthValue)}
 							error={!validateEditionSectionDepth(depthValue)}
 							label="Depth"
@@ -437,7 +440,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 		languageValues: state.get('languages'),
 		matchingNameEditionGroups,
 		pagesValue: state.get('pages'),
-		physicalVisible: state.get('physicalVisible'),
+		physicalEnable: state.get('physicalEnable'),
 		publisherValue: state.get('publisher'),
 		releaseDateValue: state.get('releaseDate'),
 		statusValue: state.get('status'),
@@ -454,11 +457,11 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onEditionGroupChange: (value) => dispatch(updateEditionGroup(value)),
 		onFormatChange: (value: {value: number} | null) => {
 			dispatch(updateFormat(value && value.value));
-			if (value.value === 3 || value.value === 5) {
-				dispatch(hidePhysical());
+			if (value.value === 3) {
+				dispatch(disablePhysical());
 			}
 			else {
-				dispatch(showPhysical());
+				dispatch(enablePhysical());
 			}
 		},
 		onHeightChange: (event) => dispatch(debouncedUpdateHeight(
