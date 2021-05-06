@@ -376,50 +376,48 @@ function EditionSection({
 					/>
 				</Col>
 			</Row>
-			{
-				<Row>
-					<Col md={3} mdOffset={3}>
-						<NumericField
-							addonAfter="mm"
-							defaultValue={widthValue}
-							disabled={!physicalEnable}
-							empty={_.isNil(widthValue)}
-							error={!validateEditionSectionWidth(widthValue)}
-							label="Width"
-							onChange={onWidthChange}
-						/>
-						<NumericField
-							addonAfter="mm"
-							defaultValue={heightValue}
-							disabled={!physicalEnable}
-							empty={_.isNil(heightValue)}
-							error={!validateEditionSectionHeight(heightValue)}
-							label="Height"
-							onChange={onHeightChange}
-						/>
-					</Col>
-					<Col md={3}>
-						<NumericField
-							addonAfter="g"
-							defaultValue={weightValue}
-							disabled={!physicalEnable}
-							empty={_.isNil(weightValue)}
-							error={!validateEditionSectionWeight(weightValue)}
-							label="Weight"
-							onChange={onWeightChange}
-						/>
-						<NumericField
-							addonAfter="mm"
-							defaultValue={depthValue}
-							disabled={!physicalEnable}
-							empty={_.isNil(depthValue)}
-							error={!validateEditionSectionDepth(depthValue)}
-							label="Depth"
-							onChange={onDepthChange}
-						/>
-					</Col>
-				</Row>
-			}
+			<Row>
+				<Col md={3} mdOffset={3}>
+					<NumericField
+						addonAfter="mm"
+						defaultValue={widthValue}
+						disabled={!physicalEnable}
+						empty={_.isNil(widthValue)}
+						error={!validateEditionSectionWidth(widthValue)}
+						label="Width"
+						onChange={onWidthChange}
+					/>
+					<NumericField
+						addonAfter="mm"
+						defaultValue={heightValue}
+						disabled={!physicalEnable}
+						empty={_.isNil(heightValue)}
+						error={!validateEditionSectionHeight(heightValue)}
+						label="Height"
+						onChange={onHeightChange}
+					/>
+				</Col>
+				<Col md={3}>
+					<NumericField
+						addonAfter="g"
+						defaultValue={weightValue}
+						disabled={!physicalEnable}
+						empty={_.isNil(weightValue)}
+						error={!validateEditionSectionWeight(weightValue)}
+						label="Weight"
+						onChange={onWeightChange}
+					/>
+					<NumericField
+						addonAfter="mm"
+						defaultValue={depthValue}
+						disabled={!physicalEnable}
+						empty={_.isNil(depthValue)}
+						error={!validateEditionSectionDepth(depthValue)}
+						label="Depth"
+						onChange={onDepthChange}
+					/>
+				</Col>
+			</Row>
 		</div>
 	);
 }
