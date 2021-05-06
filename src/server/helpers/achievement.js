@@ -35,17 +35,12 @@ import log from 'log';
  * @returns {object} - 'already unlocked' or JSON of new unlock
  */
 async function awardUnlock(UnlockType, awardAttribs) {
-	try {
-		const award = await new UnlockType(awardAttribs).fetch({require: false});
-		if (award === null || typeof award === 'undefined') {
-			const unlock = await new UnlockType(awardAttribs).save(null, {method: 'insert'});
-			return unlock.toJSON();
-		}
-		return new Promise((resolve) => resolve('Already unlocked'));
+	const award = await new UnlockType(awardAttribs).fetch({require: false});
+	if (award === null || typeof award === 'undefined') {
+		const unlock = await new UnlockType(awardAttribs).save(null, {method: 'insert'});
+		return unlock.toJSON();
 	}
-	catch (err) {
-		return new Promise((resolve, reject) => reject(err));
-	}
+	return 'Already unlocked';
 }
 
 /**
@@ -61,12 +56,8 @@ async function awardAchievement(orm, editorId, achievementName) {
 	const {AchievementType, AchievementUnlock} = orm;
 	const achievementTier = await new AchievementType({name: achievementName})
 		.fetch({require: false});
-	let awardPromise;
 	if (achievementTier === null) {
-		awardPromise = new Promise((resolve, reject) =>
-			reject(new error.AwardNotUnlockedError(
-				`Achievement ${achievementName} not found in database`
-			)));
+		throw new error.AwardNotUnlockedError(`Achievement ${achievementName} not found in database`);
 	}
 	else {
 		try {
@@ -75,15 +66,12 @@ async function awardAchievement(orm, editorId, achievementName) {
 				editorId
 			};
 			const unlock = await awardUnlock(AchievementUnlock, achievementAttribs);
-			const out = {};
-			out[achievementName] = unlock;
-			awardPromise = out;
+			return {[achievementName]: unlock};
 		}
 		catch (err) {
 			throw new error.AwardNotUnlockedError(err.message);
 		}
 	}
-	return awardPromise;
 }
 
 /**
@@ -97,17 +85,11 @@ async function awardAchievement(orm, editorId, achievementName) {
  */
 async function awardTitle(orm, editorId, tier) {
 	const {TitleType, TitleUnlock} = orm;
-	let titlePromise;
 	if (tier.titleName) {
 		const title = await new TitleType({title: tier.titleName})
 			.fetch({require: false});
-		let awardPromise;
 		if (title === null) {
-			awardPromise = new Promise((resolve, reject) => reject(
-				new error.AwardNotUnlockedError(
-					`Title ${tier.titleName} not found in database`
-				)
-			));
+			throw new error.AwardNotUnlockedError(`Title ${tier.titleName} not found in database`);
 		}
 		else {
 			try {
@@ -116,23 +98,16 @@ async function awardTitle(orm, editorId, tier) {
 					titleId: title.id
 				};
 				const unlock = await awardUnlock(TitleUnlock, titleAttribs);
-
-				const out = {};
-				out[tier.titleName] = unlock;
-				awardPromise = out;
+				return {[tier.titleName]: unlock};
 			}
 			catch (err) {
-				return new Promise((resolve, reject) => reject(
-					new error.AwardNotUnlockedError(err.message)
-				));
+				throw new error.AwardNotUnlockedError(err.message);
 			}
 		}
-		titlePromise = awardPromise;
 	}
 	else {
-		titlePromise = new Promise(resolve => resolve(false));
+		return false;
 	}
-	return titlePromise;
 }
 
 /**
@@ -182,7 +157,6 @@ function awardListToAwardObject(awardList) {
  */
 async function testTiers(orm, signal, editorId, tiers) {
 	const tierPromise = tiers.map(async (tier) => {
-		let tierOut;
 		if (signal >= tier.threshold) {
 			try {
 				const achievementUnlock = await awardAchievement(orm, editorId, tier.name);
@@ -192,7 +166,7 @@ async function testTiers(orm, signal, editorId, tiers) {
 					out.push(title);
 				}
 				out.push(achievementUnlock);
-				tierOut = out;
+				return out;
 			}
 			catch (err) {
 				return log.debug(err);
@@ -204,9 +178,8 @@ async function testTiers(orm, signal, editorId, tiers) {
 			if (tier.titleName) {
 				out[tier.titleName] = false;
 			}
-			tierOut = [out];
+			return [out];
 		}
-		return tierOut;
 	});
 	const awardList = await Promise.all(tierPromise);
 	return awardListToAwardObject(awardList);
@@ -457,27 +430,23 @@ function achievementToUnlockId(achievementUnlock) {
 async function getEditionDateDifference(orm, revisionId) {
 	const {EditionRevision} = orm;
 	try {
-		const edition = await new EditionRevision({id: revisionId}).fetch();
-		const data = await edition.related('data').fetch();
-		const releaseEventSet = await data.related('releaseEventSet').fetch();
-		const releaseEvents = await releaseEventSet.related('releaseEvents').fetch();
-		let differencePromise;
+		const edition = await new EditionRevision({id: revisionId}).fetch({withRelated: 'data.releaseEventSet.releaseEvents'});
+		const editionJSON = edition.toJSON();
+		const {releaseEvents} = editionJSON.data.releaseEventSet;
+
 		if (releaseEvents.length > 0) {
 			const msInOneDay = 86400000;
-			const attribs = releaseEvents.models[0].attributes;
+			const attribs = releaseEvents[0];
 			const date = new Date(
 				attribs.year,
 				attribs.month - 1,
 				attribs.day
 			);
-			const now = new Date(Date.now());
-			differencePromise = Math.round((date.getTime() - now.getTime()) / msInOneDay);
+			const now = Date.now();
+			return Math.round((date.getTime() - now) / msInOneDay);
 		}
-		else {
-			differencePromise =
-		new Promise((resolve, reject) => reject(new Error('no date attribute')));
-		}
-		return differencePromise;
+
+		throw new Error('no date attribute');
 	}
 	catch (err) {
 		throw new Error('no date attribute');
@@ -501,7 +470,6 @@ async function processTimeTraveller(orm, editorId, revisionId) {
 async function processHotOffThePress(orm, editorId, revisionId) {
 	try {
 		const diff = await getEditionDateDifference(orm, revisionId);
-		let achievementPromise;
 		if (diff < 0) {
 			const tiers = [{
 				name: 'Hot Off the Press',
@@ -511,9 +479,7 @@ async function processHotOffThePress(orm, editorId, revisionId) {
 			return testTiers(orm, diff, editorId, tiers);
 		}
 
-		return {'Hot Off the Press': false};
-
-		return achievementPromise;
+		return	{'Hot Off the Press': false};
 	}
 	catch (err) {
 		return {'Hot Off the Press': err};
