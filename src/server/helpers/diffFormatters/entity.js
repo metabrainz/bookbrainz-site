@@ -244,7 +244,7 @@ function formatRelationshipAdd(entity, change) {
 		return changes;
 	}
 	const key = rhs.type && rhs.type.label ? `Relationship : ${rhs.type.label}` : 'Relationship';
-	if (rhs.sourceBbid ===entity.bbid) {
+	if (rhs.sourceBbid === entity.bbid) {
 		changes.push(
 			base.formatRow(
 				'N', key, null, [rhs.targetBbid]
@@ -276,7 +276,7 @@ function formatAddOrDeleteRelationshipSet(entity, change) {
 
 	allRelationships.forEach((relationship) => {
 		const key = relationship.type && relationship.type.label ? `Relationship: ${relationship.type.label}` : 'Relationship';
-		if (relationship.sourceBbid ===entity.bbid) {
+		if (relationship.sourceBbid === entity.bbid) {
 			changes.push(
 				base.formatRow(
 					change.kind, key, [relationship.targetBbid], [relationship.targetBbid]
@@ -302,7 +302,7 @@ function formatRelationshipRemove(entity, change) {
 		return changes;
 	}
 	const key = lhs.type && lhs.type.label ? `Relationship : ${lhs.type.label}` : 'Relationship';
-	if (lhs.sourceBbid ===entity.bbid) {
+	if (lhs.sourceBbid === entity.bbid) {
 		changes.push(
 			base.formatRow(
 				'D', key, [lhs.targetBbid], null
