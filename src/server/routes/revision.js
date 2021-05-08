@@ -166,7 +166,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 	// entityRevisions - collection of *entityType*_revisions matching id
 	return Promise.all(entityRevisions.map(
 		async (revision) => {
-			const DataId = revision.get('dataId');
+			const revisionDataId = revision.get('dataId');
 			let entity = revision.related('entity').toJSON();
 			entity = await orm.func.entity.getEntity(orm, entityType, entity.bbid, ['aliasSet.defaultAlias', 'aliasSet.aliases']);
 			if (!entity.dataId) {
@@ -181,9 +181,9 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 				.then(
 					(parent) => {
 						let isNew = false;
-						const isDeletion = !DataId;
+						const isDeletion = !revisionDataId;
 						if (!parent) {
-							isNew = Boolean(DataId);
+							isNew = Boolean(revisionDataId);
 						}
 						return makePromiseFromObject({
 							changes: revision.diff(parent),
@@ -197,8 +197,8 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 					() => makePromiseFromObject({
 						changes: revision.diff(null),
 						entity,
-						isDeletion: !DataId,
-						isNew: Boolean(DataId),
+						isDeletion: !revisionDataId,
+						isNew: Boolean(revisionDataId),
 						revision
 					})
 				);
