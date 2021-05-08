@@ -165,24 +165,29 @@ function formatEditionGroupChange(change) {
 function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 	// entityRevisions - collection of *entityType*_revisions matching id
 	return Promise.all(entityRevisions.map(
-		(revision) => {
-			const dataId = revision.get('dataId');
+		async (revision) => {
+			const DataId = revision.get('dataId');
+			let entity = revision.related('entity').toJSON();
+			entity = await orm.func.entity.getEntity(orm, entityType, entity.bbid, ['aliasSet.defaultAlias', 'aliasSet.aliases']);
+			if (!entity.dataId) {
+				entity.parentAlias = await orm.func.entity.getEntityParentAlias(
+					orm, entityType, entity.bbid
+				);
+			}
+			else {
+				entity.defaultAlias = entity.aliasSet.defaultAlias;
+			}
 			return revision.parent()
 				.then(
 					(parent) => {
 						let isNew = false;
-						const isDeletion = !dataId;
+						const isDeletion = !DataId;
 						if (!parent) {
-							isNew = Boolean(dataId);
+							isNew = Boolean(DataId);
 						}
 						return makePromiseFromObject({
 							changes: revision.diff(parent),
-							entity: revision.related('entity'),
-							entityAlias: dataId ?
-								revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
-								orm.func.entity.getEntityParentAlias(
-									orm, entityType, revision.get('bbid')
-								),
+							entity,
 							isDeletion,
 							isNew,
 							revision
@@ -191,14 +196,9 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 					// If calling .parent() is rejected (no parent rev), we still want to go ahead without the parent
 					() => makePromiseFromObject({
 						changes: revision.diff(null),
-						entity: revision.related('entity'),
-						entityAlias: revision.get('dataId') ?
-							revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
-							orm.func.entity.getEntityParentAlias(
-								orm, entityType, revision.get('bbid')
-							),
-						isDeletion: !dataId,
-						isNew: Boolean(dataId),
+						entity,
+						isDeletion: !DataId,
+						isNew: Boolean(DataId),
 						revision
 					})
 				);
