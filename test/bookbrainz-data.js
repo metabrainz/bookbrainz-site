@@ -17,6 +17,7 @@
  */
 
 import BookBrainzData from 'bookbrainz-data';
+/* eslint-disable-next-line import/no-unresolved, node/no-missing-import */
 import config from '../config/test.json';
 
 
