@@ -8,6 +8,7 @@
 /reports
 /config/config.json
 /config/config.local.json
+/config/test.json
 
 # react-hot-loader files
 /static/hot
