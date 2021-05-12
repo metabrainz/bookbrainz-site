@@ -111,7 +111,7 @@ class EditorProfileTab extends React.Component {
 					<dt>Type</dt>
 					<dd>{editor.type.label}</dd>
 					<dt>Reputation</dt>
-					<dd>0</dd>
+					<dd>{editor.reputation}</dd>
 					<dt>Joined</dt>
 					<dd>{createdAtDate}</dd>
 					<dt>Last login</dt>
