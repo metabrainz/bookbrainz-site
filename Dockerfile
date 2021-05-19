@@ -41,20 +41,15 @@ RUN chown bookbrainz:bookbrainz $BB_ROOT
 RUN echo $GIT_COMMIT_SHA > .git-version
 
 # Files necessary to complete the JavaScript build
-COPY scripts/ scripts/
-COPY .babelrc ./
-COPY .eslintrc.js ./
-COPY .eslintignore ./
-COPY webpack.client.js ./
-COPY package.json ./
-COPY package-lock.json ./
+COPY --chown=bookbrainz scripts/ scripts/
+COPY --chown=bookbrainz .babelrc .eslintrc.js .eslintignore webpack.client.js package.json package-lock.json ./
 
 RUN npm install --no-audit
 
-COPY static/ static/
-COPY config/ config/
-COPY sql/ sql/
-COPY src/ src/
+COPY --chown=bookbrainz static/ static/
+COPY --chown=bookbrainz config/ config/
+COPY --chown=bookbrainz sql/ sql/
+COPY --chown=bookbrainz src/ src/
 
 
 # Development target
@@ -88,8 +83,10 @@ ADD ./docker/crontab /etc/cron.d/bookbrainz
 RUN chmod 0644 /etc/cron.d/bookbrainz && crontab -u bookbrainz /etc/cron.d/bookbrainz
 
 # Build JS project and assets
+USER bookbrainz
 RUN ["npm", "run", "build"]
 RUN ["npm", "prune", "--production"]
+USER root
 
 # API target
 FROM bookbrainz-base as bookbrainz-webservice
@@ -104,6 +101,9 @@ RUN chmod +x /etc/service/webserver/exec-command
 COPY ./docker/$DEPLOY_ENV/webserver.service /etc/service/webserver/run
 RUN chmod 755 /etc/service/webserver/run
 RUN touch /etc/service/webserver/down
+
 # Build API JS
+USER bookbrainz
 RUN ["npm", "run", "build-api-js"]
 RUN ["npm", "prune", "--production"]
+USER root
