@@ -1,4 +1,4 @@
-FROM metabrainz/node:10 as bookbrainz-base
+FROM metabrainz/node:16 as bookbrainz-base
 
 ARG DEPLOY_ENV
 ARG GIT_COMMIT_SHA
@@ -6,6 +6,7 @@ ARG GIT_COMMIT_SHA
 ARG BUILD_DEPS=" \
     build-essential \
     python-dev \
+    libpq5 \
     libpq-dev"
 
 ARG RUN_DEPS=" \
@@ -22,7 +23,7 @@ RUN apt-get update && \
 # PostgreSQL client
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 ENV PG_MAJOR 12
-RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list
+RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list
 RUN apt-get update \
     && apt-get install -y --no-install-recommends postgresql-client-$PG_MAJOR \
     && rm -rf /var/lib/apt/lists/*
