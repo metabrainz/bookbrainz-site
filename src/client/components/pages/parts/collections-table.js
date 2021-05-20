@@ -74,39 +74,41 @@ class CollectionsTable extends React.Component {
 				</MenuItem>
 			</DropdownButton>
 		);
-		const newCollectionButton = (
-			<Button
-				bsStyle="warning"
-				className="margin-bottom-d5"
-				href="/collection/create"
-				type="button"
-			>
-				<FontAwesomeIcon icon={faPlus}/>
-				&nbsp;Create Collection
-			</Button>
-		);
 
+		let newCollectionButton;
 		// 1.Check if user is logged In if so checks the page ownerId with users id
 		// OR
 		// 2.Check if user is logged In if so checks the page is central public collections page or not
-		const showNewCollectionButton = (user && user.id === ownerId) ||
-		(user && !ownerId);
+		if (user && (user.id === ownerId || !ownerId)) {
+			newCollectionButton = (
+				<Button
+					bsStyle="warning"
+					className="margin-bottom-d5"
+					href="/collection/create"
+					type="button"
+				>
+					<FontAwesomeIcon icon={faPlus}/>
+					&nbsp;Create Collection
+				</Button>
+			);
+		}
 
-		const myCollectionButton = (
-			<Button
-				bsStyle="success"
-				className="margin-bottom-d5"
-				href={`/editor/${user.id}/collections`}
-				type="button"
-			>
-				My Collections
-			</Button>
-		);
-
-		// Display My collections button when
+		let myCollectionButton;
+		// Display "My collections" button when
 		// 1.the user is logged in and not viewing the user's collections
 		// 2.the user is logged in and viewing public collections
-		const showMyCollectionButton = user && (user.id !== ownerId || !ownerId);
+		if (user && (!ownerId || user.id !== ownerId)) {
+			myCollectionButton = (
+				<Button
+					bsStyle="success"
+					className="margin-bottom-d5"
+					href={`/editor/${user.id}/collections`}
+					type="button"
+				>
+					My Collections
+				</Button>
+			);
+		}
 
 		return (
 			<div>
@@ -115,10 +117,8 @@ class CollectionsTable extends React.Component {
 						{tableHeading}
 					</h1>
 					<div className="collection-page-buttons">
-				        {showMyCollectionButton &&
-							myCollectionButton}
-						{showNewCollectionButton &&
-							newCollectionButton}
+				        {myCollectionButton}
+						{newCollectionButton}
 						{entityTypeSelect}
 					</div>
 				</div>
