@@ -1,4 +1,4 @@
-FROM metabrainz/node:10 as bookbrainz-base
+FROM metabrainz/node:16 as bookbrainz-base
 
 ARG DEPLOY_ENV
 ARG GIT_COMMIT_SHA
@@ -6,6 +6,7 @@ ARG GIT_COMMIT_SHA
 ARG BUILD_DEPS=" \
     build-essential \
     python-dev \
+    libpq5 \
     libpq-dev"
 
 ARG RUN_DEPS=" \
@@ -22,7 +23,7 @@ RUN apt-get update && \
 # PostgreSQL client
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 ENV PG_MAJOR 12
-RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list
+RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list
 RUN apt-get update \
     && apt-get install -y --no-install-recommends postgresql-client-$PG_MAJOR \
     && rm -rf /var/lib/apt/lists/*
@@ -40,20 +41,15 @@ RUN chown bookbrainz:bookbrainz $BB_ROOT
 RUN echo $GIT_COMMIT_SHA > .git-version
 
 # Files necessary to complete the JavaScript build
-COPY scripts/ scripts/
-COPY .babelrc ./
-COPY .eslintrc.js ./
-COPY .eslintignore ./
-COPY webpack.client.js ./
-COPY package.json ./
-COPY package-lock.json ./
+COPY --chown=bookbrainz scripts/ scripts/
+COPY --chown=bookbrainz .babelrc .eslintrc.js .eslintignore webpack.client.js package.json package-lock.json ./
 
 RUN npm install --no-audit
 
-COPY static/ static/
-COPY config/ config/
-COPY sql/ sql/
-COPY src/ src/
+COPY --chown=bookbrainz static/ static/
+COPY --chown=bookbrainz config/ config/
+COPY --chown=bookbrainz sql/ sql/
+COPY --chown=bookbrainz src/ src/
 
 
 # Development target
@@ -87,8 +83,10 @@ ADD ./docker/crontab /etc/cron.d/bookbrainz
 RUN chmod 0644 /etc/cron.d/bookbrainz && crontab -u bookbrainz /etc/cron.d/bookbrainz
 
 # Build JS project and assets
+USER bookbrainz
 RUN ["npm", "run", "build"]
 RUN ["npm", "prune", "--production"]
+USER root
 
 # API target
 FROM bookbrainz-base as bookbrainz-webservice
@@ -103,6 +101,9 @@ RUN chmod +x /etc/service/webserver/exec-command
 COPY ./docker/$DEPLOY_ENV/webserver.service /etc/service/webserver/run
 RUN chmod 755 /etc/service/webserver/run
 RUN touch /etc/service/webserver/down
+
 # Build API JS
+USER bookbrainz
 RUN ["npm", "run", "build-api-js"]
 RUN ["npm", "prune", "--production"]
+USER root
