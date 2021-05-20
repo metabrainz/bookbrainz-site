@@ -37,8 +37,6 @@ import {connect} from 'react-redux';
  *        validated successfully or if it contains errors
  * @param {Function} props.onNoteChange - A function to be called when the
  *        revision note is changed.
- * @param {Function} props.onSubmit - A function to be called when the
- *        submit button is clicked.
  * @param {boolean} props.submitted - Boolean indicating if the form has been submitted
  *        (i.e. submit button clicked) to prevent submitting again
  * @returns {ReactElement} React element containing the rendered
@@ -48,7 +46,6 @@ function SubmissionSection({
 	errorText,
 	formValid,
 	onNoteChange,
-	onSubmit,
 	submitted
 }) {
 	const errorAlertClass =
@@ -87,7 +84,7 @@ function SubmissionSection({
 				<Button
 					bsStyle="success"
 					disabled={!formValid || submitted}
-					onClick={onSubmit}
+					type="submit"
 				>
 					Submit
 				</Button>
@@ -103,7 +100,6 @@ SubmissionSection.propTypes = {
 	errorText: PropTypes.node.isRequired,
 	formValid: PropTypes.bool.isRequired,
 	onNoteChange: PropTypes.func.isRequired,
-	onSubmit: PropTypes.func.isRequired,
 	submitted: PropTypes.bool.isRequired
 };
 
@@ -117,11 +113,10 @@ function mapStateToProps(rootState, {validate, identifierTypes}) {
 }
 
 
-function mapDispatchToProps(dispatch, {submissionUrl}) {
+function mapDispatchToProps(dispatch) {
 	return {
 		onNoteChange: (event) =>
-			dispatch(debounceUpdateRevisionNote(event.target.value)),
-		onSubmit: () => dispatch(submit(submissionUrl))
+			dispatch(debounceUpdateRevisionNote(event.target.value))
 	};
 }
 

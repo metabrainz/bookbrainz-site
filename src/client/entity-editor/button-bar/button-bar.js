@@ -58,24 +58,22 @@ function ButtonBar({
 }) {
 	return (
 		<div>
-			<form>
-				<Row className="margin-top-1">
-					<Col className="text-center" md={6}>
-						<AliasButton
-							aliasesInvalid={aliasesInvalid}
-							numAliases={numAliases}
-							onClick={onAliasButtonClick}
-						/>
-					</Col>
-					<Col className="text-center" md={6}>
-						<IdentifierButton
-							identifiersInvalid={identifiersInvalid}
-							numIdentifiers={numIdentifiers}
-							onClick={onIdentifierButtonClick}
-						/>
-					</Col>
-				</Row>
-			</form>
+			<Row className="margin-top-1">
+				<Col className="text-center" md={6}>
+					<AliasButton
+						aliasesInvalid={aliasesInvalid}
+						numAliases={numAliases}
+						onClick={onAliasButtonClick}
+					/>
+				</Col>
+				<Col className="text-center" md={6}>
+					<IdentifierButton
+						identifiersInvalid={identifiersInvalid}
+						numIdentifiers={numIdentifiers}
+						onClick={onIdentifierButtonClick}
+					/>
+				</Col>
+			</Row>
 		</div>
 	);
 }

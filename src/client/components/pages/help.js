@@ -30,7 +30,7 @@ const {PageHeader, ListGroup, ListGroupItem, Grid, Col, Row} = bootstrap;
  * @returns {ReactElement} a HTML document to display the Develop page
  */
 function HelpPage() {
-	const IRCLink = 'https://webchat.freenode.net/?channels=#metabrainz';
+	const IRCLink = 'https://webchat.freenode.net/?channels=#bookbrainz';
 	const styleLink =
 		'https://bookbrainz-user-guide.readthedocs.io/' +
 		'en/latest/style/introduction/';

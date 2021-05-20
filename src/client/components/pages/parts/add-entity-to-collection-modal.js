@@ -23,7 +23,6 @@ import EntitySearchFieldOption from '../../../entity-editor/common/entity-search
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {genEntityIconHTMLElement} from '../../../helpers/entity';
 import request from 'superagent';
 
 

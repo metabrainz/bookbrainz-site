@@ -29,6 +29,7 @@ import {
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
+import {RelationshipTypes} from '../../../client/entity-editor/relationship-editor/types';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
@@ -168,21 +169,21 @@ router.get(
 			if (props.publisher) {
 				initialState.editionSection.publisher = props.publisher;
 				// add initial relationship with relationshipTypeId = 4 (<Publisher> published < New Edition>)
-				relationshipTypeId = 4;
+				relationshipTypeId = RelationshipTypes.PublisherPublishedEdition;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.publisher);
 			}
 
 			if (props.editionGroup) {
 				initialState.editionSection.editionGroup = props.editionGroup;
 				// add initial raltionship with relationshipTypeId = 3 (<New Edition> is an edition of <EditionGroup>)
-				relationshipTypeId = 3;
+				relationshipTypeId = RelationshipTypes.EditionIsAnEditionOfEditionGroup;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.editionGroup);
 			}
 
 			if (props.work) {
 				initialState.nameSection = getInitialNameSection(props.work);
 				// add initial raltionship with relationshipTypeId = 10 (<New Edition> Contains <Work>)
-				relationshipTypeId = 10;
+				relationshipTypeId = RelationshipTypes.EditionContainsWork;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.work);
 			}
 
