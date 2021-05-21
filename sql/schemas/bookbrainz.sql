@@ -557,10 +557,11 @@ ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (type_id) REFERENCES bookbra
 ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (source_bbid) REFERENCES bookbrainz.entity (bbid);
 ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (target_bbid) REFERENCES bookbrainz.entity (bbid);
 
-CREATE TABLE bookbrainz.relationship_order (
+CREATE TABLE bookbrainz.relationship_attribute_ordinal (
     id SERIAL,
     rel_id INT REFERENCES bookbrainz.relationship(id),
     position INTEGER DEFAULT NULL,
+	number INTEGER DEFAULT NULL,
 	PRIMARY KEY(id, rel_id)
 );
 

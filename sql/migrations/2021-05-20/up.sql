@@ -1,9 +1,10 @@
 BEGIN;
 
-CREATE TABLE IF NOT EXISTS bookbrainz.relationship_order (
+CREATE TABLE IF NOT EXISTS bookbrainz.relationship_attribute_ordinal (
     id SERIAL,
     rel_id INT REFERENCES bookbrainz.relationship(id),
     position INTEGER DEFAULT NULL,
+	number INTEGER DEFAULT NULL,
 	PRIMARY KEY(id, rel_id)
 );
 
