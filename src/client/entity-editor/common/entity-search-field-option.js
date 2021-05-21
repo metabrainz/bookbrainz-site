@@ -96,8 +96,9 @@ class EntitySearchFieldOption extends React.Component {
 				q: manipulatedQuery,
 				type: this.props.type
 			});
+		const options = response.body.filter(entity => entity.bbid !== this.props.bbid);
 		return {
-			options: response.body.map(this.entityToOption)
+			options: options.map(this.entityToOption)
 		};
 	}
 
@@ -121,6 +122,7 @@ class EntitySearchFieldOption extends React.Component {
 
 EntitySearchFieldOption.displayName = 'EntitySearchFieldOption';
 EntitySearchFieldOption.propTypes = {
+	bbid: PropTypes.string,
 	empty: PropTypes.bool,
 	error: PropTypes.bool,
 	label: PropTypes.string.isRequired,
@@ -132,6 +134,7 @@ EntitySearchFieldOption.propTypes = {
 	]).isRequired
 };
 EntitySearchFieldOption.defaultProps = {
+	bbid: null,
 	empty: true,
 	error: false,
 	languageOptions: [],
