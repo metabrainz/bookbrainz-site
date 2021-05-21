@@ -6,14 +6,14 @@ CREATE TYPE bookbrainz.lang_proficiency AS ENUM (
 	'ADVANCED',
 	'NATIVE'
 );
-ALTER TYPE bookbrainz.entity_type ADD VALUE 'Series';
 
 CREATE TYPE bookbrainz.entity_type AS ENUM (
 	'Author',
 	'EditionGroup',
 	'Edition',
 	'Publisher',
-	'Work'
+	'Work',
+	'Series'
 );
 
 CREATE TABLE bookbrainz.editor_type (
@@ -632,7 +632,7 @@ CREATE TABLE bookbrainz.series_data (
 	disambiguation_id INT REFERENCES bookbrainz.disambiguation(id),
 	language_set_id INT REFERENCES bookbrainz.language_set(id),
 	entity_type bookbrainz.entity_type NOT NULL,
-	ordering_id INT REFERENCES bookbrainz.series_ordering_type(id)
+	ordering_id INT NOT NULL REFERENCES bookbrainz.series_ordering_type(id)
 );
 
 CREATE TABLE bookbrainz.series_revision (

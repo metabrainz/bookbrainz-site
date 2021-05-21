@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS bookbrainz.series_data (
 	disambiguation_id INT REFERENCES bookbrainz.disambiguation(id),
 	language_set_id INT REFERENCES bookbrainz.language_set(id),
 	entity_type bookbrainz.entity_type NOT NULL,
-	ordering_id INT REFERENCES bookbrainz.series_ordering_type(id)
+	ordering_id INT NOT NULL REFERENCES bookbrainz.series_ordering_type(id)
 );
 
 CREATE TABLE IF NOT EXISTS bookbrainz.series_revision (
@@ -42,7 +42,7 @@ COMMIT;
 
 BEGIN;
 
-CREATE VIEW IF NOT EXISTS bookbrainz.series AS
+CREATE VIEW bookbrainz.series AS
 	SELECT
 		e.bbid, sd.id AS data_id, sr.id AS revision_id, (sr.id = s.master_revision_id) AS master, sd.entity_type, sd.annotation_id, sd.disambiguation_id,
 		als.default_alias_id, sd.ordering_id, sd.alias_set_id, sd.language_set_id, sd.identifier_set_id,
