@@ -23,7 +23,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import {
-	faChartLine, faGripVertical, faInfo, faListUl, faPlus, faQuestionCircle,
+	faChartLine, faGripVertical, faListUl, faPlus, faQuestionCircle,
 	faSearch, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
