@@ -23,7 +23,8 @@
 
 import * as bootstrap from 'react-bootstrap';
 import {
-	faChartLine, faGripVertical, faInfo, faListUl, faPlus, faQuestionCircle, faSearch, faSignInAlt, faSignOutAlt, faUserCircle
+	faChartLine, faGripVertical, faInfo, faListUl, faPlus, faQuestionCircle,
+	faSearch, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Footer from './../components/footer';
@@ -157,18 +158,21 @@ class Layout extends React.Component {
 							title={userDropdownTitle}
 							onMouseDown={this.handleMouseDown}
 						>
+							<MenuItem href={`/editor/${user.id}`}>
+								<FontAwesomeIcon fixedWidth icon={faUserCircle}/>
+								{' Profile'}
+							</MenuItem>
 							<MenuItem href={`/editor/${user.id}/revisions`}>
-								Revisions
+								<FontAwesomeIcon fixedWidth icon={faListUl}/>
+								{' Revisions'}
 							</MenuItem>
 							<MenuItem href={`/editor/${user.id}/achievements`}>
-								Achievements
+								<FontAwesomeIcon fixedWidth icon={faTrophy}/>
+								{' Achievements'}
 							</MenuItem>
 							<MenuItem href={`/editor/${user.id}/collections`}>
-								Collections
-							</MenuItem>
-							<MenuItem href={`/editor/${user.id}`}>
-								<FontAwesomeIcon fixedWidth icon={faInfo}/>
-								{' Profile'}
+								<FontAwesomeIcon fixedWidth icon={faGripVertical}/>
+								{' Collections'}
 							</MenuItem>
 							<MenuItem {...disableSignUp} href="/logout">
 								<FontAwesomeIcon fixedWidth icon={faSignOutAlt}/>
