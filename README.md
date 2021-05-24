@@ -33,7 +33,7 @@ directories will exist:
   
 ## Contact and updates
 
-Any questions? You can get in contact with the community on [our IRC channel](https://webchat.freenode.net/?channels=#bookbrainz) or [our forums](https://community.metabrainz.org/c/bookbrainz), or send us [an email](mailto:bookbrainz@metabrainz.org)
+Any questions? You can get in contact with the community on [our IRC channel](https://kiwiirc.com/nextclient/irc.libera.chat/?#bookbrainz) or [our forums](https://community.metabrainz.org/c/bookbrainz), or send us [an email](mailto:bookbrainz@metabrainz.org)
 
 Breaking changes to the database schema or our API will be announced on
 [our blog](https://blog.metabrainz.org/category/bookbrainz/), along with our other major updates,
