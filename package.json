@@ -120,7 +120,7 @@
     "faker": "^4.1.0",
     "file-loader": "^6.2.0",
     "less": "^4.0.0",
-    "less-loader": "^7.2.1",
+    "less-loader": "^9.0.0",
     "mini-css-extract-plugin": "^1.3.3",
     "mocha": "^7.2.0",
     "nodemon": "^2.0.2",
