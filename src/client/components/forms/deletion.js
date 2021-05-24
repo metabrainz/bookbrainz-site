@@ -165,7 +165,7 @@ class EntityDeletionForm extends React.Component {
 									</a>
 									&nbsp;or on our&nbsp;
 									<a
-										href="//webchat.freenode.net/?channels=#bookbrainz"
+										href="//kiwiirc.com/nextclient/irc.libera.chat/?#bookbrainz"
 										rel="noopener noreferrer"
 										target="_blank"
 									>
