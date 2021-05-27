@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS bookbrainz.relationship_attribute_ordinal (
 	PRIMARY KEY(id, rel_id)
 );
 
-CREATE TABLE IF NOT EXISTS bookbrainz.relationship_date (
+CREATE TABLE IF NOT EXISTS bookbrainz.relationship_attribute_date (
    id SERIAL,
    rel_id INT REFERENCES bookbrainz.relationship(id),
    begin_year SMALLINT,
