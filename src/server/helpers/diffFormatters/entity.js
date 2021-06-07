@@ -96,7 +96,7 @@ function formatAliasModified(change) {
 
 	const REQUIRED_DEPTH = 4;
 	const aliasLanguageChanged =
-		change.path.length > REQUIRED_DEPTH && change.path[3] === 'language' &&
+		change.path.length >= REQUIRED_DEPTH && change.path[3] === 'language' &&
 		change.path[4] === 'name';
 	if (aliasLanguageChanged) {
 		return [
@@ -108,7 +108,7 @@ function formatAliasModified(change) {
 		];
 	}
 
-	if (change.path.length > 3 && change.path[3] === 'primary') {
+	if (change.path.length >= 3 && change.path[3] === 'primary') {
 		return [
 			base.formatChange(
 				change,
