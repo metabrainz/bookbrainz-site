@@ -7,6 +7,6 @@ DROP TABLE IF EXISTS bookbrainz.relationship_attribute;
 DROP TABLE IF EXISTS bookbrainz.relationship_attribute_set; 
 DROP TABLE IF EXISTS bookbrainz.relationship_type__attribute_type;
 DROP TABLE IF EXISTS bookbrainz.relationship_attribute_type; 
-
+DELETE FROM bookbrainz.relationship_type WHERE id BETWEEN 70 and 74;
 
 COMMIT;
