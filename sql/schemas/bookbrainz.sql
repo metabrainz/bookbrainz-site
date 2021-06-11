@@ -12,7 +12,8 @@ CREATE TYPE bookbrainz.entity_type AS ENUM (
 	'EditionGroup',
 	'Edition',
 	'Publisher',
-	'Work'
+	'Work',
+	'Series'
 );
 
 CREATE TABLE bookbrainz.editor_type (
@@ -556,6 +557,52 @@ ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (type_id) REFERENCES bookbra
 ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (source_bbid) REFERENCES bookbrainz.entity (bbid);
 ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (target_bbid) REFERENCES bookbrainz.entity (bbid);
 
+-- Relationship Attributes
+
+CREATE TABLE bookbrainz.relationship_attribute_set (
+	id SERIAL PRIMARY KEY 
+);
+
+ALTER TABLE bookbrainz.relationship ADD COLUMN attribute_set_id INTEGER;
+ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (attribute_set_id) REFERENCES bookbrainz.relationship_attribute_set (id);
+
+CREATE TABLE bookbrainz.relationship_attribute_type (
+  id serial NOT NULL PRIMARY KEY,
+  parent INT DEFAULT NULL,
+  root INT NOT NULL,
+  child_order INT NOT NULL DEFAULT 0,
+  name varchar(255) NOT NULL,
+  description TEXT DEFAULT NULL,
+  last_updated TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+);
+
+CREATE TABLE bookbrainz.relationship_type__attribute_type (
+  relationship_type INT NOT NULL REFERENCES bookbrainz.relationship_type(id),
+  attribute_type INT NOT NULL REFERENCES bookbrainz.relationship_attribute_type(id),
+  min SMALLINT DEFAULT NULL,
+  max SMALLINT DEFAULT NULL,
+  last_updated TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now())
+);
+
+CREATE TABLE bookbrainz.relationship_attribute (
+  id SERIAL PRIMARY KEY, 
+  attribute_type INT NOT NULL REFERENCES bookbrainz.relationship_attribute_type(id)
+);
+
+CREATE TABLE bookbrainz.relationship_attribute_text_value (
+  attribute_id INT NOT NULL REFERENCES bookbrainz.relationship_attribute (id),
+  text_value TEXT DEFAULT NULL
+);
+
+CREATE TABLE bookbrainz.relationship_attribute_set__relationship_attribute (
+	set_id INTEGER REFERENCES bookbrainz.relationship_attribute_set (id),
+	attribute_id INTEGER REFERENCES bookbrainz.relationship_attribute (id),
+  PRIMARY KEY (
+    set_id, 
+    attribute_id
+  )
+);
+
 CREATE TABLE bookbrainz.language_set (
 	id SERIAL PRIMARY KEY
 );
@@ -573,6 +620,40 @@ ALTER TABLE bookbrainz.language_set__language ADD FOREIGN KEY (language_id) REFE
 
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (language_set_id) REFERENCES bookbrainz.language_set (id);
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (language_set_id) REFERENCES bookbrainz.language_set (id);
+
+-- Series --
+
+CREATE TABLE bookbrainz.series_header (
+	bbid UUID PRIMARY KEY,
+	master_revision_id INT
+);
+ALTER TABLE bookbrainz.series_header ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
+
+CREATE TABLE bookbrainz.series_ordering_type(
+	id SERIAL PRIMARY KEY,
+	label TEXT NOT NULL UNIQUE CHECK (label <> '')
+);
+
+CREATE TABLE bookbrainz.series_data (
+	id SERIAL PRIMARY KEY,
+	alias_set_id INT NOT NULL REFERENCES bookbrainz.alias_set(id),
+	identifier_set_id INT REFERENCES bookbrainz.identifier_set(id),
+	relationship_set_id INT REFERENCES bookbrainz.relationship_set(id),
+	annotation_id INT REFERENCES bookbrainz.annotation(id),
+	disambiguation_id INT REFERENCES bookbrainz.disambiguation(id),
+	entity_type bookbrainz.entity_type NOT NULL,
+	ordering_type_id INT NOT NULL REFERENCES bookbrainz.series_ordering_type(id)
+);
+
+CREATE TABLE bookbrainz.series_revision (
+	id INT REFERENCES bookbrainz.revision (id),
+	bbid UUID REFERENCES bookbrainz.series_header (bbid),
+	data_id INT REFERENCES bookbrainz.series_data(id),
+	is_merge BOOLEAN NOT NULL DEFAULT FALSE,
+	PRIMARY KEY ( id, bbid )
+);
+
+ALTER TABLE bookbrainz.series_header ADD FOREIGN KEY (master_revision_id, bbid) REFERENCES bookbrainz.series_revision (id, bbid);
 
 CREATE TABLE bookbrainz.title_type (
 	id SERIAL PRIMARY KEY,
@@ -790,6 +871,18 @@ CREATE VIEW bookbrainz.edition_group AS
 	LEFT JOIN bookbrainz.edition_group_data pcd ON pcr.data_id = pcd.id
 	LEFT JOIN bookbrainz.alias_set als ON pcd.alias_set_id = als.id
 	WHERE e.type = 'EditionGroup';
+
+CREATE VIEW bookbrainz.series AS
+	SELECT
+		e.bbid, sd.id AS data_id, sr.id AS revision_id, (sr.id = s.master_revision_id) AS master, sd.entity_type, sd.annotation_id, sd.disambiguation_id,
+		als.default_alias_id, sd.ordering_type_id, sd.alias_set_id, sd.identifier_set_id,
+		sd.relationship_set_id, e.type
+	FROM bookbrainz.series_revision sr
+	LEFT JOIN bookbrainz.entity e ON e.bbid = sr.bbid
+	LEFT JOIN bookbrainz.series_header s ON s.bbid = e.bbid
+	LEFT JOIN bookbrainz.series_data sd ON sr.data_id = sd.id
+	LEFT JOIN bookbrainz.alias_set als ON sd.alias_set_id = als.id
+	WHERE e.type = 'Series';
 
 CREATE VIEW bookbrainz.author_import AS
 	SELECT
