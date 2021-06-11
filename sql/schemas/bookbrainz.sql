@@ -563,7 +563,7 @@ CREATE TABLE bookbrainz.relationship_attribute_set (
 	id SERIAL PRIMARY KEY 
 );
 
-ALTER TABLE bookbrainz.relationship ADD attribute_set_id INTEGER;
+ALTER TABLE bookbrainz.relationship ADD COLUMN attribute_set_id INTEGER;
 ALTER TABLE bookbrainz.relationship ADD FOREIGN KEY (attribute_set_id) REFERENCES bookbrainz.relationship_attribute_set (id);
 
 CREATE TABLE bookbrainz.relationship_attribute_type (
