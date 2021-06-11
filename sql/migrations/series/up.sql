@@ -1,6 +1,6 @@
 BEGIN;
 
-ALTER TYPE bookbrainz.entity_type ADD VALUE 'Series';
+ALTER TYPE bookbrainz.entity_type ADD VALUE IF NOT EXISTS 'Series';
 
 CREATE TABLE  IF NOT EXISTS bookbrainz.series_header (
 	bbid UUID PRIMARY KEY,
