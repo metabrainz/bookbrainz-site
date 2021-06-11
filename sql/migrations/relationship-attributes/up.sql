@@ -46,11 +46,11 @@ CREATE TABLE bookbrainz.relationship_attribute_set__relationship_attribute (
 
 INSERT INTO bookbrainz.relationship_type ( id, label, description, link_phrase, source_entity_type, target_entity_type, parent_id, child_order, deprecated, reverse_link_phrase ) 
 VALUES 
-( 70, 'Author', 'Indicates the relationship between author and series', 'is part of', 'Author', 'Series', NULL, 0, false, 'contains'),
-( 71, 'Work', 'Indicates the relationship between work and series', 'is part of', 'Work', 'Series', NULL, 0, false, 'contains'),
-( 72, 'Edition', 'Indicates the relationship between edition and series', 'is part of', 'Edition', 'Series', NULL, 0, false, 'contains'),
-( 73, 'EditionGroup', 'Indicates the relationship between edition group and series', 'is part of', 'EditionGroup', 'Series', NULL, 0, false, 'contains'),
-( 74, 'Publisher', 'Indicates the relationship between publisher and series', 'is part of', 'Publisher', 'Series', NULL, 0, false, 'contains');
+( 70, 'Author', 'Indicates an Author is part of a Series', 'is part of', 'Author', 'Series', NULL, 0, false, 'contains'),
+( 71, 'Work', 'Indicates an Work is part of a Series', 'is part of', 'Work', 'Series', NULL, 0, false, 'contains'),
+( 72, 'Edition', 'Indicates an Edition is part of a Series', 'is part of', 'Edition', 'Series', NULL, 0, false, 'contains'),
+( 73, 'EditionGroup', 'Indicates an EditionGroup is part of a Series', 'is part of', 'EditionGroup', 'Series', NULL, 0, false, 'contains'),
+( 74, 'Publisher', 'Indicates an Publisher is part of a Series', 'is part of', 'Publisher', 'Series', NULL, 0, false, 'contains');
 
 INSERT INTO bookbrainz.relationship_attribute_type (id, parent, root, child_order, name, description)
 VALUES

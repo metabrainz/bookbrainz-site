@@ -100,11 +100,11 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_series() RETURNS TRIGGER
 		IF (TG_OP <> 'DELETE') THEN
 			INSERT INTO bookbrainz.series_data(
 				alias_set_id, identifier_set_id, relationship_set_id, annotation_id,
-				disambiguation_id, entity_type, ordering_id
+				disambiguation_id, entity_type, ordering_type_id
 			) VALUES (
 				NEW.alias_set_id, NEW.identifier_set_id, NEW.relationship_set_id,
 				NEW.annotation_id, NEW.disambiguation_id,
-				NEW.entity_type, NEW.ordering_id
+				NEW.entity_type, NEW.ordering_type_id
 			) RETURNING bookbrainz.series_data.id INTO series_data_id;
 
 			INSERT INTO bookbrainz.series_revision VALUES(NEW.revision_id, NEW.bbid, series_data_id);
