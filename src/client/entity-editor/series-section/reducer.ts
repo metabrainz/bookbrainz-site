@@ -27,7 +27,7 @@ type State = Immutable.Map<string, any>;
 
 function reducer(
 	state: State = Immutable.Map({
-		orderType: null,
+		orderType: 1,
 		seriesType: 'Author'
 	}),
 	action: Action
