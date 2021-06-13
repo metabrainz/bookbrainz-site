@@ -61,7 +61,7 @@ export const loadWorkTypes = makeLoader('WorkType', 'workTypes');
 export const loadSeriesOrderingTypes =
 	makeLoader('SeriesOrderingType', 'seriesOrderingTypes');
 export const loadRelationshipTypes =
-	makeLoader('RelationshipType', 'relationshipTypes', null , ['attributeTypes']);
+	makeLoader('RelationshipType', 'relationshipTypes', null, ['attributeTypes']);
 
 export const loadGenders =
 	makeLoader('Gender', 'genders', (a, b) => a.id > b.id);
@@ -74,31 +74,29 @@ export const loadLanguages = makeLoader('Language', 'languages', (a, b) => {
 	return a.name.localeCompare(b.name);
 });
 
-export const loadEntities = (req: $Request, res: $Response, next: NextFunction) => {
+export function loadEntities(req: $Request, res: $Response, next: NextFunction) {
 	try {
-		const entity = res.locals.entity
-		if(entity.dataId){
-		const {relationships} = entity;
-		relationships.map((relationship) => {
-			relationship.attributeSet.relationshipAttributes.map(attribute=>{
+		const {entity} = res.locals;
+		if (entity.dataId) {
+			const {relationships} = entity;
+			relationships.forEach((relationship) => {
+				relationship.attributeSet.relationshipAttributes.forEach(attribute => {
 					relationship[`${attribute.type.name}`] = attribute.value.textValue;
-			})
-			
-		})
-		if(entity.seriesOrderingType.label === 'Manual'){
-			relationships.sort((a,b) => (a.position > b.position) ? 1 : ((b.position > a.position) ? -1 : 0))
-		}
-		const entities = relationships.map((rel) => {
-			console.log(rel.number,rel.position)
-			return  {...rel.source, number: rel.number, position: rel.position, displayNumber: true}
-		})
-		res.locals.entity.entities = entities;
+				});
+			});
+			if (entity.seriesOrderingType.label === 'Manual') {
+				// eslint-disable-next-line no-nested-ternary
+				relationships.sort((a, b) => (a.position > b.position ? 1 : b.position > a.position ? -1 : 0));
+			}
+			const entities = relationships.map((rel) => ({...rel.source, displayNumber: true, number: rel.number, position: rel.position}));
+			res.locals.entity.entities = entities;
 		}
 		return next();
-	} catch (err) {
+	}
+	catch (err) {
 		return next(err);
 	}
-} 
+}
 
 export function loadEntityRelationships(req: $Request, res: $Response, next: NextFunction) {
 	const {orm}: any = req.app.locals;

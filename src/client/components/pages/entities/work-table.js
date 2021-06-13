@@ -44,7 +44,7 @@ function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities
 	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
-			{work.displayNumber && <td>{number}</td>}			
+			{work.displayNumber && <td>{number}</td>}
 			<td>
 				{
 					showCheckboxes ?
@@ -80,7 +80,6 @@ WorkTableRow.defaultProps = {
 };
 
 function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
-	console.log("EMERGENCY",entity,showAdd)
 	let tableContent;
 	if (works.length) {
 		tableContent = (

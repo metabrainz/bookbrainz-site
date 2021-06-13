@@ -40,7 +40,7 @@ function PublisherTableRow({showAddedAtColumn, publisher, showCheckboxes, select
 	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
-			{publisher.displayNumber && <td>{number}</td>}	
+			{publisher.displayNumber && <td>{number}</td>}
 			<td>
 				{
 					showCheckboxes ?

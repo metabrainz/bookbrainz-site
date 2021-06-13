@@ -53,26 +53,25 @@ export function addRelationship(data: Relationship): Action {
 	};
 }
 
-export function sortItems(oldIndex, newIndex):any{
+export function sortItems(oldIndex, newIndex):any {
 	return (dispatch, getState) => {
 		const state = getState();
 		const relationships = state.get('relationshipSection').get('relationships');
-		const relObject = relationships.toJS()
+		const relObject = relationships.toJS();
 		const array = Object.entries(relObject);
-		const sortedArray = arrayMove(array, oldIndex, newIndex)
-	
-		sortedArray.forEach((item: [string, Relationship], index: number)=>{
-			console.log(item)
-			item[1].attribute.map((relationship: _Attribute)=>{
-				if(relationship.attributeType===1){
-					relationship.value.textValue = ''+index
+		const sortedArray = arrayMove(array, oldIndex, newIndex);
+
+		sortedArray.forEach((item: [string, Relationship], index: number) => {
+			item[1].attribute.forEach((relationship: _Attribute) => {
+				if (relationship.attributeType === 1) {
+					relationship.value.textValue = `${index}`;
 				}
-			})
-		})
+			});
+		});
 		const sortedObject = Object.fromEntries(new Map([...sortedArray]));
 		const payload = sortedObject;
-		dispatch({type: SORT_ITEMS, payload: payload})
-	  }
+		dispatch({payload, type: SORT_ITEMS});
+	  };
 }
 
 export function editRelationship(rowID: number): Action {

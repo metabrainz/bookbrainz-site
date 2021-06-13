@@ -17,8 +17,8 @@
  */
 
 
-import * as React from 'react';
 import * as Immutable from 'immutable';
+import * as React from 'react';
 import {Action, updateOrderType, updateSeriesType} from './actions';
 import {Col, Row} from 'react-bootstrap';
 
@@ -57,7 +57,7 @@ type Props = StateProps & DispatchProps & OwnProps;
  * rendered as a modular section within the entity editor.
  *
  * @param {Object} props - The properties passed to the component.
- * @param {Array} props.seriesOrderingTypes - The list of possible ordering 
+ * @param {Array} props.seriesOrderingTypes - The list of possible ordering
  * 		  types for a series.
  * @param {number} props.orderTypeValue - The ID of the ordering type currently selected for
  *        the series.
@@ -81,7 +81,7 @@ function SeriesSection({
 	onSeriesTypeChange
 }: Props) {
 	const relationshipsObject = relationships.toJS();
-	const relationshipsArray = Object.values(relationshipsObject)
+	const relationshipsArray = Object.values(relationshipsObject);
 	const seriesOrderingTypesForDisplay = seriesOrderingTypes.map((type) => ({
 		label: type.label,
 		value: type.id
@@ -105,10 +105,10 @@ function SeriesSection({
 						tooltipText="Ordering Type of the Series Entity"
 					>
 						<Select
-							instanceId="seriesOrderingType"
 							backspaceRemoves={false}
 							clearable={false}
 							deleteRemoves={false}
+							instanceId="seriesOrderingType"
 							options={seriesOrderingTypesForDisplay}
 							value={orderTypeValue}
 							onChange={onOrderTypeChange}
@@ -116,11 +116,11 @@ function SeriesSection({
 					</CustomInput>
 					<CustomInput label="Series Type" tooltipText="Entity Type of the Series">
 						<Select
-							instanceId="SeriesType"
 							backspaceRemoves={false}
 							clearable={false}
-							deleteRemoves={false}			
+							deleteRemoves={false}
 							disabled={Boolean(relationshipsArray.length)}
+							instanceId="SeriesType"
 							options={seriesTypesForDisplay}
 							value={seriesTypeValue}
 							onChange={onSeriesTypeChange}
@@ -138,8 +138,8 @@ function mapStateToProps(rootState): StateProps {
 
 	return {
 		orderTypeValue: state.get('orderType'),
-		seriesTypeValue: state.get('seriesType'),
 		relationships: rootState.getIn(['relationshipSection', 'relationships']),
+		seriesTypeValue: state.get('seriesType')
 	};
 }
 
@@ -147,7 +147,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onOrderTypeChange: (value) => dispatch(updateOrderType(value && value.value)),
 		onSeriesTypeChange: (value) => dispatch(updateSeriesType(value && value.value))
-		
+
 	};
 }
 

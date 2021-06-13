@@ -38,7 +38,7 @@ function EditionGroupTableRow({editionGroup, showAddedAtColumn, showCheckboxes, 
 	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
-			{editionGroup.displayNumber && <td>{number}</td>}	
+			{editionGroup.displayNumber && <td>{number}</td>}
 			<td>
 				{
 					showCheckboxes ?
@@ -80,7 +80,7 @@ function EditionGroupTable({editionGroups, showAddedAtColumn, showCheckboxes, se
 				<Table striped>
 					<thead>
 						<tr>
-						{editionGroups[0].displayNumber && <th style={{width: '10%'}}>#</th>}
+							{editionGroups[0].displayNumber && <th style={{width: '10%'}}>#</th>}
 							<th>Name</th>
 							<th>Type</th>
 							{

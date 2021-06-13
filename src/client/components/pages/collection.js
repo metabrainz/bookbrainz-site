@@ -18,22 +18,18 @@
 
 import * as bootstrap from 'react-bootstrap';
 import {faPencilAlt, faPlus, faTimesCircle, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {formatDate, getEntityKey, getEntityTable} from '../../helpers/utils';
 import AddEntityToCollectionModal from './parts/add-entity-to-collection-modal';
-import AuthorTable from './entities/author-table';
 import DeleteOrRemoveCollaborationModal from './parts/delete-or-remove-collaboration-modal';
 import {ENTITY_TYPE_ICONS} from '../../helpers/entity';
-import EditionGroupTable from './entities/editionGroup-table';
-import EditionTable from './entities/edition-table';
 import EntityImage from './entities/image';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
-import PublisherTable from './entities/publisher-table';
 import React from 'react';
-import WorkTable from './entities/work-table';
 import _ from 'lodash';
-import {formatDate, getEntityTable, getEntityKey} from '../../helpers/utils';
 import request from 'superagent';
+
 
 const {Alert, Badge, Button, Col, Row} = bootstrap;
 

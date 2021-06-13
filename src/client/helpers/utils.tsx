@@ -17,16 +17,17 @@
  */
 
 /* eslint-disable no-useless-escape */
+import AuthorTable from '../components/pages/entities/author-table';
 import DOMPurify from 'isomorphic-dompurify';
+import EditionGroupTable from '../components/pages/entities/editionGroup-table';
+import EditionTable from '../components/pages/entities/edition-table';
+import PublisherTable from '../components/pages/entities/publisher-table';
 import React from 'react';
+import WorkTable from '../components/pages/entities/work-table';
 import _ from 'lodash';
 import {format} from 'date-fns';
 import {isIterable} from '../../types';
-import AuthorTable from '../components/pages/entities/author-table';
-import EditionTable from '../components/pages/entities/edition-table';
-import EditionGroupTable from '../components/pages/entities/editionGroup-table';
-import PublisherTable from '../components/pages/entities/publisher-table';
-import WorkTable from '../components/pages/entities/work-table';
+
 
 export interface DateObject {
 	day: string | null;

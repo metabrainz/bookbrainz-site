@@ -37,9 +37,10 @@ import type {
 	LanguageOption,
 	RelationshipForDisplay,
 	RelationshipType,
-	setPosition,
-	Relationship as _Relationship
+	Relationship as _Relationship,
+	setPosition as _setPosition
 } from './types';
+import {SortableContainer, SortableElement} from 'react-sortable-hoc';
 import {faPencilAlt, faPlus, faTimes, faUndo} from '@fortawesome/free-solid-svg-icons';
 import type {Dispatch} from 'redux'; // eslint-disable-line import/named
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -48,22 +49,23 @@ import Relationship from './relationship';
 import RelationshipEditor from './relationship-editor';
 import _ from 'lodash';
 import {connect} from 'react-redux';
-import {SortableContainer, SortableElement} from 'react-sortable-hoc';
 
-export function RelationshipListItem({contextEntity, onEdit, onRemove, relationshipType, sourceEntity, targetEntity,rowID, dragHandler}) {
+
+export function RelationshipListItem({contextEntity, onEdit, onRemove, relationshipType, sourceEntity, targetEntity, rowID, dragHandler}) {
+	/* eslint-disable react/jsx-no-bind */
 	return (
 		<Row className="margin-top-d5" key={rowID}>
-		<Col md={onEdit || onRemove ? 8 : 12}>
-			<Relationship
-				link
-				dragHandler={dragHandler}
-				contextEntity={contextEntity}
-				relationshipType={relationshipType}
-				sourceEntity={sourceEntity}
-				targetEntity={targetEntity}
-			/>
-		</Col>
-		{(onEdit || onRemove) &&
+			<Col md={onEdit || onRemove ? 8 : 12}>
+				<Relationship
+					link
+					contextEntity={contextEntity}
+					dragHandler={dragHandler}
+					relationshipType={relationshipType}
+					sourceEntity={sourceEntity}
+					targetEntity={targetEntity}
+				/>
+			</Col>
+			{(onEdit || onRemove) &&
 			<Col className="text-right" md={4}>
 				<ButtonGroup justified>
 					{onEdit &&
@@ -90,31 +92,28 @@ export function RelationshipListItem({contextEntity, onEdit, onRemove, relations
 					}
 				</ButtonGroup>
 			</Col>
-		}
-	</Row>
+			}
+		</Row>
 
-	)
+	);
 }
 const SortableItem = SortableElement(({value, onEdit, onRemove, contextEntity}) => {
-const {relationshipType, sourceEntity, targetEntity,rowID} = value;
-return (
+	const {relationshipType, sourceEntity, targetEntity, rowID} = value;
+	return (
 		<RelationshipListItem
+			dragHandler
 			contextEntity={contextEntity}
 			relationshipType={relationshipType}
+			rowID={rowID}
 			sourceEntity={sourceEntity}
 			targetEntity={targetEntity}
-			rowID={rowID}
 			onEdit={onEdit}
 			onRemove={onRemove}
-			dragHandler={true}
 		/>
-	)
-}
-);
-
-const SortableList = SortableContainer(({children}) => {
-  return <div>{children}</div>;
+	);
 });
+
+const SortableList = SortableContainer(({children}) => <div>{children}</div>);
 
 type RelationshipListProps = {
 	contextEntity: Entity,
@@ -131,25 +130,22 @@ type RelationshipListProps = {
 export function RelationshipList(
 	{contextEntity, relationships, onEdit, onRemove}: RelationshipListProps
 ) {
-	/* eslint-disable react/jsx-no-bind */
 	const renderedRelationships = _.map(
 		relationships,
 		({relationshipType, sourceEntity, targetEntity, rowID}) => (
 			<RelationshipListItem
-				key={rowID}
 				contextEntity={contextEntity}
+				dragHandler={false}
+				key={rowID}
 				relationshipType={relationshipType}
+				rowID={rowID}
 				sourceEntity={sourceEntity}
 				targetEntity={targetEntity}
-				rowID={rowID}
 				onEdit={onEdit}
 				onRemove={onRemove}
-				dragHandler={false}
 			/>
 		)
 	);
-
-	/* eslint-enable react/jsx-no-bind */
 
 	return <div>{renderedRelationships}</div>;
 }
@@ -175,7 +171,7 @@ type StateProps = {
 type DispatchProps = {
 	onAddRelationship: () => unknown,
 	onEditorClose: () => unknown,
-	onSortItems: (setPosition) => unknown,
+	onSortItems: (_setPosition) => unknown,
 	onEditorAdd: (_Relationship) => unknown,
 	onEdit: (number) => unknown,
 	onRemove: (number) => unknown,
@@ -187,7 +183,7 @@ type Props = OwnProps & StateProps & DispatchProps;
 
 function RelationshipSection({
 	canEdit, entity, entityType, entityName, languageOptions, showEditor, relationships,
-	relationshipEditorProps, relationshipTypes,orderTypeValue, seriesTypeValue, onAddRelationship,
+	relationshipEditorProps, relationshipTypes, orderTypeValue, seriesTypeValue, onAddRelationship,
 	onEditorClose, onEditorAdd, onSortItems, onEdit, onRemove, onUndo, undoPossible
 }: Props) {
 	const baseEntity = {
@@ -199,7 +195,7 @@ function RelationshipSection({
 		type: _.upperFirst(entityType)
 	};
 	const relationshipsObject = relationships.toJS();
-	const relationshipsArray: Array<RelationshipForDisplay> = Object.values(relationshipsObject)
+	const relationshipsArray: Array<RelationshipForDisplay> = Object.values(relationshipsObject);
 
 	/* If one of the relationships is to a new entity (in creation),
 	update that new entity's name to replace "New Entity" */
@@ -227,11 +223,11 @@ function RelationshipSection({
 			initRelationship={
 				relationshipEditorProps && relationshipEditorProps.toJS()
 			}
-			seriesType={seriesTypeValue}
 			languageOptions={languageOptionsForDisplay}
 			relationshipTypes={relationshipTypes}
-			onAdd={onEditorAdd}
+			seriesType={seriesTypeValue}
 			setPosition={onSortItems}
+			onAdd={onEditorAdd}
 			onCancel={onEditorClose}
 			onClose={onEditorClose}
 		/>
@@ -244,25 +240,24 @@ function RelationshipSection({
 			<Row>
 				<Col sm={12}>
 					{orderTypeValue === 2 ?
-					<SortableList distance={1} onSortEnd={onSortItems}>
-						{relationshipsArray.map((value:any, index) => (
-						<SortableItem 
-							key={`${value.rowID}`} 
-							index={index}
-							value={value} 
+						<SortableList distance={1} onSortEnd={onSortItems}>
+							{relationshipsArray.map((value:any, index) => (
+								<SortableItem
+									contextEntity={baseEntity}
+									index={index}
+									key={`${value.rowID}`}
+									value={value}
+									onEdit={canEdit ? onEdit : null}
+									onRemove={canEdit ? onRemove : null}
+								/>
+							))}
+						</SortableList>					:
+						<RelationshipList
 							contextEntity={baseEntity}
+							relationships={relationshipsArray}
 							onEdit={canEdit ? onEdit : null}
 							onRemove={canEdit ? onRemove : null}
-						/>
-						))}
-					</SortableList>
-					:
-					<RelationshipList
-						contextEntity={baseEntity}
-						relationships={relationshipsArray}
-						onEdit={canEdit ? onEdit : null}
-						onRemove={canEdit ? onRemove : null}
-					/>}
+						/>}
 				</Col>
 			</Row>
 			{canEdit &&
@@ -306,16 +301,27 @@ RelationshipSection.displayName = 'RelationshipSection';
 RelationshipSection.propTypes = {
 	languageOptions: PropTypes.array.isRequired
 };
+RelationshipListItem.propTypes = {
+	contextEntity: PropTypes.object.isRequired,
+	dragHandler: PropTypes.bool.isRequired,
+	onEdit: PropTypes.func.isRequired,
+	onRemove: PropTypes.func.isRequired,
+	relationshipType: PropTypes.object.isRequired,
+	rowID: PropTypes.string.isRequired,
+	sourceEntity: PropTypes.object.isRequired,
+	targetEntity: PropTypes.object.isRequired
+};
+
 
 function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('relationshipSection');
 	return {
 		canEdit: state.get('canEdit'),
 		entityName: rootState.getIn(['nameSection', 'name']),
-		seriesTypeValue: rootState.getIn(['seriesSection', 'seriesType']),
 		orderTypeValue: rootState.getIn(['seriesSection', 'orderType']),
 		relationshipEditorProps: state.get('relationshipEditorProps'),
 		relationships: state.get('relationships'),
+		seriesTypeValue: rootState.getIn(['seriesSection', 'seriesType']),
 		showEditor: state.get('relationshipEditorVisible'),
 		undoPossible: state.get('lastRelationships') !== null
 	};
@@ -328,8 +334,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onEditorAdd: (data) => dispatch(addRelationship(data)),
 		onEditorClose: () => dispatch(hideRelationshipEditor()),
 		onRemove: (rowID) => dispatch(removeRelationship(rowID)),
-		onUndo: () => dispatch(undoLastSave()),
-		onSortItems: ({oldIndex, newIndex}) => dispatch(sortItems(oldIndex, newIndex)) 
+		onSortItems: ({oldIndex, newIndex}) => dispatch(sortItems(oldIndex, newIndex)),
+		onUndo: () => dispatch(undoLastSave())
 	};
 }
 

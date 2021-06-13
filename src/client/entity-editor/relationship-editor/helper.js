@@ -18,23 +18,22 @@
 
 
 export const getInitAttribute = (attributes, id) => {
-    const attribute = attributes.filter(attribute => attribute.attributeType === id);   
-    if(attribute.length===0){
-        return []
-    }
-    else{
-       return attribute[0]
-    }
-}
+	const relAttribute = attributes.filter(attribute => attribute.attributeType === id);
+	if (relAttribute.length === 0) {
+		return [];
+	}
 
-export const setAttribute = (state,attributeTypes) => {
-    let attributes = attributeTypes.map(attribute=> attribute.name);
-    let result = [];
-    if(attributes.includes('number')){
-        result.push(state.attributeNumber)
-    }
-    if(attributes.includes('position')){
-        result.push(state.attributePosition)
-    }
-    return result;
-}
+	return relAttribute[0];
+};
+
+export const setAttribute = (state, attributeTypes) => {
+	const attributes = attributeTypes.map(attribute => attribute.name);
+	const result = [];
+	if (attributes.includes('number')) {
+		result.push(state.attributeNumber);
+	}
+	if (attributes.includes('position')) {
+		result.push(state.attributePosition);
+	}
+	return result;
+};

@@ -26,14 +26,14 @@ export type Entity = {
 	type: EntityType
 };
 
-export type attributeTypes =  {
+export type attributeTypes = {
 	id: number,
 	parent: number | null,
 	root: number,
 	childOrder: number | null,
 	name: string,
 	description: string | null,
-}
+};
 
 export type RelationshipType = {
 	id: number,
@@ -52,9 +52,9 @@ export type RelationshipType = {
 export type Attribute ={
 	value: {
 		textValue: string | null
-	}, 
+	},
 	attributeType: number
-}
+};
 
 export type Relationship = {
 	relationshipType: RelationshipType,
@@ -74,7 +74,7 @@ export type RelationshipForDisplay = {
 	relationshipType: RelationshipType,
 	sourceEntity: Entity,
 	targetEntity: Entity,
-	rowID: number
+	rowID: string
 };
 
 export type LanguageOption = {

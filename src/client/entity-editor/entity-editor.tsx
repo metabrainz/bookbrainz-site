@@ -87,7 +87,7 @@ const EntityEditor = (props: Props) => {
 							{...props}
 						)
 					}
-					<RelationshipSection {...props}/>				
+					<RelationshipSection {...props}/>
 					<IdentifierEditor show={identifierEditorVisible} {...props}/>
 					<AnnotationSection {...props}/>
 				</Panel.Body>

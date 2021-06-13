@@ -827,9 +827,9 @@ async function getNextIdentifierSet(orm, transacting, currentEntity, body) {
 		orm, transacting, oldIdentifierSet, body.identifiers || []
 	);
 }
-async function getNextRelationshipAttributeSets(orm, transacting, body){
+async function getNextRelationshipAttributeSets(orm, transacting, body) {
 	const {RelationshipAttributeSet} = orm;
-	const relationships = await Promise.all(body.relationships.map(async (relationship)=> { 
+	const relationships = await Promise.all(body.relationships.map(async (relationship) => {
 		const id = relationship.attributeSetId;
 		const oldRelationshipAttributeSet = await (
 			id &&
@@ -841,11 +841,11 @@ async function getNextRelationshipAttributeSets(orm, transacting, body){
 		const attributeSet = await orm.func.relationshipAttributes.updateRelationshipAttributeSet(
 			orm, transacting, oldRelationshipAttributeSet, relationship.attribute || []
 		);
-		const attributeSetId= attributeSet && attributeSet.get('id');
+		const attributeSetId = attributeSet && attributeSet.get('id');
 		relationship.attributeSetId = attributeSetId;
 		delete relationship.attribute;
 		return relationship;
-	}))
+	}));
 	return relationships;
 }
 
@@ -853,7 +853,7 @@ async function getNextRelationshipSets(
 	orm, transacting, currentEntity, body
 ) {
 	const {RelationshipSet} = orm;
-	const relationships = await getNextRelationshipAttributeSets(orm,transacting,body);
+	const relationships = await getNextRelationshipAttributeSets(orm, transacting, body);
 	const id = _.get(currentEntity, ['relationshipSet', 'id']);
 
 	const oldRelationshipSet = await (
@@ -1199,7 +1199,7 @@ export function constructRelationships(relationshipSection) {
 		relationshipSection.relationships,
 		({attributeSetId, rowID, relationshipType, sourceEntity, targetEntity, attribute}) => ({
 			attribute,
-			attributeSetId, 
+			attributeSetId,
 			id: rowID,
 			sourceBbid: _.get(sourceEntity, 'bbid'),
 			targetBbid: _.get(targetEntity, 'bbid'),

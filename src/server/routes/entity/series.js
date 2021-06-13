@@ -110,7 +110,7 @@ router.param(
 			'defaultAlias',
 			'disambiguation',
 			'seriesOrderingType',
-			'identifierSet.identifiers.type',
+			'identifierSet.identifiers.type'
 		],
 		'Series not found'
 	)
@@ -168,7 +168,7 @@ function seriesToFormState(series) {
 	);
 	const seriesSection = {
 		orderType: series.seriesOrderingType && series.seriesOrderingType.id,
-		seriesType: series.entityType  
+		seriesType: series.entityType
 	};
 
 	const relationshipSection = {
@@ -178,21 +178,22 @@ function seriesToFormState(series) {
 		relationshipEditorVisible: false,
 		relationships: {}
 	};
-	series.relationships.map((relationship) => {
-		relationship.attributeSet.relationshipAttributes.map(attribute=>{
-				relationship[`${attribute.type.name}`] = attribute.value.textValue;
-		})		
-	})
+	series.relationships.forEach((relationship) => {
+		relationship.attributeSet.relationshipAttributes.forEach(attribute => {
+			relationship[`${attribute.type.name}`] = attribute.value.textValue;
+		});
+	});
 
-	if(series.seriesOrderingType.label === 'Manual'){
-		series.relationships.sort((a,b) => (a.position > b.position) ? 1 : ((b.position > a.position) ? -1 : 0))
+	if (series.seriesOrderingType.label === 'Manual') {
+		// eslint-disable-next-line no-nested-ternary
+		series.relationships.sort((a, b) => (a.position > b.position ? 1 : b.position > a.position ? -1 : 0));
 	}
 	series.relationships.forEach((relationship) => (
-		relationshipSection.relationships['n'+relationship.id] = {
-			attribute: relationship.attributeSet? relationship.attributeSet.relationshipAttributes : [], 
+		relationshipSection.relationships[`n${relationship.id}`] = {
+			attribute: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
 			attributeSetId: relationship.attributeSetId,
 			relationshipType: relationship.type,
-			rowID: 'n'+relationship.id,
+			rowID: `n${relationship.id}`,
 			sourceEntity: relationship.source,
 			targetEntity: relationship.target
 		}
@@ -206,10 +207,10 @@ function seriesToFormState(series) {
 	return {
 		aliasEditor,
 		buttonBar,
-		seriesSection,
 		identifierEditor,
 		nameSection,
 		relationshipSection,
+		seriesSection,
 		...optionalSections
 	};
 }

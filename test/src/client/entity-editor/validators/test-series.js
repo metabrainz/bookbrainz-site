@@ -32,8 +32,8 @@ import {
 import {
 	validateForm,
 	validateSeriesSection,
-	validateSeriesSectionOrderingType,
-	validateSeriesSectionEntityType
+	validateSeriesSectionEntityType,
+	validateSeriesSectionOrderingType
 } from '../../../../../src/client/entity-editor/validators/series';
 
 import chai from 'chai';
@@ -85,7 +85,7 @@ function describeValidateSeriesSection() {
 	it('should reject an Object with an invalid ordering type', () => {
 		const result = validateSeriesSection({
 			...VALID_SERIES_SECTION,
-			orderType: {},
+			orderType: {}
 		});
 		expect(result).to.be.false;
 	});
@@ -121,8 +121,8 @@ function describeValidateForm() {
 		aliasEditor: VALID_ALIASES,
 		identifierEditor: VALID_IDENTIFIERS,
 		nameSection: VALID_NAME_SECTION,
-		submissionSection: VALID_SUBMISSION_SECTION,
-		seriesSection: VALID_SERIES_SECTION
+		seriesSection: VALID_SERIES_SECTION,
+		submissionSection: VALID_SUBMISSION_SECTION
 	};
 
 	it('should pass a valid Object', () => {

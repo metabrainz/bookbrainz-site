@@ -38,7 +38,7 @@ function AuthorTableRow({author, showAddedAtColumn, showCheckboxes, selectedEnti
 	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
-			{author.displayNumber && <td>{number}</td>}			
+			{author.displayNumber && <td>{number}</td>}
 			<td>
 				{
 					showCheckboxes ?

@@ -21,10 +21,11 @@ import * as React from 'react';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import type {RelationshipType, Entity as _Entity} from './types';
 import Entity from '../common/entity';
-import _ from 'lodash';
-import {getEntityLink} from '../../../server/helpers/utils';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import _ from 'lodash';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
+import {getEntityLink} from '../../../server/helpers/utils';
+
 
 function getEntityObjectForDisplay(entity: _Entity, makeLink: boolean) {
 	const link = makeLink && entity.bbid &&

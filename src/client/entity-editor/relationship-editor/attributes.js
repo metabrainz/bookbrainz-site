@@ -16,26 +16,34 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Col, Row, Input, ControlLabel} from 'react-bootstrap';
+import {ControlLabel} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+
 export function NumberAttribute({
-	handleChange, value
+	onHandleChange, value
 }) {
 	return (
 	    <>
-        <ControlLabel>Number</ControlLabel>
-		<input
-            className="form-control"
-            value={value || ''}
-            onChange={handleChange}
-            placeholder="Enter a value"
-            type="text"
-          />
+			<ControlLabel>Number</ControlLabel>
+			<input
+				className="form-control"
+				placeholder="Enter a value"
+				type="text"
+				value={value || ''}
+				onChange={onHandleChange}
+			/>
 	    </>
 	);
 }
 
 
+NumberAttribute.propTypes = {
+	onHandleChange: PropTypes.func.isRequired,
+	value: PropTypes.string
+};
 
+NumberAttribute.defaultProps = {
+	value: ''
+};

@@ -46,7 +46,7 @@ function EditionTableRow({edition, showAddedAtColumn, showCheckboxes, selectedEn
 	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
-			{edition.displayNumber && <td>{number}</td>}	
+			{edition.displayNumber && <td>{number}</td>}
 			<td>
 				{
 					showCheckboxes ?
@@ -97,7 +97,6 @@ EditionTableRow.defaultProps = {
 
 function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
-	console.log(showAdd)
 	if (editions.length) {
 		tableContent = (
 			<React.Fragment>

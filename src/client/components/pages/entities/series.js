@@ -18,6 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
+import {formatDate, getEntityKey, getEntityTable} from '../../../helpers/utils';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
@@ -26,7 +27,7 @@ import EntityRelatedCollections from './related-collections';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {formatDate, getEntityTable, getEntityKey} from '../../../helpers/utils';
+
 
 const {deletedEntityMessage, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
@@ -51,7 +52,7 @@ function SeriesAttributes({series}) {
 						<dd>{series.entityType}</dd>
 					</dl>
 				</Col>
-				<Col md={3}> 
+				<Col md={3}>
 					<dl>
 						<dt>Ordering Type</dt>
 						<dd>{series.seriesOrderingType.label}</dd>
@@ -93,7 +94,7 @@ function SeriesDisplayPage({entity, identifierTypes, user}) {
 				</Col>
 			</Row>
 			<EntityAnnotation entity={entity}/>
-		
+
 			{!entity.deleted &&
 			<React.Fragment>
 				<EntityTable {...propsForTable}/>

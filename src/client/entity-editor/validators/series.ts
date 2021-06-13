@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2021  Akash Gupta
- * 				 
+ *
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,21 +30,20 @@ import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
 
 
-
-export function validateSeriesSectionOrderingType(value: any): boolean {	
-	return validatePositiveInteger(value,true);
+export function validateSeriesSectionOrderingType(value: any): boolean {
+	return validatePositiveInteger(value, true);
 }
 
 export function validateSeriesSectionEntityType(value: any): boolean {
-	const entity = ['Author', 'Work', 'Edition', 'EditionGroup', 'Publisher']
-	return entity.includes(value)
+	const entity = ['Author', 'Work', 'Edition', 'EditionGroup', 'Publisher'];
+	return entity.includes(value);
 }
 
 export function validateSeriesSection(data: any): boolean {
 	return (
 		validateSeriesSectionOrderingType(get(data, 'orderType', null)) &&
 		validateSeriesSectionEntityType(get(data, 'seriesType', null))
-	
+
 	);
 }
 
