@@ -26,12 +26,13 @@ export function isValidBBID(bbid: string): boolean {
  * @returns {object} - Object mapping model name to the entity model
  */
 export function getEntityModels(orm: any) {
-	const {Author, Edition, EditionGroup, Publisher, Work} = orm;
+	const {Author, Edition, EditionGroup, Publisher, Series, Work} = orm;
 	return {
 		Author,
 		Edition,
 		EditionGroup,
 		Publisher,
+		Series,
 		Work
 	};
 }

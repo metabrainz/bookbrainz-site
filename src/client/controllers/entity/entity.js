@@ -31,6 +31,7 @@ import Layout from '../../containers/layout';
 import PublisherPage from '../../components/pages/entities/publisher';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import SeriesPage from '../../components/pages/entities/series';
 import WorkPage from '../../components/pages/entities/work';
 
 
@@ -39,6 +40,7 @@ const entityComponents = {
 	edition: EditionPage,
 	editionGroup: EditionGroupPage,
 	publisher: PublisherPage,
+	series: SeriesPage,
 	work: WorkPage
 };
 const propsTarget = document.getElementById('props');

@@ -69,6 +69,7 @@
     "react-hot-loader": "^4.13.0",
     "react-redux": "^5.1.2",
     "react-select": "^1.1.0",
+    "react-sortable-hoc": "^2.0.0",
     "react-sticky": "^6.0.1",
     "react-virtualized-select": "^3.0.1",
     "redux": "^3.7.2",
