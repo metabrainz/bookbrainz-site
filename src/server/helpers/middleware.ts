@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2015       Ben Ockmore
  *               2015-2016  Sean Burke
- *
+ *				 2021       Akash Gupta
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -29,11 +29,11 @@ interface $Request extends Request {
 	user: any
 }
 
-function makeLoader(modelName, propName, sortFunc?) {
+function makeLoader(modelName, propName, sortFunc?, relations = []) {
 	return function loaderFunc(req: $Request, res: $Response, next: NextFunction) {
 		const {orm}: any = req.app.locals;
 		const model = orm[modelName];
-		return model.fetchAll()
+		return model.fetchAll({withRelated: [...relations]})
 			.then((results) => {
 				const resultsSerial = results.toJSON();
 
@@ -58,8 +58,10 @@ export const loadEditionGroupTypes =
 	makeLoader('EditionGroupType', 'editionGroupTypes');
 export const loadPublisherTypes = makeLoader('PublisherType', 'publisherTypes');
 export const loadWorkTypes = makeLoader('WorkType', 'workTypes');
+export const loadSeriesOrderingTypes =
+	makeLoader('SeriesOrderingType', 'seriesOrderingTypes');
 export const loadRelationshipTypes =
-	makeLoader('RelationshipType', 'relationshipTypes');
+	makeLoader('RelationshipType', 'relationshipTypes', null , ['attributeTypes']);
 
 export const loadGenders =
 	makeLoader('Gender', 'genders', (a, b) => a.id > b.id);
@@ -71,6 +73,32 @@ export const loadLanguages = makeLoader('Language', 'languages', (a, b) => {
 
 	return a.name.localeCompare(b.name);
 });
+
+export const loadEntities = (req: $Request, res: $Response, next: NextFunction) => {
+	try {
+		const entity = res.locals.entity
+		if(entity.dataId){
+		const {relationships} = entity;
+		relationships.map((relationship) => {
+			relationship.attributeSet.relationshipAttributes.map(attribute=>{
+					relationship[`${attribute.type.name}`] = attribute.value.textValue;
+			})
+			
+		})
+		if(entity.seriesOrderingType.label === 'Manual'){
+			relationships.sort((a,b) => (a.position > b.position) ? 1 : ((b.position > a.position) ? -1 : 0))
+		}
+		const entities = relationships.map((rel) => {
+			console.log(rel.number,rel.position)
+			return  {...rel.source, number: rel.number, position: rel.position, displayNumber: true}
+		})
+		res.locals.entity.entities = entities;
+		}
+		return next();
+	} catch (err) {
+		return next(err);
+	}
+} 
 
 export function loadEntityRelationships(req: $Request, res: $Response, next: NextFunction) {
 	const {orm}: any = req.app.locals;
@@ -91,7 +119,9 @@ export function loadEntityRelationships(req: $Request, res: $Response, next: Nex
 					withRelated: [
 						'relationships.source',
 						'relationships.target',
-						'relationships.type'
+						'relationships.type.attributeTypes',
+						'relationships.attributeSet.relationshipAttributes.value',
+						'relationships.attributeSet.relationshipAttributes.type'
 					]
 				})
 		)
