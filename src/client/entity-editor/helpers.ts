@@ -25,6 +25,7 @@ import EditionSection from './edition-section/edition-section';
 import EditionSectionMerge from './edition-section/edition-section-merge';
 import PublisherSection from './publisher-section/publisher-section';
 import PublisherSectionMerge from './publisher-section/publisher-section-merge';
+import SeriesSection from './series-section/series-section';
 import WorkSection from './work-section/work-section';
 import WorkSectionMerge from './work-section/work-section-merge';
 import aliasEditorReducer from './alias-editor/reducer';
@@ -38,6 +39,7 @@ import identifierEditorReducer from './identifier-editor/reducer';
 import nameSectionReducer from './name-section/reducer';
 import publisherSectionReducer from './publisher-section/reducer';
 import relationshipSectionReducer from './relationship-editor/reducer';
+import seriesSectionReducer from './series-section/reducer';
 import submissionSectionReducer from './submission-section/reducer';
 import {validateForm as validateAuthorForm} from './validators/author';
 import {validateForm as validateEditionForm} from './validators/edition';
@@ -45,6 +47,7 @@ import {
 	validateForm as validateEditionGroupForm
 } from './validators/edition-group';
 import {validateForm as validatePublisherForm} from './validators/publisher';
+import {validateForm as validateSeriesForm} from './validators/series';
 import {validateForm as validateWorkForm} from './validators/work';
 import workSectionReducer from './work-section/reducer';
 
@@ -67,6 +70,7 @@ export function getEntitySection(entityType: string) {
 		edition: EditionSection,
 		editionGroup: EditionGroupSection,
 		publisher: PublisherSection,
+		series: SeriesSection,
 		work: WorkSection
 	};
 
@@ -91,6 +95,7 @@ function getEntitySectionReducer(entityType: string) {
 		edition: editionSectionReducer,
 		editionGroup: editionGroupSectionReducer,
 		publisher: publisherSectionReducer,
+		series: seriesSectionReducer,
 		work: workSectionReducer
 	};
 
@@ -103,6 +108,7 @@ export function getValidator(entityType: string) {
 		edition: validateEditionForm,
 		editionGroup: validateEditionGroupForm,
 		publisher: validatePublisherForm,
+		series: validateSeriesForm,
 		work: validateWorkForm
 	};
 
