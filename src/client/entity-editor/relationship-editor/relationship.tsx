@@ -23,7 +23,8 @@ import type {RelationshipType, Entity as _Entity} from './types';
 import Entity from '../common/entity';
 import _ from 'lodash';
 import {getEntityLink} from '../../../server/helpers/utils';
-
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faBars} from '@fortawesome/free-solid-svg-icons';
 
 function getEntityObjectForDisplay(entity: _Entity, makeLink: boolean) {
 	const link = makeLink && entity.bbid &&
@@ -46,11 +47,12 @@ type RelationshipProps = {
 	contextEntity: _Entity | null | undefined, // eslint-disable-line react/require-default-props
 	sourceEntity: _Entity,
 	targetEntity: _Entity,
+	dragHandler: boolean,
 	relationshipType: RelationshipType
 };
 
 function Relationship({
-	contextEntity, link, relationshipType, sourceEntity, targetEntity
+	contextEntity, link, relationshipType, sourceEntity, dragHandler, targetEntity
 }: RelationshipProps) {
 	const {depth, description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
 
@@ -79,6 +81,7 @@ function Relationship({
 			placement="bottom"
 		>
 			<div aria-label={description} className={indentationClass}>
+				{dragHandler ? <><FontAwesomeIcon icon={faBars}/> &nbsp;&nbsp;</> : null}
 				<Entity {...sourceObject}/>
 				{` ${usedLinkPhrase} `}
 				<Entity {...targetObject}/>
