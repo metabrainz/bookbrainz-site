@@ -35,6 +35,7 @@ const {getEntityDisambiguation, getLanguageAttribute, getEntityLabel} = entityHe
 
 function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(work);
+	const number = work.number || '?';
 	const disambiguation = getEntityDisambiguation(work);
 	const workType = work.workType ? work.workType.label : '?';
 	const languages = getLanguageAttribute(work).data;
@@ -43,6 +44,7 @@ function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities
 	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
+			{work.displayNumber && <td>{number}</td>}			
 			<td>
 				{
 					showCheckboxes ?
@@ -78,6 +80,7 @@ WorkTableRow.defaultProps = {
 };
 
 function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
+	console.log("EMERGENCY",entity,showAdd)
 	let tableContent;
 	if (works.length) {
 		tableContent = (
@@ -85,6 +88,7 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 				<Table striped>
 					<thead>
 						<tr>
+							{works[0].displayNumber && <th style={{width: '10%'}}>#</th>}
 							<th>Name</th>
 							<th>Languages</th>
 							<th>Type</th>

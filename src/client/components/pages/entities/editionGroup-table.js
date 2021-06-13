@@ -30,6 +30,7 @@ const {getEntityDisambiguation, getEntityLabel} = entityHelper;
 
 function EditionGroupTableRow({editionGroup, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(editionGroup);
+	const number = editionGroup.number || '?';
 	const disambiguation = getEntityDisambiguation(editionGroup);
 	const editionGroupType = editionGroup.editionGroupType ? editionGroup.editionGroupType.label : '?';
 	const addedAt = showAddedAtColumn ? utilHelper.formatDate(new Date(editionGroup.addedAt), true) : null;
@@ -37,6 +38,7 @@ function EditionGroupTableRow({editionGroup, showAddedAtColumn, showCheckboxes, 
 	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
+			{editionGroup.displayNumber && <td>{number}</td>}	
 			<td>
 				{
 					showCheckboxes ?
@@ -78,6 +80,7 @@ function EditionGroupTable({editionGroups, showAddedAtColumn, showCheckboxes, se
 				<Table striped>
 					<thead>
 						<tr>
+						{editionGroups[0].displayNumber && <th style={{width: '10%'}}>#</th>}
 							<th>Name</th>
 							<th>Type</th>
 							{

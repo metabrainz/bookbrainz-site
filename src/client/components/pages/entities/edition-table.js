@@ -37,6 +37,7 @@ const {Button, Table} = bootstrap;
 function EditionTableRow({edition, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(edition);
 	const disambiguation = getEntityDisambiguation(edition);
+	const number = edition.number || '?';
 	const releaseDate = getEditionReleaseDate(edition);
 	const isbn = getISBNOfEdition(edition);
 	const editionFormat = getEditionFormat(edition);
@@ -45,6 +46,7 @@ function EditionTableRow({edition, showAddedAtColumn, showCheckboxes, selectedEn
 	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
+			{edition.displayNumber && <td>{number}</td>}	
 			<td>
 				{
 					showCheckboxes ?
@@ -95,12 +97,14 @@ EditionTableRow.defaultProps = {
 
 function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
+	console.log(showAdd)
 	if (editions.length) {
 		tableContent = (
 			<React.Fragment>
 				<Table striped>
 					<thead>
 						<tr>
+							{editions[0].displayNumber && <th style={{width: '10%'}}>#</th>}
 							<th>Name</th>
 							<th>Format</th>
 							<th>ISBN</th>
