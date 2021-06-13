@@ -246,7 +246,7 @@ export function refreshIndex() {
 
 /* eslint camelcase: 0, no-magic-numbers: 1 */
 export async function generateIndex(orm) {
-	const {Area, Author, Edition, EditionGroup, Editor, Publisher, UserCollection, Work} = orm;
+	const {Area, Author, Edition, EditionGroup, Editor, Publisher, Series, UserCollection, Work} = orm;
 	const indexMappings = {
 		mappings: {
 			_default_: {
@@ -356,6 +356,7 @@ export async function generateIndex(orm) {
 		},
 		{model: EditionGroup, relations: ['editionGroupType']},
 		{model: Publisher, relations: ['publisherType', 'area']},
+		{model: Series, relations: ['seriesOrderingType']},
 		{model: Work, relations: ['workType']}
 	];
 
@@ -496,7 +497,7 @@ export function searchByName(orm, name, type, size, from) {
 
 	let modifiedType;
 	if (type === 'all_entities') {
-		modifiedType = ['author', 'edition', 'edition_group', 'work', 'publisher'];
+		modifiedType = ['author', 'edition', 'edition_group', 'series', 'work', 'publisher'];
 	}
 	else {
 		modifiedType = type;
