@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2018  Ben Ockmore
- *
+ *				 2021  Akash Gupta
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -27,6 +27,7 @@ import {
 	hideRelationshipEditor,
 	removeRelationship,
 	showRelationshipEditor,
+	sortItems,
 	undoLastSave
 } from './actions';
 import {Button, ButtonGroup, Col, Row} from 'react-bootstrap';
@@ -36,6 +37,7 @@ import type {
 	LanguageOption,
 	RelationshipForDisplay,
 	RelationshipType,
+	setPosition,
 	Relationship as _Relationship
 } from './types';
 import {faPencilAlt, faPlus, faTimes, faUndo} from '@fortawesome/free-solid-svg-icons';
@@ -46,7 +48,73 @@ import Relationship from './relationship';
 import RelationshipEditor from './relationship-editor';
 import _ from 'lodash';
 import {connect} from 'react-redux';
+import {SortableContainer, SortableElement} from 'react-sortable-hoc';
 
+export function RelationshipListItem({contextEntity, onEdit, onRemove, relationshipType, sourceEntity, targetEntity,rowID, dragHandler}) {
+	return (
+		<Row className="margin-top-d5" key={rowID}>
+		<Col md={onEdit || onRemove ? 8 : 12}>
+			<Relationship
+				link
+				dragHandler={dragHandler}
+				contextEntity={contextEntity}
+				relationshipType={relationshipType}
+				sourceEntity={sourceEntity}
+				targetEntity={targetEntity}
+			/>
+		</Col>
+		{(onEdit || onRemove) &&
+			<Col className="text-right" md={4}>
+				<ButtonGroup justified>
+					{onEdit &&
+						<Button
+							bsStyle="warning"
+							href="#"
+							role="button"
+							onClick={onEdit.bind(this, rowID)}
+						>
+							<FontAwesomeIcon icon={faPencilAlt}/>
+							<span>&nbsp;Edit</span>
+						</Button>
+					}
+					{onRemove &&
+						<Button
+							bsStyle="danger"
+							href="#"
+							role="button"
+							onClick={onRemove.bind(this, rowID)}
+						>
+							<FontAwesomeIcon icon={faTimes}/>
+							<span>&nbsp;Remove</span>
+						</Button>
+					}
+				</ButtonGroup>
+			</Col>
+		}
+	</Row>
+
+	)
+}
+const SortableItem = SortableElement(({value, onEdit, onRemove, contextEntity}) => {
+const {relationshipType, sourceEntity, targetEntity,rowID} = value;
+return (
+		<RelationshipListItem
+			contextEntity={contextEntity}
+			relationshipType={relationshipType}
+			sourceEntity={sourceEntity}
+			targetEntity={targetEntity}
+			rowID={rowID}
+			onEdit={onEdit}
+			onRemove={onRemove}
+			dragHandler={true}
+		/>
+	)
+}
+);
+
+const SortableList = SortableContainer(({children}) => {
+  return <div>{children}</div>;
+});
 
 type RelationshipListProps = {
 	contextEntity: Entity,
@@ -66,46 +134,18 @@ export function RelationshipList(
 	/* eslint-disable react/jsx-no-bind */
 	const renderedRelationships = _.map(
 		relationships,
-		({relationshipType, sourceEntity, targetEntity}, rowID) => (
-			<Row className="margin-top-d5" key={rowID}>
-				<Col md={onEdit || onRemove ? 8 : 12}>
-					<Relationship
-						link
-						contextEntity={contextEntity}
-						relationshipType={relationshipType}
-						sourceEntity={sourceEntity}
-						targetEntity={targetEntity}
-					/>
-				</Col>
-				{(onEdit || onRemove) &&
-					<Col className="text-right" md={4}>
-						<ButtonGroup justified>
-							{onEdit &&
-								<Button
-									bsStyle="warning"
-									href="#"
-									role="button"
-									onClick={onEdit.bind(this, rowID)}
-								>
-									<FontAwesomeIcon icon={faPencilAlt}/>
-									<span>&nbsp;Edit</span>
-								</Button>
-							}
-							{onRemove &&
-								<Button
-									bsStyle="danger"
-									href="#"
-									role="button"
-									onClick={onRemove.bind(this, rowID)}
-								>
-									<FontAwesomeIcon icon={faTimes}/>
-									<span>&nbsp;Remove</span>
-								</Button>
-							}
-						</ButtonGroup>
-					</Col>
-				}
-			</Row>
+		({relationshipType, sourceEntity, targetEntity, rowID}) => (
+			<RelationshipListItem
+				key={rowID}
+				contextEntity={contextEntity}
+				relationshipType={relationshipType}
+				sourceEntity={sourceEntity}
+				targetEntity={targetEntity}
+				rowID={rowID}
+				onEdit={onEdit}
+				onRemove={onRemove}
+				dragHandler={false}
+			/>
 		)
 	);
 
@@ -123,6 +163,8 @@ type OwnProps = {
 
 type StateProps = {
 	canEdit: boolean,
+	seriesTypeValue: string,
+	orderTypeValue: number,
 	entityName: string,
 	relationships: Immutable.List<any>,
 	relationshipEditorProps: Immutable.Map<string, any>,
@@ -133,6 +175,7 @@ type StateProps = {
 type DispatchProps = {
 	onAddRelationship: () => unknown,
 	onEditorClose: () => unknown,
+	onSortItems: (setPosition) => unknown,
 	onEditorAdd: (_Relationship) => unknown,
 	onEdit: (number) => unknown,
 	onRemove: (number) => unknown,
@@ -144,8 +187,8 @@ type Props = OwnProps & StateProps & DispatchProps;
 
 function RelationshipSection({
 	canEdit, entity, entityType, entityName, languageOptions, showEditor, relationships,
-	relationshipEditorProps, relationshipTypes, onAddRelationship,
-	onEditorClose, onEditorAdd, onEdit, onRemove, onUndo, undoPossible
+	relationshipEditorProps, relationshipTypes,orderTypeValue, seriesTypeValue, onAddRelationship,
+	onEditorClose, onEditorAdd, onSortItems, onEdit, onRemove, onUndo, undoPossible
 }: Props) {
 	const baseEntity = {
 		bbid: _.get(entity, 'bbid'),
@@ -156,6 +199,7 @@ function RelationshipSection({
 		type: _.upperFirst(entityType)
 	};
 	const relationshipsObject = relationships.toJS();
+	const relationshipsArray: Array<RelationshipForDisplay> = Object.values(relationshipsObject)
 
 	/* If one of the relationships is to a new entity (in creation),
 	update that new entity's name to replace "New Entity" */
@@ -183,9 +227,11 @@ function RelationshipSection({
 			initRelationship={
 				relationshipEditorProps && relationshipEditorProps.toJS()
 			}
+			seriesType={seriesTypeValue}
 			languageOptions={languageOptionsForDisplay}
 			relationshipTypes={relationshipTypes}
 			onAdd={onEditorAdd}
+			setPosition={onSortItems}
 			onCancel={onEditorClose}
 			onClose={onEditorClose}
 		/>
@@ -197,12 +243,26 @@ function RelationshipSection({
 			<h2>How are other entities related to this {_.startCase(entityType)}?</h2>
 			<Row>
 				<Col sm={12}>
+					{orderTypeValue === 2 ?
+					<SortableList distance={1} onSortEnd={onSortItems}>
+						{relationshipsArray.map((value:any, index) => (
+						<SortableItem 
+							key={`${value.rowID}`} 
+							index={index}
+							value={value} 
+							contextEntity={baseEntity}
+							onEdit={canEdit ? onEdit : null}
+							onRemove={canEdit ? onRemove : null}
+						/>
+						))}
+					</SortableList>
+					:
 					<RelationshipList
 						contextEntity={baseEntity}
-						relationships={relationshipsObject}
+						relationships={relationshipsArray}
 						onEdit={canEdit ? onEdit : null}
 						onRemove={canEdit ? onRemove : null}
-					/>
+					/>}
 				</Col>
 			</Row>
 			{canEdit &&
@@ -252,6 +312,8 @@ function mapStateToProps(rootState): StateProps {
 	return {
 		canEdit: state.get('canEdit'),
 		entityName: rootState.getIn(['nameSection', 'name']),
+		seriesTypeValue: rootState.getIn(['seriesSection', 'seriesType']),
+		orderTypeValue: rootState.getIn(['seriesSection', 'orderType']),
 		relationshipEditorProps: state.get('relationshipEditorProps'),
 		relationships: state.get('relationships'),
 		showEditor: state.get('relationshipEditorVisible'),
@@ -266,7 +328,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onEditorAdd: (data) => dispatch(addRelationship(data)),
 		onEditorClose: () => dispatch(hideRelationshipEditor()),
 		onRemove: (rowID) => dispatch(removeRelationship(rowID)),
-		onUndo: () => dispatch(undoLastSave())
+		onUndo: () => dispatch(undoLastSave()),
+		onSortItems: ({oldIndex, newIndex}) => dispatch(sortItems(oldIndex, newIndex)) 
 	};
 }
 
