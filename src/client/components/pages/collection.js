@@ -32,33 +32,10 @@ import PublisherTable from './entities/publisher-table';
 import React from 'react';
 import WorkTable from './entities/work-table';
 import _ from 'lodash';
-import {formatDate} from '../../helpers/utils';
+import {formatDate, getEntityTable, getEntityKey} from '../../helpers/utils';
 import request from 'superagent';
 
-
 const {Alert, Badge, Button, Col, Row} = bootstrap;
-
-function getEntityTable(entityType) {
-	const tables = {
-		Author: AuthorTable,
-		Edition: EditionTable,
-		EditionGroup: EditionGroupTable,
-		Publisher: PublisherTable,
-		Work: WorkTable
-	};
-	return tables[entityType];
-}
-
-function getEntityKey(entityType) {
-	const keys = {
-		Author: 'authors',
-		Edition: 'editions',
-		EditionGroup: 'editionGroups',
-		Publisher: 'publishers',
-		Work: 'works'
-	};
-	return keys[entityType];
-}
 
 function CollectionAttributes({collection}) {
 	return (
