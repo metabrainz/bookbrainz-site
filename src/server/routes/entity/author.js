@@ -227,9 +227,11 @@ function authorToFormState(author) {
 	};
 
 	author.relationships.forEach((relationship) => (
-		relationshipSection.relationships[relationship.id] = {
+		relationshipSection.relationships['n'+relationship.id] = {
+			attribute: relationship.attributeSet? relationship.attributeSet.relationshipAttributes  : [], 
+			attributeSetId: relationship.attributeSetId,
 			relationshipType: relationship.type,
-			rowID: relationship.id,
+			rowID: 'n'+relationship.id,
 			sourceEntity: relationship.source,
 			targetEntity: relationship.target
 		}
