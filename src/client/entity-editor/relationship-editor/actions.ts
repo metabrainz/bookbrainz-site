@@ -26,7 +26,7 @@ export const ADD_RELATIONSHIP = 'ADD_RELATIONSHIP';
 export const EDIT_RELATIONSHIP = 'EDIT_RELATIONSHIP';
 export const REMOVE_RELATIONSHIP = 'REMOVE_RELATIONSHIP';
 export const UNDO_LAST_SAVE = 'UNDO_LAST_SAVE';
-export const SORT_ITEMS = 'SORT_ITEMS';
+export const SORT_RELATIONSHIPS = 'SORT_RELATIONSHIPS';
 
 export type Action = {
 	type: string,
@@ -53,24 +53,41 @@ export function addRelationship(data: Relationship): Action {
 	};
 }
 
-export function sortItems(oldIndex, newIndex):any {
+export function sortRelationships(oldIndex, newIndex):any {
 	return (dispatch, getState) => {
 		const state = getState();
 		const relationships = state.get('relationshipSection').get('relationships');
+		const orderTypeValue = state.get('seriesSection').get('orderType');
 		const relObject = relationships.toJS();
 		const array = Object.entries(relObject);
-		const sortedArray = arrayMove(array, oldIndex, newIndex);
+		const automaticSort = [];
+		let automaticSortedArr: [string, Relationship][];
 
-		sortedArray.forEach((item: [string, Relationship], index: number) => {
-			item[1].attribute.forEach((relationship: _Attribute) => {
-				if (relationship.attributeType === 1) {
-					relationship.value.textValue = `${index}`;
+		if (orderTypeValue === 1) {
+			array.forEach((relationship:[string, Relationship]) => {
+				relationship[1].attribute.forEach((attribute:_Attribute) => {
+					if (attribute.attributeType === 2) {
+						automaticSort.push({number: attribute.value.textValue || -Infinity, relationshipArray: relationship});
+					}
+				});
+			});
+			// eslint-disable-next-line no-nested-ternary
+			automaticSort.sort((a, b) => (a.number > b.number ? 1 : b.number > a.number ? -1 : 0));
+			automaticSortedArr = automaticSort.map(relationship => relationship.relationshipArray);
+		}
+
+		const sortedRelationships = orderTypeValue === 1 ? arrayMove(automaticSortedArr, oldIndex, newIndex) : arrayMove(array, oldIndex, newIndex);
+		sortedRelationships.forEach((relationship: [string, Relationship], index: number) => {
+			relationship[1].attribute.forEach((attribute: _Attribute) => {
+				if (attribute.attributeType === 1) {
+					attribute.value.textValue = `${index}`;
 				}
 			});
 		});
-		const sortedObject = Object.fromEntries(new Map([...sortedArray]));
-		const payload = sortedObject;
-		dispatch({payload, type: SORT_ITEMS});
+
+		const sortedRelationshipObject = Object.fromEntries(new Map([...sortedRelationships]));
+		const payload = sortedRelationshipObject;
+		dispatch({payload, type: SORT_RELATIONSHIPS});
 	  };
 }
 

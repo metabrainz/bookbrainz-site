@@ -27,7 +27,7 @@ import {
 	hideRelationshipEditor,
 	removeRelationship,
 	showRelationshipEditor,
-	sortItems,
+	sortRelationships,
 	undoLastSave
 } from './actions';
 import {Button, ButtonGroup, Col, Row} from 'react-bootstrap';
@@ -171,7 +171,7 @@ type StateProps = {
 type DispatchProps = {
 	onAddRelationship: () => unknown,
 	onEditorClose: () => unknown,
-	onSortItems: (_setPosition) => unknown,
+	onSortRelationships: (_setPosition) => unknown,
 	onEditorAdd: (_Relationship) => unknown,
 	onEdit: (number) => unknown,
 	onRemove: (number) => unknown,
@@ -184,7 +184,7 @@ type Props = OwnProps & StateProps & DispatchProps;
 function RelationshipSection({
 	canEdit, entity, entityType, entityName, languageOptions, showEditor, relationships,
 	relationshipEditorProps, relationshipTypes, orderTypeValue, seriesTypeValue, onAddRelationship,
-	onEditorClose, onEditorAdd, onSortItems, onEdit, onRemove, onUndo, undoPossible
+	onEditorClose, onEditorAdd, onSortRelationships, onEdit, onRemove, onUndo, undoPossible
 }: Props) {
 	const baseEntity = {
 		bbid: _.get(entity, 'bbid'),
@@ -226,7 +226,7 @@ function RelationshipSection({
 			languageOptions={languageOptionsForDisplay}
 			relationshipTypes={relationshipTypes}
 			seriesType={seriesTypeValue}
-			setPosition={onSortItems}
+			setPosition={onSortRelationships}
 			onAdd={onEditorAdd}
 			onCancel={onEditorClose}
 			onClose={onEditorClose}
@@ -240,7 +240,7 @@ function RelationshipSection({
 			<Row>
 				<Col sm={12}>
 					{orderTypeValue === 2 ?
-						<SortableList distance={1} onSortEnd={onSortItems}>
+						<SortableList distance={1} onSortEnd={onSortRelationships}>
 							{relationshipsArray.map((value:any, index) => (
 								<SortableItem
 									contextEntity={baseEntity}
@@ -334,7 +334,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onEditorAdd: (data) => dispatch(addRelationship(data)),
 		onEditorClose: () => dispatch(hideRelationshipEditor()),
 		onRemove: (rowID) => dispatch(removeRelationship(rowID)),
-		onSortItems: ({oldIndex, newIndex}) => dispatch(sortItems(oldIndex, newIndex)),
+		onSortRelationships: ({oldIndex, newIndex}) => dispatch(sortRelationships(oldIndex, newIndex)),
 		onUndo: () => dispatch(undoLastSave())
 	};
 }
