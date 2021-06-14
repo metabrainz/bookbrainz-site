@@ -180,13 +180,15 @@ function seriesToFormState(series) {
 	};
 	series.relationships.forEach((relationship) => {
 		relationship.attributeSet.relationshipAttributes.forEach(attribute => {
-			relationship[`${attribute.type.name}`] = attribute.value.textValue;
+			relationship[`${attribute.type.name}`] = attribute.value.textValue || -Infinity;
 		});
 	});
-
+	/* eslint-disable no-nested-ternary */
 	if (series.seriesOrderingType.label === 'Manual') {
-		// eslint-disable-next-line no-nested-ternary
 		series.relationships.sort((a, b) => (a.position > b.position ? 1 : b.position > a.position ? -1 : 0));
+	}
+	else {
+		series.relationships.sort((a, b) => (a.number > b.number ? 1 : b.number > a.number ? -1 : 0));
 	}
 	series.relationships.forEach((relationship) => (
 		relationshipSection.relationships[`n${relationship.id}`] = {
