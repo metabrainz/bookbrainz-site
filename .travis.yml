@@ -7,7 +7,7 @@ notifications:
   email: false
   irc:
     channels:
-      - "chat.freenode.net#metabrainz"
+      - "libera.chat#bookbrainz"
     on_success: always
     on_failure: always
     template:

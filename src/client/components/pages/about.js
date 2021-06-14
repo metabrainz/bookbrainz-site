@@ -90,7 +90,7 @@ function AboutPage() {
 					className="margin-sides-1 contact-text"
 					icon={faCircle}
 				/>
-				<a className="contact-text" href="//webchat.freenode.net/?channels=#bookbrainz">
+				<a className="contact-text" href="//kiwiirc.com/nextclient/irc.libera.chat/?#bookbrainz">
 					<FontAwesomeIcon
 						className="contact-text"
 						icon={faCommentDots}
