@@ -839,11 +839,11 @@ async function getNextRelationshipAttributeSets(orm, transacting, body) {
 			})
 		);
 		const attributeSet = await orm.func.relationshipAttributes.updateRelationshipAttributeSet(
-			orm, transacting, oldRelationshipAttributeSet, relationship.attribute || []
+			orm, transacting, oldRelationshipAttributeSet, relationship.attributes || []
 		);
 		const attributeSetId = attributeSet && attributeSet.get('id');
 		relationship.attributeSetId = attributeSetId;
-		delete relationship.attribute;
+		delete relationship.attributes;
 		return relationship;
 	}));
 	return relationships;
@@ -1197,9 +1197,9 @@ export function constructIdentifiers(
 export function constructRelationships(relationshipSection) {
 	return _.map(
 		relationshipSection.relationships,
-		({attributeSetId, rowID, relationshipType, sourceEntity, targetEntity, attribute}) => ({
-			attribute,
+		({attributeSetId, rowID, relationshipType, sourceEntity, targetEntity, attributes}) => ({
 			attributeSetId,
+			attributes,
 			id: rowID,
 			sourceBbid: _.get(sourceEntity, 'bbid'),
 			targetBbid: _.get(targetEntity, 'bbid'),

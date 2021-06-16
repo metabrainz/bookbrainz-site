@@ -163,7 +163,7 @@ type RelationshipModalState = {
 	relationshipType?: RelationshipType | null | undefined,
 	relationship?: _Relationship | null | undefined,
 	targetEntity?: EntitySearchResult | null | undefined,
-	attribute?: any,
+	attributes?: any,
 	attributePosition?: _Attribute,
 	attributeNumber?: _Attribute
 };
@@ -173,10 +173,10 @@ function getInitState(
 ): RelationshipModalState {
 	if (_.isNull(initRelationship)) {
 		return {
-			attribute: [],
 			attributeNumber: {attributeType: 2, value: {textValue: null}},
 			attributePosition: {attributeType: 1, value: {textValue: null}},
 			attributeSetId: null,
+			attributes: [],
 			relationship: null,
 			relationshipType: null,
 			targetEntity: null
@@ -202,9 +202,9 @@ function getInitState(
 			_.set(thisEntity, defaultAliasPath, baseEntityName);
 		}
 	}
-	const attribute = _.get(initRelationship, ['attribute']);
-	const attributePosition = getInitAttribute(attribute, 1);
-	const attributeNumber = getInitAttribute(attribute, 2);
+	const attributes = _.get(initRelationship, ['attributes']);
+	const attributePosition = getInitAttribute(attributes, 1);
+	const attributeNumber = getInitAttribute(attributes, 2);
 
 	const searchFormatOtherEntity = otherEntity && {
 		id: _.get(otherEntity, ['bbid']),
@@ -216,10 +216,10 @@ function getInitState(
 	};
 
 	return {
-		attribute,
 		attributeNumber,
 		attributePosition,
 		attributeSetId: _.get(initRelationship, ['attributeSetId']),
+		attributes,
 		relationship: initRelationship,
 		relationshipType: _.get(initRelationship, ['relationshipType']),
 		targetEntity: searchFormatOtherEntity
@@ -301,7 +301,7 @@ class RelationshipModal
 		if (onAdd) {
 			if (this.state.relationship) {
 				const {relationship} = this.state;
-				relationship.attribute = setAttribute(this.state, this.state.relationshipType.attributeTypes);
+				relationship.attributes = setAttribute(this.state, this.state.relationshipType.attributeTypes);
 				onAdd(relationship);
 				if (baseEntity.type === 'Series') {
 					setPosition({newIndex: null, oldIndex: null});

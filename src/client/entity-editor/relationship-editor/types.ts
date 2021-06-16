@@ -60,7 +60,7 @@ export type Relationship = {
 	relationshipType: RelationshipType,
 	sourceEntity: Entity,
 	targetEntity: Entity,
-	attribute?: Array<Attribute>
+	attributes?: Array<Attribute>
 };
 
 export type RelationshipWithLabel = {
@@ -71,6 +71,7 @@ export type RelationshipWithLabel = {
 };
 
 export type RelationshipForDisplay = {
+	attributes: Array<Attribute>,
 	relationshipType: RelationshipType,
 	sourceEntity: Entity,
 	targetEntity: Entity,

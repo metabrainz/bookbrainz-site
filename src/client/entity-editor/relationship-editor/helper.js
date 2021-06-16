@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Akash Gupta
+ * Copyright (C) 2021  Akash Gupta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,4 +36,15 @@ export const setAttribute = (state, attributeTypes) => {
 		result.push(state.attributePosition);
 	}
 	return result;
+};
+
+export const getAttributeName = (id) => {
+	switch (id) {
+		case 1:
+			return 'position';
+		case 2:
+			return 'number';
+		default:
+			return 'unnamed';
+	}
 };

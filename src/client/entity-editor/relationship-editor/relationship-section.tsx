@@ -51,13 +51,15 @@ import _ from 'lodash';
 import {connect} from 'react-redux';
 
 
-export function RelationshipListItem({contextEntity, onEdit, onRemove, relationshipType, sourceEntity, targetEntity, rowID, dragHandler}) {
+export function RelationshipListItem({contextEntity, onEdit, onRemove, attributes, relationshipType, sourceEntity, targetEntity, rowID, dragHandler}) {
 	/* eslint-disable react/jsx-no-bind */
 	return (
 		<Row className="margin-top-d5" key={rowID}>
 			<Col md={onEdit || onRemove ? 8 : 12}>
 				<Relationship
 					link
+					showAttributes
+					attributes={attributes}
 					contextEntity={contextEntity}
 					dragHandler={dragHandler}
 					relationshipType={relationshipType}
@@ -98,10 +100,11 @@ export function RelationshipListItem({contextEntity, onEdit, onRemove, relations
 	);
 }
 const SortableItem = SortableElement(({value, onEdit, onRemove, contextEntity}) => {
-	const {relationshipType, sourceEntity, targetEntity, rowID} = value;
+	const {relationshipType, sourceEntity, targetEntity, attributes, rowID} = value;
 	return (
 		<RelationshipListItem
 			dragHandler
+			attributes={attributes}
 			contextEntity={contextEntity}
 			relationshipType={relationshipType}
 			rowID={rowID}
@@ -132,8 +135,9 @@ export function RelationshipList(
 ) {
 	const renderedRelationships = _.map(
 		relationships,
-		({relationshipType, sourceEntity, targetEntity, rowID}) => (
+		({relationshipType, sourceEntity, targetEntity, attributes, rowID}) => (
 			<RelationshipListItem
+				attributes={attributes}
 				contextEntity={contextEntity}
 				dragHandler={false}
 				key={rowID}
@@ -241,7 +245,7 @@ function RelationshipSection({
 				<Col sm={12}>
 					{orderTypeValue === 2 ?
 						<SortableList distance={1} onSortEnd={onSortRelationships}>
-							{relationshipsArray.map((value:any, index) => (
+							{relationshipsArray.map((value, index) => (
 								<SortableItem
 									contextEntity={baseEntity}
 									index={index}
@@ -302,14 +306,19 @@ RelationshipSection.propTypes = {
 	languageOptions: PropTypes.array.isRequired
 };
 RelationshipListItem.propTypes = {
+	attributes: PropTypes.array,
 	contextEntity: PropTypes.object.isRequired,
-	dragHandler: PropTypes.bool.isRequired,
+	dragHandler: PropTypes.bool,
 	onEdit: PropTypes.func.isRequired,
 	onRemove: PropTypes.func.isRequired,
 	relationshipType: PropTypes.object.isRequired,
 	rowID: PropTypes.string.isRequired,
 	sourceEntity: PropTypes.object.isRequired,
 	targetEntity: PropTypes.object.isRequired
+};
+RelationshipListItem.defaultProps = {
+	attributes: [],
+	dragHandler: false
 };
 
 

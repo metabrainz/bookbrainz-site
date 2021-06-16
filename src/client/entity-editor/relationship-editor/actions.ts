@@ -65,7 +65,7 @@ export function sortRelationships(oldIndex, newIndex):any {
 
 		if (orderTypeValue === 1) {
 			array.forEach((relationship:[string, Relationship]) => {
-				relationship[1].attribute.forEach((attribute:_Attribute) => {
+				relationship[1].attributes.forEach((attribute:_Attribute) => {
 					if (attribute.attributeType === 2) {
 						automaticSort.push({number: attribute.value.textValue || -Infinity, relationshipArray: relationship});
 					}
@@ -78,7 +78,7 @@ export function sortRelationships(oldIndex, newIndex):any {
 
 		const sortedRelationships = orderTypeValue === 1 ? arrayMove(automaticSortedArr, oldIndex, newIndex) : arrayMove(array, oldIndex, newIndex);
 		sortedRelationships.forEach((relationship: [string, Relationship], index: number) => {
-			relationship[1].attribute.forEach((attribute: _Attribute) => {
+			relationship[1].attributes.forEach((attribute: _Attribute) => {
 				if (attribute.attributeType === 1) {
 					attribute.value.textValue = `${index}`;
 				}

@@ -256,8 +256,8 @@ function workToFormState(work) {
 
 	work.relationships.forEach((relationship) => (
 		relationshipSection.relationships[`n${relationship.id}`] = {
-			attribute: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
 			attributeSetId: relationship.attributeSetId,
+			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
 			relationshipType: relationship.type,
 			rowID: `n${relationship.id}`,
 			sourceEntity: relationship.source,
