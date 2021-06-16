@@ -17,7 +17,7 @@
  */
 
 import type {Relationship, Attribute as _Attribute} from './types';
-import {arrayMove} from 'react-sortable-hoc';
+import arrayMove from 'array-move';
 
 
 export const SHOW_RELATIONSHIP_EDITOR = 'SHOW_RELATIONSHIP_EDITOR';

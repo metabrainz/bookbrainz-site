@@ -26,6 +26,7 @@ import CustomInput from '../../input';
 import type {Dispatch} from 'redux';
 import Select from 'react-select';
 import {connect} from 'react-redux';
+import {sortRelationships} from '../relationship-editor/actions';
 
 
 type SeriesOrderingType = {
@@ -145,9 +146,13 @@ function mapStateToProps(rootState): StateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		onOrderTypeChange: (value) => dispatch(updateOrderType(value && value.value)),
+		onOrderTypeChange: (value) => {
+			dispatch(updateOrderType(value && value.value));
+			if (value && value.value === 1) {
+				dispatch(sortRelationships(null, null));
+			}
+		},
 		onSeriesTypeChange: (value) => dispatch(updateSeriesType(value && value.value))
-
 	};
 }
 
