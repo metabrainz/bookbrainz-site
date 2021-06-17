@@ -166,29 +166,28 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 	// entityRevisions - collection of *entityType*_revisions matching id
 	return Promise.all(entityRevisions.map(
 		async (revision) => {
-			const revisionDataId = revision.get('dataId');
+			const dataId = revision.get('dataId');
 			let entity = revision.related('entity').toJSON();
 			entity = await orm.func.entity.getEntity(orm, entityType, entity.bbid, ['aliasSet.defaultAlias', 'aliasSet.aliases']);
-			if (!entity.dataId) {
-				entity.parentAlias = await orm.func.entity.getEntityParentAlias(
-					orm, entityType, entity.bbid
-				);
-			}
-			else {
-				entity.defaultAlias = entity.aliasSet.defaultAlias;
-			}
+			const isEntityDeleted = !entity.dataId;
 			return revision.parent()
 				.then(
 					(parent) => {
 						let isNew = false;
-						const isDeletion = !revisionDataId;
+						const isDeletion = !dataId;
 						if (!parent) {
-							isNew = Boolean(revisionDataId);
+							isNew = Boolean(dataId);
 						}
 						return makePromiseFromObject({
 							changes: revision.diff(parent),
-							entity,
+							entity: revision.related('entity'),
+							entityAlias: dataId ?
+								revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
+								orm.func.entity.getEntityParentAlias(
+									orm, entityType, revision.get('bbid')
+								),
 							isDeletion,
+							isEntityDeleted,
 							isNew,
 							revision
 						});
@@ -196,9 +195,15 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 					// If calling .parent() is rejected (no parent rev), we still want to go ahead without the parent
 					() => makePromiseFromObject({
 						changes: revision.diff(null),
-						entity,
-						isDeletion: !revisionDataId,
-						isNew: Boolean(revisionDataId),
+						entity: revision.related('entity'),
+						entityAlias: revision.get('dataId') ?
+							revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
+							orm.func.entity.getEntityParentAlias(
+								orm, entityType, revision.get('bbid')
+							),
+						isDeletion: !dataId,
+						isEntityDeleted,
+						isNew: Boolean(dataId),
 						revision
 					})
 				);

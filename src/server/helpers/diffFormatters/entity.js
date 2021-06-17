@@ -244,7 +244,7 @@ function formatRelationshipAdd(entity, change) {
 		return changes;
 	}
 	const key = rhs.type && rhs.type.label ? `Relationship : ${rhs.type.label}` : 'Relationship';
-	if (rhs.sourceBbid === entity.bbid) {
+	if (rhs.sourceBbid === entity.get('bbid')) {
 		changes.push(
 			base.formatRow(
 				'N', key, null, [rhs.targetBbid]
@@ -276,7 +276,7 @@ function formatAddOrDeleteRelationshipSet(entity, change) {
 
 	allRelationships.forEach((relationship) => {
 		const key = relationship.type && relationship.type.label ? `Relationship: ${relationship.type.label}` : 'Relationship';
-		if (relationship.sourceBbid === entity.bbid) {
+		if (relationship.sourceBbid === entity.get('bbid')) {
 			changes.push(
 				base.formatRow(
 					change.kind, key, [relationship.targetBbid], [relationship.targetBbid]
@@ -302,7 +302,7 @@ function formatRelationshipRemove(entity, change) {
 		return changes;
 	}
 	const key = lhs.type && lhs.type.label ? `Relationship : ${lhs.type.label}` : 'Relationship';
-	if (lhs.sourceBbid === entity.bbid) {
+	if (lhs.sourceBbid === entity.get('bbid')) {
 		changes.push(
 			base.formatRow(
 				'D', key, [lhs.targetBbid], null
@@ -385,13 +385,34 @@ export function formatEntityDiffs(diffs, entityType, entityFormatter) {
 
 	return _.flatten(diffs).map((diff) => {
 		const formattedDiff = {
-			entity: diff.entity,
+			entity: diff.entity.toJSON(),
 			isDeletion: diff.isDeletion,
 			isNew: diff.isNew
 		};
 
 		formattedDiff.entity.type = entityType;
 		formattedDiff.entityRevision = diff.revision && diff.revision.toJSON();
+
+		if (diff.entityAlias) {
+			// In the revision route, we fetch an entity's data to show its alias; an ORM model is returned.
+			// For entities without data (deleted or merged), we use getEntityParentAlias instead which returns a JSON object
+			if (typeof diff.entityAlias.toJSON === 'function') {
+				const aliasJSON = diff.entityAlias.toJSON();
+				if (diff.isEntityDeleted) {
+					formattedDiff.entity.parentAlias = aliasJSON.aliasSet.defaultAlias;
+				}
+				else {
+					formattedDiff.entity.defaultAlias = aliasJSON.aliasSet.defaultAlias;
+				}
+			}
+			else if (diff.isEntityDeleted) {
+				formattedDiff.entity.parentAlias = diff.entityAlias;
+			}
+			else {
+				formattedDiff.entity.defaultAlias = diff.entityAlias;
+			}
+		}
+
 		if (!diff.changes) {
 			formattedDiff.changes = [];
 
