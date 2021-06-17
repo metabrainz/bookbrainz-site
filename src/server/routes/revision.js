@@ -168,7 +168,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 		async (revision) => {
 			const dataId = revision.get('dataId');
 			let entity = revision.related('entity').toJSON();
-			entity = await orm.func.entity.getEntity(orm, entityType, entity.bbid, ['aliasSet.defaultAlias', 'aliasSet.aliases']);
+			entity = await orm.func.entity.getEntity(orm, entityType, entity.bbid);
 			const isEntityDeleted = !entity.dataId;
 			return revision.parent()
 				.then(
