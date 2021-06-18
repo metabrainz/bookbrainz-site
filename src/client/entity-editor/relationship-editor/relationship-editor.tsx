@@ -281,9 +281,10 @@ class RelationshipModal
 	};
 
 	handleNumberAttributeChange = ({target}) => {
+		const value = target.value === '' ? null : target.value;
 		const attributeNumber = {
 			attributeType: 2,
-			value: {textValue: target.value}
+			value: {textValue: value}
 		};
 		const attributePosition = {
 			attributeType: 1,
