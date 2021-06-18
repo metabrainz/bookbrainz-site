@@ -26,7 +26,7 @@ export type Entity = {
 	type: EntityType
 };
 
-export type attributeTypes = {
+export type AttributeTypes = {
 	id: number,
 	parent: number | null,
 	root: number,
@@ -37,7 +37,7 @@ export type attributeTypes = {
 
 export type RelationshipType = {
 	id: number,
-	attributeTypes?: Array<attributeTypes>,
+	attributeTypes?: Array<AttributeTypes>,
 	childOrder: number,
 	deprecated: boolean,
 	depth?: number,
@@ -49,11 +49,12 @@ export type RelationshipType = {
 	sourceEntityType: EntityType,
 	targetEntityType: EntityType
 };
-export type Attribute ={
+export type Attribute = {
+	attributeType: number,
 	value: {
 		textValue: string | null
 	},
-	attributeType: number
+	type?: AttributeTypes
 };
 
 export type Relationship = {

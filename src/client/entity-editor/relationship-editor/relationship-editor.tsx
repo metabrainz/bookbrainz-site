@@ -163,7 +163,7 @@ type RelationshipModalState = {
 	relationshipType?: RelationshipType | null | undefined,
 	relationship?: _Relationship | null | undefined,
 	targetEntity?: EntitySearchResult | null | undefined,
-	attributes?: any,
+	attributes?: _Attribute[],
 	attributePosition?: _Attribute,
 	attributeNumber?: _Attribute
 };
