@@ -58,6 +58,12 @@ function SeriesAttributes({series}) {
 						<dd>{series.seriesOrderingType.label}</dd>
 					</dl>
 				</Col>
+				<Col md={3}>
+					<dl>
+						<dt>Total Items</dt>
+						<dd>{series.seriesItems.length}</dd>
+					</dl>
+				</Col>
 			</Row>
 		</div>
 	);
