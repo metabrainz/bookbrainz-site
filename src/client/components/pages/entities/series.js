@@ -73,7 +73,7 @@ function SeriesDisplayPage({entity, identifierTypes, user}) {
 	const EntityTable = getEntityTable(entity.entityType);
 	const entityKey = getEntityKey(entity.entityType);
 	const propsForTable = {
-		[entityKey]: entity.entities,
+		[entityKey]: entity.seriesItems,
 		showAdd: false,
 		showAddedAtColumn: false,
 		showCheckboxes: false

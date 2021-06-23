@@ -74,7 +74,7 @@ export const loadLanguages = makeLoader('Language', 'languages', (a, b) => {
 	return a.name.localeCompare(b.name);
 });
 
-export function loadEntities(req: $Request, res: $Response, next: NextFunction) {
+export function loadSeriesItems(req: $Request, res: $Response, next: NextFunction) {
 	try {
 		const {entity} = res.locals;
 		if (entity.dataId) {
@@ -91,12 +91,15 @@ export function loadEntities(req: $Request, res: $Response, next: NextFunction) 
 			else {
 				relationships.sort(commonUtils.sortRelationshipOrdinal('number'));
 			}
-			const entities = relationships.map((rel) => (
+			const seriesItems = relationships.map((rel) => (
 				{...rel.source, displayNumber: true,
 					number: rel.number,
 					position: rel.position}
 			));
-			res.locals.entity.entities = entities;
+			res.locals.entity.seriesItems = seriesItems;
+		}
+		else {
+			res.locals.entity.seriesItems = [];
 		}
 		return next();
 	}
