@@ -78,3 +78,17 @@ export function makePromiseFromObject<T>(obj: Unresolved<T>): Promise<T> {
 			return res as T;
 	  });
 }
+
+/**
+ * This function sorts the relationship array
+ * @param {string} sortByProperty - name of property which will be used for sorting
+ * @returns {array} - sorted relationship array
+ */
+/* eslint-disable no-param-reassign */
+export function sortRelationshipOrdinal(sortByProperty: string) {
+	return (a:string, b:string) => {
+		a = a[sortByProperty] || '';
+		b = b[sortByProperty] || '';
+		return a.localeCompare(b);
+	};
+}

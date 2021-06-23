@@ -18,7 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
-import {formatDate, getEntityKey, getEntityTable} from '../../../helpers/utils';
+import {getEntityKey, getEntityTable} from '../../../helpers/utils';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
@@ -29,7 +29,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {deletedEntityMessage, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
+const {deletedEntityMessage, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
 
 function SeriesAttributes({series}) {

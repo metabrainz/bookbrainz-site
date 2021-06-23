@@ -18,6 +18,7 @@
 
 import type {Relationship, Attribute as _Attribute} from './types';
 import arrayMove from 'array-move';
+import {sortRelationshipOrdinal} from '../../../common/helpers/utils';
 
 
 export const SHOW_RELATIONSHIP_EDITOR = 'SHOW_RELATIONSHIP_EDITOR';
@@ -67,12 +68,11 @@ export function sortRelationships(oldIndex, newIndex):any {
 			array.forEach((relationship:[string, Relationship]) => {
 				relationship[1].attributes.forEach((attribute:_Attribute) => {
 					if (attribute.attributeType === 2) {
-						automaticSort.push({number: attribute.value.textValue || -Infinity, relationshipArray: relationship});
+						automaticSort.push({number: attribute.value.textValue, relationshipArray: relationship});
 					}
 				});
 			});
-			// eslint-disable-next-line no-nested-ternary
-			automaticSort.sort((a, b) => (a.number > b.number ? 1 : b.number > a.number ? -1 : 0));
+			automaticSort.sort(sortRelationshipOrdinal('number'));
 			automaticSortedArr = automaticSort.map(relationship => relationship.relationshipArray);
 		}
 

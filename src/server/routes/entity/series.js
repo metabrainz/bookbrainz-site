@@ -31,6 +31,7 @@ import {
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import {sortRelationshipOrdinal} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
 /** ****************************
@@ -180,15 +181,15 @@ function seriesToFormState(series) {
 	};
 	series.relationships.forEach((relationship) => {
 		relationship.attributeSet.relationshipAttributes.forEach(attribute => {
-			relationship[`${attribute.type.name}`] = attribute.value.textValue || -Infinity;
+			relationship[`${attribute.type.name}`] = attribute.value.textValue;
 		});
 	});
-	/* eslint-disable no-nested-ternary */
+
 	if (series.seriesOrderingType.label === 'Manual') {
-		series.relationships.sort((a, b) => (a.position > b.position ? 1 : b.position > a.position ? -1 : 0));
+		series.relationships.sort(sortRelationshipOrdinal('position'));
 	}
 	else {
-		series.relationships.sort((a, b) => (a.number > b.number ? 1 : b.number > a.number ? -1 : 0));
+		series.relationships.sort(sortRelationshipOrdinal('number'));
 	}
 	series.relationships.forEach((relationship) => (
 		relationshipSection.relationships[`n${relationship.id}`] = {
