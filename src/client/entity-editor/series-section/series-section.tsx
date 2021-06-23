@@ -37,7 +37,7 @@ type SeriesOrderingType = {
 type StateProps = {
 	orderTypeValue: number,
 	seriesTypeValue: string,
-	relationships: Immutable.List<any>
+	relationships: Immutable.List<any>[]
 };
 
 
@@ -64,7 +64,7 @@ type Props = StateProps & DispatchProps & OwnProps;
  *        the series.
  * @param {string} props.seriesTypeValue - The value of the entity type currently selected for
  *        the series.
- * @param {Immutable.List<any>} props.relationships - The list of relationships conatined by
+ * @param {Immutable.List<any>[]} props.relationships - The list of relationships conatined by
  * 		  the series.
  * @param {Function} props.onOrderTypeChange - A function to be called when
  *        a different ordering type is selected.
@@ -81,8 +81,6 @@ function SeriesSection({
 	onOrderTypeChange,
 	onSeriesTypeChange
 }: Props) {
-	const relationshipsObject = relationships.toJS();
-	const relationshipsArray = Object.values(relationshipsObject);
 	const seriesOrderingTypesForDisplay = seriesOrderingTypes.map((type) => ({
 		label: type.label,
 		value: type.id
@@ -120,7 +118,7 @@ function SeriesSection({
 							backspaceRemoves={false}
 							clearable={false}
 							deleteRemoves={false}
-							disabled={Boolean(relationshipsArray.length)}
+							disabled={Boolean(relationships.length)}
 							instanceId="SeriesType"
 							options={seriesTypesForDisplay}
 							value={seriesTypeValue}
@@ -139,7 +137,7 @@ function mapStateToProps(rootState): StateProps {
 
 	return {
 		orderTypeValue: state.get('orderType'),
-		relationships: rootState.getIn(['relationshipSection', 'relationships']),
+		relationships: rootState.getIn(['relationshipSection', 'relationships']).toArray(),
 		seriesTypeValue: state.get('seriesType')
 	};
 }
