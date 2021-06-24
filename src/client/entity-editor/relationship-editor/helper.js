@@ -17,6 +17,14 @@
  */
 
 
+/**
+ * A function to extract individual attribute object corresponding to a attribute id
+ * from attributes array.
+ *
+ * @param {array} attributes - Array of attributes.
+ * @param {number} id - Attribute id.
+ * @returns {void}
+ */
 export const getInitAttribute = (attributes, id) => {
 	const relAttribute = attributes.filter(attribute => attribute.attributeType === id);
 	if (relAttribute.length === 0) {
@@ -26,6 +34,15 @@ export const getInitAttribute = (attributes, id) => {
 	return relAttribute[0];
 };
 
+
+/**
+ * A function to insert all the individual attribute object(number, position etc) to
+ * a array.
+ *
+ * @param {object} state - Relationship state.
+ * @param {array} attributeTypes - All the attribute types associated with a relationship type.
+ * @returns {array} Array of attributes.
+ */
 export const setAttribute = (state, attributeTypes) => {
 	const attributes = attributeTypes.map(attribute => attribute.name);
 	const result = [];
@@ -38,6 +55,13 @@ export const setAttribute = (state, attributeTypes) => {
 	return result;
 };
 
+/**
+ * This function returns the attribute name corresponding
+ * to a attribute ID.
+ *
+ * @param {number} id - Attribute ID.
+ * @returns {string}  returns the attribute name.
+ */
 export const getAttributeName = (id) => {
 	switch (id) {
 		case 1:
