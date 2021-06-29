@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2015       Ben Ockmore
- *               2015-2016  Sean Burke
+ * Copyright (C) 2021  Akash Gupta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
@@ -31,18 +31,15 @@ import {
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import {sortRelationshipOrdinal} from '../../../common/helpers/utils';
 import target from '../../templates/target';
-
 
 /** ****************************
 *********** Helpers ************
 *******************************/
-
-const additionalAuthorProps = [
-	'typeId', 'genderId', 'beginAreaId', 'beginDate', 'endDate', 'ended',
-	'endAreaId'
+const additionalSeriesProps = [
+	'entityType', 'orderingTypeId'
 ];
-
 
 function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
@@ -52,7 +49,6 @@ function transformNewForm(data) {
 	const identifiers = entityRoutes.constructIdentifiers(
 		data.identifierEditor
 	);
-
 	const relationships = entityRoutes.constructRelationships(
 		data.relationshipSection
 	);
@@ -60,28 +56,17 @@ function transformNewForm(data) {
 	return {
 		aliases,
 		annotation: data.annotationSection.content,
-		beginAreaId: data.authorSection.beginArea &&
-			data.authorSection.beginArea.id,
-		beginDate: data.authorSection.beginDate,
 		disambiguation: data.nameSection.disambiguation,
-		endAreaId: data.authorSection.endArea &&
-			data.authorSection.endArea.id,
-		endDate: data.authorSection.endDate ? data.authorSection.endDate : null,
-		ended: data.authorSection.ended,
-		genderId: data.authorSection.gender,
+		entityType: data.seriesSection.seriesType,
 		identifiers,
 		note: data.submissionSection.note,
-		relationships,
-		typeId: data.authorSection.type
+		orderingTypeId: data.seriesSection.orderType,
+		relationships
 	};
 }
 
 const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'author', transformNewForm, additionalAuthorProps
-);
-
-const mergeHandler = makeEntityCreateOrEditHandler(
-	'author', transformNewForm, additionalAuthorProps, true
+	'series', transformNewForm, additionalSeriesProps
 );
 
 /** ****************************
@@ -93,13 +78,10 @@ const router = express.Router();
 // Creation
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
-	middleware.loadGenders, middleware.loadLanguages,
-	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
-	(req, res) => {
+	middleware.loadLanguages,
+	middleware.loadRelationshipTypes, middleware.loadSeriesOrderingTypes, (req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'author', req, res, {
-				genderOptions: res.locals.genders
-			}
+			'series', req, res, {}
 		));
 
 		return res.send(target({
@@ -111,8 +93,10 @@ router.get(
 	}
 );
 
+
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
+
 
 /* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
 router.param(
@@ -122,63 +106,39 @@ router.param(
 router.param(
 	'bbid',
 	middleware.makeEntityLoader(
-		'Author',
-		['authorType', 'gender', 'beginArea', 'endArea'],
-		'Author not found'
+		'Series',
+		[
+			'defaultAlias',
+			'disambiguation',
+			'seriesOrderingType',
+			'identifierSet.identifiers.type'
+		],
+		'Series not found'
 	)
 );
 
-function _setAuthorTitle(res) {
+function _setSeriesTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
-		'Author',
-		utils.template`Author “${'name'}”`
+		'Series',
+		utils.template`Series “${'name'}”`
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
-	_setAuthorTitle(res);
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadSeriesItems, (req, res) => {
+	_setSeriesTitle(res);
 	entityRoutes.displayEntity(req, res);
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
-	_setAuthorTitle(res);
-	entityRoutes.displayDeleteEntity(req, res);
-});
 
-router.post(
-	'/:bbid/delete/handler', auth.isAuthenticatedForHandler,
-	(req, res) => {
-		const {orm} = req.app.locals;
-		const {AuthorHeader, AuthorRevision} = orm;
-		return entityRoutes.handleDelete(
-			orm, req, res, AuthorHeader, AuthorRevision
-		);
-	}
-);
-
-router.get('/:bbid/revisions', (req, res, next) => {
-	const {AuthorRevision} = req.app.locals.orm;
-	_setAuthorTitle(res);
-	entityRoutes.displayRevisions(req, res, next, AuthorRevision);
-});
-
-router.get('/:bbid/revisions/revisions', (req, res, next) => {
-	const {AuthorRevision} = req.app.locals.orm;
-	_setAuthorTitle(res);
-	entityRoutes.updateDisplayedRevisions(req, res, next, AuthorRevision);
-});
-
-
-function authorToFormState(author) {
-	/** The front-end expects a language id rather than the language object. */
-	const aliases = author.aliasSet ?
-		author.aliasSet.aliases.map(({languageId, ...rest}) => ({
+function seriesToFormState(series) {
+	const aliases = series.aliasSet ?
+		series.aliasSet.aliases.map(({languageId, ...rest}) => ({
 			...rest,
 			language: languageId
 		})) : [];
 
-	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(author.aliasSet);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(series.aliasSet);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
 	const aliasEditor = {};
@@ -195,10 +155,10 @@ function authorToFormState(author) {
 		sortName: ''
 	} : defaultAliasList[0];
 	nameSection.disambiguation =
-		author.disambiguation && author.disambiguation.comment;
+		series.disambiguation && series.disambiguation.comment;
 
-	const identifiers = author.identifierSet ?
-		author.identifierSet.identifiers.map(({type, ...rest}) => ({
+	const identifiers = series.identifierSet ?
+		series.identifierSet.identifiers.map(({type, ...rest}) => ({
 			type: type.id,
 			...rest
 		})) : [];
@@ -207,15 +167,9 @@ function authorToFormState(author) {
 	identifiers.forEach(
 		(identifier) => { identifierEditor[identifier.id] = identifier; }
 	);
-
-	const authorSection = {
-		beginArea: entityRoutes.areaToOption(author.beginArea),
-		beginDate: author.beginDate,
-		endArea: entityRoutes.areaToOption(author.endArea),
-		endDate: author.endDate,
-		ended: author.ended,
-		gender: author.gender && author.gender.id,
-		type: author.authorType && author.authorType.id
+	const seriesSection = {
+		orderType: series.seriesOrderingType && series.seriesOrderingType.id,
+		seriesType: series.entityType
 	};
 
 	const relationshipSection = {
@@ -225,8 +179,19 @@ function authorToFormState(author) {
 		relationshipEditorVisible: false,
 		relationships: {}
 	};
+	series.relationships.forEach((relationship) => {
+		relationship.attributeSet.relationshipAttributes.forEach(attribute => {
+			relationship[`${attribute.type.name}`] = attribute.value.textValue;
+		});
+	});
 
-	author.relationships.forEach((relationship) => (
+	if (series.seriesOrderingType.label === 'Manual') {
+		series.relationships.sort(sortRelationshipOrdinal('position'));
+	}
+	else {
+		series.relationships.sort(sortRelationshipOrdinal('number'));
+	}
+	series.relationships.forEach((relationship) => (
 		relationshipSection.relationships[`n${relationship.id}`] = {
 			attributeSetId: relationship.attributeSetId,
 			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
@@ -238,32 +203,28 @@ function authorToFormState(author) {
 	));
 
 	const optionalSections = {};
-	if (author.annotation) {
-		optionalSections.annotationSection = author.annotation;
+	if (series.annotation) {
+		optionalSections.annotationSection = series.annotation;
 	}
 
 	return {
 		aliasEditor,
-		authorSection,
 		buttonBar,
 		identifierEditor,
 		nameSection,
 		relationshipSection,
+		seriesSection,
 		...optionalSections
 	};
 }
 
-
 router.get(
 	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
-	middleware.loadGenders, middleware.loadLanguages,
-	middleware.loadAuthorTypes, middleware.loadEntityRelationships,
-	middleware.loadRelationshipTypes,
+	middleware.loadSeriesOrderingTypes, middleware.loadLanguages,
+	 middleware.loadEntityRelationships, middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'author', req, res, {
-				genderOptions: res.locals.genders
-			}, authorToFormState
+			'series', req, res, {}, seriesToFormState
 		));
 
 		return res.send(target({
@@ -275,11 +236,7 @@ router.get(
 	}
 );
 
-
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
-
-router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler,
-	mergeHandler);
 
 export default router;

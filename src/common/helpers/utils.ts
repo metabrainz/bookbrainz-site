@@ -26,12 +26,13 @@ export function isValidBBID(bbid: string): boolean {
  * @returns {object} - Object mapping model name to the entity model
  */
 export function getEntityModels(orm: any) {
-	const {Author, Edition, EditionGroup, Publisher, Work} = orm;
+	const {Author, Edition, EditionGroup, Publisher, Series, Work} = orm;
 	return {
 		Author,
 		Edition,
 		EditionGroup,
 		Publisher,
+		Series,
 		Work
 	};
 }
@@ -76,4 +77,18 @@ export function makePromiseFromObject<T>(obj: Unresolved<T>): Promise<T> {
 			}
 			return res as T;
 	  });
+}
+
+/**
+ * This function sorts the relationship array
+ * @param {string} sortByProperty - name of property which will be used for sorting
+ * @returns {array} - sorted relationship array
+ */
+/* eslint-disable no-param-reassign */
+export function sortRelationshipOrdinal(sortByProperty: string) {
+	return (a:string, b:string) => {
+		a = a[sortByProperty] || '';
+		b = b[sortByProperty] || '';
+		return a.localeCompare(b);
+	};
 }

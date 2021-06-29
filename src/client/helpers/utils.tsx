@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2016  Daniel Hsing
- *
+ *               2021  Akash Gupta
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -17,8 +17,13 @@
  */
 
 /* eslint-disable no-useless-escape */
+import AuthorTable from '../components/pages/entities/author-table';
 import DOMPurify from 'isomorphic-dompurify';
+import EditionGroupTable from '../components/pages/entities/editionGroup-table';
+import EditionTable from '../components/pages/entities/edition-table';
+import PublisherTable from '../components/pages/entities/publisher-table';
 import React from 'react';
+import WorkTable from '../components/pages/entities/work-table';
 import _ from 'lodash';
 import {format} from 'date-fns';
 import {isIterable} from '../../types';
@@ -176,4 +181,27 @@ export function stringToHTMLWithLinks(string: string) {
 	const sanitizedHtml = DOMPurify.sanitize(content);
 	// eslint-disable-next-line react/no-danger
 	return <span dangerouslySetInnerHTML={{__html: sanitizedHtml}}/>;
+}
+
+
+export function getEntityTable(entityType: string) {
+	const tables = {
+		Author: AuthorTable,
+		Edition: EditionTable,
+		EditionGroup: EditionGroupTable,
+		Publisher: PublisherTable,
+		Work: WorkTable
+	};
+	return tables[entityType];
+}
+
+export function getEntityKey(entityType:string) {
+	const keys = {
+		Author: 'authors',
+		Edition: 'editions',
+		EditionGroup: 'editionGroups',
+		Publisher: 'publishers',
+		Work: 'works'
+	};
+	return keys[entityType];
 }

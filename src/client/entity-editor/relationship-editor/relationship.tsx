@@ -18,10 +18,13 @@
 
 import * as React from 'react';
 
+import type {Attribute, RelationshipType, Entity as _Entity} from './types';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
-import type {RelationshipType, Entity as _Entity} from './types';
 import Entity from '../common/entity';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import RelationshipAttribute from './relationship-attribute';
 import _ from 'lodash';
+import {faBars} from '@fortawesome/free-solid-svg-icons';
 import {getEntityLink} from '../../../server/helpers/utils';
 
 
@@ -46,11 +49,14 @@ type RelationshipProps = {
 	contextEntity: _Entity | null | undefined, // eslint-disable-line react/require-default-props
 	sourceEntity: _Entity,
 	targetEntity: _Entity,
+	attributes?: Array<Attribute>,
+	showAttributes?: boolean,
+	dragHandler: boolean,
 	relationshipType: RelationshipType
 };
 
 function Relationship({
-	contextEntity, link, relationshipType, sourceEntity, targetEntity
+	contextEntity, link, relationshipType, sourceEntity, attributes, showAttributes, dragHandler, targetEntity
 }: RelationshipProps) {
 	const {depth, description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
 
@@ -79,17 +85,22 @@ function Relationship({
 			placement="bottom"
 		>
 			<div aria-label={description} className={indentationClass}>
+				{dragHandler ? <><FontAwesomeIcon icon={faBars}/> &nbsp;&nbsp;</> : null}
 				<Entity {...sourceObject}/>
 				{` ${usedLinkPhrase} `}
 				<Entity {...targetObject}/>
+				{' '}
+				<RelationshipAttribute attributes={attributes} showAttributes={showAttributes}/>
 			</div>
 		</OverlayTrigger>
 	);
 }
 Relationship.displayName = 'Relationship';
 Relationship.defaultProps = {
+	attributes: [],
 	contextEntity: null, // eslint-disable-line react/default-props-match-prop-types, max-len
-	link: false // eslint-disable-line react/default-props-match-prop-types
+	link: false, // eslint-disable-line react/default-props-match-prop-types
+	showAttributes: false
 };
 
 export default Relationship;

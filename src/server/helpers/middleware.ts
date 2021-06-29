@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2015       Ben Ockmore
  *               2015-2016  Sean Burke
- *
+ *				 2021       Akash Gupta
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -29,11 +29,11 @@ interface $Request extends Request {
 	user: any
 }
 
-function makeLoader(modelName, propName, sortFunc?) {
+function makeLoader(modelName, propName, sortFunc?, relations = []) {
 	return function loaderFunc(req: $Request, res: $Response, next: NextFunction) {
 		const {orm}: any = req.app.locals;
 		const model = orm[modelName];
-		return model.fetchAll()
+		return model.fetchAll({withRelated: [...relations]})
 			.then((results) => {
 				const resultsSerial = results.toJSON();
 
@@ -58,8 +58,10 @@ export const loadEditionGroupTypes =
 	makeLoader('EditionGroupType', 'editionGroupTypes');
 export const loadPublisherTypes = makeLoader('PublisherType', 'publisherTypes');
 export const loadWorkTypes = makeLoader('WorkType', 'workTypes');
+export const loadSeriesOrderingTypes =
+	makeLoader('SeriesOrderingType', 'seriesOrderingTypes');
 export const loadRelationshipTypes =
-	makeLoader('RelationshipType', 'relationshipTypes');
+	makeLoader('RelationshipType', 'relationshipTypes', null, ['attributeTypes']);
 
 export const loadGenders =
 	makeLoader('Gender', 'genders', (a, b) => a.id > b.id);
@@ -71,6 +73,35 @@ export const loadLanguages = makeLoader('Language', 'languages', (a, b) => {
 
 	return a.name.localeCompare(b.name);
 });
+
+export function loadSeriesItems(req: $Request, res: $Response, next: NextFunction) {
+	try {
+		const {entity} = res.locals;
+		if (entity.dataId) {
+			const {relationships} = entity;
+
+			if (entity.seriesOrderingType.label === 'Manual') {
+				relationships.sort(commonUtils.sortRelationshipOrdinal('position'));
+			}
+			else {
+				relationships.sort(commonUtils.sortRelationshipOrdinal('number'));
+			}
+			const seriesItems = relationships.map((rel) => (
+				{...rel.source, displayNumber: true,
+					number: rel.number,
+					position: rel.position}
+			));
+			res.locals.entity.seriesItems = seriesItems;
+		}
+		else {
+			res.locals.entity.seriesItems = [];
+		}
+		return next();
+	}
+	catch (err) {
+		return next(err);
+	}
+}
 
 export function loadEntityRelationships(req: $Request, res: $Response, next: NextFunction) {
 	const {orm}: any = req.app.locals;
@@ -91,13 +122,24 @@ export function loadEntityRelationships(req: $Request, res: $Response, next: Nex
 					withRelated: [
 						'relationships.source',
 						'relationships.target',
-						'relationships.type'
+						'relationships.type.attributeTypes',
+						'relationships.attributeSet.relationshipAttributes.value',
+						'relationships.attributeSet.relationshipAttributes.type'
 					]
 				})
 		)
 		.then((relationshipSet) => {
 			entity.relationships = relationshipSet ?
 				relationshipSet.related('relationships').toJSON() : [];
+
+			// Attach attributes to relationship object
+			entity.relationships.forEach((relationship) => {
+				if (relationship.attributeSet?.relationshipAttributes) {
+					relationship.attributeSet.relationshipAttributes.forEach(attribute => {
+						relationship[`${attribute.type.name}`] = attribute.value.textValue;
+					});
+				}
+			});
 
 			async function getEntityWithAlias(relEntity) {
 				const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);

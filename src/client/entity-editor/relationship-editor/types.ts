@@ -26,8 +26,18 @@ export type Entity = {
 	type: EntityType
 };
 
+export type AttributeTypes = {
+	id: number,
+	parent: number | null,
+	root: number,
+	childOrder: number | null,
+	name: string,
+	description: string | null,
+};
+
 export type RelationshipType = {
 	id: number,
+	attributeTypes?: Array<AttributeTypes>,
 	childOrder: number,
 	deprecated: boolean,
 	depth?: number,
@@ -39,11 +49,19 @@ export type RelationshipType = {
 	sourceEntityType: EntityType,
 	targetEntityType: EntityType
 };
+export type Attribute = {
+	attributeType: number,
+	value: {
+		textValue: string | null
+	},
+	type?: AttributeTypes
+};
 
 export type Relationship = {
 	relationshipType: RelationshipType,
 	sourceEntity: Entity,
-	targetEntity: Entity
+	targetEntity: Entity,
+	attributes?: Array<Attribute>
 };
 
 export type RelationshipWithLabel = {
@@ -54,15 +72,21 @@ export type RelationshipWithLabel = {
 };
 
 export type RelationshipForDisplay = {
+	attributes: Array<Attribute>,
 	relationshipType: RelationshipType,
 	sourceEntity: Entity,
 	targetEntity: Entity,
-	rowID: number
+	rowID: string
 };
 
 export type LanguageOption = {
 	name: string,
 	id: number
+};
+
+export type setPosition = {
+	oldIndex: number | null,
+	newIndex: number | null
 };
 
 export enum RelationshipTypes {
