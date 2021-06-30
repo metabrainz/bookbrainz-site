@@ -466,8 +466,7 @@ export function handleDelete(
 				editorJSON.id,
 				body.note
 			);
-
-		return savedMainEntity;
+		return savedMainEntity.toJSON();
 	});
 
 	return handler.sendPromiseResult(res, entityDeletePromise, search.deleteEntity);
