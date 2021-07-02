@@ -76,7 +76,7 @@ export function formatEndedChange(change) {
 }
 
 export function formatTypeChange(change, label) {
-	return formatChange(change, label, (side) => side && [side.label]);
+	return formatChange(change, label, (side) => (typeof side === 'string' ? [side] : side && [side.label]));
 }
 
 export function formatScalarChange(change, label) {
