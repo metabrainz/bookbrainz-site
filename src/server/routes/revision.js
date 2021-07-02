@@ -59,7 +59,7 @@ function formatAuthorChange(change) {
 		return baseFormatter.formatEndedChange(change);
 	}
 
-	if (_.isEqual(change.path, ['type'])) {
+	if (_.isEqual(change.path, ['authorType'])) {
 		return baseFormatter.formatTypeChange(change, 'Author Type');
 	}
 
@@ -130,7 +130,7 @@ function formatPublisherChange(change) {
 		return baseFormatter.formatEndedChange(change);
 	}
 
-	if (_.isEqual(change.path, ['type'])) {
+	if (_.isEqual(change.path, ['publisherType'])) {
 		return baseFormatter.formatTypeChange(change, 'Publisher Type');
 	}
 
@@ -147,7 +147,7 @@ function formatWorkChange(change) {
 		return languageSetFormatter.format(change);
 	}
 
-	if (_.isEqual(change.path, ['type'])) {
+	if (_.isEqual(change.path, ['workType'])) {
 		return baseFormatter.formatTypeChange(change, 'Work Type');
 	}
 
@@ -155,7 +155,7 @@ function formatWorkChange(change) {
 }
 
 function formatEditionGroupChange(change) {
-	if (_.isEqual(change.path, ['type'])) {
+	if (_.isEqual(change.path, ['editionGroupType'])) {
 		return baseFormatter.formatTypeChange(change, 'Edition Group Type');
 	}
 
