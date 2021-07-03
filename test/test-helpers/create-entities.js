@@ -28,8 +28,8 @@ const {
 	bookshelf, util, Editor, EditorType, Revision, Relationship, RelationshipType, RelationshipSet,
 	Alias, AliasSet, Area, Identifier, IdentifierType, IdentifierSet,
 	Disambiguation, Entity, Annotation, Gender,
-	Author, Edition, EditionGroup, Publisher, Work,
-	Language, WorkType, EditionGroupType, AuthorType, PublisherType
+	Author, Edition, EditionGroup, Publisher, Series, Work,
+	Language, SeriesOrderingType, WorkType, EditionGroupType, AuthorType, PublisherType
 } = orm;
 const {updateLanguageSet} = orm.func.language;
 
@@ -338,6 +338,25 @@ export async function createAuthor(optionalBBID, optionalAuthorAttribs = {}) {
 	return author;
 }
 
+export async function createSeries(optionalBBID, optionalSeriesAttribs = {}) {
+	const bbid = optionalBBID || uuidv4();
+	await new Entity({bbid, type: 'Series'})
+		.save(null, {method: 'insert'});
+	await createEntityPrerequisites(bbid, 'Work');
+	await new SeriesOrderingType({id: 1, label: 'Automatic'})
+		.save(null, {method: 'insert'});
+	const seriesAttribs = {
+		bbid,
+		entityType: 'Work',
+		orderingTypeId: 1,
+		...optionalSeriesAttribs
+	};
+
+	const series = await new Series({...entityAttribs, ...seriesAttribs})
+		.save(null, {method: 'insert'});
+	return series;
+}
+
 export async function createPublisher(optionalBBID, optionalPublisherAttribs = {}) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Publisher'})
@@ -402,6 +421,7 @@ export function truncateEntities() {
 		'bookbrainz.entity',
 		'bookbrainz.revision',
 		'bookbrainz.annotation',
+		'bookbrainz.series_ordering_type',
 		'bookbrainz.work_type',
 		'bookbrainz.edition_group_type',
 		'bookbrainz.edition_format',
