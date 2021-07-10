@@ -156,4 +156,39 @@ router.get('/:bbid/aliases',
 		return res.status(200).send(seriesAliasesList);
 	});
 
+/**
+ *	@swagger
+ * '/series/{bbid}/identifiers':
+ *   get:
+ *     tags:
+ *       - Lookup Requests
+ *     summary: Get list of identifiers of an Series by BBID
+ *     description: Returns the list of identifiers of an Series
+ *     operationId: getIdentifiersOfSeriesByBbid
+ *     parameters:
+ *       - name: bbid
+ *         in: path
+ *         description: BBID of the Series
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of identifiers with BBID of an Series entity
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Identifiers'
+ *       404:
+ *         description: Series not found
+ *       400:
+ *         description: Invalid BBID
+ */
+router.get('/:bbid/identifiers',
+	makeEntityLoader('Series', utils.identifiersRelations, seriesError),
+	async (req, res) => {
+		const seriesIdentifiersList = await getEntityIdentifiers(res.locals.entity);
+		return res.status(200).send(seriesIdentifiersList);
+	});
+
 export default router;
