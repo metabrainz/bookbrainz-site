@@ -191,4 +191,40 @@ router.get('/:bbid/identifiers',
 		return res.status(200).send(seriesIdentifiersList);
 	});
 
+/**
+ *	@swagger
+ * '/series/{bbid}/relationships':
+ *   get:
+ *     tags:
+ *       - Lookup Requests
+ *     summary: Get list of relationships of an Series by BBID
+ *     description: Returns the list of relationships of an Series
+ *     operationId: getRelationshipsOfSeriesByBbid
+ *     parameters:
+ *       - name: bbid
+ *         in: path
+ *         description: BBID of the Series
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of relationships with BBID of an Series entity
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Relationships'
+ *       404:
+ *         description: Series not found
+ *       400:
+ *         description: Invalid BBID
+ */
+
+router.get('/:bbid/relationships',
+	makeEntityLoader('Series', utils.relationshipsRelations, seriesError),
+	async (req, res) => {
+		const seriesRelationshipList = await getEntityRelationships(res.locals.entity);
+		return res.status(200).send(seriesRelationshipList);
+	});
+
 export default router;
