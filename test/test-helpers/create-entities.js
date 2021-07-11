@@ -365,8 +365,21 @@ export async function createSeries(optionalBBID, optionalSeriesAttribs = {}) {
 	await new Entity({bbid, type: 'Series'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'Work');
-	await new SeriesOrderingType({id: 1, label: 'Automatic'})
-		.save(null, {method: 'insert'});
+	// Front-end requires 'Automatic' and 'Manual' ordering types
+	try {
+		await new SeriesOrderingType({id: 1, label: 'Automatic'})
+			.save(null, {method: 'insert'});
+	}
+	catch (error) {
+		// Type already exists
+	}
+	try {
+		await new SeriesOrderingType({id: 2, label: 'Manual'})
+			.save(null, {method: 'insert'});
+	}
+	catch (error) {
+		// Type already exists
+	}
 	const seriesAttribs = {
 		bbid,
 		entityType: 'Work',
