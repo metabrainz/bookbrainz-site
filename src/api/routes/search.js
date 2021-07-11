@@ -47,7 +47,7 @@ const router = express.Router();
  *         schema:
  *           type: string
  *           default: 'All entities'
- *           enum: [author, edition, edition-group, editor, publisher, work]
+ *           enum: [author, edition, edition-group, editor, publisher, series, work]
  *       - name: size
  *         in: query
  *         description: maximum number of entities in response
