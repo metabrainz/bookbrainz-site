@@ -18,9 +18,11 @@
 
 import * as utils from '../helpers/utils';
 
+import {formatQueryParameters, loadEntityRelationshipsForBrowse, validateBrowseRequestQueryParameters} from '../helpers/middleware';
 import {getEntityAliases, getEntityIdentifiers, getEntityRelationships, getSeriesBasicInfo} from '../helpers/formatEntityData';
 import {Router} from 'express';
 import {makeEntityLoader} from '../helpers/entityLoader';
+import {toLower} from 'lodash';
 
 
 const router = Router();
@@ -184,6 +186,7 @@ router.get('/:bbid/aliases',
  *       400:
  *         description: Invalid BBID
  */
+
 router.get('/:bbid/identifiers',
 	makeEntityLoader('Series', utils.identifiersRelations, seriesError),
 	async (req, res) => {
@@ -225,6 +228,95 @@ router.get('/:bbid/relationships',
 	async (req, res) => {
 		const seriesRelationshipList = await getEntityRelationships(res.locals.entity);
 		return res.status(200).send(seriesRelationshipList);
+	});
+
+/**
+ *	@swagger
+ * '/series':
+ *   get:
+ *     tags:
+ *       - Browse Requests
+ *     summary: Gets a list of Series related to another Entity
+ *     description: BBID of an Author or an Edition or an EditionGroup or a Publisher or a Work is passed as query parameter and it's Series are fetched
+ *     operationId: getRelatedSeriesByBbid
+ *     parameters:
+ *       - name: author
+ *         in: query
+ *         description: BBID of the corresponding Author
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *       - name: work
+ *         in: query
+ *         description: BBID of the corresponding Work
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *       - name: edition
+ *         in: query
+ *         description: BBID of the corresponding Edition
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *       - name: edition-group
+ *         in: query
+ *         description: BBID of the corresponding Edition Group
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *       - name: publisher
+ *         in: query
+ *         description: BBID of the corresponding Publisher
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *       - name: seriesOrderingType
+ *         in: query
+ *         description: filter by Series Ordering Type
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [Automatic, Manual]
+ *     responses:
+ *       200:
+ *         description: List of Series related to another Entity
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/BrowsedSeries'
+ *       404:
+ *         description: author/work/edition/edition-group/publisher (entity entity) not found
+ *       400:
+ *         description: Invalid BBID passed in the query params OR Multiple browsed entities passed in parameters
+ */
+
+router.get('/',
+	formatQueryParameters(),
+	validateBrowseRequestQueryParameters(['edition', 'author', 'edition-group', 'work', 'publisher']),
+	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
+	loadEntityRelationshipsForBrowse(),
+	async (req, res) => {
+		function relationshipsFilterMethod(relatedEntity) {
+			if (req.query.seriesorderingtype) {
+				return toLower(relatedEntity.seriesOrderingType) === toLower(req.query.seriesorderingtype);
+			}
+			return true;
+		}
+
+		const seriesRelationshipList = await utils.getBrowsedRelationships(
+			req.app.locals.orm, res.locals, 'Series',
+			getSeriesBasicInfo, seriesBasicRelations, relationshipsFilterMethod
+		);
+
+		return res.status(200).send({
+			bbid: req.query.bbid,
+			series: seriesRelationshipList
+		});
 	});
 
 export default router;
