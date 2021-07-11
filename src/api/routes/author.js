@@ -254,12 +254,19 @@ router.get('/:bbid/relationships',
  *     tags:
  *       - Browse Requests
  *     summary: Gets a list of Authors related to another Entity
- *     description: BBID of an Author or an Edition or an EditionGroup or a Publisher or a Work is passed as query parameter and it's Authors are fetched
+ *     description: BBID of an Author or an Edition or an EditionGroup or a Publisher or a Series or a Work is passed as query parameter and it's Authors are fetched
  *     operationId: getRelatedAuthorByBbid
  *     parameters:
  *       - name: author
  *         in: query
  *         description: BBID of the corresponding Author
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *       - name: work
+ *         in: query
+ *         description: BBID of the corresponding Work
  *         required: false
  *         schema:
  *           type: string
@@ -274,6 +281,13 @@ router.get('/:bbid/relationships',
  *       - name: edition-group
  *         in: query
  *         description: BBID of the corresponding Edition Group
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *       - name: series
+ *         in: query
+ *         description: BBID of the corresponding Series
  *         required: false
  *         schema:
  *           type: string
@@ -300,14 +314,14 @@ router.get('/:bbid/relationships',
  *             schema:
  *               $ref: '#/components/schemas/BrowsedAuthors'
  *       404:
- *         description: author/edition/edition-group/publisher (entity entity) not found
+ *         description: author/series/work/edition/edition-group/publisher (entity entity) not found
  *       400:
  *         description: Invalid BBID passed in the query params OR Multiple browsed entities passed in parameters
  */
 
 router.get('/',
 	formatQueryParameters(),
-	validateBrowseRequestQueryParameters(['edition', 'author', 'edition-group', 'work', 'publisher']),
+	validateBrowseRequestQueryParameters(['edition', 'author', 'series', 'edition-group', 'work', 'publisher']),
 	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res) => {

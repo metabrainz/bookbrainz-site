@@ -246,13 +246,20 @@ router.get('/:bbid/relationships',
  *     tags:
  *       - Browse Requests
  *     summary: Gets a list of Edition Groups which are related to another Entity
- *     description: BBID of an Edition is passed as a query parameter, and its related EditionGroups are fetched
+ *     description: BBID of an Edition or a Series is passed as a query parameter, and its related EditionGroups are fetched
  *     operationId: getRelatedEditionGroupByBbid
  *     parameters:
  *       - name: edition
  *         in: query
  *         description: BBID of the Edition
- *         required: true
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *       - name: series
+ *         in: query
+ *         description: BBID of the corresponding Series
+ *         required: false
  *         schema:
  *           type: string
  *           format: uuid
@@ -271,21 +278,22 @@ router.get('/:bbid/relationships',
  *             schema:
  *               $ref: '#/components/schemas/BrowsedEditionGroups'
  *       404:
- *         description: Edition not found
+ *         description: edition/series (entity entity) not found
  *       400:
  *         description: Invalid BBID passed in the query params OR Multiple browsed entities passed in parameters
  */
 
 router.get('/',
 	formatQueryParameters(),
-	validateBrowseRequestQueryParameters(['edition']),
-	// As we're loading the browsed entity, also load the related EditionGroups from the ORM models to avoid fetching it twice
-	makeEntityLoader(
-		null,
-		utils.relationshipsRelations.concat(editionGroupBasicRelations.map(rel => `editionGroup.${rel}`)),
-		'Entity not found',
-		true
-	),
+	validateBrowseRequestQueryParameters(['edition', 'series']),
+	(req, res, next) => {
+		// As we're loading the browsed entity, also load the related EditionGroups from the ORM models to avoid fetching it twice
+		let extraRelationships = [];
+		if (req.query.modelType === 'Edition') {
+			extraRelationships = editionGroupBasicRelations.map(rel => `editionGroup.${rel}`);
+		}
+		makeEntityLoader(null, utils.relationshipsRelations.concat(extraRelationships), 'Entity not found', true)(req, res, next);
+	},
 	loadEntityRelationshipsForBrowse(),
 	async (req, res) => {
 		function relationshipsFilterMethod(relatedEntity) {

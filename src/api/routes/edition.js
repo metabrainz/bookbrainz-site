@@ -278,7 +278,7 @@ router.get('/:bbid/relationships',
  *     tags:
  *       - Browse Requests
  *     summary: Gets a list of Editions related to another Entity
- *     description: BBID of an Author or an Edition or an EditionGroup or a Publisher or a Work is passed as query parameter and its related Editions are fetched
+ *     description: BBID of an Author or an Edition or an EditionGroup or a Publisher or a Series or a Work is passed as query parameter and its related Editions are fetched
  *     operationId: getRelatedEditionByBbid
  *     parameters:
  *       - name: author
@@ -305,6 +305,13 @@ router.get('/:bbid/relationships',
  *       - name: publisher
  *         in: query
  *         description: BBID of the corresponding Publisher
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *       - name: series
+ *         in: query
+ *         description: BBID of the corresponding Series
  *         required: false
  *         schema:
  *           type: string
@@ -337,14 +344,14 @@ router.get('/:bbid/relationships',
  *             schema:
  *               $ref: '#/components/schemas/BrowsedEditions'
  *       404:
- *         description: author/edition/edition-group/publisher/work (other entity) not found
+ *         description: author/edition/edition-group/publisher/series/work (other entity) not found
  *       400:
  *         description: Invalid BBID passed in the query params OR Multiple browsed entities passed in parameters
  */
 
 router.get('/',
 	formatQueryParameters(),
-	validateBrowseRequestQueryParameters(['author', 'edition', 'edition-group', 'work', 'publisher']),
+	validateBrowseRequestQueryParameters(['author', 'edition', 'edition-group', 'series', 'work', 'publisher']),
 	(req, res, next) => {
 		// As we're loading the browsed entity, also load the related Editions from the ORM models to avoid fetching it twice
 		let extraRelationships = [];
