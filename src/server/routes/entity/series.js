@@ -130,6 +130,21 @@ router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadSeriesIt
 	entityRoutes.displayEntity(req, res);
 });
 
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
+	_setSeriesTitle(res);
+	entityRoutes.displayDeleteEntity(req, res);
+});
+
+router.post(
+	'/:bbid/delete/handler', auth.isAuthenticatedForHandler,
+	(req, res) => {
+		const {orm} = req.app.locals;
+		const {SeriesHeader, SeriesRevision} = orm;
+		return entityRoutes.handleDelete(
+			orm, req, res, SeriesHeader, SeriesRevision
+		);
+	}
+);
 
 function seriesToFormState(series) {
 	const aliases = series.aliasSet ?
