@@ -58,8 +58,8 @@ function formatAuthorChange(change) {
 	if (_.isEqual(change.path, ['ended'])) {
 		return baseFormatter.formatEndedChange(change);
 	}
-
-	if (_.isEqual(change.path, ['type'])) {
+	if (_.isEqual(change.path, ['authorType']) ||
+			_.isEqual(change.path, ['authorType', 'label'])) {
 		return baseFormatter.formatTypeChange(change, 'Author Type');
 	}
 
@@ -106,11 +106,13 @@ function formatEditionChange(change) {
 		return baseFormatter.formatScalarChange(change, 'Page Count');
 	}
 
-	if (_.isEqual(change.path, ['editionFormat'])) {
+	if (_.isEqual(change.path, ['editionFormat']) ||
+			_.isEqual(change.path, ['editionFormat', 'label'])) {
 		return baseFormatter.formatTypeChange(change, 'Edition Format');
 	}
 
-	if (_.isEqual(change.path, ['editionStatus'])) {
+	if (_.isEqual(change.path, ['editionStatus']) ||
+			_.isEqual(change.path, ['editionStatus', 'label'])) {
 		return baseFormatter.formatTypeChange(change, 'Edition Status');
 	}
 
@@ -129,8 +131,8 @@ function formatPublisherChange(change) {
 	if (_.isEqual(change.path, ['ended'])) {
 		return baseFormatter.formatEndedChange(change);
 	}
-
-	if (_.isEqual(change.path, ['type'])) {
+	if (_.isEqual(change.path, ['publisherType']) ||
+			_.isEqual(change.path, ['publisherType', 'label'])) {
 		return baseFormatter.formatTypeChange(change, 'Publisher Type');
 	}
 
@@ -146,8 +148,8 @@ function formatWorkChange(change) {
 	if (languageSetFormatter.changed(change)) {
 		return languageSetFormatter.format(change);
 	}
-
-	if (_.isEqual(change.path, ['type'])) {
+	if (_.isEqual(change.path, ['workType']) ||
+			_.isEqual(change.path, ['workType', 'label'])) {
 		return baseFormatter.formatTypeChange(change, 'Work Type');
 	}
 
@@ -155,7 +157,8 @@ function formatWorkChange(change) {
 }
 
 function formatEditionGroupChange(change) {
-	if (_.isEqual(change.path, ['type'])) {
+	if (_.isEqual(change.path, ['editionGroupType']) ||
+			_.isEqual(change.path, ['editionGroupType', 'label'])) {
 		return baseFormatter.formatTypeChange(change, 'Edition Group Type');
 	}
 
