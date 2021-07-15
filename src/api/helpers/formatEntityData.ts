@@ -185,6 +185,42 @@ export function getEditionGroupBasicInfo(editionGroup: Record<string, unknown> |
 		};
 }
 
+
+/**
+ * A function to extract the basic details of an Series ORM entity
+ * @function
+ * @param {object} series - an series ORM entity
+ * @returns {object} an object containing the basic data of an Series entity.
+ * Each property defaults to null. If series is null or undefined, returns null.
+ *
+ * @example
+ * 		const series = await orm.func.entity.getEntity(orm, 'Series', bbid, relations);
+ *		getSeriesBasicInfo(series);
+ *		/* => {
+			"bbid": "3889b695-70d5-4933-9f08-defad217623e",
+			"defaultAlias": {
+				"language": "eng",
+				"name": "The Lord of the Rings",
+				"primary": true,
+				"sortName": "Lord of the Rings, The"
+			},
+			"disambiguation": null,
+			"seriesOrderingType": "Automatic",
+			"seriesType": "Work"
+		}
+ */
+
+export function getSeriesBasicInfo(series: Record<string, unknown> | null | undefined) {
+	return _.isNil(series) ? null :
+		{
+			bbid: _.get(series, 'bbid', null),
+			defaultAlias: getDefaultAlias(series),
+			disambiguation: _.get(series, 'disambiguation.comment', null),
+			seriesOrderingType: _.get(series, 'seriesOrderingType.label'),
+			seriesType: _.get(series, 'entityType', null)
+		};
+}
+
 /**
  * A function to extract the basic details of an Author ORM entity
  * @function
