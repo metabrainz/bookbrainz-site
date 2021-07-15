@@ -119,7 +119,7 @@
     "eslint-webpack-plugin": "^2.4.1",
     "faker": "^4.1.0",
     "file-loader": "^6.2.0",
-    "less": "^4.0.0",
+    "less": "^4.1.1",
     "less-loader": "^7.2.1",
     "mini-css-extract-plugin": "^1.3.3",
     "mocha": "^7.2.0",
