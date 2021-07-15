@@ -23,6 +23,7 @@ import EditionGroupTable from '../components/pages/entities/editionGroup-table';
 import EditionTable from '../components/pages/entities/edition-table';
 import PublisherTable from '../components/pages/entities/publisher-table';
 import React from 'react';
+import SeriesTable from '../components/pages/entities/series-table';
 import WorkTable from '../components/pages/entities/work-table';
 import _ from 'lodash';
 import {format} from 'date-fns';
@@ -169,6 +170,13 @@ export function dateObjectToISOString(value: DateObject) {
 	return date;
 }
 
+/**
+ * Convert any string url that has a prefix http|https|ftp|ftps to a clickable link
+ * and then rendered the HTML string as real HTML.
+ * @function stringToHTMLWithLinks
+ * @param {string} string - Can be either revision notes or annotation content etc...
+ * @returns {JSX} returns a JSX Element
+ */
 export function stringToHTMLWithLinks(string: string) {
 	const addHttpRegex = /(^| )www\./ig;
 	// eslint-disable-next-line max-len
@@ -183,13 +191,19 @@ export function stringToHTMLWithLinks(string: string) {
 	return <span dangerouslySetInnerHTML={{__html: sanitizedHtml}}/>;
 }
 
-
+/**
+ * Returns EntityTable associated with the entity type.
+ * @function getEntityTable
+ * @param {string} entityType - Entity Type (author, work, series etc ...)
+ * @returns {JSX} returns EntityTable Component
+ */
 export function getEntityTable(entityType: string) {
 	const tables = {
 		Author: AuthorTable,
 		Edition: EditionTable,
 		EditionGroup: EditionGroupTable,
 		Publisher: PublisherTable,
+		Series: SeriesTable,
 		Work: WorkTable
 	};
 	return tables[entityType];
@@ -201,6 +215,7 @@ export function getEntityKey(entityType:string) {
 		Edition: 'editions',
 		EditionGroup: 'editionGroups',
 		Publisher: 'publishers',
+		Series: 'series',
 		Work: 'works'
 	};
 	return keys[entityType];

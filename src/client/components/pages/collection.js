@@ -235,7 +235,7 @@ class CollectionPage extends React.Component {
 						<CollectionAttributes collection={this.props.collection}/>
 					</Col>
 				</Row>
-				<EntityTable{...propsForTable}/>
+				<EntityTable {...propsForTable}/>
 				{messageComponent}
 				<div className="margin-top-1 text-left">
 					{

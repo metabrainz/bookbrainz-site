@@ -70,6 +70,12 @@ function getEntityRelations(entityType) {
 		'area'
 	];
 
+	const seriesRelations = [
+		'defaultAlias.language',
+		'disambiguation',
+		'seriesOrderingType'
+	];
+
 	const workRelations = [
 		'defaultAlias.language',
 		'disambiguation',
@@ -82,6 +88,7 @@ function getEntityRelations(entityType) {
 		Edition: editionRelations,
 		EditionGroup: editionGroupRelations,
 		Publisher: publisherRelations,
+		Series: seriesRelations,
 		Work: workRelations
 	};
 	return relations[entityType];
