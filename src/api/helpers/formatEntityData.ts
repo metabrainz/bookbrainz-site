@@ -181,7 +181,7 @@ export function getEditionGroupBasicInfo(editionGroup: Record<string, unknown> |
 			bbid: _.get(editionGroup, 'bbid', null),
 			defaultAlias: getDefaultAlias(editionGroup),
 			disambiguation: _.get(editionGroup, 'disambiguation.comment', null),
-			editionGroupType: _.get(editionGroup, 'editionGroupType.label')
+			editionGroupType: _.get(editionGroup, 'editionGroupType.label', null)
 		};
 }
 
