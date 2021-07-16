@@ -236,6 +236,14 @@ function formatIdentifier(change) {
 	return null;
 }
 
+function formatRelationshipAttrubuteAddOrDelete(relationshipAttributes) {
+	const attributes = [];
+	relationshipAttributes.forEach((attribute) => {
+		attributes.push(`${attribute.type.name}: ${attribute.value.textValue}`);
+	});
+	return attributes;
+}
+
 function formatRelationshipAdd(entity, change) {
 	const changes = [];
 	const {rhs} = change.item;
@@ -244,17 +252,21 @@ function formatRelationshipAdd(entity, change) {
 		return changes;
 	}
 	const key = rhs.type && rhs.type.label ? `Relationship : ${rhs.type.label}` : 'Relationship';
+	let attributes = [];
+	if (rhs.attributeSetId) {
+		attributes = formatRelationshipAttrubuteAddOrDelete(rhs.attributeSet.relationshipAttributes);
+	}
 	if (rhs.sourceBbid === entity.get('bbid')) {
 		changes.push(
 			base.formatRow(
-				'N', key, null, [rhs.targetBbid]
+				'N', key, null, [rhs.targetBbid, ...attributes]
 			)
 		);
 	}
 	else {
 		changes.push(
 			base.formatRow(
-				'N', key, null, [rhs.sourceBbid]
+				'N', key, null, [rhs.sourceBbid, ...attributes]
 			)
 		);
 	}
@@ -276,17 +288,21 @@ function formatAddOrDeleteRelationshipSet(entity, change) {
 
 	allRelationships.forEach((relationship) => {
 		const key = relationship.type && relationship.type.label ? `Relationship: ${relationship.type.label}` : 'Relationship';
+		let attributes = [];
+		if (relationship.attributeSetId) {
+			attributes = formatRelationshipAttrubuteAddOrDelete(relationship.attributeSet.relationshipAttributes);
+		}
 		if (relationship.sourceBbid === entity.get('bbid')) {
 			changes.push(
 				base.formatRow(
-					change.kind, key, [relationship.targetBbid], [relationship.targetBbid]
+					change.kind, key, [relationship.targetBbid, ...attributes], [relationship.targetBbid, ...attributes]
 				)
 			);
 		}
 		else {
 			changes.push(
 				base.formatRow(
-					change.kind, key, [relationship.sourceBbid], [relationship.sourceBbid]
+					change.kind, key, [relationship.sourceBbid, ...attributes], [relationship.sourceBbid, ...attributes]
 				)
 			);
 		}
@@ -302,17 +318,21 @@ function formatRelationshipRemove(entity, change) {
 		return changes;
 	}
 	const key = lhs.type && lhs.type.label ? `Relationship : ${lhs.type.label}` : 'Relationship';
+	let attributes = [];
+	if (lhs.attributeSetId) {
+		attributes = formatRelationshipAttrubuteAddOrDelete(lhs.attributeSet.relationshipAttributes);
+	}
 	if (lhs.sourceBbid === entity.get('bbid')) {
 		changes.push(
 			base.formatRow(
-				'D', key, [lhs.targetBbid], null
+				'D', key, [lhs.targetBbid, ...attributes], null
 			)
 		);
 	}
 	else {
 		changes.push(
 			base.formatRow(
-				'D', key, [lhs.sourceBbid], null
+				'D', key, [lhs.sourceBbid, ...attributes], null
 			)
 		);
 	}
