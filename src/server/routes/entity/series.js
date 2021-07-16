@@ -146,6 +146,18 @@ router.post(
 	}
 );
 
+router.get('/:bbid/revisions', (req, res, next) => {
+	const {SeriesRevision} = req.app.locals.orm;
+	_setSeriesTitle(res);
+	entityRoutes.displayRevisions(req, res, next, SeriesRevision);
+});
+
+router.get('/:bbid/revisions/revisions', (req, res, next) => {
+	const {SeriesRevision} = req.app.locals.orm;
+	_setSeriesTitle(res);
+	entityRoutes.updateDisplayedRevisions(req, res, next, SeriesRevision);
+});
+
 function seriesToFormState(series) {
 	const aliases = series.aliasSet ?
 		series.aliasSet.aliases.map(({languageId, ...rest}) => ({
