@@ -275,7 +275,7 @@ router.get('/:bbid/relationships',
  *         schema:
  *           type: string
  *           format: uuid
- *       - name: seriesOrderingType
+ *       - name: orderingType
  *         in: query
  *         description: filter by Series Ordering Type
  *         required: false
@@ -302,8 +302,8 @@ router.get('/',
 	loadEntityRelationshipsForBrowse(),
 	async (req, res) => {
 		function relationshipsFilterMethod(relatedEntity) {
-			if (req.query.seriesorderingtype) {
-				return toLower(relatedEntity.seriesOrderingType) === toLower(req.query.seriesorderingtype);
+			if (req.query.orderingtype) {
+				return toLower(relatedEntity.seriesOrderingType) === toLower(req.query.orderingtype);
 			}
 			return true;
 		}
