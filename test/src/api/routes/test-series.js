@@ -161,3 +161,126 @@ describe('GET /Series', () => {
 	 });
 });
 
+/* eslint-disable no-await-in-loop */
+describe('Browse Series', () => {
+	let work;
+	before(async () => {
+		// create a work which is related to 3 series
+		const seriesBBIDs = [];
+		for (let orderingTypeId = 1; orderingTypeId <= 3; orderingTypeId++) {
+			const seriesBBID = getRandomUUID();
+			const seriesAttribs = {
+				bbid: seriesBBID,
+				// Make type id alternate between "Automatic" (1) and "Manual" (2)
+				orderingTypeId: (orderingTypeId % 2) + 1
+			};
+			await createSeries(seriesBBID, seriesAttribs);
+			seriesBBIDs.push(seriesBBID);
+		}
+		work = await createWork();
+
+		// Now create a revision which forms the relationship b/w work and series
+		const editor = await createEditor();
+		const revision = await new Revision({authorId: editor.id})
+			.save(null, {method: 'insert'});
+
+		const relationshipTypeData = {
+			description: 'test descryption',
+			id: 1,
+			label: 'test label',
+			linkPhrase: 'test phrase',
+			reverseLinkPhrase: 'test reverse link phrase',
+			sourceEntityType: 'Series',
+			targetEntityType: 'Work'
+		};
+		await new RelationshipType(relationshipTypeData)
+			.save(null, {method: 'insert'});
+
+		const relationshipsPromise = [];
+		for (const seriesBBID of seriesBBIDs) {
+			const relationshipData = {
+				sourceBbid: seriesBBID,
+				targetBbid: work.get('bbid'),
+				typeId: relationshipTypeData.id
+			};
+			relationshipsPromise.push(
+				new Relationship(relationshipData)
+					.save(null, {method: 'insert'})
+			);
+		}
+		const relationships = await Promise.all(relationshipsPromise);
+
+		const workRelationshipSet = await new RelationshipSet()
+			.save(null, {method: 'insert'})
+			.then((model) => model.relationships().attach(relationships).then(() => model));
+
+		work.set('relationshipSetId', workRelationshipSet.id);
+		work.set('revisionId', revision.id);
+		await work.save(null, {method: 'update'});
+	});
+	after(truncateEntities);
+
+
+	it('should throw an error if trying to browse more than one entity', (done) => {
+		chai.request(app)
+			.get(`/series?work=${work.get('bbid')}&edition=${work.get('bbid')}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(400);
+				return done();
+			});
+	});
+
+	it('should return list of series associated with the work (without any filter)', async () => {
+		const res = await chai.request(app).get(`/series?work=${work.get('bbid')}`);
+		await browseSeriesBasicTests(res);
+		expect(res.body.series.length).to.equal(3);
+	});
+
+	it('should return list of series associated with the work (with Type filter)', async () => {
+		const res = await chai.request(app).get(`/series?work=${work.get('bbid')}&seriesOrderingType=Automatic`);
+		await browseSeriesBasicTests(res);
+		expect(res.body.series.length).to.equal(1);
+		expect(res.body.series[0].entity.seriesOrderingType).to.equal('Automatic');
+	});
+
+	it('should return 0 series (with Incorrect Type filter)', async () => {
+		const res = await chai.request(app).get(`/series?work=${work.get('bbid')}&seriesOrderingType=wrongFilter`);
+		await browseSeriesBasicTests(res);
+		expect(res.body.series.length).to.equal(0);
+	});
+
+	it('should allow params to be case insensitive', async () => {
+		const res = await chai.request(app).get(`/sErieS?WoRk=${work.get('bbid')}&seRiEsOrDerIngTyPe=AuTomATiC`);
+		await browseSeriesBasicTests(res);
+		expect(res.body.series.length).to.equal(1);
+		expect(res.body.series[0].entity.seriesOrderingType).to.equal('Automatic');
+	});
+
+	it('should NOT throw an error if there is no related entity', async () => {
+		const work2 = await createWork();
+		const res = await chai.request(app).get(`/series?work=${work2.get('bbid')}`);
+		await browseSeriesBasicTests(res);
+		expect(res.body.series.length).to.equal(0);
+	});
+
+	it('should throw 400 error for invalid bbid', (done) => {
+		chai.request(app)
+			.get('/series?work=1212121')
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(400);
+				return done();
+			});
+	});
+
+	it('should throw 404 error for incorrect bbid', (done) => {
+		chai.request(app)
+			.get(`/series?work=${aBBID}`)
+			.end(function (err, res) {
+				if (err) { return done(err); }
+				expect(res).to.have.status(404);
+				return done();
+			});
+	});
+});
