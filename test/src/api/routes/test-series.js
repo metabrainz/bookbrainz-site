@@ -238,20 +238,20 @@ describe('Browse Series', () => {
 	});
 
 	it('should return list of series associated with the work (with Type filter)', async () => {
-		const res = await chai.request(app).get(`/series?work=${work.get('bbid')}&seriesOrderingType=Automatic`);
+		const res = await chai.request(app).get(`/series?work=${work.get('bbid')}&orderingType=Automatic`);
 		await browseSeriesBasicTests(res);
 		expect(res.body.series.length).to.equal(1);
 		expect(res.body.series[0].entity.seriesOrderingType).to.equal('Automatic');
 	});
 
 	it('should return 0 series (with Incorrect Type filter)', async () => {
-		const res = await chai.request(app).get(`/series?work=${work.get('bbid')}&seriesOrderingType=wrongFilter`);
+		const res = await chai.request(app).get(`/series?work=${work.get('bbid')}&orderingType=wrongFilter`);
 		await browseSeriesBasicTests(res);
 		expect(res.body.series.length).to.equal(0);
 	});
 
 	it('should allow params to be case insensitive', async () => {
-		const res = await chai.request(app).get(`/sErieS?WoRk=${work.get('bbid')}&seRiEsOrDerIngTyPe=AuTomATiC`);
+		const res = await chai.request(app).get(`/sErieS?WoRk=${work.get('bbid')}&OrDerIngTyPe=AuTomATiC`);
 		await browseSeriesBasicTests(res);
 		expect(res.body.series.length).to.equal(1);
 		expect(res.body.series[0].entity.seriesOrderingType).to.equal('Automatic');
