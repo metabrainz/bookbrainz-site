@@ -157,7 +157,7 @@ class UserCollectionForm extends React.Component {
 		const privacyOptions = ['Private', 'Public'].map((option) => ({
 			name: option
 		}));
-		const entityTypeOptions = ['Author', 'Work', 'Edition', 'Edition-Group', 'Publisher'].map((entity) => ({
+		const entityTypeOptions = ['Author', 'Work', 'Series', 'Edition', 'Edition-Group', 'Publisher'].map((entity) => ({
 			name: entity
 		}));
 		const initialName = this.state.collection.name;
