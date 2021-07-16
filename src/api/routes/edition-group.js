@@ -278,7 +278,7 @@ router.get('/:bbid/relationships',
  *             schema:
  *               $ref: '#/components/schemas/BrowsedEditionGroups'
  *       404:
- *         description: edition/series (entity entity) not found
+ *         description: Edition/Series (other entity) not found
  *       400:
  *         description: Invalid BBID passed in the query params OR Multiple browsed entities passed in parameters
  */
