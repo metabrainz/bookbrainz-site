@@ -51,6 +51,28 @@ export function browseAuthorBasicTests(res) {
 	});
 }
 
+export function browseSeriesBasicTests(res) {
+	expect(res.status).to.equal(200);
+	expect(res.body).to.be.an('object');
+	expect(res.body).to.have.all.keys(
+		'bbid',
+		'series'
+	);
+	res.body.series.forEach((series) => {
+		expect(series).to.have.all.keys(
+			'entity',
+			'relationship'
+		);
+		expect(series.entity).to.have.all.keys(
+			'seriesOrderingType',
+			'seriesType',
+			'bbid',
+			'defaultAlias',
+			'disambiguation'
+		);
+	});
+}
+
 export function browseWorkBasicTests(res) {
 	expect(res.status).to.equal(200);
 	expect(res.body).to.be.an('object');
