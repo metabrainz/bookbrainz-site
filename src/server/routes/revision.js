@@ -149,6 +149,9 @@ function formatSeriesChange(change) {
 			_.isEqual(change.path, ['seriesOrderingType', 'label'])) {
 		return baseFormatter.formatTypeChange(change, 'Series Ordering Type');
 	}
+	if (_.isEqual(change.path, ['entityType'])) {
+		return baseFormatter.formatTypeChange(change, 'Series Type');
+	}
 	return null;
 }
 
