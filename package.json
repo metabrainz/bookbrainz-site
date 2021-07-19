@@ -39,7 +39,7 @@
     "chart.js": "^2.9.4",
     "chartjs-adapter-date-fns": "^1.0.0",
     "classnames": "^2.3.1",
-    "compression": "^1.7.1",
+    "compression": "^1.7.4",
     "connect-redis": "^3.4.2",
     "core-js": "^3.8.3",
     "cross-env": "^5.1.1",
