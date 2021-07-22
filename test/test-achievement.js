@@ -31,6 +31,7 @@ import testMarathoner from './test-marathoner.js';
 import testPublisher from './test-publisher.js';
 import testPublisherCreator from './test-publisher-creator.js';
 import testRevisionist from './test-revisionist.js';
+import testSeriesCreator from './test-series-creator.js';
 import testSprinter from './test-sprinter.js';
 import testTimeTraveller from './test-time-traveller.js';
 import testWorkerBee from './test-worker-bee.js';
@@ -171,6 +172,7 @@ function tests() {
 	describe('Revisionist Achievement', testRevisionist);
 	describe('Sprinter Achievement', testSprinter);
 	describe('Time Traveller Achievement', testTimeTraveller);
+	describe('Series Creator Achievement', testSeriesCreator);
 	describe('Worker Bee Achievement', testWorkerBee);
 }
 
