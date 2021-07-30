@@ -35,7 +35,7 @@ import type {
 	RelationshipType,
 	RelationshipWithLabel,
 	Attribute as _Attribute,
-	Relationship as _Relationship,
+	Relationship as _Relationship
 } from './types';
 import {faExternalLinkAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 
