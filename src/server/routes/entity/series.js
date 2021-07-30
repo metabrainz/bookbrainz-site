@@ -194,18 +194,7 @@ function seriesToFormState(series) {
 		relationshipEditorVisible: false,
 		relationships: {}
 	};
-	series.relationships.forEach((relationship) => {
-		relationship.attributeSet.relationshipAttributes.forEach(attribute => {
-			relationship[`${attribute.type.name}`] = attribute.value.textValue;
-		});
-	});
 
-	if (series.seriesOrderingType.label === 'Manual') {
-		series.relationships.sort(sortRelationshipOrdinal('position'));
-	}
-	else {
-		series.relationships.sort(sortRelationshipOrdinal('number'));
-	}
 	series.relationships.forEach((relationship) => (
 		relationshipSection.relationships[`n${relationship.id}`] = {
 			attributeSetId: relationship.attributeSetId,
