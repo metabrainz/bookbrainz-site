@@ -84,11 +84,6 @@ export type LanguageOption = {
 	id: number
 };
 
-export type setPosition = {
-	oldIndex: number | null,
-	newIndex: number | null
-};
-
 export enum RelationshipTypes {
 	AuthorWorkedOnWork = 1,
 	AuthorIllustratedEdition = 2,

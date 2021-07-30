@@ -24,7 +24,6 @@ import {
 	HIDE_RELATIONSHIP_EDITOR,
 	REMOVE_RELATIONSHIP,
 	SHOW_RELATIONSHIP_EDITOR,
-	SORT_RELATIONSHIPS,
 	UNDO_LAST_SAVE
 } from './actions';
 
@@ -43,8 +42,6 @@ function reducer(
 		case SHOW_RELATIONSHIP_EDITOR:
 			return state.set('relationshipEditorVisible', true)
 				.set('relationshipEditorProps', null);
-		case SORT_RELATIONSHIPS:
-			return state.set('relationships', Immutable.fromJS(action.payload));
 		case HIDE_RELATIONSHIP_EDITOR:
 			return state.set('relationshipEditorVisible', false);
 		case ADD_RELATIONSHIP: {
