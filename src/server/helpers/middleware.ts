@@ -79,12 +79,14 @@ export function loadSeriesItems(req: $Request, res: $Response, next: NextFunctio
 		const {entity} = res.locals;
 		if (entity.dataId) {
 			const {relationships} = entity;
-			const seriesItems = relationships.map((rel) => (
-				{...rel.source, displayNumber: true,
-					number: rel.number,
-					position: rel.position}
+			// Extract the series items from relationships
+			const seriesItems = relationships.filter((relationship) => relationship.typeId > 69 && relationship.typeId < 75);
+			const formattedSeriesItems = seriesItems.map((item) => (
+				{...item.source, displayNumber: true,
+					number: item.number,
+					position: item.position}
 			));
-			res.locals.entity.seriesItems = seriesItems;
+			res.locals.entity.seriesItems = formattedSeriesItems;
 		}
 		else {
 			res.locals.entity.seriesItems = [];
