@@ -1193,9 +1193,9 @@ export function constructIdentifiers(
 	);
 }
 
-export function constructRelationships(relationshipSection) {
+export function constructRelationships(relationshipSection, relationships) {
 	return _.map(
-		relationshipSection.relationships,
+		relationshipSection[relationships],
 		({attributeSetId, rowID, relationshipType, sourceEntity, targetEntity, attributes}) => ({
 			attributeSetId,
 			attributes,
