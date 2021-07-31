@@ -68,14 +68,23 @@ type Props = StateProps & DispatchProps & OwnProps;
  * rendered as a modular section within the entity editor.
  *
  * @param {Object} props - The properties passed to the component.
- * @param {Array} props.seriesOrderingTypes - The list of possible ordering
- * 		  types for a series.
+ * @param {Object} props.entity - The entity being edited.
+ * @param {string} props.entityName - The name of the entity being edited.
+ * @param {string} props.entityType - The type of the entity being edited.
+ * @param {Function} props.onEdit - The function to call when the user clicks
+ * 		  on the edit button.
+ * @param {Function} props.onRemove - The function to call when the user clicks
+ * 		  on the remove button.
+ * @param {Function} props.onSeriesItemAdd - The function to call when the user clicks
+ * 		  on the add button.
  * @param {number} props.orderTypeValue - The ID of the ordering type currently selected for
  *        the series.
+ * @param {Array} props.seriesOrderingTypes - The list of possible ordering
+ * 		  types for a series.
+ * @param {Object} props.seriesItems - The list of series items currently in the series.
+ * @param {Object} props.relationshipTypes - The list of possible relationship types.
  * @param {string} props.seriesTypeValue - The value of the entity type currently selected for
  *        the series.
- * @param {Immutable.List<any>[]} props.relationships - The list of relationships conatined by
- * 		  the series.
  * @param {Function} props.onOrderTypeChange - A function to be called when
  *        a different ordering type is selected.
  * @param {Function} props.onSeriesTypeChange - A function to be called when
