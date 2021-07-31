@@ -49,9 +49,13 @@ function transformNewForm(data) {
 	const identifiers = entityRoutes.constructIdentifiers(
 		data.identifierEditor
 	);
-	const relationships = entityRoutes.constructRelationships(
-		data.relationshipSection
+	const seriesItems = entityRoutes.constructRelationships(
+		data.seriesSection, 'seriesItems'
 	);
+	const relationshipsItems = entityRoutes.constructRelationships(
+		data.relationshipSection, 'relationships'
+	);
+	const relationships = seriesItems.concat(relationshipsItems);
 
 	return {
 		aliases,
@@ -184,6 +188,7 @@ function seriesToFormState(series) {
 	);
 	const seriesSection = {
 		orderType: series.seriesOrderingType && series.seriesOrderingType.id,
+		seriesItems: {},
 		seriesType: series.entityType
 	};
 
@@ -195,16 +200,28 @@ function seriesToFormState(series) {
 		relationships: {}
 	};
 
-	series.relationships.forEach((relationship) => (
-		relationshipSection.relationships[`n${relationship.id}`] = {
-			attributeSetId: relationship.attributeSetId,
-			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
-			relationshipType: relationship.type,
-			rowID: `n${relationship.id}`,
-			sourceEntity: relationship.source,
-			targetEntity: relationship.target
+	series.relationships.forEach((relationship) => {
+		if (relationship.typeId > 69 && relationship.typeId < 75) {
+			seriesSection.seriesItems[`n${relationship.id}`] = {
+				attributeSetId: relationship.attributeSetId,
+				attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
+				relationshipType: relationship.type,
+				rowID: `n${relationship.id}`,
+				sourceEntity: relationship.source,
+				targetEntity: relationship.target
+			};
 		}
-	));
+		else {
+			relationshipSection.relationships[`n${relationship.id}`] = {
+				attributeSetId: relationship.attributeSetId,
+				attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
+				relationshipType: relationship.type,
+				rowID: `n${relationship.id}`,
+				sourceEntity: relationship.source,
+				targetEntity: relationship.target
+			};
+		}
+	});
 
 	const optionalSections = {};
 	if (series.annotation) {
