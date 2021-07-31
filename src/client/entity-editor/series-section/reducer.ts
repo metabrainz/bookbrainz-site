@@ -46,6 +46,11 @@ function reducer(
 				Immutable.fromJS({rowID, ...payload.data})
 			);
 		}
+		case EDIT_SERIES_ITEM:
+			return state.setIn(
+				['seriesItems', payload.rowID, 'attributes'],
+				Immutable.fromJS([...payload.data])
+			);
 		// no default
 	}
 	return state;

@@ -80,3 +80,18 @@ export function addSeriesItem(data: Relationship): Action {
 		type: ADD_SERIES_ITEM
 	};
 }
+
+/**
+ * Produces an action indicating that the attribute value of the entity being
+ * edited should be updated with the provided value.
+ *
+ * @param {Attribute} data - The new attribute value to be updated for the entity.
+ * @param {string} rowID - The ID of the series item that is being edited.
+ * @returns {Action} The resulting EDIT_SERIES_ITEM action.
+ */
+export function editSeriesItem(data: Attribute, rowID: string): Action {
+	return {
+		payload: {data, rowID},
+		type: EDIT_SERIES_ITEM
+	};
+}
