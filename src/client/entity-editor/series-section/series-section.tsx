@@ -19,12 +19,14 @@
 
 import * as Immutable from 'immutable';
 import * as React from 'react';
-import {Action, updateOrderType, updateSeriesType} from './actions';
+import {Action, addSeriesItem, editSeriesItem, removeSeriesItem, updateOrderType, updateSeriesType} from './actions';
 import {Col, Row} from 'react-bootstrap';
-
+import type {Entity, EntityType, RelationshipForDisplay, RelationshipType, Relationship as _Relationship} from '../relationship-editor/types';
 import CustomInput from '../../input';
 import type {Dispatch} from 'redux';
 import Select from 'react-select';
+import SeriesEditor from './series-editor';
+import _ from 'lodash';
 import {connect} from 'react-redux';
 
 
@@ -34,19 +36,28 @@ type SeriesOrderingType = {
 };
 
 type StateProps = {
+	entityName: string
 	orderTypeValue: number,
-	seriesTypeValue: string,
-	relationships: Immutable.List<any>[]
+	seriesItems: Immutable.List<any>,
+	seriesTypeValue: string
 };
 
 
 type DispatchProps = {
+	onEdit: (obj, number) => unknown,
+	onRemove: (number) => unknown,
 	onOrderTypeChange: (obj: {value: number}) => unknown,
-	onSeriesTypeChange: (obj: {value: string}) => unknown
+	onSeriesTypeChange: (obj: {value: string}) => unknown,
+	onSeriesItemAdd: (_Relationship) => unknown,
+
+
 };
 
 type OwnProps = {
-	seriesOrderingTypes: Array<SeriesOrderingType>
+	entity: Entity,
+	entityType: EntityType,
+	seriesOrderingTypes: Array<SeriesOrderingType>,
+	relationshipTypes: Array<RelationshipType>,
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -73,20 +84,53 @@ type Props = StateProps & DispatchProps & OwnProps;
  *        SeriesSection.
  */
 function SeriesSection({
-	seriesOrderingTypes,
-	orderTypeValue,
-	seriesTypeValue,
-	relationships,
+	entity,
+	entityName,
+	entityType,
+	onEdit,
 	onOrderTypeChange,
-	onSeriesTypeChange
+	onRemove,
+	onSeriesItemAdd,
+	onSeriesTypeChange,
+	orderTypeValue,
+	relationshipTypes,
+	seriesItems,
+	seriesOrderingTypes,
+	seriesTypeValue
 }: Props) {
+	const baseEntity = {
+		bbid: _.get(entity, 'bbid'),
+		defaultAlias: {
+			name: entityName
+		},
+		disambiguation: _.get(entity, ['disambiguation', 'comment']),
+		type: _.upperFirst(entityType)
+	};
+	const seriesItemsObject = seriesItems.toJS();
+
+	/* If one of the relationships is to a new entity (in creation),
+	update that new entity's name to replace "New Entity" */
+	if (typeof baseEntity.bbid === 'undefined') {
+		_.forEach(seriesItemsObject, relationship => {
+			const {sourceEntity, targetEntity} = relationship;
+			const defaultAliasPath = ['defaultAlias', 'name'];
+			const newEntity = [sourceEntity, targetEntity].find(({bbid}) => bbid === baseEntity.bbid);
+			const newRelationshipName = newEntity && _.get(newEntity, defaultAliasPath);
+			const baseEntityName = _.get(baseEntity, defaultAliasPath);
+			if (newRelationshipName !== baseEntityName) {
+				_.set(newEntity, defaultAliasPath, baseEntityName);
+			}
+		});
+	}
+	const seriesItemsArray: Array<RelationshipForDisplay> = Object.values(seriesItemsObject);
+
 	const seriesOrderingTypesForDisplay = seriesOrderingTypes.map((type) => ({
 		label: type.label,
 		value: type.id
 	}));
-	const seriesTypesForDisplay = ['Author', 'Work', 'Edition', 'EditionGroup', 'Publisher'].map((entity) => ({
-		label: entity,
-		value: entity
+	const seriesTypesForDisplay = ['Author', 'Work', 'Edition', 'EditionGroup', 'Publisher'].map((type) => ({
+		label: type,
+		value: type
 	}));
 	return (
 		<div>
@@ -117,7 +161,7 @@ function SeriesSection({
 							backspaceRemoves={false}
 							clearable={false}
 							deleteRemoves={false}
-							disabled={Boolean(relationships.length)}
+							disabled={Boolean(seriesItemsArray.length)}
 							instanceId="SeriesType"
 							options={seriesTypesForDisplay}
 							value={seriesTypeValue}
@@ -126,6 +170,15 @@ function SeriesSection({
 					</CustomInput>
 				</Col>
 			</Row>
+			<SeriesEditor
+				baseEntity={baseEntity}
+				relationshipTypes={relationshipTypes}
+				seriesItemsArray={seriesItemsArray}
+				seriesType={seriesTypeValue}
+				onAdd={onSeriesItemAdd}
+				onEdit={onEdit}
+				onRemove={onRemove}
+			/>
 		</div>
 	);
 }
@@ -135,15 +188,19 @@ function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('seriesSection');
 
 	return {
+		entityName: rootState.getIn(['nameSection', 'name']),
 		orderTypeValue: state.get('orderType'),
-		relationships: rootState.getIn(['relationshipSection', 'relationships']).toArray(),
+		seriesItems: state.get('seriesItems'),
 		seriesTypeValue: state.get('seriesType')
 	};
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
+		onEdit: (data, rowID) => dispatch(editSeriesItem(data, rowID)),
 		onOrderTypeChange: (value) => dispatch(updateOrderType(value && value.value)),
+		onRemove: (rowID) => dispatch(removeSeriesItem(rowID)),
+		onSeriesItemAdd: (data) => dispatch(addSeriesItem(data)),
 		onSeriesTypeChange: (value) => dispatch(updateSeriesType(value && value.value))
 	};
 }
