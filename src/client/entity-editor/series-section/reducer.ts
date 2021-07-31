@@ -51,6 +51,8 @@ function reducer(
 				['seriesItems', payload.rowID, 'attributes'],
 				Immutable.fromJS([...payload.data])
 			);
+		case REMOVE_SERIES_ITEM:
+			return state.deleteIn(['seriesItems', payload.rowID]);
 		// no default
 	}
 	return state;
