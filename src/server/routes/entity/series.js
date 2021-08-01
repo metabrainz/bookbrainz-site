@@ -201,6 +201,7 @@ function seriesToFormState(series) {
 	};
 
 	series.relationships.forEach((relationship) => {
+		// separate series items from relationships
 		if (relationship.typeId > 69 && relationship.typeId < 75) {
 			seriesSection.seriesItems[`n${relationship.id}`] = {
 				attributeSetId: relationship.attributeSetId,
