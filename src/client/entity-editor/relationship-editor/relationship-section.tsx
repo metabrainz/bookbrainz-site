@@ -66,11 +66,13 @@ export function RelationshipList(
 	/* eslint-disable react/jsx-no-bind */
 	const renderedRelationships = _.map(
 		relationships,
-		({relationshipType, sourceEntity, targetEntity}, rowID) => (
+		({relationshipType, sourceEntity, targetEntity, attributes}, rowID) => (
 			<Row className="margin-top-d5" key={rowID}>
 				<Col md={onEdit || onRemove ? 8 : 12}>
 					<Relationship
 						link
+						showAttributes
+						attributes={attributes}
 						contextEntity={contextEntity}
 						relationshipType={relationshipType}
 						sourceEntity={sourceEntity}
