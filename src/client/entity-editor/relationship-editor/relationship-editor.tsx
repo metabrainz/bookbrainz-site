@@ -297,7 +297,11 @@ class RelationshipModal
 		const {onAdd} = this.props;
 		if (onAdd) {
 			if (this.state.relationship) {
-				onAdd(this.state.relationship);
+				const {relationship} = this.state;
+				// Before adding a relationship, set all the attributes state value
+				// (ex: number, position etc) to attributes property of the relationship object.
+				relationship.attributes = setAttribute(this.state, this.state.relationshipType.attributeTypes);
+				onAdd(relationship);
 			}
 		}
 	};
