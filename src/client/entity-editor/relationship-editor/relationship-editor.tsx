@@ -38,6 +38,7 @@ import type {
 	Relationship as _Relationship
 } from './types';
 import {faExternalLinkAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
+import {getInitAttribute, setAttribute} from './helper';
 
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -158,6 +159,8 @@ type RelationshipModalState = {
 	relationshipType?: RelationshipType | null | undefined,
 	relationship?: _Relationship | null | undefined,
 	targetEntity?: EntitySearchResult | null | undefined,
+	attributePosition?: _Attribute,
+	attributeNumber?: _Attribute
 	attributes?: _Attribute[]
 };
 
@@ -166,6 +169,8 @@ function getInitState(
 ): RelationshipModalState {
 	if (_.isNull(initRelationship)) {
 		return {
+			attributeNumber: {attributeType: 2, value: {textValue: null}},
+			attributePosition: {attributeType: 1, value: {textValue: null}},
 			attributeSetId: null,
 			attributes: [],
 			relationship: null,
@@ -194,6 +199,8 @@ function getInitState(
 		}
 	}
 	const attributes = _.get(initRelationship, ['attributes']);
+	const attributePosition = getInitAttribute(attributes, 1);
+	const attributeNumber = getInitAttribute(attributes, 2);
 
 	const searchFormatOtherEntity = otherEntity && {
 		id: _.get(otherEntity, ['bbid']),
@@ -205,6 +212,8 @@ function getInitState(
 	};
 
 	return {
+		attributeNumber,
+		attributePosition,
 		attributeSetId: _.get(initRelationship, ['attributeSetId']),
 		attributes,
 		relationship: initRelationship,
@@ -264,6 +273,22 @@ class RelationshipModal
 		this.setState({
 			relationship: value,
 			relationshipType: value.relationshipType
+		});
+	};
+
+	handleNumberAttributeChange = ({target}) => {
+		const value = target.value === '' ? null : target.value;
+		const attributeNumber = {
+			attributeType: 2,
+			value: {textValue: value}
+		};
+		const attributePosition = {
+			attributeType: 1,
+			value: {textValue: null}
+		};
+		this.setState({
+			attributeNumber,
+			attributePosition
 		});
 	};
 
