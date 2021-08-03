@@ -300,6 +300,11 @@ class RelationshipModal
 	renderEntitySelect() {
 		const {baseEntity, relationshipTypes} = this.props;
 		const {targetEntity} = this.state;
+		if (baseEntity.type === 'Series') {
+			// When the base entity is Series, remove relationship type 70 - 74.
+			// We don't want to generate entity types corresponding to these relationship type.
+			_.remove(relationshipTypes, (type) => type.id > 69 && type.id < 75);
+		}
 		const types = getValidOtherEntityTypes(relationshipTypes, baseEntity);
 		if (!types.length) {
 			return null;
@@ -356,8 +361,8 @@ class RelationshipModal
 			relationshipTypes, baseEntity, otherEntity
 		);
 		if (baseEntity.type === 'Series') {
-			// when the base entity is Series, we need to remove relationshipType 70 - 74.
-			// As this relationships will be added via the series editor,
+			// When the base entity is Series, we need to remove relationshipType 70 - 74.
+			// As these relationships will be added via the series editor,
 			// we don't want to show them in the relationship modal.
 			_.remove(relationships, (relationship) => relationship.relationshipType.id > 69 && relationship.relationshipType.id < 75);
 		}
