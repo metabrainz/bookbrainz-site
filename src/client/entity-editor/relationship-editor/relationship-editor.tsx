@@ -42,6 +42,7 @@ import {getInitAttribute, setAttribute} from './helper';
 
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {NumberAttribute} from './attributes';
 import ReactSelect from 'react-select';
 import Relationship from './relationship';
 import _ from 'lodash';
@@ -381,6 +382,13 @@ class RelationshipModal
 			relationshipTypes, baseEntity, otherEntity
 		);
 
+		// The attribute types belonging to the relationship type
+		const attributeTypes = this.state.relationshipType ? this.state.relationshipType.attributeTypes : null;
+		let attributes = [];
+		if (attributeTypes) {
+			// Name of the attribute type belonging to the relationship type. EX: ['position', 'number]
+			attributes = attributeTypes.map(attribute => attribute.name);
+		}
 		return (
 			<FormGroup>
 				<ControlLabel>Relationship</ControlLabel>
@@ -396,6 +404,14 @@ class RelationshipModal
 				/>
 				{this.state.relationshipType &&
 					<HelpBlock>{this.state.relationshipType.description}</HelpBlock>
+				}
+				{
+					attributes.includes('number') ?
+						<NumberAttribute
+							value={this.state.attributeNumber.value.textValue}
+							onHandleChange={this.handleNumberAttributeChange}
+						/> :
+						null
 				}
 			</FormGroup>
 		);
