@@ -355,6 +355,12 @@ class RelationshipModal
 		const relationships = generateRelationshipSelection(
 			relationshipTypes, baseEntity, otherEntity
 		);
+		if (baseEntity.type === 'Series') {
+			// when the base entity is Series, we need to remove relationshipType 70 - 74.
+			// As this relationships will be added via the series editor,
+			// we don't want to show them in the relationship modal.
+			_.remove(relationships, (relationship) => relationship.relationshipType.id > 69 && relationship.relationshipType.id < 75);
+		}
 
 		return (
 			<FormGroup>
