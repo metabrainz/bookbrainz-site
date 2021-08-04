@@ -92,7 +92,10 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, onRemove, onAd
 			relationshipTypes, baseEntity, otherEntity
 		);
 		if (relationships.length) {
-			setSeriesItem(relationships[0]);
+			// Filter out relationship type 70 - 74 
+			const filterRelationships = relationships.filter(relationship =>
+				relationship.relationshipType.id > 69 && relationship.relationshipType.id < 75);
+			setSeriesItem(filterRelationships[0]);
 		}
 	};
 
@@ -120,7 +123,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, onRemove, onAd
 	};
 	return (
 		<div>
-			<h2>What Works are part of this Series?</h2>
+			<h2>What {seriesType}s are part of this Series?</h2>
 			{seriesItemsArray.length ?
 				<>
 					{seriesItemsArray.map((value) => (
