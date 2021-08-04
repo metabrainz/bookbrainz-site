@@ -29,7 +29,7 @@ function reducer(
 	state: State = Immutable.Map({
 		orderType: 1,
 		seriesItems: Immutable.OrderedMap(),
-		seriesType: 'Author'
+		seriesType: 'Work'
 	}),
 	action: Action
 ): State {

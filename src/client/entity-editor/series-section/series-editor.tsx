@@ -80,6 +80,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, onRemove, onAd
 
 	const handleEntityChange = (value: EntitySearchResult) => {
 		setTargetEntity(value);
+		// Convert "value" of type EntitySearchResult to type Entity
 		const otherEntity = {
 			bbid: _.get(value, 'id'),
 			defaultAlias: {
@@ -92,7 +93,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, onRemove, onAd
 			relationshipTypes, baseEntity, otherEntity
 		);
 		if (relationships.length) {
-			// Filter out relationship type 70 - 74 
+			// Filter out relationship type 70 - 74
 			const filterRelationships = relationships.filter(relationship =>
 				relationship.relationshipType.id > 69 && relationship.relationshipType.id < 75);
 			setSeriesItem(filterRelationships[0]);
@@ -101,9 +102,11 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, onRemove, onAd
 
 	const handleAdd = () => {
 		if (onAdd && targetEntity) {
+			// Set attributes value before adding the entity
 			seriesItem.attributes = [{attributeType: 1, value: {textValue: null}}, {attributeType: 2, value: {textValue: null}}];
 			if (seriesItem) {
 				onAdd(seriesItem);
+				// After adding the entity, clear the Entity Search Field by setting targetEntity to null.
 				setTargetEntity(null);
 			}
 		}
