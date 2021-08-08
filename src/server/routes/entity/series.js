@@ -69,6 +69,10 @@ const createOrEditHandler = makeEntityCreateOrEditHandler(
 	'series', transformNewForm, additionalSeriesProps
 );
 
+const mergeHandler = makeEntityCreateOrEditHandler(
+	'series', transformNewForm, additionalSeriesProps, true
+);
+
 /** ****************************
 *********** Routes ************
 *******************************/
@@ -97,6 +101,8 @@ router.get(
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
 
+router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler,
+	mergeHandler);
 
 /* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
 router.param(
