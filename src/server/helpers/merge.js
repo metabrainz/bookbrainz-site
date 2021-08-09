@@ -191,6 +191,7 @@ function getSeriesEntityMergeSection(entities) {
 		assignIfNotSet(seriesSection, 'seriesType', entity, 'entityType');
 		assignIfNotSet(seriesSection, 'orderType', entity, 'seriesOrderingType.id');
 	});
+	seriesSection.seriesItems = {};
 	return seriesSection;
 }
 
