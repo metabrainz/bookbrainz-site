@@ -192,6 +192,15 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 			entity.relationships = relationshipSet ?
 				relationshipSet.related('relationships').toJSON() : [];
 
+			// Attach attributes to relationship object
+			entity.relationships.forEach((relationship) => {
+				if (relationship.attributeSet?.relationshipAttributes) {
+					relationship.attributeSet.relationshipAttributes.forEach(attribute => {
+						relationship[`${attribute.type.name}`] = attribute.value.textValue;
+					});
+				}
+			});
+
 			async function getEntityWithAlias(relEntity) {
 				const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
 				const model = commonUtils.getEntityModelByType(orm, relEntity.type);
