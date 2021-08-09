@@ -250,7 +250,8 @@ router.get('/add/:bbid', auth.isAuthenticated,
 		if (!mergeQueue) {
 			mergeQueue = {
 				entityType: '',
-				mergingEntities: {}
+				mergingEntities: {},
+				seriesType: ''
 			};
 			req.session.mergeQueue = mergeQueue;
 		}
@@ -277,6 +278,14 @@ router.get('/add/:bbid', auth.isAuthenticated,
 		if (type !== mergeQueue.entityType) {
 			mergeQueue.mergingEntities = {};
 			mergeQueue.entityType = _.upperFirst(type);
+			mergeQueue.seriesType = type === 'Series' ? fetchedEntity.entityType : null;
+		}
+
+		/* Disallow merging series entity of different types. */
+		if (type === 'Series' && (mergeQueue.seriesType !== fetchedEntity.entityType)) {
+			mergeQueue.mergingEntities = {};
+			mergeQueue.entityType = _.upperFirst(type);
+			mergeQueue.seriesType = fetchedEntity.entityType;
 		}
 
 		mergeQueue.mergingEntities[bbid] = fetchedEntity;
