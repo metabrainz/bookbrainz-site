@@ -50,7 +50,7 @@ type Props = StateProps & DispatchProps & OwnProps;
  * @param {Object} props - The properties passed to the component.
  * @param {number} props.orderTypeValue - The order type currently selected for
  * 		  the series.
- * @param {string} props.seriesTypeValue - The entity type currently selected for 
+ * @param {string} props.seriesTypeValue - The entity type currently selected for
  * 		  the series.
  * @param {Array} props.mergingEntities - The list of entities being merged
  * @param {Function} props.onOrderTypeChange - A function to be called when
@@ -85,8 +85,8 @@ function SeriesSectionMerge({
 		}
 		relationships.push(...entity.relationships);
 	});
-    
-    // Filter out series items from relationships
+
+	// Filter out series items from relationships
 	const seriesItems = relationships.filter((relationship) => relationship.typeId > 69 && relationship.typeId < 75);
 	const formattedSeriesItems = seriesItems.map((item) => (
 		{...item.source, displayNumber: true,
