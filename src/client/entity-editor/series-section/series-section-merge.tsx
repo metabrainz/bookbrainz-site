@@ -18,6 +18,7 @@
 
 import * as React from 'react';
 import {Action, updateOrderType, updateSeriesType} from './actions';
+import {getEntityKey, getEntityTable} from '../../helpers/utils';
 import type {Dispatch} from 'redux';
 import type {Map} from 'immutable';
 import MergeField from '../common/merge-field';
@@ -68,6 +69,7 @@ function SeriesSectionMerge({
 }: Props) {
 	const seriesOrderingTypeOptions = [];
 	const seriesTypeOptions = [];
+	const relationships = [];
 
 	mergingEntities.forEach(entity => {
 		const seriesOrderingTypeOption = entity.seriesOrderingType && {label: entity.seriesOrderingType.label, value: entity.seriesOrderingType.id};
@@ -81,7 +83,23 @@ function SeriesSectionMerge({
 				value: seriesTypeOption
 			});
 		}
+		relationships.push(...entity.relationships);
 	});
+    
+	const seriesItems = relationships.filter((relationship) => relationship.typeId > 69 && relationship.typeId < 75);
+	const formattedSeriesItems = seriesItems.map((item) => (
+		{...item.source, displayNumber: true,
+			number: item.number,
+			position: item.position}
+	));
+	const EntityTable = getEntityTable(seriesTypeValue);
+	const entityKey = getEntityKey(seriesTypeValue);
+	const propsForTable = {
+		[entityKey]: formattedSeriesItems,
+		showAdd: false,
+		showAddedAtColumn: false,
+		showCheckboxes: false
+	};
 
 	return (
 		<div>
@@ -97,6 +115,7 @@ function SeriesSectionMerge({
 				options={seriesTypeOptions}
 				onChange={onSeriesTypeChange}
 			/>
+			<EntityTable {...propsForTable}/>
 		</div>
 	);
 }
