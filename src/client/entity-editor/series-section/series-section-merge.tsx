@@ -86,6 +86,7 @@ function SeriesSectionMerge({
 		relationships.push(...entity.relationships);
 	});
     
+    // Filter out series items from relationships
 	const seriesItems = relationships.filter((relationship) => relationship.typeId > 69 && relationship.typeId < 75);
 	const formattedSeriesItems = seriesItems.map((item) => (
 		{...item.source, displayNumber: true,
