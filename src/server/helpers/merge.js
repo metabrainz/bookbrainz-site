@@ -177,6 +177,14 @@ function getPublisherEntityMergeSection(entities) {
 		});
 }
 
+
+/**
+ * @name getSeriesEntityMergeSection
+ * @description Returns the initial form state for the Series merging page, based on the multiple entities.
+ * The returned section has some properties transformed to a state acceptable by the reducer.
+ * @param {object[]} entities - The array of entities to merge the properties of
+ * @returns {object} - The Series merge section for the initialState
+ */
 function getSeriesEntityMergeSection(entities) {
 	const seriesSection = {};
 	entities.forEach(entity => {
