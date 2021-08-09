@@ -164,7 +164,9 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 			withRelated: [
 				'relationships.source',
 				'relationships.target',
-				'relationships.type'
+				'relationships.type.attributeTypes',
+				'relationships.attributeSet.relationshipAttributes.value',
+				'relationships.attributeSet.relationshipAttributes.type'
 			]
 		})
 		.then((relationshipSet) => {
