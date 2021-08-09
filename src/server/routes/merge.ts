@@ -33,6 +33,7 @@ import {
 import _ from 'lodash';
 import {escapeProps} from '../helpers/props';
 import express from 'express';
+import {getAdditionalRelations} from '../helpers/utils';
 import renderRelationship from '../helpers/render';
 import targetTemplate from '../templates/target';
 
@@ -178,7 +179,7 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 				const model = commonUtils.getEntityModelByType(orm, relEntity.type);
 
 				return model.forge({bbid: redirectBbid})
-					.fetch({withRelated: 'defaultAlias'});
+					.fetch({require: false, withRelated: ['defaultAlias'].concat(getAdditionalRelations(relEntity.type))});
 			}
 
 			/**
