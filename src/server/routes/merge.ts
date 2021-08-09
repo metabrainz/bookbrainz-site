@@ -122,15 +122,33 @@ function entitiesToFormState(entities: any[]) {
 	}, []);
 	const otherEntitiesBBIDs = otherEntities.map(entity => entity.bbid);
 	relationships.forEach((relationship) => {
-		relationshipSection.relationships[relationship.id] = {
-			relationshipType: relationship.type,
-			rendered: relationship.rendered,
-			rowID: relationship.id,
-			// Change the source and/or target BBIDs of the relationship accordingly
-			// to the bbid of the entity we're merging into
-			sourceEntity: otherEntitiesBBIDs.includes(relationship.sourceBbid) ? targetEntity : relationship.source,
-			targetEntity: otherEntitiesBBIDs.includes(relationship.targetBbid) ? targetEntity : relationship.target
-		};
+		// separate series items from relationships
+		if (type === 'series' && (relationship.typeId > 69 && relationship.typeId < 75)) {
+			entityTypeSection.seriesItems[`n${relationship.id}`] = {
+				attributeSetId: relationship.attributeSetId,
+				attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
+				relationshipType: relationship.type,
+				rendered: relationship.rendered,
+				rowID: `n${relationship.id}`,
+				// Change the source and/or target BBIDs of the relationship accordingly
+				// to the bbid of the entity we're merging into
+				sourceEntity: otherEntitiesBBIDs.includes(relationship.sourceBbid) ? targetEntity : relationship.source,
+				targetEntity: otherEntitiesBBIDs.includes(relationship.targetBbid) ? targetEntity : relationship.target
+			};
+		}
+		else {
+			relationshipSection.relationships[`n${relationship.id}`] = {
+				attributeSetId: relationship.attributeSetId,
+				attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
+				relationshipType: relationship.type,
+				rendered: relationship.rendered,
+				rowID: `n${relationship.id}`,
+				// Change the source and/or target BBIDs of the relationship accordingly
+				// to the bbid of the entity we're merging into
+				sourceEntity: otherEntitiesBBIDs.includes(relationship.sourceBbid) ? targetEntity : relationship.source,
+				targetEntity: otherEntitiesBBIDs.includes(relationship.targetBbid) ? targetEntity : relationship.target
+			};
+		}
 	});
 
 	const annotations = entities.reduce((returnValue, entity, index) => {
