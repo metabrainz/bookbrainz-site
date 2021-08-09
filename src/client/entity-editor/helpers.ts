@@ -26,6 +26,7 @@ import EditionSectionMerge from './edition-section/edition-section-merge';
 import PublisherSection from './publisher-section/publisher-section';
 import PublisherSectionMerge from './publisher-section/publisher-section-merge';
 import SeriesSection from './series-section/series-section';
+import SeriesSectionMerge from './series-section/series-section-merge';
 import WorkSection from './work-section/work-section';
 import WorkSectionMerge from './work-section/work-section-merge';
 import aliasEditorReducer from './alias-editor/reducer';
@@ -83,6 +84,7 @@ export function getEntitySectionMerge(entityType: string) {
 		edition: EditionSectionMerge,
 		editionGroup: EditionGroupSectionMerge,
 		publisher: PublisherSectionMerge,
+		series: SeriesSectionMerge,
 		work: WorkSectionMerge
 	};
 
