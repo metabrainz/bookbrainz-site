@@ -131,6 +131,16 @@ function formatDefaultAliasModified(change) {
 	return [];
 }
 
+function formatRelationshipAttributeModified(change) {
+	if (change.path.length > 7 && change.path[7] === 'textValue') {
+		return [
+			base.formatChange(change,
+				`Relationship Attribute ${change.path[2]} -> Value`, (side) => side && [side])
+		];
+	}
+	return [];
+}
+
 function formatAlias(change) {
 	const aliasSetAdded =
 		change.kind === 'N' && _.isEqual(change.path, ['aliasSet']);
@@ -352,6 +362,9 @@ function formatRelationship(entity, change) {
 			return formatRelationshipRemove(entity, change);
 		}
 	}
+	if (change.kind === 'E') {
+		return formatRelationshipAttributeModified(change);
+	}
 	if (change.kind === 'D') {
 		return formatAddOrDeleteRelationshipSet(entity, change);
 	}
@@ -376,7 +389,7 @@ function formatEntityChange(entity, change) {
 
 	const relationshipChanged =
 		_.isEqual(change.path, ['relationshipSet']) ||
-		_.isEqual(change.path, ['relationshipSet', 'relationships']);
+		_.isEqual(change.path.slice(0, 2), ['relationshipSet', 'relationships']);
 	if (relationshipChanged) {
 		return formatRelationship(entity, change);
 	}
