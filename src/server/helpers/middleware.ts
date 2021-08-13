@@ -79,13 +79,6 @@ export function loadSeriesItems(req: $Request, res: $Response, next: NextFunctio
 		const {entity} = res.locals;
 		if (entity.dataId) {
 			const {relationships} = entity;
-
-			if (entity.seriesOrderingType.label === 'Manual') {
-				relationships.sort(commonUtils.sortRelationshipOrdinal('position'));
-			}
-			else {
-				relationships.sort(commonUtils.sortRelationshipOrdinal('number'));
-			}
 			const seriesItems = relationships.map((rel) => (
 				{...rel.source, displayNumber: true,
 					number: rel.number,

@@ -346,6 +346,29 @@ async function processWorkerBee(orm, editorId) {
 	return testTiers(orm, rowCount, editorId, tiers);
 }
 
+async function processSeriesCreator(orm, editorId) {
+	const {SeriesRevision} = orm;
+	const rowCount = await getTypeCreation(new SeriesRevision(),
+		'series_revision',
+		editorId);
+	const tiers = [
+		{
+			name: 'Series Creator III',
+			threshold: 100,
+			titleName: 'Series Creator'
+		},
+		{
+			name: 'Series Creator II',
+			threshold: 10
+		},
+		{
+			name: 'Series Creator I',
+			threshold: 1
+		}
+	];
+	return testTiers(orm, rowCount, editorId, tiers);
+}
+
 async function processSprinter(orm, editorId) {
 	const {bookshelf} = orm;
 	const rawSql =
@@ -555,6 +578,7 @@ export async function processEdit(orm, userId, revisionId) {
 	const publisher = await processPublisher(orm, userId);
 	const publisherCreator = await processPublisherCreator(orm, userId);
 	const workerBee = await processWorkerBee(orm, userId);
+	const seriesCreator = await processSeriesCreator(orm, userId);
 	const sprinter = await processSprinter(orm, userId);
 	const funRunner = await processFunRunner(orm, userId);
 	const marathoner = await processMarathoner(orm, userId);
@@ -568,6 +592,7 @@ export async function processEdit(orm, userId, revisionId) {
 		achievementToUnlockId(publisher),
 		achievementToUnlockId(publisherCreator),
 		achievementToUnlockId(workerBee),
+		achievementToUnlockId(seriesCreator),
 		achievementToUnlockId(sprinter),
 		achievementToUnlockId(funRunner),
 		achievementToUnlockId(marathoner),
@@ -586,6 +611,7 @@ export async function processEdit(orm, userId, revisionId) {
 		publisher,
 		publisherCreator,
 		revisionist,
+		seriesCreator,
 		sprinter,
 		timeTraveller,
 		workerBee
