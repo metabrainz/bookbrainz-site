@@ -236,11 +236,13 @@ function formatIdentifier(change) {
 	return null;
 }
 
-function formatRelationshipAttrubuteAddOrDelete(relationshipAttributes) {
+function formatRelationshipAttributeAddOrDelete(relationshipAttributes) {
 	const attributes = [];
-	relationshipAttributes.forEach((attribute) => {
-		attributes.push(`${attribute.type.name}: ${attribute.value.textValue}`);
-	});
+	if (relationshipAttributes.length) {
+		relationshipAttributes.forEach((attribute) => {
+			attributes.push(`${attribute.type.name}: ${attribute.value.textValue}`);
+		});
+	}
 	return attributes;
 }
 
@@ -254,7 +256,7 @@ function formatRelationshipAdd(entity, change) {
 	const key = rhs.type && rhs.type.label ? `Relationship : ${rhs.type.label}` : 'Relationship';
 	let attributes = [];
 	if (rhs.attributeSetId) {
-		attributes = formatRelationshipAttrubuteAddOrDelete(rhs.attributeSet.relationshipAttributes);
+		attributes = formatRelationshipAttributeAddOrDelete(rhs.attributeSet?.relationshipAttributes);
 	}
 	if (rhs.sourceBbid === entity.get('bbid')) {
 		changes.push(
@@ -290,7 +292,7 @@ function formatAddOrDeleteRelationshipSet(entity, change) {
 		const key = relationship.type && relationship.type.label ? `Relationship: ${relationship.type.label}` : 'Relationship';
 		let attributes = [];
 		if (relationship.attributeSetId) {
-			attributes = formatRelationshipAttrubuteAddOrDelete(relationship.attributeSet.relationshipAttributes);
+			attributes = formatRelationshipAttributeAddOrDelete(relationship.attributeSet?.relationshipAttributes);
 		}
 		if (relationship.sourceBbid === entity.get('bbid')) {
 			changes.push(
@@ -320,7 +322,7 @@ function formatRelationshipRemove(entity, change) {
 	const key = lhs.type && lhs.type.label ? `Relationship : ${lhs.type.label}` : 'Relationship';
 	let attributes = [];
 	if (lhs.attributeSetId) {
-		attributes = formatRelationshipAttrubuteAddOrDelete(lhs.attributeSet.relationshipAttributes);
+		attributes = formatRelationshipAttributeAddOrDelete(lhs.attributeSet?.relationshipAttributes);
 	}
 	if (lhs.sourceBbid === entity.get('bbid')) {
 		changes.push(
