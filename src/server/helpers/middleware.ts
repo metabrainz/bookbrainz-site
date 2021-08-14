@@ -80,7 +80,7 @@ export function loadSeriesItems(req: $Request, res: $Response, next: NextFunctio
 		if (entity.dataId) {
 			const {relationships} = entity;
 			// Extract the series items from relationships
-			const seriesItems = relationships.filter((relationship) => relationship.typeId > 69 && relationship.typeId < 75);
+			const seriesItems = _.remove(relationships, (relationship: any) => relationship.typeId > 69 && relationship.typeId < 75);
 			const formattedSeriesItems = seriesItems.map((item) => (
 				{...item.source, displayNumber: true,
 					number: item.number,
