@@ -288,13 +288,8 @@ class RelationshipModal
 			attributeType: 2,
 			value: {textValue: value}
 		};
-		const attributePosition = {
-			attributeType: 1,
-			value: {textValue: null}
-		};
 		this.setState({
-			attributeNumber,
-			attributePosition
+			attributeNumber
 		});
 	};
 
