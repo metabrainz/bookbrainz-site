@@ -56,7 +56,7 @@ function transformNewForm(data) {
 	);
 
 	const relationships = entityRoutes.constructRelationships(
-		data.relationshipSection, 'relationships'
+		data.relationshipSection
 	);
 
 	let releaseEvents = [];

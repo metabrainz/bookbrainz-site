@@ -50,7 +50,7 @@ function transformNewForm(data) {
 	);
 
 	const relationships = entityRoutes.constructRelationships(
-		data.relationshipSection, 'relationships'
+		data.relationshipSection
 	);
 
 	const languages = _.map(
