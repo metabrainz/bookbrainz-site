@@ -19,7 +19,7 @@
 
 import * as Immutable from 'immutable';
 import {
-	Action, UPDATE_ORDER_TYPE, UPDATE_SERIES_TYPE
+	ADD_SERIES_ITEM, Action, EDIT_SERIES_ITEM, REMOVE_SERIES_ITEM, UPDATE_ORDER_TYPE, UPDATE_SERIES_TYPE
 } from './actions';
 
 
@@ -28,16 +28,31 @@ type State = Immutable.Map<string, any>;
 function reducer(
 	state: State = Immutable.Map({
 		orderType: 1,
-		seriesType: 'Author'
+		seriesItems: Immutable.OrderedMap(),
+		seriesType: 'Work'
 	}),
 	action: Action
 ): State {
 	const {type, payload} = action;
 	switch (type) {
 		case UPDATE_ORDER_TYPE:
-			return state.set('orderType', payload);
+			return state.set('orderType', payload.newType);
 		case UPDATE_SERIES_TYPE:
-			return state.set('seriesType', payload);
+			return state.set('seriesType', payload.seriesType);
+		case ADD_SERIES_ITEM: {
+			const {rowID} = payload;
+			return state.setIn(
+				['seriesItems', rowID],
+				Immutable.fromJS({rowID, ...payload.data})
+			);
+		}
+		case EDIT_SERIES_ITEM:
+			return state.setIn(
+				['seriesItems', payload.rowID, 'attributes'],
+				Immutable.fromJS([...payload.data])
+			);
+		case REMOVE_SERIES_ITEM:
+			return state.deleteIn(['seriesItems', payload.rowID]);
 		// no default
 	}
 	return state;
