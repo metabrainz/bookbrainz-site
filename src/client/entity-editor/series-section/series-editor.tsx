@@ -115,6 +115,15 @@ const SeriesList = ({value, baseEntity, handleNumberAttributeChange, onRemove, d
 	</Row>
 );
 
+SeriesList.displayName = 'SeriesList';
+SeriesList.propTypes = {
+	baseEntity: PropTypes.object.isRequired,
+	dragHandler: PropTypes.bool.isRequired,
+	handleNumberAttributeChange: PropTypes.func.isRequired,
+	onRemove: PropTypes.func.isRequired,
+	value: PropTypes.any.isRequired
+};
+
 const SortableItem = SortableElement(({value, onRemove, baseEntity, handleNumberAttributeChange}) => (
 	<SeriesList
 		dragHandler
