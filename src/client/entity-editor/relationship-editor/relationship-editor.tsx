@@ -119,6 +119,11 @@ function getValidOtherEntityTypes(
 	relationshipTypes: Array<RelationshipType>,
 	baseEntity: Entity
 ) {
+	if (baseEntity.type === 'Series') {
+		// When the base entity is Series, remove relationship type 70 - 74.
+		// We don't want to generate entity types corresponding to these relationship type.
+		_.remove(relationshipTypes, (type) => type.id > 69 && type.id < 75);
+	}
 	const validEntityTypes = relationshipTypes.map((relationshipType) => {
 		if (relationshipType.deprecated === true) {
 			return null;
@@ -300,11 +305,6 @@ class RelationshipModal
 	renderEntitySelect() {
 		const {baseEntity, relationshipTypes} = this.props;
 		const {targetEntity} = this.state;
-		if (baseEntity.type === 'Series') {
-			// When the base entity is Series, remove relationship type 70 - 74.
-			// We don't want to generate entity types corresponding to these relationship type.
-			_.remove(relationshipTypes, (type) => type.id > 69 && type.id < 75);
-		}
 		const types = getValidOtherEntityTypes(relationshipTypes, baseEntity);
 		if (!types.length) {
 			return null;
