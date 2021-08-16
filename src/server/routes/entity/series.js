@@ -201,27 +201,21 @@ function seriesToFormState(series) {
 	};
 
 	series.relationships.forEach((relationship) => {
-		// separate series items from relationships
-		if (relationship.typeId > 69 && relationship.typeId < 75) {
-			seriesSection.seriesItems[`n${relationship.id}`] = {
-				attributeSetId: relationship.attributeSetId,
-				attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
-				relationshipType: relationship.type,
-				rowID: `n${relationship.id}`,
-				sourceEntity: relationship.source,
-				targetEntity: relationship.target
-			};
-		}
-		else {
-			relationshipSection.relationships[`n${relationship.id}`] = {
-				attributeSetId: relationship.attributeSetId,
-				attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
-				relationshipType: relationship.type,
-				rowID: `n${relationship.id}`,
-				sourceEntity: relationship.source,
-				targetEntity: relationship.target
-			};
-		}
+		const formattedRelationship = {
+			attributeSetId: relationship.attributeSetId,
+			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
+			relationshipType: relationship.type,
+			rowID: `n${relationship.id}`,
+			sourceEntity: relationship.source,
+			targetEntity: relationship.target
+		  };
+		  // separate series items from relationships
+		  if (relationship.typeId > 69 && relationship.typeId < 75) {
+			seriesSection.seriesItems[`n${relationship.id}`] = formattedRelationship;
+		  }
+		  else {
+			relationshipSection.relationships[`n${relationship.id}`] = formattedRelationship;
+		  }
 	});
 
 	const optionalSections = {};
