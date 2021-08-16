@@ -140,7 +140,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, onRemove, onAd
 									onChange={handleNumberAttributeChange.bind(this, value.rowID)}
 								/>
 							</Col>
-							<Col md={7}>
+							<Col className="form-control-static" md={7}>
 								<Relationship
 									link
 									contextEntity={baseEntity}
