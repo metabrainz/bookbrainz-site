@@ -153,6 +153,35 @@ export const sprinterAttribs = {
 	name: 'Sprinter'
 };
 
+
+export const seriesCreatorIAttribs = {
+	badgeUrl: 'http://test.com',
+	description: 'create 1 series',
+	id: 1,
+	name: 'Series Creator I'
+};
+
+export const seriesCreatorIIAttribs = {
+	badgeUrl: 'http://test.com',
+	description: 'create 10 series',
+	id: 2,
+	name: 'Series Creator II'
+};
+
+export const seriesCreatorIIIAttribs = {
+	badgeUrl: 'http://test.com',
+	description: 'create 100 series',
+	id: 3,
+	name: 'Series Creator III'
+};
+
+export const seriesCreatorAttribs = {
+	description: 'finish series creator track',
+	id: 1,
+	title: 'Series Creator'
+};
+
+
 export const workerBeeIAttribs = {
 	badgeUrl: 'http://test.com',
 	description: 'create 1 work',
@@ -382,6 +411,23 @@ export function createWorkerBee() {
 		)
 		.then(
 			() => new TitleType(workerBeeAttribs)
+				.save(null, {method: 'insert'})
+		);
+}
+
+export function createSeriesCreator() {
+	return new AchievementType(seriesCreatorIAttribs)
+		.save(null, {method: 'insert'})
+		.then(
+			() => new AchievementType(seriesCreatorIIAttribs)
+				.save(null, {method: 'insert'})
+		)
+		.then(
+			() => new AchievementType(seriesCreatorIIIAttribs)
+				.save(null, {method: 'insert'})
+		)
+		.then(
+			() => new TitleType(seriesCreatorAttribs)
 				.save(null, {method: 'insert'})
 		);
 }
