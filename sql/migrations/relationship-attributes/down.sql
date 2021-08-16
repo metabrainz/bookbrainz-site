@@ -10,3 +10,9 @@ DROP TABLE IF EXISTS bookbrainz.relationship_attribute_type;
 DELETE FROM bookbrainz.relationship_type WHERE id BETWEEN 70 and 74;
 
 COMMIT;
+
+BEGIN;
+
+DELETE FROM bookbrainz.relationship_type WHERE id = 75;
+
+COMMIT;
