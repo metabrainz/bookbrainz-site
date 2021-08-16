@@ -57,7 +57,7 @@ function isValidRelationship(relationship: _Relationship) {
 	);
 }
 
-function generateRelationshipSelection(
+export function generateRelationshipSelection(
 	relationshipTypes: Array<RelationshipType>,
 	entityA: Entity,
 	entityB: Entity

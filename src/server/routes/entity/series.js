@@ -49,9 +49,13 @@ function transformNewForm(data) {
 	const identifiers = entityRoutes.constructIdentifiers(
 		data.identifierEditor
 	);
-	const relationships = entityRoutes.constructRelationships(
-		data.relationshipSection
+	const seriesItems = entityRoutes.constructRelationships(
+		data.seriesSection, 'seriesItems'
 	);
+	const relationshipsItems = entityRoutes.constructRelationships(
+		data.relationshipSection, 'relationships'
+	);
+	const relationships = seriesItems.concat(relationshipsItems);
 
 	return {
 		aliases,
@@ -184,6 +188,7 @@ function seriesToFormState(series) {
 	);
 	const seriesSection = {
 		orderType: series.seriesOrderingType && series.seriesOrderingType.id,
+		seriesItems: {},
 		seriesType: series.entityType
 	};
 
@@ -195,16 +200,23 @@ function seriesToFormState(series) {
 		relationships: {}
 	};
 
-	series.relationships.forEach((relationship) => (
-		relationshipSection.relationships[`n${relationship.id}`] = {
+	series.relationships.forEach((relationship) => {
+		const formattedRelationship = {
 			attributeSetId: relationship.attributeSetId,
 			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
 			relationshipType: relationship.type,
 			rowID: `n${relationship.id}`,
 			sourceEntity: relationship.source,
 			targetEntity: relationship.target
-		}
-	));
+		  };
+		  // separate series items from relationships
+		  if (relationship.typeId > 69 && relationship.typeId < 75) {
+			seriesSection.seriesItems[`n${relationship.id}`] = formattedRelationship;
+		  }
+		  else {
+			relationshipSection.relationships[`n${relationship.id}`] = formattedRelationship;
+		  }
+	});
 
 	const optionalSections = {};
 	if (series.annotation) {

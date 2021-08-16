@@ -17,12 +17,22 @@
  */
 
 
+import type {Attribute, Relationship} from '../relationship-editor/types';
+
+
 export const UPDATE_ORDER_TYPE = 'UPDATE_ORDER_TYPE';
 export const UPDATE_SERIES_TYPE = 'UPDATE_SERIES_TYPE';
-
+export const ADD_SERIES_ITEM = 'ADD_SERIES_ITEM';
+export const EDIT_SERIES_ITEM = 'EDIT_SERIES_ITEM';
+export const REMOVE_SERIES_ITEM = 'REMOVE_SERIES_ITEM';
 export type Action = {
 	type: string,
-	payload?: unknown
+	payload: {
+		data?: any,
+		rowID?: string,
+		seriesType?: string,
+		newType?: number,
+	}
 };
 
 
@@ -36,7 +46,7 @@ export type Action = {
 
 export function updateSeriesType(seriesType: string): Action {
 	return {
-		payload: seriesType,
+		payload: {seriesType},
 		type: UPDATE_SERIES_TYPE
 	};
 }
@@ -50,7 +60,51 @@ export function updateSeriesType(seriesType: string): Action {
  */
 export function updateOrderType(newType: number | null | undefined): Action {
 	return {
-		payload: newType,
+		payload: {newType},
 		type: UPDATE_ORDER_TYPE
+	};
+}
+
+let nextRowID = 0;
+
+/**
+ * Produces an action indicating that a row for a new series item should be added
+ * to the series section. The row is assigned an ID based on an incrementing
+ * variable existing on the client.
+ * @param {Relationship} data - The new entity to be added in the list.
+ * @returns {Action} The resulting ADD_SERIES_ITEM action.
+ */
+export function addSeriesItem(data: Relationship): Action {
+	return {
+		payload: {data, rowID: `n${nextRowID++}`},
+		type: ADD_SERIES_ITEM
+	};
+}
+
+/**
+ * Produces an action indicating that the attribute value of the entity being
+ * edited should be updated with the provided value.
+ *
+ * @param {Attribute} data - The new attribute value to be used for the entity.
+ * @param {string} rowID - The ID of the series item that is being edited.
+ * @returns {Action} The resulting EDIT_SERIES_ITEM action.
+ */
+export function editSeriesItem(data: Attribute, rowID: string): Action {
+	return {
+		payload: {data, rowID},
+		type: EDIT_SERIES_ITEM
+	};
+}
+
+/**
+ * Produces an action indicating that the series item with the provided ID should be
+ * removed.
+ * @param {string} rowID - The ID of the series item that is being removed.
+ * @returns {Action} The resulting REMOVE_SERIES_ITEM action.
+ */
+export function removeSeriesItem(rowID: string): Action {
+	return {
+		payload: {rowID},
+		type: REMOVE_SERIES_ITEM
 	};
 }
