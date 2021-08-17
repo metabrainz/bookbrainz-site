@@ -297,7 +297,9 @@ router.get('/add/:bbid', auth.isAuthenticated,
 		const {bbid, type} = fetchedEntity;
 		if (type !== mergeQueue.entityType) {
 			mergeQueue.mergingEntities = {};
+			// mergeQueue.entityType is the type of the entity
 			mergeQueue.entityType = _.upperFirst(type);
+			// fetchedEnitity.entityType is the series entity type
 			mergeQueue.seriesEntityType = type === 'Series' ? fetchedEntity.entityType : null;
 		}
 
