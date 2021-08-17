@@ -127,14 +127,7 @@ export function loadEntityRelationships(req: $Request, res: $Response, next: Nex
 			entity.relationships = relationshipSet ?
 				relationshipSet.related('relationships').toJSON() : [];
 
-			// Attach attributes to relationship object
-			entity.relationships.forEach((relationship) => {
-				if (relationship.attributeSet?.relationshipAttributes) {
-					relationship.attributeSet.relationshipAttributes.forEach(attribute => {
-						relationship[`${attribute.type.name}`] = attribute.value.textValue;
-					});
-				}
-			});
+			utils.attachAttributes(entity.relationships);
 
 			async function getEntityWithAlias(relEntity) {
 				const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);

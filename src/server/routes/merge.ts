@@ -22,6 +22,7 @@ import * as commonUtils from '../../common/helpers/utils';
 import * as entityRoutes from './entity/entity';
 import * as middleware from '../helpers/middleware';
 import {BadRequestError, ConflictError, NotFoundError} from '../../common/helpers/error';
+import {attachAttributes, getAdditionalRelations} from '../helpers/utils';
 import {basicRelations,
 	getEntityFetchPropertiesByType,
 	getEntitySectionByType} from '../helpers/merge';
@@ -33,7 +34,6 @@ import {
 import _ from 'lodash';
 import {escapeProps} from '../helpers/props';
 import express from 'express';
-import {getAdditionalRelations} from '../helpers/utils';
 import renderRelationship from '../helpers/render';
 import targetTemplate from '../templates/target';
 
@@ -192,14 +192,7 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 			entity.relationships = relationshipSet ?
 				relationshipSet.related('relationships').toJSON() : [];
 
-			// Attach attributes to relationship object
-			entity.relationships.forEach((relationship) => {
-				if (relationship.attributeSet?.relationshipAttributes) {
-					relationship.attributeSet.relationshipAttributes.forEach(attribute => {
-						relationship[`${attribute.type.name}`] = attribute.value.textValue;
-					});
-				}
-			});
+			attachAttributes(entity.relationships);
 
 			async function getEntityWithAlias(relEntity) {
 				const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
