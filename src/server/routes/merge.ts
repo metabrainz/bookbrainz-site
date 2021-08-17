@@ -199,7 +199,7 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 				const model = commonUtils.getEntityModelByType(orm, relEntity.type);
 
 				return model.forge({bbid: redirectBbid})
-					.fetch({require: false, withRelated: ['defaultAlias'].concat(getAdditionalRelations(relEntity.type))});
+					.fetch({require: true, withRelated: ['defaultAlias'].concat(getAdditionalRelations(relEntity.type))});
 			}
 
 			/**
