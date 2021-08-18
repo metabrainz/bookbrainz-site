@@ -89,6 +89,7 @@ export function sortRelationshipOrdinal(sortByProperty: string) {
 	return (a:string, b:string) => {
 		a = a[sortByProperty] || '';
 		b = b[sortByProperty] || '';
-		return a.localeCompare(b);
+		// eslint-disable-next-line no-undefined
+		return a.localeCompare(b, undefined, {numeric: true});
 	};
 }
