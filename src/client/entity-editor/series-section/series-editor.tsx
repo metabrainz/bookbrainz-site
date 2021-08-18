@@ -80,7 +80,7 @@ type SeriesItemsProps = {
  */
 
 const SeriesList = ({value, baseEntity, handleNumberAttributeChange, onRemove, dragHandler}) => (
-	<Row className="margin-top-d5" key={`${value.rowID}`}>
+	<Row className="margin-top-d5" key={value.rowID}>
 		<Col className="text-right form-control-static padding-left-0" md={1}>
 			{dragHandler ? <><FontAwesomeIcon icon={faBars}/> &nbsp;&nbsp;</> : null}
 		</Col>
@@ -199,7 +199,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 									baseEntity={baseEntity}
 									dragHandler={false}
 									handleNumberAttributeChange={handleNumberAttributeChange}
-									key={`${value.rowID}`}
+									key={value.rowID}
 									value={value}
 									onRemove={onRemove}
 								/>
@@ -212,7 +212,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 									baseEntity={baseEntity}
 									handleNumberAttributeChange={handleNumberAttributeChange}
 									index={index}
-									key={`${value.rowID}`}
+									key={value.rowID}
 									value={value}
 									onRemove={onRemove}
 								/>
