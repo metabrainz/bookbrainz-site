@@ -18,7 +18,7 @@
 /* eslint-disable no-inline-comments */
 
 
-import type {Attribute, Relationship} from '../relationship-editor/types';
+import type {Attribute, Relationship, RelationshipForDisplay} from '../relationship-editor/types';
 import arrayMove from 'array-move';
 import {sortRelationshipOrdinal} from '../../../common/helpers/utils';
 
@@ -101,13 +101,13 @@ export function sortSeriesItems(oldIndex, newIndex):any {
 		const seriesItems = state.get('seriesSection').get('seriesItems');
 		const orderTypeValue = state.get('seriesSection').get('orderType');
 		const seriesItemsObject = seriesItems.toJS();
-		const seriesItemsArray = Object.entries(seriesItemsObject);
+		const seriesItemsArray = Object.values(seriesItemsObject);
 		const automaticSort = [];
-		let automaticSortedArr: [string, Relationship][]; // stores the sorted array of series items(sorting performed on number)
+		let automaticSortedArr: Relationship[]; // stores the sorted array of series items(sorting performed on number)
 
 		if (orderTypeValue === 1) { // OrderType 1 for Automatic Ordering
-			seriesItemsArray.forEach((seriesItem:[string, Relationship]) => {
-				seriesItem[1].attributes.forEach((attribute: Attribute) => {
+			seriesItemsArray.forEach((seriesItem: Relationship) => {
+				seriesItem.attributes.forEach((attribute: Attribute) => {
 					if (attribute.attributeType === 2) { // Attribute Type 2 for number
 						automaticSort.push({number: attribute.value.textValue, seriesItem});
 					}
@@ -119,15 +119,17 @@ export function sortSeriesItems(oldIndex, newIndex):any {
 
 		// eslint-disable-next-line max-len
 		const sortedSeriesItems = orderTypeValue === 1 ? arrayMove(automaticSortedArr, oldIndex, newIndex) : arrayMove(seriesItemsArray, oldIndex, newIndex);
-		sortedSeriesItems.forEach((seriesItem: [string, Relationship], index: number) => {
-			seriesItem[1].attributes.forEach((attribute: Attribute) => {
+		sortedSeriesItems.forEach((seriesItem: Relationship, index: number) => {
+			seriesItem.attributes.forEach((attribute: Attribute) => {
 				if (attribute.attributeType === 1) { // Attribute type 1 for position
 					attribute.value.textValue = `${index}`; // assigns the position value to the sorted series item array
 				}
 			});
 		});
-		const sortedSeriesItemObject = Object.fromEntries(new Map([...sortedSeriesItems]));
-		const payload = sortedSeriesItemObject;
+		const payload = sortedSeriesItems.reduce((accumulator, rel: RelationshipForDisplay) => {
+			accumulator[rel.rowID] = rel;
+			return accumulator;
+		}, {});
 		dispatch({payload, type: SORT_SERIES_ITEM});
 	  };
 }
