@@ -79,7 +79,7 @@ type SeriesItemsProps = {
  *
  */
 
-const SeriesList = ({value, baseEntity, handleNumberAttributeChange, onRemove, dragHandler}) => (
+const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemove, dragHandler}) => (
 	<Row className="margin-top-d5" key={value.rowID}>
 		<Col className="text-right form-control-static padding-left-0" md={1}>
 			{dragHandler ? <><FontAwesomeIcon icon={faBars}/> &nbsp;&nbsp;</> : null}
@@ -115,8 +115,8 @@ const SeriesList = ({value, baseEntity, handleNumberAttributeChange, onRemove, d
 	</Row>
 );
 
-SeriesList.displayName = 'SeriesList';
-SeriesList.propTypes = {
+SeriesListItem.displayName = 'SeriesListItem';
+SeriesListItem.propTypes = {
 	baseEntity: PropTypes.object.isRequired,
 	dragHandler: PropTypes.bool.isRequired,
 	handleNumberAttributeChange: PropTypes.func.isRequired,
@@ -125,7 +125,7 @@ SeriesList.propTypes = {
 };
 
 const SortableItem = SortableElement(({value, onRemove, baseEntity, handleNumberAttributeChange}) => (
-	<SeriesList
+	<SeriesListItem
 		dragHandler
 		baseEntity={baseEntity}
 		handleNumberAttributeChange={handleNumberAttributeChange}
@@ -195,7 +195,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 					orderType === 1 ?
 						<>
 							{seriesItemsArray.map((value) => (
-								<SeriesList
+								<SeriesListItem
 									baseEntity={baseEntity}
 									dragHandler={false}
 									handleNumberAttributeChange={handleNumberAttributeChange}
