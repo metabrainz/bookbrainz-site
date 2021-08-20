@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint-disable react/jsx-no-bind */
+/* eslint-disable react/jsx-no-bind, @typescript-eslint/no-invalid-this */
 
 
 import type {
@@ -24,9 +24,11 @@ import type {
 } from '../relationship-editor/types';
 import {Button, Col, Row} from 'react-bootstrap';
 import React, {useState} from 'react';
-import {faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
+import {SortableContainer, SortableElement} from 'react-sortable-hoc';
+import {faBars, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import PropTypes from 'prop-types';
 import Relationship from '../relationship-editor/relationship';
 import _ from 'lodash';
 import {generateRelationshipSelection} from '../relationship-editor/relationship-editor';
@@ -44,6 +46,8 @@ type SeriesItemsProps = {
 	onAdd: (_Relationship) => unknown,
     onEdit: (Attribute, string) => unknown,
     onRemove: (string) => unknown,
+	onSort: (_setPosition) => unknown,
+	orderType: number,
     relationshipTypes: Array<RelationshipType>,
     seriesItemsArray: RelationshipForDisplay[],
     seriesType: string
@@ -74,7 +78,64 @@ type SeriesItemsProps = {
  * @returns {ReactElement} React Component as a modular section within the entity editor.
  *
  */
-function SeriesEditor({baseEntity, relationshipTypes, seriesType, onRemove, onAdd, onEdit, seriesItemsArray}:SeriesItemsProps) {
+
+const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemove, dragHandler}) => (
+	<Row className="margin-top-d5" key={value.rowID}>
+		<Col className="text-right form-control-static padding-left-0" md={1}>
+			{dragHandler ? <><FontAwesomeIcon icon={faBars}/> &nbsp;&nbsp;</> : null}
+		</Col>
+		<Col md={2}>
+			<input
+				className="form-control"
+				placeholder="Enter value..."
+				type="text"
+				value={_.find(value.attributes, {attributeType: 2})?.value.textValue || ''}
+				onChange={handleNumberAttributeChange.bind(this, value.rowID)}
+			/>
+		</Col>
+		<Col className="form-control-static" md={7}>
+			<Relationship
+				link
+				contextEntity={baseEntity}
+				relationshipType={value.relationshipType}
+				sourceEntity={value.sourceEntity}
+				targetEntity={value.targetEntity}
+			/>
+		</Col>
+		<Col md={2}>
+			<Button
+				bsStyle="danger"
+				role="button"
+				onClick={onRemove.bind(this, value.rowID)}
+			>
+				<FontAwesomeIcon icon={faTimes}/>
+				<span>&nbsp;Remove</span>
+			</Button>
+		</Col>
+	</Row>
+);
+
+SeriesListItem.displayName = 'SeriesListItem';
+SeriesListItem.propTypes = {
+	baseEntity: PropTypes.object.isRequired,
+	dragHandler: PropTypes.bool.isRequired,
+	handleNumberAttributeChange: PropTypes.func.isRequired,
+	onRemove: PropTypes.func.isRequired,
+	value: PropTypes.any.isRequired
+};
+
+const SortableItem = SortableElement(({value, onRemove, baseEntity, handleNumberAttributeChange}) => (
+	<SeriesListItem
+		dragHandler
+		baseEntity={baseEntity}
+		handleNumberAttributeChange={handleNumberAttributeChange}
+		value={value}
+		onRemove={onRemove}
+	/>
+));
+
+const SortableList = SortableContainer(({children}) => <div>{children}</div>);
+function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onRemove, onAdd, onEdit, onSort, seriesItemsArray}:SeriesItemsProps) {
 	const [seriesItem, setSeriesItem] = useState(null);
 	const [targetEntity, setTargetEntity] = useState(null);
 
@@ -106,6 +167,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, onRemove, onAd
 			seriesItem.attributes = [{attributeType: 1, value: {textValue: null}}, {attributeType: 2, value: {textValue: null}}];
 			if (seriesItem) {
 				onAdd(seriesItem);
+				onSort({newIndex: null, oldIndex: null});
 				// After adding the entity, clear the Entity Search Field by setting targetEntity to null.
 				setTargetEntity(null);
 			}
@@ -123,45 +185,40 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, onRemove, onAd
 			value: {textValue: null}
 		};
 		onEdit([attributePosition, attributeNumber], rowID);
+		onSort({newIndex: null, oldIndex: null});
 	};
 	return (
 		<div>
 			<h2>What {seriesType}s are part of this Series?</h2>
 			{seriesItemsArray.length ?
-				<>
-					{seriesItemsArray.map((value) => (
-						<Row className="margin-top-d5" key={`${value.rowID}`}>
-							<Col className="text-right" md={1}/>
-							<Col md={2}>
-								<input
-									className="form-control"
-									type="text"
-									value={_.find(value.attributes, {attributeType: 2})?.value.textValue || ''}
-									onChange={handleNumberAttributeChange.bind(this, value.rowID)}
+				<> {
+					orderType === 1 ?
+						<>
+							{seriesItemsArray.map((value) => (
+								<SeriesListItem
+									baseEntity={baseEntity}
+									dragHandler={false}
+									handleNumberAttributeChange={handleNumberAttributeChange}
+									key={value.rowID}
+									value={value}
+									onRemove={onRemove}
 								/>
-							</Col>
-							<Col className="form-control-static" md={7}>
-								<Relationship
-									link
-									contextEntity={baseEntity}
-									relationshipType={value.relationshipType}
-									sourceEntity={value.sourceEntity}
-									targetEntity={value.targetEntity}
+							))
+							}
+						</> :
+						<SortableList distance={1} onSortEnd={onSort}>
+							{seriesItemsArray.map((value, index) => (
+								<SortableItem
+									baseEntity={baseEntity}
+									handleNumberAttributeChange={handleNumberAttributeChange}
+									index={index}
+									key={value.rowID}
+									value={value}
+									onRemove={onRemove}
 								/>
-							</Col>
-							<Col md={2}>
-								<Button
-									bsStyle="danger"
-									role="button"
-									onClick={onRemove.bind(this, value.rowID)}
-								>
-									<FontAwesomeIcon icon={faTimes}/>
-									<span>&nbsp;Remove</span>
-								</Button>
-							</Col>
-						</Row>
-					))
-					}
+							))}
+						</SortableList>
+				}
 				</> : null
 			}
 			<Row className="margin-top-d8">
@@ -190,4 +247,3 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, onRemove, onAd
 SeriesEditor.displayName = 'SeriesEditor';
 
 export default SeriesEditor;
-

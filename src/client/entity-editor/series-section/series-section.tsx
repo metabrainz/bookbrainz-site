@@ -19,7 +19,7 @@
 
 import * as Immutable from 'immutable';
 import * as React from 'react';
-import {Action, addSeriesItem, editSeriesItem, removeSeriesItem, updateOrderType, updateSeriesType} from './actions';
+import {Action, addSeriesItem, editSeriesItem, removeSeriesItem, sortSeriesItems, updateOrderType, updateSeriesType} from './actions';
 import {Col, Row} from 'react-bootstrap';
 import type {Entity, EntityType, RelationshipForDisplay, RelationshipType, Relationship as _Relationship} from '../relationship-editor/types';
 import CustomInput from '../../input';
@@ -49,7 +49,7 @@ type DispatchProps = {
 	onOrderTypeChange: (obj: {value: number}) => unknown,
 	onSeriesTypeChange: (obj: {value: string}) => unknown,
 	onSeriesItemAdd: (_Relationship) => unknown,
-
+	onSortSeriesItems: (_setPosition) => unknown
 
 };
 
@@ -101,6 +101,7 @@ function SeriesSection({
 	onRemove,
 	onSeriesItemAdd,
 	onSeriesTypeChange,
+	onSortSeriesItems,
 	orderTypeValue,
 	relationshipTypes,
 	seriesItems,
@@ -181,12 +182,14 @@ function SeriesSection({
 			</Row>
 			<SeriesEditor
 				baseEntity={baseEntity}
+				orderType={orderTypeValue}
 				relationshipTypes={relationshipTypes}
 				seriesItemsArray={seriesItemsArray}
 				seriesType={seriesTypeValue}
 				onAdd={onSeriesItemAdd}
 				onEdit={onEdit}
 				onRemove={onRemove}
+				onSort={onSortSeriesItems}
 			/>
 		</div>
 	);
@@ -207,10 +210,16 @@ function mapStateToProps(rootState): StateProps {
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onEdit: (data, rowID) => dispatch(editSeriesItem(data, rowID)),
-		onOrderTypeChange: (value) => dispatch(updateOrderType(value && value.value)),
+		onOrderTypeChange: (value) => {
+			dispatch(updateOrderType(value && value.value));
+			if (value && value.value === 1) {
+				dispatch(sortSeriesItems(null, null));
+			}
+		},
 		onRemove: (rowID) => dispatch(removeSeriesItem(rowID)),
 		onSeriesItemAdd: (data) => dispatch(addSeriesItem(data)),
-		onSeriesTypeChange: (value) => dispatch(updateSeriesType(value && value.value))
+		onSeriesTypeChange: (value) => dispatch(updateSeriesType(value && value.value)),
+		onSortSeriesItems: ({oldIndex, newIndex}) => dispatch(sortSeriesItems(oldIndex, newIndex))
 	};
 }
 

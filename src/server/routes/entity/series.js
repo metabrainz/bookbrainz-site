@@ -162,6 +162,16 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 	entityRoutes.updateDisplayedRevisions(req, res, next, SeriesRevision);
 });
 
+function formatRelationships(relationship) {
+	return {
+		attributeSetId: relationship.attributeSetId,
+		attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
+		relationshipType: relationship.type,
+		rowID: `n${relationship.id}`,
+		sourceEntity: relationship.source,
+		targetEntity: relationship.target
+	};
+}
 function seriesToFormState(series) {
 	const aliases = series.aliasSet ?
 		series.aliasSet.aliases.map(({languageId, ...rest}) => ({
@@ -212,22 +222,24 @@ function seriesToFormState(series) {
 		relationships: {}
 	};
 
+	const seriesItems = _.remove(series.relationships, (relationship) => relationship.typeId > 69 && relationship.typeId < 75);
+	seriesItems.forEach((seriesItem) => {
+		seriesItem.attributeSet.relationshipAttributes.forEach(attribute => {
+			seriesItem[`${attribute.type.name}`] = attribute.value.textValue;
+		});
+	});
+
+	if (series.seriesOrderingType.label === 'Manual') {
+		seriesItems.sort(sortRelationshipOrdinal('position'));
+	}
+	else {
+		seriesItems.sort(sortRelationshipOrdinal('number'));
+	}
+	seriesItems.forEach((seriesItem) => {
+		seriesSection.seriesItems[`n${seriesItem.id}`] = formatRelationships(seriesItem);
+	});
 	series.relationships.forEach((relationship) => {
-		const formattedRelationship = {
-			attributeSetId: relationship.attributeSetId,
-			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
-			relationshipType: relationship.type,
-			rowID: `n${relationship.id}`,
-			sourceEntity: relationship.source,
-			targetEntity: relationship.target
-		  };
-		  // separate series items from relationships
-		  if (relationship.typeId > 69 && relationship.typeId < 75) {
-			seriesSection.seriesItems[`n${relationship.id}`] = formattedRelationship;
-		  }
-		  else {
-			relationshipSection.relationships[`n${relationship.id}`] = formattedRelationship;
-		  }
+		relationshipSection.relationships[`n${relationship.id}`] = formatRelationships(relationship);
 	});
 
 	const optionalSections = {};

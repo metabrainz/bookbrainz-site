@@ -81,6 +81,12 @@ export function loadSeriesItems(req: $Request, res: $Response, next: NextFunctio
 			const {relationships} = entity;
 			// Extract the series items from relationships
 			const seriesItems = _.remove(relationships, (relationship: any) => relationship.typeId > 69 && relationship.typeId < 75);
+			if (entity.seriesOrderingType.label === 'Manual') {
+				seriesItems.sort(commonUtils.sortRelationshipOrdinal('position'));
+			}
+			else {
+				seriesItems.sort(commonUtils.sortRelationshipOrdinal('number'));
+			}
 			const formattedSeriesItems = seriesItems.map((item) => (
 				{...item.source, displayNumber: true,
 					number: item.number,

@@ -19,7 +19,8 @@
 
 import * as Immutable from 'immutable';
 import {
-	ADD_SERIES_ITEM, Action, EDIT_SERIES_ITEM, REMOVE_SERIES_ITEM, UPDATE_ORDER_TYPE, UPDATE_SERIES_TYPE
+	ADD_SERIES_ITEM, Action, EDIT_SERIES_ITEM, REMOVE_SERIES_ITEM,
+	SORT_SERIES_ITEM, UPDATE_ORDER_TYPE, UPDATE_SERIES_TYPE
 } from './actions';
 
 
@@ -46,6 +47,8 @@ function reducer(
 				Immutable.fromJS({rowID, ...payload.data})
 			);
 		}
+		case SORT_SERIES_ITEM:
+			return state.set('seriesItems', Immutable.fromJS(action.payload));
 		case EDIT_SERIES_ITEM:
 			return state.setIn(
 				['seriesItems', payload.rowID, 'attributes'],
