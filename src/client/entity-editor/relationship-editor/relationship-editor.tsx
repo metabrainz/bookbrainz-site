@@ -118,13 +118,14 @@ export function generateRelationshipSelection(
 }
 
 function getValidOtherEntityTypes(
-	relationshipTypes: Array<RelationshipType>,
+	relTypes: Array<RelationshipType>,
 	baseEntity: Entity
 ) {
+	let relationshipTypes = relTypes;
 	if (baseEntity.type === 'Series') {
 		// When the base entity is Series, remove relationship type 70 - 74.
 		// We don't want to generate entity types corresponding to these relationship type.
-		_.remove(relationshipTypes, (type) => type.id > 69 && type.id < 75);
+		relationshipTypes = relationshipTypes.filter(relationshipType => !(relationshipType.id > 69 && relationshipType.id < 75));
 	}
 	const validEntityTypes = relationshipTypes.map((relationshipType) => {
 		if (relationshipType.deprecated === true) {
