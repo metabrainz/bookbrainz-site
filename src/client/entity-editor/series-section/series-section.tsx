@@ -27,7 +27,9 @@ import type {Dispatch} from 'redux';
 import Select from 'react-select';
 import SeriesEditor from './series-editor';
 import _ from 'lodash';
+import {attachAttribToRelForDisplay} from '../helpers';
 import {connect} from 'react-redux';
+import {sortRelationshipOrdinal} from '../../../common/helpers/utils';
 
 
 type SeriesOrderingType = {
@@ -133,7 +135,14 @@ function SeriesSection({
 		});
 	}
 	const seriesItemsArray: Array<RelationshipForDisplay> = Object.values(seriesItemsObject);
-
+	attachAttribToRelForDisplay(seriesItemsArray);
+	// Sort the series items according to the ordering type before displaying
+	if (orderTypeValue === 2) {
+		seriesItemsArray.sort(sortRelationshipOrdinal('position'));
+	}
+	else {
+		seriesItemsArray.sort(sortRelationshipOrdinal('number'));
+	}
 	const seriesOrderingTypesForDisplay = seriesOrderingTypes.map((type) => ({
 		label: type.label,
 		value: type.id
