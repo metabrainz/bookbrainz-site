@@ -36,6 +36,7 @@ import buttonBarReducer from './button-bar/reducer';
 import {combineReducers} from 'redux-immutable';
 import editionGroupSectionReducer from './edition-group-section/reducer';
 import editionSectionReducer from './edition-section/reducer';
+import {getAttributeName} from './relationship-editor/helper';
 import identifierEditorReducer from './identifier-editor/reducer';
 import nameSectionReducer from './name-section/reducer';
 import publisherSectionReducer from './publisher-section/reducer';
@@ -143,4 +144,19 @@ export function shouldDevToolsBeInjected(): boolean {
 		typeof window === 'object' &&
 		(window as ReduxWindow).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
 	);
+}
+
+/**
+ * Takes an array of relationships and attach the deeply nested
+ * relationship attributes to the first level of the relationship object.
+ *
+ * @param {Array} relationships the array of relationships
+ */
+export function attachAttribToRelForDisplay(relationships) {
+	relationships.forEach((relationship) => {
+		relationship.attributes.forEach(attribute => {
+			const attributeName = getAttributeName(attribute.attributeType);
+			relationship[attributeName] = attribute.value.textValue;
+		});
+	});
 }
