@@ -49,11 +49,14 @@ function reducer(
 		}
 		case SORT_SERIES_ITEM:
 			return state.set('seriesItems', Immutable.fromJS(action.payload));
-		case EDIT_SERIES_ITEM:
+		case EDIT_SERIES_ITEM: {
+			// index of number attribute in the attributes array
+			const index = state.getIn(['seriesItems', payload.rowID, 'attributes']).findIndex(attribute => attribute.get('attributeType') === 2);
 			return state.setIn(
-				['seriesItems', payload.rowID, 'attributes'],
-				Immutable.fromJS([...payload.data])
+				['seriesItems', payload.rowID, 'attributes', index],
+				Immutable.fromJS({...payload.data})
 			);
+		}
 		case REMOVE_SERIES_ITEM:
 			return state.deleteIn(['seriesItems', payload.rowID]);
 		// no default
