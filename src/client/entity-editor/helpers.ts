@@ -25,6 +25,7 @@ import EditionSection from './edition-section/edition-section';
 import EditionSectionMerge from './edition-section/edition-section-merge';
 import PublisherSection from './publisher-section/publisher-section';
 import PublisherSectionMerge from './publisher-section/publisher-section-merge';
+import { RelationshipForDisplay } from './relationship-editor/types';
 import SeriesSection from './series-section/series-section';
 import SeriesSectionMerge from './series-section/series-section-merge';
 import WorkSection from './work-section/work-section';
@@ -152,7 +153,7 @@ export function shouldDevToolsBeInjected(): boolean {
  *
  * @param {Array} relationships the array of relationships
  */
-export function attachAttribToRelForDisplay(relationships) {
+export function attachAttribToRelForDisplay(relationships: RelationshipForDisplay[]) {
 	relationships.forEach((relationship) => {
 		relationship.attributes.forEach(attribute => {
 			const attributeName = getAttributeName(attribute.attributeType);
