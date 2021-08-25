@@ -1,3 +1,4 @@
+import {Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
 
 /**
  * Regular expression for valid BookBrainz UUIDs (bbid)
@@ -86,10 +87,10 @@ export function makePromiseFromObject<T>(obj: Unresolved<T>): Promise<T> {
  */
 /* eslint-disable no-param-reassign */
 export function sortRelationshipOrdinal(sortByProperty: string) {
-	return (a:string, b:string) => {
-		a = a[sortByProperty] || '';
-		b = b[sortByProperty] || '';
+	return (a: RelationshipForDisplay | Relationship, b: RelationshipForDisplay | Relationship) => {
+		const value1 = a[sortByProperty] || '';
+		const value2 = b[sortByProperty] || '';
 		// eslint-disable-next-line no-undefined
-		return a.localeCompare(b, undefined, {numeric: true});
+		return value1.localeCompare(value2, undefined, {numeric: true});
 	};
 }
