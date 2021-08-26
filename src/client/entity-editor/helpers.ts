@@ -25,7 +25,7 @@ import EditionSection from './edition-section/edition-section';
 import EditionSectionMerge from './edition-section/edition-section-merge';
 import PublisherSection from './publisher-section/publisher-section';
 import PublisherSectionMerge from './publisher-section/publisher-section-merge';
-import { RelationshipForDisplay } from './relationship-editor/types';
+import {RelationshipForDisplay} from './relationship-editor/types';
 import SeriesSection from './series-section/series-section';
 import SeriesSectionMerge from './series-section/series-section-merge';
 import WorkSection from './work-section/work-section';

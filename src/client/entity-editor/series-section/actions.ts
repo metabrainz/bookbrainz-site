@@ -103,13 +103,15 @@ export function sortSeriesItems(oldIndex, newIndex):any {
 		const orderTypeValue = state.get('seriesSection').get('orderType');
 		const seriesItemsObject = seriesItems.toJS();
 		const seriesItemsArray: RelationshipForDisplay[] = Object.values(seriesItemsObject);
+		// Attach the deeply nested attributes to the first level of the each seriesItem object.
 		attachAttribToRelForDisplay(seriesItemsArray);
 		if (orderTypeValue === 1) { // OrderType 1 for Automatic Ordering
 			seriesItemsArray.sort(sortRelationshipOrdinal('number')); // sorts the array of series items on number attribute
 		}
 		else {
-		    seriesItemsArray.sort(sortRelationshipOrdinal('position'));
+		    seriesItemsArray.sort(sortRelationshipOrdinal('position')); // sorts the array of series items on position attribute
 		}
+		// Before saving the seriesItems to the store, we need to detach back the attributes from each seriesItem object.
 		seriesItemsArray.forEach((seriesItem: any) => {
 			delete seriesItem.number;
 			delete seriesItem.position;
