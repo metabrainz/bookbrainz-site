@@ -180,11 +180,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 			attributeType: 2,
 			value: {textValue: value}
 		};
-		const attributePosition = {
-			attributeType: 1,
-			value: {textValue: null}
-		};
-		onEdit([attributePosition, attributeNumber], rowID);
+		onEdit(attributeNumber, rowID);
 		onSort({newIndex: null, oldIndex: null});
 	};
 	return (

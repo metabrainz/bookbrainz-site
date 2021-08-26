@@ -20,6 +20,7 @@
 
 import type {Attribute, Relationship, RelationshipForDisplay} from '../relationship-editor/types';
 import arrayMove from 'array-move';
+import {attachAttribToRelForDisplay} from '../helpers';
 import {sortRelationshipOrdinal} from '../../../common/helpers/utils';
 
 
@@ -101,25 +102,22 @@ export function sortSeriesItems(oldIndex, newIndex):any {
 		const seriesItems = state.get('seriesSection').get('seriesItems');
 		const orderTypeValue = state.get('seriesSection').get('orderType');
 		const seriesItemsObject = seriesItems.toJS();
-		const seriesItemsArray = Object.values(seriesItemsObject);
-		const automaticSort = [];
-		let automaticSortedArr: Relationship[]; // stores the sorted array of series items(sorting performed on number)
-
+		const seriesItemsArray: RelationshipForDisplay[] = Object.values(seriesItemsObject);
+		// Attach the deeply nested attributes to the first level of the each seriesItem object.
+		attachAttribToRelForDisplay(seriesItemsArray);
 		if (orderTypeValue === 1) { // OrderType 1 for Automatic Ordering
-			seriesItemsArray.forEach((seriesItem: Relationship) => {
-				seriesItem.attributes.forEach((attribute: Attribute) => {
-					if (attribute.attributeType === 2) { // Attribute Type 2 for number
-						automaticSort.push({number: attribute.value.textValue, seriesItem});
-					}
-				});
-			});
-			automaticSort.sort(sortRelationshipOrdinal('number')); // sorts the array of series items on number attribute
-			automaticSortedArr = automaticSort.map(item => item.seriesItem);
+			seriesItemsArray.sort(sortRelationshipOrdinal('number')); // sorts the array of series items on number attribute
 		}
-
-		// eslint-disable-next-line max-len
-		const sortedSeriesItems = orderTypeValue === 1 ? arrayMove(automaticSortedArr, oldIndex, newIndex) : arrayMove(seriesItemsArray, oldIndex, newIndex);
-		sortedSeriesItems.forEach((seriesItem: Relationship, index: number) => {
+		else {
+		    seriesItemsArray.sort(sortRelationshipOrdinal('position')); // sorts the array of series items on position attribute
+		}
+		// Before saving the seriesItems to the store, we need to detach back the attributes from each seriesItem object.
+		seriesItemsArray.forEach((seriesItem: any) => {
+			delete seriesItem.number;
+			delete seriesItem.position;
+		});
+		const sortedSeriesItems = arrayMove(seriesItemsArray, oldIndex, newIndex);
+		sortedSeriesItems.forEach((seriesItem: RelationshipForDisplay, index: number) => {
 			seriesItem.attributes.forEach((attribute: Attribute) => {
 				if (attribute.attributeType === 1) { // Attribute type 1 for position
 					attribute.value.textValue = `${index}`; // assigns the position value to the sorted series item array
