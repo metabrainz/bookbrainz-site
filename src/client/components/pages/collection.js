@@ -138,6 +138,7 @@ class CollectionPage extends React.Component {
 		this.handleRemoveEntities = this.handleRemoveEntities.bind(this);
 		this.handleShowDeleteModal = this.handleShowDeleteModal.bind(this);
 		this.handleCloseDeleteModal = this.handleCloseDeleteModal.bind(this);
+		this.handleSubscribe = this.handleSubscribe(this);
 		this.handleShowAddEntityModal = this.handleShowAddEntityModal.bind(this);
 		this.handleCloseAddEntityModal = this.handleCloseAddEntityModal.bind(this);
 		this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
@@ -224,6 +225,21 @@ class CollectionPage extends React.Component {
 		}, this.pagerElementRef.triggerSearch);
 	}
 
+	handleSubscribe() {
+		const submissionUrl = '/subscription/subscribe/collection';
+		const collectionId = this.props.collection.id;
+		const subscriberId = this.props.userId;
+		request.post(submissionUrl)
+			.send({collectionId, subscriberId})
+			.then((res) => {
+				// eslint-disable-next-line no-console
+				console.log('Success');
+			}, (error) => {
+				// eslint-disable-next-line no-console
+				console.log('error thrown');
+			});
+	}
+
 	render() {
 		const messageComponent = this.state.message.text ? <Alert bsStyle={this.state.message.type} className="margin-top-1" onDismiss={this.handleAlertDismiss}>{this.state.message.text}</Alert> : null;
 		const EntityTable = getEntityTable(this.props.collection.entityType);
@@ -265,6 +281,15 @@ class CollectionPage extends React.Component {
 				<EntityTable{...propsForTable}/>
 				{messageComponent}
 				<div className="margin-top-1 text-left">
+					<Button
+						bsSize="small"
+						bsStyle="success"
+						className="margin-bottom-d5"
+						title="Subscribe"
+						onClick={this.handleSubscribe}
+					>
+						Subscribe
+					</Button>
 					{
 						this.props.isCollaborator || this.props.isOwner ?
 							<Button

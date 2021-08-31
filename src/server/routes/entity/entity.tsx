@@ -49,6 +49,7 @@ import _ from 'lodash';
 import {getEntityLabel} from '../../../client/helpers/entity';
 import {getOrderedRevisionsForEntityPage} from '../../helpers/revisions';
 import log from 'log';
+import notificationService from '../../notificationService';
 import target from '../../templates/target';
 
 
@@ -1083,7 +1084,7 @@ export function handleCreateOrEditEntity(
 				}
 			}
 
-
+			notificationService.emit('send-notifications-for-entity', savedMainEntity.get('bbid'), req.user.id, savedMainEntity.get('type'));
 			return savedMainEntity.toJSON();
 		}
 		catch (err) {

@@ -31,7 +31,7 @@ import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {labelsForAuthor} from '../../../helpers/utils';
-
+import request from 'superagent';
 
 const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
 	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias, transformISODateForDisplay} = entityHelper;
@@ -106,9 +106,22 @@ AuthorAttributes.propTypes = {
 	author: PropTypes.object.isRequired
 };
 
+function handleSubscribe(bbid) {
+	const submissionUrl = '/subscription/subscribe/entity';
+	request.post(submissionUrl)
+		.send({bbid})
+		.then((res) => {
+			// eslint-disable-next-line no-console
+			console.log('Success');
+		}, (error) => {
+			// eslint-disable-next-line no-console
+			console.log('error thrown');
+		});
+}
 
 function AuthorDisplayPage({entity, identifierTypes, user}) {
 	const urlPrefix = getEntityUrl(entity);
+	/* eslint-disable react/jsx-no-bind */
 	return (
 		<div>
 			<Row className="entity-display-background">
@@ -124,6 +137,13 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 					<AuthorAttributes author={entity}/>
 				</Col>
 			</Row>
+			<Button
+				bsStyle="success"
+				className="margin-top-d15"
+				onClick={() => handleSubscribe(entity.bbid)}
+			>
+				Subscribe
+			</Button>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>

@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import React from 'react';
 import express from 'express';
 import log from 'log';
 
