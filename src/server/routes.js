@@ -31,6 +31,7 @@ import registerRouter from './routes/register';
 import revisionRouter from './routes/revision';
 import revisionsRouter from './routes/revisions';
 import searchRouter from './routes/search';
+import subscriptionRouter from './routes/subscription';
 import statisticsRouter from './routes/statistics';
 import workRouter from './routes/entity/work';
 
@@ -83,6 +84,10 @@ function initCollectionRoutes(app) {
 	app.use('/collection', collectionRouter);
 }
 
+function initSubscriptionRoutes(app) {
+	app.use('/subscription', subscriptionRouter);
+}
+
 function initRoutes(app) {
 	initRootRoutes(app);
 	initEditionGroupRoutes(app);
@@ -94,6 +99,7 @@ function initRoutes(app) {
 	initPublisherRoutes(app);
 	initRevisionRoutes(app);
 	initEditorRoutes(app);
+	initSubscriptionRoutes(app);
 }
 
 export default initRoutes;
