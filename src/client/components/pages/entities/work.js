@@ -92,7 +92,7 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 		request.post(submissionUrl)
 			.send({bbid})
 			.then((res) => {
-				setIsSubscribed(false)
+				setIsSubscribed(false);
 			}, (error) => {
 				// eslint-disable-next-line no-console
 				console.log('error thrown');
