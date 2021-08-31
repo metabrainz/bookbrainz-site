@@ -31,8 +31,8 @@ import registerRouter from './routes/register';
 import revisionRouter from './routes/revision';
 import revisionsRouter from './routes/revisions';
 import searchRouter from './routes/search';
-import subscriptionRouter from './routes/subscription';
 import statisticsRouter from './routes/statistics';
+import subscriptionRouter from './routes/subscription';
 import workRouter from './routes/entity/work';
 
 

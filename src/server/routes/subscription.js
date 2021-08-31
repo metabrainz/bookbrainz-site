@@ -83,7 +83,7 @@ router.post('/unsubscribe/entity', async (req, res, next) => {
 		const subscriberId = parseInt(req.user.id, 10);
 		const {EntitySubscription} = req.app.locals.orm;
 		await new EntitySubscription({}).where('bbid', bbid).where('subscriber_id', subscriberId).destroy();
-		res.send({
+		return res.send({
 			msg: 'successfully unsubscribed'
 		});
 	}
