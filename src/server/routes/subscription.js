@@ -22,6 +22,45 @@ import log from 'log';
 
 const router = express.Router();
 
+router.get('/entity/isSubscribed/:bbid', async (req, res, next) => {
+	try {
+		const {EntitySubscription} = req.app.locals.orm;
+		const editorId = req.user.id;
+		const {bbid} = req.params;
+		const subscriber = await new EntitySubscription({})
+			.where('bbid', bbid)
+			.where('subscriber_id', editorId)
+			.fetchAll({
+				required: false
+			});
+		const isSubscribed = subscriber.length > 0;
+		return res.send({isSubscribed});
+	}
+	catch (err) {
+		log.debug(err);
+		return next(err);
+	}
+});
+
+router.get('/collection/isSubscribed/:collectionId', async (req, res, next) => {
+	try {
+		const {CollectionSubscription} = req.app.locals.orm;
+		const editorId = req.user.id;
+		const {collectionId} = req.params;
+		const subscriber = await new CollectionSubscription({})
+			.where('collection_id', collectionId)
+			.where('subscriber_id', editorId)
+			.fetchAll({
+				required: false
+			});
+		const isSubscribed = subscriber.length > 0;
+		return res.send({isSubscribed});
+	}
+	catch (err) {
+		log.debug(err);
+		return next(err);
+	}
+});
 
 router.post('/subscribe/entity', async (req, res, next) => {
 	try {

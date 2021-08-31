@@ -18,6 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
+import React, {useEffect, useState} from 'react';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
@@ -26,16 +27,16 @@ import EntityRelatedCollections from './related-collections';
 import EntityTitle from './title';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import React from 'react';
 import WorksTable from './work-table';
 import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons';
+import request from 'superagent';
 
 
 const {
 	deletedEntityMessage, extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
 	getLanguageAttribute, getRelationshipTargetByTypeId, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias
 } = entityHelper;
-const {Col, Row} = bootstrap;
+const {Col, Row, Button} = bootstrap;
 
 function EditionAttributes({edition}) {
 	if (edition.deleted) {
@@ -125,6 +126,38 @@ function EditionDisplayPage({entity, identifierTypes, user}) {
 			</span>
 		);
 	}
+
+	const [isSubscribed, setIsSubscribed] = useState(false);
+	useEffect(() => {
+		request.get(`/subscription/entity/isSubscribed/${entity.bbid}`).then(response => {
+			if (response.body.isSubscribed) {
+				setIsSubscribed(true);
+			}
+		});
+	});
+	function handleUnsubscribe(bbid) {
+		const submissionUrl = '/subscription/unsubscribe/entity';
+		request.post(submissionUrl)
+			.send({bbid})
+			.then((res) => {
+				setIsSubscribed(false);
+			}, (error) => {
+				// eslint-disable-next-line no-console
+				console.log('error thrown');
+			});
+	}
+	function handleSubscribe(bbid) {
+		const submissionUrl = '/subscription/subscribe/entity';
+		request.post(submissionUrl)
+			.send({bbid})
+			.then((res) => {
+				setIsSubscribed(true);
+			}, (error) => {
+				// eslint-disable-next-line no-console
+				console.log('error thrown');
+			});
+	}
+	/* eslint-disable react/jsx-no-bind */
 	return (
 		<div>
 			<Row className="entity-display-background">
@@ -141,6 +174,26 @@ function EditionDisplayPage({entity, identifierTypes, user}) {
 					{editionGroupSection}
 				</Col>
 			</Row>
+			{
+				!isSubscribed &&
+				<Button
+					bsStyle="success"
+					className="margin-top-d15"
+					onClick={() => handleSubscribe(entity.bbid)}
+				>
+					Subscribe
+				</Button>
+			}
+			{
+				isSubscribed &&
+				<Button
+					bsStyle="danger"
+					className="margin-top-d15"
+					onClick={() => handleUnsubscribe(entity.bbid)}
+				>
+					Unsubscribe
+				</Button>
+			}
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
