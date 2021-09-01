@@ -581,4 +581,18 @@ router.get('/:id/collections/collections', async (req, res, next) => {
 	}
 });
 
+router.get('/:id/notifications', auth.isAuthenticated, async (req, res, next) => {
+	try {
+		const editorId = req.params.id;
+		const {Notification} = req.app.locals.orm;
+		const allNotifications = await new Notification().where('subscriber_id', editorId).fetchAll({requried: false});
+		return res.send({
+			notifications: allNotifications.toJSON()
+		});
+	}
+	catch (err) {
+		return next(err);
+	}
+})
+
 export default router;

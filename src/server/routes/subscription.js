@@ -15,14 +15,14 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
+import * as auth from '../helpers/auth';
 import express from 'express';
 import log from 'log';
 
 
 const router = express.Router();
 
-router.get('/entity/isSubscribed/:bbid', async (req, res, next) => {
+router.get('/entity/isSubscribed/:bbid', auth.isAuthenticated, async (req, res, next) => {
 	try {
 		const {EntitySubscription} = req.app.locals.orm;
 		const editorId = req.user.id;
@@ -42,7 +42,7 @@ router.get('/entity/isSubscribed/:bbid', async (req, res, next) => {
 	}
 });
 
-router.get('/collection/isSubscribed/:collectionId', async (req, res, next) => {
+router.get('/collection/isSubscribed/:collectionId', auth.isAuthenticated, async (req, res, next) => {
 	try {
 		const {CollectionSubscription} = req.app.locals.orm;
 		const editorId = req.user.id;
@@ -62,7 +62,7 @@ router.get('/collection/isSubscribed/:collectionId', async (req, res, next) => {
 	}
 });
 
-router.post('/subscribe/entity', async (req, res, next) => {
+router.post('/subscribe/entity', auth.isAuthenticated, async (req, res, next) => {
 	try {
 		const {bbid} = req.body;
 		const subscriberId = parseInt(req.user.id, 10);
@@ -80,7 +80,7 @@ router.post('/subscribe/entity', async (req, res, next) => {
 	}
 });
 
-router.post('/subscribe/collection', async (req, res, next) => {
+router.post('/subscribe/collection', auth.isAuthenticated, async (req, res, next) => {
 	try {
 		const {collectionId} = req.body;
 		const subscriberId = parseInt(req.user.id, 10);
@@ -99,7 +99,7 @@ router.post('/subscribe/collection', async (req, res, next) => {
 });
 
 
-router.post('/unsubscribe/collection', async (req, res, next) => {
+router.post('/unsubscribe/collection', auth.isAuthenticated, async (req, res, next) => {
 	try {
 		const {collectionId} = req.body;
 		const subscriberId = parseInt(req.user.id, 10);
@@ -115,7 +115,7 @@ router.post('/unsubscribe/collection', async (req, res, next) => {
 	}
 });
 
-router.post('/unsubscribe/entity', async (req, res, next) => {
+router.post('/unsubscribe/entity', auth.isAuthenticated, async (req, res, next) => {
 	try {
 		const {bbid} = req.body;
 		const subscriberId = parseInt(req.user.id, 10);

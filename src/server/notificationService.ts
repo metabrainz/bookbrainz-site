@@ -21,15 +21,17 @@ eventEmitter.on('send-notifications-for-collection', async (collectionId, editor
 
 	const notificationPromiseArray = [];
 	allSubscribers.forEach(subscriber => {
-		const subscriberJSON = subscriber.toJSON();
-		notificationPromiseArray.push(
-			new Notification({
-				notificationRedirectLink: `/collection/${collectionId}`,
-				notificationText: `${editorJSON.name} edited ${subscriberJSON.collection.name} collection`,
-				read: false,
-				subscriberId: subscriber.get('subscriberId')
-			}).save(null, {method: 'insert'})
-		);
+		if (subscriber.get('subscriberId') !== editorId) {
+			const subscriberJSON = subscriber.toJSON();
+			notificationPromiseArray.push(
+				new Notification({
+					notificationRedirectLink: `/collection/${collectionId}`,
+					notificationText: `${editorJSON.name} edited ${subscriberJSON.collection.name} collection`,
+					read: false,
+					subscriberId: subscriber.get('subscriberId')
+				}).save(null, {method: 'insert'})
+			);
+		}
 	});
 	await Promise.all(notificationPromiseArray);
 });
@@ -47,15 +49,16 @@ eventEmitter.on('send-notifications-for-entity', async (bbid, editorId, entityTy
 
 	const notificationPromiseArray = [];
 	allSubscribers.forEach(subscriber => {
-		const subscriberJSON = subscriber.toJSON();
-		notificationPromiseArray.push(
-			new Notification({
-				notificationRedirectLink: `/${kebabCase(entityType)}/${bbid}`,
-				notificationText: `${editorJSON.name} edited ${kebabCase(entityType)} ${bbid}`,
-				read: false,
-				subscriberId: subscriber.get('subscriberId')
-			}).save(null, {method: 'insert'})
-		);
+		if (subscriber.get('subscriberId') !== editorId) {
+			notificationPromiseArray.push(
+				new Notification({
+					notificationRedirectLink: `/${kebabCase(entityType)}/${bbid}`,
+					notificationText: `${editorJSON.name} edited ${kebabCase(entityType)} ${bbid}`,
+					read: false,
+					subscriberId: subscriber.get('subscriberId')
+				}).save(null, {method: 'insert'})
+			);
+		}
 	});
 	await Promise.all(notificationPromiseArray);
 });
