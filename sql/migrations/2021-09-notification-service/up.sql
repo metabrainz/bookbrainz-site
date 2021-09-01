@@ -12,7 +12,11 @@ ALTER TABLE bookbrainz.notification ADD FOREIGN KEY (subscriber_id) REFERENCES  
 
 CREATE TABLE bookbrainz.entity_subscription (
     bbid UUID,
-    subscriber_id INT
+    subscriber_id INT,
+    PRIMARY KEY (
+        bbid,
+        subscriber_id
+    )
 );
 ALTER TABLE bookbrainz.entity_subscription ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
 ALTER TABLE bookbrainz.entity_subscription ADD FOREIGN KEY (subscriber_id) REFERENCES bookbrainz.editor (id);
@@ -20,7 +24,11 @@ ALTER TABLE bookbrainz.entity_subscription ADD FOREIGN KEY (subscriber_id) REFER
 
 CREATE TABLE bookbrainz.collection_subscription (
     collection_id UUID,
-    subscriber_id INT
+    subscriber_id INT,
+    PRIMARY KEY (
+        collection_id,
+        subscriber_id
+    )
 );
 ALTER TABLE bookbrainz.collection_subscription ADD FOREIGN KEY (collection_id) REFERENCES bookbrainz.user_collection (id);
 ALTER TABLE bookbrainz.collection_subscription ADD FOREIGN KEY (subscriber_id) REFERENCES bookbrainz.editor (id);
