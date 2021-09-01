@@ -170,8 +170,9 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 	return Promise.all(entityRevisions.map(
 		async (revision) => {
 			const dataId = revision.get('dataId');
-			let entity = revision.related('entity').toJSON();
-			entity = await orm.func.entity.getEntity(orm, entityType, entity.bbid);
+			const revisionEntity = revision.related('entity');
+			const entityBBID = revisionEntity.get('bbid');
+			const entity = await orm.func.entity.getEntity(orm, entityType, entityBBID);
 			const isEntityDeleted = !entity.dataId;
 			return revision.parent()
 				.then(
@@ -183,7 +184,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 						}
 						return makePromiseFromObject({
 							changes: revision.diff(parent),
-							entity: revision.related('entity'),
+							entity: revisionEntity,
 							entityAlias: dataId ?
 								revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
 								orm.func.entity.getEntityParentAlias(
@@ -198,7 +199,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 					// If calling .parent() is rejected (no parent rev), we still want to go ahead without the parent
 					() => makePromiseFromObject({
 						changes: revision.diff(null),
-						entity: revision.related('entity'),
+						entity: revisionEntity,
 						entityAlias: revision.get('dataId') ?
 							revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
 							orm.func.entity.getEntityParentAlias(
