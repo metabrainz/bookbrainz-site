@@ -71,7 +71,7 @@ router.post('/subscribe/entity', async (req, res, next) => {
 			bbid, subscriberId
 		}).save(null, {method: 'insert'});
 		return res.send({
-			msg: 'successfully subscribed'
+			isSubscribed: true
 		});
 	}
 	catch (err) {
@@ -89,7 +89,7 @@ router.post('/subscribe/collection', async (req, res, next) => {
 			collectionId, subscriberId
 		}).save(null, {method: 'insert'});
 		return res.send({
-			msg: 'successfully subscribed'
+			isSubscribed: true
 		});
 	}
 	catch (err) {
@@ -106,7 +106,7 @@ router.post('/unsubscribe/collection', async (req, res, next) => {
 		const {CollectionSubscription} = req.app.locals.orm;
 		await new CollectionSubscription({}).where('collection_id', collectionId).where('subscriber_id', subscriberId).destroy();
 		return res.send({
-			msg: 'successfully unsubscribed'
+			isSubscribed: false
 		});
 	}
 	catch (err) {
@@ -122,7 +122,7 @@ router.post('/unsubscribe/entity', async (req, res, next) => {
 		const {EntitySubscription} = req.app.locals.orm;
 		await new EntitySubscription({}).where('bbid', bbid).where('subscriber_id', subscriberId).destroy();
 		return res.send({
-			msg: 'successfully unsubscribed'
+			isSubscribed: false
 		});
 	}
 	catch (err) {

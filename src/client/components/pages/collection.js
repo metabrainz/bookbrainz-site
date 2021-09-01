@@ -123,6 +123,7 @@ class CollectionPage extends React.Component {
 		super(props);
 		this.state = {
 			entities: this.props.entities,
+			isSubscribed: false,
 			message: {
 				text: null,
 				type: null
@@ -138,12 +139,18 @@ class CollectionPage extends React.Component {
 		this.handleRemoveEntities = this.handleRemoveEntities.bind(this);
 		this.handleShowDeleteModal = this.handleShowDeleteModal.bind(this);
 		this.handleCloseDeleteModal = this.handleCloseDeleteModal.bind(this);
-		this.handleSubscribe = this.handleSubscribe(this);
+		this.handleSubscribe = this.handleSubscribe.bind(this);
 		this.handleShowAddEntityModal = this.handleShowAddEntityModal.bind(this);
 		this.handleCloseAddEntityModal = this.handleCloseAddEntityModal.bind(this);
 		this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
+		this.handleUnsubscribe = this.handleUnsubscribe.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
+		this.setIsSubscribed = this.setIsSubscribed.bind(this);
 		this.closeAddEntityModalShowMessageAndRefreshTable = this.closeAddEntityModalShowMessageAndRefreshTable.bind(this);
+	}
+
+	async componentDidMount() {
+		await this.setIsSubscribed();
 	}
 
 	searchResultsCallback(newResults) {
@@ -232,11 +239,49 @@ class CollectionPage extends React.Component {
 		request.post(submissionUrl)
 			.send({collectionId, subscriberId})
 			.then((res) => {
-				// eslint-disable-next-line no-console
-				console.log('Success');
-			}, (error) => {
-				// eslint-disable-next-line no-console
-				console.log('error thrown');
+				const {isSubscribed} = res.body;
+				this.setState({isSubscribed});
+			}, () => {
+				this.setState({
+					message: {
+						text: 'Something went wrong! Please try again later',
+						type: 'danger'
+					}
+				});
+			});
+	}
+
+	handleUnsubscribe() {
+		const submissionUrl = '/subscription/unsubscribe/collection';
+		const collectionId = this.props.collection.id;
+		request.post(submissionUrl)
+			.send({collectionId})
+			.then((res) => {
+				const {isSubscribed} = res.body;
+				this.setState({isSubscribed});
+			}, () => {
+				this.setState({
+					message: {
+						text: 'Something went wrong! Please try again later',
+						type: 'danger'
+					}
+				});
+			});
+	}
+
+	setIsSubscribed() {
+		const url = `/subscription/collection/isSubscribed/${this.props.collection.id}`;
+		request.get(url)
+			.then(res => {
+				const {isSubscribed} = res.body;
+				this.setState({isSubscribed});
+			}, () => {
+				this.setState({
+					message: {
+						text: 'Something went wrong! Please try again later',
+						type: 'danger'
+					}
+				});
 			});
 	}
 
@@ -278,18 +323,33 @@ class CollectionPage extends React.Component {
 						<CollectionAttributes collection={this.props.collection}/>
 					</Col>
 				</Row>
+				{
+					!this.state.isSubscribed &&
+						<Button
+							bsSize="small"
+							bsStyle="success"
+							className="margin-bottom-d5"
+							title="Subscribe"
+							onClick={this.handleSubscribe}
+						>
+							Subscribe
+						</Button>
+				}
+				{
+					this.state.isSubscribed &&
+						<Button
+							bsSize="small"
+							bsStyle="danger"
+							className="margin-bottom-d5"
+							title="Unsubscribe"
+							onClick={this.handleUnsubscribe}
+						>
+							Unsubscribe
+						</Button>
+				}
 				<EntityTable{...propsForTable}/>
 				{messageComponent}
 				<div className="margin-top-1 text-left">
-					<Button
-						bsSize="small"
-						bsStyle="success"
-						className="margin-bottom-d5"
-						title="Subscribe"
-						onClick={this.handleSubscribe}
-					>
-						Subscribe
-					</Button>
 					{
 						this.props.isCollaborator || this.props.isOwner ?
 							<Button
