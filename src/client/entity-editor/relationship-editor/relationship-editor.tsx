@@ -357,6 +357,8 @@ class RelationshipModal
 		const bbid = this.props.baseEntity?.bbid;
 		return (
 			<EntitySearchFieldOption
+				isRelationshipEditor
+				baseEntity={baseEntity}
 				bbid={bbid}
 				buttonAfter={openButton}
 				cache={false}
