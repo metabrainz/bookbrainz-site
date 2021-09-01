@@ -398,7 +398,15 @@ export function formatEntityDiffs(diffs, entityType, entityFormatter) {
 			// For entities without data (deleted or merged), we use getEntityParentAlias instead which returns a JSON object
 			if (typeof diff.entityAlias.toJSON === 'function') {
 				const aliasJSON = diff.entityAlias.toJSON();
-				formattedDiff.entity.defaultAlias = aliasJSON.aliasSet.defaultAlias;
+				if (diff.isEntityDeleted) {
+					formattedDiff.entity.parentAlias = aliasJSON.aliasSet.defaultAlias;
+				}
+				else {
+					formattedDiff.entity.defaultAlias = aliasJSON.aliasSet.defaultAlias;
+				}
+			}
+			else if (diff.isEntityDeleted) {
+				formattedDiff.entity.parentAlias = diff.entityAlias;
 			}
 			else {
 				formattedDiff.entity.defaultAlias = diff.entityAlias;

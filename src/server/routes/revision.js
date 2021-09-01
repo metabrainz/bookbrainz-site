@@ -168,8 +168,11 @@ function formatEditionGroupChange(change) {
 function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 	// entityRevisions - collection of *entityType*_revisions matching id
 	return Promise.all(entityRevisions.map(
-		(revision) => {
+		async (revision) => {
 			const dataId = revision.get('dataId');
+			let entity = revision.related('entity').toJSON();
+			entity = await orm.func.entity.getEntity(orm, entityType, entity.bbid);
+			const isEntityDeleted = !entity.dataId;
 			return revision.parent()
 				.then(
 					(parent) => {
@@ -187,6 +190,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 									orm, entityType, revision.get('bbid')
 								),
 							isDeletion,
+							isEntityDeleted,
 							isNew,
 							revision
 						});
@@ -201,6 +205,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 								orm, entityType, revision.get('bbid')
 							),
 						isDeletion: !dataId,
+						isEntityDeleted,
 						isNew: Boolean(dataId),
 						revision
 					})
