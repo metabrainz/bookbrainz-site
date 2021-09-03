@@ -8,59 +8,75 @@ const eventEmitter = new EventEmitter();
 const orm = BookBrainzData(config.database);
 
 
+async function addNotificationToDB(allSubscribersJSON, notificationRedirectLink, notificationText, editorId) {
+	const {Notification} = orm;
+	const notificationPromiseArray = [];
+	allSubscribersJSON.forEach(async (subscriber) => {
+		if (subscriber.subscriberId !== editorId) {
+			let notification = await new Notification({
+				notificationRedirectLink,
+				subscriberId: subscriber.subscriberId
+			}).fetch({require: false});
+			let method = 'update';
+			const isNew = !notification
+			if (isNew) {
+				notification = await new Notification({
+					notificationRedirectLink,
+					subscriberId: subscriber.subscriberId
+				});
+				method = 'insert';
+			}
+			notification.set('read', false);
+			notification.set('notification_text', notificationText);
+			notification.set('timestamp', new Date());
+			notificationPromiseArray.push(
+				notification.save(null, {method})
+			);
+		}
+	});
+	await Promise.all(notificationPromiseArray);
+}
+
 eventEmitter.on('send-notifications-for-collection', async (collectionId, editorId) => {
-	const {CollectionSubscription, Notification, Editor} = orm;
+	const {CollectionSubscription, Editor} = orm;
 	const allSubscribers = await new CollectionSubscription()
 		.where('collection_id', collectionId)
 		.fetchAll({
 			required: false,
 			withRelated: ['collection']
 		});
-	const editor = await new Editor({id: editorId}).fetch();
-	const editorJSON = editor.toJSON();
-
-	const notificationPromiseArray = [];
-	allSubscribers.forEach(subscriber => {
-		if (subscriber.get('subscriberId') !== editorId) {
-			const subscriberJSON = subscriber.toJSON();
-			notificationPromiseArray.push(
-				new Notification({
-					notificationRedirectLink: `/collection/${collectionId}`,
-					notificationText: `${editorJSON.name} edited ${subscriberJSON.collection.name} collection`,
-					read: false,
-					subscriberId: subscriber.get('subscriberId')
-				}).save(null, {method: 'insert'})
-			);
-		}
-	});
-	await Promise.all(notificationPromiseArray);
+	if (allSubscribers.length) {
+		const editor = await new Editor({id: editorId}).fetch();
+		const editorJSON = editor.toJSON();
+		const allSubscribersJSON = allSubscribers.toJSON();
+		await addNotificationToDB(
+			allSubscribersJSON,
+			`/collection/${collectionId}`,
+			`${editorJSON.name} edited Collection: ${allSubscribersJSON[0].collection.name}`,
+			editorId
+		);
+	}
 });
 
 eventEmitter.on('send-notifications-for-entity', async (bbid, editorId, entityType) => {
-	const {EntitySubscription, Notification, Editor} = orm;
+	const {EntitySubscription, Editor} = orm;
 	const allSubscribers = await new EntitySubscription()
 		.where('bbid', bbid)
 		.fetchAll({
 			required: false,
 			withRelated: ['entity']
 		});
-	const editor = await new Editor({id: editorId}).fetch();
-	const editorJSON = editor.toJSON();
-
-	const notificationPromiseArray = [];
-	allSubscribers.forEach(subscriber => {
-		if (subscriber.get('subscriberId') !== editorId) {
-			notificationPromiseArray.push(
-				new Notification({
-					notificationRedirectLink: `/${kebabCase(entityType)}/${bbid}`,
-					notificationText: `${editorJSON.name} edited ${kebabCase(entityType)} ${bbid}`,
-					read: false,
-					subscriberId: subscriber.get('subscriberId')
-				}).save(null, {method: 'insert'})
-			);
-		}
-	});
-	await Promise.all(notificationPromiseArray);
+	if (allSubscribers.length) {
+		const editor = await new Editor({id: editorId}).fetch();
+		const editorJSON = editor.toJSON();
+		const allSubscribersJSON = allSubscribers.toJSON();
+		await addNotificationToDB(
+			allSubscribersJSON,
+			`/${kebabCase(entityType)}/${bbid}`,
+			`${editorJSON.name} edited ${kebabCase(entityType)} ${bbid}`,
+			editorId
+		);
+	}
 });
 
 export default eventEmitter;
