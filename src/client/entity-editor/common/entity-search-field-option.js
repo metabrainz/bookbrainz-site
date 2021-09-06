@@ -96,14 +96,12 @@ class EntitySearchFieldOption extends React.Component {
 				q: manipulatedQuery,
 				type: this.props.type
 			});
-		const options = response.body.filter(entity => entity.bbid !== this.props.bbid);
-		if (this.props.isRelationshipEditor) {
-			const {baseEntity} = this.props;
-			// If series entities entityType doesn't match with the baseEntity type, remove them from the options.
-			_.remove(options, entity => entity.type === 'Series' && baseEntity.type !== entity.entityType);
-		}
+		const isSameBBIDFilter = (entity) => entity.bbid !== this.props.bbid;
+		const combineFilters = (...filters) => (item) => filters.map((filter) => filter(item)).every((x) => x === true);
+		const combinedFilters = combineFilters(isSameBBIDFilter, ...this.props.filters);
+		const filteredOptions = response.body.filter(combinedFilters);
 		return {
-			options: options.map(this.entityToOption)
+			options: filteredOptions.map(this.entityToOption)
 		};
 	}
 
@@ -127,11 +125,10 @@ class EntitySearchFieldOption extends React.Component {
 
 EntitySearchFieldOption.displayName = 'EntitySearchFieldOption';
 EntitySearchFieldOption.propTypes = {
-	baseEntity: PropTypes.object,
 	bbid: PropTypes.string,
 	empty: PropTypes.bool,
 	error: PropTypes.bool,
-	isRelationshipEditor: PropTypes.bool,
+	filters: PropTypes.array,
 	label: PropTypes.string.isRequired,
 	languageOptions: PropTypes.array,
 	tooltipText: PropTypes.string,
@@ -141,11 +138,10 @@ EntitySearchFieldOption.propTypes = {
 	]).isRequired
 };
 EntitySearchFieldOption.defaultProps = {
-	baseEntity: null,
 	bbid: null,
 	empty: true,
 	error: false,
-	isRelationshipEditor: false,
+	filters: [],
 	languageOptions: [],
 	tooltipText: null
 };
