@@ -1,3 +1,4 @@
+import {Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
 
 /**
  * Regular expression for valid BookBrainz UUIDs (bbid)
@@ -26,12 +27,13 @@ export function isValidBBID(bbid: string): boolean {
  * @returns {object} - Object mapping model name to the entity model
  */
 export function getEntityModels(orm: any) {
-	const {Author, Edition, EditionGroup, Publisher, Work} = orm;
+	const {Author, Edition, EditionGroup, Publisher, Series, Work} = orm;
 	return {
 		Author,
 		Edition,
 		EditionGroup,
 		Publisher,
+		Series,
 		Work
 	};
 }
@@ -76,4 +78,19 @@ export function makePromiseFromObject<T>(obj: Unresolved<T>): Promise<T> {
 			}
 			return res as T;
 	  });
+}
+
+/**
+ * This function sorts the relationship array
+ * @param {string} sortByProperty - name of property which will be used for sorting
+ * @returns {array} - sorted relationship array
+ */
+/* eslint-disable no-param-reassign */
+export function sortRelationshipOrdinal(sortByProperty: string) {
+	return (a: RelationshipForDisplay | Relationship, b: RelationshipForDisplay | Relationship) => {
+		const value1 = a[sortByProperty] || '';
+		const value2 = b[sortByProperty] || '';
+		// eslint-disable-next-line no-undefined
+		return value1.localeCompare(value2, undefined, {numeric: true});
+	};
 }

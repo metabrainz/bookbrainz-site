@@ -22,6 +22,7 @@ import * as commonUtils from '../../common/helpers/utils';
 import * as entityRoutes from './entity/entity';
 import * as middleware from '../helpers/middleware';
 import {BadRequestError, ConflictError, NotFoundError} from '../../common/helpers/error';
+import {attachAttributes, getAdditionalRelations} from '../helpers/utils';
 import {basicRelations,
 	getEntityFetchPropertiesByType,
 	getEntitySectionByType} from '../helpers/merge';
@@ -121,15 +122,24 @@ function entitiesToFormState(entities: any[]) {
 	}, []);
 	const otherEntitiesBBIDs = otherEntities.map(entity => entity.bbid);
 	relationships.forEach((relationship) => {
-		relationshipSection.relationships[relationship.id] = {
+		const formattedRelationship = {
+			attributeSetId: relationship.attributeSetId,
+			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
 			relationshipType: relationship.type,
 			rendered: relationship.rendered,
-			rowID: relationship.id,
+			rowID: `n${relationship.id}`,
 			// Change the source and/or target BBIDs of the relationship accordingly
 			// to the bbid of the entity we're merging into
 			sourceEntity: otherEntitiesBBIDs.includes(relationship.sourceBbid) ? targetEntity : relationship.source,
 			targetEntity: otherEntitiesBBIDs.includes(relationship.targetBbid) ? targetEntity : relationship.target
 		};
+		// separate series items from relationships
+		if (type === 'series' && (relationship.typeId > 69 && relationship.typeId < 75)) {
+			entityTypeSection.seriesItems[`n${relationship.id}`] = formattedRelationship;
+		}
+		else {
+			relationshipSection.relationships[`n${relationship.id}`] = formattedRelationship;
+		}
 	});
 
 	const annotations = entities.reduce((returnValue, entity, index) => {
@@ -164,19 +174,23 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 			withRelated: [
 				'relationships.source',
 				'relationships.target',
-				'relationships.type'
+				'relationships.type.attributeTypes',
+				'relationships.attributeSet.relationshipAttributes.value',
+				'relationships.attributeSet.relationshipAttributes.type'
 			]
 		})
 		.then((relationshipSet) => {
 			entity.relationships = relationshipSet ?
 				relationshipSet.related('relationships').toJSON() : [];
 
+			attachAttributes(entity.relationships);
+
 			async function getEntityWithAlias(relEntity) {
 				const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
 				const model = commonUtils.getEntityModelByType(orm, relEntity.type);
 
 				return model.forge({bbid: redirectBbid})
-					.fetch({withRelated: 'defaultAlias'});
+					.fetch({require: true, withRelated: ['defaultAlias'].concat(getAdditionalRelations(relEntity.type))});
 			}
 
 			/**
@@ -247,7 +261,8 @@ router.get('/add/:bbid', auth.isAuthenticated,
 		if (!mergeQueue) {
 			mergeQueue = {
 				entityType: '',
-				mergingEntities: {}
+				mergingEntities: {},
+				seriesEntityType: ''
 			};
 			req.session.mergeQueue = mergeQueue;
 		}
@@ -273,7 +288,17 @@ router.get('/add/:bbid', auth.isAuthenticated,
 		const {bbid, type} = fetchedEntity;
 		if (type !== mergeQueue.entityType) {
 			mergeQueue.mergingEntities = {};
+			// mergeQueue.entityType is the type of the entity
 			mergeQueue.entityType = _.upperFirst(type);
+			// fetchedEnitity.entityType is the series entity type
+			mergeQueue.seriesEntityType = type === 'Series' ? fetchedEntity.entityType : null;
+		}
+
+		/* Disallow merging series entity of different types. */
+		if (type === 'Series' && (mergeQueue.seriesEntityType !== fetchedEntity.entityType)) {
+			mergeQueue.mergingEntities = {};
+			mergeQueue.entityType = _.upperFirst(type);
+			mergeQueue.seriesEntityType = fetchedEntity.entityType;
 		}
 
 		mergeQueue.mergingEntities[bbid] = fetchedEntity;

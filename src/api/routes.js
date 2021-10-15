@@ -24,6 +24,7 @@ import editionGroupRouter from './routes/edition-group';
 import editionRouter from './routes/edition';
 import publisherRouter from './routes/publisher';
 import searchRouter from './routes/search';
+import seriesRouter from './routes/series';
 import swaggerRoute from './swagger';
 import workRouter from './routes/work';
 
@@ -164,6 +165,10 @@ function initAuthorRoute(app) {
 	app.use('/author', lookupAndBrowseRequestSlowDown, authorRouter);
 }
 
+function initSeriesRoute(app) {
+	app.use('/series', lookupAndBrowseRequestSlowDown, seriesRouter);
+}
+
 function initPublisherRoute(app) {
 	app.use('/publisher', lookupAndBrowseRequestSlowDown, publisherRouter);
 }
@@ -186,6 +191,7 @@ function initRoutes() {
 	initEditionRoute(router);
 	initEditionGroupRoute(router);
 	initAuthorRoute(router);
+	initSeriesRoute(router);
 	initPublisherRoute(router);
 	initSearchRouter(router);
 	initDocsRoute(router);

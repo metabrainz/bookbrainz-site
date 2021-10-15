@@ -29,6 +29,7 @@ const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, ge
 function AuthorTableRow({author, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(author);
 	const disambiguation = getEntityDisambiguation(author);
+	const number = author.number || '?';
 	const authorType = author.authorType ? author.authorType.label : '?';
 	const gender = author.gender ? author.gender.name : '?';
 	const beginDate = transformISODateForDisplay(extractAttribute(author.beginDate));
@@ -37,6 +38,7 @@ function AuthorTableRow({author, showAddedAtColumn, showCheckboxes, selectedEnti
 	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
+			{author.displayNumber && <td>{number}</td>}
 			<td>
 				{
 					showCheckboxes ?
@@ -83,7 +85,8 @@ function AuthorTable({authors, showAddedAtColumn, showCheckboxes, selectedEntiti
 				<Table striped>
 					<thead>
 						<tr>
-							<th style={{width: '50%'}}>Name</th>
+							{authors[0].displayNumber && <th style={{width: '10%'}}>#</th>}
+							<th>Name</th>
 							<th>Gender</th>
 							<th>Type</th>
 							<th>Date of birth</th>

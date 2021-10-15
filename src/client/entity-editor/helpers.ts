@@ -25,6 +25,9 @@ import EditionSection from './edition-section/edition-section';
 import EditionSectionMerge from './edition-section/edition-section-merge';
 import PublisherSection from './publisher-section/publisher-section';
 import PublisherSectionMerge from './publisher-section/publisher-section-merge';
+import {RelationshipForDisplay} from './relationship-editor/types';
+import SeriesSection from './series-section/series-section';
+import SeriesSectionMerge from './series-section/series-section-merge';
 import WorkSection from './work-section/work-section';
 import WorkSectionMerge from './work-section/work-section-merge';
 import aliasEditorReducer from './alias-editor/reducer';
@@ -34,10 +37,12 @@ import buttonBarReducer from './button-bar/reducer';
 import {combineReducers} from 'redux-immutable';
 import editionGroupSectionReducer from './edition-group-section/reducer';
 import editionSectionReducer from './edition-section/reducer';
+import {getAttributeName} from './relationship-editor/helper';
 import identifierEditorReducer from './identifier-editor/reducer';
 import nameSectionReducer from './name-section/reducer';
 import publisherSectionReducer from './publisher-section/reducer';
 import relationshipSectionReducer from './relationship-editor/reducer';
+import seriesSectionReducer from './series-section/reducer';
 import submissionSectionReducer from './submission-section/reducer';
 import {validateForm as validateAuthorForm} from './validators/author';
 import {validateForm as validateEditionForm} from './validators/edition';
@@ -45,6 +50,7 @@ import {
 	validateForm as validateEditionGroupForm
 } from './validators/edition-group';
 import {validateForm as validatePublisherForm} from './validators/publisher';
+import {validateForm as validateSeriesForm} from './validators/series';
 import {validateForm as validateWorkForm} from './validators/work';
 import workSectionReducer from './work-section/reducer';
 
@@ -67,6 +73,7 @@ export function getEntitySection(entityType: string) {
 		edition: EditionSection,
 		editionGroup: EditionGroupSection,
 		publisher: PublisherSection,
+		series: SeriesSection,
 		work: WorkSection
 	};
 
@@ -79,6 +86,7 @@ export function getEntitySectionMerge(entityType: string) {
 		edition: EditionSectionMerge,
 		editionGroup: EditionGroupSectionMerge,
 		publisher: PublisherSectionMerge,
+		series: SeriesSectionMerge,
 		work: WorkSectionMerge
 	};
 
@@ -91,6 +99,7 @@ function getEntitySectionReducer(entityType: string) {
 		edition: editionSectionReducer,
 		editionGroup: editionGroupSectionReducer,
 		publisher: publisherSectionReducer,
+		series: seriesSectionReducer,
 		work: workSectionReducer
 	};
 
@@ -103,6 +112,7 @@ export function getValidator(entityType: string) {
 		edition: validateEditionForm,
 		editionGroup: validateEditionGroupForm,
 		publisher: validatePublisherForm,
+		series: validateSeriesForm,
 		work: validateWorkForm
 	};
 
@@ -135,4 +145,19 @@ export function shouldDevToolsBeInjected(): boolean {
 		typeof window === 'object' &&
 		(window as ReduxWindow).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
 	);
+}
+
+/**
+ * Takes an array of relationships and attach the deeply nested
+ * relationship attributes to the first level of the relationship object.
+ *
+ * @param {Array} relationships the array of relationships
+ */
+export function attachAttribToRelForDisplay(relationships: RelationshipForDisplay[]) {
+	relationships.forEach((relationship) => {
+		relationship.attributes.forEach(attribute => {
+			const attributeName = getAttributeName(attribute.attributeType);
+			relationship[attributeName] = attribute.value.textValue;
+		});
+	});
 }

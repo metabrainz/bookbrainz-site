@@ -31,6 +31,7 @@ import registerRouter from './routes/register';
 import revisionRouter from './routes/revision';
 import revisionsRouter from './routes/revisions';
 import searchRouter from './routes/search';
+import seriesRouter from './routes/entity/series';
 import statisticsRouter from './routes/statistics';
 import workRouter from './routes/entity/work';
 
@@ -63,6 +64,10 @@ function initMergeRoutes(app) {
 	app.use('/merge', mergeRouter);
 }
 
+function initSeriesRoutes(app) {
+	app.use('/series', seriesRouter);
+}
+
 function initWorkRoutes(app) {
 	app.use('/work', workRouter);
 }
@@ -90,6 +95,7 @@ function initRoutes(app) {
 	initCollectionRoutes(app);
 	initEditionRoutes(app);
 	initMergeRoutes(app);
+	initSeriesRoutes(app);
 	initWorkRoutes(app);
 	initPublisherRoutes(app);
 	initRevisionRoutes(app);

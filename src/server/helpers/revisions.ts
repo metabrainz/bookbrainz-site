@@ -21,12 +21,13 @@ import {flatMap} from 'lodash';
 
 
 function getRevisionModels(orm) {
-	const {AuthorRevision, EditionRevision, EditionGroupRevision, PublisherRevision, WorkRevision} = orm;
+	const {AuthorRevision, EditionRevision, EditionGroupRevision, PublisherRevision, SeriesRevision, WorkRevision} = orm;
 	return [
 		AuthorRevision,
 		EditionGroupRevision,
 		EditionRevision,
 		PublisherRevision,
+		SeriesRevision,
 		WorkRevision
 	];
 }

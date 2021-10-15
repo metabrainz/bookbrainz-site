@@ -204,3 +204,19 @@ export function entityToOption(entity) {
 			type: entity.type
 		};
 }
+
+/**
+ * Takes an array of relationships and attach the deeply nested
+ * relationship attributes to the first level of the relationship object.
+ *
+ * @param {Array} relationships the array of relationships
+ */
+export function attachAttributes(relationships) {
+	relationships.forEach((relationship) => {
+		if (relationship.attributeSet?.relationshipAttributes) {
+			relationship.attributeSet.relationshipAttributes.forEach(attribute => {
+				relationship[`${attribute.type.name}`] = attribute.value.textValue;
+			});
+		}
+	});
+}

@@ -237,9 +237,11 @@ function publisherToFormState(publisher) {
 	};
 
 	publisher.relationships.forEach((relationship) => (
-		relationshipSection.relationships[relationship.id] = {
+		relationshipSection.relationships[`n${relationship.id}`] = {
+			attributeSetId: relationship.attributeSetId,
+			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
 			relationshipType: relationship.type,
-			rowID: relationship.id,
+			rowID: `n${relationship.id}`,
 			sourceEntity: relationship.source,
 			targetEntity: relationship.target
 		}

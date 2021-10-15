@@ -29,6 +29,7 @@ const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, ge
 
 function PublisherTableRow({showAddedAtColumn, publisher, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(publisher);
+	const number = publisher.number || '?';
 	const disambiguation = getEntityDisambiguation(publisher);
 	const publisherType = publisher.publisherType ? publisher.publisherType.label : '?';
 	const area = publisher.area ? publisher.area.name : '?';
@@ -39,6 +40,7 @@ function PublisherTableRow({showAddedAtColumn, publisher, showCheckboxes, select
 	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
+			{publisher.displayNumber && <td>{number}</td>}
 			<td>
 				{
 					showCheckboxes ?
@@ -83,7 +85,8 @@ function PublisherTable({showAddedAtColumn, publishers, showCheckboxes, selected
 				<Table striped>
 					<thead>
 						<tr>
-							<th style={{width: '50%'}}>Name</th>
+							{publishers[0].displayNumber && <th style={{width: '10%'}}>#</th>}
+							<th>Name</th>
 							<th>Area</th>
 							<th>Type</th>
 							<th>Date founded</th>
