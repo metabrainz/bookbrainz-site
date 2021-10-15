@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>server/helpers/collectionRouteUtils.js - Documentation</title>
+    <title>server/routes/entity/series.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">server/helpers/collectionRouteUtils.js</h1>
+    <h1 class="page-title">server/routes/entity/series.js</h1>
     
 
     
@@ -47,204 +47,249 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 
 require("core-js/modules/es.symbol");
 
-require("core-js/modules/es.symbol.description");
+require("core-js/modules/es.array.concat");
+
+require("core-js/modules/es.array.filter");
 
 require("core-js/modules/es.array.for-each");
 
-require("core-js/modules/es.array.iterator");
+require("core-js/modules/es.array.map");
 
-require("core-js/modules/es.date.to-json");
+require("core-js/modules/es.array.splice");
 
-require("core-js/modules/es.function.name");
+require("core-js/modules/es.object.get-own-property-descriptor");
 
-require("core-js/modules/es.object.to-string");
+require("core-js/modules/es.object.get-own-property-descriptors");
 
-require("core-js/modules/es.promise");
-
-require("core-js/modules/es.string.iterator");
+require("core-js/modules/es.object.keys");
 
 require("core-js/modules/web.dom-collections.for-each");
-
-require("core-js/modules/web.dom-collections.iterator");
-
-require("core-js/modules/web.url.to-json");
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.collectionCreateOrEditHandler = collectionCreateOrEditHandler;
+exports.default = void 0;
 
-var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
-require("regenerator-runtime/runtime");
+var _objectWithoutProperties2 = _interopRequireDefault(require("@babel/runtime/helpers/objectWithoutProperties"));
 
-var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
 
-var _upperFirst2 = _interopRequireDefault(require("lodash/upperFirst"));
+var _isEmpty2 = _interopRequireDefault(require("lodash/isEmpty"));
 
-var _toLower2 = _interopRequireDefault(require("lodash/toLower"));
+var auth = _interopRequireWildcard(require("../../helpers/auth"));
 
-var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
+var entityRoutes = _interopRequireWildcard(require("./entity"));
 
-var _differenceWith2 = _interopRequireDefault(require("lodash/differenceWith"));
+var middleware = _interopRequireWildcard(require("../../helpers/middleware"));
 
-var _camelCase2 = _interopRequireDefault(require("lodash/camelCase"));
+var utils = _interopRequireWildcard(require("../../helpers/utils"));
 
-var handler = _interopRequireWildcard(require("../helpers/handler"));
+var _entityRouteUtils = require("../../helpers/entityRouteUtils");
 
-var search = _interopRequireWildcard(require("../../common/helpers/search"));
+var _props = require("../../helpers/props");
 
-var _error = require("../../common/helpers/error");
+var _express = _interopRequireDefault(require("express"));
 
-/*
- * Copyright (C) 2020 Prabal Singh
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+var _utils2 = require("../../../common/helpers/utils");
 
-/**
- * A handler for create or edit actions on collections.
- * @param {object} req - request object
- * @param {object} res - response object
- * @param {object} next - next object
- * @returns {promise} res.send promise
- * @description
- * Creates a new collection or updates the existing collection
- * If it's a new collection or it's name is changed, ElasticSearch index is also updated
- */
-function collectionCreateOrEditHandler(_x, _x2, _x3) {
-  return _collectionCreateOrEditHandler.apply(this, arguments);
+var _target = _interopRequireDefault(require("../../templates/target"));
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i &lt; arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _templateObject() {
+  var data = (0, _taggedTemplateLiteral2.default)(["Series \u201C", "\u201D"]);
+
+  _templateObject = function _templateObject() {
+    return data;
+  };
+
+  return data;
 }
 
-function _collectionCreateOrEditHandler() {
-  _collectionCreateOrEditHandler = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(req, res, next) {
-    var _req$app$locals$orm, UserCollection, UserCollectionCollaborator, isNew, newCollection, method, _res$locals$collectio, _res$locals$collectio2, oldCollaborators, newCollaborators, newlyAddedCollaborators, removedCollaborators, collaboratorPromises, collectionPromiseForES;
+/** ****************************
+*********** Helpers ************
+*******************************/
+var additionalSeriesProps = ['entityType', 'orderingTypeId'];
 
-    return _regenerator.default.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            _context.prev = 0;
-            _req$app$locals$orm = req.app.locals.orm, UserCollection = _req$app$locals$orm.UserCollection, UserCollectionCollaborator = _req$app$locals$orm.UserCollectionCollaborator;
-            isNew = !res.locals.collection;
+function transformNewForm(data) {
+  var aliases = entityRoutes.constructAliases(data.aliasEditor, data.nameSection);
+  var identifiers = entityRoutes.constructIdentifiers(data.identifierEditor);
+  var seriesItems = entityRoutes.constructRelationships(data.seriesSection, 'seriesItems');
+  var relationshipsItems = entityRoutes.constructRelationships(data.relationshipSection, 'relationships');
+  var relationships = seriesItems.concat(relationshipsItems);
+  return {
+    aliases: aliases,
+    annotation: data.annotationSection.content,
+    disambiguation: data.nameSection.disambiguation,
+    entityType: data.seriesSection.seriesType,
+    identifiers: identifiers,
+    note: data.submissionSection.note,
+    orderingTypeId: data.seriesSection.orderType,
+    relationships: relationships
+  };
+}
 
-            if (!isNew) {
-              _context.next = 10;
-              break;
-            }
+var createOrEditHandler = (0, _entityRouteUtils.makeEntityCreateOrEditHandler)('series', transformNewForm, additionalSeriesProps);
+var mergeHandler = (0, _entityRouteUtils.makeEntityCreateOrEditHandler)('series', transformNewForm, additionalSeriesProps, true);
+/** ****************************
+*********** Routes ************
+*******************************/
 
-            _context.next = 6;
-            return new UserCollection({
-              ownerId: req.user.id
-            });
+var router = _express.default.Router(); // Creation
 
-          case 6:
-            newCollection = _context.sent;
-            method = 'insert';
-            _context.next = 17;
-            break;
 
-          case 10:
-            if (!(((_res$locals$collectio = res.locals.collection) === null || _res$locals$collectio === void 0 ? void 0 : (_res$locals$collectio2 = _res$locals$collectio.items) === null || _res$locals$collectio2 === void 0 ? void 0 : _res$locals$collectio2.length) &amp;&amp; (0, _upperFirst2.default)((0, _camelCase2.default)(req.body.entityType)) !== res.locals.collection.entityType)) {
-              _context.next = 12;
-              break;
-            }
+router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes, middleware.loadLanguages, middleware.loadRelationshipTypes, middleware.loadSeriesOrderingTypes, function (req, res) {
+  var _entityEditorMarkup = (0, _entityRouteUtils.entityEditorMarkup)((0, _entityRouteUtils.generateEntityProps)('series', req, res, {})),
+      markup = _entityEditorMarkup.markup,
+      props = _entityEditorMarkup.props;
 
-            throw new _error.BadRequestError('Trying to change entityType of a non empty collection');
-
-          case 12:
-            _context.next = 14;
-            return new UserCollection({
-              id: req.params.collectionId
-            }).fetch({
-              require: true
-            });
-
-          case 14:
-            newCollection = _context.sent;
-            method = 'update';
-            newCollection.set('last_modified', new Date());
-
-          case 17:
-            newCollection.set('description', req.body.description);
-            newCollection.set('name', req.body.name);
-            newCollection.set('public', (0, _toLower2.default)(req.body.privacy) === 'public');
-            newCollection.set('entity_type', (0, _upperFirst2.default)((0, _camelCase2.default)(req.body.entityType)));
-            _context.next = 23;
-            return newCollection.save(null, {
-              method: method
-            });
-
-          case 23:
-            oldCollaborators = res.locals.collection ? res.locals.collection.collaborators : [];
-            newCollaborators = req.body.collaborators ? req.body.collaborators : [];
-            newlyAddedCollaborators = (0, _differenceWith2.default)(newCollaborators, oldCollaborators, _isEqual2.default);
-            removedCollaborators = (0, _differenceWith2.default)(oldCollaborators, newCollaborators, _isEqual2.default);
-            collaboratorPromises = [];
-            newlyAddedCollaborators.forEach(function (collaborator) {
-              collaboratorPromises.push(new UserCollectionCollaborator({
-                collaboratorId: collaborator.id,
-                collectionId: newCollection.get('id')
-              }).save(null, {
-                method: 'insert'
-              }));
-            });
-            removedCollaborators.forEach(function (collaborator) {
-              collaboratorPromises.push(new UserCollectionCollaborator({}).where('collection_id', newCollection.get('id')).where('collaborator_id', collaborator.id).destroy());
-            });
-            _context.next = 32;
-            return Promise.all(collaboratorPromises);
-
-          case 32:
-            if (!(isNew || res.locals.collection.name !== newCollection.get('name'))) {
-              _context.next = 35;
-              break;
-            }
-
-            collectionPromiseForES = new Promise(function (resolve) {
-              var collectionForES = {
-                aliasSet: {
-                  aliases: [{
-                    name: newCollection.get('name')
-                  }]
-                },
-                bbid: newCollection.get('id'),
-                id: newCollection.get('id'),
-                type: 'Collection'
-              };
-              resolve(collectionForES);
-            });
-            return _context.abrupt("return", handler.sendPromiseResult(res, collectionPromiseForES, search.indexEntity));
-
-          case 35:
-            return _context.abrupt("return", res.send(newCollection.toJSON()));
-
-          case 38:
-            _context.prev = 38;
-            _context.t0 = _context["catch"](0);
-            return _context.abrupt("return", next(_context.t0));
-
-          case 41:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee, null, [[0, 38]]);
+  return res.send((0, _target.default)({
+    markup: markup,
+    props: (0, _props.escapeProps)(props),
+    script: '/js/entity-editor.js',
+    title: props.heading
   }));
-  return _collectionCreateOrEditHandler.apply(this, arguments);
-}</code></pre>
+});
+router.post('/create/handler', auth.isAuthenticatedForHandler, createOrEditHandler);
+router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler, mergeHandler);
+/* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
+
+router.param('bbid', middleware.redirectedBbid);
+router.param('bbid', middleware.makeEntityLoader('Series', ['defaultAlias', 'disambiguation', 'seriesOrderingType', 'identifierSet.identifiers.type'], 'Series not found'));
+
+function _setSeriesTitle(res) {
+  res.locals.title = utils.createEntityPageTitle(res.locals.entity, 'Series', utils.template(_templateObject(), 'name'));
+}
+
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadSeriesItems, function (req, res) {
+  _setSeriesTitle(res);
+
+  entityRoutes.displayEntity(req, res);
+});
+router.get('/:bbid/delete', auth.isAuthenticated, function (req, res) {
+  _setSeriesTitle(res);
+
+  entityRoutes.displayDeleteEntity(req, res);
+});
+router.post('/:bbid/delete/handler', auth.isAuthenticatedForHandler, function (req, res) {
+  var orm = req.app.locals.orm;
+  var SeriesHeader = orm.SeriesHeader,
+      SeriesRevision = orm.SeriesRevision;
+  return entityRoutes.handleDelete(orm, req, res, SeriesHeader, SeriesRevision);
+});
+router.get('/:bbid/revisions', function (req, res, next) {
+  var SeriesRevision = req.app.locals.orm.SeriesRevision;
+
+  _setSeriesTitle(res);
+
+  entityRoutes.displayRevisions(req, res, next, SeriesRevision);
+});
+router.get('/:bbid/revisions/revisions', function (req, res, next) {
+  var SeriesRevision = req.app.locals.orm.SeriesRevision;
+
+  _setSeriesTitle(res);
+
+  entityRoutes.updateDisplayedRevisions(req, res, next, SeriesRevision);
+});
+
+function seriesToFormState(series) {
+  var aliases = series.aliasSet ? series.aliasSet.aliases.map(function (_ref) {
+    var languageId = _ref.languageId,
+        rest = (0, _objectWithoutProperties2.default)(_ref, ["languageId"]);
+    return _objectSpread(_objectSpread({}, rest), {}, {
+      language: languageId
+    });
+  }) : [];
+  var defaultAliasIndex = entityRoutes.getDefaultAliasIndex(series.aliasSet);
+  var defaultAliasList = aliases.splice(defaultAliasIndex, 1);
+  var aliasEditor = {};
+  aliases.forEach(function (alias) {
+    aliasEditor[alias.id] = alias;
+  });
+  var buttonBar = {
+    aliasEditorVisible: false,
+    identifierEditorVisible: false
+  };
+  var nameSection = (0, _isEmpty2.default)(defaultAliasList) ? {
+    language: null,
+    name: '',
+    sortName: ''
+  } : defaultAliasList[0];
+  nameSection.disambiguation = series.disambiguation &amp;&amp; series.disambiguation.comment;
+  var identifiers = series.identifierSet ? series.identifierSet.identifiers.map(function (_ref2) {
+    var type = _ref2.type,
+        rest = (0, _objectWithoutProperties2.default)(_ref2, ["type"]);
+    return _objectSpread({
+      type: type.id
+    }, rest);
+  }) : [];
+  var identifierEditor = {};
+  identifiers.forEach(function (identifier) {
+    identifierEditor[identifier.id] = identifier;
+  });
+  var seriesSection = {
+    orderType: series.seriesOrderingType &amp;&amp; series.seriesOrderingType.id,
+    seriesItems: {},
+    seriesType: series.entityType
+  };
+  var relationshipSection = {
+    canEdit: true,
+    lastRelationships: null,
+    relationshipEditorProps: null,
+    relationshipEditorVisible: false,
+    relationships: {}
+  };
+  series.relationships.forEach(function (relationship) {
+    var formattedRelationship = {
+      attributeSetId: relationship.attributeSetId,
+      attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
+      relationshipType: relationship.type,
+      rowID: "n".concat(relationship.id),
+      sourceEntity: relationship.source,
+      targetEntity: relationship.target
+    }; // separate series items from relationships
+
+    if (relationship.typeId > 69 &amp;&amp; relationship.typeId &lt; 75) {
+      seriesSection.seriesItems["n".concat(relationship.id)] = formattedRelationship;
+    } else {
+      relationshipSection.relationships["n".concat(relationship.id)] = formattedRelationship;
+    }
+  });
+  var optionalSections = {};
+
+  if (series.annotation) {
+    optionalSections.annotationSection = series.annotation;
+  }
+
+  return _objectSpread({
+    aliasEditor: aliasEditor,
+    buttonBar: buttonBar,
+    identifierEditor: identifierEditor,
+    nameSection: nameSection,
+    relationshipSection: relationshipSection,
+    seriesSection: seriesSection
+  }, optionalSections);
+}
+
+router.get('/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes, middleware.loadSeriesOrderingTypes, middleware.loadLanguages, middleware.loadEntityRelationships, middleware.loadRelationshipTypes, function (req, res) {
+  var _entityEditorMarkup2 = (0, _entityRouteUtils.entityEditorMarkup)((0, _entityRouteUtils.generateEntityProps)('series', req, res, {}, seriesToFormState)),
+      markup = _entityEditorMarkup2.markup,
+      props = _entityEditorMarkup2.props;
+
+  return res.send((0, _target.default)({
+    markup: markup,
+    props: (0, _props.escapeProps)(props),
+    script: '/js/entity-editor.js',
+    title: props.heading
+  }));
+});
+router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, createOrEditHandler);
+var _default = router;
+exports.default = _default;</code></pre>
         </article>
     </section>
 

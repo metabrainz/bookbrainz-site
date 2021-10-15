@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>server/helpers/collectionRouteUtils.js - Documentation</title>
+    <title>client/entity-editor/relationship-editor/helper.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">server/helpers/collectionRouteUtils.js</h1>
+    <h1 class="page-title">client/entity-editor/relationship-editor/helper.js</h1>
     
 
     
@@ -41,63 +41,23 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+require("core-js/modules/es.array.filter");
 
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+require("core-js/modules/es.array.includes");
 
-require("core-js/modules/es.symbol");
-
-require("core-js/modules/es.symbol.description");
-
-require("core-js/modules/es.array.for-each");
-
-require("core-js/modules/es.array.iterator");
-
-require("core-js/modules/es.date.to-json");
+require("core-js/modules/es.array.map");
 
 require("core-js/modules/es.function.name");
 
-require("core-js/modules/es.object.to-string");
-
-require("core-js/modules/es.promise");
-
-require("core-js/modules/es.string.iterator");
-
-require("core-js/modules/web.dom-collections.for-each");
-
-require("core-js/modules/web.dom-collections.iterator");
-
-require("core-js/modules/web.url.to-json");
+require("core-js/modules/es.string.includes");
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.collectionCreateOrEditHandler = collectionCreateOrEditHandler;
-
-var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-
-require("regenerator-runtime/runtime");
-
-var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
-
-var _upperFirst2 = _interopRequireDefault(require("lodash/upperFirst"));
-
-var _toLower2 = _interopRequireDefault(require("lodash/toLower"));
-
-var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
-
-var _differenceWith2 = _interopRequireDefault(require("lodash/differenceWith"));
-
-var _camelCase2 = _interopRequireDefault(require("lodash/camelCase"));
-
-var handler = _interopRequireWildcard(require("../helpers/handler"));
-
-var search = _interopRequireWildcard(require("../../common/helpers/search"));
-
-var _error = require("../../common/helpers/error");
+exports.getAttributeName = exports.setAttribute = exports.getInitAttribute = void 0;
 
 /*
- * Copyright (C) 2020 Prabal Singh
+ * Copyright (C) 2021  Akash Gupta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,136 +75,77 @@ var _error = require("../../common/helpers/error");
  */
 
 /**
- * A handler for create or edit actions on collections.
- * @param {object} req - request object
- * @param {object} res - response object
- * @param {object} next - next object
- * @returns {promise} res.send promise
- * @description
- * Creates a new collection or updates the existing collection
- * If it's a new collection or it's name is changed, ElasticSearch index is also updated
+ * A function to extract individual attribute object corresponding to a attribute id
+ * from attributes array.
+ *
+ * @param {array} attributes - Array of attributes.
+ * @param {number} id - Attribute id.
+ * @returns {void}
  */
-function collectionCreateOrEditHandler(_x, _x2, _x3) {
-  return _collectionCreateOrEditHandler.apply(this, arguments);
-}
+var getInitAttribute = function getInitAttribute(attributes, id) {
+  var relAttribute = attributes.filter(function (attribute) {
+    return attribute.attributeType === id;
+  });
 
-function _collectionCreateOrEditHandler() {
-  _collectionCreateOrEditHandler = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(req, res, next) {
-    var _req$app$locals$orm, UserCollection, UserCollectionCollaborator, isNew, newCollection, method, _res$locals$collectio, _res$locals$collectio2, oldCollaborators, newCollaborators, newlyAddedCollaborators, removedCollaborators, collaboratorPromises, collectionPromiseForES;
+  if (relAttribute.length === 0) {
+    return [];
+  }
 
-    return _regenerator.default.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            _context.prev = 0;
-            _req$app$locals$orm = req.app.locals.orm, UserCollection = _req$app$locals$orm.UserCollection, UserCollectionCollaborator = _req$app$locals$orm.UserCollectionCollaborator;
-            isNew = !res.locals.collection;
+  return relAttribute[0];
+};
+/**
+ * A function to insert all the individual attribute object(number, position etc) to
+ * a array.
+ *
+ * @param {object} state - Relationship state.
+ * @param {array} attributeTypes - All the attribute types associated with a relationship type.
+ * @returns {array} Array of attributes.
+ */
 
-            if (!isNew) {
-              _context.next = 10;
-              break;
-            }
 
-            _context.next = 6;
-            return new UserCollection({
-              ownerId: req.user.id
-            });
+exports.getInitAttribute = getInitAttribute;
 
-          case 6:
-            newCollection = _context.sent;
-            method = 'insert';
-            _context.next = 17;
-            break;
+var setAttribute = function setAttribute(state, attributeTypes) {
+  var attributes = attributeTypes.map(function (attribute) {
+    return attribute.name;
+  });
+  var result = [];
 
-          case 10:
-            if (!(((_res$locals$collectio = res.locals.collection) === null || _res$locals$collectio === void 0 ? void 0 : (_res$locals$collectio2 = _res$locals$collectio.items) === null || _res$locals$collectio2 === void 0 ? void 0 : _res$locals$collectio2.length) &amp;&amp; (0, _upperFirst2.default)((0, _camelCase2.default)(req.body.entityType)) !== res.locals.collection.entityType)) {
-              _context.next = 12;
-              break;
-            }
+  if (attributes.includes('number')) {
+    result.push(state.attributeNumber);
+  }
 
-            throw new _error.BadRequestError('Trying to change entityType of a non empty collection');
+  if (attributes.includes('position')) {
+    result.push(state.attributePosition);
+  }
 
-          case 12:
-            _context.next = 14;
-            return new UserCollection({
-              id: req.params.collectionId
-            }).fetch({
-              require: true
-            });
+  return result;
+};
+/**
+ * This function returns the attribute name corresponding
+ * to a attribute ID.
+ *
+ * @param {number} id - Attribute ID.
+ * @returns {string}  returns the attribute name.
+ */
 
-          case 14:
-            newCollection = _context.sent;
-            method = 'update';
-            newCollection.set('last_modified', new Date());
 
-          case 17:
-            newCollection.set('description', req.body.description);
-            newCollection.set('name', req.body.name);
-            newCollection.set('public', (0, _toLower2.default)(req.body.privacy) === 'public');
-            newCollection.set('entity_type', (0, _upperFirst2.default)((0, _camelCase2.default)(req.body.entityType)));
-            _context.next = 23;
-            return newCollection.save(null, {
-              method: method
-            });
+exports.setAttribute = setAttribute;
 
-          case 23:
-            oldCollaborators = res.locals.collection ? res.locals.collection.collaborators : [];
-            newCollaborators = req.body.collaborators ? req.body.collaborators : [];
-            newlyAddedCollaborators = (0, _differenceWith2.default)(newCollaborators, oldCollaborators, _isEqual2.default);
-            removedCollaborators = (0, _differenceWith2.default)(oldCollaborators, newCollaborators, _isEqual2.default);
-            collaboratorPromises = [];
-            newlyAddedCollaborators.forEach(function (collaborator) {
-              collaboratorPromises.push(new UserCollectionCollaborator({
-                collaboratorId: collaborator.id,
-                collectionId: newCollection.get('id')
-              }).save(null, {
-                method: 'insert'
-              }));
-            });
-            removedCollaborators.forEach(function (collaborator) {
-              collaboratorPromises.push(new UserCollectionCollaborator({}).where('collection_id', newCollection.get('id')).where('collaborator_id', collaborator.id).destroy());
-            });
-            _context.next = 32;
-            return Promise.all(collaboratorPromises);
+var getAttributeName = function getAttributeName(id) {
+  switch (id) {
+    case 1:
+      return 'position';
 
-          case 32:
-            if (!(isNew || res.locals.collection.name !== newCollection.get('name'))) {
-              _context.next = 35;
-              break;
-            }
+    case 2:
+      return 'number';
 
-            collectionPromiseForES = new Promise(function (resolve) {
-              var collectionForES = {
-                aliasSet: {
-                  aliases: [{
-                    name: newCollection.get('name')
-                  }]
-                },
-                bbid: newCollection.get('id'),
-                id: newCollection.get('id'),
-                type: 'Collection'
-              };
-              resolve(collectionForES);
-            });
-            return _context.abrupt("return", handler.sendPromiseResult(res, collectionPromiseForES, search.indexEntity));
+    default:
+      return 'unnamed';
+  }
+};
 
-          case 35:
-            return _context.abrupt("return", res.send(newCollection.toJSON()));
-
-          case 38:
-            _context.prev = 38;
-            _context.t0 = _context["catch"](0);
-            return _context.abrupt("return", next(_context.t0));
-
-          case 41:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee, null, [[0, 38]]);
-  }));
-  return _collectionCreateOrEditHandler.apply(this, arguments);
-}</code></pre>
+exports.getAttributeName = getAttributeName;</code></pre>
         </article>
     </section>
 

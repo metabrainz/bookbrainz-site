@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>server/helpers/collectionRouteUtils.js - Documentation</title>
+    <title>client/entity-editor/helpers.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">server/helpers/collectionRouteUtils.js</h1>
+    <h1 class="page-title">client/entity-editor/helpers.js</h1>
     
 
     
@@ -41,63 +41,96 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
-
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
-require("core-js/modules/es.symbol");
-
-require("core-js/modules/es.symbol.description");
 
 require("core-js/modules/es.array.for-each");
 
-require("core-js/modules/es.array.iterator");
-
-require("core-js/modules/es.date.to-json");
-
-require("core-js/modules/es.function.name");
-
-require("core-js/modules/es.object.to-string");
-
-require("core-js/modules/es.promise");
-
-require("core-js/modules/es.string.iterator");
-
 require("core-js/modules/web.dom-collections.for-each");
-
-require("core-js/modules/web.dom-collections.iterator");
-
-require("core-js/modules/web.url.to-json");
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.collectionCreateOrEditHandler = collectionCreateOrEditHandler;
+exports.isAliasEmpty = isAliasEmpty;
+exports.isRequiredDisambiguationEmpty = isRequiredDisambiguationEmpty;
+exports.getEntitySection = getEntitySection;
+exports.getEntitySectionMerge = getEntitySectionMerge;
+exports.getValidator = getValidator;
+exports.createRootReducer = createRootReducer;
+exports.shouldDevToolsBeInjected = shouldDevToolsBeInjected;
+exports.attachAttribToRelForDisplay = attachAttribToRelForDisplay;
 
-var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
-require("regenerator-runtime/runtime");
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
-var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+var _authorSection = _interopRequireDefault(require("./author-section/author-section"));
 
-var _upperFirst2 = _interopRequireDefault(require("lodash/upperFirst"));
+var _authorSectionMerge = _interopRequireDefault(require("./author-section/author-section-merge"));
 
-var _toLower2 = _interopRequireDefault(require("lodash/toLower"));
+var _editionGroupSection = _interopRequireDefault(require("./edition-group-section/edition-group-section"));
 
-var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
+var _editionGroupSectionMerge = _interopRequireDefault(require("./edition-group-section/edition-group-section-merge"));
 
-var _differenceWith2 = _interopRequireDefault(require("lodash/differenceWith"));
+var _editionSection = _interopRequireDefault(require("./edition-section/edition-section"));
 
-var _camelCase2 = _interopRequireDefault(require("lodash/camelCase"));
+var _editionSectionMerge = _interopRequireDefault(require("./edition-section/edition-section-merge"));
 
-var handler = _interopRequireWildcard(require("../helpers/handler"));
+var _publisherSection = _interopRequireDefault(require("./publisher-section/publisher-section"));
 
-var search = _interopRequireWildcard(require("../../common/helpers/search"));
+var _publisherSectionMerge = _interopRequireDefault(require("./publisher-section/publisher-section-merge"));
 
-var _error = require("../../common/helpers/error");
+var _seriesSection = _interopRequireDefault(require("./series-section/series-section"));
+
+var _seriesSectionMerge = _interopRequireDefault(require("./series-section/series-section-merge"));
+
+var _workSection = _interopRequireDefault(require("./work-section/work-section"));
+
+var _workSectionMerge = _interopRequireDefault(require("./work-section/work-section-merge"));
+
+var _reducer = _interopRequireDefault(require("./alias-editor/reducer"));
+
+var _reducer2 = _interopRequireDefault(require("./annotation-section/reducer"));
+
+var _reducer3 = _interopRequireDefault(require("./author-section/reducer"));
+
+var _reducer4 = _interopRequireDefault(require("./button-bar/reducer"));
+
+var _reduxImmutable = require("redux-immutable");
+
+var _reducer5 = _interopRequireDefault(require("./edition-group-section/reducer"));
+
+var _reducer6 = _interopRequireDefault(require("./edition-section/reducer"));
+
+var _helper = require("./relationship-editor/helper");
+
+var _reducer7 = _interopRequireDefault(require("./identifier-editor/reducer"));
+
+var _reducer8 = _interopRequireDefault(require("./name-section/reducer"));
+
+var _reducer9 = _interopRequireDefault(require("./publisher-section/reducer"));
+
+var _reducer10 = _interopRequireDefault(require("./relationship-editor/reducer"));
+
+var _reducer11 = _interopRequireDefault(require("./series-section/reducer"));
+
+var _reducer12 = _interopRequireDefault(require("./submission-section/reducer"));
+
+var _author = require("./validators/author");
+
+var _edition = require("./validators/edition");
+
+var _editionGroup = require("./validators/edition-group");
+
+var _publisher = require("./validators/publisher");
+
+var _series = require("./validators/series");
+
+var _work = require("./validators/work");
+
+var _reducer13 = _interopRequireDefault(require("./work-section/reducer"));
 
 /*
- * Copyright (C) 2020 Prabal Singh
+ * Copyright (C) 2016  Ben Ockmore
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,137 +146,96 @@ var _error = require("../../common/helpers/error");
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
-/**
- * A handler for create or edit actions on collections.
- * @param {object} req - request object
- * @param {object} res - response object
- * @param {object} next - next object
- * @returns {promise} res.send promise
- * @description
- * Creates a new collection or updates the existing collection
- * If it's a new collection or it's name is changed, ElasticSearch index is also updated
- */
-function collectionCreateOrEditHandler(_x, _x2, _x3) {
-  return _collectionCreateOrEditHandler.apply(this, arguments);
+function isAliasEmpty(nameValue, sortNameValue, languageValue) {
+  return !(nameValue.length || sortNameValue.length || languageValue);
 }
 
-function _collectionCreateOrEditHandler() {
-  _collectionCreateOrEditHandler = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(req, res, next) {
-    var _req$app$locals$orm, UserCollection, UserCollectionCollaborator, isNew, newCollection, method, _res$locals$collectio, _res$locals$collectio2, oldCollaborators, newCollaborators, newlyAddedCollaborators, removedCollaborators, collaboratorPromises, collectionPromiseForES;
+function isRequiredDisambiguationEmpty(required, disambiguation) {
+  return required ? !disambiguation : false;
+}
 
-    return _regenerator.default.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            _context.prev = 0;
-            _req$app$locals$orm = req.app.locals.orm, UserCollection = _req$app$locals$orm.UserCollection, UserCollectionCollaborator = _req$app$locals$orm.UserCollectionCollaborator;
-            isNew = !res.locals.collection;
+function getEntitySection(entityType) {
+  var SECTION_MAP = {
+    author: _authorSection.default,
+    edition: _editionSection.default,
+    editionGroup: _editionGroupSection.default,
+    publisher: _publisherSection.default,
+    series: _seriesSection.default,
+    work: _workSection.default
+  };
+  return SECTION_MAP[entityType];
+}
 
-            if (!isNew) {
-              _context.next = 10;
-              break;
-            }
+function getEntitySectionMerge(entityType) {
+  var SECTION_MAP = {
+    author: _authorSectionMerge.default,
+    edition: _editionSectionMerge.default,
+    editionGroup: _editionGroupSectionMerge.default,
+    publisher: _publisherSectionMerge.default,
+    series: _seriesSectionMerge.default,
+    work: _workSectionMerge.default
+  };
+  return SECTION_MAP[entityType];
+}
 
-            _context.next = 6;
-            return new UserCollection({
-              ownerId: req.user.id
-            });
+function getEntitySectionReducer(entityType) {
+  var SECTION_REDUCER_MAP = {
+    author: _reducer3.default,
+    edition: _reducer6.default,
+    editionGroup: _reducer5.default,
+    publisher: _reducer9.default,
+    series: _reducer11.default,
+    work: _reducer13.default
+  };
+  return SECTION_REDUCER_MAP[entityType];
+}
 
-          case 6:
-            newCollection = _context.sent;
-            method = 'insert';
-            _context.next = 17;
-            break;
+function getValidator(entityType) {
+  var VALIDATOR_MAP = {
+    author: _author.validateForm,
+    edition: _edition.validateForm,
+    editionGroup: _editionGroup.validateForm,
+    publisher: _publisher.validateForm,
+    series: _series.validateForm,
+    work: _work.validateForm
+  };
+  return VALIDATOR_MAP[entityType];
+}
 
-          case 10:
-            if (!(((_res$locals$collectio = res.locals.collection) === null || _res$locals$collectio === void 0 ? void 0 : (_res$locals$collectio2 = _res$locals$collectio.items) === null || _res$locals$collectio2 === void 0 ? void 0 : _res$locals$collectio2.length) &amp;&amp; (0, _upperFirst2.default)((0, _camelCase2.default)(req.body.entityType)) !== res.locals.collection.entityType)) {
-              _context.next = 12;
-              break;
-            }
+function getEntitySectionReducerName(entityType) {
+  return "".concat(entityType, "Section");
+}
 
-            throw new _error.BadRequestError('Trying to change entityType of a non empty collection');
+function createRootReducer(entityType) {
+  var _combineReducers;
 
-          case 12:
-            _context.next = 14;
-            return new UserCollection({
-              id: req.params.collectionId
-            }).fetch({
-              require: true
-            });
+  var entityReducerKey = getEntitySectionReducerName(entityType);
+  var entityReducer = getEntitySectionReducer(entityType);
+  return (0, _reduxImmutable.combineReducers)((_combineReducers = {
+    aliasEditor: _reducer.default,
+    annotationSection: _reducer2.default,
+    buttonBar: _reducer4.default
+  }, (0, _defineProperty2.default)(_combineReducers, entityReducerKey, entityReducer), (0, _defineProperty2.default)(_combineReducers, "identifierEditor", _reducer7.default), (0, _defineProperty2.default)(_combineReducers, "nameSection", _reducer8.default), (0, _defineProperty2.default)(_combineReducers, "relationshipSection", _reducer10.default), (0, _defineProperty2.default)(_combineReducers, "submissionSection", _reducer12.default), _combineReducers));
+}
 
-          case 14:
-            newCollection = _context.sent;
-            method = 'update';
-            newCollection.set('last_modified', new Date());
+function shouldDevToolsBeInjected() {
+  return Boolean((typeof window === "undefined" ? "undefined" : (0, _typeof2.default)(window)) === 'object' &amp;&amp; window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__);
+}
+/**
+ * Takes an array of relationships and attach the deeply nested
+ * relationship attributes to the first level of the relationship object.
+ *
+ * @param {Array} relationships the array of relationships
+ */
 
-          case 17:
-            newCollection.set('description', req.body.description);
-            newCollection.set('name', req.body.name);
-            newCollection.set('public', (0, _toLower2.default)(req.body.privacy) === 'public');
-            newCollection.set('entity_type', (0, _upperFirst2.default)((0, _camelCase2.default)(req.body.entityType)));
-            _context.next = 23;
-            return newCollection.save(null, {
-              method: method
-            });
 
-          case 23:
-            oldCollaborators = res.locals.collection ? res.locals.collection.collaborators : [];
-            newCollaborators = req.body.collaborators ? req.body.collaborators : [];
-            newlyAddedCollaborators = (0, _differenceWith2.default)(newCollaborators, oldCollaborators, _isEqual2.default);
-            removedCollaborators = (0, _differenceWith2.default)(oldCollaborators, newCollaborators, _isEqual2.default);
-            collaboratorPromises = [];
-            newlyAddedCollaborators.forEach(function (collaborator) {
-              collaboratorPromises.push(new UserCollectionCollaborator({
-                collaboratorId: collaborator.id,
-                collectionId: newCollection.get('id')
-              }).save(null, {
-                method: 'insert'
-              }));
-            });
-            removedCollaborators.forEach(function (collaborator) {
-              collaboratorPromises.push(new UserCollectionCollaborator({}).where('collection_id', newCollection.get('id')).where('collaborator_id', collaborator.id).destroy());
-            });
-            _context.next = 32;
-            return Promise.all(collaboratorPromises);
-
-          case 32:
-            if (!(isNew || res.locals.collection.name !== newCollection.get('name'))) {
-              _context.next = 35;
-              break;
-            }
-
-            collectionPromiseForES = new Promise(function (resolve) {
-              var collectionForES = {
-                aliasSet: {
-                  aliases: [{
-                    name: newCollection.get('name')
-                  }]
-                },
-                bbid: newCollection.get('id'),
-                id: newCollection.get('id'),
-                type: 'Collection'
-              };
-              resolve(collectionForES);
-            });
-            return _context.abrupt("return", handler.sendPromiseResult(res, collectionPromiseForES, search.indexEntity));
-
-          case 35:
-            return _context.abrupt("return", res.send(newCollection.toJSON()));
-
-          case 38:
-            _context.prev = 38;
-            _context.t0 = _context["catch"](0);
-            return _context.abrupt("return", next(_context.t0));
-
-          case 41:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee, null, [[0, 38]]);
-  }));
-  return _collectionCreateOrEditHandler.apply(this, arguments);
+function attachAttribToRelForDisplay(relationships) {
+  relationships.forEach(function (relationship) {
+    relationship.attributes.forEach(function (attribute) {
+      var attributeName = (0, _helper.getAttributeName)(attribute.attributeType);
+      relationship[attributeName] = attribute.value.textValue;
+    });
+  });
 }</code></pre>
         </article>
     </section>
