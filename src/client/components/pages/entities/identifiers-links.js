@@ -57,6 +57,7 @@ function IdentifierLink({typeId, value}) {
 			break;
 		case 12: // @VIAF: The VIAF ID corresponding to a BookBrainz Author.
 		case 29: // @VIAF: The VIAF ID corresponding to a BookBrainz Publisher.
+		case 31: // @VIAF: The VIAF ID corresponding to a BookBrainz Series.
 			link = `https://viaf.org/viaf/${value}`;
 			break;
 		case 13: // @ISNI: The ISNI ID corresponding to a BookBrainz Author.
@@ -79,6 +80,7 @@ function IdentifierLink({typeId, value}) {
 		case 19: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz EditionGroup.
 		case 20: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Publisher.
 		case 21: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Work.
+		case 30: // @Wikidata ID: The ID for the Wikidata page corresponding to a BookBrainz Series.
 			link = `https://www.wikidata.org/wiki/${value}`;
 			break;
 		case 22:
@@ -101,6 +103,15 @@ function IdentifierLink({typeId, value}) {
 			break;
 		case 28:
 			link = `https://www.goodreads.com/book/show/${value}`;
+			break;
+		case 32: // @MusicBrainz Series ID: The ID for the MusicBrainz Series corresponding to a BookBrainz Series.
+			link = `https://musicbrainz.org/series/${value}`;
+			break;
+		case 33: // @Goodreads Series ID: The ID for the Goodreads Series page corresponding to a BookBrainz Series.
+			link = `https://www.goodreads.com/series/${value}`;
+			break;
+		case 34: // @IMDB List ID: The ID for a list from IMDB
+			link = `https://www.imdb.com/list/${value}`;
 			break;
 		default:
 			return value;

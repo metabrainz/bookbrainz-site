@@ -142,6 +142,10 @@ class Layout extends React.Component {
 								{genEntityIconHTMLElement('EditionGroup')}
 								Edition Group
 							</MenuItem>
+							<MenuItem href="/series/create">
+								{genEntityIconHTMLElement('Series')}
+								Series
+							</MenuItem>
 							<MenuItem divider/>
 							<MenuItem href="/author/create">
 								{genEntityIconHTMLElement('Author')}

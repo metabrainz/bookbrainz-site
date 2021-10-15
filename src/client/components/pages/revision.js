@@ -106,17 +106,17 @@ class RevisionPage extends React.Component {
 		let deleteBadge = null;
 		if (diff.isDeletion) {
 			if (diff.entityRevision.isMerge) {
-				mergeBadge = <Badge className="merged margin-right-0-5">Merged</Badge>;
+				mergeBadge = <Badge className="merged margin-right-0-5" title={`This ${diff.entity.type} was merged in this revision`}>Merged</Badge>;
 			}
 			else {
-				deleteBadge = <Badge className="deletion margin-right-0-5">- Deleted</Badge>;
+				deleteBadge = <Badge className="deletion margin-right-0-5" title={`This ${diff.entity.type} was deleted in this revision`}>- Deleted</Badge>;
 			}
 		}
 		return (
 			<div key={diff.entity.bbid}>
 				<h3>
 					{diff.isNew &&
-					<Badge className="new margin-right-0-5">+ New</Badge>}
+					<Badge className="new margin-right-0-5" title={`This ${diff.entity.type} was created in this revision`}>+ New</Badge>}
 					{mergeBadge}
 					{deleteBadge}
 					<EntityLink
