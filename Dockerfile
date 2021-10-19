@@ -7,7 +7,8 @@ ARG BUILD_DEPS=" \
     build-essential \
     python-dev \
     libpq5 \
-    libpq-dev"
+    libpq-dev \
+    ca-certificates"
 
 ARG RUN_DEPS=" \
     bzip2 \
@@ -17,8 +18,11 @@ ARG RUN_DEPS=" \
 
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
-        $BUILD_DEPS $RUN_DEPS && \
-    rm -rf /var/lib/apt/lists/*
+        $BUILD_DEPS $RUN_DEPS \
+# remove expired let's encrypt certificate and install new ones (see ca-certificates in build deps too)
+    && rm -rf /usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt \
+    && update-ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 # PostgreSQL client
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
