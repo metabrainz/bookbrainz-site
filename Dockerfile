@@ -7,13 +7,13 @@ ARG BUILD_DEPS=" \
     build-essential \
     python-dev \
     libpq5 \
-    libpq-dev \
-    ca-certificates"
+    libpq-dev"
 
 ARG RUN_DEPS=" \
     bzip2 \
     git \
-    rsync"
+    rsync \
+    ca-certificates"
 
 
 RUN apt-get update && \
