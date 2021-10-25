@@ -87,10 +87,8 @@ ADD ./docker/crontab /etc/cron.d/bookbrainz
 RUN chmod 0644 /etc/cron.d/bookbrainz && crontab -u bookbrainz /etc/cron.d/bookbrainz
 
 # Build JS project and assets
-USER bookbrainz
 RUN ["npm", "run", "build"]
 RUN ["npm", "prune", "--production"]
-USER root
 
 # API target
 FROM bookbrainz-base as bookbrainz-webservice
@@ -107,7 +105,5 @@ RUN chmod 755 /etc/service/webserver/run
 RUN touch /etc/service/webserver/down
 
 # Build API JS
-USER bookbrainz
 RUN ["npm", "run", "build-api-js"]
 RUN ["npm", "prune", "--production"]
-USER root
