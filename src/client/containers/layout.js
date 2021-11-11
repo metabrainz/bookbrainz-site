@@ -45,6 +45,7 @@ class Layout extends React.Component {
 		this.handleDropdownToggle = this.handleDropdownToggle.bind(this);
 		this.handleDropdownClick = this.handleDropdownClick.bind(this);
 		this.handleMouseDown = this.handleMouseDown.bind(this);
+		this.fetchMoreNotifications = this.fetchMoreNotifications.bind(this);
 	}
 
 	handleMouseDown(event) {
@@ -63,6 +64,14 @@ class Layout extends React.Component {
 	handleDropdownClick(eventKey, event) {
 		event.stopPropagation();
 		this.setState({keepMenuOpen: true}, this.handleDropdownToggle);
+	}
+
+	async loadNotifications() {
+		const res = await request.get(`/subscription/notifications?from=${this.state.notificationsFrom}&size=5`);
+		const {notifications} = res.body;
+		this.setState({
+			notifications
+		});
 	}
 
 	renderNavHeader() {

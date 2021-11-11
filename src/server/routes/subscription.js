@@ -131,5 +131,26 @@ router.post('/unsubscribe/entity', auth.isAuthenticated, async (req, res, next) 
 	}
 });
 
+router.get('/notifications', auth.isAuthenticated, async (req, res, next) => {
+	try {
+		console.log('HERE');
+		const editorId = req.user.id;
+		const size = req.query.size ? parseInt(req.query.size, 10) : 5;
+		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+		const {Notification} = req.app.locals.orm;
+		const allNotifications = await new Notification()
+			.query('where', 'subscriber_id', '=', editorId)
+			.fetchPage({
+				limit: size,
+				offset: from
+			});
+		return res.send({
+			notifications: allNotifications.toJSON()
+		});
+	}
+	catch (err) {
+		return next(err);
+	}
+});
 
 export default router;
