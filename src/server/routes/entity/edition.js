@@ -255,7 +255,7 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 });
 
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
 	if(!res.locals.entity.dataId){
 		return next(new ConflictError('This entity has already been deleted'));
 	}
