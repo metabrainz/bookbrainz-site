@@ -21,6 +21,8 @@ import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
+import {ConflictError} from '../../../common/helpers/error';
+
 import {
 	entityEditorMarkup,
 	generateEntityProps,
@@ -155,6 +157,9 @@ router.get('/:bbid', middleware.loadEntityRelationships, (req, res, next) => {
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
+	if(!res.locals.entity.dataId){
+		return next(new ConflictError('This entity has already been deleted'));
+	}
 	_setPublisherTitle(res);
 	entityRoutes.displayDeleteEntity(req, res);
 });
