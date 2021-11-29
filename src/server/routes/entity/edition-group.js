@@ -21,7 +21,6 @@ import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
-import {ConflictError} from '../../../common/helpers/error';
 
 import {
 	entityEditorMarkup,
@@ -29,6 +28,7 @@ import {
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
+import {ConflictError} from '../../../common/helpers/error';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
@@ -135,11 +135,11 @@ router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
-	if(!res.locals.entity.dataId){
+	if (!res.locals.entity.dataId) {
 		return next(new ConflictError('This entity has already been deleted'));
 	}
 	_setEditionGroupTitle(res);
-	entityRoutes.displayDeleteEntity(req, res);
+	return entityRoutes.displayDeleteEntity(req, res);
 });
 
 router.post(
