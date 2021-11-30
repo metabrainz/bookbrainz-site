@@ -20,6 +20,10 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: bookbrainz_test
+        # Since we run npm tests on the host machine (not in a docker container)
+        # we need to bind the Postgres port from Docker container to host machine
+        ports:
+          - 5432:5432
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
