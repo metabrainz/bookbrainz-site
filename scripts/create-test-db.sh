@@ -1,7 +1,15 @@
 #!/bin/bash
 
-psql -c 'CREATE DATABASE bookbrainz_test;' -U postgres -h localhost
-psql -c 'CREATE EXTENSION "uuid-ossp"; CREATE SCHEMA musicbrainz; CREATE SCHEMA bookbrainz;' -d bookbrainz_test -U postgres -h localhost
-psql -f sql/schemas/musicbrainz.sql -d bookbrainz_test -U postgres -h localhost
-psql -f sql/schemas/bookbrainz.sql -d bookbrainz_test -U postgres -h localhost
-psql -f sql/scripts/create_triggers.sql -d bookbrainz_test -U postgres -h localhost
+# set up variables with defaults
+: "${POSTGRES_USER:=postgres}"
+: "${POSTGRES_PASSWORD:=}"
+: "${POSTGRES_DB:=bookbrainz_test}"
+: "${POSTGRES_HOST:=localhost}"
+
+export PGPASSWORD=$POSTGRES_PASSWORD
+
+psql -c "CREATE DATABASE ${POSTGRES_DB};" -U $POSTGRES_USER -h $POSTGRES_HOST
+psql -c 'CREATE EXTENSION "uuid-ossp"; CREATE SCHEMA musicbrainz; CREATE SCHEMA bookbrainz;' -d $POSTGRES_DB -U $POSTGRES_USER -h $POSTGRES_HOST
+psql -f sql/schemas/musicbrainz.sql -d $POSTGRES_DB -U $POSTGRES_USER -h $POSTGRES_HOST
+psql -f sql/schemas/bookbrainz.sql -d $POSTGRES_DB -U $POSTGRES_USER -h $POSTGRES_HOST
+psql -f sql/scripts/create_triggers.sql -d $POSTGRES_DB -U $POSTGRES_USER -h $POSTGRES_HOST

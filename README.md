@@ -169,7 +169,8 @@ The test suite is built using Mocha and Chai. Before running the tests, you will
 
 Run the following command to create and set up the bookbrainz_test database using Docker: `docker-compose run --rm bookbrainz-site scripts/wait-for-postgres.sh scripts/create-test-db.sh`.
   
-If you are running postgres manually outside of Docker, replace `-h postgres` with `-h localhost` at the end of each line in `scripts/create-test-db.sh` before running the script.
+If you are running postgres manually outside of Docker, you can set some environment variables before running the script `scripts/create-test-db.sh`:
+In particular `POSTGRES_HOST=localhost` but you can also set `POSTGRES_USER`, `POSTGRES_PASSWORD` and `POSTGRES_DB`
 
-Once your testing databas eis set up, you can run the test suite with the commands `docker-compose run --rm bookbrainz-site npm run test` (to run in Docker) or simply `npm run test` (to run locally).
+Once your testing database is set up, you can run the test suite with the commands `docker-compose run --rm bookbrainz-site npm run test` (to run in Docker) or simply `npm run test` (to run locally).
 You may need to adjust your `config/test.json` file to match you setup.

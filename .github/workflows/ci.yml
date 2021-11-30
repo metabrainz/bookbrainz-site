@@ -67,6 +67,10 @@ jobs:
       # Set up the test dabatase
       - name: Set up test database in PostgreSQL
         run: ./scripts/create-test-db.sh
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: bookbrainz_test
           
       # Performs a clean installation of all dependencies in the `package.json` file
       # For more information, see https://docs.npmjs.com/cli/ci.html
