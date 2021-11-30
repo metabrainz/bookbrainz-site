@@ -18,7 +18,7 @@ jobs:
         # Provide the password for postgres
         env:
           POSTGRES_USER: postgres
-          # POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: postgres
           POSTGRES_DB: bookbrainz_test
         # Set health checks to wait until postgres has started
         options: >-

@@ -22,7 +22,7 @@
 			"host": "127.0.0.1",
 			"database": "bookbrainz_test",
 			"user": "postgres",
-			"password": ""
+			"password": "postgres"
 		}
 	},
 	"search": {
