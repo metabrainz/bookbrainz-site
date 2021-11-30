@@ -28,32 +28,23 @@ jobs:
           --health-retries 5
     
     steps:
-      # Set up ElasticSearch
-      # - name: Configure sysctl limits
-      #   run: |
-      #     sudo swapoff -a
-      #     sudo sysctl -w vm.swappiness=1
-      #     sudo sysctl -w fs.file-max=262144
-      #     sudo sysctl -w vm.max_map_count=262144
       
       - name: Install PostgreSQL client
         run: |
           apt-get update
           apt-get install --yes postgresql-client
 
-      - uses: getong/elasticsearch-action@v1.2
+      #Set up ElasticSearch
+      - name: Run Elasticsearch
+      # Replace this with official elastic-github-actions/elasticsearch once they are ready for prod
+        uses: getong/elasticsearch-action@v1.2
         with:
-          elasticsearch version: '7.6.1'
+          elasticsearch version: '5.6.8'
           host port: 9200
           container port: 9200
           host node port: 9300
           node port: 9300
           discovery type: 'single-node'
-
-      # - name: Runs Elasticsearch
-      #   uses: elastic/elastic-github-actions/elasticsearch@master
-      #   with:
-      #     stack-version: 5.6.8
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -72,12 +63,6 @@ jobs:
       # Set up the test dabatase
       - name: Set up test database in PostgreSQL
         run: ./scripts/create-test-db.sh
-        # env:
-        #   # The hostname used to communicate with the PostgreSQL service container
-        #   POSTGRES_HOST: postgres
-        #   # The default PostgreSQL port
-        #   # POSTGRES_PORT: 5432
-        #   POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }} # get randomly assigned published port
           
       # Performs a clean installation of all dependencies in the `package.json` file
       # For more information, see https://docs.npmjs.com/cli/ci.html
