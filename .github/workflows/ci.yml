@@ -31,8 +31,8 @@ jobs:
       
       - name: Install PostgreSQL client
         run: |
-          apt-get update
-          apt-get install --yes postgresql-client
+          sudo apt-get update
+          sudo apt-get install --yes postgresql-client
 
       #Set up ElasticSearch
       - name: Run Elasticsearch
