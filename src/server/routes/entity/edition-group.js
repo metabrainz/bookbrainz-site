@@ -81,9 +81,18 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadEditionGroupTypes,
 	middleware.loadRelationshipTypes, (req, res) => {
-		const {markup, props} = entityEditorMarkup(generateEntityProps(
+		const markupProps = generateEntityProps(
 			'editionGroup', req, res, {}
-		));
+		);
+		markupProps.initialState.nameSection = {
+			disambiguation: '',
+			exactMatches: null,
+			language: null,
+			name: req.query.name,
+			searchResults: null,
+			sortName: ''
+		};
+		const {markup, props} = entityEditorMarkup(markupProps);
 
 		return res.send(target({
 			markup,

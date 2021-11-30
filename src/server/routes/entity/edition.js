@@ -186,7 +186,14 @@ router.get(
 				relationshipTypeId = RelationshipTypes.EditionContainsWork;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.work);
 			}
-
+			props.initialState.nameSection = {
+				disambiguation: '',
+				exactMatches: null,
+				language: null,
+				name: req.query.name,
+				searchResults: null,
+				sortName: ''
+			};
 			const editorMarkup = entityEditorMarkup(props);
 			const {markup} = editorMarkup;
 			const updatedProps = editorMarkup.props;

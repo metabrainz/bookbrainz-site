@@ -157,7 +157,7 @@ class SearchResults extends React.Component {
 							<small>Make sure the spelling is correct, and that you have selected the correct type in the search bar.</small>
 							<hr className="wide"/>
 							<h3>Are we missing an entry?</h3>
-							<CallToAction/>
+							<CallToAction query={this.props.query}/>
 						</Row>
 					}
 				</div>
@@ -301,6 +301,7 @@ class SearchResults extends React.Component {
 SearchResults.displayName = 'SearchResults';
 SearchResults.propTypes = {
 	condensed: PropTypes.bool,
+	query: PropTypes.string.isRequired,
 	results: PropTypes.array,
 	user: PropTypes.object.isRequired
 };
