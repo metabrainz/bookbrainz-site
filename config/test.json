@@ -19,7 +19,7 @@
 		"client": "pg",
 		"debug": false,
 		"connection": {
-			"host": "postgres",
+			"host": "localhost",
 			"database": "bookbrainz_test",
 			"user": "postgres",
 			"password": "postgres"
