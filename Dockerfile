@@ -46,7 +46,7 @@ RUN echo $GIT_COMMIT_SHA > .git-version
 
 # Files necessary to complete the JavaScript build
 COPY --chown=bookbrainz scripts/ scripts/
-COPY --chown=bookbrainz .babelrc .eslintrc.js .eslintignore webpack.client.js package.json package-lock.json ./
+COPY --chown=bookbrainz .babelrc .eslintrc.js .eslintignore webpack.client.js package.json yarn.lock ./
 
 RUN yarn install
 
