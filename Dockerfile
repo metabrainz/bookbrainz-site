@@ -48,7 +48,7 @@ RUN echo $GIT_COMMIT_SHA > .git-version
 COPY --chown=bookbrainz scripts/ scripts/
 COPY --chown=bookbrainz .babelrc .eslintrc.js .eslintignore webpack.client.js package.json package-lock.json ./
 
-RUN npm install --no-audit
+RUN yarn install
 
 COPY --chown=bookbrainz static/ static/
 COPY --chown=bookbrainz config/ config/
@@ -60,7 +60,7 @@ COPY --chown=bookbrainz src/ src/
 FROM bookbrainz-base as bookbrainz-dev
 ARG DEPLOY_ENV
 
-CMD ["npm", "start"]
+CMD ["yarn", "start"]
 
 # Production target
 FROM bookbrainz-base as bookbrainz-prod
@@ -87,8 +87,8 @@ ADD ./docker/crontab /etc/cron.d/bookbrainz
 RUN chmod 0644 /etc/cron.d/bookbrainz && crontab -u bookbrainz /etc/cron.d/bookbrainz
 
 # Build JS project and assets
-RUN ["npm", "run", "build"]
-RUN ["npm", "prune", "--production"]
+RUN ["yarn", "run", "build"]
+RUN ["yarn", "install", "--production", "--ignore-scripts", "--prefer-offline"]
 
 # API target
 FROM bookbrainz-base as bookbrainz-webservice
@@ -105,5 +105,5 @@ RUN chmod 755 /etc/service/webserver/run
 RUN touch /etc/service/webserver/down
 
 # Build API JS
-RUN ["npm", "run", "build-api-js"]
-RUN ["npm", "prune", "--production"]
+RUN ["yarn", "run", "build-api-js"]
+RUN ["yarn", "install", "--production", "--ignore-scripts", "--prefer-offline"]
