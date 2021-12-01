@@ -180,7 +180,7 @@ export function dateObjectToISOString(value: DateObject) {
 export function stringToHTMLWithLinks(string: string) {
 	const addHttpRegex = /(^| )www\./ig;
 	// eslint-disable-next-line max-len
-	const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%~@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
+	const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%~*@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
 	let content = string.replace(addHttpRegex, '$1https://www.');
 	content = content.replace(
 		urlRegex,
