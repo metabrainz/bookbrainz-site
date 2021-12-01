@@ -88,6 +88,7 @@ RUN chmod 0644 /etc/cron.d/bookbrainz && crontab -u bookbrainz /etc/cron.d/bookb
 
 # Build JS project and assets
 RUN ["yarn", "run", "build"]
+# Prune off the dev dependencies after build step
 RUN ["yarn", "install", "--production", "--ignore-scripts", "--prefer-offline"]
 
 # API target
@@ -106,4 +107,5 @@ RUN touch /etc/service/webserver/down
 
 # Build API JS
 RUN ["yarn", "run", "build-api-js"]
+# Prune off the dev dependencies after build step
 RUN ["yarn", "install", "--production", "--ignore-scripts", "--prefer-offline"]
