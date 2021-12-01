@@ -50,6 +50,14 @@ jobs:
           node port: 9300
           discovery type: 'single-node'
 
+      # Set up the test dabatase
+      - name: Set up test database in PostgreSQL
+        run: ./scripts/create-test-db.sh
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: bookbrainz_test
+
       - name: Checkout code
         uses: actions/checkout@v2
         with:
@@ -62,15 +70,7 @@ jobs:
           # We could also test on multiple Node versions if needed: https://github.com/actions/setup-node#matrix-testing
           node-version: '12'
           # Enables caching NPM dependencies (uses https://github.com/actions/cache under the hood)
-          cache: 'npm'
-
-      # Set up the test dabatase
-      - name: Set up test database in PostgreSQL
-        run: ./scripts/create-test-db.sh
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: bookbrainz_test
+          cache: 'yarn'
           
       # Performs a clean installation of all dependencies in the `package.json` file
       # For more information, see https://docs.npmjs.com/cli/ci.html
