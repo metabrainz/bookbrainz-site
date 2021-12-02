@@ -19,8 +19,10 @@
  */
 
 import * as React from 'react';
+import CallToAction from './parts/call-to-action';
 import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
+import {Row} from 'react-bootstrap';
 import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
 
@@ -145,7 +147,6 @@ class SearchPage extends React.Component<Props, State> {
 					onSearch={this.handleSearch}
 				/>
 				<SearchResults
-					query={this.state.query}
 					results={this.state.results}
 					user={this.props.user}
 				/>
@@ -159,6 +160,26 @@ class SearchPage extends React.Component<Props, State> {
 					searchResultsCallback={this.searchResultsCallback}
 					size={this.props.resultsPerPage}
 				/>
+				<div className="text-center">
+					{results.length === 0 &&
+					<div>
+						<hr className="thin"/>
+						<h2 style={{color: '#754e37'}}>
+						No results found
+						</h2>
+					</div>}
+
+					<Row>
+						{results.length === 0 &&
+							<small>Make sure the spelling is correct, and that
+								 you have selected the correct type in the search bar.
+							</small>}
+						<hr className="wide"/>
+						<h3>Are we missing an entry?</h3>
+						<CallToAction query={this.props.query}/>
+					</Row>
+
+				</div>
 			</div>
 		);
 	}

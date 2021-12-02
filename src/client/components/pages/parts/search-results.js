@@ -22,13 +22,12 @@ import * as bootstrap from 'react-bootstrap';
 import {differenceBy as _differenceBy, kebabCase as _kebabCase, startCase as _startCase} from 'lodash';
 
 import AddToCollectionModal from './add-to-collection-modal';
-import CallToAction from './call-to-action';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {Alert, Badge, Button, ButtonGroup, Row, Table} = bootstrap;
+const {Alert, Badge, Button, ButtonGroup, Table} = bootstrap;
 
 /**
  * Renders the document and displays the 'SearchResults' page.
@@ -279,27 +278,6 @@ class SearchResults extends React.Component {
 							}
 						</div>
 				}
-				<div className="text-center">
-					{noResults &&
-					<div>
-						<hr className="thin"/>
-						<h2 style={{color: '#754e37'}}>
-						No results found
-						</h2>
-					</div>}
-					{
-						!this.props.condensed &&
-						<Row>
-							{noResults &&
-							<small>Make sure the spelling is correct, and that
-								 you have selected the correct type in the search bar.
-							</small>}
-							<hr className="wide"/>
-							<h3>Are we missing an entry?</h3>
-							<CallToAction query={this.props.query}/>
-						</Row>
-					}
-				</div>
 			</div>
 		);
 	}
@@ -308,7 +286,6 @@ class SearchResults extends React.Component {
 SearchResults.displayName = 'SearchResults';
 SearchResults.propTypes = {
 	condensed: PropTypes.bool,
-	query: PropTypes.string.isRequired,
 	results: PropTypes.array,
 	user: PropTypes.object.isRequired
 };

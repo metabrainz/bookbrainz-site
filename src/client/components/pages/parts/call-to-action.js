@@ -33,6 +33,7 @@ const {Button, ButtonGroup, Col} = bootstrap;
  * the 'CallToAction' component.
  */
 function CallToAction(props) {
+	const nameQueryParameter = props.query ? `?name=${props.query}` : '';
 	return (
 		<div className="text-center">
 			<p>
@@ -43,35 +44,35 @@ function CallToAction(props) {
 				<ButtonGroup id="searchpage-button-group">
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
-						href={props.query ? `/author/create?name=${props.query}` : '/author/create'}
+						href={`/author/create${nameQueryParameter}`}
 					>
 						{genEntityIconHTMLElement('Author', '3x', false)}
 						<div className="margin-top-d4">Author</div>
 					</Button>
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
-						href={props.query ? `/work/create?name=${props.query}` : '/work/create'}
+						href={`/work/create${nameQueryParameter}`}
 					>
 						{genEntityIconHTMLElement('Work', '3x', false)}
 						<div className="margin-top-d4">Work</div>
 					</Button>
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
-						href={props.query ? `/edition/create?name=${props.query}` : '/work/create'}
+						href={`/edition/create${nameQueryParameter}`}
 					>
 						{genEntityIconHTMLElement('Edition', '3x', false)}
 						<div className="margin-top-d4">Edition</div>
 					</Button>
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
-						href={props.query ? `/edition-group/create?name=${props.query}` : '/edition-group/create'}
+						href={`/edition-group/create${nameQueryParameter}`}
 					>
 						{genEntityIconHTMLElement('EditionGroup', '3x', false)}
 						<div className="margin-top-d4">Edition Group</div>
 					</Button>
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
-						href={props.query ? `/publisher/create?name=${props.query}` : '/publisher/create'}
+						href={`/publisher/create${nameQueryParameter}`}
 					>
 						{genEntityIconHTMLElement('Publisher', '3x', false)}
 						<div className="margin-top-d4">Publisher</div>

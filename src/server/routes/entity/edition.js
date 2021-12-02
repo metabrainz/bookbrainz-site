@@ -190,7 +190,7 @@ router.get(
 				disambiguation: '',
 				exactMatches: null,
 				language: null,
-				name: req.query.name,
+				name: req.query?.name ?? '',
 				searchResults: null,
 				sortName: ''
 			};
