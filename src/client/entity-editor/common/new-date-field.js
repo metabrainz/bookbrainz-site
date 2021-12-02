@@ -140,10 +140,11 @@ class DateField extends React.Component {
 					groupClassName={groupClassName}
 					label={labelElement}
 				>
-					<InputGroup style={{width: '18em'}}>
+					<InputGroup className="res-dob">
 						<FormControl
 							maxLength={isCommonEraDate ? 4 : 5}
 							placeholder="YYYY"
+							style={{width: '4em'}}
 							type="text"
 							value={this.state.year}
 							onBlur={this.handleYearInputBlur}
@@ -182,6 +183,10 @@ class DateField extends React.Component {
 								dateFormat="uuuuuu-MM-dd"
 								disabled={!isCommonEraDate}
 								dropdownMode="select"
+								popperModifiers={
+									{preventOverflow: {
+									  enabled: true
+									}}}
 								popperPlacement="top-end"
 								selected={isValid(selectedDate) ? selectedDate : null}
 								timeFormat="false"

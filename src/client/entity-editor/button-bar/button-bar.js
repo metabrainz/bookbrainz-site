@@ -68,6 +68,7 @@ function ButtonBar({
 				</Col>
 				<Col className="text-center" md={6}>
 					<IdentifierButton
+						className="btn wrap"
 						identifiersInvalid={identifiersInvalid}
 						numIdentifiers={numIdentifiers}
 						onClick={onIdentifierButtonClick}
