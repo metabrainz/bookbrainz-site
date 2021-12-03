@@ -30,7 +30,6 @@ class CollectionsPage extends React.Component {
 			results: this.props.results,
 			type: props.type
 		};
-		// console.log('here type in page', this.props.type);
 		this.handleTypeChange = this.handleTypeChange.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
 		this.paginationUrl = './collections/collections';
@@ -46,7 +45,7 @@ class CollectionsPage extends React.Component {
 	}
 
 	searchParamsChangeCallback = (searchParms) => {
-		const type = searchParms.get('type') ? searchParms.get('type') : '';
+		const type = searchParms.get('type') ?? '';
 		if (type !== this.state.type) {
 			this.setState({querySearchParams: `?${searchParms.toString()}`, type});
 		}
