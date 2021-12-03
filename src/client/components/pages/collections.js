@@ -45,6 +45,13 @@ class CollectionsPage extends React.Component {
 		this.setState({querySearchParams, type});
 	}
 
+	searchParamsChangeCallback = (searchParms) => {
+		const type = searchParms.get('type') ? searchParms.get('type') : '';
+		if (type !== this.state.type) {
+			this.setState({querySearchParams: `?${searchParms.toString()}`, type});
+		}
+	};
+
 	render() {
 		return (
 			<div id="pageWithPagination">
@@ -67,6 +74,7 @@ class CollectionsPage extends React.Component {
 					paginationUrl={this.paginationUrl}
 					querySearchParams={this.state.querySearchParams}
 					results={this.state.results}
+					searchParamsChangeCallback={this.searchParamsChangeCallback}
 					searchResultsCallback={this.searchResultsCallback}
 					size={this.props.size}
 				/>
