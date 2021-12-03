@@ -40,7 +40,6 @@ router.get('/', async (req, res, next) => {
 		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 		const type = req.query.type ? req.query.type : null;
-		// console.log('inside collection route type is ', type);
 		const entityTypes = _.keys(commonUtils.getEntityModels(orm));
 		if (!entityTypes.includes(type) && type !== null) {
 			throw new error.BadRequestError(`Type ${type} do not exist`);

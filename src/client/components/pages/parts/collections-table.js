@@ -33,17 +33,11 @@ const {formatDate} = utilsHelper;
 class CollectionsTable extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			type: this.props.type
-		};
-		// console.log('got type in collection table', this.props.type, this.props.results);
-
 		// React does not autobind non-React class methods
 		this.handleEntitySelect = this.handleEntitySelect.bind(this);
 	}
 
 	handleEntitySelect(type) {
-		this.setState({type});
 		this.props.onTypeChange(type);
 	}
 
@@ -54,7 +48,7 @@ class CollectionsTable extends React.Component {
 				bsStyle="primary"
 				className="margin-bottom-d5"
 				id="entity-type-select"
-				title={_.startCase(this.state.type) || 'Entity Type'}
+				title={_.startCase(this.props.type) || 'Entity Type'}
 				onSelect={this.handleEntitySelect}
 			>
 				{this.props.entityTypes.map((entityType) => (
