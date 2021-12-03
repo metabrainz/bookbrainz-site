@@ -34,8 +34,9 @@ class CollectionsTable extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			type: ''
+			type: this.props.type
 		};
+		// console.log('got type in collection table', this.props.type, this.props.results);
 
 		// React does not autobind non-React class methods
 		this.handleEntitySelect = this.handleEntitySelect.bind(this);
@@ -213,6 +214,7 @@ CollectionsTable.propTypes = {
 	showOwner: PropTypes.bool,
 	showPrivacy: PropTypes.bool,
 	tableHeading: PropTypes.node,
+	type: PropTypes.string,
 	user: PropTypes.object
 };
 CollectionsTable.defaultProps = {
@@ -222,6 +224,7 @@ CollectionsTable.defaultProps = {
 	showOwner: false,
 	showPrivacy: false,
 	tableHeading: 'Collections',
+	type: '',
 	user: null
 };
 

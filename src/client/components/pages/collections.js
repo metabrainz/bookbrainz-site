@@ -26,10 +26,10 @@ class CollectionsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			querySearchParams: '',
+			querySearchParams: this.props.type,
 			results: this.props.results
 		};
-
+		// console.log('here type in page', this.props.type);
 		this.handleTypeChange = this.handleTypeChange.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
 		this.paginationUrl = './collections/collections';
@@ -56,6 +56,7 @@ class CollectionsPage extends React.Component {
 					showOwner={this.props.showOwner}
 					showPrivacy={this.props.showPrivacy}
 					tableHeading={this.props.tableHeading}
+					type={this.props.type ? this.props.type.split('=')[1] : ''}
 					user={this.props.user}
 					onTypeChange={this.handleTypeChange}
 				/>
@@ -86,6 +87,7 @@ CollectionsPage.propTypes = {
 	showPrivacy: PropTypes.bool,
 	size: PropTypes.number,
 	tableHeading: PropTypes.string,
+	type: PropTypes.string,
 	user: PropTypes.object
 };
 CollectionsPage.defaultProps = {
@@ -98,6 +100,7 @@ CollectionsPage.defaultProps = {
 	showPrivacy: false,
 	size: 20,
 	tableHeading: 'Collections',
+	type: '',
 	user: null
 
 };
