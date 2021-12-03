@@ -26,8 +26,9 @@ class CollectionsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			querySearchParams: this.props.type,
-			results: this.props.results
+			querySearchParams: props.type ? `type=${props.type}` : '',
+			results: this.props.results,
+			type: props.type
 		};
 		// console.log('here type in page', this.props.type);
 		this.handleTypeChange = this.handleTypeChange.bind(this);
@@ -41,7 +42,7 @@ class CollectionsPage extends React.Component {
 
 	handleTypeChange(type) {
 		const querySearchParams = type ? `type=${type}` : '';
-		this.setState({querySearchParams});
+		this.setState({querySearchParams, type});
 	}
 
 	render() {
@@ -56,7 +57,7 @@ class CollectionsPage extends React.Component {
 					showOwner={this.props.showOwner}
 					showPrivacy={this.props.showPrivacy}
 					tableHeading={this.props.tableHeading}
-					type={this.props.type ? this.props.type.split('=')[1] : ''}
+					type={this.state.type}
 					user={this.props.user}
 					onTypeChange={this.handleTypeChange}
 				/>

@@ -59,6 +59,7 @@ router.get('/', async (req, res, next) => {
 			showOwner: true,
 			size,
 			tableHeading: 'Public Collections',
+			type,
 			user
 		});
 
@@ -69,7 +70,7 @@ router.get('/', async (req, res, next) => {
 		 */
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<CollectionsPage {...propHelpers.extractChildProps(props)} type={type ? `type=${type}` : ''}/>
+				<CollectionsPage {...propHelpers.extractChildProps(props)}/>
 			</Layout>
 		);
 
