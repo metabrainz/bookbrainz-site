@@ -30,7 +30,7 @@
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
     "@babel/runtime": "^7.13.10",
-    "@elastic/elasticsearch": "^5.6.22",
+    "@elastic/elasticsearch": "^7.15.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/free-brands-svg-icons": "^5.14.0",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
