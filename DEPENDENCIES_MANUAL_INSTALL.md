@@ -44,7 +44,7 @@ No setup is required for Redis or Elasticsearch. However, it is necessary to
 perform some initialization for PostgreSQL and import the latest BookBrainz
 database dump.
 
-Firstly, begin downloading the [latest BookBrainz dump](http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2).
+First, begin downloading the [latest BookBrainz dump](http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2).
 
 Then, uncompress the `latest.sql.bz2` file, using the bzip2 command:
 

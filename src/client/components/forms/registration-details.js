@@ -113,7 +113,7 @@ class RegistrationForm extends React.Component {
 							onSubmit={this.handleSubmit}
 						>
 							<p>
-								Firstly, please check that your display
+								First, please check that your display
 								name is correct. This is the name that
 								other editors will get to know you by.
 							</p>
