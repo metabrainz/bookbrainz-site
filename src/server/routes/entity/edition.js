@@ -237,7 +237,7 @@ function _setEditionTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWorkTableAuthors, (req, res) => {
 	_setEditionTitle(res);
 	entityRoutes.displayEntity(req, res);
 });

@@ -59,6 +59,7 @@ function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities
 				<a href={`/work/${work.bbid}`}>{name}</a>
 				{disambiguation}
 			</td>
+			<td>{work.author && <a href={`/author/${work.author.bbid}`}>{work.author.defaultAlias.name}</a>}</td>
 			<td>{languages}</td>
 			<td>{workType}</td>
 			{showAddedAtColumn ? <td>{addedAt}</td> : null}
@@ -89,6 +90,7 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 						<tr>
 							{works[0].displayNumber && <th style={{width: '10%'}}>#</th>}
 							<th>Name</th>
+							<th>Author</th>
 							<th>Languages</th>
 							<th>Type</th>
 							{
