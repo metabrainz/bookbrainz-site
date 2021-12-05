@@ -417,10 +417,12 @@ export function handleDelete(
 	RevisionModel: any
 ) {
 	const {entity}: {entity?: any} = res.locals;
+	if (!entity.dataId) {
+		throw new error.ConflictError('This entity has already been deleted');
+	}
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const {body}: {body: any} = req;
-
 	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
 		if (!body.note || !body.note.length) {
 			throw new error.FormSubmissionError('A revision note is required when deleting an entity');
