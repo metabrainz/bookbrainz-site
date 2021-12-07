@@ -26,7 +26,7 @@ function Footer() {
 			<div className="container">
 				<div className="row">
 					<div className="col-sm-12 col-md-4">
-					n	<h3>
+						<h3>
 							<img alt="BookBrainz" src="/images/BookBrainz_logo.svg" width="180"/>
 						</h3>
 						<br/>
