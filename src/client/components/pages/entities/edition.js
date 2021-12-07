@@ -78,12 +78,12 @@ function EditionAttributes({edition}) {
 				</Col>
 				<Col md={3}>
 					<dl>
-						{format !== "eBook" && 
+						{format !== 'eBook' &&
 						<>
-						<dt>Dimensions (WxHxD)</dt>
-						<dd>{width}&times;{height}&times;{depth} mm</dd>
-						<dt>Weight</dt>
-						<dd>{weight} g</dd>
+							<dt>Dimensions (WxHxD)</dt>
+							<dd>{width}&times;{height}&times;{depth} mm</dd>
+							<dt>Weight</dt>
+							<dd>{weight} g</dd>
 						</>}
 						<dt>Page Count</dt>
 						<dd>{pageCount}</dd>
