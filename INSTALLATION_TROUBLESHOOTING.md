@@ -2,7 +2,12 @@
 
 * General
 
-    1. It's better for you if you do some package catalog update by
+    1. [Error: EACCES: permission denied, scandir ‘/root/.npm/_logs’]
+
+		There is some incompatibility with Docker for Windows
+		The solution is to **enable WSL2** (Windows Subsystem for Linux v2) and the problem goes away
+
+	1. It's better for you if you do some package catalog update by
 
         `sudo apt update`
 	
