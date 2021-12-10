@@ -22,6 +22,7 @@ import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
 type EntityProps = {
+	author: string | null,
 	disambiguation?: string | null | undefined,
 	language?: string,
 	link?: string | false,
@@ -31,7 +32,7 @@ type EntityProps = {
 };
 
 function Entity(
-	{disambiguation, language, link, text, type, unnamedText}: EntityProps
+	{disambiguation, language, link, text, type, unnamedText, author}: EntityProps
 ) {
 	const nameComponent = text || <i>{unnamedText}</i>;
 	const contents = (
@@ -41,7 +42,8 @@ function Entity(
 			}
 			{nameComponent}
 			{
-				disambiguation &&
+				author ? <span className="disambig margin-left-0-3"><small>({author})</small></span> :
+					disambiguation &&
 				<span className="disambig margin-left-0-3"><small>({disambiguation})</small></span>
 			}
 			{

@@ -33,9 +33,15 @@ const _maxJitter = 75;
 
 let _client = null;
 
+async function getEntityWithAlias(orm, bbid, type) {
+	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, null);
+	const model = commonUtils.getEntityModelByType(orm, type);
+	return model.forge({bbid: redirectBbid})
+		.fetch({require: false, withRelated: ['defaultAlias']});
+}
+
 async function _fetchEntityModelsForESResults(orm, results) {
 	const {Area, Editor, UserCollection} = orm;
-
 	if (!results.hits) {
 		return null;
 	}
@@ -88,7 +94,7 @@ async function _fetchEntityModelsForESResults(orm, results) {
 		const entity = await model.forge({bbid: entityStub.bbid})
 			.fetch({require: false, withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases', 'identifierSet.identifiers']});
 
-		return entity?.toJSON();
+		return {...entity?.toJSON(), author: entityStub.author ?? null};
 	})).catch(err => log.error(err));
 	return processedResults;
 }
@@ -269,6 +275,10 @@ export async function generateIndex(orm) {
 						},
 						type: 'object'
 					},
+					author: {
+						analyzer: 'trigrams',
+						type: 'text'
+					},
 					'disambiguation.comment': {
 						analyzer: 'trigrams',
 						type: 'text'
@@ -357,7 +367,7 @@ export async function generateIndex(orm) {
 		{model: EditionGroup, relations: ['editionGroupType']},
 		{model: Publisher, relations: ['publisherType', 'area']},
 		{model: Series, relations: ['seriesOrderingType']},
-		{model: Work, relations: ['workType']}
+		{model: Work, relations: ['workType', 'relationshipSet.relationships.type']}
 	];
 
 	// Update the indexed entries for each entity type
@@ -374,8 +384,22 @@ export async function generateIndex(orm) {
 	const entityLists = await Promise.all(behaviorPromise);
 
 	const listIndexes = [];
-	for (const entityList of entityLists) {
+	for (const [index, entityList] of entityLists.entries()) {
 		const listArray = entityList.toJSON();
+		if (index === (entityLists.length - 1)) {
+			for (const workEntity of listArray) {
+				if (workEntity.relationshipSetId) {
+					for (const relationship of workEntity.relationshipSet.relationships) {
+						if (relationship.typeId === 8) {
+							// eslint-disable-next-line no-await-in-loop
+							const source = await getEntityWithAlias(orm, relationship.sourceBbid, 'Author');
+							workEntity.author = source ? source.toJSON().defaultAlias.name : null;
+							break;
+						}
+					}
+				}
+			}
+		}
 		listIndexes.push(_processEntityListForBulk(listArray));
 	}
 	await Promise.all(listIndexes);
@@ -528,7 +552,6 @@ export async function init(orm, options) {
 		if (mainIndexExists) {
 			return null;
 		}
-
 		return generateIndex(orm);
 	}
 	catch (error) {
