@@ -75,6 +75,10 @@ function CollectionAttributes({collection}) {
 					<dd>{collection.entityType}</dd>
 				</Col>
 				<Col md={3}>
+					<dt>No. of Entity</dt>
+					<dd>{collection.items.length}</dd>
+				</Col>
+				<Col md={3}>
 					<dt>Created At</dt>
 					<dd>{formatDate(new Date(collection.createdAt), true)}</dd>
 				</Col>
