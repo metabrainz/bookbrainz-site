@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as React from 'react';
+import {connect, useSelector} from 'react-redux';
 import AliasEditor from './alias-editor/alias-editor';
 import AnnotationSection from './annotation-section/annotation-section';
 import ButtonBar from './button-bar/button-bar';
@@ -26,7 +26,7 @@ import NameSection from './name-section/name-section';
 import {Panel} from 'react-bootstrap';
 import RelationshipSection from './relationship-editor/relationship-section';
 import SubmissionSection from './submission-section/submission-section';
-import {connect} from 'react-redux';
+import {convertMapToObject} from '../helpers/utils';
 import {submit} from './submission-section/actions';
 
 
@@ -68,7 +68,56 @@ const EntityEditor = (props: Props) => {
 		identifierEditorVisible,
 		onSubmit
 	} = props;
+	const [initialValues, setinitialValues] = React.useState({});
+	const rootState = useSelector(state => state);
 
+	function getFormValues(rState) {
+		const state = rState.get('nameSection');
+		const editionSectionState = rState.get('editionSection');
+		const searchForExistingEditionGroup =
+			Boolean(editionSectionState) &&
+			(!editionSectionState.get('editionGroup') ||
+				editionSectionState.get('editionGroupRequired'));
+		return {
+			...convertMapToObject(rState.get('annotationSection')),
+			disambiguationDefaultValue: state.get('disambiguation'),
+			exactMatches: state.get('exactMatches'),
+			identifiers: state.get('identifierEditor'),
+			languageValue: state.get('language'),
+			nameValue: state.get('name'),
+			numAliases: rState.get('aliasEditor').size,
+			relationships: rState.get('relationshipSection').get('relationships'),
+			searchForExistingEditionGroup,
+			searchResults: state.get('searchResults'),
+			sortNameValue: state.get('sortName')
+		};
+	}
+
+	function hasFormChanged() {
+		const currentFormValues = getFormValues(rootState);
+		for (const key in currentFormValues) {
+			if (['relationships', 'identifiers'].includes(key)) {
+				if (currentFormValues[key] !== initialValues[key]) {
+					return true;
+				}
+			}
+			else if (JSON.stringify(currentFormValues[key]) !== JSON.stringify(initialValues[key])) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+	// eslint-disable-next-line consistent-return
+	const handleUrlChange = () => {
+		if (hasFormChanged()) {
+			return '';
+		}
+	};
+	React.useEffect(() => {
+		setinitialValues(getFormValues(rootState));
+		window.onbeforeunload = handleUrlChange;
+	}, []);
 	return (
 		<form onSubmit={onSubmit}>
 			<Panel>
