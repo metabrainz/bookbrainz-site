@@ -298,14 +298,15 @@ function mapStateToProps(rootState) {
 		!editionSectionState.get('editionGroup') ||
 		editionSectionState.get('editionGroupRequired')
 	);
+	const matchAllWhiteSpaces = /(\s{2,})/g;
 	return {
-		disambiguationDefaultValue: state.get('disambiguation'),
+		disambiguationDefaultValue: state.get('disambiguation')?.trim()?.replace(matchAllWhiteSpaces, ' '),
 		exactMatches: state.get('exactMatches'),
 		languageValue: state.get('language'),
-		nameValue: state.get('name'),
+		nameValue: state.get('name')?.trim()?.replace(matchAllWhiteSpaces, ' '),
 		searchForExistingEditionGroup,
 		searchResults: state.get('searchResults'),
-		sortNameValue: state.get('sortName')
+		sortNameValue: state.get('sortName')?.trim()?.replace(matchAllWhiteSpaces, ' ')
 	};
 }
 
