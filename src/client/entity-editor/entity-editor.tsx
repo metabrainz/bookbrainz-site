@@ -22,17 +22,18 @@ import AliasEditor from './alias-editor/alias-editor';
 import AnnotationSection from './annotation-section/annotation-section';
 import ButtonBar from './button-bar/button-bar';
 import IdentifierEditor from './identifier-editor/identifier-editor';
-import Immutable from 'immutable';
 import NameSection from './name-section/name-section';
 import {Panel} from 'react-bootstrap';
 import RelationshipSection from './relationship-editor/relationship-section';
 import SubmissionSection from './submission-section/submission-section';
+import _ from 'lodash';
 import {submit} from './submission-section/actions';
 
 
 type OwnProps = {
 	children: React.ReactElement<any>,
-	heading: string
+	heading: string,
+	intitialState:Record<string, any>,
 };
 
 type StateProps = {
@@ -68,15 +69,13 @@ const EntityEditor = (props: Props) => {
 		identifierEditorVisible,
 		onSubmit
 	} = props;
-	const ImmutableCurrentState = useSelector((state) => state);
-	const [ImmutableInitalState, setImmutableInitalState] = React.useState();
+	const currentState = (useSelector((state) => state) as any).toJS();
 	// eslint-disable-next-line consistent-return
 	const handleUrlChange = () => {
-		if (!Immutable.is(ImmutableInitalState, ImmutableCurrentState)) {
+		if (!_.isEqual(currentState, props.intitialState)) {
 			return 'You have some unsaved changes!';
 		}
 	};
-	React.useEffect(() => setImmutableInitalState(ImmutableCurrentState), []);
 	React.useEffect(() => {
 		window.onbeforeunload = handleUrlChange;
 	}, [handleUrlChange]);
