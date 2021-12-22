@@ -176,7 +176,7 @@ class SearchPage extends React.Component<Props, State> {
 							</small>}
 						<hr className="wide"/>
 						<h3>Are we missing an entry?</h3>
-						<CallToAction query={this.props.query}/>
+						<CallToAction query={query}/>
 					</Row>
 
 				</div>
