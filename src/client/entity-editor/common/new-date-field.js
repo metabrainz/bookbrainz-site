@@ -140,11 +140,11 @@ class DateField extends React.Component {
 					groupClassName={groupClassName}
 					label={labelElement}
 				>
-					<InputGroup className="res-dob">
+					<InputGroup className="responsive-date-field">
 						<FormControl
+							className="year-field"
 							maxLength={isCommonEraDate ? 4 : 5}
 							placeholder="YYYY"
-							style={{width: '4em'}}
 							type="text"
 							value={this.state.year}
 							onBlur={this.handleYearInputBlur}
@@ -152,9 +152,9 @@ class DateField extends React.Component {
 						/>
 						<InputGroup.Addon style={{padding: '0 0.5em'}}>-</InputGroup.Addon>
 						<FormControl
+							className="other-date-field"
 							maxLength="2"
 							placeholder="MM"
-							style={{width: '3.5em'}}
 							type="text"
 							value={this.state.month}
 							onBlur={this.handleMonthInputBlur}
@@ -162,9 +162,9 @@ class DateField extends React.Component {
 						/>
 						<InputGroup.Addon style={{padding: '0 0.5em'}}>-</InputGroup.Addon>
 						<FormControl
+							className="other-date-field"
 							maxLength="2"
 							placeholder="DD"
-							style={{width: '3.5em'}}
 							type="text"
 							value={this.state.day}
 							onBlur={this.handleDayInputBlur}
