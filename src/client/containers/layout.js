@@ -34,7 +34,7 @@ import React from 'react';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 
 
-const {Alert, MenuItem, Nav, Navbar, NavItem, NavDropdown} = bootstrap;
+const {Alert, Nav, Navbar, NavItem, NavDropdown} = bootstrap;
 
 class Layout extends React.Component {
 	constructor(props) {
@@ -139,31 +139,31 @@ class Layout extends React.Component {
 					onSelect={this.handleDropdownClick}
 					onToggle={this.handleDropdownToggle}
 				>
-					<MenuItem href="/work/create">
+					<NavDropdown.Item href="/work/create">
 						{genEntityIconHTMLElement('Work')}
 						Work
-					</MenuItem>
-					<MenuItem href="/edition/create">
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/edition/create">
 						{genEntityIconHTMLElement('Edition')}
 						Edition
-					</MenuItem>
-					<MenuItem href="/edition-group/create">
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/edition-group/create">
 						{genEntityIconHTMLElement('EditionGroup')}
 						Edition Group
-					</MenuItem>
-					<MenuItem href="/series/create">
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/series/create">
 						{genEntityIconHTMLElement('Series')}
 						Series
-					</MenuItem>
-					<MenuItem divider/>
-					<MenuItem href="/author/create">
+					</NavDropdown.Item>
+					<NavDropdown.Divider/>
+					<NavDropdown.Item href="/author/create">
 						{genEntityIconHTMLElement('Author')}
 						Author
-					</MenuItem>
-					<MenuItem href="/publisher/create">
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/publisher/create">
 						{genEntityIconHTMLElement('Publisher')}
 						Publisher
-					</MenuItem>
+					</NavDropdown.Item>
 				</NavDropdown>
 				<NavDropdown
 					eventKey={2}
@@ -171,26 +171,26 @@ class Layout extends React.Component {
 					title={userDropdownTitle}
 					onMouseDown={this.handleMouseDown}
 				>
-					<MenuItem href={`/editor/${user.id}`}>
+					<NavDropdown.Item href={`/editor/${user.id}`}>
 						<FontAwesomeIcon fixedWidth icon={faUserCircle}/>
 						{' Profile'}
-					</MenuItem>
-					<MenuItem href={`/editor/${user.id}/revisions`}>
+					</NavDropdown.Item>
+					<NavDropdown.Item href={`/editor/${user.id}/revisions`}>
 						<FontAwesomeIcon fixedWidth icon={faListUl}/>
 						{' Revisions'}
-					</MenuItem>
-					<MenuItem href={`/editor/${user.id}/achievements`}>
+					</NavDropdown.Item>
+					<NavDropdown.Item href={`/editor/${user.id}/achievements`}>
 						<FontAwesomeIcon fixedWidth icon={faTrophy}/>
 						{' Achievements'}
-					</MenuItem>
-					<MenuItem href={`/editor/${user.id}/collections`}>
+					</NavDropdown.Item>
+					<NavDropdown.Item href={`/editor/${user.id}/collections`}>
 						<FontAwesomeIcon fixedWidth icon={faGripVertical}/>
 						{' Collections'}
-					</MenuItem>
-					<MenuItem {...disableSignUp} href="/logout">
+					</NavDropdown.Item>
+					<NavDropdown.Item {...disableSignUp} href="/logout">
 						<FontAwesomeIcon fixedWidth icon={faSignOutAlt}/>
 						{' Sign Out'}
-					</MenuItem>
+					</NavDropdown.Item>
 				</NavDropdown>
 			</Nav>
 		);

@@ -25,7 +25,7 @@ import {isFunction} from 'lodash';
 import request from 'superagent';
 
 
-const {Pager, Button, ButtonGroup, DropdownButton, MenuItem} = bootstrap;
+const {Pager, Button, ButtonGroup, Dropdown, DropdownButton} = bootstrap;
 
 class PagerElement extends React.Component {
 	constructor(props) {
@@ -155,11 +155,11 @@ class PagerElement extends React.Component {
 										title={`${this.state.size} per page`}
 										onSelect={this.handleResultsPerPageChange}
 									>
-										<MenuItem eventKey="10">10 per page</MenuItem>
-										<MenuItem eventKey="20">20 per page</MenuItem>
-										<MenuItem eventKey="35">35 per page</MenuItem>
-										<MenuItem eventKey="50">50 per page</MenuItem>
-										<MenuItem eventKey="100">100 per page</MenuItem>
+										<Dropdown.Item eventKey="10">10 per page</Dropdown.Item>
+										<Dropdown.Item eventKey="20">20 per page</Dropdown.Item>
+										<Dropdown.Item eventKey="35">35 per page</Dropdown.Item>
+										<Dropdown.Item eventKey="50">50 per page</Dropdown.Item>
+										<Dropdown.Item eventKey="100">100 per page</Dropdown.Item>
 									</DropdownButton>
 								</ButtonGroup>
 								<Pager.Item

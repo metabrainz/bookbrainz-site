@@ -26,7 +26,7 @@ import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {Button, DropdownButton, MenuItem, Table} = bootstrap;
+const {Button, DropdownButton, Dropdown, Table} = bootstrap;
 const {formatDate} = utilsHelper;
 
 
@@ -52,21 +52,21 @@ class CollectionsTable extends React.Component {
 				onSelect={this.handleEntitySelect}
 			>
 				{this.props.entityTypes.map((entityType) => (
-					<MenuItem
+					<Dropdown.Item
 						eventKey={entityType}
 						key={entityType}
 					>
 						{genEntityIconHTMLElement(entityType)}
 						{_.startCase(entityType)}
-					</MenuItem>
+					</Dropdown.Item>
 				))}
-				<MenuItem divider/>
-				<MenuItem
+				<Dropdown.Divider/>
+				<Dropdown.Item
 					eventKey={null}
 					key="allTypes"
 				>
 					All Types
-				</MenuItem>
+				</Dropdown.Item>
 			</DropdownButton>
 		);
 
