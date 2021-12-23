@@ -82,7 +82,7 @@
     "superagent": "^6.1.0",
     "swagger-jsdoc": "^4.0.0",
     "swagger-ui-express": "^4.1.4",
-    "validator": "^9.1.2"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.0",
