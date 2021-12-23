@@ -198,7 +198,7 @@ function AuthorSection({
 			<Row>
 				<Col md={6} mdOffset={3}>
 					<CustomInput
-						groupClassName={genderShow ? null : 'hidden'}
+						groupClassName={genderShow ? null : 'd-none'}
 						label="Gender"
 					>
 						<Select

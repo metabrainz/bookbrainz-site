@@ -171,7 +171,7 @@ class UserCollectionForm extends React.Component {
 			initialPrivacy = 'Public';
 		}
 		const {errorText} = this.state;
-		const errorAlertClass = classNames('text-center', 'margin-top-1', {hidden: !errorText});
+		const errorAlertClass = classNames('text-center', 'margin-top-1', {'d-none': !errorText});
 		const submitLabel = this.props.collection.name ? 'Update collection' : 'Create collection';
 		const canEditType = this.props.collection.items.length === 0;
 

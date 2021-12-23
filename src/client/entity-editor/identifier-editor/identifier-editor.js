@@ -55,7 +55,7 @@ const IdentifierEditor = ({
 	show
 }) => {
 	const noIdentifiersTextClass =
-		classNames('text-center', {hidden: identifiers.size});
+		classNames('text-center', {'d-none': identifiers.size});
 
 	const helpText = `identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc.
 	You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).`;

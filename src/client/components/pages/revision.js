@@ -284,7 +284,7 @@ class RevisionPage extends React.Component {
 								type="textarea"
 							/>
 							<Button
-								className="pull-right margin-top-1"
+								className="float-right margin-top-1"
 								title="Submit revision note"
 								type="submit"
 								variant="primary"

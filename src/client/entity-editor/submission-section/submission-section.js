@@ -49,7 +49,7 @@ function SubmissionSection({
 	submitted
 }) {
 	const errorAlertClass =
-		classNames('text-center', 'margin-top-1', {hidden: !errorText});
+		classNames('text-center', 'margin-top-1', {'d-none': !errorText});
 
 	const editNoteLabel = (
 		<span>

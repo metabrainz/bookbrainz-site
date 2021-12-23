@@ -116,7 +116,7 @@ function RevisionsTable(props) {
 																<span className="note-content">
 																	{stringToHTMLWithLinks(note.content)}
 																	<a
-																		className="note-author pull-right"
+																		className="note-author float-right"
 																		href={`/editor/${note.author.id}`}
 																	>
 																		—{note.author.name}

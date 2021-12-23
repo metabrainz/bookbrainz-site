@@ -55,7 +55,7 @@ class IndexPage extends React.Component {
 						<Container>
 							<img
 								alt="BookBrainz logo"
-								className="img-responsive center-block"
+								className="img-fluid center-block"
 								src="/images/BookBrainz_text.svg"
 								title="BookBrainz"
 								width="500"

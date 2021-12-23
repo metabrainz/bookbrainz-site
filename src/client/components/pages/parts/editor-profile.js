@@ -85,7 +85,7 @@ class EditorProfileTab extends React.Component {
 				<h2>
 					Basic Info
 					{user && user.id === editor.id &&
-						<small className="pull-right">
+						<small className="float-right">
 							<Button
 								className="entity-action"
 								href="/editor/edit"

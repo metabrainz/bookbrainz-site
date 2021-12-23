@@ -60,7 +60,7 @@ function HelpPage() {
 				<Col md={4}>
 					<img
 						alt="Entity relationships"
-						className="img-responsive center-block"
+						className="img-fluid center-block"
 						src="/images/entity_relationships.svg"
 					/>
 				</Col>
@@ -156,7 +156,7 @@ function HelpPage() {
 				</Col>
 
 				<Col md={6}>
-					<hr className="visible-sm"/>
+					<hr className="d-lg-none"/>
 					<h2>Glossary</h2>
 					<p>
 					Here is a short description of some of the main terms you will encounter.

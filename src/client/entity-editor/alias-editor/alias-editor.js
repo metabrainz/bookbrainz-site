@@ -59,7 +59,7 @@ const AliasEditor = ({
 	}));
 
 	const noAliasesTextClass =
-		classNames('text-center', {hidden: aliases.size});
+		classNames('text-center', {'d-none': aliases.size});
 
 	const helpText = `Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc.
 		Refer to the help page for more details and examples.`;
