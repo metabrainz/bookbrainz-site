@@ -45,10 +45,10 @@ class CollectionsTable extends React.Component {
 		const {showLastModified, showOwner, showIfOwnerOrCollaborator, showPrivacy, results, tableHeading, user, ownerId} = this.props;
 		const entityTypeSelect = (
 			<DropdownButton
-				bsStyle="primary"
 				className="margin-bottom-d5"
 				id="entity-type-select"
 				title={_.startCase(this.props.type) || 'Entity Type'}
+				variant="primary"
 				onSelect={this.handleEntitySelect}
 			>
 				{this.props.entityTypes.map((entityType) => (
@@ -77,10 +77,10 @@ class CollectionsTable extends React.Component {
 		if (user && (user.id === ownerId || !ownerId)) {
 			newCollectionButton = (
 				<Button
-					bsStyle="warning"
 					className="margin-bottom-d5"
 					href="/collection/create"
 					type="button"
+					variant="warning"
 				>
 					<FontAwesomeIcon icon={faPlus}/>
 					&nbsp;Create Collection
@@ -95,10 +95,10 @@ class CollectionsTable extends React.Component {
 		if (user && (!ownerId || user.id !== ownerId)) {
 			myCollectionButton = (
 				<Button
-					bsStyle="success"
 					className="margin-bottom-d5"
 					href={`/editor/${user.id}/collections`}
 					type="button"
+					variant="success"
 				>
 					My Collections
 				</Button>

@@ -51,7 +51,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 				</Alert>
 			);
 			submitButton = (
-				<Button bsStyle="danger" onClick={this.handleSubmit}>
+				<Button variant="danger" onClick={this.handleSubmit}>
 					<FontAwesomeIcon icon={faTrashAlt}/> Delete
 				</Button>
 			);
@@ -74,7 +74,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 				</Alert>
 			);
 			submitButton = (
-				<Button bsStyle="warning" onClick={this.handleSubmit}>
+				<Button variant="warning" onClick={this.handleSubmit}>
 					<FontAwesomeIcon icon={faTimesCircle}/> Stop collaboration
 				</Button>
 			);
@@ -99,7 +99,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 					{errorComponent}
 				</Modal.Body>
 				<Modal.Footer>
-					<Button bsStyle="info" onClick={this.props.onCloseModal}>
+					<Button variant="info" onClick={this.props.onCloseModal}>
 						Cancel
 					</Button>
 					{submitButton}

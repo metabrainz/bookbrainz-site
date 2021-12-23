@@ -117,8 +117,8 @@ function IdentifierRow({
 				<Col className="text-right" md={3} mdOffset={1}>
 					<Button
 						block
-						bsStyle="danger"
 						className="margin-top-d15"
+						variant="danger"
 						onClick={onRemoveButtonClick}
 					>
 						<FontAwesomeIcon icon={faTimes}/>

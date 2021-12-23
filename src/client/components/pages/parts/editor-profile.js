@@ -87,10 +87,10 @@ class EditorProfileTab extends React.Component {
 					{user && user.id === editor.id &&
 						<small className="pull-right">
 							<Button
-								bsStyle="warning"
 								className="entity-action"
 								href="/editor/edit"
 								title="Edit basic editor info"
+								variant="warning"
 							>
 								<FontAwesomeIcon icon={faPencilAlt}/>{' '}Edit Profile
 							</Button>

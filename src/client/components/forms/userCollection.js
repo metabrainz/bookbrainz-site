@@ -238,8 +238,8 @@ class UserCollectionForm extends React.Component {
 								<Col className="margin-top-d5" sm={6}>
 									<Button
 										block
-										bsStyle="primary"
 										type="button"
+										variant="primary"
 										onClick={this.handleAddCollaborator}
 									>
 										<FontAwesomeIcon icon={faPlus}/>
@@ -251,9 +251,9 @@ class UserCollectionForm extends React.Component {
 								this.state.collaborators.map((collaborator, index) => {
 									const buttonAfter = (
 										<Button
-											bsSize="small"
-											bsStyle="danger"
+											size="sm"
 											type="button"
+											variant="danger"
 											onClick={() => this.handleRemoveCollaborator(index)}
 										>
 											<FontAwesomeIcon icon={faTimes}/>&nbsp;Remove
@@ -282,8 +282,8 @@ class UserCollectionForm extends React.Component {
 								<Col className="margin-top-d5" sm={6}>
 									<Button
 										block
-										bsStyle="success"
 										type="submit"
+										variant="success"
 									>
 										<FontAwesomeIcon icon={faSave}/>&nbsp;{submitLabel}
 									</Button>
@@ -293,8 +293,8 @@ class UserCollectionForm extends React.Component {
 										<Col className="margin-top-d5" sm={6}>
 											<Button
 												block
-												bsStyle="danger"
 												type="button"
+												variant="danger"
 												onClick={this.handleShowModal}
 											>
 												<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;Delete collection

@@ -82,9 +82,9 @@ function SubmissionSection({
 			</Row>
 			<div className="text-center margin-top-1">
 				<Button
-					bsStyle="success"
 					disabled={!formValid || submitted}
 					type="submit"
+					variant="success"
 				>
 					Submit
 				</Button>

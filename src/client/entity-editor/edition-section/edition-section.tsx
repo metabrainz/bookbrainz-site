@@ -233,8 +233,8 @@ function EditionSection({
 				/>
 				<Button
 					block
-					bsStyle="primary"
 					className="wrap"
+					variant="primary"
 					// eslint-disable-next-line react/jsx-no-bind
 					onClick={onToggleShowEditionGroupSection.bind(this, false)}
 				>
@@ -262,8 +262,8 @@ function EditionSection({
 								<br/>
 								<Button
 									block
-									bsStyle="success"
 									className="wrap"
+									variant="success"
 									// eslint-disable-next-line react/jsx-no-bind
 									onClick={onToggleShowEditionGroupSection.bind(this, true)}
 								>

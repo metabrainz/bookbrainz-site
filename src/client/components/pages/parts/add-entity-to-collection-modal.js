@@ -145,9 +145,9 @@ class AddEntityToCollectionModal extends React.Component {
 							this.state.entities.map((entity, index) => {
 								const buttonAfter = (
 									<Button
-										bsSize="small"
-										bsStyle="danger"
+										size="sm"
 										type="button"
+										variant="danger"
 										onClick={() => this.handleRemoveEntity(index)}
 									>
 										<FontAwesomeIcon icon={faTimes}/>&nbsp;Remove
@@ -191,16 +191,16 @@ class AddEntityToCollectionModal extends React.Component {
 				<Modal.Footer>
 					<ButtonGroup>
 						<Button
-							bsStyle="primary"
 							type="button"
+							variant="primary"
 							onClick={this.handleAddEntity}
 						>
 							<FontAwesomeIcon icon={faPlus}/>
 							&nbsp;Add another {lowerCase(this.props.collectionType)}
 						</Button>
 						<Button
-							bsStyle="success"
 							disabled={!cleanedEntities.length}
+							variant="success"
 							onClick={this.handleSubmit}
 						>
 							<FontAwesomeIcon icon={faPlus}/>

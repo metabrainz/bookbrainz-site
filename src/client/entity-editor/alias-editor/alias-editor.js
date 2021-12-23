@@ -101,7 +101,7 @@ const AliasEditor = ({
 				</div>
 				<Row>
 					<Col className="text-right" md={3} mdOffset={9}>
-						<Button bsStyle="success" onClick={onAddAlias}>
+						<Button variant="success" onClick={onAddAlias}>
 							<FontAwesomeIcon icon={faPlus}/>
 							<span>&nbsp;Add alias</span>
 						</Button>
@@ -110,7 +110,7 @@ const AliasEditor = ({
 			</Modal.Body>
 
 			<Modal.Footer>
-				<Button bsStyle="primary" onClick={onClose}>Close</Button>
+				<Button variant="primary" onClick={onClose}>Close</Button>
 			</Modal.Footer>
 		</Modal>
 	);

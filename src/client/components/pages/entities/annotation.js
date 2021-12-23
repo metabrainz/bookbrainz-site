@@ -48,7 +48,7 @@ class EntityAnnotation extends React.Component {
 					<Collapse in={this.state.open}>
 						<pre className="annotation-content">{stringToHTMLWithLinks(annotation.content)}</pre>
 					</Collapse>
-					<Button bsStyle="link" onClick={this.handleToggleCollapse}>
+					<Button variant="link" onClick={this.handleToggleCollapse}>
 						Show {this.state.open ? 'less' : 'more…'}
 					</Button>
 					<p className="text-muted">Last modified: <span title={formatDate(lastModifiedDate, true)}>{formatDate(lastModifiedDate)}</span>

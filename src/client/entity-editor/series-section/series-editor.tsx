@@ -104,8 +104,8 @@ const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemov
 		</Col>
 		<Col md={2}>
 			<Button
-				bsStyle="danger"
 				role="button"
+				variant="danger"
 				onClick={onRemove.bind(this, value.rowID)}
 			>
 				<FontAwesomeIcon icon={faTimes}/>
@@ -231,7 +231,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 					/>
 				</Col>
 				<Col md={2}>
-					<Button bsStyle="success" onClick={handleAdd}>
+					<Button variant="success" onClick={handleAdd}>
 						<FontAwesomeIcon icon={faPlus}/>
 						<span>&nbsp;Add {seriesType}</span>
 					</Button>

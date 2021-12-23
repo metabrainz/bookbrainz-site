@@ -124,8 +124,8 @@ const AliasRow = ({
 			<Col className="text-right" md={3} mdOffset={2}>
 				<Button
 					block
-					bsStyle="danger"
 					className="margin-top-d5"
+					variant="danger"
 					onClick={onRemoveButtonClick}
 				>
 					<FontAwesomeIcon icon={faTimes}/>

@@ -134,9 +134,9 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 				/>
 				<EntityRelatedCollections collections={entity.collections}/>
 				<Button
-					bsStyle="success"
 					className="margin-top-d15"
 					href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+					variant="success"
 				>
 					<FontAwesomeIcon className="margin-right-0-5" icon={faPlus}/>Add Work
 				</Button>

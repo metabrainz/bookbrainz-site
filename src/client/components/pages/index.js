@@ -73,8 +73,8 @@ class IndexPage extends React.Component {
 											/>
 											<span className="input-group-btn">
 												<Button
-													bsStyle="success"
 													type="submit"
+													variant="success"
 												>
 													<FontAwesomeIcon icon={faSearch}/>
 												</Button>
@@ -85,8 +85,8 @@ class IndexPage extends React.Component {
 										<Col sm={4}>
 											<Button
 												block
-												bsSize="large"
 												href="/about"
+												size="lg"
 											>
 												About
 											</Button>
@@ -94,8 +94,8 @@ class IndexPage extends React.Component {
 										<Col sm={4}>
 											<Button
 												block
-												bsSize="large"
 												href="/contribute"
+												size="lg"
 											>
 												Contribute
 											</Button>
@@ -103,8 +103,8 @@ class IndexPage extends React.Component {
 										<Col sm={4}>
 											<Button
 												block
-												bsSize="large"
 												href="/develop"
+												size="lg"
 											>
 												Develop
 											</Button>
@@ -211,8 +211,8 @@ class IndexPage extends React.Component {
 					/>
 					<div className="text-center">
 						<Button
-							bsStyle="primary"
 							href="/revisions"
+							variant="primary"
 						>
 							<FontAwesomeIcon className="margin-right-0-5" icon={faListUl}/>
 							See all revisions
@@ -249,9 +249,9 @@ class IndexPage extends React.Component {
 				<div className="text-center margin-top-1 margin-bottom-3">
 					<Button
 						{...disableSignUp}
-						bsSize="large"
-						bsStyle="success"
 						href="/register"
+						size="lg"
+						variant="success"
 					>
 				Register!
 					</Button>

@@ -175,7 +175,7 @@ class DateField extends React.Component {
 								showMonthDropdown
 								showYearDropdown
 								customInput={
-									<Button bsStyle="info" style={{lineHeight: '1.75', padding: '0.375em 0.938em'}} title="Date picker">
+									<Button style={{lineHeight: '1.75', padding: '0.375em 0.938em'}} title="Date picker" variant="info">
 										<FontAwesomeIcon icon={faCalendarAlt}/>
 									</Button>
 								}

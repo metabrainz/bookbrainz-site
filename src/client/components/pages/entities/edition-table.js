@@ -130,9 +130,9 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckbo
 				</Table>
 				{showAdd &&
 					<Button
-						bsStyle="success"
 						className="margin-top-d15"
 						href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+						variant="success"
 					>
 						<FontAwesomeIcon icon={faPlus}/>
 						{'  Add Edition'}
@@ -146,8 +146,8 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckbo
 			<React.Fragment>
 				<span className="margin-right-2 pull-left">
 					<Button
-						bsStyle="success"
 						href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+						variant="success"
 					>
 						<FontAwesomeIcon icon={faBook} size="2x"/>
 						<br/>

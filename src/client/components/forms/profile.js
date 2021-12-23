@@ -216,9 +216,9 @@ class ProfileForm extends React.Component {
 								</Panel.Body>
 								<Panel.Footer>
 									<Button
-										bsStyle="success"
 										disabled={!hasChanged}
 										type="submit"
+										variant="success"
 									>
 										Save changes
 									</Button>

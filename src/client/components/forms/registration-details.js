@@ -150,10 +150,10 @@ class RegistrationForm extends React.Component {
 							{errorComponent}
 							<div className="text-center">
 								<Button
-									bsSize="large"
-									bsStyle="primary"
 									disabled={!this.state.valid}
+									size="lg"
 									type="submit"
+									variant="primary"
 								>
 									Looks good, sign me up!
 								</Button>

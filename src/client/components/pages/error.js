@@ -64,9 +64,9 @@ function ErrorPage(props) {
 			</div>
 			<Row className="margin-top-1">
 				<Button
-					bsSize="small"
-					bsStyle="link"
 					href="/"
+					size="sm"
+					variant="link"
 				>
 					Return to Main Page
 				</Button>

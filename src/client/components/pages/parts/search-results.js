@@ -275,18 +275,18 @@ class SearchResults extends React.Component {
 					this.props.user ?
 						<ButtonGroup>
 							<Button
-								bsStyle="primary"
 								disabled={!this.state.selected.length}
 								type="button"
+								variant="primary"
 								onClick={this.handleAddToCollection}
 							>
 								{genEntityIconHTMLElement('Collection')}
 									Add to Collection
 							</Button>
 							<Button
-								bsStyle="warning"
 								disabled={!this.state.selected.length}
 								type="button"
+								variant="warning"
 								onClick={this.handleClearSelected}
 							>
 								Clear <Badge pill variant="light">{this.state.selected.length}</Badge> selected

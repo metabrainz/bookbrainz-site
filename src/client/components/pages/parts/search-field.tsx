@@ -33,8 +33,8 @@ const {Button, Col, DropdownButton, InputGroup, MenuItem, Row} = bootstrap;
 const SearchButton = (
 	<Button
 		block
-		bsStyle="success"
 		type="submit"
+		variant="success"
 	>
 		<FontAwesomeIcon icon={faSearch}/>&nbsp;Search
 	</Button>
