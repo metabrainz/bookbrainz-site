@@ -305,7 +305,7 @@ class Layout extends React.Component {
 
 		const alerts = this.props.alerts.map((alert, idx) => (
 			// eslint-disable-next-line react/no-array-index-key
-			<Alert bsStyle={alert.level} className="text-center" key={idx}>
+			<Alert className="text-center" key={idx} variant={alert.level}>
 				<p>{alert.message}</p>
 			</Alert>
 		));

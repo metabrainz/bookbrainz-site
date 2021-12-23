@@ -184,7 +184,7 @@ class AddToCollectionModal extends React.Component {
 		if (this.state.message.text) {
 			messageComponent = (
 				<div>
-					<Alert bsStyle={this.state.message.type}>{this.state.message.text}</Alert>
+					<Alert variant={this.state.message.type}>{this.state.message.text}</Alert>
 				</div>
 			);
 		}

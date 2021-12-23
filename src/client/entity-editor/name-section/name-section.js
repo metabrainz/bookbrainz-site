@@ -176,7 +176,7 @@ class NameSection extends React.Component {
 							warnIfExists,
 							disambiguationDefaultValue
 						) ?
-							<Alert bsStyle="warning">
+							<Alert variant="warning">
 									We found the following&nbsp;
 								{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} with
 									exactly the same name or alias:

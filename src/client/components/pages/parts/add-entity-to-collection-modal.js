@@ -125,7 +125,7 @@ class AddEntityToCollectionModal extends React.Component {
 			errorComponent =
 				(
 					<div className="text-center margin-top-1">
-						<Alert bsStyle="danger" onDismiss={this.handleAlertDismiss}>{this.state.error}</Alert>
+						<Alert variant="danger" onDismiss={this.handleAlertDismiss}>{this.state.error}</Alert>
 					</div>
 				);
 		}

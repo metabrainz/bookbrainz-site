@@ -257,7 +257,7 @@ function EditionSection({
 				{
 					showAutoCreateEditionGroupMessage ?
 						<Col md={6} mdOffset={showMatchingEditionGroups ? 0 : 3}>
-							<Alert bsStyle="success">
+							<Alert variant="success">
 								<p>A new Edition Group with the same name will be created automatically.</p>
 								<br/>
 								<Button
@@ -275,7 +275,7 @@ function EditionSection({
 				}
 				{showMatchingEditionGroups &&
 					<Col md={6}>
-						<Alert bsStyle="warning">
+						<Alert variant="warning">
 							{matchingNameEditionGroups.length > 1 ?
 								'Edition Groups with the same name as this Edition already exist' :
 								'An existing Edition Group with the same name as this Edition already exists'

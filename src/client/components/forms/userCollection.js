@@ -276,7 +276,7 @@ class UserCollectionForm extends React.Component {
 							}
 							<hr/>
 							<div className={errorAlertClass}>
-								<Alert bsStyle="danger">Error: {errorText}</Alert>
+								<Alert variant="danger">Error: {errorText}</Alert>
 							</div>
 							<Row className="margin-bottom-2">
 								<Col className="margin-top-d5" sm={6}>

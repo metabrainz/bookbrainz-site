@@ -40,7 +40,7 @@ function RegistrationAuth() {
 				to sign in or register with MusicBrainz. You’ll then be
 				redirected back to BookBrainz to continue registration!
 			</p>
-			<Alert bsStyle="warning">
+			<Alert variant="warning">
 				If you already registered for BookBrainz, and your account
 				isn’t linked to a MusicBrainz account, please contact us using
 				one of the links on our homepage instead of registering. We’ll

@@ -140,7 +140,7 @@ class ProfileForm extends React.Component {
 		let errorComponent = null;
 		if (this.state.error) {
 			errorComponent =
-				<Alert bsStyle="danger">{this.state.error.message}</Alert>;
+				<Alert variant="danger">{this.state.error.message}</Alert>;
 		}
 
 		const hasChanged = this.hasChanged();

@@ -90,7 +90,7 @@ function SubmissionSection({
 				</Button>
 			</div>
 			<div className={errorAlertClass}>
-				<Alert bsStyle="danger">Submission Error: {errorText}</Alert>
+				<Alert variant="danger">Submission Error: {errorText}</Alert>
 			</div>
 		</div>
 	);

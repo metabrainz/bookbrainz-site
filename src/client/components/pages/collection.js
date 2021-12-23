@@ -200,8 +200,8 @@ class CollectionPage extends React.Component {
 		const messageComponent =
 			this.state.message.text ? (
 				<Alert
-					bsStyle={this.state.message.type}
 					className="margin-top-1"
+					variant={this.state.message.type}
 					onDismiss={this.handleAlertDismiss}
 				>
 					 {this.state.message.text}
