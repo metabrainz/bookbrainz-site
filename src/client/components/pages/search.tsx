@@ -24,6 +24,7 @@ import PropTypes from 'prop-types';
 import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
 
+
 type Props = {
 	entityTypes: any[],
 	from?: number,

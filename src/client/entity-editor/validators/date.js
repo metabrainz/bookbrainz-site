@@ -1,4 +1,3 @@
-/* eslint-disable eqeqeq,sort-keys */
 export function dateValidator(day, month, year) {
 	const isPosIntRegx = /^\+?([0-9]\d*)$/;
 	const isYearInt = Number.isInteger(Number(year));
@@ -7,46 +6,52 @@ export function dateValidator(day, month, year) {
 
 	if (!year) {
 		if (!month && !day) {
-			return {isValid: true, errorMessage: ''};
+			return {errorMessage: '', isValid: true};
 		}
-		return {isValid: false, errorMessage: 'Year must be entered'};
+
+		return {errorMessage: 'Year must be entered', isValid: false};
 	}
 
 	if (!isYearInt) {
-		return {isValid: false, errorMessage: 'Year is not valid'};
+		return {errorMessage: 'Year is not valid', isValid: false};
 	}
+
 	if (!month) {
 		if (!day) {
-			return {isValid: true, errorMessage: ''};
+			return {errorMessage: '', isValid: true};
 		}
-		return {isValid: false, errorMessage: 'Month must be entered'};
+
+		return {errorMessage: 'Month must be entered', isValid: false};
 	}
 	if (!isMonthPosInt) {
-		return {isValid: false, errorMessage: 'Month is not valid'};
+		return {errorMessage: 'Month is not valid', isValid: false};
 	}
+
 	else if (month < 1 || month > 12) {
-		return {isValid: false, errorMessage: 'Month is not valid'};
+		return {errorMessage: 'Month is not valid', isValid: false};
 	}
+
 	if (!day) {
-		return {isValid: true, errorMessage: ''};
+		return {errorMessage: '', isValid: true};
 	}
 	else if (!isDayPosInt) {
-		return {isValid: false, errorMessage: 'Day is not valid'};
+		return {errorMessage: 'Day is not valid', isValid: false};
 	}
 	else if (day < 1 || day > 31) {
-		return {isValid: false, errorMessage: 'Day is not valid'};
+		return {errorMessage: 'Day is not valid', isValid: false};
 	}
-	else if ((month == 4 || month == 6 || month == 9 || month == 11) && day == 31) {
-		return {isValid: false, errorMessage: 'Day is not valid for this month'};
+	else if ((month === 4 || month === 6 || month === 9 || month === 11) && day === 31) {
+		return {errorMessage: 'Day is not valid for this month', isValid: false};
 	}
-	else if (month == 2) {
-		const isleap = year % 100 == 0 ? year % 400 == 0 : year % 4 == 0;
+	else if (month === 2) {
+		const isleap = year % 100 === 0 ? year % 400 === 0 : year % 4 === 0;
 		if (day < 1 || day > 29) {
-			return {isValid: false, errorMessage: 'Day is not valid for this month'};
+			return {errorMessage: 'Day is not valid for this month', isValid: false};
 		}
-		else if (day > 29 || (day == 29 && !isleap)) {
-			return {isValid: false, errorMessage: 'Year is not leap, invalid day'};
+		else if (day > 29 || (day === 29 && !isleap)) {
+			return {errorMessage: 'Year is not leap, invalid day', isValid: false};
 		}
 	}
-	return {isValid: true, errorMessage: ''};
+
+	return {errorMessage: '', isValid: true};
 }

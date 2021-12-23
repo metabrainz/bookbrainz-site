@@ -54,6 +54,7 @@ const AliasEditorMerge = ({
 				aliases.map((alias, rowId) => (
 					<AliasRowMerge
 						index={rowId}
+						// eslint-disable-next-line react/no-array-index-key
 						key={rowId}
 						languageOptions={languageOptionsForDisplay}
 					/>

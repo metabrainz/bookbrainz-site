@@ -15,6 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint-disable max-len */
 
 import * as bootstrap from 'react-bootstrap';
 
@@ -24,7 +25,6 @@ import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 const {PageHeader, ListGroup, ListGroupItem, Grid, Col, Row} = bootstrap;
 
-/* eslint max-len: 0 */
 /**
  * Renders the document and displays the 'Help' page.
  * @returns {ReactElement} a HTML document to display the Develop page

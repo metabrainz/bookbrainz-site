@@ -97,7 +97,7 @@ type onChangeParamType = {
 type Props = {
 	empty?: boolean,
 	error?: boolean,
-	onChange?: (onChangeParamType) => unknown,
+	onChange?: (value: onChangeParamType) => unknown,
 	storedNameValue: string
 };
 
