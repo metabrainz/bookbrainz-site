@@ -23,6 +23,7 @@
 import * as search from '../common/helpers/search';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
+import {createClient} from 'redis';
 import {get as _get} from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
 import compression from 'compression';
@@ -49,6 +50,10 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(compression());
 
+const redisClient = createClient({
+	host: _get(config, 'session.redis.host', 'localhost'),
+	port: _get(config, 'session.redis.port', 6379)
+});
 
 const RedisStore = redis(session);
 app.use(session({
@@ -60,20 +65,20 @@ app.use(session({
 	saveUninitialized: false,
 	secret: config.session.secret,
 	store: new RedisStore({
-		host: _get(config, 'session.redis.host', 'localhost'),
-		port: _get(config, 'session.redis.port', 6379)
+		client: redisClient
 	})
 }));
-
 
 // Set up routes
 const mainRouter = initRoutes();
 const API_VERSION = process.env.API_VERSION || '1';
 app.use(`/${API_VERSION}`, mainRouter);
+
 // Redirect all requests to /${API_VERSION}/...
 app.use('/*', (req, res) => {
 	res.redirect(308, `/${API_VERSION}${req.originalUrl}`);
 });
+
 // Catch 404 and forward to error handler
 mainRouter.use((req, res) => {
 	res.status(404).send({message: `Incorrect endpoint ${req.path}`});

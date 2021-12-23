@@ -26,6 +26,7 @@ import * as serverErrorHelper from './helpers/error';
 import {existsSync, readFileSync} from 'fs';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
+import {createClient} from 'redis';
 import {get as _get} from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
 import compression from 'compression';
@@ -97,10 +98,14 @@ const sessionOptions = {
 	secret: config.session.secret
 };
 if (process.env.NODE_ENV !== 'test') {
-	const RedisStore = redis(session);
-	sessionOptions.store = new RedisStore({
+	const redisClient = createClient({
 		host: _get(config, 'session.redis.host', 'localhost'),
 		port: _get(config, 'session.redis.port', 6379)
+	});
+
+	const RedisStore = redis(session);
+	sessionOptions.store = new RedisStore({
+		client: redisClient
 	});
 }
 app.use(session(sessionOptions));
