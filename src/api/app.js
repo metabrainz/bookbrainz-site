@@ -50,24 +50,28 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(compression());
 
-const redisClient = createClient({
-	host: _get(config, 'session.redis.host', 'localhost'),
-	port: _get(config, 'session.redis.port', 6379)
-});
-
-const RedisStore = redis(session);
-app.use(session({
+/* Set up sessions, using Redis in production and default in-memory for testing environment*/
+const sessionOptions = {
 	cookie: {
 		maxAge: _get(config, 'session.maxAge', 2592000000),
 		secure: _get(config, 'session.secure', false)
 	},
 	resave: false,
 	saveUninitialized: false,
-	secret: config.session.secret,
-	store: new RedisStore({
+	secret: config.session.secret
+};
+if (process.env.NODE_ENV !== 'test') {
+	const redisClient = createClient({
+		host: _get(config, 'session.redis.host', 'localhost'),
+		port: _get(config, 'session.redis.port', 6379)
+	});
+
+	const RedisStore = redis(session);
+	sessionOptions.store = new RedisStore({
 		client: redisClient
-	})
-}));
+	});
+}
+app.use(session(sessionOptions));
 
 // Set up routes
 const mainRouter = initRoutes();
