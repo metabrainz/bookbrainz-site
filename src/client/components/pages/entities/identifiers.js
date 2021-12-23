@@ -27,7 +27,7 @@ function EntityIdentifiers({identifiers, identifierTypes}) {
 			<h2>Identifiers</h2>
 			{
 				identifiers &&
-				identifierTypes.map((type) => {
+				identifierTypes.sort((a, b) => a.label.localeCompare(b.label)).map((type) => {
 					const identifierValues =
 						identifiers
 							.filter(

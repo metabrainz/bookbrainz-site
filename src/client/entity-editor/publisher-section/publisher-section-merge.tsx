@@ -151,7 +151,7 @@ function PublisherSectionMerge({
 	const {isValid: isValidEndDate, errorMessage: errorMessageEndDate} = validatePublisherSectionEndDate(beginDateValue, endDateValue, endedChecked);
 
 	return (
-		<form>
+		<div>
 			<MergeField
 				currentValue={typeValue}
 				label="Type"
@@ -190,7 +190,7 @@ function PublisherSectionMerge({
 					onChange={onEndDateChange}
 				/>
 			}
-		</form>
+		</div>
 	);
 }
 PublisherSectionMerge.displayName = 'PublisherSectionMerge';

@@ -17,7 +17,6 @@
  */
 
 import {DateObject, ISODateStringToObject, isNullDate} from '../../helpers/utils';
-import {Iterable} from 'immutable';
 import _ from 'lodash';
 import {dateValidator} from './date';
 import {isIterable} from '../../../types';

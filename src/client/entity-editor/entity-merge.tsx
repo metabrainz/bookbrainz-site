@@ -33,6 +33,7 @@ import _ from 'lodash';
 import {connect} from 'react-redux';
 import {faAngleDoubleLeft} from '@fortawesome/free-solid-svg-icons';
 import {getEntityLink} from '../../server/helpers/utils';
+import {submit} from './submission-section/actions';
 
 
 type OwnProps = {
@@ -46,17 +47,24 @@ type StateProps = {
 	identifierSet: any
 };
 
-type Props = StateProps & OwnProps;
+type DispatchProps = {
+	onSubmit: () => unknown
+};
+
+type Props = StateProps & OwnProps & DispatchProps;
 
 /**
  * Container component. Renders all of the sections of the entity editing form.
  *
  * @param {Object} props - The properties passed to the component.
+ * @param {React.Node} props.children - The child content to wrap with this
+ *        entity editor form.
+ * @param {Array} props.mergingEntities - An array of entities that are being merge
  * @param {boolean} props.identifierSet - Concatenated identifiers from entities in merging
  * @param {boolean} props.identifierTypes - possible identifier types for this entity type
  * @param {string} props.subheading - Subheading at the top of the html page
- * @param {React.Node} props.children - The child content to wrap with this
- *        entity editor form.
+ * @param {Function} props.onSubmit - A function to be called when the
+ *        submit button is clicked.
  * @returns {ReactElement} React element containing the rendered EntityMerge.
  */
 const EntityMerge = (props: Props) => {
@@ -65,83 +73,86 @@ const EntityMerge = (props: Props) => {
 		mergingEntities,
 		identifierSet,
 		identifierTypes,
-		subheading
+		subheading,
+		onSubmit
 	} = props;
 	const identifiers = _.values(identifierSet.toJS()) || [];
 	return (
-		<Panel>
-			<Panel.Heading>
-				<Panel.Title componentClass="h2">
-					<p>{subheading}</p>
+		<form onSubmit={onSubmit}>
+			<Panel>
+				<Panel.Heading>
+					<Panel.Title componentClass="h2">
+						<p>{subheading}</p>
+						<div>
+							{mergingEntities.map((entity, index) => {
+								const entityForDisplay = {
+									link: getEntityLink({bbid: entity.bbid, type: entity.type}),
+									text: _.get(entity, ['defaultAlias', 'name']),
+									type: entity.type,
+									unnamedText: '(unnamed)'
+								};
+								const isNotLast = index < mergingEntities.length - 1;
+								return (
+									<span key={entity.bbid}>
+										<Entity {...entityForDisplay}/>
+										{isNotLast && <FontAwesomeIcon className="margin-sides-d5" icon={faAngleDoubleLeft}/>}
+									</span>
+								);
+							})}
+						</div>
+					</Panel.Title>
+				</Panel.Heading>
+				<Panel.Body>
+					<p className="alert alert-info">
+						You are merging into entity {mergingEntities[0].bbid}. If you want to merge into another entity instead,
+						you can select the correct entity in the merge queue at the bottom of the page and click
+						the <i>Merge into selected entity</i> button again.
+						This will reload the page with the new merge target selected.
+					</p>
+					<p className="text-muted">
+					Select and review the data to merge.
+					For further modifications, edit the resulting merged entity.
+					</p>
 					<div>
-						{mergingEntities.map((entity, index) => {
-							const entityForDisplay = {
-								link: getEntityLink({bbid: entity.bbid, type: entity.type}),
-								text: _.get(entity, ['defaultAlias', 'name']),
-								type: entity.type,
-								unnamedText: '(unnamed)'
-							};
-							const isNotLast = index < mergingEntities.length - 1;
-							return (
-								<span key={entity.bbid}>
-									<Entity {...entityForDisplay}/>
-									{isNotLast && <FontAwesomeIcon className="margin-sides-d5" icon={faAngleDoubleLeft}/>}
-								</span>
-							);
-						})}
+						<Row>
+							<Col md={5} mdOffset={1}>
+								<NameSectionMerge {...props}/>
+							</Col>
+							<Col md={5} mdOffset={1}>
+								<AliasEditorMerge {...props}/>
+							</Col>
+						</Row>
+						<Row>
+							<Col md={5} mdOffset={1}>
+								{
+									React.cloneElement(
+										React.Children.only(children),
+										{...props}
+									)
+								}
+							</Col>
+						</Row>
+						<Row>
+							<Col md={8}>
+								<RelationshipSection {...props}/>
+							</Col>
+							<Col md={4}>
+								<EntityIdentifiers
+									identifierTypes={identifierTypes}
+									identifiers={identifiers}
+								/>
+							</Col>
+						</Row>
+						<AnnotationSection {...props}/>
 					</div>
-				</Panel.Title>
-			</Panel.Heading>
-			<Panel.Body>
-				<p className="alert alert-info">
-					You are merging into entity {mergingEntities[0].bbid}. If you want to merge into another entity instead,
-					you can select the correct entity in the merge queue at the bottom of the page and click
-					the <i>Merge into selected entity</i> button again.
-					This will reload the page with the new merge target selected.
-				</p>
-				<p className="text-muted">
-				Select and review the data to merge.
-				For further modifications, edit the resulting merged entity.
-				</p>
-				<div>
-					<Row>
-						<Col md={5} mdOffset={1}>
-							<NameSectionMerge {...props}/>
-						</Col>
-						<Col md={5} mdOffset={1}>
-							<AliasEditorMerge {...props}/>
-						</Col>
-					</Row>
-					<Row>
-						<Col md={5} mdOffset={1}>
-							{
-								React.cloneElement(
-									React.Children.only(children),
-									{...props}
-								)
-							}
-						</Col>
-					</Row>
-					<Row>
-						<Col md={8}>
-							<RelationshipSection {...props}/>
-						</Col>
-						<Col md={4}>
-							<EntityIdentifiers
-								identifierTypes={identifierTypes}
-								identifiers={identifiers}
-							/>
-						</Col>
-					</Row>
-					<AnnotationSection {...props}/>
-				</div>
-			</Panel.Body>
-			<Panel.Footer>
-				<div>
-					<SubmissionSection {...props}/>
-				</div>
-			</Panel.Footer>
-		</Panel>
+				</Panel.Body>
+				<Panel.Footer>
+					<div>
+						<SubmissionSection {...props}/>
+					</div>
+				</Panel.Footer>
+			</Panel>
+		</form>
 	);
 };
 EntityMerge.displayName = 'EntityMerge';
@@ -151,5 +162,13 @@ function mapStateToProps(rootState): StateProps {
 		identifierSet: rootState.get('identifierEditor', {})
 	};
 }
+function mapDispatchToProps(dispatch, {submissionUrl}) {
+	return {
+		onSubmit: (event:React.FormEvent) => {
+			event.preventDefault();
+			dispatch(submit(submissionUrl));
+		}
+	};
+}
 
-export default connect(mapStateToProps)(EntityMerge);
+export default connect(mapStateToProps, mapDispatchToProps)(EntityMerge);

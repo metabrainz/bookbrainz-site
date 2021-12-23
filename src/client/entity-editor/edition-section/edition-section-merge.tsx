@@ -220,7 +220,7 @@ function EditionSectionMerge({
 	});
 
 	return (
-		<form>
+		<div>
 			<MergeField
 				currentValue={authorCreditValue}
 				label="Author Credit"
@@ -301,7 +301,7 @@ function EditionSectionMerge({
 					value={languageValues}
 				/>
 			</CustomInput>
-		</form>
+		</div>
 	);
 }
 EditionSectionMerge.displayName = 'EditionSectionMerge';

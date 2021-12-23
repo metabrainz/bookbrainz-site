@@ -96,8 +96,12 @@ class EntitySearchFieldOption extends React.Component {
 				q: manipulatedQuery,
 				type: this.props.type
 			});
+		const isSameBBIDFilter = (entity) => entity.bbid !== this.props.bbid;
+		const combineFilters = (...filters) => (item) => filters.map((filter) => filter(item)).every((x) => x === true);
+		const combinedFilters = combineFilters(isSameBBIDFilter, ...this.props.filters);
+		const filteredOptions = response.body.filter(combinedFilters);
 		return {
-			options: response.body.map(this.entityToOption)
+			options: filteredOptions.map(this.entityToOption)
 		};
 	}
 
@@ -121,8 +125,10 @@ class EntitySearchFieldOption extends React.Component {
 
 EntitySearchFieldOption.displayName = 'EntitySearchFieldOption';
 EntitySearchFieldOption.propTypes = {
+	bbid: PropTypes.string,
 	empty: PropTypes.bool,
 	error: PropTypes.bool,
+	filters: PropTypes.array,
 	label: PropTypes.string.isRequired,
 	languageOptions: PropTypes.array,
 	tooltipText: PropTypes.string,
@@ -132,8 +138,10 @@ EntitySearchFieldOption.propTypes = {
 	]).isRequired
 };
 EntitySearchFieldOption.defaultProps = {
+	bbid: null,
 	empty: true,
 	error: false,
+	filters: [],
 	languageOptions: [],
 	tooltipText: null
 };

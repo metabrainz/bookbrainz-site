@@ -25,11 +25,13 @@ import {v4 as uuidv4} from 'uuid';
 
 
 const {
-	bookshelf, util, Editor, EditorType, Revision, Relationship, RelationshipType, RelationshipSet,
+	bookshelf, util, Editor, EditorType, Revision, Relationship, RelationshipAttribute,
+	RelationshipType, RelationshipAttributeTextValue, RelationshipAttributeSet,
+	RelationshipAttributeType, RelationshipSet,
 	Alias, AliasSet, Area, Identifier, IdentifierType, IdentifierSet,
 	Disambiguation, Entity, Annotation, Gender,
-	Author, Edition, EditionGroup, Publisher, Work,
-	Language, WorkType, EditionGroupType, AuthorType, PublisherType
+	Author, Edition, EditionGroup, Publisher, Series, Work,
+	Language, SeriesOrderingType, WorkType, EditionGroupType, AuthorType, PublisherType
 } = orm;
 const {updateLanguageSet} = orm.func.language;
 
@@ -82,6 +84,11 @@ const relationshipTypeData = {
 	reverseLinkPhrase: 'test reverse link phrase',
 	sourceEntityType: 'Author',
 	targetEntityType: 'Work'
+};
+
+const relAttribTypeAttribs = {
+	name: 'test name',
+	root: 1
 };
 
 const entityAttribs = {
@@ -146,7 +153,20 @@ async function createIdentifierAndIdentifierSet() {
 	await identifierSet.identifiers().attach([identifier.id]);
 }
 
-async function createRelationshipSet(sourceBbid, targetBbid, targetEntityType = 'Author') {
+async function createRelationshipAttributeSet() {
+	const attributeType = await new RelationshipAttributeType(relAttribTypeAttribs)
+		.save(null, {method: 'insert'});
+	const attribute = await new RelationshipAttribute({attributeType: attributeType.get('id')})
+		.save(null, {method: 'insert'});
+	await new RelationshipAttributeTextValue({attributeId: attribute.get('id'), textValue: 'test value'})
+		.save(null, {method: 'insert'});
+	const relationshipAttributeSet = await new RelationshipAttributeSet()
+		.save(null, {method: 'insert'});
+	await relationshipAttributeSet.relationshipAttributes().attach(attribute);
+	return relationshipAttributeSet.get('id');
+}
+
+async function createRelationshipSet(sourceBbid, targetBbid, targetEntityType = 'Author', attributeSetId) {
 	const safeTargetBbid = targetBbid || uuidv4();
 	const safeSourceBbid = sourceBbid || uuidv4();
 
@@ -166,6 +186,7 @@ async function createRelationshipSet(sourceBbid, targetBbid, targetEntityType = 
 		.catch(console.log);
 
 	const relationshipData = {
+		attributeSetId,
 		sourceBbid: safeSourceBbid,
 		targetBbid: safeTargetBbid,
 		typeId: relationshipType.id
@@ -203,7 +224,8 @@ async function createEntityPrerequisites(entityBbid, entityType) {
 	await createEditor();
 	await createAliasAndAliasSet();
 	await createIdentifierAndIdentifierSet();
-	await createRelationshipSet(entityBbid, null, entityType);
+	const attributeSetID = await createRelationshipAttributeSet();
+	await createRelationshipSet(entityBbid, null, entityType, attributeSetID);
 
 	const disambiguation = await new Disambiguation({
 		comment: 'Test Disambiguation'
@@ -338,6 +360,38 @@ export async function createAuthor(optionalBBID, optionalAuthorAttribs = {}) {
 	return author;
 }
 
+export async function createSeries(optionalBBID, optionalSeriesAttribs = {}) {
+	const bbid = optionalBBID || uuidv4();
+	await new Entity({bbid, type: 'Series'})
+		.save(null, {method: 'insert'});
+	await createEntityPrerequisites(bbid, 'Work');
+	// Front-end requires 'Automatic' and 'Manual' ordering types
+	try {
+		await new SeriesOrderingType({id: 1, label: 'Automatic'})
+			.save(null, {method: 'insert'});
+	}
+	catch (error) {
+		// Type already exists
+	}
+	try {
+		await new SeriesOrderingType({id: 2, label: 'Manual'})
+			.save(null, {method: 'insert'});
+	}
+	catch (error) {
+		// Type already exists
+	}
+	const seriesAttribs = {
+		bbid,
+		entityType: 'Work',
+		orderingTypeId: 1,
+		...optionalSeriesAttribs
+	};
+
+	const series = await new Series({...entityAttribs, ...seriesAttribs})
+		.save(null, {method: 'insert'});
+	return series;
+}
+
 export async function createPublisher(optionalBBID, optionalPublisherAttribs = {}) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Publisher'})
@@ -398,10 +452,14 @@ export function truncateEntities() {
 		'bookbrainz.relationship',
 		'bookbrainz.relationship_type',
 		'bookbrainz.relationship_set',
+		'bookbrainz.relationship_attribute_set',
+		'bookbrainz.relationship_attribute',
+		'bookbrainz.relationship_attribute_type',
 		'bookbrainz.disambiguation',
 		'bookbrainz.entity',
 		'bookbrainz.revision',
 		'bookbrainz.annotation',
+		'bookbrainz.series_ordering_type',
 		'bookbrainz.work_type',
 		'bookbrainz.edition_group_type',
 		'bookbrainz.edition_format',

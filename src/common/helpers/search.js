@@ -86,7 +86,7 @@ async function _fetchEntityModelsForESResults(orm, results) {
 		// Regular entity
 		const model = commonUtils.getEntityModelByType(orm, entityStub.type);
 		const entity = await model.forge({bbid: entityStub.bbid})
-			.fetch({require: false, withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases']});
+			.fetch({require: false, withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases', 'identifierSet.identifiers']});
 
 		return entity?.toJSON();
 	})).catch(err => log.error(err));
@@ -202,7 +202,8 @@ export function autocomplete(orm, query, type) {
 
 	const dslQuery = {
 		body: {
-			query: queryBody
+			query: queryBody,
+			size: 42
 		},
 		index: _index
 	};
@@ -245,7 +246,7 @@ export function refreshIndex() {
 
 /* eslint camelcase: 0, no-magic-numbers: 1 */
 export async function generateIndex(orm) {
-	const {Area, Author, Edition, EditionGroup, Editor, Publisher, UserCollection, Work} = orm;
+	const {Area, Author, Edition, EditionGroup, Editor, Publisher, Series, UserCollection, Work} = orm;
 	const indexMappings = {
 		mappings: {
 			_default_: {
@@ -331,7 +332,8 @@ export async function generateIndex(orm) {
 		'annotation',
 		'disambiguation',
 		'defaultAlias',
-		'aliasSet.aliases'
+		'aliasSet.aliases',
+		'identifierSet.identifiers'
 	];
 
 	const entityBehaviors = [
@@ -354,6 +356,7 @@ export async function generateIndex(orm) {
 		},
 		{model: EditionGroup, relations: ['editionGroupType']},
 		{model: Publisher, relations: ['publisherType', 'area']},
+		{model: Series, relations: ['seriesOrderingType']},
 		{model: Work, relations: ['workType']}
 	];
 
@@ -416,7 +419,7 @@ export async function generateIndex(orm) {
 	}));
 	await _processEntityListForBulk(processedEditors);
 
-	const userCollections = await UserCollection.forge()
+	const userCollections = await UserCollection.forge().where({public: true})
 		.fetchAll();
 	const userCollectionsJSON = userCollections.toJSON();
 
@@ -479,7 +482,8 @@ export function searchByName(orm, name, type, size, from) {
 					fields: [
 						'aliasSet.aliases.name^3',
 						'aliasSet.aliases.name.search',
-						'disambiguation.comment'
+						'disambiguation.comment',
+						'identifierSet.identifiers.value'
 					],
 					minimum_should_match: '80%',
 					query: name,
@@ -493,7 +497,7 @@ export function searchByName(orm, name, type, size, from) {
 
 	let modifiedType;
 	if (type === 'all_entities') {
-		modifiedType = ['author', 'edition', 'edition_group', 'work', 'publisher'];
+		modifiedType = ['author', 'edition', 'edition_group', 'series', 'work', 'publisher'];
 	}
 	else {
 		modifiedType = type;

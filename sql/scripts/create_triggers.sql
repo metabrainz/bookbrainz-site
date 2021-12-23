@@ -87,6 +87,43 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_edition() RETURNS TRIGGER
 	END;
 $process_edition$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION bookbrainz.process_series() RETURNS TRIGGER
+	AS $process_series$
+	DECLARE
+		series_data_id INT;
+	BEGIN
+		IF (TG_OP = 'INSERT') THEN
+			INSERT INTO bookbrainz.series_header(bbid) VALUES(NEW.bbid);
+		END IF;
+
+		-- If we're not deleting, create new entity data rows as necessary
+		IF (TG_OP <> 'DELETE') THEN
+			INSERT INTO bookbrainz.series_data(
+				alias_set_id, identifier_set_id, relationship_set_id, annotation_id,
+				disambiguation_id, entity_type, ordering_type_id
+			) VALUES (
+				NEW.alias_set_id, NEW.identifier_set_id, NEW.relationship_set_id,
+				NEW.annotation_id, NEW.disambiguation_id,
+				NEW.entity_type, NEW.ordering_type_id
+			) RETURNING bookbrainz.series_data.id INTO series_data_id;
+
+			INSERT INTO bookbrainz.series_revision VALUES(NEW.revision_id, NEW.bbid, series_data_id);
+		ELSE
+			INSERT INTO bookbrainz.series_revision VALUES(NEW.revision_id, NEW.bbid, NULL);
+		END IF;
+
+		UPDATE bookbrainz.series_header
+			SET master_revision_id = NEW.revision_id
+			WHERE bbid = NEW.bbid;
+
+		IF (TG_OP = 'DELETE') THEN
+			RETURN OLD;
+		ELSE
+			RETURN NEW;
+		END IF;
+	END;
+$process_series$ LANGUAGE plpgsql;
+
 CREATE OR REPLACE FUNCTION bookbrainz.process_work() RETURNS TRIGGER
 	AS $process_work$
 	DECLARE
@@ -181,10 +218,10 @@ CREATE OR REPLACE FUNCTION bookbrainz.process_edition_group() RETURNS TRIGGER
 		IF (TG_OP <> 'DELETE') THEN
 			INSERT INTO bookbrainz.edition_group_data(
 				alias_set_id, identifier_set_id, relationship_set_id, annotation_id,
-				disambiguation_id, type_id
+				disambiguation_id, type_id, author_credit_id
 			) VALUES (
 				NEW.alias_set_id, NEW.identifier_set_id, NEW.relationship_set_id,
-				NEW.annotation_id, NEW.disambiguation_id, NEW.type_id
+				NEW.annotation_id, NEW.disambiguation_id, NEW.type_id, NEW.author_credit_id
 			) RETURNING bookbrainz.edition_group_data.id INTO edition_group_data_id;
 
 			INSERT INTO bookbrainz.edition_group_revision VALUES(NEW.revision_id, NEW.bbid, edition_group_data_id);
@@ -218,6 +255,14 @@ BEGIN;
 CREATE TRIGGER process_edition
 	INSTEAD OF INSERT OR UPDATE OR DELETE ON bookbrainz.edition
 	FOR EACH ROW EXECUTE PROCEDURE bookbrainz.process_edition();
+
+COMMIT;
+
+BEGIN;
+
+CREATE TRIGGER process_series
+	INSTEAD OF INSERT OR UPDATE OR DELETE ON bookbrainz.series
+	FOR EACH ROW EXECUTE PROCEDURE bookbrainz.process_series();
 
 COMMIT;
 

@@ -29,6 +29,8 @@ import {
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
+import {ConflictError} from '../../../common/helpers/error';
+import {RelationshipTypes} from '../../../client/entity-editor/relationship-editor/types';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
@@ -203,21 +205,21 @@ router.get(
 			if (props.publisher) {
 				initialState.editionSection.publisher = props.publisher;
 				// add initial relationship with relationshipTypeId = 4 (<Publisher> published < New Edition>)
-				relationshipTypeId = 4;
+				relationshipTypeId = RelationshipTypes.PublisherPublishedEdition;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.publisher);
 			}
 
 			if (props.editionGroup) {
 				initialState.editionSection.editionGroup = props.editionGroup;
 				// add initial raltionship with relationshipTypeId = 3 (<New Edition> is an edition of <EditionGroup>)
-				relationshipTypeId = 3;
+				relationshipTypeId = RelationshipTypes.EditionIsAnEditionOfEditionGroup;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.editionGroup);
 			}
 
 			if (props.work) {
 				initialState.nameSection = getInitialNameSection(props.work);
 				// add initial raltionship with relationshipTypeId = 10 (<New Edition> Contains <Work>)
-				relationshipTypeId = 10;
+				relationshipTypeId = RelationshipTypes.EditionContainsWork;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.work);
 			}
 
@@ -289,9 +291,12 @@ router.get('/:bbid/revisions/revisions', (req:PassportRequest, res, next) => {
 });
 
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req:PassportRequest, res) => {
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
+	if (!res.locals.entity.dataId) {
+		return next(new ConflictError('This entity has already been deleted'));
+	}
 	_setEditionTitle(res);
-	entityRoutes.displayDeleteEntity(req, res);
+	return entityRoutes.displayDeleteEntity(req, res);
 });
 
 router.post(
@@ -401,9 +406,11 @@ function editionToFormState(edition) {
 	};
 
 	edition.relationships.forEach((relationship) => (
-		relationshipSection.relationships[relationship.id] = {
+		relationshipSection.relationships[`n${relationship.id}`] = {
+			attributeSetId: relationship.attributeSetId,
+			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
 			relationshipType: relationship.type,
-			rowID: relationship.id,
+			rowID: `n${relationship.id}`,
 			sourceEntity: relationship.source,
 			targetEntity: relationship.target
 		}

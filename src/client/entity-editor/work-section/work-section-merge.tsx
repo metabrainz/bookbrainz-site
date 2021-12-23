@@ -83,7 +83,7 @@ function WorkSectionMerge({
 	});
 
 	return (
-		<form>
+		<div>
 			<MergeField
 				currentValue={typeValue}
 				label="Type"
@@ -98,7 +98,7 @@ function WorkSectionMerge({
 					value={languageValues}
 				/>
 			</CustomInput>
-		</form>
+		</div>
 	);
 }
 WorkSectionMerge.displayName = 'WorkSectionMerge';

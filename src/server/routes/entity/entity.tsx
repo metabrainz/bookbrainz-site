@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016  Ben Ockmore
  *               2016  Sean Burke
- *
+ *				 2021  Akash Gupta
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -44,6 +44,7 @@ import EntityRevisions from '../../../client/components/pages/entity-revisions';
 import Layout from '../../../client/containers/layout';
 import PublisherPage from '../../../client/components/pages/entities/publisher';
 import ReactDOMServer from 'react-dom/server';
+import SeriesPage from '../../../client/components/pages/entities/series';
 import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
 import {getEntityLabel} from '../../../client/helpers/entity';
@@ -59,6 +60,7 @@ const entityComponents = {
 	edition: EditionPage,
 	editionGroup: EditionGroupPage,
 	publisher: PublisherPage,
+	series: SeriesPage,
 	work: WorkPage
 };
 
@@ -414,10 +416,12 @@ export function handleDelete(
 	RevisionModel: any
 ) {
 	const {entity}: {entity?: any} = res.locals;
+	if (!entity.dataId) {
+		throw new error.ConflictError('This entity has already been deleted');
+	}
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const {body}: {body: any} = req;
-
 	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
 		if (!body.note || !body.note.length) {
 			throw new error.FormSubmissionError('A revision note is required when deleting an entity');
@@ -463,8 +467,7 @@ export function handleDelete(
 				editorJSON.id,
 				body.note
 			);
-
-		return savedMainEntity;
+		return savedMainEntity.toJSON();
 	});
 
 	return handler.sendPromiseResult(res, entityDeletePromise, search.deleteEntity);
@@ -844,12 +847,33 @@ async function getNextIdentifierSet(orm, transacting, currentEntity, body) {
 		orm, transacting, oldIdentifierSet, body.identifiers || []
 	);
 }
+async function getNextRelationshipAttributeSets(orm, transacting, body) {
+	const {RelationshipAttributeSet} = orm;
+	const relationships = await Promise.all(body.relationships.map(async (relationship) => {
+		const id = relationship.attributeSetId;
+		const oldRelationshipAttributeSet = await (
+			id &&
+			new RelationshipAttributeSet({id}).fetch({
+				require: false,
+				transacting, withRelated: ['relationshipAttributes.value']
+			})
+		);
+		const attributeSet = await orm.func.relationshipAttributes.updateRelationshipAttributeSet(
+			orm, transacting, oldRelationshipAttributeSet, relationship.attributes || []
+		);
+		const attributeSetId = attributeSet && attributeSet.get('id');
+		relationship.attributeSetId = attributeSetId;
+		delete relationship.attributes;
+		return relationship;
+	}));
+	return relationships;
+}
 
 async function getNextRelationshipSets(
 	orm, transacting, currentEntity, body
 ) {
 	const {RelationshipSet} = orm;
-
+	const relationships = await getNextRelationshipAttributeSets(orm, transacting, body);
 	const id = _.get(currentEntity, ['relationshipSet', 'id']);
 
 	const oldRelationshipSet = await (
@@ -861,7 +885,7 @@ async function getNextRelationshipSets(
 	);
 
 	return orm.func.relationship.updateRelationshipSets(
-		orm, transacting, oldRelationshipSet, body.relationships || []
+		orm, transacting, oldRelationshipSet, relationships || []
 	);
 }
 
@@ -1190,10 +1214,12 @@ export function constructIdentifiers(
 	);
 }
 
-export function constructRelationships(relationshipSection) {
+export function constructRelationships(parentSection, childAttributeName = 'relationships') {
 	return _.map(
-		relationshipSection.relationships,
-		({rowID, relationshipType, sourceEntity, targetEntity}) => ({
+		parentSection[childAttributeName],
+		({attributeSetId, rowID, relationshipType, sourceEntity, targetEntity, attributes}) => ({
+			attributeSetId,
+			attributes,
 			id: rowID,
 			sourceBbid: _.get(sourceEntity, 'bbid'),
 			targetBbid: _.get(targetEntity, 'bbid'),

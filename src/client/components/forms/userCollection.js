@@ -32,7 +32,7 @@ import classNames from 'classnames';
 import request from 'superagent';
 
 
-const {Alert, Button, ButtonGroup, Col} = bootstrap;
+const {Alert, Button, Col} = bootstrap;
 
 class UserCollectionForm extends React.Component {
 	constructor(props) {
@@ -157,7 +157,7 @@ class UserCollectionForm extends React.Component {
 		const privacyOptions = ['Private', 'Public'].map((option) => ({
 			name: option
 		}));
-		const entityTypeOptions = ['Author', 'Work', 'Edition', 'Edition-Group', 'Publisher'].map((entity) => ({
+		const entityTypeOptions = ['Author', 'Work', 'Series', 'Edition', 'Edition-Group', 'Publisher'].map((entity) => ({
 			name: entity
 		}));
 		const initialName = this.state.collection.name;
@@ -229,9 +229,24 @@ class UserCollectionForm extends React.Component {
 								ref={(ref) => this.privacy = ref}
 							/>
 							<h3><b>Collaborators</b></h3>
-							<p className="help-block">
+							<div className="row margin-bottom-2">
+								<div className="col-sm-6 margin-top-d5">
+									<p className="help-block">
 								Collaborators can add/remove entities from your collection
-							</p>
+									</p>
+								</div>
+								<div className="col-sm-6 margin-top-d5">
+									<Button
+										block
+										bsStyle="primary"
+										type="button"
+										onClick={this.handleAddCollaborator}
+									>
+										<FontAwesomeIcon icon={faPlus}/>
+										&nbsp;Add another collaborator
+									</Button>
+								</div>
+							</div>
 							{
 								this.state.collaborators.map((collaborator, index) => {
 									const buttonAfter = (
@@ -264,17 +279,6 @@ class UserCollectionForm extends React.Component {
 								<Alert bsStyle="danger">Error: {errorText}</Alert>
 							</div>
 							<div className="row margin-bottom-2">
-								<div className="col-sm-6 margin-top-d5">
-									<Button
-										block
-										bsStyle="primary"
-										type="button"
-										onClick={this.handleAddCollaborator}
-									>
-										<FontAwesomeIcon icon={faPlus}/>
-										&nbsp;Add another collaborator
-									</Button>
-								</div>
 								<div className="col-sm-6 margin-top-d5">
 									<Button
 										block

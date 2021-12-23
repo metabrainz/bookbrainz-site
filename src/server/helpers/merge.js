@@ -46,6 +46,10 @@ export function getEntityFetchPropertiesByType(entityType) {
 				'languageSet.languages',
 				'workType'
 			];
+		case 'Series':
+			return [
+				'seriesOrderingType'
+			];
 		default:
 			return [];
 	}
@@ -175,6 +179,25 @@ function getPublisherEntityMergeSection(entities) {
 		});
 }
 
+
+/**
+ * @name getSeriesEntityMergeSection
+ * @description Returns the initial form state for the Series merging page, based on the multiple entities.
+ * The returned section has some properties transformed to a state acceptable by the reducer.
+ * @param {object[]} entities - The array of entities to merge the properties of
+ * @returns {object} - The Series merge section for the initialState
+ */
+function getSeriesEntityMergeSection(entities) {
+	const seriesSection = {};
+	entities.forEach(entity => {
+		assignIfNotSet(seriesSection, 'seriesType', entity, 'entityType');
+		assignIfNotSet(seriesSection, 'orderType', entity, 'seriesOrderingType.id');
+	});
+	seriesSection.seriesItems = {};
+	return seriesSection;
+}
+
+
 /**
  * @name getWorkEntityMergeSection
  * @description Returns the initial form state for the Work merging page, based on the multiple entities.
@@ -213,6 +236,8 @@ export function getEntitySectionByType(entityType, entities) {
 			return getEditionGroupEntityMergeSection(entities);
 		case 'publisher':
 			return getPublisherEntityMergeSection(entities);
+		case 'series':
+			return getSeriesEntityMergeSection(entities);
 		case 'work':
 			return getWorkEntityMergeSection(entities);
 		default:

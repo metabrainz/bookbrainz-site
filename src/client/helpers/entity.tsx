@@ -23,14 +23,7 @@ import * as React from 'react';
 import {FontAwesomeIconProps as FAProps, FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst} from 'lodash';
 import {
-	faBook,
-	faGlobe,
-	faGripVertical,
-	faPenNib,
-	faUniversity,
-	faUser,
-	faUserCircle,
-	faWindowRestore
+	faBook, faGlobe, faGripVertical, faLayerGroup, faPenNib, faUniversity, faUser, faUserCircle, faWindowRestore
 } from '@fortawesome/free-solid-svg-icons';
 import {format, isValid, parseISO} from 'date-fns';
 import {dateObjectToISOString} from './utils';
@@ -172,7 +165,7 @@ export function entityToOption(entity) {
 
 export function getEntityLabel(entity, returnHTML = true) {
 	if (entity.defaultAlias) {
-		return `${entity.defaultAlias.name} `;
+		return `${entity.defaultAlias.name}`;
 	}
 
 	// Deleted entities
@@ -182,7 +175,7 @@ export function getEntityLabel(entity, returnHTML = true) {
 			deletedEntityName = entity.parentAlias.name;
 		}
 		if (returnHTML) {
-			return <span className="text-muted deleted" title={`Deleted ${entity.type}`}>{deletedEntityName}</span>;
+			return <span className="deleted"><span className="text-muted" title={`This ${entity.type} was deleted`}>{deletedEntityName}</span></span>;
 		}
 		return `${deletedEntityName}`;
 	}
@@ -265,6 +258,7 @@ export const ENTITY_TYPE_ICONS = {
 	EditionGroup: faWindowRestore,
 	Editor: faUserCircle,
 	Publisher: faUniversity,
+	Series: faLayerGroup,
 	Work: faPenNib
 };
 

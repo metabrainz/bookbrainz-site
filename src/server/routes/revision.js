@@ -58,8 +58,8 @@ function formatAuthorChange(change) {
 	if (_.isEqual(change.path, ['ended'])) {
 		return baseFormatter.formatEndedChange(change);
 	}
-
-	if (_.isEqual(change.path, ['type'])) {
+	if (_.isEqual(change.path, ['authorType']) ||
+			_.isEqual(change.path, ['authorType', 'label'])) {
 		return baseFormatter.formatTypeChange(change, 'Author Type');
 	}
 
@@ -106,11 +106,13 @@ function formatEditionChange(change) {
 		return baseFormatter.formatScalarChange(change, 'Page Count');
 	}
 
-	if (_.isEqual(change.path, ['editionFormat'])) {
+	if (_.isEqual(change.path, ['editionFormat']) ||
+			_.isEqual(change.path, ['editionFormat', 'label'])) {
 		return baseFormatter.formatTypeChange(change, 'Edition Format');
 	}
 
-	if (_.isEqual(change.path, ['editionStatus'])) {
+	if (_.isEqual(change.path, ['editionStatus']) ||
+			_.isEqual(change.path, ['editionStatus', 'label'])) {
 		return baseFormatter.formatTypeChange(change, 'Edition Status');
 	}
 
@@ -129,8 +131,8 @@ function formatPublisherChange(change) {
 	if (_.isEqual(change.path, ['ended'])) {
 		return baseFormatter.formatEndedChange(change);
 	}
-
-	if (_.isEqual(change.path, ['type'])) {
+	if (_.isEqual(change.path, ['publisherType']) ||
+			_.isEqual(change.path, ['publisherType', 'label'])) {
 		return baseFormatter.formatTypeChange(change, 'Publisher Type');
 	}
 
@@ -142,12 +144,23 @@ function formatPublisherChange(change) {
 	return null;
 }
 
+function formatSeriesChange(change) {
+	if (_.isEqual(change.path, ['seriesOrderingType']) ||
+			_.isEqual(change.path, ['seriesOrderingType', 'label'])) {
+		return baseFormatter.formatTypeChange(change, 'Series Ordering Type');
+	}
+	if (_.isEqual(change.path, ['entityType'])) {
+		return baseFormatter.formatTypeChange(change, 'Series Type');
+	}
+	return null;
+}
+
 function formatWorkChange(change) {
 	if (languageSetFormatter.changed(change)) {
 		return languageSetFormatter.format(change);
 	}
-
-	if (_.isEqual(change.path, ['type'])) {
+	if (_.isEqual(change.path, ['workType']) ||
+			_.isEqual(change.path, ['workType', 'label'])) {
 		return baseFormatter.formatTypeChange(change, 'Work Type');
 	}
 
@@ -155,7 +168,8 @@ function formatWorkChange(change) {
 }
 
 function formatEditionGroupChange(change) {
-	if (_.isEqual(change.path, ['type'])) {
+	if (_.isEqual(change.path, ['editionGroupType']) ||
+			_.isEqual(change.path, ['editionGroupType', 'label'])) {
 		return baseFormatter.formatTypeChange(change, 'Edition Group Type');
 	}
 
@@ -165,40 +179,57 @@ function formatEditionGroupChange(change) {
 function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 	// entityRevisions - collection of *entityType*_revisions matching id
 	return Promise.all(entityRevisions.map(
-		(revision) =>
-			revision.parent()
+		async (revision) => {
+			const dataId = revision.get('dataId');
+			const revisionEntity = revision.related('entity');
+			const entityBBID = revisionEntity.get('bbid');
+			const entity = await orm.func.entity.getEntity(orm, entityType, entityBBID);
+			const isEntityDeleted = !entity.dataId;
+			return revision.parent()
 				.then(
-					(parent) => makePromiseFromObject({
-						changes: revision.diff(parent),
-						entity: revision.related('entity'),
-						entityAlias: revision.get('dataId') ?
-							revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
-							orm.func.entity.getEntityParentAlias(
-								orm, entityType, revision.get('bbid')
-							),
-						isNew: !parent,
-						revision
-					}),
+					(parent) => {
+						let isNew = false;
+						const isDeletion = !dataId;
+						if (!parent) {
+							isNew = Boolean(dataId);
+						}
+						return makePromiseFromObject({
+							changes: revision.diff(parent),
+							entity: revisionEntity,
+							entityAlias: dataId ?
+								revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
+								orm.func.entity.getEntityParentAlias(
+									orm, entityType, revision.get('bbid')
+								),
+							isDeletion,
+							isEntityDeleted,
+							isNew,
+							revision
+						});
+					},
 					// If calling .parent() is rejected (no parent rev), we still want to go ahead without the parent
 					() => makePromiseFromObject({
 						changes: revision.diff(null),
-						entity: revision.related('entity'),
+						entity: revisionEntity,
 						entityAlias: revision.get('dataId') ?
 							revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
 							orm.func.entity.getEntityParentAlias(
 								orm, entityType, revision.get('bbid')
 							),
-						isNew: true,
+						isDeletion: !dataId,
+						isEntityDeleted,
+						isNew: Boolean(dataId),
 						revision
 					})
-				)
+				);
+		}
 	));
 }
 
 router.get('/:id', async (req, res, next) => {
 	const {
 		AuthorRevision, EditionRevision, EditionGroupRevision,
-		PublisherRevision, Revision, WorkRevision
+		SeriesRevision, PublisherRevision, Revision, WorkRevision
 	} = req.app.locals.orm;
 
 	let revision;
@@ -242,6 +273,7 @@ router.get('/:id', async (req, res, next) => {
 		const editionDiffs = await _createRevision(EditionRevision, 'Edition');
 		const editionGroupDiffs = await _createRevision(EditionGroupRevision, 'EditionGroup');
 		const publisherDiffs = await _createRevision(PublisherRevision, 'Publisher');
+		const seriesDiffs = await _createRevision(SeriesRevision, 'Series');
 		const workDiffs = await _createRevision(WorkRevision, 'Work');
 		const diffs = _.concat(
 			entityFormatter.formatEntityDiffs(
@@ -263,6 +295,11 @@ router.get('/:id', async (req, res, next) => {
 				publisherDiffs,
 				'Publisher',
 				formatPublisherChange
+			),
+			entityFormatter.formatEntityDiffs(
+				seriesDiffs,
+				'Series',
+				formatSeriesChange
 			),
 			entityFormatter.formatEntityDiffs(
 				workDiffs,

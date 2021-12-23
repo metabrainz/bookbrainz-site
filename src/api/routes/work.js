@@ -258,7 +258,7 @@ router.get('/:bbid/relationships',
  *     tags:
  *       - Browse Requests
  *     summary: Gets a list of Works related to another Entity
- *     description: BBID of an Author, or an Edition, or a Work, or a Publisher is passed as query parameter and their related Works are fetched
+ *     description: BBID of an Author, or an Edition, or a Work, or a Publisher, or a Series is passed as query parameter and their related Works are fetched
  *     operationId: getRelatedWorkByBbid
  *     parameters:
  *       - name: author
@@ -278,6 +278,13 @@ router.get('/:bbid/relationships',
  *       - name: publisher
  *         in: query
  *         description: BBID of the corresponding Publisher
+ *         required: false
+ *         schema:
+ *           type: string
+ *           format: uuid
+*       - name: series
+ *         in: query
+ *         description: BBID of the corresponding Series
  *         required: false
  *         schema:
  *           type: string
@@ -310,14 +317,14 @@ router.get('/:bbid/relationships',
  *             schema:
  *               $ref: '#/components/schemas/BrowsedAuthors'
  *       404:
- *         description: author/edition/work/publisher (other entity) not found
+ *         description: author/edition/series/work/publisher (other entity) not found
  *       400:
  *         description: Invalid BBID passed in the query params OR Multiple browsed entities passed in parameters
  */
 
 router.get('/',
 	formatQueryParameters(),
-	validateBrowseRequestQueryParameters(['author', 'edition', 'work', 'publisher']),
+	validateBrowseRequestQueryParameters(['author', 'edition', 'series', 'work', 'publisher']),
 	makeEntityLoader(null, utils.relationshipsRelations, 'Entity not found', true),
 	loadEntityRelationshipsForBrowse(),
 	async (req, res) => {

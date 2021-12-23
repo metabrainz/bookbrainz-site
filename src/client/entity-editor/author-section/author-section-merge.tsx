@@ -205,7 +205,7 @@ function AuthorSectionMerge({
 	const formattedEndDateValue = transformISODateForSelect(endDateValue);
 
 	return (
-		<form>
+		<div>
 			<MergeField
 				currentValue={typeValue}
 				label="Type"
@@ -256,7 +256,7 @@ function AuthorSectionMerge({
 					/>
 				</React.Fragment>
 			}
-		</form>
+		</div>
 	);
 }
 AuthorSectionMerge.displayName = 'AuthorSectionMerge';

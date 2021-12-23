@@ -23,6 +23,7 @@ import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
+import EntityRelatedCollections from './related-collections';
 import EntityTitle from './title';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -78,10 +79,13 @@ function EditionAttributes({edition}) {
 				</Col>
 				<Col md={3}>
 					<dl>
-						<dt>Dimensions (WxHxD)</dt>
-						<dd>{width}&times;{height}&times;{depth} mm</dd>
-						<dt>Weight</dt>
-						<dd>{weight} g</dd>
+						{format !== 'eBook' &&
+						<>
+							<dt>Dimensions (WxHxD)</dt>
+							<dd>{width}&times;{height}&times;{depth} mm</dd>
+							<dt>Weight</dt>
+							<dd>{weight} g</dd>
+						</>}
 						<dt>Page Count</dt>
 						<dd>{pageCount}</dd>
 					</dl>
@@ -175,6 +179,7 @@ function EditionDisplayPage({entity, identifierTypes, user}) {
 					identifierTypes={identifierTypes}
 					urlPrefix={urlPrefix}
 				/>
+				<EntityRelatedCollections collections={entity.collections}/>
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter

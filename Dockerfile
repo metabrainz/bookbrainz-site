@@ -1,28 +1,33 @@
-FROM metabrainz/node:10 as bookbrainz-base
+FROM metabrainz/node:16 as bookbrainz-base
 
 ARG DEPLOY_ENV
 ARG GIT_COMMIT_SHA
 
 ARG BUILD_DEPS=" \
     build-essential \
-    python-dev \
-    libpq-dev"
+    python-dev"
 
 ARG RUN_DEPS=" \
     bzip2 \
     git \
-    rsync"
+    rsync \
+    libpq5 \
+    libpq-dev \
+    ca-certificates"
 
 
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y \
-        $BUILD_DEPS $RUN_DEPS && \
-    rm -rf /var/lib/apt/lists/*
+        $BUILD_DEPS $RUN_DEPS \
+# remove expired let's encrypt certificate and install new ones (see ca-certificates in build deps too)
+    && rm -rf /usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt \
+    && update-ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 # PostgreSQL client
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 ENV PG_MAJOR 12
-RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' $PG_MAJOR > /etc/apt/sources.list.d/pgdg.list
+RUN echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 RUN apt-get update \
     && apt-get install -y --no-install-recommends postgresql-client-$PG_MAJOR \
     && rm -rf /var/lib/apt/lists/*
@@ -40,27 +45,22 @@ RUN chown bookbrainz:bookbrainz $BB_ROOT
 RUN echo $GIT_COMMIT_SHA > .git-version
 
 # Files necessary to complete the JavaScript build
-COPY scripts/ scripts/
-COPY .babelrc ./
-COPY .eslintrc.js ./
-COPY .eslintignore ./
-COPY webpack.client.js ./
-COPY package.json ./
-COPY package-lock.json ./
+COPY --chown=bookbrainz scripts/ scripts/
+COPY --chown=bookbrainz .babelrc .eslintrc.js .eslintignore webpack.client.js package.json yarn.lock ./
 
-RUN npm install --no-audit
+RUN yarn install
 
-COPY static/ static/
-COPY config/ config/
-COPY sql/ sql/
-COPY src/ src/
+COPY --chown=bookbrainz static/ static/
+COPY --chown=bookbrainz config/ config/
+COPY --chown=bookbrainz sql/ sql/
+COPY --chown=bookbrainz src/ src/
 
 
 # Development target
 FROM bookbrainz-base as bookbrainz-dev
 ARG DEPLOY_ENV
 
-CMD ["npm", "start"]
+CMD ["yarn", "start"]
 
 # Production target
 FROM bookbrainz-base as bookbrainz-prod
@@ -87,8 +87,9 @@ ADD ./docker/crontab /etc/cron.d/bookbrainz
 RUN chmod 0644 /etc/cron.d/bookbrainz && crontab -u bookbrainz /etc/cron.d/bookbrainz
 
 # Build JS project and assets
-RUN ["npm", "run", "build"]
-RUN ["npm", "prune", "--production"]
+RUN ["yarn", "run", "build"]
+# Prune off the dev dependencies after build step
+RUN ["yarn", "install", "--production", "--ignore-scripts", "--prefer-offline"]
 
 # API target
 FROM bookbrainz-base as bookbrainz-webservice
@@ -103,6 +104,8 @@ RUN chmod +x /etc/service/webserver/exec-command
 COPY ./docker/$DEPLOY_ENV/webserver.service /etc/service/webserver/run
 RUN chmod 755 /etc/service/webserver/run
 RUN touch /etc/service/webserver/down
+
 # Build API JS
-RUN ["npm", "run", "build-api-js"]
-RUN ["npm", "prune", "--production"]
+RUN ["yarn", "run", "build-api-js"]
+# Prune off the dev dependencies after build step
+RUN ["yarn", "install", "--production", "--ignore-scripts", "--prefer-offline"]

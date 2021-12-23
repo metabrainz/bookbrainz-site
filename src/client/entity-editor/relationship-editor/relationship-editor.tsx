@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2018  Ben Ockmore
- *
+ *				 2021  Akash Gupta
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -32,15 +32,17 @@ import {
 import type {
 	Entity,
 	EntityType,
-	LanguageOption,
 	RelationshipType,
 	RelationshipWithLabel,
+	Attribute as _Attribute,
 	Relationship as _Relationship
 } from './types';
 import {faExternalLinkAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
+import {getInitAttribute, setAttribute} from './helper';
 
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {NumberAttribute} from './attributes';
 import ReactSelect from 'react-select';
 import Relationship from './relationship';
 import _ from 'lodash';
@@ -57,7 +59,7 @@ function isValidRelationship(relationship: _Relationship) {
 	);
 }
 
-function generateRelationshipSelection(
+export function generateRelationshipSelection(
 	relationshipTypes: Array<RelationshipType>,
 	entityA: Entity,
 	entityB: Entity
@@ -116,9 +118,15 @@ function generateRelationshipSelection(
 }
 
 function getValidOtherEntityTypes(
-	relationshipTypes: Array<RelationshipType>,
+	relTypes: Array<RelationshipType>,
 	baseEntity: Entity
 ) {
+	let relationshipTypes = relTypes;
+	if (baseEntity.type === 'Series') {
+		// When the base entity is Series, remove relationship type 70 - 74.
+		// We don't want to generate entity types corresponding to these relationship type.
+		relationshipTypes = relationshipTypes.filter(relationshipType => !(relationshipType.id > 69 && relationshipType.id < 75));
+	}
 	const validEntityTypes = relationshipTypes.map((relationshipType) => {
 		if (relationshipType.deprecated === true) {
 			return null;
@@ -152,10 +160,15 @@ type RelationshipModalProps = {
 	onAdd?: (_Relationship) => unknown
 };
 
+
 type RelationshipModalState = {
+	attributeSetId: number | null,
 	relationshipType?: RelationshipType | null | undefined,
 	relationship?: _Relationship | null | undefined,
-	targetEntity?: EntitySearchResult | null | undefined
+	targetEntity?: EntitySearchResult | null | undefined,
+	attributePosition?: _Attribute,
+	attributeNumber?: _Attribute
+	attributes?: _Attribute[]
 };
 
 function getInitState(
@@ -163,6 +176,10 @@ function getInitState(
 ): RelationshipModalState {
 	if (_.isNull(initRelationship)) {
 		return {
+			attributeNumber: {attributeType: 2, value: {textValue: null}},
+			attributePosition: {attributeType: 1, value: {textValue: null}},
+			attributeSetId: null,
+			attributes: [],
 			relationship: null,
 			relationshipType: null,
 			targetEntity: null
@@ -188,6 +205,9 @@ function getInitState(
 			_.set(thisEntity, defaultAliasPath, baseEntityName);
 		}
 	}
+	const attributes = _.get(initRelationship, ['attributes']);
+	const attributePosition = getInitAttribute(attributes, 1);
+	const attributeNumber = getInitAttribute(attributes, 2);
 
 	const searchFormatOtherEntity = otherEntity && {
 		id: _.get(otherEntity, ['bbid']),
@@ -199,6 +219,10 @@ function getInitState(
 	};
 
 	return {
+		attributeNumber,
+		attributePosition,
+		attributeSetId: _.get(initRelationship, ['attributeSetId']),
+		attributes,
 		relationship: initRelationship,
 		relationshipType: _.get(initRelationship, ['relationshipType']),
 		targetEntity: searchFormatOtherEntity
@@ -259,11 +283,26 @@ class RelationshipModal
 		});
 	};
 
+	handleNumberAttributeChange = ({target}) => {
+		const value = target.value === '' ? null : target.value;
+		const attributeNumber = {
+			attributeType: 2,
+			value: {textValue: value}
+		};
+		this.setState({
+			attributeNumber
+		});
+	};
+
 	handleAdd = () => {
 		const {onAdd} = this.props;
 		if (onAdd) {
 			if (this.state.relationship) {
-				onAdd(this.state.relationship);
+				const {relationship} = this.state;
+				// Before adding a relationship, set all the attributes state value
+				// (ex: number, position etc) to attributes property of the relationship object.
+				relationship.attributes = setAttribute(this.state, this.state.relationshipType.attributeTypes);
+				onAdd(relationship);
 			}
 		}
 	};
@@ -315,11 +354,18 @@ class RelationshipModal
 				<FontAwesomeIcon icon={faExternalLinkAlt}/>
 			</Button>
 		);
-
+		const bbid = this.props.baseEntity?.bbid;
+		// Filter out Series of a different entityType than the current entity.
+		// This ensures we don't add an entity of type X to a Series of entityType Y.
+		// For Example, a Work cannot be added to an Author Series.
+		const filterDifferentTypeSeries = (entity) => (entity.type === 'Series' ? baseEntity.type === entity.entityType : true);
+		const additionalFilters = [filterDifferentTypeSeries];
 		return (
 			<EntitySearchFieldOption
+				bbid={bbid}
 				buttonAfter={openButton}
 				cache={false}
+				filters={additionalFilters}
 				instanceId="relationshipEntitySearchField"
 				label={label}
 				languageOptions={this.props.languageOptions}
@@ -346,7 +392,20 @@ class RelationshipModal
 		const relationships = generateRelationshipSelection(
 			relationshipTypes, baseEntity, otherEntity
 		);
+		if (baseEntity.type === 'Series') {
+			// When the base entity is Series, we need to remove relationshipType 70 - 74.
+			// As these relationships will be added via the series editor,
+			// we don't want to show them in the relationship modal.
+			_.remove(relationships, (relationship) => relationship.relationshipType.id > 69 && relationship.relationshipType.id < 75);
+		}
 
+		// The attribute types belonging to the relationship type
+		const attributeTypes = this.state.relationshipType ? this.state.relationshipType.attributeTypes : null;
+		let attributes = [];
+		if (attributeTypes) {
+			// Name of the attribute type belonging to the relationship type. EX: ['position', 'number]
+			attributes = attributeTypes.map(attribute => attribute.name);
+		}
 		return (
 			<FormGroup>
 				<ControlLabel>Relationship</ControlLabel>
@@ -362,6 +421,14 @@ class RelationshipModal
 				/>
 				{this.state.relationshipType &&
 					<HelpBlock>{this.state.relationshipType.description}</HelpBlock>
+				}
+				{
+					attributes.includes('number') ?
+						<NumberAttribute
+							value={this.state.attributeNumber.value.textValue}
+							onHandleChange={this.handleNumberAttributeChange}
+						/> :
+						null
 				}
 			</FormGroup>
 		);
@@ -414,14 +481,14 @@ class RelationshipModal
 					<hr/>
 					<Row>
 						<Col md={10} mdOffset={1}>
-							<form>
+							<div>
 								<div>
 									{entitySelect}
 								</div>
 								<div>
 									{this.renderRelationshipSelect()}
 								</div>
-							</form>
+							</div>
 						</Col>
 					</Row>
 				</Modal.Body>

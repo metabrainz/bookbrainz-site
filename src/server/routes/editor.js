@@ -157,6 +157,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 				throw new error.FormSubmissionError();
 			});
 
+		res.locals.user.name = req.body.name;
 		const editorJSON = modifiedEditor.toJSON();
 		return {
 			aliasSet: {
@@ -484,30 +485,17 @@ async function rankUpdate(orm, editorId, bodyRank, rank) {
 }
 
 
-router.post('/:id/achievements/', auth.isAuthenticated, (req, res) => {
+router.post('/:id/achievements/', auth.isAuthenticated, async (req, res) => {
 	const {orm} = req.app.locals;
 	const {Editor} = orm;
 	const userId = parseInt(req.params.id, 10);
-
-	async function runAsync() {
-		if (!isCurrentUser(userId, req.user)) {
-			throw new Error('Not authenticated');
-		}
-
-		const rankOnePromise = rankUpdate(orm, userId, req.body.rank1, 1);
-		const rankTwoPromise = rankUpdate(orm, userId, req.body.rank2, 2);
-		const rankThreePromise = rankUpdate(orm, userId, req.body.rank3, 3);
-
-		const rankJSON = await Promise.all([
-			rankOnePromise, rankTwoPromise, rankThreePromise
-		]);
-
-		res.redirect(`/editor/${req.params.id}`);
-
-		return rankJSON;
+	if (!isCurrentUser(userId, req.user)) {
+		throw new Error('Not authenticated');
 	}
-
-	handler.sendPromiseResult(res, runAsync());
+	await rankUpdate(orm, userId, req.body.rank1, 1);
+	await rankUpdate(orm, userId, req.body.rank2, 2);
+	await rankUpdate(orm, userId, req.body.rank3, 3);
+	return res.redirect(`/editor/${req.params.id}`);
 });
 
 

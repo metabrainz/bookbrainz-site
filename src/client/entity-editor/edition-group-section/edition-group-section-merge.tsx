@@ -71,7 +71,7 @@ function EditionGroupSectionMerge({
 	});
 
 	return (
-		<form>
+		<div>
 			<MergeField
 				currentValue={typeValue}
 				label="Type"
@@ -83,7 +83,7 @@ function EditionGroupSectionMerge({
 				entity={mergingEntities[0]}
 				showAdd={false}
 			/>
-		</form>
+		</div>
 	);
 }
 EditionGroupSectionMerge.displayName = 'EditionGroupSectionMerge';

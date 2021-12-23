@@ -29,6 +29,8 @@ import {
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
+import {ConflictError} from '../../../common/helpers/error';
+import {RelationshipTypes} from '../../../client/entity-editor/relationship-editor/types';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
@@ -113,13 +115,13 @@ router.get(
 		function render(props) {
 			if (props.author) {
 				// add initial ralationship with relationshipTypeId = 8 (<Work> is written by <Author>)
-				relationshipTypeId = 8;
+				relationshipTypeId = RelationshipTypes.AuthorWroteWork;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.author);
 			}
 
 			if (props.edition) {
 				// add initial ralationship with relationshipTypeId = 10 (<Work> is contained in <Edition>)
-				relationshipTypeId = 10;
+				relationshipTypeId = RelationshipTypes.EditionContainsWork;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.edition);
 			}
 
@@ -171,9 +173,12 @@ router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
 	entityRoutes.displayEntity(req, res);
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
+	if (!res.locals.entity.dataId) {
+		return next(new ConflictError('This entity has already been deleted'));
+	}
 	_setWorkTitle(res);
-	entityRoutes.displayDeleteEntity(req, res);
+	return entityRoutes.displayDeleteEntity(req, res);
 });
 
 router.post(
@@ -254,9 +259,11 @@ function workToFormState(work) {
 	};
 
 	work.relationships.forEach((relationship) => (
-		relationshipSection.relationships[relationship.id] = {
+		relationshipSection.relationships[`n${relationship.id}`] = {
+			attributeSetId: relationship.attributeSetId,
+			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
 			relationshipType: relationship.type,
-			rowID: relationship.id,
+			rowID: `n${relationship.id}`,
 			sourceEntity: relationship.source,
 			targetEntity: relationship.target
 		}

@@ -153,56 +153,55 @@ class NameSection extends React.Component {
 		return (
 			<div>
 				<h2>{`What is the ${_.startCase(entityType)} called?`}</h2>
-				<form>
-					<Row>
-						<Col md={6} mdOffset={3}>
-							<NameField
-								defaultValue={nameValue}
-								empty={isAliasEmpty(
-									nameValue, sortNameValue, languageValue
-								)}
-								error={!validateNameSectionName(nameValue)}
-								inputRef={this.updateNameFieldInputRef}
-								tooltipText={`Official name of the ${_.startCase(entityType)} in its original language.
+				<Row>
+					<Col md={6} mdOffset={3}>
+						<NameField
+							defaultValue={nameValue}
+							empty={isAliasEmpty(
+								nameValue, sortNameValue, languageValue
+							)}
+							error={!validateNameSectionName(nameValue)}
+							inputRef={this.updateNameFieldInputRef}
+							tooltipText={`Official name of the ${_.startCase(entityType)} in its original language.
 								Names in other languages should be added as aliases.`}
-								warn={(isRequiredDisambiguationEmpty(
-									warnIfExists,
-									disambiguationDefaultValue
-								))}
-								onChange={this.handleNameChange}
-							/>
-						</Col>
-						<Col md={6} mdOffset={3}>
-							{isRequiredDisambiguationEmpty(
+							warn={(isRequiredDisambiguationEmpty(
 								warnIfExists,
 								disambiguationDefaultValue
-							) ?
-								<Alert bsStyle="warning">
+							))}
+							onChange={this.handleNameChange}
+						/>
+					</Col>
+					<Col md={6} mdOffset={3}>
+						{isRequiredDisambiguationEmpty(
+							warnIfExists,
+							disambiguationDefaultValue
+						) ?
+							<Alert bsStyle="warning">
 									We found the following&nbsp;
-									{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} with
+								{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} with
 									exactly the same name or alias:
-									<br/><small className="help-block">Click on a name to open it (Ctrl/Cmd + click to open in a new tab)</small>
-									<ListGroup className="margin-top-1 margin-bottom-1">
-										{exactMatches.map((match) =>
-											(
-												<ListGroupItem
-													bsStyle="warning"
-													href={`/${_.kebabCase(entityType)}/${match.bbid}`}
-													key={`${match.bbid}`}
-													rel="noopener noreferrer" target="_blank"
-												>
-													{match.defaultAlias.name} {getEntityDisambiguation(match)}
-												</ListGroupItem>
-											))}
-									</ListGroup>
+								<br/><small className="help-block">Click on a name to open it (Ctrl/Cmd + click to open in a new tab)</small>
+								<ListGroup className="margin-top-1 margin-bottom-1">
+									{exactMatches.map((match) =>
+										(
+											<ListGroupItem
+												bsStyle="warning"
+												href={`/${_.kebabCase(entityType)}/${match.bbid}`}
+												key={`${match.bbid}`}
+												rel="noopener noreferrer" target="_blank"
+											>
+												{match.defaultAlias.name} {getEntityDisambiguation(match)}
+											</ListGroupItem>
+										))}
+								</ListGroup>
 									If you are sure your entry is different, please fill the
 									disambiguation field below to help us differentiate between them.
-								</Alert> : null
-							}
-						</Col>
-					</Row>
-					{
-						!warnIfExists &&
+							</Alert> : null
+						}
+					</Col>
+				</Row>
+				{
+					!warnIfExists &&
 						!_.isEmpty(searchResults) &&
 						<Row>
 							<Col md={6} mdOffset={3}>
@@ -212,52 +211,51 @@ class NameSection extends React.Component {
 								<SearchResults condensed results={searchResults}/>
 							</Col>
 						</Row>
-					}
-					<Row>
-						<Col md={6} mdOffset={3}>
-							<SortNameField
-								defaultValue={sortNameValue}
-								empty={isAliasEmpty(
-									nameValue, sortNameValue, languageValue
-								)}
-								error={!validateNameSectionSortName(sortNameValue)}
-								storedNameValue={nameValue}
-								onChange={onSortNameChange}
-							/>
-						</Col>
-					</Row>
-					<Row>
-						<Col md={6} mdOffset={3}>
-							<LanguageField
-								empty={isAliasEmpty(
-									nameValue, sortNameValue, languageValue
-								)}
-								error={!validateNameSectionLanguage(languageValue)}
-								instanceId="language"
-								options={languageOptionsForDisplay}
-								tooltipText="Language used for the above name"
-								value={languageValue}
-								onChange={onLanguageChange}
-							/>
-						</Col>
-					</Row>
-					<Row>
-						<Col md={6} mdOffset={3}>
-							<DisambiguationField
-								defaultValue={disambiguationDefaultValue}
-								error={isRequiredDisambiguationEmpty(
-									warnIfExists,
-									disambiguationDefaultValue
-								) ||
+				}
+				<Row>
+					<Col md={6} mdOffset={3}>
+						<SortNameField
+							defaultValue={sortNameValue}
+							empty={isAliasEmpty(
+								nameValue, sortNameValue, languageValue
+							)}
+							error={!validateNameSectionSortName(sortNameValue)}
+							storedNameValue={nameValue}
+							onChange={onSortNameChange}
+						/>
+					</Col>
+				</Row>
+				<Row>
+					<Col md={6} mdOffset={3}>
+						<LanguageField
+							empty={isAliasEmpty(
+								nameValue, sortNameValue, languageValue
+							)}
+							error={!validateNameSectionLanguage(languageValue)}
+							instanceId="language"
+							options={languageOptionsForDisplay}
+							tooltipText="Language used for the above name"
+							value={languageValue}
+							onChange={onLanguageChange}
+						/>
+					</Col>
+				</Row>
+				<Row>
+					<Col md={6} mdOffset={3}>
+						<DisambiguationField
+							defaultValue={disambiguationDefaultValue}
+							error={isRequiredDisambiguationEmpty(
+								warnIfExists,
+								disambiguationDefaultValue
+							) ||
 								!validateNameSectionDisambiguation(
 									disambiguationDefaultValue
 								)}
-								required={warnIfExists}
-								onChange={onDisambiguationChange}
-							/>
-						</Col>
-					</Row>
-				</form>
+							required={warnIfExists}
+							onChange={onDisambiguationChange}
+						/>
+					</Col>
+				</Row>
 			</div>
 		);
 	}

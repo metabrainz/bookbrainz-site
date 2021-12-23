@@ -19,10 +19,10 @@
 		"client": "pg",
 		"debug": false,
 		"connection": {
-			"host": "127.0.0.1",
+			"host": "localhost",
 			"database": "bookbrainz_test",
 			"user": "postgres",
-			"password": ""
+			"password": "postgres"
 		}
 	},
 	"search": {

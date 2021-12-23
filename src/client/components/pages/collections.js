@@ -26,10 +26,10 @@ class CollectionsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			querySearchParams: '',
-			results: this.props.results
+			querySearchParams: props.type ? `type=${props.type}` : '',
+			results: this.props.results,
+			type: props.type
 		};
-
 		this.handleTypeChange = this.handleTypeChange.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
 		this.paginationUrl = './collections/collections';
@@ -41,20 +41,30 @@ class CollectionsPage extends React.Component {
 
 	handleTypeChange(type) {
 		const querySearchParams = type ? `type=${type}` : '';
-		this.setState({querySearchParams});
+		this.setState({querySearchParams, type});
 	}
+
+	searchParamsChangeCallback = (searchParms) => {
+		const type = searchParms.get('type') ?? '';
+		if (type !== this.state.type) {
+			this.setState({querySearchParams: `?${searchParms.toString()}`, type});
+		}
+	};
 
 	render() {
 		return (
 			<div id="pageWithPagination">
 				<CollectionsTable
 					entityTypes={this.props.entityTypes}
+					ownerId={this.props.editor ? this.props.editor.id : null}
 					results={this.state.results}
 					showIfOwnerOrCollaborator={this.props.showIfOwnerOrCollaborator}
 					showLastModified={this.props.showLastModified}
 					showOwner={this.props.showOwner}
 					showPrivacy={this.props.showPrivacy}
 					tableHeading={this.props.tableHeading}
+					type={this.state.type}
+					user={this.props.user}
 					onTypeChange={this.handleTypeChange}
 				/>
 				<PagerElement
@@ -63,6 +73,7 @@ class CollectionsPage extends React.Component {
 					paginationUrl={this.paginationUrl}
 					querySearchParams={this.state.querySearchParams}
 					results={this.state.results}
+					searchParamsChangeCallback={this.searchParamsChangeCallback}
 					searchResultsCallback={this.searchResultsCallback}
 					size={this.props.size}
 				/>
@@ -71,9 +82,9 @@ class CollectionsPage extends React.Component {
 	}
 }
 
-
 CollectionsPage.displayName = 'CollectionsPage';
 CollectionsPage.propTypes = {
+	editor: PropTypes.object,
 	entityTypes: PropTypes.array.isRequired,
 	from: PropTypes.number,
 	nextEnabled: PropTypes.bool.isRequired,
@@ -83,9 +94,12 @@ CollectionsPage.propTypes = {
 	showOwner: PropTypes.bool,
 	showPrivacy: PropTypes.bool,
 	size: PropTypes.number,
-	tableHeading: PropTypes.string
+	tableHeading: PropTypes.string,
+	type: PropTypes.string,
+	user: PropTypes.object
 };
 CollectionsPage.defaultProps = {
+	editor: null,
 	from: 0,
 	results: [],
 	showIfOwnerOrCollaborator: false,
@@ -93,7 +107,10 @@ CollectionsPage.defaultProps = {
 	showOwner: false,
 	showPrivacy: false,
 	size: 20,
-	tableHeading: 'Collections'
+	tableHeading: 'Collections',
+	type: '',
+	user: null
+
 };
 
 export default CollectionsPage;

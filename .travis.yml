@@ -2,13 +2,12 @@ language: node_js
 node_js:
   - "node"
   - "lts/*"
-  - "10"
 
 notifications:
   email: false
   irc:
     channels:
-      - "chat.freenode.net#metabrainz"
+      - "libera.chat#bookbrainz"
     on_success: always
     on_failure: always
     template:

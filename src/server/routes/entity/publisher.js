@@ -21,11 +21,14 @@ import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
+
 import {
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
+
+import {ConflictError} from '../../../common/helpers/error';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
@@ -154,9 +157,12 @@ router.get('/:bbid', middleware.loadEntityRelationships, (req, res, next) => {
 		.catch(next);
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
+	if (!res.locals.entity.dataId) {
+		return next(new ConflictError('This entity has already been deleted'));
+	}
 	_setPublisherTitle(res);
-	entityRoutes.displayDeleteEntity(req, res);
+	return entityRoutes.displayDeleteEntity(req, res);
 });
 
 router.post(
@@ -237,9 +243,11 @@ function publisherToFormState(publisher) {
 	};
 
 	publisher.relationships.forEach((relationship) => (
-		relationshipSection.relationships[relationship.id] = {
+		relationshipSection.relationships[`n${relationship.id}`] = {
+			attributeSetId: relationship.attributeSetId,
+			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
 			relationshipType: relationship.type,
-			rowID: relationship.id,
+			rowID: `n${relationship.id}`,
 			sourceEntity: relationship.source,
 			targetEntity: relationship.target
 		}

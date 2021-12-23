@@ -24,7 +24,7 @@ type Props = {
 	labelClassName?: string,
 	name?: string,
 	standalone?: boolean,
-	tooltipText?: string,
+	tooltipText?: string | React.ReactElement,
 	type?: string,
 	validationState?: 'success' | 'warning' | 'error' | null,
 	wrapperClassName?: string,
@@ -62,7 +62,7 @@ export default class Input extends React.Component<Props> {
 		labelClassName: PropTypes.string,
 		name: PropTypes.string,
 		standalone: PropTypes.bool,
-		tooltipText: PropTypes.string,
+		tooltipText: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
 		type: PropTypes.string,
 		validationState: PropTypes.string,
 		wrapperClassName: PropTypes.string

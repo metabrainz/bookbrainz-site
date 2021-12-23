@@ -170,7 +170,7 @@ class EditorProfileTab extends React.Component {
 								<p className="text-center">
 									{model.achievement.name}
 								</p>
-								<p className="text=center">
+								<p className="text-center">
 									{model.achievement.description}
 								</p>
 								<p className="text-center">

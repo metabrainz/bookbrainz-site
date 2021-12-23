@@ -33,26 +33,22 @@ const {formatDate} = utilsHelper;
 class CollectionsTable extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			type: ''
-		};
-
 		// React does not autobind non-React class methods
 		this.handleEntitySelect = this.handleEntitySelect.bind(this);
 	}
 
 	handleEntitySelect(type) {
-		this.setState({type});
 		this.props.onTypeChange(type);
 	}
 
 	render() {
-		const {showLastModified, showOwner, showIfOwnerOrCollaborator, showPrivacy, results, tableHeading} = this.props;
+		const {showLastModified, showOwner, showIfOwnerOrCollaborator, showPrivacy, results, tableHeading, user, ownerId} = this.props;
 		const entityTypeSelect = (
 			<DropdownButton
 				bsStyle="primary"
+				className="margin-bottom-d5"
 				id="entity-type-select"
-				title={_.startCase(this.state.type) || 'Entity Type'}
+				title={_.startCase(this.props.type) || 'Entity Type'}
 				onSelect={this.handleEntitySelect}
 			>
 				{this.props.entityTypes.map((entityType) => (
@@ -73,23 +69,50 @@ class CollectionsTable extends React.Component {
 				</MenuItem>
 			</DropdownButton>
 		);
-		const newCollectionButton = (
-			<Button
-				bsStyle="warning"
-				href="/collection/create"
-				type="button"
-			>
-				<FontAwesomeIcon icon={faPlus}/>
-				&nbsp;Create Collection
-			</Button>
-		);
+
+		let newCollectionButton;
+		// 1.Check if user is logged In if so checks the page ownerId with users id
+		// OR
+		// 2.Check if user is logged In if so checks the page is central public collections page or not
+		if (user && (user.id === ownerId || !ownerId)) {
+			newCollectionButton = (
+				<Button
+					bsStyle="warning"
+					className="margin-bottom-d5"
+					href="/collection/create"
+					type="button"
+				>
+					<FontAwesomeIcon icon={faPlus}/>
+					&nbsp;Create Collection
+				</Button>
+			);
+		}
+
+		let myCollectionButton;
+		// Display "My collections" button when
+		// 1.the user is logged in and not viewing the user's collections
+		// 2.the user is logged in and viewing public collections
+		if (user && (!ownerId || user.id !== ownerId)) {
+			myCollectionButton = (
+				<Button
+					bsStyle="success"
+					className="margin-bottom-d5"
+					href={`/editor/${user.id}/collections`}
+					type="button"
+				>
+					My Collections
+				</Button>
+			);
+		}
+
 		return (
 			<div>
 				<div>
 					<h1 className="text-center">
 						{tableHeading}
 					</h1>
-					<div className="text-right">
+					<div className="collection-page-buttons">
+				        {myCollectionButton}
 						{newCollectionButton}
 						{entityTypeSelect}
 					</div>
@@ -106,6 +129,7 @@ class CollectionsTable extends React.Component {
 									<th className="col-sm-2">Name</th>
 									<th className="col-sm-4">Description</th>
 									<th className="col-sm-2">Entity Type</th>
+									<th className="col-sm-2">Entities</th>
 									{
 										showPrivacy ?
 											<th className="col-sm-2">Privacy</th> : null
@@ -139,6 +163,7 @@ class CollectionsTable extends React.Component {
 											</td>
 											<td>{collection.description}</td>
 											<td>{collection.entityType}</td>
+											<td>{collection.itemCount}</td>
 											{
 												showPrivacy ?
 													<td>{collection.public ? 'Public' : 'Private'}</td> : null
@@ -176,19 +201,25 @@ class CollectionsTable extends React.Component {
 CollectionsTable.propTypes = {
 	entityTypes: PropTypes.array.isRequired,
 	onTypeChange: PropTypes.func.isRequired,
+	ownerId: PropTypes.number,
 	results: PropTypes.array.isRequired,
 	showIfOwnerOrCollaborator: PropTypes.bool,
 	showLastModified: PropTypes.bool,
 	showOwner: PropTypes.bool,
 	showPrivacy: PropTypes.bool,
-	tableHeading: PropTypes.node
+	tableHeading: PropTypes.node,
+	type: PropTypes.string,
+	user: PropTypes.object
 };
 CollectionsTable.defaultProps = {
+	ownerId: null,
 	showIfOwnerOrCollaborator: false,
 	showLastModified: false,
 	showOwner: false,
 	showPrivacy: false,
-	tableHeading: 'Collections'
+	tableHeading: 'Collections',
+	type: '',
+	user: null
 };
 
 

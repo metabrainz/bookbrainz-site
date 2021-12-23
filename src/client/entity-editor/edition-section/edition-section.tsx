@@ -26,7 +26,8 @@ import {
 	debouncedUpdateReleaseDate,
 	debouncedUpdateWeight,
 	debouncedUpdateWidth,
-	showPhysical,
+	disablePhysical,
+	enablePhysical,
 	toggleShowEditionGroup,
 	updateEditionGroup,
 	updateFormat,
@@ -106,7 +107,7 @@ type StateProps = {
 	heightValue: OptionalNumber,
 	languageValues: List<LanguageOption>,
 	pagesValue: OptionalNumber,
-	physicalVisible: OptionalBool,
+	physicalEnable: OptionalBool,
 	publisherValue: Map<string, any>,
 	editionGroupRequired: OptionalBool,
 	editionGroupVisible: OptionalBool,
@@ -124,7 +125,6 @@ type DispatchProps = {
 	onHeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
 	onLanguagesChange: (arg: Array<LanguageOption>) => unknown,
 	onPagesChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
-	onPhysicalButtonClick: () => unknown,
 	onPublisherChange: (arg: Publisher) => unknown,
 	onToggleShowEditionGroupSection: (showEGSection: boolean) => unknown,
 	onEditionGroupChange: (arg: EditionGroup) => unknown,
@@ -168,7 +168,6 @@ function EditionSection({
 	onDepthChange,
 	onFormatChange,
 	onHeightChange,
-	onPhysicalButtonClick,
 	onReleaseDateChange,
 	onPagesChange,
 	onToggleShowEditionGroupSection,
@@ -178,7 +177,7 @@ function EditionSection({
 	onWeightChange,
 	onWidthChange,
 	pagesValue,
-	physicalVisible,
+	physicalEnable,
 	editionGroupRequired,
 	editionGroupValue,
 	editionGroupVisible,
@@ -224,8 +223,12 @@ function EditionSection({
 					help="Group with other Editions of the same book"
 					instanceId="edition-group"
 					label="Edition Group"
-					tooltipText="Group together different Editions of the same book.
-					<br>For example paperback, hardcover and e-book editions."
+					tooltipText={
+						<>
+						Group together different Editions of the same book.
+							<br/>For example paperback, hardcover and e-book editions.
+						</>
+					}
 					type="edition-group"
 					value={editionGroupValue}
 					onChange={onEditionGroupChange}
@@ -244,7 +247,7 @@ function EditionSection({
 	);
 
 	return (
-		<form>
+		<div>
 			<h2>
 				What else do you know about the Edition?
 			</h2>
@@ -364,69 +367,61 @@ function EditionSection({
 					</CustomInput>
 				</Col>
 			</Row>
-			{
-				physicalVisible &&
-				<Row>
-					<Col md={3} mdOffset={3}>
-						<NumericField
-							addonAfter="mm"
-							defaultValue={widthValue}
-							empty={_.isNil(widthValue)}
-							error={!validateEditionSectionWidth(widthValue)}
-							label="Width"
-							onChange={onWidthChange}
-						/>
-						<NumericField
-							addonAfter="mm"
-							defaultValue={heightValue}
-							empty={_.isNil(heightValue)}
-							error={!validateEditionSectionHeight(heightValue)}
-							label="Height"
-							onChange={onHeightChange}
-						/>
-						<NumericField
-							addonAfter="mm"
-							defaultValue={depthValue}
-							empty={_.isNil(depthValue)}
-							error={!validateEditionSectionDepth(depthValue)}
-							label="Depth"
-							onChange={onDepthChange}
-						/>
-					</Col>
-					<Col md={3}>
-						<NumericField
-							addonAfter="g"
-							defaultValue={weightValue}
-							empty={_.isNil(weightValue)}
-							error={!validateEditionSectionWeight(weightValue)}
-							label="Weight"
-							onChange={onWeightChange}
-						/>
-						<NumericField
-							addonAfter="pages"
-							defaultValue={pagesValue}
-							empty={_.isNil(pagesValue)}
-							error={!validateEditionSectionPages(pagesValue)}
-							label="Page Count"
-							onChange={onPagesChange}
-						/>
-					</Col>
-				</Row>
-			}
-			{
-				!physicalVisible &&
-				<Row>
-					<Col className="text-center" md={4} mdOffset={4}>
-						<Button
-							bsStyle="link"
-							onClick={onPhysicalButtonClick}
-						>
-							Add physical data…
-						</Button>
-					</Col>
-				</Row>
-			}
-		</form>
+			<Row>
+				<Col md={3} mdOffset={3}>
+					<NumericField
+						addonAfter="pages"
+						defaultValue={pagesValue}
+						empty={_.isNil(pagesValue)}
+						error={!validateEditionSectionPages(pagesValue)}
+						label="Page Count"
+						onChange={onPagesChange}
+					/>
+				</Col>
+			</Row>
+			<Row>
+				<Col md={3} mdOffset={3}>
+					<NumericField
+						addonAfter="mm"
+						defaultValue={widthValue}
+						disabled={!physicalEnable}
+						empty={_.isNil(widthValue)}
+						error={!validateEditionSectionWidth(widthValue)}
+						label="Width"
+						onChange={onWidthChange}
+					/>
+					<NumericField
+						addonAfter="mm"
+						defaultValue={heightValue}
+						disabled={!physicalEnable}
+						empty={_.isNil(heightValue)}
+						error={!validateEditionSectionHeight(heightValue)}
+						label="Height"
+						onChange={onHeightChange}
+					/>
+				</Col>
+				<Col md={3}>
+					<NumericField
+						addonAfter="g"
+						defaultValue={weightValue}
+						disabled={!physicalEnable}
+						empty={_.isNil(weightValue)}
+						error={!validateEditionSectionWeight(weightValue)}
+						label="Weight"
+						onChange={onWeightChange}
+					/>
+					<NumericField
+						addonAfter="mm"
+						defaultValue={depthValue}
+						disabled={!physicalEnable}
+						empty={_.isNil(depthValue)}
+						error={!validateEditionSectionDepth(depthValue)}
+						label="Depth"
+						onChange={onDepthChange}
+					/>
+				</Col>
+			</Row>
+		</div>
 	);
 }
 EditionSection.displayName = 'EditionSection';
@@ -446,7 +441,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 		languageValues: state.get('languages'),
 		matchingNameEditionGroups,
 		pagesValue: state.get('pages'),
-		physicalVisible: state.get('physicalVisible'),
+		physicalEnable: state.get('physicalEnable'),
 		publisherValue: state.get('publisher'),
 		releaseDateValue: state.get('releaseDate'),
 		statusValue: state.get('status'),
@@ -461,8 +456,15 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
 		onEditionGroupChange: (value) => dispatch(updateEditionGroup(value)),
-		onFormatChange: (value: {value: number} | null) =>
-			dispatch(updateFormat(value && value.value)),
+		onFormatChange: (value: {value: number} | null) => {
+			dispatch(updateFormat(value && value.value));
+			if (value.value === 3) {
+				dispatch(disablePhysical());
+			}
+			else {
+				dispatch(enablePhysical());
+			}
+		},
 		onHeightChange: (event) => dispatch(debouncedUpdateHeight(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
@@ -471,7 +473,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onPagesChange: (event) => dispatch(debouncedUpdatePages(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
-		onPhysicalButtonClick: () => dispatch(showPhysical()),
 		onPublisherChange: (value) => dispatch(updatePublisher(value)),
 		onReleaseDateChange: (releaseDate) =>
 			dispatch(debouncedUpdateReleaseDate(releaseDate)),

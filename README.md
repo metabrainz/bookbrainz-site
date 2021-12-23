@@ -3,7 +3,6 @@
 [![Build Status](https://travis-ci.org/bookbrainz/bookbrainz-site.svg?branch=master)](https://travis-ci.org/bookbrainz/bookbrainz-site)
 [![Dependency Status](https://img.shields.io/david/bookbrainz/bookbrainz-site.svg)](https://david-dm.org/bookbrainz/bookbrainz-site)
 [![devDependency Status](https://img.shields.io/david/dev/bookbrainz/bookbrainz-site.svg)](https://david-dm.org/bookbrainz/bookbrainz-site#info=devDependencies)
-[![Known Vulnerabilities](https://snyk.io/test/github/bookbrainz/bookbrainz-site/badge.svg)](https://snyk.io/test/github/bookbrainz/bookbrainz-site)
 [![Coverage Status](https://coveralls.io/repos/github/bookbrainz/bookbrainz-site/badge.svg?branch=master)](https://coveralls.io/github/bookbrainz/bookbrainz-site?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/76f87309d52d75ff4a18/maintainability)](https://codeclimate.com/github/BookBrainz/bookbrainz-site/maintainability)
 <a href="https://www.browserstack.com/">
@@ -33,7 +32,7 @@ directories will exist:
   
 ## Contact and updates
 
-Any questions? You can get in contact with the community on [our IRC channel](https://webchat.freenode.net/?channels=#bookbrainz) or [our forums](https://community.metabrainz.org/c/bookbrainz), or send us [an email](mailto:bookbrainz@metabrainz.org)
+Any questions? You can get in contact with the community on [our IRC channel](https://kiwiirc.com/nextclient/irc.libera.chat/?#bookbrainz) or [our forums](https://community.metabrainz.org/c/bookbrainz), or send us [an email](mailto:bookbrainz@metabrainz.org)
 
 Breaking changes to the database schema or our API will be announced on
 [our blog](https://blog.metabrainz.org/category/bookbrainz/), along with our other major updates,
@@ -141,7 +140,7 @@ Once you are done developing, you can stop the dependencies running in docker in
 
 As described above for running the web server, you can easily start the API with Docker by running  `./develop-api.sh`.
 
-Point you browser to `localhost:9099/1/api-docs` to pull up the documentation and try out the api endpoints.
+Point you browser to `localhost:9098/1/api-docs` to pull up the documentation and try out the api endpoints.
 
 Don't forget to run `./stop.sh` once you are done developing to stop the dependencies that are running in the background.
 
@@ -167,11 +166,10 @@ You will find the documentation for [watching files and live reloading here](./N
 # Testing
 The test suite is built using Mocha and Chai. Before running the tests, you will need to set up a `bookbrainz_test` database in postgres. Here are the instructions to do so:
 
-Run the following postgres commands to create and set up the bookbrainz_test database:
-  - `psql -c 'CREATE DATABASE bookbrainz_test;' -U postgres -h localhost`
-  - `psql -c 'CREATE EXTENSION "uuid-ossp"; CREATE SCHEMA musicbrainz; CREATE SCHEMA bookbrainz;' -d bookbrainz_test -U postgres -h localhost`
-  - `psql -f sql/schemas/musicbrainz.sql -d bookbrainz_test -U postgres -h localhost`
-  - `psql -f sql/schemas/bookbrainz.sql -d bookbrainz_test -U postgres -h localhost`
-  - `psql -f sql/scripts/create_triggers.sql -d bookbrainz_test -U postgres -h localhost`
+Run the following command to create and set up the bookbrainz_test database using Docker: `docker-compose run --rm bookbrainz-site scripts/wait-for-postgres.sh scripts/create-test-db.sh`.
+  
+If you are running postgres manually outside of Docker, you can set some environment variables before running the script `scripts/create-test-db.sh`:
+In particular `POSTGRES_HOST=localhost` but you can also set `POSTGRES_USER`, `POSTGRES_PASSWORD` and `POSTGRES_DB`
 
-If you are running these commands from inside the `bookbrainz-site` docker container, replace `-h localhost` with `-h postgres`.
+Once your testing database is set up, you can run the test suite with the commands `docker-compose run --rm bookbrainz-site yarn run test` (to run in Docker) or simply `yarn run test` (to run locally).
+You may need to adjust your `config/test.json` file to match you setup.

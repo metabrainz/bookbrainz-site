@@ -182,6 +182,7 @@ class DateField extends React.Component {
 								dateFormat="uuuuuu-MM-dd"
 								disabled={!isCommonEraDate}
 								dropdownMode="select"
+								popperPlacement="top-end"
 								selected={isValid(selectedDate) ? selectedDate : null}
 								timeFormat="false"
 								onChange={this.handleChangeOfDatePicker}

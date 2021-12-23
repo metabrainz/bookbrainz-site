@@ -18,47 +18,20 @@
 
 import * as bootstrap from 'react-bootstrap';
 import {faPencilAlt, faPlus, faTimesCircle, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {formatDate, getEntityKey, getEntityTable} from '../../helpers/utils';
 import AddEntityToCollectionModal from './parts/add-entity-to-collection-modal';
-import AuthorTable from './entities/author-table';
 import DeleteOrRemoveCollaborationModal from './parts/delete-or-remove-collaboration-modal';
 import {ENTITY_TYPE_ICONS} from '../../helpers/entity';
-import EditionGroupTable from './entities/editionGroup-table';
-import EditionTable from './entities/edition-table';
 import EntityImage from './entities/image';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
-import PublisherTable from './entities/publisher-table';
 import React from 'react';
-import WorkTable from './entities/work-table';
 import _ from 'lodash';
-import {formatDate} from '../../helpers/utils';
 import request from 'superagent';
 
 
 const {Alert, Badge, Button, Col, Row} = bootstrap;
-
-function getEntityTable(entityType) {
-	const tables = {
-		Author: AuthorTable,
-		Edition: EditionTable,
-		EditionGroup: EditionGroupTable,
-		Publisher: PublisherTable,
-		Work: WorkTable
-	};
-	return tables[entityType];
-}
-
-function getEntityKey(entityType) {
-	const keys = {
-		Author: 'authors',
-		Edition: 'editions',
-		EditionGroup: 'editionGroups',
-		Publisher: 'publishers',
-		Work: 'works'
-	};
-	return keys[entityType];
-}
 
 function CollectionAttributes({collection}) {
 	return (
@@ -262,7 +235,7 @@ class CollectionPage extends React.Component {
 						<CollectionAttributes collection={this.props.collection}/>
 					</Col>
 				</Row>
-				<EntityTable{...propsForTable}/>
+				<EntityTable {...propsForTable}/>
 				{messageComponent}
 				<div className="margin-top-1 text-left">
 					{
@@ -270,6 +243,7 @@ class CollectionPage extends React.Component {
 							<Button
 								bsSize="small"
 								bsStyle="success"
+								className="margin-bottom-d5"
 								title={`Add ${this.props.collection.entityType}`}
 								onClick={this.handleShowAddEntityModal}
 							>
@@ -282,6 +256,7 @@ class CollectionPage extends React.Component {
 							<Button
 								bsSize="small"
 								bsStyle="danger"
+								className="margin-bottom-d5"
 								disabled={!this.state.selectedEntities.length}
 								title={`Remove selected ${_.kebabCase(this.props.collection.entityType)}s`}
 								onClick={this.handleRemoveEntities}
@@ -296,6 +271,7 @@ class CollectionPage extends React.Component {
 							<Button
 								bsSize="small"
 								bsStyle="warning"
+								className="margin-bottom-d5"
 								href={`/collection/${this.props.collection.id}/edit`}
 								title="Edit Collection"
 							>
@@ -307,6 +283,7 @@ class CollectionPage extends React.Component {
 							<Button
 								bsSize="small"
 								bsStyle="danger"
+								className="margin-bottom-d5"
 								title="Delete Collection"
 								onClick={this.handleShowDeleteModal}
 							>
@@ -318,6 +295,7 @@ class CollectionPage extends React.Component {
 							<Button
 								bsSize="small"
 								bsStyle="warning"
+								className="margin-bottom-d5"
 								title="Remove yourself as a collaborator"
 								onClick={this.handleShowDeleteModal}
 							>

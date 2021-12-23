@@ -154,19 +154,25 @@ function SortNameField({
 		</ValidationLabel>
 	);
 
+	/* eslint-disable react/jsx-no-bind */
 	const guessButton =
 		<Button bsStyle="primary" onClick={handleGuessClick}>Guess</Button>;
 
 	const copyButton =
 		<Button bsStyle="primary" onClick={handleCopyClick}>Copy</Button>;
+	/* eslint-enable react/jsx-no-bind */
 
 	return (
 		<CustomInput
 			buttonAfter={[guessButton, ' ', copyButton]}
 			label={label}
 			ref={(node) => { input = node; }}
-			tooltipText="Alphabetical sorting name. Examples: 'Dickens, Charles', 'Christmas Carol, A'.
-			<br>You can try to fill it automatically with the guess button"
+			tooltipText={
+				<>
+				Alphabetical sorting name. Examples: &apos;Dickens, Charles&apos;, &apos;Christmas Carol, A&apos;.
+					<br/>You can try to fill it automatically with the guess button
+				</>
+			}
 			type="text"
 			onChange={onChange}
 			{...rest}
