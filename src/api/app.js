@@ -23,11 +23,11 @@
 import * as search from '../common/helpers/search';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
-import {createClient} from 'redis';
 import {get as _get} from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
 import compression from 'compression';
 import config from '../common/helpers/config';
+import {createClient} from 'redis';
 import express from 'express';
 import initRoutes from './routes';
 import logger from 'morgan';
