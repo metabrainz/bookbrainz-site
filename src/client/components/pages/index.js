@@ -30,7 +30,7 @@ import RevisionsTable from './parts/revisions-table';
 import {faTwitter} from '@fortawesome/free-brands-svg-icons';
 
 
-const {Alert, Button, Col, Grid, Row} = bootstrap;
+const {Alert, Button, Col, Container, Row} = bootstrap;
 
 class IndexPage extends React.Component {
 	constructor(props) {
@@ -52,7 +52,7 @@ class IndexPage extends React.Component {
 				</Alert>
 				<div id="background-image">
 					<div className="text-center" id="background-overlay">
-						<Grid>
+						<Container>
 							<img
 								alt="BookBrainz logo"
 								className="img-responsive center-block"
@@ -176,7 +176,7 @@ class IndexPage extends React.Component {
 									</div>
 								</Col>
 							</Row>
-						</Grid>
+						</Container>
 					</div>
 				</div>
 			</div>
@@ -185,7 +185,7 @@ class IndexPage extends React.Component {
 
 	renderContent() {
 		return (
-			<Grid>
+			<Container>
 				<Row>
 					<Col md={8} mdOffset={2}>
 						<h1 className="text-center">The Open Book Database</h1>
@@ -219,7 +219,7 @@ class IndexPage extends React.Component {
 						</Button>
 					</div>
 				</div>
-			</Grid>
+			</Container>
 		);
 	}
 
