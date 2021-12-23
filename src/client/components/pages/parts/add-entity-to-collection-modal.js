@@ -204,7 +204,7 @@ class AddEntityToCollectionModal extends React.Component {
 							onClick={this.handleSubmit}
 						>
 							<FontAwesomeIcon icon={faPlus}/>
-							&nbsp;Add <Badge>{cleanedEntities.length}</Badge>&nbsp;
+							&nbsp;Add <Badge pill>{cleanedEntities.length}</Badge>&nbsp;
 							{lowerCase(this.props.collectionType)}{cleanedEntities.length > 1 ? 's' : ''} to the collection
 						</Button>
 					</ButtonGroup>
