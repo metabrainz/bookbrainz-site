@@ -42,7 +42,7 @@
     "classnames": "^2.3.1",
     "compression": "^1.7.4",
     "connect-redis": "^3.4.2",
-    "core-js": "^3.8.3",
+    "core-js": "^3.20.1",
     "cross-env": "^5.1.1",
     "date-fns": "^2.15.0",
     "debug": "^4.3.2",
@@ -82,7 +82,7 @@
     "superagent": "^6.1.0",
     "swagger-jsdoc": "^4.0.0",
     "swagger-ui-express": "^4.1.4",
-    "validator": "^9.1.2"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.0",
