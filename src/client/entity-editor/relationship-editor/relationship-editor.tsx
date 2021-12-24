@@ -22,6 +22,7 @@ import * as React from 'react';
 import {
 	Button,
 	Col,
+	Container,
 	ControlLabel,
 	FormGroup,
 	HelpBlock,
@@ -444,7 +445,7 @@ class RelationshipModal
 		// display a helpful message instead of empty selects
 		if (entitySelect === null) {
 			return (
-				<Modal show bsSize="large" onHide={onClose}>
+				<Modal show size="lg" onHide={onClose}>
 					<Modal.Header>
 						<Modal.Title>Add a relationship</Modal.Title>
 					</Modal.Header>
@@ -463,7 +464,7 @@ class RelationshipModal
 		}
 
 		return (
-			<Modal show bsSize="large" onHide={onClose} onKeyUp={this.handleKeyPress}>
+			<Modal show size="lg" onHide={onClose} onKeyUp={this.handleKeyPress}>
 				<Modal.Header>
 					<Modal.Title>Add a relationship</Modal.Title>
 				</Modal.Header>
@@ -493,14 +494,16 @@ class RelationshipModal
 					</Row>
 				</Modal.Body>
 				<Modal.Footer>
-					<Row>
-						<Col lg={{offset: 1, span: 10}}>
-							<ProgressBar
-								bsStyle="success"
-								now={this.calculateProgressAmount()}
-							/>
-						</Col>
-					</Row>
+					<Container fluid>
+						<Row>
+							<Col lg={{offset: 1, span: 10}}>
+								<ProgressBar
+									bsStyle="success"
+									now={this.calculateProgressAmount()}
+								/>
+							</Col>
+						</Row>
+					</Container>
 					<Button variant="danger" onClick={onCancel}>
 						<FontAwesomeIcon icon={faTimes}/>
 						<span>&nbsp;Cancel</span>

@@ -76,7 +76,7 @@ const AliasEditor = ({
 	);
 
 	return (
-		<Modal bsSize="large" show={show} onHide={onClose}>
+		<Modal show={show} size="lg" onHide={onClose}>
 			<Modal.Header>
 				<Modal.Title>
 					Alias Editor {helpIconElement}

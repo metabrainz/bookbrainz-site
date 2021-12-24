@@ -175,8 +175,8 @@ class AddEntityToCollectionModal extends React.Component {
 
 		return (
 			<Modal
-				bsSize="large"
 				show={this.props.show}
+				size="lg"
 				onHide={this.props.onCloseModal}
 			>
 				<Modal.Header closeButton>
