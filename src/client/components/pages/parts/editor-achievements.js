@@ -109,7 +109,7 @@ class EditorAchievementTab extends React.Component {
 		const STICKY_TOP_MARGIN = 64;
 		return (
 			<Row>
-				<Col md={10} mdOffset={1}>
+				<Col lg={{offset: 1, span: 10}}>
 					<div id="achievementsForm">
 						<StickyContainer>
 							<Sticky topOffset={-80}>

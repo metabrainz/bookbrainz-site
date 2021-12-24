@@ -234,7 +234,7 @@ class RevisionPage extends React.Component {
 		const dateRevisionCreated = formatDate(new Date(revision.createdAt), true);
 		return (
 			<Row id="mergePage">
-				<Col md={12}>
+				<Col lg={12}>
 					<h1>Revision #{revision.id}</h1>
 					{revision.isMerge && (
 						<div className="mergedEntities">

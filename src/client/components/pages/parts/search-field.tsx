@@ -159,7 +159,7 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 
 		return (
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<form
 						action="/search"
 						className="form-horizontal whole-page-form"

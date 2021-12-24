@@ -58,10 +58,10 @@ class Achievement extends React.Component {
 		}
 		return (
 			<div className="row well">
-				<Col sm={2}>
+				<Col md={2}>
 					{imgElement}
 				</Col>
-				<Col sm={8}>
+				<Col md={8}>
 					<div className="h2">
 						{this.state.achievement.name}
 					</div>

@@ -136,7 +136,7 @@ class AddEntityToCollectionModal extends React.Component {
 			<Row>
 				<Col
 					id="addEntityToCollection"
-					md={12}
+					lg={12}
 				>
 					<form
 						className="padding-sides-0"

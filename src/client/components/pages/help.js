@@ -57,14 +57,14 @@ function HelpPage() {
 			</p>
 
 			<Row>
-				<Col md={4}>
+				<Col lg={4}>
 					<img
 						alt="Entity relationships"
 						className="img-fluid center-block"
 						src="/images/entity_relationships.svg"
 					/>
 				</Col>
-				<Col className="margin-top-2" md={8}>
+				<Col className="margin-top-2" lg={8}>
 					<ListGroup>
 						<ListGroupItem><b>{genEntityIconHTMLElement('Author')}Author</b> – an individual, group or collective that participates in the creative process of an artistic work. It also includes translators, illustrators, editors, etc.</ListGroupItem>
 						<ListGroupItem>
@@ -89,7 +89,7 @@ function HelpPage() {
 					</ListGroup>
 				</Col>
 
-				<Col md={12}>
+				<Col lg={12}>
 					<h4>Examples</h4>
 					<p>
 						The following examples should help you understand the different entities and how they relate to each other:
@@ -103,7 +103,7 @@ function HelpPage() {
 			</Row>
 
 			<Row>
-				<Col md={6}>
+				<Col lg={6}>
 					<h2>Frequently Asked Questions</h2>
 					<br/>
 					<h4>How do I add a book?</h4>
@@ -155,7 +155,7 @@ function HelpPage() {
 					</ul>
 				</Col>
 
-				<Col md={6}>
+				<Col lg={6}>
 					<hr className="d-lg-none"/>
 					<h2>Glossary</h2>
 					<p>

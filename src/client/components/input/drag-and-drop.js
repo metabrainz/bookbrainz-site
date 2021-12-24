@@ -73,7 +73,7 @@ class DragAndDrop extends React.Component {
 	render() {
 		return (
 			<div
-				className="well col-sm-4"
+				className="well col-md-4"
 				onClick={this.handleClick}
 				onDragOver={this.handleDragOver}
 				onDrop={this.handleDrop}

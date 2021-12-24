@@ -48,10 +48,10 @@ function TopEditorsTable(props) {
 			>
 				<thead>
 					<tr>
-						<th className="col-sm-1" >#</th>
-						<th className="col-sm-5" >Editor&apos;s Name</th>
-						<th className="col-sm-3" >Total Revisions</th>
-						<th className="col-sm-3" >Registration Date</th>
+						<th className="col-md-1" >#</th>
+						<th className="col-md-5" >Editor&apos;s Name</th>
+						<th className="col-md-3" >Total Revisions</th>
+						<th className="col-md-3" >Registration Date</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -101,10 +101,10 @@ function EntityCountTable(props) {
 			>
 				<thead>
 					<tr>
-						<th className="col-sm-1" >#</th>
-						<th className="col-sm-5" >Entity Type</th>
-						<th className="col-sm-3" >Total</th>
-						<th className="col-sm-3" >Added in Last 30 days</th>
+						<th className="col-md-1" >#</th>
+						<th className="col-md-5" >Entity Type</th>
+						<th className="col-md-3" >Total</th>
+						<th className="col-md-3" >Added in Last 30 days</th>
 					</tr>
 				</thead>
 				<tbody>

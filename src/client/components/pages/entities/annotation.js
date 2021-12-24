@@ -43,7 +43,7 @@ class EntityAnnotation extends React.Component {
 		const lastModifiedDate = new Date(annotation.lastRevision.createdAt);
 		return (
 			<Row>
-				<Col md={12}>
+				<Col lg={12}>
 					<h2>Annotation</h2>
 					<Collapse in={this.state.open}>
 						<pre className="annotation-content">{stringToHTMLWithLinks(annotation.content)}</pre>

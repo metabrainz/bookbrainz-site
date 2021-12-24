@@ -81,7 +81,7 @@ function EditionGroupSection({
 				know it
 			</p>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<CustomInput
 						label="Type"
 						tooltipText="Physical format of the Edition Group"

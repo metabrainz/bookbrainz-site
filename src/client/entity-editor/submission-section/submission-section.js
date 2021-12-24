@@ -64,7 +64,7 @@ function SubmissionSection({
 				Submit Your Edit
 			</h2>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<CustomInput
 						label={editNoteLabel}
 						rows="6"

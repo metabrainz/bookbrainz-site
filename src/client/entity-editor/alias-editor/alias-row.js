@@ -77,7 +77,7 @@ const AliasRow = ({
 }) => (
 	<div>
 		<Row>
-			<Col md={4}>
+			<Col lg={4}>
 				<NameField
 					autoFocus
 					defaultValue={nameValue}
@@ -88,7 +88,7 @@ const AliasRow = ({
 					onChange={onNameChange}
 				/>
 			</Col>
-			<Col md={4}>
+			<Col lg={4}>
 				<SortNameField
 					defaultValue={sortNameValue}
 					empty={
@@ -99,7 +99,7 @@ const AliasRow = ({
 					onChange={onSortNameChange}
 				/>
 			</Col>
-			<Col md={4}>
+			<Col lg={4}>
 				<LanguageField
 					empty={
 						isAliasEmpty(nameValue, sortNameValue, languageValue)
@@ -113,7 +113,7 @@ const AliasRow = ({
 			</Col>
 		</Row>
 		<Row>
-			<Col md={2} mdOffset={5}>
+			<Col lg={{offset: 5, span: 2}}>
 				<Checkbox
 					defaultChecked={primaryChecked}
 					onChange={onPrimaryClick}
@@ -121,7 +121,7 @@ const AliasRow = ({
 					Primary
 				</Checkbox>
 			</Col>
-			<Col className="text-right" md={3} mdOffset={2}>
+			<Col className="text-right" lg={{offset: 2, span: 3}}>
 				<Button
 					block
 					className="margin-top-d5"

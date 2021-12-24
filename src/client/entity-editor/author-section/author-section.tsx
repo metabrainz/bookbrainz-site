@@ -184,7 +184,7 @@ function AuthorSection({
 				know it
 			</p>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<CustomInput label="Type">
 						<Select
 							instanceId="authorType"
@@ -196,7 +196,7 @@ function AuthorSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<CustomInput
 						groupClassName={genderShow ? null : 'd-none'}
 						label="Gender"
@@ -211,7 +211,7 @@ function AuthorSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<DateField
 						show
 						defaultValue={beginDateValue}
@@ -224,7 +224,7 @@ function AuthorSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<EntitySearchFieldOption
 						instanceId="beginArea"
 						label={beginAreaLabel}
@@ -245,7 +245,7 @@ function AuthorSection({
 			{endedChecked &&
 				<div>
 					<Row>
-						<Col md={6} mdOffset={3}>
+						<Col lg={{offset: 3, span: 6}}>
 							<DateField
 								show
 								defaultValue={endDateValue}
@@ -258,7 +258,7 @@ function AuthorSection({
 						</Col>
 					</Row>
 					<Row>
-						<Col md={6} mdOffset={3}>
+						<Col lg={{offset: 3, span: 6}}>
 							<EntitySearchFieldOption
 								instanceId="endArea"
 								label={endAreaLabel}

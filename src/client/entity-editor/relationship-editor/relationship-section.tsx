@@ -67,7 +67,7 @@ export function RelationshipList(
 		relationships,
 		({relationshipType, sourceEntity, targetEntity, attributes}, rowID) => (
 			<Row className="margin-top-d5" key={rowID}>
-				<Col md={onEdit || onRemove ? 8 : 12}>
+				<Col lg={onEdit || onRemove ? 8 : 12}>
 					<Relationship
 						link
 						showAttributes
@@ -79,7 +79,7 @@ export function RelationshipList(
 					/>
 				</Col>
 				{(onEdit || onRemove) &&
-					<Col className="text-right" md={4}>
+					<Col className="text-right" lg={4}>
 						<ButtonGroup justified>
 							{onEdit &&
 								<Button
@@ -197,7 +197,7 @@ function RelationshipSection({
 			{canEdit && showEditor && editor}
 			<h2>How are other entities related to this {_.startCase(entityType)}?</h2>
 			<Row>
-				<Col sm={12}>
+				<Col md={12}>
 					<RelationshipList
 						contextEntity={baseEntity}
 						relationships={relationshipsObject}
@@ -210,8 +210,7 @@ function RelationshipSection({
 				<Row className="margin-top-1">
 					<Col
 						className="text-center"
-						md={4}
-						mdOffset={4}
+						lg={{offset: 4, span: 4}}
 					>
 						<Button
 							variant="success"
@@ -227,8 +226,7 @@ function RelationshipSection({
 				<Row className="margin-top-d5">
 					<Col
 						className="text-center"
-						md={4}
-						mdOffset={4}
+						lg={{offset: 4, span: 4}}
 					>
 						<Button
 							onClick={onUndo}

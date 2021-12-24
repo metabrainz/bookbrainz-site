@@ -39,20 +39,20 @@ function CollectionAttributes({collection}) {
 			{
 				collection.description.length ?
 					<Row>
-						<Col md={12}>
+						<Col lg={12}>
 							<dt>Description</dt>
 							<dd>{collection.description}</dd>
 						</Col>
 					</Row> : null
 			}
 			<Row>
-				<Col md={3}>
+				<Col lg={3}>
 					<dt>Owner</dt>
 					<dd><a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a></dd>
 				</Col>
 				{
 					collection.collaborators.length ?
-						<Col md={3}>
+						<Col lg={3}>
 							<dt>Collaborator{collection.collaborators.length > 1 ? 's' : null}</dt>
 							<dd>
 								{
@@ -66,19 +66,19 @@ function CollectionAttributes({collection}) {
 							</dd>
 						</Col> : null
 				}
-				<Col md={3}>
+				<Col lg={3}>
 					<dt>Privacy</dt>
 					<dd>{collection.public ? 'Public' : 'Private'}</dd>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dt>Collection type</dt>
 					<dd>{collection.entityType}</dd>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dt>Created At</dt>
 					<dd>{formatDate(new Date(collection.createdAt), true)}</dd>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dt>Last Modified</dt>
 					<dd>{formatDate(new Date(collection.lastModified), true)}</dd>
 				</Col>
@@ -233,12 +233,12 @@ class CollectionPage extends React.Component {
 					onCloseModal={this.handleCloseAddEntityModal}
 				/>
 				<Row className="entity-display-background">
-					<Col className="entity-display-image-box text-center" md={2}>
+					<Col className="entity-display-image-box text-center" lg={2}>
 						<EntityImage
 							backupIcon={ENTITY_TYPE_ICONS[this.props.collection.entityType]}
 						/>
 					</Col>
-					<Col md={10}>
+					<Col lg={10}>
 						<h1>{this.props.collection.name}</h1>
 						<hr/>
 						<CollectionAttributes collection={this.props.collection}/>

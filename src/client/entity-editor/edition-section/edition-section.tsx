@@ -214,7 +214,7 @@ function EditionSection({
 
 	const getEditionGroupSearchSelect = () => (
 		<React.Fragment>
-			<Col className="margin-bottom-2" md={6} mdOffset={showMatchingEditionGroups ? 0 : 3}>
+			<Col className="margin-bottom-2" lg={{offset: showMatchingEditionGroups ? 0 : 3, span: 6}}>
 				<EntitySearchFieldOption
 					clearable={false}
 					error={!validateEditionSectionEditionGroup(editionGroupValue, true)}
@@ -256,7 +256,7 @@ function EditionSection({
 			<Row className="margin-bottom-3">
 				{
 					showAutoCreateEditionGroupMessage ?
-						<Col md={6} mdOffset={showMatchingEditionGroups ? 0 : 3}>
+						<Col lg={{offset: showMatchingEditionGroups ? 0 : 3, span: 6}}>
 							<Alert variant="success">
 								<p>A new Edition Group with the same name will be created automatically.</p>
 								<br/>
@@ -274,7 +274,7 @@ function EditionSection({
 						getEditionGroupSearchSelect()
 				}
 				{showMatchingEditionGroups &&
-					<Col md={6}>
+					<Col lg={6}>
 						<Alert variant="warning">
 							{matchingNameEditionGroups.length > 1 ?
 								'Edition Groups with the same name as this Edition already exist' :
@@ -304,7 +304,7 @@ function EditionSection({
 				don&rsquo;t know it
 			</p>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<EntitySearchFieldOption
 						instanceId="publisher"
 						label="Publisher"
@@ -315,7 +315,7 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<DateField
 						show
 						defaultValue={releaseDateValue}
@@ -331,7 +331,7 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<ImmutableLanguageField
 						empty
 						multi
@@ -344,7 +344,7 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={3} mdOffset={3}>
+				<Col lg={{offset: 3, span: 3}}>
 					<CustomInput label="Format" tooltipText="The type of printing and binding of the edition, or digital equivalent">
 						<Select
 							instanceId="editionFormat"
@@ -354,7 +354,7 @@ function EditionSection({
 						/>
 					</CustomInput>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<CustomInput label="Status" tooltipText="Has the work been published, or is it in a draft stage?">
 						<Select
 							instanceId="editionStatus"
@@ -366,7 +366,7 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={3} mdOffset={3}>
+				<Col lg={{offset: 3, span: 3}}>
 					<NumericField
 						addonAfter="pages"
 						defaultValue={pagesValue}
@@ -378,7 +378,7 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={3} mdOffset={3}>
+				<Col lg={{offset: 3, span: 3}}>
 					<NumericField
 						addonAfter="mm"
 						defaultValue={widthValue}
@@ -398,7 +398,7 @@ function EditionSection({
 						onChange={onHeightChange}
 					/>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<NumericField
 						addonAfter="g"
 						defaultValue={weightValue}

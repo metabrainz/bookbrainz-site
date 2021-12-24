@@ -115,15 +115,15 @@ const EntityMerge = (props: Props) => {
 					</p>
 					<div>
 						<Row>
-							<Col md={5} mdOffset={1}>
+							<Col lg={{offset: 1, span: 5}}>
 								<NameSectionMerge {...props}/>
 							</Col>
-							<Col md={5} mdOffset={1}>
+							<Col lg={{offset: 1, span: 5}}>
 								<AliasEditorMerge {...props}/>
 							</Col>
 						</Row>
 						<Row>
-							<Col md={5} mdOffset={1}>
+							<Col lg={{offset: 1, span: 5}}>
 								{
 									React.cloneElement(
 										React.Children.only(children),
@@ -133,10 +133,10 @@ const EntityMerge = (props: Props) => {
 							</Col>
 						</Row>
 						<Row>
-							<Col md={8}>
+							<Col lg={8}>
 								<RelationshipSection {...props}/>
 							</Col>
-							<Col md={4}>
+							<Col lg={4}>
 								<EntityIdentifiers
 									identifierTypes={identifierTypes}
 									identifiers={identifiers}

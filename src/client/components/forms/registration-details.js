@@ -107,7 +107,7 @@ class RegistrationForm extends React.Component {
 				</div>
 				<Row>
 					{loadingComponent}
-					<Col md={6} mdOffset={3}>
+					<Col lg={{offset: 3, span: 6}}>
 						<form
 							className="whole-page-form form-horizontal"
 							onSubmit={this.handleSubmit}
@@ -121,11 +121,11 @@ class RegistrationForm extends React.Component {
 								className="form-control"
 								defaultValue={this.props.name}
 								label="Display Name"
-								labelClassName="col-md-4"
+								labelClassName="col-lg-4"
 								placeholder="Display Name"
 								ref={(ref) => this.displayName = ref}
 								type="text"
-								wrapperClassName="col-md-4"
+								wrapperClassName="col-lg-4"
 								onChange={this.handleChange}
 							/>
 							<p>
@@ -140,11 +140,11 @@ class RegistrationForm extends React.Component {
 								instanceId="gender"
 								label="Gender"
 								labelAttribute="name"
-								labelClassName="col-md-4"
+								labelClassName="col-lg-4"
 								options={this.props.genders}
 								placeholder="Select gender…"
 								ref={(ref) => this.gender = ref}
-								wrapperClassName="col-md-4"
+								wrapperClassName="col-lg-4"
 							/>
 							<hr/>
 							{errorComponent}

@@ -126,26 +126,26 @@ class CollectionsTable extends React.Component {
 						>
 							<thead>
 								<tr>
-									<th className="col-sm-2">Name</th>
-									<th className="col-sm-4">Description</th>
-									<th className="col-sm-2">Entity Type</th>
-									<th className="col-sm-2">Entities</th>
+									<th className="col-md-2">Name</th>
+									<th className="col-md-4">Description</th>
+									<th className="col-md-2">Entity Type</th>
+									<th className="col-md-2">Entities</th>
 									{
 										showPrivacy ?
-											<th className="col-sm-2">Privacy</th> : null
+											<th className="col-md-2">Privacy</th> : null
 									}
 									{
 										showIfOwnerOrCollaborator ?
-											<th className="col-sm-2">Collaborator/Owner</th> : null
+											<th className="col-md-2">Collaborator/Owner</th> : null
 									}
 									{
 										showOwner ?
-											<th className="col-sm-2">Owner</th> : null
+											<th className="col-md-2">Owner</th> : null
 
 									}
 									{
 										showLastModified ?
-											<th className="col-sm-2">Last Modified</th> : null
+											<th className="col-md-2">Last Modified</th> : null
 									}
 								</tr>
 							</thead>

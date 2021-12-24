@@ -54,7 +54,7 @@ function AnnotationSection({
 				Annotation
 			</h2>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<CustomInput
 						defaultValue={annotation.content}
 						label={annotationLabel}

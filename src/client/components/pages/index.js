@@ -61,7 +61,7 @@ class IndexPage extends React.Component {
 								width="500"
 							/>
 							<Row>
-								<Col md={8} mdOffset={2}>
+								<Col lg={{offset: 2, span: 8}}>
 									<form action="/search" role="search">
 										<div className="input-group input-group-lg margin-top-5">
 											<input
@@ -82,7 +82,7 @@ class IndexPage extends React.Component {
 										</div>
 									</form>
 									<Row className="margin-top-4">
-										<Col sm={4}>
+										<Col md={4}>
 											<Button
 												block
 												href="/about"
@@ -91,7 +91,7 @@ class IndexPage extends React.Component {
 												About
 											</Button>
 										</Col>
-										<Col sm={4}>
+										<Col md={4}>
 											<Button
 												block
 												href="/contribute"
@@ -100,7 +100,7 @@ class IndexPage extends React.Component {
 												Contribute
 											</Button>
 										</Col>
-										<Col sm={4}>
+										<Col md={4}>
 											<Button
 												block
 												href="/develop"
@@ -187,7 +187,7 @@ class IndexPage extends React.Component {
 		return (
 			<Container>
 				<Row>
-					<Col md={8} mdOffset={2}>
+					<Col lg={{offset: 2, span: 8}}>
 						<h1 className="text-center">The Open Book Database</h1>
 						<p className="lead text-justify">
 							BookBrainz is a project to create an online database
@@ -228,10 +228,10 @@ class IndexPage extends React.Component {
 		return (
 			<React.Fragment>
 				<Row>
-					<Col className="text-center margin-top-4" md={2}>
+					<Col className="text-center margin-top-4" lg={2}>
 						<FontAwesomeIcon icon={faUser} size="5x"/>
 					</Col>
-					<Col md={10}>
+					<Col lg={10}>
 						<h2>Join Us!</h2>
 						<p className="lead">
 					First off,{' '}

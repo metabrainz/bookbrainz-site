@@ -154,7 +154,7 @@ class NameSection extends React.Component {
 			<div>
 				<h2>{`What is the ${_.startCase(entityType)} called?`}</h2>
 				<Row>
-					<Col md={6} mdOffset={3}>
+					<Col lg={{offset: 3, span: 6}}>
 						<NameField
 							defaultValue={nameValue}
 							empty={isAliasEmpty(
@@ -171,7 +171,7 @@ class NameSection extends React.Component {
 							onChange={this.handleNameChange}
 						/>
 					</Col>
-					<Col md={6} mdOffset={3}>
+					<Col lg={{offset: 3, span: 6}}>
 						{isRequiredDisambiguationEmpty(
 							warnIfExists,
 							disambiguationDefaultValue
@@ -204,7 +204,7 @@ class NameSection extends React.Component {
 					!warnIfExists &&
 						!_.isEmpty(searchResults) &&
 						<Row>
-							<Col md={6} mdOffset={3}>
+							<Col lg={{offset: 3, span: 6}}>
 								If the {_.startCase(entityType)} you want to add appears in the results
 								below, click on it to inspect it before adding a possible duplicate.<br/>
 								<small>Ctrl/Cmd + click to open in a new tab</small>
@@ -213,7 +213,7 @@ class NameSection extends React.Component {
 						</Row>
 				}
 				<Row>
-					<Col md={6} mdOffset={3}>
+					<Col lg={{offset: 3, span: 6}}>
 						<SortNameField
 							defaultValue={sortNameValue}
 							empty={isAliasEmpty(
@@ -226,7 +226,7 @@ class NameSection extends React.Component {
 					</Col>
 				</Row>
 				<Row>
-					<Col md={6} mdOffset={3}>
+					<Col lg={{offset: 3, span: 6}}>
 						<LanguageField
 							empty={isAliasEmpty(
 								nameValue, sortNameValue, languageValue
@@ -241,7 +241,7 @@ class NameSection extends React.Component {
 					</Col>
 				</Row>
 				<Row>
-					<Col md={6} mdOffset={3}>
+					<Col lg={{offset: 3, span: 6}}>
 						<DisambiguationField
 							defaultValue={disambiguationDefaultValue}
 							error={isRequiredDisambiguationEmpty(

@@ -160,7 +160,7 @@ function SeriesSection({
 				All fields are mandatory — select the option from dropdown
 			</p>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<CustomInput
 						label="Ordering Type"
 						tooltipText="Ordering Type of the Series Entity"

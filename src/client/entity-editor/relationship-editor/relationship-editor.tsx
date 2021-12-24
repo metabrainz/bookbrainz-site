@@ -480,7 +480,7 @@ class RelationshipModal
 					</p>
 					<hr/>
 					<Row>
-						<Col md={10} mdOffset={1}>
+						<Col lg={{offset: 1, span: 10}}>
 							<div>
 								<div>
 									{entitySelect}
@@ -494,7 +494,7 @@ class RelationshipModal
 				</Modal.Body>
 				<Modal.Footer>
 					<Row>
-						<Col md={10} mdOffset={1}>
+						<Col lg={{offset: 1, span: 10}}>
 							<ProgressBar
 								bsStyle="success"
 								now={this.calculateProgressAmount()}

@@ -32,7 +32,7 @@ function EditorContainer(props) {
 	return (
 		<div>
 			<Row>
-				<Col md={12}>
+				<Col lg={12}>
 					{editor.title ?
 						<div>
 							<a
@@ -51,7 +51,7 @@ function EditorContainer(props) {
 				</Col>
 			</Row>
 			<Row>
-				<Col md={12}>
+				<Col lg={12}>
 					<Nav bsStyle="tabs">
 						<NavItem
 							active={tabActive === 0}

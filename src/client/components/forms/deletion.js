@@ -129,7 +129,7 @@ class EntityDeletionForm extends React.Component {
 				<h1>Delete Entity</h1>
 				<Row className="margin-top-2">
 					{loadingComponent}
-					<Col md={6} mdOffset={3}>
+					<Col lg={{offset: 3, span: 6}}>
 						<form onSubmit={this.handleSubmit}>
 							<Panel
 								bsStyle="danger"

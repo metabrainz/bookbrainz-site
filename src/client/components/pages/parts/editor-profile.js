@@ -160,7 +160,7 @@ class EditorProfileTab extends React.Component {
 					padding="0"
 				>
 					{achievement.model.map((model) => (
-						<Col key={`achievementModel${model.id}`} sm={4}>
+						<Col key={`achievementModel${model.id}`} md={4}>
 							<div className="well">
 								<Image
 									className="center-block"
@@ -182,7 +182,7 @@ class EditorProfileTab extends React.Component {
 						</Col>
 					))}
 					{achievement.length < 3 &&
-						<Col sm={achievementBsSize}>
+						<Col md={achievementBsSize}>
 							<div
 								className="well"
 								height="100%"
@@ -243,16 +243,16 @@ class EditorProfileTab extends React.Component {
 	render() {
 		return (
 			<Row>
-				<Col md={12}>
+				<Col lg={12}>
 					{this.renderBasicInfo()}
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					{this.renderStats()}
 				</Col>
-				<Col md={9}>
+				<Col lg={9}>
 					{this.renderActivityGraph()}
 				</Col>
-				<Col md={12}>
+				<Col lg={12}>
 					{this.renderBadges()}
 				</Col>
 			</Row>

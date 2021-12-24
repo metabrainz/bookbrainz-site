@@ -138,7 +138,7 @@ function PublisherSection({
 				know it
 			</p>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<CustomInput label="Type">
 						<Select
 							instanceId="publisherType"
@@ -150,7 +150,7 @@ function PublisherSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<EntitySearchFieldOption
 						instanceId="area"
 						label="Area"
@@ -162,7 +162,7 @@ function PublisherSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<DateField
 						show
 						defaultValue={beginDateValue}
@@ -186,7 +186,7 @@ function PublisherSection({
 			{endedChecked &&
 				<div>
 					<Row>
-						<Col md={6} mdOffset={3}>
+						<Col lg={{offset: 3, span: 6}}>
 							<DateField
 								show
 								defaultValue={endDateValue}

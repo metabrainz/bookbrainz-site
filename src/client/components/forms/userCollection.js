@@ -188,8 +188,7 @@ class UserCollectionForm extends React.Component {
 				<div>
 					<Col
 						id="collectionForm"
-						md={8}
-						mdOffset={2}
+						lg={{offset: 2, span: 8}}
 					>
 						<form
 							className="padding-sides-0"
@@ -230,12 +229,12 @@ class UserCollectionForm extends React.Component {
 							/>
 							<h3><b>Collaborators</b></h3>
 							<Row className="margin-bottom-2">
-								<Col className="margin-top-d5" sm={6}>
+								<Col className="margin-top-d5" md={6}>
 									<p className="text-muted">
 								Collaborators can add/remove entities from your collection
 									</p>
 								</Col>
-								<Col className="margin-top-d5" sm={6}>
+								<Col className="margin-top-d5" md={6}>
 									<Button
 										block
 										type="button"
@@ -279,7 +278,7 @@ class UserCollectionForm extends React.Component {
 								<Alert variant="danger">Error: {errorText}</Alert>
 							</div>
 							<Row className="margin-bottom-2">
-								<Col className="margin-top-d5" sm={6}>
+								<Col className="margin-top-d5" md={6}>
 									<Button
 										block
 										type="submit"
@@ -290,7 +289,7 @@ class UserCollectionForm extends React.Component {
 								</Col>
 								{
 									this.props.collection.id ?
-										<Col className="margin-top-d5" sm={6}>
+										<Col className="margin-top-d5" md={6}>
 											<Button
 												block
 												type="button"

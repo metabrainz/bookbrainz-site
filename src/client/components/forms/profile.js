@@ -155,7 +155,7 @@ class ProfileForm extends React.Component {
 			<div>
 				<Row className="margin-top-2">
 					{loadingElement}
-					<Col md={8} mdOffset={2}>
+					<Col lg={{offset: 2, span: 8}}>
 						<form onSubmit={this.handleSubmit}>
 							<Panel>
 								<Panel.Heading>

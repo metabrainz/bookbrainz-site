@@ -98,7 +98,7 @@ class EntityFooter extends React.Component {
 
 				}
 				<Row>
-					<Col className="text-center" md={10} mdOffset={1}>
+					<Col className="text-center" lg={{offset: 1, span: 10}}>
 						<Button
 							className="footer-button"
 							disabled={this.props.deleted}
