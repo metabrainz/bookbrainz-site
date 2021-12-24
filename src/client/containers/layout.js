@@ -34,7 +34,7 @@ import React from 'react';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 
 
-const {Alert, Nav, Navbar, NavDropdown} = bootstrap;
+const {Alert, Button, Form, FormControl, InputGroup, Nav, Navbar, NavDropdown} = bootstrap;
 
 class Layout extends React.Component {
 	constructor(props) {
@@ -197,30 +197,21 @@ class Layout extends React.Component {
 
 	renderSearchForm() {
 		return (
-			<form
+			<Form
+				inline
 				action="/search"
-				className="navbar-form navbar-right"
+				className="ml-auto"
 				role="search"
 			>
-				<div className="form-group">
-					<div className="input-group">
-						<input
-							className="form-control"
-							name="q"
-							placeholder="Search for..."
-							type="text"
-						/>
-						<span className="input-group-btn">
-							<button
-								className="btn btn-success"
-								type="submit"
-							>
-								<FontAwesomeIcon icon={faSearch}/>
-							</button>
-						</span>
-					</div>
-				</div>
-			</form>
+				<InputGroup>
+					<FormControl name="q" placeholder="Search for..." type="text"/>
+					<InputGroup.Append>
+						<Button type="submit" variant="success">
+							<FontAwesomeIcon icon={faSearch}/>
+						</Button>
+					</InputGroup.Append>
+				</InputGroup>
+			</Form>
 		);
 	}
 
