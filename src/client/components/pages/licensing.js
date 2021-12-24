@@ -21,7 +21,7 @@ import * as bootstrap from 'react-bootstrap';
 import React from 'react';
 
 
-const {Col, PageHeader, Row} = bootstrap;
+const {Col, Row} = bootstrap;
 
 function LicensingPage() {
 	const CC0Link = 'http://creativecommons.org/publicdomain/zero/1.0/';
@@ -33,7 +33,9 @@ function LicensingPage() {
 
 	return (
 		<div>
-			<PageHeader>Licensing</PageHeader>
+			<div className="page-header">
+				<h1>Licensing</h1>
+			</div>
 
 			<p>The BookBrainz core data is licensed under the&nbsp;
 				<a href={CC0Link}>

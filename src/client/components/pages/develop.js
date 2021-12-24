@@ -16,12 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
-
 import React from 'react';
 
-
-const {PageHeader} = bootstrap;
 
 /**
  * Renders the document and displays the 'Develop' page.
@@ -30,7 +26,9 @@ const {PageHeader} = bootstrap;
 function DevelopPage() {
 	return (
 		<div>
-			<PageHeader>Developing with BookBrainz</PageHeader>
+			<div className="page-header">
+				<h1>Developing with BookBrainz</h1>
+			</div>
 			<p className="lead">
 				We aim to make it as easy as possible to use the data
 				stored in BookBrainz. If you&rsquo;re a developer wanting

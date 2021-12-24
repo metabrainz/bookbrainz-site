@@ -29,7 +29,7 @@ import SelectWrapper from '../input/select-wrapper';
 import request from 'superagent';
 
 
-const {Alert, Button, Col, PageHeader, Row} = bootstrap;
+const {Alert, Button, Col, Row} = bootstrap;
 
 class RegistrationForm extends React.Component {
 	constructor(props) {
@@ -96,7 +96,7 @@ class RegistrationForm extends React.Component {
 
 		return (
 			<div>
-				<PageHeader>Register</PageHeader>
+				<div className="page-header"><h1>Register</h1></div>
 				<div>
 					Great! You successfully logged in to MusicBrainz and
 					are now just one step away from becoming a BookBrainz
