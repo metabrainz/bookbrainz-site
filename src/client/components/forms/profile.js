@@ -30,7 +30,7 @@ import SelectWrapper from '../input/select-wrapper';
 import ValidationLabel from '../../entity-editor/common/validation-label';
 
 
-const {Alert, Button, Col, Panel, Row} = bootstrap;
+const {Alert, Button, Col, Card, Row} = bootstrap;
 const {injectDefaultAliasName} = utilsHelper;
 
 class ProfileForm extends React.Component {
@@ -157,13 +157,11 @@ class ProfileForm extends React.Component {
 					{loadingElement}
 					<Col lg={{offset: 2, span: 8}}>
 						<form onSubmit={this.handleSubmit}>
-							<Panel>
-								<Panel.Heading>
-									<Panel.Title>
-										<span className="h3">Edit your public profile</span>
-									</Panel.Title>
-								</Panel.Heading>
-								<Panel.Body>
+							<Card>
+								<Card.Header as="h3">
+									Edit your public profile
+								</Card.Header>
+								<Card.Body>
 									<CustomInput
 										defaultValue={name}
 										help="required"
@@ -213,8 +211,8 @@ class ProfileForm extends React.Component {
 										onChange={this.handleSelectChange}
 									/>
 									{errorComponent}
-								</Panel.Body>
-								<Panel.Footer>
+								</Card.Body>
+								<Card.Footer>
 									<Button
 										disabled={!hasChanged}
 										type="submit"
@@ -222,8 +220,8 @@ class ProfileForm extends React.Component {
 									>
 										Save changes
 									</Button>
-								</Panel.Footer>
-							</Panel>
+								</Card.Footer>
+							</Card>
 						</form>
 					</Col>
 				</Row>

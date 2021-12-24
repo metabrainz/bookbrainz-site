@@ -28,7 +28,7 @@ import {kebabCase as _kebabCase} from 'lodash';
 import request from 'superagent';
 
 
-const {Alert, Button, Col, Row, Panel} = bootstrap;
+const {Alert, Button, Col, Row, Card} = bootstrap;
 
 class EntityDeletionForm extends React.Component {
 	constructor(props) {
@@ -131,15 +131,11 @@ class EntityDeletionForm extends React.Component {
 					{loadingComponent}
 					<Col lg={{offset: 3, span: 6}}>
 						<form onSubmit={this.handleSubmit}>
-							<Panel
-								bsStyle="danger"
-							>
-								<Panel.Heading>
-									<Panel.Title componentClass="h3">
-										Confirm Deletion
-									</Panel.Title>
-								</Panel.Heading>
-								<Panel.Body>
+							<Card bg="danger">
+								<Card.Header as="h4">
+									Confirm Deletion
+								</Card.Header>
+								<Card.Body>
 
 									<Alert variant="warning">
 										<h4>
@@ -189,11 +185,11 @@ class EntityDeletionForm extends React.Component {
 										onChange={this.handleNoteChange}
 									/>
 									{errorComponent}
-								</Panel.Body>
-								<Panel.Footer>
+								</Card.Body>
+								<Card.Footer>
 									{footerComponent}
-								</Panel.Footer>
-							</Panel>
+								</Card.Footer>
+							</Card>
 						</form>
 					</Col>
 				</Row>

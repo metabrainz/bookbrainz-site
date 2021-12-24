@@ -19,7 +19,7 @@
 
 import * as React from 'react';
 
-import {Col, Panel, Row} from 'react-bootstrap';
+import {Card, Col, Row} from 'react-bootstrap';
 
 import AliasEditorMerge from './alias-editor/alias-editor-merge';
 import AnnotationSection from './annotation-section/annotation-section';
@@ -79,30 +79,28 @@ const EntityMerge = (props: Props) => {
 	const identifiers = _.values(identifierSet.toJS()) || [];
 	return (
 		<form onSubmit={onSubmit}>
-			<Panel>
-				<Panel.Heading>
-					<Panel.Title componentClass="h2">
-						<p>{subheading}</p>
-						<div>
-							{mergingEntities.map((entity, index) => {
-								const entityForDisplay = {
-									link: getEntityLink({bbid: entity.bbid, type: entity.type}),
-									text: _.get(entity, ['defaultAlias', 'name']),
-									type: entity.type,
-									unnamedText: '(unnamed)'
-								};
-								const isNotLast = index < mergingEntities.length - 1;
-								return (
-									<span key={entity.bbid}>
-										<Entity {...entityForDisplay}/>
-										{isNotLast && <FontAwesomeIcon className="margin-sides-d5" icon={faAngleDoubleLeft}/>}
-									</span>
-								);
-							})}
-						</div>
-					</Panel.Title>
-				</Panel.Heading>
-				<Panel.Body>
+			<Card>
+				<Card.Header as="h4">
+					<p>{subheading}</p>
+					<div>
+						{mergingEntities.map((entity, index) => {
+							const entityForDisplay = {
+								link: getEntityLink({bbid: entity.bbid, type: entity.type}),
+								text: _.get(entity, ['defaultAlias', 'name']),
+								type: entity.type,
+								unnamedText: '(unnamed)'
+							};
+							const isNotLast = index < mergingEntities.length - 1;
+							return (
+								<span key={entity.bbid}>
+									<Entity {...entityForDisplay}/>
+									{isNotLast && <FontAwesomeIcon className="margin-sides-d5" icon={faAngleDoubleLeft}/>}
+								</span>
+							);
+						})}
+					</div>
+				</Card.Header>
+				<Card.Body>
 					<p className="alert alert-info">
 						You are merging into entity {mergingEntities[0].bbid}. If you want to merge into another entity instead,
 						you can select the correct entity in the merge queue at the bottom of the page and click
@@ -145,13 +143,13 @@ const EntityMerge = (props: Props) => {
 						</Row>
 						<AnnotationSection {...props}/>
 					</div>
-				</Panel.Body>
-				<Panel.Footer>
+				</Card.Body>
+				<Card.Footer>
 					<div>
 						<SubmissionSection {...props}/>
 					</div>
-				</Panel.Footer>
-			</Panel>
+				</Card.Footer>
+			</Card>
 		</form>
 	);
 };
