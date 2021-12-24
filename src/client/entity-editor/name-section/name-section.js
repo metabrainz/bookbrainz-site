@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Alert, Col, ListGroup, ListGroupItem, Row} from 'react-bootstrap';
+import {Alert, Col, ListGroup, Row} from 'react-bootstrap';
 import {
 	checkIfNameExists,
 	debouncedUpdateDisambiguationField,
@@ -184,14 +184,14 @@ class NameSection extends React.Component {
 								<ListGroup className="margin-top-1 margin-bottom-1">
 									{exactMatches.map((match) =>
 										(
-											<ListGroupItem
+											<ListGroup.Item
 												bsStyle="warning"
 												href={`/${_.kebabCase(entityType)}/${match.bbid}`}
 												key={`${match.bbid}`}
 												rel="noopener noreferrer" target="_blank"
 											>
 												{match.defaultAlias.name} {getEntityDisambiguation(match)}
-											</ListGroupItem>
+											</ListGroup.Item>
 										))}
 								</ListGroup>
 									If you are sure your entry is different, please fill the

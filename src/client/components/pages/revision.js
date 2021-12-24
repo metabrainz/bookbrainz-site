@@ -32,7 +32,7 @@ import request from 'superagent';
 import {transformISODateForDisplay} from '../../helpers/entity';
 
 
-const {Badge, Button, Col, ListGroup, ListGroupItem, Row} = bootstrap;
+const {Badge, Button, Col, ListGroup, Row} = bootstrap;
 const {formatDate} = utilsHelper;
 
 class RevisionPage extends React.Component {
@@ -207,7 +207,7 @@ class RevisionPage extends React.Component {
 			const noteAuthorTitle =
 				RevisionPage.formatTitle(note.author);
 			return (
-				<ListGroupItem
+				<ListGroup.Item
 					key={note.id}
 				>
 					<div className="revision-note">
@@ -223,7 +223,7 @@ class RevisionPage extends React.Component {
 							, {`${timeCreated}`}
 						</p>
 					</div>
-				</ListGroupItem>
+				</ListGroup.Item>
 			);
 		});
 

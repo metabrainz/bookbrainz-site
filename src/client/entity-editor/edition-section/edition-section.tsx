@@ -36,7 +36,7 @@ import {
 	updateStatus
 } from './actions';
 
-import {Alert, Button, Col, ListGroup, ListGroupItem, Row} from 'react-bootstrap';
+import {Alert, Button, Col, ListGroup, Row} from 'react-bootstrap';
 import {DateObject, isNullDate} from '../../helpers/utils';
 import type {List, Map} from 'immutable';
 import {faClone, faExternalLinkAlt, faSearch} from '@fortawesome/free-solid-svg-icons';
@@ -290,9 +290,9 @@ function EditionSection({
 							</small>
 							<ListGroup className="margin-top-1">
 								{matchingNameEditionGroups.map(eg => (
-									<ListGroupItem key={eg.bbid}>
+									<ListGroup.Item key={eg.bbid}>
 										<LinkedEntity option={entityToOption(eg)} onSelect={onEditionGroupChange}/>
-									</ListGroupItem>
+									</ListGroup.Item>
 								))}
 							</ListGroup>
 						</Alert>

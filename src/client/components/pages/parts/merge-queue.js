@@ -26,7 +26,7 @@ import React from 'react';
 
 
 const {
-	Button, ButtonGroup, Card, ListGroup, ListGroupItem
+	Button, ButtonGroup, Card, ListGroup
 } = bootstrap;
 
 class MergeQueue extends React.Component {
@@ -69,7 +69,7 @@ class MergeQueue extends React.Component {
 					{values(mergingEntities)
 						.map(entity =>
 							 (
-								<ListGroupItem key={`merge-queue-${entity.bbid}`}>
+								<ListGroup.Item key={`merge-queue-${entity.bbid}`}>
 
 									<input
 										checked={this.state.selectedOption === entity.bbid}
@@ -80,7 +80,7 @@ class MergeQueue extends React.Component {
 										onChange={this.handleOptionChange}
 									/>
 									<EntityLink inline entity={entity}/>
-								</ListGroupItem>
+								</ListGroup.Item>
 							))}
 				</ListGroup>
 			);
