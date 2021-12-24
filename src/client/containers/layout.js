@@ -92,13 +92,24 @@ class Layout extends React.Component {
 		);
 	}
 
-	renderNavContent() {
-		const {user, homepage, hideSearch} = this.props;
+	renderGuestDropdown() {
+		const disableSignUp = this.props.disableSignUp ?
+			{disabled: true} :
+			{};
 
-		/*
-		 * GOTCHA: Usage of react-bootstrap FormGroup component inside
-		 * Navbar.Form causes a DOM mutation
-		 */
+		return (
+			<Nav pullRight>
+				<NavItem {...disableSignUp} href="/auth">
+					<FontAwesomeIcon icon={faSignInAlt}/>
+					{' Sign In / Register'}
+				</NavItem>
+			</Nav>
+		);
+	}
+
+	renderLoggedInDropdown() {
+		const {user} = this.props;
+
 		const createDropdownTitle = (
 			<span>
 				<FontAwesomeIcon icon={faPlus}/>
@@ -118,80 +129,116 @@ class Layout extends React.Component {
 			{};
 
 		return (
+			<Nav pullRight>
+				<NavDropdown
+					eventKey={1}
+					id="create-dropdown"
+					open={this.state.menuOpen}
+					title={createDropdownTitle}
+					onMouseDown={this.handleMouseDown}
+					onSelect={this.handleDropdownClick}
+					onToggle={this.handleDropdownToggle}
+				>
+					<MenuItem href="/work/create">
+						{genEntityIconHTMLElement('Work')}
+						Work
+					</MenuItem>
+					<MenuItem href="/edition/create">
+						{genEntityIconHTMLElement('Edition')}
+						Edition
+					</MenuItem>
+					<MenuItem href="/edition-group/create">
+						{genEntityIconHTMLElement('EditionGroup')}
+						Edition Group
+					</MenuItem>
+					<MenuItem href="/series/create">
+						{genEntityIconHTMLElement('Series')}
+						Series
+					</MenuItem>
+					<MenuItem divider/>
+					<MenuItem href="/author/create">
+						{genEntityIconHTMLElement('Author')}
+						Author
+					</MenuItem>
+					<MenuItem href="/publisher/create">
+						{genEntityIconHTMLElement('Publisher')}
+						Publisher
+					</MenuItem>
+				</NavDropdown>
+				<NavDropdown
+					eventKey={2}
+					id="user-dropdown"
+					title={userDropdownTitle}
+					onMouseDown={this.handleMouseDown}
+				>
+					<MenuItem href={`/editor/${user.id}`}>
+						<FontAwesomeIcon fixedWidth icon={faUserCircle}/>
+						{' Profile'}
+					</MenuItem>
+					<MenuItem href={`/editor/${user.id}/revisions`}>
+						<FontAwesomeIcon fixedWidth icon={faListUl}/>
+						{' Revisions'}
+					</MenuItem>
+					<MenuItem href={`/editor/${user.id}/achievements`}>
+						<FontAwesomeIcon fixedWidth icon={faTrophy}/>
+						{' Achievements'}
+					</MenuItem>
+					<MenuItem href={`/editor/${user.id}/collections`}>
+						<FontAwesomeIcon fixedWidth icon={faGripVertical}/>
+						{' Collections'}
+					</MenuItem>
+					<MenuItem {...disableSignUp} href="/logout">
+						<FontAwesomeIcon fixedWidth icon={faSignOutAlt}/>
+						{' Sign Out'}
+					</MenuItem>
+				</NavDropdown>
+			</Nav>
+		);
+	}
+
+	renderSearchForm() {
+		return (
+			<form
+				action="/search"
+				className="navbar-form navbar-right"
+				role="search"
+			>
+				<div className="form-group">
+					<div className="input-group">
+						<input
+							className="form-control"
+							name="q"
+							placeholder="Search for..."
+							type="text"
+						/>
+						<span className="input-group-btn">
+							<button
+								className="btn btn-success"
+								type="submit"
+							>
+								<FontAwesomeIcon icon={faSearch}/>
+							</button>
+						</span>
+					</div>
+				</div>
+			</form>
+		);
+	}
+
+	renderNavContent() {
+		const {homepage, hideSearch, user} = this.props;
+
+		/*
+		 * GOTCHA: Usage of react-bootstrap FormGroup component inside
+		 * Navbar.Form causes a DOM mutation
+		 */
+
+		return (
 			<Navbar.Collapse id="bs-example-navbar-collapse-1">
-				{user && user.id ? (
-					<Nav pullRight>
-						<NavDropdown
-							eventKey={1}
-							id="create-dropdown"
-							open={this.state.menuOpen}
-							title={createDropdownTitle}
-							onMouseDown={this.handleMouseDown}
-							onSelect={this.handleDropdownClick}
-							onToggle={this.handleDropdownToggle}
-						>
-							<MenuItem href="/work/create">
-								{genEntityIconHTMLElement('Work')}
-								Work
-							</MenuItem>
-							<MenuItem href="/edition/create">
-								{genEntityIconHTMLElement('Edition')}
-								Edition
-							</MenuItem>
-							<MenuItem href="/edition-group/create">
-								{genEntityIconHTMLElement('EditionGroup')}
-								Edition Group
-							</MenuItem>
-							<MenuItem href="/series/create">
-								{genEntityIconHTMLElement('Series')}
-								Series
-							</MenuItem>
-							<MenuItem divider/>
-							<MenuItem href="/author/create">
-								{genEntityIconHTMLElement('Author')}
-								Author
-							</MenuItem>
-							<MenuItem href="/publisher/create">
-								{genEntityIconHTMLElement('Publisher')}
-								Publisher
-							</MenuItem>
-						</NavDropdown>
-						<NavDropdown
-							eventKey={2}
-							id="user-dropdown"
-							title={userDropdownTitle}
-							onMouseDown={this.handleMouseDown}
-						>
-							<MenuItem href={`/editor/${user.id}`}>
-								<FontAwesomeIcon fixedWidth icon={faUserCircle}/>
-								{' Profile'}
-							</MenuItem>
-							<MenuItem href={`/editor/${user.id}/revisions`}>
-								<FontAwesomeIcon fixedWidth icon={faListUl}/>
-								{' Revisions'}
-							</MenuItem>
-							<MenuItem href={`/editor/${user.id}/achievements`}>
-								<FontAwesomeIcon fixedWidth icon={faTrophy}/>
-								{' Achievements'}
-							</MenuItem>
-							<MenuItem href={`/editor/${user.id}/collections`}>
-								<FontAwesomeIcon fixedWidth icon={faGripVertical}/>
-								{' Collections'}
-							</MenuItem>
-							<MenuItem {...disableSignUp} href="/logout">
-								<FontAwesomeIcon fixedWidth icon={faSignOutAlt}/>
-								{' Sign Out'}
-							</MenuItem>
-						</NavDropdown>
-					</Nav>
-				) : (
-					<Nav pullRight>
-						<NavItem {...disableSignUp} href="/auth">
-							<FontAwesomeIcon icon={faSignInAlt}/>
-							{' Sign In / Register'}
-						</NavItem>
-					</Nav>
-				)}
+				{
+					user && user.id ?
+						this.renderLoggedInDropdown() : this.renderGuestDropdown()
+				}
 				<Nav pullRight>
 					<NavItem href="/help">
 						<FontAwesomeIcon icon={faQuestionCircle}/>
@@ -216,32 +263,7 @@ class Layout extends React.Component {
 						{' Revisions '}
 					</NavItem>
 				</Nav>
-				{!(homepage || hideSearch) && (
-					<form
-						action="/search"
-						className="navbar-form navbar-right"
-						role="search"
-					>
-						<div className="form-group">
-							<div className="input-group">
-								<input
-									className="form-control"
-									name="q"
-									placeholder="Search for..."
-									type="text"
-								/>
-								<span className="input-group-btn">
-									<button
-										className="btn btn-success"
-										type="submit"
-									>
-										<FontAwesomeIcon icon={faSearch}/>
-									</button>
-								</span>
-							</div>
-						</div>
-					</form>
-				)}
+				{!(homepage || hideSearch) && this.renderSearchForm()}
 			</Navbar.Collapse>
 		);
 	}
