@@ -16,10 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as bootstrap from 'react-bootstrap';
 import CustomInput from '../../input';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+
+const {Card} = bootstrap;
 
 class DragAndDrop extends React.Component {
 	constructor() {
@@ -72,26 +75,29 @@ class DragAndDrop extends React.Component {
 
 	render() {
 		return (
-			<div
-				className="well col-md-4"
+			<Card
+				bg="light"
 				onClick={this.handleClick}
 				onDragOver={this.handleDragOver}
 				onDrop={this.handleDrop}
 			>
-				<CustomInput
-					name={this.props.name}
-					type="hidden"
-					value={this.state.achievement.id}
-				/>
-				<img
-					className="center-block"
-					height="100px"
+				<Card.Img
+					className="mt-4"
+					height={100}
 					src={this.state.achievement.src}
+					variant="top"
 				/>
-				<div className="center-block h3">
-					{this.state.achievement.name}
-				</div>
-			</div>
+				<Card.Body className="text-center">
+					<CustomInput
+						name={this.props.name}
+						type="hidden"
+						value={this.state.achievement.id}
+					/>
+					<div className="h3">
+						{this.state.achievement.name}
+					</div>
+				</Card.Body>
+			</Card>
 		);
 	}
 }

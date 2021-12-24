@@ -606,3 +606,12 @@ ul {
 .badge {
 	vertical-align: middle;
 }
+
+/* Add padding to make this more like a well, and tidy up editor achievement display */
+.card.bg-light {
+	padding: 19px;
+
+	.list-group-item {
+		background-color: $gray-200;
+	}
+}

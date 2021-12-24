@@ -31,7 +31,7 @@ import React from 'react';
 import 'chartjs-adapter-date-fns';
 
 
-const {Button, Col, Image, Row} = bootstrap;
+const {Button, Card, Col, Image, ListGroup, Row} = bootstrap;
 const {formatDate} = utilsHelper;
 
 class EditorProfileTab extends React.Component {
@@ -161,42 +161,41 @@ class EditorProfileTab extends React.Component {
 				>
 					{achievement.model.map((model) => (
 						<Col key={`achievementModel${model.id}`} md={4}>
-							<div className="well">
-								<Image
-									className="center-block"
-									height="100px"
+							<Card bg="light">
+								<Card.Img
+									className="mt-4"
+									height={100}
 									src={model.achievement.badgeUrl}
+									variant="top"
 								/>
-								<p className="text-center">
-									{model.achievement.name}
-								</p>
-								<p className="text-center">
-									{model.achievement.description}
-								</p>
-								<p className="text-center">
-									{`unlocked: ${formatDate(new Date(
-										model.unlockedAt
-									), true)}`}
-								</p>
-							</div>
+								<Card.Body className="text-center">
+									<ListGroup variant="flush">
+										<ListGroup.Item>{model.achievement.name}</ListGroup.Item>
+										<ListGroup.Item>{model.achievement.description}</ListGroup.Item>
+										<ListGroup.Item>
+											{`Unlocked: ${formatDate(new Date(
+												model.unlockedAt
+											), true)}`}
+										</ListGroup.Item>
+									</ListGroup>
+								</Card.Body>
+							</Card>
 						</Col>
 					))}
 					{achievement.length < 3 &&
 						<Col md={achievementBsSize}>
-							<div
-								className="well"
-								height="100%"
-							>
+							<Card bg="light" className="justify-content-center">
 								<Image
-									className="center-block"
+									className="ml-auto mr-auto"
 									height="160px"
 									src="/images/sadface.png"
+									width="160px"
 								/>
 								<p className="text-center">
 									No badge to show, use the achievement menu
 									to see available achievements
 								</p>
-							</div>
+							</Card>
 						</Col>
 					}
 				</Row>

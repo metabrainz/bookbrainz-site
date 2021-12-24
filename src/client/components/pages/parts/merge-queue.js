@@ -26,7 +26,7 @@ import React from 'react';
 
 
 const {
-	Button, ButtonGroup, ListGroup, ListGroupItem, Well
+	Button, ButtonGroup, Card, ListGroup, ListGroupItem
 } = bootstrap;
 
 class MergeQueue extends React.Component {
@@ -87,7 +87,7 @@ class MergeQueue extends React.Component {
 		}
 
 		return (
-			<Well className="margin-top-2">
+			<Card bg="light" className="margin-top-2">
 				<h3 className="margin-top-0">
 					Selected {entityCount} entit{entityCount > 1 ? 'ies' : 'y'} for merging
 				</h3>
@@ -123,7 +123,7 @@ class MergeQueue extends React.Component {
 						&nbsp;Cancel merge
 					</Button>
 				</ButtonGroup>
-			</Well>
+			</Card>
 		);
 	}
 }
