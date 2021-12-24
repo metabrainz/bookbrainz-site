@@ -16,11 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
 import React from 'react';
 
-
-const {PageHeader} = bootstrap;
 
 /**
  * Renders the the document and displays the 'Contribute' page.
@@ -35,7 +32,9 @@ function ContributePage() {
 
 	return (
 		<div>
-			<PageHeader>Contributing to BookBrainz</PageHeader>
+			<div className="page-header">
+				<h1>Contributing to BookBrainz</h1>
+			</div>
 			<p className="lead">
 				There are many ways that you can contribute to the
 				BookBrainz online encyclopedia, depending on where your
