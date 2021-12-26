@@ -64,7 +64,7 @@ function Footer(props) {
 						</a>
 					</Col>
 				</Row>
-				<Row className="text-center">
+				<div className="text-center">
 					<small>
 						Alpha Software —{' '}
 						<a href={`${repositoryUrl}commit/${siteRevision}`}>
@@ -74,7 +74,7 @@ function Footer(props) {
 							Report a Bug
 						</a>
 					</small>
-				</Row>
+				</div>
 			</Grid>
 		</footer>
 	);
