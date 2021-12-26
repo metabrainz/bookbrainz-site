@@ -1,11 +1,9 @@
 import * as React from 'react';
 
 // eslint-disable-next-line import/named
-import {ControlLabel, FormControl, FormGroup, HelpBlock, InputGroup, OverlayTrigger, Tooltip} from 'react-bootstrap';
-
+import {Form, InputGroup, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import cx from 'classnames';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 
@@ -110,20 +108,30 @@ export default class Input extends React.Component<Props> {
 		return values;
 	}
 
-	renderAddon(addon) {
-		return addon && <InputGroup.Addon>{addon}</InputGroup.Addon>;
-	}
-
-	renderButtons(buttons) {
-		if (Array.isArray(buttons)) {
-			return buttons.map((button, index) => this.renderButton(button, index));
+	renderPrepend(addon, buttons) {
+		if (!addon && !buttons) {
+			return null;
 		}
 
-		return this.renderButton(buttons, 0);
+		return (
+			<InputGroup.Prepend>
+				{addon && <InputGroup.Text>{addon}</InputGroup.Text>}
+				{buttons}
+			</InputGroup.Prepend>
+		);
 	}
 
-	renderButton(button, index: number) {
-		return button && <InputGroup.Button key={`btn${index}`}>{button}</InputGroup.Button>;
+	renderAppend(addon, buttons) {
+		if (!addon && !buttons) {
+			return null;
+		}
+
+		return (
+			<InputGroup.Append>
+				{addon && <InputGroup.Text>{addon}</InputGroup.Text>}
+				{buttons}
+			</InputGroup.Append>
+		);
 	}
 
 	renderInputGroup({
@@ -133,15 +141,15 @@ export default class Input extends React.Component<Props> {
 		...props
 	}: IGProps) {
 		if (props.type === 'select' || props.type === 'textarea') {
-			props.componentClass = props.type;
+			props.as = props.type;
 			delete props.type;
 		}
 
 		const formControl =
 			(children && React.cloneElement(children, props)) ||
-			<FormControl
+			<Form.Control
 				/* eslint-disable-next-line react/jsx-no-bind */
-				inputRef={(ref: HTMLInputElement) => { this.refFormControl = ref; }}
+				ref={(ref: HTMLInputElement) => { this.refFormControl = ref; }}
 				value={value}
 				{...props}
 			/>;
@@ -151,7 +159,7 @@ export default class Input extends React.Component<Props> {
 				(
 					<div className={className}>
 						{formControl}
-						{help && <HelpBlock>{help}</HelpBlock>}
+						{help && <Form.Text muted>{help}</Form.Text>}
 					</div>
 				) :
 				formControl;
@@ -162,14 +170,10 @@ export default class Input extends React.Component<Props> {
 		}
 
 		return (
-			<InputGroup
-				bsClass={cx('input-group', wrapperClassName)}
-			>
-				{this.renderAddon(addonBefore)}
-				{this.renderButtons(buttonBefore)}
+			<InputGroup className={wrapperClassName}>
+				{this.renderPrepend(addonBefore, buttonBefore)}
 				{getFormControlWrapped()}
-				{this.renderButtons(buttonAfter)}
-				{this.renderAddon(addonAfter)}
+				{this.renderAppend(addonAfter, buttonAfter)}
 			</InputGroup>
 		);
 	}
@@ -197,20 +201,18 @@ export default class Input extends React.Component<Props> {
 		);
 
 		return (
-			<FormGroup
-				bsClass={cx('form-group', groupClassName)}
+			<Form.Group
+				className={groupClassName}
 				controlId={id}
 			>
 				{label && (
-					<ControlLabel
-						bsClass={cx('control-label', labelClassName)}
-					>
+					<Form.Label className={labelClassName}>
 						{label}
 						{helpIconElement}
-					</ControlLabel>
+					</Form.Label>
 				)}
 				{this.renderInputGroup(props)}
-			</FormGroup>
+			</Form.Group>
 		);
 	}
 }
