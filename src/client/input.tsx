@@ -186,7 +186,7 @@ export default class Input extends React.Component<Props> {
 
 		const helpIconElement = tooltipText && (
 			<OverlayTrigger
-				delayShow={50}
+				delay={50}
 				overlay={<Tooltip id={`tooltip-${id}`}>{tooltipText}</Tooltip>}
 			>
 				<FontAwesomeIcon

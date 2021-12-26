@@ -62,7 +62,7 @@ const IdentifierEditor = ({
 
 	const helpIconElement = (
 		<OverlayTrigger
-			delayShow={50}
+			delay={50}
 			overlay={<Tooltip id="identifier-editor-tooltip">{helpText}</Tooltip>}
 		>
 			<FontAwesomeIcon

@@ -65,7 +65,7 @@ const AliasEditor = ({
 		Refer to the help page for more details and examples.`;
 	const helpIconElement = (
 		<OverlayTrigger
-			delayShow={50}
+			delay={50}
 			overlay={<Tooltip id="alias-editor-tooltip">{helpText}</Tooltip>}
 		>
 			<FontAwesomeIcon
