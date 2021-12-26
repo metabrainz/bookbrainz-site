@@ -27,6 +27,7 @@ import React from 'react';
 import ReactSelect from 'react-select';
 import SearchSelect from '../input/entity-search';
 import SelectWrapper from '../input/select-wrapper';
+import ValidationLabel from '../../entity-editor/common/validation-label';
 
 
 const {Alert, Button, Col, Panel, Row} = bootstrap;
@@ -144,6 +145,12 @@ class ProfileForm extends React.Component {
 
 		const hasChanged = this.hasChanged();
 
+		const nameLabel = (
+			<ValidationLabel error={!this.valid()}>
+				Display Name
+			</ValidationLabel>
+		);
+
 		return (
 			<div>
 				<Row className="margin-top-2">
@@ -160,10 +167,9 @@ class ProfileForm extends React.Component {
 									<CustomInput
 										defaultValue={name}
 										help="required"
-										label="Display Name"
+										label={nameLabel}
 										name="name"
 										type="text"
-										validationState={this.valid() ? 'success' : 'error'}
 										onChange={this.handleValueChange}
 									/>
 									<CustomInput
