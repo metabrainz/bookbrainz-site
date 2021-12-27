@@ -97,27 +97,27 @@ class EditorProfileTab extends React.Component {
 						</small>
 					}
 				</h2>
-				<dl className="dl-horizontal">
-					<dt>MusicBrainz Account</dt>
-					<dd>
+				<dl className="row">
+					<dt className="col-md-2">MusicBrainz Account</dt>
+					<dd className="col-md-10">
 						{musicbrainzAccount}
 					</dd>
-					<dt>Display Name</dt>
-					<dd>{name}</dd>
-					<dt>Area</dt>
-					<dd>{editor.area ? editor.area.name : '?'}</dd>
-					<dt>Gender</dt>
-					<dd>{gender ? gender.name : '?'}</dd>
-					<dt>Type</dt>
-					<dd>{editor.type.label}</dd>
-					<dt>Reputation</dt>
-					<dd>0</dd>
-					<dt>Joined</dt>
-					<dd>{createdAtDate}</dd>
-					<dt>Last login</dt>
-					<dd>{lastActiveDate}</dd>
-					<dt>Bio</dt>
-					<dd>{editor.bio ? editor.bio : '-'}</dd>
+					<dt className="col-md-2">Display Name</dt>
+					<dd className="col-md-10">{name}</dd>
+					<dt className="col-md-2">Area</dt>
+					<dd className="col-md-10">{editor.area ? editor.area.name : '?'}</dd>
+					<dt className="col-md-2">Gender</dt>
+					<dd className="col-md-10">{gender ? gender.name : '?'}</dd>
+					<dt className="col-md-2">Type</dt>
+					<dd className="col-md-10">{editor.type.label}</dd>
+					<dt className="col-md-2">Reputation</dt>
+					<dd className="col-md-10">0</dd>
+					<dt className="col-md-2">Joined</dt>
+					<dd className="col-md-10">{createdAtDate}</dd>
+					<dt className="col-md-2">Last login</dt>
+					<dd className="col-md-10">{lastActiveDate}</dd>
+					<dt className="col-md-2">Bio</dt>
+					<dd className="col-md-10">{editor.bio ? editor.bio : '-'}</dd>
 				</dl>
 			</div>
 		);
@@ -129,13 +129,13 @@ class EditorProfileTab extends React.Component {
 		return (
 			<div>
 				<h2>Stats</h2>
-				<dl className="dl-horizontal">
-					<dt>Total Revisions</dt>
-					<dd>{editor.totalRevisions}</dd>
-					<dt>Revisions Applied</dt>
-					<dd>{editor.revisionsApplied}</dd>
-					<dt>Revisions Reverted</dt>
-					<dd>{editor.revisionsReverted}</dd>
+				<dl className="row">
+					<dt className="col-md-8">Total Revisions</dt>
+					<dd className="col-md-4">{editor.totalRevisions}</dd>
+					<dt className="col-md-8">Revisions Applied</dt>
+					<dd className="col-md-4">{editor.revisionsApplied}</dd>
+					<dt className="col-md-8">Revisions Reverted</dt>
+					<dd className="col-md-4">{editor.revisionsReverted}</dd>
 				</dl>
 			</div>
 		);
