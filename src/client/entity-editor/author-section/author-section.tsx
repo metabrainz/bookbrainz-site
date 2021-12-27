@@ -29,7 +29,7 @@ import {
 	updateGender,
 	updateType
 } from './actions';
-import {Checkbox, Col, Row} from 'react-bootstrap';
+import {Col, Form, Row} from 'react-bootstrap';
 import {isNullDate, labelsForAuthor} from '../../helpers/utils';
 import {
 	validateAuthorSectionBeginDate,
@@ -85,7 +85,7 @@ type DispatchProps = {
 	onBeginDateChange: (arg: string) => unknown,
 	onEndAreaChange: (arg: Area | null | undefined) => unknown,
 	onEndDateChange: (arg: string) => unknown,
-	onEndedChange: (arg: React.FormEvent<Checkbox>) => unknown,
+	onEndedChange: (arg: React.FormEvent<any>) => unknown,
 	onGenderChange: (obj: {value: number} | null) => unknown,
 	onTypeChange: (obj: {value: number} | null) => unknown
 };
@@ -235,12 +235,12 @@ function AuthorSection({
 				</Col>
 			</Row>
 			<div className="text-center">
-				<Checkbox
+				<Form.Check
 					defaultChecked={endedChecked}
+					label={endedLabel}
+					type="checkbox"
 					onChange={onEndedChange}
-				>
-					{endedLabel}
-				</Checkbox>
+				/>
 			</div>
 			{endedChecked &&
 				<div>

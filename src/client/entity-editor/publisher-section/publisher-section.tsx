@@ -26,7 +26,7 @@ import {
 	updateEnded,
 	updateType
 } from './actions';
-import {Checkbox, Col, Row} from 'react-bootstrap';
+import {Col, Form, Row} from 'react-bootstrap';
 import {
 	validatePublisherSectionBeginDate,
 	validatePublisherSectionEndDate
@@ -67,7 +67,7 @@ type DispatchProps = {
 	onAreaChange: (arg: Area | null | undefined) => unknown,
 	onBeginDateChange: (arg: string) => unknown,
 	onEndDateChange: (arg: string) => unknown,
-	onEndedChange: (arg: React.FormEvent<Checkbox>) => unknown,
+	onEndedChange: (arg: React.FormEvent<any>) => unknown,
 	onTypeChange: (obj: {value: number} | null) => unknown
 };
 
@@ -176,12 +176,12 @@ function PublisherSection({
 				</Col>
 			</Row>
 			<div className="text-center">
-				<Checkbox
+				<Form.Check
 					defaultChecked={endedChecked}
+					label="Dissolved?"
+					type="checkbox"
 					onChange={onEndedChange}
-				>
-					Dissolved?
-				</Checkbox>
+				/>
 			</div>
 			{endedChecked &&
 				<div>

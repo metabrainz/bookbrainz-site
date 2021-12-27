@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Checkbox, Col, Row} from 'react-bootstrap';
+import {Button, Col, Form, Row} from 'react-bootstrap';
 import {
 	debouncedUpdateAliasName, debouncedUpdateAliasSortName, removeAliasRow,
 	updateAliasLanguage, updateAliasPrimary
@@ -114,12 +114,12 @@ const AliasRow = ({
 		</Row>
 		<Row>
 			<Col lg={{offset: 5, span: 2}}>
-				<Checkbox
+				<Form.Check
 					defaultChecked={primaryChecked}
+					label="Primary"
+					type="checkbox"
 					onChange={onPrimaryClick}
-				>
-					Primary
-				</Checkbox>
+				/>
 			</Col>
 			<Col className="text-right" lg={{offset: 2, span: 3}}>
 				<Button
