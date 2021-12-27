@@ -149,7 +149,9 @@ class DateField extends React.Component {
 							onBlur={this.handleYearInputBlur}
 							onChange={this.handleYearChange}
 						/>
-						<InputGroup.Addon style={{padding: '0 0.5em'}}>-</InputGroup.Addon>
+						<InputGroup.Append>
+							<InputGroup.Text style={{padding: '0 0.5em'}}>-</InputGroup.Text>
+						</InputGroup.Append>
 						<FormControl
 							maxLength="2"
 							placeholder="MM"
@@ -159,7 +161,9 @@ class DateField extends React.Component {
 							onBlur={this.handleMonthInputBlur}
 							onChange={this.handleMonthChange}
 						/>
-						<InputGroup.Addon style={{padding: '0 0.5em'}}>-</InputGroup.Addon>
+						<InputGroup.Append>
+							<InputGroup.Text style={{padding: '0 0.5em'}}>-</InputGroup.Text>
+						</InputGroup.Append>
 						<FormControl
 							maxLength="2"
 							placeholder="DD"
@@ -169,7 +173,7 @@ class DateField extends React.Component {
 							onBlur={this.handleDayInputBlur}
 							onChange={this.handleDayChange}
 						/>
-						<InputGroup.Button style={{fontSize: 'inherit'}}>
+						<InputGroup.Append style={{fontSize: 'inherit'}}>
 							<DatePicker
 								peekNextMonth
 								showMonthDropdown
@@ -187,7 +191,7 @@ class DateField extends React.Component {
 								timeFormat="false"
 								onChange={this.handleChangeOfDatePicker}
 							/>
-						</InputGroup.Button>
+						</InputGroup.Append>
 					</InputGroup>
 				</CustomInput>
 
