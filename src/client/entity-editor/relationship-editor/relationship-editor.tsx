@@ -23,9 +23,8 @@ import {
 	Button,
 	Col,
 	Container,
-	ControlLabel,
+	Form,
 	FormGroup,
-	HelpBlock,
 	Modal,
 	ProgressBar,
 	Row
@@ -409,7 +408,7 @@ class RelationshipModal
 		}
 		return (
 			<FormGroup>
-				<ControlLabel>Relationship</ControlLabel>
+				<Form.Label>Relationship</Form.Label>
 				<ReactSelect
 					disabled={!this.state.targetEntity}
 					name="relationshipType"
@@ -421,7 +420,9 @@ class RelationshipModal
 					onChange={this.handleRelationshipTypeChange}
 				/>
 				{this.state.relationshipType &&
-					<HelpBlock>{this.state.relationshipType.description}</HelpBlock>
+					<Form.Text muted>
+						{this.state.relationshipType.description}
+					</Form.Text>
 				}
 				{
 					attributes.includes('number') ?
