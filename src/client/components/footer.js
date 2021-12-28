@@ -59,9 +59,11 @@ function Footer(props) {
 						</small>
 					</Col>
 					<Col className="text-right" xs={4}>
-						<a href="/privacy">
-							<small>Privacy & Terms</small>
-						</a>
+						<small>
+							<a href="/privacy">
+								Privacy & Terms
+							</a>
+						</small>
 					</Col>
 				</Row>
 				<div className="text-center">
