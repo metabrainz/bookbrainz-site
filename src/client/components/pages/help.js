@@ -49,12 +49,12 @@ function HelpPage() {
 			</p>
 			<hr/>
 
-			<Row>
-				<h2>Entities</h2>
-				<p>
-					Entities are the main concepts used to describe a bibliographic record through their relationships
-				</p>
+			<h2>Entities</h2>
+			<p>
+				Entities are the main concepts used to describe a bibliographic record through their relationships
+			</p>
 
+			<Row>
 				<Col md={4}>
 					<img
 						alt="Entity relationships"
