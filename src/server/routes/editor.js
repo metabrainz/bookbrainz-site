@@ -230,17 +230,19 @@ export async function getEditorActivity(editorId, startDate, Revision, endDate =
 		(revision) => format(new Date(revision.createdAt), 'LLL-yy')
 	);
 	const revisionsCount = _.countBy(revisionDates);
-
+	// eslint-disable-next-line no-console
+	console.log(revisionJSON.size);
+	const temp = revisionJSON.length ? revisionJSON[0].createdAt : Date.now();
+	const temp2 = startDate > temp ? temp : startDate;
 	const allMonthsInInterval = eachMonthOfInterval({
 		end: endDate,
-		start: startDate
+		start: temp2
 	})
 		.map(month => format(new Date(month), 'LLL-yy'))
 		.reduce((accumulator, month) => {
 			accumulator[month] = 0;
 			return accumulator;
 		}, {});
-
 	return {...allMonthsInInterval, ...revisionsCount};
 }
 
