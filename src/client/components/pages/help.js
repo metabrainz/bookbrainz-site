@@ -22,7 +22,7 @@ import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
-const {PageHeader, ListGroup, ListGroupItem, Grid, Col, Row} = bootstrap;
+const {PageHeader, ListGroup, ListGroupItem, Col, Row} = bootstrap;
 
 /* eslint max-len: 0 */
 /**
@@ -36,7 +36,7 @@ function HelpPage() {
 		'en/latest/style/introduction/';
 
 	return (
-		<Grid>
+		<div>
 
 			<PageHeader>Help page</PageHeader>
 			<p className="lead">
@@ -209,9 +209,7 @@ function HelpPage() {
 
 				</Col>
 			</Row>
-
-
-		</Grid>
+		</div>
 	);
 }
 
