@@ -313,7 +313,7 @@ function editionToFormState(edition) {
 		(identifier) => { identifierEditor[identifier.id] = identifier; }
 	);
 
-	const physicalVisible = !(
+	const physicalEnable = !(
 		_.isNull(edition.depth) && _.isNull(edition.height) &&
 		_.isNull(edition.pages) && _.isNull(edition.weight) &&
 		_.isNull(edition.width)
@@ -341,7 +341,7 @@ function editionToFormState(edition) {
 			({id, name}) => ({label: name, value: id})
 		) : [],
 		pages: edition.pages,
-		physicalVisible,
+		physicalEnable,
 		publisher,
 		releaseDate,
 		status: edition.editionStatus && edition.editionStatus.id,
