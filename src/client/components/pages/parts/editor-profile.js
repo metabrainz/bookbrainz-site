@@ -97,7 +97,7 @@ class EditorProfileTab extends React.Component {
 						</small>
 					}
 				</h2>
-				<dl className="row">
+				<dl className="row editor-info">
 					<dt className="col-md-2">MusicBrainz Account</dt>
 					<dd className="col-md-10">
 						{musicbrainzAccount}
@@ -129,7 +129,7 @@ class EditorProfileTab extends React.Component {
 		return (
 			<div>
 				<h2>Stats</h2>
-				<dl className="row">
+				<dl className="row editor-info">
 					<dt className="col-md-8">Total Revisions</dt>
 					<dd className="col-md-4">{editor.totalRevisions}</dd>
 					<dt className="col-md-8">Revisions Applied</dt>
