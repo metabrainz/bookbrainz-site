@@ -42,6 +42,7 @@ function CallToAction() {
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
 						href="/author/create"
+						variant="secondary"
 					>
 						{genEntityIconHTMLElement('Author', '3x', false)}
 						<div className="margin-top-d4">Author</div>
@@ -49,6 +50,7 @@ function CallToAction() {
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
 						href="/work/create"
+						variant="secondary"
 					>
 						{genEntityIconHTMLElement('Work', '3x', false)}
 						<div className="margin-top-d4">Work</div>
@@ -56,6 +58,7 @@ function CallToAction() {
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
 						href="/edition/create"
+						variant="secondary"
 					>
 						{genEntityIconHTMLElement('Edition', '3x', false)}
 						<div className="margin-top-d4">Edition</div>
@@ -63,6 +66,7 @@ function CallToAction() {
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
 						href="/edition-group/create"
+						variant="secondary"
 					>
 						{genEntityIconHTMLElement('EditionGroup', '3x', false)}
 						<div className="margin-top-d4">Edition Group</div>
@@ -70,6 +74,7 @@ function CallToAction() {
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
 						href="/publisher/create"
+						variant="secondary"
 					>
 						{genEntityIconHTMLElement('Publisher', '3x', false)}
 						<div className="margin-top-d4">Publisher</div>

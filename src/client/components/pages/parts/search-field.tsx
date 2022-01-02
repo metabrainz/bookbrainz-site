@@ -120,6 +120,7 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 				componentClass={InputGroup.Button}
 				id="entity-type-select"
 				title={_.startCase(this.state.type) || 'All Entities'}
+				variant="secondary"
 				onSelect={this.handleEntitySelect}
 			>
 				{this.props.entityTypes.map((entityType: string) => (

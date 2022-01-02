@@ -132,7 +132,7 @@ class EntityFooter extends React.Component {
 							className="footer-button"
 							href={`/merge/add/${this.props.bbid}`}
 							title="Select entity for merging"
-							variant="default"
+							variant="secondary"
 						>
 							<FontAwesomeIcon
 								flip="vertical"
