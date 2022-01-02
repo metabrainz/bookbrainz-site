@@ -71,7 +71,7 @@ class IndexPage extends React.Component {
 												placeholder="Search for..."
 												type="text"
 											/>
-											<span className="input-group-btn">
+											<span className="input-group-append">
 												<Button
 													type="submit"
 													variant="success"
