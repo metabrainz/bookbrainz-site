@@ -87,6 +87,7 @@ class IndexPage extends React.Component {
 												block
 												href="/about"
 												size="lg"
+												variant="secondary"
 											>
 												About
 											</Button>
@@ -96,6 +97,7 @@ class IndexPage extends React.Component {
 												block
 												href="/contribute"
 												size="lg"
+												variant="secondary"
 											>
 												Contribute
 											</Button>
@@ -105,6 +107,7 @@ class IndexPage extends React.Component {
 												block
 												href="/develop"
 												size="lg"
+												variant="secondary"
 											>
 												Develop
 											</Button>
