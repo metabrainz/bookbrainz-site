@@ -25,7 +25,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Col, Row} = bootstrap;
+const {Button, CardDeck, Col, Form, Row} = bootstrap;
 const {Sticky, StickyContainer} = ReactSticky;
 
 /**
@@ -84,25 +84,25 @@ class EditorAchievementTab extends React.Component {
 		let rankUpdate;
 		if (this.props.isOwner) {
 			rankUpdate = (
-				<form
-					className="form-horizontal padding-bottom-1"
+				<Form
+					className="padding-bottom-1"
 					id="rankSelectForm"
 					method="post"
 				>
-					<div className="dnd-container">
+					<CardDeck>
 						<DragAndDrop name="rank1"/>
 						<DragAndDrop name="rank2"/>
 						<DragAndDrop name="rank3"/>
-					</div>
+					</CardDeck>
 					<span className="margin-left-1">
-						<button className="btn btn-success" type="submit">
+						<Button type="submit" variant="success">
 							Update
-						</button>
+						</Button>
 						<span className="margin-left-1">
 							click badge to unset
 						</span>
 					</span>
-				</form>
+				</Form>
 			);
 		}
 
