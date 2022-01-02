@@ -69,7 +69,7 @@ class MergeQueue extends React.Component {
 					{values(mergingEntities)
 						.map(entity =>
 							 (
-								<ListGroup.Item key={`merge-queue-${entity.bbid}`}>
+								<ListGroup.Item className="bg-white" key={`merge-queue-${entity.bbid}`}>
 
 									<input
 										checked={this.state.selectedOption === entity.bbid}
@@ -95,7 +95,7 @@ class MergeQueue extends React.Component {
 					After clicking <i>Merge into selected entity</i>, you will be redirected to a page where you can review the data before merging.
 				</p>
 				{entityList}
-				<ButtonGroup>
+				<ButtonGroup className="d-inline-block">
 					<Button
 						disabled={isNil(this.state.selectedOption)}
 						href={`/merge/submit/${this.state.selectedOption}`}
