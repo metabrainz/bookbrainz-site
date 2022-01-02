@@ -43,8 +43,8 @@ function TopEditorsTable(props) {
 			</div>
 			<Table
 				bordered
-				condensed
 				striped
+				size="sm"
 			>
 				<thead>
 					<tr>
@@ -96,8 +96,8 @@ function EntityCountTable(props) {
 			</div>
 			<Table
 				bordered
-				condensed
 				striped
+				size="sm"
 			>
 				<thead>
 					<tr>

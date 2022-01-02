@@ -53,7 +53,7 @@ class RevisionPage extends React.Component {
 		const isChangeADate = change.key.toLowerCase().match(/\bdate\b/);
 		if (change.kind === 'N') {
 			return (
-				<tr className="success" key={change.key}>
+				<tr className="table-success" key={change.key}>
 					<th scope="row">{change.key}</th>
 					<td> — </td>
 					<td>
@@ -65,7 +65,7 @@ class RevisionPage extends React.Component {
 
 		if (change.kind === 'E') {
 			return (
-				<tr className="warning" key={change.key}>
+				<tr className="table-warning" key={change.key}>
 					<th scope="row">{change.key}</th>
 					<td>
 						{RevisionPage.formatValueList(change.lhs, isChangeADate)}
@@ -79,7 +79,7 @@ class RevisionPage extends React.Component {
 
 		if (change.kind === 'D') {
 			return (
-				<tr className="danger" key={change.key}>
+				<tr className="table-danger" key={change.key}>
 					<th scope="row">{change.key}</th>
 					<td>
 						{RevisionPage.formatValueList(change.lhs, isChangeADate)}
