@@ -185,10 +185,10 @@ class NameSection extends React.Component {
 									{exactMatches.map((match) =>
 										(
 											<ListGroup.Item
-												bsStyle="warning"
 												href={`/${_.kebabCase(entityType)}/${match.bbid}`}
 												key={`${match.bbid}`}
 												rel="noopener noreferrer" target="_blank"
+												variant="warning"
 											>
 												{match.defaultAlias.name} {getEntityDisambiguation(match)}
 											</ListGroup.Item>

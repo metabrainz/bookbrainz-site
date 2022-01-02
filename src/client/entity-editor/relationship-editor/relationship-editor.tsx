@@ -499,8 +499,8 @@ class RelationshipModal
 						<Row>
 							<Col lg={{offset: 1, span: 10}}>
 								<ProgressBar
-									bsStyle="success"
 									now={this.calculateProgressAmount()}
+									variant="success"
 								/>
 							</Col>
 						</Row>
