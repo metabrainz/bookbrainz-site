@@ -26,7 +26,7 @@ import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {Button, DropdownButton, Dropdown, Table} = bootstrap;
+const {Button, ButtonGroup, Dropdown, DropdownButton, Table} = bootstrap;
 const {formatDate} = utilsHelper;
 
 
@@ -112,9 +112,11 @@ class CollectionsTable extends React.Component {
 						{tableHeading}
 					</h1>
 					<div className="collection-page-buttons">
-				        {myCollectionButton}
-						{newCollectionButton}
-						{entityTypeSelect}
+						<ButtonGroup>
+							{myCollectionButton}
+							{newCollectionButton}
+							{entityTypeSelect}
+						</ButtonGroup>
 					</div>
 				</div>
 				<hr className="thin"/>
