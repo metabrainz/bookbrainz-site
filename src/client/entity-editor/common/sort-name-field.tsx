@@ -159,12 +159,12 @@ function SortNameField({
 		<Button variant="primary" onClick={handleGuessClick}>Guess</Button>;
 
 	const copyButton =
-		<Button variant="primary" onClick={handleCopyClick}>Copy</Button>;
+		<Button className="ml-1" variant="primary" onClick={handleCopyClick}>Copy</Button>;
 	/* eslint-enable react/jsx-no-bind */
 
 	return (
 		<CustomInput
-			buttonAfter={[guessButton, ' ', copyButton]}
+			buttonAfter={[guessButton, copyButton]}
 			label={label}
 			ref={(node) => { input = node; }}
 			tooltipText={
