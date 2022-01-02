@@ -89,7 +89,7 @@ class EditorAchievementTab extends React.Component {
 					id="rankSelectForm"
 					method="post"
 				>
-					<CardDeck>
+					<CardDeck className="mb-3">
 						<DragAndDrop name="rank1"/>
 						<DragAndDrop name="rank2"/>
 						<DragAndDrop name="rank3"/>
@@ -131,7 +131,7 @@ class EditorAchievementTab extends React.Component {
 									}
 								}
 							</Sticky>
-							<div className="margin-left-2 margin-right-2" style={{zIndex: 1}}>
+							<div style={{zIndex: 1}}>
 								<div className="h1">Unlocked Achievements</div>
 								{achievements}
 								<div className="h1">Locked Achievements</div>
