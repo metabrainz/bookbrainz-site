@@ -120,8 +120,9 @@ class RegistrationForm extends React.Component {
 							<CustomInput
 								className="form-control"
 								defaultValue={this.props.name}
+								groupClassName="row"
 								label="Display Name"
-								labelClassName="col-lg-4"
+								labelClassName="col-lg-4 col-form-label"
 								placeholder="Display Name"
 								ref={(ref) => this.displayName = ref}
 								type="text"
@@ -136,11 +137,12 @@ class RegistrationForm extends React.Component {
 							<SelectWrapper
 								base={ReactSelect}
 								defaultValue={initialGender}
+								groupClassName="row"
 								idAttribute="id"
 								instanceId="gender"
 								label="Gender"
 								labelAttribute="name"
-								labelClassName="col-lg-4"
+								labelClassName="col-lg-4 col-form-label"
 								options={this.props.genders}
 								placeholder="Select gender…"
 								ref={(ref) => this.gender = ref}
