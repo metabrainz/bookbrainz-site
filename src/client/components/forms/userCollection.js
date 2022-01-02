@@ -231,7 +231,7 @@ class UserCollectionForm extends React.Component {
 							<h3><b>Collaborators</b></h3>
 							<Row className="margin-bottom-2">
 								<Col className="margin-top-d5" sm={6}>
-									<p className="help-block">
+									<p className="text-muted">
 								Collaborators can add/remove entities from your collection
 									</p>
 								</Col>

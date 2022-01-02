@@ -91,7 +91,7 @@ class MergeQueue extends React.Component {
 				<h3 className="margin-top-0">
 					Selected {entityCount} entit{entityCount > 1 ? 'ies' : 'y'} for merging
 				</h3>
-				<p className="help-block">Select the entity you want to merge into, or add more duplicates to merge.<br/>
+				<p className="text-muted">Select the entity you want to merge into, or add more duplicates to merge.<br/>
 					After clicking <i>Merge into selected entity</i>, you will be redirected to a page where you can review the data before merging.
 				</p>
 				{entityList}

@@ -67,7 +67,7 @@ function AnnotationSection({
 						annotation && annotation.lastRevision &&
 						<p className="small text-muted">Last modified: {formatDate(new Date(annotation.lastRevision.createdAt))}</p>
 					}
-					<p className="help-block">
+					<p className="text-muted">
 						Annotations allow you to enter freeform data that does not otherwise fit in the above form.
 						<b> Do not submit any copyrighted text here.</b> The contents will be made available to the public under <a href="https://musicbrainz.org/doc/About/Data_License">open licenses</a>.
 					</p>
