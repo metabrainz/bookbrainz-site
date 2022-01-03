@@ -29,7 +29,7 @@ import {
 	showRelationshipEditor,
 	undoLastSave
 } from './actions';
-import {Button, ButtonGroup, Col, Row} from 'react-bootstrap';
+import {Button, Col, Row} from 'react-bootstrap';
 import type {
 	Entity,
 	EntityType,
@@ -80,9 +80,10 @@ export function RelationshipList(
 				</Col>
 				{(onEdit || onRemove) &&
 					<Col className="text-right" lg={4}>
-						<ButtonGroup justified>
+						<div className="btn-group d-flex" role="group">
 							{onEdit &&
 								<Button
+									className="w-100"
 									href="#"
 									role="button"
 									variant="warning"
@@ -94,6 +95,7 @@ export function RelationshipList(
 							}
 							{onRemove &&
 								<Button
+									className="w-100"
 									href="#"
 									role="button"
 									variant="danger"
@@ -103,7 +105,7 @@ export function RelationshipList(
 									<span>&nbsp;Remove</span>
 								</Button>
 							}
-						</ButtonGroup>
+						</div>
 					</Col>
 				}
 			</Row>
