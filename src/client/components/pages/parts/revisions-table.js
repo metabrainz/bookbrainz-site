@@ -30,9 +30,7 @@ const {formatDate, stringToHTMLWithLinks} = utilsHelper;
 
 function RevisionsTable(props) {
 	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading} = props;
-	const tableCssClasses = 'table table-striped';
 	return (
-
 		<div>
 			<div>
 				<h1 className="text-center">{tableHeading}</h1>
@@ -41,8 +39,9 @@ function RevisionsTable(props) {
 			{
 				results.length > 0 ?
 					<Table
+						borderless
 						responsive
-						className={tableCssClasses}
+						striped
 					>
 						<thead>
 							<tr>
