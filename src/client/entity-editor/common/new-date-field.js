@@ -144,12 +144,13 @@ class DateField extends React.Component {
 						<FormControl
 							maxLength={isCommonEraDate ? 4 : 5}
 							placeholder="YYYY"
+							style={{width: '4.5em'}}
 							type="text"
 							value={this.state.year}
 							onBlur={this.handleYearInputBlur}
 							onChange={this.handleYearChange}
 						/>
-						<InputGroup.Append>
+						<InputGroup.Append style={{'margin-right': '-1px'}}>
 							<InputGroup.Text style={{padding: '0 0.5em'}}>-</InputGroup.Text>
 						</InputGroup.Append>
 						<FormControl
@@ -161,7 +162,7 @@ class DateField extends React.Component {
 							onBlur={this.handleMonthInputBlur}
 							onChange={this.handleMonthChange}
 						/>
-						<InputGroup.Append>
+						<InputGroup.Append style={{'margin-right': '-1px'}}>
 							<InputGroup.Text style={{padding: '0 0.5em'}}>-</InputGroup.Text>
 						</InputGroup.Append>
 						<FormControl
