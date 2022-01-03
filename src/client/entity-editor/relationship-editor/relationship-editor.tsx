@@ -24,7 +24,6 @@ import {
 	Col,
 	Container,
 	Form,
-	FormGroup,
 	Modal,
 	ProgressBar,
 	Row
@@ -407,7 +406,7 @@ class RelationshipModal
 			attributes = attributeTypes.map(attribute => attribute.name);
 		}
 		return (
-			<FormGroup>
+			<Form.Group>
 				<Form.Label>Relationship</Form.Label>
 				<ReactSelect
 					disabled={!this.state.targetEntity}
@@ -432,7 +431,7 @@ class RelationshipModal
 						/> :
 						null
 				}
-			</FormGroup>
+			</Form.Group>
 		);
 	}
 
