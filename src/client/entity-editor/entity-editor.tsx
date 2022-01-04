@@ -42,7 +42,7 @@ type StateProps = {
 };
 
 type DispatchProps = {
-	onSubmit: () => unknown
+	onSubmit: (event:React.FormEvent) => unknown
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -71,11 +71,16 @@ const EntityEditor = (props: Props) => {
 	} = props;
 	const currentState = (useSelector((state) => state) as any).toJS();
 	// eslint-disable-next-line consistent-return
-	const handleUrlChange = () => {
-		if (!_.isEqual(currentState, props.intitialState)) {
+	const handleUrlChange = React.useCallback(() => {
+		if (!_.isEqual(currentState, props.intitialState) && !currentState.submissionSection.submitted) {
 			return 'You have some unsaved changes!';
 		}
-	};
+	}, [currentState]);
+	React.useEffect(() => {
+		if (props.intitialState.editionSection && !props.intitialState.editionSection.matchingNameEditionGroups) {
+			props.intitialState.editionSection.matchingNameEditionGroups = [];
+		}
+	}, []);
 	React.useEffect(() => {
 		window.onbeforeunload = handleUrlChange;
 	}, [handleUrlChange]);
