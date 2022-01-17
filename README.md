@@ -1,9 +1,8 @@
 # BookBrainz Site
 
-[![Build Status](https://travis-ci.org/bookbrainz/bookbrainz-site.svg?branch=master)](https://travis-ci.org/bookbrainz/bookbrainz-site)
-[![Dependency Status](https://img.shields.io/david/bookbrainz/bookbrainz-site.svg)](https://david-dm.org/bookbrainz/bookbrainz-site)
-[![devDependency Status](https://img.shields.io/david/dev/bookbrainz/bookbrainz-site.svg)](https://david-dm.org/bookbrainz/bookbrainz-site#info=devDependencies)
-[![Coverage Status](https://coveralls.io/repos/github/bookbrainz/bookbrainz-site/badge.svg?branch=master)](https://coveralls.io/github/bookbrainz/bookbrainz-site?branch=master)
+![CI status](https://github.com/metabrainz/bookbrainz-site/actions/workflows/ci.yml/badge.svg?branch=master)
+![Tests status](https://github.com/metabrainz/bookbrainz-site/actions/workflows/test-report.yml/badge.svg?branch=master)
+[![Coverage status](https://coveralls.io/repos/github/bookbrainz/bookbrainz-site/badge.svg?branch=master)](https://coveralls.io/github/bookbrainz/bookbrainz-site?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/76f87309d52d75ff4a18/maintainability)](https://codeclimate.com/github/BookBrainz/bookbrainz-site/maintainability)
 <a href="https://www.browserstack.com/">
 <img src="https://bookbrainz.org/images/BrowserStack.svg" height="20px"></img>
@@ -47,7 +46,7 @@ Still not sure what to start with? Have a look at [tickets tagged **good-first-b
 
 ## Documentation
 
-The auto-generated developer documentation is served alongisde this repository on Github Pages: https://bookbrainz.github.io/bookbrainz-site
+The auto-generated developer documentation is served alongisde this repository on Github Pages: https://metabrainz.github.io/bookbrainz-site
 
 Our contributing guidelines can be found [here](CONTRIBUTING.md).
 <br/>
@@ -87,7 +86,7 @@ Note: If you are using docker-toolbox you need to replace [elasticsearch:9200](/
 To clone the repository and point the local HEAD to the latest commit in the
 `stable` branch, something like the following command should work:
 
-    git clone --recurse-submodules https://github.com/bookbrainz/bookbrainz-site.git
+    git clone --recurse-submodules https://github.com/metabrainz/bookbrainz-site.git
 
 Since this project makes use of
 git submodules, you

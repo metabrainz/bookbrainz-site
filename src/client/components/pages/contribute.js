@@ -83,7 +83,7 @@ function ContributePage() {
 				&nbsp;to see if there are any issues
 				or project that interests you.
 				Our code is all open source and hosted&nbsp;
-				<a href="https://github.com/BookBrainz">
+				<a href="https://github.com/metabrainz?q=bookbrainz">
 					on GitHub
 				</a>
 			</p>

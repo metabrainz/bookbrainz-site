@@ -130,7 +130,7 @@ if (existsSync(gitRevisionFilePath)) {
 }
 debug(`Git revision: ${siteRevision}`);
 
-const repositoryUrl = 'https://github.com/bookbrainz/bookbrainz-site/';
+const repositoryUrl = 'https://github.com/metabrainz/bookbrainz-site/';
 
 app.use((req, res, next) => {
 	// Set up globally-used properties
