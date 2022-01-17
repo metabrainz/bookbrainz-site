@@ -47,7 +47,7 @@ Still not sure what to start with? Have a look at [tickets tagged **good-first-b
 
 ## Documentation
 
-The auto-generated developer documentation is served alongisde this repository on Github Pages: https://bookbrainz.github.io/bookbrainz-site
+The auto-generated developer documentation is served alongisde this repository on Github Pages: https://metabrainz.github.io/bookbrainz-site
 
 Our contributing guidelines can be found [here](CONTRIBUTING.md).
 <br/>
@@ -87,7 +87,7 @@ Note: If you are using docker-toolbox you need to replace [elasticsearch:9200](/
 To clone the repository and point the local HEAD to the latest commit in the
 `stable` branch, something like the following command should work:
 
-    git clone --recurse-submodules https://github.com/bookbrainz/bookbrainz-site.git
+    git clone --recurse-submodules https://github.com/metabrainz/bookbrainz-site.git
 
 Since this project makes use of
 git submodules, you

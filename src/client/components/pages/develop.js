@@ -62,9 +62,9 @@ function DevelopPage() {
 			<h2>Source Code</h2>
 			<p>
 				BookBrainz runs on open source software. If you wish to
-				access the source, even contribute to the project, please
+				access the source and contribute to the project, please
 				see&nbsp;
-				<a href="https://github.com/bookbrainz/">
+				<a href="https://github.com/metabrainz/bookbrainz-site">
 					our github page
 				</a>.
 			</p>
