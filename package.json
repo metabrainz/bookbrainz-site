@@ -43,7 +43,7 @@
     "compression": "^1.7.4",
     "connect-redis": "^3.4.2",
     "core-js": "^3.8.3",
-    "cross-env": "^5.1.1",
+    "cross-env": "^7.0.3",
     "date-fns": "^2.15.0",
     "debug": "^4.3.2",
     "express": "^4.17.2",
