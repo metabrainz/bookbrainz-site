@@ -48,14 +48,31 @@
 
 
     <section class="readme">
-        <article><h1>BookBrainz Site</h1>
-<p><img src="https://github.com/metabrainz/bookbrainz-site/actions/workflows/ci.yml/badge.svg?branch=master" alt="CI status">
-<img src="https://github.com/metabrainz/bookbrainz-site/actions/workflows/test-report.yml/badge.svg?branch=master" alt="Tests status">
-<a href="https://coveralls.io/github/bookbrainz/bookbrainz-site?branch=master"><img src="https://coveralls.io/repos/github/bookbrainz/bookbrainz-site/badge.svg?branch=master" alt="Coverage status"></a>
-<a href="https://codeclimate.com/github/BookBrainz/bookbrainz-site/maintainability"><img src="https://api.codeclimate.com/v1/badges/76f87309d52d75ff4a18/maintainability" alt="Maintainability"></a>
-<a href="https://www.browserstack.com/">
-<img src="https://bookbrainz.org/images/BrowserStack.svg" height="20px"></img>
-</a></p>
+        <article><h1 align="center">
+  <br>
+  <a href="https://bookbrainz.org"><img src="https://github.com/metabrainz/metabrainz-logos/blob/master/logos/BookBrainz/PNG/BookBrainz_logo.png" alt="BookBrainz"></a>
+</h1>
+<h4 align="center">Server for the BookBrainz project</h4>
+<p align="center">
+    <img src="https://github.com/metabrainz/bookbrainz-site/actions/workflows/ci.yml/badge.svg?branch=master"
+         alt="CI status">
+    <img src="https://github.com/metabrainz/bookbrainz-site/actions/workflows/test-report.yml/badge.svg?branch=master"
+         alt="Tests status">
+    <img src="https://coveralls.io/repos/github/bookbrainz/bookbrainz-site/badge.svg?branch=master)](https://coveralls.io/github/bookbrainz/bookbrainz-site?branch=master"
+         alt="Coverage status">
+	<a href="https://codeclimate.com/github/bookbrainz/bookbrainz-site">
+		<img src="https://api.codeclimate.com/v1/badges/76f87309d52d75ff4a18/maintainability"
+         alt="Maintainability">
+	</a>
+	<a href="https://www.browserstack.com/">
+		<img src="https://bookbrainz.org/images/BrowserStack.svg" height="20px"></img>
+	</a>
+</p>
+<p align="center">
+  <a href="https://bookbrainz.org">Website</a> •
+  <a href="https://bookbrainz-dev-docs.readthedocs.io/">Documentation</a> •
+  <a href="https://tickets.metabrainz.org/projects/BB/issues">Bug tracker</a>
+</p>
 <hr>
 This repository contains the code for the BookBrainz web site. The directories
 are arranged as follows:
@@ -88,90 +105,21 @@ so consider following that.</p>
 If you are new to open source contribution workflows, have a look at <a href="https://akrabat.com/the-beginners-guide-to-contributing-to-a-github-project/">this beginner's guide</a> and our <a href="CONTRIBUTING.md">contribution guidelines</a>.
 Looking for existing issues, or to report a new bug you found? Head to our ticket tracker at https://tickets.metabrainz.org/projects/BB !
 Still not sure what to start with? Have a look at <a href="https://tickets.metabrainz.org/issues/?jql=project%20%3D%20BB%20AND%20status%20in%20(Open%2C%20Reopened)%20AND%20resolution%20%3D%20Unresolved%20AND%20labels%20%3D%20good-first-bug%20ORDER%20BY%20priority%20DESC%2C%20updated%20DESC">tickets tagged <strong>good-first-bug</strong></a></p>
+<h3>Setting up a local BookBrainz server</h3>
+<p>For instruction on how to <a href="https://bookbrainz-dev-docs.readthedocs.io/en/latest/docs/installation.html">set up and configure a local BookBrainz instance</a>, as well as <a href="https://bookbrainz-dev-docs.readthedocs.io/en/latest/docs/troubleshooting.html">troubleshooting common issues</a> and setting up testing, please visit our developer docs: https://bookbrainz-dev-docs.readthedocs.io</p>
 <h2>Documentation</h2>
-<p>The auto-generated developer documentation is served alongisde this repository on Github Pages: https://metabrainz.github.io/bookbrainz-site</p>
-<p>Our contributing guidelines can be found <a href="CONTRIBUTING.md">here</a>.
-<br/></p>
+<p>The developer documentation can be found at https://bookbrainz-dev-docs.readthedocs.io</p>
+<p>We also have a user guide for the website https://bookbrainz-user-guide.readthedocs.io</p>
+<p>The inline documentation found in this repository is served alongside on Github Pages: https://metabrainz.github.io/bookbrainz-site</p>
+<p>Our contributing guidelines can be found <a href="CONTRIBUTING.md">here</a>.</p>
+<br/>
 <h2>Beta and test subdomains</h2>
 <p>We have two separate subdomains for the purpose of testing and rolling out beta features.
 You can sign in with the same account as the one you use on the main website.</p>
 <p><strong><a href="https://beta.bookbrainz.org">beta.bookbrainz.org</a></strong> uses the main database but with a newer version of the code that hasn't been released yet. It is used to test new features.</p>
 <p><strong><a href="https://test.bookbrainz.org">test.bookbrainz.org</a></strong>: all changes made to this subdomain are not in sync with the main database and vice versa.
 This domain is for you to tinker with all features of the website freely without having to verify the correctness of the data you enter. This comes in handy if that's all you need to do instead of having to set up BookBrainz locally.
-This subdomain is used for testing only and the data is not maintained or updated. It is not guaranteed that any of the data will be authentic.
-<br/>
-<br/></p>
-<h1>Setting up a local BookBrainz server</h1>
-<p>BookBrainz depends on having PostgreSQL, Redis, Elasticsearch and NodeJS set
-up and running.</p>
-<h2>Running dependencies using Docker</h2>
-<p>The easiest way to get a local developement server running is <a href="https://docs.docker.com/get-started/part2/">using Docker</a>.
-This will save you a fair amount of set up.</p>
-<p>You'll need to install Docker and Docker-compose on your development machine:</p>
-<ul>
-<li><a href="https://docs.docker.com/install/">Docker</a></li>
-<li><a href="https://docs.docker.com/compose/install/">docker-compose</a></li>
-</ul>
-<p>When that is installed, clone the repository and follow the instructions below step by step.</p>
-<p>Note: If you are using docker-toolbox you need to replace <a href="/config/config.json.example#L30">elasticsearch:9200</a> with ip address of your docker-machine in <code>config.json</code>. To get ip address of your docker machine use command <code>docker-machine ip default</code> for more infomation regarding finding ip address of docker-machine refer <a href="https://docs.docker.com/machine/reference/ip/">here</a></p>
-<h2>Cloning</h2>
-<p>To clone the repository and point the local HEAD to the latest commit in the
-<code>stable</code> branch, something like the following command should work:</p>
-<pre><code>git clone --recurse-submodules https://github.com/metabrainz/bookbrainz-site.git
-</code></pre>
-<p>Since this project makes use of
-git submodules, you
-need to use <code>git clone --recurse-submodules</code> to clone it. Alternatively, to manually initialize
-submodules, run these two commands:</p>
-<pre><code>git submodule init
-git submodule update
-</code></pre>
-<p>Currently used submodule:</p>
-<ul>
-<li><a href="https://github.com/MonkeyDo/lobes">MonkeyDo/lobes</a> in
-<code>src/client/stylesheets/lobes</code></li>
-</ul>
-<h2>Configuration</h2>
-<p>Create a copy of <code>config/config.json.example</code> and rename it to <code>config.json</code>.
-You can do this by running this command from the bookbrainz-site directory:</p>
-<p><code>cp config/config.json.example config/config.json</code></p>
-<p>If you want to be able to sign-up and edit, you will need to set up authentication under <code>musicbrainz</code>.
-To get the <code>clientID</code> and <code>clientSecret</code> tokens, head to <a href="https://musicbrainz.org/account/applications">the MusicBrainz website</a>
-and register a new developer application. Make sure to enter the callback URL as <code>http://localhost:&lt;port&gt;/cb</code>(port: 9099 by default). You can then copy the tokens for that developer application and paste as strings in your <code>config/config.json</code>. The tokens and callback URL in your <code>config/config.json</code> needs to match exactly the one for the developer application.</p>
-<h2>Database set-up</h2>
-<p>When you first start working with BookBrainz, you will need to perform some initialization for PostgreSQL and import the latest BookBrainz
-database dump.</p>
-<p>Luckily, we have a script that does just that: from the command line, in the <code>bookbrainz-site</code> folder, type and run <code>./scripts/database-init-docker.sh</code>.
-The process may take a while as Docker downloads and builds the images. Let that run until the command returns.</p>
-<p>The latest database dump can be found <a href="http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2">at this address</a></p>
-<h2>Running the web server</h2>
-<p>If all went well, you will only need to run <code>./develop.sh</code> in the command line from the <code>bookbrainz-site</code> folder.
-Press <code>ctrl+c</code> to stop the server. The dependencies will continue running in the background.</p>
-<p>Wait until the console output gets quiet and this line appears: <code>&gt; cross-env node ./lib/server/app.js</code>.
-After a few seconds, you can then point your browser to <code>localhost:9099</code>.</p>
-<p>Make changes to the code in the <code>src</code> folder and run <code>./develop.sh</code> again to rebuild and run the server.</p>
-<p>Once you are done developing, you can stop the dependencies running in docker in the background by running <code>./stop.sh</code>.</p>
-<h2>Running the API</h2>
-<p>As described above for running the web server, you can easily start the API with Docker by running  <code>./develop-api.sh</code>.</p>
-<p>Point you browser to <code>localhost:9098/1/api-docs</code> to pull up the documentation and try out the api endpoints.</p>
-<p>Don't forget to run <code>./stop.sh</code> once you are done developing to stop the dependencies that are running in the background.</p>
-<h2>Advanced users and debugging</h2>
-<p>Once you get into serious work on the project, we recommend you use a debugger and <a href="./NODEJS_SETUP.md">run the NodeJS server locally</a> (while still running dependencies in Docker for simplicity).
-Using a debugger will allow you to pause and inspect the server code as it is being executed.</p>
-<p>If you do not want to use Docker at all, you can also <a href="./DEPENDENCIES_MANUAL_INSTALL.md">install the database and search dependencies on your machine</a></p>
-<h2>Watch files and live reload</h2>
-<p>When doing local development on your computer, you would have to stop and rebuild the application after every change you make to the codebase, then refresh the page to see the changes.</p>
-<p>There is a more convenient development option set up for the project called &quot;live reloading&quot;.
-Saving a file will trigger a rebuild of the project (the &quot;watch&quot; part), and changes will automatically be reflected in the web page without the need to reload (the &quot;live reload&quot; part).
-The current state of your page will also be preserved that way.</p>
-<p>You will find the documentation for <a href="./NODEJS_SETUP.md/#Watch-files-and-live-reload-with-Webpack">watching files and live reloading here</a></p>
-<h1>Testing</h1>
-<p>The test suite is built using Mocha and Chai. Before running the tests, you will need to set up a <code>bookbrainz_test</code> database in postgres. Here are the instructions to do so:</p>
-<p>Run the following command to create and set up the bookbrainz_test database using Docker: <code>docker-compose run --rm bookbrainz-site scripts/wait-for-postgres.sh scripts/create-test-db.sh</code>.</p>
-<p>If you are running postgres manually outside of Docker, you can set some environment variables before running the script <code>scripts/create-test-db.sh</code>:
-In particular <code>POSTGRES_HOST=localhost</code> but you can also set <code>POSTGRES_USER</code>, <code>POSTGRES_PASSWORD</code> and <code>POSTGRES_DB</code></p>
-<p>Once your testing database is set up, you can run the test suite with the commands <code>docker-compose run --rm bookbrainz-site yarn run test</code> (to run in Docker) or simply <code>yarn run test</code> (to run locally).
-You may need to adjust your <code>config/test.json</code> file to match you setup.</p></article>
+This subdomain is used for testing only and the data is not maintained or updated. It is not guaranteed that any of the data will be authentic.</p></article>
     </section>
 
 
@@ -184,7 +132,7 @@ You may need to adjust your <code>config/test.json</code> file to match you setu
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Jan 20 2022 00:54:09 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Jan 21 2022 17:55:15 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
