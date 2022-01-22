@@ -615,3 +615,9 @@ ul {
 		background-color: $gray-200;
 	}
 }
+
+/* Round button used in pager at the bottom of many table-style pages */
+.round-button {
+	border-radius: 20px;
+	font-weight: 700;
+}
