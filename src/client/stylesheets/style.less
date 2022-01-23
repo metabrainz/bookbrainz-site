@@ -196,23 +196,6 @@ body {
 }
 .generate-margins-d(60);
 
-.no-sides-border {
-	border-left: 0px;
-	border-right: 0px;
-}
-
-.picture-fallback-icon(@size) {
-	font-size: @size;
-	margin: 0.2em 0;
-	color: #d0d0d0;
-}
-.picture-fallback-icon-small {
-	.picture-fallback-icon(300%);
-}
-.picture-fallback-icon-large {
-	.picture-fallback-icon(800%);
-}
-
 // Fix to put react-bootstrap tooltips in front of modals
 .tooltip {
 	z-index: 1050;
@@ -288,12 +271,6 @@ a.contact-text:visited {
 .deleted {
 	text-decoration: line-through;
 	color: @brand-danger;
-}
-
-/* getStarted.jade */
-/* =============== */
-.get-started-icon {
-	margin-top: 20px;
 }
 
 /* entity/view/*.jade */
