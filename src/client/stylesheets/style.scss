@@ -37,6 +37,7 @@ $disabled-color: lighten($disabled-bg,15%);
 .navbar.BookBrainz {
 	background: rgba(255, 255, 255, 1);
 	margin-bottom: 0px;
+	padding-right: 0px;
 	.navbar-nav > .disabled > a {
 		color: $disabled-color;
 		background: $disabled-bg;
@@ -49,6 +50,7 @@ $disabled-color: lighten($disabled-bg,15%);
 
 .BookBrainz .navbar-toggler {
 	background-color: $bookbrainz;
+	margin-right: 1rem;
 	&:focus {
 		background-color: $bookbrainz;
 	}
