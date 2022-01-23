@@ -575,3 +575,34 @@ hr.wide {
 .dnd-container {
 	display: flex;
 }
+
+/* Replicate Boostrap 3 style conventions */
+th {
+	text-align: left;
+}
+
+.table thead th {
+	border-top-style: none;
+}
+
+@media (min-width: map-get($container-max-widths, "md")) {
+	.editor-info dt {
+		text-align: right;
+	}
+}
+
+dl.row dd {
+	margin-bottom: 0;
+}
+
+.list-group ul {
+	margin-bottom: 0;
+}
+
+ul {
+	margin-bottom: 10px;
+}
+
+.badge {
+	vertical-align: middle;
+}
