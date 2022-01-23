@@ -620,3 +620,53 @@ ul {
 .input-group > .Select {
 	flex: 1 1 auto;
 }
+
+/* Restore the bootstrap4 default blue colour of primary buttons */
+.btn {
+	&.btn-primary {
+		background: #337ab7;
+
+		&:focus {
+			background: #448ccb;
+		}
+
+		&:hover {
+			background: #448ccb;
+		}
+
+		&:not(:disabled):not(.disabled):active {
+			background: #337ab7;
+		}
+
+		&:active:hover {
+			background-color: #204d74;
+			border-color: #183854;
+		}
+
+		&.dropdown-toggle {
+			background: #337ab7;
+		}
+	}
+
+	&.btn-outline-primary {
+		color: #337ab7;
+		border: 1px solid #ddd;
+
+		&:focus,&:hover {
+			background-color: #f9f6f5;
+		}
+
+		&:not(:disabled):not(.disabled):active {
+			color: #337ab7;
+			border: 1px solid #ddd;
+			background-color: #fff;
+			box-shadow: none;
+		}
+
+		&:disabled,&.disabled {
+			color: #dbccc6;
+			cursor: not-allowed;
+			background-color: #fff;
+		}
+	}
+}
