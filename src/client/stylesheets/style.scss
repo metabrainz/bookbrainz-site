@@ -670,3 +670,10 @@ ul {
 		}
 	}
 }
+
+/* Match existing behaviour which shrinks lead paragraph size on smaller devices */
+@media (max-width: map-get($container-max-widths, "sm")) {
+    p.lead {
+        font-size: 1.0rem;
+    }
+}
