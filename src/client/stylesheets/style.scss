@@ -1,7 +1,7 @@
 /*
- * Copyright (C) 2014-2015, 2022  Ben Ockmore
- *               2015             Leo Verto
- *               2016             Sean Burke
+ * Copyright (C) 2014-2015, 2021-2022  Ben Ockmore
+ *               2015                  Leo Verto
+ *               2016                  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ $disabled-color: lighten($disabled-bg,15%);
 .navbar.BookBrainz {
 	background: rgba(255, 255, 255, 1);
 	margin-bottom: 0px;
-	.nav.navbar-nav > .disabled > a {
+	.navbar-nav > .disabled > a {
 		color: $disabled-color;
 		background: $disabled-bg;
 	}
@@ -47,7 +47,7 @@ $disabled-color: lighten($disabled-bg,15%);
 	border: none !important;
 }
 
-.BookBrainz .navbar-toggle {
+.BookBrainz .navbar-toggler {
 	background-color: $bookbrainz;
 	&:focus {
 		background-color: $bookbrainz;
@@ -88,7 +88,10 @@ body {
 .whole-page-form {
 	margin-top: 3em;
 }
-.navbar-form .input-group-btn > .btn {
+.navbar .input-group-append > .btn {
+	padding: 6.5px 12px !important;
+}
+.navbar .input-group-prepend > .btn {
 	padding: 6.5px 12px !important;
 }
 .loading-background {
@@ -410,7 +413,7 @@ hr.wide {
 .BookBrainz > .container-fluid > .navbar-header{
 	margin-left: 0px;
 	margin-right: 0px;
-	>.navbar-toggle{
+	>.navbar-toggler{
 		margin-right: 0px;
 	}
 
