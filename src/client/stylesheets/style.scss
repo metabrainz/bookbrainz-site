@@ -679,3 +679,11 @@ ul {
         font-size: 1.0rem;
     }
 }
+
+/* Restore BS3 padding on input group buttons */
+.input-group > .input-group-prepend > .btn {
+	padding: 6px 12px;
+}
+.input-group > .input-group-append > .btn {
+	padding: 6px 12px;
+}
