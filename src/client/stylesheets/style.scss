@@ -615,3 +615,8 @@ ul {
 	border-radius: 20px;
 	font-weight: 700;
 }
+
+/* Fixes relationship editor "Other Entity" width */
+.input-group > .Select {
+	flex: 1 1 auto;
+}
