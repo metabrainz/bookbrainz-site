@@ -489,7 +489,6 @@ async function rankUpdate(orm, editorId, bodyRank, rank) {
 
 router.post('/:id/achievements/', auth.isAuthenticated, async (req, res) => {
 	const {orm} = req.app.locals;
-	const {Editor} = orm;
 	const userId = parseInt(req.params.id, 10);
 	if (!isCurrentUser(userId, req.user)) {
 		throw new Error('Not authenticated');

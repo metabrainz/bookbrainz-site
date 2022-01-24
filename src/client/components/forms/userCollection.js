@@ -92,7 +92,7 @@ class UserCollectionForm extends React.Component {
 			.send(data)
 			.then((res) => {
 				window.location.href = `/collection/${res.body.id}`;
-			}, (error) => {
+			}, () => {
 				this.setState({
 					errorText: 'Internal Error'
 				});

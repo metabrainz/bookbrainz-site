@@ -15,6 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint-disable camelcase */
 
 import * as commonUtils from '../../common/helpers/utils';
 import {camelCase, isString, snakeCase, upperFirst} from 'lodash';
@@ -244,7 +245,6 @@ export function refreshIndex() {
 	return _client.indices.refresh({index: _index});
 }
 
-/* eslint camelcase: 0, no-magic-numbers: 1 */
 export async function generateIndex(orm) {
 	const {Area, Author, Edition, EditionGroup, Editor, Publisher, Series, UserCollection, Work} = orm;
 	const indexMappings = {

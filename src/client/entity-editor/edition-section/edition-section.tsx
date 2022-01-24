@@ -324,6 +324,7 @@ function EditionSection({
 						errorMessage={dateErrorMessage}
 						label="Release Date"
 						placeholder="YYYY-MM-DD"
+						// eslint-disable-next-line max-len
 						tooltipText="The date this specific edition was published (not the first publication date of the work). If unsure, leave empty."
 						onChangeDate={onReleaseDateChange}
 					/>

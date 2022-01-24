@@ -1,4 +1,3 @@
-/* eslint-disable prefer-arrow-callback,func-names */
 /*
  * Copyright (C) 2019  Akhilesh Kumar
  *
@@ -48,7 +47,7 @@ describe('GET /Edition', () => {
 	before(() => createEdition(aBBID));
 	after(truncateEntities);
 	// Test to get basic information of an Edition
-	it('should get basic information of edition', async function () {
+	it('should get basic information of edition', async () => {
 		const res = await chai.request(app).get(`/edition/${aBBID}`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -68,7 +67,7 @@ describe('GET /Edition', () => {
 		);
 	 });
 
-	 it('should return list of aliases of an Edition', async function () {
+	 it('should return list of aliases of an Edition', async () => {
 		const res = await chai.request(app).get(`/edition/${aBBID}/aliases`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -80,7 +79,7 @@ describe('GET /Edition', () => {
 		expect(res.body.aliases).to.have.lengthOf(1);
 	 });
 
-	 it('should return list of identifiers of an Edition', async function () {
+	 it('should return list of identifiers of an Edition', async () => {
 		const res = await chai.request(app).get(`/edition/${aBBID}/identifiers`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -92,7 +91,7 @@ describe('GET /Edition', () => {
 		expect(res.body.identifiers).to.have.lengthOf(1);
 	 });
 
-	 it('should return list of relationships of an Edition', async function () {
+	 it('should return list of relationships of an Edition', async () => {
 		const res = await chai.request(app).get(`/edition/${aBBID}/relationships`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -104,10 +103,10 @@ describe('GET /Edition', () => {
 		expect(res.body.relationships).to.have.lengthOf(1);
 	 });
 
-	 it('should throw a 404 error if trying to access an edition that does not exist', function (done) {
+	 it('should throw a 404 error if trying to access an edition that does not exist', (done) => {
 		chai.request(app)
 			.get(`/edition/${bBBID}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
@@ -117,10 +116,10 @@ describe('GET /Edition', () => {
 			});
 	 });
 
-	it('should throw a 400 error if trying to access an edition with invalid BBID', function (done) {
+	it('should throw a 400 error if trying to access an edition with invalid BBID', (done) => {
 		chai.request(app)
 			.get(`/edition/${inValidBBID}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(400);
 				expect(res.ok).to.be.false;
@@ -130,10 +129,10 @@ describe('GET /Edition', () => {
 			});
 	 });
 
-	 it('should throw a 404 error if trying to identifiers  of an Edition that does not exist', function (done) {
+	 it('should throw a 404 error if trying to identifiers  of an Edition that does not exist', (done) => {
 		chai.request(app)
 			.get(`/edition/${bBBID}/identifiers`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
@@ -143,10 +142,10 @@ describe('GET /Edition', () => {
 			});
 	 });
 
-	 it('should throw a 404 error if trying to relationships of an Edition that does not exist', function (done) {
+	 it('should throw a 404 error if trying to relationships of an Edition that does not exist', (done) => {
 		chai.request(app)
 			.get(`/edition/${bBBID}/relationships`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
@@ -157,10 +156,10 @@ describe('GET /Edition', () => {
 	 });
 
 
-	it('should throw a 404 error if trying to access aliases of an Edition that does not exist', function (done) {
+	it('should throw a 404 error if trying to access aliases of an Edition that does not exist', (done) => {
 		chai.request(app)
 			.get(`/edition/${bBBID}/aliases`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
@@ -279,7 +278,7 @@ describe('Browse Edition', () => {
 	it('should throw an error if trying to browse more than one entity', (done) => {
 		chai.request(app)
 			.get(`/edition?author=${author.get('bbid')}&work=${author.get('bbid')}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(400);
 				return done();
@@ -419,7 +418,7 @@ describe('Browse Edition', () => {
 	it('should throw 400 error for invalid bbid', (done) => {
 		chai.request(app)
 			.get('/edition?author=1212121')
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(400);
 				return done();
@@ -429,7 +428,7 @@ describe('Browse Edition', () => {
 	it('should throw 404 error for incorrect bbid', (done) => {
 		chai.request(app)
 			.get(`/edition?author=${aBBID}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				return done();
