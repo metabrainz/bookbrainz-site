@@ -28,7 +28,7 @@ import React from 'react';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {Alert, Badge, Button, ButtonGroup, Row, Table} = bootstrap;
+const {Alert, Badge, Button, ButtonGroup, Table} = bootstrap;
 
 /**
  * Renders the document and displays the 'SearchResults' page.
@@ -153,12 +153,12 @@ class SearchResults extends React.Component {
 					</h2>
 					{
 						!this.props.condensed &&
-						<Row>
+						<div>
 							<small>Make sure the spelling is correct, and that you have selected the correct type in the search bar.</small>
 							<hr className="wide"/>
 							<h3>Are we missing an entry?</h3>
 							<CallToAction/>
-						</Row>
+						</div>
 					}
 				</div>
 			);

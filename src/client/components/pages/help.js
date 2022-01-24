@@ -22,7 +22,7 @@ import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
-const {PageHeader, ListGroup, ListGroupItem, Grid, Col, Row} = bootstrap;
+const {ListGroup, ListGroupItem, Col, Row} = bootstrap;
 
 /* eslint max-len: 0 */
 /**
@@ -36,9 +36,11 @@ function HelpPage() {
 		'en/latest/style/introduction/';
 
 	return (
-		<Grid>
+		<div>
 
-			<PageHeader>Help page</PageHeader>
+			<div className="page-header">
+				<h1>Help page</h1>
+			</div>
 			<p className="lead">
 				Feeling lost? On this page you will find explanations of the basic concepts
 				used across BookBrainz, as well as an F.A.Q and a glossary.
@@ -49,12 +51,12 @@ function HelpPage() {
 			</p>
 			<hr/>
 
-			<Row>
-				<h2>Entities</h2>
-				<p>
-					Entities are the main concepts used to describe a bibliographic record through their relationships
-				</p>
+			<h2>Entities</h2>
+			<p>
+				Entities are the main concepts used to describe a bibliographic record through their relationships
+			</p>
 
+			<Row>
 				<Col md={4}>
 					<img
 						alt="Entity relationships"
@@ -209,9 +211,7 @@ function HelpPage() {
 
 				</Col>
 			</Row>
-
-
-		</Grid>
+		</div>
 	);
 }
 

@@ -59,12 +59,14 @@ function Footer(props) {
 						</small>
 					</Col>
 					<Col className="text-right" xs={4}>
-						<a href="/privacy">
-							<small>Privacy & Terms</small>
-						</a>
+						<small>
+							<a href="/privacy">
+								Privacy & Terms
+							</a>
+						</small>
 					</Col>
 				</Row>
-				<Row className="text-center">
+				<div className="text-center">
 					<small>
 						Alpha Software —{' '}
 						<a href={`${repositoryUrl}commit/${siteRevision}`}>
@@ -74,7 +76,7 @@ function Footer(props) {
 							Report a Bug
 						</a>
 					</small>
-				</Row>
+				</div>
 			</Grid>
 		</footer>
 	);
