@@ -231,9 +231,11 @@ export async function getEditorActivity(editorId, startDate, Revision, endDate =
 	);
 	const revisionsCount = _.countBy(revisionDates);
 
+	const firstRevisionDate = revisionJSON.length ? revisionJSON[0].createdAt : Date.now();
+	const activityStart = startDate > firstRevisionDate ? firstRevisionDate : startDate;
 	const allMonthsInInterval = eachMonthOfInterval({
 		end: endDate,
-		start: startDate
+		start: activityStart
 	})
 		.map(month => format(new Date(month), 'LLL-yy'))
 		.reduce((accumulator, month) => {
