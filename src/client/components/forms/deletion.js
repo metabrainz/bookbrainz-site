@@ -145,7 +145,7 @@ class EntityDeletionForm extends React.Component {
 											<FontAwesomeIcon icon={faExclamationTriangle}/>&nbsp;
 											You’re about to delete the {entity.type} {entityName}.
 										</h4>
-										<p style={{fontSize: '1.3em'}}>Edit the entity or merge duplicates rather than delete !</p>
+										<span style={{fontSize: '1.3em'}}>Edit the entity or merge duplicates rather than delete !</span>
 									</Alert>
 									<p>
 									As a general principle, if you can solve an issue with non-destructive edits,

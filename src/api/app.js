@@ -1,4 +1,3 @@
-/* eslint-disable no-process-env */
 /*
  * Copyright (C) 2014-2015  Ben Ockmore
  *               2015-2017  Sean Burke
@@ -18,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint global-require: 'warn' */
+/* eslint-disable node/no-process-env */
 
 import * as search from '../common/helpers/search';
 import BookBrainzData from 'bookbrainz-data';
@@ -88,13 +87,12 @@ search.init(app.locals.orm, Object.assign({}, config.search));
 const debug = Debug('bbapi');
 
 const DEFAULT_API_PORT = 9098;
-app.set('port', process.env.PORT || DEFAULT_API_PORT); // eslint-disable-line no-process-env,max-len
+app.set('port', process.env.PORT || DEFAULT_API_PORT);
 
 const server = app.listen(app.get('port'), () => {
 	debug(`Express server listening on port ${server.address().port}`);
 });
 
-/* eslint-disable no-console */
 function cleanupFunction() {
 	return new Promise((resolve, reject) => {
 		debug('Cleaning up before closing');
@@ -116,7 +114,6 @@ function cleanupFunction() {
 		}
 	});
 }
-/* eslint-enable no-console */
 
 // Run cleanup function
 appCleanup(cleanupFunction);

@@ -1,4 +1,3 @@
-/* eslint-disable prefer-arrow-callback,func-names */
 /*
  * Copyright (C) 2019  Akhilesh Kumar
  *
@@ -45,7 +44,7 @@ describe('GET /Author', () => {
 	before(() => createAuthor(aBBID));
 	after(truncateEntities);
 	// Test to get basic information of an Author
-	it('should get basic information of an Author', async function () {
+	it('should get basic information of an Author', async () => {
 		const res = await chai.request(app).get(`/author/${aBBID}`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -63,7 +62,7 @@ describe('GET /Author', () => {
 		);
 	 });
 
-	 it('should return list of aliases of an Author', async function () {
+	 it('should return list of aliases of an Author', async () => {
 		const res = await chai.request(app).get(`/author/${aBBID}/aliases`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -75,7 +74,7 @@ describe('GET /Author', () => {
 		expect(res.body.aliases).to.have.lengthOf(1);
 	 });
 
-	 it('should return list of identifiers of an Author', async function () {
+	 it('should return list of identifiers of an Author', async () => {
 		const res = await chai.request(app).get(`/author/${aBBID}/identifiers`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -87,7 +86,7 @@ describe('GET /Author', () => {
 		expect(res.body.identifiers).to.have.lengthOf(1);
 	 });
 
-	 it('should return list of relationships of an Author', async function () {
+	 it('should return list of relationships of an Author', async () => {
 		const res = await chai.request(app).get(`/author/${aBBID}/relationships`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -99,10 +98,10 @@ describe('GET /Author', () => {
 		expect(res.body.relationships).to.have.lengthOf(1);
 	 });
 
-	 it('should throw a 404 error if trying to access an author that does not exist', function (done) {
+	 it('should throw a 404 error if trying to access an author that does not exist', (done) => {
 		chai.request(app)
 			.get(`/author/${bBBID}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
@@ -112,10 +111,10 @@ describe('GET /Author', () => {
 			});
 	 });
 
-	it('should throw a 400 error if trying to access an author with invalid BBID', function (done) {
+	it('should throw a 400 error if trying to access an author with invalid BBID', (done) => {
 		chai.request(app)
 			.get(`/author/${inValidBBID}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(400);
 				expect(res.ok).to.be.false;
@@ -125,10 +124,10 @@ describe('GET /Author', () => {
 			});
 	 });
 
-	 it('should throw a 404 error if trying to access identifiers of an Author that does not exist', function (done) {
+	 it('should throw a 404 error if trying to access identifiers of an Author that does not exist', (done) => {
 		chai.request(app)
 			.get(`/author/${bBBID}/identifiers`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
@@ -139,10 +138,10 @@ describe('GET /Author', () => {
 	 });
 
 
-	it('should throw a 404 error if trying to access aliases of an Author that does not exist', function (done) {
+	it('should throw a 404 error if trying to access aliases of an Author that does not exist', (done) => {
 		chai.request(app)
 			.get(`/author/${bBBID}/aliases`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
@@ -152,10 +151,10 @@ describe('GET /Author', () => {
 			});
 	 });
 
-	it('should throw a 404 error if trying to access relationships of an Author that does not exist', function (done) {
+	it('should throw a 404 error if trying to access relationships of an Author that does not exist', (done) => {
 		chai.request(app)
 			.get(`/author/${bBBID}/relationships`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
@@ -229,7 +228,7 @@ describe('Browse Author', () => {
 	it('should throw an error if trying to browse more than one entity', (done) => {
 		chai.request(app)
 			.get(`/author?work=${work.get('bbid')}&edition=${work.get('bbid')}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(400);
 				return done();
@@ -272,7 +271,7 @@ describe('Browse Author', () => {
 	it('should throw 400 error for invalid bbid', (done) => {
 		chai.request(app)
 			.get('/author?work=1212121')
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(400);
 				return done();
@@ -282,7 +281,7 @@ describe('Browse Author', () => {
 	it('should throw 404 error for incorrect bbid', (done) => {
 		chai.request(app)
 			.get(`/author?work=${aBBID}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				return done();

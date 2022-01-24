@@ -58,6 +58,7 @@ router.get('/', async (req, res, next) => {
 			showOwner: true,
 			size,
 			tableHeading: 'Public Collections',
+			type,
 			user
 		});
 

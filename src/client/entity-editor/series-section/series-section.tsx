@@ -21,7 +21,7 @@ import * as Immutable from 'immutable';
 import * as React from 'react';
 import {Action, addSeriesItem, editSeriesItem, removeSeriesItem, sortSeriesItems, updateOrderType, updateSeriesType} from './actions';
 import {Col, Row} from 'react-bootstrap';
-import type {Entity, EntityType, RelationshipForDisplay, RelationshipType, Relationship as _Relationship} from '../relationship-editor/types';
+import type {Entity, EntityType, RelationshipForDisplay, RelationshipType} from '../relationship-editor/types';
 import CustomInput from '../../input';
 import type {Dispatch} from 'redux';
 import Select from 'react-select';

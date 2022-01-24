@@ -92,7 +92,7 @@ class AddEntityToCollectionModal extends React.Component {
 		if (bbids.length) {
 			request.post(`/collection/${this.props.collectionId}/add`)
 				.send({bbids})
-				.then((res) => {
+				.then(() => {
 					this.setState({
 						entities: [],
 						error: null
@@ -102,7 +102,7 @@ class AddEntityToCollectionModal extends React.Component {
 							type: 'success'
 						});
 					});
-				}, (error) => {
+				}, () => {
 					this.setState({
 						error: 'Something went wrong! Please try again later'
 					});
