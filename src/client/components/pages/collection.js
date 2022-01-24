@@ -232,6 +232,7 @@ class CollectionPage extends React.Component {
 					</Col>
 					<Col md={10}>
 						<h1>{this.props.collection.name}</h1>
+						<hr/>
 						<CollectionAttributes collection={this.props.collection}/>
 					</Col>
 				</Row>
