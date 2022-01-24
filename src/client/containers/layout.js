@@ -206,10 +206,10 @@ class Layout extends React.Component {
 				<div className="form-group">
 					<div className="input-group">
 						<input
+							required
 							className="form-control"
 							name="q"
 							placeholder="Search for..."
-							required
 							type="text"
 						/>
 						<span className="input-group-btn">
