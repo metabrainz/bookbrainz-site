@@ -41,7 +41,8 @@ import routes from './routes';
 import serveStatic from 'serve-static';
 import session from 'express-session';
 
-console.log("Testing linting in PRs from forked repos");
+
+console.log('Testing linting in PRs from forked repos');
 
 // Initialize log-to-stdout  writer
 logNode();
