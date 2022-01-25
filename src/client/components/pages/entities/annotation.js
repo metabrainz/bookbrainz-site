@@ -41,7 +41,7 @@ class EntityAnnotation extends React.Component {
 		const spanElement = document.querySelector('.annotation-content span');
 		if (spanElement.offsetHeight < this.annotationContentRef.current.offsetHeight) {
 			// eslint-disable-next-line react/no-did-mount-set-state
-			this.setState({open: false, showButton: false});
+			this.setState({open: true, showButton: false});
 		}
 	}
 
