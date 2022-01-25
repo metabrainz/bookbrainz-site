@@ -22,7 +22,6 @@ import * as bootstrap from 'react-bootstrap';
 import {differenceBy as _differenceBy, kebabCase as _kebabCase, startCase as _startCase} from 'lodash';
 
 import AddToCollectionModal from './add-to-collection-modal';
-import CallToAction from './call-to-action';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
@@ -144,25 +143,6 @@ class SearchResults extends React.Component {
 
 	render() {
 		const noResults = !this.props.results || this.props.results.length === 0;
-		if (noResults) {
-			return (
-				<div className="text-center">
-					<hr className="thin"/>
-					<h2 style={{color: '#754e37'}}>
-						No results found
-					</h2>
-					{
-						!this.props.condensed &&
-						<div>
-							<small>Make sure the spelling is correct, and that you have selected the correct type in the search bar.</small>
-							<hr className="wide"/>
-							<h3>Are we missing an entry?</h3>
-							<CallToAction/>
-						</div>
-					}
-				</div>
-			);
-		}
 
 		const results = this.props.results.map((result) => {
 			if (!result) {
@@ -223,31 +203,34 @@ class SearchResults extends React.Component {
 		return (
 			<div>
 				{
-					this.props.user ?
+					!noResults &&
 						<div>
-							<AddToCollectionModal
-								bbids={this.state.selected.map(selected => selected.bbid)}
-								closeModalAndShowMessage={this.closeModalAndShowMessage}
-								entityType={this.state.selected[0]?.type}
-								handleCloseModal={this.onCloseModal}
-								show={this.state.showModal}
-								userId={this.props.user.id}
-							/>
-						</div> : null
-				}
-				{
-					!this.props.condensed &&
+							{
+								this.props.user ?
+									<div>
+										<AddToCollectionModal
+											bbids={this.state.selected.map(selected => selected.bbid)}
+											closeModalAndShowMessage={this.closeModalAndShowMessage}
+											entityType={this.state.selected[0]?.type}
+											handleCloseModal={this.onCloseModal}
+											show={this.state.showModal}
+											userId={this.props.user.id}
+										/>
+									</div> : null
+							}
+							{
+								!this.props.condensed &&
 					<h3 style={{color: '#754e37'}}>
 						Search Results
 					</h3>
-				}
-				<hr className="thin"/>
-				<Table
-					responsive
-					className={tableCssClasses}
-				>
-					{
-						!this.props.condensed &&
+							}
+							<hr className="thin"/>
+							<Table
+								responsive
+								className={tableCssClasses}
+							>
+								{
+									!this.props.condensed &&
 						<thead>
 							<tr>
 								<th className="col-sm-3">Type</th>
@@ -255,43 +238,45 @@ class SearchResults extends React.Component {
 								<th className="col-sm-4">Aliases</th>
 							</tr>
 						</thead>
-					}
-					<tbody>
-						{results}
-					</tbody>
-				</Table>
-				{
-					this.state.message.text ?
-						<Alert
-							bsStyle={this.state.message.type}
-							className="margin-top-1"
-							onDismiss={this.handleAlertDismiss}
-						>
-							{this.state.message.text}
-						</Alert> : null
+								}
+								<tbody>
+									{results}
+								</tbody>
+							</Table>
+							{
+								this.state.message.text ?
+									<Alert
+										bsStyle={this.state.message.type}
+										className="margin-top-1"
+										onDismiss={this.handleAlertDismiss}
+									>
+										{this.state.message.text}
+									</Alert> : null
 
-				}
-				{
-					this.props.user ?
-						<ButtonGroup>
-							<Button
-								bsStyle="primary"
-								disabled={!this.state.selected.length}
-								type="button"
-								onClick={this.handleAddToCollection}
-							>
-								{genEntityIconHTMLElement('Collection')}
+							}
+							{
+								this.props.user ?
+									<ButtonGroup>
+										<Button
+											bsStyle="primary"
+											disabled={!this.state.selected.length}
+											type="button"
+											onClick={this.handleAddToCollection}
+										>
+											{genEntityIconHTMLElement('Collection')}
 									Add to Collection
-							</Button>
-							<Button
-								bsStyle="warning"
-								disabled={!this.state.selected.length}
-								type="button"
-								onClick={this.handleClearSelected}
-							>
+										</Button>
+										<Button
+											bsStyle="warning"
+											disabled={!this.state.selected.length}
+											type="button"
+											onClick={this.handleClearSelected}
+										>
 								Clear <Badge>{this.state.selected.length}</Badge> selected
-							</Button>
-						</ButtonGroup> : null
+										</Button>
+									</ButtonGroup> : null
+							}
+						</div>
 				}
 			</div>
 		);
