@@ -97,7 +97,7 @@ type onChangeParamType = {
 type Props = {
 	empty?: boolean,
 	error?: boolean,
-	onChange?: (onChangeParamType) => unknown,
+	onChange?: (value: onChangeParamType) => unknown,
 	storedNameValue: string
 };
 
@@ -154,11 +154,13 @@ function SortNameField({
 		</ValidationLabel>
 	);
 
+	/* eslint-disable react/jsx-no-bind */
 	const guessButton =
 		<Button bsStyle="primary" onClick={handleGuessClick}>Guess</Button>;
 
 	const copyButton =
 		<Button bsStyle="primary" onClick={handleCopyClick}>Copy</Button>;
+	/* eslint-enable react/jsx-no-bind */
 
 	return (
 		<CustomInput

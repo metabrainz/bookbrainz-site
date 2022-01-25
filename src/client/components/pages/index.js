@@ -43,14 +43,12 @@ class IndexPage extends React.Component {
 		return (
 			<div>
 				<Alert bsStyle="warning" className="text-center">
-					<p>
-						Under development — adventurous users, please test and
-						add data! Give us feedback about bugs, glitches and
-						potential improvements at {' '}
-						<a href="//tickets.metabrainz.org/projects/BB">
-							MetaBrainz JIRA!
-						</a>
-					</p>
+					Under development — adventurous users, please test and
+					add data! Give us feedback about bugs, glitches and
+					potential improvements at {' '}
+					<a href="//tickets.metabrainz.org/projects/BB">
+						MetaBrainz JIRA!
+					</a>
 				</Alert>
 				<div id="background-image">
 					<div className="text-center" id="background-overlay">
@@ -64,24 +62,23 @@ class IndexPage extends React.Component {
 							/>
 							<Row>
 								<Col md={8} mdOffset={2}>
-									<form action="/search" role="search">
-										<div className="input-group input-group-lg margin-top-5">
-											<input
-												autoFocus="autofocus"
-												className="form-control"
-												name="q"
-												placeholder="Search for..."
-												type="text"
-											/>
-											<span className="input-group-btn">
-												<Button
-													bsStyle="success"
-													type="submit"
-												>
-													<FontAwesomeIcon icon={faSearch}/>
-												</Button>
-											</span>
-										</div>
+									<form action="/search" className="input-group input-group-lg margin-top-5" role="search">
+										<input
+											required
+											autoFocus="autofocus"
+											className="form-control"
+											name="q"
+											placeholder="Search for..."
+											type="text"
+										/>
+										<span className="input-group-btn">
+											<Button
+												bsStyle="success"
+												type="submit"
+											>
+												<FontAwesomeIcon icon={faSearch}/>
+											</Button>
+										</span>
 									</form>
 									<Row className="margin-top-4">
 										<Col sm={4}>

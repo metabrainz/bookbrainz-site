@@ -25,7 +25,7 @@ import {startCase as _startCase} from 'lodash';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
-const {PageHeader, Table} = bootstrap;
+const {Table} = bootstrap;
 const {formatDate} = utilsHelper;
 
 /**
@@ -142,7 +142,7 @@ function StatisticsPage(props) {
 	const {allEntities, last30DaysEntities, topEditors} = props;
 	return (
 		<div>
-			<PageHeader>Statistics of BookBrainz</PageHeader>
+			<div className="page-header"><h1>Statistics of BookBrainz</h1></div>
 			<TopEditorsTable editors={topEditors}/>
 			<EntityCountTable
 				allEntities={allEntities}

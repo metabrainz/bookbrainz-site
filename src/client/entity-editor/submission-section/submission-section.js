@@ -17,12 +17,12 @@
  */
 
 import {Alert, Button, Col, Row} from 'react-bootstrap';
-import {debounceUpdateRevisionNote, submit} from './actions';
 import CustomInput from '../../input';
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
+import {debounceUpdateRevisionNote} from './actions';
 
 /**
  * Container component. The SubmissionSection component contains a button for

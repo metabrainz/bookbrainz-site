@@ -3,7 +3,6 @@ import {Relationship, RelationshipForDisplay} from '../../client/entity-editor/r
 /**
  * Regular expression for valid BookBrainz UUIDs (bbid)
  *
- * @type {RegExp}
  * @private
  */
 const _bbidRegex =
@@ -18,7 +17,6 @@ const _bbidRegex =
 export function isValidBBID(bbid: string): boolean {
 	return _bbidRegex.test(bbid);
 }
-
 
 /**
  * Returns all entity models defined in bookbrainz-data-js
@@ -85,7 +83,6 @@ export function makePromiseFromObject<T>(obj: Unresolved<T>): Promise<T> {
  * @param {string} sortByProperty - name of property which will be used for sorting
  * @returns {array} - sorted relationship array
  */
-/* eslint-disable no-param-reassign */
 export function sortRelationshipOrdinal(sortByProperty: string) {
 	return (a: RelationshipForDisplay | Relationship, b: RelationshipForDisplay | Relationship) => {
 		const value1 = a[sortByProperty] || '';

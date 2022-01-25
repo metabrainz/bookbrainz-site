@@ -29,7 +29,7 @@ import SelectWrapper from '../input/select-wrapper';
 import request from 'superagent';
 
 
-const {Alert, Button, PageHeader} = bootstrap;
+const {Alert, Button, Col, Row} = bootstrap;
 
 class RegistrationForm extends React.Component {
 	constructor(props) {
@@ -96,7 +96,7 @@ class RegistrationForm extends React.Component {
 
 		return (
 			<div>
-				<PageHeader>Register</PageHeader>
+				<div className="page-header"><h1>Register</h1></div>
 				<div>
 					Great! You successfully logged in to MusicBrainz and
 					are now just one step away from becoming a BookBrainz
@@ -105,9 +105,9 @@ class RegistrationForm extends React.Component {
 					a little bit more about you. When you’re done, just
 					click the blue button at the bottom of the page.
 				</div>
-				<div className="row">
+				<Row>
 					{loadingComponent}
-					<div className="col-md-6 col-md-offset-3">
+					<Col md={6} mdOffset={3}>
 						<form
 							className="whole-page-form form-horizontal"
 							onSubmit={this.handleSubmit}
@@ -159,8 +159,8 @@ class RegistrationForm extends React.Component {
 								</Button>
 							</div>
 						</form>
-					</div>
-				</div>
+					</Col>
+				</Row>
 			</div>
 		);
 	}
@@ -168,7 +168,7 @@ class RegistrationForm extends React.Component {
 
 RegistrationForm.displayName = 'RegistrationForm';
 RegistrationForm.propTypes = {
-	gender: validators.namedProperty, // eslint-disable-line react/no-typos
+	gender: validators.namedProperty,
 	genders: PropTypes.arrayOf(validators.namedProperty).isRequired,
 	name: PropTypes.string
 };

@@ -11,10 +11,10 @@ To install NodeJS, follow the instruction for your operating system on the [offi
 
 
 ## Installing Packages
-The site depends on a number of node packages which can be installed using npm:
+The site depends on a number of node packages which can be installed using yarn (or npm):
 
     cd bookbrainz-site/
-    npm install
+    yarn install
 
 This command will also compile the site LESS and JavaScript source files.
 
@@ -23,7 +23,7 @@ This command will also compile the site LESS and JavaScript source files.
 Our `config.example.json` is set up to work out of the box running everything in Docker. Addresses for the dependencies refer to docker container names, so that containers can communicate with each other.
 
 For local development (run outside of Docker), make a copy of `config/config.local.json.example` and [fill up the musicbrainz tokens](README.md#configuration). You can then pass this configuration file when running the server locally using `--config` flag.
-For example, `npm start -- --config ./config/config.local.json` will use `./config/config.local.json` config instead of the Default config (`config.json` for Docker).
+For example, `yarn start -- --config ./config/config.local.json` will use `./config/config.local.json` config instead of the Default config (`config.json` for Docker).
 
 
 ## Building and running
@@ -56,12 +56,12 @@ Make sure the dependencies (postgres, redis, elasticsearch) are running, and you
 Advanced users may want to use Webpack to build, watch files and inject rebuilt pages without having to refresh the page,
 keeping the application state intact, for the price of increased compilation time and resource usage (see note below).
 
-If you are running the server manually, you can simply run `npm run debug` in the command line.
+If you are running the server manually, you can simply run `yarn run debug` in the command line.
 
 If you're using Docker and our `./develop.sh` script, you will need to modify the `docker-compose.yml` file and change a few things on the `bookbrainz-site` service defined there:
 1. change the bookbrainz-site `command` to:
-    - `npm run debug` if you only want to change client files (in `src/client`)
-    - `npm run debug-watch-server` if you *also* want to modify server files (in `src/server`)
+    - `yarn run debug` if you only want to change client files (in `src/client`)
+    - `yarn run debug-watch-server` if you *also* want to modify server files (in `src/server`)
 2. mount the `src` folder to the bookbrainz-site service
 
 For example:
@@ -69,10 +69,10 @@ For example:
 services:
   bookbrainz-site:
   # 1. Change the command to run
-    command: npm run debug
+    command: yarn run debug
     volumes:
       - "./config/config.json:/home/bookbrainz/bookbrainz-site/config/config.json:ro"
   # 2. Mount the src directory
       - "./src:/home/bookbrainz/bookbrainz-site/src"
 ```
-**Note**: Using Webpack watch mode (`npm run debug`) results in more resource consumption (about ~1GB increased RAM usage) compared to running the [standard web server](/README.md#running-the-web-server).
+**Note**: Using Webpack watch mode (`yarn run debug`) results in more resource consumption (about ~1GB increased RAM usage) compared to running the [standard web server](/README.md#running-the-web-server).

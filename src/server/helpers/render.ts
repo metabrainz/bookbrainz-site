@@ -66,12 +66,10 @@ function renderRelationship(relationship: Relationship) {
 		!relationship.source || !relationship.target ||
 		!_.isString(_.get(relationship, 'type.linkPhrase'));
 	if (inputsInvalid) {
-		/* eslint-disable prefer-template */
 		throw new TypeError(
-			'Invalid inputs to renderRelationship:\n' +
-			JSON.stringify(relationship, null, 2)
+			`Invalid inputs to renderRelationship:\n${
+				JSON.stringify(relationship, null, 2)}`
 		);
-		/* eslint-enable prefer-template */
 	}
 
 	function template(data) {
@@ -90,8 +88,7 @@ function renderRelationship(relationship: Relationship) {
 			// Linkify source and target based on default alias
 			const name = _.get(entity, 'defaultAlias.name', '(unnamed)');
 			const entityIcon = `<i class="fa fa-${ENTITY_TYPE_ICONS[entity.type]} margin-right-0-5"></i>`;
-			// eslint-disable-next-line prefer-template
-			return entityIcon + `<a href="${utils.getEntityLink(entity)}">${name}</a>`;
+			return `${entityIcon}<a href="${utils.getEntityLink(entity)}">${name}</a>`;
 		})
 	};
 
