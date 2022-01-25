@@ -4,7 +4,7 @@
 newPRWelcomeComment: |
   Thanks for opening your first pull request for BookBrainz, and welcome to our community! :tada:
 
-  If you haven't yet, please check out our [contributing guidelines](https://github.com/bookbrainz/bookbrainz-site/blob/master/CONTRIBUTING.md).
+  If you haven't yet, please check out our [contributing guidelines](https://github.com/metabrainz/bookbrainz-site/blob/master/CONTRIBUTING.md).
 
   Someone will be reviewing your PR soon; just hang in there !
   In the meantime, if you're wondering what to do next, you can have a look at our [issue tracker](https://tickets.metabrainz.org/browse/BB)

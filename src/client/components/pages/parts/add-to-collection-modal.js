@@ -164,7 +164,7 @@ class AddToCollectionModal extends React.Component {
 							});
 						});
 					});
-			}, (error) => {
+			}, () => {
 				this.setState({
 					message: {
 						text: 'Something went wrong! Please try again later',

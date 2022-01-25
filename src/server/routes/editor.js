@@ -231,9 +231,11 @@ export async function getEditorActivity(editorId, startDate, Revision, endDate =
 	);
 	const revisionsCount = _.countBy(revisionDates);
 
+	const firstRevisionDate = revisionJSON.length ? revisionJSON[0].createdAt : Date.now();
+	const activityStart = startDate > firstRevisionDate ? firstRevisionDate : startDate;
 	const allMonthsInInterval = eachMonthOfInterval({
 		end: endDate,
-		start: startDate
+		start: activityStart
 	})
 		.map(month => format(new Date(month), 'LLL-yy'))
 		.reduce((accumulator, month) => {
@@ -487,7 +489,6 @@ async function rankUpdate(orm, editorId, bodyRank, rank) {
 
 router.post('/:id/achievements/', auth.isAuthenticated, async (req, res) => {
 	const {orm} = req.app.locals;
-	const {Editor} = orm;
 	const userId = parseInt(req.params.id, 10);
 	if (!isCurrentUser(userId, req.user)) {
 		throw new Error('Not authenticated');

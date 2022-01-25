@@ -25,7 +25,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Row} = bootstrap;
+const {Col, Row} = bootstrap;
 const {Sticky, StickyContainer} = ReactSticky;
 
 /**
@@ -109,7 +109,7 @@ class EditorAchievementTab extends React.Component {
 		const STICKY_TOP_MARGIN = 64;
 		return (
 			<Row>
-				<div className="col-md-10-offset-1">
+				<Col md={10} mdOffset={1}>
 					<div id="achievementsForm">
 						<StickyContainer>
 							<Sticky topOffset={-80}>
@@ -139,7 +139,7 @@ class EditorAchievementTab extends React.Component {
 							</div>
 						</StickyContainer>
 					</div>
-				</div>
+				</Col>
 			</Row>
 		);
 	}

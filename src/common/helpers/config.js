@@ -25,7 +25,8 @@ let configContents;
 // Use Default configuration (for Docker)
 function useDefaultConfig() {
 	/* Pull in environment-specific configuration. */
-	const env = process.env.NODE_ENV || 'development'; // eslint-disable-line no-process-env,max-len
+	// eslint-disable-next-line node/no-process-env
+	const env = process.env.NODE_ENV || 'development';
 
 	let configFileBasename = 'config';
 	if (env === 'test') {
@@ -41,7 +42,7 @@ config/${configFileBasename}.json If you don't have a \
 config/${configFileBasename}.json file, you should copy, \
 rename and modify config/config.json.example. For more \
 information refer to: \
-https://github.com/bookbrainz/bookbrainz-site#configuration\n`);
+https://github.com/metabrainz/bookbrainz-site#configuration\n`);
 	}
 }
 

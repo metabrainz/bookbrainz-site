@@ -23,7 +23,7 @@ import React from 'react';
 import {hot} from 'react-hot-loader';
 
 
-const {Alert, Button, PageHeader} = bootstrap;
+const {Alert, Button} = bootstrap;
 
 /**
  * Renders a page allowing the user to sign in to MusicBrainz to
@@ -33,7 +33,7 @@ const {Alert, Button, PageHeader} = bootstrap;
 function RegistrationAuth() {
 	return (
 		<div>
-			<PageHeader>Register</PageHeader>
+			<div className="page-header"><h1>Register</h1></div>
 			<p>
 				To sign up as an editor of BookBrainz, you need to first
 				have a MusicBrainz account. Please click the button below

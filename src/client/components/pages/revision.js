@@ -109,7 +109,8 @@ class RevisionPage extends React.Component {
 				mergeBadge = <Badge className="merged margin-right-0-5" title={`This ${diff.entity.type} was merged in this revision`}>Merged</Badge>;
 			}
 			else {
-				deleteBadge = <Badge className="deletion margin-right-0-5" title={`This ${diff.entity.type} was deleted in this revision`}>- Deleted</Badge>;
+				deleteBadge =
+					<Badge className="deletion margin-right-0-5" title={`This ${diff.entity.type} was deleted in this revision`}>- Deleted</Badge>;
 			}
 		}
 		return (

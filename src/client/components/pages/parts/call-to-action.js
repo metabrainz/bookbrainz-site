@@ -23,7 +23,7 @@ import React from 'react';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {Button, ButtonGroup, Col} = bootstrap;
+const {Button, ButtonGroup} = bootstrap;
 
 /**
  * Renders the document and displays 'CallToAction' component.
@@ -37,7 +37,7 @@ function CallToAction() {
 				Help us and click on the right entity below to create a new entry.
 				<br/><small>Not sure what to do? Visit the <a href="/help">help page</a> to get started.</small>
 			</p>
-			<Col md={8} mdOffset={2}>
+			<div>
 				<ButtonGroup id="searchpage-button-group">
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
@@ -75,7 +75,7 @@ function CallToAction() {
 						<div className="margin-top-d4">Publisher</div>
 					</Button>
 				</ButtonGroup>
-			</Col>
+			</div>
 		</div>
 	);
 }

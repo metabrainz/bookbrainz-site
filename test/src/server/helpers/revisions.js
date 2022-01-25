@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 import * as error from '../../../../src/common/helpers/error';
 
 import {
@@ -396,7 +398,6 @@ describe('getOrderedRevisionForEditorPage', () => {
 
 /* eslint-disable no-await-in-loop */
 describe('getOrderedRevisionsForEntityPage', () => {
-	// eslint-disable-next-line one-var
 	let editorJSON;
 	before(async () => {
 		const editor = await createEditor();
@@ -570,7 +571,6 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		});
 	});
 
-	/* eslint-disable camelcase */
 	it('should return revisions of merged entities', async () => {
 		const author1 = await createAuthor();
 		const author2 = await createAuthor();

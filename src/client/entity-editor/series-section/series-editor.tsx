@@ -18,11 +18,11 @@
 /* eslint-disable react/jsx-no-bind, @typescript-eslint/no-invalid-this */
 
 
-import type {
-	Attribute, Entity, EntityType, RelationshipForDisplay,
-	RelationshipType, Relationship as _Relationship
-} from '../relationship-editor/types';
 import {Button, Col, Row} from 'react-bootstrap';
+import type {
+	Entity, EntityType, RelationshipForDisplay,
+	RelationshipType
+} from '../relationship-editor/types';
 import React, {useState} from 'react';
 import {SortableContainer, SortableElement} from 'react-sortable-hoc';
 import {faBars, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
