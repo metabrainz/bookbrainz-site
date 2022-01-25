@@ -25,10 +25,10 @@ import React from 'react';
 class EntityAnnotation extends React.Component {
 	constructor(props) {
 	  super(props);
-	  this.preRef = React.createRef();
+	  this.annotationContentRef = React.createRef();
 	  this.state = {
 			open: false,
-			show: true
+			showButton: true
 	  };
 	}
 
@@ -38,10 +38,10 @@ class EntityAnnotation extends React.Component {
 		if (!annotation || !annotation.content) {
 			return;
 		}
-		const spanElement = document.querySelector('pre span');
-		if (spanElement.offsetHeight < this.preRef.current.offsetHeight) {
+		const spanElement = document.querySelector('.annotation-content span');
+		if (spanElement.offsetHeight < this.annotationContentRef.current.offsetHeight) {
 			// eslint-disable-next-line react/no-did-mount-set-state
-			this.setState({open: false, show: false});
+			this.setState({open: false, showButton: false});
 		}
 	}
 
@@ -60,9 +60,9 @@ class EntityAnnotation extends React.Component {
 				<Col md={12}>
 					<h2>Annotation</h2>
 					<Collapse in={this.state.open}>
-						<pre className="annotation-content" ref={this.preRef} >{stringToHTMLWithLinks(annotation.content)}</pre>
+						<pre className="annotation-content" ref={this.annotationContentRef} >{stringToHTMLWithLinks(annotation.content)}</pre>
 					</Collapse>
-					{this.state.show &&
+					{this.state.showButton &&
 					<Button bsStyle="link" onClick={this.handleToggleCollapse}>
 						Show {this.state.open ? 'less' : 'more…'}
 					</Button>}
