@@ -75,7 +75,7 @@ function CollectionAttributes({collection}) {
 					<dd>{collection.entityType}</dd>
 				</Col>
 				<Col md={3}>
-					<dt>No. of Entity</dt>
+					<dt>Number of entities</dt>
 					<dd>{collection.items.length}</dd>
 				</Col>
 				<Col md={3}>
