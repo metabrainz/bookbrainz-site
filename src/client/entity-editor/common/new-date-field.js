@@ -140,8 +140,9 @@ class DateField extends React.Component {
 					groupClassName={groupClassName}
 					label={labelElement}
 				>
-					<InputGroup style={{width: '18em'}}>
+					<InputGroup className="responsive-date-field">
 						<FormControl
+							className="year-field"
 							maxLength={isCommonEraDate ? 4 : 5}
 							placeholder="YYYY"
 							type="text"
@@ -151,9 +152,9 @@ class DateField extends React.Component {
 						/>
 						<InputGroup.Addon style={{padding: '0 0.5em'}}>-</InputGroup.Addon>
 						<FormControl
+							className="other-date-field"
 							maxLength="2"
 							placeholder="MM"
-							style={{width: '3.5em'}}
 							type="text"
 							value={this.state.month}
 							onBlur={this.handleMonthInputBlur}
@@ -161,9 +162,9 @@ class DateField extends React.Component {
 						/>
 						<InputGroup.Addon style={{padding: '0 0.5em'}}>-</InputGroup.Addon>
 						<FormControl
+							className="other-date-field"
 							maxLength="2"
 							placeholder="DD"
-							style={{width: '3.5em'}}
 							type="text"
 							value={this.state.day}
 							onBlur={this.handleDayInputBlur}
@@ -182,6 +183,10 @@ class DateField extends React.Component {
 								dateFormat="uuuuuu-MM-dd"
 								disabled={!isCommonEraDate}
 								dropdownMode="select"
+								popperModifiers={
+									{preventOverflow: {
+									  enabled: true
+									}}}
 								popperPlacement="top-end"
 								selected={isValid(selectedDate) ? selectedDate : null}
 								timeFormat="false"
