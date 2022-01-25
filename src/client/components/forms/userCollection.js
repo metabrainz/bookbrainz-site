@@ -32,7 +32,7 @@ import classNames from 'classnames';
 import request from 'superagent';
 
 
-const {Alert, Button, Col} = bootstrap;
+const {Alert, Button, Col, Row} = bootstrap;
 
 class UserCollectionForm extends React.Component {
 	constructor(props) {
@@ -92,7 +92,7 @@ class UserCollectionForm extends React.Component {
 			.send(data)
 			.then((res) => {
 				window.location.href = `/collection/${res.body.id}`;
-			}, (error) => {
+			}, () => {
 				this.setState({
 					errorText: 'Internal Error'
 				});
@@ -229,13 +229,13 @@ class UserCollectionForm extends React.Component {
 								ref={(ref) => this.privacy = ref}
 							/>
 							<h3><b>Collaborators</b></h3>
-							<div className="row margin-bottom-2">
-								<div className="col-sm-6 margin-top-d5">
+							<Row className="margin-bottom-2">
+								<Col className="margin-top-d5" sm={6}>
 									<p className="help-block">
 								Collaborators can add/remove entities from your collection
 									</p>
-								</div>
-								<div className="col-sm-6 margin-top-d5">
+								</Col>
+								<Col className="margin-top-d5" sm={6}>
 									<Button
 										block
 										bsStyle="primary"
@@ -245,8 +245,8 @@ class UserCollectionForm extends React.Component {
 										<FontAwesomeIcon icon={faPlus}/>
 										&nbsp;Add another collaborator
 									</Button>
-								</div>
-							</div>
+								</Col>
+							</Row>
 							{
 								this.state.collaborators.map((collaborator, index) => {
 									const buttonAfter = (
@@ -278,8 +278,8 @@ class UserCollectionForm extends React.Component {
 							<div className={errorAlertClass}>
 								<Alert bsStyle="danger">Error: {errorText}</Alert>
 							</div>
-							<div className="row margin-bottom-2">
-								<div className="col-sm-6 margin-top-d5">
+							<Row className="margin-bottom-2">
+								<Col className="margin-top-d5" sm={6}>
 									<Button
 										block
 										bsStyle="success"
@@ -287,10 +287,10 @@ class UserCollectionForm extends React.Component {
 									>
 										<FontAwesomeIcon icon={faSave}/>&nbsp;{submitLabel}
 									</Button>
-								</div>
+								</Col>
 								{
 									this.props.collection.id ?
-										<div className="col-sm-6 margin-top-d5">
+										<Col className="margin-top-d5" sm={6}>
 											<Button
 												block
 												bsStyle="danger"
@@ -299,9 +299,9 @@ class UserCollectionForm extends React.Component {
 											>
 												<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;Delete collection
 											</Button>
-										</div> : null
+										</Col> : null
 								}
-							</div>
+							</Row>
 						</form>
 					</Col>
 				</div>

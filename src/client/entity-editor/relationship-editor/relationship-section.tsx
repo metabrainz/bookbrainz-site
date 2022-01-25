@@ -35,11 +35,10 @@ import type {
 	EntityType,
 	LanguageOption,
 	RelationshipForDisplay,
-	RelationshipType,
-	Relationship as _Relationship
+	RelationshipType
 } from './types';
 import {faPencilAlt, faPlus, faTimes, faUndo} from '@fortawesome/free-solid-svg-icons';
-import type {Dispatch} from 'redux'; // eslint-disable-line import/named
+import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import Relationship from './relationship';

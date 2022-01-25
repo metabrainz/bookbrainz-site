@@ -28,7 +28,7 @@ import {faSearch} from '@fortawesome/free-solid-svg-icons';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {Button, DropdownButton, InputGroup, MenuItem} = bootstrap;
+const {Button, Col, DropdownButton, InputGroup, MenuItem, Row} = bootstrap;
 
 const SearchButton = (
 	<Button
@@ -158,8 +158,8 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 		) : '';
 
 		return (
-			<div className="row">
-				<div className="col-md-6 col-md-offset-3">
+			<Row>
+				<Col md={6} mdOffset={3}>
 					<form
 						action="/search"
 						className="form-horizontal whole-page-form"
@@ -174,8 +174,8 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 							onChange={this.handleChange}
 						/>
 					</form>
-				</div>
-			</div>
+				</Col>
+			</Row>
 		);
 	}
 }

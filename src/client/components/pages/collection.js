@@ -123,7 +123,6 @@ class CollectionPage extends React.Component {
 	}
 
 	toggleRow(bbid) {
-		// eslint-disable-next-line react/no-access-state-in-setstate
 		const oldSelected = this.state.selectedEntities;
 		let newSelected;
 		if (oldSelected.find(selectedBBID => selectedBBID === bbid)) {
@@ -143,7 +142,7 @@ class CollectionPage extends React.Component {
 			const submissionUrl = `/collection/${this.props.collection.id}/remove`;
 			request.post(submissionUrl)
 				.send({bbids})
-				.then((res) => {
+				.then(() => {
 					this.setState({
 						message: {
 							text: `Removed ${bbids.length} ${_.kebabCase(this.props.collection.entityType)}${bbids.length > 1 ? 's' : ''}`,
@@ -151,7 +150,7 @@ class CollectionPage extends React.Component {
 						},
 						selectedEntities: []
 					}, this.pagerElementRef.triggerSearch);
-				}, (error) => {
+				}, () => {
 					this.setState({
 						message: {
 							text: 'Something went wrong! Please try again later',
@@ -198,7 +197,16 @@ class CollectionPage extends React.Component {
 	}
 
 	render() {
-		const messageComponent = this.state.message.text ? <Alert bsStyle={this.state.message.type} className="margin-top-1" onDismiss={this.handleAlertDismiss}>{this.state.message.text}</Alert> : null;
+		const messageComponent =
+			this.state.message.text ? (
+				<Alert
+					bsStyle={this.state.message.type}
+					className="margin-top-1"
+					onDismiss={this.handleAlertDismiss}
+				>
+					 {this.state.message.text}
+				</Alert>
+			) : null;
 		const EntityTable = getEntityTable(this.props.collection.entityType);
 		const propsForTable = {
 			[this.entityKey]: this.state.entities,
@@ -232,6 +240,7 @@ class CollectionPage extends React.Component {
 					</Col>
 					<Col md={10}>
 						<h1>{this.props.collection.name}</h1>
+						<hr/>
 						<CollectionAttributes collection={this.props.collection}/>
 					</Col>
 				</Row>

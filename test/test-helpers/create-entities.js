@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /*
  * Copyright (C) 2019  Nicolas Pelletier
  *
@@ -16,6 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint-disable no-console */
 
 import {internet, random} from 'faker';
 
@@ -302,7 +302,9 @@ export async function createEditionGroup(optionalBBID, optionalEditionGroupAttri
 	if (!isNil(optionalEditionGroupAttrib.typeId)) {
 		optionalEditionGroupTypeAttrib.id = optionalEditionGroupAttrib.typeId;
 	}
-	const editionGroupType = await new EditionGroupType({label: `Edition Group Type ${optionalEditionGroupAttrib.typeId || random.number()}`, ...optionalEditionGroupTypeAttrib})
+	const editionGroupType = await new EditionGroupType(
+		{label: `Edition Group Type ${optionalEditionGroupAttrib.typeId || random.number()}`, ...optionalEditionGroupTypeAttrib}
+	)
 		.save(null, {method: 'insert'});
 
 	const editionGroupAttribs = {
@@ -418,7 +420,9 @@ export async function createPublisher(optionalBBID, optionalPublisherAttribs = {
 			.fetch({require: false});
 	}
 	if (!publisherType) {
-		publisherType = await new PublisherType({label: `Publisher Type ${optionalPublisherAttribs.typeId || random.number()}`, ...optionalPublisherTypeAttribs})
+		publisherType = await new PublisherType(
+			{label: `Publisher Type ${optionalPublisherAttribs.typeId || random.number()}`, ...optionalPublisherTypeAttribs}
+		)
 			.save(null, {method: 'insert'});
 	}
 

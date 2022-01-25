@@ -63,13 +63,13 @@
 @btn-primary-border:             darken(#428bca, 6.5%);
 
 body {
-	margin-top: 64px;
-    margin-bottom: 64px;
+	padding-top: 64px;
+    padding-bottom: 64px;
 }
 
 @media (max-width: 600px) {
     body {
-        margin-bottom: 128px;
+        padding-bottom: 128px;
     }
 }
 
@@ -196,23 +196,6 @@ body {
 }
 .generate-margins-d(60);
 
-.no-sides-border {
-	border-left: 0px;
-	border-right: 0px;
-}
-
-.picture-fallback-icon(@size) {
-	font-size: @size;
-	margin: 0.2em 0;
-	color: #d0d0d0;
-}
-.picture-fallback-icon-small {
-	.picture-fallback-icon(300%);
-}
-.picture-fallback-icon-large {
-	.picture-fallback-icon(800%);
-}
-
 // Fix to put react-bootstrap tooltips in front of modals
 .tooltip {
 	z-index: 1050;
@@ -275,7 +258,6 @@ a.contact-text:visited {
 	-o-background-size: cover;
 	background-size: cover;
 	width:100%;
-	height:550px;
 }
 
 #background-overlay {
@@ -283,17 +265,12 @@ a.contact-text:visited {
 	width:100%;
 	height:100%;
 	padding-top:4em;
+	padding-bottom:4em;
 }
 
 .deleted {
 	text-decoration: line-through;
 	color: @brand-danger;
-}
-
-/* getStarted.jade */
-/* =============== */
-.get-started-icon {
-	margin-top: 20px;
 }
 
 /* entity/view/*.jade */
@@ -584,7 +561,7 @@ hr.wide {
 	max-width: 200px;
 	min-width: 175px;
 	margin-top: 8px;
-} 
+}
 
 .collection-page-buttons {
     text-align: right;

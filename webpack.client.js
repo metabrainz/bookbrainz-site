@@ -4,7 +4,6 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
-const ESLintPlugin = require('eslint-webpack-plugin');
 
 const production = process.env.NODE_ENV === 'production';
 
@@ -112,12 +111,7 @@ const clientConfig = {
 		new MiniCssExtractPlugin({
 			filename: 'stylesheets/[name].css'
 		}),
-		new CleanWebpackPlugin(cleanWebpackPluginOpts),
-		new ESLintPlugin({
-			extensions: ['.js', '.jsx', '.ts', '.tsx'],
-			files: path.resolve(__dirname, 'src'),
-			fix: !production,
-		})
+		new CleanWebpackPlugin(cleanWebpackPluginOpts)
 	],
 	resolve: {
 		extensions: ['.js', '.jsx', '.ts', '.tsx']
