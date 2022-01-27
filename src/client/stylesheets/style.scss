@@ -582,6 +582,10 @@ th {
 	border-top-style: none;
 }
 
+.table-striped tbody tr:nth-of-type(odd){
+	background-color: #fafafa;
+}
+
 @media (min-width: map-get($container-max-widths, "md")) {
 	.editor-info dt {
 		text-align: right;
