@@ -30,6 +30,7 @@ import {get as _get} from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
 import compression from 'compression';
 import config from '../common/helpers/config';
+import {createClient} from 'redis';
 import express from 'express';
 import favicon from 'serve-favicon';
 import initInflux from './influx';
@@ -97,10 +98,14 @@ const sessionOptions = {
 	secret: config.session.secret
 };
 if (process.env.NODE_ENV !== 'test') {
-	const RedisStore = redis(session);
-	sessionOptions.store = new RedisStore({
+	const redisClient = createClient({
 		host: _get(config, 'session.redis.host', 'localhost'),
 		port: _get(config, 'session.redis.port', 6379)
+	});
+
+	const RedisStore = redis(session);
+	sessionOptions.store = new RedisStore({
+		client: redisClient
 	});
 }
 app.use(session(sessionOptions));

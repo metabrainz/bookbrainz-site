@@ -62,24 +62,23 @@ class IndexPage extends React.Component {
 							/>
 							<Row>
 								<Col lg={{offset: 2, span: 8}}>
-									<form action="/search" role="search">
-										<div className="input-group input-group-lg margin-top-5">
-											<input
-												autoFocus="autofocus"
-												className="form-control"
-												name="q"
-												placeholder="Search for..."
-												type="text"
-											/>
-											<span className="input-group-append">
-												<Button
-													type="submit"
-													variant="success"
-												>
-													<FontAwesomeIcon icon={faSearch}/>
-												</Button>
-											</span>
-										</div>
+									<form action="/search" className="input-group input-group-lg margin-top-5" role="search">
+										<input
+											required
+											autoFocus="autofocus"
+											className="form-control"
+											name="q"
+											placeholder="Search for..."
+											type="text"
+										/>
+										<span className="input-group-append">
+											<Button
+												type="submit"
+												variant="success"
+											>
+												<FontAwesomeIcon icon={faSearch}/>
+											</Button>
+										</span>
 									</form>
 									<Row className="margin-top-4">
 										<Col md={4}>

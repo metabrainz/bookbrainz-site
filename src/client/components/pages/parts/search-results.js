@@ -22,7 +22,6 @@ import * as bootstrap from 'react-bootstrap';
 import {differenceBy as _differenceBy, kebabCase as _kebabCase, startCase as _startCase} from 'lodash';
 
 import AddToCollectionModal from './add-to-collection-modal';
-import CallToAction from './call-to-action';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
@@ -144,25 +143,6 @@ class SearchResults extends React.Component {
 
 	render() {
 		const noResults = !this.props.results || this.props.results.length === 0;
-		if (noResults) {
-			return (
-				<div className="text-center">
-					<hr className="thin"/>
-					<h2 style={{color: '#754e37'}}>
-						No results found
-					</h2>
-					{
-						!this.props.condensed &&
-						<div>
-							<small>Make sure the spelling is correct, and that you have selected the correct type in the search bar.</small>
-							<hr className="wide"/>
-							<h3>Are we missing an entry?</h3>
-							<CallToAction/>
-						</div>
-					}
-				</div>
-			);
-		}
 
 		const results = this.props.results.map((result) => {
 			if (!result) {
@@ -219,7 +199,9 @@ class SearchResults extends React.Component {
 		if (this.props.condensed) {
 			tableCssClasses += ' table-condensed';
 		}
-
+		if (noResults) {
+			return null;
+		}
 		return (
 			<div>
 				{
