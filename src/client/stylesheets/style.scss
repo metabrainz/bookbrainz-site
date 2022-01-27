@@ -604,6 +604,11 @@ ul {
 	vertical-align: middle;
 }
 
+// Vertical alignment of the caret symbol in dropdown buttons
+.dropdown-toggle::after{
+	vertical-align: middle;
+}
+
 /* Add padding to make this more like a well, and tidy up editor achievement display */
 .card.bg-light {
 	padding: 19px;
