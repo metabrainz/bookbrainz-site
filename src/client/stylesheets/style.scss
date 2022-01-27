@@ -454,7 +454,7 @@ hr.wide {
 	margin: 0;
 	&.collapse{
 		max-height: max-content;
-		&:not(.in){ //, &.collapsing {
+		&:not(.show){ //, &.collapsing {
 			max-height: 3em;
 			overflow: hidden;
 			display: block;
