@@ -185,6 +185,12 @@ body {
 }
 @include generate-margins-d(60);
 
+
+.deleted {
+	text-decoration: line-through;
+	color: $danger;
+}
+
 // Fix to put react-bootstrap tooltips in front of modals
 .tooltip {
 	z-index: 1050;
@@ -238,7 +244,8 @@ html {
 a.contact-text:visited {
 	color: rgb(180, 180, 180);
 }
-/* index.jade */
+
+/* index page */
 /* ========== */
 #background-image {
 	background:url(./Bookshelf.jpg);
@@ -255,18 +262,6 @@ a.contact-text:visited {
 	height:100%;
 	padding-top:4em;
 	padding-bottom:4em;
-}
-
-.deleted {
-	text-decoration: line-through;
-	color: $danger;
-}
-
-/* entity/view/*.jade */
-/* ================== */
-.entity-action {
-	margin-left: 0.1em;
-	margin-right: 0.1em;
 }
 
 /* Removes padding from fixed-width "About", "Contribute" and "Develop" buttons
