@@ -75,16 +75,6 @@ body {
 	}
 }
 
-// Buttons in Lobes overlap for some reason, which if opacity is reduced (disabled) will look quite bad
-.btn {
-    margin-left: 0;
-    margin-right: 0;
-}
-
-.btn-group > .btn:not(:last-child) {
-    margin-bottom: 0.5em;
-}
-
 /* Site-wide styling */
 /* ================= */
 .whole-page-form {
