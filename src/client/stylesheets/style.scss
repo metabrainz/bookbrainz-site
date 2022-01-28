@@ -615,6 +615,15 @@ ul {
 	.list-group-item {
 		background-color: $gray-200;
 	}
+
+	.card-body {
+		// avoid padding here in addition to around card
+		padding-bottom: 0px;
+
+		.list-group {
+			margin-bottom: 0px;
+		}
+	}
 }
 
 /* Round button used in pager at the bottom of many table-style pages */

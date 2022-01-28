@@ -162,7 +162,7 @@ class EditorProfileTab extends React.Component {
 						<Col key={`achievementModel${model.id}`} md={4}>
 							<Card bg="light">
 								<Card.Img
-									className="mt-4"
+									className="mt-3 mb-2"
 									height={100}
 									src={model.achievement.badgeUrl}
 									variant="top"
