@@ -20,9 +20,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          # Also check out Lobes bootstrap theme submodule
-          submodules: true
           
       - name: NPM install
         uses: bahmutov/npm-install@v1
