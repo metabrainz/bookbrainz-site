@@ -200,7 +200,7 @@ class Layout extends React.Component {
 			<Form
 				inline
 				action="/search"
-				className="ml-auto"
+				className="ml-auto mr-3"
 				role="search"
 			>
 				<InputGroup>
