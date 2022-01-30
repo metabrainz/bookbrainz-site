@@ -29,12 +29,12 @@ import {
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
+import {makePromiseFromObject, unflatten} from '../../../common/helpers/utils';
 import {ConflictError} from '../../../common/helpers/error';
 import {RelationshipTypes} from '../../../client/entity-editor/relationship-editor/types';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
-import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
 
@@ -195,6 +195,65 @@ router.get(
 				searchResults: null,
 				sortName: ''
 			};
+			const editorMarkup = entityEditorMarkup(props);
+			const {markup} = editorMarkup;
+			const updatedProps = editorMarkup.props;
+			return res.send(target({
+				markup,
+				props: escapeProps(updatedProps),
+				script: '/js/entity-editor.js',
+				title: props.heading
+			}));
+		}
+
+		makePromiseFromObject(propsPromise)
+			.then(render)
+			.catch(next);
+	}
+);
+
+router.post(
+	'/create', auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	middleware.loadEditionStatuses, middleware.loadEditionFormats,
+	middleware.loadLanguages, middleware.loadRelationshipTypes,
+	(req, res, next) => {
+		// parsing submitted data to correct format
+		res.locals.entity = unflatten(req.body);
+		res.locals.entity.editionSection.physicalEnable = true;
+		let breakFlag = false;
+		if (res.locals.entity.nameSection.language) {
+			for (const language of res.locals.languages) {
+				if (language.name.toLowerCase() === res.locals.entity.nameSection.language.toLowerCase()) {
+					res.locals.entity.nameSection.language = language.id;
+					breakFlag = true;
+					break;
+				}
+			}
+			if (!breakFlag) {
+				delete res.locals.entity.nameSection.language;
+			}
+		}
+		breakFlag = false;
+		if (res.locals.entity.editionSection.format) {
+			for (const edFormat of res.locals.editionFormats) {
+				if (edFormat.label === res.locals.entity.editionSection.format) {
+					res.locals.entity.editionSection.format = edFormat.id;
+					breakFlag = true;
+					break;
+				}
+			}
+			if (!breakFlag) {
+				delete res.locals.entity.editionSection.format;
+			}
+		}
+		const keysToFloat = ['height', 'width', 'depth', 'weight', 'pages'];
+		for (const key of keysToFloat) {
+			res.locals.entity.editionSection[key] = parseInt(res.locals.entity.editionSection[key], 10) || null;
+		}
+		const propsPromise = generateEntityProps(
+			'edition', req, res, {}, (entity) => entity
+		);
+		function render(props) {
 			const editorMarkup = entityEditorMarkup(props);
 			const {markup} = editorMarkup;
 			const updatedProps = editorMarkup.props;
