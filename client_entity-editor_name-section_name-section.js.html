@@ -239,8 +239,10 @@ var NameSection = /*#__PURE__*/function (_React$Component) {
       });
       var warnIfExists = !(0, _isEmpty2.default)(exactMatches);
       return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h2", null, "What is the ".concat((0, _startCase2.default)(entityType), " called?")), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
-        md: 6,
-        mdOffset: 3
+        lg: {
+          offset: 3,
+          span: 6
+        }
       }, /*#__PURE__*/_react.default.createElement(_nameField.default, {
         defaultValue: nameValue,
         empty: (0, _helpers.isAliasEmpty)(nameValue, sortNameValue, languageValue),
@@ -250,31 +252,37 @@ var NameSection = /*#__PURE__*/function (_React$Component) {
         warn: (0, _helpers.isRequiredDisambiguationEmpty)(warnIfExists, disambiguationDefaultValue),
         onChange: this.handleNameChange
       })), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
-        md: 6,
-        mdOffset: 3
+        lg: {
+          offset: 3,
+          span: 6
+        }
       }, (0, _helpers.isRequiredDisambiguationEmpty)(warnIfExists, disambiguationDefaultValue) ? /*#__PURE__*/_react.default.createElement(_reactBootstrap.Alert, {
-        bsStyle: "warning"
+        variant: "warning"
       }, "We found the following\xA0", (0, _startCase2.default)(entityType), exactMatches.length > 1 ? 's' : '', " with exactly the same name or alias:", /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement("small", {
-        className: "help-block"
+        className: "text-muted"
       }, "Click on a name to open it (Ctrl/Cmd + click to open in a new tab)"), /*#__PURE__*/_react.default.createElement(_reactBootstrap.ListGroup, {
         className: "margin-top-1 margin-bottom-1"
       }, exactMatches.map(function (match) {
-        return /*#__PURE__*/_react.default.createElement(_reactBootstrap.ListGroupItem, {
-          bsStyle: "warning",
+        return /*#__PURE__*/_react.default.createElement(_reactBootstrap.ListGroup.Item, {
           href: "/".concat((0, _kebabCase2.default)(entityType), "/").concat(match.bbid),
           key: "".concat(match.bbid),
           rel: "noopener noreferrer",
-          target: "_blank"
+          target: "_blank",
+          variant: "warning"
         }, match.defaultAlias.name, " ", (0, _entity.getEntityDisambiguation)(match));
       })), "If you are sure your entry is different, please fill the disambiguation field below to help us differentiate between them.") : null)), !warnIfExists &amp;&amp; !(0, _isEmpty2.default)(searchResults) &amp;&amp; /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
-        md: 6,
-        mdOffset: 3
+        lg: {
+          offset: 3,
+          span: 6
+        }
       }, "If the ", (0, _startCase2.default)(entityType), " you want to add appears in the results below, click on it to inspect it before adding a possible duplicate.", /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement("small", null, "Ctrl/Cmd + click to open in a new tab"), /*#__PURE__*/_react.default.createElement(_searchResults.default, {
         condensed: true,
         results: searchResults
       }))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
-        md: 6,
-        mdOffset: 3
+        lg: {
+          offset: 3,
+          span: 6
+        }
       }, /*#__PURE__*/_react.default.createElement(_sortNameField.default, {
         defaultValue: sortNameValue,
         empty: (0, _helpers.isAliasEmpty)(nameValue, sortNameValue, languageValue),
@@ -282,8 +290,10 @@ var NameSection = /*#__PURE__*/function (_React$Component) {
         storedNameValue: nameValue,
         onChange: onSortNameChange
       }))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
-        md: 6,
-        mdOffset: 3
+        lg: {
+          offset: 3,
+          span: 6
+        }
       }, /*#__PURE__*/_react.default.createElement(_languageField.default, {
         empty: (0, _helpers.isAliasEmpty)(nameValue, sortNameValue, languageValue),
         error: !(0, _common.validateNameSectionLanguage)(languageValue),
@@ -293,8 +303,10 @@ var NameSection = /*#__PURE__*/function (_React$Component) {
         value: languageValue,
         onChange: onLanguageChange
       }))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
-        md: 6,
-        mdOffset: 3
+        lg: {
+          offset: 3,
+          span: 6
+        }
       }, /*#__PURE__*/_react.default.createElement(_disambiguationField.default, {
         defaultValue: disambiguationDefaultValue,
         error: (0, _helpers.isRequiredDisambiguationEmpty)(warnIfExists, disambiguationDefaultValue) || !(0, _common.validateNameSectionDisambiguation)(disambiguationDefaultValue),
@@ -393,7 +405,7 @@ exports.default = _default;</code></pre>
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Jan 25 2022 17:53:15 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Jan 31 2022 12:52:48 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

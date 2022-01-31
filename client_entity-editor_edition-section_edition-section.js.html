@@ -210,8 +210,10 @@ function EditionSection(_ref) {
   var getEditionGroupSearchSelect = function getEditionGroupSearchSelect() {
     return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
       className: "margin-bottom-2",
-      md: 6,
-      mdOffset: showMatchingEditionGroups ? 0 : 3
+      lg: {
+        offset: showMatchingEditionGroups ? 0 : 3,
+        span: 6
+      }
     }, /*#__PURE__*/React.createElement(_entitySearchFieldOption.default, {
       clearable: false,
       error: !(0, _edition.validateEditionSectionEditionGroup)(editionGroupValue, true),
@@ -224,8 +226,8 @@ function EditionSection(_ref) {
       onChange: onEditionGroupChange
     }), /*#__PURE__*/React.createElement(_reactBootstrap.Button, {
       block: true,
-      bsStyle: "primary",
-      className: "wrap" // eslint-disable-next-line react/jsx-no-bind
+      className: "wrap",
+      variant: "primary" // eslint-disable-next-line react/jsx-no-bind
       ,
       onClick: onToggleShowEditionGroupSection.bind(_this, false)
     }, /*#__PURE__*/React.createElement(_reactFontawesome.FontAwesomeIcon, {
@@ -238,28 +240,30 @@ function EditionSection(_ref) {
   }, "Edition Group is required \u2014 this cannot be blank. You can search for and choose an existing Edition Group, or choose to automatically create one instead."), /*#__PURE__*/React.createElement(_reactBootstrap.Row, {
     className: "margin-bottom-3"
   }, showAutoCreateEditionGroupMessage ? /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
-    md: 6,
-    mdOffset: showMatchingEditionGroups ? 0 : 3
+    lg: {
+      offset: showMatchingEditionGroups ? 0 : 3,
+      span: 6
+    }
   }, /*#__PURE__*/React.createElement(_reactBootstrap.Alert, {
-    bsStyle: "success"
+    variant: "success"
   }, /*#__PURE__*/React.createElement("p", null, "A new Edition Group with the same name will be created automatically."), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement(_reactBootstrap.Button, {
     block: true,
-    bsStyle: "success",
-    className: "wrap" // eslint-disable-next-line react/jsx-no-bind
+    className: "wrap",
+    variant: "success" // eslint-disable-next-line react/jsx-no-bind
     ,
     onClick: onToggleShowEditionGroupSection.bind(this, true)
   }, /*#__PURE__*/React.createElement(_reactFontawesome.FontAwesomeIcon, {
     icon: _freeSolidSvgIcons.faSearch
   }), "\xA0Search for an existing Edition Group"))) : getEditionGroupSearchSelect(), showMatchingEditionGroups &amp;&amp; /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
-    md: 6
+    lg: 6
   }, /*#__PURE__*/React.createElement(_reactBootstrap.Alert, {
-    bsStyle: "warning"
+    variant: "warning"
   }, matchingNameEditionGroups.length > 1 ? 'Edition Groups with the same name as this Edition already exist' : 'An existing Edition Group with the same name as this Edition already exists', /*#__PURE__*/React.createElement("br", null), "Please review the Edition Groups below and select the one that corresponds to your Edition.", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("small", null, "If no Edition Group is selected, a new one will be created automatically.", /*#__PURE__*/React.createElement("br", null), "Click on the ", /*#__PURE__*/React.createElement(_reactFontawesome.FontAwesomeIcon, {
     icon: _freeSolidSvgIcons.faExternalLinkAlt
   }), " icon open in a new tab, and click an item to select."), /*#__PURE__*/React.createElement(_reactBootstrap.ListGroup, {
     className: "margin-top-1"
   }, matchingNameEditionGroups.map(function (eg) {
-    return /*#__PURE__*/React.createElement(_reactBootstrap.ListGroupItem, {
+    return /*#__PURE__*/React.createElement(_reactBootstrap.ListGroup.Item, {
       key: eg.bbid
     }, /*#__PURE__*/React.createElement(_linkedEntity.default, {
       option: (0, _utils2.entityToOption)(eg),
@@ -268,8 +272,10 @@ function EditionSection(_ref) {
   }))))), /*#__PURE__*/React.createElement("p", {
     className: "text-muted"
   }, "Below fields are optional \u2014 leave something blank if you don\u2019t know it"), /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
-    md: 6,
-    mdOffset: 3
+    lg: {
+      offset: 3,
+      span: 6
+    }
   }, /*#__PURE__*/React.createElement(_entitySearchFieldOption.default, {
     instanceId: "publisher",
     label: "Publisher",
@@ -277,8 +283,10 @@ function EditionSection(_ref) {
     value: publisherValue,
     onChange: onPublisherChange
   }))), /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
-    md: 6,
-    mdOffset: 3
+    lg: {
+      offset: 3,
+      span: 6
+    }
   }, /*#__PURE__*/React.createElement(_newDateField.default, {
     show: true,
     defaultValue: releaseDateValue,
@@ -291,8 +299,10 @@ function EditionSection(_ref) {
     tooltipText: "The date this specific edition was published (not the first publication date of the work). If unsure, leave empty.",
     onChangeDate: onReleaseDateChange
   }))), /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
-    md: 6,
-    mdOffset: 3
+    lg: {
+      offset: 3,
+      span: 6
+    }
   }, /*#__PURE__*/React.createElement(ImmutableLanguageField, {
     empty: true,
     multi: true,
@@ -302,8 +312,10 @@ function EditionSection(_ref) {
     value: languageValues,
     onChange: onLanguagesChange
   }))), /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
-    md: 3,
-    mdOffset: 3
+    lg: {
+      offset: 3,
+      span: 3
+    }
   }, /*#__PURE__*/React.createElement(_input.default, {
     label: "Format",
     tooltipText: "The type of printing and binding of the edition, or digital equivalent"
@@ -313,7 +325,7 @@ function EditionSection(_ref) {
     value: formatValue,
     onChange: onFormatChange
   }))), /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
-    md: 3
+    lg: 3
   }, /*#__PURE__*/React.createElement(_input.default, {
     label: "Status",
     tooltipText: "Has the work been published, or is it in a draft stage?"
@@ -323,8 +335,10 @@ function EditionSection(_ref) {
     value: statusValue,
     onChange: onStatusChange
   })))), /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
-    md: 3,
-    mdOffset: 3
+    lg: {
+      offset: 3,
+      span: 3
+    }
   }, /*#__PURE__*/React.createElement(_numericField.default, {
     addonAfter: "pages",
     defaultValue: pagesValue,
@@ -333,8 +347,10 @@ function EditionSection(_ref) {
     label: "Page Count",
     onChange: onPagesChange
   }))), /*#__PURE__*/React.createElement(_reactBootstrap.Row, null, /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
-    md: 3,
-    mdOffset: 3
+    lg: {
+      offset: 3,
+      span: 3
+    }
   }, /*#__PURE__*/React.createElement(_numericField.default, {
     addonAfter: "mm",
     defaultValue: widthValue,
@@ -352,7 +368,7 @@ function EditionSection(_ref) {
     label: "Height",
     onChange: onHeightChange
   })), /*#__PURE__*/React.createElement(_reactBootstrap.Col, {
-    md: 3
+    lg: 3
   }, /*#__PURE__*/React.createElement(_numericField.default, {
     addonAfter: "g",
     defaultValue: weightValue,
@@ -461,7 +477,7 @@ exports.default = _default;</code></pre>
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Jan 25 2022 17:53:15 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Jan 31 2022 12:52:48 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
