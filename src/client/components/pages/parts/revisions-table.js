@@ -30,9 +30,7 @@ const {formatDate, stringToHTMLWithLinks} = utilsHelper;
 
 function RevisionsTable(props) {
 	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading} = props;
-	const tableCssClasses = 'table table-striped';
 	return (
-
 		<div>
 			<div>
 				<h1 className="text-center">{tableHeading}</h1>
@@ -41,25 +39,26 @@ function RevisionsTable(props) {
 			{
 				results.length > 0 ?
 					<Table
+						borderless
 						responsive
-						className={tableCssClasses}
+						striped
 					>
 						<thead>
 							<tr>
-								<th className="col-sm-2">Revision ID</th>
+								<th className="col-md-2">Revision ID</th>
 								{
 									showEntities ?
-										<th className="col-sm-5">Modified entities</th> : null
+										<th className="col-md-5">Modified entities</th> : null
 								}
 								{
 									showRevisionEditor ?
-										<th className="col-sm-3">User</th> : null
+										<th className="col-md-3">User</th> : null
 								}
 								{
 									showRevisionNote ?
-										<th className="col-sm-3">Note</th> : null
+										<th className="col-md-3">Note</th> : null
 								}
-								<th className="col-sm-2">Date</th>
+								<th className="col-md-2">Date</th>
 							</tr>
 						</thead>
 
@@ -116,7 +115,7 @@ function RevisionsTable(props) {
 																<span className="note-content">
 																	{stringToHTMLWithLinks(note.content)}
 																	<a
-																		className="note-author pull-right"
+																		className="note-author float-right"
 																		href={`/editor/${note.author.id}`}
 																	>
 																		—{note.author.name}

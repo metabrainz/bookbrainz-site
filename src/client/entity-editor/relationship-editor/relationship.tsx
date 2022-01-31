@@ -77,7 +77,7 @@ function Relationship({
 
 	return (
 		<OverlayTrigger
-			delayShow={50}
+			delay={50}
 			overlay={<Tooltip id={`tooltip-${id}`}>{description}</Tooltip>}
 			placement="bottom"
 		>

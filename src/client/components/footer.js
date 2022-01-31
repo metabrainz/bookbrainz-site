@@ -24,14 +24,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Col, Grid, Row} = bootstrap;
+const {Col, Container, Row} = bootstrap;
 
 function Footer(props) {
 	const {repositoryUrl, siteRevision} = props;
 
 	return (
 		<footer className="footer">
-			<Grid fluid>
+			<Container fluid>
 				<Row>
 					<Col xs={4}>
 						<small>{'Tested with '}
@@ -77,7 +77,7 @@ function Footer(props) {
 						</a>
 					</small>
 				</div>
-			</Grid>
+			</Container>
 		</footer>
 	);
 }

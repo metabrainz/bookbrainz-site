@@ -87,7 +87,7 @@ class RegistrationForm extends React.Component {
 		let errorComponent = null;
 		if (this.state.error) {
 			errorComponent =
-				<Alert bsStyle="danger">{this.state.error}</Alert>;
+				<Alert variant="danger">{this.state.error}</Alert>;
 		}
 
 		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
@@ -107,7 +107,7 @@ class RegistrationForm extends React.Component {
 				</div>
 				<Row>
 					{loadingComponent}
-					<Col md={6} mdOffset={3}>
+					<Col lg={{offset: 3, span: 6}}>
 						<form
 							className="whole-page-form form-horizontal"
 							onSubmit={this.handleSubmit}
@@ -120,12 +120,13 @@ class RegistrationForm extends React.Component {
 							<CustomInput
 								className="form-control"
 								defaultValue={this.props.name}
+								groupClassName="row"
 								label="Display Name"
-								labelClassName="col-md-4"
+								labelClassName="col-lg-4 col-form-label"
 								placeholder="Display Name"
 								ref={(ref) => this.displayName = ref}
 								type="text"
-								wrapperClassName="col-md-4"
+								wrapperClassName="col-lg-4"
 								onChange={this.handleChange}
 							/>
 							<p>
@@ -136,24 +137,25 @@ class RegistrationForm extends React.Component {
 							<SelectWrapper
 								base={ReactSelect}
 								defaultValue={initialGender}
+								groupClassName="row"
 								idAttribute="id"
 								instanceId="gender"
 								label="Gender"
 								labelAttribute="name"
-								labelClassName="col-md-4"
+								labelClassName="col-lg-4 col-form-label"
 								options={this.props.genders}
 								placeholder="Select gender…"
 								ref={(ref) => this.gender = ref}
-								wrapperClassName="col-md-4"
+								wrapperClassName="col-lg-4"
 							/>
 							<hr/>
 							{errorComponent}
 							<div className="text-center">
 								<Button
-									bsSize="large"
-									bsStyle="primary"
 									disabled={!this.state.valid}
+									size="lg"
 									type="submit"
+									variant="primary"
 								>
 									Looks good, sign me up!
 								</Button>

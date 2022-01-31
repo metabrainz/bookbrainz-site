@@ -29,8 +29,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          # Also check out Lobes bootstrap theme submodule
-          submodules: true
           
       - name: NPM install
         uses: bahmutov/npm-install@v1

@@ -84,7 +84,7 @@ function LicensingPage() {
 			</p>
 
 			<Row className="margin-top-2">
-				<Col className="text-center" md={4} mdOffset={2}>
+				<Col className="text-center" lg={{offset: 2, span: 4}}>
 					<a
 						href={CC0Link}
 						rel="license"
@@ -98,7 +98,7 @@ function LicensingPage() {
 						CC0
 					</a>
 				</Col>
-				<Col className="text-center" md={4}>
+				<Col className="text-center" lg={4}>
 					<a
 						href={CCBYSALink}
 						rel="license"

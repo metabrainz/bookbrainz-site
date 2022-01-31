@@ -184,7 +184,7 @@ class AddToCollectionModal extends React.Component {
 		if (this.state.message.text) {
 			messageComponent = (
 				<div>
-					<Alert bsStyle={this.state.message.type}>{this.state.message.text}</Alert>
+					<Alert variant={this.state.message.type}>{this.state.message.text}</Alert>
 				</div>
 			);
 		}
@@ -281,13 +281,13 @@ class AddToCollectionModal extends React.Component {
 					{
 						this.state.showCollectionForm ?
 							<Button
-								bsStyle="primary"
+								variant="primary"
 								onClick={this.handleShowAllCollections}
 							>
 								Select from collections
 							</Button> :
 							<Button
-								bsStyle="warning"
+								variant="warning"
 								onClick={this.handleShowCollectionForm}
 							>
 								<FontAwesomeIcon icon={faPlus}/>
@@ -296,14 +296,14 @@ class AddToCollectionModal extends React.Component {
 					}
 					{
 						this.state.showCollectionForm ?
-							<Button bsStyle="success" onClick={this.handleAddToNewCollection}>
+							<Button variant="success" onClick={this.handleAddToNewCollection}>
 								<FontAwesomeIcon icon={faPlus}/> Add to new collection
 							</Button> :
-							<Button bsStyle="success" disabled={!this.state.collectionsAvailable.length} onClick={this.handleAddToCollection}>
+							<Button disabled={!this.state.collectionsAvailable.length} variant="success" onClick={this.handleAddToCollection}>
 								<FontAwesomeIcon icon={faPlus}/>Add to selected collection{this.state.selectedCollections.length > 1 ? 's' : null}
 							</Button>
 					}
-					<Button bsStyle="danger" onClick={this.props.handleCloseModal}>
+					<Button variant="danger" onClick={this.props.handleCloseModal}>
 						<FontAwesomeIcon icon={faTimes}/> Close
 					</Button>
 				</Modal.Footer>

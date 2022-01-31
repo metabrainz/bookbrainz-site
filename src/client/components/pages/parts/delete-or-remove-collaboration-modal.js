@@ -39,7 +39,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 			this.postData = {};
 			modalTitle = 'Confirm deletion';
 			modalBody = (
-				<Alert bsStyle="danger">
+				<Alert variant="danger">
 					<h4>
 						<FontAwesomeIcon icon={faExclamationTriangle}/>&nbsp;
 						You’re about to delete the Collection: {collection.name}.
@@ -51,7 +51,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 				</Alert>
 			);
 			submitButton = (
-				<Button bsStyle="danger" onClick={this.handleSubmit}>
+				<Button variant="danger" onClick={this.handleSubmit}>
 					<FontAwesomeIcon icon={faTrashAlt}/> Delete
 				</Button>
 			);
@@ -62,7 +62,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 			this.postData = {collaboratorIds: [this.props.userId]};
 			modalTitle = 'Remove yourself as a collaborator';
 			modalBody = (
-				<Alert bsStyle="warning">
+				<Alert variant="warning">
 					<h4>
 						<FontAwesomeIcon icon={faExclamationTriangle}/>&nbsp;
 						You’re about to remove yourself as a collaborator of Collection: {collection.name}.
@@ -74,7 +74,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 				</Alert>
 			);
 			submitButton = (
-				<Button bsStyle="warning" onClick={this.handleSubmit}>
+				<Button variant="warning" onClick={this.handleSubmit}>
 					<FontAwesomeIcon icon={faTimesCircle}/> Stop collaboration
 				</Button>
 			);
@@ -83,7 +83,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 		let errorComponent = null;
 		if (this.state.error) {
 			errorComponent =
-				<Alert bsStyle="danger">{this.state.error}</Alert>;
+				<Alert variant="danger">{this.state.error}</Alert>;
 		}
 
 		return (
@@ -99,7 +99,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 					{errorComponent}
 				</Modal.Body>
 				<Modal.Footer>
-					<Button bsStyle="info" onClick={this.props.onCloseModal}>
+					<Button variant="info" onClick={this.props.onCloseModal}>
 						Cancel
 					</Button>
 					{submitButton}
