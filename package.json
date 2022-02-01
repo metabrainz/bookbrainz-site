@@ -106,7 +106,7 @@
     "babel-plugin-lodash": "^3.3.4",
     "babel-plugin-transform-require-ignore": "^0.1.1",
     "bootstrap": "^4.6.1",
-    "chai": "^4.0.2",
+    "chai": "^4.3.6",
     "chai-arrays": "^2.2.0",
     "chai-as-promised": "^7.0.0",
     "chai-http": "^4.3.0",
