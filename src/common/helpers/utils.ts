@@ -119,5 +119,5 @@ export function unflatten(flattenObj) {
 			cur[prop] = flattenObj[dotKey];
 		}
 	}
-	return result[''];
+	return result[''] ?? {};
 }

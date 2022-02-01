@@ -216,42 +216,43 @@ router.post(
 	'/create', auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages, middleware.loadRelationshipTypes,
-	(req, res, next) => {
+	async (req, res, next) => {
 		// parsing submitted data to correct format
-		res.locals.entity = unflatten(req.body);
-		res.locals.entity.editionSection.physicalEnable = true;
-		let breakFlag = false;
-		if (res.locals.entity.nameSection.language) {
-			for (const language of res.locals.languages) {
-				if (language.name.toLowerCase() === res.locals.entity.nameSection.language.toLowerCase()) {
-					res.locals.entity.nameSection.language = language.id;
-					breakFlag = true;
-					break;
+		const entity = unflatten(req.body);
+		_.set(entity, 'nameSection.name', _.get(entity, 'nameSection.name', ''));
+		entity.nameSection.sortName = _.get(entity, 'nameSection.sortName', '');
+		_.set(entity, 'editionSection.physicalEnable', true);
+		const {orm} = req.app.locals;
+		const {Language, EditionFormat} = orm;
+		if (entity.nameSection.language) {
+			const outLanguage = await Language.query({where: {name: entity.nameSection.language}}).fetch({require: false});
+			entity.nameSection.language = outLanguage?.get('id');
+		}
+		if (entity.editionSection.format) {
+			const outEdFormat = await EditionFormat.query({where: {label: entity.editionSection.format}}).fetch({require: false});
+			entity.editionSection.format = outEdFormat?.get('id');
+		}
+		const keysToInt = ['height', 'width', 'depth', 'weight', 'pages'];
+		for (const key of keysToInt) {
+			entity.editionSection[key] = parseInt(entity.editionSection[key], 10) || null;
+		}
+		// submitted identifier should be like identifierEditor.t{typeId} eg. identifierEditor.t9 for ISBN-13
+		if (entity.identifierEditor) {
+			let index = 0;
+			for (const typeKey in entity.identifierEditor) {
+				if (Object.hasOwnProperty.call(entity.identifierEditor, typeKey)) {
+					entity.identifierEditor[`${index}`] =
+					{
+						type: parseInt(typeKey.replace('t', ''), 10),
+						value: entity.identifierEditor[typeKey]
+					};
+					delete entity.identifierEditor[typeKey];
+					index++;
 				}
 			}
-			if (!breakFlag) {
-				delete res.locals.entity.nameSection.language;
-			}
-		}
-		breakFlag = false;
-		if (res.locals.entity.editionSection.format) {
-			for (const edFormat of res.locals.editionFormats) {
-				if (edFormat.label === res.locals.entity.editionSection.format) {
-					res.locals.entity.editionSection.format = edFormat.id;
-					breakFlag = true;
-					break;
-				}
-			}
-			if (!breakFlag) {
-				delete res.locals.entity.editionSection.format;
-			}
-		}
-		const keysToFloat = ['height', 'width', 'depth', 'weight', 'pages'];
-		for (const key of keysToFloat) {
-			res.locals.entity.editionSection[key] = parseInt(res.locals.entity.editionSection[key], 10) || null;
 		}
 		const propsPromise = generateEntityProps(
-			'edition', req, res, {}, (entity) => entity
+			'edition', req, res, {}, () => entity
 		);
 		function render(props) {
 			const editorMarkup = entityEditorMarkup(props);
