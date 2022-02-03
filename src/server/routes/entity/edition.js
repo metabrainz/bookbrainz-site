@@ -20,6 +20,7 @@
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
+import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
 import {
@@ -249,6 +250,22 @@ router.post(
 					delete entity.identifierEditor[typeKey];
 					index++;
 				}
+			}
+		}
+
+		// adding publisher
+		if (entity.editionSection.publisher) {
+			const results = await search.autocomplete(orm, entity.editionSection.publisher, 'publisher', 1);
+			if (results.length) {
+				const bestMatch = results[0];
+				entity.editionSection.publisher = {
+					bbid: bestMatch.bbid,
+					text: bestMatch.defaultAlias.name,
+					type: 'Publisher'
+				};
+			}
+			else {
+				delete entity.editionSection.publisher;
 			}
 		}
 		const propsPromise = generateEntityProps(
