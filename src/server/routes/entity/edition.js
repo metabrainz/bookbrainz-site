@@ -221,7 +221,8 @@ router.post(
 		const entity = await utils.parseInitialState(req);
 		_.set(entity, 'editionSection.physicalEnable', true);
 		const {orm} = req.app.locals;
-		const {EditionFormat} = orm;
+		const {EditionFormat, Language} = orm;
+		entity.editionSection = await utils.parseLanguages(entity.editionSection, Language);
 		if (entity.editionSection.format) {
 			entity.editionSection.format = await utils.getIdByField(EditionFormat, 'label', entity.editionSection.format);
 		}

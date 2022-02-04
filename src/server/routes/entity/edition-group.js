@@ -105,6 +105,32 @@ router.get(
 );
 
 
+router.post(
+	'/create', auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	middleware.loadLanguages, middleware.loadEditionGroupTypes,
+	middleware.loadRelationshipTypes, async (req, res) => {
+		const entity = await utils.parseInitialState(req);
+		const {orm} = req.app.locals;
+		const {EditionGroupType} = orm;
+		if (entity.editionGroupSection) {
+			entity.editionGroupSection = {
+				type: await utils.getIdByField(EditionGroupType, 'label', entity.editionGroupSection)
+			};
+		}
+		const markupProps = generateEntityProps(
+			'editionGroup', req, res, {}, () => entity
+		);
+		const {markup, props} = entityEditorMarkup(markupProps);
+
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/entity-editor.js',
+			title: props.heading
+		}));
+	}
+);
+
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
 

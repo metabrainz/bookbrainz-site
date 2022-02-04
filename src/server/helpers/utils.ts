@@ -234,12 +234,12 @@ export function getIdByField(
 	model:any,
 	fieldName:string,
 	fieldValue:string
-):Promise<string> {
+):Promise<number> {
 	return model.query({where: {[fieldName]: fieldValue}}).fetch({require: false})?.get('id');
 }
 
 /**
- * Generate Identifier state from form submitted data
+ * Generate Identifier state from req body
  *
  * @param {object} sourceIdentifierState - source state in format of t{typeId}:value
  * @returns {object} - correctly formatted identifierEditor state
@@ -261,6 +261,32 @@ export function generateIdenfierState(sourceIdentifierState:Record<string, strin
 }
 
 /**
+ * Generate EntitySection Language state from req body
+ *
+ * @param {object} sourceEntitySection - source entity section state in format of languages{index}:value
+ * @param {object} model - Language model
+ *  @returns {Promise} - Resolves to modified state
+ */
+export async function parseLanguages(sourceEntitySection:Record<string, any>, model):Promise<Record<string, any>> {
+	const languages = [];
+	for (const langKey in sourceEntitySection) {
+		if (Object.prototype.hasOwnProperty.call(sourceEntitySection, langKey)) {
+			if (langKey.includes('languages')) {
+				languages.push({
+					label: sourceEntitySection[langKey],
+					// eslint-disable-next-line no-await-in-loop
+					value: await getIdByField(model, 'name', sourceEntitySection[langKey])
+				});
+				delete sourceEntitySection[langKey];
+			}
+		}
+	}
+	sourceEntitySection.languages = languages;
+	return sourceEntitySection;
+}
+
+
+/**
  * Parse NameSection, IdentifierEditor, AnnotationSection state from request body
  *
  * @param {object} req - Request object
@@ -273,6 +299,11 @@ export async function parseInitialState(req):Promise<Record<string, any>> {
 	// NameSection State
 	_.set(entity, 'nameSection.name', _.get(entity, 'nameSection.name', ''));
 	entity.nameSection.sortName = _.get(entity, 'nameSection.sortName', '');
+	entity.nameSection.exactMatches = null;
+	entity.nameSection.searchResults = null;
+	entity.nameSection.languages = _.get(entity, 'nameSection.languages', null);
+	entity.nameSection.disambiguation = _.get(entity, 'nameSection.disambiguation', null);
+
 	if (entity.nameSection.language) {
 		entity.nameSection.language = await getIdByField(Language, 'name', entity.nameSection.language);
 	}

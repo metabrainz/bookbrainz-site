@@ -20,6 +20,7 @@
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
+import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
 import {
@@ -114,6 +115,54 @@ router.get(
 		}));
 	}
 );
+
+
+router.post(
+	'/create', auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	middleware.loadLanguages, middleware.loadPublisherTypes,
+	middleware.loadRelationshipTypes,
+	async (req, res) => {
+		const {orm} = req.app.locals;
+		const {PublisherType} = orm;
+		const entity = await utils.parseInitialState(req);
+		if (entity.publisherSection) {
+			if (entity.publisherSection.type) {
+				entity.publisherSection.type = await utils.getIdByField(PublisherType, 'label', entity.publisherSection.type);
+			}
+			if (entity.publisherSection.endDate) {
+				entity.publisherSection.ended = true;
+			}
+			if (entity.publisherSection.area) {
+				const results = await search.autocomplete(orm, entity.publisherSection.area, 'area', 1);
+				if (results.length) {
+					const bestMatch = results[0];
+					entity.publisherSection.area = {
+						disambiguation: bestMatch.disambiguation.comment,
+						id: bestMatch.id,
+						text: bestMatch.defaultAlias.name,
+						type: bestMatch.type
+
+					};
+				}
+				else {
+					delete entity.publisherSection.area;
+				}
+			}
+		}
+		const markupProps = generateEntityProps(
+			'publisher', req, res, {}, () => entity
+		);
+		const {markup, props} = entityEditorMarkup(markupProps);
+
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/entity-editor.js',
+			title: props.heading
+		}));
+	}
+);
+
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
