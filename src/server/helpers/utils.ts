@@ -20,6 +20,7 @@
  */
 
 import _ from 'lodash';
+import {unflatten} from '../../common/helpers/utils';
 
 
 /**
@@ -219,4 +220,71 @@ export function attachAttributes(relationships) {
 			});
 		}
 	});
+}
+
+/**
+ * Fetch Id of a model using field value
+ *
+ * @param {object} model - Model  eg. Language
+ * @param {string} fieldName - given field eg. name
+ * @param {string} fieldValue - given field value eg. English
+ * @returns {Promise} - Resolves to required id
+ */
+export function getIdByField(
+	model:any,
+	fieldName:string,
+	fieldValue:string
+):Promise<string> {
+	return model.query({where: {[fieldName]: fieldValue}}).fetch({require: false})?.get('id');
+}
+
+/**
+ * Generate Identifier state from form submitted data
+ *
+ * @param {object} sourceIdentifierState - source state in format of t{typeId}:value
+ * @returns {object} - correctly formatted identifierEditor state
+ */
+export function generateIdenfierState(sourceIdentifierState:Record<string, string>):Record<string, any> {
+	let index = 0;
+	const identifierState = {};
+	for (const typeKey in sourceIdentifierState) {
+		if (Object.hasOwnProperty.call(sourceIdentifierState, typeKey)) {
+			identifierState[`${index}`] =
+			{
+				type: parseInt(typeKey.replace('t', ''), 10),
+				value: sourceIdentifierState[typeKey]
+			};
+			index++;
+		}
+	}
+	return identifierState;
+}
+
+/**
+ * Parse NameSection, IdentifierEditor, AnnotationSection state from request body
+ *
+ * @param {object} req - Request object
+ * @returns {Promise} - Resolves to Entity initialState
+ */
+export async function parseInitialState(req):Promise<Record<string, any>> {
+	const entity = unflatten(req.body);
+	const {orm} = req.app.locals;
+	const {Language} = orm;
+	// NameSection State
+	_.set(entity, 'nameSection.name', _.get(entity, 'nameSection.name', ''));
+	entity.nameSection.sortName = _.get(entity, 'nameSection.sortName', '');
+	if (entity.nameSection.language) {
+		entity.nameSection.language = await getIdByField(Language, 'name', entity.nameSection.language);
+	}
+	// IdentifierEditor State
+	if (entity.identifierEditor) {
+		entity.identifierEditor = generateIdenfierState(entity.identifierEditor);
+	}
+	// AnnotationSection State
+	if (entity.annotationSection) {
+		entity.annotationSection = {
+			content: entity.annotationSection
+		};
+	}
+	return entity;
 }

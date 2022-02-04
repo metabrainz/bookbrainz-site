@@ -30,14 +30,13 @@ import {
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
-import {makePromiseFromObject, unflatten} from '../../../common/helpers/utils';
 import {ConflictError} from '../../../common/helpers/error';
 import {RelationshipTypes} from '../../../client/entity-editor/relationship-editor/types';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
-
 
 /** ****************************
 *********** Helpers ************
@@ -219,40 +218,17 @@ router.post(
 	middleware.loadLanguages, middleware.loadRelationshipTypes,
 	async (req, res, next) => {
 		// parsing submitted data to correct format
-		const entity = unflatten(req.body);
-		_.set(entity, 'nameSection.name', _.get(entity, 'nameSection.name', ''));
-		entity.nameSection.sortName = _.get(entity, 'nameSection.sortName', '');
+		const entity = await utils.parseInitialState(req);
 		_.set(entity, 'editionSection.physicalEnable', true);
 		const {orm} = req.app.locals;
-		const {Language, EditionFormat} = orm;
-		if (entity.nameSection.language) {
-			const outLanguage = await Language.query({where: {name: entity.nameSection.language}}).fetch({require: false});
-			entity.nameSection.language = outLanguage?.get('id');
-		}
+		const {EditionFormat} = orm;
 		if (entity.editionSection.format) {
-			const outEdFormat = await EditionFormat.query({where: {label: entity.editionSection.format}}).fetch({require: false});
-			entity.editionSection.format = outEdFormat?.get('id');
+			entity.editionSection.format = await utils.getIdByField(EditionFormat, 'label', entity.editionSection.format);
 		}
 		const keysToInt = ['height', 'width', 'depth', 'weight', 'pages'];
 		for (const key of keysToInt) {
 			entity.editionSection[key] = parseInt(entity.editionSection[key], 10) || null;
 		}
-		// submitted identifier should be like identifierEditor.t{typeId} eg. identifierEditor.t9 for ISBN-13
-		if (entity.identifierEditor) {
-			let index = 0;
-			for (const typeKey in entity.identifierEditor) {
-				if (Object.hasOwnProperty.call(entity.identifierEditor, typeKey)) {
-					entity.identifierEditor[`${index}`] =
-					{
-						type: parseInt(typeKey.replace('t', ''), 10),
-						value: entity.identifierEditor[typeKey]
-					};
-					delete entity.identifierEditor[typeKey];
-					index++;
-				}
-			}
-		}
-
 		// adding publisher
 		if (entity.editionSection.publisher) {
 			const results = await search.autocomplete(orm, entity.editionSection.publisher, 'publisher', 1);
