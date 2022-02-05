@@ -248,7 +248,7 @@ export function generateIdenfierState(sourceIdentifierState:Record<string, strin
 	let index = 0;
 	const identifierState = {};
 	for (const typeKey in sourceIdentifierState) {
-		if (Object.hasOwnProperty.call(sourceIdentifierState, typeKey)) {
+		if (Object.prototype.hasOwnProperty.call(sourceIdentifierState, typeKey)) {
 			identifierState[`${index}`] =
 			{
 				type: parseInt(typeKey.replace('t', ''), 10),
@@ -264,10 +264,12 @@ export function generateIdenfierState(sourceIdentifierState:Record<string, strin
  * Generate EntitySection Language state from req body
  *
  * @param {object} sourceEntitySection - source entity section state in format of languages{index}:value
- * @param {object} model - Language model
+ * @param {object} orm - orm object
  *  @returns {Promise} - Resolves to modified state
  */
-export async function parseLanguages(sourceEntitySection:Record<string, any>, model):Promise<Record<string, any>> {
+export async function parseLanguages(sourceEntitySection:Record<string, any>, orm):Promise<Record<string, any>> {
+	if (!sourceEntitySection) { return sourceEntitySection; }
+	const {Language} = orm;
 	const languages = [];
 	for (const langKey in sourceEntitySection) {
 		if (Object.prototype.hasOwnProperty.call(sourceEntitySection, langKey)) {
@@ -275,7 +277,7 @@ export async function parseLanguages(sourceEntitySection:Record<string, any>, mo
 				languages.push({
 					label: sourceEntitySection[langKey],
 					// eslint-disable-next-line no-await-in-loop
-					value: await getIdByField(model, 'name', sourceEntitySection[langKey])
+					value: await getIdByField(Language, 'name', sourceEntitySection[langKey])
 				});
 				delete sourceEntitySection[langKey];
 			}

@@ -112,9 +112,9 @@ router.post(
 		const entity = await utils.parseInitialState(req);
 		const {orm} = req.app.locals;
 		const {EditionGroupType} = orm;
-		if (entity.editionGroupSection) {
+		if (entity.editionGroupSection?.type) {
 			entity.editionGroupSection = {
-				type: await utils.getIdByField(EditionGroupType, 'label', entity.editionGroupSection)
+				type: await utils.getIdByField(EditionGroupType, 'label', entity.editionGroupSection.type)
 			};
 		}
 		const markupProps = generateEntityProps(
