@@ -68,11 +68,11 @@ function CallToAction(props) {
 					</Button>
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
-						href={`/edition-group/create${nameQueryParameter}`}
+						href={`/series/create${nameQueryParameter}`}
 						variant="secondary"
 					>
-						{genEntityIconHTMLElement('EditionGroup', '3x', false)}
-						<div className="margin-top-d4">Edition Group</div>
+						{genEntityIconHTMLElement('Series', '3x', false)}
+						<div className="margin-top-d4">Series</div>
 					</Button>
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
