@@ -19,6 +19,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as search from '../../common/helpers/search';
 import _ from 'lodash';
 import {unflatten} from '../../common/helpers/utils';
 
@@ -223,6 +224,22 @@ export function attachAttributes(relationships) {
 }
 
 /**
+ * Fetch id related with label
+ *
+ * @param {object[]} fromOptions - Options
+ * @param {string} label - related label
+ * @returns {number} - assigned id
+ */
+export function getIdByLabel(fromOptions:any[], label:string):number | null {
+	for (const option of fromOptions) {
+		if (option.name === label) {
+			return option.id;
+		}
+	}
+	return null;
+}
+
+/**
  * Fetch Id of a model using field value
  *
  * @param {object} model - Model  eg. Language
@@ -287,6 +304,35 @@ export async function parseLanguages(sourceEntitySection:Record<string, any>, or
 	return sourceEntitySection;
 }
 
+/**
+ * Generate react-select option from query
+ * @param {object} orm - orm
+ * @param {string} type - type eg. area
+ * @param {string} query - query string
+ * @returns {Promise} - resolves to option object
+ */
+export async function searchOption(orm, type:string, query:string):Promise<{
+	disambiguation: string,
+	id: number,
+	text: string,
+	type: string,
+
+} | null> {
+	const results = await search.autocomplete(orm, query, type, 1);
+	if (results.length) {
+		const bestMatch = results[0];
+		const option = {
+			disambiguation: bestMatch.disambiguation.comment,
+			id: bestMatch.id,
+			text: bestMatch.defaultAlias.name,
+			type: bestMatch.type
+
+		};
+		return option;
+	}
+
+	return null;
+}
 
 /**
  * Parse NameSection, IdentifierEditor, AnnotationSection state from request body

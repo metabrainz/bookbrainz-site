@@ -121,6 +121,46 @@ router.get(
 	}
 );
 
+router.post(
+	'/create', auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	middleware.loadGenders, middleware.loadLanguages,
+	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
+	async (req, res) => {
+		const {orm} = req.app.locals;
+		const entity = await utils.parseInitialState(req);
+		if (entity.authorSection) {
+			if (entity.authorSection.endDate || entity.authorSection.endArea) {
+				entity.authorSection.ended = true;
+			}
+			if (entity.authorSection.gender) {
+				entity.authorSection.gender = utils.getIdByLabel(res.locals.genders, entity.authorSection.gender);
+			}
+			if (entity.authorSection.type) {
+				entity.authorSection.type = utils.getIdByLabel(res.locals.authorTypes, entity.authorSection.type);
+			}
+			if (entity.authorSection.beginArea) {
+				entity.authorSection.beginArea = await utils.searchOption(orm, 'area', entity.authorSection.beginArea);
+			}
+			if (entity.authorSection.endArea) {
+				entity.authorSection.endArea = await utils.searchOption(orm, 'area', entity.authorSection.endArea);
+			}
+		}
+		const markupProps = generateEntityProps(
+			'author', req, res, {
+				genderOptions: res.locals.genders
+			}, () => entity
+		);
+		const {markup, props} = entityEditorMarkup(markupProps);
+
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/entity-editor.js',
+			title: props.heading
+		}));
+	}
+);
+
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
 
