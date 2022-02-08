@@ -28,7 +28,7 @@ import {kebabCase as _kebabCase} from 'lodash';
 import request from 'superagent';
 
 
-const {Alert, Button, Col, Row, Panel} = bootstrap;
+const {Alert, Button, Col, Row, Card} = bootstrap;
 
 class EntityDeletionForm extends React.Component {
 	constructor(props) {
@@ -89,7 +89,7 @@ class EntityDeletionForm extends React.Component {
 		let errorComponent = null;
 		if (this.state.error) {
 			errorComponent =
-				<Alert bsStyle="danger">{this.state.error}</Alert>;
+				<Alert variant="danger">{this.state.error}</Alert>;
 		}
 
 		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
@@ -98,16 +98,17 @@ class EntityDeletionForm extends React.Component {
 		const footerComponent = (
 			<span className="clearfix">
 				<Button
-					bsStyle="danger"
-					className="pull-right"
+					className="float-right"
 					disabled={!hasNote}
 					type="submit"
+					variant="danger"
 				>
 					<FontAwesomeIcon icon={faTrashAlt}/> Delete
 				</Button>
 				<Button
-					className="pull-right"
+					className="float-right"
 					href={this.entityUrl}
+					variant="secondary"
 				>
 					<FontAwesomeIcon icon={faTimesCircle}/> Cancel
 				</Button>
@@ -128,19 +129,15 @@ class EntityDeletionForm extends React.Component {
 				<h1>Delete Entity</h1>
 				<Row className="margin-top-2">
 					{loadingComponent}
-					<Col md={6} mdOffset={3}>
+					<Col lg={{offset: 3, span: 6}}>
 						<form onSubmit={this.handleSubmit}>
-							<Panel
-								bsStyle="danger"
-							>
-								<Panel.Heading>
-									<Panel.Title componentClass="h3">
-										Confirm Deletion
-									</Panel.Title>
-								</Panel.Heading>
-								<Panel.Body>
+							<Card bg="danger">
+								<Card.Header as="h4">
+									Confirm Deletion
+								</Card.Header>
+								<Card.Body>
 
-									<Alert bsStyle="warning">
+									<Alert variant="warning">
 										<h4>
 											<FontAwesomeIcon icon={faExclamationTriangle}/>&nbsp;
 											You’re about to delete the {entity.type} {entityName}.
@@ -188,11 +185,11 @@ class EntityDeletionForm extends React.Component {
 										onChange={this.handleNoteChange}
 									/>
 									{errorComponent}
-								</Panel.Body>
-								<Panel.Footer>
+								</Card.Body>
+								<Card.Footer>
 									{footerComponent}
-								</Panel.Footer>
-							</Panel>
+								</Card.Footer>
+							</Card>
 						</form>
 					</Col>
 				</Row>

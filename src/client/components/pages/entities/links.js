@@ -34,14 +34,14 @@ function EntityLinks({entity, identifierTypes, urlPrefix}) {
 	const relationships = filterOutRelationshipTypeById(entity, relationshipTypeId);
 	return (
 		<Row>
-			<Col md={8}>
+			<Col lg={8}>
 				<EntityRelationships
 					contextEntity={entity}
 					entityUrl={urlPrefix}
 					relationships={relationships}
 				/>
 			</Col>
-			<Col md={4}>
+			<Col lg={4}>
 				<EntityIdentifiers
 					identifierTypes={identifierTypes}
 					identifiers={entity.identifierSet && entity.identifierSet.identifiers}

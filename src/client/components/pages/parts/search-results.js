@@ -199,84 +199,81 @@ class SearchResults extends React.Component {
 		if (this.props.condensed) {
 			tableCssClasses += ' table-condensed';
 		}
-
+		if (noResults) {
+			return null;
+		}
 		return (
 			<div>
 				{
-					!noResults &&
+					this.props.user ?
 						<div>
-							{
-								this.props.user ?
-									<div>
-										<AddToCollectionModal
-											bbids={this.state.selected.map(selected => selected.bbid)}
-											closeModalAndShowMessage={this.closeModalAndShowMessage}
-											entityType={this.state.selected[0]?.type}
-											handleCloseModal={this.onCloseModal}
-											show={this.state.showModal}
-											userId={this.props.user.id}
-										/>
-									</div> : null
-							}
-							{
-								!this.props.condensed &&
+							<AddToCollectionModal
+								bbids={this.state.selected.map(selected => selected.bbid)}
+								closeModalAndShowMessage={this.closeModalAndShowMessage}
+								entityType={this.state.selected[0]?.type}
+								handleCloseModal={this.onCloseModal}
+								show={this.state.showModal}
+								userId={this.props.user.id}
+							/>
+						</div> : null
+				}
+				{
+					!this.props.condensed &&
 					<h3 style={{color: '#754e37'}}>
 						Search Results
 					</h3>
-							}
-							<hr className="thin"/>
-							<Table
-								responsive
-								className={tableCssClasses}
-							>
-								{
-									!this.props.condensed &&
+				}
+				<hr className="thin"/>
+				<Table
+					responsive
+					className={tableCssClasses}
+				>
+					{
+						!this.props.condensed &&
 						<thead>
 							<tr>
-								<th className="col-sm-3">Type</th>
-								<th className="col-sm-5">Name</th>
-								<th className="col-sm-4">Aliases</th>
+								<th className="col-md-3">Type</th>
+								<th className="col-md-5">Name</th>
+								<th className="col-md-4">Aliases</th>
 							</tr>
 						</thead>
-								}
-								<tbody>
-									{results}
-								</tbody>
-							</Table>
-							{
-								this.state.message.text ?
-									<Alert
-										bsStyle={this.state.message.type}
-										className="margin-top-1"
-										onDismiss={this.handleAlertDismiss}
-									>
-										{this.state.message.text}
-									</Alert> : null
+					}
+					<tbody>
+						{results}
+					</tbody>
+				</Table>
+				{
+					this.state.message.text ?
+						<Alert
+							className="margin-top-1"
+							variant={this.state.message.type}
+							onDismiss={this.handleAlertDismiss}
+						>
+							{this.state.message.text}
+						</Alert> : null
 
-							}
-							{
-								this.props.user ?
-									<ButtonGroup>
-										<Button
-											bsStyle="primary"
-											disabled={!this.state.selected.length}
-											type="button"
-											onClick={this.handleAddToCollection}
-										>
-											{genEntityIconHTMLElement('Collection')}
+				}
+				{
+					this.props.user ?
+						<ButtonGroup>
+							<Button
+								disabled={!this.state.selected.length}
+								type="button"
+								variant="primary"
+								onClick={this.handleAddToCollection}
+							>
+								{genEntityIconHTMLElement('Collection')}
 									Add to Collection
-										</Button>
-										<Button
-											bsStyle="warning"
-											disabled={!this.state.selected.length}
-											type="button"
-											onClick={this.handleClearSelected}
-										>
-								Clear <Badge>{this.state.selected.length}</Badge> selected
-										</Button>
-									</ButtonGroup> : null
-							}
-						</div>
+							</Button>
+							<Button
+								disabled={!this.state.selected.length}
+								type="button"
+								variant="warning"
+								onClick={this.handleClearSelected}
+							>
+								Clear <Badge pill variant="light">{this.state.selected.length}</Badge> selected
+							</Button>
+						</ButtonGroup> : null
 				}
 			</div>
 		);

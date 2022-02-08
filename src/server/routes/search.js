@@ -23,7 +23,6 @@ import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
-import * as utils from '../helpers/utils';
 
 import {keys as _keys, snakeCase as _snakeCase, isNil} from 'lodash';
 import {escapeProps, generateProps} from '../helpers/props';
@@ -56,7 +55,7 @@ router.get('/', (req, res, next) => {
 		}))
 		.then((searchResults) => {
 			const entityTypes = _keys(commonUtils.getEntityModels(orm));
-			const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(searchResults.initialResults, size);
+			const {newResultsArray, nextEnabled} = commonUtils.getNextEnabledAndResultsArray(searchResults.initialResults, size);
 			searchResults.initialResults = newResultsArray;
 
 			const props = generateProps(req, res, {

@@ -110,7 +110,7 @@ function WorkSection({
 				know it
 			</p>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<CustomInput
 						label="Type"
 						tooltipText="Literary form or structure of the work"
@@ -125,7 +125,7 @@ function WorkSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<ImmutableLanguageField
 						empty
 						multi

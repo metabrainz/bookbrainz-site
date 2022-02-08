@@ -22,7 +22,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Col} = bootstrap;
+const {Card, Col, Container, Row} = bootstrap;
 
 class Achievement extends React.Component {
 	constructor(props) {
@@ -57,17 +57,21 @@ class Achievement extends React.Component {
 			);
 		}
 		return (
-			<div className="row well">
-				<Col sm={2}>
-					{imgElement}
-				</Col>
-				<Col sm={8}>
-					<div className="h2">
-						{this.state.achievement.name}
-					</div>
-					<p>{this.state.achievement.description}</p>
-				</Col>
-			</div>
+			<Card bg="light">
+				<Container fluid>
+					<Row>
+						<Col md={2}>
+							{imgElement}
+						</Col>
+						<Col md={8}>
+							<div className="h2">
+								{this.state.achievement.name}
+							</div>
+							<p>{this.state.achievement.description}</p>
+						</Col>
+					</Row>
+				</Container>
+			</Card>
 		);
 	}
 }

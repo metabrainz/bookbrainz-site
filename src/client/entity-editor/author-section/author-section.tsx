@@ -29,7 +29,7 @@ import {
 	updateGender,
 	updateType
 } from './actions';
-import {Checkbox, Col, Row} from 'react-bootstrap';
+import {Col, Form, Row} from 'react-bootstrap';
 import {isNullDate, labelsForAuthor} from '../../helpers/utils';
 import {
 	validateAuthorSectionBeginDate,
@@ -85,7 +85,7 @@ type DispatchProps = {
 	onBeginDateChange: (arg: string) => unknown,
 	onEndAreaChange: (arg: Area | null | undefined) => unknown,
 	onEndDateChange: (arg: string) => unknown,
-	onEndedChange: (arg: React.FormEvent<Checkbox>) => unknown,
+	onEndedChange: (arg: React.FormEvent<any>) => unknown,
 	onGenderChange: (obj: {value: number} | null) => unknown,
 	onTypeChange: (obj: {value: number} | null) => unknown
 };
@@ -184,7 +184,7 @@ function AuthorSection({
 				know it
 			</p>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<CustomInput label="Type">
 						<Select
 							instanceId="authorType"
@@ -196,9 +196,9 @@ function AuthorSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<CustomInput
-						groupClassName={genderShow ? null : 'hidden'}
+						groupClassName={genderShow ? null : 'd-none'}
 						label="Gender"
 					>
 						<Select
@@ -211,7 +211,7 @@ function AuthorSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<DateField
 						show
 						defaultValue={beginDateValue}
@@ -224,7 +224,7 @@ function AuthorSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<EntitySearchFieldOption
 						instanceId="beginArea"
 						label={beginAreaLabel}
@@ -235,17 +235,17 @@ function AuthorSection({
 				</Col>
 			</Row>
 			<div className="text-center">
-				<Checkbox
+				<Form.Check
 					defaultChecked={endedChecked}
+					label={endedLabel}
+					type="checkbox"
 					onChange={onEndedChange}
-				>
-					{endedLabel}
-				</Checkbox>
+				/>
 			</div>
 			{endedChecked &&
 				<div>
 					<Row>
-						<Col md={6} mdOffset={3}>
+						<Col lg={{offset: 3, span: 6}}>
 							<DateField
 								show
 								defaultValue={endDateValue}
@@ -258,7 +258,7 @@ function AuthorSection({
 						</Col>
 					</Row>
 					<Row>
-						<Col md={6} mdOffset={3}>
+						<Col lg={{offset: 3, span: 6}}>
 							<EntitySearchFieldOption
 								instanceId="endArea"
 								label={endAreaLabel}

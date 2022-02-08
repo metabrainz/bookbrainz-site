@@ -45,6 +45,7 @@ function CallToAction(props) {
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
 						href={`/author/create${nameQueryParameter}`}
+						variant="secondary"
 					>
 						{genEntityIconHTMLElement('Author', '3x', false)}
 						<div className="margin-top-d4">Author</div>
@@ -52,6 +53,7 @@ function CallToAction(props) {
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
 						href={`/work/create${nameQueryParameter}`}
+						variant="secondary"
 					>
 						{genEntityIconHTMLElement('Work', '3x', false)}
 						<div className="margin-top-d4">Work</div>
@@ -59,20 +61,23 @@ function CallToAction(props) {
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
 						href={`/edition/create${nameQueryParameter}`}
+						variant="secondary"
 					>
 						{genEntityIconHTMLElement('Edition', '3x', false)}
 						<div className="margin-top-d4">Edition</div>
 					</Button>
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
-						href={`/edition-group/create${nameQueryParameter}`}
+						href={`/series/create${nameQueryParameter}`}
+						variant="secondary"
 					>
-						{genEntityIconHTMLElement('EditionGroup', '3x', false)}
-						<div className="margin-top-d4">Edition Group</div>
+						{genEntityIconHTMLElement('Series', '3x', false)}
+						<div className="margin-top-d4">Series</div>
 					</Button>
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
 						href={`/publisher/create${nameQueryParameter}`}
+						variant="secondary"
 					>
 						{genEntityIconHTMLElement('Publisher', '3x', false)}
 						<div className="margin-top-d4">Publisher</div>

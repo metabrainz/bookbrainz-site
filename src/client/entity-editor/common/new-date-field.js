@@ -132,7 +132,7 @@ class DateField extends React.Component {
 			year: this.state.year
 		});
 		const selectedDate = parseISO(dateString);
-		const groupClassName = classNames({hidden: !this.props.show});
+		const groupClassName = classNames({'d-none': !this.props.show});
 		const isCommonEraDate = Math.sign(this.state.year) === 1 || Math.sign(this.state.year) === 0;
 		return (
 			<div>
@@ -145,12 +145,15 @@ class DateField extends React.Component {
 							className="year-field"
 							maxLength={isCommonEraDate ? 4 : 5}
 							placeholder="YYYY"
+							style={{width: '4.5em'}}
 							type="text"
 							value={this.state.year}
 							onBlur={this.handleYearInputBlur}
 							onChange={this.handleYearChange}
 						/>
-						<InputGroup.Addon style={{padding: '0 0.5em'}}>-</InputGroup.Addon>
+						<InputGroup.Append style={{'margin-right': '-1px'}}>
+							<InputGroup.Text style={{padding: '0 0.5em'}}>-</InputGroup.Text>
+						</InputGroup.Append>
 						<FormControl
 							className="other-date-field"
 							maxLength="2"
@@ -160,7 +163,9 @@ class DateField extends React.Component {
 							onBlur={this.handleMonthInputBlur}
 							onChange={this.handleMonthChange}
 						/>
-						<InputGroup.Addon style={{padding: '0 0.5em'}}>-</InputGroup.Addon>
+						<InputGroup.Append style={{'margin-right': '-1px'}}>
+							<InputGroup.Text style={{padding: '0 0.5em'}}>-</InputGroup.Text>
+						</InputGroup.Append>
 						<FormControl
 							className="other-date-field"
 							maxLength="2"
@@ -170,13 +175,13 @@ class DateField extends React.Component {
 							onBlur={this.handleDayInputBlur}
 							onChange={this.handleDayChange}
 						/>
-						<InputGroup.Button style={{fontSize: 'inherit'}}>
+						<InputGroup.Append style={{fontSize: 'inherit'}}>
 							<DatePicker
 								peekNextMonth
 								showMonthDropdown
 								showYearDropdown
 								customInput={
-									<Button bsStyle="info" style={{lineHeight: '1.75', padding: '0.375em 0.938em'}} title="Date picker">
+									<Button style={{lineHeight: '1.75', padding: '0.375em 0.938em'}} title="Date picker" variant="info">
 										<FontAwesomeIcon icon={faCalendarAlt}/>
 									</Button>
 								}
@@ -192,7 +197,7 @@ class DateField extends React.Component {
 								timeFormat="false"
 								onChange={this.handleChangeOfDatePicker}
 							/>
-						</InputGroup.Button>
+						</InputGroup.Append>
 					</InputGroup>
 				</CustomInput>
 

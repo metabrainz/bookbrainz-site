@@ -28,13 +28,13 @@ import {faSearch} from '@fortawesome/free-solid-svg-icons';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {Button, Col, DropdownButton, InputGroup, MenuItem, Row} = bootstrap;
+const {Button, Col, Dropdown, DropdownButton, InputGroup, Row} = bootstrap;
 
 const SearchButton = (
 	<Button
 		block
-		bsStyle="success"
 		type="submit"
+		variant="success"
 	>
 		<FontAwesomeIcon icon={faSearch}/>&nbsp;Search
 	</Button>
@@ -117,49 +117,50 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 	render() {
 		const entityTypeSelect = Array.isArray(this.props.entityTypes) ? (
 			<DropdownButton
-				componentClass={InputGroup.Button}
+				as={InputGroup.Append}
 				id="entity-type-select"
 				title={_.startCase(this.state.type) || 'All Entities'}
+				variant="secondary"
 				onSelect={this.handleEntitySelect}
 			>
 				{this.props.entityTypes.map((entityType: string) => (
-					<MenuItem
+					<Dropdown.Item
 						eventKey={entityType}
 						key={entityType}
 					>
 						{genEntityIconHTMLElement(entityType)}
 						{_.startCase(entityType)}
-					</MenuItem>
+					</Dropdown.Item>
 				))}
-				<MenuItem divider/>
-				<MenuItem
+				<Dropdown.Divider/>
+				<Dropdown.Item
 					eventKey="all_entities"
 					key="allEntities"
 				>
 					All Entities
-				</MenuItem>
+				</Dropdown.Item>
 
-				<MenuItem divider/>
-				<MenuItem
+				<Dropdown.Divider/>
+				<Dropdown.Item
 					eventKey="editor"
 					key="editor"
 				>
 					{genEntityIconHTMLElement('Editor')}
 					Editor
-				</MenuItem>
-				<MenuItem
+				</Dropdown.Item>
+				<Dropdown.Item
 					eventKey="collection"
 					key="collection"
 				>
 					{genEntityIconHTMLElement('Collection')}
 					Collection
-				</MenuItem>
+				</Dropdown.Item>
 			</DropdownButton>
 		) : '';
 
 		return (
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<form
 						action="/search"
 						className="form-horizontal whole-page-form"

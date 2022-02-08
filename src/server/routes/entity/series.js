@@ -92,6 +92,15 @@ router.get(
 			'series', req, res, {}
 		));
 
+		props.initialState.nameSection = {
+			disambiguation: '',
+			exactMatches: null,
+			language: null,
+			name: req.query?.name ?? '',
+			searchResults: null,
+			sortName: ''
+		};
+
 		return res.send(target({
 			markup,
 			props: escapeProps(props),

@@ -45,19 +45,19 @@ function WorkAttributes({work}) {
 	return (
 		<div>
 			<Row>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>Sort Name</dt>
 						<dd>{sortNameOfDefaultAlias}</dd>
 					</dl>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>Type</dt>
 						<dd>{type}</dd>
 					</dl>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>Language</dt>
 						<dd>{languages}</dd>
@@ -81,14 +81,14 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 	return (
 		<div>
 			<Row className="entity-display-background">
-				<Col className="entity-display-image-box text-center" md={2}>
+				<Col className="entity-display-image-box text-center" lg={2}>
 					<EntityImage
 						backupIcon={ENTITY_TYPE_ICONS.Work}
 						deleted={entity.deleted}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>
-				<Col md={10}>
+				<Col lg={10}>
 					<EntityTitle entity={entity}/>
 					<WorkAttributes work={entity}/>
 				</Col>

@@ -57,13 +57,13 @@ class EntityAnnotation extends React.Component {
 		const lastModifiedDate = new Date(annotation.lastRevision.createdAt);
 		return (
 			<Row>
-				<Col md={12}>
+				<Col lg={12}>
 					<h2>Annotation</h2>
 					<Collapse in={this.state.open}>
 						<pre className="annotation-content" ref={this.annotationContentRef} >{stringToHTMLWithLinks(annotation.content)}</pre>
 					</Collapse>
 					{this.state.showButton &&
-					<Button bsStyle="link" onClick={this.handleToggleCollapse}>
+					<Button variant="link" onClick={this.handleToggleCollapse}>
 						Show {this.state.open ? 'less' : 'more…'}
 					</Button>}
 					<p className="text-muted">Last modified: <span title={formatDate(lastModifiedDate, true)}>{formatDate(lastModifiedDate)}</span>

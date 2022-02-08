@@ -30,7 +30,7 @@ import SelectWrapper from '../input/select-wrapper';
 import ValidationLabel from '../../entity-editor/common/validation-label';
 
 
-const {Alert, Button, Col, Panel, Row} = bootstrap;
+const {Alert, Button, Col, Card, Row} = bootstrap;
 const {injectDefaultAliasName} = utilsHelper;
 
 class ProfileForm extends React.Component {
@@ -140,7 +140,7 @@ class ProfileForm extends React.Component {
 		let errorComponent = null;
 		if (this.state.error) {
 			errorComponent =
-				<Alert bsStyle="danger">{this.state.error.message}</Alert>;
+				<Alert variant="danger">{this.state.error.message}</Alert>;
 		}
 
 		const hasChanged = this.hasChanged();
@@ -155,15 +155,13 @@ class ProfileForm extends React.Component {
 			<div>
 				<Row className="margin-top-2">
 					{loadingElement}
-					<Col md={8} mdOffset={2}>
+					<Col lg={{offset: 2, span: 8}}>
 						<form onSubmit={this.handleSubmit}>
-							<Panel>
-								<Panel.Heading>
-									<Panel.Title>
-										<span className="h3">Edit your public profile</span>
-									</Panel.Title>
-								</Panel.Heading>
-								<Panel.Body>
+							<Card>
+								<Card.Header as="h3">
+									Edit your public profile
+								</Card.Header>
+								<Card.Body>
 									<CustomInput
 										defaultValue={name}
 										help="required"
@@ -213,17 +211,17 @@ class ProfileForm extends React.Component {
 										onChange={this.handleSelectChange}
 									/>
 									{errorComponent}
-								</Panel.Body>
-								<Panel.Footer>
+								</Card.Body>
+								<Card.Footer>
 									<Button
-										bsStyle="success"
 										disabled={!hasChanged}
 										type="submit"
+										variant="success"
 									>
 										Save changes
 									</Button>
-								</Panel.Footer>
-							</Panel>
+								</Card.Footer>
+							</Card>
 						</form>
 					</Col>
 				</Row>
