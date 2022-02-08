@@ -17,10 +17,10 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import * as utils from '../../../../server/helpers/utils';
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import {getNextEnabledAndResultsArray} from '../../../../common/helpers/utils';
 import {isFunction} from 'lodash';
 import request from 'superagent';
 
@@ -106,7 +106,7 @@ class PagerElement extends React.Component {
 		request.get(`${this.props.paginationUrl}?${searchParams.toString()}`)
 			.then((res) => JSON.parse(res.text))
 			.then((data) => {
-				const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(data, newSize);
+				const {newResultsArray, nextEnabled} = getNextEnabledAndResultsArray(data, newSize);
 				this.setState({
 					from: newFrom,
 					nextEnabled,

@@ -91,3 +91,20 @@ export function sortRelationshipOrdinal(sortByProperty: string) {
 		return value1.localeCompare(value2, undefined, {numeric: true});
 	};
 }
+
+
+export function getNextEnabledAndResultsArray(array, size) {
+	if (array.length > size) {
+		while (array.length > size) {
+			array.pop();
+		}
+		return {
+			newResultsArray: array,
+			nextEnabled: true
+		};
+	}
+	return {
+		newResultsArray: array,
+		nextEnabled: false
+	};
+}

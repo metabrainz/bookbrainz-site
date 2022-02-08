@@ -56,7 +56,7 @@ router.get('/', (req, res, next) => {
 		}))
 		.then((searchResults) => {
 			const entityTypes = _keys(commonUtils.getEntityModels(orm));
-			const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(searchResults.initialResults, size);
+			const {newResultsArray, nextEnabled} = commonUtils.getNextEnabledAndResultsArray(searchResults.initialResults, size);
 			searchResults.initialResults = newResultsArray;
 
 			const props = generateProps(req, res, {

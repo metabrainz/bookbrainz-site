@@ -170,21 +170,6 @@ export function getAdditionalRelations(modelType) {
 	return [];
 }
 
-export function getNextEnabledAndResultsArray(array, size) {
-	if (array.length > size) {
-		while (array.length > size) {
-			array.pop();
-		}
-		return {
-			newResultsArray: array,
-			nextEnabled: true
-		};
-	}
-	return {
-		newResultsArray: array,
-		nextEnabled: false
-	};
-}
 
 /**
  * Takes an entity and converts it to a format acceptable to react-select.

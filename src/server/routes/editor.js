@@ -331,7 +331,7 @@ router.get('/:id/revisions', async (req, res, next) => {
 			await Promise.all([orderedRevisionsPromise, editorJSONPromise]);
 
 		const {newResultsArray, nextEnabled} =
-			utils.getNextEnabledAndResultsArray(orderedRevisions, size);
+			commonUtils.getNextEnabledAndResultsArray(orderedRevisions, size);
 
 		const props = generateProps(req, res, {
 			editor: editorJSON,
@@ -522,7 +522,7 @@ router.get('/:id/collections', async (req, res, next) => {
 
 		// fetch 1 more collections than required to check nextEnabled
 		const orderedCollections = await getOrderedCollectionsForEditorPage(from, size + 1, type, req);
-		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedCollections, size);
+		const {newResultsArray, nextEnabled} = commonUtils.getNextEnabledAndResultsArray(orderedCollections, size);
 		const editor = await new Editor({id: req.params.id}).fetch();
 		const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
 
