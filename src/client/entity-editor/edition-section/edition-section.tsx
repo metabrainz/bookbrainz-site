@@ -37,7 +37,7 @@ import {
 } from './actions';
 
 import {Alert, Button, Col, ListGroup, Row} from 'react-bootstrap';
-import {DateObject, isNullDate} from '../../helpers/utils';
+import {DateObject, entityToOption, isNullDate} from '../../helpers/utils';
 import type {List, Map} from 'immutable';
 import {faClone, faExternalLinkAlt, faSearch} from '@fortawesome/free-solid-svg-icons';
 import {
@@ -60,7 +60,6 @@ import NumericField from '../common/numeric-field';
 import Select from 'react-select';
 import _ from 'lodash';
 import {connect} from 'react-redux';
-import {entityToOption} from '../../../server/helpers/utils';
 import makeImmutable from '../common/make-immutable';
 
 
