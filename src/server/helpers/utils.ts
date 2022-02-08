@@ -22,16 +22,6 @@
 import _ from 'lodash';
 
 
-/**
- * Returns an API path for interacting with the given Bookshelf entity model
- *
- * @param {object} entity - Entity object
- * @returns {string} - URL path to interact with entity
- */
-export function getEntityLink(entity: {type: string, bbid: string}): string {
-	return `/${_.kebabCase(entity.type)}/${entity.bbid}`;
-}
-
 export function getDateBeforeDays(days) {
 	const date = new Date();
 	date.setDate(date.getDate() - days);

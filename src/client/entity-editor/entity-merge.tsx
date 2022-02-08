@@ -32,7 +32,7 @@ import SubmissionSection from './submission-section/submission-section';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {faAngleDoubleLeft} from '@fortawesome/free-solid-svg-icons';
-import {getEntityLink} from '../../server/helpers/utils';
+import {getEntityLink} from '../../common/helpers/utils';
 import {submit} from './submission-section/actions';
 
 

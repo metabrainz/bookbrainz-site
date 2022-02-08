@@ -18,9 +18,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as utils from './utils';
-
 import {ENTITY_TYPE_ICONS} from '../../client/helpers/entity';
+import {getEntityLink} from '../../common/helpers/utils';
 import _ from 'lodash';
 
 
@@ -88,7 +87,7 @@ function renderRelationship(relationship: Relationship) {
 			// Linkify source and target based on default alias
 			const name = _.get(entity, 'defaultAlias.name', '(unnamed)');
 			const entityIcon = `<i class="fa fa-${ENTITY_TYPE_ICONS[entity.type]} margin-right-0-5"></i>`;
-			return `${entityIcon}<a href="${utils.getEntityLink(entity)}">${name}</a>`;
+			return `${entityIcon}<a href="${getEntityLink(entity)}">${name}</a>`;
 		})
 	};
 

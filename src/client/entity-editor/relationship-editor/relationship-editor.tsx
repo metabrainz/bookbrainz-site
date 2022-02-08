@@ -45,7 +45,7 @@ import {NumberAttribute} from './attributes';
 import ReactSelect from 'react-select';
 import Relationship from './relationship';
 import _ from 'lodash';
-import {getEntityLink} from '../../../server/helpers/utils';
+import {getEntityLink} from '../../../common/helpers/utils';
 
 
 function isValidRelationship(relationship: _Relationship) {
