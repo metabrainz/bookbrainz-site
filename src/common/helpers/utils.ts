@@ -1,5 +1,7 @@
 import {Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
 
+import {kebabCase} from 'lodash';
+
 /**
  * Regular expression for valid BookBrainz UUIDs (bbid)
  *
@@ -100,7 +102,7 @@ export function sortRelationshipOrdinal(sortByProperty: string) {
  * @returns {string} - URL path to interact with entity
  */
 export function getEntityLink(entity: {type: string, bbid: string}): string {
-	return `/${_.kebabCase(entity.type)}/${entity.bbid}`;
+	return `/${kebabCase(entity.type)}/${entity.bbid}`;
 }
 
 
