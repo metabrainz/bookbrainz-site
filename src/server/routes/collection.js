@@ -23,7 +23,6 @@ import * as handler from '../helpers/handler';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
-import * as utils from '../helpers/utils';
 import {escapeProps, generateProps} from '../helpers/props';
 import CollectionPage from '../../client/components/pages/collection';
 import Layout from '../../client/containers/layout';

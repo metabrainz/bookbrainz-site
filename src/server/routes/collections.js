@@ -18,7 +18,6 @@
 import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as propHelpers from '../../client/helpers/props';
-import * as utils from '../helpers/utils';
 import {escapeProps, generateProps} from '../helpers/props';
 import CollectionsPage from '../../client/components/pages/collections';
 import Layout from '../../client/containers/layout';

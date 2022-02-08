@@ -17,7 +17,6 @@
  */
 
 import * as propHelpers from '../../client/helpers/props';
-import * as utils from '../helpers/utils';
 import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
 import React from 'react';
