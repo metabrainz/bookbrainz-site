@@ -133,10 +133,10 @@ router.post(
 				entity.authorSection.ended = true;
 			}
 			if (entity.authorSection.gender) {
-				entity.authorSection.gender = utils.getIdByLabel(res.locals.genders, entity.authorSection.gender);
+				entity.authorSection.gender = utils.getIdByLabel(res.locals.genders, entity.authorSection.gender, 'name');
 			}
 			if (entity.authorSection.type) {
-				entity.authorSection.type = utils.getIdByLabel(res.locals.authorTypes, entity.authorSection.type);
+				entity.authorSection.type = utils.getIdByLabel(res.locals.authorTypes, entity.authorSection.type, 'label');
 			}
 			if (entity.authorSection.beginArea) {
 				entity.authorSection.beginArea = await utils.searchOption(orm, 'area', entity.authorSection.beginArea);

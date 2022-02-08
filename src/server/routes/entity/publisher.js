@@ -20,7 +20,6 @@
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
-import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
 import {
@@ -133,20 +132,7 @@ router.post(
 				entity.publisherSection.ended = true;
 			}
 			if (entity.publisherSection.area) {
-				const results = await search.autocomplete(orm, entity.publisherSection.area, 'area', 1);
-				if (results.length) {
-					const bestMatch = results[0];
-					entity.publisherSection.area = {
-						disambiguation: bestMatch.disambiguation.comment,
-						id: bestMatch.id,
-						text: bestMatch.defaultAlias.name,
-						type: bestMatch.type
-
-					};
-				}
-				else {
-					delete entity.publisherSection.area;
-				}
+				entity.publisherSection.area = await utils.searchOption(orm, 'area', entity.publisherSection.area);
 			}
 		}
 		const markupProps = generateEntityProps(

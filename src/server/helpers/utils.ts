@@ -228,11 +228,12 @@ export function attachAttributes(relationships) {
  *
  * @param {object[]} fromOptions - Options
  * @param {string} label - related label
+ * @param {string} keyName - key associated
  * @returns {number} - assigned id
  */
-export function getIdByLabel(fromOptions:any[], label:string):number | null {
+export function getIdByLabel(fromOptions:any[], label:string, keyName:string):number | null {
 	for (const option of fromOptions) {
-		if (option.name === label) {
+		if (option[keyName] === label) {
 			return option.id;
 		}
 	}
