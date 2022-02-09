@@ -341,5 +341,13 @@ export async function parseInitialState(req):Promise<Record<string, any>> {
 			content: entity.annotationSection
 		};
 	}
+	// SubmissionSection State
+	if (entity.submissionSection) {
+		entity.submissionSection = {
+			note: entity.submissionSection,
+			submitError: '',
+			submitted: false
+		};
+	}
 	return entity;
 }

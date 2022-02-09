@@ -45,6 +45,7 @@ import {debounceUpdateRevisionNote} from './actions';
 function SubmissionSection({
 	errorText,
 	formValid,
+	note,
 	onNoteChange,
 	submitted
 }) {
@@ -57,7 +58,6 @@ function SubmissionSection({
 			<span className="text-muted"> (optional)</span>
 		</span>
 	);
-
 	return (
 		<div>
 			<h2>
@@ -66,6 +66,7 @@ function SubmissionSection({
 			<Row>
 				<Col lg={{offset: 3, span: 6}}>
 					<CustomInput
+						defaultValue={note}
 						label={editNoteLabel}
 						rows="6"
 						tooltipText="Cite your sources or an explanation of your edit"
@@ -99,6 +100,7 @@ SubmissionSection.displayName = 'SubmissionSection';
 SubmissionSection.propTypes = {
 	errorText: PropTypes.node.isRequired,
 	formValid: PropTypes.bool.isRequired,
+	note: PropTypes.node.isRequired,
 	onNoteChange: PropTypes.func.isRequired,
 	submitted: PropTypes.bool.isRequired
 };
@@ -108,6 +110,7 @@ function mapStateToProps(rootState, {validate, identifierTypes}) {
 	return {
 		errorText: state.get('submitError'),
 		formValid: validate(rootState, identifierTypes),
+		note: state.get('note'),
 		submitted: state.get('submitted')
 	};
 }
