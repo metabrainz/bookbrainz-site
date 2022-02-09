@@ -223,12 +223,12 @@ export function getIdByLabel(fromOptions:any[], label:string, keyName:string):nu
  * @param {string} fieldValue - given field value eg. English
  * @returns {Promise} - Resolves to required id
  */
-export function getIdByField(
+export async function getIdByField(
 	model:any,
 	fieldName:string,
 	fieldValue:string
 ):Promise<number> {
-	return model.query({where: {[fieldName]: fieldValue}}).fetch({require: false})?.get('id');
+	return (await model.query({where: {[fieldName]: fieldValue}}).fetch({require: false}))?.get('id');
 }
 
 /**
