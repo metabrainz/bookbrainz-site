@@ -285,9 +285,10 @@ export async function parseLanguages(sourceEntitySection:Record<string, any>, or
  * @param {object} orm - orm
  * @param {string} type - type eg. area
  * @param {string} query - query string
+ * @param {string} idKey - key corresponding to id
  * @returns {Promise} - resolves to option object
  */
-export async function searchOption(orm, type:string, query:string):Promise<{
+export async function searchOption(orm, type:string, query:string, idKey = 'id'):Promise<{
 	disambiguation: string,
 	id: number,
 	text: string,
@@ -298,8 +299,8 @@ export async function searchOption(orm, type:string, query:string):Promise<{
 	if (results.length) {
 		const bestMatch = results[0];
 		const option = {
-			disambiguation: bestMatch.disambiguation.comment,
-			id: bestMatch.id,
+			disambiguation: idKey === 'id' ? bestMatch.disambiguation.comment : null,
+			id: bestMatch[idKey],
 			text: bestMatch.defaultAlias.name,
 			type: bestMatch.type
 

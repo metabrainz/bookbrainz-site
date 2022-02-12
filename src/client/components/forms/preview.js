@@ -17,12 +17,10 @@ class PreviewPage extends React.Component {
 			if (Object.hasOwnProperty.call(formBody, field)) {
 				const value = formBody[field];
 				formInputs.push(
-					<>
-						<Form.Group controlId={field}>
-							<Form.Label>{field}</Form.Label>
-							<Form.Control as={field.includes('submissionSection') ? 'textarea' : 'input'} defaultValue={value} name={field}/>
-						</Form.Group>
-					</>
+					<Form.Group controlId={field} key={field}>
+						<Form.Label>{field}</Form.Label>
+						<Form.Control as={field.includes('submissionSection') ? 'textarea' : 'input'} defaultValue={value} name={field}/>
+					</Form.Group>
 				);
 			}
 		}

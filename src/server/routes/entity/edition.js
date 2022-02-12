@@ -219,30 +219,26 @@ router.post(
 	async (req, res, next) => {
 		// parsing submitted data to correct format
 		const entity = await utils.parseInitialState(req);
-		_.set(entity, 'editionSection.physicalEnable', true);
-		const {orm} = req.app.locals;
-		const {EditionFormat} = orm;
-		entity.editionSection = await utils.parseLanguages(entity.editionSection, orm);
-		if (entity.editionSection.format) {
-			entity.editionSection.format = await utils.getIdByField(EditionFormat, 'label', entity.editionSection.format);
-		}
-		const keysToInt = ['height', 'width', 'depth', 'weight', 'pages'];
-		for (const key of keysToInt) {
-			entity.editionSection[key] = parseInt(entity.editionSection[key], 10) || null;
-		}
-		// adding publisher
-		if (entity.editionSection.publisher) {
-			const results = await search.autocomplete(orm, entity.editionSection.publisher, 'publisher', 1);
-			if (results.length) {
-				const bestMatch = results[0];
-				entity.editionSection.publisher = {
-					bbid: bestMatch.bbid,
-					text: bestMatch.defaultAlias.name,
-					type: 'Publisher'
-				};
+		if (entity.editionSection) {
+			const {orm} = req.app.locals;
+			const {EditionFormat} = orm;
+			entity.editionSection = await utils.parseLanguages(entity.editionSection, orm);
+			if (entity.editionSection.format) {
+				entity.editionSection.format = await utils.getIdByField(EditionFormat, 'label', entity.editionSection.format);
 			}
-			else {
-				delete entity.editionSection.publisher;
+			const keysToInt = ['height', 'width', 'depth', 'weight', 'pages'];
+			let physicalEnable = false;
+			for (const key of keysToInt) {
+				entity.editionSection[key] = parseInt(entity.editionSection[key], 10) || null;
+				if (entity.editionSection[key]) {
+					physicalEnable = true;
+				}
+			}
+			entity.editionSection.physicalEnable = physicalEnable;
+			// adding publisher
+			if (entity.editionSection.publisher) {
+				const foundOption = await utils.searchOption(orm, 'publisher', entity.editionSection.publisher, 'bbid');
+				entity.editionSection.publisher = foundOption ? _.omit(foundOption, ['disambiguation']) : null;
 			}
 		}
 		const propsPromise = generateEntityProps(
