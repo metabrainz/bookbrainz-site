@@ -268,9 +268,9 @@ export async function parseLanguages(sourceEntitySection:Record<string, any>, or
 		if (Object.prototype.hasOwnProperty.call(sourceEntitySection, langKey)) {
 			if (langKey.includes('languages')) {
 				languages.push({
-					label: sourceEntitySection[langKey],
+					label: _.upperFirst(sourceEntitySection[langKey]),
 					// eslint-disable-next-line no-await-in-loop
-					value: await getIdByField(Language, 'name', sourceEntitySection[langKey])
+					value: await getIdByField(Language, 'name', _.upperFirst(sourceEntitySection[langKey]))
 				});
 				delete sourceEntitySection[langKey];
 			}
@@ -295,14 +295,14 @@ export async function searchOption(orm, type:string, query:string, idKey = 'id')
 	type: string,
 
 } | null> {
-	const results = await search.autocomplete(orm, query, type, 1);
+	const results = await search.checkIfExists(orm, query, type);
 	if (results.length) {
-		const bestMatch = results[0];
+		const firstMatch = results[0];
 		const option = {
-			disambiguation: idKey === 'id' ? bestMatch.disambiguation.comment : null,
-			id: bestMatch[idKey],
-			text: bestMatch.defaultAlias.name,
-			type: bestMatch.type
+			disambiguation: idKey === 'id' ? firstMatch.disambiguation.comment : null,
+			id: firstMatch[idKey],
+			text: firstMatch.defaultAlias.name,
+			type: firstMatch.type
 
 		};
 		return option;
@@ -318,37 +318,42 @@ export async function searchOption(orm, type:string, query:string, idKey = 'id')
  * @returns {Promise} - Resolves to Entity initialState
  */
 export async function parseInitialState(req):Promise<Record<string, any>> {
+	const emptyState = {
+		nameSection: {
+			disambiguation: '',
+			exactMatches: null,
+			language: null,
+			name: '',
+			searchResults: null,
+			sortName: ''
+		}
+	};
 	const entity = unflatten(req.body);
 	const {orm} = req.app.locals;
 	const {Language} = orm;
 	// NameSection State
-	_.set(entity, 'nameSection.name', _.get(entity, 'nameSection.name', ''));
-	entity.nameSection.sortName = _.get(entity, 'nameSection.sortName', '');
-	entity.nameSection.exactMatches = null;
-	entity.nameSection.searchResults = null;
-	entity.nameSection.languages = _.get(entity, 'nameSection.languages', null);
-	entity.nameSection.disambiguation = _.get(entity, 'nameSection.disambiguation', null);
+	const initialState = Object.assign(emptyState, entity);
 
-	if (entity.nameSection.language) {
-		entity.nameSection.language = await getIdByField(Language, 'name', entity.nameSection.language);
+	if (initialState.nameSection.language) {
+		initialState.nameSection.language = await getIdByField(Language, 'name', initialState.nameSection.language);
 	}
 	// IdentifierEditor State
-	if (entity.identifierEditor) {
-		entity.identifierEditor = generateIdenfierState(entity.identifierEditor);
+	if (initialState.identifierEditor) {
+		initialState.identifierEditor = generateIdenfierState(initialState.identifierEditor);
 	}
 	// AnnotationSection State
-	if (entity.annotationSection) {
-		entity.annotationSection = {
-			content: entity.annotationSection
+	if (initialState.annotationSection) {
+		initialState.annotationSection = {
+			content: initialState.annotationSection
 		};
 	}
 	// SubmissionSection State
-	if (entity.submissionSection) {
-		entity.submissionSection = {
-			note: entity.submissionSection,
+	if (initialState.submissionSection) {
+		initialState.submissionSection = {
+			note: initialState.submissionSection,
 			submitError: '',
 			submitted: false
 		};
 	}
-	return entity;
+	return initialState;
 }
