@@ -17,12 +17,11 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import CustomInput from '../../input';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Card} = bootstrap;
+const {Card, Form} = bootstrap;
 
 class DragAndDrop extends React.Component {
 	constructor() {
@@ -69,10 +68,6 @@ class DragAndDrop extends React.Component {
 		this.addChild(data);
 	}
 
-	getValue() {
-		return this.target.getValue();
-	}
-
 	render() {
 		return (
 			<Card
@@ -88,11 +83,13 @@ class DragAndDrop extends React.Component {
 					variant="top"
 				/>
 				<Card.Body className="text-center">
-					<CustomInput
-						name={this.props.name}
-						type="hidden"
-						value={this.state.achievement.id}
-					/>
+					<Form.Group>
+						<Form.Control
+							name={this.props.name}
+							type="hidden"
+							value={this.state.achievement.id}
+						/>
+					</Form.Group>
 					<div className="h3">
 						{this.state.achievement.name}
 					</div>
