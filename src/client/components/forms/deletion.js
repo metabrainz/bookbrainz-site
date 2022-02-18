@@ -17,8 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import {faExclamationTriangle, faTimesCircle, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
-import CustomInput from '../../input';
+import {faExclamationTriangle, faQuestionCircle, faTimesCircle, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LoadingSpinner from '../loading-spinner';
 import PropTypes from 'prop-types';
@@ -28,7 +27,7 @@ import {kebabCase as _kebabCase} from 'lodash';
 import request from 'superagent';
 
 
-const {Alert, Button, Col, Row, Card} = bootstrap;
+const {Alert, Button, Col, Form, Row, OverlayTrigger, Tooltip, Card} = bootstrap;
 
 class EntityDeletionForm extends React.Component {
 	constructor(props) {
@@ -124,6 +123,12 @@ class EntityDeletionForm extends React.Component {
 			</ValidationLabel>
 		);
 
+		const deletionTooltip = (
+			<Tooltip>
+				Please explain why you are deleting this entity. This is required.
+			</Tooltip>
+		);
+
 		return (
 			<div id="deletion-form">
 				<h1>Delete Entity</h1>
@@ -174,16 +179,29 @@ class EntityDeletionForm extends React.Component {
 									&nbsp;to select it to be merged instead.
 									</p>
 									<hr/>
-									<CustomInput
-										help="* A note is required"
-										label={noteLabel}
-										rows="5"
-										tooltipText="Please explain why you are deleting this entity. This is required."
-										type="textarea"
-										value={note}
-										wrapperClassName="margin-top-1"
-										onChange={this.handleNoteChange}
-									/>
+									<Form.Group>
+										<Form.Label>
+											{noteLabel}
+											<OverlayTrigger
+												delay={50}
+												overlay={deletionTooltip}
+											>
+												<FontAwesomeIcon
+													className="margin-left-0-5"
+													icon={faQuestionCircle}
+												/>
+											</OverlayTrigger>
+										</Form.Label>
+										<div className="margin-top-1">
+											<Form.Control
+												as="textarea"
+												rows="5"
+												value={note}
+												onChange={this.handleNoteChange}
+											/>
+											<Form.Text muted>* A note is required</Form.Text>
+										</div>
+									</Form.Group>
 									{errorComponent}
 								</Card.Body>
 								<Card.Footer>
