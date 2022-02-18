@@ -114,7 +114,7 @@ router.post(
 	'/create', auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
 	middleware.loadLanguages,
 	middleware.loadRelationshipTypes, middleware.loadSeriesOrderingTypes, async (req, res) => {
-		const entity = await utils.parseInitialState(req);
+		const entity = await utils.parseInitialState(req, 'series');
 		if (entity.seriesSection) {
 			const orderingTypes = ['Automatic', 'Manual'];
 			const seriesTypes = ['Author', 'Work', 'EditionGroup', 'Edition', 'Publisher'];

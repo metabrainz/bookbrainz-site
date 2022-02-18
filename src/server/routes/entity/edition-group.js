@@ -109,7 +109,7 @@ router.post(
 	'/create', auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadEditionGroupTypes,
 	middleware.loadRelationshipTypes, async (req, res) => {
-		const entity = await utils.parseInitialState(req);
+		const entity = await utils.parseInitialState(req, 'editionGroup');
 		const {orm} = req.app.locals;
 		const {EditionGroupType} = orm;
 		if (entity.editionGroupSection?.type) {

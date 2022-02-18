@@ -123,7 +123,7 @@ router.post(
 	async (req, res) => {
 		const {orm} = req.app.locals;
 		const {PublisherType} = orm;
-		const entity = await utils.parseInitialState(req);
+		const entity = await utils.parseInitialState(req, 'publisher');
 		if (entity.publisherSection) {
 			if (entity.publisherSection.type) {
 				entity.publisherSection.type = await utils.getIdByField(PublisherType, 'label', entity.publisherSection.type);

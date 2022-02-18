@@ -292,6 +292,7 @@ NameSection.defaultProps = {
 
 function mapStateToProps(rootState) {
 	const state = rootState.get('nameSection');
+	const stateJson = state.toJSON();
 	const editionSectionState = rootState.get('editionSection');
 	const searchForExistingEditionGroup = Boolean(editionSectionState) &&
 	(
@@ -300,11 +301,11 @@ function mapStateToProps(rootState) {
 	);
 	return {
 		disambiguationDefaultValue: state.get('disambiguation'),
-		exactMatches: state.get('exactMatches'),
+		exactMatches: stateJson.exactMatches,
 		languageValue: state.get('language'),
 		nameValue: state.get('name'),
 		searchForExistingEditionGroup,
-		searchResults: state.get('searchResults'),
+		searchResults: stateJson.searchResults,
 		sortNameValue: state.get('sortName')
 	};
 }

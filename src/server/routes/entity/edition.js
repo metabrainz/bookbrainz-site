@@ -216,7 +216,7 @@ router.post(
 	middleware.loadLanguages, middleware.loadRelationshipTypes,
 	async (req, res, next) => {
 		// parsing submitted data to correct format
-		const entity = await utils.parseInitialState(req);
+		const entity = await utils.parseInitialState(req, 'edition');
 		if (entity.editionSection) {
 			const {orm} = req.app.locals;
 			const {EditionFormat} = orm;

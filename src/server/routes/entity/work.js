@@ -155,7 +155,7 @@ router.post(
 	middleware.loadRelationshipTypes,
 	async (req, res, next) => {
 		const {WorkType} = req.app.locals.orm;
-		const entity = await utils.parseInitialState(req);
+		const entity = await utils.parseInitialState(req, 'work');
 		if (entity.workSection?.type) {
 			entity.workSection.type = await utils.getIdByField(WorkType, 'label', entity.workSection.type);
 		}

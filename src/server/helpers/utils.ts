@@ -315,9 +315,10 @@ export async function searchOption(orm, type:string, query:string, idKey = 'id')
  * Parse NameSection, IdentifierEditor, AnnotationSection state from request body
  *
  * @param {object} req - Request object
+ * @param {string} type - entity type
  * @returns {Promise} - Resolves to Entity initialState
  */
-export async function parseInitialState(req):Promise<Record<string, any>> {
+export async function parseInitialState(req, type):Promise<Record<string, any>> {
 	const emptyState = {
 		nameSection: {
 			disambiguation: '',
@@ -333,7 +334,10 @@ export async function parseInitialState(req):Promise<Record<string, any>> {
 	const {Language} = orm;
 	// NameSection State
 	const initialState = Object.assign(emptyState, entity);
-
+	if (initialState.nameSection.name) {
+		initialState.nameSection.searchResults = await search.autocomplete(orm, initialState.nameSection.name, type, 10);
+		initialState.nameSection.exactMatches = await search.checkIfExists(orm, initialState.nameSection.name, type);
+	}
 	if (initialState.nameSection.language) {
 		initialState.nameSection.language = await getIdByField(Language, 'name', initialState.nameSection.language);
 	}

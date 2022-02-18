@@ -127,7 +127,7 @@ router.post(
 	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
 	async (req, res) => {
 		const {orm} = req.app.locals;
-		const entity = await utils.parseInitialState(req);
+		const entity = await utils.parseInitialState(req, 'author');
 		if (entity.authorSection) {
 			if (entity.authorSection.endDate || entity.authorSection.endArea) {
 				entity.authorSection.ended = true;
