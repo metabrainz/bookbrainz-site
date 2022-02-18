@@ -20,7 +20,6 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as validators from '../../helpers/react-validators';
-import CustomInput from '../../input';
 import LoadingSpinner from '../loading-spinner';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -29,7 +28,7 @@ import SelectWrapper from '../input/select-wrapper';
 import request from 'superagent';
 
 
-const {Alert, Button, Col, Row} = bootstrap;
+const {Alert, Button, Col, Form, Row} = bootstrap;
 
 class RegistrationForm extends React.Component {
 	constructor(props) {
@@ -50,7 +49,7 @@ class RegistrationForm extends React.Component {
 
 		const gender = this.gender.getValue();
 		const data = {
-			displayName: this.displayName.getValue(),
+			displayName: this.displayName.value,
 			gender: gender ? parseInt(gender, 10) : null
 		};
 
@@ -74,7 +73,7 @@ class RegistrationForm extends React.Component {
 	}
 
 	isValid() {
-		return !this.displayName || this.displayName.getValue().length > 0;
+		return !this.displayName || this.displayName.value.length > 0;
 	}
 
 	handleChange() {
@@ -117,18 +116,21 @@ class RegistrationForm extends React.Component {
 								name is correct. This is the name that
 								other editors will get to know you by.
 							</p>
-							<CustomInput
-								className="form-control"
-								defaultValue={this.props.name}
-								groupClassName="row"
-								label="Display Name"
-								labelClassName="col-lg-4 col-form-label"
-								placeholder="Display Name"
-								ref={(ref) => this.displayName = ref}
-								type="text"
-								wrapperClassName="col-lg-4"
-								onChange={this.handleChange}
-							/>
+							<Form.Group className="row">
+								<Form.Label className="col-lg-4 col-form-label">
+									Display Name
+								</Form.Label>
+								<div className="col-lg-4">
+									<Form.Control
+										defaultValue={this.props.name}
+										placeholder="Display Name"
+										/* eslint-disable-next-line react/jsx-no-bind */
+										ref={(ref) => this.displayName = ref}
+										type="text"
+										onChange={this.handleChange}
+									/>
+								</div>
+							</Form.Group>
 							<p>
 								And, optionally, set a gender
 								that will be displayed on your profile
