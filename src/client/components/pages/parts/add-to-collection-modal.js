@@ -1,6 +1,5 @@
 import * as bootstrap from 'react-bootstrap';
 import {faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
-import CustomInput from '../../../input';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -10,7 +9,7 @@ import _ from 'lodash';
 import request from 'superagent';
 
 
-const {Alert, Col, Button, Modal} = bootstrap;
+const {Alert, Col, Button, Form, Modal} = bootstrap;
 
 class AddToCollectionModal extends React.Component {
 	constructor(props) {
@@ -140,8 +139,8 @@ class AddToCollectionModal extends React.Component {
 			return;
 		}
 
-		const description = this.description.getValue();
-		const name = this.name.getValue();
+		const description = this.description.value;
+		const name = this.name.value;
 		const privacy = this.privacy.getValue();
 		const {entityType} = this.props;
 
@@ -175,7 +174,7 @@ class AddToCollectionModal extends React.Component {
 	}
 
 	isValid() {
-		return _.trim(this.name.getValue()).length && this.privacy.getValue();
+		return _.trim(this.name.value).length && this.privacy.getValue();
 	}
 
 	/* eslint-disable react/jsx-no-bind */
@@ -236,16 +235,20 @@ class AddToCollectionModal extends React.Component {
 					<form
 						className="padding-sides-0 addToCollectionModal-body"
 					>
-						<CustomInput
-							label="Name"
-							ref={(ref) => this.name = ref}
-							type="text"
-						/>
-						<CustomInput
-							label="Description"
-							ref={(ref) => this.description = ref}
-							type="textarea"
-						/>
+						<Form.Group>
+							<Form.Label>Name</Form.Label>
+							<Form.Control
+								ref={(ref) => this.name = ref}
+								type="text"
+							/>
+						</Form.Group>
+						<Form.Group>
+							<Form.Label>Description</Form.Label>
+							<Form.Control
+								as="textarea"
+								ref={(ref) => this.description = ref}
+							/>
+						</Form.Group>
 						<SelectWrapper
 							base={ReactSelect}
 							idAttribute="name"
