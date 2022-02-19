@@ -20,7 +20,6 @@
 import * as bootstrap from 'react-bootstrap';
 import {faPlus, faSave, faTimes, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {trim, uniqBy} from 'lodash';
-import CustomInput from '../../input';
 import DeleteOrRemoveCollaborationModal from '../pages/parts/delete-or-remove-collaboration-modal';
 import EntitySearchFieldOption from '../../entity-editor/common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -32,7 +31,7 @@ import classNames from 'classnames';
 import request from 'superagent';
 
 
-const {Alert, Button, Col, Row} = bootstrap;
+const {Alert, Button, Col, Form, Row} = bootstrap;
 
 class UserCollectionForm extends React.Component {
 	constructor(props) {
@@ -68,8 +67,8 @@ class UserCollectionForm extends React.Component {
 		}
 
 		const collaborators = this.getCleanedCollaborators();
-		const description = this.description.getValue();
-		const name = trim(this.name.getValue());
+		const description = this.description.value;
+		const name = trim(this.name.value);
 		const privacy = this.privacy.getValue();
 		const entityType = this.entityType.getValue();
 
@@ -100,7 +99,7 @@ class UserCollectionForm extends React.Component {
 	}
 
 	isValid() {
-		return trim(this.name.getValue()).length && this.entityType.getValue();
+		return trim(this.name.value).length && this.entityType.getValue();
 	}
 
 	getCleanedCollaborators() {
@@ -194,18 +193,22 @@ class UserCollectionForm extends React.Component {
 							className="padding-sides-0"
 							onSubmit={this.handleSubmit}
 						>
-							<CustomInput
-								defaultValue={initialName}
-								label="Name"
-								ref={(ref) => this.name = ref}
-								type="text"
-							/>
-							<CustomInput
-								defaultValue={initialDescription}
-								label="Description"
-								ref={(ref) => this.description = ref}
-								type="textarea"
-							/>
+							<Form.Group>
+								<Form.Label>Name</Form.Label>
+								<Form.Control
+									defaultValue={initialName}
+									ref={(ref) => this.name = ref}
+									type="text"
+								/>
+							</Form.Group>
+							<Form.Group>
+								<Form.Label>Description</Form.Label>
+								<Form.Control
+									as="textarea"
+									defaultValue={initialDescription}
+									ref={(ref) => this.description = ref}
+								/>
+							</Form.Group>
 							<SelectWrapper
 								base={ReactSelect}
 								defaultValue={initialType}
