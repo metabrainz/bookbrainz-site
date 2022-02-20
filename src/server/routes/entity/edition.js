@@ -235,7 +235,7 @@ router.post(
 			entity.editionSection.physicalEnable = physicalEnable;
 			// adding publisher
 			if (entity.editionSection.publisher) {
-				const foundOption = await utils.searchOption(orm, 'publisher', entity.editionSection.publisher, 'bbid');
+				const foundOption = await utils.searchOption(orm, 'publisher', entity.editionSection.publisher, 'bbid', true);
 				entity.editionSection.publisher = foundOption ? _.omit(foundOption, ['disambiguation']) : null;
 			}
 		}

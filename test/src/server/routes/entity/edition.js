@@ -1,5 +1,4 @@
-import {createEdition, createEditor, getRandomUUID, truncateEntities} from '../../../../test-helpers/create-entities';
-
+import {createEdition, createEditor, getRandomUUID, seedInitialState, truncateEntities} from '../../../../test-helpers/create-entities';
 import app from '../../../../../src/server/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
@@ -53,4 +52,28 @@ describe('Edition routes', () => {
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
+	it('should not throw error while seeding edition', async () => {
+		const data = {
+			...seedInitialState,
+			'editionSection.depth': '209',
+			'editionSection.format': 'Paperback',
+			'editionSection.height': '139',
+			'editionSection.pages': '499',
+			'editionSection.publisher': 'Farrar,+Straus+and+Giroux',
+			'editionSection.releaseDate': '2013-04-02',
+			'editionSection.weight': '453',
+			'editionSection.width': '37',
+			'identifierEditor.t10': '0374533555'
+		};
+		const res = await chai.request(app).post('/edition/create').send(data);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw not authorized error while seeding edition', async () => {
+		const data = {};
+		const res = await chai.request(app).post('/edition/create').set('Cookie', '').send(data);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
 });
+

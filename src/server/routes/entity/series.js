@@ -111,7 +111,7 @@ router.get(
 );
 
 router.post(
-	'/create', auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
 	middleware.loadLanguages,
 	middleware.loadRelationshipTypes, middleware.loadSeriesOrderingTypes, async (req, res) => {
 		const entity = await utils.parseInitialState(req, 'series');

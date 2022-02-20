@@ -1,4 +1,4 @@
-import {createEditionGroup, createEditor, getRandomUUID, truncateEntities} from '../../../../test-helpers/create-entities';
+import {createEditionGroup, createEditor, getRandomUUID, seedInitialState, truncateEntities} from '../../../../test-helpers/create-entities';
 
 import app from '../../../../../src/server/app';
 import chai from 'chai';
@@ -50,6 +50,23 @@ describe('Edition Group routes', () => {
 	it('should not throw an error if requested edition group BBID exists', async () => {
 		const res = await chai.request(app)
 			.get(`/edition-group/${aBBID}`);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw error while seeding edition group', async () => {
+		const data = {
+			...seedInitialState,
+			'editionGroupSection.type': 'Book',
+			'identifierEditor.t19': 'wikidataid'
+
+		  };
+		const res = await chai.request(app).post('/edition-group/create').send(data);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw not authorized error while seeding edition group', async () => {
+		const data = {};
+		const res = await chai.request(app).post('/edition-group/create').set('Cookie', '').send(data);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});

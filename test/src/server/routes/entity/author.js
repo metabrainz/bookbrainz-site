@@ -1,4 +1,4 @@
-import {createAuthor, createEditor, getRandomUUID, truncateEntities} from '../../../../test-helpers/create-entities';
+import {createAuthor, createEditor, getRandomUUID, seedInitialState, truncateEntities} from '../../../../test-helpers/create-entities';
 
 import app from '../../../../../src/server/app';
 import chai from 'chai';
@@ -53,4 +53,26 @@ describe('Author routes', () => {
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
+	it('should not throw error while seeding author', async () => {
+		const data = {
+			...seedInitialState,
+			'authorSection.beginArea': 'New York',
+			'authorSection.beginDate': '2022-02-01',
+			'authorSection.endDate': '2022-02-08',
+			'authorSection.gender': 'Male',
+			'authorSection.type': 'Person',
+			'identifierEditor.t23': 'openlibid'
+		  };
+		const res = await chai.request(app).post('/author/create').send(data);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw not authorized error while seeding author', async () => {
+		const data = {};
+		const res = await chai.request(app).post('/author/create').set('Cookie', '').send(data);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
 });
+
+

@@ -35,6 +35,15 @@ const {
 } = orm;
 const {updateLanguageSet} = orm.func.language;
 
+export const seedInitialState = {
+	annotationSection: 'annotation',
+	'identifierEditor.t0': 'invalidIdentifier',
+	'nameSection.disambiguation': 'disambiguation',
+	'nameSection.language': 'English',
+	'nameSection.name': 'name',
+	'nameSection.sname': 'sname',
+	submissionSection: 'note'
+};
 
 export const editorTypeAttribs = {
 	label: 'test_type'

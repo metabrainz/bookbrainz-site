@@ -106,7 +106,7 @@ router.get(
 
 
 router.post(
-	'/create', auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadEditionGroupTypes,
 	middleware.loadRelationshipTypes, async (req, res) => {
 		const entity = await utils.parseInitialState(req, 'editionGroup');

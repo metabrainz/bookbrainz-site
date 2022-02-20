@@ -1,5 +1,7 @@
+import {generateIdenfierState, getIdByField, parseLanguages, searchOption} from '../../../../src/server/helpers/utils';
 import chai from 'chai';
 import {getNextEnabledAndResultsArray} from '../../../../src/common/helpers/utils';
+import orm from '../../../bookbrainz-data';
 
 
 const {expect} = chai;
@@ -48,5 +50,67 @@ describe('getNextEnabledAndResultsArray', () => {
 
 		expect(newResultsArray.length).to.equal(10);
 		expect(nextEnabled).to.equal(true);
+	});
+});
+
+describe('getIdByField', () => {
+	it('should return number if item exists', async () => {
+		const {Language} = orm;
+		const fieldName = 'name';
+		const fieldValue = 'English';
+		const exId = await getIdByField(Language, fieldName, fieldValue);
+		expect(exId).to.be.a('number');
+	});
+	it('should return null if item does not exists', async () => {
+		const {Language} = orm;
+		const fieldName = 'name';
+		const fieldValue = 'Japenglish';
+		const exId = await getIdByField(Language, fieldName, fieldValue);
+		expect(exId).to.be.null;
+	});
+});
+describe('generateIdenfierState', () => {
+	it('should return correctly formatted identifier state', () => {
+		const sourceIdentifierState = {
+			t1: '123',
+			t2: '234'
+		};
+		const expectedIdentifierState = {
+			0: {
+				type: 1,
+				value: '123'
+			},
+			1: {
+				type: 2,
+				value: '234'
+			}
+
+		};
+		const result = generateIdenfierState(sourceIdentifierState);
+		expect(result).to.eql(expectedIdentifierState);
+	});
+});
+
+describe('parseLanguages', () => {
+	it('should return correctly formatted languages state', async () => {
+		const sourceEntityState = {
+			languages1: 'English'
+		};
+		const expectedEntityState = [
+			{
+				label: 'English',
+				value: 111
+			}
+		];
+		const result = await parseLanguages(sourceEntityState, orm);
+		expect(result.languages).to.eql(expectedEntityState);
+	});
+});
+describe('searchOption', () => {
+	it('should return null if no exact match found', async () => {
+		const query = 'penguin';
+		const type = 'publisher';
+		const result = await searchOption(orm, type, query, 'bbid', true);
+		expect(result).to.be.null;
 	});
 });

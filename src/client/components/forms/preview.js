@@ -56,7 +56,9 @@ PreviewPage.propTypes = {
 	baseUrl: PropTypes.string.isRequired,
 	formBody: PropTypes.object.isRequired,
 	originalUrl: PropTypes.string.isRequired,
-	sourceUrl: PropTypes.string.isRequired
+	sourceUrl: PropTypes.string
 };
-
+PreviewPage.defaultProps = {
+	sourceUrl: null
+};
 export default PreviewPage;

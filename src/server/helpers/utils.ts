@@ -227,8 +227,8 @@ export async function getIdByField(
 	model:any,
 	fieldName:string,
 	fieldValue:string
-):Promise<number> {
-	return (await model.query({where: {[fieldName]: fieldValue}}).fetch({require: false}))?.get('id');
+):Promise<number | null> {
+	return (await model.query({where: {[fieldName]: fieldValue}}).fetch({require: false}))?.get('id') ?? null;
 }
 
 /**
@@ -286,16 +286,23 @@ export async function parseLanguages(sourceEntitySection:Record<string, any>, or
  * @param {string} type - type eg. area
  * @param {string} query - query string
  * @param {string} idKey - key corresponding to id
+ * @param {boolean} exactMatch - exact matching the query string
  * @returns {Promise} - resolves to option object
  */
-export async function searchOption(orm, type:string, query:string, idKey = 'id'):Promise<{
+export async function searchOption(orm, type:string, query:string, idKey = 'id', exactMatch = false):Promise<{
 	disambiguation: string,
 	id: number,
 	text: string,
 	type: string,
 
 } | null> {
-	const results = await search.checkIfExists(orm, query, type);
+	let results;
+	if (exactMatch) {
+		results = await search.checkIfExists(orm, query, type);
+	}
+	else {
+		results = await search.autocomplete(orm, query, type, 1);
+	}
 	if (results.length) {
 		const firstMatch = results[0];
 		const option = {
@@ -334,7 +341,7 @@ export async function parseInitialState(req, type):Promise<Record<string, any>> 
 	const {Language} = orm;
 	// NameSection State
 	const initialState = Object.assign(emptyState, entity);
-	if (initialState.nameSection.name) {
+	if (initialState.nameSection.name && type !== 'edition') {
 		initialState.nameSection.searchResults = await search.autocomplete(orm, initialState.nameSection.name, type, 10);
 		initialState.nameSection.exactMatches = await search.checkIfExists(orm, initialState.nameSection.name, type);
 	}
