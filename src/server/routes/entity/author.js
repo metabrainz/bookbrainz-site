@@ -93,7 +93,7 @@ const router = express.Router();
 
 // Creation
 router.get(
-	'/create', entityRoutes.displayPreview, auth.isAuthenticated, middleware.loadIdentifierTypes,
+	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadGenders, middleware.loadLanguages,
 	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
 	(req, res) => {
@@ -122,7 +122,7 @@ router.get(
 );
 
 router.post(
-	'/create', auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
 	middleware.loadGenders, middleware.loadLanguages,
 	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
 	async (req, res) => {
