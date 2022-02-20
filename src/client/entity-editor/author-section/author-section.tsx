@@ -36,7 +36,6 @@ import {
 	validateAuthorSectionEndDate
 } from '../validators/author';
 
-import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
 import type {Dispatch} from 'redux';
 
@@ -185,29 +184,28 @@ function AuthorSection({
 			</p>
 			<Row>
 				<Col lg={{offset: 3, span: 6}}>
-					<CustomInput label="Type">
+					<Form.Group>
+						<Form.Label>Type</Form.Label>
 						<Select
 							instanceId="authorType"
 							options={authorTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
 			</Row>
 			<Row>
 				<Col lg={{offset: 3, span: 6}}>
-					<CustomInput
-						groupClassName={genderShow ? null : 'd-none'}
-						label="Gender"
-					>
+					<Form.Group className={genderShow ? null : 'd-none'}>
+						<Form.Label>Gender</Form.Label>
 						<Select
 							instanceId="gender"
 							options={genderOptionsForDisplay}
 							value={genderValue}
 							onChange={onGenderChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
 			</Row>
 			<Row>

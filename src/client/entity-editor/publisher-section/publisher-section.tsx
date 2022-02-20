@@ -32,7 +32,6 @@ import {
 	validatePublisherSectionEndDate
 } from '../validators/publisher';
 
-import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
 import type {Dispatch} from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
@@ -139,14 +138,15 @@ function PublisherSection({
 			</p>
 			<Row>
 				<Col lg={{offset: 3, span: 6}}>
-					<CustomInput label="Type">
+					<Form.Group>
+						<Form.Label>Type</Form.Label>
 						<Select
 							instanceId="publisherType"
 							options={publisherTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
 			</Row>
 			<Row>
