@@ -47,29 +47,29 @@ describe('Publisher routes', () => {
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
-	it('should not throw an error if requested publisher BBID exists', async () => {
-		const res = await chai.request(app)
-			.get(`/publisher/${aBBID}`);
-		expect(res.ok).to.be.true;
-		expect(res).to.have.status(200);
-	});
 	it('should not throw error while seeding publisher', async () => {
 		const data = {
 			...seedInitialState,
 			'identifierEditor.t20': 'wikidataid',
-			'publisherSection.area': 'New York',
-			'publisherSection.beginDate': '2022-01-31',
-			'publisherSection.endDate': '2022-02-13',
-			'publisherSection.type': 'Imprint'
+			'publisherSection.area': '',
+			'publisherSection.beginDate': 'invalid',
+			'publisherSection.endDate': '',
+			'publisherSection.type': ''
 
 		  };
-		const res = await chai.request(app).post('/publisher/create').send(data);
+		const res = await agent.post('/publisher/create').set('Origin', `http://127.0.0.1:${agent.app.address().port}`).send(data);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
 	it('should not throw not authorized error while seeding publisher', async () => {
 		const data = {};
-		const res = await chai.request(app).post('/publisher/create').set('Cookie', '').send(data);
+		const res = await chai.request(app).post('/publisher/create').send(data);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw an error if requested publisher BBID exists', async () => {
+		const res = await chai.request(app)
+			.get(`/publisher/${aBBID}`);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});

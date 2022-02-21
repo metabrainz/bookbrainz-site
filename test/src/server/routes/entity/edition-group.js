@@ -47,26 +47,26 @@ describe('Edition Group routes', () => {
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
-	it('should not throw an error if requested edition group BBID exists', async () => {
-		const res = await chai.request(app)
-			.get(`/edition-group/${aBBID}`);
-		expect(res.ok).to.be.true;
-		expect(res).to.have.status(200);
-	});
 	it('should not throw error while seeding edition group', async () => {
 		const data = {
 			...seedInitialState,
-			'editionGroupSection.type': 'Book',
+			'editionGroupSection.type': '',
 			'identifierEditor.t19': 'wikidataid'
 
 		  };
-		const res = await chai.request(app).post('/edition-group/create').send(data);
+		const res = await agent.post('/edition-group/create').set('Origin', `http://127.0.0.1:${agent.app.address().port}`).send(data);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
 	it('should not throw not authorized error while seeding edition group', async () => {
 		const data = {};
-		const res = await chai.request(app).post('/edition-group/create').set('Cookie', '').send(data);
+		const res = await chai.request(app).post('/edition-group/create').send(data);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw an error if requested edition group BBID exists', async () => {
+		const res = await chai.request(app)
+			.get(`/edition-group/${aBBID}`);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});

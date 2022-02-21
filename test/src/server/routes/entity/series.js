@@ -66,27 +66,27 @@ describe('Series routes', () => {
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
-	it('should not throw an error if requested series BBID exists', async () => {
-		const res = await chai.request(app)
-			.get(`/series/${aBBID}`);
-		expect(res.ok).to.be.true;
-		expect(res).to.have.status(200);
-	});
 	it('should not throw error while seeding series', async () => {
 		const data = {
 			...seedInitialState,
 			'identifierEditor.t30': 'wikidataid',
-			orderType: 'Automatic',
-			seriesType: 'Work'
+			orderType: '',
+			seriesType: ''
 
 		  };
-		const res = await chai.request(app).post('/series/create').send(data);
+		const res = await agent.post('/series/create').set('Origin', `http://127.0.0.1:${agent.app.address().port}`).send(data);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
 	it('should not throw not authorized error while seeding series', async () => {
 		const data = {};
-		const res = await chai.request(app).post('/series/create').set('Cookie', '').send(data);
+		const res = await chai.request(app).post('/series/create').send(data);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw an error if requested series BBID exists', async () => {
+		const res = await chai.request(app)
+			.get(`/series/${aBBID}`);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});

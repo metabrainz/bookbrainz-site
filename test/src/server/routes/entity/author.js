@@ -47,29 +47,29 @@ describe('Author routes', () => {
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
-	it('should not throw an error if requested author BBID exists', async () => {
-		const res = await chai.request(app)
-			.get(`/author/${aBBID}`);
-		expect(res.ok).to.be.true;
-		expect(res).to.have.status(200);
-	});
 	it('should not throw error while seeding author', async () => {
 		const data = {
 			...seedInitialState,
-			'authorSection.beginArea': 'New York',
-			'authorSection.beginDate': '2022-02-01',
-			'authorSection.endDate': '2022-02-08',
-			'authorSection.gender': 'Male',
-			'authorSection.type': 'Person',
+			'authorSection.beginArea': '',
+			'authorSection.beginDate': 'invaliddate',
+			'authorSection.endDate': '',
+			'authorSection.gender': '',
+			'authorSection.type': '',
 			'identifierEditor.t23': 'openlibid'
 		  };
-		const res = await chai.request(app).post('/author/create').send(data);
+		const res = await agent.post('/author/create').set('Origin', `http://127.0.0.1:${agent.app.address().port}`).send(data);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
 	it('should not throw not authorized error while seeding author', async () => {
 		const data = {};
-		const res = await chai.request(app).post('/author/create').set('Cookie', '').send(data);
+		const res = await chai.request(app).post('/author/create').send(data);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw an error if requested author BBID exists', async () => {
+		const res = await chai.request(app)
+			.get(`/author/${aBBID}`);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
