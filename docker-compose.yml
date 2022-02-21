@@ -4,7 +4,7 @@ services:
 
   bookbrainz-site:
     container_name: bookbrainz-site
-    command: yarn start
+    command: npm start
     build:
       context: ./
       dockerfile: Dockerfile
