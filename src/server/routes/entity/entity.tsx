@@ -990,6 +990,15 @@ async function indexAutoCreatedEditionGroup(orm, newEdition, transacting) {
 	}
 }
 
+function sanitizeBody(body:any) {
+	for (const alias of body.aliases) {
+		alias.name = commonUtils.sanitize(alias.name);
+		alias.sortName = commonUtils.sanitize(alias.sortName);
+	}
+	body.disambiguation = commonUtils.sanitize(body.disambiguation);
+	return body;
+}
+
 export function handleCreateOrEditEntity(
 	req: PassportRequest,
 	res: $Response,
@@ -1001,7 +1010,7 @@ export function handleCreateOrEditEntity(
 	const {Entity, Revision, bookshelf} = orm;
 	const editorJSON = req.user;
 
-	const {body}: {body: any} = req;
+	let {body}: {body: any} = req;
 	const {locals: resLocals}: {locals: any} = res;
 
 	let currentEntity: {
@@ -1017,7 +1026,8 @@ export function handleCreateOrEditEntity(
 		try {
 			// Determine if a new entity is being created
 			const isNew = !currentEntity;
-
+			// sanitize namesection inputs
+			body = sanitizeBody(body);
 			if (isNew) {
 				const newEntity = await new Entity({type: entityType})
 					.save(null, {transacting});

@@ -94,3 +94,37 @@ export function sortRelationshipOrdinal(sortByProperty: string) {
 		return value1.localeCompare(value2, undefined, {numeric: true});
 	};
 }
+
+/**
+ * This function repalces other space control character to U+0020 and trim extra spaces
+ * @param {string} text - text to sanitize
+ * @returns {string} - sanitized text
+ */
+export function collapseWhiteSpaces(text:string):string {
+	const spaceRegex = RegExp(/\s+/gi);
+	const doubleRegex = RegExp(/\s{2,}/gi);
+	let sanitizedText = text.replace(spaceRegex, '\u0020');
+	sanitizedText = text.replace(doubleRegex, '\u0020');
+	return sanitizedText.trim();
+}
+
+/**
+ * This function is to sanitize text inputs
+ * @param {string} text - text to sanitize
+ * @returns {string} - sanitized text
+ */
+export function sanitize(text:string):string {
+	if (!text) {
+		return text;
+	}
+	// unicode normalization to convert text into normal text
+	let sanitizeText = text.normalize('NFC');
+	sanitizeText = collapseWhiteSpaces(sanitizeText);
+	// eslint-disable-next-line no-control-regex
+	const invalidXMLRgx = RegExp(/[^\u0009\u000a\u000d\u0020-\uD7FF\uE000-\uFFFD]/gi);
+	sanitizeText = sanitizeText.replace(invalidXMLRgx, '');
+	const ccRegex = RegExp(/[\u200B\u00AD\p{Cc}]/gu);
+	sanitizeText = sanitizeText.replace(ccRegex, '');
+	sanitizeText = collapseWhiteSpaces(sanitizeText);
+	return sanitizeText;
+}

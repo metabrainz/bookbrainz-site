@@ -298,15 +298,14 @@ function mapStateToProps(rootState) {
 		!editionSectionState.get('editionGroup') ||
 		editionSectionState.get('editionGroupRequired')
 	);
-	const matchAllWhiteSpaces = /(\s{2,})/g;
 	return {
-		disambiguationDefaultValue: state.get('disambiguation')?.trim()?.replace(matchAllWhiteSpaces, ' '),
+		disambiguationDefaultValue: state.get('disambiguation'),
 		exactMatches: state.get('exactMatches'),
 		languageValue: state.get('language'),
-		nameValue: state.get('name')?.trim()?.replace(matchAllWhiteSpaces, ' '),
+		nameValue: state.get('name'),
 		searchForExistingEditionGroup,
 		searchResults: state.get('searchResults'),
-		sortNameValue: state.get('sortName')?.trim()?.replace(matchAllWhiteSpaces, ' ')
+		sortNameValue: state.get('sortName')
 	};
 }
 
@@ -314,22 +313,22 @@ function mapDispatchToProps(dispatch, {entity, entityType}) {
 	const entityBBID = entity && entity.bbid;
 	return {
 		onDisambiguationChange: (event) =>
-			dispatch(debouncedUpdateDisambiguationField(event.target.value.trim())),
+			dispatch(debouncedUpdateDisambiguationField(event.target.value)),
 		onLanguageChange: (value) =>
 			dispatch(updateLanguageField(value && value.value)),
 		onNameChange: (value) =>
-			dispatch(debouncedUpdateNameField(value.trim())),
+			dispatch(debouncedUpdateNameField(value)),
 		onNameChangeCheckIfEditionGroupExists: _.debounce((value) => {
-			dispatch(checkIfNameExists(value.trim(), entityBBID, 'EditionGroup', UPDATE_WARN_IF_EDITION_GROUP_EXISTS));
+			dispatch(checkIfNameExists(value, entityBBID, 'EditionGroup', UPDATE_WARN_IF_EDITION_GROUP_EXISTS));
 		}, 1500),
 		onNameChangeCheckIfExists: _.debounce((value) => {
-			dispatch(checkIfNameExists(value.trim(), entityBBID, entityType));
+			dispatch(checkIfNameExists(value, entityBBID, entityType));
 		}, 500),
 		onNameChangeSearchName: _.debounce((value) => {
-			dispatch(searchName(value.trim(), entityBBID, entityType));
+			dispatch(searchName(value, entityBBID, entityType));
 		}, 500),
 		onSortNameChange: (event) =>
-			dispatch(debouncedUpdateSortNameField(event.target.value.trim()))
+			dispatch(debouncedUpdateSortNameField(event.target.value))
 	};
 }
 
