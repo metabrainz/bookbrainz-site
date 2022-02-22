@@ -126,6 +126,7 @@ export function sanitize(text:string):string {
 	sanitizeText = sanitizeText.replace(ccRegex, '');
 	sanitizeText = collapseWhiteSpaces(sanitizeText);
 	return sanitizeText;
+}
 
 /**
  * Returns an API path for interacting with the given Bookshelf entity model
