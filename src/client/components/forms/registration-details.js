@@ -29,7 +29,7 @@ import SelectWrapper from '../input/select-wrapper';
 import request from 'superagent';
 
 
-const {Alert, Button, PageHeader} = bootstrap;
+const {Alert, Button, Col, Row} = bootstrap;
 
 class RegistrationForm extends React.Component {
 	constructor(props) {
@@ -87,7 +87,7 @@ class RegistrationForm extends React.Component {
 		let errorComponent = null;
 		if (this.state.error) {
 			errorComponent =
-				<Alert bsStyle="danger">{this.state.error}</Alert>;
+				<Alert variant="danger">{this.state.error}</Alert>;
 		}
 
 		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
@@ -96,7 +96,7 @@ class RegistrationForm extends React.Component {
 
 		return (
 			<div>
-				<PageHeader>Register</PageHeader>
+				<div className="page-header"><h1>Register</h1></div>
 				<div>
 					Great! You successfully logged in to MusicBrainz and
 					are now just one step away from becoming a BookBrainz
@@ -105,9 +105,9 @@ class RegistrationForm extends React.Component {
 					a little bit more about you. When you’re done, just
 					click the blue button at the bottom of the page.
 				</div>
-				<div className="row">
+				<Row>
 					{loadingComponent}
-					<div className="col-md-6 col-md-offset-3">
+					<Col lg={{offset: 3, span: 6}}>
 						<form
 							className="whole-page-form form-horizontal"
 							onSubmit={this.handleSubmit}
@@ -120,12 +120,13 @@ class RegistrationForm extends React.Component {
 							<CustomInput
 								className="form-control"
 								defaultValue={this.props.name}
+								groupClassName="row"
 								label="Display Name"
-								labelClassName="col-md-4"
+								labelClassName="col-lg-4 col-form-label"
 								placeholder="Display Name"
 								ref={(ref) => this.displayName = ref}
 								type="text"
-								wrapperClassName="col-md-4"
+								wrapperClassName="col-lg-4"
 								onChange={this.handleChange}
 							/>
 							<p>
@@ -136,31 +137,32 @@ class RegistrationForm extends React.Component {
 							<SelectWrapper
 								base={ReactSelect}
 								defaultValue={initialGender}
+								groupClassName="row"
 								idAttribute="id"
 								instanceId="gender"
 								label="Gender"
 								labelAttribute="name"
-								labelClassName="col-md-4"
+								labelClassName="col-lg-4 col-form-label"
 								options={this.props.genders}
 								placeholder="Select gender…"
 								ref={(ref) => this.gender = ref}
-								wrapperClassName="col-md-4"
+								wrapperClassName="col-lg-4"
 							/>
 							<hr/>
 							{errorComponent}
 							<div className="text-center">
 								<Button
-									bsSize="large"
-									bsStyle="primary"
 									disabled={!this.state.valid}
+									size="lg"
 									type="submit"
+									variant="primary"
 								>
 									Looks good, sign me up!
 								</Button>
 							</div>
 						</form>
-					</div>
-				</div>
+					</Col>
+				</Row>
 			</div>
 		);
 	}
@@ -168,7 +170,7 @@ class RegistrationForm extends React.Component {
 
 RegistrationForm.displayName = 'RegistrationForm';
 RegistrationForm.propTypes = {
-	gender: validators.namedProperty, // eslint-disable-line react/no-typos
+	gender: validators.namedProperty,
 	genders: PropTypes.arrayOf(validators.namedProperty).isRequired,
 	name: PropTypes.string
 };

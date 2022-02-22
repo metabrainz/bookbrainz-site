@@ -97,11 +97,20 @@ router.get(
 	middleware.loadGenders, middleware.loadLanguages,
 	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
 	(req, res) => {
-		const {markup, props} = entityEditorMarkup(generateEntityProps(
+		const markupProps = generateEntityProps(
 			'author', req, res, {
 				genderOptions: res.locals.genders
 			}
-		));
+		);
+		markupProps.initialState.nameSection = {
+			disambiguation: '',
+			exactMatches: null,
+			language: null,
+			name: req.query?.name ?? '',
+			searchResults: null,
+			sortName: ''
+		};
+		const {markup, props} = entityEditorMarkup(markupProps);
 
 		return res.send(target({
 			markup,

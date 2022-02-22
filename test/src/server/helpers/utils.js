@@ -1,5 +1,5 @@
 import chai from 'chai';
-import {getNextEnabledAndResultsArray} from '../../../../src/server/helpers/utils';
+import {getNextEnabledAndResultsArray} from '../../../../src/common/helpers/utils';
 
 
 const {expect} = chai;

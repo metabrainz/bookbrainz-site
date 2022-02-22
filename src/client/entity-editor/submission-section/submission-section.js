@@ -17,12 +17,12 @@
  */
 
 import {Alert, Button, Col, Row} from 'react-bootstrap';
-import {debounceUpdateRevisionNote, submit} from './actions';
 import CustomInput from '../../input';
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
+import {debounceUpdateRevisionNote} from './actions';
 
 /**
  * Container component. The SubmissionSection component contains a button for
@@ -49,7 +49,7 @@ function SubmissionSection({
 	submitted
 }) {
 	const errorAlertClass =
-		classNames('text-center', 'margin-top-1', {hidden: !errorText});
+		classNames('text-center', 'margin-top-1', {'d-none': !errorText});
 
 	const editNoteLabel = (
 		<span>
@@ -64,7 +64,7 @@ function SubmissionSection({
 				Submit Your Edit
 			</h2>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<CustomInput
 						label={editNoteLabel}
 						rows="6"
@@ -82,15 +82,15 @@ function SubmissionSection({
 			</Row>
 			<div className="text-center margin-top-1">
 				<Button
-					bsStyle="success"
 					disabled={!formValid || submitted}
 					type="submit"
+					variant="success"
 				>
 					Submit
 				</Button>
 			</div>
 			<div className={errorAlertClass}>
-				<Alert bsStyle="danger">Submission Error: {errorText}</Alert>
+				<Alert variant="danger">Submission Error: {errorText}</Alert>
 			</div>
 		</div>
 	);

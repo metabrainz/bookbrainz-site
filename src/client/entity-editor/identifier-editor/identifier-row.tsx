@@ -95,7 +95,7 @@ function IdentifierRow({
 	return (
 		<div>
 			<Row>
-				<Col md={4}>
+				<Col lg={4}>
 					<ValueField
 						defaultValue={valueValue}
 						empty={!valueValue && typeValue === null}
@@ -105,7 +105,7 @@ function IdentifierRow({
 						onChange={onValueChange}
 					/>
 				</Col>
-				<Col md={4}>
+				<Col lg={4}>
 					<CustomInput label="Type">
 						<Select
 							instanceId={`identifierType${index}`}
@@ -115,11 +115,11 @@ function IdentifierRow({
 						/>
 					</CustomInput>
 				</Col>
-				<Col className="text-right" md={3} mdOffset={1}>
+				<Col className="text-right" lg={{offset: 1, span: 3}}>
 					<Button
 						block
-						bsStyle="danger"
 						className="margin-top-d15"
+						variant="danger"
 						onClick={onRemoveButtonClick}
 					>
 						<FontAwesomeIcon icon={faTimes}/>

@@ -22,13 +22,12 @@ import * as bootstrap from 'react-bootstrap';
 import {differenceBy as _differenceBy, kebabCase as _kebabCase, startCase as _startCase} from 'lodash';
 
 import AddToCollectionModal from './add-to-collection-modal';
-import CallToAction from './call-to-action';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {Alert, Badge, Button, ButtonGroup, Row, Table} = bootstrap;
+const {Alert, Badge, Button, ButtonGroup, Table} = bootstrap;
 
 /**
  * Renders the document and displays the 'SearchResults' page.
@@ -144,25 +143,6 @@ class SearchResults extends React.Component {
 
 	render() {
 		const noResults = !this.props.results || this.props.results.length === 0;
-		if (noResults) {
-			return (
-				<div className="text-center">
-					<hr className="thin"/>
-					<h2 style={{color: '#754e37'}}>
-						No results found
-					</h2>
-					{
-						!this.props.condensed &&
-						<Row>
-							<small>Make sure the spelling is correct, and that you have selected the correct type in the search bar.</small>
-							<hr className="wide"/>
-							<h3>Are we missing an entry?</h3>
-							<CallToAction/>
-						</Row>
-					}
-				</div>
-			);
-		}
 
 		const results = this.props.results.map((result) => {
 			if (!result) {
@@ -219,7 +199,9 @@ class SearchResults extends React.Component {
 		if (this.props.condensed) {
 			tableCssClasses += ' table-condensed';
 		}
-
+		if (noResults) {
+			return null;
+		}
 		return (
 			<div>
 				{
@@ -250,9 +232,9 @@ class SearchResults extends React.Component {
 						!this.props.condensed &&
 						<thead>
 							<tr>
-								<th className="col-sm-3">Type</th>
-								<th className="col-sm-5">Name</th>
-								<th className="col-sm-4">Aliases</th>
+								<th className="col-md-3">Type</th>
+								<th className="col-md-5">Name</th>
+								<th className="col-md-4">Aliases</th>
 							</tr>
 						</thead>
 					}
@@ -263,8 +245,8 @@ class SearchResults extends React.Component {
 				{
 					this.state.message.text ?
 						<Alert
-							bsStyle={this.state.message.type}
 							className="margin-top-1"
+							variant={this.state.message.type}
 							onDismiss={this.handleAlertDismiss}
 						>
 							{this.state.message.text}
@@ -275,21 +257,21 @@ class SearchResults extends React.Component {
 					this.props.user ?
 						<ButtonGroup>
 							<Button
-								bsStyle="primary"
 								disabled={!this.state.selected.length}
 								type="button"
+								variant="primary"
 								onClick={this.handleAddToCollection}
 							>
 								{genEntityIconHTMLElement('Collection')}
 									Add to Collection
 							</Button>
 							<Button
-								bsStyle="warning"
 								disabled={!this.state.selected.length}
 								type="button"
+								variant="warning"
 								onClick={this.handleClearSelected}
 							>
-								Clear <Badge>{this.state.selected.length}</Badge> selected
+								Clear <Badge pill variant="light">{this.state.selected.length}</Badge> selected
 							</Button>
 						</ButtonGroup> : null
 				}

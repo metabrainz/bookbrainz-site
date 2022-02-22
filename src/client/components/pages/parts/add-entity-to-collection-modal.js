@@ -92,7 +92,7 @@ class AddEntityToCollectionModal extends React.Component {
 		if (bbids.length) {
 			request.post(`/collection/${this.props.collectionId}/add`)
 				.send({bbids})
-				.then((res) => {
+				.then(() => {
 					this.setState({
 						entities: [],
 						error: null
@@ -102,7 +102,7 @@ class AddEntityToCollectionModal extends React.Component {
 							type: 'success'
 						});
 					});
-				}, (error) => {
+				}, () => {
 					this.setState({
 						error: 'Something went wrong! Please try again later'
 					});
@@ -125,7 +125,7 @@ class AddEntityToCollectionModal extends React.Component {
 			errorComponent =
 				(
 					<div className="text-center margin-top-1">
-						<Alert bsStyle="danger" onDismiss={this.handleAlertDismiss}>{this.state.error}</Alert>
+						<Alert variant="danger" onDismiss={this.handleAlertDismiss}>{this.state.error}</Alert>
 					</div>
 				);
 		}
@@ -136,7 +136,7 @@ class AddEntityToCollectionModal extends React.Component {
 			<Row>
 				<Col
 					id="addEntityToCollection"
-					md={12}
+					lg={12}
 				>
 					<form
 						className="padding-sides-0"
@@ -145,9 +145,9 @@ class AddEntityToCollectionModal extends React.Component {
 							this.state.entities.map((entity, index) => {
 								const buttonAfter = (
 									<Button
-										bsSize="small"
-										bsStyle="danger"
+										size="sm"
 										type="button"
+										variant="danger"
 										onClick={() => this.handleRemoveEntity(index)}
 									>
 										<FontAwesomeIcon icon={faTimes}/>&nbsp;Remove
@@ -175,8 +175,8 @@ class AddEntityToCollectionModal extends React.Component {
 
 		return (
 			<Modal
-				bsSize="large"
 				show={this.props.show}
+				size="lg"
 				onHide={this.props.onCloseModal}
 			>
 				<Modal.Header closeButton>
@@ -191,20 +191,20 @@ class AddEntityToCollectionModal extends React.Component {
 				<Modal.Footer>
 					<ButtonGroup>
 						<Button
-							bsStyle="primary"
 							type="button"
+							variant="primary"
 							onClick={this.handleAddEntity}
 						>
 							<FontAwesomeIcon icon={faPlus}/>
 							&nbsp;Add another {lowerCase(this.props.collectionType)}
 						</Button>
 						<Button
-							bsStyle="success"
 							disabled={!cleanedEntities.length}
+							variant="success"
 							onClick={this.handleSubmit}
 						>
 							<FontAwesomeIcon icon={faPlus}/>
-							&nbsp;Add <Badge>{cleanedEntities.length}</Badge>&nbsp;
+							&nbsp;Add <Badge pill>{cleanedEntities.length}</Badge>&nbsp;
 							{lowerCase(this.props.collectionType)}{cleanedEntities.length > 1 ? 's' : ''} to the collection
 						</Button>
 					</ButtonGroup>

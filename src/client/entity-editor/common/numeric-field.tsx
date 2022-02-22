@@ -41,7 +41,7 @@ type Props = {
  * @param {boolean} props.empty - Passed to the ValidationLabel within the
  *        component to indicate that the field is empty.
  * @param {boolean} props.show - Determines the visibility of the field - if
- *        falsey, bootstrap's 'hidden' class is applied.
+ *        falsey, bootstrap's 'd-none' class is applied.
  * @param {string} props.label - The text to be used for the input label.
  * @returns {Object} A React component containing the rendered input.
  */
@@ -55,7 +55,7 @@ function NumericField({
 	const labelElement =
 		<ValidationLabel empty={empty} error={error}>{label}</ValidationLabel>;
 
-	const groupClassName = classNames({hidden: !show});
+	const groupClassName = classNames({'d-none': !show});
 	return (
 		<CustomInput
 			groupClassName={groupClassName}
