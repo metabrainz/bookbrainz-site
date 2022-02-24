@@ -18,8 +18,10 @@
 
 import * as React from 'react';
 
-import CustomInput from '../../input';
+import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ValidationLabel from '../common/validation-label';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 
 type Props = {
@@ -53,13 +55,28 @@ function DisambiguationField({
 		</ValidationLabel>
 	);
 
+	const tooltip = (
+		<Tooltip>
+			If a different entity with the same name already exists or if there is a
+			need for clarification
+		</Tooltip>
+	);
+
 	return (
-		<CustomInput
-			label={label}
-			tooltipText="If a different entity with the same name already exists or if there is a need for clarification"
-			type="text"
-			{...rest}
-		/>
+
+
+		<Form.Group>
+			<Form.Label>
+				{label}
+				<OverlayTrigger delay={50} overlay={tooltip}>
+					<FontAwesomeIcon
+						className="margin-left-0-5"
+						icon={faQuestionCircle}
+					/>
+				</OverlayTrigger>
+			</Form.Label>
+			<Form.Control type="text" {...rest}/>
+		</Form.Group>
 	);
 }
 DisambiguationField.displayName = 'DisambiguationField';

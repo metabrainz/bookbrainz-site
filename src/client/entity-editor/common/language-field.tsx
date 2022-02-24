@@ -16,10 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+
 import * as React from 'react';
-import CustomInput from '../../input';
+import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ValidationLabel from './validation-label';
 import VirtualizedSelect from 'react-virtualized-select';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 
 type Props = {
@@ -52,10 +55,21 @@ function LanguageField({
 		<ValidationLabel empty={empty} error={error}>Language</ValidationLabel>
 	;
 
+	const tooltip = <Tooltip>{tooltipText}</Tooltip>;
+
 	return (
-		<CustomInput label={label} tooltipText={tooltipText}>
+		<Form.Group>
+			<Form.Label>
+				{label}
+				<OverlayTrigger delay={50} overlay={tooltip}>
+					<FontAwesomeIcon
+						className="margin-left-0-5"
+						icon={faQuestionCircle}
+					/>
+				</OverlayTrigger>
+			</Form.Label>
 			<VirtualizedSelect {...rest}/>
-		</CustomInput>
+		</Form.Group>
 	);
 }
 LanguageField.displayName = 'LanguageField';

@@ -24,14 +24,15 @@ import {
 	updateLanguages,
 	updateType
 } from './actions';
-import {Col, Row} from 'react-bootstrap';
+import {Col, Form, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 import type {List, Map} from 'immutable';
 
-import CustomInput from '../../input';
 import type {Dispatch} from 'redux';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LanguageField from '../common/language-field';
 import Select from 'react-select';
 import {connect} from 'react-redux';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import makeImmutable from '../common/make-immutable';
 
 
@@ -100,6 +101,12 @@ function WorkSection({
 		value: type.id
 	}));
 
+	const tooltip = (
+		<Tooltip>
+			Literary form or structure of the work
+		</Tooltip>
+	);
+
 	return (
 		<div>
 			<h2>
@@ -111,17 +118,23 @@ function WorkSection({
 			</p>
 			<Row>
 				<Col lg={{offset: 3, span: 6}}>
-					<CustomInput
-						label="Type"
-						tooltipText="Literary form or structure of the work"
-					>
+					<Form.Group>
+						<Form.Label>
+							Type
+							<OverlayTrigger delay={50} overlay={tooltip}>
+								<FontAwesomeIcon
+									className="margin-left-0-5"
+									icon={faQuestionCircle}
+								/>
+							</OverlayTrigger>
+						</Form.Label>
 						<Select
 							instanceId="workType"
 							options={workTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
 			</Row>
 			<Row>
