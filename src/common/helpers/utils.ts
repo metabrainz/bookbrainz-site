@@ -121,3 +121,58 @@ export function getNextEnabledAndResultsArray(array, size) {
 		nextEnabled: false
 	};
 }
+
+/**
+ * Convert ISBN-10 to ISBN-13
+ * @param {string} isbn10 valid ISBN-10
+ * @returns {string} ISBN-13
+ */
+
+export function isbn10To13(isbn10:string):string {
+	const tempISBN10 = `${isbn10}`.replaceAll('-', '');
+	let totalSum = 0;
+
+	const isbn13 = `978${tempISBN10.substring(0, 9)}`;
+
+	for (let i = 0; i < 12; i++) {
+		totalSum += Number(isbn13.charAt(i)) * ((i % 2) === 0 ? 1 : 3);
+	}
+
+	const lastDigit = (10 - (totalSum % 10)) % 10;
+	return isbn13 + lastDigit;
+}
+
+/**
+ * Convert ISBN-13 to ISBN-10
+ * @param {string} isbn13 valid ISBN-13
+ * @returns {string} ISBN-10
+ */
+
+export function isbn13To10(isbn13:string):string {
+	const tempISBN13 = isbn13.replaceAll('-', '');
+	let digits = [];
+	let sum = 0;
+	let chkDigit;
+
+	digits = `${tempISBN13}`.substring(3, 12).split('');
+
+	for (let i = 0; i < 9; i++) {
+		sum += digits[i] * (10 - i);
+	}
+
+	const chkTmp = 11 - (sum % 11);
+	switch (chkTmp) {
+		case 10:
+			chkDigit = 'X';
+			break;
+		case 11:
+			chkDigit = 0;
+			break;
+		default:
+			chkDigit = chkTmp;
+			break;
+	}
+	digits.push(chkDigit);
+
+	return digits.join('');
+}
