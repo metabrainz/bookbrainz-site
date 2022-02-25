@@ -108,10 +108,14 @@ export function loadSeriesItems(req: $Request, res: $Response, next: NextFunctio
 export async function loadWorkTableAuthors(req: $Request, res: $Response, next: NextFunction) {
 	const {orm}: any = req.app.locals;
 	const {entity} = res.locals;
-	const workBBIDs = getRelationshipTargetBBIDByTypeId(entity, 10);
-	const authorsData = await orm.func.work.loadAuthorNames(orm, workBBIDs);
-	const authorsDataGroupedByWorkBBID = _.groupBy(authorsData, 'workbbid');
-	entity.authorsData = authorsDataGroupedByWorkBBID;
+	try {
+		const workBBIDs = getRelationshipTargetBBIDByTypeId(entity, 10);
+		const authorsData = await orm.func.work.loadAuthorNames(orm, workBBIDs);
+		const authorsDataGroupedByWorkBBID = _.groupBy(authorsData, 'workbbid');
+		entity.authorsData = authorsDataGroupedByWorkBBID;
+	} catch (err) {
+		return next(err);
+	}
 	next();
 }
 
