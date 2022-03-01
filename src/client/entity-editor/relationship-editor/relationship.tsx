@@ -23,7 +23,7 @@ import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import Entity from '../common/entity';
 import RelationshipAttribute from './relationship-attribute';
 import _ from 'lodash';
-import {getEntityLink} from '../../../server/helpers/utils';
+import {getEntityLink} from '../../../common/helpers/utils';
 
 
 function getEntityObjectForDisplay(entity: _Entity, makeLink: boolean) {
@@ -77,7 +77,7 @@ function Relationship({
 
 	return (
 		<OverlayTrigger
-			delayShow={50}
+			delay={50}
 			overlay={<Tooltip id={`tooltip-${id}`}>{description}</Tooltip>}
 			placement="bottom"
 		>

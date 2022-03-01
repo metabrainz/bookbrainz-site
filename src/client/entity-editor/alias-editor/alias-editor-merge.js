@@ -43,7 +43,7 @@ const AliasEditorMerge = ({
 	languageOptions.forEach((language) => (languageOptionsForDisplay[language.id] = language.name));
 
 	const noAliasesTextClass =
-		classNames('text-center', {hidden: aliases.size});
+		classNames('text-center', {'d-none': aliases.size});
 	return (
 		<React.Fragment>
 			<h2>Aliases</h2>
@@ -54,6 +54,7 @@ const AliasEditorMerge = ({
 				aliases.map((alias, rowId) => (
 					<AliasRowMerge
 						index={rowId}
+						// eslint-disable-next-line react/no-array-index-key
 						key={rowId}
 						languageOptions={languageOptionsForDisplay}
 					/>

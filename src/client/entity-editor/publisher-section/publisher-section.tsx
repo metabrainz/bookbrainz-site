@@ -26,13 +26,12 @@ import {
 	updateEnded,
 	updateType
 } from './actions';
-import {Checkbox, Col, Row} from 'react-bootstrap';
+import {Col, Form, Row} from 'react-bootstrap';
 import {
 	validatePublisherSectionBeginDate,
 	validatePublisherSectionEndDate
 } from '../validators/publisher';
 
-import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
 import type {Dispatch} from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
@@ -67,7 +66,7 @@ type DispatchProps = {
 	onAreaChange: (arg: Area | null | undefined) => unknown,
 	onBeginDateChange: (arg: string) => unknown,
 	onEndDateChange: (arg: string) => unknown,
-	onEndedChange: (arg: React.FormEvent<Checkbox>) => unknown,
+	onEndedChange: (arg: React.FormEvent<any>) => unknown,
 	onTypeChange: (obj: {value: number} | null) => unknown
 };
 
@@ -138,19 +137,20 @@ function PublisherSection({
 				know it
 			</p>
 			<Row>
-				<Col md={6} mdOffset={3}>
-					<CustomInput label="Type">
+				<Col lg={{offset: 3, span: 6}}>
+					<Form.Group>
+						<Form.Label>Type</Form.Label>
 						<Select
 							instanceId="publisherType"
 							options={publisherTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<EntitySearchFieldOption
 						instanceId="area"
 						label="Area"
@@ -162,7 +162,7 @@ function PublisherSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<DateField
 						show
 						defaultValue={beginDateValue}
@@ -176,17 +176,17 @@ function PublisherSection({
 				</Col>
 			</Row>
 			<div className="text-center">
-				<Checkbox
+				<Form.Check
 					defaultChecked={endedChecked}
+					label="Dissolved?"
+					type="checkbox"
 					onChange={onEndedChange}
-				>
-					Dissolved?
-				</Checkbox>
+				/>
 			</div>
 			{endedChecked &&
 				<div>
 					<Row>
-						<Col md={6} mdOffset={3}>
+						<Col lg={{offset: 3, span: 6}}>
 							<DateField
 								show
 								defaultValue={endDateValue}

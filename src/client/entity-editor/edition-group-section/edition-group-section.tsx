@@ -18,13 +18,14 @@
 
 import * as React from 'react';
 import {Action, updateType} from './actions';
-import {Col, Row} from 'react-bootstrap';
+import {Col, Form, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 
-import CustomInput from '../../input';
 import type {Dispatch} from 'redux';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import type {Map} from 'immutable';
 import Select from 'react-select';
 import {connect} from 'react-redux';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 
 type EditionGroupType = {
@@ -71,6 +72,8 @@ function EditionGroupSection({
 		value: type.id
 	}));
 
+	const tooltip = <Tooltip>Physical format of the Edition Group</Tooltip>;
+
 	return (
 		<div>
 			<h2>
@@ -81,18 +84,24 @@ function EditionGroupSection({
 				know it
 			</p>
 			<Row>
-				<Col md={6} mdOffset={3}>
-					<CustomInput
-						label="Type"
-						tooltipText="Physical format of the Edition Group"
-					>
+				<Col lg={{offset: 3, span: 6}}>
+					<Form.Group>
+						<Form.Label>
+							Type
+							<OverlayTrigger delay={50} overlay={tooltip}>
+								<FontAwesomeIcon
+									className="margin-left-0-5"
+									icon={faQuestionCircle}
+								/>
+							</OverlayTrigger>
+						</Form.Label>
 						<Select
 							instanceId="editionGroupType"
 							options={editionGroupTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
 			</Row>
 		</div>

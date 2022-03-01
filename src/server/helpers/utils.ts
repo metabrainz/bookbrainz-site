@@ -22,16 +22,6 @@
 import _ from 'lodash';
 
 
-/**
- * Returns an API path for interacting with the given Bookshelf entity model
- *
- * @param {object} entity - Entity object
- * @returns {string} - URL path to interact with entity
- */
-export function getEntityLink(entity: {type: string, bbid: string}): string {
-	return `/${_.kebabCase(entity.type)}/${entity.bbid}`;
-}
-
 export function getDateBeforeDays(days) {
 	const date = new Date();
 	date.setDate(date.getDate() - days);
@@ -170,21 +160,6 @@ export function getAdditionalRelations(modelType) {
 	return [];
 }
 
-export function getNextEnabledAndResultsArray(array, size) {
-	if (array.length > size) {
-		while (array.length > size) {
-			array.pop();
-		}
-		return {
-			newResultsArray: array,
-			nextEnabled: true
-		};
-	}
-	return {
-		newResultsArray: array,
-		nextEnabled: false
-	};
-}
 
 /**
  * Takes an entity and converts it to a format acceptable to react-select.

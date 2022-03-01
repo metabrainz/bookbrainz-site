@@ -200,7 +200,7 @@ export async function displayRevisions(
 	try {
 		// get 1 more revision than required to check nextEnabled
 		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, from, size + 1, RevisionModel, bbid);
-		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
+		const {newResultsArray, nextEnabled} = commonUtils.getNextEnabledAndResultsArray(orderedRevisions, size);
 		const props = generateProps(req, res, {
 			from,
 			nextEnabled,
@@ -328,7 +328,7 @@ async function saveEntitiesAndFinishRevision(
 		setParentRevisions(transacting, newRevision, parentRevisionIDs);
 
 	/** model.save returns a refreshed model */
-	// eslint-disable-next-line no-unused-vars
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [savedEntities, ...others] = await Promise.all([
 		entitiesSavedPromise,
 		editorUpdatePromise,

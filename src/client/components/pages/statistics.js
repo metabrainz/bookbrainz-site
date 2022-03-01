@@ -25,7 +25,7 @@ import {startCase as _startCase} from 'lodash';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
-const {PageHeader, Table} = bootstrap;
+const {Table} = bootstrap;
 const {formatDate} = utilsHelper;
 
 /**
@@ -43,15 +43,15 @@ function TopEditorsTable(props) {
 			</div>
 			<Table
 				bordered
-				condensed
 				striped
+				size="sm"
 			>
 				<thead>
 					<tr>
-						<th className="col-sm-1" >#</th>
-						<th className="col-sm-5" >Editor&apos;s Name</th>
-						<th className="col-sm-3" >Total Revisions</th>
-						<th className="col-sm-3" >Registration Date</th>
+						<th className="col-md-1" >#</th>
+						<th className="col-md-5" >Editor&apos;s Name</th>
+						<th className="col-md-3" >Total Revisions</th>
+						<th className="col-md-3" >Registration Date</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -96,15 +96,15 @@ function EntityCountTable(props) {
 			</div>
 			<Table
 				bordered
-				condensed
 				striped
+				size="sm"
 			>
 				<thead>
 					<tr>
-						<th className="col-sm-1" >#</th>
-						<th className="col-sm-5" >Entity Type</th>
-						<th className="col-sm-3" >Total</th>
-						<th className="col-sm-3" >Added in Last 30 days</th>
+						<th className="col-md-1" >#</th>
+						<th className="col-md-5" >Entity Type</th>
+						<th className="col-md-3" >Total</th>
+						<th className="col-md-3" >Added in Last 30 days</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -142,7 +142,7 @@ function StatisticsPage(props) {
 	const {allEntities, last30DaysEntities, topEditors} = props;
 	return (
 		<div>
-			<PageHeader>Statistics of BookBrainz</PageHeader>
+			<div className="page-header"><h1>Statistics of BookBrainz</h1></div>
 			<TopEditorsTable editors={topEditors}/>
 			<EntityCountTable
 				allEntities={allEntities}

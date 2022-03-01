@@ -25,7 +25,8 @@ let configContents;
 // Use Default configuration (for Docker)
 function useDefaultConfig() {
 	/* Pull in environment-specific configuration. */
-	const env = process.env.NODE_ENV || 'development'; // eslint-disable-line no-process-env,max-len
+	// eslint-disable-next-line node/no-process-env
+	const env = process.env.NODE_ENV || 'development';
 
 	let configFileBasename = 'config';
 	if (env === 'test') {
