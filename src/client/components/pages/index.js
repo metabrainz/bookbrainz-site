@@ -30,7 +30,7 @@ import RevisionsTable from './parts/revisions-table';
 import {faTwitter} from '@fortawesome/free-brands-svg-icons';
 
 
-const {Alert, Button, Col, Grid, Row} = bootstrap;
+const {Alert, Button, Col, Container, Row} = bootstrap;
 
 class IndexPage extends React.Component {
 	constructor(props) {
@@ -42,71 +42,71 @@ class IndexPage extends React.Component {
 	renderHeader() {
 		return (
 			<div>
-				<Alert bsStyle="warning" className="text-center">
-					<p>
-						Under development — adventurous users, please test and
-						add data! Give us feedback about bugs, glitches and
-						potential improvements at {' '}
-						<a href="//tickets.metabrainz.org/projects/BB">
-							MetaBrainz JIRA!
-						</a>
-					</p>
+				<Alert className="text-center" variant="warning">
+					Under development — adventurous users, please test and
+					add data! Give us feedback about bugs, glitches and
+					potential improvements at {' '}
+					<a href="//tickets.metabrainz.org/projects/BB">
+						MetaBrainz JIRA!
+					</a>
 				</Alert>
 				<div id="background-image">
 					<div className="text-center" id="background-overlay">
-						<Grid>
+						<Container>
 							<img
 								alt="BookBrainz logo"
-								className="img-responsive center-block"
+								className="img-fluid center-block"
 								src="/images/BookBrainz_text.svg"
 								title="BookBrainz"
 								width="500"
 							/>
 							<Row>
-								<Col md={8} mdOffset={2}>
-									<form action="/search" role="search">
-										<div className="input-group input-group-lg margin-top-5">
-											<input
-												autoFocus="autofocus"
-												className="form-control"
-												name="q"
-												placeholder="Search for..."
-												type="text"
-											/>
-											<span className="input-group-btn">
-												<Button
-													bsStyle="success"
-													type="submit"
-												>
-													<FontAwesomeIcon icon={faSearch}/>
-												</Button>
-											</span>
-										</div>
+								<Col lg={{offset: 2, span: 8}}>
+									<form action="/search" className="input-group input-group-lg margin-top-5" role="search">
+										<input
+											required
+											autoFocus="autofocus"
+											className="form-control"
+											name="q"
+											placeholder="Search for..."
+											type="text"
+										/>
+										<span className="input-group-append">
+											<Button
+												type="submit"
+												variant="success"
+											>
+												<FontAwesomeIcon icon={faSearch}/>
+											</Button>
+										</span>
 									</form>
 									<Row className="margin-top-4">
-										<Col sm={4}>
+										<Col md={4}>
 											<Button
 												block
-												bsSize="large"
 												href="/about"
+												size="lg"
+												variant="secondary"
 											>
 												About
 											</Button>
 										</Col>
-										<Col sm={4}>
+										<Col md={4}>
 											<Button
 												block
-												bsSize="large"
 												href="/contribute"
+												size="lg"
+												variant="secondary"
 											>
 												Contribute
 											</Button>
 										</Col>
-										<Col sm={4}>
+										<Col md={4}>
 											<Button
 												block
-												bsSize="large"
 												href="/develop"
+												size="lg"
+												variant="secondary"
 											>
 												Develop
 											</Button>
@@ -178,7 +178,7 @@ class IndexPage extends React.Component {
 									</div>
 								</Col>
 							</Row>
-						</Grid>
+						</Container>
 					</div>
 				</div>
 			</div>
@@ -187,9 +187,9 @@ class IndexPage extends React.Component {
 
 	renderContent() {
 		return (
-			<Grid>
+			<Container>
 				<Row>
-					<Col md={8} mdOffset={2}>
+					<Col lg={{offset: 2, span: 8}}>
 						<h1 className="text-center">The Open Book Database</h1>
 						<p className="lead text-justify">
 							BookBrainz is a project to create an online database
@@ -213,15 +213,15 @@ class IndexPage extends React.Component {
 					/>
 					<div className="text-center">
 						<Button
-							bsStyle="primary"
 							href="/revisions"
+							variant="primary"
 						>
 							<FontAwesomeIcon className="margin-right-0-5" icon={faListUl}/>
 							See all revisions
 						</Button>
 					</div>
 				</div>
-			</Grid>
+			</Container>
 		);
 	}
 
@@ -230,10 +230,10 @@ class IndexPage extends React.Component {
 		return (
 			<React.Fragment>
 				<Row>
-					<Col className="text-center margin-top-4" md={2}>
+					<Col className="text-center margin-top-4" lg={2}>
 						<FontAwesomeIcon icon={faUser} size="5x"/>
 					</Col>
-					<Col md={10}>
+					<Col lg={10}>
 						<h2>Join Us!</h2>
 						<p className="lead">
 					First off,{' '}
@@ -251,9 +251,9 @@ class IndexPage extends React.Component {
 				<div className="text-center margin-top-1 margin-bottom-3">
 					<Button
 						{...disableSignUp}
-						bsSize="large"
-						bsStyle="success"
 						href="/register"
+						size="lg"
+						variant="success"
 					>
 				Register!
 					</Button>

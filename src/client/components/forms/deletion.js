@@ -17,8 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import {faExclamationTriangle, faTimesCircle, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
-import CustomInput from '../../input';
+import {faExclamationTriangle, faQuestionCircle, faTimesCircle, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LoadingSpinner from '../loading-spinner';
 import PropTypes from 'prop-types';
@@ -28,7 +27,7 @@ import {kebabCase as _kebabCase} from 'lodash';
 import request from 'superagent';
 
 
-const {Alert, Button, Col, Row, Panel} = bootstrap;
+const {Alert, Button, Col, Form, Row, OverlayTrigger, Tooltip, Card} = bootstrap;
 
 class EntityDeletionForm extends React.Component {
 	constructor(props) {
@@ -89,7 +88,7 @@ class EntityDeletionForm extends React.Component {
 		let errorComponent = null;
 		if (this.state.error) {
 			errorComponent =
-				<Alert bsStyle="danger">{this.state.error}</Alert>;
+				<Alert variant="danger">{this.state.error}</Alert>;
 		}
 
 		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
@@ -98,16 +97,17 @@ class EntityDeletionForm extends React.Component {
 		const footerComponent = (
 			<span className="clearfix">
 				<Button
-					bsStyle="danger"
-					className="pull-right"
+					className="float-right"
 					disabled={!hasNote}
 					type="submit"
+					variant="danger"
 				>
 					<FontAwesomeIcon icon={faTrashAlt}/> Delete
 				</Button>
 				<Button
-					className="pull-right"
+					className="float-right"
 					href={this.entityUrl}
+					variant="secondary"
 				>
 					<FontAwesomeIcon icon={faTimesCircle}/> Cancel
 				</Button>
@@ -123,29 +123,31 @@ class EntityDeletionForm extends React.Component {
 			</ValidationLabel>
 		);
 
+		const deletionTooltip = (
+			<Tooltip>
+				Please explain why you are deleting this entity. This is required.
+			</Tooltip>
+		);
+
 		return (
 			<div id="deletion-form">
 				<h1>Delete Entity</h1>
 				<Row className="margin-top-2">
 					{loadingComponent}
-					<Col md={6} mdOffset={3}>
+					<Col lg={{offset: 3, span: 6}}>
 						<form onSubmit={this.handleSubmit}>
-							<Panel
-								bsStyle="danger"
-							>
-								<Panel.Heading>
-									<Panel.Title componentClass="h3">
-										Confirm Deletion
-									</Panel.Title>
-								</Panel.Heading>
-								<Panel.Body>
+							<Card bg="danger">
+								<Card.Header as="h4">
+									Confirm Deletion
+								</Card.Header>
+								<Card.Body>
 
-									<Alert bsStyle="warning">
+									<Alert variant="warning">
 										<h4>
 											<FontAwesomeIcon icon={faExclamationTriangle}/>&nbsp;
 											You’re about to delete the {entity.type} {entityName}.
 										</h4>
-										<p style={{fontSize: '1.3em'}}>Edit the entity or merge duplicates rather than delete !</p>
+										<span style={{fontSize: '1.3em'}}>Edit the entity or merge duplicates rather than delete !</span>
 									</Alert>
 									<p>
 									As a general principle, if you can solve an issue with non-destructive edits,
@@ -177,22 +179,35 @@ class EntityDeletionForm extends React.Component {
 									&nbsp;to select it to be merged instead.
 									</p>
 									<hr/>
-									<CustomInput
-										help="* A note is required"
-										label={noteLabel}
-										rows="5"
-										tooltipText="Please explain why you are deleting this entity. This is required."
-										type="textarea"
-										value={note}
-										wrapperClassName="margin-top-1"
-										onChange={this.handleNoteChange}
-									/>
+									<Form.Group>
+										<Form.Label>
+											{noteLabel}
+											<OverlayTrigger
+												delay={50}
+												overlay={deletionTooltip}
+											>
+												<FontAwesomeIcon
+													className="margin-left-0-5"
+													icon={faQuestionCircle}
+												/>
+											</OverlayTrigger>
+										</Form.Label>
+										<div className="margin-top-1">
+											<Form.Control
+												as="textarea"
+												rows="5"
+												value={note}
+												onChange={this.handleNoteChange}
+											/>
+											<Form.Text muted>* A note is required</Form.Text>
+										</div>
+									</Form.Group>
 									{errorComponent}
-								</Panel.Body>
-								<Panel.Footer>
+								</Card.Body>
+								<Card.Footer>
 									{footerComponent}
-								</Panel.Footer>
-							</Panel>
+								</Card.Footer>
+							</Card>
 						</form>
 					</Col>
 				</Row>

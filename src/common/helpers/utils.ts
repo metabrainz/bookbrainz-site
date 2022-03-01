@@ -1,9 +1,10 @@
 import {Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
 
+import {kebabCase} from 'lodash';
+
 /**
  * Regular expression for valid BookBrainz UUIDs (bbid)
  *
- * @type {RegExp}
  * @private
  */
 const _bbidRegex =
@@ -18,7 +19,6 @@ const _bbidRegex =
 export function isValidBBID(bbid: string): boolean {
 	return _bbidRegex.test(bbid);
 }
-
 
 /**
  * Returns all entity models defined in bookbrainz-data-js
@@ -85,12 +85,39 @@ export function makePromiseFromObject<T>(obj: Unresolved<T>): Promise<T> {
  * @param {string} sortByProperty - name of property which will be used for sorting
  * @returns {array} - sorted relationship array
  */
-/* eslint-disable no-param-reassign */
 export function sortRelationshipOrdinal(sortByProperty: string) {
 	return (a: RelationshipForDisplay | Relationship, b: RelationshipForDisplay | Relationship) => {
 		const value1 = a[sortByProperty] || '';
 		const value2 = b[sortByProperty] || '';
 		// eslint-disable-next-line no-undefined
 		return value1.localeCompare(value2, undefined, {numeric: true});
+	};
+}
+
+
+/**
+ * Returns an API path for interacting with the given Bookshelf entity model
+ *
+ * @param {object} entity - Entity object
+ * @returns {string} - URL path to interact with entity
+ */
+export function getEntityLink(entity: {type: string, bbid: string}): string {
+	return `/${kebabCase(entity.type)}/${entity.bbid}`;
+}
+
+
+export function getNextEnabledAndResultsArray(array, size) {
+	if (array.length > size) {
+		while (array.length > size) {
+			array.pop();
+		}
+		return {
+			newResultsArray: array,
+			nextEnabled: true
+		};
+	}
+	return {
+		newResultsArray: array,
+		nextEnabled: false
 	};
 }

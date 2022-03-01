@@ -19,10 +19,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {Form} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
 import _ from 'lodash';
-import classNames from 'classnames';
 
 
 function wangleID(value, idAttribute) {
@@ -72,6 +72,7 @@ class SelectWrapper extends React.Component {
 	render() {
 		const {
 			base,
+			groupClassName,
 			idAttribute,
 			label,
 			labelAttribute,
@@ -85,13 +86,12 @@ class SelectWrapper extends React.Component {
 		const Child = base;
 
 		const childValue = _.isNil(value) ? this.state.value : value;
-		const labelClasses = classNames('control-label', labelClassName);
 
 		return (
-			<div className="form-group">
+			<Form.Group className={groupClassName}>
 				{
 					label &&
-					<label className={labelClasses}>{label}</label>
+					<label className={labelClassName}>{label}</label>
 				}
 				<div className={wrapperClassName}>
 					<Child
@@ -104,7 +104,7 @@ class SelectWrapper extends React.Component {
 						onChange={this.handleChange}
 					/>
 				</div>
-			</div>
+			</Form.Group>
 		);
 	}
 }
@@ -116,6 +116,7 @@ SelectWrapper.propTypes = {
 		PropTypes.number,
 		PropTypes.object
 	]),
+	groupClassName: PropTypes.string,
 	idAttribute: PropTypes.string.isRequired,
 	label: PropTypes.string,
 	labelAttribute: PropTypes.string.isRequired,
@@ -132,6 +133,7 @@ SelectWrapper.propTypes = {
 };
 SelectWrapper.defaultProps = {
 	defaultValue: null,
+	groupClassName: null,
 	label: null,
 	labelClassName: null,
 	multiple: false,

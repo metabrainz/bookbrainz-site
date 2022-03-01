@@ -1,4 +1,3 @@
-/* eslint-disable prefer-arrow-callback,func-names */
 /*
  * Copyright (C) 2019  Akhilesh Kumar
  *
@@ -26,17 +25,17 @@ import chaiHttp from 'chai-http';
 chai.use(chaiHttp);
 const {expect} = chai;
 
-
 const aBBID = getRandomUUID();
 const bBBID = getRandomUUID();
 
 describe('Common test of API', () => {
 	// Test API for envalid requests
-	it('should throw a 405 error if send post request', function (done) {
+	it('should throw a 405 error if send post request', (done) => {
 		chai.request(app)
 			.post(`/work/${bBBID}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
+
 				expect(res).to.have.status(405);
 				expect(res.ok).to.be.false;
 				expect(res.body).to.be.an('object');
@@ -44,11 +43,13 @@ describe('Common test of API', () => {
 				return done();
 			});
 	 });
-	 it('should throw a 405 error if send put request', function (done) {
+
+	 it('should throw a 405 error if send put request', (done) => {
 		chai.request(app)
 			.put(`/work/${bBBID}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
+
 				expect(res).to.have.status(405);
 				expect(res.ok).to.be.false;
 				expect(res.body).to.be.an('object');
@@ -56,10 +57,11 @@ describe('Common test of API', () => {
 				return done();
 			});
 	 });
-	 it('should throw a 405 error if send delete request', function (done) {
+
+	 it('should throw a 405 error if send delete request', (done) => {
 		chai.request(app)
 			.delete(`/work/${bBBID}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(405);
 				expect(res.ok).to.be.false;
@@ -69,10 +71,10 @@ describe('Common test of API', () => {
 			});
 	 });
 
-	 it('should throw a 404 error if endpoint is not valid', function (done) {
+	 it('should throw a 404 error if endpoint is not valid', (done) => {
 		chai.request(app)
 			.get(`/work/${bBBID}/not-valid`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
@@ -86,7 +88,7 @@ describe('Common test of API', () => {
 describe('Lookup endpoints', () => {
 	before(() => createAuthor(aBBID));
 	after(truncateEntities);
-	it('GET {entity}/{BBID}/aliases should return aliases with a specific structure', async function () {
+	it('GET {entity}/{BBID}/aliases should return aliases with a specific structure', async () => {
 		const res = await chai.request(app).get(`/author/${aBBID}/aliases`);
 		expect(res.body.aliases).to.be.an('array');
 		expect(res.body.aliases[0]).to.be.an('object');
@@ -102,7 +104,7 @@ describe('Lookup endpoints', () => {
 		expect(res.body.aliases[0].primary).to.be.a('boolean');
 	 });
 
-	 it('GET {entity}/{BBID}/identifiers should return identifiers with a specific structure', async function () {
+	 it('GET {entity}/{BBID}/identifiers should return identifiers with a specific structure', async () => {
 		const res = await chai.request(app).get(`/author/${aBBID}/identifiers`);
 		expect(res.body.identifiers).to.be.an('array');
 		expect(res.body.identifiers[0]).to.be.an('object');
@@ -114,7 +116,7 @@ describe('Lookup endpoints', () => {
 		expect(res.body.identifiers[0].value).to.be.a('string');
 	 });
 
-	 it('GET {entity}/{BBID}/relationships should return relationships with a specific structure', async function () {
+	 it('GET {entity}/{BBID}/relationships should return relationships with a specific structure', async () => {
 		const res = await chai.request(app).get(`/author/${aBBID}/relationships`);
 		expect(res.body.relationships).to.be.an('array');
 		expect(res.body.relationships[0]).to.have.all.keys(

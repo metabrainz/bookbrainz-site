@@ -16,15 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
 import {faCircle, faCommentDots, faComments, faEnvelope} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import React from 'react';
 import {faTwitter} from '@fortawesome/free-brands-svg-icons';
 
-
-const {PageHeader} = bootstrap;
 
 /**
  * Renders the document and displays the 'About' page.
@@ -38,7 +35,7 @@ function AboutPage() {
 
 	return (
 		<div>
-			<PageHeader>About BookBrainz</PageHeader>
+			<div className="page-header"><h1>About BookBrainz</h1></div>
 			<p className="lead">
 				BookBrainz is an online encyclopaedia which contains
 				information about published literature. Our aim is to
