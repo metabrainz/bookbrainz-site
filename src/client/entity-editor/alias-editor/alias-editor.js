@@ -67,6 +67,7 @@ const AliasEditor = ({
 		<OverlayTrigger
 			delay={50}
 			overlay={<Tooltip id="alias-editor-tooltip">{helpText}</Tooltip>}
+			placement="right"
 		>
 			<FontAwesomeIcon
 				className="fa-sm"
