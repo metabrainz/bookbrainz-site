@@ -23,8 +23,11 @@
         {{end}}
         {{end}}
 		"maxAge": 2592000000,
-		"secret": "{{template "KEY" "secret_key"}}",
-		"secure": false
+		"secret": "{{template "KEY" "session/secret_key"}}",
+		"secure": "{{template "KEY" "session/secure"}}",
+		"name": "{{template "KEY" "session/name"}}",
+		"sameSite": "{{template "KEY" "session/sameSite"}}",
+		"httpOnly": "{{template "KEY" "session/httpOnly"}}"
 	},
 	"database": {
         {{if service "pgbouncer-master"}}
