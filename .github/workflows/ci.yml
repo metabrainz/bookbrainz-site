@@ -52,9 +52,6 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          # Also check out Lobes bootstrap theme submodule
-          submodules: true
 
       # Set up the test dabatase
       - name: Set up test database in PostgreSQL

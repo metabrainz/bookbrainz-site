@@ -1,4 +1,3 @@
-/* eslint-disable */
 /*
  * Copyright (C) 2019  Akhilesh Kumar
  *
@@ -19,19 +18,25 @@
 
 import slowDown from 'express-slow-down';
 
+
+const FIVE_MINUTES_IN_MS = 5 * 60 * 1000;
+
+/* Allow 100 requests per 5 minutes, then begin adding 500ms of delay per
+   request above 100. Request #102 is delayed by 100ms, request #102 by 200ms,
+   etc. */
 export const lookupAndBrowseRequestSlowDown = slowDown({
-	windowMs: 5 * 60 * 1000, // 5 minutes
-	delayAfter: 100, // allow 100 requests per 5 minutes, then...
-	delayMs: 500 // begin adding 500ms of delay per request above 100:
-	// request # 101 is delayed by 100ms
-	// request # 102 is delayed by 200ms
-	// etc.
+	delayAfter: 100,
+	delayMs: 500,
+	windowMs: FIVE_MINUTES_IN_MS
 });
 
+/* Allow 100 requests per 5 minutes, then begin adding 500ms of delay per
+   request above 100. Request #102 is delayed by 100ms, request #102 by 200ms,
+   etc. */
 export const searchRequestSlowDown = slowDown({
-	windowMs: 5 * 60 * 1000, // 5 minutes
-	delayAfter: 100, // allow 100 requests per 5 minutes, then...
-	delayMs: 500 // begin adding 500ms of delay per request above 100:
+	delayAfter: 100,
+	delayMs: 500,
+	windowMs: FIVE_MINUTES_IN_MS
 });
 
 

@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Checkbox, Col, Row} from 'react-bootstrap';
+import {Button, Col, Form, Row} from 'react-bootstrap';
 import {
 	debouncedUpdateAliasName, debouncedUpdateAliasSortName, removeAliasRow,
 	updateAliasLanguage, updateAliasPrimary
@@ -77,7 +77,7 @@ const AliasRow = ({
 }) => (
 	<div>
 		<Row>
-			<Col md={4}>
+			<Col lg={4}>
 				<NameField
 					autoFocus
 					defaultValue={nameValue}
@@ -88,7 +88,7 @@ const AliasRow = ({
 					onChange={onNameChange}
 				/>
 			</Col>
-			<Col md={4}>
+			<Col lg={4}>
 				<SortNameField
 					defaultValue={sortNameValue}
 					empty={
@@ -99,7 +99,7 @@ const AliasRow = ({
 					onChange={onSortNameChange}
 				/>
 			</Col>
-			<Col md={4}>
+			<Col lg={4}>
 				<LanguageField
 					empty={
 						isAliasEmpty(nameValue, sortNameValue, languageValue)
@@ -113,19 +113,19 @@ const AliasRow = ({
 			</Col>
 		</Row>
 		<Row>
-			<Col md={2} mdOffset={5}>
-				<Checkbox
+			<Col lg={{offset: 5, span: 2}}>
+				<Form.Check
 					defaultChecked={primaryChecked}
+					label="Primary"
+					type="checkbox"
 					onChange={onPrimaryClick}
-				>
-					Primary
-				</Checkbox>
+				/>
 			</Col>
-			<Col className="text-right" md={3} mdOffset={2}>
+			<Col className="text-right" lg={{offset: 2, span: 3}}>
 				<Button
 					block
-					bsStyle="danger"
 					className="margin-top-d5"
+					variant="danger"
 					onClick={onRemoveButtonClick}
 				>
 					<FontAwesomeIcon icon={faTimes}/>

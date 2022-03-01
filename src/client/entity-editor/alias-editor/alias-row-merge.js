@@ -47,8 +47,7 @@ const AliasRowMerge = ({
 	languageValue,
 	nameValue,
 	sortNameValue,
-	primaryChecked,
-	onRemoveButtonClick
+	primaryChecked
 }) => (
 	<div className="margin-bottom-1">
 		{nameValue} <small>({sortNameValue})</small>
@@ -61,7 +60,6 @@ AliasRowMerge.propTypes = {
 	languageOptions: PropTypes.object.isRequired,
 	languageValue: PropTypes.number,
 	nameValue: PropTypes.string.isRequired,
-	onRemoveButtonClick: PropTypes.func.isRequired,
 	primaryChecked: PropTypes.bool.isRequired,
 	sortNameValue: PropTypes.string.isRequired
 };
@@ -88,18 +86,3 @@ function mapStateToProps(rootState, {index}) {
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(AliasRowMerge);
-
-
-/* <Col sm={9}>
-	{nameValue} <small>({sortNameValue})</small>
-	<br/><small>{primaryChecked && 'Primary'} {languageOptions[languageValue]}</small>
-</Col>
-<Col sm={3}>
-	<Button
-		bsSize="sm"
-		bsStyle="danger"
-		onClick={onRemoveButtonClick}
-	>
-		Remove
-	</Button>
-</Col> */

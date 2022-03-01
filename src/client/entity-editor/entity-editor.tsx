@@ -21,9 +21,9 @@ import {connect, useSelector} from 'react-redux';
 import AliasEditor from './alias-editor/alias-editor';
 import AnnotationSection from './annotation-section/annotation-section';
 import ButtonBar from './button-bar/button-bar';
+import {Card} from 'react-bootstrap';
 import IdentifierEditor from './identifier-editor/identifier-editor';
 import NameSection from './name-section/name-section';
-import {Panel} from 'react-bootstrap';
 import RelationshipSection from './relationship-editor/relationship-section';
 import SubmissionSection from './submission-section/submission-section';
 import _ from 'lodash';
@@ -87,13 +87,11 @@ const EntityEditor = (props: Props) => {
 
 	return (
 		<form onSubmit={onSubmit}>
-			<Panel>
-				<Panel.Heading>
-					<Panel.Title componentClass="h3">
-						{heading}
-					</Panel.Title>
-				</Panel.Heading>
-				<Panel.Body>
+			<Card>
+				<Card.Header as="h4">
+					{heading}
+				</Card.Header>
+				<Card.Body>
 					<AliasEditor show={aliasEditorVisible} {...props}/>
 					<NameSection {...props}/>
 					<ButtonBar {...props}/>
@@ -106,11 +104,11 @@ const EntityEditor = (props: Props) => {
 					<RelationshipSection {...props}/>
 					<IdentifierEditor show={identifierEditorVisible} {...props}/>
 					<AnnotationSection {...props}/>
-				</Panel.Body>
-				<Panel.Footer>
+				</Card.Body>
+				<Card.Footer>
 					<SubmissionSection {...props}/>
-				</Panel.Footer>
-			</Panel>
+				</Card.Footer>
+			</Card>
 		</form>
 	);
 };

@@ -18,7 +18,7 @@
 	
         `/ home/user/Desktop/latest.sql.bz2`
   
-	3. Error: `fatal: unable to access 'https://github.com/path/to/repo.git/': gnutls_handshake() failed: Error in the pull function` after entering the `git clone --recursive https://github.com/bookbrainz/bookbrainz-site.git` command.
+	3. Error: `fatal: unable to access 'https://github.com/path/to/repo.git/': gnutls_handshake() failed: Error in the pull function` after entering the `git clone --recursive https://github.com/metabrainz/bookbrainz-site.git` command.
 At this point, you should check your internet connection. If it persists, make sure you are not working behind a proxy.
 
 	4. There are no css styles! My local page does not look like bookbrainz.org at all !

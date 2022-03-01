@@ -26,7 +26,7 @@ import React from 'react';
 
 
 const {
-	Button, ButtonGroup, ListGroup, ListGroupItem, Well
+	Button, ButtonGroup, Card, ListGroup
 } = bootstrap;
 
 class MergeQueue extends React.Component {
@@ -69,7 +69,7 @@ class MergeQueue extends React.Component {
 					{values(mergingEntities)
 						.map(entity =>
 							 (
-								<ListGroupItem key={`merge-queue-${entity.bbid}`}>
+								<ListGroup.Item className="bg-white" key={`merge-queue-${entity.bbid}`}>
 
 									<input
 										checked={this.state.selectedOption === entity.bbid}
@@ -80,50 +80,50 @@ class MergeQueue extends React.Component {
 										onChange={this.handleOptionChange}
 									/>
 									<EntityLink inline entity={entity}/>
-								</ListGroupItem>
+								</ListGroup.Item>
 							))}
 				</ListGroup>
 			);
 		}
 
 		return (
-			<Well className="margin-top-2">
+			<Card bg="light" className="margin-top-2">
 				<h3 className="margin-top-0">
 					Selected {entityCount} entit{entityCount > 1 ? 'ies' : 'y'} for merging
 				</h3>
-				<p className="help-block">Select the entity you want to merge into, or add more duplicates to merge.<br/>
+				<p className="text-muted">Select the entity you want to merge into, or add more duplicates to merge.<br/>
 					After clicking <i>Merge into selected entity</i>, you will be redirected to a page where you can review the data before merging.
 				</p>
 				{entityList}
-				<ButtonGroup>
+				<ButtonGroup className="d-inline-block">
 					<Button
-						bsStyle="success"
 						disabled={isNil(this.state.selectedOption)}
 						href={`/merge/submit/${this.state.selectedOption}`}
 						title="Merge entities"
+						variant="success"
 					>
 						<FontAwesomeIcon icon={faTasks}/>
 						&nbsp;Merge into selected entity
 					</Button>
 					<Button
-						bsStyle="warning"
 						disabled={isNil(this.state.selectedOption)}
 						href={`/merge/remove/${this.state.selectedOption}`}
 						title="Remove from merge"
+						variant="warning"
 					>
 						<FontAwesomeIcon icon={faTrashAlt}/>
 						&nbsp;Remove selected entity
 					</Button>
 					<Button
-						bsStyle="danger"
 						href="/merge/cancel"
 						title="Cancel merge"
+						variant="danger"
 					>
 						<FontAwesomeIcon icon={faTrashAlt}/>
 						&nbsp;Cancel merge
 					</Button>
 				</ButtonGroup>
-			</Well>
+			</Card>
 		);
 	}
 }

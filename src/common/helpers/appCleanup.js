@@ -1,7 +1,4 @@
-
-/* eslint-disable no-console */
-/* eslint-disable no-process-exit */
-/* eslint-disable no-use-before-define */
+/* eslint-disable node/no-process-exit, no-console, no-process-exit */
 
 /**
  * Captures process exits and signals and calls user-defined cleanup function.
@@ -16,11 +13,9 @@ function cleanupOnExit(cleanupPromise) {
 	process.on('asyncExit', () => {
 		cleanupPromise().then(() => {
 			console.log('Cleanup process finished');
-			// eslint-disable-next-line node/no-process-exit
 			process.exit(0);
 		}).catch((error) => {
 			console.log(error);
-			// eslint-disable-next-line node/no-process-exit
 			process.exit(1);
 		});
 	});
@@ -38,7 +33,6 @@ function cleanupOnExit(cleanupPromise) {
 		// callback();
 		// eslint-disable-next-line @typescript-eslint/no-use-before-define -- safe, functions hoisted
 		removeAllListeners();
-		// process.kill(process.pid, 0);
 	}
 
 	function removeAllListeners() {
@@ -71,7 +65,6 @@ function cleanupOnExit(cleanupPromise) {
 	process.on('uncaughtException', (error) => {
 		console.error('Uncaught Exception:');
 		console.error(error.stack);
-		// eslint-disable-next-line node/no-process-exit
 		process.exit(1);
 	});
 }
