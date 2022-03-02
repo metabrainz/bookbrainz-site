@@ -32,7 +32,9 @@ function Footer() {
 						</h3>
 						<br/>
 						<p className="color-gray">
-							BookBrainz is a project to create an online database of information about every single book, magazine, journal and other publication ever written.
+							BookBrainz is a project to create an online database
+							of information about every single book, magazine, journal
+							and other publication ever written.
 						</p>
 						<ul className="list-unstyled">
 							<li className="color-a">
@@ -102,12 +104,15 @@ function Footer() {
 					</div>
 					<div className="col-md-6">
 						<p className="section-line">
-					Brought to you by <img alt="image" height="30" src="/images/meb-icons/MetaBrainz.svg" width="30"/> <span className="color-a"> MetaBrainz Foundation </span>
+					Brought to you by
+							<img alt="image" height="30" src="/images/meb-icons/MetaBrainz.svg" width="30"/>
+							<span className="color-a"> MetaBrainz Foundation </span>
 						</p>
 					</div>
 					<div className="col-md-3 d-none d-md-block">
 						<p className="color-gray section-line">
-					Found an Issue?  <a href="https://tickets.metabrainz.org/" rel="noopener noreferrer" target="_blank" > <span className="color-a"> Report Here </span></a>
+					Found an Issue?
+							<a href="https://tickets.metabrainz.org/" rel="noopener noreferrer" target="_blank" > <span className="color-a"> Report Here </span></a>
 						</p>
 					</div>
 				</div>
