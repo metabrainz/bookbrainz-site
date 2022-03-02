@@ -22,7 +22,7 @@ import React from 'react';
 import {hot} from 'react-hot-loader';
 
 
-const {Button, Grid, Row} = bootstrap;
+const {Button, Container, Row} = bootstrap;
 
 /**
  * Links to different pages
@@ -41,7 +41,7 @@ function ErrorPage(props) {
 	 * is added in
 	 */
 	return (
-		<Grid className="text-center">
+		<Container className="text-center">
 			<Row className="margin-bottom-6">
 				<h1>{error.status}</h1>
 			</Row>
@@ -64,14 +64,14 @@ function ErrorPage(props) {
 			</div>
 			<Row className="margin-top-1">
 				<Button
-					bsSize="small"
-					bsStyle="link"
 					href="/"
+					size="sm"
+					variant="link"
 				>
 					Return to Main Page
 				</Button>
 			</Row>
-		</Grid>
+		</Container>
 	);
 }
 ErrorPage.displayName = 'ErrorPage';

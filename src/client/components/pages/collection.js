@@ -39,20 +39,20 @@ function CollectionAttributes({collection}) {
 			{
 				collection.description.length ?
 					<Row>
-						<Col md={12}>
+						<Col lg={12}>
 							<dt>Description</dt>
 							<dd>{collection.description}</dd>
 						</Col>
 					</Row> : null
 			}
 			<Row>
-				<Col md={3}>
+				<Col lg={3}>
 					<dt>Owner</dt>
 					<dd><a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a></dd>
 				</Col>
 				{
 					collection.collaborators.length ?
-						<Col md={3}>
+						<Col lg={3}>
 							<dt>Collaborator{collection.collaborators.length > 1 ? 's' : null}</dt>
 							<dd>
 								{
@@ -66,19 +66,23 @@ function CollectionAttributes({collection}) {
 							</dd>
 						</Col> : null
 				}
-				<Col md={3}>
+				<Col lg={3}>
 					<dt>Privacy</dt>
 					<dd>{collection.public ? 'Public' : 'Private'}</dd>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dt>Collection type</dt>
 					<dd>{collection.entityType}</dd>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
+					<dt>Number of {_.kebabCase(collection.entityType)}s</dt>
+					<dd>{collection.items.length}</dd>
+				</Col>
+				<Col lg={3}>
 					<dt>Created At</dt>
 					<dd>{formatDate(new Date(collection.createdAt), true)}</dd>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dt>Last Modified</dt>
 					<dd>{formatDate(new Date(collection.lastModified), true)}</dd>
 				</Col>
@@ -200,8 +204,8 @@ class CollectionPage extends React.Component {
 		const messageComponent =
 			this.state.message.text ? (
 				<Alert
-					bsStyle={this.state.message.type}
 					className="margin-top-1"
+					variant={this.state.message.type}
 					onDismiss={this.handleAlertDismiss}
 				>
 					 {this.state.message.text}
@@ -233,12 +237,12 @@ class CollectionPage extends React.Component {
 					onCloseModal={this.handleCloseAddEntityModal}
 				/>
 				<Row className="entity-display-background">
-					<Col className="entity-display-image-box text-center" md={2}>
+					<Col className="entity-display-image-box text-center" lg={2}>
 						<EntityImage
 							backupIcon={ENTITY_TYPE_ICONS[this.props.collection.entityType]}
 						/>
 					</Col>
-					<Col md={10}>
+					<Col lg={10}>
 						<h1>{this.props.collection.name}</h1>
 						<hr/>
 						<CollectionAttributes collection={this.props.collection}/>
@@ -250,10 +254,10 @@ class CollectionPage extends React.Component {
 					{
 						this.props.isCollaborator || this.props.isOwner ?
 							<Button
-								bsSize="small"
-								bsStyle="success"
 								className="margin-bottom-d5"
+								size="sm"
 								title={`Add ${this.props.collection.entityType}`}
+								variant="success"
 								onClick={this.handleShowAddEntityModal}
 							>
 								<FontAwesomeIcon icon={faPlus}/>
@@ -263,26 +267,26 @@ class CollectionPage extends React.Component {
 					{
 						(this.props.isCollaborator || this.props.isOwner) && this.state.entities.length ?
 							<Button
-								bsSize="small"
-								bsStyle="danger"
 								className="margin-bottom-d5"
 								disabled={!this.state.selectedEntities.length}
+								size="sm"
 								title={`Remove selected ${_.kebabCase(this.props.collection.entityType)}s`}
+								variant="danger"
 								onClick={this.handleRemoveEntities}
 							>
 								<FontAwesomeIcon icon={faTimesCircle}/>
-								&nbsp;Remove <Badge>{this.state.selectedEntities.length}</Badge> selected&nbsp;
+								&nbsp;Remove <Badge pill>{this.state.selectedEntities.length}</Badge> selected&nbsp;
 								{_.kebabCase(this.props.collection.entityType)}{this.state.selectedEntities.length > 1 ? 's' : null}
 							</Button> : null
 					}
 					{
 						this.props.isOwner ?
 							<Button
-								bsSize="small"
-								bsStyle="warning"
 								className="margin-bottom-d5"
 								href={`/collection/${this.props.collection.id}/edit`}
+								size="sm"
 								title="Edit Collection"
+								variant="warning"
 							>
 								<FontAwesomeIcon icon={faPencilAlt}/>&nbsp;Edit collection
 							</Button> : null
@@ -290,10 +294,10 @@ class CollectionPage extends React.Component {
 					{
 						this.props.isOwner ?
 							<Button
-								bsSize="small"
-								bsStyle="danger"
 								className="margin-bottom-d5"
+								size="sm"
 								title="Delete Collection"
+								variant="danger"
 								onClick={this.handleShowDeleteModal}
 							>
 								<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;Delete collection
@@ -302,10 +306,10 @@ class CollectionPage extends React.Component {
 					{
 						this.props.isCollaborator ?
 							<Button
-								bsSize="small"
-								bsStyle="warning"
 								className="margin-bottom-d5"
+								size="sm"
 								title="Remove yourself as a collaborator"
+								variant="warning"
 								onClick={this.handleShowDeleteModal}
 							>
 								<FontAwesomeIcon icon={faTimesCircle}/>&nbsp;Stop collaboration

@@ -21,7 +21,6 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 
-import CustomInput from '../../input';
 import EntityLink from '../entity-link';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -32,7 +31,7 @@ import request from 'superagent';
 import {transformISODateForDisplay} from '../../helpers/entity';
 
 
-const {Badge, Button, Col, ListGroup, ListGroupItem, Row} = bootstrap;
+const {Badge, Button, Col, Form, ListGroup, Row} = bootstrap;
 const {formatDate} = utilsHelper;
 
 class RevisionPage extends React.Component {
@@ -53,7 +52,7 @@ class RevisionPage extends React.Component {
 		const isChangeADate = change.key.toLowerCase().match(/\bdate\b/);
 		if (change.kind === 'N') {
 			return (
-				<tr className="success" key={change.key}>
+				<tr className="table-success" key={change.key}>
 					<th scope="row">{change.key}</th>
 					<td> — </td>
 					<td>
@@ -65,7 +64,7 @@ class RevisionPage extends React.Component {
 
 		if (change.kind === 'E') {
 			return (
-				<tr className="warning" key={change.key}>
+				<tr className="table-warning" key={change.key}>
 					<th scope="row">{change.key}</th>
 					<td>
 						{RevisionPage.formatValueList(change.lhs, isChangeADate)}
@@ -79,7 +78,7 @@ class RevisionPage extends React.Component {
 
 		if (change.kind === 'D') {
 			return (
-				<tr className="danger" key={change.key}>
+				<tr className="table-danger" key={change.key}>
 					<th scope="row">{change.key}</th>
 					<td>
 						{RevisionPage.formatValueList(change.lhs, isChangeADate)}
@@ -106,18 +105,18 @@ class RevisionPage extends React.Component {
 		let deleteBadge = null;
 		if (diff.isDeletion) {
 			if (diff.entityRevision.isMerge) {
-				mergeBadge = <Badge className="merged margin-right-0-5" title={`This ${diff.entity.type} was merged in this revision`}>Merged</Badge>;
+				mergeBadge = <Badge pill className="merged margin-right-0-5 text-light" title={`This ${diff.entity.type} was merged in this revision`}>Merged</Badge>;
 			}
 			else {
 				deleteBadge =
-					<Badge className="deletion margin-right-0-5" title={`This ${diff.entity.type} was deleted in this revision`}>- Deleted</Badge>;
+					<Badge pill className="deletion margin-right-0-5 text-light" title={`This ${diff.entity.type} was deleted in this revision`}>- Deleted</Badge>;
 			}
 		}
 		return (
 			<div key={diff.entity.bbid}>
 				<h3>
 					{diff.isNew &&
-					<Badge className="new margin-right-0-5" title={`This ${diff.entity.type} was created in this revision`}>+ New</Badge>}
+					<Badge pill className="new margin-right-0-5 text-light" title={`This ${diff.entity.type} was created in this revision`}>+ New</Badge>}
 					{mergeBadge}
 					{deleteBadge}
 					<EntityLink
@@ -154,7 +153,7 @@ class RevisionPage extends React.Component {
 	handleSubmit(event) {
 		event.preventDefault();
 		const data = {
-			note: this.noteInput.getValue()
+			note: this.noteInput.value
 		};
 		request.post(`/revision/${this.props.revision.id}/note`)
 			.send(data)
@@ -207,7 +206,7 @@ class RevisionPage extends React.Component {
 			const noteAuthorTitle =
 				RevisionPage.formatTitle(note.author);
 			return (
-				<ListGroupItem
+				<ListGroup.Item
 					key={note.id}
 				>
 					<div className="revision-note">
@@ -223,7 +222,7 @@ class RevisionPage extends React.Component {
 							, {`${timeCreated}`}
 						</p>
 					</div>
-				</ListGroupItem>
+				</ListGroup.Item>
 			);
 		});
 
@@ -234,7 +233,7 @@ class RevisionPage extends React.Component {
 		const dateRevisionCreated = formatDate(new Date(revision.createdAt), true);
 		return (
 			<Row id="mergePage">
-				<Col md={12}>
+				<Col lg={12}>
 					<h1>Revision #{revision.id}</h1>
 					{revision.isMerge && (
 						<div className="mergedEntities">
@@ -276,18 +275,20 @@ class RevisionPage extends React.Component {
 							className="margin-top-2"
 							onSubmit={this.handleSubmit}
 						>
-							<CustomInput
-								autoComplete="off"
-								label="Add Note"
-								ref={(ref) => this.noteInput = ref}
-								rows="6"
-								type="textarea"
-							/>
+							<Form.Group>
+								<Form.Label>Add Note</Form.Label>
+								<Form.Control
+									as="textarea"
+									autoComplete="off"
+									ref={(ref) => this.noteInput = ref}
+									rows="6"
+								/>
+							</Form.Group>
 							<Button
-								bsStyle="primary"
-								className="pull-right margin-top-1"
+								className="float-right margin-top-1"
 								title="Submit revision note"
 								type="submit"
+								variant="primary"
 							>
 								Submit
 							</Button>

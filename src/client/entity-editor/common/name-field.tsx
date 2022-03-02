@@ -18,8 +18,10 @@
 
 
 import * as React from 'react';
-import CustomInput from '../../input';
+import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ValidationLabel from '../common/validation-label';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 
 type Props = {
@@ -55,8 +57,26 @@ function NameField({
 		</ValidationLabel>
 	);
 
+	const helpIconElement = tooltipText && (
+		<OverlayTrigger
+			delay={50}
+			overlay={<Tooltip>{tooltipText}</Tooltip>}
+		>
+			<FontAwesomeIcon
+				className="margin-left-0-5"
+				icon={faQuestionCircle}
+			/>
+		</OverlayTrigger>
+	);
+
 	return (
-		<CustomInput label={label} tooltipText={tooltipText} type="text" {...rest}/>
+		<Form.Group>
+			<Form.Label>
+				{label}
+				{helpIconElement}
+			</Form.Label>
+			<Form.Control type="text" {...rest}/>
+		</Form.Group>
 	);
 }
 NameField.displayName = 'NameField';

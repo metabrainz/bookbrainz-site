@@ -20,7 +20,6 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 import * as validators from '../../helpers/react-validators';
-import CustomInput from '../../input';
 import LoadingSpinner from '../loading-spinner';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -30,7 +29,7 @@ import SelectWrapper from '../input/select-wrapper';
 import ValidationLabel from '../../entity-editor/common/validation-label';
 
 
-const {Alert, Button, Col, Panel, Row} = bootstrap;
+const {Alert, Button, Col, Card, Form, Row} = bootstrap;
 const {injectDefaultAliasName} = utilsHelper;
 
 class ProfileForm extends React.Component {
@@ -140,7 +139,7 @@ class ProfileForm extends React.Component {
 		let errorComponent = null;
 		if (this.state.error) {
 			errorComponent =
-				<Alert bsStyle="danger">{this.state.error.message}</Alert>;
+				<Alert variant="danger">{this.state.error.message}</Alert>;
 		}
 
 		const hasChanged = this.hasChanged();
@@ -155,30 +154,32 @@ class ProfileForm extends React.Component {
 			<div>
 				<Row className="margin-top-2">
 					{loadingElement}
-					<Col md={8} mdOffset={2}>
+					<Col lg={{offset: 2, span: 8}}>
 						<form onSubmit={this.handleSubmit}>
-							<Panel>
-								<Panel.Heading>
-									<Panel.Title>
-										<span className="h3">Edit your public profile</span>
-									</Panel.Title>
-								</Panel.Heading>
-								<Panel.Body>
-									<CustomInput
-										defaultValue={name}
-										help="required"
-										label={nameLabel}
-										name="name"
-										type="text"
-										onChange={this.handleValueChange}
-									/>
-									<CustomInput
-										defaultValue={bio}
-										label="Bio"
-										name="bio"
-										type="textarea"
-										onChange={this.handleValueChange}
-									/>
+							<Card>
+								<Card.Header as="h3">
+									Edit your public profile
+								</Card.Header>
+								<Card.Body>
+									<Form.Group>
+										<Form.Label>{nameLabel}</Form.Label>
+										<Form.Control
+											defaultValue={name}
+											name="name"
+											type="text"
+											onChange={this.handleValueChange}
+										/>
+										<Form.Text muted>required</Form.Text>
+									</Form.Group>
+									<Form.Group>
+										<Form.Label>Bio</Form.Label>
+										<Form.Control
+											as="textarea"
+											defaultValue={bio}
+											name="bio"
+											onChange={this.handleValueChange}
+										/>
+									</Form.Group>
 									{titleOptions.length > 0 &&
 										<SelectWrapper
 											base={ReactSelect}
@@ -213,17 +214,17 @@ class ProfileForm extends React.Component {
 										onChange={this.handleSelectChange}
 									/>
 									{errorComponent}
-								</Panel.Body>
-								<Panel.Footer>
+								</Card.Body>
+								<Card.Footer>
 									<Button
-										bsStyle="success"
 										disabled={!hasChanged}
 										type="submit"
+										variant="success"
 									>
 										Save changes
 									</Button>
-								</Panel.Footer>
-							</Panel>
+								</Card.Footer>
+							</Card>
 						</form>
 					</Col>
 				</Row>

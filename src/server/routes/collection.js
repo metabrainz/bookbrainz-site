@@ -23,7 +23,6 @@ import * as handler from '../helpers/handler';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
-import * as utils from '../helpers/utils';
 import {escapeProps, generateProps} from '../helpers/props';
 import CollectionPage from '../../client/components/pages/collection';
 import Layout from '../../client/containers/layout';
@@ -33,6 +32,7 @@ import UserCollectionForm from '../../client/components/forms/userCollection';
 import {collectionCreateOrEditHandler} from '../helpers/collectionRouteUtils';
 import express from 'express';
 import {getCollectionItems} from '../helpers/collections';
+import {getNextEnabledAndResultsArray} from '../../common/helpers/utils';
 import log from 'log';
 import target from '../templates/target';
 
@@ -126,7 +126,7 @@ router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, 
 		// fetch 1 more bbid to check next enabled for pagination
 		const items = await getCollectionItems(collection.id, from, size + 1, orm);
 		// get next enabled for pagination
-		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(items, size);
+		const {newResultsArray, nextEnabled} = getNextEnabledAndResultsArray(items, size);
 		// load entities from bbids
 		const entitiesPromise = newResultsArray.map(async item => ({
 			addedAt: item.added_at,

@@ -1,7 +1,7 @@
 /*
- * Copyright (C) 2014-2015  Ben Ockmore
- *               2015       Leo Verto
- *               2016       Sean Burke
+ * Copyright (C) 2014-2015, 2021-2022  Ben Ockmore
+ *               2015                  Leo Verto
+ *               2016                  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,32 +18,35 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-@import "./lobes/less/theme.less";
+@import "lobes4/scss/variables.scss";
 
-@import "~react-select/less/select.less";
-@import "~react-virtualized/styles.css";
-@import "~react-virtualized-select/styles.css";
-@import "~react-datepicker/dist/react-datepicker.css";
-
-/* With Webpack and less-loader, we are able to import directly from node_modules directory
-   Once we are using Webpack for dev AND prod builds, consider moving to taht style of imports */
-// @import "~react-virtualized/styles.css";
-// @import "~react-virtualized-select/styles.css";
-// @import "~react-datepicker/dist/react-datepicker.css";
+$navbar-light-color: $gray-400;
+$brand-secondary: $bookbrainz;
+$disabled-bg: lighten(desaturate($bookbrainz,10%),42%);
+$disabled-color: lighten($disabled-bg,15%);
 
 
-/* Modifications to Lobes */
-/* ====================== */
-@brand-secondary: @bookbrainz;
-@disabled-bg: lighten(desaturate(@bookbrainz,10%),42%);
-@disabled-color: lighten(@disabled-bg,15%);
+@import "lobes4/scss/bootstrap.scss";
+
+@import "react-select/scss/default.scss";
+@import "react-virtualized/styles.css";
+@import "react-virtualized-select/styles.css";
+@import "react-datepicker/dist/react-datepicker.css";
+
 
 .navbar.BookBrainz {
 	background: rgba(255, 255, 255, 1);
 	margin-bottom: 0px;
-	.nav.navbar-nav > .disabled > a {
-		color: @disabled-color;
-		background: @disabled-bg;
+	padding-right: 0px;
+	.navbar-nav {
+		// The following prevents menu items from wrapping to two lines (icon on top text on the bottom)
+		// in browsers sizes between collapsed menu and enough horizontal space for all menu items
+		white-space: nowrap;
+		
+		& > .disabled > a {
+			color: $disabled-color;
+			background: $disabled-bg;
+		}
 	}
 }
 
@@ -51,16 +54,13 @@
 	border: none !important;
 }
 
-.BookBrainz .navbar-toggle {
-	background-color: @bookbrainz;
+.BookBrainz .navbar-toggler {
+	background-color: $bookbrainz;
+	margin-right: 1rem;
 	&:focus {
-		background-color: @bookbrainz;
+		background-color: $bookbrainz;
 	}
 }
-
-/* Overwrite button primary colour to retain default bootstrap meaning */
-@btn-primary-bg:                 darken(#428bca, 6.5%);
-@btn-primary-border:             darken(#428bca, 6.5%);
 
 body {
 	padding-top: 64px;
@@ -81,22 +81,15 @@ body {
 	}
 }
 
-// Buttons in Lobes overlap for some reason, which if opacity is reduced (disabled) will look quite bad
-.btn {
-    margin-left: 0;
-    margin-right: 0;
-}
-
-.btn-group > .btn:not(:last-child) {
-    margin-bottom: 0.5em;
-}
-
 /* Site-wide styling */
 /* ================= */
 .whole-page-form {
 	margin-top: 3em;
 }
-.navbar-form .input-group-btn > .btn {
+.navbar .input-group-append > .btn {
+	padding: 6.5px 12px !important;
+}
+.navbar .input-group-prepend > .btn {
 	padding: 6.5px 12px !important;
 }
 .loading-background {
@@ -116,85 +109,93 @@ body {
 	margin-left: -0.5em;
 	margin-top: -0.5em;
 }
-.generate-margins(@n, @i: 0) when (@i =< @n) {
-	.margin-top-@{i} {
-		margin-top: unit(@i, em) !important;
-	}
-	.margin-bottom-@{i} {
-		margin-bottom: unit(@i, em) !important;
-	}
-	.margin-left-@{i} {
-		margin-left: unit(@i, em) !important;
-	}
-	.margin-right-@{i} {
-		margin-right: unit(@i, em) !important;
-	}
-	.margin-sides-@{i} {
-		margin-left: unit(@i, em) !important;
-		margin-right: unit(@i, em) !important;
-	}
+@mixin generate-margins($n, $initI: 0) {
+	@for $i from $initI through $n {
+		.margin-top-#{$i} {
+			margin-top: ($i * 1em) !important;
+		}
+		.margin-bottom-#{$i} {
+			margin-bottom: ($i * 1em) !important;
+		}
+		.margin-left-#{$i} {
+			margin-left: ($i * 1em) !important;
+		}
+		.margin-right-#{$i} {
+			margin-right: ($i * 1em) !important;
+		}
+		.margin-sides-#{$i} {
+			margin-left: ($i * 1em) !important;
+			margin-right: ($i * 1em) !important;
+		}
 
-	.padding-top-@{i} {
-		padding-top: unit(@i, em) !important;
+		.padding-top-#{$i} {
+			padding-top: ($i * 1em) !important;
+		}
+		.padding-bottom-#{$i} {
+			padding-bottom: ($i * 1em) !important;
+		}
+		.padding-left-#{$i} {
+			padding-left: ($i * 1em) !important;
+		}
+		.padding-right-#{$i} {
+			padding-right: ($i * 1em) !important;
+		}
+		.padding-sides-#{$i} {
+			padding-left: ($i * 1em) !important;
+			padding-right: ($i * 1em) !important;
+		}
 	}
-	.padding-bottom-@{i} {
-		padding-bottom: unit(@i, em) !important;
-	}
-	.padding-left-@{i} {
-		padding-left: unit(@i, em) !important;
-	}
-	.padding-right-@{i} {
-		padding-right: unit(@i, em) !important;
-	}
-	.padding-sides-@{i} {
-		padding-left: unit(@i, em) !important;
-		padding-right: unit(@i, em) !important;
-	}
-	.generate-margins(@n, (@i + 1));
 }
-.generate-margins(6);
-.margin-right-0-5 {margin-right: unit(0.5, em) !important};
-.margin-left-0-5 {margin-left: unit(0.5, em) !important};
-.margin-right-0-3 {margin-right: unit(0.3, em) !important};
-.margin-left-0-3 {margin-left: unit(0.3, em) !important};
+@include generate-margins(6);
+.margin-right-0-5 {margin-right: 0.5em !important};
+.margin-left-0-5 {margin-left: 0.5em !important};
+.margin-right-0-3 {margin-right: 0.3em !important};
+.margin-left-0-3 {margin-left: 0.3em !important};
 
-.generate-margins-d(@n, @i: 0) when (@i =< @n) {
-	.margin-top-d@{i} {
-		margin-top: unit((@i/10), em) !important;
-	}
-	.margin-bottom-d@{i} {
-		margin-bottom: unit((@i/10), em) !important;
-	}
-	.margin-left-d@{i} {
-		margin-left: unit((@i/10), em) !important;
-	}
-	.margin-right-d@{i} {
-		margin-right: unit((@i/10), em) !important;
-	}
-	.margin-sides-d@{i} {
-		margin-left: unit((@i/10), em) !important;
-		margin-right: unit((@i/10), em) !important;
-	}
+@mixin generate-margins-d($n, $initI: 0) {
+	@for $i from $initI through $n {
+		.margin-top-d#{$i} {
+			margin-top: ($i * 0.1em) !important;
+		}
+		.margin-bottom-d#{$i} {
+			margin-bottom: ($i * 0.1em) !important;
+		}
+		.margin-left-d#{$i} {
+			margin-left: ($i * 0.1em) !important;
+		}
+		.margin-right-d#{$i} {
+			margin-right: ($i * 0.1em) !important;
+		}
+		.margin-sides-d#{$i} {
+			margin-left: ($i * 0.1em) !important;
+			margin-right: ($i * 0.1em) !important;
+		}
 
-	.padding-top-d@{i} {
-		padding-top: unit((@i/10), em) !important;
+		.padding-top-d#{$i} {
+			padding-top: ($i * 0.1em) !important;
+		}
+		.padding-bottom-d#{$i} {
+			padding-bottom: ($i * 0.1em) !important;
+		}
+		.padding-left-d#{$i} {
+			padding-left: ($i * 0.1em) !important;
+		}
+		.padding-right-d#{$i} {
+			padding-right: ($i * 0.1em) !important;
+		}
+		.padding-sides-d#{$i} {
+			padding-left: ($i * 0.1em) !important;
+			padding-right: ($i * 0.1em) !important;
+		}
 	}
-	.padding-bottom-d@{i} {
-		padding-bottom: unit((@i/10), em) !important;
-	}
-	.padding-left-d@{i} {
-		padding-left: unit((@i/10), em) !important;
-	}
-	.padding-right-d@{i} {
-		padding-right: unit((@i/10), em) !important;
-	}
-	.padding-sides-d@{i} {
-		padding-left: unit((@i/10), em) !important;
-		padding-right: unit((@i/10), em) !important;
-	}
-	.generate-margins-d(@n, (@i + 1));
 }
-.generate-margins-d(60);
+@include generate-margins-d(60);
+
+
+.deleted {
+	text-decoration: line-through;
+	color: $danger;
+}
 
 // Fix to put react-bootstrap tooltips in front of modals
 .tooltip {
@@ -270,7 +271,8 @@ html {
 a.contact-text:visited {
 	color: rgb(180, 180, 180);
 }
-/* index.jade */
+
+/* index page */
 /* ========== */
 #background-image {
 	background: linear-gradient(to right, #483a28 0%, #e86428 100%);
@@ -289,18 +291,6 @@ a.contact-text:visited {
 	padding-bottom:4em;
 }
 
-.deleted {
-	text-decoration: line-through;
-	color: @brand-danger;
-}
-
-/* entity/view/*.jade */
-/* ================== */
-.entity-action {
-	margin-left: 0.1em;
-	margin-right: 0.1em;
-}
-
 /* Removes padding from fixed-width "About", "Contribute" and "Develop" buttons
    on the front page to prevent text misalignment. */
 #background-overlay [class^="col-"] > .btn {
@@ -311,15 +301,15 @@ a.contact-text:visited {
 
 /* react-select styling */
 .Select-control {
-	height: @input-height-base;
-	border-radius: @input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
-	.transition(~"border-color ease-in-out .15s, box-shadow ease-in-out .15s");
-	.form-control-focus();
+	height: $input-line-height;
+	border-radius: $input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
+	@include transition("border-color ease-in-out .15s, box-shadow ease-in-out .15s");
+	@include form-control-focus();
 
 }
 
 .Select-placeholder {
-	color: @input-color-placeholder;
+	color: $input-placeholder-color;
 	user-select: none;
 	-moz-user-select: none;
 	-webkit-user-select: none;
@@ -337,6 +327,15 @@ a.contact-text:visited {
 
 /* react-datepicker styling */
 .form-group {
+	.responsive-date-field{
+		width: 18em;
+		.year-field{
+			width:4em;
+		}
+		.other-date-field{
+			width: 3.5em;
+		}
+	}
 	.react-datepicker-wrapper, .react-datepicker__input-container {
 		width: 100%;
 	}
@@ -376,7 +375,7 @@ a.contact-text:visited {
 	margin-bottom: 5em;
 	width: 100%;
 	>:last-child:not(:only-child) {
-		color: @brand-danger;
+		color: $danger;
 	}
 }
 
@@ -415,7 +414,7 @@ hr.wide {
 	  > span {
 		display: block;
 		padding: 5px 14px;
-		background-color: @dropdown-bg;
+		background-color: $white;
 		border: none;
 		border-radius: 0;
 	  }
@@ -423,7 +422,7 @@ hr.wide {
 	  > a:hover,
 	  > a:focus {
 		text-decoration: none;
-		background-color:@dropdown-link-hover-bg;
+		background-color:$primary;
 	  }
 	}
 }
@@ -437,14 +436,14 @@ hr.wide {
 .BookBrainz > .container-fluid > .navbar-header{
 	margin-left: 0px;
 	margin-right: 0px;
-	>.navbar-toggle{
+	>.navbar-toggler{
 		margin-right: 0px;
 	}
 
 }
 .revision-note {
 	&:not(:last-child) {
-		border-bottom: 1px solid @disabled-color;
+		border-bottom: 1px solid $disabled-color;
 		margin-bottom: 0.3em;
 		padding-bottom: 0.3em;
 	}
@@ -452,7 +451,7 @@ hr.wide {
 		white-space: pre-wrap;
 	}
 	.note-author {
-		&:extend(.small);
+		@extend .small;
 		font-style: italic;
 		white-space: nowrap;
 		margin-left: 0.2em;
@@ -475,7 +474,7 @@ hr.wide {
 	margin: 0;
 	&.collapse{
 		max-height: max-content;
-		&:not(.in){ //, &.collapsing {
+		&:not(.show){ //, &.collapsing {
 			max-height: 3em;
 			overflow: hidden;
 			display: block;
@@ -507,10 +506,10 @@ hr.wide {
 		position: relative;
 		padding: 0.1em 1.5em 1em;
 		margin: 0 -1.5em;
-		background-color: fade(@disabled-bg,15%);
+		background-color: rgba($disabled-bg,15%);
 		&:after,
 		&:before {
-			border: .15em solid @disabled-bg;
+			border: .15em solid $disabled-bg;
 			bottom: 0;
 			content: '';
 			position: absolute;
@@ -535,8 +534,8 @@ hr.wide {
 	position: relative;
     margin-right: 0.5em;
 	vertical-align: middle;
-    background-color: @brand-secondary;
-	color: @white;
+    background-color: $brand-secondary;
+	color: $white;
 	& > * {
 		position: absolute;
 		min-width: 110%;
@@ -549,15 +548,15 @@ hr.wide {
 	}
 }
 .badge.new {
-	background-color: @green;
+	background-color: $green;
 }
 
 .badge.deletion {
-	background-color: @red;
+	background-color: $red;
 }
 
 .badge.merged {
-	background-color: @purple;
+	background-color: $purple;
 }
 
 .label-checkbox {
@@ -588,14 +587,142 @@ hr.wide {
     text-align: right;
 }
 
-@media only screen and (max-width: @screen-sm-max){
+@media only screen and (max-width: map-get($container-max-widths, "md")){
     .collection-page-buttons {
         text-align: center;
     }
 }
 
-/* editor-achievements.js */
+/* Replicate Boostrap 3 style conventions */
+th {
+	text-align: left;
+}
 
-.dnd-container {
-	display: flex;
+.table thead th {
+	border-top-style: none;
+}
+
+.table-striped tbody tr:nth-of-type(odd){
+	background-color: #fafafa;
+}
+
+@media (min-width: map-get($container-max-widths, "md")) {
+	.editor-info dt {
+		text-align: right;
+	}
+}
+
+dl.row dd {
+	margin-bottom: 0;
+}
+
+.list-group ul {
+	margin-bottom: 0;
+}
+
+ul {
+	margin-bottom: 10px;
+}
+
+.badge {
+	vertical-align: middle;
+}
+
+// Vertical alignment of the caret symbol in dropdown buttons
+.dropdown-toggle::after{
+	vertical-align: middle;
+}
+
+/* Add padding to make this more like a well, and tidy up editor achievement display */
+.card.bg-light {
+	padding: 19px;
+
+	.list-group-item {
+		background-color: $gray-200;
+	}
+
+	.card-body {
+		// avoid padding here in addition to around card
+		padding-bottom: 0px;
+
+		.list-group {
+			margin-bottom: 0px;
+		}
+	}
+}
+
+/* Round button used in pager at the bottom of many table-style pages */
+.round-button {
+	border-radius: 20px;
+	font-weight: 700;
+}
+
+/* Fixes relationship editor "Other Entity" width */
+.input-group > .Select {
+	flex: 1 1 auto;
+}
+
+/* Restore the bootstrap4 default blue colour of primary buttons */
+.btn {
+	&.btn-primary {
+		background: #337ab7;
+
+		&:focus {
+			background: #448ccb;
+		}
+
+		&:hover {
+			background: #448ccb;
+		}
+
+		&:not(:disabled):not(.disabled):active {
+			background: #337ab7;
+		}
+
+		&:active:hover {
+			background-color: #204d74;
+			border-color: #183854;
+		}
+
+		&.dropdown-toggle {
+			background: #337ab7;
+		}
+	}
+
+	&.btn-outline-primary {
+		color: #337ab7;
+		border: 1px solid #ddd;
+
+		&:focus,&:hover {
+			background-color: #f9f6f5;
+		}
+
+		&:not(:disabled):not(.disabled):active {
+			color: #337ab7;
+			border: 1px solid #ddd;
+			background-color: #fff;
+			box-shadow: none;
+		}
+
+		&:disabled,&.disabled {
+			color: #dbccc6;
+			cursor: not-allowed;
+			background-color: #fff;
+		}
+	}
+}
+
+/* Match existing behaviour which shrinks lead paragraph size on smaller devices */
+@media (max-width: map-get($container-max-widths, "sm")) {
+    p.lead {
+        font-size: 1.0rem;
+    }
+}
+
+/* Restore BS3 padding on input group buttons */
+.input-group > .input-group-prepend > .btn {
+	padding: 6px 12px;
+}
+.input-group > .input-group-append > .btn {
+	padding: 6px 12px;
 }

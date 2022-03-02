@@ -34,7 +34,7 @@ import React from 'react';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 
 
-const {Alert, MenuItem, Nav, Navbar, NavItem, NavDropdown} = bootstrap;
+const {Alert, Button, Form, FormControl, InputGroup, Nav, Navbar, NavDropdown} = bootstrap;
 
 class Layout extends React.Component {
 	constructor(props) {
@@ -69,26 +69,23 @@ class Layout extends React.Component {
 		const {homepage} = this.props;
 
 		return (
-			<Navbar.Header>
-				<Navbar.Brand className="logo">
-					<a href="/">
-						{homepage ? (
-							<img
-								alt="BookBrainz icon"
-								src="/images/BookBrainz_logo_icon.svg"
-								title="BookBrainz"
-							/>
-						) : (
-							<img
-								alt="BookBrainz icon"
-								src="/images/BookBrainz_logo_mini.svg"
-								title="BookBrainz"
-							/>
-						)}
-					</a>
-				</Navbar.Brand>
-				<Navbar.Toggle/>
-			</Navbar.Header>
+			<Navbar.Brand className="logo">
+				<a href="/">
+					{homepage ? (
+						<img
+							alt="BookBrainz icon"
+							src="/images/BookBrainz_logo_icon.svg"
+							title="BookBrainz"
+						/>
+					) : (
+						<img
+							alt="BookBrainz icon"
+							src="/images/BookBrainz_logo_mini.svg"
+							title="BookBrainz"
+						/>
+					)}
+				</a>
+			</Navbar.Brand>
 		);
 	}
 
@@ -98,11 +95,13 @@ class Layout extends React.Component {
 			{};
 
 		return (
-			<Nav pullRight>
-				<NavItem {...disableSignUp} href="/auth">
-					<FontAwesomeIcon icon={faSignInAlt}/>
-					{' Sign In / Register'}
-				</NavItem>
+			<Nav>
+				<Nav.Item>
+					<Nav.Link {...disableSignUp} href="/auth">
+						<FontAwesomeIcon icon={faSignInAlt}/>
+						{' Sign In / Register'}
+					</Nav.Link>
+				</Nav.Item>
 			</Nav>
 		);
 	}
@@ -129,9 +128,9 @@ class Layout extends React.Component {
 			{};
 
 		return (
-			<Nav pullRight>
+			<Nav>
 				<NavDropdown
-					eventKey={1}
+					alignRight
 					id="create-dropdown"
 					open={this.state.menuOpen}
 					title={createDropdownTitle}
@@ -139,58 +138,58 @@ class Layout extends React.Component {
 					onSelect={this.handleDropdownClick}
 					onToggle={this.handleDropdownToggle}
 				>
-					<MenuItem href="/work/create">
+					<NavDropdown.Item href="/work/create">
 						{genEntityIconHTMLElement('Work')}
 						Work
-					</MenuItem>
-					<MenuItem href="/edition/create">
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/edition/create">
 						{genEntityIconHTMLElement('Edition')}
 						Edition
-					</MenuItem>
-					<MenuItem href="/edition-group/create">
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/edition-group/create">
 						{genEntityIconHTMLElement('EditionGroup')}
 						Edition Group
-					</MenuItem>
-					<MenuItem href="/series/create">
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/series/create">
 						{genEntityIconHTMLElement('Series')}
 						Series
-					</MenuItem>
-					<MenuItem divider/>
-					<MenuItem href="/author/create">
+					</NavDropdown.Item>
+					<NavDropdown.Divider/>
+					<NavDropdown.Item href="/author/create">
 						{genEntityIconHTMLElement('Author')}
 						Author
-					</MenuItem>
-					<MenuItem href="/publisher/create">
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/publisher/create">
 						{genEntityIconHTMLElement('Publisher')}
 						Publisher
-					</MenuItem>
+					</NavDropdown.Item>
 				</NavDropdown>
 				<NavDropdown
-					eventKey={2}
+					alignRight
 					id="user-dropdown"
 					title={userDropdownTitle}
 					onMouseDown={this.handleMouseDown}
 				>
-					<MenuItem href={`/editor/${user.id}`}>
+					<NavDropdown.Item href={`/editor/${user.id}`}>
 						<FontAwesomeIcon fixedWidth icon={faUserCircle}/>
 						{' Profile'}
-					</MenuItem>
-					<MenuItem href={`/editor/${user.id}/revisions`}>
+					</NavDropdown.Item>
+					<NavDropdown.Item href={`/editor/${user.id}/revisions`}>
 						<FontAwesomeIcon fixedWidth icon={faListUl}/>
 						{' Revisions'}
-					</MenuItem>
-					<MenuItem href={`/editor/${user.id}/achievements`}>
+					</NavDropdown.Item>
+					<NavDropdown.Item href={`/editor/${user.id}/achievements`}>
 						<FontAwesomeIcon fixedWidth icon={faTrophy}/>
 						{' Achievements'}
-					</MenuItem>
-					<MenuItem href={`/editor/${user.id}/collections`}>
+					</NavDropdown.Item>
+					<NavDropdown.Item href={`/editor/${user.id}/collections`}>
 						<FontAwesomeIcon fixedWidth icon={faGripVertical}/>
 						{' Collections'}
-					</MenuItem>
-					<MenuItem {...disableSignUp} href="/logout">
+					</NavDropdown.Item>
+					<NavDropdown.Item {...disableSignUp} href="/logout">
 						<FontAwesomeIcon fixedWidth icon={faSignOutAlt}/>
 						{' Sign Out'}
-					</MenuItem>
+					</NavDropdown.Item>
 				</NavDropdown>
 			</Nav>
 		);
@@ -198,31 +197,21 @@ class Layout extends React.Component {
 
 	renderSearchForm() {
 		return (
-			<form
+			<Form
+				inline
 				action="/search"
-				className="navbar-form navbar-right"
+				className="ml-auto mr-3"
 				role="search"
 			>
-				<div className="form-group">
-					<div className="input-group">
-						<input
-							required
-							className="form-control"
-							name="q"
-							placeholder="Search for..."
-							type="text"
-						/>
-						<span className="input-group-btn">
-							<button
-								className="btn btn-success"
-								type="submit"
-							>
-								<FontAwesomeIcon icon={faSearch}/>
-							</button>
-						</span>
-					</div>
-				</div>
-			</form>
+				<InputGroup>
+					<FormControl required name="q" placeholder="Search for..." type="text"/>
+					<InputGroup.Append>
+						<Button type="submit" variant="success">
+							<FontAwesomeIcon icon={faSearch}/>
+						</Button>
+					</InputGroup.Append>
+				</InputGroup>
+			</Form>
 		);
 	}
 
@@ -233,38 +222,47 @@ class Layout extends React.Component {
 		 * GOTCHA: Usage of react-bootstrap FormGroup component inside
 		 * Navbar.Form causes a DOM mutation
 		 */
+		const revisionsClassName = homepage || hideSearch ? 'ml-auto' : null;
 
 		return (
 			<Navbar.Collapse id="bs-example-navbar-collapse-1">
+				{!(homepage || hideSearch) && this.renderSearchForm()}
+				<Nav className={revisionsClassName}>
+					<Nav.Item>
+						<Nav.Link href="/revisions">
+							<FontAwesomeIcon icon={faListUl}/>
+							{' Revisions '}
+						</Nav.Link>
+					</Nav.Item>
+				</Nav>
+				<Nav>
+					<Nav.Item>
+						<Nav.Link href="/collections">
+							<FontAwesomeIcon icon={faGripVertical}/>
+							{' Collections '}
+						</Nav.Link>
+					</Nav.Item>
+				</Nav>
+				<Nav>
+					<Nav.Item>
+						<Nav.Link href="/statistics">
+							<FontAwesomeIcon icon={faChartLine}/>
+							{' Statistics '}
+						</Nav.Link>
+					</Nav.Item>
+				</Nav>
+				<Nav>
+					<Nav.Item>
+						<Nav.Link href="/help">
+							<FontAwesomeIcon icon={faQuestionCircle}/>
+							{' Help '}
+						</Nav.Link>
+					</Nav.Item>
+				</Nav>
 				{
 					user && user.id ?
 						this.renderLoggedInDropdown() : this.renderGuestDropdown()
 				}
-				<Nav pullRight>
-					<NavItem href="/help">
-						<FontAwesomeIcon icon={faQuestionCircle}/>
-						{' Help '}
-					</NavItem>
-				</Nav>
-				<Nav pullRight>
-					<NavItem href="/statistics">
-						<FontAwesomeIcon icon={faChartLine}/>
-						{' Statistics '}
-					</NavItem>
-				</Nav>
-				<Nav pullRight>
-					<NavItem href="/collections">
-						<FontAwesomeIcon icon={faGripVertical}/>
-						{' Collections '}
-					</NavItem>
-				</Nav>
-				<Nav pullRight>
-					<NavItem href="/revisions">
-						<FontAwesomeIcon icon={faListUl}/>
-						{' Revisions '}
-					</NavItem>
-				</Nav>
-				{!(homepage || hideSearch) && this.renderSearchForm()}
 			</Navbar.Collapse>
 		);
 	}
@@ -306,7 +304,7 @@ class Layout extends React.Component {
 
 		const alerts = this.props.alerts.map((alert, idx) => (
 			// eslint-disable-next-line react/no-array-index-key
-			<Alert bsStyle={alert.level} className="text-center" key={idx}>
+			<Alert className="text-center" key={idx} variant={alert.level}>
 				<p>{alert.message}</p>
 			</Alert>
 		));
@@ -316,8 +314,9 @@ class Layout extends React.Component {
 				<a className="sr-only sr-only-focusable" href="#content">
 					Skip to main content
 				</a>
-				<Navbar fixedTop fluid className="BookBrainz" role="navigation">
+				<Navbar className="BookBrainz" expand="lg" fixed="top" role="navigation">
 					{this.renderNavHeader()}
+					<Navbar.Toggle/>
 					{this.renderNavContent()}
 				</Navbar>
 				{alerts}

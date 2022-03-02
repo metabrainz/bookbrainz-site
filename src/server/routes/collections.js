@@ -18,7 +18,6 @@
 import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as propHelpers from '../../client/helpers/props';
-import * as utils from '../helpers/utils';
 import {escapeProps, generateProps} from '../helpers/props';
 import CollectionsPage from '../../client/components/pages/collections';
 import Layout from '../../client/containers/layout';
@@ -47,7 +46,7 @@ router.get('/', async (req, res, next) => {
 		const {user} = req;
 		// fetch 1 more collections than required to check nextEnabled
 		const orderedRevisions = await getOrderedPublicCollections(from, size + 1, type, orm);
-		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
+		const {newResultsArray, nextEnabled} = commonUtils.getNextEnabledAndResultsArray(orderedRevisions, size);
 
 		const props = generateProps(req, res, {
 			entityTypes,

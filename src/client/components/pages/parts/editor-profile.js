@@ -31,7 +31,7 @@ import React from 'react';
 import 'chartjs-adapter-date-fns';
 
 
-const {Button, Col, Image, Row} = bootstrap;
+const {Button, Card, Col, Image, ListGroup, Row} = bootstrap;
 const {formatDate} = utilsHelper;
 
 class EditorProfileTab extends React.Component {
@@ -85,39 +85,38 @@ class EditorProfileTab extends React.Component {
 				<h2>
 					Basic Info
 					{user && user.id === editor.id &&
-						<small className="pull-right">
+						<small className="float-right">
 							<Button
-								bsStyle="warning"
-								className="entity-action"
 								href="/editor/edit"
 								title="Edit basic editor info"
+								variant="warning"
 							>
 								<FontAwesomeIcon icon={faPencilAlt}/>{' '}Edit Profile
 							</Button>
 						</small>
 					}
 				</h2>
-				<dl className="dl-horizontal">
-					<dt>MusicBrainz Account</dt>
-					<dd>
+				<dl className="row editor-info">
+					<dt className="col-md-2">MusicBrainz Account</dt>
+					<dd className="col-md-10">
 						{musicbrainzAccount}
 					</dd>
-					<dt>Display Name</dt>
-					<dd>{name}</dd>
-					<dt>Area</dt>
-					<dd>{editor.area ? editor.area.name : '?'}</dd>
-					<dt>Gender</dt>
-					<dd>{gender ? gender.name : '?'}</dd>
-					<dt>Type</dt>
-					<dd>{editor.type.label}</dd>
-					<dt>Reputation</dt>
-					<dd>0</dd>
-					<dt>Joined</dt>
-					<dd>{createdAtDate}</dd>
-					<dt>Last login</dt>
-					<dd>{lastActiveDate}</dd>
-					<dt>Bio</dt>
-					<dd>{editor.bio ? editor.bio : '-'}</dd>
+					<dt className="col-md-2">Display Name</dt>
+					<dd className="col-md-10">{name}</dd>
+					<dt className="col-md-2">Area</dt>
+					<dd className="col-md-10">{editor.area ? editor.area.name : '?'}</dd>
+					<dt className="col-md-2">Gender</dt>
+					<dd className="col-md-10">{gender ? gender.name : '?'}</dd>
+					<dt className="col-md-2">Type</dt>
+					<dd className="col-md-10">{editor.type.label}</dd>
+					<dt className="col-md-2">Reputation</dt>
+					<dd className="col-md-10">0</dd>
+					<dt className="col-md-2">Joined</dt>
+					<dd className="col-md-10">{createdAtDate}</dd>
+					<dt className="col-md-2">Last login</dt>
+					<dd className="col-md-10">{lastActiveDate}</dd>
+					<dt className="col-md-2">Bio</dt>
+					<dd className="col-md-10">{editor.bio ? editor.bio : '-'}</dd>
 				</dl>
 			</div>
 		);
@@ -129,13 +128,13 @@ class EditorProfileTab extends React.Component {
 		return (
 			<div>
 				<h2>Stats</h2>
-				<dl className="dl-horizontal">
-					<dt>Total Revisions</dt>
-					<dd>{editor.totalRevisions}</dd>
-					<dt>Revisions Applied</dt>
-					<dd>{editor.revisionsApplied}</dd>
-					<dt>Revisions Reverted</dt>
-					<dd>{editor.revisionsReverted}</dd>
+				<dl className="row editor-info">
+					<dt className="col-md-8">Total Revisions</dt>
+					<dd className="col-md-4">{editor.totalRevisions}</dd>
+					<dt className="col-md-8">Revisions Applied</dt>
+					<dd className="col-md-4">{editor.revisionsApplied}</dd>
+					<dt className="col-md-8">Revisions Reverted</dt>
+					<dd className="col-md-4">{editor.revisionsReverted}</dd>
 				</dl>
 			</div>
 		);
@@ -160,43 +159,42 @@ class EditorProfileTab extends React.Component {
 					padding="0"
 				>
 					{achievement.model.map((model) => (
-						<Col key={`achievementModel${model.id}`} sm={4}>
-							<div className="well">
-								<Image
-									className="center-block"
-									height="100px"
+						<Col key={`achievementModel${model.id}`} md={4}>
+							<Card bg="light">
+								<Card.Img
+									className="mt-3 mb-2"
+									height={100}
 									src={model.achievement.badgeUrl}
+									variant="top"
 								/>
-								<p className="text-center">
-									{model.achievement.name}
-								</p>
-								<p className="text-center">
-									{model.achievement.description}
-								</p>
-								<p className="text-center">
-									{`unlocked: ${formatDate(new Date(
-										model.unlockedAt
-									), true)}`}
-								</p>
-							</div>
+								<Card.Body className="text-center">
+									<ListGroup variant="flush">
+										<ListGroup.Item>{model.achievement.name}</ListGroup.Item>
+										<ListGroup.Item>{model.achievement.description}</ListGroup.Item>
+										<ListGroup.Item>
+											{`Unlocked: ${formatDate(new Date(
+												model.unlockedAt
+											), true)}`}
+										</ListGroup.Item>
+									</ListGroup>
+								</Card.Body>
+							</Card>
 						</Col>
 					))}
 					{achievement.length < 3 &&
-						<Col sm={achievementBsSize}>
-							<div
-								className="well"
-								height="100%"
-							>
+						<Col md={achievementBsSize}>
+							<Card bg="light" className="justify-content-center">
 								<Image
-									className="center-block"
+									className="ml-auto mr-auto"
 									height="160px"
 									src="/images/sadface.png"
+									width="160px"
 								/>
 								<p className="text-center">
 									No badge to show, use the achievement menu
 									to see available achievements
 								</p>
-							</div>
+							</Card>
 						</Col>
 					}
 				</Row>
@@ -243,16 +241,16 @@ class EditorProfileTab extends React.Component {
 	render() {
 		return (
 			<Row>
-				<Col md={12}>
+				<Col lg={12}>
 					{this.renderBasicInfo()}
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					{this.renderStats()}
 				</Col>
-				<Col md={9}>
+				<Col lg={9}>
 					{this.renderActivityGraph()}
 				</Col>
-				<Col md={12}>
+				<Col lg={12}>
 					{this.renderBadges()}
 				</Col>
 			</Row>
