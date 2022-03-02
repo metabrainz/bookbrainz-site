@@ -77,11 +77,6 @@ const EntityEditor = (props: Props) => {
 		}
 	}, [currentState]);
 	React.useEffect(() => {
-		if (props.intitialState.editionSection && !props.intitialState.editionSection.matchingNameEditionGroups) {
-			props.intitialState.editionSection.matchingNameEditionGroups = [];
-		}
-	}, []);
-	React.useEffect(() => {
 		window.onbeforeunload = handleUrlChange;
 	}, [handleUrlChange]);
 
