@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as React from 'react';
+import {connect, useSelector} from 'react-redux';
 import AliasEditor from './alias-editor/alias-editor';
 import AnnotationSection from './annotation-section/annotation-section';
 import ButtonBar from './button-bar/button-bar';
@@ -26,13 +26,14 @@ import IdentifierEditor from './identifier-editor/identifier-editor';
 import NameSection from './name-section/name-section';
 import RelationshipSection from './relationship-editor/relationship-section';
 import SubmissionSection from './submission-section/submission-section';
-import {connect} from 'react-redux';
+import _ from 'lodash';
 import {submit} from './submission-section/actions';
 
 
 type OwnProps = {
 	children: React.ReactElement<any>,
-	heading: string
+	heading: string,
+	intitialState:Record<string, any>,
 };
 
 type StateProps = {
@@ -41,7 +42,7 @@ type StateProps = {
 };
 
 type DispatchProps = {
-	onSubmit: () => unknown
+	onSubmit: (event:React.FormEvent) => unknown
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -68,6 +69,16 @@ const EntityEditor = (props: Props) => {
 		identifierEditorVisible,
 		onSubmit
 	} = props;
+	const currentState = (useSelector((state) => state) as any).toJS();
+	// eslint-disable-next-line consistent-return
+	const handleUrlChange = React.useCallback(() => {
+		if (!_.isEqual(currentState, props.intitialState) && !currentState.submissionSection.submitted) {
+			return 'You have some unsaved changes!';
+		}
+	}, [currentState]);
+	React.useEffect(() => {
+		window.onbeforeunload = handleUrlChange;
+	}, [handleUrlChange]);
 
 	return (
 		<form onSubmit={onSubmit}>

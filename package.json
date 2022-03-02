@@ -69,7 +69,7 @@
     "react-datepicker": "^4.7.0",
     "react-dom": "^16.13.1",
     "react-hot-loader": "^4.13.0",
-    "react-redux": "^5.1.2",
+    "react-redux": "^7.2.6",
     "react-select": "^1.1.0",
     "react-sortable-hoc": "^2.0.0",
     "react-sticky": "^6.0.1",
