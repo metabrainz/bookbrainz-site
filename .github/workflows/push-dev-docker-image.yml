@@ -1,5 +1,5 @@
 # This workflow can be used to push an image off a branch to Docker Hub.
-# This is useful to deploy changes to LB beta or test for testing.
+# This is useful to deploy changes from any branch/PR to BookBrainz beta or test for testing.
 name: Push development Docker image
 
 on:
@@ -34,4 +34,4 @@ jobs:
             --build-arg DEPLOY_ENV="${{ github.event.inputs.tag }}" \
             --build-arg GIT_COMMIT_SHA="${{ github.sha }}" .
       - name: Push development image
-        run: docker push metabrainz/listenbrainz:"${{ github.event.inputs.tag }}"
+        run: docker push metabrainz/bookbrainz:"${{ github.event.inputs.tag }}"
