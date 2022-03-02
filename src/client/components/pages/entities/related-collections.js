@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/* eslint-disable sort-imports */
 import PropTypes from 'prop-types';
 import React from 'react';
 

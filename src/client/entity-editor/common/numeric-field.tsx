@@ -18,12 +18,13 @@
 
 
 import * as React from 'react';
-import CustomInput from '../../input';
+import {Form, InputGroup} from 'react-bootstrap';
 import ValidationLabel from '../common/validation-label';
 import classNames from 'classnames';
 
 
 type Props = {
+	addonAfter: any,
 	show?: boolean,
 	label: string,
 	empty?: boolean,
@@ -41,11 +42,12 @@ type Props = {
  * @param {boolean} props.empty - Passed to the ValidationLabel within the
  *        component to indicate that the field is empty.
  * @param {boolean} props.show - Determines the visibility of the field - if
- *        falsey, bootstrap's 'hidden' class is applied.
+ *        falsey, bootstrap's 'd-none' class is applied.
  * @param {string} props.label - The text to be used for the input label.
  * @returns {Object} A React component containing the rendered input.
  */
 function NumericField({
+	addonAfter,
 	show,
 	label,
 	empty,
@@ -55,14 +57,17 @@ function NumericField({
 	const labelElement =
 		<ValidationLabel empty={empty} error={error}>{label}</ValidationLabel>;
 
-	const groupClassName = classNames({hidden: !show});
+	const groupClassName = classNames({'d-none': !show});
 	return (
-		<CustomInput
-			groupClassName={groupClassName}
-			label={labelElement}
-			type="number"
-			{...rest}
-		/>
+		<Form.Group className={groupClassName}>
+			<Form.Label>{labelElement}</Form.Label>
+			<InputGroup>
+				<Form.Control type="number" {...rest}/>
+				<InputGroup.Append>
+					<InputGroup.Text>{addonAfter}</InputGroup.Text>
+				</InputGroup.Append>
+			</InputGroup>
+		</Form.Group>
 	);
 }
 NumericField.displayName = 'NumericField';

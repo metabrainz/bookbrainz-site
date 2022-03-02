@@ -17,13 +17,13 @@
  */
 
 import * as propHelpers from '../../client/helpers/props';
-import * as utils from '../helpers/utils';
 import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import RevisionsPage from '../../client/components/pages/revisions';
 import express from 'express';
+import {getNextEnabledAndResultsArray} from '../../common/helpers/utils';
 import {getOrderedRevisions} from '../helpers/revisions';
 import target from '../templates/target';
 
@@ -67,7 +67,7 @@ router.get('/', async (req, res, next) => {
 	try {
 		// fetch 1 more revision than required to check nextEnabled
 		const orderedRevisions = await getOrderedRevisions(from, size + 1, orm);
-		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
+		const {newResultsArray, nextEnabled} = getNextEnabledAndResultsArray(orderedRevisions, size);
 		return render(newResultsArray, nextEnabled);
 	}
 	catch (err) {

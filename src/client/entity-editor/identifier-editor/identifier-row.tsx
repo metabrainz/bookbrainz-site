@@ -24,12 +24,11 @@ import {
 	Action, debouncedUpdateIdentifierValue, removeIdentifierRow,
 	updateIdentifierType
 } from './actions';
-import {Button, Col, Row} from 'react-bootstrap';
+import {Button, Col, Form, Row} from 'react-bootstrap';
 import {
 	IdentifierType,
 	validateIdentifierValue
 } from '../validators/common';
-import CustomInput from '../../input';
 import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
@@ -94,7 +93,7 @@ function IdentifierRow({
 	return (
 		<div>
 			<Row>
-				<Col md={4}>
+				<Col lg={4}>
 					<ValueField
 						defaultValue={valueValue}
 						empty={!valueValue && typeValue === null}
@@ -104,21 +103,22 @@ function IdentifierRow({
 						onChange={onValueChange}
 					/>
 				</Col>
-				<Col md={4}>
-					<CustomInput label="Type">
+				<Col lg={4}>
+					<Form.Group>
+						<Form.Label>Type</Form.Label>
 						<Select
 							instanceId={`identifierType${index}`}
 							options={identifierTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
-				<Col className="text-right" md={3} mdOffset={1}>
+				<Col className="text-right" lg={{offset: 1, span: 3}}>
 					<Button
 						block
-						bsStyle="danger"
 						className="margin-top-d15"
+						variant="danger"
 						onClick={onRemoveButtonClick}
 					>
 						<FontAwesomeIcon icon={faTimes}/>

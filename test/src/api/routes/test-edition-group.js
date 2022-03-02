@@ -1,4 +1,3 @@
-/* eslint-disable prefer-arrow-callback,func-names */
 /*
  * Copyright (C) 2019  Akhilesh Kumar
  *
@@ -47,7 +46,7 @@ describe('GET /EditionGroup', () => {
 	before(() => createEditionGroup(aBBID));
 	after(truncateEntities);
 	// Test to get basic information of an Edition Group
-	it('should get basic information of an Edition Group', async function () {
+	it('should get basic information of an Edition Group', async () => {
 		const res = await chai.request(app).get(`/edition-group/${aBBID}`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -59,7 +58,7 @@ describe('GET /EditionGroup', () => {
 		);
 	 });
 
-	 it('should return list of aliases of an Edition Group', async function () {
+	 it('should return list of aliases of an Edition Group', async () => {
 		const res = await chai.request(app).get(`/edition-group/${aBBID}/aliases`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -71,7 +70,7 @@ describe('GET /EditionGroup', () => {
 		expect(res.body.aliases).to.have.lengthOf(1);
 	 });
 
-	 it('should return list of identifiers of an Edition Group', async function () {
+	 it('should return list of identifiers of an Edition Group', async () => {
 		const res = await chai.request(app).get(`/edition-group/${aBBID}/identifiers`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -83,7 +82,7 @@ describe('GET /EditionGroup', () => {
 		expect(res.body.identifiers).to.have.lengthOf(1);
 	 });
 
-	it('should return list of relationships of an Edition Group', async function () {
+	it('should return list of relationships of an Edition Group', async () => {
 		const res = await chai.request(app).get(`/edition-group/${aBBID}/relationships`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -95,10 +94,10 @@ describe('GET /EditionGroup', () => {
 		expect(res.body.relationships).to.have.lengthOf(1);
 	 });
 
-	 it('should throw a 404 error if trying to access an edition group that does not exist', function (done) {
+	 it('should throw a 404 error if trying to access an edition group that does not exist', (done) => {
 		chai.request(app)
 			.get(`/edition-group/${bBBID}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
@@ -108,10 +107,10 @@ describe('GET /EditionGroup', () => {
 			});
 	 });
 
-	it('should throw a 400 error if trying to access an edition with invalid BBID', function (done) {
+	it('should throw a 400 error if trying to access an edition with invalid BBID', (done) => {
 		chai.request(app)
 			.get(`/edition-group/${inValidBBID}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(400);
 				expect(res.ok).to.be.false;
@@ -121,10 +120,10 @@ describe('GET /EditionGroup', () => {
 			});
 	 });
 
-	 it('should throw a 404 error if trying to access identifiers of an Edition Group that does not exist', function (done) {
+	 it('should throw a 404 error if trying to access identifiers of an Edition Group that does not exist', (done) => {
 		chai.request(app)
 			.get(`/edition-group/${bBBID}/identifiers`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
@@ -135,10 +134,10 @@ describe('GET /EditionGroup', () => {
 	 });
 
 
-	it('should throw a 404 error if trying to access aliases of an Edition Group that does not exist', function (done) {
+	it('should throw a 404 error if trying to access aliases of an Edition Group that does not exist', (done) => {
 		chai.request(app)
 			.get(`/edition-group/${bBBID}/aliases`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
@@ -148,10 +147,10 @@ describe('GET /EditionGroup', () => {
 			});
 	 });
 
-	it('should throw a 404 error if trying to access relationships of an Edition Group that does not exist', function (done) {
+	it('should throw a 404 error if trying to access relationships of an Edition Group that does not exist', (done) => {
 		chai.request(app)
 			.get(`/edition-group/${bBBID}/relationships`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
@@ -162,10 +161,8 @@ describe('GET /EditionGroup', () => {
 	 });
 });
 
-
 describe('Browse EditionGroup', () => {
 	// Test browse requests for Edition Group
-	// eslint-disable-next-line one-var
 	let edition;
 	before(async () => {
 		await truncateEntities();
@@ -215,7 +212,7 @@ describe('Browse EditionGroup', () => {
 	it('should throw 400 error for invalid bbid', (done) => {
 		chai.request(app)
 			.get('/edition-group?edition=1212121')
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(400);
 				return done();
@@ -225,7 +222,7 @@ describe('Browse EditionGroup', () => {
 	it('should throw 404 error for incorrect bbid', (done) => {
 		chai.request(app)
 			.get(`/edition-group?edition=${aBBID}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				return done();
@@ -235,7 +232,7 @@ describe('Browse EditionGroup', () => {
 	it('should throw 400 error for incorrect linked entity', (done) => {
 		chai.request(app)
 			.get(`/edition-group?author=${aBBID}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(400);
 				return done();

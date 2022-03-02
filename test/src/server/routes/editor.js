@@ -1,10 +1,12 @@
+/* eslint-disable sort-keys */
+
 import {createEditor, truncateEntities} from '../../../test-helpers/create-entities';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import {getEditorActivity} from '../../../../src/server/routes/editor.js';
 import orm from '../../../bookbrainz-data';
 
-/* eslint sort-keys: 0 */
+
 chai.use(chaiHttp);
 const {expect} = chai;
 

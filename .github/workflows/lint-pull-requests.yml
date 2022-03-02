@@ -1,0 +1,44 @@
+# Run ESLint on pull requests (limited permissions)
+
+name: Lint pull requests
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on pull request events in the context of the fork
+  # trying to sidestep limitations here: https://github.com/wearerequired/lint-action/issues/13
+  pull_request_target:
+
+# Limit permissions of the token
+# When running an untrusted fork, we don't want to give write permissions
+# See https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+permissions:
+  checks: write # Allows the creation of annotations on forks
+  contents: read # Don't allow untrusted forks write access
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request_target' && github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  run-linters-pull-request:
+    name: Run linters for pull requests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          
+      - name: NPM install
+        uses: bahmutov/npm-install@v1
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          eslint: true
+          # Auto-fix requires write permissions to commit changes, which we don't want to allow
+          # See https://github.com/wearerequired/lint-action/issues/13
+          auto_fix: false
+          

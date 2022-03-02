@@ -26,10 +26,10 @@ class CollectionsPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			querySearchParams: '',
-			results: this.props.results
+			querySearchParams: props.type ? `type=${props.type}` : '',
+			results: this.props.results,
+			type: props.type
 		};
-
 		this.handleTypeChange = this.handleTypeChange.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
 		this.paginationUrl = './collections/collections';
@@ -41,8 +41,15 @@ class CollectionsPage extends React.Component {
 
 	handleTypeChange(type) {
 		const querySearchParams = type ? `type=${type}` : '';
-		this.setState({querySearchParams});
+		this.setState({querySearchParams, type});
 	}
+
+	searchParamsChangeCallback = (searchParms) => {
+		const type = searchParms.get('type') ?? '';
+		if (type !== this.state.type) {
+			this.setState({querySearchParams: `?${searchParms.toString()}`, type});
+		}
+	};
 
 	render() {
 		return (
@@ -56,6 +63,7 @@ class CollectionsPage extends React.Component {
 					showOwner={this.props.showOwner}
 					showPrivacy={this.props.showPrivacy}
 					tableHeading={this.props.tableHeading}
+					type={this.state.type}
 					user={this.props.user}
 					onTypeChange={this.handleTypeChange}
 				/>
@@ -65,6 +73,7 @@ class CollectionsPage extends React.Component {
 					paginationUrl={this.paginationUrl}
 					querySearchParams={this.state.querySearchParams}
 					results={this.state.results}
+					searchParamsChangeCallback={this.searchParamsChangeCallback}
 					searchResultsCallback={this.searchResultsCallback}
 					size={this.props.size}
 				/>
@@ -86,6 +95,7 @@ CollectionsPage.propTypes = {
 	showPrivacy: PropTypes.bool,
 	size: PropTypes.number,
 	tableHeading: PropTypes.string,
+	type: PropTypes.string,
 	user: PropTypes.object
 };
 CollectionsPage.defaultProps = {
@@ -98,6 +108,7 @@ CollectionsPage.defaultProps = {
 	showPrivacy: false,
 	size: 20,
 	tableHeading: 'Collections',
+	type: '',
 	user: null
 
 };

@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {ControlLabel} from 'react-bootstrap';
+import {Form} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -26,7 +26,7 @@ export function NumberAttribute({
 }) {
 	return (
 	    <>
-			<ControlLabel>Number</ControlLabel>
+			<Form.Label>Number</Form.Label>
 			<input
 				className="form-control"
 				placeholder="Enter a value"

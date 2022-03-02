@@ -17,7 +17,6 @@
  */
 /* eslint-disable no-inline-comments */
 
-
 import type {Attribute, Relationship, RelationshipForDisplay} from '../relationship-editor/types';
 import arrayMove from 'array-move';
 import {attachAttribToRelForDisplay} from '../helpers';

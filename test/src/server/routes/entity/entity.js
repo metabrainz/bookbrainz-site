@@ -193,7 +193,8 @@ describe('deleteRelationships', () => {
 		expect(affectedEntities).to.have.length(0);
 	});
 
-	it('it should return an array containing the other entity to modify (this should also check that the returned entity model has a changed relationshipSetId)', async () => {
+	it('it should return an array containing the other entity to modify' +
+	' (this should also check that the returned entity model has a changed relationshipSetId)', async () => {
 		// Create Entities
 		const work = await createWork();
 
@@ -247,7 +248,8 @@ describe('deleteRelationships', () => {
 		expect(affectedEntities).to.have.length(1);
 	});
 
-	it('it should delete only the relationships to the entity being deleted (meaning if entity A has rels to B and C and I deleted B, A should still have a rel to C)', async () => {
+	it('it should delete only the relationships to the entity being deleted' +
+	' (meaning if entity A has rels to B and C and I deleted B, A should still have a rel to C)', async () => {
 		// Create Entities
 		const workABBID = getRandomUUID();
 		const workBBBID = getRandomUUID();

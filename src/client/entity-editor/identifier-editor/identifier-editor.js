@@ -55,15 +55,16 @@ const IdentifierEditor = ({
 	show
 }) => {
 	const noIdentifiersTextClass =
-		classNames('text-center', {hidden: identifiers.size});
+		classNames('text-center', {'d-none': identifiers.size});
 
 	const helpText = `identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc.
 	You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).`;
 
 	const helpIconElement = (
 		<OverlayTrigger
-			delayShow={50}
+			delay={50}
 			overlay={<Tooltip id="identifier-editor-tooltip">{helpText}</Tooltip>}
+			placement="right"
 		>
 			<FontAwesomeIcon
 				className="fa-sm"
@@ -73,7 +74,7 @@ const IdentifierEditor = ({
 	);
 
 	return (
-		<Modal bsSize="large" show={show} onHide={onClose}>
+		<Modal show={show} size="lg" onHide={onClose}>
 			<Modal.Header>
 				<Modal.Title>
 					Identifier Editor {helpIconElement}
@@ -97,8 +98,8 @@ const IdentifierEditor = ({
 					}
 				</div>
 				<Row>
-					<Col className="text-right" md={3} mdOffset={9}>
-						<Button bsStyle="success" onClick={onAddIdentifier}>
+					<Col className="text-right" lg={{offset: 9, span: 3}}>
+						<Button variant="success" onClick={onAddIdentifier}>
 							<FontAwesomeIcon icon={faPlus}/>
 							<span>&nbsp;Add identifier</span>
 						</Button>
@@ -107,7 +108,7 @@ const IdentifierEditor = ({
 			</Modal.Body>
 
 			<Modal.Footer>
-				<Button bsStyle="primary" onClick={onClose}>Close</Button>
+				<Button variant="primary" onClick={onClose}>Close</Button>
 			</Modal.Footer>
 		</Modal>
 	);

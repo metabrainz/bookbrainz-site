@@ -4,7 +4,6 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
-const ESLintPlugin = require('eslint-webpack-plugin');
 
 const production = process.env.NODE_ENV === 'production';
 
@@ -37,7 +36,7 @@ const clientConfig = {
 		'entity/entity': ['./controllers/entity/entity.js'],
 		'entity-editor': ['./entity-editor/controller.js'],
 		'entity-merge': ['./entity-editor/entity-merge.tsx'],
-		style: './stylesheets/style.less'
+		style: './stylesheets/style.scss'
 	},
 	externals: {
 		moment: 'moment'
@@ -54,6 +53,24 @@ const clientConfig = {
 	module: {
 		rules: [
 			{
+				test: /\.s?css$/,
+				use: [
+					MiniCssExtractPlugin.loader,
+					{
+						loader: 'css-loader'
+					},
+					{
+						loader: 'resolve-url-loader'
+					},
+					{
+						loader: 'sass-loader',
+						options: {
+							sourceMap: true
+						}
+					}
+				]
+			},
+			{
 				include: /node_modules/,
 				test: /\.(js|mjs)$/,
 				resolve: {
@@ -65,22 +82,6 @@ const clientConfig = {
 				include: path.resolve(__dirname, 'src'),
 				test: /\.(js|jsx|ts|tsx)$/,
 				use: ['babel-loader']
-			},
-			{
-				test: /\.(le|c)ss$/,
-				use: [
-					MiniCssExtractPlugin.loader,
-					'css-loader',
-					{
-						loader: 'less-loader',
-						options: {
-							lessOptions: {
-								math: 'always',
-								paths: [path.resolve(__dirname, 'node_modules', 'bootstrap', 'less')]
-							}
-						}
-					}
-				]
 			},
 			{
 				test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
@@ -112,12 +113,7 @@ const clientConfig = {
 		new MiniCssExtractPlugin({
 			filename: 'stylesheets/[name].css'
 		}),
-		new CleanWebpackPlugin(cleanWebpackPluginOpts),
-		new ESLintPlugin({
-			extensions: ['.js', '.jsx', '.ts', '.tsx'],
-			files: path.resolve(__dirname, 'src'),
-			fix: !production,
-		})
+		new CleanWebpackPlugin(cleanWebpackPluginOpts)
 	],
 	resolve: {
 		extensions: ['.js', '.jsx', '.ts', '.tsx']

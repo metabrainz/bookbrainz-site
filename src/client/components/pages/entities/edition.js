@@ -58,7 +58,7 @@ function EditionAttributes({edition}) {
 		<div>
 
 			<Row>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>Sort Name</dt>
 						<dd>{sortNameOfDefaultAlias}</dd>
@@ -68,7 +68,7 @@ function EditionAttributes({edition}) {
 						<dd>{format}</dd>
 					</dl>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>Status</dt>
 						<dd>{status}</dd>
@@ -76,17 +76,20 @@ function EditionAttributes({edition}) {
 						<dd>{languages}</dd>
 					</dl>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
-						<dt>Dimensions (WxHxD)</dt>
-						<dd>{width}&times;{height}&times;{depth} mm</dd>
-						<dt>Weight</dt>
-						<dd>{weight} g</dd>
+						{format !== 'eBook' &&
+						<>
+							<dt>Dimensions (WxHxD)</dt>
+							<dd>{width}&times;{height}&times;{depth} mm</dd>
+							<dt>Weight</dt>
+							<dd>{weight} g</dd>
+						</>}
 						<dt>Page Count</dt>
 						<dd>{pageCount}</dd>
 					</dl>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>Publishers</dt>
 						<dd>{publishers}</dd>
@@ -129,14 +132,14 @@ function EditionDisplayPage({entity, identifierTypes, user}) {
 	return (
 		<div>
 			<Row className="entity-display-background">
-				<Col className="entity-display-image-box text-center" md={2}>
+				<Col className="entity-display-image-box text-center" lg={2}>
 					<EntityImage
 						backupIcon={ENTITY_TYPE_ICONS.Edition}
 						deleted={entity.deleted}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>
-				<Col md={10}>
+				<Col lg={10}>
 					<EntityTitle entity={entity}/>
 					<EditionAttributes edition={entity}/>
 					{editionGroupSection}

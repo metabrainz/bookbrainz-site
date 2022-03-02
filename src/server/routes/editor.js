@@ -23,7 +23,6 @@ import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
-import * as utils from '../helpers/utils';
 import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
 import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
@@ -231,9 +230,11 @@ export async function getEditorActivity(editorId, startDate, Revision, endDate =
 	);
 	const revisionsCount = _.countBy(revisionDates);
 
+	const firstRevisionDate = revisionJSON.length ? revisionJSON[0].createdAt : Date.now();
+	const activityStart = startDate > firstRevisionDate ? firstRevisionDate : startDate;
 	const allMonthsInInterval = eachMonthOfInterval({
 		end: endDate,
-		start: startDate
+		start: activityStart
 	})
 		.map(month => format(new Date(month), 'LLL-yy'))
 		.reduce((accumulator, month) => {
@@ -329,7 +330,7 @@ router.get('/:id/revisions', async (req, res, next) => {
 			await Promise.all([orderedRevisionsPromise, editorJSONPromise]);
 
 		const {newResultsArray, nextEnabled} =
-			utils.getNextEnabledAndResultsArray(orderedRevisions, size);
+			commonUtils.getNextEnabledAndResultsArray(orderedRevisions, size);
 
 		const props = generateProps(req, res, {
 			editor: editorJSON,
@@ -487,7 +488,6 @@ async function rankUpdate(orm, editorId, bodyRank, rank) {
 
 router.post('/:id/achievements/', auth.isAuthenticated, async (req, res) => {
 	const {orm} = req.app.locals;
-	const {Editor} = orm;
 	const userId = parseInt(req.params.id, 10);
 	if (!isCurrentUser(userId, req.user)) {
 		throw new Error('Not authenticated');
@@ -521,7 +521,7 @@ router.get('/:id/collections', async (req, res, next) => {
 
 		// fetch 1 more collections than required to check nextEnabled
 		const orderedCollections = await getOrderedCollectionsForEditorPage(from, size + 1, type, req);
-		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedCollections, size);
+		const {newResultsArray, nextEnabled} = commonUtils.getNextEnabledAndResultsArray(orderedCollections, size);
 		const editor = await new Editor({id: req.params.id}).fetch();
 		const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
 

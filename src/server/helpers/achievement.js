@@ -21,7 +21,6 @@
  * @module Achievement
  */
 
-/* eslint prefer-spread: 1, prefer-reflect: 1, no-magic-numbers: 0 */
 import * as error from '../../common/helpers/error';
 
 import {flattenDeep, isNil} from 'lodash';
