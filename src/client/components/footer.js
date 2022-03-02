@@ -26,7 +26,7 @@ function Footer() {
 		 <section className="section-footer">
 			<div className="container">
 				<div className="row">
-					<div className="col-sm-12 col-md-4">
+					<div className="col-sm-12 col-md-6">
 						<h3>
 							<img alt="BookBrainz" src="/images/BookBrainz_logo.svg" width="180"/>
 						</h3>
@@ -48,7 +48,7 @@ function Footer() {
 							</li>
 						</ul>
 					</div>
-					<div className="col-sm-12 col-md-4 section-md-t3">
+					<div className="col-sm-12 col-md-3 section-md-t3">
 						<h3 className="w-title-a text-brand">Useful Links</h3>
 						<ul className="list-unstyled">
 							<li className="item-list-a">
@@ -72,7 +72,7 @@ function Footer() {
 
 						</ul>
 					</div>
-					<div className="col-sm-12 col-md-4 section-md-t3">
+					<div className="col-sm-12 col-md-3 section-md-t3">
 						<h3 className="w-title-a text-brand">Fellow Projects</h3>
 						<ul className="list-unstyled">
 							<li className="item-list-a">

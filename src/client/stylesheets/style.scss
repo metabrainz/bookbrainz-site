@@ -42,7 +42,7 @@ $disabled-color: lighten($disabled-bg,15%);
 		// The following prevents menu items from wrapping to two lines (icon on top text on the bottom)
 		// in browsers sizes between collapsed menu and enough horizontal space for all menu items
 		white-space: nowrap;
-		
+
 		& > .disabled > a {
 			color: $disabled-color;
 			background: $disabled-bg;
@@ -275,7 +275,7 @@ a.contact-text:visited {
 /* index page */
 /* ========== */
 #background-image {
-	background: linear-gradient(to right, #483a28 0%, #e86428 100%);
+	background: linear-gradient(to right, #483a28 0%, #000000 100%);
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
