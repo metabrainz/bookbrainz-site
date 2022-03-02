@@ -53,7 +53,6 @@ function Footer(props) {
 							</li>
 						</ul>
 					</div>
-					<br/>
 					<div className="col-sm-12 col-md-4 section-md-t3">
 						<h3 className="w-title-a text-brand">Useful Links</h3>
 						<ul className="list-unstyled">
@@ -82,10 +81,10 @@ function Footer(props) {
 						<h3 className="w-title-a text-brand">Fellow Projects</h3>
 						<ul className="list-unstyled">
 							<li className="item-list-a">
-									 <img height="18" src="/images/icons/angle_double_right_icon.svg" width="18"/> <img alt="image" height="24" src="/images/meb-icons/MusicBrainz.svg" width="24"/> <a href="https://musicbrainz.org/" rel="noopener noreferrer" target="_blank" >MusicBrainz</a>
+								 <img height="18" src="/images/icons/angle_double_right_icon.svg" width="18"/> <img alt="image" height="24" src="/images/meb-icons/MusicBrainz.svg" width="24"/> <a href="https://musicbrainz.org/" rel="noopener noreferrer" target="_blank" >MusicBrainz</a>
 							</li>
 							<li className="item-list-a">
-									 <img height="18" src="/images/icons/angle_double_right_icon.svg" width="18"/> <img alt="image" height="24" src="/images/meb-icons/ListenBrainz.svg" width="24"/> <a href="https://listenbrainz.org/" rel="noopener noreferrer" target="_blank" >ListenBrainz</a>
+								 <img height="18" src="/images/icons/angle_double_right_icon.svg" width="18"/> <img alt="image" height="24" src="/images/meb-icons/ListenBrainz.svg" width="24"/> <a href="https://listenbrainz.org/" rel="noopener noreferrer" target="_blank" >ListenBrainz</a>
 							</li>
 							<li className="item-list-a">
 								<img height="18" src="/images/icons/angle_double_right_icon.svg" width="18"/> <img alt="image" height="24" src="/images/meb-icons/CritiqueBrainz.svg" width="24"/> <a href="https://critiquebrainz.org/" rel="noopener noreferrer" target="_blank" >CritiqueBrainz</a>
@@ -105,7 +104,7 @@ function Footer(props) {
 				<div className="row center-p">
 					<div className="col-md-3 d-none d-md-block">
 						<p className="color-gray section-line">
-					OSS Geek?  <a href="https://github.com/metabrainz/musicbrainz-server" rel="noopener noreferrer" target="_blank" > <span className="color-a"> Contribute Here </span> </a>
+					OSS Geek?  <a href="https://github.com/metabrainz/bookbrainz-site" rel="noopener noreferrer" target="_blank" > <span className="color-a"> Contribute Here </span> </a>
 						</p>
 					</div>
 					<div className="col-md-6">
