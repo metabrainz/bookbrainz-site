@@ -21,11 +21,14 @@ import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
+
 import {
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
+
+import {ConflictError} from '../../../common/helpers/error';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
@@ -90,9 +93,18 @@ router.get(
 	middleware.loadLanguages, middleware.loadPublisherTypes,
 	middleware.loadRelationshipTypes,
 	(req, res) => {
-		const {markup, props} = entityEditorMarkup(generateEntityProps(
+		const markupProps = generateEntityProps(
 			'publisher', req, res, {}
-		));
+		);
+		markupProps.initialState.nameSection = {
+			disambiguation: '',
+			exactMatches: null,
+			language: null,
+			name: req.query?.name ?? '',
+			searchResults: null,
+			sortName: ''
+		};
+		const {markup, props} = entityEditorMarkup(markupProps);
 
 		return res.send(target({
 			markup,
@@ -154,9 +166,12 @@ router.get('/:bbid', middleware.loadEntityRelationships, (req, res, next) => {
 		.catch(next);
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
+	if (!res.locals.entity.dataId) {
+		return next(new ConflictError('This entity has already been deleted'));
+	}
 	_setPublisherTitle(res);
-	entityRoutes.displayDeleteEntity(req, res);
+	return entityRoutes.displayDeleteEntity(req, res);
 });
 
 router.post(

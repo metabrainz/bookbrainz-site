@@ -29,6 +29,7 @@ import {
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
+import {ConflictError} from '../../../common/helpers/error';
 import {RelationshipTypes} from '../../../client/entity-editor/relationship-editor/types';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
@@ -158,7 +159,14 @@ router.get(
 
 		function render(props) {
 			const {initialState} = props;
-
+			initialState.nameSection = {
+				disambiguation: '',
+				exactMatches: null,
+				language: null,
+				name: req.query?.name ?? '',
+				searchResults: null,
+				sortName: ''
+			};
 			let relationshipTypeId;
 			let initialRelationshipIndex = 0;
 
@@ -186,7 +194,6 @@ router.get(
 				relationshipTypeId = RelationshipTypes.EditionContainsWork;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.work);
 			}
-
 			const editorMarkup = entityEditorMarkup(props);
 			const {markup} = editorMarkup;
 			const updatedProps = editorMarkup.props;
@@ -236,7 +243,7 @@ function _setEditionTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWorkTableAuthors, (req, res) => {
 	_setEditionTitle(res);
 	entityRoutes.displayEntity(req, res);
 });
@@ -254,9 +261,12 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 });
 
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
+	if (!res.locals.entity.dataId) {
+		return next(new ConflictError('This entity has already been deleted'));
+	}
 	_setEditionTitle(res);
-	entityRoutes.displayDeleteEntity(req, res);
+	return entityRoutes.displayDeleteEntity(req, res);
 });
 
 router.post(
@@ -309,7 +319,7 @@ function editionToFormState(edition) {
 		(identifier) => { identifierEditor[identifier.id] = identifier; }
 	);
 
-	const physicalVisible = !(
+	const physicalEnable = !(
 		_.isNull(edition.depth) && _.isNull(edition.height) &&
 		_.isNull(edition.pages) && _.isNull(edition.weight) &&
 		_.isNull(edition.width)
@@ -337,7 +347,7 @@ function editionToFormState(edition) {
 			({id, name}) => ({label: name, value: id})
 		) : [],
 		pages: edition.pages,
-		physicalVisible,
+		physicalEnable,
 		publisher,
 		releaseDate,
 		status: edition.editionStatus && edition.editionStatus.id,

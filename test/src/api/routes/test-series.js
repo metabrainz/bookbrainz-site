@@ -1,4 +1,3 @@
-/* eslint-disable prefer-arrow-callback,func-names */
 /*
  * Copyright (C) 2021  Akash Gupta
  *
@@ -45,7 +44,7 @@ describe('GET /Series', () => {
 	before(() => createSeries(aBBID));
 	after(truncateEntities);
 	// Test to get basic information of an Series
-	it('should get basic information of an Series', async function () {
+	it('should get basic information of an Series', async () => {
 		const res = await chai.request(app).get(`/series/${aBBID}`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -58,7 +57,7 @@ describe('GET /Series', () => {
 		);
 	 });
 
-	 it('should return list of aliases of an Series', async function () {
+	 it('should return list of aliases of an Series', async () => {
 		const res = await chai.request(app).get(`/series/${aBBID}/aliases`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -70,7 +69,7 @@ describe('GET /Series', () => {
 		expect(res.body.aliases).to.have.lengthOf(1);
 	 });
 
-	 it('should return list of identifiers of an Series', async function () {
+	 it('should return list of identifiers of an Series', async () => {
 		const res = await chai.request(app).get(`/series/${aBBID}/identifiers`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -82,7 +81,7 @@ describe('GET /Series', () => {
 		expect(res.body.identifiers).to.have.lengthOf(1);
 	 });
 
-	 it('should return list of relationships of an Series', async function () {
+	 it('should return list of relationships of an Series', async () => {
 		const res = await chai.request(app).get(`/series/${aBBID}/relationships`);
 		expect(res.status).to.equal(200);
 		expect(res.body).to.be.an('object');
@@ -94,10 +93,10 @@ describe('GET /Series', () => {
 		expect(res.body.relationships).to.have.lengthOf(1);
 	 });
 
-	 it('should throw a 404 error if trying to access an series that does not exist', function (done) {
+	 it('should throw a 404 error if trying to access an series that does not exist', (done) => {
 		chai.request(app)
 			.get(`/series/${bBBID}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
@@ -107,10 +106,10 @@ describe('GET /Series', () => {
 			});
 	 });
 
-	it('should throw a 400 error if trying to access an series with invalid BBID', function (done) {
+	it('should throw a 400 error if trying to access an series with invalid BBID', (done) => {
 		chai.request(app)
 			.get(`/series/${inValidBBID}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(400);
 				expect(res.ok).to.be.false;
@@ -120,10 +119,10 @@ describe('GET /Series', () => {
 			});
 	 });
 
-	 it('should throw a 404 error if trying to access identifiers of an Series that does not exist', function (done) {
+	 it('should throw a 404 error if trying to access identifiers of an Series that does not exist', (done) => {
 		chai.request(app)
 			.get(`/series/${bBBID}/identifiers`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
@@ -134,10 +133,10 @@ describe('GET /Series', () => {
 	 });
 
 
-	it('should throw a 404 error if trying to access aliases of an Series that does not exist', function (done) {
+	it('should throw a 404 error if trying to access aliases of an Series that does not exist', (done) => {
 		chai.request(app)
 			.get(`/series/${bBBID}/aliases`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
@@ -147,10 +146,10 @@ describe('GET /Series', () => {
 			});
 	 });
 
-	it('should throw a 404 error if trying to access relationships of an Series that does not exist', function (done) {
+	it('should throw a 404 error if trying to access relationships of an Series that does not exist', (done) => {
 		chai.request(app)
 			.get(`/series/${bBBID}/relationships`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				expect(res.ok).to.be.false;
@@ -224,7 +223,7 @@ describe('Browse Series', () => {
 	it('should throw an error if trying to browse more than one entity', (done) => {
 		chai.request(app)
 			.get(`/series?work=${work.get('bbid')}&edition=${work.get('bbid')}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(400);
 				return done();
@@ -267,7 +266,7 @@ describe('Browse Series', () => {
 	it('should throw 400 error for invalid bbid', (done) => {
 		chai.request(app)
 			.get('/series?work=1212121')
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(400);
 				return done();
@@ -277,7 +276,7 @@ describe('Browse Series', () => {
 	it('should throw 404 error for incorrect bbid', (done) => {
 		chai.request(app)
 			.get(`/series?work=${aBBID}`)
-			.end(function (err, res) {
+			.end((err, res) => {
 				if (err) { return done(err); }
 				expect(res).to.have.status(404);
 				return done();

@@ -28,10 +28,10 @@ import {
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
+import {ConflictError} from '../../../common/helpers/error';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
-import {sortRelationshipOrdinal} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
 /** ****************************
@@ -92,6 +92,15 @@ router.get(
 			'series', req, res, {}
 		));
 
+		props.initialState.nameSection = {
+			disambiguation: '',
+			exactMatches: null,
+			language: null,
+			name: req.query?.name ?? '',
+			searchResults: null,
+			sortName: ''
+		};
+
 		return res.send(target({
 			markup,
 			props: escapeProps(props),
@@ -140,9 +149,12 @@ router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadSeriesIt
 	entityRoutes.displayEntity(req, res);
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
+	if (!res.locals.entity.dataId) {
+		return next(new ConflictError('This entity has already been deleted'));
+	}
 	_setSeriesTitle(res);
-	entityRoutes.displayDeleteEntity(req, res);
+	return entityRoutes.displayDeleteEntity(req, res);
 });
 
 router.post(

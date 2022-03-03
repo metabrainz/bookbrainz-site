@@ -200,7 +200,7 @@ export async function displayRevisions(
 	try {
 		// get 1 more revision than required to check nextEnabled
 		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, from, size + 1, RevisionModel, bbid);
-		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
+		const {newResultsArray, nextEnabled} = commonUtils.getNextEnabledAndResultsArray(orderedRevisions, size);
 		const props = generateProps(req, res, {
 			from,
 			nextEnabled,
@@ -328,7 +328,7 @@ async function saveEntitiesAndFinishRevision(
 		setParentRevisions(transacting, newRevision, parentRevisionIDs);
 
 	/** model.save returns a refreshed model */
-	// eslint-disable-next-line no-unused-vars
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [savedEntities, ...others] = await Promise.all([
 		entitiesSavedPromise,
 		editorUpdatePromise,
@@ -417,10 +417,12 @@ export function handleDelete(
 	RevisionModel: any
 ) {
 	const {entity}: {entity?: any} = res.locals;
+	if (!entity.dataId) {
+		throw new error.ConflictError('This entity has already been deleted');
+	}
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const {body}: {body: any} = req;
-
 	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
 		if (!body.note || !body.note.length) {
 			throw new error.FormSubmissionError('A revision note is required when deleting an entity');

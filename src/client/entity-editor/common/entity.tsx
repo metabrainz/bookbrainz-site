@@ -61,6 +61,7 @@ function Entity(
 Entity.displayName = 'Entity';
 Entity.defaultProps = {
 	disambiguation: null,
+	language: null,
 	link: false,
 	unnamedText: '(unnamed)'
 };

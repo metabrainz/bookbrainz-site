@@ -18,10 +18,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as utils from './utils';
+import {get, isString} from 'lodash';
 
 import {ENTITY_TYPE_ICONS} from '../../client/helpers/entity';
-import _ from 'lodash';
+import {getEntityLink} from '../../common/helpers/utils';
 
 
 type EntityInRelationship = {
@@ -64,14 +64,12 @@ type Relationship = {
 function renderRelationship(relationship: Relationship) {
 	const inputsInvalid =
 		!relationship.source || !relationship.target ||
-		!_.isString(_.get(relationship, 'type.linkPhrase'));
+		!isString(get(relationship, 'type.linkPhrase'));
 	if (inputsInvalid) {
-		/* eslint-disable prefer-template */
 		throw new TypeError(
-			'Invalid inputs to renderRelationship:\n' +
-			JSON.stringify(relationship, null, 2)
+			`Invalid inputs to renderRelationship:\n${
+				JSON.stringify(relationship, null, 2)}`
 		);
-		/* eslint-enable prefer-template */
 	}
 
 	function template(data) {
@@ -88,10 +86,9 @@ function renderRelationship(relationship: Relationship) {
 			relationship.target
 		].map((entity) => {
 			// Linkify source and target based on default alias
-			const name = _.get(entity, 'defaultAlias.name', '(unnamed)');
+			const name = get(entity, 'defaultAlias.name', '(unnamed)');
 			const entityIcon = `<i class="fa fa-${ENTITY_TYPE_ICONS[entity.type]} margin-right-0-5"></i>`;
-			// eslint-disable-next-line prefer-template
-			return entityIcon + `<a href="${utils.getEntityLink(entity)}">${name}</a>`;
+			return `${entityIcon}<a href="${getEntityLink(entity)}">${name}</a>`;
 		})
 	};
 

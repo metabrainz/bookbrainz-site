@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Alert, Col, ListGroup, ListGroupItem, Row} from 'react-bootstrap';
+import {Alert, Col, ListGroup, Row} from 'react-bootstrap';
 import {
 	checkIfNameExists,
 	debouncedUpdateDisambiguationField,
@@ -154,7 +154,7 @@ class NameSection extends React.Component {
 			<div>
 				<h2>{`What is the ${_.startCase(entityType)} called?`}</h2>
 				<Row>
-					<Col md={6} mdOffset={3}>
+					<Col lg={{offset: 3, span: 6}}>
 						<NameField
 							defaultValue={nameValue}
 							empty={isAliasEmpty(
@@ -171,27 +171,27 @@ class NameSection extends React.Component {
 							onChange={this.handleNameChange}
 						/>
 					</Col>
-					<Col md={6} mdOffset={3}>
+					<Col lg={{offset: 3, span: 6}}>
 						{isRequiredDisambiguationEmpty(
 							warnIfExists,
 							disambiguationDefaultValue
 						) ?
-							<Alert bsStyle="warning">
+							<Alert variant="warning">
 									We found the following&nbsp;
 								{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} with
 									exactly the same name or alias:
-								<br/><small className="help-block">Click on a name to open it (Ctrl/Cmd + click to open in a new tab)</small>
+								<br/><small className="text-muted">Click on a name to open it (Ctrl/Cmd + click to open in a new tab)</small>
 								<ListGroup className="margin-top-1 margin-bottom-1">
 									{exactMatches.map((match) =>
 										(
-											<ListGroupItem
-												bsStyle="warning"
+											<ListGroup.Item
 												href={`/${_.kebabCase(entityType)}/${match.bbid}`}
 												key={`${match.bbid}`}
 												rel="noopener noreferrer" target="_blank"
+												variant="warning"
 											>
 												{match.defaultAlias.name} {getEntityDisambiguation(match)}
-											</ListGroupItem>
+											</ListGroup.Item>
 										))}
 								</ListGroup>
 									If you are sure your entry is different, please fill the
@@ -204,7 +204,7 @@ class NameSection extends React.Component {
 					!warnIfExists &&
 						!_.isEmpty(searchResults) &&
 						<Row>
-							<Col md={6} mdOffset={3}>
+							<Col lg={{offset: 3, span: 6}}>
 								If the {_.startCase(entityType)} you want to add appears in the results
 								below, click on it to inspect it before adding a possible duplicate.<br/>
 								<small>Ctrl/Cmd + click to open in a new tab</small>
@@ -213,7 +213,7 @@ class NameSection extends React.Component {
 						</Row>
 				}
 				<Row>
-					<Col md={6} mdOffset={3}>
+					<Col lg={{offset: 3, span: 6}}>
 						<SortNameField
 							defaultValue={sortNameValue}
 							empty={isAliasEmpty(
@@ -226,7 +226,7 @@ class NameSection extends React.Component {
 					</Col>
 				</Row>
 				<Row>
-					<Col md={6} mdOffset={3}>
+					<Col lg={{offset: 3, span: 6}}>
 						<LanguageField
 							empty={isAliasEmpty(
 								nameValue, sortNameValue, languageValue
@@ -241,7 +241,7 @@ class NameSection extends React.Component {
 					</Col>
 				</Row>
 				<Row>
-					<Col md={6} mdOffset={3}>
+					<Col lg={{offset: 3, span: 6}}>
 						<DisambiguationField
 							defaultValue={disambiguationDefaultValue}
 							error={isRequiredDisambiguationEmpty(
@@ -264,7 +264,7 @@ NameSection.displayName = 'NameSection';
 NameSection.propTypes = {
 	action: PropTypes.string,
 	disambiguationDefaultValue: PropTypes.string,
-	entityType: entityTypeProperty.isRequired, // eslint-disable-line react/no-typos, max-len
+	entityType: entityTypeProperty.isRequired,
 	exactMatches: PropTypes.array,
 	languageOptions: PropTypes.array.isRequired,
 	languageValue: PropTypes.number,

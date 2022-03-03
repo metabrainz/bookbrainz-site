@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 /*
  * Copyright (C) 2019  Nicolas Pelletier
  *
@@ -19,7 +18,6 @@
 
 
 import * as React from 'react';
-import * as _ from 'lodash';
 
 import {
 	Action,
@@ -31,26 +29,15 @@ import {
 	updateGender,
 	updateType
 } from './actions';
-
-
 import {convertMapToObject, labelsForAuthor} from '../../helpers/utils';
 import {entityToOption, transformISODateForSelect} from '../../helpers/entity';
 import type {Dispatch} from 'redux';
 import Entity from '../common/entity';
 import LinkedEntity from '../common/linked-entity';
 import MergeField from '../common/merge-field';
+import _ from 'lodash';
 import {connect} from 'react-redux';
 
-
-type AuthorType = {
-	label: string,
-	id: number
-};
-
-type GenderOptions = {
-	name: string,
-	id: number
-};
 
 type Area = {
 	disambiguation: string | null | undefined,

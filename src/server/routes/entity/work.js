@@ -29,6 +29,7 @@ import {
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
+import {ConflictError} from '../../../common/helpers/error';
 import {RelationshipTypes} from '../../../client/entity-editor/relationship-editor/types';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
@@ -123,7 +124,14 @@ router.get(
 				relationshipTypeId = RelationshipTypes.EditionContainsWork;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.edition);
 			}
-
+			props.initialState.nameSection = {
+				disambiguation: '',
+				exactMatches: null,
+				language: null,
+				name: req.query?.name ?? '',
+				searchResults: null,
+				sortName: ''
+			};
 			const editorMarkup = entityEditorMarkup(props);
 			const {markup} = editorMarkup;
 			const updatedProps = editorMarkup.props;
@@ -172,9 +180,12 @@ router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
 	entityRoutes.displayEntity(req, res);
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
+	if (!res.locals.entity.dataId) {
+		return next(new ConflictError('This entity has already been deleted'));
+	}
 	_setWorkTitle(res);
-	entityRoutes.displayDeleteEntity(req, res);
+	return entityRoutes.displayDeleteEntity(req, res);
 });
 
 router.post(

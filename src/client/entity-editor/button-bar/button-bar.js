@@ -59,15 +59,16 @@ function ButtonBar({
 	return (
 		<div>
 			<Row className="margin-top-1">
-				<Col className="text-center" md={6}>
+				<Col className="text-center" lg={6}>
 					<AliasButton
 						aliasesInvalid={aliasesInvalid}
 						numAliases={numAliases}
 						onClick={onAliasButtonClick}
 					/>
 				</Col>
-				<Col className="text-center" md={6}>
+				<Col className="text-center" lg={6}>
 					<IdentifierButton
+						className="btn wrap"
 						identifiersInvalid={identifiersInvalid}
 						numIdentifiers={numIdentifiers}
 						onClick={onIdentifierButtonClick}
