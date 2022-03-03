@@ -33,8 +33,13 @@ const {Button, Table} = bootstrap;
 
 const {getEntityDisambiguation, getLanguageAttribute, getEntityLabel} = entityHelper;
 
+function renderAuthors(authorData) {
+	return authorData.map(author => <tr key={author.authorbbid}><a href={`/author/${author.authorbbid}`}>{author.authoralias}</a></tr>);
+}
+
 function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(work);
+	const authorData = work.authorsData;
 	const number = work.number || '?';
 	const disambiguation = getEntityDisambiguation(work);
 	const workType = work.workType ? work.workType.label : '?';
@@ -59,6 +64,7 @@ function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities
 				<a href={`/work/${work.bbid}`}>{name}</a>
 				{disambiguation}
 			</td>
+			<td>{authorData.length ? renderAuthors(authorData) : '?'}</td>
 			<td>{languages}</td>
 			<td>{workType}</td>
 			{showAddedAtColumn ? <td>{addedAt}</td> : null}
@@ -89,6 +95,7 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 						<tr>
 							{works[0].displayNumber && <th style={{width: '10%'}}>#</th>}
 							<th>Name</th>
+							<th>Author</th>
 							<th>Languages</th>
 							<th>Type</th>
 							{
