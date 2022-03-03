@@ -278,8 +278,9 @@ function EditionSectionMerge({
 			<Form.Group>
 				<Form.Label>Languages</Form.Label>
 				<Select
-					disabled
-					multi
+					isDisabled
+					isMulti
+					classNamePrefix="react-select"
 					instanceId="languages"
 					placeholder="No languages"
 					value={languageValues}

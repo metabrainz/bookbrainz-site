@@ -100,6 +100,7 @@ function WorkSection({
 		label: type.label,
 		value: type.id
 	}));
+	const typeOption = workTypesForDisplay.find((el) => el.value === typeValue);
 
 	const tooltip = (
 		<Tooltip>
@@ -129,9 +130,10 @@ function WorkSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
+							classNamePrefix="react-select"
 							instanceId="workType"
 							options={workTypesForDisplay}
-							value={typeValue}
+							value={typeOption}
 							onChange={onTypeChange}
 						/>
 					</Form.Group>

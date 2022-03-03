@@ -89,7 +89,7 @@ function IdentifierRow({
 		label: type.label,
 		value: type.id
 	}));
-
+	const identifiierValue = identifierTypesForDisplay.find((el) => el.value === typeValue);
 	return (
 		<div>
 			<Row>
@@ -107,9 +107,10 @@ function IdentifierRow({
 					<Form.Group>
 						<Form.Label>Type</Form.Label>
 						<Select
+							classNamePrefix="react-select"
 							instanceId={`identifierType${index}`}
 							options={identifierTypesForDisplay}
-							value={typeValue}
+							value={identifiierValue}
 							onChange={onTypeChange}
 						/>
 					</Form.Group>

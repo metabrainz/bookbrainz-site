@@ -161,12 +161,12 @@ function AuthorSection({
 		label: gender.name,
 		value: gender.id
 	}));
-
+	const genderOption = genderOptionsForDisplay.find((el) => el.value === genderValue);
 	const authorTypesForDisplay = authorTypes.map((type) => ({
 		label: type.label,
 		value: type.id
 	}));
-
+	const typeOption = authorTypesForDisplay.find((el) => el.value === typeValue);
 	const currentAuthorType = typeValue ? authorTypes.find(type => type.id === typeValue) : {id: 1, label: 'Person'};
 
 	const {isValid: isValidDob, errorMessage: dobError} = validateAuthorSectionBeginDate(beginDateValue);
@@ -187,9 +187,10 @@ function AuthorSection({
 					<Form.Group>
 						<Form.Label>Type</Form.Label>
 						<Select
+							classNamePrefix="react-select"
 							instanceId="authorType"
 							options={authorTypesForDisplay}
-							value={typeValue}
+							value={typeOption}
 							onChange={onTypeChange}
 						/>
 					</Form.Group>
@@ -200,9 +201,10 @@ function AuthorSection({
 					<Form.Group className={genderShow ? null : 'd-none'}>
 						<Form.Label>Gender</Form.Label>
 						<Select
+							classNamePrefix="react-select"
 							instanceId="gender"
 							options={genderOptionsForDisplay}
-							value={genderValue}
+							value={genderOption}
 							onChange={onGenderChange}
 						/>
 					</Form.Group>

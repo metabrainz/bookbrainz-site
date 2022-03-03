@@ -364,6 +364,7 @@ class RelationshipModal
 				bbid={bbid}
 				buttonAfter={openButton}
 				cache={false}
+				className="Select"
 				filters={additionalFilters}
 				instanceId="relationshipEntitySearchField"
 				label={label}
@@ -388,7 +389,7 @@ class RelationshipModal
 			type: _.get(this.state, ['targetEntity', 'type'])
 		};
 
-		const relationships = generateRelationshipSelection(
+		const relationships:_Relationship[] = generateRelationshipSelection(
 			relationshipTypes, baseEntity, otherEntity
 		);
 		if (baseEntity.type === 'Series') {
@@ -405,17 +406,24 @@ class RelationshipModal
 			// Name of the attribute type belonging to the relationship type. EX: ['position', 'number]
 			attributes = attributeTypes.map(attribute => attribute.name);
 		}
+		const colourStyles = {
+			option: (styles) => ({
+				...styles,
+				backgroundColor: 'transparent',
+				color: 'inherit'
+			  })
+		  };
 		return (
 			<Form.Group>
 				<Form.Label>Relationship</Form.Label>
 				<ReactSelect
-					disabled={!this.state.targetEntity}
+					classNamePrefix="react-select"
+					components={{SingleValue: Relationship, Option: Relationship}}
+					isDisabled={!this.state.targetEntity}
 					name="relationshipType"
-					optionRenderer={Relationship}
 					options={relationships}
+					styles={colourStyles}
 					value={this.state.relationship}
-					valueKey="selectId"
-					valueRenderer={Relationship}
 					onChange={this.handleRelationshipTypeChange}
 				/>
 				{this.state.relationshipType &&

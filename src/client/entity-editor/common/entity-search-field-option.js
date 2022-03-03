@@ -23,7 +23,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LinkedEntity from './linked-entity';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {Async as SelectAsync} from 'react-select';
+import SelectAsync from 'react-select/async';
 import ValidationLabel from '../common/validation-label';
 import _ from 'lodash';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
@@ -102,9 +102,7 @@ class EntitySearchFieldOption extends React.Component {
 		const combineFilters = (...filters) => (item) => filters.map((filter) => filter(item)).every((x) => x === true);
 		const combinedFilters = combineFilters(isSameBBIDFilter, ...this.props.filters);
 		const filteredOptions = response.body.filter(combinedFilters);
-		return {
-			options: filteredOptions.map(this.entityToOption)
-		};
+		return filteredOptions.map(this.entityToOption);
 	}
 
 	renderInputGroup({
@@ -141,11 +139,11 @@ class EntitySearchFieldOption extends React.Component {
 
 		const wrappedSelect = (
 			<ImmutableAsyncSelect
+				classNamePrefix="react-select"
+				components={{Option: LinkedEntity, SingleValue: Entity}}
 				filterOptions={false}
 				labelKey="text"
 				loadOptions={this.fetchOptions}
-				optionComponent={LinkedEntity}
-				valueRenderer={Entity}
 				onBlurResetsInput={false}
 				{...this.props}
 			/>

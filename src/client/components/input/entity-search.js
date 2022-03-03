@@ -18,7 +18,7 @@
  */
 
 import {entityToOption, genEntityIconHTMLElement} from '../../helpers/entity';
-import {Async} from 'react-select';
+import Async from 'react-select/async';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SelectWrapper from './select-wrapper';
@@ -45,9 +45,7 @@ class EntitySearch extends React.Component {
 				q: query,
 				type: _.snakeCase(this.props.type)
 			})
-			.then((response) => ({
-				options: response.body.map(entityToOption)
-			}));
+			.then((response) => response.body.map(entityToOption));
 	}
 
 	renderOption(option) {

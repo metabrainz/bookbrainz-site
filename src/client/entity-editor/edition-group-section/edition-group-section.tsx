@@ -71,7 +71,7 @@ function EditionGroupSection({
 		label: type.label,
 		value: type.id
 	}));
-
+	const typeOption = editionGroupTypesForDisplay.find((el) => el.value === typeValue);
 	const tooltip = <Tooltip>Physical format of the Edition Group</Tooltip>;
 
 	return (
@@ -96,9 +96,10 @@ function EditionGroupSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
+							classNamePrefix="react-select"
 							instanceId="editionGroupType"
 							options={editionGroupTypesForDisplay}
-							value={typeValue}
+							value={typeOption}
 							onChange={onTypeChange}
 						/>
 					</Form.Group>

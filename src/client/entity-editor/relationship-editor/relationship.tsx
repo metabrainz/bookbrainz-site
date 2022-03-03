@@ -19,6 +19,7 @@
 import * as React from 'react';
 
 import type {Attribute, RelationshipType, Entity as _Entity} from './types';
+import {OptionProps, SingleValueProps, components} from 'react-select';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import Entity from '../common/entity';
 import RelationshipAttribute from './relationship-attribute';
@@ -42,7 +43,7 @@ function getEntityObjectForDisplay(entity: _Entity, makeLink: boolean) {
 	};
 }
 
-type RelationshipProps = {
+type Relationship = {
 	link: boolean, // eslint-disable-line react/require-default-props
 	contextEntity: _Entity | null | undefined, // eslint-disable-line react/require-default-props
 	sourceEntity: _Entity,
@@ -52,9 +53,8 @@ type RelationshipProps = {
 	relationshipType: RelationshipType
 };
 
-function Relationship({
-	contextEntity, link, relationshipType, sourceEntity, attributes, showAttributes, targetEntity
-}: RelationshipProps) {
+function Relationship(props: SingleValueProps<Relationship> | OptionProps<Relationship>) {
+	const {contextEntity, link, relationshipType, sourceEntity, attributes, showAttributes, targetEntity} = props.data;
 	const {depth, description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
 
 	const reversed = contextEntity &&
@@ -74,29 +74,34 @@ function Relationship({
 	if (typeof depth !== 'undefined') {
 		indentationClass = `margin-left-d${8 * depth}`;
 	}
-
+	const child =
+	(
+		<div aria-label={description} className={indentationClass}>
+			<Entity data={sourceObject}/>
+			{` ${usedLinkPhrase} `}
+			<Entity data={targetObject}/>
+			{' '}
+			<RelationshipAttribute attributes={attributes} showAttributes={showAttributes}/>
+		</div>
+	);
 	return (
 		<OverlayTrigger
 			delay={50}
 			overlay={<Tooltip id={`tooltip-${id}`}>{description}</Tooltip>}
 			placement="bottom"
 		>
-			<div aria-label={description} className={indentationClass}>
-				<Entity {...sourceObject}/>
-				{` ${usedLinkPhrase} `}
-				<Entity {...targetObject}/>
-				{' '}
-				<RelationshipAttribute attributes={attributes} showAttributes={showAttributes}/>
-			</div>
+			{props.innerProps ? <components.Option {...props as OptionProps}> {child}</components.Option> :
+				<components.SingleValue {...props}>{child}</components.SingleValue>
+			}
 		</OverlayTrigger>
 	);
 }
 Relationship.displayName = 'Relationship';
-Relationship.defaultProps = {
+Relationship.defaultProps = {data: {
 	attributes: [],
 	contextEntity: null, // eslint-disable-line react/default-props-match-prop-types, max-len
 	link: false, // eslint-disable-line react/default-props-match-prop-types
 	showAttributes: false
-};
+}};
 
 export default Relationship;
