@@ -54,7 +54,7 @@
     "influx": "^5.5.3",
     "isomorphic-dompurify": "^0.13.0",
     "jsesc": "^2.5.2",
-    "lobes4": "^4.0.0",
+    "lobes4": "4.0.1",
     "lodash": "^4.17.21",
     "log": "^6.0.0",
     "log-node": "^8.0.3",

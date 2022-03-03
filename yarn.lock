@@ -5177,13 +5177,10 @@ loader-utils@^2.0.0:
     emojis-list "^3.0.0"
     json5 "^2.1.2"
 
-lobes4@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/lobes4/-/lobes4-4.0.0.tgz#319c6163d6faffbe4a3277f964f3e1a201fe85b8"
-  integrity sha512-VWd4Nibwl1gUQNa9hm1AKscBOhSWbZjFyzw4r/aw2kZo2li1CviTHul2KZTm/x26Rx9eMeJ+TeaNKH6ufNd7Gw==
-  dependencies:
-    bootstrap "^4.6.1"
-    sass "^1.49.0"
+lobes4@4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/lobes4/-/lobes4-4.0.1.tgz#923a70f4387228d60026ad652695b82c55a7c4a2"
+  integrity sha512-ZShyX08yv1MnP7xHZC+4irJvV3ivIHgLxX1Q3CO/6/DKwWyrZ0ClgPL6LUIh4NSD8Bobr2aGmRsPEHiABjzRMw==
 
 locate-path@^2.0.0:
   version "2.0.0"
