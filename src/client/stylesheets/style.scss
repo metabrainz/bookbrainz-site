@@ -47,6 +47,9 @@ $disabled-color: lighten($disabled-bg,15%);
 			color: $disabled-color;
 			background: $disabled-bg;
 		}
+		.dropdown-menu a.dropdown-item:hover:visited {
+			color: #fff !important;
+		}
 	}
 }
 
