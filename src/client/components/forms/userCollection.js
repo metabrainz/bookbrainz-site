@@ -212,8 +212,8 @@ class UserCollectionForm extends React.Component {
 							<SelectWrapper
 								base={ReactSelect}
 								defaultValue={initialType}
-								disabled={!canEditType}
 								idAttribute="name"
+								isDisabled={!canEditType}
 								label="Entity Type"
 								labelAttribute="name"
 								options={entityTypeOptions}

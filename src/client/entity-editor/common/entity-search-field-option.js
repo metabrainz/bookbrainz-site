@@ -23,6 +23,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LinkedEntity from './linked-entity';
 import PropTypes from 'prop-types';
 import React from 'react';
+// eslint-disable-next-line import/no-internal-modules
 import SelectAsync from 'react-select/async';
 import ValidationLabel from '../common/validation-label';
 import _ from 'lodash';
@@ -136,12 +137,16 @@ class EntitySearchFieldOption extends React.Component {
 				<FontAwesomeIcon className="margin-left-0-5" icon={faQuestionCircle}/>
 			</OverlayTrigger>
 		);
-
+		function getOptionLabel(option) {
+			return option.text;
+		}
 		const wrappedSelect = (
 			<ImmutableAsyncSelect
+				className="Select"
 				classNamePrefix="react-select"
 				components={{Option: LinkedEntity, SingleValue: Entity}}
 				filterOptions={false}
+				getOptionLabel={getOptionLabel}
 				labelKey="text"
 				loadOptions={this.fetchOptions}
 				onBlurResetsInput={false}

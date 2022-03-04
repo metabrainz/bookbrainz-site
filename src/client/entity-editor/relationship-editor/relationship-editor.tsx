@@ -413,12 +413,16 @@ class RelationshipModal
 				color: 'inherit'
 			  })
 		  };
+		function getOptionValue(option) {
+			return option.selectedId;
+		}
 		return (
 			<Form.Group>
 				<Form.Label>Relationship</Form.Label>
 				<ReactSelect
 					classNamePrefix="react-select"
 					components={{SingleValue: Relationship, Option: Relationship}}
+					getOptionValue={getOptionValue}
 					isDisabled={!this.state.targetEntity}
 					name="relationshipType"
 					options={relationships}

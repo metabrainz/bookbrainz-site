@@ -43,7 +43,7 @@ class SelectWrapper extends React.Component {
 		super(props);
 
 		this.state = {
-			value: props.defaultValue
+			value: this.props.options.filter((el) => el.value === this.props.defaultValue)
 		};
 		this.currentValue = this.state.value;
 
@@ -86,7 +86,12 @@ class SelectWrapper extends React.Component {
 		const Child = base;
 
 		const childValue = _.isNil(value) ? this.state.value : value;
-
+		function getOptionLabel(option) {
+			return option[labelAttribute];
+		}
+		function getOptionValue(option) {
+			return option[idAttribute];
+		}
 		return (
 			<Form.Group className={groupClassName}>
 				{
@@ -96,11 +101,12 @@ class SelectWrapper extends React.Component {
 				<div className={wrapperClassName}>
 					<Child
 						{...props}
-						labelKey={labelAttribute}
-						multi={multiple}
+						classNamePrefix="react-select"
+						getOptionLabel={getOptionLabel}
+						getOptionValue={getOptionValue}
+						isMulti={multiple}
 						ref={(ref) => this.select = ref}
 						value={childValue}
-						valueKey={idAttribute}
 						onChange={this.handleChange}
 					/>
 				</div>
@@ -124,6 +130,7 @@ SelectWrapper.propTypes = {
 	multiple: PropTypes.bool,
 	name: PropTypes.string,
 	onChange: PropTypes.func,
+	options: PropTypes.array.isRequired,
 	value: PropTypes.oneOfType([
 		PropTypes.string,
 		PropTypes.number,

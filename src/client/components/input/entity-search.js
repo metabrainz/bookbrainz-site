@@ -18,6 +18,7 @@
  */
 
 import {entityToOption, genEntityIconHTMLElement} from '../../helpers/entity';
+// eslint-disable-next-line import/no-internal-modules
 import Async from 'react-select/async';
 import PropTypes from 'prop-types';
 import React from 'react';
