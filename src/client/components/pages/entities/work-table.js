@@ -76,7 +76,7 @@ WorkTableRow.propTypes = {
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool.isRequired,
-	showAuthors: PropTypes.bool.isRequired,
+	showAuthors: PropTypes.bool,
 	showCheckboxes: PropTypes.bool,
 	work: PropTypes.object.isRequired
 };
@@ -89,7 +89,7 @@ WorkTableRow.defaultProps = {
 function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
 	if (works.length) {
-		const showAuthors = (works[0].authorsData) ? true : false;
+		const showAuthors = works[0].authorsData;
 		tableContent = (
 			<React.Fragment>
 				<Table striped>
