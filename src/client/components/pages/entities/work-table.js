@@ -64,7 +64,7 @@ function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities
 				<a href={`/work/${work.bbid}`}>{name}</a>
 				{disambiguation}
 			</td>
-			<td>{authorData.length ? renderAuthors(authorData) : '?'}</td>
+			{authorData && <td>{authorData.length ? renderAuthors(authorData) : '?'}</td>}
 			<td>{languages}</td>
 			<td>{workType}</td>
 			{showAddedAtColumn ? <td>{addedAt}</td> : null}
@@ -88,6 +88,7 @@ WorkTableRow.defaultProps = {
 function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
 	if (works.length) {
+		const showAuthors = works[0].authorsData;
 		tableContent = (
 			<React.Fragment>
 				<Table striped>
@@ -95,7 +96,7 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 						<tr>
 							{works[0].displayNumber && <th style={{width: '10%'}}>#</th>}
 							<th>Name</th>
-							<th>Author</th>
+							{showAuthors && <th>Author</th>}
 							<th>Languages</th>
 							<th>Type</th>
 							{
