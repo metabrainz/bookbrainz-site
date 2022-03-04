@@ -1,6 +1,6 @@
 import {Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
 
-import {kebabCase} from 'lodash';
+import {isString, kebabCase} from 'lodash';
 
 /**
  * Regular expression for valid BookBrainz UUIDs (bbid)
@@ -100,7 +100,8 @@ export function sortRelationshipOrdinal(sortByProperty: string) {
  * @returns {string} - sanitized text
  */
 export function collapseWhiteSpaces(text:string):string {
-	const spaceRegex = RegExp(/\s+/gi);
+	// replace any whitespace space characters
+	const spaceRegex = RegExp(/\s/gi);
 	const doubleRegex = RegExp(/\s{2,}/gi);
 	let sanitizedText = text.replace(spaceRegex, '\u0020');
 	sanitizedText = text.replace(doubleRegex, '\u0020');
@@ -113,15 +114,17 @@ export function collapseWhiteSpaces(text:string):string {
  * @returns {string} - sanitized text
  */
 export function sanitize(text:string):string {
-	if (!text) {
+	if (!isString(text)) {
 		return text;
 	}
 	// unicode normalization to convert text into normal text
 	let sanitizeText = text.normalize('NFC');
 	sanitizeText = collapseWhiteSpaces(sanitizeText);
 	// eslint-disable-next-line no-control-regex
-	const invalidXMLRgx = RegExp(/[^\u0009\u000a\u000d\u0020-\uD7FF\uE000-\uFFFD]/gi);
+	// https://www.w3.org/TR/xml/#charsets remove invalid xml characters
+	const invalidXMLRgx = RegExp(/[^\u0020-\uD7FF\uE000-\uFFFD]/gi);
 	sanitizeText = sanitizeText.replace(invalidXMLRgx, '');
+	// get rid of all control charcters
 	const ccRegex = RegExp(/[\u200B\u00AD\p{Cc}]/gu);
 	sanitizeText = sanitizeText.replace(ccRegex, '');
 	sanitizeText = collapseWhiteSpaces(sanitizeText);
