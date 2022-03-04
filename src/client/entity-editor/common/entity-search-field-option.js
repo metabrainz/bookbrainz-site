@@ -146,6 +146,7 @@ class EntitySearchFieldOption extends React.Component {
 				classNamePrefix="react-select"
 				components={{Option: LinkedEntity, SingleValue: Entity}}
 				filterOptions={false}
+				// eslint-disable-next-line react/jsx-no-bind
 				getOptionLabel={getOptionLabel}
 				labelKey="text"
 				loadOptions={this.fetchOptions}

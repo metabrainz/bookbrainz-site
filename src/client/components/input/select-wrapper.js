@@ -102,7 +102,9 @@ class SelectWrapper extends React.Component {
 					<Child
 						{...props}
 						classNamePrefix="react-select"
+						// eslint-disable-next-line react/jsx-no-bind
 						getOptionLabel={getOptionLabel}
+						// eslint-disable-next-line react/jsx-no-bind
 						getOptionValue={getOptionValue}
 						isMulti={multiple}
 						ref={(ref) => this.select = ref}
