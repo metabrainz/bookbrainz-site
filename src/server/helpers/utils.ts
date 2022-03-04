@@ -341,6 +341,7 @@ export async function parseInitialState(req, type):Promise<Record<string, any>> 
 	const {Language} = orm;
 	// NameSection State
 	const initialState = Object.assign(emptyState, entity);
+	// We allow Editions (but not other entities) to have the same primary name as another Edition without requiring a disambiguation
 	if (initialState.nameSection.name && type !== 'edition') {
 		initialState.nameSection.searchResults = await search.autocomplete(orm, initialState.nameSection.name, type, 10);
 		initialState.nameSection.exactMatches = await search.checkIfExists(orm, initialState.nameSection.name, type);

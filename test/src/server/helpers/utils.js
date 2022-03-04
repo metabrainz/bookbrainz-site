@@ -1,11 +1,20 @@
+import {createPublisher, truncateEntities} from '../../../test-helpers/create-entities';
 import {generateIdenfierState, getIdByField, parseLanguages, searchOption} from '../../../../src/server/helpers/utils';
 import chai from 'chai';
 import {getNextEnabledAndResultsArray} from '../../../../src/common/helpers/utils';
 import orm from '../../../bookbrainz-data';
 
 
+const {Language, Alias, AliasSet} = orm;
 const {expect} = chai;
-
+const languageAttribs = {
+	frequency: 1,
+	isoCode1: 'en',
+	isoCode2b: 'eng',
+	isoCode2t: 'eng',
+	isoCode3: 'eng',
+	name: 'English'
+};
 describe('getNextEnabledAndResultsArray', () => {
 	it('should return an array of required length and nextEnabled:true when results.length > size', () => {
 		const array = Array(10).fill(0);
@@ -54,12 +63,20 @@ describe('getNextEnabledAndResultsArray', () => {
 });
 
 describe('getIdByField', () => {
+	after(truncateEntities);
 	it('should return null if item does not exists', async () => {
-		const {Language} = orm;
 		const fieldName = 'name';
 		const fieldValue = 'Japenglish';
 		const exId = await getIdByField(Language, fieldName, fieldValue);
 		expect(exId).to.be.null;
+	});
+	it('should return the ID for an existing item', async () => {
+		const language = await new Language(languageAttribs)
+			.save(null, {method: 'insert'});
+		const fieldName = 'name';
+		const fieldValue = languageAttribs.name;
+		const exId = await getIdByField(Language, fieldName, fieldValue);
+		expect(exId).to.equal(language.id);
 	});
 });
 describe('generateIdenfierState', () => {
@@ -85,19 +102,44 @@ describe('generateIdenfierState', () => {
 });
 
 describe('parseLanguages', () => {
+	after(truncateEntities);
 	it('should return correctly formatted languages state', async () => {
+		const language = await new Language(languageAttribs).save(null, {method: 'insert'});
 		const sourceEntityState = {
-			languages1: 'English'
+			languages1: languageAttribs.name
 		};
+		const expectedResult = [{label: languageAttribs.name, value: language.id}];
 		const result = await parseLanguages(sourceEntityState, orm);
-		expect(result.languages).to.be.a('array');
+		expect(result.languages).to.eql(expectedResult);
 	});
 });
 describe('searchOption', () => {
+	after(truncateEntities);
 	it('should return null if no exact match found', async () => {
 		const query = 'penguin';
 		const type = 'publisher';
 		const result = await searchOption(orm, type, query, 'bbid', true);
 		expect(result).to.be.null;
+	});
+	it('should return correct option if match found', async () => {
+		const language = await new Language({...languageAttribs})
+			.save(null, {method: 'insert'});
+		const defaultAlias = {
+			languageId: language.id,
+			name: 'penguin',
+			sortName: 'penguin'
+		};
+		const alias = await new Alias({...defaultAlias})
+			.save(null, {method: 'insert'});
+
+		const aliasSet = await new AliasSet({
+			defaultAliasId: alias.id
+		})
+			.save(null, {method: 'insert'});
+		await aliasSet.aliases().attach([alias.id]);
+		const publisher = await createPublisher(null, {aliasSetId: aliasSet.id});
+		const expectedResults = {disambiguation: null, id: publisher.get('bbid'), text: defaultAlias.name, type: 'Publisher'};
+		const result = await searchOption(orm, 'publisher', defaultAlias.name, 'bbid', true);
+		expect(result).to.eql(expectedResults);
 	});
 });

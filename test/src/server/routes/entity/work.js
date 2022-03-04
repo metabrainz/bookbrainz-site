@@ -61,7 +61,7 @@ describe('Work routes', () => {
 		expect(res).to.have.status(200);
 	});
 	it('should not throw not authorized error while seeding work', async () => {
-		const data = {};
+		const data = seedInitialState;
 		const res = await chai.request(app).post('/work/create').send(data);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);

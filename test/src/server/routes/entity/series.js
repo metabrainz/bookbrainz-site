@@ -79,7 +79,7 @@ describe('Series routes', () => {
 		expect(res).to.have.status(200);
 	});
 	it('should not throw not authorized error while seeding series', async () => {
-		const data = {};
+		const data = seedInitialState;
 		const res = await chai.request(app).post('/series/create').send(data);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);

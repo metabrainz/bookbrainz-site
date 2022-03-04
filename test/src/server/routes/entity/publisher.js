@@ -62,7 +62,7 @@ describe('Publisher routes', () => {
 		expect(res).to.have.status(200);
 	});
 	it('should not throw not authorized error while seeding publisher', async () => {
-		const data = {};
+		const data = seedInitialState;
 		const res = await chai.request(app).post('/publisher/create').send(data);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);

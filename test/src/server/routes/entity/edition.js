@@ -64,7 +64,7 @@ describe('Edition routes', () => {
 		expect(res).to.have.status(200);
 	});
 	it('should not throw not authorized error while seeding edition', async () => {
-		const data = {};
+		const data = seedInitialState;
 		const res = await chai.request(app).post('/edition/create').send(data);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
