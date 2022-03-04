@@ -37,7 +37,7 @@ function renderAuthors(authorData) {
 	return authorData.map(author => <tr key={author.authorbbid}><a href={`/author/${author.authorbbid}`}>{author.authoralias}</a></tr>);
 }
 
-function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities, onToggleRow}) {
+function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities, onToggleRow, showAuthors}) {
 	const name = getEntityLabel(work);
 	const authorData = work.authorsData;
 	const number = work.number || '?';
@@ -64,7 +64,7 @@ function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities
 				<a href={`/work/${work.bbid}`}>{name}</a>
 				{disambiguation}
 			</td>
-			<td>{authorData.length ? renderAuthors(authorData) : '?'}</td>
+			{showAuthors && <td>{authorData.length ? renderAuthors(authorData) : '?'}</td>}
 			<td>{languages}</td>
 			<td>{workType}</td>
 			{showAddedAtColumn ? <td>{addedAt}</td> : null}
@@ -88,6 +88,7 @@ WorkTableRow.defaultProps = {
 function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
 	if (works.length) {
+		const showAuthors = works[0].authorsData !== undefined;
 		tableContent = (
 			<React.Fragment>
 				<Table striped>
@@ -95,7 +96,7 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 						<tr>
 							{works[0].displayNumber && <th style={{width: '10%'}}>#</th>}
 							<th>Name</th>
-							<th>Author</th>
+							{showAuthors && <th>Author</th>}
 							<th>Languages</th>
 							<th>Type</th>
 							{
@@ -112,6 +113,7 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 									showAddedAtColumn={showAddedAtColumn}
 									showCheckboxes={showCheckboxes}
 									work={work}
+									showAuthors={showAuthors}
 									onToggleRow={onToggleRow}
 								/>
 							))
