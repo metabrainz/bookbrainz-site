@@ -101,10 +101,8 @@ export function sortRelationshipOrdinal(sortByProperty: string) {
  */
 export function collapseWhiteSpaces(text:string):string {
 	// replace any whitespace space characters
-	const spaceRegex = RegExp(/\s/gi);
-	const doubleRegex = RegExp(/\s{2,}/gi);
-	let sanitizedText = text.replace(spaceRegex, '\u0020');
-	sanitizedText = text.replace(doubleRegex, '\u0020');
+	const spaceRegex = RegExp(/\s+/gi);
+	const sanitizedText = text.replace(spaceRegex, '\u0020');
 	return sanitizedText.trim();
 }
 
