@@ -32,11 +32,13 @@ function EntityRelationships({contextEntity, relationships}) {
 						key={relationship.id}
 					>
 						<Relationship
-							link
-							contextEntity={contextEntity}
-							relationshipType={relationship.type}
-							sourceEntity={relationship.source}
-							targetEntity={relationship.target}
+							data={{
+								contextEntity,
+								link: true,
+								relationshipType: relationship.type,
+								sourceEntity: relationship.source,
+								targetEntity: relationship.target
+							}}
 						/>
 					</li>
 				))}

@@ -194,12 +194,12 @@ function EditionSection({
 		label: format.label,
 		value: format.id
 	}));
-	const formatOption = editionFormatsForDisplay.find((el) => el.value === formatValue);
+	const formatOption = editionFormatsForDisplay.filter((el) => el.value === formatValue);
 	const editionStatusesForDisplay = editionStatuses.map((status) => ({
 		label: status.label,
 		value: status.id
 	}));
-	const statusOption = editionStatusesForDisplay.find((el) => el.value === statusValue);
+	const statusOption = editionStatusesForDisplay.filter((el) => el.value === statusValue);
 	const {isValid: isValidReleaseDate, errorMessage: dateErrorMessage} = validateEditionSectionReleaseDate(releaseDateValue);
 
 	const hasmatchingNameEditionGroups = Array.isArray(matchingNameEditionGroups) && matchingNameEditionGroups.length > 0;

@@ -161,12 +161,12 @@ function AuthorSection({
 		label: gender.name,
 		value: gender.id
 	}));
-	const genderOption = genderOptionsForDisplay.find((el) => el.value === genderValue);
+	const genderOption = genderOptionsForDisplay.filter((el) => el.value === genderValue);
 	const authorTypesForDisplay = authorTypes.map((type) => ({
 		label: type.label,
 		value: type.id
 	}));
-	const typeOption = authorTypesForDisplay.find((el) => el.value === typeValue);
+	const typeOption = authorTypesForDisplay.filter((el) => el.value === typeValue);
 	const currentAuthorType = typeValue ? authorTypes.find(type => type.id === typeValue) : {id: 1, label: 'Person'};
 
 	const {isValid: isValidDob, errorMessage: dobError} = validateAuthorSectionBeginDate(beginDateValue);

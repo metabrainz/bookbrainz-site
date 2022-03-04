@@ -69,13 +69,13 @@ export function RelationshipList(
 			<Row className="margin-top-d5" key={rowID}>
 				<Col lg={onEdit || onRemove ? 8 : 12}>
 					<Relationship
-						link
-						showAttributes
-						attributes={attributes}
-						contextEntity={contextEntity}
-						relationshipType={relationshipType}
-						sourceEntity={sourceEntity}
-						targetEntity={targetEntity}
+						data={{attributes,
+							contextEntity,
+							link: true,
+							relationshipType,
+							showAttributes: true,
+							sourceEntity,
+							targetEntity}}
 					/>
 				</Col>
 				{(onEdit || onRemove) &&

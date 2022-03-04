@@ -124,7 +124,7 @@ function PublisherSection({
 		label: type.label,
 		value: type.id
 	}));
-	const typeOption = publisherTypesForDisplay.find((el) => el.value === typeValue);
+	const typeOption = publisherTypesForDisplay.filter((el) => el.value === typeValue);
 	const {isValid: isValidBeginDate, errorMessage: errorMessageBeginDate} = validatePublisherSectionBeginDate(beginDateValue);
 	const {isValid: isValidEndDate, errorMessage: errorMessageEndDate} = validatePublisherSectionEndDate(beginDateValue, endDateValue, endedChecked);
 	return (

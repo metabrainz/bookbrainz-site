@@ -148,13 +148,13 @@ function SeriesSection({
 		label: type.label,
 		value: type.id
 	}));
-	const orderTypeOption = seriesOrderingTypesForDisplay.find((el) => el.value === orderTypeValue);
+	const orderTypeOption = seriesOrderingTypesForDisplay.filter((el) => el.value === orderTypeValue);
 
 	const seriesTypesForDisplay = ['Author', 'Work', 'Edition', 'EditionGroup', 'Publisher'].map((type) => ({
 		label: type,
 		value: type
 	}));
-	const seriesTypeOption = seriesTypesForDisplay.find((el) => el.value === seriesTypeValue);
+	const seriesTypeOption = seriesTypesForDisplay.filter((el) => el.value === seriesTypeValue);
 	const orderingTooltip = (
 		<Tooltip>
 		Ordering Type of the Series Entity

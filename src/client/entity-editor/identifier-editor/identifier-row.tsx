@@ -89,7 +89,7 @@ function IdentifierRow({
 		label: type.label,
 		value: type.id
 	}));
-	const identifiierValue = identifierTypesForDisplay.find((el) => el.value === typeValue);
+	const identifiierValue = identifierTypesForDisplay.filter((el) => el.value === typeValue);
 	return (
 		<div>
 			<Row>

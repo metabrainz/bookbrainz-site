@@ -53,7 +53,7 @@ type Relationship = {
 	relationshipType: RelationshipType
 };
 
-function Relationship(props: SingleValueProps<Relationship> | OptionProps<Relationship>) {
+function Relationship(props: SingleValueProps<Relationship> | OptionProps<Relationship> | {data:Relationship}) {
 	const {contextEntity, link, relationshipType, sourceEntity, attributes, showAttributes, targetEntity} = props.data;
 	const {depth, description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
 
@@ -84,14 +84,22 @@ function Relationship(props: SingleValueProps<Relationship> | OptionProps<Relati
 			<RelationshipAttribute attributes={attributes} showAttributes={showAttributes}/>
 		</div>
 	);
+	let parentContainer;
+	if (props.getStyles) {
+		parentContainer = props.innerProps ? <components.Option {...props as OptionProps}> {child}</components.Option> : props.getStyles &&
+		<components.SingleValue {...props}>{child}</components.SingleValue>;
+	}
+	else {
+		parentContainer = <div>{child}</div>;
+	}
 	return (
 		<OverlayTrigger
 			delay={50}
 			overlay={<Tooltip id={`tooltip-${id}`}>{description}</Tooltip>}
 			placement="bottom"
 		>
-			{props.innerProps ? <components.Option {...props as OptionProps}> {child}</components.Option> :
-				<components.SingleValue {...props}>{child}</components.SingleValue>
+			{
+				parentContainer
 			}
 		</OverlayTrigger>
 	);
