@@ -83,6 +83,7 @@ WorkTableRow.propTypes = {
 WorkTableRow.defaultProps = {
 	onToggleRow: null,
 	selectedEntities: [],
+	showAuthors: false,
 	showCheckboxes: false
 };
 
