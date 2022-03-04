@@ -185,6 +185,7 @@ class NameSection extends React.Component {
 									{exactMatches.map((match) =>
 										(
 											<ListGroup.Item
+												action
 												href={`/${_.kebabCase(entityType)}/${match.bbid}`}
 												key={`${match.bbid}`}
 												rel="noopener noreferrer" target="_blank"
