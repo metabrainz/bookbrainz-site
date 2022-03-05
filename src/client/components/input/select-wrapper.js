@@ -69,13 +69,19 @@ class SelectWrapper extends React.Component {
 		return wangleID(childValue, this.props.idAttribute);
 	}
 
+	getOptionLabel(option) {
+		return option[this.props.labelAttribute];
+	}
+
+	getOptionValue(option) {
+		return option[this.props.idAttribute];
+	}
+
 	render() {
 		const {
 			base,
 			groupClassName,
-			idAttribute,
 			label,
-			labelAttribute,
 			labelClassName,
 			multiple,
 			wrapperClassName,
@@ -86,12 +92,6 @@ class SelectWrapper extends React.Component {
 		const Child = base;
 
 		const childValue = _.isNil(value) ? this.state.value : value;
-		function getOptionLabel(option) {
-			return option[labelAttribute];
-		}
-		function getOptionValue(option) {
-			return option[idAttribute];
-		}
 		return (
 			<Form.Group className={groupClassName}>
 				{
@@ -102,10 +102,8 @@ class SelectWrapper extends React.Component {
 					<Child
 						{...props}
 						classNamePrefix="react-select"
-						// eslint-disable-next-line react/jsx-no-bind
-						getOptionLabel={getOptionLabel}
-						// eslint-disable-next-line react/jsx-no-bind
-						getOptionValue={getOptionValue}
+						getOptionLabel={this.getOptionLabel}
+						getOptionValue={this.getOptionValue}
 						isMulti={multiple}
 						ref={(ref) => this.select = ref}
 						value={childValue}
