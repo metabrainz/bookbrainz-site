@@ -128,7 +128,11 @@ export function getNextEnabledAndResultsArray(array, size) {
  * @returns {string} ISBN-13
  */
 
-export function isbn10To13(isbn10:string):string {
+export function isbn10To13(isbn10:string):string | null {
+	const isbn10Regex = RegExp(/^(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$)[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$/);
+	if (!isbn10Regex.test(isbn10)) {
+		return null;
+	}
 	const tempISBN10 = `${isbn10}`.replaceAll('-', '');
 	let totalSum = 0;
 
@@ -148,7 +152,11 @@ export function isbn10To13(isbn10:string):string {
  * @returns {string} ISBN-10
  */
 
-export function isbn13To10(isbn13:string):string {
+export function isbn13To10(isbn13:string):string | null {
+	const isbn13Regex = RegExp(/^(?=[0-9]{13}$|(?=(?:[0-9]+[- ]){1,4})[- 0-9]{14,17}$)978[- ]?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9]$/);
+	if (!isbn13Regex.test(isbn13)) {
+		return null;
+	}
 	const tempISBN13 = isbn13.replaceAll('-', '');
 	let digits = [];
 	let sum = 0;
