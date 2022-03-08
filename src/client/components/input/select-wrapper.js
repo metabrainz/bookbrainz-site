@@ -130,7 +130,7 @@ SelectWrapper.propTypes = {
 	multiple: PropTypes.bool,
 	name: PropTypes.string,
 	onChange: PropTypes.func,
-	options: PropTypes.array.isRequired,
+	options: PropTypes.array,
 	value: PropTypes.oneOfType([
 		PropTypes.string,
 		PropTypes.number,
@@ -146,6 +146,7 @@ SelectWrapper.defaultProps = {
 	multiple: false,
 	name: null,
 	onChange: null,
+	options: [],
 	value: null,
 	wrapperClassName: null
 };

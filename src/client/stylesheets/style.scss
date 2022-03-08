@@ -28,8 +28,6 @@ $disabled-color: lighten($disabled-bg,15%);
 
 @import "lobes4/scss/bootstrap.scss";
 
-@import "react-virtualized/styles.css";
-@import "react-virtualized-select/styles.css";
 @import "react-datepicker/dist/react-datepicker.css";
 
 
@@ -278,6 +276,12 @@ a.contact-text:visited {
 
 
 /* react-select styling */
+.react-select__option {
+	background-color: white !important;
+	&:hover{
+		background-color: #deebff !important;
+	}
+}
 .react-select__menu {
 	z-index: 100 !important;
 }
