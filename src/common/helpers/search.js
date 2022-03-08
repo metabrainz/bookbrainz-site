@@ -84,6 +84,12 @@ async function _fetchEntityModelsForESResults(orm, results) {
 			collectionJSON.bbid = entityStub.bbid;
 			return collectionJSON;
 		}
+		if (entityStub.type === 'Language') {
+			entityStub.defaultAlias = {
+				name: entityStub.aliasSet?.aliases?.[0]?.name
+			};
+			return entityStub;
+		}
 		// Regular entity
 		const model = commonUtils.getEntityModelByType(orm, entityStub.type);
 		const entity = await model.forge({bbid: entityStub.bbid})
@@ -246,7 +252,7 @@ export function refreshIndex() {
 }
 
 export async function generateIndex(orm) {
-	const {Area, Author, Edition, EditionGroup, Editor, Publisher, Series, UserCollection, Work} = orm;
+	const {Area, Author, Edition, EditionGroup, Editor, Language, Publisher, Series, UserCollection, Work} = orm;
 	const indexMappings = {
 		mappings: {
 			_default_: {
@@ -380,14 +386,30 @@ export async function generateIndex(orm) {
 	}
 	await Promise.all(listIndexes);
 
+	/** To index entity names, we use aliasSet.aliases.name and bbid, which Areas and languages don't have.
+	 * We massage the JSON to return a similar format as BB entities
+	 */
+
+	/* Process Languages */
+	const languagesCollection = await Language.forge().fetchAll();
+	const languages = languagesCollection.toJSON();
+	const processedLanguages = languages.map((language) => ({
+		aliasSet: {
+			aliases: [
+				{name: language.name}
+			]
+		},
+		bbid: language.id,
+		type: 'Language'
+	}));
+	await _processEntityListForBulk(processedLanguages);
+
+	/* Process Areas */
 	const areaCollection = await Area.forge()
 		.fetchAll();
 
 	const areas = areaCollection.toJSON();
 
-	/** To index names, we use aliasSet.aliases.name and bbid, which Areas don't have.
-	 * We massage the area to return a similar format as BB entities
-	 */
 	const processedAreas = areas.map((area) => new Object({
 		aliasSet: {
 			aliases: [
