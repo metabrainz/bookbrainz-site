@@ -53,7 +53,7 @@ type Relationship = {
 	relationshipType: RelationshipType
 };
 
-function Relationship(props: SingleValueProps<Relationship> | OptionProps<Relationship> | {data:Relationship}) {
+function Relationship(props: SingleValueProps<Relationship> | OptionProps<Relationship, any> | {data:Relationship}) {
 	const {contextEntity, link, relationshipType, sourceEntity, attributes, showAttributes, targetEntity} = props.data;
 	const {depth, description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
 
@@ -86,7 +86,7 @@ function Relationship(props: SingleValueProps<Relationship> | OptionProps<Relati
 	);
 	let parentContainer;
 	if (props.getStyles) {
-		parentContainer = props.innerProps ? <components.Option {...props as OptionProps}> {child}</components.Option> : props.getStyles &&
+		parentContainer = props.innerProps ? <components.Option {...props as OptionProps<any, any>}> {child}</components.Option> : props.getStyles &&
 		<components.SingleValue {...props}>{child}</components.SingleValue>;
 	}
 	else {

@@ -80,7 +80,7 @@ class LinkedEntity extends React.Component<any, any> {
 
 	render() {
 		const option = this.getSafeOptionValue(this.props.data);
-		const styles = this.props.getStyles('option', {...this.props, isSelected: false});
+		const styles = this.props.getStyles('option', this.props);
 		const {disambiguation, text, type, unnamedText, language} = option;
 		const nameComponent = text || <i>{unnamedText}</i>;
 		return (

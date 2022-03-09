@@ -277,9 +277,11 @@ a.contact-text:visited {
 
 /* react-select styling */
 .react-select__option {
+	color: #46433a !important;
 	background-color: white !important;
 	&:hover{
 		background-color: #deebff !important;
+		color: #333;
 	}
 }
 .react-select__menu {

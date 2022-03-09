@@ -41,13 +41,15 @@ function wangleID(value, idAttribute) {
 class SelectWrapper extends React.Component {
 	constructor(props) {
 		super(props);
-
 		this.state = {
-			value: this.props.options.filter((el) => el.value === this.props.defaultValue)
+			value: this.props.defaultValue[this.props.idAttribute] ? this.props.defaultValue :
+			 this.props.options.filter((el) => el[this.props.idAttribute] === this.props.defaultValue)
 		};
 		this.currentValue = this.state.value;
 
 		this.handleChange = this.handleChange.bind(this);
+		this.getOptionLabel = this.getOptionLabel.bind(this);
+		this.getOptionValue = this.getOptionValue.bind(this);
 	}
 
 	handleChange(newValue) {
@@ -85,13 +87,11 @@ class SelectWrapper extends React.Component {
 			labelClassName,
 			multiple,
 			wrapperClassName,
-			value,
 			...props
 		} = this.props;
-
 		const Child = base;
 
-		const childValue = _.isNil(value) ? this.state.value : value;
+		const childValue = this.state.value;
 		return (
 			<Form.Group className={groupClassName}>
 				{
