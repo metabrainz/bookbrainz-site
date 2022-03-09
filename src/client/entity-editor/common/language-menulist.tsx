@@ -1,5 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import {MenuListProps} from 'react-select';
+import ResizeObserver from 'resize-observer-polyfill';
 import {Virtuoso} from 'react-virtuoso';
 
 
@@ -15,6 +16,10 @@ const MenuList = ({options, children, getValue}:MenuListProps) => {
 	const virtuosoRef = useRef(null);
 	const [option] = getValue();
 	const getInnerItem = (index) => <InnerItem>{children[index]}</InnerItem>;
+	useEffect(() => {
+		if (!window.ResizeObserver) { window.ResizeObserver = ResizeObserver; }
+	}, []);
+
 	useEffect(() => {
 		if (virtuosoRef?.current) {
 			let selectedOptionIndex = 0;

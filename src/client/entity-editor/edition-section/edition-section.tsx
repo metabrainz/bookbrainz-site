@@ -387,7 +387,7 @@ function EditionSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
-							className="react-select"
+							classNamePrefix="react-select"
 							instanceId="editionStatus"
 							options={editionStatusesForDisplay}
 							value={statusOption}
