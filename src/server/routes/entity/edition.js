@@ -182,6 +182,8 @@ router.get(
 
 			if (props.editionGroup) {
 				initialState.editionSection.editionGroup = props.editionGroup;
+				// Default to same name as Edition Group
+				initialState.nameSection = getInitialNameSection(props.editionGroup);
 				// add initial raltionship with relationshipTypeId = 3 (<New Edition> is an edition of <EditionGroup>)
 				relationshipTypeId = RelationshipTypes.EditionIsAnEditionOfEditionGroup;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.editionGroup);
