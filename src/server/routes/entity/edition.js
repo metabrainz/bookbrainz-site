@@ -20,8 +20,8 @@
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
-import * as utils from '../../helpers/utils';
 import * as search from '../../../common/helpers/search';
+import * as utils from '../../helpers/utils';
 
 import {
 	addInitialRelationship,
