@@ -171,9 +171,7 @@ router.get(
 			let relationshipTypeId;
 			let initialRelationshipIndex = 0;
 
-			if (props.publisher || props.editionGroup || props.work) {
-				initialState.editionSection = {};
-			}
+			initialState.editionSection = initialState.editionSection ?? {};
 
 			if (props.publisher) {
 				initialState.editionSection.publisher = props.publisher;
