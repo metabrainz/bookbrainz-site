@@ -21,6 +21,7 @@ import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
 import * as utils from '../../helpers/utils';
+import * as search from '../../../common/helpers/search';
 
 import {
 	addInitialRelationship,
@@ -157,7 +158,7 @@ router.get(
 					.then((data) => data && utils.entityToOption(data.toJSON()));
 		}
 
-		function render(props) {
+		async function render(props) {
 			const {initialState} = props;
 			initialState.nameSection = {
 				disambiguation: '',
@@ -194,6 +195,13 @@ router.get(
 				relationshipTypeId = RelationshipTypes.EditionContainsWork;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.work);
 			}
+
+			if (req.query?.name) {
+				// Initial search for existing Edition Group with same name
+				// Otherwise the search for matching EG is only triggered when user modifies the name
+				initialState.editionSection.matchingNameEditionGroups = await search.autocomplete(req.app.locals.orm, req.query.name, 'EditionGroup');
+			}
+
 			const editorMarkup = entityEditorMarkup(props);
 			const {markup} = editorMarkup;
 			const updatedProps = editorMarkup.props;
