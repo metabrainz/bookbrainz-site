@@ -36,10 +36,10 @@ import {
 	updateStatus
 } from './actions';
 
-import {Alert, Button, Col, ListGroup, Row} from 'react-bootstrap';
+import {Alert, Button, Col, Form, ListGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 import {DateObject, isNullDate} from '../../helpers/utils';
 import type {List, Map} from 'immutable';
-import {faClone, faExternalLinkAlt, faSearch} from '@fortawesome/free-solid-svg-icons';
+import {faClone, faExternalLinkAlt, faQuestionCircle, faSearch} from '@fortawesome/free-solid-svg-icons';
 import {
 	validateEditionSectionDepth,
 	validateEditionSectionEditionGroup,
@@ -49,7 +49,6 @@ import {
 	validateEditionSectionWeight,
 	validateEditionSectionWidth
 } from '../validators/edition';
-import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
 import type {Dispatch} from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
@@ -244,6 +243,18 @@ function EditionSection({
 		</React.Fragment>
 	);
 
+	const formatTooltip = (
+		<Tooltip>
+			The type of printing and binding of the edition, or digital equivalent
+		</Tooltip>
+	);
+
+	const statusTooltip = (
+		<Tooltip>
+			Has the work been published, or is it in a draft stage?
+		</Tooltip>
+	);
+
 	return (
 		<div>
 			<h2>
@@ -345,24 +356,42 @@ function EditionSection({
 			</Row>
 			<Row>
 				<Col lg={{offset: 3, span: 3}}>
-					<CustomInput label="Format" tooltipText="The type of printing and binding of the edition, or digital equivalent">
+					<Form.Group>
+						<Form.Label>
+							Format
+							<OverlayTrigger delay={50} overlay={formatTooltip}>
+								<FontAwesomeIcon
+									className="margin-left-0-5"
+									icon={faQuestionCircle}
+								/>
+							</OverlayTrigger>
+						</Form.Label>
 						<Select
 							instanceId="editionFormat"
 							options={editionFormatsForDisplay}
 							value={formatValue}
 							onChange={onFormatChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
 				<Col lg={3}>
-					<CustomInput label="Status" tooltipText="Has the work been published, or is it in a draft stage?">
+					<Form.Group>
+						<Form.Label>
+							Status
+							<OverlayTrigger delay={50} overlay={statusTooltip}>
+								<FontAwesomeIcon
+									className="margin-left-0-5"
+									icon={faQuestionCircle}
+								/>
+							</OverlayTrigger>
+						</Form.Label>
 						<Select
 							instanceId="editionStatus"
 							options={editionStatusesForDisplay}
 							value={statusValue}
 							onChange={onStatusChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
 			</Row>
 			<Row>

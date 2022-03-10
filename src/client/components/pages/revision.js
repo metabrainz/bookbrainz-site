@@ -21,7 +21,6 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 
-import CustomInput from '../../input';
 import EntityLink from '../entity-link';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -32,7 +31,7 @@ import request from 'superagent';
 import {transformISODateForDisplay} from '../../helpers/entity';
 
 
-const {Badge, Button, Col, ListGroup, Row} = bootstrap;
+const {Badge, Button, Col, Form, ListGroup, Row} = bootstrap;
 const {formatDate} = utilsHelper;
 
 class RevisionPage extends React.Component {
@@ -154,7 +153,7 @@ class RevisionPage extends React.Component {
 	handleSubmit(event) {
 		event.preventDefault();
 		const data = {
-			note: this.noteInput.getValue()
+			note: this.noteInput.value
 		};
 		request.post(`/revision/${this.props.revision.id}/note`)
 			.send(data)
@@ -276,13 +275,15 @@ class RevisionPage extends React.Component {
 							className="margin-top-2"
 							onSubmit={this.handleSubmit}
 						>
-							<CustomInput
-								autoComplete="off"
-								label="Add Note"
-								ref={(ref) => this.noteInput = ref}
-								rows="6"
-								type="textarea"
-							/>
+							<Form.Group>
+								<Form.Label>Add Note</Form.Label>
+								<Form.Control
+									as="textarea"
+									autoComplete="off"
+									ref={(ref) => this.noteInput = ref}
+									rows="6"
+								/>
+							</Form.Group>
 							<Button
 								className="float-right margin-top-1"
 								title="Submit revision note"

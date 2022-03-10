@@ -20,7 +20,6 @@
 import * as React from 'react';
 import * as bootstrap from 'react-bootstrap';
 
-import CustomInput from '../../../input';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
@@ -28,7 +27,7 @@ import {faSearch} from '@fortawesome/free-solid-svg-icons';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {Button, Col, Dropdown, DropdownButton, InputGroup, Row} = bootstrap;
+const {Button, Col, Dropdown, DropdownButton, InputGroup, Form, Row} = bootstrap;
 
 const SearchButton = (
 	<Button
@@ -167,13 +166,20 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 						role="search"
 						onSubmit={this.handleSubmit}
 					>
-						<CustomInput
-							buttonAfter={[entityTypeSelect, SearchButton]}
-							name="q"
-							type="text"
-							value={this.state.query}
-							onChange={this.handleChange}
-						/>
+						<Form.Group>
+							<InputGroup>
+								<Form.Control
+									name="q"
+									type="text"
+									value={this.state.query}
+									onChange={this.handleChange}
+								/>
+								<InputGroup.Append>
+									{entityTypeSelect}
+									{SearchButton}
+								</InputGroup.Append>
+							</InputGroup>
+						</Form.Group>
 					</form>
 				</Col>
 			</Row>

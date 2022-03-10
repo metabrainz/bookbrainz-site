@@ -16,14 +16,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Col, Row} from 'react-bootstrap';
+import {Col, Form, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 import {convertMapToObject, formatDate} from '../../helpers/utils';
 
-import CustomInput from '../../input';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
 import {debounceUpdateAnnotation} from './actions';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Container component. The AnnotationSection component contains a
@@ -48,6 +49,12 @@ function AnnotationSection({
 		</span>
 	);
 
+	const tooltip = (
+		<Tooltip>
+			Additional freeform data that does not fit in the above form
+		</Tooltip>
+	);
+
 	return (
 		<div>
 			<h2>
@@ -55,14 +62,23 @@ function AnnotationSection({
 			</h2>
 			<Row>
 				<Col lg={{offset: 3, span: 6}}>
-					<CustomInput
-						defaultValue={annotation.content}
-						label={annotationLabel}
-						rows="4"
-						tooltipText="Additional freeform data that does not fit in the above form"
-						type="textarea"
-						onChange={onAnnotationChange}
-					/>
+					<Form.Group>
+						<Form.Label>
+							{annotationLabel}
+							<OverlayTrigger delay={50} overlay={tooltip}>
+								<FontAwesomeIcon
+									className="margin-left-0-5"
+									icon={faQuestionCircle}
+								/>
+							</OverlayTrigger>
+						</Form.Label>
+						<Form.Control
+							as="textarea"
+							defaultValue={annotation.content}
+							rows="4"
+							onChange={onAnnotationChange}
+						/>
+					</Form.Group>
 					{
 						annotation && annotation.lastRevision &&
 						<p className="small text-muted">Last modified: {formatDate(new Date(annotation.lastRevision.createdAt))}</p>

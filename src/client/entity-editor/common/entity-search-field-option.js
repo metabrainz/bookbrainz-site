@@ -17,14 +17,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import CustomInput from '../../input';
+import {Form, InputGroup, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import Entity from './entity';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LinkedEntity from './linked-entity';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {Async as SelectAsync} from 'react-select';
 import ValidationLabel from '../common/validation-label';
 import _ from 'lodash';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import makeImmutable from './make-immutable';
 import request from 'superagent';
 
@@ -105,20 +107,58 @@ class EntitySearchFieldOption extends React.Component {
 		};
 	}
 
+	renderInputGroup({
+		buttonAfter, help, wrappedSelect, ...props
+	}) {
+		if (!buttonAfter) {
+			return (
+				<>
+					{React.cloneElement(wrappedSelect, props)}
+					{help && <Form.Text muted>{help}</Form.Text>}
+				</>
+			);
+		}
+
+		return (
+			<InputGroup>
+				{React.cloneElement(wrappedSelect, props)}
+				{help && <Form.Text muted>{help}</Form.Text>}
+				<InputGroup.Append>{buttonAfter}</InputGroup.Append>
+			</InputGroup>
+		);
+	}
+
 	render() {
 		const labelElement = <ValidationLabel empty={this.props.empty} error={this.props.error}>{this.props.label}</ValidationLabel>;
+		const helpIconElement = this.props.tooltipText && (
+			<OverlayTrigger
+				delay={50}
+				overlay={<Tooltip>{this.props.tooltipText}</Tooltip>}
+			>
+				<FontAwesomeIcon className="margin-left-0-5" icon={faQuestionCircle}/>
+			</OverlayTrigger>
+		);
+
+		const wrappedSelect = (
+			<ImmutableAsyncSelect
+				filterOptions={false}
+				labelKey="text"
+				loadOptions={this.fetchOptions}
+				optionComponent={LinkedEntity}
+				valueRenderer={Entity}
+				onBlurResetsInput={false}
+				{...this.props}
+			/>
+		);
+
 		return (
-			<CustomInput label={labelElement} tooltipText={this.props.tooltipText} {...this.props}>
-				<ImmutableAsyncSelect
-					filterOptions={false}
-					labelKey="text"
-					loadOptions={this.fetchOptions}
-					optionComponent={LinkedEntity}
-					valueRenderer={Entity}
-					onBlurResetsInput={false}
-					{...this.props}
-				/>
-			</CustomInput>
+			<Form.Group>
+				<Form.Label>
+					{labelElement}
+					{helpIconElement}
+				</Form.Label>
+				{this.renderInputGroup({wrappedSelect, ...this.props})}
+			</Form.Group>
 		);
 	}
 }
