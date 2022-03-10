@@ -20,10 +20,8 @@
 import * as React from 'react';
 import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import MenuList from './language-menulist';
-import Option from './language-option';
-import Select from 'react-select';
 import ValidationLabel from './validation-label';
+import VirtualizedSelect from 'react-virtualized-select';
 import createFilterOptions from 'react-select-fast-filter-options';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
@@ -59,11 +57,11 @@ function LanguageField({
 	;
 
 	const tooltip = <Tooltip>{tooltipText}</Tooltip>;
-	const {options, value} = rest;
+	const {options} = rest;
 	const filterOptions = createFilterOptions({
 		options
 	});
-	rest.value = rest.isMulti ? rest.value : options.filter((el) => el.value === value);
+	// rest.value = rest.isMulti ? rest.value : options.filter((el) => el.value === value);
 	return (
 		<Form.Group>
 			<Form.Label>
@@ -75,13 +73,7 @@ function LanguageField({
 					/>
 				</OverlayTrigger>
 			</Form.Label>
-			<Select
-				classNamePrefix="react-select"
-				components={{
-					MenuList,
-					Option
-				}} filterOption={filterOptions} {...rest}
-			/>
+			<VirtualizedSelect filterOptions={filterOptions} {...rest}/>
 		</Form.Group>
 	);
 }
