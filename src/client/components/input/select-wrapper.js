@@ -41,10 +41,15 @@ function wangleID(value, idAttribute) {
 class SelectWrapper extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			value: this.props.defaultValue[this.props.idAttribute] ? this.props.defaultValue :
-			 this.props.options.filter((el) => el[this.props.idAttribute] === this.props.defaultValue)
-		};
+		if (this.props.defaultValue) {
+			this.state = {
+				value: this.props.defaultValue[this.props.idAttribute] ? this.props.defaultValue :
+				 this.props.options.filter((el) => el[this.props.idAttribute] === this.props.defaultValue)
+			};
+		}
+		else {
+			this.state = null;
+		}
 		this.currentValue = this.state.value;
 
 		this.handleChange = this.handleChange.bind(this);
