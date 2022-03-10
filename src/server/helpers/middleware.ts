@@ -17,12 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
+
 import type {Response as $Response, NextFunction, Request} from 'express';
+
 import _ from 'lodash';
+import {getRelationshipTargetBBIDByTypeId} from '../../client/helpers/entity';
 
 
 interface $Request extends Request {
@@ -102,6 +104,21 @@ export function loadSeriesItems(req: $Request, res: $Response, next: NextFunctio
 	catch (err) {
 		return next(err);
 	}
+}
+
+export async function loadWorkTableAuthors(req: $Request, res: $Response, next: NextFunction) {
+	const {orm}: any = req.app.locals;
+	const {entity} = res.locals;
+	try {
+		const workBBIDs = getRelationshipTargetBBIDByTypeId(entity, 10);
+		const authorsData = await orm.func.work.loadAuthorNames(orm, workBBIDs);
+		const authorsDataGroupedByWorkBBID = _.groupBy(authorsData, 'workbbid');
+		entity.authorsData = authorsDataGroupedByWorkBBID;
+	}
+	catch (err) {
+		return next(err);
+	}
+	return next();
 }
 
 export function loadEntityRelationships(req: $Request, res: $Response, next: NextFunction) {

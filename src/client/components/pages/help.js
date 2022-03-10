@@ -57,14 +57,14 @@ function HelpPage() {
 			</p>
 
 			<Row>
-				<Col lg={4}>
+				<Col lg={6}>
 					<img
 						alt="Entity relationships"
 						className="img-fluid center-block"
 						src="/images/entity_relationships.svg"
 					/>
 				</Col>
-				<Col className="margin-top-2" lg={8}>
+				<Col className="margin-top-2" lg={6}>
 					<ListGroup>
 						<ListGroup.Item><b>{genEntityIconHTMLElement('Author')}Author</b> – an individual, group or collective that participates in the creative process of an artistic work. It also includes translators, illustrators, editors, etc.</ListGroup.Item>
 						<ListGroup.Item>
@@ -72,6 +72,12 @@ function HelpPage() {
 							Here we are not talking, for example, about a physical book, but the introduction, story, illustrations, etc. it contains.
 							<ul>
 								<li>Examples: novel, poem, translation, introduction & foreword, article, research paper, etc.</li>
+							</ul>
+						</ListGroup.Item>
+						<ListGroup.Item>
+							<b>{genEntityIconHTMLElement('Series')}Series</b> – a set or sequence of related works, editions, authors, publishers or edition-groups.
+							<ul>
+								<li>Examples: a series of novels, a series of comics, etc.</li>
 							</ul>
 						</ListGroup.Item>
 						<ListGroup.Item>
