@@ -204,7 +204,8 @@ router.get(
 			if (initialState.nameSection.name) {
 				// Initial search for existing Edition Group with same name
 				// Otherwise the search for matching EG is only triggered when user modifies the name
-				initialState.editionSection.matchingNameEditionGroups = props.editionGroup ?? await search.autocomplete(req.app.locals.orm, req.query.name, 'EditionGroup');
+				initialState.editionSection.matchingNameEditionGroups = props.editionGroup ??
+					await search.autocomplete(req.app.locals.orm, req.query.name, 'EditionGroup');
 			}
 
 			const editorMarkup = entityEditorMarkup(props);
