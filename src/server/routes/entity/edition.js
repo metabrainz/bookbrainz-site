@@ -20,6 +20,7 @@
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
+import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
 import {
@@ -34,6 +35,7 @@ import {RelationshipTypes} from '../../../client/entity-editor/relationship-edit
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import log from 'log';
 import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
@@ -157,7 +159,7 @@ router.get(
 					.then((data) => data && utils.entityToOption(data.toJSON()));
 		}
 
-		function render(props) {
+		async function render(props) {
 			const {initialState} = props;
 			initialState.nameSection = {
 				disambiguation: '',
@@ -194,6 +196,18 @@ router.get(
 				relationshipTypeId = RelationshipTypes.EditionContainsWork;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.work);
 			}
+
+			if (initialState.nameSection?.name) {
+				const {name} = initialState.nameSection;
+				try {
+					initialState.nameSection.searchResults = await search.autocomplete(req.app.locals.orm, name, 'Edition');
+					initialState.nameSection.exactMatches = await search.checkIfExists(req.app.locals.orm, name, 'Edition');
+				}
+				catch (err) {
+					log.debug(err);
+				}
+			}
+
 			const editorMarkup = entityEditorMarkup(props);
 			const {markup} = editorMarkup;
 			const updatedProps = editorMarkup.props;
