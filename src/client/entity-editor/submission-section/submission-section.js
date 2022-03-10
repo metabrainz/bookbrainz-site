@@ -83,7 +83,7 @@ function SubmissionSection({
 								/>
 							</OverlayTrigger>
 						</Form.Label>
-						<Form.Control as="textarea" rows="6" defaultValue={note} onChange={onNoteChange}/>
+						<Form.Control as="textarea" defaultValue={note} rows="6" onChange={onNoteChange}/>
 					</Form.Group>
 					<p className="text-muted">
 						{`An edit note will make your entries more credible. Reply to one or more of these questions in the textarea below:
