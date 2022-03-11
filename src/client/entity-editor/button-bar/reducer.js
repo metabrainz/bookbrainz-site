@@ -16,18 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {
-	SHOW_ALIAS_EDITOR, SHOW_IDENTIFIER_EDITOR
-} from './actions';
 import {HIDE_ALIAS_EDITOR} from '../alias-editor/actions';
-import {HIDE_IDENTIFIER_EDITOR} from '../identifier-editor/actions';
 import Immutable from 'immutable';
+import {SHOW_ALIAS_EDITOR} from './actions';
 
 
 function reducer(
 	state = Immutable.Map({
-		aliasEditorVisible: false,
-		identifierEditorVisible: false
+		aliasEditorVisible: false
 	}),
 	action
 ) {
@@ -36,10 +32,6 @@ function reducer(
 			return state.set('aliasEditorVisible', true);
 		case HIDE_ALIAS_EDITOR:
 			return state.set('aliasEditorVisible', false);
-		case SHOW_IDENTIFIER_EDITOR:
-			return state.set('identifierEditorVisible', true);
-		case HIDE_IDENTIFIER_EDITOR:
-			return state.set('identifierEditorVisible', false);
 		// no default
 	}
 	return state;

@@ -20,7 +20,6 @@ export const ADD_IDENTIFIER_ROW = 'ADD_IDENTIFIER_ROW';
 export const REMOVE_IDENTIFIER_ROW = 'REMOVE_IDENTIFIER_ROW';
 export const UPDATE_IDENTIFIER_TYPE = 'UPDATE_IDENTIFIER_TYPE';
 export const UPDATE_IDENTIFIER_VALUE = 'UPDATE_IDENTIFIER_VALUE';
-export const HIDE_IDENTIFIER_EDITOR = 'HIDE_IDENTIFIER_EDITOR';
 export const REMOVE_EMPTY_IDENTIFIERS = 'REMOVE_EMPTY_IDENTIFIERS';
 
 export type Action = {
@@ -30,20 +29,6 @@ export type Action = {
 		debounce?: string
 	}
 };
-
-/**
- * Produces an action indicating that the identifier editor should be hidden
- * from view.
- *
- * @see showIdentifierEditor
- *
- * @returns {Action} The resulting HIDE_IDENTIFIER_EDITOR action.
- */
-export function hideIdentifierEditor(): Action {
-	return {
-		type: HIDE_IDENTIFIER_EDITOR
-	};
-}
 
 let nextIdentifierRowId = 0;
 
