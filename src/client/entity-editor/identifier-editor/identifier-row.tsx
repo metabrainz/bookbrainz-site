@@ -44,10 +44,12 @@ type OwnProps = {
 
 type StateProps = {
 	valueValue: string,
-	typeValue: number
+	typeValue: number,
+	showOptions: boolean
 };
 
 type DispatchProps = {
+	onBlur: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
 	onTypeChange: (obj: {value: number}) => unknown,
 	onRemoveButtonClick: () => unknown,
 	onValueChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown
@@ -74,13 +76,17 @@ type Props = StateProps & DispatchProps & OwnProps;
  *        the button to remove the identifier is clicked.
  * @param {Function} props.onValueChange - A function to be called when the
  *        value for the identifier is changed.
+ * @param {Function} props.onBlur - A function to be called when the identifier
+ *        field goes out of focus.
  * @returns {ReactElement} React element containing the rendered IdentifierRow.
  */
 function IdentifierRow({
 	index,
+	showOptions,
 	typeOptions,
 	valueValue,
 	typeValue,
+	onBlur,
 	onTypeChange,
 	onRemoveButtonClick,
 	onValueChange
@@ -93,39 +99,44 @@ function IdentifierRow({
 	return (
 		<div>
 			<Row>
-				<Col lg={4}>
+				<Col lg={{offset: 3, span: 6}}>
 					<ValueField
 						defaultValue={valueValue}
 						empty={!valueValue && typeValue === null}
 						error={!validateIdentifierValue(
 							valueValue, typeValue, typeOptions
 						)}
+						onBlur={onBlur}
 						onChange={onValueChange}
 					/>
 				</Col>
-				<Col lg={4}>
-					<Form.Group>
-						<Form.Label>Type</Form.Label>
-						<Select
-							instanceId={`identifierType${index}`}
-							options={identifierTypesForDisplay}
-							value={typeValue}
-							onChange={onTypeChange}
-						/>
-					</Form.Group>
-				</Col>
-				<Col className="text-right" lg={{offset: 1, span: 3}}>
-					<Button
-						block
-						className="margin-top-d15"
-						variant="danger"
-						onClick={onRemoveButtonClick}
-					>
-						<FontAwesomeIcon icon={faTimes}/>
-						<span>&nbsp;Remove</span>
-					</Button>
-				</Col>
 			</Row>
+			{showOptions && (
+				<Row>
+					<Col lg={{offset: 3, span: 4}}>
+						<Form.Group>
+							<Form.Label>Type</Form.Label>
+							<Select
+								instanceId={`identifierType${index}`}
+								options={identifierTypesForDisplay}
+								value={typeValue}
+								onChange={onTypeChange}
+							/>
+						</Form.Group>
+					</Col>
+					<Col className="text-right" lg={{offset: 0, span: 2}}>
+						<Button
+							block
+							className="margin-top-d21"
+							variant="danger"
+							onClick={onRemoveButtonClick}
+						>
+							<FontAwesomeIcon icon={faTimes}/>
+							<span>&nbsp;Remove</span>
+						</Button>
+					</Col>
+				</Row>
+			)}
 			<hr/>
 		</div>
 	);
@@ -152,11 +163,30 @@ function handleValueChange(
 }
 
 
+function handleBlur(
+	dispatch: Dispatch<Action>,
+	event: React.ChangeEvent<HTMLInputElement>,
+	index: number
+) {
+	if (event.target.value === '') {
+		return dispatch(removeIdentifierRow(index));
+	}
+	return null;
+}
+
+
 function mapStateToProps(rootState, {index}: OwnProps): StateProps {
 	const state = rootState.get('identifierEditor');
+	const typeValue = state.getIn([index, 'type']);
+	const valueValue = state.getIn([index, 'value']);
+	let showOptions = true;
+	if (valueValue === null || valueValue === '') {
+		showOptions = false;
+	}
 	return {
-		typeValue: state.getIn([index, 'type']),
-		valueValue: state.getIn([index, 'value'])
+		showOptions,
+		typeValue,
+		valueValue
 	};
 }
 
@@ -166,6 +196,8 @@ function mapDispatchToProps(
 	{index, typeOptions}: OwnProps
 ): DispatchProps {
 	return {
+		onBlur: (event: React.ChangeEvent<HTMLInputElement>) =>
+			handleBlur(dispatch, event, index),
 		onRemoveButtonClick: () => dispatch(removeIdentifierRow(index)),
 		onTypeChange: (value: {value: number}) =>
 			dispatch(updateIdentifierType(index, value && value.value)),
