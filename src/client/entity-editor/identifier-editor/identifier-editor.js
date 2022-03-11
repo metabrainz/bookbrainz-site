@@ -39,6 +39,8 @@ import {connect} from 'react-redux';
  *        identifier.
  * @param {Function} props.onAddIdentifier - A function to be called when the
  *        button to add an identifier is clicked.
+ * @param {Function} props.addIdentifierVisible - A boolean value to determine
+ *        if 'Add Identifier' button should be visible.
  * @returns {ReactElement} React element containing the rendered
  *          IdentifierEditor.
  */

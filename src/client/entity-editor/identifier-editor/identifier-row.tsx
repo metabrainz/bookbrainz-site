@@ -70,6 +70,8 @@ type Props = StateProps & DispatchProps & OwnProps;
  * @param {number} props.typeValue - The ID of the type currently selected.
  * @param {string} props.valueValue - The value currently set for this
  *        identifier.
+ * @param {string} props.showOptions - The boolean value to determine
+ *        if type field and remove button should be visible.
  * @param {Function} props.onTypeChange - A function to be called when a new
  *        identifier type is selected.
  * @param {Function} props.onRemoveButtonClick - A function to be called when
@@ -82,10 +84,10 @@ type Props = StateProps & DispatchProps & OwnProps;
  */
 function IdentifierRow({
 	index,
-	showOptions,
 	typeOptions,
 	valueValue,
 	typeValue,
+	showOptions,
 	onBlur,
 	onTypeChange,
 	onRemoveButtonClick,
