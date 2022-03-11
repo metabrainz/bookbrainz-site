@@ -16,15 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Col, Modal, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
-import {addIdentifierRow, hideIdentifierEditor, removeEmptyIdentifiers} from './actions';
+import {Button, Col, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 import {faPlus, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import IdentifierRow from './identifier-row';
 import PropTypes from 'prop-types';
 import React from 'react';
-import classNames from 'classnames';
+import {addIdentifierRow} from './actions';
 import {connect} from 'react-redux';
 
 
@@ -40,23 +39,15 @@ import {connect} from 'react-redux';
  *        identifier.
  * @param {Function} props.onAddIdentifier - A function to be called when the
  *        button to add an identifier is clicked.
- * @param {Function} props.onClose - A function to be called when the button to
- *        close the editor is clicked.
- * @param {boolean} props.show - Whether or not the editor modal should be
- *        visible.
  * @returns {ReactElement} React element containing the rendered
  *          IdentifierEditor.
  */
 const IdentifierEditor = ({
 	identifiers,
 	identifierTypes,
-	onAddIdentifier,
-	onClose,
-	show
+	addIdentifierVisible,
+	onAddIdentifier
 }) => {
-	const noIdentifiersTextClass =
-		classNames('text-center', {'d-none': identifiers.size});
-
 	const helpText = `identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc.
 	You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).`;
 
@@ -74,70 +65,59 @@ const IdentifierEditor = ({
 	);
 
 	return (
-		<Modal show={show} size="lg" onHide={onClose}>
-			<Modal.Header>
-				<Modal.Title>
-					Identifier Editor {helpIconElement}
-				</Modal.Title>
-			</Modal.Header>
-
-			<Modal.Body>
-				<div className={noIdentifiersTextClass}>
-					<p className="text-muted">This entity has no identifiers</p>
-				</div>
-				<div>
-					{
-						identifiers.map((identifier, rowId) => (
-							<IdentifierRow
-								index={rowId}
-								// eslint-disable-next-line react/no-array-index-key
-								key={rowId}
-								typeOptions={identifierTypes}
-							/>
-						)).toArray()
-					}
-				</div>
+		<div>
+			<h2>
+			Add identifiers {helpIconElement}
+			</h2>
+			<div>
+				{
+					identifiers.map((identifier, rowId) => (
+						<IdentifierRow
+							index={rowId}
+							// eslint-disable-next-line react/no-array-index-key
+							key={rowId}
+							typeOptions={identifierTypes}
+						/>
+					)).toArray()
+				}
+			</div>
+			{addIdentifierVisible && (
 				<Row>
-					<Col className="text-right" lg={{offset: 9, span: 3}}>
+					<Col className="text-center" lg={{offset: 4, span: 4}}>
 						<Button variant="success" onClick={onAddIdentifier}>
 							<FontAwesomeIcon icon={faPlus}/>
 							<span>&nbsp;Add identifier</span>
 						</Button>
 					</Col>
 				</Row>
-			</Modal.Body>
-
-			<Modal.Footer>
-				<Button variant="primary" onClick={onClose}>Close</Button>
-			</Modal.Footer>
-		</Modal>
+			)}
+		</div>
 	);
 };
 IdentifierEditor.displayName = 'IdentifierEditor';
 IdentifierEditor.propTypes = {
+	addIdentifierVisible: PropTypes.bool.isRequired,
 	identifierTypes: PropTypes.array.isRequired,
 	identifiers: PropTypes.object.isRequired,
-	onAddIdentifier: PropTypes.func.isRequired,
-	onClose: PropTypes.func.isRequired,
-	show: PropTypes.bool
-};
-IdentifierEditor.defaultProps = {
-	show: false
+	onAddIdentifier: PropTypes.func.isRequired
 };
 
 function mapStateToProps(state) {
+	const identifiers = state.get('identifierEditor');
+	let visible = true;
+	if (identifiers && identifiers.filter(identifier =>
+		identifier.get('value') === '' && identifier.get('type') === null).size !== 0) {
+		visible = false;
+	}
 	return {
+		addIdentifierVisible: visible,
 		identifiers: state.get('identifierEditor')
 	};
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
-		onAddIdentifier: () => dispatch(addIdentifierRow()),
-		onClose: () => {
-			dispatch(hideIdentifierEditor());
-			dispatch(removeEmptyIdentifiers());
-		}
+		onAddIdentifier: () => dispatch(addIdentifierRow())
 	};
 }
 
