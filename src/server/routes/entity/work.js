@@ -26,6 +26,7 @@ import {
 	addInitialRelationship,
 	entityEditorMarkup,
 	generateEntityProps,
+	makeAddRelationshipHandler,
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
@@ -69,6 +70,8 @@ function transformNewForm(data) {
 		typeId: data.workSection.type
 	};
 }
+
+const addRelationshipHandler = makeAddRelationshipHandler('work');
 
 const createOrEditHandler = makeEntityCreateOrEditHandler(
 	'work', transformNewForm, 'typeId'
@@ -198,6 +201,8 @@ router.post(
 		);
 	}
 );
+
+router.post('/:bbid/relationships', auth.isAuthenticatedForHandler, addRelationshipHandler);
 
 router.get('/:bbid/revisions', (req, res, next) => {
 	const {WorkRevision} = req.app.locals.orm;

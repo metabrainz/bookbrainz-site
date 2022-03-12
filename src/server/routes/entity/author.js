@@ -25,6 +25,7 @@ import * as utils from '../../helpers/utils';
 import {
 	entityEditorMarkup,
 	generateEntityProps,
+	makeAddRelationshipHandler,
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
@@ -76,6 +77,8 @@ function transformNewForm(data) {
 		typeId: data.authorSection.type
 	};
 }
+
+const addRelationshipHandler = makeAddRelationshipHandler('author');
 
 const createOrEditHandler = makeEntityCreateOrEditHandler(
 	'author', transformNewForm, additionalAuthorProps
@@ -158,6 +161,8 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
 	_setAuthorTitle(res);
 	return entityRoutes.displayDeleteEntity(req, res);
 });
+
+router.post('/:bbid/relationships', auth.isAuthenticatedForHandler, addRelationshipHandler);
 
 router.post(
 	'/:bbid/delete/handler', auth.isAuthenticatedForHandler,

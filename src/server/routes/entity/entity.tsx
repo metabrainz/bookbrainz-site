@@ -992,6 +992,67 @@ async function indexAutoCreatedEditionGroup(orm, newEdition, transacting) {
 	}
 }
 
+export function handleAddRelationship(
+	req:PassportRequest,
+	res:$Response,
+	entityType:EntityTypeString
+) {
+	const {body} = req;
+	const {orm} = req.app.locals;
+	const editorJSON = req.user;
+	const {Revision, bookshelf} = orm;
+	const currentEntity: {
+		aliasSet: {id: number} | null | undefined,
+		annotation: {id: number} | null | undefined,
+		bbid: string,
+		disambiguation: {id: number} | null | undefined,
+		identifierSet: {id: number} | null | undefined,
+		type: EntityTypeString
+	} | null | undefined = res.locals.entity;
+	const entityEditPromise = bookshelf.transaction(async (transacting) => {
+		const newRevision = await new Revision({
+			authorId: editorJSON.id,
+			isMerge: false
+		}).save(null, {transacting});
+		const relationshipSets = await getNextRelationshipSets(
+			orm, transacting, currentEntity, body
+		);
+		if (_.isEmpty(relationshipSets)) {
+			throw new error.FormSubmissionError('No Updated Relationship Field');
+		}
+		// Fetch main entity
+		const mainEntity = await fetchOrCreateMainEntity(
+			orm, transacting, false, currentEntity.bbid, entityType
+		);
+		// Fetch all entities that definitely exist
+		const otherEntities = await fetchEntitiesForRelationships(
+			orm, transacting, currentEntity, relationshipSets
+		);
+		otherEntities.forEach(entity => { entity.shouldInsert = false; });
+		mainEntity.shouldInsert = false;
+		const allEntities = [...otherEntities, mainEntity]
+			.filter(entity => entity.get('dataId') !== null);
+		_.forEach(allEntities, (entityModel) => {
+			const bbid: string = entityModel.get('bbid');
+			if (_.has(relationshipSets, bbid)) {
+				entityModel.set(
+					'relationshipSetId',
+					// Set to relationshipSet id or null if empty set
+					relationshipSets[bbid] && relationshipSets[bbid].get('id')
+				);
+			}
+		});
+		const savedMainEntity = await saveEntitiesAndFinishRevision(
+			orm, transacting, false, newRevision, mainEntity, allEntities,
+			editorJSON.id, body.note
+		);
+		return savedMainEntity.toJSON();
+	});
+	return handler.sendPromiseResult(
+		res,
+		entityEditPromise
+	);
+}
 export function handleCreateOrEditEntity(
 	req: PassportRequest,
 	res: $Response,
