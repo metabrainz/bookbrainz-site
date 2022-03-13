@@ -324,7 +324,7 @@ export function makeAddRelationshipHandler(entityType:string) {
 	const entityName = _.upperFirst(entityType);
 	return function addRelationsipHandler(req:PassportRequest, res:$Response) {
 		if (!req.body.relationships) {
-			throw new error.ConflictError('Relationships field not found!');
+			throw new error.BadRequestError('Relationships field does not exist on request body!');
 		}
 		req.body.relationships = entityRoutes.constructRelationships(req.body);
 		return entityRoutes.handleAddRelationship(req, res, entityName as EntityTypeString);

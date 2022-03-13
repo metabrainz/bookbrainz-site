@@ -20,11 +20,12 @@ import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import * as utilHelper from '../../../helpers/utils';
 
+import React, {useState} from 'react';
 import {faBook, faPlus} from '@fortawesome/free-solid-svg-icons';
 
+import AddEntityRelationModal from '../parts/add-entity-relation-modal';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 
 
@@ -32,7 +33,7 @@ const {
 	getEditionReleaseDate, getEntityLabel, getEntityDisambiguation,
 	getISBNOfEdition, getEditionFormat
 } = entityHelper;
-const {Button, Table} = bootstrap;
+const {Alert, Button, Table} = bootstrap;
 
 function EditionTableRow({edition, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(edition);
@@ -95,8 +96,28 @@ EditionTableRow.defaultProps = {
 	showCheckboxes: false
 };
 
-function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
+function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckboxes, selectedEntities, onToggleRow, relationshipTypeId}) {
 	let tableContent;
+	const [show, setShow] = useState(false);
+	const [message, setMessage] = useState({});
+	const haveRelationshipId = Boolean(relationshipTypeId);
+	function onCloseModalHandler() {
+		setShow(false);
+	}
+	function handleOpenModal() {
+		setShow(true);
+	}
+	function closeModalAndShowMessage(msg) {
+		setMessage(msg);
+		onCloseModalHandler();
+	}
+	function handleAlertDismiss() {
+		setMessage({});
+	}
+	const submitUrl = `/${entity.type.toLowerCase()}/${
+		entity.bbid
+	}/relationships`;
+	const buttonProps = !haveRelationshipId ? {href: `/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`} : {onClick: handleOpenModal};
 	if (editions.length) {
 		tableContent = (
 			<React.Fragment>
@@ -128,15 +149,17 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckbo
 						}
 					</tbody>
 				</Table>
-				{showAdd &&
+				{showAdd && (
 					<Button
 						className="margin-top-d15"
-						href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 						variant="success"
+						{...buttonProps}
+
 					>
 						<FontAwesomeIcon icon={faPlus}/>
 						{'  Add Edition'}
 					</Button>
+				)
 				}
 			</React.Fragment>
 		);
@@ -146,8 +169,8 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckbo
 			<React.Fragment>
 				<span className="margin-right-2 float-left">
 					<Button
-						href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 						variant="success"
+						{...buttonProps}
 					>
 						<FontAwesomeIcon icon={faBook} size="2x"/>
 						<br/>
@@ -173,6 +196,20 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckbo
 		<div>
 			<h2>Editions</h2>
 			{tableContent}
+			{haveRelationshipId && <AddEntityRelationModal
+				closeModalAndShowMessage={closeModalAndShowMessage}
+				entity={entity} isSource={entity.type !== 'Work'} relationshipTypeId={relationshipTypeId} show={show}
+				submitUrl={submitUrl} targetEntityType="Edition" onCloseModal={onCloseModalHandler}
+			                       />}
+			{message.type &&
+			<Alert
+				dismissible
+				className="margin-top-1"
+				variant={message.type}
+				onClose={handleAlertDismiss}
+			>
+					 {message.text}
+			</Alert>}
 		</div>
 	);
 }
@@ -181,6 +218,7 @@ EditionTable.propTypes = {
 	editions: PropTypes.array.isRequired,
 	entity: PropTypes.object,
 	onToggleRow: PropTypes.func,
+	relationshipTypeId: PropTypes.number,
 	selectedEntities: PropTypes.array,
 	showAdd: PropTypes.bool,
 	showAddedAtColumn: PropTypes.bool,
@@ -189,6 +227,7 @@ EditionTable.propTypes = {
 EditionTable.defaultProps = {
 	entity: null,
 	onToggleRow: null,
+	relationshipTypeId: null,
 	selectedEntities: [],
 	showAdd: true,
 	showAddedAtColumn: false,

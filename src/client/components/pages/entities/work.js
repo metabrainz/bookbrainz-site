@@ -99,6 +99,7 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 				<EditionTable
 					editions={editionsContainWork}
 					entity={entity}
+					relationshipTypeId={10}
 				/>
 				<EntityLinks
 					entity={entity}
