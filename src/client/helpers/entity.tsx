@@ -364,6 +364,20 @@ export function getRelationshipTargetBBIDByTypeId(entity, relationshipTypeId: nu
 }
 
 /**
+ * Get an array of all BBIDs from an array of entity objects
+ *
+ * @param {array} entities - an array of entities
+ * @returns {array} Return array of the BBIDs of all entities contained in the entities array
+ */
+ export function getListofBBIDs(entities) {
+	let targets = [];
+	entities.map((entity) => {
+		targets.push(entity.bbid);
+	})
+	return targets;
+}
+
+/**
  * Get an array of all sources from relationships of an entity belongs to given relationshipTypeId
  *
  * @param {object} entity - main entity

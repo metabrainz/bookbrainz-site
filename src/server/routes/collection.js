@@ -23,7 +23,9 @@ import * as handler from '../helpers/handler';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
+import _ from 'lodash';
 import {escapeProps, generateProps} from '../helpers/props';
+import { addAuthorsDataToWorks, getListofBBIDs } from '../../client/helpers/entity';
 import CollectionPage from '../../client/components/pages/collection';
 import Layout from '../../client/containers/layout';
 import React from 'react';
@@ -132,11 +134,16 @@ router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, 
 			addedAt: item.added_at,
 			...await orm.func.entity.getEntity(orm, collection.entityType, item.bbid, relations)
 		}));
-		const entities = await Promise.all(entitiesPromise);
+		let entities = await Promise.all(entitiesPromise);
 		const isOwner = req.user && parseInt(collection.ownerId, 10) === parseInt(req.user?.id, 10);
 		const isCollaborator = req.user && collection.collaborators.filter(collaborator => collaborator.id === req.user.id).length;
 		const userId = req.user ? parseInt(req.user.id, 10) : null;
-
+		if(collection.entityType === 'Work') {
+			const workBBIDs = getListofBBIDs(entities);
+			const authorsData = await orm.func.work.loadAuthorNames(orm, workBBIDs);
+			const authorsDataGroupedByWorkBBID = _.groupBy(authorsData, 'workbbid');
+			entities = addAuthorsDataToWorks(authorsDataGroupedByWorkBBID, entities);
+		}
 		const props = generateProps(req, res, {
 			collection,
 			entities,
