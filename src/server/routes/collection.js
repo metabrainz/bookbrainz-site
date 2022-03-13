@@ -23,14 +23,14 @@ import * as handler from '../helpers/handler';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
-import _ from 'lodash';
+import {addAuthorsDataToWorks, getListofBBIDs} from '../../client/helpers/entity';
 import {escapeProps, generateProps} from '../helpers/props';
-import { addAuthorsDataToWorks, getListofBBIDs } from '../../client/helpers/entity';
 import CollectionPage from '../../client/components/pages/collection';
 import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import UserCollectionForm from '../../client/components/forms/userCollection';
+import _ from 'lodash';
 import {collectionCreateOrEditHandler} from '../helpers/collectionRouteUtils';
 import express from 'express';
 import {getCollectionItems} from '../helpers/collections';
@@ -138,7 +138,7 @@ router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, 
 		const isOwner = req.user && parseInt(collection.ownerId, 10) === parseInt(req.user?.id, 10);
 		const isCollaborator = req.user && collection.collaborators.filter(collaborator => collaborator.id === req.user.id).length;
 		const userId = req.user ? parseInt(req.user.id, 10) : null;
-		if(collection.entityType === 'Work') {
+		if (collection.entityType === 'Work') {
 			const workBBIDs = getListofBBIDs(entities);
 			const authorsData = await orm.func.work.loadAuthorNames(orm, workBBIDs);
 			const authorsDataGroupedByWorkBBID = _.groupBy(authorsData, 'workbbid');

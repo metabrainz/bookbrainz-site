@@ -369,11 +369,12 @@ export function getRelationshipTargetBBIDByTypeId(entity, relationshipTypeId: nu
  * @param {array} entities - an array of entities
  * @returns {array} Return array of the BBIDs of all entities contained in the entities array
  */
- export function getListofBBIDs(entities) {
+export function getListofBBIDs(entities) {
 	let targets = [];
 	entities.map((entity) => {
 		targets.push(entity.bbid);
-	})
+		return entity;
+	});
 	return targets;
 }
 
