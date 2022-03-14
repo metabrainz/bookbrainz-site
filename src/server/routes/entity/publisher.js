@@ -20,6 +20,7 @@
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
+import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
 import {
@@ -32,6 +33,7 @@ import {ConflictError} from '../../../common/helpers/error';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import log from 'log';
 import target from '../../templates/target';
 
 
@@ -92,11 +94,11 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadPublisherTypes,
 	middleware.loadRelationshipTypes,
-	(req, res) => {
+	async (req, res) => {
 		const markupProps = generateEntityProps(
 			'publisher', req, res, {}
 		);
-		markupProps.initialState.nameSection = {
+		const nameSection = {
 			disambiguation: '',
 			exactMatches: null,
 			language: null,
@@ -104,6 +106,17 @@ router.get(
 			searchResults: null,
 			sortName: ''
 		};
+		if (nameSection.name) {
+			try {
+				nameSection.searchResults = await search.autocomplete(req.app.locals.orm, nameSection.name, 'Publisher');
+				nameSection.exactMatches = await search.checkIfExists(req.app.locals.orm, nameSection.name, 'Publisher');
+			}
+			catch (err) {
+				log.debug(err);
+			}
+		}
+
+		markupProps.initialState.nameSection = nameSection;
 		const {markup, props} = entityEditorMarkup(markupProps);
 
 		return res.send(target({

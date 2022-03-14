@@ -26,10 +26,10 @@ import Immutable from 'immutable';
 function reducer(
 	state = Immutable.Map({
 		disambiguation: '',
-		exactMatches: null,
+		exactMatches: [],
 		language: null,
 		name: '',
-		searchResults: null,
+		searchResults: [],
 		sortName: ''
 	}),
 	action

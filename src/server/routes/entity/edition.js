@@ -35,6 +35,7 @@ import {RelationshipTypes} from '../../../client/entity-editor/relationship-edit
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import log from 'log';
 import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
@@ -200,11 +201,19 @@ router.get(
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.work);
 			}
 
-			if (initialState.nameSection.name) {
-				// Initial search for existing Edition Group with same name
-				// Otherwise the search for matching EG is only triggered when user modifies the name
-				initialState.editionSection.matchingNameEditionGroups = props.editionGroup ??
-					await search.autocomplete(req.app.locals.orm, req.query.name, 'EditionGroup');
+			if (initialState.nameSection?.name) {
+				const {name} = initialState.nameSection;
+				try {
+					initialState.nameSection.searchResults = await search.autocomplete(req.app.locals.orm, name, 'Edition');
+					initialState.nameSection.exactMatches = await search.checkIfExists(req.app.locals.orm, name, 'Edition');
+					// Initial search for existing Edition Group with same name
+					// Otherwise the search for matching EG is only triggered when user modifies the name
+					initialState.editionSection.matchingNameEditionGroups = initialState.editionSection.editionGroup ??
+						await search.autocomplete(req.app.locals.orm, name, 'EditionGroup');
+				}
+				catch (err) {
+					log.debug(err);
+				}
 			}
 
 			const editorMarkup = entityEditorMarkup(props);
