@@ -110,6 +110,44 @@ router.get(
 	}
 );
 
+router.post(
+	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	middleware.loadLanguages,
+	middleware.loadRelationshipTypes, middleware.loadSeriesOrderingTypes, async (req, res) => {
+		const entity = await utils.parseInitialState(req, 'series');
+		if (entity.seriesSection) {
+			const orderingTypes = ['Automatic', 'Manual'];
+			const seriesTypes = ['Author', 'Work', 'EditionGroup', 'Edition', 'Publisher'];
+			if (entity.seriesSection.orderType) {
+				if (!orderingTypes.includes(entity.seriesSection.orderType)) {
+					delete entity.seriesSection.orderType;
+				}
+				else {
+					entity.seriesSection.orderType = orderingTypes.indexOf(entity.seriesSection.orderType) + 1;
+				}
+			}
+			if (entity.seriesSection.seriesType && !seriesTypes.includes(entity.seriesSection.seriesType)) {
+				delete entity.seriesSection.seriesType;
+			}
+		}
+		if (_.isEmpty(entity.seriesSection)) {
+			delete entity.seriesSection;
+		}
+		else {
+			entity.seriesSection.seriesItems = {};
+		}
+		const {markup, props} = entityEditorMarkup(generateEntityProps(
+			'series', req, res, {}, () => entity
+		));
+
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/entity-editor.js',
+			title: props.heading
+		}));
+	}
+);
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);

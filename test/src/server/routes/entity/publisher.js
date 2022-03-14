@@ -1,4 +1,4 @@
-import {createEditor, createPublisher, getRandomUUID, truncateEntities} from '../../../../test-helpers/create-entities';
+import {createEditor, createPublisher, getRandomUUID, seedInitialState, truncateEntities} from '../../../../test-helpers/create-entities';
 
 import app from '../../../../../src/server/app';
 import chai from 'chai';
@@ -44,6 +44,26 @@ describe('Publisher routes', () => {
 	it('should not throw an error trying to edit an existing publisher', async () => {
 		const res = await agent
 			.get(`/publisher/${aBBID}/edit`);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw error while seeding publisher', async () => {
+		const data = {
+			...seedInitialState,
+			'identifierEditor.t20': 'wikidataid',
+			'publisherSection.area': '',
+			'publisherSection.beginDate': 'invalid',
+			'publisherSection.endDate': '',
+			'publisherSection.type': ''
+
+		  };
+		const res = await agent.post('/publisher/create').set('Origin', `http://127.0.0.1:${agent.app.address().port}`).send(data);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw not authorized error while seeding publisher', async () => {
+		const data = seedInitialState;
+		const res = await chai.request(app).post('/publisher/create').send(data);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});

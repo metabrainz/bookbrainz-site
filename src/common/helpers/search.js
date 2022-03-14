@@ -180,7 +180,7 @@ async function _processEntityListForBulk(entityList) {
 	await Promise.all(indexOperations);
 }
 
-export function autocomplete(orm, query, type) {
+export function autocomplete(orm, query, type, size = 42) {
 	let queryBody = null;
 
 	if (commonUtils.isValidBBID(query)) {
@@ -204,7 +204,7 @@ export function autocomplete(orm, query, type) {
 	const dslQuery = {
 		body: {
 			query: queryBody,
-			size: 42
+			size
 		},
 		index: _index
 	};
