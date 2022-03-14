@@ -43,9 +43,9 @@ import SortNameField from '../common/sort-name-field';
 import {UPDATE_WARN_IF_EDITION_GROUP_EXISTS} from '../edition-section/actions';
 import _ from 'lodash';
 import {connect} from 'react-redux';
+import {convertMapToObject} from '../../helpers/utils';
 import {entityTypeProperty} from '../../helpers/react-validators';
 import {getEntityDisambiguation} from '../../helpers/entity';
-
 
 /**
  * Container component. The NameSection component contains input fields for
@@ -284,10 +284,10 @@ NameSection.propTypes = {
 NameSection.defaultProps = {
 	action: 'create',
 	disambiguationDefaultValue: null,
-	exactMatches: null,
+	exactMatches: [],
 	languageValue: null,
 	searchForExistingEditionGroup: true,
-	searchResults: null
+	searchResults: []
 };
 
 
@@ -301,11 +301,11 @@ function mapStateToProps(rootState) {
 	);
 	return {
 		disambiguationDefaultValue: state.get('disambiguation'),
-		exactMatches: state.get('exactMatches'),
+		exactMatches: convertMapToObject(state.get('exactMatches')),
 		languageValue: state.get('language'),
 		nameValue: state.get('name'),
 		searchForExistingEditionGroup,
-		searchResults: state.get('searchResults'),
+		searchResults: convertMapToObject(state.get('searchResults')),
 		sortNameValue: state.get('sortName')
 	};
 }
