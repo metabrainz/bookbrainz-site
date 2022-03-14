@@ -21,15 +21,16 @@ import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import * as utilHelper from '../../../helpers/utils';
 
+import React, {useState} from 'react';
 import {faPenNib, faPlus} from '@fortawesome/free-solid-svg-icons';
 
+import AddEntityRelationModal from '../parts/add-entity-relation-modal';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 
 
-const {Button, Table} = bootstrap;
+const {Alert, Button, Table} = bootstrap;
 
 const {getEntityDisambiguation, getLanguageAttribute, getEntityLabel} = entityHelper;
 
@@ -85,8 +86,32 @@ WorkTableRow.defaultProps = {
 	showCheckboxes: false
 };
 
-function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
+function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, selectedEntities, onToggleRow, relationshipTypeId}) {
 	let tableContent;
+	const [show, setShow] = useState(false);
+	const [message, setMessage] = useState({});
+	const haveRelationshipId = Boolean(relationshipTypeId);
+	function onCloseModalHandler() {
+		setShow(false);
+	}
+	function handleOpenModal() {
+		setShow(true);
+	}
+	function closeModalAndShowMessage(msg) {
+		setMessage(msg);
+		onCloseModalHandler();
+	}
+	function handleAlertDismiss() {
+		setMessage({});
+	}
+	let submitUrl;
+	let buttonProps;
+	if (showAdd) {
+		submitUrl = `/${entity.type.toLowerCase()}/${
+			entity.bbid
+		}/relationships`;
+		buttonProps = !haveRelationshipId ? {href: `/work/create?${_kebabCase(entity.type)}=${entity.bbid}`} : {onClick: handleOpenModal};
+	}
 	if (works.length) {
 		const showAuthors = works[0].authorsData;
 		tableContent = (
@@ -122,8 +147,8 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 				{showAdd &&
 					<Button
 						className="margin-top-d15"
-						href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 						variant="success"
+						{...buttonProps}
 					>
 						<FontAwesomeIcon className="margin-right-0-5" icon={faPlus}/>Add Work
 					</Button>
@@ -136,7 +161,7 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 			<React.Fragment>
 				<span className="margin-right-2 float-left">
 					<Button
-						href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+						{...buttonProps}
 						variant="success"
 					>
 						<FontAwesomeIcon icon={faPenNib} size="2x"/>
@@ -163,6 +188,20 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 		<div>
 			<h2>Works</h2>
 			{tableContent}
+			{haveRelationshipId && <AddEntityRelationModal
+				closeModalAndShowMessage={closeModalAndShowMessage}
+				entity={entity} isSource={entity.type !== 'Work'} relationshipTypeId={relationshipTypeId} show={show}
+				submitUrl={submitUrl} targetEntityType="Work" onCloseModal={onCloseModalHandler}
+			                       />}
+			{message.type &&
+			<Alert
+				dismissible
+				className="margin-top-1"
+				variant={message.type}
+				onClose={handleAlertDismiss}
+			>
+					 {message.text}
+			</Alert>}
 		</div>
 	);
 }
@@ -170,6 +209,7 @@ WorkTable.displayName = 'WorkTable';
 WorkTable.propTypes = {
 	entity: PropTypes.object,
 	onToggleRow: PropTypes.func,
+	relationshipTypeId: PropTypes.number,
 	selectedEntities: PropTypes.array,
 	showAdd: PropTypes.bool,
 	showAddedAtColumn: PropTypes.bool,
@@ -179,6 +219,7 @@ WorkTable.propTypes = {
 WorkTable.defaultProps = {
 	entity: null,
 	onToggleRow: null,
+	relationshipTypeId: null,
 	selectedEntities: [],
 	showAdd: true,
 	showAddedAtColumn: false,

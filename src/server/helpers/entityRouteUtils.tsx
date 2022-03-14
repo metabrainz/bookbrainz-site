@@ -28,6 +28,7 @@ import * as utils from './utils';
 import type {Request as $Request, Response as $Response} from 'express';
 import EntityEditor from '../../client/entity-editor/entity-editor';
 import EntityMerge from '../../client/entity-editor/entity-merge';
+import {EntityTypeString} from 'bookbrainz-data/lib/func/types';
 import Layout from '../../client/containers/layout';
 import {Provider} from 'react-redux';
 import ReactDOMServer from 'react-dom/server';
@@ -311,4 +312,21 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
 		{...props.initialState.relationshipSection.relationships, [rowId]: initialRelationship};
 
 	return props;
+}
+
+/**
+ * Makes a middleware handler for adding relationships.
+ * @param {string} entityType - entity type
+ * @returns {addRelationshipHandler} addRelationshipHandler - middleware handler
+ */
+
+export function makeAddRelationshipHandler(entityType:string) {
+	const entityName = _.upperFirst(entityType);
+	return function addRelationsipHandler(req:PassportRequest, res:$Response) {
+		if (!req.body.relationships) {
+			throw new error.BadRequestError('Relationships field does not exist on request body!');
+		}
+		req.body.relationships = entityRoutes.constructRelationships(req.body);
+		return entityRoutes.handleAddRelationship(req, res, entityName as EntityTypeString);
+	};
 }

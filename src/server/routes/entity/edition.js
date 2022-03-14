@@ -27,6 +27,7 @@ import {
 	addInitialRelationship,
 	entityEditorMarkup,
 	generateEntityProps,
+	makeAddRelationshipHandler,
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
@@ -110,6 +111,8 @@ function getInitialNameSection(entity) {
 		sortName: entity.defaultAlias.sortName
 	};
 }
+
+const addRelationshipHandler = makeAddRelationshipHandler('edition');
 
 const createOrEditHandler = makeEntityCreateOrEditHandler(
 	'edition', transformNewForm, additionalEditionProps
@@ -340,6 +343,8 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
 	_setEditionTitle(res);
 	return entityRoutes.displayDeleteEntity(req, res);
 });
+
+router.post('/:bbid/relationships', auth.isAuthenticatedForHandler, addRelationshipHandler);
 
 router.post(
 	'/:bbid/delete/handler', auth.isAuthenticatedForHandler,
