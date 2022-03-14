@@ -150,6 +150,7 @@ function EditionDisplayPage({entity, identifierTypes, user}) {
 			<React.Fragment>
 				<WorksTable
 					entity={entity}
+					relationshipTypeId={10}
 					works={worksContainedByEditionWithAuthors}
 				/>
 				<EntityLinks

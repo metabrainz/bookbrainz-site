@@ -224,7 +224,7 @@ class AddEntityRelationModal extends React.Component {
 							onClick={this.handleSubmit}
 						>
 							<FontAwesomeIcon icon={faPlus}/>
-							&nbsp;Add <Badge pill>{cleanedEntities.length}</Badge>&nbsp;
+							&nbsp;Link <Badge pill>{cleanedEntities.length}</Badge>&nbsp;
 							{lowerCase(this.props.targetEntityType)}{cleanedEntities.length > 1 ? 's' : ''}
 						</Button>
 					</ButtonGroup>
