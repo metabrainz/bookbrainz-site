@@ -202,7 +202,7 @@ class AddEntityRelationModal extends React.Component {
 				<Modal.Footer>
 					<ButtonGroup>
 						<Button
-							href={`/edition/create?${_kebabCase(this.props.entity.type)}=${
+							href={`/${lowerCase(this.props.targetEntityType)}/create?${_kebabCase(this.props.entity.type)}=${
 								this.props.entity.bbid
 							}`}
 							variant="success"

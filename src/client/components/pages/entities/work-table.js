@@ -104,11 +104,14 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 	function handleAlertDismiss() {
 		setMessage({});
 	}
-	const submitUrl = `/${entity.type.toLowerCase()}/${
-		entity.bbid
-	}/relationships`;
-	const buttonProps = !haveRelationshipId ? {href: `/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`} : {onClick: handleOpenModal};
-
+	let submitUrl;
+	let buttonProps;
+	if (showAdd) {
+		submitUrl = `/${entity.type.toLowerCase()}/${
+			entity.bbid
+		}/relationships`;
+		buttonProps = !haveRelationshipId ? {href: `/work/create?${_kebabCase(entity.type)}=${entity.bbid}`} : {onClick: handleOpenModal};
+	}
 	if (works.length) {
 		const showAuthors = works[0].authorsData;
 		tableContent = (
