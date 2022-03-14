@@ -214,6 +214,7 @@ router.get(
 				catch (err) {
 					log.debug(err);
 				}
+			}
 
 			const editorMarkup = entityEditorMarkup(props);
 			const {markup} = editorMarkup;
