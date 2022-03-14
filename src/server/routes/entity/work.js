@@ -149,6 +149,41 @@ router.get(
 	}
 );
 
+router.post(
+	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	middleware.loadLanguages, middleware.loadWorkTypes,
+	middleware.loadRelationshipTypes,
+	async (req, res, next) => {
+		const {WorkType} = req.app.locals.orm;
+		const entity = await utils.parseInitialState(req, 'work');
+		if (entity.workSection?.type) {
+			entity.workSection.type = await utils.getIdByField(WorkType, 'label', entity.workSection.type);
+		}
+		if (entity.workSection) {
+			entity.workSection = await utils.parseLanguages(entity.workSection, req.app.locals.orm);
+		}
+		const propsPromise = generateEntityProps(
+			'work', req, res, {}, () => entity
+		);
+
+		function render(props) {
+			const editorMarkup = entityEditorMarkup(props);
+			const {markup} = editorMarkup;
+			const updatedProps = editorMarkup.props;
+
+			return res.send(target({
+				markup,
+				props: escapeProps(updatedProps),
+				script: '/js/entity-editor.js',
+				title: props.heading
+			}));
+		}
+		makePromiseFromObject(propsPromise)
+			.then(render)
+			.catch(next);
+	}
+);
+
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
 

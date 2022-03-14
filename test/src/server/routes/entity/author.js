@@ -1,4 +1,4 @@
-import {createAuthor, createEditor, getRandomUUID, truncateEntities} from '../../../../test-helpers/create-entities';
+import {createAuthor, createEditor, getRandomUUID, seedInitialState, truncateEntities} from '../../../../test-helpers/create-entities';
 
 import app from '../../../../../src/server/app';
 import chai from 'chai';
@@ -47,6 +47,26 @@ describe('Author routes', () => {
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
+	it('should not throw error while seeding author', async () => {
+		const data = {
+			...seedInitialState,
+			'authorSection.beginArea': '',
+			'authorSection.beginDate': 'invaliddate',
+			'authorSection.endDate': '',
+			'authorSection.gender': '',
+			'authorSection.type': '',
+			'identifierEditor.t23': 'openlibid'
+		  };
+		const res = await agent.post('/author/create').set('Origin', `http://127.0.0.1:${agent.app.address().port}`).send(data);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw not authorized error while seeding author', async () => {
+		const data = seedInitialState;
+		const res = await chai.request(app).post('/author/create').send(data);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
 	it('should not throw an error if requested author BBID exists', async () => {
 		const res = await chai.request(app)
 			.get(`/author/${aBBID}`);
@@ -54,3 +74,5 @@ describe('Author routes', () => {
 		expect(res).to.have.status(200);
 	});
 });
+
+
