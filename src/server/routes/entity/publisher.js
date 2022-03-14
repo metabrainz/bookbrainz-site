@@ -128,6 +128,41 @@ router.get(
 	}
 );
 
+
+router.post(
+	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	middleware.loadLanguages, middleware.loadPublisherTypes,
+	middleware.loadRelationshipTypes,
+	async (req, res) => {
+		const {orm} = req.app.locals;
+		const {PublisherType} = orm;
+		const entity = await utils.parseInitialState(req, 'publisher');
+		if (entity.publisherSection) {
+			if (entity.publisherSection.type) {
+				entity.publisherSection.type = await utils.getIdByField(PublisherType, 'label', entity.publisherSection.type);
+			}
+			if (entity.publisherSection.endDate) {
+				entity.publisherSection.ended = true;
+			}
+			if (entity.publisherSection.area) {
+				entity.publisherSection.area = await utils.searchOption(orm, 'area', entity.publisherSection.area);
+			}
+		}
+		const markupProps = generateEntityProps(
+			'publisher', req, res, {}, () => entity
+		);
+		const {markup, props} = entityEditorMarkup(markupProps);
+
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/entity-editor.js',
+			title: props.heading
+		}));
+	}
+);
+
+
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
 

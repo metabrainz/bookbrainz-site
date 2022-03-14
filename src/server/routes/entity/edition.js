@@ -39,7 +39,6 @@ import log from 'log';
 import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
-
 /** ****************************
 *********** Helpers ************
 *******************************/
@@ -208,6 +207,56 @@ router.get(
 				}
 			}
 
+			const editorMarkup = entityEditorMarkup(props);
+			const {markup} = editorMarkup;
+			const updatedProps = editorMarkup.props;
+			return res.send(target({
+				markup,
+				props: escapeProps(updatedProps),
+				script: '/js/entity-editor.js',
+				title: props.heading
+			}));
+		}
+
+		makePromiseFromObject(propsPromise)
+			.then(render)
+			.catch(next);
+	}
+);
+
+router.post(
+	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	middleware.loadEditionStatuses, middleware.loadEditionFormats,
+	middleware.loadLanguages, middleware.loadRelationshipTypes,
+	async (req, res, next) => {
+		// parsing submitted data to correct format
+		const entity = await utils.parseInitialState(req, 'edition');
+		if (entity.editionSection) {
+			const {orm} = req.app.locals;
+			const {EditionFormat} = orm;
+			entity.editionSection = await utils.parseLanguages(entity.editionSection, orm);
+			if (entity.editionSection.format) {
+				entity.editionSection.format = await utils.getIdByField(EditionFormat, 'label', entity.editionSection.format);
+			}
+			const keysToInt = ['height', 'width', 'depth', 'weight', 'pages'];
+			let physicalEnable = false;
+			for (const key of keysToInt) {
+				entity.editionSection[key] = parseInt(entity.editionSection[key], 10) || null;
+				if (entity.editionSection[key]) {
+					physicalEnable = true;
+				}
+			}
+			entity.editionSection.physicalEnable = physicalEnable;
+			// adding publisher
+			if (entity.editionSection.publisher) {
+				const foundOption = await utils.searchOption(orm, 'publisher', entity.editionSection.publisher, 'bbid', true);
+				entity.editionSection.publisher = foundOption ? _.omit(foundOption, ['disambiguation']) : null;
+			}
+		}
+		const propsPromise = generateEntityProps(
+			'edition', req, res, {}, () => entity
+		);
+		function render(props) {
 			const editorMarkup = entityEditorMarkup(props);
 			const {markup} = editorMarkup;
 			const updatedProps = editorMarkup.props;
