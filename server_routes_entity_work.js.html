@@ -102,6 +102,8 @@ var entityRoutes = _interopRequireWildcard(require("./entity"));
 
 var middleware = _interopRequireWildcard(require("../../helpers/middleware"));
 
+var search = _interopRequireWildcard(require("../../../common/helpers/search"));
+
 var utils = _interopRequireWildcard(require("../../helpers/utils"));
 
 var _entityRouteUtils = require("../../helpers/entityRouteUtils");
@@ -113,6 +115,8 @@ var _types = require("../../../client/entity-editor/relationship-editor/types");
 var _props = require("../../helpers/props");
 
 var _express = _interopRequireDefault(require("express"));
+
+var _log = _interopRequireDefault(require("log"));
 
 var _utils2 = require("../../../common/helpers/utils");
 
@@ -192,52 +196,99 @@ router.get('/create', auth.isAuthenticated, middleware.loadIdentifierTypes, midd
     });
   }
 
-  function render(props) {
-    var _req$query$name, _req$query;
+  function render(_x) {
+    return _render.apply(this, arguments);
+  }
 
-    if (props.author) {
-      // add initial ralationship with relationshipTypeId = 8 (&lt;Work> is written by &lt;Author>)
-      relationshipTypeId = _types.RelationshipTypes.AuthorWroteWork;
-      (0, _entityRouteUtils.addInitialRelationship)(props, relationshipTypeId, initialRelationshipIndex++, props.author);
-    }
+  function _render() {
+    _render = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(props) {
+      var _req$query$name, _req$query;
 
-    if (props.edition) {
-      // add initial ralationship with relationshipTypeId = 10 (&lt;Work> is contained in &lt;Edition>)
-      relationshipTypeId = _types.RelationshipTypes.EditionContainsWork;
-      (0, _entityRouteUtils.addInitialRelationship)(props, relationshipTypeId, initialRelationshipIndex++, props.edition);
-    }
+      var nameSection, editorMarkup, markup, updatedProps;
+      return _regenerator.default.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              if (props.author) {
+                // add initial ralationship with relationshipTypeId = 8 (&lt;Work> is written by &lt;Author>)
+                relationshipTypeId = _types.RelationshipTypes.AuthorWroteWork;
+                (0, _entityRouteUtils.addInitialRelationship)(props, relationshipTypeId, initialRelationshipIndex++, props.author);
+              }
 
-    props.initialState.nameSection = {
-      disambiguation: '',
-      exactMatches: null,
-      language: null,
-      name: (_req$query$name = (_req$query = req.query) === null || _req$query === void 0 ? void 0 : _req$query.name) !== null &amp;&amp; _req$query$name !== void 0 ? _req$query$name : '',
-      searchResults: null,
-      sortName: ''
-    };
-    var editorMarkup = (0, _entityRouteUtils.entityEditorMarkup)(props);
-    var markup = editorMarkup.markup;
-    var updatedProps = editorMarkup.props;
-    return res.send((0, _target.default)({
-      markup: markup,
-      props: (0, _props.escapeProps)(updatedProps),
-      script: '/js/entity-editor.js',
-      title: props.heading
+              if (props.edition) {
+                // add initial ralationship with relationshipTypeId = 10 (&lt;Work> is contained in &lt;Edition>)
+                relationshipTypeId = _types.RelationshipTypes.EditionContainsWork;
+                (0, _entityRouteUtils.addInitialRelationship)(props, relationshipTypeId, initialRelationshipIndex++, props.edition);
+              }
+
+              nameSection = {
+                disambiguation: '',
+                exactMatches: null,
+                language: null,
+                name: (_req$query$name = (_req$query = req.query) === null || _req$query === void 0 ? void 0 : _req$query.name) !== null &amp;&amp; _req$query$name !== void 0 ? _req$query$name : '',
+                searchResults: null,
+                sortName: ''
+              };
+
+              if (!nameSection.name) {
+                _context.next = 16;
+                break;
+              }
+
+              _context.prev = 4;
+              _context.next = 7;
+              return search.autocomplete(req.app.locals.orm, nameSection.name, 'Work');
+
+            case 7:
+              nameSection.searchResults = _context.sent;
+              _context.next = 10;
+              return search.checkIfExists(req.app.locals.orm, nameSection.name, 'Work');
+
+            case 10:
+              nameSection.exactMatches = _context.sent;
+              _context.next = 16;
+              break;
+
+            case 13:
+              _context.prev = 13;
+              _context.t0 = _context["catch"](4);
+
+              _log.default.debug(_context.t0);
+
+            case 16:
+              props.initialState.nameSection = nameSection;
+              editorMarkup = (0, _entityRouteUtils.entityEditorMarkup)(props);
+              markup = editorMarkup.markup;
+              updatedProps = editorMarkup.props;
+              return _context.abrupt("return", res.send((0, _target.default)({
+                markup: markup,
+                props: (0, _props.escapeProps)(updatedProps),
+                script: '/js/entity-editor.js',
+                title: props.heading
+              })));
+
+            case 21:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, null, [[4, 13]]);
     }));
+    return _render.apply(this, arguments);
   }
 
   (0, _utils2.makePromiseFromObject)(propsPromise).then(render).catch(next);
 });
 router.post('/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes, middleware.loadLanguages, middleware.loadWorkTypes, middleware.loadRelationshipTypes, /*#__PURE__*/function () {
-  var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(req, res, next) {
+  var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(req, res, next) {
     var _entity$workSection;
 
     var WorkType, entity, propsPromise, render;
-    return _regenerator.default.wrap(function _callee$(_context) {
+    return _regenerator.default.wrap(function _callee2$(_context2) {
       while (1) {
-        switch (_context.prev = _context.next) {
+        switch (_context2.prev = _context2.next) {
           case 0:
-            render = function _render(props) {
+            render = function _render2(props) {
               var editorMarkup = (0, _entityRouteUtils.entityEditorMarkup)(props);
               var markup = editorMarkup.markup;
               var updatedProps = editorMarkup.props;
@@ -250,34 +301,34 @@ router.post('/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandl
             };
 
             WorkType = req.app.locals.orm.WorkType;
-            _context.next = 4;
+            _context2.next = 4;
             return utils.parseInitialState(req, 'work');
 
           case 4:
-            entity = _context.sent;
+            entity = _context2.sent;
 
             if (!((_entity$workSection = entity.workSection) !== null &amp;&amp; _entity$workSection !== void 0 &amp;&amp; _entity$workSection.type)) {
-              _context.next = 9;
+              _context2.next = 9;
               break;
             }
 
-            _context.next = 8;
+            _context2.next = 8;
             return utils.getIdByField(WorkType, 'label', entity.workSection.type);
 
           case 8:
-            entity.workSection.type = _context.sent;
+            entity.workSection.type = _context2.sent;
 
           case 9:
             if (!entity.workSection) {
-              _context.next = 13;
+              _context2.next = 13;
               break;
             }
 
-            _context.next = 12;
+            _context2.next = 12;
             return utils.parseLanguages(entity.workSection, req.app.locals.orm);
 
           case 12:
-            entity.workSection = _context.sent;
+            entity.workSection = _context2.sent;
 
           case 13:
             propsPromise = (0, _entityRouteUtils.generateEntityProps)('work', req, res, {}, function () {
@@ -287,13 +338,13 @@ router.post('/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandl
 
           case 15:
           case "end":
-            return _context.stop();
+            return _context2.stop();
         }
       }
-    }, _callee);
+    }, _callee2);
   }));
 
-  return function (_x, _x2, _x3) {
+  return function (_x2, _x3, _x4) {
     return _ref.apply(this, arguments);
   };
 }());
@@ -449,7 +500,7 @@ exports.default = _default;</code></pre>
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Mar 14 2022 19:43:00 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Mar 14 2022 20:01:20 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
