@@ -171,9 +171,7 @@ router.get(
 			let relationshipTypeId;
 			let initialRelationshipIndex = 0;
 
-			if (props.publisher || props.editionGroup || props.work) {
-				initialState.editionSection = {};
-			}
+			initialState.editionSection = initialState.editionSection ?? {};
 
 			if (props.publisher) {
 				initialState.editionSection.publisher = props.publisher;
@@ -183,6 +181,10 @@ router.get(
 			}
 
 			if (props.editionGroup) {
+				if (!initialState.nameSection.name) {
+					// If a name hasn't been passed in query parameters, default to same name as the Edition Group
+					initialState.nameSection = getInitialNameSection(props.editionGroup);
+				}
 				initialState.editionSection.editionGroup = props.editionGroup;
 				// add initial raltionship with relationshipTypeId = 3 (<New Edition> is an edition of <EditionGroup>)
 				relationshipTypeId = RelationshipTypes.EditionIsAnEditionOfEditionGroup;
@@ -190,7 +192,10 @@ router.get(
 			}
 
 			if (props.work) {
-				initialState.nameSection = getInitialNameSection(props.work);
+				if (!initialState.nameSection.name) {
+					// If a name hasn't been passed in query parameters, default to same name as the Work
+					initialState.nameSection = getInitialNameSection(props.work);
+				}
 				// add initial raltionship with relationshipTypeId = 10 (<New Edition> Contains <Work>)
 				relationshipTypeId = RelationshipTypes.EditionContainsWork;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.work);
@@ -201,11 +206,14 @@ router.get(
 				try {
 					initialState.nameSection.searchResults = await search.autocomplete(req.app.locals.orm, name, 'Edition');
 					initialState.nameSection.exactMatches = await search.checkIfExists(req.app.locals.orm, name, 'Edition');
+					// Initial search for existing Edition Group with same name
+					// Otherwise the search for matching EG is only triggered when user modifies the name
+					initialState.editionSection.matchingNameEditionGroups = initialState.editionSection.editionGroup ??
+						await search.autocomplete(req.app.locals.orm, name, 'EditionGroup');
 				}
 				catch (err) {
 					log.debug(err);
 				}
-			}
 
 			const editorMarkup = entityEditorMarkup(props);
 			const {markup} = editorMarkup;
