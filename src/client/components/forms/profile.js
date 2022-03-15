@@ -20,7 +20,6 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 import * as validators from '../../helpers/react-validators';
-import CustomInput from '../../input';
 import LoadingSpinner from '../loading-spinner';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -30,7 +29,7 @@ import SelectWrapper from '../input/select-wrapper';
 import ValidationLabel from '../../entity-editor/common/validation-label';
 
 
-const {Alert, Button, Col, Card, Row} = bootstrap;
+const {Alert, Button, Col, Card, Form, Row} = bootstrap;
 const {injectDefaultAliasName} = utilsHelper;
 
 class ProfileForm extends React.Component {
@@ -162,21 +161,25 @@ class ProfileForm extends React.Component {
 									Edit your public profile
 								</Card.Header>
 								<Card.Body>
-									<CustomInput
-										defaultValue={name}
-										help="required"
-										label={nameLabel}
-										name="name"
-										type="text"
-										onChange={this.handleValueChange}
-									/>
-									<CustomInput
-										defaultValue={bio}
-										label="Bio"
-										name="bio"
-										type="textarea"
-										onChange={this.handleValueChange}
-									/>
+									<Form.Group>
+										<Form.Label>{nameLabel}</Form.Label>
+										<Form.Control
+											defaultValue={name}
+											name="name"
+											type="text"
+											onChange={this.handleValueChange}
+										/>
+										<Form.Text muted>required</Form.Text>
+									</Form.Group>
+									<Form.Group>
+										<Form.Label>Bio</Form.Label>
+										<Form.Control
+											as="textarea"
+											defaultValue={bio}
+											name="bio"
+											onChange={this.handleValueChange}
+										/>
+									</Form.Group>
 									{titleOptions.length > 0 &&
 										<SelectWrapper
 											base={ReactSelect}

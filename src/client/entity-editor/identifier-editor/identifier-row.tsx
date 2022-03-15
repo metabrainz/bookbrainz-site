@@ -24,12 +24,11 @@ import {
 	Action, debouncedUpdateIdentifierValue, removeIdentifierRow,
 	updateIdentifierType
 } from './actions';
-import {Button, Col, Row} from 'react-bootstrap';
+import {Button, Col, Form, Row} from 'react-bootstrap';
 import {
 	IdentifierType,
 	validateIdentifierValue
 } from '../validators/common';
-import CustomInput from '../../input';
 import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
@@ -106,14 +105,15 @@ function IdentifierRow({
 					/>
 				</Col>
 				<Col lg={4}>
-					<CustomInput label="Type">
+					<Form.Group>
+						<Form.Label>Type</Form.Label>
 						<Select
 							instanceId={`identifierType${index}`}
 							options={identifierTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
 				<Col className="text-right" lg={{offset: 1, span: 3}}>
 					<Button

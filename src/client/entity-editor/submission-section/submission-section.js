@@ -16,13 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Alert, Button, Col, Row} from 'react-bootstrap';
-import CustomInput from '../../input';
+import {Alert, Button, Col, Form, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 import {debounceUpdateRevisionNote} from './actions';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Container component. The SubmissionSection component contains a button for
@@ -45,6 +46,7 @@ import {debounceUpdateRevisionNote} from './actions';
 function SubmissionSection({
 	errorText,
 	formValid,
+	note,
 	onNoteChange,
 	submitted
 }) {
@@ -58,6 +60,12 @@ function SubmissionSection({
 		</span>
 	);
 
+	const tooltip = (
+		<Tooltip>
+			Cite your sources or an explanation of your edit
+		</Tooltip>
+	);
+
 	return (
 		<div>
 			<h2>
@@ -65,13 +73,18 @@ function SubmissionSection({
 			</h2>
 			<Row>
 				<Col lg={{offset: 3, span: 6}}>
-					<CustomInput
-						label={editNoteLabel}
-						rows="6"
-						tooltipText="Cite your sources or an explanation of your edit"
-						type="textarea"
-						onChange={onNoteChange}
-					/>
+					<Form.Group>
+						<Form.Label>
+							{editNoteLabel}
+							<OverlayTrigger delay={50} overlay={tooltip}>
+								<FontAwesomeIcon
+									className="margin-left-0-5"
+									icon={faQuestionCircle}
+								/>
+							</OverlayTrigger>
+						</Form.Label>
+						<Form.Control as="textarea" defaultValue={note} rows="6" onChange={onNoteChange}/>
+					</Form.Group>
 					<p className="text-muted">
 						{`An edit note will make your entries more credible. Reply to one or more of these questions in the textarea below:
 						- Where did you get your info from? A link is worth a thousand words.
@@ -99,6 +112,7 @@ SubmissionSection.displayName = 'SubmissionSection';
 SubmissionSection.propTypes = {
 	errorText: PropTypes.node.isRequired,
 	formValid: PropTypes.bool.isRequired,
+	note: PropTypes.node.isRequired,
 	onNoteChange: PropTypes.func.isRequired,
 	submitted: PropTypes.bool.isRequired
 };
@@ -108,6 +122,7 @@ function mapStateToProps(rootState, {validate, identifierTypes}) {
 	return {
 		errorText: state.get('submitError'),
 		formValid: validate(rootState, identifierTypes),
+		note: state.get('note'),
 		submitted: state.get('submitted')
 	};
 }

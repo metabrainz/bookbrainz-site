@@ -1,8 +1,7 @@
 import * as _ from 'lodash';
-import {Button, FormControl, InputGroup} from 'react-bootstrap';
+import {Button, Form, FormControl, InputGroup} from 'react-bootstrap';
 import {ISODateStringToObject, dateObjectToISOString, getTodayDate} from '../../helpers/utils';
 import {isValid, parseISO} from 'date-fns';
-import CustomInput from '../../input';
 import DatePicker from 'react-datepicker';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -136,10 +135,8 @@ class DateField extends React.Component {
 		const isCommonEraDate = Math.sign(this.state.year) === 1 || Math.sign(this.state.year) === 0;
 		return (
 			<div>
-				<CustomInput
-					groupClassName={groupClassName}
-					label={labelElement}
-				>
+				<Form.Group className={groupClassName}>
+					<Form.Label>{labelElement}</Form.Label>
 					<InputGroup className="responsive-date-field">
 						<FormControl
 							className="year-field"
@@ -199,8 +196,7 @@ class DateField extends React.Component {
 							/>
 						</InputGroup.Append>
 					</InputGroup>
-				</CustomInput>
-
+				</Form.Group>
 			</div>
 
 		);
