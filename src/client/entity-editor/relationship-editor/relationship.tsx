@@ -53,8 +53,8 @@ type Relationship = {
 	relationshipType: RelationshipType
 };
 
-function Relationship(props: SingleValueProps<Relationship> | OptionProps<Relationship, any> | {data:Relationship}) {
-	const {contextEntity, link, relationshipType, sourceEntity, attributes, showAttributes, targetEntity} = props.data;
+function Relationship(props: SingleValueProps<Relationship> | OptionProps<Relationship, any> | Relationship) {
+	const {contextEntity, link, relationshipType, sourceEntity, attributes, showAttributes, targetEntity} = props.data ?? props;
 	const {depth, description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
 
 	const reversed = contextEntity &&
@@ -77,9 +77,9 @@ function Relationship(props: SingleValueProps<Relationship> | OptionProps<Relati
 	const child =
 	(
 		<div aria-label={description} className={indentationClass}>
-			<Entity data={sourceObject}/>
+			<Entity {...sourceObject}/>
 			{` ${usedLinkPhrase} `}
-			<Entity data={targetObject}/>
+			<Entity {...targetObject}/>
 			{' '}
 			<RelationshipAttribute attributes={attributes} showAttributes={showAttributes}/>
 		</div>
@@ -105,11 +105,4 @@ function Relationship(props: SingleValueProps<Relationship> | OptionProps<Relati
 	);
 }
 Relationship.displayName = 'Relationship';
-Relationship.defaultProps = {data: {
-	attributes: [],
-	contextEntity: null, // eslint-disable-line react/default-props-match-prop-types, max-len
-	link: false, // eslint-disable-line react/default-props-match-prop-types
-	showAttributes: false
-}};
-
 export default Relationship;

@@ -95,15 +95,11 @@ const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemov
 		</Col>
 		<Col className="form-control-static" lg={7}>
 			<Relationship
-				data={
-					{
-						contextEntity: baseEntity,
-						link: true,
-						relationshipType: value.relationshipType,
-						sourceEntity: value.sourceEntity,
-						targetEntity: value.targetEntity
-					}
-				}
+				link
+				contextEntity={baseEntity}
+				relationshipType={value.relationshipType}
+				sourceEntity={value.sourceEntity}
+				targetEntity={value.targetEntity}
 			/>
 		</Col>
 		<Col lg={2}>

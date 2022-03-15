@@ -33,10 +33,9 @@ type Entity = {
 };
 
 function Entity(
-	props:SingleValueProps<Entity> | {data:Entity}
+	props:SingleValueProps<Entity> | Entity
 ) {
-	const {data, ...rest} = props;
-	const {disambiguation, language, link, text, type, unnamedText} = data;
+	const {disambiguation, language, link, text, type, unnamedText, ...rest} = props.data ?? props;
 	const nameComponent = text || <i>{unnamedText}</i>;
 	const children =
 	(
@@ -70,11 +69,5 @@ function Entity(
 }
 
 Entity.displayName = 'Entity';
-Entity.defaultProps = {data: {
-	disambiguation: null,
-	language: null,
-	link: false,
-	unnamedText: '(unnamed)'
-}};
 
 export default Entity;
