@@ -25,7 +25,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
 import SearchSelect from '../input/entity-search';
-import SelectWrapper from '../input/select-wrapper';
 import ValidationLabel from '../../entity-editor/common/validation-label';
 
 
@@ -116,9 +115,29 @@ class ProfileForm extends React.Component {
 		this.setState({[event.target.name]: event.target.value});
 	};
 
-	handleSelectChange = (value, idAttribute) => {
-		this.setState({[idAttribute]: value});
+	handleGenderChange= (option) => {
+		this.setState({genderId: option.id});
 	};
+
+	handleTitleChange = (option) => {
+		this.setState({titleId: option.unlockId});
+	};
+
+	handleAreaChange = (option) => {
+		this.setState({areaId: option.id});
+	};
+
+	getTitleOptionLabel(option) {
+		return option.title;
+	}
+
+	getTitleOptionValue(option) {
+		return option.unlockId;
+	}
+
+	getGenderOptionLabel(option) {
+		return option.name;
+	}
 
 	render() {
 		const loadingElement =
@@ -181,38 +200,40 @@ class ProfileForm extends React.Component {
 										/>
 									</Form.Group>
 									{titleOptions.length > 0 &&
-										<SelectWrapper
-											base={ReactSelect}
-											defaultValue={titleId}
-											idAttribute="unlockId"
-											instanceId="title"
-											label="Title"
-											labelAttribute="title"
-											name="titleId"
-											options={titleOptions}
-											placeholder="Select title"
-											onChange={this.handleSelectChange}
-										/>
+										<Form.Group>
+											<Form.Label>title</Form.Label>
+											<ReactSelect
+												classNamePrefix="react-select"
+												getOptionLabel={this.getTitleOptionLabel}
+												getOptionValue={this.getTitleOptionValue}
+												instanceId="title"
+												options={titleOptions}
+												placeholder="Select title"
+												value={titleOptions.filter((option) => option.unlockId === titleId)}
+												onChange={this.handleTitleChange}
+											/>
+										</Form.Group>
+
 									}
 									<SearchSelect
 										defaultValue={transformedArea}
 										label="Area"
-										name="areaId"
 										placeholder="Select area..."
 										type="area"
-										onChange={this.handleSelectChange}
+										onChange={this.handleAreaChange}
 									/>
-									<SelectWrapper
-										base={ReactSelect}
-										defaultValue={genderId}
-										idAttribute="id"
-										label="Gender"
-										labelAttribute="name"
-										name="genderId"
-										options={genderOptions}
-										placeholder="Select Gender"
-										onChange={this.handleSelectChange}
-									/>
+									<Form.Group>
+										<Form.Label>Gender</Form.Label>
+										<ReactSelect
+											classNamePrefix="react-select"
+											getOptionLabel={this.getGenderOptionLabel}
+											getOptionValue={this.getGenderOptionValue}
+											options={genderOptions}
+											placeholder="Select Gender"
+											value={genderOptions.filter((option) => option.id === genderId)}
+											onChange={this.handleGenderChange}
+										/>
+									</Form.Group>
 									{errorComponent}
 								</Card.Body>
 								<Card.Footer>

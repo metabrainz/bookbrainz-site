@@ -19,10 +19,11 @@
 
 import {entityToOption, genEntityIconHTMLElement} from '../../helpers/entity';
 import Async from 'react-select/async';
+import {Form} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
-import SelectWrapper from './select-wrapper';
 import _ from 'lodash';
+import {components} from 'react-select';
 import request from 'superagent';
 
 
@@ -48,36 +49,42 @@ class EntitySearch extends React.Component {
 			.then((response) => response.body.map(entityToOption));
 	}
 
-	renderOption(option) {
+	renderOption(optionProps) {
 		return (
-			<div>
-				{option.type && genEntityIconHTMLElement(option.type)}
+			<components.Option {...optionProps}>
+				{optionProps.data.type && genEntityIconHTMLElement(optionProps.data.type)}
 				{' '}
-				{option.text}
+				{optionProps.data.text}
 				{
-					option.disambiguation &&
+					optionProps.data.disambiguation &&
 					<span className="disambig">
-						({option.disambiguation})
+						({optionProps.data.disambiguation})
 					</span>
 				}
-			</div>
+			</components.Option>
 		);
+	}
+
+	getOptionLabel(option) {
+		return option.text;
 	}
 
 	render() {
 		const {defaultValue, ...props} = this.props;
 
 		return (
-			<SelectWrapper
-				base={Async}
-				defaultValue={defaultValue && entityToOption(defaultValue)}
-				idAttribute="id"
-				labelAttribute="text"
-				loadOptions={this.fetchOptions}
-				optionRenderer={this.renderOption}
-				ref={(ref) => this.select = ref}
-				{...props}
-			/>
+			<Form.Group>
+				{props.label &&
+				<Form.Label>{props.label}</Form.Label>}
+				<Async
+					classNamePrefix="react-select"
+					components={{Option: this.renderOption}}
+					defaultValue={defaultValue && entityToOption(defaultValue)}
+					getOptionLabel={this.getOptionLabel}
+					loadOptions={this.fetchOptions}
+					{...props}
+				/>
+			</Form.Group>
 		);
 	}
 }
