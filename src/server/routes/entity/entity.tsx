@@ -42,6 +42,7 @@ import EditionGroupPage from '../../../client/components/pages/entities/edition-
 import EditionPage from '../../../client/components/pages/entities/edition';
 import EntityRevisions from '../../../client/components/pages/entity-revisions';
 import Layout from '../../../client/containers/layout';
+import PreviewPage from '../../../client/components/forms/preview';
 import PublisherPage from '../../../client/components/pages/entities/publisher';
 import ReactDOMServer from 'react-dom/server';
 import SeriesPage from '../../../client/components/pages/entities/series';
@@ -1275,4 +1276,29 @@ export function compareEntitiesByDate(a, b) {
 	}
 
 	return new Date(aDate).getTime() - new Date(bDate).getTime();
+}
+export function displayPreview(req:PassportRequest, res:$Response, next) {
+	const baseUrl = `${req.protocol}://${req.get('host')}`;
+	const originalUrl = `${baseUrl}${req.originalUrl}`;
+	const sourceUrl = req.headers.origin !== 'null' ? req.headers.origin : '<Unknown Source>';
+	if (sourceUrl === baseUrl) {
+		return next();
+	}
+	const finalProps = {baseUrl, formBody: req.body, originalUrl, sourceUrl};
+	const props = generateProps(req, res, {
+		alert: [],
+		...finalProps
+
+	});
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(props)}>
+			<PreviewPage {...propHelpers.extractPreviewProps(props)}/>
+		</Layout>
+	);
+	return res.send(target({
+		markup,
+		props: JSON.stringify(props),
+		script: '/js/preview.js',
+		title: 'Preview'
+	}));
 }

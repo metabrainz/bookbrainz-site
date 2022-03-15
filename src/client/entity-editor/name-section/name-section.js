@@ -43,9 +43,9 @@ import SortNameField from '../common/sort-name-field';
 import {UPDATE_WARN_IF_EDITION_GROUP_EXISTS} from '../edition-section/actions';
 import _ from 'lodash';
 import {connect} from 'react-redux';
+import {convertMapToObject} from '../../helpers/utils';
 import {entityTypeProperty} from '../../helpers/react-validators';
 import {getEntityDisambiguation} from '../../helpers/entity';
-
 
 /**
  * Container component. The NameSection component contains input fields for
@@ -181,10 +181,11 @@ class NameSection extends React.Component {
 								{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} with
 									exactly the same name or alias:
 								<br/><small className="text-muted">Click on a name to open it (Ctrl/Cmd + click to open in a new tab)</small>
-								<ListGroup className="margin-top-1 margin-bottom-1">
+								<ListGroup activeKey={null} className="margin-top-1 margin-bottom-1">
 									{exactMatches.map((match) =>
 										(
 											<ListGroup.Item
+												action
 												href={`/${_.kebabCase(entityType)}/${match.bbid}`}
 												key={`${match.bbid}`}
 												rel="noopener noreferrer" target="_blank"
@@ -283,10 +284,10 @@ NameSection.propTypes = {
 NameSection.defaultProps = {
 	action: 'create',
 	disambiguationDefaultValue: null,
-	exactMatches: null,
+	exactMatches: [],
 	languageValue: null,
 	searchForExistingEditionGroup: true,
-	searchResults: null
+	searchResults: []
 };
 
 
@@ -300,11 +301,11 @@ function mapStateToProps(rootState) {
 	);
 	return {
 		disambiguationDefaultValue: state.get('disambiguation'),
-		exactMatches: state.get('exactMatches'),
+		exactMatches: convertMapToObject(state.get('exactMatches')),
 		languageValue: state.get('language'),
 		nameValue: state.get('name'),
 		searchForExistingEditionGroup,
-		searchResults: state.get('searchResults'),
+		searchResults: convertMapToObject(state.get('searchResults')),
 		sortNameValue: state.get('sortName')
 	};
 }

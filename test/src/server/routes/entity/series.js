@@ -17,7 +17,7 @@
  */
 
 
-import {createEditor, createSeries, getRandomUUID, truncateEntities} from '../../../../test-helpers/create-entities';
+import {createEditor, createSeries, getRandomUUID, seedInitialState, truncateEntities} from '../../../../test-helpers/create-entities';
 
 import app from '../../../../../src/server/app';
 import chai from 'chai';
@@ -63,6 +63,24 @@ describe('Series routes', () => {
 	it('should not throw an error trying to edit an existing series', async () => {
 		const res = await agent
 			.get(`/series/${aBBID}/edit`);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw error while seeding series', async () => {
+		const data = {
+			...seedInitialState,
+			'identifierEditor.t30': 'wikidataid',
+			orderType: '',
+			seriesType: ''
+
+		  };
+		const res = await agent.post('/series/create').set('Origin', `http://127.0.0.1:${agent.app.address().port}`).send(data);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw not authorized error while seeding series', async () => {
+		const data = seedInitialState;
+		const res = await chai.request(app).post('/series/create').send(data);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});

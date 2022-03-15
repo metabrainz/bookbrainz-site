@@ -94,6 +94,35 @@ export function sortRelationshipOrdinal(sortByProperty: string) {
 	};
 }
 
+/**
+ * Takes a flatten object and convert it into unflatten one
+ * eg. { "a.c": 2 } -> { "a": { "c" : 2 } }
+ *
+ * @param {Object} flattenObj the flattened object i.e in diasy chain form
+ */
+
+export function unflatten(flattenObj) {
+	const result = {};
+	let cur;
+	let prop;
+	let parts;
+	if (Array.isArray(flattenObj) || Object(flattenObj) !== flattenObj) {
+		return flattenObj;
+	}
+	for (const dotKey in flattenObj) {
+		if (Object.prototype.hasOwnProperty.call(flattenObj, dotKey)) {
+			cur = result;
+			prop = '';
+			parts = dotKey.split('.');
+			for (let i = 0; i < parts.length; i++) {
+				cur = cur[prop] || (cur[prop] = {});
+				prop = parts[i];
+			}
+			cur[prop] = flattenObj[dotKey];
+		}
+	}
+	return result[''] ?? {};
+}
 
 /**
  * Returns an API path for interacting with the given Bookshelf entity model

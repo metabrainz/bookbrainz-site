@@ -185,6 +185,7 @@ class EntityDeletionForm extends React.Component {
 											<OverlayTrigger
 												delay={50}
 												overlay={deletionTooltip}
+												placement="right"
 											>
 												<FontAwesomeIcon
 													className="margin-left-0-5"

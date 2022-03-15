@@ -33,7 +33,7 @@ import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons';
 
 const {
 	deletedEntityMessage, extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
-	getLanguageAttribute, getRelationshipTargetByTypeId, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias
+	getLanguageAttribute, getRelationshipTargetByTypeId, addAuthorsDataToWorks, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias
 } = entityHelper;
 const {Col, Row} = bootstrap;
 
@@ -109,6 +109,7 @@ function EditionDisplayPage({entity, identifierTypes, user}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
+	const worksContainedByEditionWithAuthors = addAuthorsDataToWorks(entity.authorsData, worksContainedByEdition);
 	const urlPrefix = getEntityUrl(entity);
 	let editionGroupSection;
 	if (entity.editionGroup) {
@@ -149,7 +150,7 @@ function EditionDisplayPage({entity, identifierTypes, user}) {
 			<React.Fragment>
 				<WorksTable
 					entity={entity}
-					works={worksContainedByEdition}
+					works={worksContainedByEditionWithAuthors}
 				/>
 				<EntityLinks
 					entity={entity}

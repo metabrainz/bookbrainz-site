@@ -1,4 +1,4 @@
-import {createEditor, createWork, getRandomUUID, truncateEntities} from '../../../../test-helpers/create-entities';
+import {createEditor, createWork, getRandomUUID, seedInitialState, truncateEntities} from '../../../../test-helpers/create-entities';
 
 import app from '../../../../../src/server/app';
 import chai from 'chai';
@@ -45,6 +45,24 @@ describe('Work routes', () => {
 	it('should not throw an error trying to edit an existing work', async () => {
 		const res = await agent
 			.get(`/work/${aBBID}/edit`);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw error while seeding work', async () => {
+		const data = {
+			...seedInitialState,
+			'identifierEditor.t8': 'wikidataid',
+			'workSection.languages0': 'English',
+			'workSection.languages1': 'Japenglish',
+			'workSection.type': ''
+		  };
+		const res = await agent.post('/work/create').set('Origin', `http://127.0.0.1:${agent.app.address().port}`).send(data);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw not authorized error while seeding work', async () => {
+		const data = seedInitialState;
+		const res = await chai.request(app).post('/work/create').send(data);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
