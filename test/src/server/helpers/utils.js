@@ -1,7 +1,8 @@
 import {createPublisher, truncateEntities} from '../../../test-helpers/create-entities';
 import {generateIdenfierState, getIdByField, parseLanguages, searchOption} from '../../../../src/server/helpers/utils';
+import {getNextEnabledAndResultsArray, isbn10To13, isbn13To10} from '../../../../src/common/helpers/utils';
+
 import chai from 'chai';
-import {getNextEnabledAndResultsArray} from '../../../../src/common/helpers/utils';
 import orm from '../../../bookbrainz-data';
 
 
@@ -59,6 +60,31 @@ describe('getNextEnabledAndResultsArray', () => {
 
 		expect(newResultsArray.length).to.equal(10);
 		expect(nextEnabled).to.equal(true);
+	});
+});
+
+describe('Convert ISBNs', () => {
+	it('should return null if isbn10 not valid', () => {
+		const isbn10 = '1-23-45678-9';
+		const result = isbn10To13(isbn10);
+		expect(result).to.null;
+	});
+	it('should return valid isbn13 from isbn10', () => {
+		const isbn10 = '1-23-456789-X';
+		const expectedResult = '9781234567897';
+		const result = isbn10To13(isbn10);
+		expect(result).to.equal(expectedResult);
+	});
+	it('should return null if isbn13 not valid', () => {
+		const isbn13 = '879-123-456-7897';
+		const result = isbn13To10(isbn13);
+		expect(result).to.null;
+	});
+	it('should return valid isbn10 from isbn13', () => {
+		const isbn13 = '978-1-23456-789-7';
+		const expectedResult = '123456789X';
+		const result = isbn13To10(isbn13);
+		expect(result).to.equal(expectedResult);
 	});
 });
 
