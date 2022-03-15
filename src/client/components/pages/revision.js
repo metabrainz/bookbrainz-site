@@ -32,7 +32,7 @@ import {transformISODateForDisplay} from '../../helpers/entity';
 
 
 const {Badge, Button, Col, Form, ListGroup, Row} = bootstrap;
-const {formatDate} = utilsHelper;
+const {formatDate, stringToHTMLWithLinks} = utilsHelper;
 
 class RevisionPage extends React.Component {
 	static formatValueList(list, isChangeADate) {
@@ -210,7 +210,9 @@ class RevisionPage extends React.Component {
 					key={note.id}
 				>
 					<div className="revision-note">
-						<p className="note-content">{note.content}</p>
+						<p className="note-content">
+							{stringToHTMLWithLinks(note.content)}
+						</p>
 						<p className="text-right">
 							—&nbsp;
 							<a
