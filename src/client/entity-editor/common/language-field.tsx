@@ -61,7 +61,6 @@ function LanguageField({
 	const filterOptions = createFilterOptions({
 		options
 	});
-	// rest.value = rest.isMulti ? rest.value : options.filter((el) => el.value === value);
 	return (
 		<Form.Group>
 			<Form.Label>

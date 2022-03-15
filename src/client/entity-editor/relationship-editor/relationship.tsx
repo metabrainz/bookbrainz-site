@@ -85,6 +85,7 @@ function Relationship(props: SingleValueProps<Relationship> | OptionProps<Relati
 		</div>
 	);
 	let parentContainer;
+	// this component can be givent three different types of props, each require different parent container
 	if (props.getStyles) {
 		parentContainer = props.innerProps ? <components.Option {...props as OptionProps<any, any>}> {child}</components.Option> : props.getStyles &&
 		<components.SingleValue {...props}>{child}</components.SingleValue>;

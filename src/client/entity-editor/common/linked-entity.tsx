@@ -36,7 +36,7 @@ class LinkedEntity extends React.Component<any, any> {
 	};
 
 	static defaultProps = {
-		className: '',
+		className: 'react-select__option',
 		innerProps: null,
 		onSelect: null
 	};

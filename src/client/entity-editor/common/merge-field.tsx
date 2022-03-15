@@ -19,7 +19,7 @@
 
 import * as React from 'react';
 import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
-import _, {get as _get, has} from 'lodash';
+import {get as _get, has, isEqual} from 'lodash';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
 import ValidationLabel from '../common/validation-label';
@@ -91,7 +91,7 @@ function MergeField({
 		}
 		return onChange(value);
 	};
-	const currentOption = options.filter((el) => _.isEqual(el.value, currentValue));
+	const currentOption = options.filter((el) => isEqual(el.value, currentValue));
 	return (
 		<Form.Group>
 			<Form.Label>

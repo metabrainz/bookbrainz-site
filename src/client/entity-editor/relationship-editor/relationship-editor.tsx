@@ -406,13 +406,6 @@ class RelationshipModal
 			// Name of the attribute type belonging to the relationship type. EX: ['position', 'number]
 			attributes = attributeTypes.map(attribute => attribute.name);
 		}
-		const colourStyles = {
-			option: (styles) => ({
-				...styles,
-				backgroundColor: 'transparent',
-				color: 'inherit'
-			  })
-		  };
 		function getOptionValue(option) {
 			return option.selectedId;
 		}
@@ -426,7 +419,6 @@ class RelationshipModal
 					isDisabled={!this.state.targetEntity}
 					name="relationshipType"
 					options={relationships}
-					styles={colourStyles}
 					value={this.state.relationship}
 					onChange={this.handleRelationshipTypeChange}
 				/>
