@@ -33,6 +33,7 @@ import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
 import ValueField from './value-field';
+import {collapseWhiteSpaces} from '../../../common/helpers/utils';
 import {connect} from 'react-redux';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
@@ -139,15 +140,16 @@ function handleValueChange(
 	index: number,
 	types: Array<IdentifierType>
 ) {
+	let value = collapseWhiteSpaces(event.target.value);
 	const guessedType =
-		data.guessIdentifierType(event.target.value, types);
+		data.guessIdentifierType(value, types);
 	if (guessedType) {
 		const result = new RegExp(guessedType.detectionRegex)
-			.exec(event.target.value);
-		event.target.value = result[1];
+			.exec(value);
+		value = result[1];
 	}
 	return dispatch(
-		debouncedUpdateIdentifierValue(index, event.target.value, guessedType)
+		debouncedUpdateIdentifierValue(index, value, guessedType)
 	);
 }
 
