@@ -75,6 +75,10 @@ function CollectionAttributes({collection}) {
 					<dd>{collection.entityType}</dd>
 				</Col>
 				<Col lg={3}>
+					<dt>Number of {_.kebabCase(collection.entityType)}s</dt>
+					<dd>{collection.items.length}</dd>
+				</Col>
+				<Col lg={3}>
 					<dt>Created At</dt>
 					<dd>{formatDate(new Date(collection.createdAt), true)}</dd>
 				</Col>
