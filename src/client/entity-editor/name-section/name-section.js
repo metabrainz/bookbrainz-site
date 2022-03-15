@@ -181,7 +181,7 @@ class NameSection extends React.Component {
 								{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} with
 									exactly the same name or alias:
 								<br/><small className="text-muted">Click on a name to open it (Ctrl/Cmd + click to open in a new tab)</small>
-								<ListGroup className="margin-top-1 margin-bottom-1">
+								<ListGroup activeKey={null} className="margin-top-1 margin-bottom-1">
 									{exactMatches.map((match) =>
 										(
 											<ListGroup.Item
