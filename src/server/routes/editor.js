@@ -136,7 +136,8 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 		if (editor.get('areaId') === req.body.areaId &&
 			editor.get('bio') === req.body.bio &&
 			editor.get('name') === req.body.name &&
-			editor.get('titleUnlockId') === req.body.title
+			editor.get('titleUnlockId') === req.body.title &&
+			editor.get('genderId') === req.body.genderId
 		) {
 			throw new error.FormSubmissionError('No change to the profile');
 		}
