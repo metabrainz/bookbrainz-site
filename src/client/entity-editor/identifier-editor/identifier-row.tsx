@@ -29,7 +29,7 @@ import {
 	IdentifierType,
 	validateIdentifierValue
 } from '../validators/common';
-import {isbn10To13, isbn13To10} from '../../../common/helpers/utils';
+import {collapseWhiteSpaces, isbn10To13, isbn13To10} from '../../../common/helpers/utils';
 import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
@@ -141,6 +141,7 @@ function handleValueChange(
 	types: Array<IdentifierType>
 ) {
 	let {value} = event.target;
+	value = collapseWhiteSpaces(value);
 	const guessedType =
 		data.guessIdentifierType(value, types);
 	if (guessedType) {
