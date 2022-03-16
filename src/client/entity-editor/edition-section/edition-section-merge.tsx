@@ -38,7 +38,7 @@ import {entityToOption, transformISODateForSelect} from '../../helpers/entity';
 import type {Dispatch} from 'redux';
 import Entity from '../common/entity';
 import {Form} from 'react-bootstrap';
-import LinkedEntity from '../common/linked-entity';
+import LinkedEntitySelect from '../common/linked-entity-select';
 import MergeField from '../common/merge-field';
 import Select from 'react-select';
 import _ from 'lodash';
@@ -214,7 +214,7 @@ function EditionSectionMerge({
 			<MergeField
 				currentValue={editionGroupValue}
 				label="Edition Group"
-				optionComponent={LinkedEntity}
+				optionComponent={LinkedEntitySelect}
 				options={editionGroupOptions}
 				valueRenderer={Entity}
 				onChange={onEditionGroupChange}
@@ -228,7 +228,7 @@ function EditionSectionMerge({
 			<MergeField
 				currentValue={publisherValue}
 				label="Publisher"
-				optionComponent={LinkedEntity}
+				optionComponent={LinkedEntitySelect}
 				options={publisherOptions}
 				valueRenderer={Entity}
 				onChange={onPublisherChange}

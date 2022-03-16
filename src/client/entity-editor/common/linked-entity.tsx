@@ -36,7 +36,7 @@ class LinkedEntity extends React.Component<any, any> {
 	};
 
 	static defaultProps = {
-		className: 'react-select__option',
+		className: '',
 		innerProps: null,
 		onSelect: null
 	};
@@ -80,13 +80,12 @@ class LinkedEntity extends React.Component<any, any> {
 
 	render() {
 		const option = this.getSafeOptionValue(this.props.data);
-		const styles = this.props.getStyles('option', this.props);
 		const {disambiguation, text, type, unnamedText, language} = option;
 		const nameComponent = text || <i>{unnamedText}</i>;
 		return (
 			<div
-				className={this.props.className} style={styles}
-				onClick={this.handleParentEvent} {...this.props.innerProps}
+				className={this.props.className}
+				onClick={this.handleParentEvent} {...this.props}
 			>
 				{
 					type && genEntityIconHTMLElement(type)

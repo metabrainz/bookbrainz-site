@@ -33,7 +33,7 @@ import {convertMapToObject, labelsForAuthor} from '../../helpers/utils';
 import {entityToOption, transformISODateForSelect} from '../../helpers/entity';
 import type {Dispatch} from 'redux';
 import Entity from '../common/entity';
-import LinkedEntity from '../common/linked-entity';
+import LinkedEntitySelect from '../common/linked-entity-select';
 import MergeField from '../common/merge-field';
 import _ from 'lodash';
 import {connect} from 'react-redux';
@@ -214,7 +214,7 @@ function AuthorSectionMerge({
 			<MergeField
 				currentValue={beginAreaValue}
 				label={beginAreaLabel}
-				optionComponent={LinkedEntity}
+				optionComponent={LinkedEntitySelect}
 				options={beginAreaOptions}
 				valueRenderer={Entity}
 				onChange={onBeginAreaChange}
@@ -236,7 +236,7 @@ function AuthorSectionMerge({
 					<MergeField
 						currentValue={endAreaValue}
 						label={endAreaLabel}
-						optionComponent={LinkedEntity}
+						optionComponent={LinkedEntitySelect}
 						options={endAreaOptions}
 						valueRenderer={Entity}
 						onChange={onEndAreaChange}
