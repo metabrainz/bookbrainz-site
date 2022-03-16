@@ -18,7 +18,7 @@
  */
 
 import {Form, InputGroup, OverlayTrigger, Tooltip} from 'react-bootstrap';
-import Entity from './entity';
+import EntitySelect from './entity-select';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LinkedEntitySelect from './linked-entity-select';
 import PropTypes from 'prop-types';
@@ -144,7 +144,7 @@ class EntitySearchFieldOption extends React.Component {
 			<ImmutableAsyncSelect
 				className="Select"
 				classNamePrefix="react-select"
-				components={{Option: LinkedEntitySelect, SingleValue: Entity}}
+				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				filterOptions={false}
 				getOptionLabel={this.getOptionLabel}
 				labelKey="text"

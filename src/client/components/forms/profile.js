@@ -140,6 +140,10 @@ class ProfileForm extends React.Component {
 		return option.name;
 	}
 
+	getGenderOptionValue(option) {
+		return option.id;
+	}
+
 	render() {
 		const loadingElement =
 			this.state.waiting ? <LoadingSpinner/> : null;
@@ -228,6 +232,7 @@ class ProfileForm extends React.Component {
 										<ReactSelect
 											classNamePrefix="react-select"
 											getOptionLabel={this.getGenderOptionLabel}
+											getOptionValue={this.getGenderOptionValue}
 											options={genderOptions}
 											placeholder="Select Gender"
 											value={genderOptions.filter((option) => option.id === genderId)}

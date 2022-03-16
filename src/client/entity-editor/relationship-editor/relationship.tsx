@@ -55,7 +55,7 @@ export {Relationship as RelationshipType};
 type RelationshipProps = Relationship & {Parent?:React.FunctionComponent<any>};
 
 function Relationship({Parent, ...props}: RelationshipProps) {
-	const {contextEntity, link, relationshipType, sourceEntity, attributes, showAttributes, targetEntity} = props;
+	const {contextEntity, link, relationshipType, sourceEntity, attributes, showAttributes, targetEntity, ...rest} = props;
 	const {depth, description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
 
 	const reversed = contextEntity &&
@@ -81,7 +81,7 @@ function Relationship({Parent, ...props}: RelationshipProps) {
 			overlay={<Tooltip id={`tooltip-${id}`}>{description}</Tooltip>}
 			placement="bottom"
 		>
-			<Parent {...props}>
+			<Parent {...rest}>
 				<div aria-label={description} className={indentationClass}>
 					<Entity {...sourceObject}/>
 					{` ${usedLinkPhrase} `}

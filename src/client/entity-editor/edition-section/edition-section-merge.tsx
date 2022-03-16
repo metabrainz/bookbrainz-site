@@ -36,7 +36,7 @@ import type {List, Map} from 'immutable';
 import {entityToOption, transformISODateForSelect} from '../../helpers/entity';
 
 import type {Dispatch} from 'redux';
-import Entity from '../common/entity';
+import EntitySelect from '../common/entity-select';
 import {Form} from 'react-bootstrap';
 import LinkedEntitySelect from '../common/linked-entity-select';
 import MergeField from '../common/merge-field';
@@ -212,11 +212,10 @@ function EditionSectionMerge({
 	return (
 		<div>
 			<MergeField
+				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				currentValue={editionGroupValue}
 				label="Edition Group"
-				optionComponent={LinkedEntitySelect}
 				options={editionGroupOptions}
-				valueRenderer={Entity}
 				onChange={onEditionGroupChange}
 			/>
 			<MergeField
@@ -226,11 +225,10 @@ function EditionSectionMerge({
 				onChange={onReleaseDateChange}
 			/>
 			<MergeField
+				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				currentValue={publisherValue}
 				label="Publisher"
-				optionComponent={LinkedEntitySelect}
 				options={publisherOptions}
-				valueRenderer={Entity}
 				onChange={onPublisherChange}
 			/>
 			<MergeField

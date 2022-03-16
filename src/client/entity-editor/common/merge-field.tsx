@@ -99,6 +99,7 @@ function MergeField({
 				{helpIconElement}
 			</Form.Label>
 			<Select
+				{...rest}
 				classNamePrefix="react-select"
 				instanceId={label}
 				isClearable={false}

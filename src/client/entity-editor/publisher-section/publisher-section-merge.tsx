@@ -33,7 +33,7 @@ import {
 } from '../validators/publisher';
 
 import type {Dispatch} from 'redux';
-import Entity from '../common/entity';
+import EntitySelect from '../common/entity-select';
 import LinkedEntitySelect from '../common/linked-entity-select';
 import type {Map} from 'immutable';
 import MergeField from '../common/merge-field';
@@ -159,11 +159,10 @@ function PublisherSectionMerge({
 				onChange={onTypeChange}
 			/>
 			<MergeField
+				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				currentValue={areaValue}
 				label="Area"
-				optionComponent={LinkedEntitySelect}
 				options={areaOptions}
-				valueRenderer={Entity}
 				onChange={onAreaChange}
 			/>
 			<MergeField

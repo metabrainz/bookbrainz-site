@@ -18,12 +18,10 @@
  */
 
 import * as React from 'react';
-import {SingleValueProps, components} from 'react-select';
-import _ from 'lodash';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
-type Entity = {
+type EntityProps = {
 	disambiguation?: string | null | undefined,
 	language?: string,
 	link?: string | false,
@@ -33,33 +31,25 @@ type Entity = {
 };
 
 function Entity(
-	props:SingleValueProps<Entity> | Entity
+	{disambiguation, language, link, text, type, unnamedText}: EntityProps
 ) {
-	const {disambiguation, language, link, text, type, unnamedText, ...rest} = props.data ?? props;
 	const nameComponent = text || <i>{unnamedText}</i>;
-	const children =
-	(
-		<>{
-			type && genEntityIconHTMLElement(type)
-		}
-		{nameComponent}
-		{
-			disambiguation &&
+	const contents = (
+		<span>
+			{
+				type && genEntityIconHTMLElement(type)
+			}
+			{nameComponent}
+			{
+				disambiguation &&
 				<span className="disambig margin-left-0-3"><small>({disambiguation})</small></span>
-		}
-		{
-			language &&
+			}
+			{
+				language &&
 				<span className="text-muted small margin-left-0-3">{language}</span>
-		}
-		</>
+			}
+		</span>
 	);
-	const contents =
-		!_.isEmpty(rest) ?
-			(
-				<components.SingleValue {...(props as SingleValueProps)}>{children}
-				</components.SingleValue>
-			) : <div className="d-inline">{children}</div>
-	;
 
 	if (link) {
 		return <a href={link}>{contents}</a>;
@@ -69,5 +59,11 @@ function Entity(
 }
 
 Entity.displayName = 'Entity';
+Entity.defaultProps = {
+	disambiguation: null,
+	language: null,
+	link: false,
+	unnamedText: '(unnamed)'
+};
 
 export default Entity;
