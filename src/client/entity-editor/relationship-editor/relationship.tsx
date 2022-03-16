@@ -19,7 +19,6 @@
 import * as React from 'react';
 
 import type {Attribute, RelationshipType, Entity as _Entity} from './types';
-import {OptionProps, SingleValueProps, components} from 'react-select';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import Entity from '../common/entity';
 import RelationshipAttribute from './relationship-attribute';
@@ -52,9 +51,11 @@ type Relationship = {
 	showAttributes?: boolean,
 	relationshipType: RelationshipType
 };
+export {Relationship as RelationshipType};
+type RelationshipProps = Relationship & {Parent?:React.FunctionComponent<any>};
 
-function Relationship(props: SingleValueProps<Relationship> | OptionProps<Relationship, any> | Relationship) {
-	const {contextEntity, link, relationshipType, sourceEntity, attributes, showAttributes, targetEntity} = props.data ?? props;
+function Relationship({Parent, ...props}: RelationshipProps) {
+	const {contextEntity, link, relationshipType, sourceEntity, attributes, showAttributes, targetEntity} = props;
 	const {depth, description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
 
 	const reversed = contextEntity &&
@@ -74,36 +75,29 @@ function Relationship(props: SingleValueProps<Relationship> | OptionProps<Relati
 	if (typeof depth !== 'undefined') {
 		indentationClass = `margin-left-d${8 * depth}`;
 	}
-	const child =
-	(
-		<div aria-label={description} className={indentationClass}>
-			<Entity {...sourceObject}/>
-			{` ${usedLinkPhrase} `}
-			<Entity {...targetObject}/>
-			{' '}
-			<RelationshipAttribute attributes={attributes} showAttributes={showAttributes}/>
-		</div>
-	);
-	let parentContainer;
-	// this component can be givent three different types of props, each require different parent container
-	if (props.getStyles) {
-		parentContainer = props.innerProps ? <components.Option {...props as OptionProps<any, any>}> {child}</components.Option> : props.getStyles &&
-		<components.SingleValue {...props}>{child}</components.SingleValue>;
-	}
-	else {
-		parentContainer = <div>{child}</div>;
-	}
 	return (
 		<OverlayTrigger
 			delay={50}
 			overlay={<Tooltip id={`tooltip-${id}`}>{description}</Tooltip>}
 			placement="bottom"
 		>
-			{
-				parentContainer
-			}
+			<Parent {...props}>
+				<div aria-label={description} className={indentationClass}>
+					<Entity {...sourceObject}/>
+					{` ${usedLinkPhrase} `}
+					<Entity {...targetObject}/>
+					{' '}
+					<RelationshipAttribute attributes={attributes} showAttributes={showAttributes}/>
+				</div>
+			</Parent>
 		</OverlayTrigger>
 	);
 }
+Relationship.defaultProps =
+{
+	Parent: React.Fragment,
+	attributes: [],
+	showAttributes: false
+};
 Relationship.displayName = 'Relationship';
 export default Relationship;

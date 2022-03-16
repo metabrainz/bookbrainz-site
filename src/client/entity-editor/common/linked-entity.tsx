@@ -86,7 +86,7 @@ class LinkedEntity extends React.Component<any, any> {
 		return (
 			<div
 				className={this.props.className} style={styles}
-				onClick={this.props?.innerProps.onClick ?? this.handleParentEvent} {...this.props.innerProps}
+				onClick={this.handleParentEvent} {...this.props.innerProps}
 			>
 				{
 					type && genEntityIconHTMLElement(type)

@@ -43,7 +43,7 @@ import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {NumberAttribute} from './attributes';
 import ReactSelect from 'react-select';
-import Relationship from './relationship';
+import RelationshipSelect from './relationship-select';
 import _ from 'lodash';
 import {getEntityLink} from '../../../common/helpers/utils';
 
@@ -377,6 +377,10 @@ class RelationshipModal
 		);
 	}
 
+	getOptionValue(option) {
+		return option.selectedId;
+	}
+
 	renderRelationshipSelect() {
 		const {baseEntity, relationshipTypes} = this.props;
 
@@ -406,16 +410,13 @@ class RelationshipModal
 			// Name of the attribute type belonging to the relationship type. EX: ['position', 'number]
 			attributes = attributeTypes.map(attribute => attribute.name);
 		}
-		function getOptionValue(option) {
-			return option.selectedId;
-		}
 		return (
 			<Form.Group>
 				<Form.Label>Relationship</Form.Label>
 				<ReactSelect
 					classNamePrefix="react-select"
-					components={{SingleValue: Relationship, Option: Relationship}}
-					getOptionValue={getOptionValue}
+					components={{Option: RelationshipSelect, SingleValue: RelationshipSelect}}
+					getOptionValue={this.getOptionValue}
 					isDisabled={!this.state.targetEntity}
 					name="relationshipType"
 					options={relationships}
