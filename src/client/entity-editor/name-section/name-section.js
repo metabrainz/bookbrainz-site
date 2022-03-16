@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Alert, Button, Col, Container, ListGroup, Row} from 'react-bootstrap';
+import {Alert, Button, Col, ListGroup, Row} from 'react-bootstrap';
 import {
 	checkIfNameExists,
 	debouncedUpdateDisambiguationField,
@@ -171,7 +171,7 @@ class NameSection extends React.Component {
 
 
 		return (
-			<Container>
+			<div className="margin-right-2">
 				<h2>{`What is the ${_.startCase(entityType)} called?`}</h2>
 				<Row>
 					<Col>
@@ -278,7 +278,7 @@ class NameSection extends React.Component {
 						</Row>
 					</Col>
 				</Row>
-			</Container>
+			</div>
 		);
 	}
 }
