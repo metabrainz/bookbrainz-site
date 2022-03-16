@@ -24,8 +24,9 @@ import LoadingSpinner from '../loading-spinner';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
-import SearchSelect from '../input/entity-search';
+import SearchSelect from '../../entity-editor/common/entity-search-field-option';
 import ValidationLabel from '../../entity-editor/common/validation-label';
+import {entityToOption} from '../../helpers/entity';
 
 
 const {Alert, Button, Col, Card, Form, Row} = bootstrap;
@@ -216,7 +217,7 @@ class ProfileForm extends React.Component {
 
 									}
 									<SearchSelect
-										defaultValue={transformedArea}
+										defaultValue={entityToOption(transformedArea)}
 										label="Area"
 										placeholder="Select area..."
 										type="area"
@@ -227,7 +228,6 @@ class ProfileForm extends React.Component {
 										<ReactSelect
 											classNamePrefix="react-select"
 											getOptionLabel={this.getGenderOptionLabel}
-											getOptionValue={this.getGenderOptionValue}
 											options={genderOptions}
 											placeholder="Select Gender"
 											value={genderOptions.filter((option) => option.id === genderId)}
