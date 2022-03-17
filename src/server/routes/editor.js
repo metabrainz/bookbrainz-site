@@ -257,10 +257,12 @@ function achievementColToEditorGetJSON(achievementCol) {
 	};
 }
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', (req, res, next) => {
 	const {AchievementUnlock, Revision} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
-
+	if (!userId) {
+		return next(new error.BadRequestError('Editor Id is not valid!', req));
+	}
 	const editorJSONPromise = getIdEditorJSONPromise(userId, req);
 
 	const achievementColPromise = new AchievementUnlock()
@@ -273,42 +275,42 @@ router.get('/:id', async (req, res, next) => {
 			withRelated: ['achievement']
 		});
 
-	const [achievementCol, editorJSON] = await Promise.all(
+	return Promise.all(
 		[achievementColPromise, editorJSONPromise]
-	).catch(next);
-
-	editorJSON.activityData =
+	).then(async ([achievementCol, editorJSON]) => {
+		editorJSON.activityData =
 		await getEditorActivity(editorJSON.id, editorJSON.createdAt, Revision)
 			.catch(next);
 
-	const achievementJSON = achievementColToEditorGetJSON(achievementCol);
+		const achievementJSON = achievementColToEditorGetJSON(achievementCol);
 
-	const props = generateProps(req, res, {
-		achievement: achievementJSON,
-		editor: editorJSON,
-		tabActive: 0
-	});
+		const props = generateProps(req, res, {
+			achievement: achievementJSON,
+			editor: editorJSON,
+			tabActive: 0
+		});
 
-	const markup = ReactDOMServer.renderToString(
-		<Layout {...propHelpers.extractLayoutProps(props)} >
-			<EditorContainer
-				{...propHelpers.extractEditorProps(props)}
-			>
-				<ProfileTab
-					user={props.user}
-					{...propHelpers.extractChildProps(props)}
-				/>
-			</EditorContainer>
-		</Layout>
-	);
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)} >
+				<EditorContainer
+					{...propHelpers.extractEditorProps(props)}
+				>
+					<ProfileTab
+						user={props.user}
+						{...propHelpers.extractChildProps(props)}
+					/>
+				</EditorContainer>
+			</Layout>
+		);
 
-	res.send(target({
-		markup,
-		page: 'profile',
-		props: escapeProps(props),
-		script: '/js/editor/editor.js',
-		title: `${props.editor.name}'s Profile`
-	}));
+		return res.send(target({
+			markup,
+			page: 'profile',
+			props: escapeProps(props),
+			script: '/js/editor/editor.js',
+			title: `${props.editor.name}'s Profile`
+		}));
+	}).catch(next);
 });
 
 // eslint-disable-next-line consistent-return
