@@ -257,30 +257,26 @@ function achievementColToEditorGetJSON(achievementCol) {
 	};
 }
 
-router.get('/:id', (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
 	const {AchievementUnlock, Revision} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
 	if (!userId) {
 		return next(new error.BadRequestError('Editor Id is not valid!', req));
 	}
-	const editorJSONPromise = getIdEditorJSONPromise(userId, req);
+	try {
+		const editorJSON = await getIdEditorJSONPromise(userId, req);
 
-	const achievementColPromise = new AchievementUnlock()
-		.where('editor_id', userId)
-		.where('profile_rank', '<=', '3')
-		.query((qb) => qb.limit(3))
-		.orderBy('profile_rank', 'ASC')
-		.fetchAll({
-			require: false,
-			withRelated: ['achievement']
-		});
-
-	return Promise.all(
-		[achievementColPromise, editorJSONPromise]
-	).then(async ([achievementCol, editorJSON]) => {
+		const achievementCol = await new AchievementUnlock()
+			.where('editor_id', userId)
+			.where('profile_rank', '<=', '3')
+			.query((qb) => qb.limit(3))
+			.orderBy('profile_rank', 'ASC')
+			.fetchAll({
+				require: false,
+				withRelated: ['achievement']
+			});
 		editorJSON.activityData =
-		await getEditorActivity(editorJSON.id, editorJSON.createdAt, Revision)
-			.catch(next);
+		await getEditorActivity(editorJSON.id, editorJSON.createdAt, Revision);
 
 		const achievementJSON = achievementColToEditorGetJSON(achievementCol);
 
@@ -310,7 +306,10 @@ router.get('/:id', (req, res, next) => {
 			script: '/js/editor/editor.js',
 			title: `${props.editor.name}'s Profile`
 		}));
-	}).catch(next);
+	}
+	catch (err) {
+		return next(err);
+	}
 });
 
 // eslint-disable-next-line consistent-return
