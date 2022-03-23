@@ -114,7 +114,7 @@
     "chai-sorted": "^0.2.0",
     "clean-webpack-plugin": "^4.0.0",
     "compression-webpack-plugin": "^9.2.0",
-    "css-loader": "^6.5.1",
+    "css-loader": "^6.7.1",
     "eslint": "^7.30.0",
     "eslint-plugin-babel": "^4.1.2",
     "eslint-plugin-import": "^2.22.1",
