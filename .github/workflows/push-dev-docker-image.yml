@@ -5,6 +5,10 @@ name: Push development Docker image
 on:
   workflow_dispatch:
     inputs:
+      pr:
+        description: 'PR number (if deploying a PR)'
+        required: false
+        type: string
       tag:
         description: 'Docker Image Tag (Version)'
         required: true
@@ -17,7 +21,12 @@ jobs:
       runs-on: ubuntu-latest
 
       steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          # The branch, tag or SHA to checkout. When checking out the repository that
+          # triggered a workflow, this defaults to the reference or SHA for that event.
+          # Otherwise, uses the default branch.
+          ref: ${{ "refs/pull/${{ github.event.inputs.pr }}/head" || "" }}
 
       - name: Login to Docker Hub
         run: echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
