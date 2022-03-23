@@ -33,7 +33,13 @@ const {Button, ButtonGroup} = bootstrap;
  * the 'CallToAction' component.
  */
 function CallToAction(props) {
-	const nameQueryParameter = props.query ? `?name=${props.query}` : '';
+	// double encoding to prevent browser from automatically decoding it
+	const nameQueryParameter = props.query ? `?name=${encodeURIComponent(encodeURIComponent(props.query))}` : '';
+	function generateRedirects(type) {
+		return () => {
+			window.location.href = `/${type}/create${nameQueryParameter}`;
+		};
+	}
 	return (
 		<div className="text-center">
 			<p>
@@ -44,40 +50,40 @@ function CallToAction(props) {
 				<ButtonGroup id="searchpage-button-group">
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
-						href={`/author/create${nameQueryParameter}`}
 						variant="secondary"
+						onClick={generateRedirects('author')}
 					>
 						{genEntityIconHTMLElement('Author', '3x', false)}
 						<div className="margin-top-d4">Author</div>
 					</Button>
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
-						href={`/work/create${nameQueryParameter}`}
 						variant="secondary"
+						onClick={generateRedirects('work')}
 					>
 						{genEntityIconHTMLElement('Work', '3x', false)}
 						<div className="margin-top-d4">Work</div>
 					</Button>
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
-						href={`/edition/create${nameQueryParameter}`}
 						variant="secondary"
+						onClick={generateRedirects('edition')}
 					>
 						{genEntityIconHTMLElement('Edition', '3x', false)}
 						<div className="margin-top-d4">Edition</div>
 					</Button>
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
-						href={`/series/create${nameQueryParameter}`}
 						variant="secondary"
+						onClick={generateRedirects('series')}
 					>
 						{genEntityIconHTMLElement('Series', '3x', false)}
 						<div className="margin-top-d4">Series</div>
 					</Button>
 					<Button
 						className="padding-bottom-1 padding-sides-2 padding-top-1"
-						href={`/publisher/create${nameQueryParameter}`}
 						variant="secondary"
+						onClick={generateRedirects('publisher')}
 					>
 						{genEntityIconHTMLElement('Publisher', '3x', false)}
 						<div className="margin-top-d4">Publisher</div>
