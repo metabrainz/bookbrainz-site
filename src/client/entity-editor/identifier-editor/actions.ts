@@ -90,13 +90,14 @@ export function removeIdentifierRow(rowId: number): Action {
  * @param {string} value - The new value to be used for the identifier value.
  * @param {number} suggestedType - The ID for the type suggested by the new
  *        value.
+ * @param {boolean} doDebounce - flag for debouncing
  * @returns {Action} The resulting UPDATE_IDENTIFIER_VALUE action.
  */
 export function debouncedUpdateIdentifierValue(
-	rowId: number, value: string, suggestedType: number
+	rowId: number, value: string, suggestedType: number, doDebounce = true
 ): Action {
 	return {
-		meta: {debounce: 'keystroke'},
+		meta: {debounce: doDebounce ? 'keystroke' : null},
 		payload: {
 			rowId,
 			suggestedType,

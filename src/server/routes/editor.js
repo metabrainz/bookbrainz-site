@@ -136,7 +136,8 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 		if (editor.get('areaId') === req.body.areaId &&
 			editor.get('bio') === req.body.bio &&
 			editor.get('name') === req.body.name &&
-			editor.get('titleUnlockId') === req.body.title
+			editor.get('titleUnlockId') === req.body.title &&
+			editor.get('genderId') === req.body.genderId
 		) {
 			throw new error.FormSubmissionError('No change to the profile');
 		}
@@ -259,55 +260,56 @@ function achievementColToEditorGetJSON(achievementCol) {
 router.get('/:id', async (req, res, next) => {
 	const {AchievementUnlock, Revision} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
+	if (!userId) {
+		return next(new error.BadRequestError('Editor Id is not valid!', req));
+	}
+	try {
+		const editorJSON = await getIdEditorJSONPromise(userId, req);
 
-	const editorJSONPromise = getIdEditorJSONPromise(userId, req);
+		const achievementCol = await new AchievementUnlock()
+			.where('editor_id', userId)
+			.where('profile_rank', '<=', '3')
+			.query((qb) => qb.limit(3))
+			.orderBy('profile_rank', 'ASC')
+			.fetchAll({
+				require: false,
+				withRelated: ['achievement']
+			});
+		editorJSON.activityData =
+		await getEditorActivity(editorJSON.id, editorJSON.createdAt, Revision);
 
-	const achievementColPromise = new AchievementUnlock()
-		.where('editor_id', userId)
-		.where('profile_rank', '<=', '3')
-		.query((qb) => qb.limit(3))
-		.orderBy('profile_rank', 'ASC')
-		.fetchAll({
-			require: false,
-			withRelated: ['achievement']
+		const achievementJSON = achievementColToEditorGetJSON(achievementCol);
+
+		const props = generateProps(req, res, {
+			achievement: achievementJSON,
+			editor: editorJSON,
+			tabActive: 0
 		});
 
-	const [achievementCol, editorJSON] = await Promise.all(
-		[achievementColPromise, editorJSONPromise]
-	).catch(next);
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)} >
+				<EditorContainer
+					{...propHelpers.extractEditorProps(props)}
+				>
+					<ProfileTab
+						user={props.user}
+						{...propHelpers.extractChildProps(props)}
+					/>
+				</EditorContainer>
+			</Layout>
+		);
 
-	editorJSON.activityData =
-		await getEditorActivity(editorJSON.id, editorJSON.createdAt, Revision)
-			.catch(next);
-
-	const achievementJSON = achievementColToEditorGetJSON(achievementCol);
-
-	const props = generateProps(req, res, {
-		achievement: achievementJSON,
-		editor: editorJSON,
-		tabActive: 0
-	});
-
-	const markup = ReactDOMServer.renderToString(
-		<Layout {...propHelpers.extractLayoutProps(props)} >
-			<EditorContainer
-				{...propHelpers.extractEditorProps(props)}
-			>
-				<ProfileTab
-					user={props.user}
-					{...propHelpers.extractChildProps(props)}
-				/>
-			</EditorContainer>
-		</Layout>
-	);
-
-	res.send(target({
-		markup,
-		page: 'profile',
-		props: escapeProps(props),
-		script: '/js/editor/editor.js',
-		title: `${props.editor.name}'s Profile`
-	}));
+		return res.send(target({
+			markup,
+			page: 'profile',
+			props: escapeProps(props),
+			script: '/js/editor/editor.js',
+			title: `${props.editor.name}'s Profile`
+		}));
+	}
+	catch (err) {
+		return next(err);
+	}
 });
 
 // eslint-disable-next-line consistent-return
