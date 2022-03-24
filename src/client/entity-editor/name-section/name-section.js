@@ -157,11 +157,11 @@ class NameSection extends React.Component {
 
 		const warnIfExists = !_.isEmpty(exactMatches);
 
-		if (!this.state.showButton && searchResults && searchResults.length > 5) {
+		if (!this.state.showButton && searchResults?.length > 5) {
 			this.setState({showButton: true});
 		}
 
-		if (this.state.showButton && searchResults && searchResults.length <= 5) {
+		if (this.state.showButton && searchResults?.length <= 5) {
 			this.setState({showButton: false});
 		}
 
@@ -171,10 +171,10 @@ class NameSection extends React.Component {
 
 
 		return (
-			<div className="margin-right-2">
+			<div className="margin-right-1">
 				<h2>{`What is the ${_.startCase(entityType)} called?`}</h2>
 				<Row>
-					<Col>
+					<Col md={{span: 6}}>
 						<NameField
 							defaultValue={nameValue}
 							empty={isAliasEmpty(
@@ -223,7 +223,7 @@ class NameSection extends React.Component {
 							onChange={onDisambiguationChange}
 						/>
 					</Col>
-					<Col>
+					<Col md={{span: 6}}>
 						<Row>
 							<hr/>
 							{isRequiredDisambiguationEmpty(
