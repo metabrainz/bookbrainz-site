@@ -164,6 +164,9 @@ function entitiesToFormState(entities: any[]) {
 function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 	const {RelationshipSet} = orm;
 
+	// Default to empty array, its presence is expected down the line
+	entity.relationships = [];
+	
 	if (!entity.relationshipSetId) {
 		return null;
 	}
@@ -180,8 +183,9 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 			]
 		})
 		.then((relationshipSet) => {
-			entity.relationships = relationshipSet ?
-				relationshipSet.related('relationships').toJSON() : [];
+			if(relationshipSet){
+				entity.relationships = relationshipSet.related('relationships').toJSON();
+			}
 
 			attachAttributes(entity.relationships);
 
