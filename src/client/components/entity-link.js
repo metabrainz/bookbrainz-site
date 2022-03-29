@@ -25,6 +25,18 @@ import {kebabCase as _kebabCase} from 'lodash';
 
 
 function EntityLink({entity, inline}) {
+	let sort_name = "Unnamed";
+	let type = "Unnamed";
+	let languages = ['Not defined'];
+	if(entity.defaultAlias && entity.defaultAlias.sortName){
+		sort_name = entity.defaultAlias.sortName;
+	}
+	if(entity.workType && entity.workType.label){
+		type = entity.workType.label;
+	}
+	if(entity.languageSet && entity.languageSet.languages){
+		languages = entity.languageSet.languages;
+	}
 	const [open, setOpen] = useState(false);
 	let bbidElement = <div className="small">({entity.bbid})</div>;
 	if (inline) {
@@ -54,17 +66,17 @@ function EntityLink({entity, inline}) {
 						<div className='d-flex'>
 							<span className='mx-4'>
 								<div><b>Sort Name</b></div>
-								<div>{entity.defaultAlias.sortName}</div>
+								<div>{sort_name}</div>
 							</span>
 							<span className='mx-4'>
 								<div><b>Type</b></div>
-								<div>{entity.workType.label}</div>
+								<div>{type}</div>
 							</span>
 							<span className='mx-4'>
 								<div><b>Language</b></div>
 								<div className='d-flex'>
-									{(entity.languageSet.languages).map(
-										(lang)=>(<div>{lang.name}</div>)
+									{languages.map(
+										(lang)=>(<div className='mr-2'>{lang.name}</div>)
 									)}		
 								</div>					
 							</span>
