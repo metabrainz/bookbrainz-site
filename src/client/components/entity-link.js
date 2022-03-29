@@ -16,25 +16,65 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as bootstrap from 'react-bootstrap';
+import {Row, Col}from 'react-bootstrap';
 import {genEntityIconHTMLElement, getEntityLabel} from '../helpers/entity';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useState} from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 
 
 function EntityLink({entity, inline}) {
+	const [open, setOpen] = useState(false);
 	let bbidElement = <div className="small">({entity.bbid})</div>;
 	if (inline) {
 		bbidElement = <span className="small">({entity.bbid})</span>;
 	}
 	return (
-		<span>
-			<a href={`/${_kebabCase(entity.type)}/${entity.bbid}`}>
-				{genEntityIconHTMLElement(entity.type)}
-				{getEntityLabel(entity)}
-			</a>
-			{bbidElement}
-		</span>
+
+		<>
+			<span>
+				<a href={`/${_kebabCase(entity.type)}/${entity.bbid}`}>
+					{genEntityIconHTMLElement(entity.type)}
+					{getEntityLabel(entity)}
+				</a>
+				{bbidElement}
+
+				<bootstrap.Button
+				className='mx-1'
+				variant="light"
+				size="sm"
+				onClick={() => setOpen(!open)}
+				aria-controls="example-collapse-text"
+				aria-expanded={open}>
+					more...
+				</bootstrap.Button>
+				<bootstrap.Collapse in={open}>
+					<div id="example-collapse-text">
+						<div className='d-flex'>
+							<span className='mx-4'>
+								<div><b>Sort Name</b></div>
+								<div>{entity.defaultAlias.sortName}</div>
+							</span>
+							<span className='mx-4'>
+								<div><b>Type</b></div>
+								<div>{entity.workType.label}</div>
+							</span>
+							<span className='mx-4'>
+								<div><b>Language</b></div>
+								<div className='d-flex'>
+									{(entity.languageSet.languages).map(
+										(lang)=>(<div>{lang.name}</div>)
+									)}		
+								</div>					
+							</span>
+						</div>
+					</div>
+				</bootstrap.Collapse>
+			</span>
+
+		</>
+
 	);
 }
 
