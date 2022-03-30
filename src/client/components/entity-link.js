@@ -17,24 +17,23 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import {Row, Col}from 'react-bootstrap';
 import {genEntityIconHTMLElement, getEntityLabel} from '../helpers/entity';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
+import React,{useState} from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 
 
 function EntityLink({entity, inline}) {
-	let sort_name = "Unnamed";
-	let type = "Unnamed";
-	let languages = ['Not defined'];
-	if(entity.defaultAlias && entity.defaultAlias.sortName){
-		sort_name = entity.defaultAlias.sortName;
+	let sortName = 'Unnamed';
+	let type = 'Unnamed';
+	let languages = [];
+	if (entity.defaultAlias && entity.defaultAlias.sortName) {
+		sortName = entity.defaultAlias.sortName;
 	}
-	if(entity.workType && entity.workType.label){
+	if (entity.workType && entity.workType.label) {
 		type = entity.workType.label;
 	}
-	if(entity.languageSet && entity.languageSet.languages){
+	if (entity.languageSet && entity.languageSet.languages) {
 		languages = entity.languageSet.languages;
 	}
 	const [open, setOpen] = useState(false);
@@ -53,30 +52,31 @@ function EntityLink({entity, inline}) {
 				{bbidElement}
 
 				<bootstrap.Button
-				className='mx-1'
-				variant="light"
-				size="sm"
-				onClick={() => setOpen(!open)}
-				aria-controls="example-collapse-text"
-				aria-expanded={open}>
+					mx={1}
+					variant="light"
+					size="sm"
+					onClick={() => setOpen(!open)}
+					aria-controls="example-collapse-text"
+					aria-expanded={open}
+				>
 					more...
 				</bootstrap.Button>
 				<bootstrap.Collapse in={open}>
 					<div id="example-collapse-text">
-						<div className='d-flex'>
-							<span className='mx-4'>
+						<div d-flex>
+							<span mx={4}>
 								<div><b>Sort Name</b></div>
-								<div>{sort_name}</div>
+								<div>{sortName}</div>
 							</span>
-							<span className='mx-4'>
+							<span mx={4}>
 								<div><b>Type</b></div>
 								<div>{type}</div>
 							</span>
-							<span className='mx-4'>
+							<span mx={4}>
 								<div><b>Language</b></div>
-								<div className='d-flex'>
+								<div d-flex>
 									{languages.map(
-										(lang)=>(<div className='mr-2'>{lang.name}</div>)
+										(lang) => (<div mr={2}>{lang.name}</div>)
 									)}		
 								</div>					
 							</span>
