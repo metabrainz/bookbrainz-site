@@ -28,13 +28,13 @@ function EntityLink({entity, inline}) {
 	let type = 'Unnamed';
 	let languages = [];
 	if (entity.defaultAlias && entity.defaultAlias.sortName) {
-		[sortName] = entity.defaultAlias;
+		sortName = entity.defaultAlias.sortName;
 	}
 	if (entity.workType && entity.workType.label) {
-		type = entity.workType.label;
+		type = entity.workType.label.languages;
 	}
 	if (entity.languageSet && entity.languageSet.languages) {
-		[languages] = entity.languageSet;
+		languages = entity.languageSet.languages;
 	}
 	const [open, setOpen] = useState(false);
 	let bbidElement = <div className="small">({entity.bbid})</div>;
@@ -74,7 +74,7 @@ function EntityLink({entity, inline}) {
 							<span className="mx-4">
 								<div><b>Language</b></div>
 								<div className="d-flex">
-									{languages.map(lang{<div className="mr-2" key={lang.name}}>{lang.name}</div>)}
+									{languages.map(lang => <div className="mr-2" key={lang.name}>{lang.name}</div>)}
 								</div>
 							</span>
 						</div>
