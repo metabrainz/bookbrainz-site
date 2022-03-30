@@ -18,10 +18,9 @@
 
 import * as bootstrap from 'react-bootstrap';
 import {genEntityIconHTMLElement, getEntityLabel} from '../helpers/entity';
-import PropTypes from 'prop-types';
-import React from 'react';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
+import PropTypes from 'prop-types';
 
 
 function EntityLink({entity, inline}) {
