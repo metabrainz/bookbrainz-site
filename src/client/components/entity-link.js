@@ -58,7 +58,7 @@ function EntityLink({entity, inline}) {
 					className="mx-1"
 					size="sm"
 					variant="light"
-					onClick={() => setOpen(!open)}
+					onClick={function(){setOpen(!open)}}
 				>
 					more...
 				</bootstrap.Button>
