@@ -38,9 +38,11 @@ router.get('/cb', (req, res, next) => {
 			return next(authErr);
 		}
 
+		// Set profile in session, and continue to registration
+		req.session.mbProfile = info;
+
 		if (!user) {
-			// Set profile in session, and continue to registration
-			req.session.mbProfile = info;
+			// Redirect to registration page
 			return res.redirect('/register/details');
 		}
 
