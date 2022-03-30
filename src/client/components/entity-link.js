@@ -18,13 +18,13 @@
 
 import * as bootstrap from 'react-bootstrap';
 import {genEntityIconHTMLElement, getEntityLabel} from '../helpers/entity';
-import React, {useState} from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+import {useState} from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 
 
 function EntityLink({entity, inline}) {
-	console.log(entity);
 	let sortNamee = 'Unnamed';
 	let type = 'Unnamed';
 	let languages = [];
@@ -77,7 +77,7 @@ function EntityLink({entity, inline}) {
 							<span className="mx-4">
 								<div><b>Language</b></div>
 								<div className="d-flex">
-									{languages.map(lang=><div className="mr-2" key={lang.id}>{lang.name}</div>)}
+									{languages.map(lang => <div className="mr-2" key={lang.id}>{lang.name}</div>)}
 								</div>
 							</span>
 						</div>
