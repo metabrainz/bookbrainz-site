@@ -108,7 +108,7 @@ router.post('/handler', async (req, res) => {
 		// Fetch the default EditorType from the database
 		const editorType = await EditorType.forge({label: 'Editor'}).fetch({require: true});
 		// Create a new Editor and add to the database
-		const editor = new Editor({
+		const editor = await new Editor({
 			cachedMetabrainzName: req.session.mbProfile.sub,
 			genderId: req.body.gender,
 			metabrainzUserId: req.session.mbProfile.metabrainz_user_id,

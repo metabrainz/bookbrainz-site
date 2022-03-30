@@ -23,18 +23,17 @@ import React, {ChangeEvent, Component} from 'react';
 import LoadingSpinner from '../loading-spinner';
 import ReactSelect from 'react-select';
 import SelectWrapper from '../input/select-wrapper';
-import request from 'superagent';
 
 
 type RegistrationFormProps = {
-	gender?:{id:string};
+	gender?:{id:number | string};
 	genders: [];
 	name:string;
 };
 type RegistrationFormState = {
 	displayName:string;
 	error: string | null;
-	gender?:string;
+	gender?:number | string;
 	waiting:boolean;
 };
 
@@ -53,6 +52,7 @@ class RegistrationForm extends Component<RegistrationFormProps, RegistrationForm
 
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleNameChange = this.handleNameChange.bind(this);
+		this.handleGenderChange = this.handleGenderChange.bind(this);
 	}
 
 	async handleSubmit(event) {
@@ -70,7 +70,7 @@ class RegistrationForm extends Component<RegistrationFormProps, RegistrationForm
 
 		const data = {
 			displayName,
-			gender: gender ? parseInt(gender, 10) : null
+			gender: gender ?? null
 		};
 
 		this.setState({
@@ -79,15 +79,35 @@ class RegistrationForm extends Component<RegistrationFormProps, RegistrationForm
 		});
 
 		try {
-			await request.post('/register/handler')
-				.send(data);
+			const response = await fetch('/register/handler', {
+				body: JSON.stringify(data),
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				method: 'POST'
+			});
+			// const response = await request.post('/register/handler')
+			// 	.send(data);
+			if (!response.ok) {
+				const body = await response.json();
+				throw new Error(body.error);
+			}
 		}
 		catch (err) {
 			this.setState({
 				error: err.message,
 				waiting: false
 			});
+			return;
 		}
+
+		this.setState({
+			error: null,
+			waiting: false
+		});
+
+		// Redirect to login page
+		window.location.href = '/auth';
 	}
 
 	handleNameChange(event: ChangeEvent<HTMLInputElement>) {
@@ -112,7 +132,10 @@ class RegistrationForm extends Component<RegistrationFormProps, RegistrationForm
 		}
 
 		const loadingComponent = waiting ? <LoadingSpinner/> : null;
-
+		const buttonProps:any = {};
+		if (displayName?.length <= 0) {
+			buttonProps.disabled = true;
+		}
 		return (
 			<div>
 				<div className="page-header"><h1>Register</h1></div>
@@ -172,7 +195,7 @@ class RegistrationForm extends Component<RegistrationFormProps, RegistrationForm
 							{errorComponent}
 							<div className="text-center">
 								<Button
-									disabled={displayName?.length <= 0}
+									{...buttonProps}
 									size="lg"
 									type="submit"
 									variant="primary"
