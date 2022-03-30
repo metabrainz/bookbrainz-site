@@ -18,23 +18,25 @@
 
 import * as bootstrap from 'react-bootstrap';
 import {genEntityIconHTMLElement, getEntityLabel} from '../helpers/entity';
-import React, {useState} from 'react';
 import PropTypes from 'prop-types';
+import React, {useState} from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 
 
 function EntityLink({entity, inline}) {
-	let sortName = 'Unnamed';
+	let sortNamee = 'Unnamed';
 	let type = 'Unnamed';
 	let languages = [];
 	if (entity.defaultAlias && entity.defaultAlias.sortName) {
-		sortName = entity.defaultAlias.sortName;
+		const {sortName} = entity.defaultAlias;
+		sortNamee = sortName;
 	}
 	if (entity.workType && entity.workType.label) {
-		type = entity.workType.label.languages;
+		type = entity.workType.label;
 	}
 	if (entity.languageSet && entity.languageSet.languages) {
-		languages = entity.languageSet.languages;
+		const [...rest] = entity.languageSet.languages;
+		languages=rest;
 	}
 	const [open, setOpen] = useState(false);
 	let bbidElement = <div className="small">({entity.bbid})</div>;
@@ -53,7 +55,7 @@ function EntityLink({entity, inline}) {
 				<bootstrap.Button
 					aria-controls="example-collapse-text"
 					aria-expanded={open}
-					mx={1}
+					className="mx-1"
 					size="sm"
 					variant="light"
 					onClick={() => setOpen(!open)}
@@ -65,7 +67,7 @@ function EntityLink({entity, inline}) {
 						<div className="d-flex">
 							<span className="mx-4">
 								<div><b>Sort Name</b></div>
-								<div>{sortName}</div>
+								<div>{sortNamee}</div>
 							</span>
 							<span className="mx-4">
 								<div><b>Type</b></div>
@@ -74,7 +76,7 @@ function EntityLink({entity, inline}) {
 							<span className="mx-4">
 								<div><b>Language</b></div>
 								<div className="d-flex">
-									{languages.map(lang => <div className="mr-2" key={lang.name}>{lang.name}</div>)}
+									{languages.map(function(lang){return <div className="mr-2" key={lang.id}>{lang.name}</div>})}
 								</div>
 							</span>
 						</div>
