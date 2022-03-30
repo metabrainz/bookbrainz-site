@@ -17,10 +17,10 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import {genEntityIconHTMLElement, getEntityLabel} from '../helpers/entity';
 import React, {useState} from 'react';
-import {kebabCase as _kebabCase} from 'lodash';
+import {genEntityIconHTMLElement, getEntityLabel} from '../helpers/entity';
 import PropTypes from 'prop-types';
+import {kebabCase as _kebabCase} from 'lodash';
 
 
 function EntityLink({entity, inline}) {
