@@ -63,20 +63,20 @@ function EntityLink({entity, inline}) {
 				</bootstrap.Button>
 				<bootstrap.Collapse in={open}>
 					<div id="example-collapse-text">
-						<div d-flex>
-							<span mx={4}>
+						<div className="d-flex">
+							<span className="mx-4">
 								<div><b>Sort Name</b></div>
 								<div>{sortName}</div>
 							</span>
-							<span mx={4}>
+							<span className="mx-4">
 								<div><b>Type</b></div>
 								<div>{type}</div>
 							</span>
-							<span mx={4}>
+							<span className="mx-4">
 								<div><b>Language</b></div>
-								<div d-flex>
+								<div className="d-flex">
 									{languages.map(
-										(lang) => (<div mr={2}>{lang.name}</div>)
+										(lang) => (<div className="mr-2">{lang.name}</div>)
 									)}		
 								</div>					
 							</span>
