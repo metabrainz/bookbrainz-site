@@ -19,37 +19,57 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import * as validators from '../../helpers/react-validators';
+import React, {ChangeEvent, Component} from 'react';
 import LoadingSpinner from '../loading-spinner';
-import PropTypes from 'prop-types';
-import React from 'react';
 import ReactSelect from 'react-select';
 import SelectWrapper from '../input/select-wrapper';
 import request from 'superagent';
 
 
+type RegistrationFormProps = {
+	gender?:{id:string};
+	genders: [];
+	name:string;
+};
+type RegistrationFormState = {
+	displayName:string;
+	error: string | null;
+	gender?:string;
+	waiting:boolean;
+};
+
 const {Alert, Button, Col, Form, Row} = bootstrap;
 
-class RegistrationForm extends React.Component {
+class RegistrationForm extends Component<RegistrationFormProps, RegistrationFormState> {
 	constructor(props) {
 		super(props);
 
 		this.state = {
+			displayName: props.name ?? '',
 			error: null,
-			valid: this.isValid(),
+			gender: props.gender?.id,
 			waiting: false
 		};
 
 		this.handleSubmit = this.handleSubmit.bind(this);
-		this.handleChange = this.handleChange.bind(this);
+		this.handleNameChange = this.handleNameChange.bind(this);
 	}
 
-	handleSubmit(event) {
+	async handleSubmit(event) {
+		const {displayName, gender} = this.state;
+
 		event.preventDefault();
 
-		const gender = this.gender.getValue();
+		if (!displayName) {
+			this.setState({
+				error: 'Please fill in a display name',
+				waiting: false
+			});
+			return;
+		}
+
 		const data = {
-			displayName: this.displayName.value,
+			displayName,
 			gender: gender ? parseInt(gender, 10) : null
 		};
 
@@ -58,40 +78,40 @@ class RegistrationForm extends React.Component {
 			waiting: true
 		});
 
-		request.post('/register/handler')
-			.send(data)
-			.then(() => {
-				window.location.href = '/auth';
-			})
-			.catch((res) => {
-				const {error} = res.body;
-				this.setState({
-					error,
-					waiting: false
-				});
+		try {
+			await request.post('/register/handler')
+				.send(data);
+		}
+		catch (err) {
+			this.setState({
+				error: err.message,
+				waiting: false
 			});
+		}
 	}
 
-	isValid() {
-		return !this.displayName || this.displayName.value.length > 0;
-	}
-
-	handleChange() {
+	handleNameChange(event: ChangeEvent<HTMLInputElement>) {
 		this.setState({
-			valid: this.isValid()
+			displayName: event.target.value
+		});
+	}
+
+	handleGenderChange(value) {
+		this.setState({
+			gender: value
 		});
 	}
 
 	render() {
+		const {displayName, gender, error, waiting} = this.state;
+
 		let errorComponent = null;
-		if (this.state.error) {
+		if (error) {
 			errorComponent =
-				<Alert variant="danger">{this.state.error}</Alert>;
+				<Alert variant="danger">{error}</Alert>;
 		}
 
-		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
-
-		const initialGender = this.props.gender && this.props.gender.id;
+		const loadingComponent = waiting ? <LoadingSpinner/> : null;
 
 		return (
 			<div>
@@ -124,10 +144,8 @@ class RegistrationForm extends React.Component {
 									<Form.Control
 										defaultValue={this.props.name}
 										placeholder="Display Name"
-										/* eslint-disable-next-line react/jsx-no-bind */
-										ref={(ref) => this.displayName = ref}
 										type="text"
-										onChange={this.handleChange}
+										onChange={this.handleNameChange}
 									/>
 								</div>
 							</Form.Group>
@@ -138,7 +156,7 @@ class RegistrationForm extends React.Component {
 							</p>
 							<SelectWrapper
 								base={ReactSelect}
-								defaultValue={initialGender}
+								defaultValue={gender}
 								groupClassName="row"
 								idAttribute="id"
 								instanceId="gender"
@@ -147,14 +165,14 @@ class RegistrationForm extends React.Component {
 								labelClassName="col-lg-4 col-form-label"
 								options={this.props.genders}
 								placeholder="Select gender…"
-								ref={(ref) => this.gender = ref}
 								wrapperClassName="col-lg-4"
+								onChange={this.handleGenderChange}
 							/>
 							<hr/>
 							{errorComponent}
 							<div className="text-center">
 								<Button
-									disabled={!this.state.valid}
+									disabled={displayName?.length <= 0}
 									size="lg"
 									type="submit"
 									variant="primary"
@@ -170,15 +188,5 @@ class RegistrationForm extends React.Component {
 	}
 }
 
-RegistrationForm.displayName = 'RegistrationForm';
-RegistrationForm.propTypes = {
-	gender: validators.namedProperty,
-	genders: PropTypes.arrayOf(validators.namedProperty).isRequired,
-	name: PropTypes.string
-};
-RegistrationForm.defaultProps = {
-	gender: null,
-	name: null
-};
 
 export default RegistrationForm;
