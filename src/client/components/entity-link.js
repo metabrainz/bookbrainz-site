@@ -27,9 +27,6 @@ function EntityLink({entity, inline}) {
 	let sortNamee = 'Unnamed';
 	let type = 'Unnamed';
 	let languages = [];
-	function onClick(){
-		setOpen(!open);
-	}
 	if (entity.defaultAlias && entity.defaultAlias.sortName) {
 		const {sortName} = entity.defaultAlias;
 		sortNamee = sortName;
@@ -61,7 +58,7 @@ function EntityLink({entity, inline}) {
 					className="mx-1"
 					size="sm"
 					variant="light"
-					onClick={onClick}
+					onClick={() => setOpen(!open)}
 				>
 					more...
 				</bootstrap.Button>
