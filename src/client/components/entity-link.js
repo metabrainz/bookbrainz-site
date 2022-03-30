@@ -50,7 +50,6 @@ function EntityLink({entity, inline}) {
 					{getEntityLabel(entity)}
 				</a>
 				{bbidElement}
-
 				<bootstrap.Button
 					aria-controls="example-collapse-text"
 					aria-expanded={open}
@@ -75,14 +74,13 @@ function EntityLink({entity, inline}) {
 							<span className="mx-4">
 								<div><b>Language</b></div>
 								<div className="d-flex">
-									{languages.map(lang => <div key={lang.name} className="mr-2">{lang.name}</div>)}		
-								</div>					
+									{languages.map(lang{<div className="mr-2" key={lang.name}}>{lang.name}</div>)}
+								</div>
 							</span>
 						</div>
 					</div>
 				</bootstrap.Collapse>
 			</span>
-
 		</>
 
 	);
