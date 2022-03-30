@@ -47,32 +47,10 @@ const additionalEditionProps = [
 	'formatId', 'statusId'
 ];
 
-type AuthorT = {
-	value: string,
-	id: number
-};
-
-type AuthorCreditEditorT = {
-	author: AuthorT,
-	joinPhrase: string,
-	name: string
-};
-
 type PassportRequest = express.Request & {
 	user: any,
 	session: any
 };
-
-function constructAuthorCredit(
-	authorCreditEditor: Record<string, AuthorCreditEditorT>
-) {
-	return _.map(
-		authorCreditEditor,
-		({author, joinPhrase, name}: AuthorCreditEditorT) =>
-			({authorBBID: author.id, joinPhrase, name})
-	);
-}
-
 function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
 		data.aliasEditor, data.nameSection
@@ -100,7 +78,7 @@ function transformNewForm(data) {
 		authorCredit = data.authorCredit.names;
 	}
 	else if (!_.isNil(data.authorCreditEditor)) {
-		authorCredit = constructAuthorCredit(data.authorCreditEditor);
+		authorCredit = entityRoutes.constructAuthorCredit(data.authorCreditEditor);
 	}
 
 	return {

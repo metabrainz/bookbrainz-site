@@ -192,5 +192,5 @@ export function validateAuthorCreditRow(row: any): boolean {
 export const validateAuthorCreditSection = _.partialRight(
 	// Requires at least one Author Credit row
 	validateMultiple, _.partialRight.placeholder,
-	validateAuthorCreditRow, null, true
+	validateAuthorCreditRow, null, false
 );

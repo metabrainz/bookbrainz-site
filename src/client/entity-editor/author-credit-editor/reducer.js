@@ -55,8 +55,8 @@ function setNewAuthorAndDisplay(state, payload) {
 		// name.
 		returnState = returnState.setIn([payload.rowId, 'name'], '');
 	}
-	else if (returnState.getIn([payload.rowId, 'name'], '') === '') {
-		// When the display name is empty and the user sets a new author, copy
+	else {
+		// When the user sets a new author, copy
 		// the author's name to the display name field.
 		returnState = returnState.setIn([payload.rowId, 'name'], payload.text);
 	}

@@ -1295,3 +1295,25 @@ export function compareEntitiesByDate(a, b) {
 
 	return new Date(aDate).getTime() - new Date(bDate).getTime();
 }
+
+type AuthorT = {
+	value: string,
+	id: number
+};
+
+type AuthorCreditEditorT = {
+	author: AuthorT,
+	joinPhrase: string,
+	name: string
+};
+
+
+export function constructAuthorCredit(
+	authorCreditEditor: Record<string, AuthorCreditEditorT>
+) {
+	return _.map(
+		authorCreditEditor,
+		({author, joinPhrase, name}: AuthorCreditEditorT) =>
+			({authorBBID: author.id, joinPhrase, name})
+	);
+}
