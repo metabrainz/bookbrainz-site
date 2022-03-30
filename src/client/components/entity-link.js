@@ -18,8 +18,8 @@
 
 import * as bootstrap from 'react-bootstrap';
 import {genEntityIconHTMLElement, getEntityLabel} from '../helpers/entity';
+import {React, useState} from 'react';
 import PropTypes from 'prop-types';
-import React, {useState} from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 
 
@@ -36,7 +36,7 @@ function EntityLink({entity, inline}) {
 	}
 	if (entity.languageSet && entity.languageSet.languages) {
 		const [...rest] = entity.languageSet.languages;
-		languages=rest;
+		languages = rest;
 	}
 	const [open, setOpen] = useState(false);
 	let bbidElement = <div className="small">({entity.bbid})</div>;
@@ -58,7 +58,7 @@ function EntityLink({entity, inline}) {
 					className="mx-1"
 					size="sm"
 					variant="light"
-					onClick={() => setOpen(!open)}
+					onClick={function(){return setOpen(!open)}}
 				>
 					more...
 				</bootstrap.Button>
@@ -76,7 +76,7 @@ function EntityLink({entity, inline}) {
 							<span className="mx-4">
 								<div><b>Language</b></div>
 								<div className="d-flex">
-									{languages.map(function(lang){return <div className="mr-2" key={lang.id}>{lang.name}</div>})}
+									{languages.map (function(lang){ return <div className="mr-2" key={lang.id}>{lang.name}</div> })}
 								</div>
 							</span>
 						</div>
