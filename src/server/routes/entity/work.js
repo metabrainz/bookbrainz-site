@@ -20,6 +20,7 @@
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
+import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
 import {
@@ -34,6 +35,7 @@ import {RelationshipTypes} from '../../../client/entity-editor/relationship-edit
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import log from 'log';
 import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
@@ -112,7 +114,7 @@ router.get(
 					.then((data) => data && utils.entityToOption(data.toJSON()));
 		}
 
-		function render(props) {
+		async function render(props) {
 			if (props.author) {
 				// add initial ralationship with relationshipTypeId = 8 (<Work> is written by <Author>)
 				relationshipTypeId = RelationshipTypes.AuthorWroteWork;
@@ -124,7 +126,7 @@ router.get(
 				relationshipTypeId = RelationshipTypes.EditionContainsWork;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.edition);
 			}
-			props.initialState.nameSection = {
+			const nameSection = {
 				disambiguation: '',
 				exactMatches: null,
 				language: null,
@@ -132,6 +134,51 @@ router.get(
 				searchResults: null,
 				sortName: ''
 			};
+			if (nameSection.name) {
+				try {
+					nameSection.searchResults = await search.autocomplete(req.app.locals.orm, nameSection.name, 'Work');
+					nameSection.exactMatches = await search.checkIfExists(req.app.locals.orm, nameSection.name, 'Work');
+				}
+				catch (err) {
+					log.debug(err);
+				}
+			}
+			props.initialState.nameSection = nameSection;
+			const editorMarkup = entityEditorMarkup(props);
+			const {markup} = editorMarkup;
+			const updatedProps = editorMarkup.props;
+
+			return res.send(target({
+				markup,
+				props: escapeProps(updatedProps),
+				script: '/js/entity-editor.js',
+				title: props.heading
+			}));
+		}
+		makePromiseFromObject(propsPromise)
+			.then(render)
+			.catch(next);
+	}
+);
+
+router.post(
+	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	middleware.loadLanguages, middleware.loadWorkTypes,
+	middleware.loadRelationshipTypes,
+	async (req, res, next) => {
+		const {WorkType} = req.app.locals.orm;
+		const entity = await utils.parseInitialState(req, 'work');
+		if (entity.workSection?.type) {
+			entity.workSection.type = await utils.getIdByField(WorkType, 'label', entity.workSection.type);
+		}
+		if (entity.workSection) {
+			entity.workSection = await utils.parseLanguages(entity.workSection, req.app.locals.orm);
+		}
+		const propsPromise = generateEntityProps(
+			'work', req, res, {}, () => entity
+		);
+
+		function render(props) {
 			const editorMarkup = entityEditorMarkup(props);
 			const {markup} = editorMarkup;
 			const updatedProps = editorMarkup.props;

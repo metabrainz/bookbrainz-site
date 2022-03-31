@@ -23,6 +23,7 @@ const clientConfig = {
 		'collection/create': ['./controllers/collection/userCollectionForm'],
 		collections: ['./controllers/collections'],
 		deletion: ['./controllers/deletion.js'],
+		preview: ['./controllers/preview.js'],
 		error: ['./controllers/error.js'],
 		index: ['./controllers/index.js'],
 		registrationDetails: ['./controllers/registrationDetails.js'],
