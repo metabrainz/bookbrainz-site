@@ -52,7 +52,7 @@ const AuthorCreditEditor = ({
 	onClose,
 	showEditor
 }) => (
-	<Modal bsSize="large" show={showEditor} onHide={onClose} >
+	<Modal show={showEditor} size="lg" onHide={onClose} >
 		<Modal.Header>
 			<Modal.Title>Edit Author credit</Modal.Title>
 		</Modal.Header>
@@ -84,11 +84,11 @@ const AuthorCreditEditor = ({
 			</div>
 		</Modal.Body>
 		<Modal.Footer>
-			<Button bsStyle="success" onClick={onAddAuthorCreditRow}>
+			<Button variant="success" onClick={onAddAuthorCreditRow}>
 				<FontAwesomeIcon icon={faPlus}/>
 				&nbsp;Add another author
 			</Button>
-			<Button bsStyle="warning" onClick={onClose}>Close</Button>
+			<Button variant="warning" onClick={onClose}>Close</Button>
 		</Modal.Footer>
 	</Modal>
 );

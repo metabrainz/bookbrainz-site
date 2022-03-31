@@ -24,11 +24,12 @@ import {
 	removeEmptyCreditRows,
 	showAuthorCreditEditor
 } from './actions';
-import {Button, Col, Row} from 'react-bootstrap';
+import {Button, Col, Form, InputGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
+
 import {map as _map, values as _values} from 'lodash';
 
+import {faPencilAlt, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import AuthorCreditEditor from './author-credit-editor';
-import CustomInput from '../../input';
 import type {Dispatch} from 'redux'; // eslint-disable-line import/named
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -36,7 +37,6 @@ import React from 'react';
 import ValidationLabel from '../common/validation-label';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
-import {faPencilAlt} from '@fortawesome/free-solid-svg-icons';
 import {validateAuthorCreditSection} from '../validators/common';
 
 
@@ -74,29 +74,40 @@ function AuthorCreditSection({
 
 	const editButton = (
 		// eslint-disable-next-line react/jsx-no-bind
-		<Button bsStyle="success" onClick={function openEditor() { onEditAuthorCredit(authorCreditRows.length); }}>
+		<Button variant="success" onClick={function openEditor() { onEditAuthorCredit(authorCreditRows.length); }}>
 			<FontAwesomeIcon icon={faPencilAlt}/>
 			&nbsp;Edit
 		</Button>);
 
 	const label = (
-		<ValidationLabel error={!isValid}>
+		<ValidationLabel empty={authorCreditPreview.length === 0} error={!isValid}>
 			Author Credit
 		</ValidationLabel>
 	);
-
+	const tooltip = (
+		<Tooltip>
+			Name(s) of the Author(s) as they appear on the book cover
+		</Tooltip>
+	);
 	return (
 		<Row className="margin-bottom-2">
 			{editor}
-			<Col md={6} mdOffset={3}>
-				<CustomInput
-					buttonAfter={editButton}
-					label={label}
-					placeholder="No Author Credit yet, click edit to add one"
-					tooltipText="Name(s) of the Author(s) as they appear on the book cover"
-					validationState={!isValid ? 'error' : 'success'}
-					value={authorCreditPreview}
-				/>
+			<Col md={{offset: 3, span: 6}}>
+				<Form.Group>
+					<Form.Label>
+						{label}
+						<OverlayTrigger delay={50} overlay={tooltip}>
+							<FontAwesomeIcon
+								className="margin-left-0-5"
+								icon={faQuestionCircle}
+							/>
+						</OverlayTrigger>
+					</Form.Label>
+					<InputGroup>
+						<Form.Control defaultValue={authorCreditPreview} placeholder="No Author Credit yet, click edit to add one" type="text"/>
+						<InputGroup.Append>{editButton}</InputGroup.Append>
+					</InputGroup>
+				</Form.Group>
 			</Col>
 		</Row>
 	);

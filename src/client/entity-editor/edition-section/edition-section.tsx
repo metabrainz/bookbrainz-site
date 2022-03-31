@@ -51,7 +51,6 @@ import {
 } from '../validators/edition';
 
 import AuthorCreditSection from '../author-credit-editor/author-credit-section';
-import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
 import type {Dispatch} from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';

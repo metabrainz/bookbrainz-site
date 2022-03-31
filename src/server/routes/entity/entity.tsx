@@ -1327,6 +1327,7 @@ export function constructAuthorCredit(
 		({author, joinPhrase, name}: AuthorCreditEditorT) =>
 			({authorBBID: author.id, joinPhrase, name})
 	);
+}
 export function displayPreview(req:PassportRequest, res:$Response, next) {
 	const baseUrl = `${req.protocol}://${req.get('host')}`;
 	const originalUrl = `${baseUrl}${req.originalUrl}`;

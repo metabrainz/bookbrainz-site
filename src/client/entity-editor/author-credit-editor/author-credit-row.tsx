@@ -24,13 +24,12 @@ import {
 	updateCreditDisplayValue,
 	updateCreditJoinPhraseValue
 } from './actions';
-import {Button, Col, Row} from 'react-bootstrap';
-
-import CustomInput from '../../input';
+import {Button, Col, Form, Row} from 'react-bootstrap';
 import type {Dispatch} from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
+import ValidationLabel from '../common/validation-label';
 import {connect} from 'react-redux';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
@@ -89,7 +88,7 @@ function AuthorCreditRow({
 	return (
 		<div>
 			<Row>
-				<Col md={3}>
+				<Col md={{span: 3}}>
 					<EntitySearchFieldOption
 						instanceId={`author${index}`}
 						label="Author"
@@ -99,30 +98,31 @@ function AuthorCreditRow({
 						onChange={onAuthorChange}
 					/>
 				</Col>
-				<Col md={3}>
-					<CustomInput
-						id={`authorDisplayName${index}`}
-						label="Author as credited"
-						type="text"
-						validationState={!name.length ? 'error' : null}
-						value={name}
-						onChange={onNameChange}
-					/>
+				<Col md={{span: 3}}>
+
+					<Form.Group>
+						<Form.Label>
+							<ValidationLabel empty={name.length === 0} error={!name.length}>
+								Author as credited
+
+							</ValidationLabel>
+						</Form.Label>
+						<Form.Control type="text" value={name} onChange={onNameChange}/>
+
+					</Form.Group>
 				</Col>
-				<Col md={3}>
-					<CustomInput
-						id={`identifierType${index}`}
-						label="Join phrase"
-						type="text"
-						value={joinPhrase}
-						onChange={onJoinPhraseChange}
-					/>
+				<Col md={{span: 3}}>
+					<Form.Group>
+						<Form.Label>Join Phrase</Form.Label>
+						<Form.Control type="text" value={joinPhrase} onChange={onJoinPhraseChange}/>
+
+					</Form.Group>
 				</Col>
-				<Col md={3}>
+				<Col md={{span: 3}}>
 					<Button
 						block
-						bsStyle="danger"
 						className="margin-top-d18"
+						variant="danger"
 						onClick={onRemoveButtonClick}
 					>
 						<FontAwesomeIcon icon={faTimes}/>
