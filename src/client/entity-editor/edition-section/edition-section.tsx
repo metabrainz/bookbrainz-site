@@ -36,10 +36,10 @@ import {
 	updateStatus
 } from './actions';
 
-import {Alert, Button, Col, ListGroup, ListGroupItem, Row} from 'react-bootstrap';
+import {Alert, Button, Col, Form, ListGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 import {DateObject, isNullDate} from '../../helpers/utils';
 import type {List, Map} from 'immutable';
-import {faClone, faExternalLinkAlt, faSearch} from '@fortawesome/free-solid-svg-icons';
+import {faClone, faExternalLinkAlt, faQuestionCircle, faSearch} from '@fortawesome/free-solid-svg-icons';
 import {
 	validateEditionSectionDepth,
 	validateEditionSectionEditionGroup,
@@ -62,7 +62,7 @@ import NumericField from '../common/numeric-field';
 import Select from 'react-select';
 import _ from 'lodash';
 import {connect} from 'react-redux';
-import {entityToOption} from '../../../server/helpers/utils';
+import {entityToOption} from '../../helpers/entity';
 import makeImmutable from '../common/make-immutable';
 
 
@@ -205,7 +205,7 @@ function EditionSection({
 
 	const {isValid: isValidReleaseDate, errorMessage: dateErrorMessage} = validateEditionSectionReleaseDate(releaseDateValue);
 
-	const hasmatchingNameEditionGroups = Array.isArray(matchingNameEditionGroups) && matchingNameEditionGroups.length > 0;
+	const hasmatchingNameEditionGroups = matchingNameEditionGroups?.length;
 
 	const showAutoCreateEditionGroupMessage =
 		!editionGroupValue &&
@@ -216,7 +216,7 @@ function EditionSection({
 
 	const getEditionGroupSearchSelect = () => (
 		<React.Fragment>
-			<Col className="margin-bottom-2" md={6} mdOffset={showMatchingEditionGroups ? 0 : 3}>
+			<Col className="margin-bottom-2" lg={{offset: showMatchingEditionGroups ? 0 : 3, span: 6}}>
 				<EntitySearchFieldOption
 					clearable={false}
 					error={!validateEditionSectionEditionGroup(editionGroupValue, true)}
@@ -235,8 +235,8 @@ function EditionSection({
 				/>
 				<Button
 					block
-					bsStyle="primary"
 					className="wrap"
+					variant="primary"
 					// eslint-disable-next-line react/jsx-no-bind
 					onClick={onToggleShowEditionGroupSection.bind(this, false)}
 				>
@@ -244,6 +244,18 @@ function EditionSection({
 				</Button>
 			</Col>
 		</React.Fragment>
+	);
+
+	const formatTooltip = (
+		<Tooltip>
+			The type of printing and binding of the edition, or digital equivalent
+		</Tooltip>
+	);
+
+	const statusTooltip = (
+		<Tooltip>
+			Has the work been published, or is it in a draft stage?
+		</Tooltip>
 	);
 
 	return (
@@ -259,14 +271,14 @@ function EditionSection({
 			<Row className="margin-bottom-3">
 				{
 					showAutoCreateEditionGroupMessage ?
-						<Col md={6} mdOffset={showMatchingEditionGroups ? 0 : 3}>
-							<Alert bsStyle="success">
+						<Col lg={{offset: showMatchingEditionGroups ? 0 : 3, span: 6}}>
+							<Alert variant="success">
 								<p>A new Edition Group with the same name will be created automatically.</p>
 								<br/>
 								<Button
 									block
-									bsStyle="success"
 									className="wrap"
+									variant="success"
 									// eslint-disable-next-line react/jsx-no-bind
 									onClick={onToggleShowEditionGroupSection.bind(this, true)}
 								>
@@ -277,8 +289,8 @@ function EditionSection({
 						getEditionGroupSearchSelect()
 				}
 				{showMatchingEditionGroups &&
-					<Col md={6}>
-						<Alert bsStyle="warning">
+					<Col lg={6}>
+						<Alert variant="warning">
 							{matchingNameEditionGroups.length > 1 ?
 								'Edition Groups with the same name as this Edition already exist' :
 								'An existing Edition Group with the same name as this Edition already exists'
@@ -293,9 +305,9 @@ function EditionSection({
 							</small>
 							<ListGroup className="margin-top-1">
 								{matchingNameEditionGroups.map(eg => (
-									<ListGroupItem key={eg.bbid}>
+									<ListGroup.Item key={eg.bbid}>
 										<LinkedEntity option={entityToOption(eg)} onSelect={onEditionGroupChange}/>
-									</ListGroupItem>
+									</ListGroup.Item>
 								))}
 							</ListGroup>
 						</Alert>
@@ -307,7 +319,7 @@ function EditionSection({
 				don&rsquo;t know it
 			</p>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<EntitySearchFieldOption
 						instanceId="publisher"
 						label="Publisher"
@@ -318,7 +330,7 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<DateField
 						show
 						defaultValue={releaseDateValue}
@@ -327,13 +339,14 @@ function EditionSection({
 						errorMessage={dateErrorMessage}
 						label="Release Date"
 						placeholder="YYYY-MM-DD"
+						// eslint-disable-next-line max-len
 						tooltipText="The date this specific edition was published (not the first publication date of the work). If unsure, leave empty."
 						onChangeDate={onReleaseDateChange}
 					/>
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<ImmutableLanguageField
 						empty
 						multi
@@ -346,29 +359,47 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={3} mdOffset={3}>
-					<CustomInput label="Format" tooltipText="The type of printing and binding of the edition, or digital equivalent">
+				<Col lg={{offset: 3, span: 3}}>
+					<Form.Group>
+						<Form.Label>
+							Format
+							<OverlayTrigger delay={50} overlay={formatTooltip}>
+								<FontAwesomeIcon
+									className="margin-left-0-5"
+									icon={faQuestionCircle}
+								/>
+							</OverlayTrigger>
+						</Form.Label>
 						<Select
 							instanceId="editionFormat"
 							options={editionFormatsForDisplay}
 							value={formatValue}
 							onChange={onFormatChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
-				<Col md={3}>
-					<CustomInput label="Status" tooltipText="Has the work been published, or is it in a draft stage?">
+				<Col lg={3}>
+					<Form.Group>
+						<Form.Label>
+							Status
+							<OverlayTrigger delay={50} overlay={statusTooltip}>
+								<FontAwesomeIcon
+									className="margin-left-0-5"
+									icon={faQuestionCircle}
+								/>
+							</OverlayTrigger>
+						</Form.Label>
 						<Select
 							instanceId="editionStatus"
 							options={editionStatusesForDisplay}
 							value={statusValue}
 							onChange={onStatusChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
 			</Row>
 			<Row>
-				<Col md={3} mdOffset={3}>
+				<Col lg={{offset: 3, span: 3}}>
 					<NumericField
 						addonAfter="pages"
 						defaultValue={pagesValue}
@@ -380,7 +411,7 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={3} mdOffset={3}>
+				<Col lg={{offset: 3, span: 3}}>
 					<NumericField
 						addonAfter="mm"
 						defaultValue={widthValue}
@@ -400,7 +431,7 @@ function EditionSection({
 						onChange={onHeightChange}
 					/>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<NumericField
 						addonAfter="g"
 						defaultValue={weightValue}
@@ -429,7 +460,7 @@ EditionSection.displayName = 'EditionSection';
 type RootState = Map<string, Map<string, any>>;
 function mapStateToProps(rootState: RootState): StateProps {
 	const state: Map<string, any> = rootState.get('editionSection');
-	const matchingNameEditionGroups = state.get('matchingNameEditionGroups');
+	const matchingNameEditionGroups = state.get('matchingNameEditionGroups')?.toJS();
 
 	return {
 		depthValue: state.get('depth'),

@@ -29,14 +29,13 @@ import {
 	updateGender,
 	updateType
 } from './actions';
-import {Checkbox, Col, Row} from 'react-bootstrap';
+import {Col, Form, Row} from 'react-bootstrap';
 import {isNullDate, labelsForAuthor} from '../../helpers/utils';
 import {
 	validateAuthorSectionBeginDate,
 	validateAuthorSectionEndDate
 } from '../validators/author';
 
-import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
 import type {Dispatch} from 'redux';
 
@@ -85,7 +84,7 @@ type DispatchProps = {
 	onBeginDateChange: (arg: string) => unknown,
 	onEndAreaChange: (arg: Area | null | undefined) => unknown,
 	onEndDateChange: (arg: string) => unknown,
-	onEndedChange: (arg: React.FormEvent<Checkbox>) => unknown,
+	onEndedChange: (arg: React.FormEvent<any>) => unknown,
 	onGenderChange: (obj: {value: number} | null) => unknown,
 	onTypeChange: (obj: {value: number} | null) => unknown
 };
@@ -184,34 +183,33 @@ function AuthorSection({
 				know it
 			</p>
 			<Row>
-				<Col md={6} mdOffset={3}>
-					<CustomInput label="Type">
+				<Col lg={{offset: 3, span: 6}}>
+					<Form.Group>
+						<Form.Label>Type</Form.Label>
 						<Select
 							instanceId="authorType"
 							options={authorTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
-					<CustomInput
-						groupClassName={genderShow ? null : 'hidden'}
-						label="Gender"
-					>
+				<Col lg={{offset: 3, span: 6}}>
+					<Form.Group className={genderShow ? null : 'd-none'}>
+						<Form.Label>Gender</Form.Label>
 						<Select
 							instanceId="gender"
 							options={genderOptionsForDisplay}
 							value={genderValue}
 							onChange={onGenderChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<DateField
 						show
 						defaultValue={beginDateValue}
@@ -224,7 +222,7 @@ function AuthorSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<EntitySearchFieldOption
 						instanceId="beginArea"
 						label={beginAreaLabel}
@@ -235,17 +233,17 @@ function AuthorSection({
 				</Col>
 			</Row>
 			<div className="text-center">
-				<Checkbox
+				<Form.Check
 					defaultChecked={endedChecked}
+					label={endedLabel}
+					type="checkbox"
 					onChange={onEndedChange}
-				>
-					{endedLabel}
-				</Checkbox>
+				/>
 			</div>
 			{endedChecked &&
 				<div>
 					<Row>
-						<Col md={6} mdOffset={3}>
+						<Col lg={{offset: 3, span: 6}}>
 							<DateField
 								show
 								defaultValue={endDateValue}
@@ -258,7 +256,7 @@ function AuthorSection({
 						</Col>
 					</Row>
 					<Row>
-						<Col md={6} mdOffset={3}>
+						<Col lg={{offset: 3, span: 6}}>
 							<EntitySearchFieldOption
 								instanceId="endArea"
 								label={endAreaLabel}

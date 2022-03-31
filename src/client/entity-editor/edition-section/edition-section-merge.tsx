@@ -35,9 +35,9 @@ import {AuthorCredit, updateAuthorCredit} from '../author-credit-editor/actions'
 import type {List, Map} from 'immutable';
 import {authorCreditToString, entityToOption, transformISODateForSelect} from '../../helpers/entity';
 
-import CustomInput from '../../input';
 import type {Dispatch} from 'redux';
 import Entity from '../common/entity';
+import {Form} from 'react-bootstrap';
 import LinkedEntity from '../common/linked-entity';
 import MergeField from '../common/merge-field';
 import Select from 'react-select';
@@ -292,7 +292,8 @@ function EditionSectionMerge({
 				options={weightOptions}
 				onChange={onWeightChange}
 			/>
-			<CustomInput label="Languages">
+			<Form.Group>
+				<Form.Label>Languages</Form.Label>
 				<Select
 					disabled
 					multi
@@ -300,7 +301,7 @@ function EditionSectionMerge({
 					placeholder="No languages"
 					value={languageValues}
 				/>
-			</CustomInput>
+			</Form.Group>
 		</div>
 	);
 }

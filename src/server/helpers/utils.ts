@@ -19,18 +19,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as search from '../../common/helpers/search';
 import _ from 'lodash';
+import {unflatten} from '../../common/helpers/utils';
 
-
-/**
- * Returns an API path for interacting with the given Bookshelf entity model
- *
- * @param {object} entity - Entity object
- * @returns {string} - URL path to interact with entity
- */
-export function getEntityLink(entity: {type: string, bbid: string}): string {
-	return `/${_.kebabCase(entity.type)}/${entity.bbid}`;
-}
 
 export function getDateBeforeDays(days) {
 	const date = new Date();
@@ -167,21 +159,6 @@ export function getAdditionalRelations(modelType) {
 	return [];
 }
 
-export function getNextEnabledAndResultsArray(array, size) {
-	if (array.length > size) {
-		while (array.length > size) {
-			array.pop();
-		}
-		return {
-			newResultsArray: array,
-			nextEnabled: true
-		};
-	}
-	return {
-		newResultsArray: array,
-		nextEnabled: false
-	};
-}
 
 /**
  * Takes an entity and converts it to a format acceptable to react-select.
@@ -216,4 +193,176 @@ export function attachAttributes(relationships) {
 			});
 		}
 	});
+}
+
+/**
+ * Fetch id related with label
+ *
+ * @param {object[]} fromOptions - Options
+ * @param {string} label - related label
+ * @param {string} keyName - key associated
+ * @returns {number} - assigned id
+ */
+export function getIdByLabel(fromOptions:any[], label:string, keyName:string):number | null {
+	for (const option of fromOptions) {
+		if (option[keyName] === label) {
+			return option.id;
+		}
+	}
+	return null;
+}
+
+/**
+ * Fetch Id of a model using field value
+ *
+ * @param {object} model - Model  eg. Language
+ * @param {string} fieldName - given field eg. name
+ * @param {string} fieldValue - given field value eg. English
+ * @returns {Promise} - Resolves to required id
+ */
+export async function getIdByField(
+	model:any,
+	fieldName:string,
+	fieldValue:string
+):Promise<number | null> {
+	return (await model.query({where: {[fieldName]: fieldValue}}).fetch({require: false}))?.get('id') ?? null;
+}
+
+/**
+ * Generate Identifier state from req body
+ *
+ * @param {object} sourceIdentifierState - source state in format of t{typeId}:value
+ * @returns {object} - correctly formatted identifierEditor state
+ */
+export function generateIdenfierState(sourceIdentifierState:Record<string, string>):Record<string, any> {
+	let index = 0;
+	const identifierState = {};
+	for (const typeKey in sourceIdentifierState) {
+		if (Object.prototype.hasOwnProperty.call(sourceIdentifierState, typeKey)) {
+			identifierState[`${index}`] =
+			{
+				type: parseInt(typeKey.replace('t', ''), 10),
+				value: sourceIdentifierState[typeKey]
+			};
+			index++;
+		}
+	}
+	return identifierState;
+}
+
+/**
+ * Generate EntitySection Language state from req body
+ *
+ * @param {object} sourceEntitySection - source entity section state in format of languages{index}:value
+ * @param {object} orm - orm object
+ *  @returns {Promise} - Resolves to modified state
+ */
+export async function parseLanguages(sourceEntitySection:Record<string, any>, orm):Promise<Record<string, any>> {
+	if (!sourceEntitySection) { return sourceEntitySection; }
+	const {Language} = orm;
+	const languages = [];
+	for (const langKey in sourceEntitySection) {
+		if (Object.prototype.hasOwnProperty.call(sourceEntitySection, langKey)) {
+			if (langKey.includes('languages')) {
+				languages.push({
+					label: _.upperFirst(sourceEntitySection[langKey]),
+					// eslint-disable-next-line no-await-in-loop
+					value: await getIdByField(Language, 'name', _.upperFirst(sourceEntitySection[langKey]))
+				});
+				delete sourceEntitySection[langKey];
+			}
+		}
+	}
+	sourceEntitySection.languages = languages;
+	return sourceEntitySection;
+}
+
+/**
+ * Generate react-select option from query
+ * @param {object} orm - orm
+ * @param {string} type - type eg. area
+ * @param {string} query - query string
+ * @param {string} idKey - key corresponding to id
+ * @param {boolean} exactMatch - exact matching the query string
+ * @returns {Promise} - resolves to option object
+ */
+export async function searchOption(orm, type:string, query:string, idKey = 'id', exactMatch = false):Promise<{
+	disambiguation: string,
+	id: number,
+	text: string,
+	type: string,
+
+} | null> {
+	let results;
+	if (exactMatch) {
+		results = await search.checkIfExists(orm, query, type);
+	}
+	else {
+		results = await search.autocomplete(orm, query, type, 1);
+	}
+	if (results.length) {
+		const firstMatch = results[0];
+		const option = {
+			disambiguation: idKey === 'id' ? firstMatch.disambiguation.comment : null,
+			id: firstMatch[idKey],
+			text: firstMatch.defaultAlias.name,
+			type: firstMatch.type
+
+		};
+		return option;
+	}
+
+	return null;
+}
+
+/**
+ * Parse NameSection, IdentifierEditor, AnnotationSection state from request body
+ *
+ * @param {object} req - Request object
+ * @param {string} type - entity type
+ * @returns {Promise} - Resolves to Entity initialState
+ */
+export async function parseInitialState(req, type):Promise<Record<string, any>> {
+	const emptyState = {
+		nameSection: {
+			disambiguation: '',
+			exactMatches: null,
+			language: null,
+			name: '',
+			searchResults: null,
+			sortName: ''
+		}
+	};
+	const entity = unflatten(req.body);
+	const {orm} = req.app.locals;
+	const {Language} = orm;
+	// NameSection State
+	const initialState = Object.assign(emptyState, entity);
+	// We allow Editions (but not other entities) to have the same primary name as another Edition without requiring a disambiguation
+	if (initialState.nameSection.name && type !== 'edition') {
+		initialState.nameSection.searchResults = await search.autocomplete(orm, initialState.nameSection.name, type, 10);
+		initialState.nameSection.exactMatches = await search.checkIfExists(orm, initialState.nameSection.name, type);
+	}
+	if (initialState.nameSection.language) {
+		initialState.nameSection.language = await getIdByField(Language, 'name', initialState.nameSection.language);
+	}
+	// IdentifierEditor State
+	if (initialState.identifierEditor) {
+		initialState.identifierEditor = generateIdenfierState(initialState.identifierEditor);
+	}
+	// AnnotationSection State
+	if (initialState.annotationSection) {
+		initialState.annotationSection = {
+			content: initialState.annotationSection
+		};
+	}
+	// SubmissionSection State
+	if (initialState.submissionSection) {
+		initialState.submissionSection = {
+			note: initialState.submissionSection,
+			submitError: '',
+			submitted: false
+		};
+	}
+	return initialState;
 }

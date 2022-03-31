@@ -138,7 +138,7 @@ NameSectionMerge.displayName = 'NameSectionMerge';
 NameSectionMerge.propTypes = {
 	disambiguationDefaultValue: PropTypes.string,
 	entityType: entityTypeProperty.isRequired,
-	languageOptions: PropTypes.array.isRequired, // eslint-disable-line react/no-typos, max-len
+	languageOptions: PropTypes.array.isRequired,
 	languageValue: PropTypes.number,
 	mergingEntities: PropTypes.array.isRequired,
 	nameValue: PropTypes.string.isRequired,

@@ -24,12 +24,12 @@ import {
 	Action, debouncedUpdateIdentifierValue, removeIdentifierRow,
 	updateIdentifierType
 } from './actions';
-import {Button, Col, Row} from 'react-bootstrap';
+import {Button, Col, Form, Row} from 'react-bootstrap';
 import {
 	IdentifierType,
 	validateIdentifierValue
 } from '../validators/common';
-import CustomInput from '../../input';
+import {collapseWhiteSpaces, isbn10To13, isbn13To10} from '../../../common/helpers/utils';
 import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
@@ -94,7 +94,7 @@ function IdentifierRow({
 	return (
 		<div>
 			<Row>
-				<Col md={4}>
+				<Col lg={4}>
 					<ValueField
 						defaultValue={valueValue}
 						empty={!valueValue && typeValue === null}
@@ -104,21 +104,22 @@ function IdentifierRow({
 						onChange={onValueChange}
 					/>
 				</Col>
-				<Col md={4}>
-					<CustomInput label="Type">
+				<Col lg={4}>
+					<Form.Group>
+						<Form.Label>Type</Form.Label>
 						<Select
 							instanceId={`identifierType${index}`}
 							options={identifierTypesForDisplay}
 							value={typeValue}
 							onChange={onTypeChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
-				<Col className="text-right" md={3} mdOffset={1}>
+				<Col className="text-right" lg={{offset: 1, span: 3}}>
 					<Button
 						block
-						bsStyle="danger"
 						className="margin-top-d15"
+						variant="danger"
 						onClick={onRemoveButtonClick}
 					>
 						<FontAwesomeIcon icon={faTimes}/>
@@ -139,16 +140,29 @@ function handleValueChange(
 	index: number,
 	types: Array<IdentifierType>
 ) {
+	let {value} = event.target;
+	value = collapseWhiteSpaces(value);
 	const guessedType =
-		data.guessIdentifierType(event.target.value, types);
+		data.guessIdentifierType(value, types);
 	if (guessedType) {
-		const result = new RegExp(guessedType.detectionRegex)
-			.exec(event.target.value);
-		event.target.value = result[1];
+		const result = new RegExp(guessedType.detectionRegex).exec(value);
+		value = result[1];
+		if (guessedType.id === 9) {
+			const isbn10Type:any = types.find((el) => el.id === 10);
+			const isbn10 = isbn13To10(value);
+			if (isbn10) {
+				dispatch(debouncedUpdateIdentifierValue(index + 1, isbn10, isbn10Type, false));
+			}
+		}
+		if (guessedType.id === 10) {
+			const isbn13Type:any = types.find((el) => el.id === 9);
+			const isbn13 = isbn10To13(value);
+			if (isbn13) {
+				dispatch(debouncedUpdateIdentifierValue(index + 1, isbn10To13(value), isbn13Type, false));
+			}
+		}
 	}
-	return dispatch(
-		debouncedUpdateIdentifierValue(index, event.target.value, guessedType)
-	);
+	return dispatch(debouncedUpdateIdentifierValue(index, value, guessedType));
 }
 
 

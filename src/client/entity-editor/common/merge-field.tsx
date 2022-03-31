@@ -18,10 +18,12 @@
 
 
 import * as React from 'react';
+import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {get as _get, has} from 'lodash';
-import CustomInput from '../../input';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
 import ValidationLabel from '../common/validation-label';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 
 type Props = {
@@ -30,6 +32,7 @@ type Props = {
 	label: string,
 	currentValue: any,
 	onChange: any,
+	tooltipText?: string | React.ReactElement,
 	valueProperty?: string,
 	[propName: string]: any
 };
@@ -53,20 +56,29 @@ function MergeField({
 	options,
 	label,
 	currentValue,
+	tooltipText,
 	onChange,
 	valueProperty,
 	...rest
 }: Props) {
 	const labelComponent = <ValidationLabel error={error} >{label}</ValidationLabel>;
+
+	const helpIconElement = tooltipText && (
+		<OverlayTrigger delay={50} overlay={<Tooltip>{tooltipText}</Tooltip>}>
+			<FontAwesomeIcon className="margin-left-0-5" icon={faQuestionCircle}/>
+		</OverlayTrigger>
+	);
+
 	if (options.length <= 1) {
 		const value = _get(options, `[0][${valueProperty}]`, '');
 		return (
-			<CustomInput
-				readOnly
-				label={labelComponent}
-				value={value}
-				{...rest}
-			/>
+			<Form.Group>
+				<Form.Label>
+					{labelComponent}
+					{helpIconElement}
+				</Form.Label>
+				<Form.Control readOnly value={value} {...rest}/>
+			</Form.Group>
 		);
 	}
 	const onChangeReturnValue = function onChangeReturnValue(selectObject) {
@@ -80,7 +92,11 @@ function MergeField({
 		return onChange(value);
 	};
 	return (
-		<CustomInput label={labelComponent} {...rest}>
+		<Form.Group>
+			<Form.Label>
+				{labelComponent}
+				{helpIconElement}
+			</Form.Label>
 			<Select
 				clearable={false}
 				instanceId={label}
@@ -89,13 +105,14 @@ function MergeField({
 				// eslint-disable-next-line react/jsx-no-bind
 				onChange={onChangeReturnValue}
 			/>
-		</CustomInput>
+		</Form.Group>
 	);
 }
 MergeField.displayName = 'MergeField';
 
 MergeField.defaultProps = {
 	error: false,
+	tooltipText: null,
 	valueProperty: 'label'
 };
 

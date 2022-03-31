@@ -18,11 +18,11 @@
 /* eslint-disable react/jsx-no-bind, @typescript-eslint/no-invalid-this */
 
 
-import type {
-	Attribute, Entity, EntityType, RelationshipForDisplay,
-	RelationshipType, Relationship as _Relationship
-} from '../relationship-editor/types';
 import {Button, Col, Row} from 'react-bootstrap';
+import type {
+	Entity, EntityType, RelationshipForDisplay,
+	RelationshipType
+} from '../relationship-editor/types';
 import React, {useState} from 'react';
 import {SortableContainer, SortableElement} from 'react-sortable-hoc';
 import {faBars, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
@@ -81,10 +81,10 @@ type SeriesItemsProps = {
 
 const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemove, dragHandler}) => (
 	<Row className="margin-top-d5" key={value.rowID}>
-		<Col className="text-right form-control-static padding-left-0" md={1}>
+		<Col className="text-right form-control-static padding-left-0" lg={1}>
 			{dragHandler ? <><FontAwesomeIcon icon={faBars}/> &nbsp;&nbsp;</> : null}
 		</Col>
-		<Col md={2}>
+		<Col lg={2}>
 			<input
 				className="form-control"
 				placeholder="Enter value..."
@@ -93,7 +93,7 @@ const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemov
 				onChange={handleNumberAttributeChange.bind(this, value.rowID)}
 			/>
 		</Col>
-		<Col className="form-control-static" md={7}>
+		<Col className="form-control-static" lg={7}>
 			<Relationship
 				link
 				contextEntity={baseEntity}
@@ -102,10 +102,10 @@ const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemov
 				targetEntity={value.targetEntity}
 			/>
 		</Col>
-		<Col md={2}>
+		<Col lg={2}>
 			<Button
-				bsStyle="danger"
 				role="button"
+				variant="danger"
 				onClick={onRemove.bind(this, value.rowID)}
 			>
 				<FontAwesomeIcon icon={faTimes}/>
@@ -218,10 +218,10 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 				</> : null
 			}
 			<Row className="margin-top-d8">
-				<Col className="text-right" md={3}>
+				<Col className="text-right" lg={3}>
 					<p className="margin-top-d5">Add an entity to the series:</p>
 				</Col>
-				<Col md={7} style={{marginTop: -22}}>
+				<Col lg={7} style={{marginTop: -22}}>
 					<EntitySearchFieldOption
 						instanceId="entitySearchField"
 						name="entity"
@@ -230,8 +230,8 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 						onChange={handleEntityChange}
 					/>
 				</Col>
-				<Col md={2}>
-					<Button bsStyle="success" onClick={handleAdd}>
+				<Col lg={2}>
+					<Button variant="success" onClick={handleAdd}>
 						<FontAwesomeIcon icon={faPlus}/>
 						<span>&nbsp;Add {seriesType}</span>
 					</Button>

@@ -33,8 +33,13 @@ const {Button, Table} = bootstrap;
 
 const {getEntityDisambiguation, getLanguageAttribute, getEntityLabel} = entityHelper;
 
+function renderAuthors(authorData) {
+	return authorData.map(author => <tr key={author.authorbbid}><a href={`/author/${author.authorbbid}`}>{author.authoralias}</a></tr>);
+}
+
 function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(work);
+	const authorData = work.authorsData;
 	const number = work.number || '?';
 	const disambiguation = getEntityDisambiguation(work);
 	const workType = work.workType ? work.workType.label : '?';
@@ -59,6 +64,7 @@ function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities
 				<a href={`/work/${work.bbid}`}>{name}</a>
 				{disambiguation}
 			</td>
+			{authorData && <td>{authorData.length ? renderAuthors(authorData) : '?'}</td>}
 			<td>{languages}</td>
 			<td>{workType}</td>
 			{showAddedAtColumn ? <td>{addedAt}</td> : null}
@@ -82,6 +88,7 @@ WorkTableRow.defaultProps = {
 function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
 	if (works.length) {
+		const showAuthors = works[0].authorsData;
 		tableContent = (
 			<React.Fragment>
 				<Table striped>
@@ -89,6 +96,7 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 						<tr>
 							{works[0].displayNumber && <th style={{width: '10%'}}>#</th>}
 							<th>Name</th>
+							{showAuthors && <th>Author</th>}
 							<th>Languages</th>
 							<th>Type</th>
 							{
@@ -113,9 +121,9 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 				</Table>
 				{showAdd &&
 					<Button
-						bsStyle="success"
 						className="margin-top-d15"
 						href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+						variant="success"
 					>
 						<FontAwesomeIcon className="margin-right-0-5" icon={faPlus}/>Add Work
 					</Button>
@@ -126,10 +134,10 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 	else if (showAdd) {
 		tableContent = (
 			<React.Fragment>
-				<span className="margin-right-2 pull-left">
+				<span className="margin-right-2 float-left">
 					<Button
-						bsStyle="success"
 						href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+						variant="success"
 					>
 						<FontAwesomeIcon icon={faPenNib} size="2x"/>
 						<br/>

@@ -168,7 +168,7 @@ function describeValidateEditionSectionLanguages() {
 		expect(result).to.be.false;
 	});
 
-	it('should reject an Immutable.List containing one invalid Immutable.Map', () => { // eslint-disable-line max-len
+	it('should reject an Immutable.List containing one invalid Immutable.Map', () => {
 		const result = validateEditionSectionLanguages(
 			Immutable.fromJS(INVALID_LANGUAGES)
 		);

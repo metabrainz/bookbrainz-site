@@ -59,14 +59,15 @@ const AliasEditor = ({
 	}));
 
 	const noAliasesTextClass =
-		classNames('text-center', {hidden: aliases.size});
+		classNames('text-center', {'d-none': aliases.size});
 
 	const helpText = `Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc.
 		Refer to the help page for more details and examples.`;
 	const helpIconElement = (
 		<OverlayTrigger
-			delayShow={50}
+			delay={50}
 			overlay={<Tooltip id="alias-editor-tooltip">{helpText}</Tooltip>}
+			placement="right"
 		>
 			<FontAwesomeIcon
 				className="fa-sm"
@@ -76,7 +77,7 @@ const AliasEditor = ({
 	);
 
 	return (
-		<Modal bsSize="large" show={show} onHide={onClose}>
+		<Modal show={show} size="lg" onHide={onClose}>
 			<Modal.Header>
 				<Modal.Title>
 					Alias Editor {helpIconElement}
@@ -100,8 +101,8 @@ const AliasEditor = ({
 					}
 				</div>
 				<Row>
-					<Col className="text-right" md={3} mdOffset={9}>
-						<Button bsStyle="success" onClick={onAddAlias}>
+					<Col className="text-right" lg={{offset: 9, span: 3}}>
+						<Button variant="success" onClick={onAddAlias}>
 							<FontAwesomeIcon icon={faPlus}/>
 							<span>&nbsp;Add alias</span>
 						</Button>
@@ -110,7 +111,7 @@ const AliasEditor = ({
 			</Modal.Body>
 
 			<Modal.Footer>
-				<Button bsStyle="primary" onClick={onClose}>Close</Button>
+				<Button variant="primary" onClick={onClose}>Close</Button>
 			</Modal.Footer>
 		</Modal>
 	);
