@@ -176,7 +176,7 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 
 	// Default to empty array, its presence is expected down the line
 	entity.relationships = [];
-	
+
 	if (!entity.relationshipSetId) {
 		return null;
 	}
@@ -193,7 +193,7 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 			]
 		})
 		.then((relationshipSet) => {
-			if(relationshipSet){
+			if (relationshipSet) {
 				entity.relationships = relationshipSet.related('relationships').toJSON();
 			}
 

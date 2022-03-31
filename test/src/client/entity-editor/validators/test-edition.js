@@ -458,7 +458,7 @@ function describeValidateForm() {
 			},
 			IDENTIFIER_TYPES
 		);
-		expect(result).to.be.false;
+		expect(result).to.be.true;
 	});
 
 	it('should reject an Object with an invalid identifier editor', () => {
