@@ -60,13 +60,13 @@ function AuthorAttributes({author}) {
 	return (
 		<div>
 			<Row>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>Sort Name</dt>
 						<dd>{sortNameOfDefaultAlias}</dd>
 					</dl>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>Type</dt>
 						<dd>{type}</dd>
@@ -78,7 +78,7 @@ function AuthorAttributes({author}) {
 						}
 					</dl>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>{beginDateLabel}</dt>
 						<dd>{beginDate}</dd>
@@ -88,7 +88,7 @@ function AuthorAttributes({author}) {
 				</Col>
 				{
 					author.ended &&
-					<Col md={3}>
+					<Col lg={3}>
 						<dl>
 							<dt>{endDateLabel}</dt>
 							<dd>{endDate}</dd>
@@ -112,14 +112,14 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 	return (
 		<div>
 			<Row className="entity-display-background">
-				<Col className="entity-display-image-box text-center" md={2}>
+				<Col className="entity-display-image-box text-center" lg={2}>
 					<EntityImage
 						backupIcon={ENTITY_TYPE_ICONS.Author}
 						deleted={entity.deleted}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>
-				<Col md={10}>
+				<Col lg={10}>
 					<EntityTitle entity={entity}/>
 					<AuthorAttributes author={entity}/>
 				</Col>
@@ -135,9 +135,9 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 				/>
 				<EntityRelatedCollections collections={entity.collections}/>
 				<Button
-					bsStyle="success"
 					className="margin-top-d15"
 					href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+					variant="success"
 				>
 					<FontAwesomeIcon className="margin-right-0-5" icon={faPlus}/>Add Work
 				</Button>

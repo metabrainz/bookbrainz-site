@@ -4,12 +4,13 @@ services:
 
   bookbrainz-site:
     container_name: bookbrainz-site
-    command: npm start
+    command: yarn start
     build:
       context: ./
       dockerfile: Dockerfile
       target: bookbrainz-dev
     restart: unless-stopped
+    user: bookbrainz
     ports:
       - "9099:9099"
     depends_on:

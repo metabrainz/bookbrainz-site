@@ -28,7 +28,6 @@ import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
 const {expect} = chai;
 
-
 export function testValidatePositiveIntegerFunc(
 	validationFunc, required = true
 ) {
@@ -105,28 +104,29 @@ export function testValidateBooleanFunc(validationFunc, required = true) {
 }
 
 export function testValidateDateFunc(validationFunc, required = true) {
-	it('should pass a object containing a valid year value', () => {
+	it('should pass an object containing a valid year value', () => {
 		const result = validationFunc({day: '', month: '', year: '2017'}).isValid;
 		expect(result).to.be.true;
 	});
 
-	it('should pass a object containing a valid year and month value', () => {
+	it('should pass an object containing a valid year and month value', () => {
 		const result = validationFunc({day: '', month: '11', year: '2017'}).isValid;
 		expect(result).to.be.true;
 	});
 
-	it('should pass a object containing a valid year, month and day value', () => {
+	it('should pass an object containing a valid year, month and day value', () => {
 		const result = validationFunc({day: '21', month: '11', year: '2017'}).isValid;
 		expect(result).to.be.true;
 	});
 
 	it('should reject all other forms of invalid dates', () => {
-		const result = INVALID_DATES.reduce((res, date) =>
-			res || validationFunc(date).isValid, false);
-		expect(result).to.be.false;
+		for (const date of INVALID_DATES) {
+			const result = validationFunc(date).isValid;
+			expect(result, `year '${date.year}', month '${date.month}', day '${date.day}'`).to.be.false;
+		}
 	});
 
-	it(`should ${required ? 'reject' : 'pass'} a empty value object`,
+	it(`should ${required ? 'reject' : 'pass'} an empty value object`,
 		() => {
 			const result = validationFunc({}).isValid;
 			expect(result).to.equal(!required);

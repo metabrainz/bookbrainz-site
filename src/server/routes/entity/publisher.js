@@ -20,15 +20,20 @@
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
+import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
+
 import {
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
+
+import {ConflictError} from '../../../common/helpers/error';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import log from 'log';
 import target from '../../templates/target';
 
 
@@ -89,10 +94,30 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadPublisherTypes,
 	middleware.loadRelationshipTypes,
-	(req, res) => {
-		const {markup, props} = entityEditorMarkup(generateEntityProps(
+	async (req, res) => {
+		const markupProps = generateEntityProps(
 			'publisher', req, res, {}
-		));
+		);
+		const nameSection = {
+			disambiguation: '',
+			exactMatches: null,
+			language: null,
+			name: req.query?.name ?? '',
+			searchResults: null,
+			sortName: ''
+		};
+		if (nameSection.name) {
+			try {
+				nameSection.searchResults = await search.autocomplete(req.app.locals.orm, nameSection.name, 'Publisher');
+				nameSection.exactMatches = await search.checkIfExists(req.app.locals.orm, nameSection.name, 'Publisher');
+			}
+			catch (err) {
+				log.debug(err);
+			}
+		}
+
+		markupProps.initialState.nameSection = nameSection;
+		const {markup, props} = entityEditorMarkup(markupProps);
 
 		return res.send(target({
 			markup,
@@ -102,6 +127,41 @@ router.get(
 		}));
 	}
 );
+
+
+router.post(
+	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	middleware.loadLanguages, middleware.loadPublisherTypes,
+	middleware.loadRelationshipTypes,
+	async (req, res) => {
+		const {orm} = req.app.locals;
+		const {PublisherType} = orm;
+		const entity = await utils.parseInitialState(req, 'publisher');
+		if (entity.publisherSection) {
+			if (entity.publisherSection.type) {
+				entity.publisherSection.type = await utils.getIdByField(PublisherType, 'label', entity.publisherSection.type);
+			}
+			if (entity.publisherSection.endDate) {
+				entity.publisherSection.ended = true;
+			}
+			if (entity.publisherSection.area) {
+				entity.publisherSection.area = await utils.searchOption(orm, 'area', entity.publisherSection.area);
+			}
+		}
+		const markupProps = generateEntityProps(
+			'publisher', req, res, {}, () => entity
+		);
+		const {markup, props} = entityEditorMarkup(markupProps);
+
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/entity-editor.js',
+			title: props.heading
+		}));
+	}
+);
+
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
@@ -154,9 +214,12 @@ router.get('/:bbid', middleware.loadEntityRelationships, (req, res, next) => {
 		.catch(next);
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
+	if (!res.locals.entity.dataId) {
+		return next(new ConflictError('This entity has already been deleted'));
+	}
 	_setPublisherTitle(res);
-	entityRoutes.displayDeleteEntity(req, res);
+	return entityRoutes.displayDeleteEntity(req, res);
 });
 
 router.post(
@@ -237,9 +300,11 @@ function publisherToFormState(publisher) {
 	};
 
 	publisher.relationships.forEach((relationship) => (
-		relationshipSection.relationships[relationship.id] = {
+		relationshipSection.relationships[`n${relationship.id}`] = {
+			attributeSetId: relationship.attributeSetId,
+			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
 			relationshipType: relationship.type,
-			rowID: relationship.id,
+			rowID: `n${relationship.id}`,
 			sourceEntity: relationship.source,
 			targetEntity: relationship.target
 		}

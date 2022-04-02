@@ -15,6 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint-disable camelcase */
 
 import * as commonUtils from '../../common/helpers/utils';
 import {camelCase, isString, snakeCase, upperFirst} from 'lodash';
@@ -179,7 +180,7 @@ async function _processEntityListForBulk(entityList) {
 	await Promise.all(indexOperations);
 }
 
-export function autocomplete(orm, query, type) {
+export function autocomplete(orm, query, type, size = 42) {
 	let queryBody = null;
 
 	if (commonUtils.isValidBBID(query)) {
@@ -203,7 +204,7 @@ export function autocomplete(orm, query, type) {
 	const dslQuery = {
 		body: {
 			query: queryBody,
-			size: 42
+			size
 		},
 		index: _index
 	};
@@ -244,9 +245,8 @@ export function refreshIndex() {
 	return _client.indices.refresh({index: _index});
 }
 
-/* eslint camelcase: 0, no-magic-numbers: 1 */
 export async function generateIndex(orm) {
-	const {Area, Author, Edition, EditionGroup, Editor, Publisher, UserCollection, Work} = orm;
+	const {Area, Author, Edition, EditionGroup, Editor, Publisher, Series, UserCollection, Work} = orm;
 	const indexMappings = {
 		mappings: {
 			_default_: {
@@ -356,6 +356,7 @@ export async function generateIndex(orm) {
 		},
 		{model: EditionGroup, relations: ['editionGroupType']},
 		{model: Publisher, relations: ['publisherType', 'area']},
+		{model: Series, relations: ['seriesOrderingType']},
 		{model: Work, relations: ['workType']}
 	];
 
@@ -496,7 +497,7 @@ export function searchByName(orm, name, type, size, from) {
 
 	let modifiedType;
 	if (type === 'all_entities') {
-		modifiedType = ['author', 'edition', 'edition_group', 'work', 'publisher'];
+		modifiedType = ['author', 'edition', 'edition_group', 'series', 'work', 'publisher'];
 	}
 	else {
 		modifiedType = type;

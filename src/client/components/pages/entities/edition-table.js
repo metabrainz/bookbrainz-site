@@ -37,6 +37,7 @@ const {Button, Table} = bootstrap;
 function EditionTableRow({edition, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(edition);
 	const disambiguation = getEntityDisambiguation(edition);
+	const number = edition.number || '?';
 	const releaseDate = getEditionReleaseDate(edition);
 	const isbn = getISBNOfEdition(edition);
 	const editionFormat = getEditionFormat(edition);
@@ -45,6 +46,7 @@ function EditionTableRow({edition, showAddedAtColumn, showCheckboxes, selectedEn
 	/* eslint-disable react/jsx-no-bind */
 	return (
 		<tr>
+			{edition.displayNumber && <td>{number}</td>}
 			<td>
 				{
 					showCheckboxes ?
@@ -101,6 +103,7 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckbo
 				<Table striped>
 					<thead>
 						<tr>
+							{editions[0].displayNumber && <th style={{width: '10%'}}>#</th>}
 							<th>Name</th>
 							<th>Format</th>
 							<th>ISBN</th>
@@ -127,9 +130,9 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckbo
 				</Table>
 				{showAdd &&
 					<Button
-						bsStyle="success"
 						className="margin-top-d15"
 						href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+						variant="success"
 					>
 						<FontAwesomeIcon icon={faPlus}/>
 						{'  Add Edition'}
@@ -141,10 +144,10 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckbo
 	else if (showAdd) {
 		tableContent = (
 			<React.Fragment>
-				<span className="margin-right-2 pull-left">
+				<span className="margin-right-2 float-left">
 					<Button
-						bsStyle="success"
 						href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+						variant="success"
 					>
 						<FontAwesomeIcon icon={faBook} size="2x"/>
 						<br/>

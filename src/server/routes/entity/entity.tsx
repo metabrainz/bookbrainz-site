@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016  Ben Ockmore
  *               2016  Sean Burke
- *
+ *				 2021  Akash Gupta
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -42,8 +42,10 @@ import EditionGroupPage from '../../../client/components/pages/entities/edition-
 import EditionPage from '../../../client/components/pages/entities/edition';
 import EntityRevisions from '../../../client/components/pages/entity-revisions';
 import Layout from '../../../client/containers/layout';
+import PreviewPage from '../../../client/components/forms/preview';
 import PublisherPage from '../../../client/components/pages/entities/publisher';
 import ReactDOMServer from 'react-dom/server';
+import SeriesPage from '../../../client/components/pages/entities/series';
 import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
 import {getEntityLabel} from '../../../client/helpers/entity';
@@ -61,6 +63,7 @@ const entityComponents = {
 	edition: EditionPage,
 	editionGroup: EditionGroupPage,
 	publisher: PublisherPage,
+	series: SeriesPage,
 	work: WorkPage
 };
 
@@ -199,7 +202,7 @@ export async function displayRevisions(
 	try {
 		// get 1 more revision than required to check nextEnabled
 		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, from, size + 1, RevisionModel, bbid);
-		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
+		const {newResultsArray, nextEnabled} = commonUtils.getNextEnabledAndResultsArray(orderedRevisions, size);
 		const props = generateProps(req, res, {
 			from,
 			nextEnabled,
@@ -327,7 +330,7 @@ async function saveEntitiesAndFinishRevision(
 		setParentRevisions(transacting, newRevision, parentRevisionIDs);
 
 	/** model.save returns a refreshed model */
-	// eslint-disable-next-line no-unused-vars
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [savedEntities, ...others] = await Promise.all([
 		entitiesSavedPromise,
 		editorUpdatePromise,
@@ -416,10 +419,12 @@ export function handleDelete(
 	RevisionModel: any
 ) {
 	const {entity}: {entity?: any} = res.locals;
+	if (!entity.dataId) {
+		throw new error.ConflictError('This entity has already been deleted');
+	}
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const {body}: {body: any} = req;
-
 	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
 		if (!body.note || !body.note.length) {
 			throw new error.FormSubmissionError('A revision note is required when deleting an entity');
@@ -825,12 +830,33 @@ async function getNextIdentifierSet(orm, transacting, currentEntity, body) {
 		orm, transacting, oldIdentifierSet, body.identifiers || []
 	);
 }
+async function getNextRelationshipAttributeSets(orm, transacting, body) {
+	const {RelationshipAttributeSet} = orm;
+	const relationships = await Promise.all(body.relationships.map(async (relationship) => {
+		const id = relationship.attributeSetId;
+		const oldRelationshipAttributeSet = await (
+			id &&
+			new RelationshipAttributeSet({id}).fetch({
+				require: false,
+				transacting, withRelated: ['relationshipAttributes.value']
+			})
+		);
+		const attributeSet = await orm.func.relationshipAttributes.updateRelationshipAttributeSet(
+			orm, transacting, oldRelationshipAttributeSet, relationship.attributes || []
+		);
+		const attributeSetId = attributeSet && attributeSet.get('id');
+		relationship.attributeSetId = attributeSetId;
+		delete relationship.attributes;
+		return relationship;
+	}));
+	return relationships;
+}
 
 async function getNextRelationshipSets(
 	orm, transacting, currentEntity, body
 ) {
 	const {RelationshipSet} = orm;
-
+	const relationships = await getNextRelationshipAttributeSets(orm, transacting, body);
 	const id = _.get(currentEntity, ['relationshipSet', 'id']);
 
 	const oldRelationshipSet = await (
@@ -842,7 +868,7 @@ async function getNextRelationshipSets(
 	);
 
 	return orm.func.relationship.updateRelationshipSets(
-		orm, transacting, oldRelationshipSet, body.relationships || []
+		orm, transacting, oldRelationshipSet, relationships || []
 	);
 }
 
@@ -968,6 +994,15 @@ async function indexAutoCreatedEditionGroup(orm, newEdition, transacting) {
 	}
 }
 
+function sanitizeBody(body:any) {
+	for (const alias of body.aliases) {
+		alias.name = commonUtils.sanitize(alias.name);
+		alias.sortName = commonUtils.sanitize(alias.sortName);
+	}
+	body.disambiguation = commonUtils.sanitize(body.disambiguation);
+	return body;
+}
+
 export function handleCreateOrEditEntity(
 	req: PassportRequest,
 	res: $Response,
@@ -979,7 +1014,7 @@ export function handleCreateOrEditEntity(
 	const {Entity, Revision, bookshelf} = orm;
 	const editorJSON = req.user;
 
-	const {body}: {body: any} = req;
+	let {body}: {body: any} = req;
 	const {locals: resLocals}: {locals: any} = res;
 
 	let currentEntity: {
@@ -995,7 +1030,8 @@ export function handleCreateOrEditEntity(
 		try {
 			// Determine if a new entity is being created
 			const isNew = !currentEntity;
-
+			// sanitize namesection inputs
+			body = sanitizeBody(body);
 			if (isNew) {
 				const newEntity = await new Entity({type: entityType})
 					.save(null, {transacting});
@@ -1171,10 +1207,12 @@ export function constructIdentifiers(
 	);
 }
 
-export function constructRelationships(relationshipSection) {
+export function constructRelationships(parentSection, childAttributeName = 'relationships') {
 	return _.map(
-		relationshipSection.relationships,
-		({rowID, relationshipType, sourceEntity, targetEntity}) => ({
+		parentSection[childAttributeName],
+		({attributeSetId, rowID, relationshipType, sourceEntity, targetEntity, attributes}) => ({
+			attributeSetId,
+			attributes,
 			id: rowID,
 			sourceBbid: _.get(sourceEntity, 'bbid'),
 			targetBbid: _.get(targetEntity, 'bbid'),
@@ -1249,4 +1287,29 @@ export function compareEntitiesByDate(a, b) {
 	}
 
 	return new Date(aDate).getTime() - new Date(bDate).getTime();
+}
+export function displayPreview(req:PassportRequest, res:$Response, next) {
+	const baseUrl = `${req.protocol}://${req.get('host')}`;
+	const originalUrl = `${baseUrl}${req.originalUrl}`;
+	const sourceUrl = req.headers.origin !== 'null' ? req.headers.origin : '<Unknown Source>';
+	if (sourceUrl === baseUrl) {
+		return next();
+	}
+	const finalProps = {baseUrl, formBody: req.body, originalUrl, sourceUrl};
+	const props = generateProps(req, res, {
+		alert: [],
+		...finalProps
+
+	});
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(props)}>
+			<PreviewPage {...propHelpers.extractPreviewProps(props)}/>
+		</Layout>
+	);
+	return res.send(target({
+		markup,
+		props: JSON.stringify(props),
+		script: '/js/preview.js',
+		title: 'Preview'
+	}));
 }

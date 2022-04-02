@@ -23,7 +23,7 @@ import * as React from 'react';
 import {FontAwesomeIconProps as FAProps, FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst} from 'lodash';
 import {
-	faBook, faGlobe, faGripVertical, faPenNib, faUniversity, faUser, faUserCircle, faWindowRestore
+	faBook, faGlobe, faGripVertical, faLayerGroup, faPenNib, faUniversity, faUser, faUserCircle, faWindowRestore
 } from '@fortawesome/free-solid-svg-icons';
 import {format, isValid, parseISO} from 'date-fns';
 import {dateObjectToISOString} from './utils';
@@ -175,7 +175,7 @@ export function getEntityLabel(entity, returnHTML = true) {
 			deletedEntityName = entity.parentAlias.name;
 		}
 		if (returnHTML) {
-			return <span className="deleted"><span className="text-muted" title={`Deleted ${entity.type}`}>{deletedEntityName}</span></span>;
+			return <span className="deleted"><span className="text-muted" title={`This ${entity.type} was deleted`}>{deletedEntityName}</span></span>;
 		}
 		return `${deletedEntityName}`;
 	}
@@ -249,6 +249,7 @@ export const ENTITY_TYPE_ICONS = {
 	EditionGroup: faWindowRestore,
 	Editor: faUserCircle,
 	Publisher: faUniversity,
+	Series: faLayerGroup,
 	Work: faPenNib
 };
 
@@ -315,6 +316,48 @@ export function getRelationshipTargetByTypeId(entity, relationshipTypeId: number
 			.map((relation) => {
 				const {target} = relation;
 				return target;
+			});
+	}
+	return targets;
+}
+
+/**
+ * Get an array of works contained in an edition, along with the authorAlias of those works
+ *
+ * @param {object} authorsData - an object which contains the authorAlias and authorBBID with workBBIDs as keys
+ * @param {array} works - the array containing all the works in an edition
+ * @returns {array} - return the works array after adding authorsData to each work in the array
+ */
+export function addAuthorsDataToWorks(authorsData, works) {
+	works.map((work) => {
+		if (authorsData[work.bbid]) {
+			work.authorsData = authorsData[work.bbid];
+		}
+		else {
+			work.authorsData = [];
+		}
+		return work;
+	});
+	return works;
+}
+
+/**
+ * Get an array of all target BBIDs from relationships of an entity belongs to given relationshipTypeId
+ *
+ * @param {object} entity - an entity with all relationships
+ * @param {number} relationshipTypeId - typeId of spacific relationshipType
+ * @returns {array} Return array of all the targetBBIDs belongs to entity relationships for given relationshipTypeId
+ */
+export function getRelationshipTargetBBIDByTypeId(entity, relationshipTypeId: number) {
+	let targets = [];
+	if (Array.isArray(entity.relationships)) {
+		targets = entity.relationships
+			.filter(
+				(relation) => relation.typeId === relationshipTypeId
+			)
+			.map((relation) => {
+				const {target} = relation;
+				return target.bbid;
 			});
 	}
 	return targets;

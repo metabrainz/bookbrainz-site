@@ -20,6 +20,7 @@
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
+import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
 import {
@@ -29,13 +30,14 @@ import {
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
+import {ConflictError} from '../../../common/helpers/error';
 import {RelationshipTypes} from '../../../client/entity-editor/relationship-editor/types';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import log from 'log';
 import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
-
 
 /** ****************************
 *********** Helpers ************
@@ -156,15 +158,20 @@ router.get(
 					.then((data) => data && utils.entityToOption(data.toJSON()));
 		}
 
-		function render(props) {
+		async function render(props) {
 			const {initialState} = props;
-
+			initialState.nameSection = {
+				disambiguation: '',
+				exactMatches: null,
+				language: null,
+				name: req.query?.name ?? '',
+				searchResults: null,
+				sortName: ''
+			};
 			let relationshipTypeId;
 			let initialRelationshipIndex = 0;
 
-			if (props.publisher || props.editionGroup || props.work) {
-				initialState.editionSection = {};
-			}
+			initialState.editionSection = initialState.editionSection ?? {};
 
 			if (props.publisher) {
 				initialState.editionSection.publisher = props.publisher;
@@ -174,6 +181,10 @@ router.get(
 			}
 
 			if (props.editionGroup) {
+				if (!initialState.nameSection.name) {
+					// If a name hasn't been passed in query parameters, default to same name as the Edition Group
+					initialState.nameSection = getInitialNameSection(props.editionGroup);
+				}
 				initialState.editionSection.editionGroup = props.editionGroup;
 				// add initial raltionship with relationshipTypeId = 3 (<New Edition> is an edition of <EditionGroup>)
 				relationshipTypeId = RelationshipTypes.EditionIsAnEditionOfEditionGroup;
@@ -181,12 +192,80 @@ router.get(
 			}
 
 			if (props.work) {
-				initialState.nameSection = getInitialNameSection(props.work);
+				if (!initialState.nameSection.name) {
+					// If a name hasn't been passed in query parameters, default to same name as the Work
+					initialState.nameSection = getInitialNameSection(props.work);
+				}
 				// add initial raltionship with relationshipTypeId = 10 (<New Edition> Contains <Work>)
 				relationshipTypeId = RelationshipTypes.EditionContainsWork;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.work);
 			}
 
+			if (initialState.nameSection?.name) {
+				const {name} = initialState.nameSection;
+				try {
+					initialState.nameSection.searchResults = await search.autocomplete(req.app.locals.orm, name, 'Edition');
+					initialState.nameSection.exactMatches = await search.checkIfExists(req.app.locals.orm, name, 'Edition');
+					// Initial search for existing Edition Group with same name
+					// Otherwise the search for matching EG is only triggered when user modifies the name
+					initialState.editionSection.matchingNameEditionGroups = initialState.editionSection.editionGroup ??
+						await search.autocomplete(req.app.locals.orm, name, 'EditionGroup');
+				}
+				catch (err) {
+					log.debug(err);
+				}
+			}
+
+			const editorMarkup = entityEditorMarkup(props);
+			const {markup} = editorMarkup;
+			const updatedProps = editorMarkup.props;
+			return res.send(target({
+				markup,
+				props: escapeProps(updatedProps),
+				script: '/js/entity-editor.js',
+				title: props.heading
+			}));
+		}
+
+		makePromiseFromObject(propsPromise)
+			.then(render)
+			.catch(next);
+	}
+);
+
+router.post(
+	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	middleware.loadEditionStatuses, middleware.loadEditionFormats,
+	middleware.loadLanguages, middleware.loadRelationshipTypes,
+	async (req, res, next) => {
+		// parsing submitted data to correct format
+		const entity = await utils.parseInitialState(req, 'edition');
+		if (entity.editionSection) {
+			const {orm} = req.app.locals;
+			const {EditionFormat} = orm;
+			entity.editionSection = await utils.parseLanguages(entity.editionSection, orm);
+			if (entity.editionSection.format) {
+				entity.editionSection.format = await utils.getIdByField(EditionFormat, 'label', entity.editionSection.format);
+			}
+			const keysToInt = ['height', 'width', 'depth', 'weight', 'pages'];
+			let physicalEnable = false;
+			for (const key of keysToInt) {
+				entity.editionSection[key] = parseInt(entity.editionSection[key], 10) || null;
+				if (entity.editionSection[key]) {
+					physicalEnable = true;
+				}
+			}
+			entity.editionSection.physicalEnable = physicalEnable;
+			// adding publisher
+			if (entity.editionSection.publisher) {
+				const foundOption = await utils.searchOption(orm, 'publisher', entity.editionSection.publisher, 'bbid', true);
+				entity.editionSection.publisher = foundOption ? _.omit(foundOption, ['disambiguation']) : null;
+			}
+		}
+		const propsPromise = generateEntityProps(
+			'edition', req, res, {}, () => entity
+		);
+		function render(props) {
 			const editorMarkup = entityEditorMarkup(props);
 			const {markup} = editorMarkup;
 			const updatedProps = editorMarkup.props;
@@ -236,7 +315,7 @@ function _setEditionTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWorkTableAuthors, (req, res) => {
 	_setEditionTitle(res);
 	entityRoutes.displayEntity(req, res);
 });
@@ -254,9 +333,12 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 });
 
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
+	if (!res.locals.entity.dataId) {
+		return next(new ConflictError('This entity has already been deleted'));
+	}
 	_setEditionTitle(res);
-	entityRoutes.displayDeleteEntity(req, res);
+	return entityRoutes.displayDeleteEntity(req, res);
 });
 
 router.post(
@@ -309,7 +391,7 @@ function editionToFormState(edition) {
 		(identifier) => { identifierEditor[identifier.id] = identifier; }
 	);
 
-	const physicalVisible = !(
+	const physicalEnable = !(
 		_.isNull(edition.depth) && _.isNull(edition.height) &&
 		_.isNull(edition.pages) && _.isNull(edition.weight) &&
 		_.isNull(edition.width)
@@ -337,7 +419,7 @@ function editionToFormState(edition) {
 			({id, name}) => ({label: name, value: id})
 		) : [],
 		pages: edition.pages,
-		physicalVisible,
+		physicalEnable,
 		publisher,
 		releaseDate,
 		status: edition.editionStatus && edition.editionStatus.id,
@@ -354,9 +436,11 @@ function editionToFormState(edition) {
 	};
 
 	edition.relationships.forEach((relationship) => (
-		relationshipSection.relationships[relationship.id] = {
+		relationshipSection.relationships[`n${relationship.id}`] = {
+			attributeSetId: relationship.attributeSetId,
+			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
 			relationshipType: relationship.type,
-			rowID: relationship.id,
+			rowID: `n${relationship.id}`,
 			sourceEntity: relationship.source,
 			targetEntity: relationship.target
 		}

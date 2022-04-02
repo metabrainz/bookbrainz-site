@@ -20,7 +20,6 @@
 import * as bootstrap from 'react-bootstrap';
 import {faPlus, faSave, faTimes, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {trim, uniqBy} from 'lodash';
-import CustomInput from '../../input';
 import DeleteOrRemoveCollaborationModal from '../pages/parts/delete-or-remove-collaboration-modal';
 import EntitySearchFieldOption from '../../entity-editor/common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -32,7 +31,7 @@ import classNames from 'classnames';
 import request from 'superagent';
 
 
-const {Alert, Button, Col} = bootstrap;
+const {Alert, Button, Col, Form, Row} = bootstrap;
 
 class UserCollectionForm extends React.Component {
 	constructor(props) {
@@ -68,8 +67,8 @@ class UserCollectionForm extends React.Component {
 		}
 
 		const collaborators = this.getCleanedCollaborators();
-		const description = this.description.getValue();
-		const name = trim(this.name.getValue());
+		const description = this.description.value;
+		const name = trim(this.name.value);
 		const privacy = this.privacy.getValue();
 		const entityType = this.entityType.getValue();
 
@@ -92,7 +91,7 @@ class UserCollectionForm extends React.Component {
 			.send(data)
 			.then((res) => {
 				window.location.href = `/collection/${res.body.id}`;
-			}, (error) => {
+			}, () => {
 				this.setState({
 					errorText: 'Internal Error'
 				});
@@ -100,7 +99,7 @@ class UserCollectionForm extends React.Component {
 	}
 
 	isValid() {
-		return trim(this.name.getValue()).length && this.entityType.getValue();
+		return trim(this.name.value).length && this.entityType.getValue();
 	}
 
 	getCleanedCollaborators() {
@@ -157,7 +156,7 @@ class UserCollectionForm extends React.Component {
 		const privacyOptions = ['Private', 'Public'].map((option) => ({
 			name: option
 		}));
-		const entityTypeOptions = ['Author', 'Work', 'Edition', 'Edition-Group', 'Publisher'].map((entity) => ({
+		const entityTypeOptions = ['Author', 'Work', 'Series', 'Edition', 'Edition-Group', 'Publisher'].map((entity) => ({
 			name: entity
 		}));
 		const initialName = this.state.collection.name;
@@ -171,7 +170,7 @@ class UserCollectionForm extends React.Component {
 			initialPrivacy = 'Public';
 		}
 		const {errorText} = this.state;
-		const errorAlertClass = classNames('text-center', 'margin-top-1', {hidden: !errorText});
+		const errorAlertClass = classNames('text-center', 'margin-top-1', {'d-none': !errorText});
 		const submitLabel = this.props.collection.name ? 'Update collection' : 'Create collection';
 		const canEditType = this.props.collection.items.length === 0;
 
@@ -188,25 +187,28 @@ class UserCollectionForm extends React.Component {
 				<div>
 					<Col
 						id="collectionForm"
-						md={8}
-						mdOffset={2}
+						lg={{offset: 2, span: 8}}
 					>
 						<form
 							className="padding-sides-0"
 							onSubmit={this.handleSubmit}
 						>
-							<CustomInput
-								defaultValue={initialName}
-								label="Name"
-								ref={(ref) => this.name = ref}
-								type="text"
-							/>
-							<CustomInput
-								defaultValue={initialDescription}
-								label="Description"
-								ref={(ref) => this.description = ref}
-								type="textarea"
-							/>
+							<Form.Group>
+								<Form.Label>Name</Form.Label>
+								<Form.Control
+									defaultValue={initialName}
+									ref={(ref) => this.name = ref}
+									type="text"
+								/>
+							</Form.Group>
+							<Form.Group>
+								<Form.Label>Description</Form.Label>
+								<Form.Control
+									as="textarea"
+									defaultValue={initialDescription}
+									ref={(ref) => this.description = ref}
+								/>
+							</Form.Group>
 							<SelectWrapper
 								base={ReactSelect}
 								defaultValue={initialType}
@@ -229,31 +231,31 @@ class UserCollectionForm extends React.Component {
 								ref={(ref) => this.privacy = ref}
 							/>
 							<h3><b>Collaborators</b></h3>
-							<div className="row margin-bottom-2">
-								<div className="col-sm-6 margin-top-d5">
-									<p className="help-block">
+							<Row className="margin-bottom-2">
+								<Col className="margin-top-d5" md={6}>
+									<p className="text-muted">
 								Collaborators can add/remove entities from your collection
 									</p>
-								</div>
-								<div className="col-sm-6 margin-top-d5">
+								</Col>
+								<Col className="margin-top-d5" md={6}>
 									<Button
 										block
-										bsStyle="primary"
 										type="button"
+										variant="primary"
 										onClick={this.handleAddCollaborator}
 									>
 										<FontAwesomeIcon icon={faPlus}/>
 										&nbsp;Add another collaborator
 									</Button>
-								</div>
-							</div>
+								</Col>
+							</Row>
 							{
 								this.state.collaborators.map((collaborator, index) => {
 									const buttonAfter = (
 										<Button
-											bsSize="small"
-											bsStyle="danger"
+											size="sm"
 											type="button"
+											variant="danger"
 											onClick={() => this.handleRemoveCollaborator(index)}
 										>
 											<FontAwesomeIcon icon={faTimes}/>&nbsp;Remove
@@ -276,32 +278,32 @@ class UserCollectionForm extends React.Component {
 							}
 							<hr/>
 							<div className={errorAlertClass}>
-								<Alert bsStyle="danger">Error: {errorText}</Alert>
+								<Alert variant="danger">Error: {errorText}</Alert>
 							</div>
-							<div className="row margin-bottom-2">
-								<div className="col-sm-6 margin-top-d5">
+							<Row className="margin-bottom-2">
+								<Col className="margin-top-d5" md={6}>
 									<Button
 										block
-										bsStyle="success"
 										type="submit"
+										variant="success"
 									>
 										<FontAwesomeIcon icon={faSave}/>&nbsp;{submitLabel}
 									</Button>
-								</div>
+								</Col>
 								{
 									this.props.collection.id ?
-										<div className="col-sm-6 margin-top-d5">
+										<Col className="margin-top-d5" md={6}>
 											<Button
 												block
-												bsStyle="danger"
 												type="button"
+												variant="danger"
 												onClick={this.handleShowModal}
 											>
 												<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;Delete collection
 											</Button>
-										</div> : null
+										</Col> : null
 								}
-							</div>
+							</Row>
 						</form>
 					</Col>
 				</div>

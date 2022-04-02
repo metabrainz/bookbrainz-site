@@ -20,6 +20,7 @@
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
+import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
 import {
@@ -28,9 +29,11 @@ import {
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
+import {ConflictError} from '../../../common/helpers/error';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import log from 'log';
 import target from '../../templates/target';
 
 /** ****************************
@@ -80,10 +83,30 @@ const router = express.Router();
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadEditionGroupTypes,
-	middleware.loadRelationshipTypes, (req, res) => {
-		const {markup, props} = entityEditorMarkup(generateEntityProps(
+	middleware.loadRelationshipTypes, async (req, res) => {
+		const markupProps = generateEntityProps(
 			'editionGroup', req, res, {}
-		));
+		);
+		const nameSection = {
+			disambiguation: '',
+			exactMatches: null,
+			language: null,
+			name: req.query?.name ?? '',
+			searchResults: null,
+			sortName: ''
+		};
+		if (nameSection.name) {
+			try {
+				nameSection.searchResults = await search.autocomplete(req.app.locals.orm, nameSection.name, 'EditionGroup');
+				nameSection.exactMatches = await search.checkIfExists(req.app.locals.orm, nameSection.name, 'EditionGroup');
+			}
+			catch (err) {
+				log.debug(err);
+			}
+		}
+
+		markupProps.initialState.nameSection = nameSection;
+		const {markup, props} = entityEditorMarkup(markupProps);
 
 		return res.send(target({
 			markup,
@@ -94,6 +117,32 @@ router.get(
 	}
 );
 
+
+router.post(
+	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	middleware.loadLanguages, middleware.loadEditionGroupTypes,
+	middleware.loadRelationshipTypes, async (req, res) => {
+		const entity = await utils.parseInitialState(req, 'editionGroup');
+		const {orm} = req.app.locals;
+		const {EditionGroupType} = orm;
+		if (entity.editionGroupSection?.type) {
+			entity.editionGroupSection = {
+				type: await utils.getIdByField(EditionGroupType, 'label', entity.editionGroupSection.type)
+			};
+		}
+		const markupProps = generateEntityProps(
+			'editionGroup', req, res, {}, () => entity
+		);
+		const {markup, props} = entityEditorMarkup(markupProps);
+
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/entity-editor.js',
+			title: props.heading
+		}));
+	}
+);
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
@@ -133,9 +182,12 @@ router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
 	entityRoutes.displayEntity(req, res);
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res) => {
+router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
+	if (!res.locals.entity.dataId) {
+		return next(new ConflictError('This entity has already been deleted'));
+	}
 	_setEditionGroupTitle(res);
-	entityRoutes.displayDeleteEntity(req, res);
+	return entityRoutes.displayDeleteEntity(req, res);
 });
 
 router.post(
@@ -213,9 +265,11 @@ function editionGroupToFormState(editionGroup) {
 	};
 
 	editionGroup.relationships.forEach((relationship) => (
-		relationshipSection.relationships[relationship.id] = {
+		relationshipSection.relationships[`n${relationship.id}`] = {
+			attributeSetId: relationship.attributeSetId,
+			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
 			relationshipType: relationship.type,
-			rowID: relationship.id,
+			rowID: `n${relationship.id}`,
 			sourceEntity: relationship.source,
 			targetEntity: relationship.target
 		}

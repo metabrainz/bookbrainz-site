@@ -6,6 +6,7 @@ export const entityTypeProperty = PropTypes.oneOf([
 	'edition',
 	'editionGroup',
 	'publisher',
+	'series',
 	'work'
 ]);
 

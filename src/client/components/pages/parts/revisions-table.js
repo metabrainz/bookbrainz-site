@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint-disable no-useless-escape */
+
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
 import {genEntityIconHTMLElement, getEntityLabel, getEntityUrl} from '../../../helpers/entity';
@@ -28,12 +28,9 @@ import {faCodeBranch} from '@fortawesome/free-solid-svg-icons';
 const {Table} = bootstrap;
 const {formatDate, stringToHTMLWithLinks} = utilsHelper;
 
-
 function RevisionsTable(props) {
 	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading} = props;
-	const tableCssClasses = 'table table-striped';
 	return (
-
 		<div>
 			<div>
 				<h1 className="text-center">{tableHeading}</h1>
@@ -42,25 +39,26 @@ function RevisionsTable(props) {
 			{
 				results.length > 0 ?
 					<Table
+						borderless
 						responsive
-						className={tableCssClasses}
+						striped
 					>
 						<thead>
 							<tr>
-								<th className="col-sm-2">Revision ID</th>
+								<th className="col-md-2">Revision ID</th>
 								{
 									showEntities ?
-										<th className="col-sm-5">Modified entities</th> : null
+										<th className="col-md-5">Modified entities</th> : null
 								}
 								{
 									showRevisionEditor ?
-										<th className="col-sm-3">User</th> : null
+										<th className="col-md-3">User</th> : null
 								}
 								{
 									showRevisionNote ?
-										<th className="col-sm-3">Note</th> : null
+										<th className="col-md-3">Note</th> : null
 								}
-								<th className="col-sm-2">Date</th>
+								<th className="col-md-2">Date</th>
 							</tr>
 						</thead>
 
@@ -117,7 +115,7 @@ function RevisionsTable(props) {
 																<span className="note-content">
 																	{stringToHTMLWithLinks(note.content)}
 																	<a
-																		className="note-author pull-right"
+																		className="note-author float-right"
 																		href={`/editor/${note.author.id}`}
 																	>
 																		—{note.author.name}
@@ -160,8 +158,6 @@ RevisionsTable.defaultProps = {
 
 };
 
-
 RevisionsTable.displayName = 'RevisionsTable';
-
 
 export default RevisionsTable;

@@ -23,7 +23,6 @@ import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
-import * as utils from '../helpers/utils';
 import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
 import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
@@ -137,7 +136,8 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 		if (editor.get('areaId') === req.body.areaId &&
 			editor.get('bio') === req.body.bio &&
 			editor.get('name') === req.body.name &&
-			editor.get('titleUnlockId') === req.body.title
+			editor.get('titleUnlockId') === req.body.title &&
+			editor.get('genderId') === req.body.genderId
 		) {
 			throw new error.FormSubmissionError('No change to the profile');
 		}
@@ -231,9 +231,11 @@ export async function getEditorActivity(editorId, startDate, Revision, endDate =
 	);
 	const revisionsCount = _.countBy(revisionDates);
 
+	const firstRevisionDate = revisionJSON.length ? revisionJSON[0].createdAt : Date.now();
+	const activityStart = startDate > firstRevisionDate ? firstRevisionDate : startDate;
 	const allMonthsInInterval = eachMonthOfInterval({
 		end: endDate,
-		start: startDate
+		start: activityStart
 	})
 		.map(month => format(new Date(month), 'LLL-yy'))
 		.reduce((accumulator, month) => {
@@ -258,55 +260,56 @@ function achievementColToEditorGetJSON(achievementCol) {
 router.get('/:id', async (req, res, next) => {
 	const {AchievementUnlock, Revision} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
+	if (!userId) {
+		return next(new error.BadRequestError('Editor Id is not valid!', req));
+	}
+	try {
+		const editorJSON = await getIdEditorJSONPromise(userId, req);
 
-	const editorJSONPromise = getIdEditorJSONPromise(userId, req);
+		const achievementCol = await new AchievementUnlock()
+			.where('editor_id', userId)
+			.where('profile_rank', '<=', '3')
+			.query((qb) => qb.limit(3))
+			.orderBy('profile_rank', 'ASC')
+			.fetchAll({
+				require: false,
+				withRelated: ['achievement']
+			});
+		editorJSON.activityData =
+		await getEditorActivity(editorJSON.id, editorJSON.createdAt, Revision);
 
-	const achievementColPromise = new AchievementUnlock()
-		.where('editor_id', userId)
-		.where('profile_rank', '<=', '3')
-		.query((qb) => qb.limit(3))
-		.orderBy('profile_rank', 'ASC')
-		.fetchAll({
-			require: false,
-			withRelated: ['achievement']
+		const achievementJSON = achievementColToEditorGetJSON(achievementCol);
+
+		const props = generateProps(req, res, {
+			achievement: achievementJSON,
+			editor: editorJSON,
+			tabActive: 0
 		});
 
-	const [achievementCol, editorJSON] = await Promise.all(
-		[achievementColPromise, editorJSONPromise]
-	).catch(next);
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)} >
+				<EditorContainer
+					{...propHelpers.extractEditorProps(props)}
+				>
+					<ProfileTab
+						user={props.user}
+						{...propHelpers.extractChildProps(props)}
+					/>
+				</EditorContainer>
+			</Layout>
+		);
 
-	editorJSON.activityData =
-		await getEditorActivity(editorJSON.id, editorJSON.createdAt, Revision)
-			.catch(next);
-
-	const achievementJSON = achievementColToEditorGetJSON(achievementCol);
-
-	const props = generateProps(req, res, {
-		achievement: achievementJSON,
-		editor: editorJSON,
-		tabActive: 0
-	});
-
-	const markup = ReactDOMServer.renderToString(
-		<Layout {...propHelpers.extractLayoutProps(props)} >
-			<EditorContainer
-				{...propHelpers.extractEditorProps(props)}
-			>
-				<ProfileTab
-					user={props.user}
-					{...propHelpers.extractChildProps(props)}
-				/>
-			</EditorContainer>
-		</Layout>
-	);
-
-	res.send(target({
-		markup,
-		page: 'profile',
-		props: escapeProps(props),
-		script: '/js/editor/editor.js',
-		title: `${props.editor.name}'s Profile`
-	}));
+		return res.send(target({
+			markup,
+			page: 'profile',
+			props: escapeProps(props),
+			script: '/js/editor/editor.js',
+			title: `${props.editor.name}'s Profile`
+		}));
+	}
+	catch (err) {
+		return next(err);
+	}
 });
 
 // eslint-disable-next-line consistent-return
@@ -329,7 +332,7 @@ router.get('/:id/revisions', async (req, res, next) => {
 			await Promise.all([orderedRevisionsPromise, editorJSONPromise]);
 
 		const {newResultsArray, nextEnabled} =
-			utils.getNextEnabledAndResultsArray(orderedRevisions, size);
+			commonUtils.getNextEnabledAndResultsArray(orderedRevisions, size);
 
 		const props = generateProps(req, res, {
 			editor: editorJSON,
@@ -487,7 +490,6 @@ async function rankUpdate(orm, editorId, bodyRank, rank) {
 
 router.post('/:id/achievements/', auth.isAuthenticated, async (req, res) => {
 	const {orm} = req.app.locals;
-	const {Editor} = orm;
 	const userId = parseInt(req.params.id, 10);
 	if (!isCurrentUser(userId, req.user)) {
 		throw new Error('Not authenticated');
@@ -521,7 +523,7 @@ router.get('/:id/collections', async (req, res, next) => {
 
 		// fetch 1 more collections than required to check nextEnabled
 		const orderedCollections = await getOrderedCollectionsForEditorPage(from, size + 1, type, req);
-		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedCollections, size);
+		const {newResultsArray, nextEnabled} = commonUtils.getNextEnabledAndResultsArray(orderedCollections, size);
 		const editor = await new Editor({id: req.params.id}).fetch();
 		const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
 

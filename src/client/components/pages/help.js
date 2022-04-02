@@ -15,6 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint-disable max-len */
 
 import * as bootstrap from 'react-bootstrap';
 
@@ -22,9 +23,8 @@ import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
-const {PageHeader, ListGroup, ListGroupItem, Grid, Col, Row} = bootstrap;
+const {ListGroup, Col, Row} = bootstrap;
 
-/* eslint max-len: 0 */
 /**
  * Renders the document and displays the 'Help' page.
  * @returns {ReactElement} a HTML document to display the Develop page
@@ -36,9 +36,11 @@ function HelpPage() {
 		'en/latest/style/introduction/';
 
 	return (
-		<Grid>
+		<div>
 
-			<PageHeader>Help page</PageHeader>
+			<div className="page-header">
+				<h1>Help page</h1>
+			</div>
 			<p className="lead">
 				Feeling lost? On this page you will find explanations of the basic concepts
 				used across BookBrainz, as well as an F.A.Q and a glossary.
@@ -49,45 +51,51 @@ function HelpPage() {
 			</p>
 			<hr/>
 
-			<Row>
-				<h2>Entities</h2>
-				<p>
-					Entities are the main concepts used to describe a bibliographic record through their relationships
-				</p>
+			<h2>Entities</h2>
+			<p>
+				Entities are the main concepts used to describe a bibliographic record through their relationships
+			</p>
 
-				<Col md={4}>
+			<Row>
+				<Col lg={6}>
 					<img
 						alt="Entity relationships"
-						className="img-responsive center-block"
+						className="img-fluid center-block"
 						src="/images/entity_relationships.svg"
 					/>
 				</Col>
-				<Col className="margin-top-2" md={8}>
+				<Col className="margin-top-2" lg={6}>
 					<ListGroup>
-						<ListGroupItem><b>{genEntityIconHTMLElement('Author')}Author</b> – an individual, group or collective that participates in the creative process of an artistic work. It also includes translators, illustrators, editors, etc.</ListGroupItem>
-						<ListGroupItem>
+						<ListGroup.Item><b>{genEntityIconHTMLElement('Author')}Author</b> – an individual, group or collective that participates in the creative process of an artistic work. It also includes translators, illustrators, editors, etc.</ListGroup.Item>
+						<ListGroup.Item>
 							<b>{genEntityIconHTMLElement('Work')}Work</b> – a distinct intellectual or artistic creation expressed in words and/or images.
 							Here we are not talking, for example, about a physical book, but the introduction, story, illustrations, etc. it contains.
 							<ul>
 								<li>Examples: novel, poem, translation, introduction & foreword, article, research paper, etc.</li>
 							</ul>
-						</ListGroupItem>
-						<ListGroupItem>
+						</ListGroup.Item>
+						<ListGroup.Item>
+							<b>{genEntityIconHTMLElement('Series')}Series</b> – a set or sequence of related works, editions, authors, publishers or edition-groups.
+							<ul>
+								<li>Examples: a series of novels, a series of comics, etc.</li>
+							</ul>
+						</ListGroup.Item>
+						<ListGroup.Item>
 							<b>{genEntityIconHTMLElement('Edition')}Edition</b> –  a published physical or digital version of one or more Works.
 							<ul>
 								<li>Examples: book, anthology, comic book, magazine, leaflet</li>
 								<li>Note: An Author can self-publish an Edition</li>
 							</ul>
-						</ListGroupItem>
-						<ListGroupItem>
+						</ListGroup.Item>
+						<ListGroup.Item>
 							<b>{genEntityIconHTMLElement('EditionGroup')}Edition Group</b> – a logical grouping of different Editions of the same book.
 							<ul><li>Example: paperback, hardcover and e-book editions of a novel</li></ul>
-						</ListGroupItem>
-						<ListGroupItem><b>{genEntityIconHTMLElement('Publisher')}Publisher</b> – publishing company or imprint</ListGroupItem>
+						</ListGroup.Item>
+						<ListGroup.Item><b>{genEntityIconHTMLElement('Publisher')}Publisher</b> – publishing company or imprint</ListGroup.Item>
 					</ListGroup>
 				</Col>
 
-				<Col md={12}>
+				<Col lg={12}>
 					<h4>Examples</h4>
 					<p>
 						The following examples should help you understand the different entities and how they relate to each other:
@@ -101,7 +109,7 @@ function HelpPage() {
 			</Row>
 
 			<Row>
-				<Col md={6}>
+				<Col lg={6}>
 					<h2>Frequently Asked Questions</h2>
 					<br/>
 					<h4>How do I add a book?</h4>
@@ -153,8 +161,8 @@ function HelpPage() {
 					</ul>
 				</Col>
 
-				<Col md={6}>
-					<hr className="visible-sm"/>
+				<Col lg={6}>
+					<hr className="d-lg-none"/>
 					<h2>Glossary</h2>
 					<p>
 					Here is a short description of some of the main terms you will encounter.
@@ -162,41 +170,41 @@ function HelpPage() {
 					</p>
 					<br/>
 					<ListGroup>
-						<ListGroupItem><b><a href="https://musicbrainz.org/doc/Aliases">Aliases</a></b> – Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc.
+						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Aliases">Aliases</a></b> – Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc.
 							<br/>
 							Example:
 							<ul>
 								<li>Name: 村上 春樹 – Alias (english): Haruki Murakami</li>
 								<li>Name: J.K. Rowling – Alias (full name): Joanne Kathleen Rowling – Alias (pseudonym): Robert Galbraith</li>
 							</ul>
-						</ListGroupItem>
+						</ListGroup.Item>
 
-						<ListGroupItem><b><a href="https://musicbrainz.org/doc/Style/Artist_Credits">Author Credits</a></b> – As appearing on the publication cover. For example, if the author is using a pseudonym, the credits should reflect that.</ListGroupItem>
+						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Style/Artist_Credits">Author Credits</a></b> – As appearing on the publication cover. For example, if the author is using a pseudonym, the credits should reflect that.</ListGroup.Item>
 
-						<ListGroupItem><b><a href="https://musicbrainz.org/doc/Disambiguation_Comment">Disambiguation</a></b> – Short comment added to differentiate between similarly-named entities.
+						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Disambiguation_Comment">Disambiguation</a></b> – Short comment added to differentiate between similarly-named entities.
 							<br/>
 							Example:
 							<ul>
 								<li>The Alchemist (philosophical novel) by Paulo Coelho</li>
 								<li>The Alchemyst (Nicolas Flamel biography) by Michael Scott</li>
 							</ul>
-						</ListGroupItem>
+						</ListGroup.Item>
 
-						<ListGroupItem><b>Entities</b> – Conceptual items representing the various authors and parts of a publication. See the previous Entities section for details.</ListGroupItem>
+						<ListGroup.Item><b>Entities</b> – Conceptual items representing the various authors and parts of a publication. See the previous Entities section for details.</ListGroup.Item>
 
-						<ListGroupItem><b><a href="https://en.wikipedia.org/wiki/Category:Book_formats">Format</a></b> – Refers to different printing and/or binding methods, or digital distribution.
+						<ListGroup.Item><b><a href="https://en.wikipedia.org/wiki/Category:Book_formats">Format</a></b> – Refers to different printing and/or binding methods, or digital distribution.
 							<br/>For example: paperback, mass-market, hardcover and e-book are all book formats
-						</ListGroupItem>
+						</ListGroup.Item>
 
-						<ListGroupItem><b>Identifiers</b> – identity of an entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, etc.
+						<ListGroup.Item><b>Identifiers</b> – identity of an entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, etc.
 							<br/>When adding identifiers to an entity, you can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).
-						</ListGroupItem>
+						</ListGroup.Item>
 
-						<ListGroupItem><b><a href="https://en.wikipedia.org/wiki/Edition_(book)#Printing,_print_run,_impression,_et_cetera">Printing, print run, impression</a></b> – A batch of identical copies of an edition of a work that is printed in a same, single production set-up.
+						<ListGroup.Item><b><a href="https://en.wikipedia.org/wiki/Edition_(book)#Printing,_print_run,_impression,_et_cetera">Printing, print run, impression</a></b> – A batch of identical copies of an edition of a work that is printed in a same, single production set-up.
 							<br/>One edition of a work may have any number of printings, e. g. a same Edition can have a first impression and a second impression.
-						</ListGroupItem>
+						</ListGroup.Item>
 
-						<ListGroupItem><b><a href="https://musicbrainz.org/doc/Style/Artist/Sort_Name">Sort name</a></b> – Modified name to help sorting alphabetically
+						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Style/Artist/Sort_Name">Sort name</a></b> – Modified name to help sorting alphabetically
 							<br/>
 							Example:
 							<ul>
@@ -204,14 +212,12 @@ function HelpPage() {
 								<li>A Tale of Two Cities -&gt; Tale of Two Cities, A</li>
 								<li>Benito Pérez Galdós -&gt; Pérez Galdós, Benito</li>
 							</ul>
-						</ListGroupItem>
+						</ListGroup.Item>
 					</ListGroup>
 
 				</Col>
 			</Row>
-
-
-		</Grid>
+		</div>
 	);
 }
 

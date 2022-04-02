@@ -18,11 +18,12 @@
 
 import * as React from 'react';
 
+import type {Attribute, RelationshipType, Entity as _Entity} from './types';
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
-import type {RelationshipType, Entity as _Entity} from './types';
 import Entity from '../common/entity';
+import RelationshipAttribute from './relationship-attribute';
 import _ from 'lodash';
-import {getEntityLink} from '../../../server/helpers/utils';
+import {getEntityLink} from '../../../common/helpers/utils';
 
 
 function getEntityObjectForDisplay(entity: _Entity, makeLink: boolean) {
@@ -46,11 +47,13 @@ type RelationshipProps = {
 	contextEntity: _Entity | null | undefined, // eslint-disable-line react/require-default-props
 	sourceEntity: _Entity,
 	targetEntity: _Entity,
+	attributes?: Array<Attribute>,
+	showAttributes?: boolean,
 	relationshipType: RelationshipType
 };
 
 function Relationship({
-	contextEntity, link, relationshipType, sourceEntity, targetEntity
+	contextEntity, link, relationshipType, sourceEntity, attributes, showAttributes, targetEntity
 }: RelationshipProps) {
 	const {depth, description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
 
@@ -74,7 +77,7 @@ function Relationship({
 
 	return (
 		<OverlayTrigger
-			delayShow={50}
+			delay={50}
 			overlay={<Tooltip id={`tooltip-${id}`}>{description}</Tooltip>}
 			placement="bottom"
 		>
@@ -82,14 +85,18 @@ function Relationship({
 				<Entity {...sourceObject}/>
 				{` ${usedLinkPhrase} `}
 				<Entity {...targetObject}/>
+				{' '}
+				<RelationshipAttribute attributes={attributes} showAttributes={showAttributes}/>
 			</div>
 		</OverlayTrigger>
 	);
 }
 Relationship.displayName = 'Relationship';
 Relationship.defaultProps = {
+	attributes: [],
 	contextEntity: null, // eslint-disable-line react/default-props-match-prop-types, max-len
-	link: false // eslint-disable-line react/default-props-match-prop-types
+	link: false, // eslint-disable-line react/default-props-match-prop-types
+	showAttributes: false
 };
 
 export default Relationship;

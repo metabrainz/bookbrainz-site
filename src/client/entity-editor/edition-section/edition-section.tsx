@@ -26,7 +26,8 @@ import {
 	debouncedUpdateReleaseDate,
 	debouncedUpdateWeight,
 	debouncedUpdateWidth,
-	showPhysical,
+	disablePhysical,
+	enablePhysical,
 	toggleShowEditionGroup,
 	updateEditionGroup,
 	updateFormat,
@@ -35,10 +36,10 @@ import {
 	updateStatus
 } from './actions';
 
-import {Alert, Button, Col, ListGroup, ListGroupItem, Row} from 'react-bootstrap';
+import {Alert, Button, Col, Form, ListGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 import {DateObject, isNullDate} from '../../helpers/utils';
 import type {List, Map} from 'immutable';
-import {faClone, faExternalLinkAlt, faSearch} from '@fortawesome/free-solid-svg-icons';
+import {faClone, faExternalLinkAlt, faQuestionCircle, faSearch} from '@fortawesome/free-solid-svg-icons';
 import {
 	validateEditionSectionDepth,
 	validateEditionSectionEditionGroup,
@@ -48,7 +49,6 @@ import {
 	validateEditionSectionWeight,
 	validateEditionSectionWidth
 } from '../validators/edition';
-import CustomInput from '../../input';
 import DateField from '../common/new-date-field';
 import type {Dispatch} from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
@@ -59,7 +59,7 @@ import NumericField from '../common/numeric-field';
 import Select from 'react-select';
 import _ from 'lodash';
 import {connect} from 'react-redux';
-import {entityToOption} from '../../../server/helpers/utils';
+import {entityToOption} from '../../helpers/entity';
 import makeImmutable from '../common/make-immutable';
 
 
@@ -104,7 +104,7 @@ type StateProps = {
 	heightValue: OptionalNumber,
 	languageValues: List<LanguageOption>,
 	pagesValue: OptionalNumber,
-	physicalVisible: OptionalBool,
+	physicalEnable: OptionalBool,
 	publisherValue: Map<string, any>,
 	editionGroupRequired: OptionalBool,
 	editionGroupVisible: OptionalBool,
@@ -122,7 +122,6 @@ type DispatchProps = {
 	onHeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
 	onLanguagesChange: (arg: Array<LanguageOption>) => unknown,
 	onPagesChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
-	onPhysicalButtonClick: () => unknown,
 	onPublisherChange: (arg: Publisher) => unknown,
 	onToggleShowEditionGroupSection: (showEGSection: boolean) => unknown,
 	onEditionGroupChange: (arg: EditionGroup) => unknown,
@@ -166,7 +165,6 @@ function EditionSection({
 	onDepthChange,
 	onFormatChange,
 	onHeightChange,
-	onPhysicalButtonClick,
 	onReleaseDateChange,
 	onPagesChange,
 	onToggleShowEditionGroupSection,
@@ -176,7 +174,7 @@ function EditionSection({
 	onWeightChange,
 	onWidthChange,
 	pagesValue,
-	physicalVisible,
+	physicalEnable,
 	editionGroupRequired,
 	editionGroupValue,
 	editionGroupVisible,
@@ -204,7 +202,7 @@ function EditionSection({
 
 	const {isValid: isValidReleaseDate, errorMessage: dateErrorMessage} = validateEditionSectionReleaseDate(releaseDateValue);
 
-	const hasmatchingNameEditionGroups = Array.isArray(matchingNameEditionGroups) && matchingNameEditionGroups.length > 0;
+	const hasmatchingNameEditionGroups = matchingNameEditionGroups?.length;
 
 	const showAutoCreateEditionGroupMessage =
 		!editionGroupValue &&
@@ -215,7 +213,7 @@ function EditionSection({
 
 	const getEditionGroupSearchSelect = () => (
 		<React.Fragment>
-			<Col className="margin-bottom-2" md={6} mdOffset={showMatchingEditionGroups ? 0 : 3}>
+			<Col className="margin-bottom-2" lg={{offset: showMatchingEditionGroups ? 0 : 3, span: 6}}>
 				<EntitySearchFieldOption
 					clearable={false}
 					error={!validateEditionSectionEditionGroup(editionGroupValue, true)}
@@ -234,8 +232,8 @@ function EditionSection({
 				/>
 				<Button
 					block
-					bsStyle="primary"
 					className="wrap"
+					variant="primary"
 					// eslint-disable-next-line react/jsx-no-bind
 					onClick={onToggleShowEditionGroupSection.bind(this, false)}
 				>
@@ -243,6 +241,18 @@ function EditionSection({
 				</Button>
 			</Col>
 		</React.Fragment>
+	);
+
+	const formatTooltip = (
+		<Tooltip>
+			The type of printing and binding of the edition, or digital equivalent
+		</Tooltip>
+	);
+
+	const statusTooltip = (
+		<Tooltip>
+			Has the work been published, or is it in a draft stage?
+		</Tooltip>
 	);
 
 	return (
@@ -257,14 +267,14 @@ function EditionSection({
 			<Row className="margin-bottom-3">
 				{
 					showAutoCreateEditionGroupMessage ?
-						<Col md={6} mdOffset={showMatchingEditionGroups ? 0 : 3}>
-							<Alert bsStyle="success">
+						<Col lg={{offset: showMatchingEditionGroups ? 0 : 3, span: 6}}>
+							<Alert variant="success">
 								<p>A new Edition Group with the same name will be created automatically.</p>
 								<br/>
 								<Button
 									block
-									bsStyle="success"
 									className="wrap"
+									variant="success"
 									// eslint-disable-next-line react/jsx-no-bind
 									onClick={onToggleShowEditionGroupSection.bind(this, true)}
 								>
@@ -275,8 +285,8 @@ function EditionSection({
 						getEditionGroupSearchSelect()
 				}
 				{showMatchingEditionGroups &&
-					<Col md={6}>
-						<Alert bsStyle="warning">
+					<Col lg={6}>
+						<Alert variant="warning">
 							{matchingNameEditionGroups.length > 1 ?
 								'Edition Groups with the same name as this Edition already exist' :
 								'An existing Edition Group with the same name as this Edition already exists'
@@ -291,9 +301,9 @@ function EditionSection({
 							</small>
 							<ListGroup className="margin-top-1">
 								{matchingNameEditionGroups.map(eg => (
-									<ListGroupItem key={eg.bbid}>
+									<ListGroup.Item key={eg.bbid}>
 										<LinkedEntity option={entityToOption(eg)} onSelect={onEditionGroupChange}/>
-									</ListGroupItem>
+									</ListGroup.Item>
 								))}
 							</ListGroup>
 						</Alert>
@@ -305,7 +315,7 @@ function EditionSection({
 				don&rsquo;t know it
 			</p>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<EntitySearchFieldOption
 						instanceId="publisher"
 						label="Publisher"
@@ -316,7 +326,7 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<DateField
 						show
 						defaultValue={releaseDateValue}
@@ -325,13 +335,14 @@ function EditionSection({
 						errorMessage={dateErrorMessage}
 						label="Release Date"
 						placeholder="YYYY-MM-DD"
+						// eslint-disable-next-line max-len
 						tooltipText="The date this specific edition was published (not the first publication date of the work). If unsure, leave empty."
 						onChangeDate={onReleaseDateChange}
 					/>
 				</Col>
 			</Row>
 			<Row>
-				<Col md={6} mdOffset={3}>
+				<Col lg={{offset: 3, span: 6}}>
 					<ImmutableLanguageField
 						empty
 						multi
@@ -344,89 +355,99 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col md={3} mdOffset={3}>
-					<CustomInput label="Format" tooltipText="The type of printing and binding of the edition, or digital equivalent">
+				<Col lg={{offset: 3, span: 3}}>
+					<Form.Group>
+						<Form.Label>
+							Format
+							<OverlayTrigger delay={50} overlay={formatTooltip}>
+								<FontAwesomeIcon
+									className="margin-left-0-5"
+									icon={faQuestionCircle}
+								/>
+							</OverlayTrigger>
+						</Form.Label>
 						<Select
 							instanceId="editionFormat"
 							options={editionFormatsForDisplay}
 							value={formatValue}
 							onChange={onFormatChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
-				<Col md={3}>
-					<CustomInput label="Status" tooltipText="Has the work been published, or is it in a draft stage?">
+				<Col lg={3}>
+					<Form.Group>
+						<Form.Label>
+							Status
+							<OverlayTrigger delay={50} overlay={statusTooltip}>
+								<FontAwesomeIcon
+									className="margin-left-0-5"
+									icon={faQuestionCircle}
+								/>
+							</OverlayTrigger>
+						</Form.Label>
 						<Select
 							instanceId="editionStatus"
 							options={editionStatusesForDisplay}
 							value={statusValue}
 							onChange={onStatusChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
 			</Row>
-			{
-				physicalVisible &&
-				<Row>
-					<Col md={3} mdOffset={3}>
-						<NumericField
-							addonAfter="mm"
-							defaultValue={widthValue}
-							empty={_.isNil(widthValue)}
-							error={!validateEditionSectionWidth(widthValue)}
-							label="Width"
-							onChange={onWidthChange}
-						/>
-						<NumericField
-							addonAfter="mm"
-							defaultValue={heightValue}
-							empty={_.isNil(heightValue)}
-							error={!validateEditionSectionHeight(heightValue)}
-							label="Height"
-							onChange={onHeightChange}
-						/>
-						<NumericField
-							addonAfter="mm"
-							defaultValue={depthValue}
-							empty={_.isNil(depthValue)}
-							error={!validateEditionSectionDepth(depthValue)}
-							label="Depth"
-							onChange={onDepthChange}
-						/>
-					</Col>
-					<Col md={3}>
-						<NumericField
-							addonAfter="g"
-							defaultValue={weightValue}
-							empty={_.isNil(weightValue)}
-							error={!validateEditionSectionWeight(weightValue)}
-							label="Weight"
-							onChange={onWeightChange}
-						/>
-						<NumericField
-							addonAfter="pages"
-							defaultValue={pagesValue}
-							empty={_.isNil(pagesValue)}
-							error={!validateEditionSectionPages(pagesValue)}
-							label="Page Count"
-							onChange={onPagesChange}
-						/>
-					</Col>
-				</Row>
-			}
-			{
-				!physicalVisible &&
-				<Row>
-					<Col className="text-center" md={4} mdOffset={4}>
-						<Button
-							bsStyle="link"
-							onClick={onPhysicalButtonClick}
-						>
-							Add physical data…
-						</Button>
-					</Col>
-				</Row>
-			}
+			<Row>
+				<Col lg={{offset: 3, span: 3}}>
+					<NumericField
+						addonAfter="pages"
+						defaultValue={pagesValue}
+						empty={_.isNil(pagesValue)}
+						error={!validateEditionSectionPages(pagesValue)}
+						label="Page Count"
+						onChange={onPagesChange}
+					/>
+				</Col>
+			</Row>
+			<Row>
+				<Col lg={{offset: 3, span: 3}}>
+					<NumericField
+						addonAfter="mm"
+						defaultValue={widthValue}
+						disabled={!physicalEnable}
+						empty={_.isNil(widthValue)}
+						error={!validateEditionSectionWidth(widthValue)}
+						label="Width"
+						onChange={onWidthChange}
+					/>
+					<NumericField
+						addonAfter="mm"
+						defaultValue={heightValue}
+						disabled={!physicalEnable}
+						empty={_.isNil(heightValue)}
+						error={!validateEditionSectionHeight(heightValue)}
+						label="Height"
+						onChange={onHeightChange}
+					/>
+				</Col>
+				<Col lg={3}>
+					<NumericField
+						addonAfter="g"
+						defaultValue={weightValue}
+						disabled={!physicalEnable}
+						empty={_.isNil(weightValue)}
+						error={!validateEditionSectionWeight(weightValue)}
+						label="Weight"
+						onChange={onWeightChange}
+					/>
+					<NumericField
+						addonAfter="mm"
+						defaultValue={depthValue}
+						disabled={!physicalEnable}
+						empty={_.isNil(depthValue)}
+						error={!validateEditionSectionDepth(depthValue)}
+						label="Depth"
+						onChange={onDepthChange}
+					/>
+				</Col>
+			</Row>
 		</div>
 	);
 }
@@ -435,7 +456,7 @@ EditionSection.displayName = 'EditionSection';
 type RootState = Map<string, Map<string, any>>;
 function mapStateToProps(rootState: RootState): StateProps {
 	const state: Map<string, any> = rootState.get('editionSection');
-	const matchingNameEditionGroups = state.get('matchingNameEditionGroups');
+	const matchingNameEditionGroups = state.get('matchingNameEditionGroups')?.toJS();
 
 	return {
 		depthValue: state.get('depth'),
@@ -447,7 +468,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 		languageValues: state.get('languages'),
 		matchingNameEditionGroups,
 		pagesValue: state.get('pages'),
-		physicalVisible: state.get('physicalVisible'),
+		physicalEnable: state.get('physicalEnable'),
 		publisherValue: state.get('publisher'),
 		releaseDateValue: state.get('releaseDate'),
 		statusValue: state.get('status'),
@@ -462,8 +483,15 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
 		onEditionGroupChange: (value) => dispatch(updateEditionGroup(value)),
-		onFormatChange: (value: {value: number} | null) =>
-			dispatch(updateFormat(value && value.value)),
+		onFormatChange: (value: {value: number} | null) => {
+			dispatch(updateFormat(value && value.value));
+			if (value.value === 3) {
+				dispatch(disablePhysical());
+			}
+			else {
+				dispatch(enablePhysical());
+			}
+		},
 		onHeightChange: (event) => dispatch(debouncedUpdateHeight(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
@@ -472,7 +500,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onPagesChange: (event) => dispatch(debouncedUpdatePages(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
-		onPhysicalButtonClick: () => dispatch(showPhysical()),
 		onPublisherChange: (value) => dispatch(updatePublisher(value)),
 		onReleaseDateChange: (releaseDate) =>
 			dispatch(debouncedUpdateReleaseDate(releaseDate)),

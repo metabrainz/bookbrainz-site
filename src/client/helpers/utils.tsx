@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2016  Daniel Hsing
- *
+ *               2021  Akash Gupta
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -16,9 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/* eslint-disable no-useless-escape */
+import AuthorTable from '../components/pages/entities/author-table';
 import DOMPurify from 'isomorphic-dompurify';
+import EditionGroupTable from '../components/pages/entities/editionGroup-table';
+import EditionTable from '../components/pages/entities/edition-table';
+import PublisherTable from '../components/pages/entities/publisher-table';
 import React from 'react';
+import SeriesTable from '../components/pages/entities/series-table';
+import WorkTable from '../components/pages/entities/work-table';
 import _ from 'lodash';
 import {format} from 'date-fns';
 import {isIterable} from '../../types';
@@ -164,10 +169,17 @@ export function dateObjectToISOString(value: DateObject) {
 	return date;
 }
 
+/**
+ * Convert any string url that has a prefix http|https|ftp|ftps to a clickable link
+ * and then rendered the HTML string as real HTML.
+ * @function stringToHTMLWithLinks
+ * @param {string} string - Can be either revision notes or annotation content etc...
+ * @returns {JSX} returns a JSX Element
+ */
 export function stringToHTMLWithLinks(string: string) {
-	const addHttpRegex = /(^| )www\./ig;
-	// eslint-disable-next-line max-len
-	const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
+	const addHttpRegex = /(^|\b)www\./ig;
+	// eslint-disable-next-line max-len, no-useless-escape
+	const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%~*@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
 	let content = string.replace(addHttpRegex, '$1https://www.');
 	content = content.replace(
 		urlRegex,
@@ -176,4 +188,34 @@ export function stringToHTMLWithLinks(string: string) {
 	const sanitizedHtml = DOMPurify.sanitize(content);
 	// eslint-disable-next-line react/no-danger
 	return <span dangerouslySetInnerHTML={{__html: sanitizedHtml}}/>;
+}
+
+/**
+ * Returns EntityTable associated with the entity type.
+ * @function getEntityTable
+ * @param {string} entityType - Entity Type (author, work, series etc ...)
+ * @returns {JSX} returns EntityTable Component
+ */
+export function getEntityTable(entityType: string) {
+	const tables = {
+		Author: AuthorTable,
+		Edition: EditionTable,
+		EditionGroup: EditionGroupTable,
+		Publisher: PublisherTable,
+		Series: SeriesTable,
+		Work: WorkTable
+	};
+	return tables[entityType];
+}
+
+export function getEntityKey(entityType:string) {
+	const keys = {
+		Author: 'authors',
+		Edition: 'editions',
+		EditionGroup: 'editionGroups',
+		Publisher: 'publishers',
+		Series: 'series',
+		Work: 'works'
+	};
+	return keys[entityType];
 }

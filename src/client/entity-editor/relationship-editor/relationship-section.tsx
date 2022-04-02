@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2018  Ben Ockmore
- *
+ *				 2021  Akash Gupta
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -29,17 +29,16 @@ import {
 	showRelationshipEditor,
 	undoLastSave
 } from './actions';
-import {Button, ButtonGroup, Col, Row} from 'react-bootstrap';
+import {Button, Col, Row} from 'react-bootstrap';
 import type {
 	Entity,
 	EntityType,
 	LanguageOption,
 	RelationshipForDisplay,
-	RelationshipType,
-	Relationship as _Relationship
+	RelationshipType
 } from './types';
 import {faPencilAlt, faPlus, faTimes, faUndo} from '@fortawesome/free-solid-svg-icons';
-import type {Dispatch} from 'redux'; // eslint-disable-line import/named
+import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import Relationship from './relationship';
@@ -66,11 +65,13 @@ export function RelationshipList(
 	/* eslint-disable react/jsx-no-bind */
 	const renderedRelationships = _.map(
 		relationships,
-		({relationshipType, sourceEntity, targetEntity}, rowID) => (
+		({relationshipType, sourceEntity, targetEntity, attributes}, rowID) => (
 			<Row className="margin-top-d5" key={rowID}>
-				<Col md={onEdit || onRemove ? 8 : 12}>
+				<Col lg={onEdit || onRemove ? 8 : 12}>
 					<Relationship
 						link
+						showAttributes
+						attributes={attributes}
 						contextEntity={contextEntity}
 						relationshipType={relationshipType}
 						sourceEntity={sourceEntity}
@@ -78,13 +79,14 @@ export function RelationshipList(
 					/>
 				</Col>
 				{(onEdit || onRemove) &&
-					<Col className="text-right" md={4}>
-						<ButtonGroup justified>
+					<Col className="text-right" lg={4}>
+						<div className="btn-group d-flex" role="group">
 							{onEdit &&
 								<Button
-									bsStyle="warning"
+									className="w-100"
 									href="#"
 									role="button"
+									variant="warning"
 									onClick={onEdit.bind(this, rowID)}
 								>
 									<FontAwesomeIcon icon={faPencilAlt}/>
@@ -93,16 +95,17 @@ export function RelationshipList(
 							}
 							{onRemove &&
 								<Button
-									bsStyle="danger"
+									className="w-100"
 									href="#"
 									role="button"
+									variant="danger"
 									onClick={onRemove.bind(this, rowID)}
 								>
 									<FontAwesomeIcon icon={faTimes}/>
 									<span>&nbsp;Remove</span>
 								</Button>
 							}
-						</ButtonGroup>
+						</div>
 					</Col>
 				}
 			</Row>
@@ -196,7 +199,7 @@ function RelationshipSection({
 			{canEdit && showEditor && editor}
 			<h2>How are other entities related to this {_.startCase(entityType)}?</h2>
 			<Row>
-				<Col sm={12}>
+				<Col md={12}>
 					<RelationshipList
 						contextEntity={baseEntity}
 						relationships={relationshipsObject}
@@ -209,11 +212,10 @@ function RelationshipSection({
 				<Row className="margin-top-1">
 					<Col
 						className="text-center"
-						md={4}
-						mdOffset={4}
+						lg={{offset: 4, span: 4}}
 					>
 						<Button
-							bsStyle="success"
+							variant="success"
 							onClick={onAddRelationship}
 						>
 							<FontAwesomeIcon icon={faPlus}/>
@@ -226,8 +228,7 @@ function RelationshipSection({
 				<Row className="margin-top-d5">
 					<Col
 						className="text-center"
-						md={4}
-						mdOffset={4}
+						lg={{offset: 4, span: 4}}
 					>
 						<Button
 							onClick={onUndo}

@@ -39,6 +39,8 @@ export type Action = {
 };
 
 
+export const DISABLE_PHYSICAL = 'DISABLE_PHYSICAL';
+export const ENABLE_PHYSICAL = 'ENABLE_PHYSICAL';
 export const UPDATE_EDITION_GROUP = 'UPDATE_EDITION_GROUP';
 export const UPDATE_PUBLISHER = 'UPDATE_PUBLISHER';
 export const UPDATE_RELEASE_DATE = 'UPDATE_RELEASE_DATE';
@@ -50,7 +52,6 @@ export const UPDATE_PAGES = 'UPDATE_PAGES';
 export const UPDATE_WIDTH = 'UPDATE_WIDTH';
 export const UPDATE_HEIGHT = 'UPDATE_HEIGHT';
 export const UPDATE_DEPTH = 'UPDATE_DEPTH';
-export const SHOW_PHYSICAL = 'SHOW_PHYSICAL';
 export const TOGGLE_SHOW_EDITION_GROUP = 'TOGGLE_SHOW_EDITION_GROUP';
 export const UPDATE_WARN_IF_EDITION_GROUP_EXISTS = 'UPDATE_WARN_IF_EDITION_GROUP_EXISTS';
 
@@ -118,13 +119,25 @@ export function updateLanguages(newLanguages: Array<LanguageOption>): Action {
 
 /**
  * Produces an action indicating that the physical section of the edition
- * form should be shown.
+ * form should be editable.
  *
- * @returns {Action} The resulting SHOW_PHYSICAL action.
+ * @returns {Action} The resulting ENABLE_PHYSICAL action.
  */
-export function showPhysical(): Action {
+export function enablePhysical(): Action {
 	return {
-		type: SHOW_PHYSICAL
+		type: ENABLE_PHYSICAL
+	};
+}
+
+/**
+ * Produces an action indicating that the physical section of the edition
+ * form should not be editable.
+ *
+ * @returns {Action} The resulting DISABLE_PHYSICAL action.
+ */
+export function disablePhysical(): Action {
+	return {
+		type: DISABLE_PHYSICAL
 	};
 }
 
