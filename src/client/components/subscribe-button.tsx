@@ -34,8 +34,8 @@ function SubscribeButton({id, type}:SubscribeButtonProps) {
 	if (!isSubscribed) {
 		return (
 			<Button
-				bsStyle="success"
 				className="margin-top-d15"
+				variant="success"
 				onClick={() => handleSubscribe()}
 			>
         Subscribe
@@ -44,8 +44,8 @@ function SubscribeButton({id, type}:SubscribeButtonProps) {
 
 	return (
 		<Button
-			bsStyle="danger"
 			className="margin-top-d15"
+			variant="danger"
 			onClick={() => handleUnsubscribe()}
 		>
         Unsubscribe

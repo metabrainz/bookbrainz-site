@@ -2,6 +2,8 @@ import BookBrainzData from 'bookbrainz-data';
 import {EventEmitter} from 'events';
 import config from '../../config/config.json';
 import {kebabCase} from 'lodash';
+
+
 const eventEmitter = new EventEmitter();
 
 
@@ -18,7 +20,7 @@ async function addNotificationToDB(allSubscribersJSON, notificationRedirectLink,
 				subscriberId: subscriber.subscriberId
 			}).fetch({require: false});
 			let method = 'update';
-			const isNew = !notification
+			const isNew = !notification;
 			if (isNew) {
 				notification = await new Notification({
 					notificationRedirectLink,
