@@ -585,7 +585,7 @@ router.get('/:id/notifications', auth.isAuthenticated, async (req, res, next) =>
 	try {
 		const editorId = req.params.id;
 		const {Notification} = req.app.locals.orm;
-		const allNotifications = await new Notification().where('subscriber_id', editorId).fetchAll({requried: false});
+		const allNotifications = await new Notification().where('subscriber_id', editorId).fetchAll({required: false});
 		return res.send({
 			notifications: allNotifications.toJSON()
 		});

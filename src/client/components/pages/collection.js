@@ -30,6 +30,7 @@ import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import PublisherTable from './entities/publisher-table';
 import React from 'react';
+import SubscribeButton from '../../../../../../../Desktop/Projects/Contribution/bookbrainz-site/src/client/components/subscribe-button';
 import WorkTable from './entities/work-table';
 import _ from 'lodash';
 import {formatDate} from '../../helpers/utils';
@@ -123,7 +124,6 @@ class CollectionPage extends React.Component {
 		super(props);
 		this.state = {
 			entities: this.props.entities,
-			isSubscribed: false,
 			message: {
 				text: null,
 				type: null
@@ -139,18 +139,11 @@ class CollectionPage extends React.Component {
 		this.handleRemoveEntities = this.handleRemoveEntities.bind(this);
 		this.handleShowDeleteModal = this.handleShowDeleteModal.bind(this);
 		this.handleCloseDeleteModal = this.handleCloseDeleteModal.bind(this);
-		this.handleSubscribe = this.handleSubscribe.bind(this);
 		this.handleShowAddEntityModal = this.handleShowAddEntityModal.bind(this);
 		this.handleCloseAddEntityModal = this.handleCloseAddEntityModal.bind(this);
 		this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
-		this.handleUnsubscribe = this.handleUnsubscribe.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
-		this.setIsSubscribed = this.setIsSubscribed.bind(this);
 		this.closeAddEntityModalShowMessageAndRefreshTable = this.closeAddEntityModalShowMessageAndRefreshTable.bind(this);
-	}
-
-	async componentDidMount() {
-		await this.setIsSubscribed();
 	}
 
 	searchResultsCallback(newResults) {
@@ -232,59 +225,6 @@ class CollectionPage extends React.Component {
 		}, this.pagerElementRef.triggerSearch);
 	}
 
-	handleSubscribe() {
-		const submissionUrl = '/subscription/subscribe/collection';
-		const collectionId = this.props.collection.id;
-		const subscriberId = this.props.userId;
-		request.post(submissionUrl)
-			.send({collectionId, subscriberId})
-			.then((res) => {
-				const {isSubscribed} = res.body;
-				this.setState({isSubscribed});
-			}, () => {
-				this.setState({
-					message: {
-						text: 'Something went wrong! Please try again later',
-						type: 'danger'
-					}
-				});
-			});
-	}
-
-	handleUnsubscribe() {
-		const submissionUrl = '/subscription/unsubscribe/collection';
-		const collectionId = this.props.collection.id;
-		request.post(submissionUrl)
-			.send({collectionId})
-			.then((res) => {
-				const {isSubscribed} = res.body;
-				this.setState({isSubscribed});
-			}, () => {
-				this.setState({
-					message: {
-						text: 'Something went wrong! Please try again later',
-						type: 'danger'
-					}
-				});
-			});
-	}
-
-	setIsSubscribed() {
-		const url = `/subscription/collection/isSubscribed/${this.props.collection.id}`;
-		request.get(url)
-			.then(res => {
-				const {isSubscribed} = res.body;
-				this.setState({isSubscribed});
-			}, () => {
-				this.setState({
-					message: {
-						text: 'Something went wrong! Please try again later',
-						type: 'danger'
-					}
-				});
-			});
-	}
-
 	render() {
 		const messageComponent = this.state.message.text ? <Alert bsStyle={this.state.message.type} className="margin-top-1" onDismiss={this.handleAlertDismiss}>{this.state.message.text}</Alert> : null;
 		const EntityTable = getEntityTable(this.props.collection.entityType);
@@ -323,30 +263,7 @@ class CollectionPage extends React.Component {
 						<CollectionAttributes collection={this.props.collection}/>
 					</Col>
 				</Row>
-				{
-					!this.state.isSubscribed &&
-						<Button
-							bsSize="small"
-							bsStyle="success"
-							className="margin-bottom-d5"
-							title="Subscribe"
-							onClick={this.handleSubscribe}
-						>
-							Subscribe
-						</Button>
-				}
-				{
-					this.state.isSubscribed &&
-						<Button
-							bsSize="small"
-							bsStyle="danger"
-							className="margin-bottom-d5"
-							title="Unsubscribe"
-							onClick={this.handleUnsubscribe}
-						>
-							Unsubscribe
-						</Button>
-				}
+				<SubscribeButton isCollection bbid={this.props.collection.id}/>
 				<EntityTable{...propsForTable}/>
 				{messageComponent}
 				<div className="margin-top-1 text-left">

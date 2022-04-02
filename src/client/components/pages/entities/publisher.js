@@ -18,7 +18,6 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
-import React, {useEffect, useState} from 'react';
 import EditionTable from './edition-table';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
@@ -27,12 +26,13 @@ import EntityLinks from './links';
 import EntityRelatedCollections from './related-collections';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
-import request from 'superagent';
+import React from 'react';
+import SubscribeButton from '../../../../../../../../Desktop/Projects/Contribution/bookbrainz-site/src/client/components/subscribe-button';
 
 
 const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
 	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias, transformISODateForDisplay} = entityHelper;
-const {Col, Row, Button} = bootstrap;
+const {Col, Row} = bootstrap;
 
 function PublisherAttributes({publisher}) {
 	if (publisher.deleted) {
@@ -84,37 +84,6 @@ PublisherAttributes.propTypes = {
 
 function PublisherDisplayPage({entity, identifierTypes, user}) {
 	const urlPrefix = getEntityUrl(entity);
-	const [isSubscribed, setIsSubscribed] = useState(false);
-	useEffect(() => {
-		request.get(`/subscription/entity/isSubscribed/${entity.bbid}`).then(response => {
-			if (response.body.isSubscribed) {
-				setIsSubscribed(true);
-			}
-		});
-	});
-	function handleUnsubscribe(bbid) {
-		const submissionUrl = '/subscription/unsubscribe/entity';
-		request.post(submissionUrl)
-			.send({bbid})
-			.then((res) => {
-				setIsSubscribed(false);
-			}, (error) => {
-				// eslint-disable-next-line no-console
-				console.log('error thrown');
-			});
-	}
-	function handleSubscribe(bbid) {
-		const submissionUrl = '/subscription/subscribe/entity';
-		request.post(submissionUrl)
-			.send({bbid})
-			.then((res) => {
-				setIsSubscribed(true);
-			}, (error) => {
-				// eslint-disable-next-line no-console
-				console.log('error thrown');
-			});
-	}
-	/* eslint-disable react/jsx-no-bind */
 	return (
 		<div>
 			<Row className="entity-display-background">
@@ -130,26 +99,7 @@ function PublisherDisplayPage({entity, identifierTypes, user}) {
 					<PublisherAttributes publisher={entity}/>
 				</Col>
 			</Row>
-			{
-				!isSubscribed &&
-				<Button
-					bsStyle="success"
-					className="margin-top-d15"
-					onClick={() => handleSubscribe(entity.bbid)}
-				>
-					Subscribe
-				</Button>
-			}
-			{
-				isSubscribed &&
-				<Button
-					bsStyle="danger"
-					className="margin-top-d15"
-					onClick={() => handleUnsubscribe(entity.bbid)}
-				>
-					Unsubscribe
-				</Button>
-			}
+			<SubscribeButton bbid={entity.bbid}/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
