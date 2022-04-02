@@ -15,20 +15,87 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-import * as auth from '../helpers/auth';
 import express from 'express';
+import {isAuthenticated} from '../helpers/auth';
 import log from 'log';
+import {snakeCase} from 'lodash';
 
 
 const router = express.Router();
 
-router.get('/entity/isSubscribed/:bbid', auth.isAuthenticated, async (req, res, next) => {
+const allowedTypes = ['collection', 'author', 'editionGroup', 'edition', 'publisher', 'work', 'series'];
+function getTypeSubscription(type, orm) {
+	let TypeSubscription;
+	let idKey;
+	if (type === 'collection') {
+		idKey = 'collectionId';
+		TypeSubscription = orm.CollectionSubscription;
+	}
+	else {
+		idKey = 'bbid';
+		TypeSubscription = orm.EntitySubscription;
+	}
+	return {
+		TypeSubscription,
+		idKey
+	};
+}
+export async function handleSubscribe(req, res, next) {
+	const {type, id} = req.params;
+	if (!allowedTypes.includes(type)) {
+		return next();
+	}
 	try {
-		const {EntitySubscription} = req.app.locals.orm;
+		const {orm} = req.app.locals;
+		const subscriberId = parseInt(req.user.id, 10);
+		const {TypeSubscription, idKey} = getTypeSubscription(type, orm);
+
+		await new TypeSubscription({
+			[idKey]: id, subscriberId
+		}).save(null, {method: 'insert'});
+		return res.send({
+			isSubscribed: true
+		});
+	}
+	catch (err) {
+		log.debug(err);
+		return next(err);
+	}
+}
+
+export async function handleUnSubscribe(req, res, next) {
+	const {type, id} = req.params;
+	if (!allowedTypes.includes(type)) {
+		return next();
+	}
+	try {
+		const {orm} = req.app.locals;
+		const subscriberId = parseInt(req.user.id, 10);
+		const {TypeSubscription, idKey} = getTypeSubscription(type, orm);
+
+		await new TypeSubscription({}).where(snakeCase(idKey), id).where('subscriber_id', subscriberId).destroy();
+		return res.send({
+			isSubscribed: false
+		});
+	}
+	catch (err) {
+		log.debug(err);
+		return next(err);
+	}
+}
+
+export async function handleIsSubscribed(req, res, next) {
+	const {type, id} = req.params;
+	if (!allowedTypes.includes(type)) {
+		return next();
+	}
+	try {
 		const editorId = req.user.id;
-		const {bbid} = req.params;
-		const subscriber = await new EntitySubscription({})
-			.where('bbid', bbid)
+		const {orm} = req.app.locals;
+		const {TypeSubscription, idKey} = getTypeSubscription(type, orm);
+
+		const subscriber = await new TypeSubscription({})
+			.where(snakeCase(idKey), id)
 			.where('subscriber_id', editorId)
 			.fetchAll({
 				required: false
@@ -40,100 +107,10 @@ router.get('/entity/isSubscribed/:bbid', auth.isAuthenticated, async (req, res, 
 		log.debug(err);
 		return next(err);
 	}
-});
+}
 
-router.get('/collection/isSubscribed/:collectionId', auth.isAuthenticated, async (req, res, next) => {
+router.get('/notifications', isAuthenticated, async (req, res, next) => {
 	try {
-		const {CollectionSubscription} = req.app.locals.orm;
-		const editorId = req.user.id;
-		const {collectionId} = req.params;
-		const subscriber = await new CollectionSubscription({})
-			.where('collection_id', collectionId)
-			.where('subscriber_id', editorId)
-			.fetchAll({
-				required: false
-			});
-		const isSubscribed = subscriber.length > 0;
-		return res.send({isSubscribed});
-	}
-	catch (err) {
-		log.debug(err);
-		return next(err);
-	}
-});
-
-router.post('/subscribe/entity', auth.isAuthenticated, async (req, res, next) => {
-	try {
-		const {bbid} = req.body;
-		const subscriberId = parseInt(req.user.id, 10);
-		const {EntitySubscription} = req.app.locals.orm;
-		await new EntitySubscription({
-			bbid, subscriberId
-		}).save(null, {method: 'insert'});
-		return res.send({
-			isSubscribed: true
-		});
-	}
-	catch (err) {
-		log.debug(err);
-		return next(err);
-	}
-});
-
-router.post('/subscribe/collection', auth.isAuthenticated, async (req, res, next) => {
-	try {
-		const {collectionId} = req.body;
-		const subscriberId = parseInt(req.user.id, 10);
-		const {CollectionSubscription} = req.app.locals.orm;
-		await new CollectionSubscription({
-			collectionId, subscriberId
-		}).save(null, {method: 'insert'});
-		return res.send({
-			isSubscribed: true
-		});
-	}
-	catch (err) {
-		log.debug(err);
-		return next(err);
-	}
-});
-
-
-router.post('/unsubscribe/collection', auth.isAuthenticated, async (req, res, next) => {
-	try {
-		const {collectionId} = req.body;
-		const subscriberId = parseInt(req.user.id, 10);
-		const {CollectionSubscription} = req.app.locals.orm;
-		await new CollectionSubscription({}).where('collection_id', collectionId).where('subscriber_id', subscriberId).destroy();
-		return res.send({
-			isSubscribed: false
-		});
-	}
-	catch (err) {
-		log.debug(err);
-		return next(err);
-	}
-});
-
-router.post('/unsubscribe/entity', auth.isAuthenticated, async (req, res, next) => {
-	try {
-		const {bbid} = req.body;
-		const subscriberId = parseInt(req.user.id, 10);
-		const {EntitySubscription} = req.app.locals.orm;
-		await new EntitySubscription({}).where('bbid', bbid).where('subscriber_id', subscriberId).destroy();
-		return res.send({
-			isSubscribed: false
-		});
-	}
-	catch (err) {
-		log.debug(err);
-		return next(err);
-	}
-});
-
-router.get('/notifications', auth.isAuthenticated, async (req, res, next) => {
-	try {
-		console.log('HERE');
 		const editorId = req.user.id;
 		const size = req.query.size ? parseInt(req.query.size, 10) : 5;
 		const from = req.query.from ? parseInt(req.query.from, 10) : 0;

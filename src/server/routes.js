@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {isAuthenticated, isAuthenticatedForHandler} from './helpers/auth';
+import subscriptionRouter, {handleIsSubscribed, handleSubscribe, handleUnSubscribe} from './routes/subscription';
 import authRouter from './routes/auth';
 import authorRouter from './routes/entity/author';
 import collectionRouter from './routes/collection';
@@ -32,7 +34,6 @@ import revisionRouter from './routes/revision';
 import revisionsRouter from './routes/revisions';
 import searchRouter from './routes/search';
 import statisticsRouter from './routes/statistics';
-import subscriptionRouter from './routes/subscription';
 import workRouter from './routes/entity/work';
 
 
@@ -85,6 +86,9 @@ function initCollectionRoutes(app) {
 }
 
 function initSubscriptionRoutes(app) {
+	app.post('/:type/:id/subscribe', isAuthenticatedForHandler, handleSubscribe);
+	app.post('/:type/:id/unsubscribe', isAuthenticatedForHandler, handleUnSubscribe);
+	app.get('/:type/:id/subscribed', isAuthenticated, handleIsSubscribed);
 	app.use('/subscription', subscriptionRouter);
 }
 

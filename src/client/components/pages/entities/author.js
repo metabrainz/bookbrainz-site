@@ -27,7 +27,7 @@ import EntityTitle from './title';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import SubscribeButton from '../../../../../../../../Desktop/Projects/Contribution/bookbrainz-site/src/client/components/subscribe-button';
+import SubscribeButton from '../../subscribe-button';
 import {kebabCase as _kebabCase} from 'lodash';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {labelsForAuthor} from '../../../helpers/utils';
@@ -124,7 +124,7 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 					<AuthorAttributes author={entity}/>
 				</Col>
 			</Row>
-			<SubscribeButton bbid={entity.bbid}/>
+			<SubscribeButton id={entity.bbid} type="author"/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>

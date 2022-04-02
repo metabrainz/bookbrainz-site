@@ -28,7 +28,7 @@ import EntityRelatedCollections from './related-collections';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
-import SubscribeButton from '../../../../../../../../Desktop/Projects/Contribution/bookbrainz-site/src/client/components/subscribe-button';
+import SubscribeButton from '../../subscribe-button';
 
 
 const {deletedEntityMessage, getRelationshipSourceByTypeId, getLanguageAttribute, getTypeAttribute, getEntityUrl,
@@ -94,7 +94,7 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 					<WorkAttributes work={entity}/>
 				</Col>
 			</Row>
-			<SubscribeButton bbid={entity.bbid}/>
+			<SubscribeButton id={entity.bbid} type="work"/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>

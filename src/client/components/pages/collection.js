@@ -30,7 +30,7 @@ import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import PublisherTable from './entities/publisher-table';
 import React from 'react';
-import SubscribeButton from '../../../../../../../Desktop/Projects/Contribution/bookbrainz-site/src/client/components/subscribe-button';
+import SubscribeButton from './../subscribe-button';
 import WorkTable from './entities/work-table';
 import _ from 'lodash';
 import {formatDate} from '../../helpers/utils';
@@ -263,7 +263,7 @@ class CollectionPage extends React.Component {
 						<CollectionAttributes collection={this.props.collection}/>
 					</Col>
 				</Row>
-				<SubscribeButton isCollection bbid={this.props.collection.id}/>
+				<SubscribeButton id={this.props.collection.id} type="collection"/>
 				<EntityTable{...propsForTable}/>
 				{messageComponent}
 				<div className="margin-top-1 text-left">

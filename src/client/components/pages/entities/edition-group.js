@@ -27,7 +27,7 @@ import EntityRelatedCollections from './related-collections';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
-import SubscribeButton from '../../../../../../../../Desktop/Projects/Contribution/bookbrainz-site/src/client/components/subscribe-button';
+import SubscribeButton from '../../subscribe-button';
 
 
 const {deletedEntityMessage, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
@@ -81,7 +81,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 					<EditionGroupAttributes editionGroup={entity}/>
 				</Col>
 			</Row>
-			<SubscribeButton bbid={entity.bbid}/>
+			<SubscribeButton id={entity.bbid} type="editionGroup"/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
