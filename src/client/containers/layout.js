@@ -23,29 +23,47 @@
 
 import * as bootstrap from 'react-bootstrap';
 import {
-	faChartLine, faGripVertical, faListUl, faPlus, faQuestionCircle,
-	faSearch, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle
+	faBell, faChartLine, faGripVertical, faListUl, faPencilAlt,
+	faPlus, faQuestionCircle, faSearch, faSignInAlt, faSignOutAlt,
+	faTrophy, faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Footer from './../components/footer';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import MergeQueue from '../components/pages/parts/merge-queue';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {forEach} from 'lodash';
 import {genEntityIconHTMLElement} from '../helpers/entity';
+import request from 'superagent';
 
 
-const {Alert, Button, Form, FormControl, InputGroup, Nav, Navbar, NavDropdown} = bootstrap;
+const {Alert, Button, Form, FormControl, InputGroup, Nav, Navbar, NavDropdown, Row, Spinner} = bootstrap;
 
 class Layout extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {keepMenuOpen: false, menuOpen: false};
+		this.state = {
+			hasMore: true,
+			keepMenuOpen: false,
+			menuOpen: false,
+			notifications: []
+		};
+		this.readNotificationUrl = '/subscription/read';
 		this.renderNavContent = this.renderNavContent.bind(this);
 		this.renderNavHeader = this.renderNavHeader.bind(this);
+		this.renderNotifications = this.renderNotifications.bind(this);
 		this.handleDropdownToggle = this.handleDropdownToggle.bind(this);
 		this.handleDropdownClick = this.handleDropdownClick.bind(this);
 		this.handleMouseDown = this.handleMouseDown.bind(this);
 		this.fetchMoreNotifications = this.fetchMoreNotifications.bind(this);
+		this.handleReadAllNotifications = this.handleReadAllNotifications.bind(this);
+		this.genHandleOnClick = this.genHandleOnClick.bind(this);
+		this.renderSingleNotification = this.renderSingleNotification.bind(this);
+	}
+
+	componentDidMount() {
+		this.fetchMoreNotifications();
 	}
 
 	handleMouseDown(event) {
@@ -66,12 +84,30 @@ class Layout extends React.Component {
 		this.setState({keepMenuOpen: true}, this.handleDropdownToggle);
 	}
 
-	async loadNotifications() {
-		const res = await request.get(`/subscription/notifications?from=${this.state.notificationsFrom}&size=5`);
+	genHandleOnClick(id, redirectUrl) {
+		return () => {
+			request.post(this.readNotificationUrl).send({0: id}).then(() => {
+				window.location.href = redirectUrl;
+			});
+		};
+	}
+
+	async fetchMoreNotifications() {
+		const res = await request.get(`/subscription/notifications?from=${this.state.notifications.length}&size=5`);
 		const {notifications} = res.body;
-		this.setState({
-			notifications
+		const allNotifications = [];
+		forEach(notifications, (notification) => {
+			allNotifications.push(notification);
 		});
+		if (notifications.length > 0) {
+			this.setState((state) => {
+				const newNotifications = notifications.concat(state.notifications);
+				newNotifications.sort((a, b) => a.timestamp < b.timestamp);
+				return {...state, hasMore: true, notifications: newNotifications};
+			});
+			return;
+		}
+		this.setState({hasMore: false});
 	}
 
 	renderNavHeader() {
@@ -139,7 +175,6 @@ class Layout extends React.Component {
 		return (
 			<Nav>
 				<NavDropdown
-					alignRight
 					id="create-dropdown"
 					open={this.state.menuOpen}
 					title={createDropdownTitle}
@@ -195,6 +230,10 @@ class Layout extends React.Component {
 						<FontAwesomeIcon fixedWidth icon={faGripVertical}/>
 						{' Collections'}
 					</NavDropdown.Item>
+					<NavDropdown.Item href="/help">
+						<FontAwesomeIcon icon={faQuestionCircle}/>
+						{' Help '}
+					</NavDropdown.Item>
 					<NavDropdown.Item {...disableSignUp} href="/logout">
 						<FontAwesomeIcon fixedWidth icon={faSignOutAlt}/>
 						{' Sign Out'}
@@ -224,6 +263,60 @@ class Layout extends React.Component {
 		);
 	}
 
+	renderSingleNotification(notification) {
+		return (
+			<NavDropdown.Item
+				className={`notify-notification wrapword ${!notification.read ? 'notify-nread' : ''}`}
+				href={notification.notificationRedirectLink}
+				key={notification.id}
+				onClick={this.genHandleOnClick(notification.id, notification.notificationRedirectLink)}
+			>
+				<FontAwesomeIcon icon={faPencilAlt}/>
+				{` ${notification.notificationText}`}
+			</NavDropdown.Item>
+		);
+	}
+
+	handleReadAllNotifications() {
+		const notificationsToRead = {};
+		this.state.notifications.forEach((notification, index) => {
+			notificationsToRead[index] = notification.id;
+		});
+		request.post(this.readNotificationUrl).send(notificationsToRead).then(window.location.reload);
+	}
+
+	renderNotifications() {
+		const userNotificationsTitle = (
+			<span>
+				<FontAwesomeIcon icon={faBell}/>
+				{' Notifications'}
+			</span>);
+		const loaderComponent = <h4 className="ml-4"> Loading <Spinner animation="border"/> </h4>;
+		const endMessageNode = <h5 className="ml-4"> that&apos;s all folks!</h5>;
+		return (
+			<Nav>
+				<NavDropdown alighRight className="notify-container" title={userNotificationsTitle}>
+					<Row className="notify-heading">
+						<h4>Notifications</h4>
+						<Button className="m-0 p-0" variant="link" onClick={this.handleReadAllNotifications}>Mark all as read</Button>
+					</Row>
+					<NavDropdown.Divider/>
+					<InfiniteScroll
+						dataLength={this.state.notifications.length}
+						endMessage={endMessageNode}
+						hasMore={this.state.hasMore}
+						height={400}
+						loader={loaderComponent}
+						next={this.fetchMoreNotifications}
+						style={{width: 350}}
+					>
+						{this.state.notifications.map(this.renderSingleNotification)}
+					</InfiniteScroll>
+				</NavDropdown>
+			</Nav>
+		);
+	}
+
 	renderNavContent() {
 		const {homepage, hideSearch, user} = this.props;
 
@@ -244,6 +337,7 @@ class Layout extends React.Component {
 						</Nav.Link>
 					</Nav.Item>
 				</Nav>
+				{(user && user.id) && this.renderNotifications()}
 				<Nav>
 					<Nav.Item>
 						<Nav.Link href="/collections">
@@ -257,14 +351,6 @@ class Layout extends React.Component {
 						<Nav.Link href="/statistics">
 							<FontAwesomeIcon icon={faChartLine}/>
 							{' Statistics '}
-						</Nav.Link>
-					</Nav.Item>
-				</Nav>
-				<Nav>
-					<Nav.Item>
-						<Nav.Link href="/help">
-							<FontAwesomeIcon icon={faQuestionCircle}/>
-							{' Help '}
 						</Nav.Link>
 					</Nav.Item>
 				</Nav>

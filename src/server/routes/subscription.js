@@ -15,10 +15,10 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+import {map, snakeCase} from 'lodash';
 import express from 'express';
 import {isAuthenticated} from '../helpers/auth';
 import log from 'log';
-import {snakeCase} from 'lodash';
 
 
 const router = express.Router();
@@ -124,6 +124,29 @@ router.get('/notifications', isAuthenticated, async (req, res, next) => {
 		return res.send({
 			notifications: allNotifications.toJSON()
 		});
+	}
+	catch (err) {
+		return next(err);
+	}
+});
+
+router.post('/read', async (req, res, next) => {
+	const {Notification} = req.app.locals.orm;
+	async function readNotification(notificationId) {
+		const notification = await new Notification({id: notificationId}).fetch({require: false});
+		if (notification) {
+			notification.set('read', true);
+			return notification.save();
+		}
+		return {};
+	}
+	try {
+		const notificationsToRead = req.body;
+		const readPromises = [];
+		map(notificationsToRead, (id) => {
+			readPromises.push(readNotification(id));
+		});
+		return await readPromises;
 	}
 	catch (err) {
 		return next(err);

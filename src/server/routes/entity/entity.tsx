@@ -1119,9 +1119,12 @@ export function handleCreateOrEditEntity(
 					await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
 				}
 			}
-
-			notificationService.emit('send-notifications-for-entity', savedMainEntity.get('bbid'), req.user.id, savedMainEntity.get('type'));
-			return savedMainEntity.toJSON();
+			const savedMainEntityJSON = savedMainEntity.toJSON();
+			notificationService.emit('send-notifications-for-entity',
+				savedMainEntityJSON.bbid,
+				req.user.id, savedMainEntityJSON.type,
+				savedMainEntityJSON.aliasSet.aliases.find((alias) => alias.primary).name);
+			return savedMainEntityJSON;
 		}
 		catch (err) {
 			log.error(err);

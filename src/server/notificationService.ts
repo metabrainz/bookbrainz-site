@@ -60,7 +60,7 @@ eventEmitter.on('send-notifications-for-collection', async (collectionId, editor
 	}
 });
 
-eventEmitter.on('send-notifications-for-entity', async (bbid, editorId, entityType) => {
+eventEmitter.on('send-notifications-for-entity', async (bbid, editorId, entityType, primaryName) => {
 	const {EntitySubscription, Editor} = orm;
 	const allSubscribers = await new EntitySubscription()
 		.where('bbid', bbid)
@@ -75,7 +75,7 @@ eventEmitter.on('send-notifications-for-entity', async (bbid, editorId, entityTy
 		await addNotificationToDB(
 			allSubscribersJSON,
 			`/${kebabCase(entityType)}/${bbid}`,
-			`${editorJSON.name} edited ${kebabCase(entityType)} ${bbid}`,
+			`${editorJSON.name} edited ${kebabCase(entityType)} ${primaryName}`,
 			editorId
 		);
 	}
