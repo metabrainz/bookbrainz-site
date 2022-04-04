@@ -724,13 +724,14 @@ ul {
 }
 
 .notify-notification.dropdown-item{
+	display: flex;
+	flex-direction: column;
 	padding: 1rem;
 	color: #443f3f;
 	background-color: #ebf4f9;
-}
-
-.notify-notification.notify-nread.dropdown-item {
-	background-color: #cfefff;
+	&.notify-nread{
+		background-color: #cfefff;
+	}
 }
 
 .wrapword {
@@ -742,4 +743,17 @@ ul {
     white-space: -webkit-pre-wrap; /* Newer versions of Chrome/Safari*/
     word-break: break-all;
     white-space: normal;
+}
+
+.notify-date{
+	color: #5f6c5f;
+	margin-left: auto;
+	padding-top: 3px;
+}
+
+.notify-infscroll {
+	height: 400px;
+    overflow-x: hidden;
+ 	overflow-y: auto;
+	width: 350px;
 }

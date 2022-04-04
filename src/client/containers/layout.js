@@ -29,13 +29,14 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Footer from './../components/footer';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import InfiniteScroll from 'react-infinite-scroller';
 import MergeQueue from '../components/pages/parts/merge-queue';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {forEach} from 'lodash';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 import request from 'superagent';
+import {timeAgo} from '../helpers/utils';
 
 
 const {Alert, Button, Form, FormControl, InputGroup, Nav, Navbar, NavDropdown, Row, Spinner} = bootstrap;
@@ -60,10 +61,6 @@ class Layout extends React.Component {
 		this.handleReadAllNotifications = this.handleReadAllNotifications.bind(this);
 		this.genHandleOnClick = this.genHandleOnClick.bind(this);
 		this.renderSingleNotification = this.renderSingleNotification.bind(this);
-	}
-
-	componentDidMount() {
-		this.fetchMoreNotifications();
 	}
 
 	handleMouseDown(event) {
@@ -102,8 +99,8 @@ class Layout extends React.Component {
 		if (notifications.length > 0) {
 			this.setState((state) => {
 				const newNotifications = notifications.concat(state.notifications);
-				newNotifications.sort((a, b) => a.timestamp < b.timestamp);
-				return {...state, hasMore: true, notifications: newNotifications};
+				newNotifications.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+				return {...state, notifications: newNotifications};
 			});
 			return;
 		}
@@ -264,6 +261,7 @@ class Layout extends React.Component {
 	}
 
 	renderSingleNotification(notification) {
+		const lastUpdatedDate = new Date(notification.timestamp);
 		return (
 			<NavDropdown.Item
 				className={`notify-notification wrapword ${!notification.read ? 'notify-nread' : ''}`}
@@ -271,8 +269,11 @@ class Layout extends React.Component {
 				key={notification.id}
 				onClick={this.genHandleOnClick(notification.id, notification.notificationRedirectLink)}
 			>
-				<FontAwesomeIcon icon={faPencilAlt}/>
-				{` ${notification.notificationText}`}
+				<span>
+					<FontAwesomeIcon icon={faPencilAlt}/>
+					{` ${notification.notificationText}`}
+				</span>
+				<small className="notify-date">{timeAgo(lastUpdatedDate)}</small>
 			</NavDropdown.Item>
 		);
 	}
@@ -292,7 +293,6 @@ class Layout extends React.Component {
 				{' Notifications'}
 			</span>);
 		const loaderComponent = <h4 className="ml-4"> Loading <Spinner animation="border"/> </h4>;
-		const endMessageNode = <h5 className="ml-4"> that&apos;s all folks!</h5>;
 		return (
 			<Nav>
 				<NavDropdown alighRight className="notify-container" title={userNotificationsTitle}>
@@ -302,13 +302,10 @@ class Layout extends React.Component {
 					</Row>
 					<NavDropdown.Divider/>
 					<InfiniteScroll
-						dataLength={this.state.notifications.length}
-						endMessage={endMessageNode}
+						className="notify-infscroll"
 						hasMore={this.state.hasMore}
-						height={400}
+						loadMore={this.fetchMoreNotifications}
 						loader={loaderComponent}
-						next={this.fetchMoreNotifications}
-						style={{width: 350}}
 					>
 						{this.state.notifications.map(this.renderSingleNotification)}
 					</InfiniteScroll>
