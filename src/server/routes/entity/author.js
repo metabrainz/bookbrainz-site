@@ -24,12 +24,14 @@ import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
 import {
+	addInitialRelationship,
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
 import {ConflictError} from '../../../common/helpers/error';
+import {RelationshipTypes} from '../../../client/entity-editor/relationship-editor/types';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
@@ -98,11 +100,25 @@ router.get(
 	middleware.loadGenders, middleware.loadLanguages,
 	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
 	async (req, res) => {
+		const {Work} = req.app.locals.orm;
+		let relationshipTypeId;
+		let initialRelationshipIndex = 0;
 		const markupProps = generateEntityProps(
 			'author', req, res, {
 				genderOptions: res.locals.genders
 			}
 		);
+		if (req.query.work) {
+			const data = await Work.forge({bbid: req.query.work}).fetch({require: false, withRelated: 'defaultAlias'});
+			markupProps.work = data && utils.entityToOption(data.toJSON());
+		}
+
+		if (markupProps.work) {
+			// add initial relationship with relationshipTypeId = 8 (<Work> is written by <Author>)
+			relationshipTypeId = RelationshipTypes.AuthorWroteWork;
+			addInitialRelationship(markupProps, relationshipTypeId, initialRelationshipIndex++, markupProps.work);
+		}
+
 		const nameSection = {
 			disambiguation: '',
 			exactMatches: null,
