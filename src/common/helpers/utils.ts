@@ -1,6 +1,7 @@
 import {Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
 
 import {isString, kebabCase} from 'lodash';
+import {validateAlias} from '../../client/entity-editor/validators/common';
 
 /**
  * Regular expression for valid BookBrainz UUIDs (bbid)
@@ -187,46 +188,17 @@ export function getNextEnabledAndResultsArray(array, size) {
 }
 
 /**
- * Convert ISBN-10 to ISBN-13
- * @param {string} isbn10 valid ISBN-10
- * @returns {string} ISBN-13
+ * Calculate check digit for isbn10
+ * @param {string} isbn ISBN-10
+ * @returns {string|number} check digit
  */
 
-export function isbn10To13(isbn10:string):string | null {
-	const isbn10Regex = RegExp(/^(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$)[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$/);
-	if (!isbn10Regex.test(isbn10)) {
-		return null;
-	}
-	const tempISBN10 = `${isbn10}`.replaceAll('-', '');
-	let totalSum = 0;
-
-	const isbn13 = `978${tempISBN10.substring(0, 9)}`;
-
-	for (let i = 0; i < 12; i++) {
-		totalSum += Number(isbn13.charAt(i)) * ((i % 2) === 0 ? 1 : 3);
-	}
-
-	const lastDigit = (10 - (totalSum % 10)) % 10;
-	return isbn13 + lastDigit;
-}
-
-/**
- * Convert ISBN-13 to ISBN-10
- * @param {string} isbn13 valid ISBN-13
- * @returns {string} ISBN-10
- */
-
-export function isbn13To10(isbn13:string):string | null {
-	const isbn13Regex = RegExp(/^(?=[0-9]{13}$|(?=(?:[0-9]+[- ]){1,4})[- 0-9]{14,17}$)978[- ]?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9]$/);
-	if (!isbn13Regex.test(isbn13)) {
-		return null;
-	}
-	const tempISBN13 = isbn13.replaceAll('-', '');
+export function calIsbn10Chk(isbn) {
 	let digits = [];
 	let sum = 0;
 	let chkDigit;
 
-	digits = `${tempISBN13}`.substring(3, 12).split('');
+	digits = `${isbn}`.substring(0, 9).split('');
 
 	for (let i = 0; i < 9; i++) {
 		sum += digits[i] * (10 - i);
@@ -244,7 +216,71 @@ export function isbn13To10(isbn13:string):string | null {
 			chkDigit = chkTmp;
 			break;
 	}
-	digits.push(chkDigit);
+	return chkDigit;
+}
+
+/**
+ * Calculate check digit for isbn13
+ * @param {string} isbn ISBN-13
+ * @returns {string|number} check digit
+ */
+export function calIsbn13Chk(isbn) {
+	let totalSum = 0;
+	for (let i = 0; i < 12; i++) {
+		totalSum += Number(isbn.charAt(i)) * ((i % 2) === 0 ? 1 : 3);
+	}
+
+	const lastDigit = (10 - (totalSum % 10)) % 10;
+	return lastDigit;
+}
+
+/**
+ * Match the check digit for isbn
+ * @param {string} value ISBN value
+ * @param {boolean} isISBN13 validate for isbn13?
+ * @returns {boolean} check digit
+ */
+export function validateChkISBN(value:string, isISBN13 = true) {
+	if (isISBN13) {
+		return calIsbn13Chk(value.replaceAll('-', '')) === Number(value.at(-1));
+	}
+
+	return calIsbn10Chk(value.replaceAll('-', '')) === value.at(-1);
+}
+
+/**
+ * Convert ISBN-10 to ISBN-13
+ * @param {string} isbn10 valid ISBN-10
+ * @returns {string} ISBN-13
+ */
+
+export function isbn10To13(isbn10:string):string | null {
+	const isbn10Regex = RegExp(/^(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$)[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$/);
+	if (!isbn10Regex.test(isbn10)) {
+		return null;
+	}
+	const tempISBN10 = `${isbn10}`.replaceAll('-', '');
+
+	const isbn13 = `978${tempISBN10.substring(0, 9)}`;
+
+	const lastDigit = calIsbn13Chk(isbn13);
+	return isbn13 + lastDigit;
+}
+
+/**
+ * Convert ISBN-13 to ISBN-10
+ * @param {string} isbn13 valid ISBN-13
+ * @returns {string} ISBN-10
+ */
+
+export function isbn13To10(isbn13:string):string | null {
+	const isbn13Regex = RegExp(/^(?=[0-9]{13}$|(?=(?:[0-9]+[- ]){1,4})[- 0-9]{14,17}$)978[- ]?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9]$/);
+	if (!isbn13Regex.test(isbn13)) {
+		return null;
+	}
+	const tempISBN13 = isbn13.replaceAll('-', '');
+	const digits = tempISBN13.substring(3, 12).split('');
+	digits.push(calIsbn10Chk(digits.join('')));
 
 	return digits.join('');
 }
