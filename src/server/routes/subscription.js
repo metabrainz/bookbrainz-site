@@ -19,7 +19,7 @@ import {map, snakeCase} from 'lodash';
 import express from 'express';
 import {isAuthenticated} from '../helpers/auth';
 import log from 'log';
-import {sendPromiseResult} from '../../../../../../Desktop/Projects/Contribution/bookbrainz-site/src/server/helpers/handler';
+import {sendPromiseResult} from '../helpers/handler';
 
 
 const router = express.Router();
