@@ -1,6 +1,6 @@
 import BookBrainzData from 'bookbrainz-data';
 import {EventEmitter} from 'events';
-import config from '../../config/config.json';
+import config from '../common/helpers/config';
 import {kebabCase} from 'lodash';
 
 

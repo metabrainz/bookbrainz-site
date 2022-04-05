@@ -1,6 +1,5 @@
 {
 	"compilerOptions": {
-		"resolveJsonModule": true,
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"jsx": "preserve",
