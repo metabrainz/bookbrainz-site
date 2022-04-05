@@ -266,6 +266,7 @@ class Layout extends React.Component {
 			<NavDropdown.Item
 				className={`notify-notification wrapword ${!notification.read ? 'notify-nread' : ''}`}
 				href={notification.notificationRedirectLink}
+				id="notify-a"
 				key={notification.id}
 				onClick={this.genHandleOnClick(notification.id, notification.notificationRedirectLink)}
 			>
@@ -278,12 +279,18 @@ class Layout extends React.Component {
 		);
 	}
 
-	handleReadAllNotifications() {
+	async handleReadAllNotifications() {
 		const notificationsToRead = {};
 		this.state.notifications.forEach((notification, index) => {
-			notificationsToRead[index] = notification.id;
+			if (!notification.read) {
+				notificationsToRead[index] = notification.id;
+			}
 		});
-		request.post(this.readNotificationUrl).send(notificationsToRead).then(window.location.reload);
+		await request.post(this.readNotificationUrl).send(notificationsToRead);
+		this.setState((state) => {
+			const notifications = state.notifications.map((notification) => ({...notification, read: true}));
+			return {...state, notifications};
+		});
 	}
 
 	renderNotifications() {

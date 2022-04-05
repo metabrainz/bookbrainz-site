@@ -723,7 +723,7 @@ ul {
 	font-size: small;
 }
 
-.notify-notification.dropdown-item{
+a.notify-notification.dropdown-item{
 	display: flex;
 	flex-direction: column;
 	padding: 1rem;
@@ -732,6 +732,10 @@ ul {
 	&.notify-nread{
 		background-color: #cfefff;
 	}
+}
+
+a#notify-a:hover{
+	color: #443f3f !important;
 }
 
 .wrapword {

@@ -19,6 +19,7 @@ import {map, snakeCase} from 'lodash';
 import express from 'express';
 import {isAuthenticated} from '../helpers/auth';
 import log from 'log';
+import {sendPromiseResult} from '../../../../../../Desktop/Projects/Contribution/bookbrainz-site/src/server/helpers/handler';
 
 
 const router = express.Router();
@@ -130,7 +131,7 @@ router.get('/notifications', isAuthenticated, async (req, res, next) => {
 	}
 });
 
-router.post('/read', async (req, res, next) => {
+router.post('/read', (req, res, next) => {
 	const {Notification} = req.app.locals.orm;
 	async function readNotification(notificationId) {
 		const notification = await new Notification({id: notificationId}).fetch({require: false});
@@ -146,7 +147,7 @@ router.post('/read', async (req, res, next) => {
 		map(notificationsToRead, (id) => {
 			readPromises.push(readNotification(id));
 		});
-		return await readPromises;
+		return sendPromiseResult(res, readPromises);
 	}
 	catch (err) {
 		return next(err);

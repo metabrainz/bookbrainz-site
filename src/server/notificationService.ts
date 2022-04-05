@@ -39,13 +39,12 @@ async function addNotificationToDB(allSubscribersJSON, notificationRedirectLink,
 	await Promise.all(notificationPromiseArray);
 }
 
-eventEmitter.on('send-notifications-for-collection', async (collectionId, editorId) => {
+eventEmitter.on('send-notifications-for-collection', async (collectionId, editorId, collectionName) => {
 	const {CollectionSubscription, Editor} = orm;
 	const allSubscribers = await new CollectionSubscription()
 		.where('collection_id', collectionId)
 		.fetchAll({
-			required: false,
-			withRelated: ['collection']
+			required: false
 		});
 	if (allSubscribers.length) {
 		const editor = await new Editor({id: editorId}).fetch();
@@ -54,7 +53,7 @@ eventEmitter.on('send-notifications-for-collection', async (collectionId, editor
 		await addNotificationToDB(
 			allSubscribersJSON,
 			`/collection/${collectionId}`,
-			`${editorJSON.name} edited Collection: ${allSubscribersJSON[0].collection.name}`,
+			`${editorJSON.name} edited Collection: ${collectionName}`,
 			editorId
 		);
 	}
@@ -65,8 +64,7 @@ eventEmitter.on('send-notifications-for-entity', async (bbid, editorId, entityTy
 	const allSubscribers = await new EntitySubscription()
 		.where('bbid', bbid)
 		.fetchAll({
-			required: false,
-			withRelated: ['entity']
+			required: false
 		});
 	if (allSubscribers.length) {
 		const editor = await new Editor({id: editorId}).fetch();
@@ -75,7 +73,7 @@ eventEmitter.on('send-notifications-for-entity', async (bbid, editorId, entityTy
 		await addNotificationToDB(
 			allSubscribersJSON,
 			`/${kebabCase(entityType)}/${bbid}`,
-			`${editorJSON.name} edited ${kebabCase(entityType)} ${primaryName}`,
+			`${editorJSON.name} edited ${kebabCase(entityType)}: ${primaryName}`,
 			editorId
 		);
 	}
