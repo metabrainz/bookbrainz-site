@@ -29,11 +29,11 @@ import {
 	IdentifierType,
 	validateIdentifierValue
 } from '../validators/common';
-import {collapseWhiteSpaces, isbn10To13, isbn13To10} from '../../../common/helpers/utils';
 import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
 import ValueField from './value-field';
+import {collapseWhiteSpaces} from '../../../common/helpers/utils';
 import {connect} from 'react-redux';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
@@ -147,20 +147,21 @@ function handleValueChange(
 	if (guessedType) {
 		const result = new RegExp(guessedType.detectionRegex).exec(value);
 		value = result[1];
-		if (guessedType.id === 9) {
-			const isbn10Type:any = types.find((el) => el.id === 10);
-			const isbn10 = isbn13To10(value);
-			if (isbn10) {
-				dispatch(debouncedUpdateIdentifierValue(index + 1, isbn10, isbn10Type, false));
-			}
-		}
-		if (guessedType.id === 10) {
-			const isbn13Type:any = types.find((el) => el.id === 9);
-			const isbn13 = isbn10To13(value);
-			if (isbn13) {
-				dispatch(debouncedUpdateIdentifierValue(index + 1, isbn10To13(value), isbn13Type, false));
-			}
-		}
+		// 	disabling "add isbn row" feature temporary
+		// if (guessedType.id === 9) {
+		// 	const isbn10Type:any = types.find((el) => el.id === 10);
+		// 	const isbn10 = isbn13To10(value);
+		// 	if (isbn10) {
+		// 		dispatch(debouncedUpdateIdentifierValue(index + 1, isbn10, isbn10Type, false));
+		// 	}
+		// }
+		// if (guessedType.id === 10) {
+		// 	const isbn13Type:any = types.find((el) => el.id === 9);
+		// 	const isbn13 = isbn10To13(value);
+		// 	if (isbn13) {
+		// 		dispatch(debouncedUpdateIdentifierValue(index + 1, isbn10To13(value), isbn13Type, false));
+		// 	}
+		// }
 	}
 	return dispatch(debouncedUpdateIdentifierValue(index, value, guessedType));
 }
