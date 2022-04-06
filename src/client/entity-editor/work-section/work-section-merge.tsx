@@ -34,6 +34,7 @@ import {convertMapToObject} from '../../helpers/utils';
 
 
 type LanguageOption = {
+	frequency: number,
 	name: string,
 	id: number
 };
