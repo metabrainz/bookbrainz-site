@@ -61,6 +61,17 @@ function LanguageField({
 	const filterOptions = createFilterOptions({
 		options
 	});
+	const sortFilterOptions = (opts, input, selectOptions) => {
+		const newOptions = filterOptions(opts, input, selectOptions);
+		const sortLang = (a, b) => {
+			if (a.frequency !== b.frequency) {
+				return b.frequency - a.frequency;
+			}
+			return a.label.localeCompare(b.label);
+		};
+		newOptions.sort(sortLang);
+		return newOptions;
+	};
 	return (
 		<Form.Group>
 			<Form.Label>
@@ -72,7 +83,7 @@ function LanguageField({
 					/>
 				</OverlayTrigger>
 			</Form.Label>
-			<VirtualizedSelect filterOptions={filterOptions} {...rest}/>
+			<VirtualizedSelect filterOptions={sortFilterOptions} {...rest}/>
 		</Form.Group>
 	);
 }
