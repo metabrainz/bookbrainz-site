@@ -22,6 +22,7 @@ import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ValidationLabel from './validation-label';
 import VirtualizedSelect from 'react-virtualized-select';
+import createFilterOptions from 'react-select-fast-filter-options';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 
@@ -56,7 +57,10 @@ function LanguageField({
 	;
 
 	const tooltip = <Tooltip>{tooltipText}</Tooltip>;
-
+	const {options} = rest;
+	const filterOptions = createFilterOptions({
+		options
+	});
 	return (
 		<Form.Group>
 			<Form.Label>
@@ -68,7 +72,7 @@ function LanguageField({
 					/>
 				</OverlayTrigger>
 			</Form.Label>
-			<VirtualizedSelect {...rest}/>
+			<VirtualizedSelect filterOptions={filterOptions} {...rest}/>
 		</Form.Group>
 	);
 }

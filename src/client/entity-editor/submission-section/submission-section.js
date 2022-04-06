@@ -46,6 +46,7 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 function SubmissionSection({
 	errorText,
 	formValid,
+	note,
 	onNoteChange,
 	submitted
 }) {
@@ -82,7 +83,7 @@ function SubmissionSection({
 								/>
 							</OverlayTrigger>
 						</Form.Label>
-						<Form.Control as="textarea" rows="6" onChange={onNoteChange}/>
+						<Form.Control as="textarea" defaultValue={note} rows="6" onChange={onNoteChange}/>
 					</Form.Group>
 					<p className="text-muted">
 						{`An edit note will make your entries more credible. Reply to one or more of these questions in the textarea below:
@@ -111,6 +112,7 @@ SubmissionSection.displayName = 'SubmissionSection';
 SubmissionSection.propTypes = {
 	errorText: PropTypes.node.isRequired,
 	formValid: PropTypes.bool.isRequired,
+	note: PropTypes.node.isRequired,
 	onNoteChange: PropTypes.func.isRequired,
 	submitted: PropTypes.bool.isRequired
 };
@@ -120,6 +122,7 @@ function mapStateToProps(rootState, {validate, identifierTypes}) {
 	return {
 		errorText: state.get('submitError'),
 		formValid: validate(rootState, identifierTypes),
+		note: state.get('note'),
 		submitted: state.get('submitted')
 	};
 }

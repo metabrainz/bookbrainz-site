@@ -202,7 +202,7 @@ function EditionSection({
 
 	const {isValid: isValidReleaseDate, errorMessage: dateErrorMessage} = validateEditionSectionReleaseDate(releaseDateValue);
 
-	const hasmatchingNameEditionGroups = Array.isArray(matchingNameEditionGroups) && matchingNameEditionGroups.length > 0;
+	const hasmatchingNameEditionGroups = matchingNameEditionGroups?.length;
 
 	const showAutoCreateEditionGroupMessage =
 		!editionGroupValue &&
@@ -456,7 +456,7 @@ EditionSection.displayName = 'EditionSection';
 type RootState = Map<string, Map<string, any>>;
 function mapStateToProps(rootState: RootState): StateProps {
 	const state: Map<string, any> = rootState.get('editionSection');
-	const matchingNameEditionGroups = state.get('matchingNameEditionGroups');
+	const matchingNameEditionGroups = state.get('matchingNameEditionGroups')?.toJS();
 
 	return {
 		depthValue: state.get('depth'),

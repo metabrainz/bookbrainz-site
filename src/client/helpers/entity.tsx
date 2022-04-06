@@ -322,6 +322,48 @@ export function getRelationshipTargetByTypeId(entity, relationshipTypeId: number
 }
 
 /**
+ * Get an array of works contained in an edition, along with the authorAlias of those works
+ *
+ * @param {object} authorsData - an object which contains the authorAlias and authorBBID with workBBIDs as keys
+ * @param {array} works - the array containing all the works in an edition
+ * @returns {array} - return the works array after adding authorsData to each work in the array
+ */
+export function addAuthorsDataToWorks(authorsData, works) {
+	works.map((work) => {
+		if (authorsData[work.bbid]) {
+			work.authorsData = authorsData[work.bbid];
+		}
+		else {
+			work.authorsData = [];
+		}
+		return work;
+	});
+	return works;
+}
+
+/**
+ * Get an array of all target BBIDs from relationships of an entity belongs to given relationshipTypeId
+ *
+ * @param {object} entity - an entity with all relationships
+ * @param {number} relationshipTypeId - typeId of spacific relationshipType
+ * @returns {array} Return array of all the targetBBIDs belongs to entity relationships for given relationshipTypeId
+ */
+export function getRelationshipTargetBBIDByTypeId(entity, relationshipTypeId: number) {
+	let targets = [];
+	if (Array.isArray(entity.relationships)) {
+		targets = entity.relationships
+			.filter(
+				(relation) => relation.typeId === relationshipTypeId
+			)
+			.map((relation) => {
+				const {target} = relation;
+				return target.bbid;
+			});
+	}
+	return targets;
+}
+
+/**
  * Get an array of all sources from relationships of an entity belongs to given relationshipTypeId
  *
  * @param {object} entity - main entity
