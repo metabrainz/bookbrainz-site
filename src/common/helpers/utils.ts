@@ -1,7 +1,6 @@
 import {Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
 
-import {isString, kebabCase} from 'lodash';
-import {validateAlias} from '../../client/entity-editor/validators/common';
+import {isString, kebabCase, toString} from 'lodash';
 
 /**
  * Regular expression for valid BookBrainz UUIDs (bbid)
@@ -190,10 +189,10 @@ export function getNextEnabledAndResultsArray(array, size) {
 /**
  * Calculate check digit for isbn10
  * @param {string} isbn ISBN-10
- * @returns {string|number} check digit
+ * @returns {string} check digit
  */
 
-export function calIsbn10Chk(isbn) {
+export function calIsbn10Chk(isbn:string):string {
 	let digits = [];
 	let sum = 0;
 	let chkDigit;
@@ -216,36 +215,22 @@ export function calIsbn10Chk(isbn) {
 			chkDigit = chkTmp;
 			break;
 	}
-	return chkDigit;
+	return toString(chkDigit);
 }
 
 /**
  * Calculate check digit for isbn13
  * @param {string} isbn ISBN-13
- * @returns {string|number} check digit
+ * @returns {string} check digit
  */
-export function calIsbn13Chk(isbn) {
+export function calIsbn13Chk(isbn:string):string {
 	let totalSum = 0;
 	for (let i = 0; i < 12; i++) {
 		totalSum += Number(isbn.charAt(i)) * ((i % 2) === 0 ? 1 : 3);
 	}
 
 	const lastDigit = (10 - (totalSum % 10)) % 10;
-	return lastDigit;
-}
-
-/**
- * Match the check digit for isbn
- * @param {string} value ISBN value
- * @param {boolean} isISBN13 validate for isbn13?
- * @returns {boolean} check digit
- */
-export function validateChkISBN(value:string, isISBN13 = true) {
-	if (isISBN13) {
-		return calIsbn13Chk(value.replaceAll('-', '')) === Number(value.at(-1));
-	}
-
-	return calIsbn10Chk(value.replaceAll('-', '')) === value.at(-1);
+	return toString(lastDigit);
 }
 
 /**

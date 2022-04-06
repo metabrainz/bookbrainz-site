@@ -25,7 +25,6 @@ import {
 
 import {Iterable} from 'immutable';
 import _ from 'lodash';
-import {validateChkISBN} from '../../../common/helpers/utils';
 
 
 export function validateMultiple(
@@ -94,11 +93,6 @@ export function validateIdentifierValue(
 	const selectedType = _.find(types, (type) => type.id === typeId);
 
 	if (selectedType) {
-		// also verify the last digit of ISBNs
-		if (typeId === 9 && !validateChkISBN(value) || typeId === 10 && !validateChkISBN(value, false)) {
-			return false;
-		}
-
 		return new RegExp(selectedType.validationRegex).test(value);
 	}
 
