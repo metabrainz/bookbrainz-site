@@ -24,6 +24,7 @@ import ValidationLabel from './validation-label';
 import VirtualizedSelect from 'react-virtualized-select';
 import createFilterOptions from 'react-select-fast-filter-options';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import {isNumber} from 'lodash';
 
 
 type Props = {
@@ -64,7 +65,7 @@ function LanguageField({
 	const sortFilterOptions = (opts, input, selectOptions) => {
 		const newOptions = filterOptions(opts, input, selectOptions);
 		const sortLang = (a, b) => {
-			if (a.frequency !== b.frequency) {
+			if (isNumber(a.frequency) && isNumber(b.frequency) && a.frequency !== b.frequency) {
 				return b.frequency - a.frequency;
 			}
 			return a.label.localeCompare(b.label);
