@@ -180,7 +180,7 @@ export function stringToHTMLWithLinks(string: string) {
 	const addHttpRegex = /(^|\b)www\./ig;
 	// eslint-disable-next-line max-len, no-useless-escape
 	const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%~*@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
-	let content = string.replace(addHttpRegex, '$1https://www.');
+	let content = string.replace(addHttpRegex, '$1www.');
 	content = content.replace(
 		urlRegex,
 		'<a href="$1" target="_blank">$1</a>'
