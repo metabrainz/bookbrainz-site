@@ -177,15 +177,16 @@ export function dateObjectToISOString(value: DateObject) {
  * @returns {JSX} returns a JSX Element
  */
 export function stringToHTMLWithLinks(string: string) {
-	const addHttpRegex = /(^|\b)www\./ig;
-	// eslint-disable-next-line max-len, no-useless-escape
-	const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%~*@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
-	let content = string.replace(addHttpRegex, '$1www.');
-	content = content.replace(
-		urlRegex,
-		'<a href="$1" target="_blank">$1</a>'
-	);
-	const sanitizedHtml = DOMPurify.sanitize(content);
+	let urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
+	let contentString = string.replace(urlRegex, (url) => {
+		let hyperlink = url;
+		if (!hyperlink.match('^https?:')) {
+			hyperlink = `http://${hyperlink}`;
+		}
+		return `<a href="${hyperlink}" target="_blank">${url}</a>`;
+	});
+
+	const sanitizedHtml = DOMPurify.sanitize(contentString);
 	// eslint-disable-next-line react/no-danger
 	return <span dangerouslySetInnerHTML={{__html: sanitizedHtml}}/>;
 }
