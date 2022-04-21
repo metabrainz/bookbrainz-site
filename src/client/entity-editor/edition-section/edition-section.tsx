@@ -76,6 +76,7 @@ type EditionStatus = {
 };
 
 type LanguageOption = {
+	frequency: number,
 	name: string,
 	id: number
 };
@@ -186,6 +187,7 @@ function EditionSection({
 	widthValue
 }: Props) {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
+		frequency: language.frequency,
 		label: language.name,
 		value: language.id
 	}));
@@ -202,14 +204,14 @@ function EditionSection({
 
 	const {isValid: isValidReleaseDate, errorMessage: dateErrorMessage} = validateEditionSectionReleaseDate(releaseDateValue);
 
-	const hasmatchingNameEditionGroups = matchingNameEditionGroups?.length;
+	const hasmatchingNameEditionGroups = Boolean(matchingNameEditionGroups?.length);
 
 	const showAutoCreateEditionGroupMessage =
 		!editionGroupValue &&
 		!editionGroupVisible &&
 		!editionGroupRequired;
 
-	const showMatchingEditionGroups = hasmatchingNameEditionGroups && !editionGroupValue;
+	const showMatchingEditionGroups = Boolean(hasmatchingNameEditionGroups && !editionGroupValue);
 
 	const getEditionGroupSearchSelect = () => (
 		<React.Fragment>
@@ -456,7 +458,6 @@ EditionSection.displayName = 'EditionSection';
 type RootState = Map<string, Map<string, any>>;
 function mapStateToProps(rootState: RootState): StateProps {
 	const state: Map<string, any> = rootState.get('editionSection');
-	const matchingNameEditionGroups = state.get('matchingNameEditionGroups')?.toJS();
 
 	return {
 		depthValue: state.get('depth'),
@@ -466,7 +467,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 		formatValue: state.get('format'),
 		heightValue: state.get('height'),
 		languageValues: state.get('languages'),
-		matchingNameEditionGroups,
+		matchingNameEditionGroups: state.get('matchingNameEditionGroups'),
 		pagesValue: state.get('pages'),
 		physicalEnable: state.get('physicalEnable'),
 		publisherValue: state.get('publisher'),

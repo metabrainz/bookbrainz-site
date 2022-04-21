@@ -44,6 +44,7 @@ type WorkType = {
 };
 
 type LanguageOption = {
+	frequency: number,
 	name: string,
 	id: number
 };
@@ -92,6 +93,7 @@ function WorkSection({
 	onTypeChange
 }: Props) {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
+		frequency: language.frequency,
 		label: language.name,
 		value: language.id
 	}));
