@@ -32,7 +32,7 @@ import {
 import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
-import ValueField from './value-field';
+import ValidationLabel from '../common/validation-label';
 import {collapseWhiteSpaces} from '../../../common/helpers/utils';
 import {connect} from 'react-redux';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
@@ -90,19 +90,38 @@ function IdentifierRow({
 		label: type.label,
 		value: type.id
 	}));
+	const isValueEmpty = !valueValue && typeValue === null;
+	const isValueValid = validateIdentifierValue(
+		valueValue, typeValue, typeOptions
+	);
 
 	return (
 		<div>
 			<Row>
 				<Col lg={4}>
-					<ValueField
-						defaultValue={valueValue}
-						empty={!valueValue && typeValue === null}
-						error={!validateIdentifierValue(
-							valueValue, typeValue, typeOptions
-						)}
-						onChange={onValueChange}
-					/>
+
+					<Form.Group>
+						<Form.Label>
+							<ValidationLabel
+								empty={isValueEmpty}
+								error={!isValueValid}
+							>
+								Value
+							</ValidationLabel>
+						</Form.Label>
+						<Form.Control
+							autoFocus
+							required
+							defaultValue={valueValue}
+							isValid={isValueValid}
+							type="text"
+							onChange={onValueChange}
+						/>
+						<Form.Text/>
+						<Form.Control.Feedback type={isValueValid ? 'valid' : 'invalid'}>
+							The identifier will be stored as {valueValue}
+						</Form.Control.Feedback>
+					</Form.Group>
 				</Col>
 				<Col lg={4}>
 					<Form.Group>
