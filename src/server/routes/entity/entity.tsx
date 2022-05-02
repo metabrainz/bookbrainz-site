@@ -1203,7 +1203,7 @@ export function constructIdentifiers(
 		identifierEditor,
 		({type: typeId, value}: IdentifierEditorT, id: string) =>{
 			if(typeId===9 || typeId===10){
-				let val=value.split('');
+				let val=value.split('-');
 				value=val.reduce((acc,n)=>{
 				  if(n!=='-'){
 					acc+=n;
