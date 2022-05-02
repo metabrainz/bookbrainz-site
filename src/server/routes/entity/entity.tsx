@@ -1201,8 +1201,19 @@ export function constructIdentifiers(
 ) {
 	return _.map(
 		identifierEditor,
-		({type: typeId, value}: IdentifierEditorT, id: string) =>
-			({id, typeId, value})
+		({type: typeId, value}: IdentifierEditorT, id: string) =>{
+			if(typeId===9 || typeId===10){
+				let val=value.split('');
+				value=val.reduce((acc,n)=>{
+				  if(n!=='-'){
+					acc+=n;
+				  }
+				  return acc;
+				})
+			  }
+			  
+			  return {id,typeId,value}
+		}
 	);
 }
 
