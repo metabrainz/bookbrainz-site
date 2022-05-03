@@ -73,6 +73,7 @@ function transformNewForm(data) {
 	return {
 		aliases,
 		annotation: data.annotationSection.content,
+		copyToEG: data.nameSection.copyToEG ?? false,
 		depth: data.editionSection.depth &&
 			parseInt(data.editionSection.depth, 10),
 		disambiguation: data.nameSection.disambiguation,

@@ -1020,6 +1020,7 @@ export function handleCreateOrEditEntity(
 		aliasSet: {id: number} | null | undefined,
 		annotation: {id: number} | null | undefined,
 		bbid: string,
+		editionGroup:any | undefined,
 		disambiguation: {id: number} | null | undefined,
 		identifierSet: {id: number} | null | undefined,
 		type: EntityTypeString
@@ -1085,6 +1086,21 @@ export function handleCreateOrEditEntity(
 			let allEntities = [...otherEntities, mainEntity]
 				.filter(entity => entity.get('dataId') !== null);
 
+			// copy name to the edition group
+			if (!isNew && entityType === 'Edition' && body.copyToEG) {
+				const currentEditionGroup = currentEntity.editionGroup;
+				const entityDefaultAlias = body.aliases.find((alias) => alias.default);
+				if (currentEditionGroup.defaultAlias.name !== entityDefaultAlias.name) {
+					const tempBody = {aliases: [{...currentEditionGroup.defaultAlias, default: true, name: entityDefaultAlias.name}]};
+					const aliasSet = await getNextAliasSet(orm, transacting, currentEditionGroup, tempBody);
+					const EGEntity = await fetchOrCreateMainEntity(
+						orm, transacting, false, currentEditionGroup.bbid, 'EditionGroup'
+					);
+					EGEntity.set('aliasSetId', aliasSet.id);
+					EGEntity.shouldInsert = false;
+					allEntities.push(EGEntity);
+				}
+			}
 			if (isMergeOperation) {
 				allEntities = await processMergeOperation(orm, transacting, req.session,
 					mainEntity, allEntities, relationshipSets);

@@ -26,7 +26,7 @@ export const UPDATE_NAME_FIELD = 'UPDATE_NAME_FIELD';
 export const UPDATE_SORT_NAME_FIELD = 'UPDATE_SORT_NAME_FIELD';
 export const UPDATE_WARN_IF_EXISTS = 'UPDATE_WARN_IF_EXISTS';
 export const UPDATE_SEARCH_RESULTS = 'UPDATE_SEARCH_RESULTS';
-
+export const UPDATE_COPY_CHECKBOX = 'UPDATE_COPY_CHECKBOX';
 export type Action = {
 	type: string,
 	payload?: unknown,
@@ -201,5 +201,19 @@ export function searchName(
 					type: UPDATE_SEARCH_RESULTS
 				});
 			});
+	};
+}
+
+/**
+ * Produces an action indicating that the checkbox
+ * should be updated with the provided value.
+ *
+ * @param {boolean} isCheck - The new value to be used for the checkbox.
+ * @returns {Action} The resulting UPDATE_COPY_CHECKBOX action.
+ */
+export function updateCheckbox(isCheck:boolean): Action {
+	return {
+		payload: isCheck,
+		type: UPDATE_COPY_CHECKBOX
 	};
 }
