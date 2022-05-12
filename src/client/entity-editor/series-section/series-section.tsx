@@ -148,10 +148,13 @@ function SeriesSection({
 		label: type.label,
 		value: type.id
 	}));
+	const orderTypeOption = seriesOrderingTypesForDisplay.filter((el) => el.value === orderTypeValue);
+
 	const seriesTypesForDisplay = ['Author', 'Work', 'Edition', 'EditionGroup', 'Publisher'].map((type) => ({
 		label: type,
 		value: type
 	}));
+	const seriesTypeOption = seriesTypesForDisplay.filter((el) => el.value === seriesTypeValue);
 	const orderingTooltip = (
 		<Tooltip>
 		Ordering Type of the Series Entity
@@ -183,12 +186,12 @@ function SeriesSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
-							backspaceRemoves={false}
-							clearable={false}
-							deleteRemoves={false}
+							backspaceRemovesValue={false}
+							classNamePrefix="react-select"
 							instanceId="seriesOrderingType"
+							isClearable={false}
 							options={seriesOrderingTypesForDisplay}
-							value={orderTypeValue}
+							value={orderTypeOption}
 							onChange={onOrderTypeChange}
 						/>
 					</Form.Group>
@@ -203,13 +206,13 @@ function SeriesSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
-							backspaceRemoves={false}
-							clearable={false}
-							deleteRemoves={false}
-							disabled={Boolean(seriesItemsArray.length)}
+							backspaceRemovesValue={false}
+							classNamePrefix="react-select"
 							instanceId="SeriesType"
+							isClearable={false}
+							isDisabled={Boolean(seriesItemsArray.length)}
 							options={seriesTypesForDisplay}
-							value={seriesTypeValue}
+							value={seriesTypeOption}
 							onChange={onSeriesTypeChange}
 						/>
 					</Form.Group>

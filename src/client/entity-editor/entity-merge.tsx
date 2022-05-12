@@ -84,12 +84,12 @@ const EntityMerge = (props: Props) => {
 					<p>{subheading}</p>
 					<div>
 						{mergingEntities.map((entity, index) => {
-							const entityForDisplay = {
+							const entityForDisplay = {data: {
 								link: getEntityLink({bbid: entity.bbid, type: entity.type}),
 								text: _.get(entity, ['defaultAlias', 'name']),
 								type: entity.type,
 								unnamedText: '(unnamed)'
-							};
+							}};
 							const isNotLast = index < mergingEntities.length - 1;
 							return (
 								<span key={entity.bbid}>

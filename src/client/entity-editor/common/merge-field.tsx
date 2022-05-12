@@ -19,7 +19,7 @@
 
 import * as React from 'react';
 import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
-import {get as _get, has} from 'lodash';
+import {get as _get, has, isEqual} from 'lodash';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
 import ValidationLabel from '../common/validation-label';
@@ -91,6 +91,7 @@ function MergeField({
 		}
 		return onChange(value);
 	};
+	const currentOption = options.filter((el) => isEqual(el.value, currentValue));
 	return (
 		<Form.Group>
 			<Form.Label>
@@ -98,10 +99,12 @@ function MergeField({
 				{helpIconElement}
 			</Form.Label>
 			<Select
-				clearable={false}
+				{...rest}
+				classNamePrefix="react-select"
 				instanceId={label}
+				isClearable={false}
 				options={options}
-				value={currentValue}
+				value={currentOption}
 				// eslint-disable-next-line react/jsx-no-bind
 				onChange={onChangeReturnValue}
 			/>
