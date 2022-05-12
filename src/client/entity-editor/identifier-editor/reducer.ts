@@ -43,7 +43,8 @@ function reducer(
 			const updatedValue = state.setIn(
 				[payload.rowId, 'value'], payload.value
 			);
-			if (payload.suggestedType) {
+			// don't switch type if user already selected it
+			if (payload.suggestedType && !state.getIn([payload.rowId, 'type'])) {
 				return updatedValue.setIn(
 					[payload.rowId, 'type'], payload.suggestedType.id
 				);
