@@ -2,6 +2,7 @@ import BookBrainzData from 'bookbrainz-data';
 import {EventEmitter} from 'events';
 import config from '../common/helpers/config';
 import {kebabCase} from 'lodash';
+import log from 'log';
 
 
 const eventEmitter = new EventEmitter();
@@ -13,30 +14,35 @@ const orm = BookBrainzData(config.database);
 async function addNotificationToDB(allSubscribersJSON, notificationRedirectLink, notificationText, editorId) {
 	const {Notification} = orm;
 	const notificationPromiseArray = [];
-	allSubscribersJSON.forEach(async (subscriber) => {
-		if (subscriber.subscriberId !== editorId) {
-			let notification = await new Notification({
-				notificationRedirectLink,
-				subscriberId: subscriber.subscriberId
-			}).fetch({require: false});
-			let method = 'update';
-			const isNew = !notification;
-			if (isNew) {
-				notification = await new Notification({
+	try {
+		allSubscribersJSON.forEach(async (subscriber) => {
+			if (subscriber.subscriberId !== editorId) {
+				let notification = await new Notification({
 					notificationRedirectLink,
 					subscriberId: subscriber.subscriberId
-				});
-				method = 'insert';
+				}).fetch({require: false});
+				let method = 'update';
+				const isNew = !notification;
+				if (isNew) {
+					notification = await new Notification({
+						notificationRedirectLink,
+						subscriberId: subscriber.subscriberId
+					});
+					method = 'insert';
+				}
+				notification.set('read', false);
+				notification.set('notification_text', notificationText);
+				notification.set('timestamp', new Date());
+				notificationPromiseArray.push(
+					notification.save(null, {method})
+				);
 			}
-			notification.set('read', false);
-			notification.set('notification_text', notificationText);
-			notification.set('timestamp', new Date());
-			notificationPromiseArray.push(
-				notification.save(null, {method})
-			);
-		}
-	});
-	await Promise.all(notificationPromiseArray);
+		});
+		await Promise.all(notificationPromiseArray);
+	}
+	catch (err) {
+		log.error(err);
+	}
 }
 
 eventEmitter.on('send-notifications-for-collection', async (collectionId, editorId, collectionName) => {
