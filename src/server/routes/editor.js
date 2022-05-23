@@ -25,6 +25,7 @@ import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
 import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
+import {getEditsInDays, getTypeCreation} from '../helpers/achievement';
 import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
 import CollectionsPage from '../../client/components/pages/collections';
 import EditorContainer from '../../client/containers/editor';
@@ -386,17 +387,89 @@ router.get('/:id/revisions/revisions', async (req, res, next) => {
 	res.send(orderedRevisions);
 });
 
-function setAchievementUnlockedField(achievements, unlocks) {
+/**
+ * Get progress counter of a achievement for a editor
+ * @param {number} achievementId - Achivement Type id
+ * @param {number} editorId - editorId
+ * @param {object} orm - orm
+ * @returns {Promise<number>} - Promise resolved to progress counter
+ */
+async function getProgress(achievementId, editorId, orm) {
+	const revisionist = [1, 2, 3];
+	if (revisionist.includes(achievementId)) {
+		const {Editor} = orm;
+		const editor = await new Editor({id: editorId})
+			.fetch({require: false});
+		const revisions = editor.get('revisionsApplied');
+		return revisions;
+	}
+	// entity revisionist
+	const authorRevisionist = [4, 5, 6];
+	const editionGroupRevisionist = [7, 8, 9];
+	const publisherRevisionist = [15, 16, 17];
+	const editionRevisionist = [18, 19, 20];
+	const workRevisionist = [21, 22, 23];
+	const seriesRevisionist = [28, 29, 30];
+
+	if (authorRevisionist.includes(achievementId)) {
+		const {AuthorRevision} = orm;
+		return getTypeCreation(new AuthorRevision(), 'author_revision', editorId);
+	}
+	if (editionGroupRevisionist.includes(achievementId)) {
+		const {EditionGroupRevision} = orm;
+		return getTypeCreation(new EditionGroupRevision(), 'edition_group_revision', editorId);
+	}
+	if (editionRevisionist.includes(achievementId)) {
+		const {EditionRevision} = orm;
+		return getTypeCreation(new EditionRevision(), 'edition_revision', editorId);
+	}
+	if (publisherRevisionist.includes(achievementId)) {
+		const {PublisherRevision} = orm;
+		return getTypeCreation(new PublisherRevision(), 'publisher_revision', editorId);
+	}
+	if (workRevisionist.includes(achievementId)) {
+		const {WorkRevision} = orm;
+		return getTypeCreation(new WorkRevision(), 'work_revision', editorId);
+	}
+	if (seriesRevisionist.includes(achievementId)) {
+		const {SeriesRevision} = orm;
+		return getTypeCreation(new SeriesRevision(), 'series_revision', editorId);
+	}
+	if (achievementId === 10) {
+		const {bookshelf} = orm;
+		const rawSql =
+		`SELECT * from bookbrainz.revision WHERE author_id=${editorId} \
+		and created_at > (SELECT CURRENT_DATE - INTERVAL '1 hour');`;
+
+		const out = await bookshelf.knex.raw(rawSql);
+		return out.rowCount;
+	}
+	if (achievementId === 11) {
+		return getEditsInDays(orm, editorId, 6);
+	}
+	if (achievementId === 12) {
+		return getEditsInDays(orm, editorId, 29);
+	}
+
+	// const explorerVisits = [24, 25, 26];
+	// if (explorerVisits.includes(achievementId)) {
+	// 	return getEntityVisits(editorId);
+	// }
+	return 0;
+}
+
+async function setAchievementUnlockedField(achievements, unlocks, userId, orm) {
 	if (!unlocks) {
 		return null;
 	}
 
 	const unlockIDSet = new Set(unlocks.map('attributes.achievementId'));
 
-	const model = achievements.map((achievementType) => ({
+	const model = await Promise.all(achievements.map(async (achievementType) => ({
 		...achievementType.toJSON(),
+		counter: await getProgress(achievementType.id, userId, orm),
 		unlocked: unlockIDSet.has(achievementType.id)
-	}));
+	})));
 
 	return {model};
 }
@@ -423,7 +496,7 @@ router.get('/:id/achievements', async (req, res, next) => {
 	]);
 
 	const achievementJSON =
-		setAchievementUnlockedField(achievementTypes, unlocks);
+		await setAchievementUnlockedField(achievementTypes, unlocks, userId, res.app.locals.orm);
 
 	const props = generateProps(req, res, {
 		achievement: achievementJSON,

@@ -192,7 +192,7 @@ async function testTiers(orm, signal, editorId, tiers) {
  * @param {int} editor - Editor id being queried
  * @returns {int} - Number of revisions of type (type)
  */
-async function getTypeCreation(revisionType, revisionString, editor) {
+export async function getTypeCreation(revisionType, revisionString, editor) {
 	const out = await revisionType
 		.query((qb) => {
 			qb.innerJoin('bookbrainz.revision',
@@ -393,7 +393,7 @@ async function processSprinter(orm, editorId) {
  * @param {int} days - Number of days before today to collect edits from
  * @returns {int} - Number of days edits were performed on
  */
-async function getEditsInDays(orm, editorId, days) {
+export async function getEditsInDays(orm, editorId, days) {
 	const {bookshelf} = orm;
 	const rawSql =
 		`SELECT DISTINCT created_at::date from bookbrainz.revision \
@@ -514,7 +514,7 @@ async function processHotOffThePress(orm, editorId, revisionId) {
  * @param {int} editorId - Editor to get views for
  * @returns {int} - Number of views user has
  */
-async function getEntityVisits(orm, editorId) {
+export async function getEntityVisits(orm, editorId) {
 	const {EditorEntityVisits} = orm;
 	const visits = await new EditorEntityVisits()
 		.where('editor_id', editorId)
