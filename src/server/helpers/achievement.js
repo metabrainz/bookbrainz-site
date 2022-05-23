@@ -524,7 +524,7 @@ export async function getEntityVisits(orm, editorId) {
 
 async function processExplorer(orm, editorId) {
 	try {
-		const visits = await getEntityVisits(editorId);
+		const visits = await getEntityVisits(orm, editorId);
 
 		const tiers = [
 			{

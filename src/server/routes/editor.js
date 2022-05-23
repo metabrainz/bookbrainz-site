@@ -25,7 +25,7 @@ import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
 import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
-import {getEditsInDays, getTypeCreation} from '../helpers/achievement';
+import {getEditsInDays, getEntityVisits, getTypeCreation} from '../helpers/achievement';
 import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
 import CollectionsPage from '../../client/components/pages/collections';
 import EditorContainer from '../../client/containers/editor';
@@ -388,7 +388,7 @@ router.get('/:id/revisions/revisions', async (req, res, next) => {
 });
 
 /**
- * Get progress counter of a achievement for a editor
+ * Get progress counter of achievement for a editor
  * @param {number} achievementId - Achivement Type id
  * @param {number} editorId - editorId
  * @param {object} orm - orm
@@ -403,6 +403,7 @@ async function getProgress(achievementId, editorId, orm) {
 		const revisions = editor.get('revisionsApplied');
 		return revisions;
 	}
+
 	// entity revisionist
 	const authorRevisionist = [4, 5, 6];
 	const editionGroupRevisionist = [7, 8, 9];
@@ -451,10 +452,10 @@ async function getProgress(achievementId, editorId, orm) {
 		return getEditsInDays(orm, editorId, 29);
 	}
 
-	// const explorerVisits = [24, 25, 26];
-	// if (explorerVisits.includes(achievementId)) {
-	// 	return getEntityVisits(editorId);
-	// }
+	const explorerVisits = [24, 25, 26];
+	if (explorerVisits.includes(achievementId)) {
+		return getEntityVisits(orm, editorId);
+	}
 	return 0;
 }
 
