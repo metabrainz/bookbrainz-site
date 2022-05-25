@@ -1407,76 +1407,74 @@ export function handleCreateEntities(
 		type: EntityTypeString
 	} | null | undefined;
 
-	const entityEditPromise = bookshelf.transaction(async (transacting) => {
-		/* eslint-disable no-await-in-loop */
-		const savedMainEntities = {};
-		const bbidMap = {};
-		const allRelationships = [];
-		try {
-			await Promise.all(Object.keys(body).map(async (entityKey:string) => {
-				const entityForm = body[entityKey];
-				const entityType = _.upperFirst(entityForm.type);
-				allRelationships.push(entityForm.relationships);
-				const newEntity = await new Entity({type: entityType}).save(null, {transacting});
-				currentEntity = newEntity.toJSON();
-				// create new revision for each entity
-				const newRevision = await new Revision({
-					authorId: editorJSON.id,
-					isMerge: false
-				}).save(null, {transacting});
-				// console.log('here currentEntity', currentEntity);
-				const changedProps = await getChangedProps(
-					orm, transacting, true, currentEntity, entityForm, entityType,
-					newRevision, _.pick(entityForm, additionalEntityProps[_.lowerFirst(entityType)])
-				);
-				const mainEntity = await fetchOrCreateMainEntity(
-					orm, transacting, true, currentEntity.bbid, entityType
-				);
-				// console.log('here main entity', mainEntity.toJSON());
-				mainEntity.shouldInsert = true;
+	const savedMainEntities = {};
+	const bbidMap = {};
+	const allRelationships = [];
+	let entityEditPromise;
+	try {
+		entityEditPromise = Promise.all(Object.keys(body).map((entityKey:string) => bookshelf.transaction(async (transacting) => {
+			const entityForm = body[entityKey];
+			const entityType = _.upperFirst(entityForm.type);
+			allRelationships.push(entityForm.relationships);
+			const newEntity = await new Entity({type: entityType}).save(null, {transacting});
+			currentEntity = newEntity.toJSON();
 
-				// set changed attributes on main entity
-				_.forOwn(changedProps, (value, key) => mainEntity.set(key, value));
-				const savedMainEntity = await saveEntitiesAndFinishRevision(
-					orm, transacting, true, newRevision, mainEntity, [mainEntity],
-					editorJSON.id, entityForm.note
-				);
+			// create new revision for each entity
+			const newRevision = await new Revision({
+				authorId: editorJSON.id,
+				isMerge: false
+			}).save(null, {transacting});
+			const changedProps = await getChangedProps(
+				orm, transacting, true, currentEntity, entityForm, entityType,
+				newRevision, _.pick(entityForm, additionalEntityProps[_.lowerFirst(entityType)])
+			);
+			const mainEntity = await fetchOrCreateMainEntity(
+				orm, transacting, true, currentEntity.bbid, entityType
+			);
+			mainEntity.shouldInsert = true;
 
-				/* We need to load the aliases for search reindexing and refresh it*/
-				await savedMainEntity.load('aliasSet.aliases', {transacting});
+			// set changed attributes on main entity
+			_.forOwn(changedProps, (value, key) => mainEntity.set(key, value));
+			const savedMainEntity = await saveEntitiesAndFinishRevision(
+				orm, transacting, true, newRevision, mainEntity, [mainEntity],
+				editorJSON.id, entityForm.note
+			);
 
-				/* New entities will lack some attributes like 'type' required for search indexing */
-				await savedMainEntity.refresh({transacting});
+			/* We need to load the aliases for search reindexing and refresh it*/
+			await savedMainEntity.load('aliasSet.aliases', {transacting});
 
-				/* fetch and reindex EditionGroups that may have been created automatically by the ORM and not indexed */
-				if (savedMainEntity.get('type') === 'Edition') {
-					await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
-				}
-				bbidMap[entityKey] = savedMainEntity.get('bbid');
-				savedMainEntities[entityKey] = savedMainEntity.toJSON();
-			}));
+			/* New entities will lack some attributes like 'type' required for search indexing */
+			await savedMainEntity.refresh({transacting});
 
-			// adding relationship on newly created entites
-			await Promise.all(allRelationships.map(async (rels, index) => {
+			/* fetch and reindex EditionGroups that may have been created automatically by the ORM and not indexed */
+			if (savedMainEntity.get('type') === 'Edition') {
+				await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
+			}
+			bbidMap[entityKey] = savedMainEntity.get('bbid');
+			savedMainEntities[entityKey] = savedMainEntity.toJSON();
+			return savedMainEntities[entityKey];
+		})));
+
+		// adding relationship on newly created entites
+	}
+	catch (err) {
+		log.error(err);
+		throw err;
+	}
+
+	const achievementPromise = entityEditPromise.then(
+		async (entitiesJSON:Record<string, any>) => {
+			await bookshelf.transaction((transacting) => Promise.all(allRelationships.map(async (rels, index) => {
 				if (!_.isEmpty(rels)) {
 					const relationships = rels.map((rel) => (
 						{...rel, sourceBbid: _.get(bbidMap, rel.sourceBbid) ?? rel.sourceBbid,
-						 targetBbid: _.get(bbidMap, rel.targetBbid) ?? rel.targetBbid}
+								 targetBbid: _.get(bbidMap, rel.targetBbid) ?? rel.targetBbid}
 					));
 					const cEntity = savedMainEntities[index.toString()];
 					const {relationshipSetId} = await handleAddRelationship({relationships}, editorJSON, cEntity, cEntity.type, orm, transacting);
 					cEntity.relationshipSetId = relationshipSetId;
 				}
-			}));
-			return savedMainEntities;
-		}
-		catch (err) {
-			log.error(err);
-			throw err;
-		}
-	});
-	const achievementPromise = entityEditPromise.then(
-		(entitiesJSON:Record<string, any>) => {
+			})));
 			const entitiesAchievementsPromise = [];
 			for (const entityJSON of Object.values(entitiesJSON)) {
 				entitiesAchievementsPromise.push(achievement.processEdit(
