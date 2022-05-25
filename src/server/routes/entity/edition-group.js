@@ -40,7 +40,7 @@ import target from '../../templates/target';
 *********** Helpers ************
 *******************************/
 
-function transformNewForm(data) {
+export function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
 		data.aliasEditor, data.nameSection
 	);

@@ -312,3 +312,33 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
 
 	return props;
 }
+
+export function validateUnifiedForm(body:Record<string, any>):boolean {
+	for (const entityKey in body) {
+		if (Object.prototype.hasOwnProperty.call(body, entityKey)) {
+			const entityForm = body[entityKey];
+			const entityType = _.snakeCase(entityForm.type);
+			if (!entityType) {
+				return false;
+			}
+			const validator = getValidator(entityType);
+			if (!validator(entityForm)) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+export function createEntitesHandler(
+	req:$Request,
+	res:$Response
+) {
+	// validating
+	if (!validateUnifiedForm(req.body)) {
+		const err = new error.FormSubmissionError();
+		error.sendErrorAsJSON(res, err);
+	}
+	// transforming
+	req.body = entityRoutes.transformForm(req.body);
+	return entityRoutes.handleCreateEntities(req as PassportRequest, res);
+}
