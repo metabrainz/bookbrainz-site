@@ -26,7 +26,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
-import SelectWrapper from '../input/select-wrapper';
 import classNames from 'classnames';
 import request from 'superagent';
 
@@ -58,19 +57,17 @@ class UserCollectionForm extends React.Component {
 
 	handleSubmit(evt) {
 		evt.preventDefault();
-
 		if (!this.isValid()) {
 			this.setState({
 				errorText: 'Incomplete Form'
 			});
 			return;
 		}
-
 		const collaborators = this.getCleanedCollaborators();
 		const description = this.description.value;
 		const name = trim(this.name.value);
-		const privacy = this.privacy.getValue();
-		const entityType = this.entityType.getValue();
+		const privacy = this.privacy.select.getValue()[0].name;
+		const entityType = this.entityType.select.getValue()[0].name;
 
 		const data = {
 			collaborators,
@@ -99,7 +96,7 @@ class UserCollectionForm extends React.Component {
 	}
 
 	isValid() {
-		return trim(this.name.value).length && this.entityType.getValue();
+		return trim(this.name.value).length && this.entityType.select.getValue().length;
 	}
 
 	getCleanedCollaborators() {
@@ -146,6 +143,14 @@ class UserCollectionForm extends React.Component {
 
 	handleCloseModal() {
 		this.setState({showModal: false});
+	}
+
+	getOptionLabel(option) {
+		return option.name;
+	}
+
+	getOptionValue(option) {
+		return option.name;
 	}
 
 	render() {
@@ -209,27 +214,33 @@ class UserCollectionForm extends React.Component {
 									ref={(ref) => this.description = ref}
 								/>
 							</Form.Group>
-							<SelectWrapper
-								base={ReactSelect}
-								defaultValue={initialType}
-								disabled={!canEditType}
-								idAttribute="name"
-								label="Entity Type"
-								labelAttribute="name"
-								options={entityTypeOptions}
-								placeholder="Select Entity Type"
-								ref={(ref) => this.entityType = ref}
-							/>
-							<SelectWrapper
-								base={ReactSelect}
-								defaultValue={initialPrivacy}
-								idAttribute="name"
-								label="Privacy"
-								labelAttribute="name"
-								options={privacyOptions}
-								placeholder="Select Privacy"
-								ref={(ref) => this.privacy = ref}
-							/>
+							<Form.Group>
+								<Form.Label>Entity Type</Form.Label>
+								<ReactSelect
+									classNamePrefix="react-select"
+									defaultValue={entityTypeOptions.filter((option) => option.name === initialType)}
+									getOptionLabel={this.getOptionLabel}
+									getOptionValue={this.getOptionValue}
+									instanceId="title"
+									isDisabled={!canEditType}
+									options={entityTypeOptions}
+									placeholder="Select title"
+									ref={(ref) => this.entityType = ref}
+								/>
+							</Form.Group>
+							<Form.Group>
+								<Form.Label>Privacy</Form.Label>
+								<ReactSelect
+									classNamePrefix="react-select"
+									defaultValue={privacyOptions.filter((option) => option.name === initialPrivacy)}
+									getOptionLabel={this.getOptionLabel}
+									getOptionValue={this.getOptionValue}
+									instanceId="Privacy"
+									options={privacyOptions}
+									placeholder="Select Privacy"
+									ref={(ref) => this.privacy = ref}
+								/>
+							</Form.Group>
 							<h3><b>Collaborators</b></h3>
 							<Row className="margin-bottom-2">
 								<Col className="margin-top-d5" md={6}>

@@ -4,7 +4,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
-import SelectWrapper from '../../input/select-wrapper';
 import _ from 'lodash';
 import request from 'superagent';
 
@@ -141,7 +140,7 @@ class AddToCollectionModal extends React.Component {
 
 		const description = this.description.value;
 		const name = this.name.value;
-		const privacy = this.privacy.getValue();
+		const privacy = this.privacy.select.getValue();
 		const {entityType} = this.props;
 
 		const data = {
@@ -174,7 +173,15 @@ class AddToCollectionModal extends React.Component {
 	}
 
 	isValid() {
-		return _.trim(this.name.value).length && this.privacy.getValue();
+		return _.trim(this.name.value).length && this.privacy.select.getValue().length;
+	}
+
+	getOptionLabel(option) {
+		return option.name;
+	}
+
+	getOptionValue(option) {
+		return option.name;
 	}
 
 	/* eslint-disable react/jsx-no-bind */
@@ -249,15 +256,18 @@ class AddToCollectionModal extends React.Component {
 								ref={(ref) => this.description = ref}
 							/>
 						</Form.Group>
-						<SelectWrapper
-							base={ReactSelect}
-							idAttribute="name"
-							label="Privacy"
-							labelAttribute="name"
-							options={privacyOptions}
-							placeholder="Select Privacy"
-							ref={(ref) => this.privacy = ref}
-						/>
+						<Form.Group>
+							<Form.Label>Privacy</Form.Label>
+							<ReactSelect
+								classNamePrefix="react-select"
+								getOptionLabel={this.getOptionLabel}
+								getOptionValue={this.getOptionValue}
+								options={privacyOptions}
+								placeholder="Select Privacy"
+								ref={(ref) => this.privacy = ref}
+
+							/>
+						</Form.Group>
 					</form>
 				</Col>
 			</div>

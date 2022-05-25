@@ -24,7 +24,6 @@ import LoadingSpinner from '../loading-spinner';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
-import SelectWrapper from '../input/select-wrapper';
 import request from 'superagent';
 
 
@@ -47,7 +46,7 @@ class RegistrationForm extends React.Component {
 	handleSubmit(event) {
 		event.preventDefault();
 
-		const gender = this.gender.getValue();
+		const gender = this.gender.select.getValue()[0].id;
 		const data = {
 			displayName: this.displayName.value,
 			gender: gender ? parseInt(gender, 10) : null
@@ -80,6 +79,10 @@ class RegistrationForm extends React.Component {
 		this.setState({
 			valid: this.isValid()
 		});
+	}
+
+	getOptionLabel(option) {
+		return option.name;
 	}
 
 	render() {
@@ -136,20 +139,20 @@ class RegistrationForm extends React.Component {
 								that will be displayed on your profile
 								page.
 							</p>
-							<SelectWrapper
-								base={ReactSelect}
-								defaultValue={initialGender}
-								groupClassName="row"
-								idAttribute="id"
-								instanceId="gender"
-								label="Gender"
-								labelAttribute="name"
-								labelClassName="col-lg-4 col-form-label"
-								options={this.props.genders}
-								placeholder="Select gender…"
-								ref={(ref) => this.gender = ref}
-								wrapperClassName="col-lg-4"
-							/>
+							<Form.Group className="row">
+								<Form.Label className="col-lg-4 col-form-label">Gender</Form.Label>
+								<div className="col-lg-4">
+									<ReactSelect
+										defaultValue={this.props.genders.filter((option) => option.id === initialGender)}
+										getOptionLabel={this.getOptionLabel}
+										instanceId="gender"
+										options={this.props.genders}
+										placeholder="Select gender…"
+										ref={(ref) => this.gender = ref}
+									/>
+								</div>
+							</Form.Group>
+
 							<hr/>
 							{errorComponent}
 							<div className="text-center">

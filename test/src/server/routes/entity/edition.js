@@ -1,5 +1,4 @@
-import {createEdition, createEditor, getRandomUUID, truncateEntities} from '../../../../test-helpers/create-entities';
-
+import {createEdition, createEditor, getRandomUUID, seedInitialState, truncateEntities} from '../../../../test-helpers/create-entities';
 import app from '../../../../../src/server/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
@@ -47,6 +46,29 @@ describe('Edition routes', () => {
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
+	it('should not throw error while seeding edition', async () => {
+		const data = {
+			...seedInitialState,
+			'editionSection.depth': 'nan',
+			'editionSection.format': '',
+			'editionSection.height': '139',
+			'editionSection.pages': '499',
+			'editionSection.publisher': '',
+			'editionSection.releaseDate': 'invalid',
+			'editionSection.weight': '453',
+			'editionSection.width': '',
+			'identifierEditor.t10': '0374533555'
+		};
+		const res = await agent.get('/edition/create').set('Origin', `http://127.0.0.1:${agent.app.address().port}`).send(data);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw not authorized error while seeding edition', async () => {
+		const data = seedInitialState;
+		const res = await chai.request(app).post('/edition/create').send(data);
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+	});
 	it('should not throw an error if requested edition BBID exists', async () => {
 		const res = await chai.request(app)
 			.get(`/edition/${aBBID}`);
@@ -54,3 +76,4 @@ describe('Edition routes', () => {
 		expect(res).to.have.status(200);
 	});
 });
+

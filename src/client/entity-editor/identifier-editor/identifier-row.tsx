@@ -33,6 +33,7 @@ import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
 import ValueField from './value-field';
+import {collapseWhiteSpaces} from '../../../common/helpers/utils';
 import {connect} from 'react-redux';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
@@ -89,7 +90,7 @@ function IdentifierRow({
 		label: type.label,
 		value: type.id
 	}));
-
+	const identifierValue = identifierTypesForDisplay.filter((el) => el.value === typeValue);
 	return (
 		<div>
 			<Row>
@@ -107,9 +108,10 @@ function IdentifierRow({
 					<Form.Group>
 						<Form.Label>Type</Form.Label>
 						<Select
+							classNamePrefix="react-select"
 							instanceId={`identifierType${index}`}
 							options={identifierTypesForDisplay}
-							value={typeValue}
+							value={identifierValue}
 							onChange={onTypeChange}
 						/>
 					</Form.Group>
@@ -139,16 +141,30 @@ function handleValueChange(
 	index: number,
 	types: Array<IdentifierType>
 ) {
+	let {value} = event.target;
+	value = collapseWhiteSpaces(value);
 	const guessedType =
-		data.guessIdentifierType(event.target.value, types);
+		data.guessIdentifierType(value, types);
 	if (guessedType) {
-		const result = new RegExp(guessedType.detectionRegex)
-			.exec(event.target.value);
-		event.target.value = result[1];
+		const result = new RegExp(guessedType.detectionRegex).exec(value);
+		value = result[1];
+		// 	disabling "add isbn row" feature temporary
+		// if (guessedType.id === 9) {
+		// 	const isbn10Type:any = types.find((el) => el.id === 10);
+		// 	const isbn10 = isbn13To10(value);
+		// 	if (isbn10) {
+		// 		dispatch(debouncedUpdateIdentifierValue(index + 1, isbn10, isbn10Type, false));
+		// 	}
+		// }
+		// if (guessedType.id === 10) {
+		// 	const isbn13Type:any = types.find((el) => el.id === 9);
+		// 	const isbn13 = isbn10To13(value);
+		// 	if (isbn13) {
+		// 		dispatch(debouncedUpdateIdentifierValue(index + 1, isbn10To13(value), isbn13Type, false));
+		// 	}
+		// }
 	}
-	return dispatch(
-		debouncedUpdateIdentifierValue(index, event.target.value, guessedType)
-	);
+	return dispatch(debouncedUpdateIdentifierValue(index, value, guessedType));
 }
 
 

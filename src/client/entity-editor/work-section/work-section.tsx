@@ -44,6 +44,7 @@ type WorkType = {
 };
 
 type LanguageOption = {
+	frequency: number,
 	name: string,
 	id: number
 };
@@ -92,6 +93,7 @@ function WorkSection({
 	onTypeChange
 }: Props) {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
+		frequency: language.frequency,
 		label: language.name,
 		value: language.id
 	}));
@@ -100,6 +102,7 @@ function WorkSection({
 		label: type.label,
 		value: type.id
 	}));
+	const typeOption = workTypesForDisplay.filter((el) => el.value === typeValue);
 
 	const tooltip = (
 		<Tooltip>
@@ -129,9 +132,10 @@ function WorkSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
+							classNamePrefix="react-select"
 							instanceId="workType"
 							options={workTypesForDisplay}
-							value={typeValue}
+							value={typeOption}
 							onChange={onTypeChange}
 						/>
 					</Form.Group>

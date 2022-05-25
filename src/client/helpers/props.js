@@ -57,3 +57,12 @@ export function extractEntityProps(props) {
 		user: props.user
 	};
 }
+
+export function extractPreviewProps(props) {
+	return {
+		baseUrl: props.baseUrl,
+		formBody: props.formBody,
+		originalUrl: props.originalUrl,
+		sourceUrl: props.sourceUrl
+	};
+}

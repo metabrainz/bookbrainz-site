@@ -76,6 +76,7 @@ type EditionStatus = {
 };
 
 type LanguageOption = {
+	frequency: number,
 	name: string,
 	id: number
 };
@@ -186,6 +187,7 @@ function EditionSection({
 	widthValue
 }: Props) {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
+		frequency: language.frequency,
 		label: language.name,
 		value: language.id
 	}));
@@ -194,22 +196,22 @@ function EditionSection({
 		label: format.label,
 		value: format.id
 	}));
-
+	const formatOption = editionFormatsForDisplay.filter((el) => el.value === formatValue);
 	const editionStatusesForDisplay = editionStatuses.map((status) => ({
 		label: status.label,
 		value: status.id
 	}));
-
+	const statusOption = editionStatusesForDisplay.filter((el) => el.value === statusValue);
 	const {isValid: isValidReleaseDate, errorMessage: dateErrorMessage} = validateEditionSectionReleaseDate(releaseDateValue);
 
-	const hasmatchingNameEditionGroups = Array.isArray(matchingNameEditionGroups) && matchingNameEditionGroups.length > 0;
+	const hasmatchingNameEditionGroups = Boolean(matchingNameEditionGroups?.length);
 
 	const showAutoCreateEditionGroupMessage =
 		!editionGroupValue &&
 		!editionGroupVisible &&
 		!editionGroupRequired;
 
-	const showMatchingEditionGroups = hasmatchingNameEditionGroups && !editionGroupValue;
+	const showMatchingEditionGroups = Boolean(hasmatchingNameEditionGroups && !editionGroupValue);
 
 	const getEditionGroupSearchSelect = () => (
 		<React.Fragment>
@@ -302,7 +304,7 @@ function EditionSection({
 							<ListGroup className="margin-top-1">
 								{matchingNameEditionGroups.map(eg => (
 									<ListGroup.Item key={eg.bbid}>
-										<LinkedEntity option={entityToOption(eg)} onSelect={onEditionGroupChange}/>
+										<LinkedEntity data={entityToOption(eg)} onSelect={onEditionGroupChange}/>
 									</ListGroup.Item>
 								))}
 							</ListGroup>
@@ -367,9 +369,10 @@ function EditionSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
+							classNamePrefix="react-select"
 							instanceId="editionFormat"
 							options={editionFormatsForDisplay}
-							value={formatValue}
+							value={formatOption}
 							onChange={onFormatChange}
 						/>
 					</Form.Group>
@@ -386,9 +389,10 @@ function EditionSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
+							classNamePrefix="react-select"
 							instanceId="editionStatus"
 							options={editionStatusesForDisplay}
-							value={statusValue}
+							value={statusOption}
 							onChange={onStatusChange}
 						/>
 					</Form.Group>
@@ -456,7 +460,6 @@ EditionSection.displayName = 'EditionSection';
 type RootState = Map<string, Map<string, any>>;
 function mapStateToProps(rootState: RootState): StateProps {
 	const state: Map<string, any> = rootState.get('editionSection');
-	const matchingNameEditionGroups = state.get('matchingNameEditionGroups');
 
 	return {
 		depthValue: state.get('depth'),
@@ -466,7 +469,7 @@ function mapStateToProps(rootState: RootState): StateProps {
 		formatValue: state.get('format'),
 		heightValue: state.get('height'),
 		languageValues: state.get('languages'),
-		matchingNameEditionGroups,
+		matchingNameEditionGroups: state.get('matchingNameEditionGroups'),
 		pagesValue: state.get('pages'),
 		physicalEnable: state.get('physicalEnable'),
 		publisherValue: state.get('publisher'),
