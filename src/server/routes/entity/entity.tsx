@@ -1389,6 +1389,7 @@ export async function handleAddRelationship(
 	return savedMainEntity.toJSON();
 }
 
+
 export function handleCreateEntities(
 	req: PassportRequest,
 	res: $Response
@@ -1407,15 +1408,15 @@ export function handleCreateEntities(
 		type: EntityTypeString
 	} | null | undefined;
 
-	const savedMainEntities = {};
-	const bbidMap = {};
-	const allRelationships = [];
-	let entityEditPromise;
-	try {
-		entityEditPromise = Promise.all(Object.keys(body).map((entityKey:string) => bookshelf.transaction(async (transacting) => {
+	const entityEditPromise = bookshelf.transaction(async (transacting) => {
+		/* eslint-disable no-await-in-loop */
+		const savedMainEntities = {};
+		const bbidMap = {};
+		const allRelationships = {};
+		async function processEntity(entityKey:string) {
 			const entityForm = body[entityKey];
 			const entityType = _.upperFirst(entityForm.type);
-			allRelationships.push(entityForm.relationships);
+			allRelationships[entityKey] = entityForm.relationships;
 			const newEntity = await new Entity({type: entityType}).save(null, {transacting});
 			currentEntity = newEntity.toJSON();
 
@@ -1452,29 +1453,34 @@ export function handleCreateEntities(
 			}
 			bbidMap[entityKey] = savedMainEntity.get('bbid');
 			savedMainEntities[entityKey] = savedMainEntity.toJSON();
-			return savedMainEntities[entityKey];
-		})));
+		}
+		try {
+			// bookshelf's transaction issue with Promise.All  https://github.com/bookshelf/bookshelf/issues/1498
+			await Object.keys(body).reduce((promise, entityKey) => promise.then(() => processEntity(entityKey)), Promise.resolve());
 
-		// adding relationship on newly created entites
-	}
-	catch (err) {
-		log.error(err);
-		throw err;
-	}
-
-	const achievementPromise = entityEditPromise.then(
-		async (entitiesJSON:Record<string, any>) => {
-			await bookshelf.transaction((transacting) => Promise.all(allRelationships.map(async (rels, index) => {
+			// adding relationship on newly created entites
+			await Promise.all(Object.keys(allRelationships).map(async (entityId) => {
+				const rels = allRelationships[entityId];
 				if (!_.isEmpty(rels)) {
 					const relationships = rels.map((rel) => (
 						{...rel, sourceBbid: _.get(bbidMap, rel.sourceBbid) ?? rel.sourceBbid,
-								 targetBbid: _.get(bbidMap, rel.targetBbid) ?? rel.targetBbid}
+						 targetBbid: _.get(bbidMap, rel.targetBbid) ?? rel.targetBbid}
 					));
-					const cEntity = savedMainEntities[index.toString()];
-					const {relationshipSetId} = await handleAddRelationship({relationships}, editorJSON, cEntity, cEntity.type, orm, transacting);
-					cEntity.relationshipSetId = relationshipSetId;
+					const mainEntity = savedMainEntities[entityId];
+					const {relationshipSetId} = await handleAddRelationship({relationships}, editorJSON,
+						 mainEntity, mainEntity.type, orm, transacting);
+					mainEntity.relationshipSetId = relationshipSetId;
 				}
-			})));
+			}));
+			return savedMainEntities;
+		}
+		catch (err) {
+			log.error(err);
+			throw err;
+		}
+	});
+	const achievementPromise = entityEditPromise.then(
+		(entitiesJSON:Record<string, any>) => {
 			const entitiesAchievementsPromise = [];
 			for (const entityJSON of Object.values(entitiesJSON)) {
 				entitiesAchievementsPromise.push(achievement.processEdit(
