@@ -124,7 +124,7 @@ function PublisherSection({
 		label: type.label,
 		value: type.id
 	}));
-
+	const typeOption = publisherTypesForDisplay.filter((el) => el.value === typeValue);
 	const {isValid: isValidBeginDate, errorMessage: errorMessageBeginDate} = validatePublisherSectionBeginDate(beginDateValue);
 	const {isValid: isValidEndDate, errorMessage: errorMessageEndDate} = validatePublisherSectionEndDate(beginDateValue, endDateValue, endedChecked);
 	return (
@@ -141,9 +141,10 @@ function PublisherSection({
 					<Form.Group>
 						<Form.Label>Type</Form.Label>
 						<Select
+							classNamePrefix="react-select"
 							instanceId="publisherType"
 							options={publisherTypesForDisplay}
-							value={typeValue}
+							value={typeOption}
 							onChange={onTypeChange}
 						/>
 					</Form.Group>

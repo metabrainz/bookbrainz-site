@@ -34,7 +34,7 @@ const {Button, Table} = bootstrap;
 const {getEntityDisambiguation, getLanguageAttribute, getEntityLabel} = entityHelper;
 
 function renderAuthors(authorData) {
-	return authorData.map(author => <tr key={author.authorbbid}><a href={`/author/${author.authorbbid}`}>{author.authoralias}</a></tr>);
+	return authorData.map(author => <div key={author.authorbbid}><a href={`/author/${author.authorbbid}`}>{author.authoralias}</a></div>);
 }
 
 function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities, onToggleRow}) {

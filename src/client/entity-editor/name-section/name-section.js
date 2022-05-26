@@ -143,6 +143,7 @@ class NameSection extends React.Component {
 		} = this.props;
 
 		const languageOptionsForDisplay = languageOptions.map((language) => ({
+			frequency: language.frequency,
 			label: language.name,
 			value: language.id
 		}));

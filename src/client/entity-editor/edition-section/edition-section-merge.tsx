@@ -36,9 +36,9 @@ import type {List, Map} from 'immutable';
 import {authorCreditToString, entityToOption, transformISODateForSelect} from '../../helpers/entity';
 
 import type {Dispatch} from 'redux';
-import Entity from '../common/entity';
+import EntitySelect from '../common/entity-select';
 import {Form} from 'react-bootstrap';
-import LinkedEntity from '../common/linked-entity';
+import LinkedEntitySelect from '../common/linked-entity-select';
 import MergeField from '../common/merge-field';
 import Select from 'react-select';
 import _ from 'lodash';
@@ -229,11 +229,10 @@ function EditionSectionMerge({
 				onChange={onAuthorCreditChange}
 			/>
 			<MergeField
+				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				currentValue={editionGroupValue}
 				label="Edition Group"
-				optionComponent={LinkedEntity}
 				options={editionGroupOptions}
-				valueRenderer={Entity}
 				onChange={onEditionGroupChange}
 			/>
 			<MergeField
@@ -243,11 +242,10 @@ function EditionSectionMerge({
 				onChange={onReleaseDateChange}
 			/>
 			<MergeField
+				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				currentValue={publisherValue}
 				label="Publisher"
-				optionComponent={LinkedEntity}
 				options={publisherOptions}
-				valueRenderer={Entity}
 				onChange={onPublisherChange}
 			/>
 			<MergeField
@@ -295,8 +293,9 @@ function EditionSectionMerge({
 			<Form.Group>
 				<Form.Label>Languages</Form.Label>
 				<Select
-					disabled
-					multi
+					isDisabled
+					isMulti
+					classNamePrefix="react-select"
 					instanceId="languages"
 					placeholder="No languages"
 					value={languageValues}

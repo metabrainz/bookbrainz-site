@@ -48,7 +48,7 @@ function reducer(
 		authorCreditEditorVisible: false,
 		format: null,
 		languages: Immutable.List([]),
-		matchingNameEditionGroups: Immutable.List([]),
+		matchingNameEditionGroups: [],
 		physicalEnable: true,
 		publisher: null,
 		releaseDate: '',
@@ -92,9 +92,9 @@ function reducer(
 			return state.set('authorCreditEditorVisible', true);
 		case UPDATE_WARN_IF_EDITION_GROUP_EXISTS:
 			if (!Array.isArray(payload) || !payload.length) {
-				return state.set('matchingNameEditionGroups', Immutable.List());
+				return state.set('matchingNameEditionGroups', []);
 			}
-			return state.set('matchingNameEditionGroups', Immutable.List(payload));
+			return state.set('matchingNameEditionGroups', payload);
 		// no default
 	}
 	return state;

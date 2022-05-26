@@ -69,7 +69,7 @@ function Footer(props) {
 				<div className="text-center">
 					<small>
 						Alpha Software —{' '}
-						<a href={`${repositoryUrl}commit/${siteRevision}`}>
+						<a href={`${repositoryUrl}tree/${siteRevision}`}>
 							{siteRevision}
 						</a> —&nbsp;
 						<a href="https://tickets.metabrainz.org/projects/BB/issues/">
