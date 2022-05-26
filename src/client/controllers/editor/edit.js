@@ -28,7 +28,8 @@ import {extractLayoutProps} from '../../helpers/props';
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
-ReactDOM.hydrate(
+ReactDOM.hydrateRoot(
+	document.getElementById('target'),
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
 			<ProfileForm
@@ -37,8 +38,7 @@ ReactDOM.hydrate(
 				titles={props.titles}
 			/>
 		</Layout>
-	</AppContainer>,
-	document.getElementById('target')
+	</AppContainer>
 );
 
 

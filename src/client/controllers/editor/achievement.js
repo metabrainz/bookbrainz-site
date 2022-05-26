@@ -33,7 +33,8 @@ import ReactDOM from 'react-dom';
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
-ReactDOM.hydrate(
+ReactDOM.hydrateRoot(
+	document.getElementById('target'),
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
 			<EditorContainer
@@ -46,8 +47,7 @@ ReactDOM.hydrate(
 				/>
 			</EditorContainer>
 		</Layout>
-	</AppContainer>,
-	document.getElementById('target')
+	</AppContainer>
 );
 
 

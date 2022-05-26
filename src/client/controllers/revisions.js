@@ -34,7 +34,7 @@ const markup = (
 	</AppContainer>
 );
 
-ReactDOM.hydrate(markup, document.getElementById('target'));
+ReactDOM.hydrateRoot(document.getElementById('target'), markup);
 
 /*
  * As we are not exporting a component,

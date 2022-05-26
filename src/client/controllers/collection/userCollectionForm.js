@@ -28,15 +28,15 @@ import {extractLayoutProps} from '../../helpers/props';
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
-ReactDOM.hydrate(
+ReactDOM.hydrateRoot(
+	document.getElementById('target'),
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
 			<UserCollectionForm
 				collection={props.collection}
 			/>
 		</Layout>
-	</AppContainer>,
-	document.getElementById('target')
+	</AppContainer>
 );
 
 
