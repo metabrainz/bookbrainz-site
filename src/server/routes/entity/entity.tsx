@@ -49,15 +49,23 @@ import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
 import {_bulkIndexEntities} from '../../../common/helpers/search';
 import {transformNewForm as authorTransform} from './author';
+import {transformNewForm as editionGroupTransform} from './edition-group';
+import {transformNewForm as editionTransform} from './edition';
 import {getEntityLabel} from '../../../client/helpers/entity';
 import {getOrderedRevisionsForEntityPage} from '../../helpers/revisions';
 import log from 'log';
+import {transformNewForm as publisherTransform} from './publisher';
+import {transformNewForm as seriesTransform} from './series';
 import target from '../../templates/target';
 import {transformNewForm as workTransform} from './work';
 
 
 const transformFunctions = {
 	author: authorTransform,
+	edition: editionTransform,
+	editionGroup: editionGroupTransform,
+	publisher: publisherTransform,
+	series: seriesTransform,
 	work: workTransform
 };
 const additionalEntityProps = {
@@ -65,6 +73,13 @@ const additionalEntityProps = {
 		'typeId', 'genderId', 'beginAreaId', 'beginDate', 'endDate', 'ended',
 		'endAreaId'
 	],
+	edition: [
+		'editionGroupBbid', 'width', 'height', 'depth', 'weight', 'pages',
+		'formatId', 'statusId'
+	],
+	editionGroup: 'typeid',
+	publisher: ['typeId', 'areaId', 'beginDate', 'endDate', 'ended'],
+	series: ['entityType', 'orderingTypeId'],
 	work: 'typeId'
 
 };
@@ -1341,8 +1356,8 @@ export function transformForm(body:Record<string, any>):Record<string, any> {
 
 
 export async function handleAddRelationship(
-	body,
-	editorJSON,
+	body:Record<string, any>,
+	editorId:number,
 	currentEntity,
 	entityType:EntityTypeString,
 	orm,
@@ -1350,8 +1365,9 @@ export async function handleAddRelationship(
 ) {
 	const {Revision} = orm;
 
+	// new revision for adding relationship
 	const newRevision = await new Revision({
-		authorId: editorJSON.id,
+		authorId: editorId,
 		isMerge: false
 	}).save(null, {transacting});
 	const relationshipSets = await getNextRelationshipSets(
@@ -1364,7 +1380,8 @@ export async function handleAddRelationship(
 	const mainEntity = await fetchOrCreateMainEntity(
 		orm, transacting, false, currentEntity.bbid, entityType
 	);
-		// Fetch all entities that definitely exist
+
+	// Fetch all entities that definitely exist
 	const otherEntities = await fetchEntitiesForRelationships(
 		orm, transacting, currentEntity, relationshipSets
 	);
@@ -1384,11 +1401,10 @@ export async function handleAddRelationship(
 	});
 	const savedMainEntity = await saveEntitiesAndFinishRevision(
 		orm, transacting, false, newRevision, mainEntity, allEntities,
-		editorJSON.id, body.note
+		editorId, body.note
 	);
 	return savedMainEntity.toJSON();
 }
-
 
 export function handleCreateEntities(
 	req: PassportRequest,
@@ -1409,10 +1425,11 @@ export function handleCreateEntities(
 	} | null | undefined;
 
 	const entityEditPromise = bookshelf.transaction(async (transacting) => {
-		/* eslint-disable no-await-in-loop */
 		const savedMainEntities = {};
+		// map dummy id to real bbid
 		const bbidMap = {};
 		const allRelationships = {};
+		// callback for creating entity
 		async function processEntity(entityKey:string) {
 			const entityForm = body[entityKey];
 			const entityType = _.upperFirst(entityForm.type);
@@ -1425,9 +1442,10 @@ export function handleCreateEntities(
 				authorId: editorJSON.id,
 				isMerge: false
 			}).save(null, {transacting});
+			const additionalProps = _.pick(entityForm, additionalEntityProps[_.snakeCase(entityType)]);
 			const changedProps = await getChangedProps(
 				orm, transacting, true, currentEntity, entityForm, entityType,
-				newRevision, _.pick(entityForm, additionalEntityProps[_.lowerFirst(entityType)])
+				newRevision, additionalProps
 			);
 			const mainEntity = await fetchOrCreateMainEntity(
 				orm, transacting, true, currentEntity.bbid, entityType
@@ -1455,7 +1473,7 @@ export function handleCreateEntities(
 			savedMainEntities[entityKey] = savedMainEntity.toJSON();
 		}
 		try {
-			// bookshelf's transaction issue with Promise.All  https://github.com/bookshelf/bookshelf/issues/1498
+			// bookshelf's transaction have issue with Promise.All
 			await Object.keys(body).reduce((promise, entityKey) => promise.then(() => processEntity(entityKey)), Promise.resolve());
 
 			// adding relationship on newly created entites
@@ -1467,7 +1485,7 @@ export function handleCreateEntities(
 						 targetBbid: _.get(bbidMap, rel.targetBbid) ?? rel.targetBbid}
 					));
 					const mainEntity = savedMainEntities[entityId];
-					const {relationshipSetId} = await handleAddRelationship({relationships}, editorJSON,
+					const {relationshipSetId} = await handleAddRelationship({relationships}, editorJSON.id,
 						 mainEntity, mainEntity.type, orm, transacting);
 					mainEntity.relationshipSetId = relationshipSetId;
 				}

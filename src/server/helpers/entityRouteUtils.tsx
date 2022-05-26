@@ -37,7 +37,7 @@ import {generateProps} from './props';
 
 
 const {createRootReducer, getEntitySection, getEntitySectionMerge, getValidator} = entityEditorHelpers;
-
+const validEntityTypes = ['author', 'edition', 'editionGroup', 'publisher', 'series', 'work'];
 type EntityAction = 'create' | 'edit';
 type PassportRequest = $Request & {user: any, session: any};
 
@@ -313,12 +313,18 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
 	return props;
 }
 
-export function validateUnifiedForm(body:Record<string, any>):boolean {
+/**
+ * Validate Unified form
+ * @param {object} body - request body
+ * @returns {boolean}
+ */
+
+function validateUnifiedForm(body:Record<string, any>):boolean {
 	for (const entityKey in body) {
 		if (Object.prototype.hasOwnProperty.call(body, entityKey)) {
 			const entityForm = body[entityKey];
 			const entityType = _.snakeCase(entityForm.type);
-			if (!entityType) {
+			if (!entityType && !validEntityTypes.includes(entityType)) {
 				return false;
 			}
 			const validator = getValidator(entityType);
@@ -329,6 +335,13 @@ export function validateUnifiedForm(body:Record<string, any>):boolean {
 	}
 	return true;
 }
+
+/**
+ * Middleware for handling unified form submission
+ * @param {object} req - Request object
+ * @param {object} res - Response object
+ */
+
 export function createEntitesHandler(
 	req:$Request,
 	res:$Response
