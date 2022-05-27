@@ -147,7 +147,6 @@ class EntitySearchFieldOption extends React.Component {
 				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				filterOptions={false}
 				getOptionLabel={this.getOptionLabel}
-				labelKey="text"
 				loadOptions={this.fetchOptions}
 				onBlurResetsInput={false}
 				{...this.props}

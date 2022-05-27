@@ -164,7 +164,7 @@ export function toggleShowEditionGroup(showEGSection: boolean): Action {
  *                                   the edition.
  * @returns {Action} The resulting UPDATE_PUBLISHER action.
  */
-export function updatePublisher(newPublisher: Publisher): Action {
+export function updatePublisher(newPublisher: Record<string, Publisher>): Action {
 	return {
 		payload: newPublisher,
 		type: UPDATE_PUBLISHER
