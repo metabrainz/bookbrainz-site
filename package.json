@@ -35,6 +35,8 @@
     "@fortawesome/free-brands-svg-icons": "^5.14.0",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-fontawesome": "^0.1.11",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.5",
     "array-move": "^3.0.1",
     "bookbrainz-data": "2.13.1",
     "chart.js": "^2.9.4",
