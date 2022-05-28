@@ -349,7 +349,7 @@ export function createEntitesHandler(
 	// validating
 	if (!validateUnifiedForm(req.body)) {
 		const err = new error.FormSubmissionError();
-		error.sendErrorAsJSON(res, err);
+		return error.sendErrorAsJSON(res, err);
 	}
 	// transforming
 	req.body = entityRoutes.transformForm(req.body);

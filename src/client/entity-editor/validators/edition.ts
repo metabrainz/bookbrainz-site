@@ -70,12 +70,12 @@ export function validateEditionSectionEditionGroup(value: any, editionGroupRequi
 	return validateUUID(get(value, 'id', null), editionGroupRequired);
 }
 
-export function validateEditionSectionPublisher(value: any): boolean {
+export function validateEditionSectionPublisher(value: any, isCustom = false): boolean {
 	if (!value) {
 		return true;
 	}
-
-	return validateUUID(get(value, 'id', null), true);
+	// custom/dummy id is used for unified form
+	return isCustom ? Boolean(get(value, 'id', null)) : validateUUID(get(value, 'id', null), true);
 }
 
 export function validateEditionSectionReleaseDate(value: any) {
@@ -95,7 +95,7 @@ export function validateEditionSectionWidth(value: any): boolean {
 	return validatePositiveInteger(value);
 }
 
-export function validateEditionSection(data: any): boolean {
+export function validateEditionSection(data: any, isCustom = false): boolean {
 	return (
 		validateEditionSectionDepth(get(data, 'depth', null)) &&
 		validateEditionSectionFormat(get(data, 'format', null)) &&
@@ -106,7 +106,7 @@ export function validateEditionSection(data: any): boolean {
 			get(data, 'editionGroup', null),
 			get(data, 'editionGroupRequired', null)
 		) &&
-		validateEditionSectionPublisher(get(data, 'publisher', null)) &&
+		validateEditionSectionPublisher(get(data, 'publisher', null), isCustom) &&
 		validateEditionSectionReleaseDate(get(data, 'releaseDate', null)).isValid &&
 		validateEditionSectionStatus(get(data, 'status', null)) &&
 		validateEditionSectionWeight(get(data, 'weight', null)) &&
@@ -123,7 +123,7 @@ export function validateForm(
 			get(formData, 'identifierEditor', {}), identifierTypes
 		),
 		validateNameSection(get(formData, 'nameSection', {})),
-		validateEditionSection(get(formData, 'editionSection', {})),
+		validateEditionSection(get(formData, 'editionSection', {}), Boolean(formData.type)),
 		validateSubmissionSection(get(formData, 'submissionSection', {}))
 	];
 

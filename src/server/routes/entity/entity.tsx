@@ -1433,6 +1433,10 @@ export function handleCreateEntities(
 		async function processEntity(entityKey:string) {
 			const entityForm = body[entityKey];
 			const entityType = _.upperFirst(entityForm.type);
+			// edition entity should be on the bottom of the list
+			if (entityType === 'Edition' && !_.isEmpty(entityForm.publishers)) {
+				entityForm.publishers = entityForm.publishers.map((id) => bbidMap[id] ?? id);
+			}
 			allRelationships[entityKey] = entityForm.relationships;
 			const newEntity = await new Entity({type: entityType}).save(null, {transacting});
 			currentEntity = newEntity.toJSON();
