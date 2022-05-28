@@ -130,6 +130,10 @@ class EntitySearchFieldOption extends React.Component {
 		return option.text;
 	}
 
+	getOptionValue(option) {
+		return option.id;
+	}
+
 	render() {
 		const labelElement = <ValidationLabel empty={this.props.empty} error={this.props.error}>{this.props.label}</ValidationLabel>;
 		const helpIconElement = this.props.tooltipText && (
@@ -147,6 +151,7 @@ class EntitySearchFieldOption extends React.Component {
 				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				filterOptions={false}
 				getOptionLabel={this.getOptionLabel}
+				getOptionValue={this.getOptionValue}
 				loadOptions={this.fetchOptions}
 				onBlurResetsInput={false}
 				{...this.props}
