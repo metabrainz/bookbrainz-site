@@ -22,15 +22,18 @@ import {
 	addAuthorCreditRow,
 	hideAuthorCreditEditor,
 	removeEmptyCreditRows,
-	showAuthorCreditEditor
+	showAuthorCreditEditor,
+	updateCreditAuthorValue
 } from './actions';
 import {Button, Col, Form, InputGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 
+import {SingleValueProps, components} from 'react-select';
 import {map as _map, values as _values} from 'lodash';
 
 import {faPencilAlt, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import AuthorCreditEditor from './author-credit-editor';
 import type {Dispatch} from 'redux'; // eslint-disable-line import/named
+import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -46,9 +49,11 @@ type OwnProps = {
 type StateProps = {
 	authorCreditEditor: Record<string, AuthorCreditRow>,
 	showEditor: boolean,
+	isEditable:boolean,
 };
 
 type DispatchProps = {
+	onAuthorChange: (Author) => unknown,
 	onEditAuthorCredit: (rowCount: number) => unknown,
 	onEditorClose: () => unknown,
 };
@@ -56,7 +61,7 @@ type DispatchProps = {
 type Props = OwnProps & StateProps & DispatchProps;
 
 function AuthorCreditSection({
-	authorCreditEditor, onEditAuthorCredit, onEditorClose, showEditor
+	authorCreditEditor, onEditAuthorCredit, onEditorClose, showEditor, onAuthorChange, isEditable
 }: Props) {
 	let editor;
 	if (showEditor) {
@@ -84,6 +89,14 @@ function AuthorCreditSection({
 			Author Credit
 		</ValidationLabel>
 	);
+	const SingleValue = (props:SingleValueProps<any>) => (
+		<components.SingleValue {...props}>
+			<span>
+				{props.data.label}
+			</span>
+		</components.SingleValue>
+	);
+	const optionValue = authorCreditPreview.length && {label: authorCreditPreview, value: authorCreditPreview};
 	const tooltip = (
 		<Tooltip>
 			Name(s) of the Author(s) as they appear on the book cover
@@ -104,8 +117,19 @@ function AuthorCreditSection({
 						</OverlayTrigger>
 					</Form.Label>
 					<InputGroup>
-						<Form.Control defaultValue={authorCreditPreview} placeholder="No Author Credit yet, click edit to add one" type="text"/>
+						<div className="ac-select">
+							<EntitySearchFieldOption
+								customComponents={{DropdownIndicator: null, SingleValue}}
+								instanceId="author0"
+								isDisabled={!isEditable}
+								placeholder="Type to search"
+								type="author"
+								value={optionValue}
+								onChange={onAuthorChange}
+							/>
+						</div>
 						<InputGroup.Append>{editButton}</InputGroup.Append>
+
 					</InputGroup>
 				</Form.Group>
 			</Col>
@@ -115,18 +139,25 @@ function AuthorCreditSection({
 
 AuthorCreditSection.propTypes = {
 	authorCreditEditor: PropTypes.object.isRequired,
+	isEditable: PropTypes.bool.isRequired,
 	showEditor: PropTypes.bool.isRequired
 };
 
 function mapStateToProps(rootState): StateProps {
+	const firstRowKey = rootState.get('authorCreditEditor').keySeq().first();
+	const authorCreditRow = rootState.getIn(['authorCreditEditor', firstRowKey]);
+	const isEditable = !(rootState.get('authorCreditEditor').size > 1) &&
+	 authorCreditRow.get('name') === authorCreditRow.getIn(['author', 'text'], '');
 	return {
 		authorCreditEditor: convertMapToObject(rootState.get('authorCreditEditor')),
+		isEditable,
 		showEditor: rootState.getIn(['editionSection', 'authorCreditEditorVisible'])
 	};
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
+		onAuthorChange: (value) => dispatch(updateCreditAuthorValue(-1, value)),
 		onEditAuthorCredit: (rowCount:number) => {
 			dispatch(showAuthorCreditEditor());
 			// Automatically add an empty row if editor is empty

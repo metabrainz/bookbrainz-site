@@ -144,7 +144,7 @@ class EntitySearchFieldOption extends React.Component {
 			<ImmutableAsyncSelect
 				className="Select"
 				classNamePrefix="react-select"
-				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
+				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect, ...this.props.customComponents && this.props.customComponents}}
 				filterOptions={false}
 				getOptionLabel={this.getOptionLabel}
 				labelKey="text"
@@ -156,10 +156,12 @@ class EntitySearchFieldOption extends React.Component {
 
 		return (
 			<Form.Group>
+				{this.props.label &&
 				<Form.Label>
 					{labelElement}
 					{helpIconElement}
 				</Form.Label>
+				}
 				{this.renderInputGroup({wrappedSelect, ...this.props})}
 			</Form.Group>
 		);

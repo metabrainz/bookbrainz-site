@@ -54,7 +54,7 @@ export type AuthorCredit = {
 	id: number,
 };
 
-let nextAuthorCreditRowId = 0;
+let nextAuthorCreditRowId = 1;
 
 /**
  * Produces an action indicating that a row for an additional name should be

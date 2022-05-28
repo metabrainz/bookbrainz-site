@@ -721,3 +721,9 @@ ul {
 .input-group > .input-group-append > .btn {
 	padding: 6px 12px;
 }
+.ac-select {
+	flex-grow: 2;
+}
+.ac-select .form-group {
+	margin-bottom: 0;
+}

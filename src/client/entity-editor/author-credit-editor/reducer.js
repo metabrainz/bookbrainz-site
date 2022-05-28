@@ -48,6 +48,10 @@ function addAuthorCreditRow(state, payload) {
 }
 
 function setNewAuthorAndDisplay(state, payload) {
+	if (payload.rowId === -1) {
+		const firstRowKey = state.keySeq().first();
+		payload.rowId = firstRowKey;
+	}
 	let returnState = state.setIn([payload.rowId, 'author'], Immutable.fromJS(payload));
 
 	if (!payload.id) {
@@ -65,6 +69,10 @@ function setNewAuthorAndDisplay(state, payload) {
 }
 
 function deleteAuthorCreditRow(state, payload) {
+	const firstRowKey = state.keySeq().first();
+	if (firstRowKey === payload) {
+		return state;
+	}
 	let returnState = state.delete(payload);
 
 	// If names remain in the author credit, empty the join phrase for the last
@@ -77,14 +85,17 @@ function deleteAuthorCreditRow(state, payload) {
 	return returnState;
 }
 function deleteEmptyRows(state) {
-	const returnState = state.filterNot(row =>
-		row.get('author') === null && row.get('joinPhrase') === '' && row.get('name') === '');
+	const firstRowKey = state.keySeq().first();
+	const returnState = state.filterNot((row, rowId) =>
+		(rowId !== firstRowKey) && row.get('author') === null && row.get('joinPhrase') === '' && row.get('name') === '');
 
 	return returnState;
 }
-
+const initialState = {
+	n0: EMPTY_CREDIT_ROW
+};
 function reducer(
-	state = Immutable.OrderedMap(),
+	state = Immutable.OrderedMap(initialState),
 	action
 ) {
 	const {type, payload} = action;
