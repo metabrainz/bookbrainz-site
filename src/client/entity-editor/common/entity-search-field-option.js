@@ -171,6 +171,7 @@ class EntitySearchFieldOption extends React.Component {
 EntitySearchFieldOption.displayName = 'EntitySearchFieldOption';
 EntitySearchFieldOption.propTypes = {
 	bbid: PropTypes.string,
+	customComponents: PropTypes.object,
 	empty: PropTypes.bool,
 	error: PropTypes.bool,
 	filters: PropTypes.array,
@@ -184,6 +185,7 @@ EntitySearchFieldOption.propTypes = {
 };
 EntitySearchFieldOption.defaultProps = {
 	bbid: null,
+	customComponents: {},
 	empty: true,
 	error: false,
 	filters: [],

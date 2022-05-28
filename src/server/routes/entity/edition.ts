@@ -405,7 +405,13 @@ function editionToFormState(edition) {
 	for (const credit of credits) {
 		authorCreditEditor[credit.position] = credit;
 	}
-
+	if (_.isEmpty(authorCreditEditor)) {
+		authorCreditEditor.n0 = {
+			author: null,
+			joinPhrase: '',
+			name: ''
+		};
+	}
 	const identifiers = edition.identifierSet ?
 		edition.identifierSet.identifiers.map(({type, ...rest}) => ({
 			type: type.id,
