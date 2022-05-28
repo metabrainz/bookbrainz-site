@@ -184,9 +184,9 @@ function describeValidateEditionSectionLanguages() {
 	});
 }
 
-const VALID_ENTITY = {
+const VALID_ENTITY = {0: {
 	id: '21675f5b-e9f8-4a6b-9aac-d3c965aa7d83'
-};
+}};
 
 const INVALID_ENTITY = {
 	id: '2'

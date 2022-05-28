@@ -76,15 +76,17 @@ export function validateEditionSectionPublisher(value: any): boolean {
 		return true;
 	}
 	const publishers = convertMapToObject(value);
+	let flag = false;
 	for (const pubId in publishers) {
 		if (Object.prototype.hasOwnProperty.call(publishers, pubId)) {
 			const publisher = publishers[pubId];
 			if (!validateUUID(get(publisher, 'id', null), true)) {
 				return false;
 			}
+			flag = true;
 		}
 	}
-	return true;
+	return flag;
 }
 
 export function validateEditionSectionReleaseDate(value: any) {
