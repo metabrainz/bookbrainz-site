@@ -122,7 +122,7 @@ function AuthorCreditSection({
 								customComponents={{DropdownIndicator: null, SingleValue}}
 								instanceId="author0"
 								isDisabled={!isEditable}
-								placeholder="Type to search"
+								placeholder="Type to search or paste a BBID"
 								type="author"
 								value={optionValue}
 								onChange={onAuthorChange}
