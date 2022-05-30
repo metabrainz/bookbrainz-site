@@ -34,7 +34,6 @@ import {
 } from '../validators/common';
 
 import DisambiguationField from './disambiguation-field';
-import Immutable from 'immutable';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import PropTypes from 'prop-types';
@@ -47,24 +46,10 @@ import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {entityTypeProperty} from '../../helpers/react-validators';
 import {getEntityDisambiguation} from '../../helpers/entity';
+import makeImmutable from '../common/make-immutable';
 
 
-function MLanguageField(props) {
-	return <LanguageField {...props}/>;
-}
-function mapS2P(rootState) {
-	const state = rootState.get('nameSection');
-	return {
-		value: state.get('language')
-	};
-}
-function mapD2P(dispatch) {
-	return {
-		onChange: (value) =>
-			dispatch(updateLanguageField(value && value.value))
-	};
-}
-const NLanguageField = connect(mapS2P, mapD2P, null)(MLanguageField);
+const ImmutableLanguageField = makeImmutable(LanguageField);
 
 
 /**
@@ -156,6 +141,7 @@ class NameSection extends React.Component {
 			languageValue,
 			nameValue,
 			sortNameValue,
+			onLanguageChange,
 			onSortNameChange,
 			onDisambiguationChange,
 			searchResults
@@ -247,14 +233,16 @@ class NameSection extends React.Component {
 				</Row>
 				<Row>
 					<Col lg={{offset: 3, span: 6}}>
-						<NLanguageField
+						<ImmutableLanguageField
 							empty={isAliasEmpty(
 								nameValue, sortNameValue, languageValue
 							)}
 							error={!validateNameSectionLanguage(languageValue)}
 							instanceId="language"
-							options={Immutable.OrderedSet(languageOptionsForDisplay)}
+							options={languageOptionsForDisplay}
 							tooltipText="Language used for the above name"
+							value={languageValue}
+							onChange={onLanguageChange}
 						/>
 					</Col>
 				</Row>
@@ -288,6 +276,7 @@ NameSection.propTypes = {
 	languageValue: PropTypes.number,
 	nameValue: PropTypes.string.isRequired,
 	onDisambiguationChange: PropTypes.func.isRequired,
+	onLanguageChange: PropTypes.func.isRequired,
 	onNameChange: PropTypes.func.isRequired,
 	onNameChangeCheckIfEditionGroupExists: PropTypes.func.isRequired,
 	onNameChangeCheckIfExists: PropTypes.func.isRequired,
@@ -331,6 +320,8 @@ function mapDispatchToProps(dispatch, {entity, entityType}) {
 	return {
 		onDisambiguationChange: (event) =>
 			dispatch(debouncedUpdateDisambiguationField(event.target.value)),
+		onLanguageChange: (value) =>
+			dispatch(updateLanguageField(value && value.value)),
 		onNameChange: (value) =>
 			dispatch(debouncedUpdateNameField(value)),
 		onNameChangeCheckIfEditionGroupExists: _.debounce((value) => {
