@@ -67,6 +67,10 @@ const languageAttribs = {
 	name: 'English'
 };
 
+const PublisherTypeAttribs = {
+	label: 'Publisher Type 1'
+};
+
 export const aliasData = {
 	languageId: 42,
 	name: 'Entity name',
@@ -403,6 +407,17 @@ export async function createSeries(optionalBBID, optionalSeriesAttribs = {}) {
 	return series;
 }
 
+async function fetchOrCreatePublisherType(PublisherTypeModel, optionalPublisherAttribs = {}) {
+	let publisherType;
+	publisherType = await new PublisherTypeModel({...PublisherTypeAttribs, ...optionalPublisherAttribs})
+		.fetch({require: false});
+	if (publisherType) {
+		return publisherType;
+	}
+	publisherType = await new PublisherTypeModel({...PublisherTypeAttribs, ...optionalPublisherAttribs}).save(null, {method: 'insert'});
+	return publisherType;
+}
+
 export async function createPublisher(optionalBBID, optionalPublisherAttribs = {}) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Publisher'})
@@ -429,10 +444,7 @@ export async function createPublisher(optionalBBID, optionalPublisherAttribs = {
 			.fetch({require: false});
 	}
 	if (!publisherType) {
-		publisherType = await new PublisherType(
-			{label: `Publisher Type ${optionalPublisherAttribs.typeId || random.number()}`, ...optionalPublisherTypeAttribs}
-		)
-			.save(null, {method: 'insert'});
+		publisherType = await fetchOrCreatePublisherType(PublisherType, optionalPublisherTypeAttribs);
 	}
 
 	const publisherAttribs = {
