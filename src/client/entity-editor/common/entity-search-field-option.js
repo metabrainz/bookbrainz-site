@@ -165,9 +165,10 @@ class EntitySearchFieldOption extends React.Component {
 		);
 		const wrappedSelect = (
 			<ImmutableAsyncSelect
+				{...this.props}
 				blurInputOnSelect
 				isClearable
-				className="Select"
+				className={`Select${this.props.className ? ` ${this.props.className}` : ''}`}
 				classNamePrefix="react-select"
 				components={{
 					Option: LinkedEntitySelect,
@@ -181,7 +182,6 @@ class EntitySearchFieldOption extends React.Component {
 				labelKey="text"
 				loadOptions={this.fetchOptions}
 				onBlurResetsInput={false}
-				{...this.props}
 			/>
 		);
 
@@ -202,6 +202,7 @@ class EntitySearchFieldOption extends React.Component {
 EntitySearchFieldOption.displayName = 'EntitySearchFieldOption';
 EntitySearchFieldOption.propTypes = {
 	bbid: PropTypes.string,
+	className: PropTypes.string,
 	customComponents: PropTypes.object,
 	empty: PropTypes.bool,
 	error: PropTypes.bool,
@@ -222,6 +223,7 @@ EntitySearchFieldOption.propTypes = {
 };
 EntitySearchFieldOption.defaultProps = {
 	bbid: null,
+	className: '',
 	customComponents: {},
 	empty: true,
 	error: false,
