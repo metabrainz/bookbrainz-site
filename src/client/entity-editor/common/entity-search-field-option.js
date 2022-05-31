@@ -89,8 +89,15 @@ class EntitySearchFieldOption extends React.Component {
 				options: []
 			};
 		}
-		if (isValidBBID(query)) {
-			const entity = await request.get(`/search/entity/${query}`).then((res) => res.body).catch(() => null);
+		let manipulatedQuery = query;
+		const bookbrainzURLRegex =
+			/bookbrainz\.org\/\w+\/([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/gi;
+		const regexpResults = bookbrainzURLRegex.exec(query);
+		if (regexpResults && regexpResults.length) {
+			manipulatedQuery = regexpResults[1];
+		}
+		if (isValidBBID(manipulatedQuery)) {
+			const entity = await request.get(`/search/entity/${manipulatedQuery}`).then((res) => res.body).catch(() => null);
 			if (entity && typeof this.props.onChange === 'function' && (_.snakeCase(entity.type) === this.props.type ||
 				 (_.isArray(this.props.type) && this.props.type.includes(entity.type)))) {
 				const entityOption = this.entityToOption(entity);
@@ -99,13 +106,6 @@ class EntitySearchFieldOption extends React.Component {
 				this.selectRef.current.blur();
 				return [entityOption];
 			}
-		}
-		let manipulatedQuery = query;
-		const bookbrainzURLRegex =
-			/bookbrainz\.org\/\w+\/([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/gi;
-		const regexpResults = bookbrainzURLRegex.exec(query);
-		if (regexpResults && regexpResults.length) {
-			manipulatedQuery = regexpResults[1];
 		}
 		const response = await request.get('/search/autocomplete').query({
 			q: manipulatedQuery,
