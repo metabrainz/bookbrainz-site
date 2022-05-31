@@ -123,7 +123,7 @@ export function validateForm(
 			get(formData, 'identifierEditor', {}), identifierTypes
 		),
 		validateNameSection(get(formData, 'nameSection', {})),
-		validateEditionSection(get(formData, 'editionSection', {}), Boolean(formData.type)),
+		validateEditionSection(get(formData, 'editionSection', {}), Boolean(formData?.type)),
 		validateSubmissionSection(get(formData, 'submissionSection', {}))
 	];
 
