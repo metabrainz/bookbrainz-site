@@ -30,21 +30,53 @@ import Immutable from 'immutable';
 
 const EMPTY_CREDIT_ROW = Immutable.Map({
 	author: null,
+	automaticJoinPhrase: true,
 	joinPhrase: '',
 	name: ''
 });
 
-function addAuthorCreditRow(state, payload) {
-	let stateToModify = state;
+/* Shamelessly stolen from MusicBrainz server:
+	https://github.com/metabrainz/musicbrainz-server/blob/ece12896ff67524279d7e00998da300162d93c0b/root/static/scripts/edit/components/ArtistCreditEditor.js#L28
+*/
+function addAuthorCreditRow(state, newItemKey) {
+	// Add a new empty author credit row
+	let returnedState = state.set(newItemKey, EMPTY_CREDIT_ROW);
 
-	// If there are already names in the author credit and the previous name
-	// has no join phrase set, set a default.
-	const lastKey = stateToModify.keySeq().last();
-	if (lastKey && stateToModify.getIn([lastKey, 'joinPhrase'], '') === '') {
-		stateToModify = stateToModify.setIn([lastKey, 'joinPhrase'], ' & ');
+	const autoJoinPhraseRegex = /^(| & |, )$/;
+	const acNames = returnedState.toJS();
+	const keys = Object.keys(acNames);
+	const {size} = returnedState;
+	// If there are already names in the author credit, add join phrases to them.
+	// Depending on how many credits there are the join phrase will be an ampersand or a comma
+	if (size > 0) {
+		// New empty author credit, last item
+		const name0Key = keys[size - 1];
+		const name0 = acNames[name0Key];
+		if (name0 && name0.automaticJoinPhrase !== false) {
+			returnedState = returnedState.setIn([name0Key, 'joinPhrase'], '');
+		}
+	}
+	if (size > 1) {
+		// Second to last author credit
+		const name1Key = keys[size - 2];
+		const name1 = acNames[name1Key];
+		if (name1 && name1.automaticJoinPhrase !== false &&
+			autoJoinPhraseRegex.test(name1.joinPhrase)) {
+			returnedState = returnedState.setIn([name1Key, 'joinPhrase'], ' & ');
+		}
 	}
 
-	return stateToModify.set(payload, EMPTY_CREDIT_ROW);
+	if (size > 2) {
+		// Third to last author credit
+		const name2Key = keys[size - 3];
+		const name2 = acNames[name2Key];
+		if (name2 && name2.automaticJoinPhrase !== false &&
+			autoJoinPhraseRegex.test(name2.joinPhrase)) {
+			returnedState = returnedState.setIn([name2Key, 'joinPhrase'], ', ');
+		}
+	  }
+
+	return returnedState;
 }
 
 function setNewAuthorAndDisplay(state, payload) {
@@ -106,8 +138,12 @@ function reducer(
 			return setNewAuthorAndDisplay(state, payload);
 		case UPDATE_CREDIT_DISPLAY_VALUE:
 			return state.setIn([payload.rowId, 'name'], payload.value);
-		case UPDATE_CREDIT_JOIN_PHRASE_VALUE:
-			return state.setIn([payload.rowId, 'joinPhrase'], payload.value);
+		case UPDATE_CREDIT_JOIN_PHRASE_VALUE: {
+			const returnState =	state.setIn([payload.rowId, 'joinPhrase'], payload.value);
+			// The join phrase has been modified manually by the user,
+			// from now on it shouldn't be automatically modified
+			return returnState.setIn([payload.rowId, 'automaticJoinPhrase'], false);
+		}
 		case REMOVE_AUTHOR_CREDIT_ROW:
 			return deleteAuthorCreditRow(state, payload);
 		case REMOVE_EMPTY_CREDIT_ROWS:

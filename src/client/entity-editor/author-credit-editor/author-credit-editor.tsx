@@ -61,11 +61,12 @@ const AuthorCreditEditor = ({
 				Author credits indicate who is the main credited Author (or Authors) for Editions,
 				and how they are credited. They consist of Authors, with (optionally) their names
 				as credited in the specific Edition (i.e. on the cover), and join phrases between them.
-				Keep in mind that join phrases should include spaces if you want any to appear in final credit.
+				Keep in mind that join phrases should include spaces before and after if you want any
+				to appear in the final credit.
 			</p>
 			<hr/>
 			<dl>
-				<dt>Preview of the Author credit:</dt>
+				<dt>Preview of the final Author credit:</dt>
 				<dd>
 					<AuthorCreditDisplay names={authorCredit}/>
 				</dd>

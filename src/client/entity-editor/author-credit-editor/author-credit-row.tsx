@@ -35,7 +35,7 @@ import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
 
 type OwnProps = {
-	index: number,
+	index: string,
 };
 
 type StateProps = {
@@ -60,7 +60,7 @@ type Props = StateProps & DispatchProps & OwnProps;
  * remove the identifier from the editor.
  *
  * @param {Object} props - The properties passed to the component.
- * @param {number} props.index - The index of the row in the parent editor.
+ * @param {string} props.index - The index of the row in the parent editor (i.e. 'n0')
  * @param {string} props.author - The ID of the type currently selected.
  * @param {string} props.joinPhrase - The ID of the type currently selected.
  * @param {string} props.name - The value currently set for this
