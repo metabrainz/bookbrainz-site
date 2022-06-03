@@ -33,12 +33,14 @@ import revisionsRouter from './routes/revisions';
 import searchRouter from './routes/search';
 import seriesRouter from './routes/entity/series';
 import statisticsRouter from './routes/statistics';
+import ufRouter from './routes/unifiedform';
 import workRouter from './routes/entity/work';
 
 
 function initRootRoutes(app) {
 	app.use('/', indexRouter);
 	app.use('/', authRouter);
+	app.use('/', ufRouter);
 	app.use('/search', searchRouter);
 	app.use('/register', registerRouter);
 	app.use('/revisions', revisionsRouter);

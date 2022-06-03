@@ -163,6 +163,10 @@ class Layout extends React.Component {
 						{genEntityIconHTMLElement('Publisher')}
 						Publisher
 					</NavDropdown.Item>
+					<NavDropdown.Item href="/create">
+						{genEntityIconHTMLElement('Book')}
+						Book
+					</NavDropdown.Item>
 				</NavDropdown>
 				<NavDropdown
 					alignRight

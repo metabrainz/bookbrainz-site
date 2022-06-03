@@ -23,7 +23,7 @@ import * as React from 'react';
 import {FontAwesomeIconProps as FAProps, FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst} from 'lodash';
 import {
-	faBook, faGlobe, faGripVertical, faLayerGroup, faPenNib, faUniversity, faUser, faUserCircle, faWindowRestore
+	faBook, faCubes, faGlobe, faGripVertical, faLayerGroup, faPenNib, faUniversity, faUser, faUserCircle, faWindowRestore
 } from '@fortawesome/free-solid-svg-icons';
 import {format, isValid, parseISO} from 'date-fns';
 import {dateObjectToISOString} from './utils';
@@ -244,6 +244,7 @@ export function getEntityUrl(entity) {
 export const ENTITY_TYPE_ICONS = {
 	Area: faGlobe,
 	Author: faUser,
+	Book: faCubes,
 	Collection: faGripVertical,
 	Edition: faBook,
 	EditionGroup: faWindowRestore,

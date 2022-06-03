@@ -34,8 +34,11 @@ import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import {createStore} from 'redux';
 import {generateProps} from './props';
+import UnifiedForm from '../../client/unified-form/unified-form';
+import * as UnifiedFormHelpers from '../../client/unified-form/helpers';
 
 
+const {createRootReducer: ufCreateRootReducer} = UnifiedFormHelpers;
 const {createRootReducer, getEntitySection, getEntitySectionMerge, getValidator} = entityEditorHelpers;
 
 type EntityAction = 'create' | 'edit';
@@ -311,4 +314,54 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
 		{...props.initialState.relationshipSection.relationships, [rowId]: initialRelationship};
 
 	return props;
+}
+
+/**
+ * Return markup for the unified form.
+ * This also modifies the props value with a new initialState!
+ * @param {object} props - react props
+ * @returns {object} - Updated props and HTML string with markup
+ */
+
+export function unifiedFormMarkup(props:{initialState:any}) {
+	const {initialState, ...rest} = props;
+	const rootReducer = ufCreateRootReducer();
+	const store:any = createStore(rootReducer, Immutable.fromJS(initialState));
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(rest)}>
+			<Provider store={store}>
+				<UnifiedForm {...props}/>
+			</Provider>
+		</Layout>
+	);
+	return {
+		markup,
+		props: Object.assign({}, props, {initialState: store.getState()})
+	};
+}
+
+/**
+ * Returns a props object with reasonable defaults for unified form.
+ * @param {request} req - request object
+ * @param {response} res - response object
+ * @param {object} additionalProps - additional props
+ * @param {initialStateCallback} initialStateCallback - callback
+ * to get the initial state
+ * @returns {object} - props
+ */
+export function generateUnifiedProps(
+	req: PassportRequest, res: $Response,
+	additionalProps: any,
+	initialStateCallback: () => any = () => new Object()
+): any {
+	const submissionUrl = '/create/handler';
+	const props = Object.assign({
+		identifierTypes: res.locals.identifierTypes,
+		initialStateCallback: initialStateCallback(),
+		languageOptions: res.locals.languages,
+		requiresJS: true,
+		submissionUrl
+	}, additionalProps);
+
+	return generateProps(req, res, props);
 }
