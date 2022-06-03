@@ -269,3 +269,11 @@ export function isbn13To10(isbn13:string):string | null {
 
 	return digits.join('');
 }
+export function filterIdentifierTypesByEntityType(
+	identifierTypes: Array<{id: number, entityType: string}>,
+	entityType: string
+): Array<Record<string, unknown>> {
+	return identifierTypes.filter(
+		(type) => type.entityType === entityType
+	);
+}

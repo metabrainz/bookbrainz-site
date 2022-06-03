@@ -121,7 +121,7 @@ function mapStateToProps(rootState, {validate, identifierTypes}) {
 	const state = rootState.get('submissionSection');
 	return {
 		errorText: state.get('submitError'),
-		formValid: validate(rootState, identifierTypes),
+		formValid: validate && validate(rootState, identifierTypes),
 		note: state.get('note'),
 		submitted: state.get('submitted')
 	};

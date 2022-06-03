@@ -16,7 +16,7 @@ import createDebounce from 'redux-debounce';
 
 
 const {
-	createRootReducer, shouldDevToolsBeInjected
+	createRootReducer, shouldDevToolsBeInjected, validatorMap
 } = helpers;
 
 const KEYSTROKE_DEBOUNCE_TIME = 250;
@@ -32,7 +32,7 @@ const composeEnhancers = shouldDevToolsBeInjected() ?
 	window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose;
 
 function getEntityEditor() {
-	return <UnifiedForm {...extractChildProps(rest)}/>;
+	return <UnifiedForm validators={validatorMap} {...extractChildProps(rest)}/>;
 }
 
 const store = createStore(

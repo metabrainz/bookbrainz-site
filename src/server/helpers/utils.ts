@@ -20,23 +20,14 @@
  */
 
 import * as search from '../../common/helpers/search';
+import {filterIdentifierTypesByEntityType, unflatten} from '../../common/helpers/utils';
 import _ from 'lodash';
-import {unflatten} from '../../common/helpers/utils';
 
 
 export function getDateBeforeDays(days) {
 	const date = new Date();
 	date.setDate(date.getDate() - days);
 	return date;
-}
-
-export function filterIdentifierTypesByEntityType(
-	identifierTypes: Array<{id: number, entityType: string}>,
-	entityType: string
-): Array<Record<string, unknown>> {
-	return identifierTypes.filter(
-		(type) => type.entityType === entityType
-	);
 }
 
 export function filterIdentifierTypesByEntity(

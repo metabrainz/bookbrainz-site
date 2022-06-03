@@ -19,6 +19,7 @@
 
 import * as Immutable from 'immutable';
 import * as React from 'react';
+import * as UnifiedFormHelpers from '../../client/unified-form/helpers';
 import * as entityEditorHelpers from '../../client/entity-editor/helpers';
 import * as entityRoutes from '../routes/entity/entity';
 import * as error from '../../common/helpers/error';
@@ -31,11 +32,11 @@ import EntityMerge from '../../client/entity-editor/entity-merge';
 import Layout from '../../client/containers/layout';
 import {Provider} from 'react-redux';
 import ReactDOMServer from 'react-dom/server';
+import UnifiedForm from '../../client/unified-form/unified-form';
 import _ from 'lodash';
 import {createStore} from 'redux';
+import {filterIdentifierTypesByEntityType} from '../../common/helpers/utils';
 import {generateProps} from './props';
-import UnifiedForm from '../../client/unified-form/unified-form';
-import * as UnifiedFormHelpers from '../../client/unified-form/helpers';
 
 
 const {createRootReducer: ufCreateRootReducer} = UnifiedFormHelpers;
@@ -72,7 +73,7 @@ export function generateEntityProps(
 
 	const getFilteredIdentifierTypes = isEdit ?
 		_.partialRight(utils.filterIdentifierTypesByEntity, entity) :
-		_.partialRight(utils.filterIdentifierTypesByEntityType, entityName);
+		_.partialRight(filterIdentifierTypesByEntityType, entityName);
 	const filteredIdentifierTypes = getFilteredIdentifierTypes(
 		res.locals.identifierTypes
 	);
@@ -357,7 +358,7 @@ export function generateUnifiedProps(
 	const submissionUrl = '/create/handler';
 	const props = Object.assign({
 		identifierTypes: res.locals.identifierTypes,
-		initialStateCallback: initialStateCallback(),
+		initialState: initialStateCallback(),
 		languageOptions: res.locals.languages,
 		requiresJS: true,
 		submissionUrl
