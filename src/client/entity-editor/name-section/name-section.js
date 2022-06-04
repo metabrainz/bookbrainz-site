@@ -139,7 +139,8 @@ class NameSection extends React.Component {
 			onLanguageChange,
 			onSortNameChange,
 			onDisambiguationChange,
-			searchResults
+			searchResults,
+			isUf
 		} = this.props;
 
 		const languageOptionsForDisplay = languageOptions.map((language) => ({
@@ -149,13 +150,17 @@ class NameSection extends React.Component {
 		}));
 
 		const warnIfExists = !_.isEmpty(exactMatches);
-
-
+		const colAttribs = {
+			lg: {offset: 3, span: 6}
+		};
+		if (isUf) {
+			colAttribs.lg.offset = 0;
+		}
 		return (
 			<div>
-				<h2>{`What is the ${_.startCase(entityType)} called?`}</h2>
+				{!isUf && <h2>{`What is the ${_.startCase(entityType)} called?`}</h2>}
 				<Row>
-					<Col lg={{offset: 3, span: 6}}>
+					<Col {...colAttribs}>
 						<NameField
 							defaultValue={nameValue}
 							empty={isAliasEmpty(
@@ -172,7 +177,7 @@ class NameSection extends React.Component {
 							onChange={this.handleNameChange}
 						/>
 					</Col>
-					<Col lg={{offset: 3, span: 6}}>
+					<Col {...colAttribs}>
 						{isRequiredDisambiguationEmpty(
 							warnIfExists,
 							disambiguationDefaultValue
@@ -206,7 +211,7 @@ class NameSection extends React.Component {
 					!warnIfExists &&
 						!_.isEmpty(searchResults) &&
 						<Row>
-							<Col lg={{offset: 3, span: 6}}>
+							<Col {...colAttribs}>
 								If the {_.startCase(entityType)} you want to add appears in the results
 								below, click on it to inspect it before adding a possible duplicate.<br/>
 								<small>Ctrl/Cmd + click to open in a new tab</small>
@@ -215,7 +220,7 @@ class NameSection extends React.Component {
 						</Row>
 				}
 				<Row>
-					<Col lg={{offset: 3, span: 6}}>
+					<Col {...colAttribs}>
 						<SortNameField
 							defaultValue={sortNameValue}
 							empty={isAliasEmpty(
@@ -228,8 +233,8 @@ class NameSection extends React.Component {
 					</Col>
 				</Row>
 				<Row>
-					<Col lg={{offset: 3, span: 6}}>
-						<LanguageField
+					<Col {...colAttribs}>
+						<ImmutableLanguageField
 							empty={isAliasEmpty(
 								nameValue, sortNameValue, languageValue
 							)}
@@ -243,7 +248,7 @@ class NameSection extends React.Component {
 					</Col>
 				</Row>
 				<Row>
-					<Col lg={{offset: 3, span: 6}}>
+					<Col {...colAttribs}>
 						<DisambiguationField
 							defaultValue={disambiguationDefaultValue}
 							error={isRequiredDisambiguationEmpty(
@@ -268,6 +273,7 @@ NameSection.propTypes = {
 	disambiguationDefaultValue: PropTypes.string,
 	entityType: entityTypeProperty.isRequired,
 	exactMatches: PropTypes.array,
+	isUf: PropTypes.bool,
 	languageOptions: PropTypes.array.isRequired,
 	languageValue: PropTypes.number,
 	nameValue: PropTypes.string.isRequired,
@@ -286,6 +292,7 @@ NameSection.defaultProps = {
 	action: 'create',
 	disambiguationDefaultValue: null,
 	exactMatches: [],
+	isUf: false,
 	languageValue: null,
 	searchForExistingEditionGroup: true,
 	searchResults: []

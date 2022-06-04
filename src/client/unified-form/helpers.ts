@@ -1,3 +1,4 @@
+import ISBNReducer from './cover-tab/reducer';
 import aliasEditorReducer from '../entity-editor/alias-editor/reducer';
 import annotationSectionReducer from '../entity-editor/annotation-section/reducer';
 import buttonBarReducer from '../entity-editor/button-bar/reducer';
@@ -29,6 +30,7 @@ export const validatorMap = {
 
 export function createRootReducer() {
 	return combineReducers({
+		ISBN: ISBNReducer,
 		aliasEditor: aliasEditorReducer,
 		annotationSection: annotationSectionReducer,
 		buttonBar: buttonBarReducer,

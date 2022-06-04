@@ -27,6 +27,7 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 type Props = {
 	empty?: boolean,
 	error?: boolean,
+	label?: string,
 	tooltipText?: string,
 	warn?: boolean
 };
@@ -47,13 +48,14 @@ type Props = {
 function NameField({
 	empty,
 	error,
+	label,
 	tooltipText,
 	warn,
 	...rest
 }: Props) {
-	const label = (
+	const inputLabel = (
 		<ValidationLabel empty={empty} error={error} warn={warn}>
-			Name
+			{!label ? 'Name' : label}
 		</ValidationLabel>
 	);
 
@@ -72,7 +74,7 @@ function NameField({
 	return (
 		<Form.Group>
 			<Form.Label>
-				{label}
+				{inputLabel}
 				{helpIconElement}
 			</Form.Label>
 			<Form.Control type="text" {...rest}/>
@@ -83,6 +85,7 @@ NameField.displayName = 'NameField';
 NameField.defaultProps = {
 	empty: false,
 	error: false,
+	label: '',
 	tooltipText: null,
 	warn: false
 };

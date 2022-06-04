@@ -54,22 +54,28 @@ function ButtonBar({
 	numAliases,
 	numIdentifiers,
 	onAliasButtonClick,
+	isUf,
 	onIdentifierButtonClick
 }) {
+	const className = isUf ? 'text-right' : 'text-center';
 	return (
 		<div>
 			<Row className="margin-top-1">
-				<Col className="text-center" lg={6}>
-					<AliasButton
-						aliasesInvalid={aliasesInvalid}
-						numAliases={numAliases}
-						onClick={onAliasButtonClick}
-					/>
-				</Col>
-				<Col className="text-center" lg={6}>
+				{
+					!isUf &&
+					<Col className={className} lg={6}>
+						<AliasButton
+							aliasesInvalid={aliasesInvalid}
+							numAliases={numAliases}
+							onClick={onAliasButtonClick}
+						/>
+					</Col>
+			  }
+				<Col className={className} lg={6}>
 					<IdentifierButton
-						className="btn wrap"
+						className={`btn wrap${!isUf ? '' : ' btn-success'}`}
 						identifiersInvalid={identifiersInvalid}
+						isUf={isUf}
 						numIdentifiers={numIdentifiers}
 						onClick={onIdentifierButtonClick}
 					/>
@@ -82,10 +88,14 @@ ButtonBar.displayName = 'ButtonBar';
 ButtonBar.propTypes = {
 	aliasesInvalid: PropTypes.bool.isRequired,
 	identifiersInvalid: PropTypes.bool.isRequired,
+	isUf: PropTypes.bool,
 	numAliases: PropTypes.number.isRequired,
 	numIdentifiers: PropTypes.number.isRequired,
 	onAliasButtonClick: PropTypes.func.isRequired,
 	onIdentifierButtonClick: PropTypes.func.isRequired
+};
+ButtonBar.defaultProps = {
+	isUf: false
 };
 
 function mapStateToProps(rootState, {identifierTypes}) {

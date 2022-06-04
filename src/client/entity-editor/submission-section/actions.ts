@@ -114,6 +114,30 @@ function postSubmission(url: string, data: Map<string, any>): Promise<void> {
 		});
 }
 
+function postUFSubmission(url: string, data: Map<string, any>): Promise<void> {
+	// transform data
+	const jsonData = data.toJS();
+	if (jsonData.ISBN.type) {
+		jsonData.identifierEditor.m0 = jsonData.ISBN;
+	}
+
+	return request.post(url).send(jsonData)
+		.then((response: Response) => {
+			if (!response.body) {
+				window.location.replace('/login');
+			}
+
+			const redirectUrl = '/';
+			if (response.body.alert) {
+				const alertParam = `?alert=${response.body.alert}`;
+				window.location.href = `${redirectUrl}${alertParam}`;
+			}
+			else {
+				window.location.href = redirectUrl;
+			}
+		});
+}
+
 type SubmitResult = (arg1: (Action) => unknown, arg2: () => Map<string, any>) => unknown;
 export function submit(
 	submissionUrl: string
@@ -121,6 +145,19 @@ export function submit(
 	return (dispatch, getState) => {
 		const rootState = getState();
 		dispatch(setSubmitted(true));
+		// TO-DO: not the best best way
+		if (rootState.get('ISBN')) {
+			return postUFSubmission(submissionUrl, rootState)
+				.catch(
+					(error: {message: string}) => {
+						const message =
+						_.get(error, ['response', 'body', 'error'], null) ||
+						error.message;
+						dispatch(setSubmitted(false));
+						return dispatch(setSubmitError(message));
+					}
+				);
+		}
 		return postSubmission(submissionUrl, rootState)
 			.catch(
 				(error: {message: string}) => {

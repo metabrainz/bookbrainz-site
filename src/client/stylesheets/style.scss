@@ -721,3 +721,35 @@ ul {
 .input-group > .input-group-append > .btn {
 	padding: 6px 12px;
 }
+
+/* Unified  form */
+$uf-primary:#EB743B;
+.uf-main{
+	padding: 0.6rem;
+}
+.uf-tab{
+	border: 1px #dfdfdf solid;
+	h4{
+		padding: 0.8rem;
+		margin-bottom: 0;
+		border-bottom: 0.125rem #ed8d60 solid;
+		background-color: #F7F7F7;
+
+	}
+	.tab-content{
+		padding: 1rem;	
+	}
+}
+.uf-tab-header{
+	padding: 0.6rem 0 0 0.6rem;
+	margin-bottom: 1rem;
+	background-color: #F4E9E3;
+	a{
+		color: #754E37;
+	}
+	.nav-link.nav-item.active{
+		color: $uf-primary;
+		border-color: $uf-primary;
+		border-bottom: none;
+	}
+}
