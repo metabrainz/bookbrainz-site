@@ -130,6 +130,10 @@ class EntitySearchFieldOption extends React.Component {
 		return option.text;
 	}
 
+	getOptionValue(option) {
+		return option.id;
+	}
+
 	render() {
 		const labelElement = <ValidationLabel empty={this.props.empty} error={this.props.error}>{this.props.label}</ValidationLabel>;
 		const helpIconElement = this.props.tooltipText && (
@@ -140,14 +144,15 @@ class EntitySearchFieldOption extends React.Component {
 				<FontAwesomeIcon className="margin-left-0-5" icon={faQuestionCircle}/>
 			</OverlayTrigger>
 		);
+		const SelectWrapper = this.props.SelectWrapper ?? ImmutableAsyncSelect;
 		const wrappedSelect = (
-			<ImmutableAsyncSelect
+			<SelectWrapper
 				className="Select"
 				classNamePrefix="react-select"
 				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				filterOptions={false}
 				getOptionLabel={this.getOptionLabel}
-				labelKey="text"
+				getOptionValue={this.getOptionValue}
 				loadOptions={this.fetchOptions}
 				onBlurResetsInput={false}
 				{...this.props}
@@ -168,6 +173,7 @@ class EntitySearchFieldOption extends React.Component {
 
 EntitySearchFieldOption.displayName = 'EntitySearchFieldOption';
 EntitySearchFieldOption.propTypes = {
+	SelectWrapper: PropTypes.elementType,
 	bbid: PropTypes.string,
 	empty: PropTypes.bool,
 	error: PropTypes.bool,
@@ -181,6 +187,7 @@ EntitySearchFieldOption.propTypes = {
 	]).isRequired
 };
 EntitySearchFieldOption.defaultProps = {
+	SelectWrapper: null,
 	bbid: null,
 	empty: true,
 	error: false,

@@ -11,6 +11,7 @@ import {validateForm as validateAuthorForm} from '../entity-editor/validators/au
 import {validateForm as validateEditionForm} from '../entity-editor/validators/edition';
 import {validateForm as validatePublisherForm} from '../entity-editor/validators/publisher';
 import {validateForm as validateWorkForm} from '../entity-editor/validators/work';
+import worksReducer from './content-tab/reducer';
 
 
 type ReduxWindow = typeof window & {__REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any};
@@ -37,6 +38,7 @@ export function createRootReducer() {
 		editionSection: editionSectionReducer,
 		identifierEditor: identifierEditorReducer,
 		nameSection: nameSectionReducer,
-		submissionSection: submissionSectionReducer
+		submissionSection: submissionSectionReducer,
+		works: worksReducer
 	});
 }

@@ -58,3 +58,16 @@ export type ISBNDispatchProps = {
     onChange: (arg:RInputEvent)=>unknown
 };
 export type ISBNProps = ISBNStateProps & ISBNDispatchProps;
+
+type EntitySelect = {
+	text:string,
+	id:string
+};
+export type ContentTabStateProps = {
+	nextId:string | number,
+	value:any | any[]
+};
+export type ContentTabDispatchProps = {
+	onChange:(arg:EntitySelect|EntitySelect[])=>unknown
+};
+export type ContentTabProps = ContentTabStateProps & ContentTabDispatchProps;

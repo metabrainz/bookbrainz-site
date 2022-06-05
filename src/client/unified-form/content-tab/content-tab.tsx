@@ -1,17 +1,50 @@
+import * as Bootstrap from 'react-bootstrap/';
+import {ContentTabDispatchProps, ContentTabProps, ContentTabStateProps} from '../interface/type';
 import React from 'react';
+import SearchEntityCreaate from '../common/search-entity-create-select';
 import {connect} from 'react-redux';
+import {convertMapToObject} from '../../helpers/utils';
+import {reduce} from 'lodash';
+import {updateWorks} from './action';
 
 
-export function ContentTab(props) {
-	return <div>ContentTab</div>;
+const {Row, Col} = Bootstrap;
+export function ContentTab({value, onChange, nextId}:ContentTabProps) {
+	return (
+		<Row>
+			<Col lg={{span: 6}}>
+				<SearchEntityCreaate
+					isMulti
+					label="Works"
+					nextId={nextId}
+					type="work"
+					value={value}
+					onChange={onChange}
+				/>
+			</Col>
+		</Row>
+		 );
 }
 
-function mapStateToProps(state) {
-	return {};
+function mapStateToProps(rootState) {
+	const worksObj = convertMapToObject(rootState.get('works'));
+	const nextId = reduce(worksObj, (prev, value) => (value.__isNew__ ? prev + 1 : prev), 0);
+	return {
+		nextId,
+		value: Object.values(worksObj)
+	};
 }
 
-function mapDispatchToProps(state) {
-	return {};
+function mapDispatchToProps(dispatch) {
+	return {
+		onChange: (options:any[]) => {
+			const mappedOptions = Object.fromEntries(options.map((value, index) => {
+				value.__isNew__ = Boolean(value.__isNew__);
+				return [index, value];
+			}));
+			return dispatch(updateWorks(mappedOptions));
+		}
+	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContentTab);
+export default connect<ContentTabStateProps, ContentTabDispatchProps>(mapStateToProps, mapDispatchToProps)(ContentTab);
