@@ -1,17 +1,26 @@
+import * as Bootstrap from 'react-bootstrap';
+import AnnotationSection from '../../entity-editor/annotation-section/annotation-section';
+import EditionSection from '../../entity-editor/edition-section/edition-section';
 import React from 'react';
-import {connect} from 'react-redux';
 
 
+const {Card, Accordion} = Bootstrap;
 export function DetailTab(props) {
-	return <div>DetailTab</div>;
+	return (
+		<div>
+			<Accordion >
+				<Card>
+					<Accordion.Toggle as={Card.Header} eventKey="0">Extra info
+					</Accordion.Toggle>
+					<Accordion.Collapse eventKey="0">
+						<Card.Body>
+							<EditionSection isUf {...props}/>
+						</Card.Body>
+					</Accordion.Collapse>
+				</Card>
+			</Accordion>
+			<AnnotationSection isUf {...props}/>
+		</div>);
 }
 
-function mapStateToProps(state) {
-	return {};
-}
-
-function mapDispatchToProps(state) {
-	return {};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DetailTab);
+export default DetailTab;

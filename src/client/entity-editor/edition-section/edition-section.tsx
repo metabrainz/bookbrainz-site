@@ -94,6 +94,7 @@ type EditionGroup = {
 type OwnProps = {
 	languageOptions: Array<LanguageOption>,
 	editionFormats: Array<EditionFormat>,
+	isUf:boolean,
 	editionStatuses: Array<EditionStatus>
 };
 
@@ -180,6 +181,7 @@ function EditionSection({
 	editionGroupValue,
 	editionGroupVisible,
 	matchingNameEditionGroups,
+	isUf,
 	publisherValue,
 	releaseDateValue,
 	statusValue,
@@ -256,37 +258,50 @@ function EditionSection({
 			Has the work been published, or is it in a draft stage?
 		</Tooltip>
 	);
-
+	const colSpan = {
+		offset: 3,
+		span: 6
+	};
+	const shortColSpan = {
+		offset: 3,
+		span: 3
+	};
+	if (isUf) {
+		colSpan.offset = 0;
+		shortColSpan.offset = 0;
+	}
 	return (
 		<div>
-			<h2>
+			{!isUf &&
+			<>
+				<h2>
 				What else do you know about the Edition?
-			</h2>
-			<p className="text-muted">
+				</h2>
+				<p className="text-muted">
 				Edition Group is required — this cannot be blank. You can search for and choose an existing Edition Group,
 				or choose to automatically create one instead.
-			</p>
-			<Row className="margin-bottom-3">
-				{
-					showAutoCreateEditionGroupMessage ?
-						<Col lg={{offset: showMatchingEditionGroups ? 0 : 3, span: 6}}>
-							<Alert variant="success">
-								<p>A new Edition Group with the same name will be created automatically.</p>
-								<br/>
-								<Button
-									block
-									className="wrap"
-									variant="success"
-									// eslint-disable-next-line react/jsx-no-bind
-									onClick={onToggleShowEditionGroupSection.bind(this, true)}
-								>
-									<FontAwesomeIcon icon={faSearch}/>&nbsp;Search for an existing Edition Group
-								</Button>
-							</Alert>
-						</Col> :
-						getEditionGroupSearchSelect()
-				}
-				{showMatchingEditionGroups &&
+				</p>
+				<Row className="margin-bottom-3">
+					{
+						showAutoCreateEditionGroupMessage ?
+							<Col lg={{offset: showMatchingEditionGroups ? 0 : 3, span: 6}}>
+								<Alert variant="success">
+									<p>A new Edition Group with the same name will be created automatically.</p>
+									<br/>
+									<Button
+										block
+										className="wrap"
+										variant="success"
+										// eslint-disable-next-line react/jsx-no-bind
+										onClick={onToggleShowEditionGroupSection.bind(this, true)}
+									>
+										<FontAwesomeIcon icon={faSearch}/>&nbsp;Search for an existing Edition Group
+									</Button>
+								</Alert>
+							</Col> :
+							getEditionGroupSearchSelect()
+					}
+					{showMatchingEditionGroups &&
 					<Col lg={6}>
 						<Alert variant="warning">
 							{matchingNameEditionGroups.length > 1 ?
@@ -310,14 +325,17 @@ function EditionSection({
 							</ListGroup>
 						</Alert>
 					</Col>
-				}
-			</Row>
+					}
+				</Row>
+			</>
+			}
 			<p className="text-muted">
 				Below fields are optional — leave something blank if you
 				don&rsquo;t know it
 			</p>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				{!isUf &&
+				<Col lg={colSpan}>
 					<EntitySearchFieldOption
 						instanceId="publisher"
 						label="Publisher"
@@ -325,10 +343,10 @@ function EditionSection({
 						value={publisherValue}
 						onChange={onPublisherChange}
 					/>
-				</Col>
+				</Col>}
 			</Row>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={colSpan}>
 					<DateField
 						show
 						defaultValue={releaseDateValue}
@@ -344,7 +362,7 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={colSpan}>
 					<ImmutableLanguageField
 						empty
 						multi
@@ -357,7 +375,7 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col lg={{offset: 3, span: 3}}>
+				<Col lg={shortColSpan}>
 					<Form.Group>
 						<Form.Label>
 							Format
@@ -399,7 +417,7 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col lg={{offset: 3, span: 3}}>
+				<Col lg={shortColSpan}>
 					<NumericField
 						addonAfter="pages"
 						defaultValue={pagesValue}
@@ -411,7 +429,7 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col lg={{offset: 3, span: 3}}>
+				<Col lg={shortColSpan}>
 					<NumericField
 						addonAfter="mm"
 						defaultValue={widthValue}

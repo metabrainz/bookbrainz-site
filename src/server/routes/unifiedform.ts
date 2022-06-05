@@ -10,6 +10,7 @@ type PassportRequest = express.Request & {user: any, session: any};
 
 const router = express.Router();
 router.get('/create', isAuthenticated, middleware.loadIdentifierTypes,
+	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages, middleware.loadWorkTypes, middleware.loadGenders, middleware.loadAuthorTypes,
 	middleware.loadRelationshipTypes, (req:PassportRequest, res:express.Response) => {
 		const props = generateUnifiedProps(req, res, {});

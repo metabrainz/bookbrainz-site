@@ -40,7 +40,7 @@ export function UnifiedForm(props:UnifiedFormProps) {
 	return (
 		<form className="uf-main" onSubmit={onSubmit}>
 			<div className="uf-tab">
-				<h4>Create Book</h4>
+				<h4>Add Book</h4>
 				<Tabs activeKey={tabKey} className="uf-tab-header" id="controlled-tab" onSelect={setTabKey}>
 					<Tab eventKey="cover" title="Cover">
 						<CoverTab {...props} identifierTypes={editionIdentifierTypes as IdentifierType[]}/>
@@ -49,7 +49,7 @@ export function UnifiedForm(props:UnifiedFormProps) {
 						<ContentTab/>
 					</Tab>
 					<Tab eventKey="detail" title="Details">
-						<DetailTab/>
+						<DetailTab {...props}/>
 					</Tab>
 				</Tabs>
 			</div>

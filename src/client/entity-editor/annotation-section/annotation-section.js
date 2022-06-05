@@ -40,7 +40,8 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
  */
 function AnnotationSection({
 	annotation,
-	onAnnotationChange
+	onAnnotationChange,
+	isUf
 }) {
 	const annotationLabel = (
 		<span>
@@ -54,14 +55,17 @@ function AnnotationSection({
 			Additional freeform data that does not fit in the above form
 		</Tooltip>
 	);
-
+	const colSpan = {offset: 3, span: 6};
+	if (isUf) {
+		colSpan.offset = 0;
+	}
 	return (
 		<div>
 			<h2>
 				Annotation
 			</h2>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={colSpan}>
 					<Form.Group>
 						<Form.Label>
 							{annotationLabel}
@@ -95,9 +99,12 @@ function AnnotationSection({
 AnnotationSection.displayName = 'AnnotationSection';
 AnnotationSection.propTypes = {
 	annotation: PropTypes.object.isRequired,
+	isUf: PropTypes.bool,
 	onAnnotationChange: PropTypes.func.isRequired
 };
-
+AnnotationSection.defaultProps = {
+	isUf: false
+};
 function mapStateToProps(rootState) {
 	return {
 		annotation: convertMapToObject(rootState.get('annotationSection'))
