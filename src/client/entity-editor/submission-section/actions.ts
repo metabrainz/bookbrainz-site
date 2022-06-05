@@ -113,15 +113,42 @@ function postSubmission(url: string, data: Map<string, any>): Promise<void> {
 			}
 		});
 }
+function transformFormData(data:Record<string, any>):Record<string, any> {
+	const newData = {};
+	const nextId = 0;
+	// add new publisher
+	// add new works
+
+	// add edition at last
+	if (data.ISBN.type) {
+		data.identifierEditor.m0 = data.ISBN;
+	}
+	data.relationshipSection.relationships = _.mapValues(data.works, (work, key) => {
+		const relationship = {
+			attributeSetId: null,
+			attributes: [],
+			relationshipType: {
+				id: 10
+			},
+			rowID: key,
+			sourceEntity: {
+				bbid: nextId
+			},
+			targetEntity: {
+				bbid: work.id
+			}
+		};
+		return relationship;
+	});
+	newData[`b${nextId}`] = {...data, type: 'Edition'};
+	return newData;
+}
 
 function postUFSubmission(url: string, data: Map<string, any>): Promise<void> {
 	// transform data
 	const jsonData = data.toJS();
-	if (jsonData.ISBN.type) {
-		jsonData.identifierEditor.m0 = jsonData.ISBN;
-	}
-
-	return request.post(url).send(jsonData)
+	const postData = transformFormData(jsonData);
+	return request.post(url).send(postData)
 		.then((response: Response) => {
 			if (!response.body) {
 				window.location.replace('/login');

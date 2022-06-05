@@ -355,7 +355,7 @@ export function generateUnifiedProps(
 	additionalProps: any,
 	initialStateCallback: () => any = () => new Object()
 ): any {
-	const submissionUrl = '/create/handler';
+	const submissionUrl = 'localhost:9097/create/handler';
 	const props = Object.assign({
 		identifierTypes: res.locals.identifierTypes,
 		initialState: initialStateCallback(),
