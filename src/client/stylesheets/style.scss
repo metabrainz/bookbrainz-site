@@ -753,3 +753,21 @@ $uf-primary:#EB743B;
 		border-bottom: none;
 	}
 }
+.uf-navbtn-row {
+	margin: 0;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+	button{
+		width: max-content;
+	}
+	.col{
+		align-items: stretch;
+		flex-grow: 0;
+		margin-right: 0.3rem;
+		padding: 0;
+	}
+	.col:nth-child(1)
+	{
+		margin-right: 3rem;
+	}
+}

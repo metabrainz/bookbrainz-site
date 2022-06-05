@@ -3,6 +3,7 @@ import {IdentifierType, UnifiedFormProps} from './interface/type';
 import ContentTab from './content-tab/content-tab';
 import CoverTab from './cover-tab/cover-tab';
 import DetailTab from './detail-tab/detail-tab';
+import NavButtons from './navbutton';
 import React from 'react';
 import SubmitSection from '../entity-editor/submission-section/submission-section';
 import {connect} from 'react-redux';
@@ -23,6 +24,19 @@ export function UnifiedForm(props:UnifiedFormProps) {
 	const {identifierTypes, validators, onSubmit} = props;
 	const [tabKey, setTabKey] = React.useState('cover');
 	const editionIdentifierTypes = filterIdentifierTypesByEntityType(identifierTypes, 'edition');
+	const tabKeys = ['cover', 'content', 'detail'];
+	const onNextHandler = React.useCallback(() => {
+		const index = tabKeys.indexOf(tabKey);
+		if (index >= 0 && index < tabKeys.length - 1) {
+			setTabKey(tabKeys[index + 1]);
+		}
+	}, [tabKey]);
+	const onBackHandler = React.useCallback(() => {
+		const index = tabKeys.indexOf(tabKey);
+		if (index > 0 && index < tabKeys.length) {
+			setTabKey(tabKeys[index - 1]);
+		}
+	}, [tabKey]);
 	return (
 		<form className="uf-main" onSubmit={onSubmit}>
 			<div className="uf-tab">
@@ -39,6 +53,10 @@ export function UnifiedForm(props:UnifiedFormProps) {
 					</Tab>
 				</Tabs>
 			</div>
+			<NavButtons
+				disableBack={tabKeys.indexOf(tabKey) === 0} disableNext={tabKeys.indexOf(tabKey) === tabKeys.length - 1}
+				onBack={onBackHandler} onNext={onNextHandler}
+			/>
 			<SubmitSection identifierTypes={editionIdentifierTypes} validate={validators && getUfValidator(validators.edition)}/>
 
 		</form>
