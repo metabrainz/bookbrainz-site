@@ -234,7 +234,7 @@ class NameSection extends React.Component {
 				</Row>
 				<Row>
 					<Col {...colAttribs}>
-						<ImmutableLanguageField
+						<LanguageField
 							empty={isAliasEmpty(
 								nameValue, sortNameValue, languageValue
 							)}
