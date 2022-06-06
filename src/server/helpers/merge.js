@@ -29,6 +29,7 @@ export function getEntityFetchPropertiesByType(entityType) {
 			];
 		case 'EditionGroup':
 			return [
+				'authorCredit.names.author.defaultAlias',
 				'editionGroupType',
 				'editions.defaultAlias',
 				'editions.disambiguation',

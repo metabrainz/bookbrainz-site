@@ -65,7 +65,7 @@ type OwnProps = {
 
 type OptionalNumber = number | null | undefined;
 type StateProps = {
-	authorCreditValue: Record<string, unknown>
+	authorCreditValue: Record<string, unknown>,
 	depthValue: OptionalNumber,
 	formatValue: OptionalNumber,
 	heightValue: OptionalNumber,

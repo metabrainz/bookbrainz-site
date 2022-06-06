@@ -144,11 +144,11 @@ export function createRootReducer(entityType: string, isMerge = false) {
 		submissionSection: submissionSectionReducer
 	};
 
-	if (entityHasAuthorCredits(entityType)) {
-		reducers.authorCreditEditor = authorCreditEditorReducer;
-	}
 	if (isMerge) {
 		reducers.authorCredit = authorCreditMergeReducer;
+	}
+	else if (entityHasAuthorCredits(entityType)) {
+		reducers.authorCreditEditor = authorCreditEditorReducer;
 	}
 
 	return combineReducers(reducers);

@@ -26,7 +26,6 @@ import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
-
 import type {Request as $Request, Response as $Response, NextFunction} from 'express';
 import type {
 	EntityTypeString,
@@ -36,6 +35,8 @@ import type {
 	Transaction
 } from 'bookbrainz-data/lib/func/types';
 import {escapeProps, generateProps} from '../../helpers/props';
+
+import {AuthorCreditRow} from '../../../client/entity-editor/author-credit-editor/actions';
 import AuthorPage from '../../../client/components/pages/entities/author';
 import DeletionForm from '../../../client/components/forms/deletion';
 import EditionGroupPage from '../../../client/components/pages/entities/edition-group';
@@ -675,19 +676,17 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 	return allEntitiesReturnArray;
 }
 
-type ProcessEditionSetsBody = {
-	languages: Array<Language>,
-	publishers: Array<Publisher>,
-	releaseEvents: Array<ReleaseEvent>
+type ProcessAuthorCreditBody = {
+	authorCredit: Array<AuthorCreditRow>
 };
+type ProcessAuthorCreditResult = {authorCreditId: number};
 
-type ProcessEditionSetsResult = {authorCreditId: number[], languageSetId: number[], publisherSetId: number[], releaseEventSetId: number[]};
-async function processEditionSets(
+async function processAuthorCredit(
 	orm: any,
 	currentEntity: Record<string, unknown> | null | undefined,
-	body: ProcessEditionSetsBody,
+	body: ProcessAuthorCreditBody,
 	transacting: Transaction
-): Promise<ProcessEditionSetsResult> {
+): Promise<ProcessAuthorCreditResult> {
 	const authorCreditID = _.get(currentEntity, ['authorCredit', 'id']);
 
 	const oldAuthorCredit = await (
@@ -697,16 +696,34 @@ async function processEditionSets(
 	);
 
 	const names = _.get(body, 'authorCredit') || [];
-	const newAuthorCreditIDPromise = orm.func.authorCredit.updateAuthorCredit(
+	const newAuthorCredit = await orm.func.authorCredit.updateAuthorCredit(
 		orm, transacting, oldAuthorCredit,
 		names.map((name) => ({
 			authorBBID: name.authorBBID,
 			joinPhrase: name.joinPhrase,
 			name: name.name
 		}))
-	)
-		.then((credit) => credit && credit.get('id'));
+	);
 
+	return {
+		authorCreditId: newAuthorCredit && newAuthorCredit.get('id')
+	};
+}
+
+
+type ProcessEditionSetsBody = {
+	languages: Array<Language>,
+	publishers: Array<Publisher>,
+	releaseEvents: Array<ReleaseEvent>
+} & ProcessAuthorCreditBody;
+type ProcessEditionSetsResult = {languageSetId: number[], publisherSetId: number[], releaseEventSetId: number[]} & ProcessAuthorCreditResult;
+
+async function processEditionSets(
+	orm: any,
+	currentEntity: Record<string, unknown> | null | undefined,
+	body: ProcessEditionSetsBody,
+	transacting: Transaction
+): Promise<ProcessEditionSetsResult> {
 	const languageSetID = _.get(currentEntity, ['languageSet', 'id']);
 
 	const oldLanguageSet = await (
@@ -765,8 +782,10 @@ async function processEditionSets(
 		)
 			.then((set) => set && set.get('id'));
 
+	const authorCreditIDPromise = processAuthorCredit(orm, currentEntity, body, transacting).then(acResult => acResult.authorCreditId);
+
 	return commonUtils.makePromiseFromObject<ProcessEditionSetsResult>({
-		authorCreditId: newAuthorCreditIDPromise,
+		authorCreditId: authorCreditIDPromise,
 		languageSetId: newLanguageSetIDPromise,
 		publisherSetId: newPublisherSetIDPromise,
 		releaseEventSetId: newReleaseEventSetIDPromise
@@ -795,22 +814,30 @@ async function processWorkSets(
 	});
 }
 
-function processEntitySets(
+async function processEntitySets(
 	orm: any,
 	currentEntity: Record<string, unknown> | null | undefined,
 	entityType: EntityTypeString,
 	body: any,
 	transacting: Transaction
-): Promise<ProcessEditionSetsResult | ProcessWorkSetsResult | null> {
+): Promise<ProcessEditionSetsResult | ProcessWorkSetsResult | ProcessAuthorCreditResult | null> {
 	if (entityType === 'Edition') {
-		return processEditionSets(orm, currentEntity, body, transacting);
+		const editionSets = await processEditionSets(orm, currentEntity, body, transacting);
+		const authorCredit = await processAuthorCredit(orm, currentEntity, body, transacting);
+		return {...editionSets, ...authorCredit};
+	}
+
+	if (entityType === 'EditionGroup') {
+		const authorCredit = await processAuthorCredit(orm, currentEntity, body, transacting);
+		return authorCredit;
 	}
 
 	if (entityType === 'Work') {
-		return processWorkSets(orm, currentEntity, body, transacting);
+		const workSets = await processWorkSets(orm, currentEntity, body, transacting);
+		return workSets;
 	}
 
-	return new Promise(resolve => resolve(null));
+	return null;
 }
 
 

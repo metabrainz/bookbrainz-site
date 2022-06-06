@@ -88,6 +88,7 @@ export function generateEntityProps(
 			`Add ${entityName}`,
 		identifierTypes: filteredIdentifierTypes,
 		initialState: initialStateCallback(entity),
+		isMerge: false,
 		languageOptions: res.locals.languages,
 		requiresJS: true,
 		subheading: isEdit ?
@@ -135,6 +136,7 @@ export function generateEntityMergeProps(
 		heading: `Merge ${mergingEntities.length} ${entityName}s`,
 		identifierTypes: filteredIdentifierTypes,
 		initialState: initialStateCallback(mergingEntities),
+		isMerge: true,
 		languageOptions: res.locals.languages,
 		requiresJS: true,
 		subheading: `You are merging ${mergingEntities.length} existing ${entityName}s:`,
@@ -251,12 +253,12 @@ export function makeEntityCreateOrEditHandler(
 		req: PassportRequest,
 		res: $Response
 	) {
-		if (!validate(req.body)) {
+		const {mergeQueue} = req.session;
+		const isMergeOperation = isMergeHandler && mergeQueue && _.size(mergeQueue.mergingEntities) >= 2;
+		if (!validate(req.body, null, isMergeOperation)) {
 			const err = new error.FormSubmissionError();
 			error.sendErrorAsJSON(res, err);
 		}
-		const {mergeQueue} = req.session;
-		const isMergeOperation = isMergeHandler && mergeQueue && _.size(mergeQueue.mergingEntities) >= 2;
 
 		req.body = transformNewForm(req.body);
 

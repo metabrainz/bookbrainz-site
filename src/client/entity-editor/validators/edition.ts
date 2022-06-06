@@ -21,6 +21,7 @@ import {get, validateDate, validatePositiveInteger, validateUUID} from './base';
 import {
 	validateAliases,
 	validateAuthorCreditSection,
+	validateAuthorCreditSectionMerge,
 	validateIdentifiers,
 	validateNameSection,
 	validateSubmissionSection
@@ -116,8 +117,16 @@ export function validateEditionSection(data: any): boolean {
 }
 
 export function validateForm(
-	formData: any, identifierTypes?: Array<_IdentifierType> | null | undefined
+	formData: any, identifierTypes?: Array<_IdentifierType> | null | undefined,
+	isMerge?:boolean
 ): boolean {
+	let validAuthorCredit;
+	if (isMerge) {
+		validAuthorCredit = validateAuthorCreditSectionMerge(get(formData, 'authorCredit', {}));
+	}
+	else {
+		validAuthorCredit = validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}));
+	}
 	const conditions = [
 		validateAliases(get(formData, 'aliasEditor', {})),
 		validateIdentifiers(
@@ -125,7 +134,7 @@ export function validateForm(
 		),
 		validateNameSection(get(formData, 'nameSection', {})),
 		validateEditionSection(get(formData, 'editionSection', {})),
-		validateAuthorCreditSection(get(formData, 'authorCreditEditor', {})),
+		validAuthorCredit,
 		validateSubmissionSection(get(formData, 'submissionSection', {}))
 	];
 

@@ -27,6 +27,7 @@ import {
 
 import {Iterable} from 'immutable';
 import _ from 'lodash';
+import {AuthorCredit} from '../author-credit-editor/actions';
 
 
 export function validateMultiple(
@@ -194,3 +195,7 @@ export const validateAuthorCreditSection = _.partialRight(
 	validateMultiple, _.partialRight.placeholder,
 	validateAuthorCreditRow, null, false
 );
+// In the merge editor we use the authorCredit directly instead of the authorCreditEditor state
+export function validateAuthorCreditSectionMerge(authorCredit:AuthorCredit) :boolean {
+	return validatePositiveInteger(get(authorCredit, 'id', null), true);
+}
