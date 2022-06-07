@@ -1,4 +1,4 @@
-import {ISBNDispatchProps, ISBNProps, RInputEvent} from '../interface/type';
+import {ISBNDispatchProps, ISBNProps, ISBNStateProps, RInputEvent} from '../interface/type';
 import {debouncedUpdateISBNValue, updateISBNType} from './action';
 import Immutable from 'immutable';
 import NameField from '../../entity-editor/common/name-field';
@@ -21,7 +21,7 @@ export function ISBNField(props:ISBNProps) {
 		</div>);
 }
 
-function mapStateToProps(rootState:Immutable.Map<any, any>):Record<string, any> {
+function mapStateToProps(rootState:Immutable.Map<any, any>):ISBNStateProps {
 	return {
 		type: rootState.getIn(['ISBN', 'type']),
 		value: rootState.getIn(['ISBN', 'value'])
@@ -51,4 +51,4 @@ function mapDispatchToProps(dispatch):ISBNDispatchProps {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ISBNField);
+export default connect<ISBNStateProps, ISBNDispatchProps>(mapStateToProps, mapDispatchToProps)(ISBNField);

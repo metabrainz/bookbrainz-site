@@ -56,6 +56,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LanguageField from '../common/language-field';
 import LinkedEntity from '../common/linked-entity';
 import NumericField from '../common/numeric-field';
+import SearchEntityCreate from '../../unified-form/common/search-entity-create-select';
 import Select from 'react-select';
 import _ from 'lodash';
 import {connect} from 'react-redux';
@@ -214,11 +215,11 @@ function EditionSection({
 		!editionGroupRequired;
 
 	const showMatchingEditionGroups = Boolean(hasmatchingNameEditionGroups && !editionGroupValue);
-
+	const EntitySearchField = isUf ? SearchEntityCreate : EntitySearchFieldOption;
 	const getEditionGroupSearchSelect = () => (
 		<React.Fragment>
-			<Col className="margin-bottom-2" lg={{offset: showMatchingEditionGroups ? 0 : 3, span: 6}}>
-				<EntitySearchFieldOption
+			<Col className="margin-bottom-2" lg={{offset: isUf || showMatchingEditionGroups ? 0 : 3, span: 6}}>
+				<EntitySearchField
 					clearable={false}
 					error={!validateEditionSectionEditionGroup(editionGroupValue, true)}
 					help="Group with other Editions of the same book"
@@ -273,35 +274,37 @@ function EditionSection({
 	return (
 		<div>
 			{!isUf &&
-			<>
+
 				<h2>
 				What else do you know about the Edition?
 				</h2>
-				<p className="text-muted">
+			}
+			<p className="text-muted">
 				Edition Group is required — this cannot be blank. You can search for and choose an existing Edition Group,
 				or choose to automatically create one instead.
-				</p>
-				<Row className="margin-bottom-3">
-					{
-						showAutoCreateEditionGroupMessage ?
-							<Col lg={{offset: showMatchingEditionGroups ? 0 : 3, span: 6}}>
-								<Alert variant="success">
-									<p>A new Edition Group with the same name will be created automatically.</p>
-									<br/>
-									<Button
-										block
-										className="wrap"
-										variant="success"
-										// eslint-disable-next-line react/jsx-no-bind
-										onClick={onToggleShowEditionGroupSection.bind(this, true)}
-									>
-										<FontAwesomeIcon icon={faSearch}/>&nbsp;Search for an existing Edition Group
-									</Button>
-								</Alert>
-							</Col> :
-							getEditionGroupSearchSelect()
-					}
-					{showMatchingEditionGroups &&
+			</p>
+
+			<Row className="margin-bottom-3">
+				{
+					showAutoCreateEditionGroupMessage ?
+						<Col lg={{offset: isUf || showMatchingEditionGroups ? 0 : 3, span: 6}}>
+							<Alert variant="success">
+								<p>A new Edition Group with the same name will be created automatically.</p>
+								<br/>
+								<Button
+									block
+									className="wrap"
+									variant="success"
+									// eslint-disable-next-line react/jsx-no-bind
+									onClick={onToggleShowEditionGroupSection.bind(this, true)}
+								>
+									<FontAwesomeIcon icon={faSearch}/>&nbsp;Search for an existing Edition Group
+								</Button>
+							</Alert>
+						</Col> :
+						getEditionGroupSearchSelect()
+				}
+				{showMatchingEditionGroups &&
 					<Col lg={6}>
 						<Alert variant="warning">
 							{matchingNameEditionGroups.length > 1 ?
@@ -325,10 +328,10 @@ function EditionSection({
 							</ListGroup>
 						</Alert>
 					</Col>
-					}
-				</Row>
-			</>
-			}
+				}
+			</Row>
+
+
 			<p className="text-muted">
 				Below fields are optional — leave something blank if you
 				don&rsquo;t know it

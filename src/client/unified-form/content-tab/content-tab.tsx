@@ -1,7 +1,7 @@
 import * as Bootstrap from 'react-bootstrap/';
 import {ContentTabDispatchProps, ContentTabProps, ContentTabStateProps} from '../interface/type';
 import React from 'react';
-import SearchEntityCreaate from '../common/search-entity-create-select';
+import SearchEntityCreate from '../common/search-entity-create-select';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {reduce} from 'lodash';
@@ -13,7 +13,7 @@ export function ContentTab({value, onChange, nextId}:ContentTabProps) {
 	return (
 		<Row>
 			<Col lg={{span: 6}}>
-				<SearchEntityCreaate
+				<SearchEntityCreate
 					isMulti
 					label="Works"
 					nextId={nextId}

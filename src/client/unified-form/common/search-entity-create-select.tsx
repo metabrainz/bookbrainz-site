@@ -14,7 +14,7 @@ const defaultProps = {
 	languageOptions: [],
 	tooltipText: null
 };
-type SearchEntityCreaateProps = {
+type SearchEntityCreateProps = {
   bbid?:string,
   empty?:boolean,
   nextId:string|number,
@@ -27,7 +27,7 @@ type SearchEntityCreaateProps = {
 
 } & typeof defaultProps & CommonProps<any, any>;
 
-function SearchEntityCreaate(props:SearchEntityCreaateProps):JSX.Element {
+function SearchEntityCreate(props:SearchEntityCreateProps):JSX.Element {
 	const {type, nextId} = props;
 	const createLabel = React.useCallback((input) => `Create ${type} "${input}"`, [type]);
 	const getNewOptionData = React.useCallback((input, label) => ({
@@ -43,6 +43,6 @@ function SearchEntityCreaate(props:SearchEntityCreaateProps):JSX.Element {
 		{...props}
 	        />);
 }
-SearchEntityCreaate.defaultProps = defaultProps;
-export default SearchEntityCreaate;
+SearchEntityCreate.defaultProps = defaultProps;
+export default SearchEntityCreate;
 
