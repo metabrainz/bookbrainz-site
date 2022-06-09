@@ -73,6 +73,7 @@ function transformNewForm(data) {
 	return {
 		aliases,
 		annotation: data.annotationSection.content,
+		copyNameToEditionGroup: data.nameSection.copyNameToEditionGroup ?? false,
 		depth: data.editionSection.depth &&
 			parseInt(data.editionSection.depth, 10),
 		disambiguation: data.nameSection.disambiguation,
@@ -296,7 +297,7 @@ router.param(
 	middleware.makeEntityLoader(
 		'Edition',
 		[
-			'editionGroup.defaultAlias',
+			'editionGroup.aliasSet.aliases',
 			'languageSet.languages',
 			'editionFormat',
 			'editionStatus',

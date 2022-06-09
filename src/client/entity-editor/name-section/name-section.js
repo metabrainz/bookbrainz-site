@@ -16,13 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Alert, Col, ListGroup, Row} from 'react-bootstrap';
+import {Alert, Col, Form, ListGroup, Row} from 'react-bootstrap';
 import {
 	checkIfNameExists,
 	debouncedUpdateDisambiguationField,
 	debouncedUpdateNameField,
 	debouncedUpdateSortNameField,
 	searchName,
+	updateCopyNameCheckbox,
 	updateLanguageField
 } from './actions';
 import {isAliasEmpty, isRequiredDisambiguationEmpty} from '../helpers';
@@ -68,6 +69,7 @@ const ImmutableLanguageField = makeImmutable(LanguageField);
  * @param {string} props.nameValue - The name currently set for this entity.
  * @param {string} props.sortNameValue - The sort name currently set for this
  *        entity.
+ * @param {Function} props.onCheckboxToggle - A function to be called when toggle copy name to EG checkbox
  * @param {Function} props.onLanguageChange - A function to be called when a
  *        different language type is selected.
  * @param {Function} props.onNameChange - A function to be called when the name
@@ -134,6 +136,7 @@ class NameSection extends React.Component {
 
 	render() {
 		const {
+			action,
 			disambiguationDefaultValue,
 			entityType,
 			exactMatches,
@@ -141,6 +144,7 @@ class NameSection extends React.Component {
 			languageValue,
 			nameValue,
 			sortNameValue,
+			onCheckboxToggle,
 			onLanguageChange,
 			onSortNameChange,
 			onDisambiguationChange,
@@ -261,6 +265,17 @@ class NameSection extends React.Component {
 							onChange={onDisambiguationChange}
 						/>
 					</Col>
+					{action === 'edit' && entityType === 'edition' &&
+					<Col className="md-2" lg={{offset: 3, span: 6}}>
+						<Form.Check
+							className="margin-bottom-d8"
+							id="name"
+							label="Copy the Edition name to the Edition Group"
+							type="checkbox"
+							onChange={onCheckboxToggle}
+						/>
+					</Col>
+					}
 				</Row>
 			</div>
 		);
@@ -275,6 +290,7 @@ NameSection.propTypes = {
 	languageOptions: PropTypes.array.isRequired,
 	languageValue: PropTypes.number,
 	nameValue: PropTypes.string.isRequired,
+	onCheckboxToggle: PropTypes.func.isRequired,
 	onDisambiguationChange: PropTypes.func.isRequired,
 	onLanguageChange: PropTypes.func.isRequired,
 	onNameChange: PropTypes.func.isRequired,
@@ -318,6 +334,7 @@ function mapStateToProps(rootState) {
 function mapDispatchToProps(dispatch, {entity, entityType}) {
 	const entityBBID = entity && entity.bbid;
 	return {
+		onCheckboxToggle: (event) => dispatch(updateCopyNameCheckbox(event.target.checked)),
 		onDisambiguationChange: (event) =>
 			dispatch(debouncedUpdateDisambiguationField(event.target.value)),
 		onLanguageChange: (value) =>
