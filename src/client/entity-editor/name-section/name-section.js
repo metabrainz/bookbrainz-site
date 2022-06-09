@@ -23,7 +23,7 @@ import {
 	debouncedUpdateNameField,
 	debouncedUpdateSortNameField,
 	searchName,
-	updateCheckbox,
+	updateCopyNameCheckbox,
 	updateLanguageField
 } from './actions';
 import {isAliasEmpty, isRequiredDisambiguationEmpty} from '../helpers';
@@ -176,17 +176,6 @@ class NameSection extends React.Component {
 							onChange={this.handleNameChange}
 						/>
 					</Col>
-					{action === 'edit' && entityType === 'edition' &&
-					<Col className="md-2" lg={{offset: 3, span: 6}}>
-						<Form.Check
-							className="margin-bottom-d8"
-							id="name"
-							label="Copy the edition name to edition-group"
-							type="checkbox"
-							onChange={onCheckboxToggle}
-						/>
-					</Col>
-					}
 					<Col lg={{offset: 3, span: 6}}>
 						{isRequiredDisambiguationEmpty(
 							warnIfExists,
@@ -272,6 +261,17 @@ class NameSection extends React.Component {
 							onChange={onDisambiguationChange}
 						/>
 					</Col>
+					{action === 'edit' && entityType === 'edition' &&
+					<Col className="md-2" lg={{offset: 3, span: 6}}>
+						<Form.Check
+							className="margin-bottom-d8"
+							id="name"
+							label="Copy the Edition name to the Edition Group"
+							type="checkbox"
+							onChange={onCheckboxToggle}
+						/>
+					</Col>
+					}
 				</Row>
 			</div>
 		);
@@ -330,7 +330,7 @@ function mapStateToProps(rootState) {
 function mapDispatchToProps(dispatch, {entity, entityType}) {
 	const entityBBID = entity && entity.bbid;
 	return {
-		onCheckboxToggle: (event) => dispatch(updateCheckbox(event.target.checked)),
+		onCheckboxToggle: (event) => dispatch(updateCopyNameCheckbox(event.target.checked)),
 		onDisambiguationChange: (event) =>
 			dispatch(debouncedUpdateDisambiguationField(event.target.value)),
 		onLanguageChange: (value) =>

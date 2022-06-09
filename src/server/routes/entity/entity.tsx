@@ -1002,6 +1002,31 @@ function sanitizeBody(body:any) {
 	return body;
 }
 
+/**
+ * @param {Object} body - form body
+ * @param {Object}  currentEditionGroup - current Edition Group
+ * @param {Object} orm - orm
+ * @param {Object} transacting - bookshelf transaction
+ * @returns {Promise} - resolve to edition group modal
+ */
+async function copyNameToEditionGroup(body:Record<string, any>, currentEditionGroup:Record<string, any>, orm, transacting):Promise<any> {
+	const entityDefaultAlias = body.aliases.find((alias) => alias.default);
+	const tempAliases = currentEditionGroup.aliasSet.aliases.map((alias) => {
+		const mAlias = _.pick(alias, ['id', 'name', 'sortName', 'languageId', 'primary', 'default']);
+		if (alias.id === currentEditionGroup.aliasSet.defaultAliasId) {
+			return {...mAlias, default: true, name: entityDefaultAlias.name};
+		}
+		return mAlias;
+	});
+	const aliasSet = await getNextAliasSet(orm, transacting, currentEditionGroup, {aliases: tempAliases});
+	const EGEntity = await fetchOrCreateMainEntity(
+		orm, transacting, false, currentEditionGroup.bbid, 'EditionGroup'
+	);
+	EGEntity.set('aliasSetId', aliasSet.id);
+	EGEntity.shouldInsert = false;
+	return EGEntity;
+}
+
 export function handleCreateOrEditEntity(
 	req: PassportRequest,
 	res: $Response,
@@ -1087,19 +1112,9 @@ export function handleCreateOrEditEntity(
 				.filter(entity => entity.get('dataId') !== null);
 
 			// copy name to the edition group
-			if (!isNew && entityType === 'Edition' && body.copyToEG) {
-				const currentEditionGroup = currentEntity.editionGroup;
-				const entityDefaultAlias = body.aliases.find((alias) => alias.default);
-				if (currentEditionGroup.defaultAlias.name !== entityDefaultAlias.name) {
-					const tempBody = {aliases: [{...currentEditionGroup.defaultAlias, default: true, name: entityDefaultAlias.name}]};
-					const aliasSet = await getNextAliasSet(orm, transacting, currentEditionGroup, tempBody);
-					const EGEntity = await fetchOrCreateMainEntity(
-						orm, transacting, false, currentEditionGroup.bbid, 'EditionGroup'
-					);
-					EGEntity.set('aliasSetId', aliasSet.id);
-					EGEntity.shouldInsert = false;
-					allEntities.push(EGEntity);
-				}
+			if (!isNew && entityType === 'Edition' && body.copyNameToEditionGroup) {
+				const EGEntity = await copyNameToEditionGroup(body, currentEntity.editionGroup, orm, transacting);
+				allEntities.push(EGEntity);
 			}
 			if (isMergeOperation) {
 				allEntities = await processMergeOperation(orm, transacting, req.session,

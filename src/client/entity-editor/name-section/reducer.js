@@ -17,7 +17,7 @@
  */
 
 import {
-	UPDATE_COPY_CHECKBOX, UPDATE_DISAMBIGUATION_FIELD, UPDATE_LANGUAGE_FIELD,
+	UPDATE_COPY_NAME_TO_EDITION_GROUP, UPDATE_DISAMBIGUATION_FIELD, UPDATE_LANGUAGE_FIELD,
 	UPDATE_NAME_FIELD, UPDATE_SEARCH_RESULTS, UPDATE_SORT_NAME_FIELD, UPDATE_WARN_IF_EXISTS
 } from './actions';
 import Immutable from 'immutable';
@@ -25,7 +25,7 @@ import Immutable from 'immutable';
 
 function reducer(
 	state = Immutable.Map({
-		copyToEG: false,
+		copyNameToEditionGroup: false,
 		disambiguation: '',
 		exactMatches: [],
 		language: null,
@@ -49,8 +49,8 @@ function reducer(
 			return state.set('searchResults', payload);
 		case UPDATE_WARN_IF_EXISTS:
 			return state.set('exactMatches', payload);
-		case UPDATE_COPY_CHECKBOX:
-			return state.set('copyToEG', payload);
+		case UPDATE_COPY_NAME_TO_EDITION_GROUP:
+			return state.set('copyNameToEditionGroup', payload);
 		// no default
 	}
 	return state;
