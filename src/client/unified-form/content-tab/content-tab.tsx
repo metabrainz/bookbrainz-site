@@ -9,7 +9,7 @@ import {updateWorks} from './action';
 
 
 const {Row, Col} = Bootstrap;
-export function ContentTab({value, onChange, nextId}:ContentTabProps) {
+export function ContentTab({value, onChange, nextId, ...rest}:ContentTabProps) {
 	return (
 		<Row>
 			<Col lg={{span: 6}}>
@@ -20,6 +20,7 @@ export function ContentTab({value, onChange, nextId}:ContentTabProps) {
 					type="work"
 					value={value}
 					onChange={onChange}
+					{...rest}
 				/>
 			</Col>
 		</Row>
@@ -27,7 +28,7 @@ export function ContentTab({value, onChange, nextId}:ContentTabProps) {
 }
 
 function mapStateToProps(rootState) {
-	const worksObj = convertMapToObject(rootState.get('works'));
+	const worksObj = convertMapToObject(rootState.get('Works'));
 	const nextId = reduce(worksObj, (prev, value) => (value.__isNew__ ? prev + 1 : prev), 0);
 	return {
 		nextId,

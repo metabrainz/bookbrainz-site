@@ -23,15 +23,15 @@ export type UnifiedFormDispatchProps = {
 	onSubmit: (event:React.FormEvent) =>unknown
 };
 export type UnifiedFormProps = {
-    identifierTypes:IdentifierType[],
-    validators:Record<string, any>,
+    identifierTypes?:IdentifierType[],
+    validators?:Record<string, any>,
 } & UnifiedFormDispatchProps;
 
 export type CoverOwnProps = {
-    languageOptions: LanguageOption[],
-	editionFormats:EditionFormat[],
+    languageOptions?: LanguageOption[],
+	editionFormats?:EditionFormat[],
 	identifierTypes:IdentifierType[]
-	editionStatuses: EditionStatus[]
+	editionStatuses?: EditionStatus[]
 };
 export type CoverStateProps = {
     publisherValue:any[],
@@ -71,3 +71,25 @@ export type ContentTabDispatchProps = {
 	onChange:(arg:EntitySelect|EntitySelect[])=>unknown
 };
 export type ContentTabProps = ContentTabStateProps & ContentTabDispatchProps;
+
+export type NavButtonsProps = {
+    onNext:()=>unknown,
+    onBack:()=>unknown,
+    disableBack:boolean,
+    disableNext:boolean
+};
+
+export type SearchEntityCreateProps = {
+	bbid?:string,
+	empty?:boolean,
+	nextId:string|number,
+	error?:boolean,
+	filters?:Array<any>,
+	label:string,
+	tooltipText?:string,
+	languageOptions?:Array<any>,
+	value?:Array<EntitySelect> | EntitySelect
+	type:string | Array<string>,
+	onChange:(arg)=>unknown
+
+};

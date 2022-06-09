@@ -259,6 +259,7 @@ function EditionSection({
 			Has the work been published, or is it in a draft stage?
 		</Tooltip>
 	);
+	const headingTag = !isUf && <h2>What else do you know about the Edition?</h2>;
 	const colSpan = {
 		offset: 3,
 		span: 6
@@ -273,12 +274,7 @@ function EditionSection({
 	}
 	return (
 		<div>
-			{!isUf &&
-
-				<h2>
-				What else do you know about the Edition?
-				</h2>
-			}
+			{headingTag}
 			<p className="text-muted">
 				Edition Group is required — this cannot be blank. You can search for and choose an existing Edition Group,
 				or choose to automatically create one instead.

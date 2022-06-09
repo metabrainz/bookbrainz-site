@@ -167,13 +167,13 @@ function postUFSubmission(url: string, data: Map<string, any>): Promise<void> {
 
 type SubmitResult = (arg1: (Action) => unknown, arg2: () => Map<string, any>) => unknown;
 export function submit(
-	submissionUrl: string
+	submissionUrl: string,
+	isUf = false
 ): SubmitResult {
 	return (dispatch, getState) => {
 		const rootState = getState();
 		dispatch(setSubmitted(true));
-		// TO-DO: not the best best way
-		if (rootState.get('ISBN')) {
+		if (isUf) {
 			return postUFSubmission(submissionUrl, rootState)
 				.catch(
 					(error: {message: string}) => {

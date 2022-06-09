@@ -4,6 +4,7 @@ import annotationSectionReducer from '../entity-editor/annotation-section/reduce
 import buttonBarReducer from '../entity-editor/button-bar/reducer';
 import {combineReducers} from 'redux-immutable';
 import editionSectionReducer from '../entity-editor/edition-section/reducer';
+import {createRootReducer as getEntityReducer} from '../entity-editor/helpers';
 import identifierEditorReducer from '../entity-editor/identifier-editor/reducer';
 import nameSectionReducer from '../entity-editor/name-section/reducer';
 import relationshipSectionReducer from '../entity-editor/relationship-editor/reducer';
@@ -33,6 +34,8 @@ export const validatorMap = {
 export function createRootReducer() {
 	return combineReducers({
 		ISBN: ISBNReducer,
+		Work: getEntityReducer('work'),
+		Works: worksReducer,
 		aliasEditor: aliasEditorReducer,
 		annotationSection: annotationSectionReducer,
 		buttonBar: buttonBarReducer,
@@ -40,7 +43,6 @@ export function createRootReducer() {
 		identifierEditor: identifierEditorReducer,
 		nameSection: nameSectionReducer,
 		relationshipSection: relationshipSectionReducer,
-		submissionSection: submissionSectionReducer,
-		works: worksReducer
+		submissionSection: submissionSectionReducer
 	});
 }

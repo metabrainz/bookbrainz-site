@@ -14,12 +14,12 @@ export function DetailTab(props) {
 					</Accordion.Toggle>
 					<Accordion.Collapse eventKey="0">
 						<Card.Body>
-							<EditionSection isUf {...props}/>
+							<EditionSection {...props}/>
 						</Card.Body>
 					</Accordion.Collapse>
 				</Card>
 			</Accordion>
-			<AnnotationSection isUf {...props}/>
+			<AnnotationSection {...props}/>
 		</div>);
 }
 

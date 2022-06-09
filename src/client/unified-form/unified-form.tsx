@@ -1,5 +1,5 @@
 import * as Boostrap from 'react-bootstrap';
-import {IdentifierType, UnifiedFormProps} from './interface/type';
+import {IdentifierType, UnifiedFormDispatchProps, UnifiedFormProps} from './interface/type';
 import ContentTab from './content-tab/content-tab';
 import CoverTab from './cover-tab/cover-tab';
 import DetailTab from './detail-tab/detail-tab';
@@ -46,7 +46,7 @@ export function UnifiedForm(props:UnifiedFormProps) {
 						<CoverTab {...props} identifierTypes={editionIdentifierTypes as IdentifierType[]}/>
 					</Tab>
 					<Tab eventKey="content" title="Contents">
-						<ContentTab/>
+						<ContentTab {...props}/>
 					</Tab>
 					<Tab eventKey="detail" title="Details">
 						<DetailTab {...props}/>
@@ -67,9 +67,9 @@ function mapDispatchToProps(dispatch, {submissionUrl}) {
 	return {
 		onSubmit: (event:React.FormEvent) => {
 			event.preventDefault();
-			dispatch(submit(submissionUrl));
+			dispatch(submit(submissionUrl), true);
 		}
 	};
 }
 
-export default connect(null, mapDispatchToProps)(UnifiedForm);
+export default connect<null, UnifiedFormDispatchProps>(null, mapDispatchToProps)(UnifiedForm);

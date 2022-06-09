@@ -1,10 +1,11 @@
 
 
-export const UPDATE_WORKS = 'UPDATE_WORKS';
+export const ADD_WORK = 'ADD_WORK';
 
+let nextId = 0;
 export function updateWorks(payload) {
 	return {
-		payload,
-		type: UPDATE_WORKS
+		payload: {id: nextId++, value: payload},
+		type: ADD_WORK
 	};
 }

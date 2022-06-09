@@ -78,10 +78,15 @@ class LinkedEntity extends React.Component<any, any> {
 		return optionToCheck;
 	}
 
+
 	render() {
 		const option = this.getSafeOptionValue(this.props.data);
 		const {disambiguation, text, type, unnamedText, language, __isNew__} = option;
 		const nameComponent = text || <i>{unnamedText}</i>;
+		const externalLinkComponent = !__isNew__ &&
+				<a onClick={this.handleChildEvent}>
+					<FontAwesomeIcon icon={faExternalLinkAlt}/>
+				</a>;
 		return (
 			<div
 				className={this.props.className}
@@ -98,10 +103,7 @@ class LinkedEntity extends React.Component<any, any> {
 					<span className="disambig"><small>({disambiguation})</small></span>
 				}
 				{' '}
-				{!__isNew__ &&
-				<a onClick={this.handleChildEvent}>
-					<FontAwesomeIcon icon={faExternalLinkAlt}/>
-				</a>}
+				{externalLinkComponent}
 				<span className="text-muted small" style={{float: 'right'}}>{language}</span>
 			</div>
 		);

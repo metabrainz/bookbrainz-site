@@ -1,16 +1,12 @@
 import * as Bootstrap from 'react-bootstrap';
 import {faAngleLeft, faAngleRight} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {NavButtonsProps} from './interface/type';
 import React from 'react';
 
 
 const {Row, Col, Button} = Bootstrap;
-type NavButtonsProps = {
-    onNext:()=>unknown,
-    onBack:()=>unknown,
-    disableBack:boolean,
-    disableNext:boolean
-};
+
 export default function NavButtons({onNext, onBack, disableBack, disableNext}:NavButtonsProps) {
 	return (
 		<Row className="uf-navbtn-row">

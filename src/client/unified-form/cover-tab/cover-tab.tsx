@@ -14,7 +14,7 @@ export function CoverTab(props:CoverProps) {
 	const {publisherValue, onPublisherChange, identifierEditorVisible} = props;
 	return (
 		<div>
-			<NameSection {...props} isUf/>
+			<NameSection {...props}/>
 			<Row>
 				<Col lg={{offset: 0, span: 6}}>
 					<SearchEntityCreate
@@ -32,7 +32,7 @@ export function CoverTab(props:CoverProps) {
 				</Col>
 			</Row>
 
-			<ButtonBar {...props} isUf/>
+			<ButtonBar {...props}/>
 			<IdentifierEditor show={identifierEditorVisible} {...props}/>
 		</div>
 

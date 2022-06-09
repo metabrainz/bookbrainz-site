@@ -58,22 +58,27 @@ function ButtonBar({
 	onIdentifierButtonClick
 }) {
 	const className = isUf ? 'text-right' : 'text-center';
+	function renderAliasButton() {
+		if (isUf) {
+			return null;
+		}
+		return (
+			<Col className={className} lg={6}>
+				<AliasButton
+					aliasesInvalid={aliasesInvalid}
+					numAliases={numAliases}
+					onClick={onAliasButtonClick}
+				/>
+			</Col>);
+	}
+	const identifierEditorClass = `btn wrap${!isUf ? '' : ' btn-success'}`;
 	return (
 		<div>
+			{renderAliasButton()}
 			<Row className="margin-top-1">
-				{
-					!isUf &&
-					<Col className={className} lg={6}>
-						<AliasButton
-							aliasesInvalid={aliasesInvalid}
-							numAliases={numAliases}
-							onClick={onAliasButtonClick}
-						/>
-					</Col>
-			  }
 				<Col className={className} lg={6}>
 					<IdentifierButton
-						className={`btn wrap${!isUf ? '' : ' btn-success'}`}
+						className={identifierEditorClass}
 						identifiersInvalid={identifiersInvalid}
 						isUf={isUf}
 						numIdentifiers={numIdentifiers}

@@ -324,7 +324,7 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
  * @returns {object} - Updated props and HTML string with markup
  */
 
-export function unifiedFormMarkup(props:{initialState:any}) {
+export function unifiedFormMarkup(props) {
 	const {initialState, ...rest} = props;
 	const rootReducer = ufCreateRootReducer();
 	const store:any = createStore(rootReducer, Immutable.fromJS(initialState));
@@ -355,10 +355,12 @@ export function generateUnifiedProps(
 	additionalProps: any,
 	initialStateCallback: () => any = () => new Object()
 ): any {
-	const submissionUrl = 'localhost:9097/create/handler';
+	const submissionUrl = '/create/handler';
 	const props = Object.assign({
+		entityType: 'edition',
 		identifierTypes: res.locals.identifierTypes,
 		initialState: initialStateCallback(),
+		isUf: true,
 		languageOptions: res.locals.languages,
 		requiresJS: true,
 		submissionUrl
