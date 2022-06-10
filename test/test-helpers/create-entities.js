@@ -19,6 +19,7 @@
 
 import {internet, random} from 'faker';
 
+import {faker} from '@faker-js/faker';
 import {isNil} from 'lodash';
 import orm from '../bookbrainz-data';
 import {v4 as uuidv4} from 'uuid';
@@ -65,10 +66,6 @@ const languageAttribs = {
 	isoCode2t: 'eng',
 	isoCode3: 'eng',
 	name: 'English'
-};
-
-const PublisherTypeAttribs = {
-	label: 'Publisher Type 1'
 };
 
 export const aliasData = {
@@ -408,13 +405,10 @@ export async function createSeries(optionalBBID, optionalSeriesAttribs = {}) {
 }
 
 async function fetchOrCreatePublisherType(PublisherTypeModel, optionalPublisherAttribs = {}) {
-	let publisherType;
-	publisherType = await new PublisherTypeModel({...PublisherTypeAttribs, ...optionalPublisherAttribs})
-		.fetch({require: false});
-	if (publisherType) {
-		return publisherType;
-	}
-	publisherType = await new PublisherTypeModel({...PublisherTypeAttribs, ...optionalPublisherAttribs}).save(null, {method: 'insert'});
+	const PublisherTypeAttribs = {
+		label: faker.commerce.productAdjective()
+	};
+	const publisherType = await new PublisherTypeModel({...PublisherTypeAttribs, ...optionalPublisherAttribs}).save(null, {method: 'insert'});
 	return publisherType;
 }
 
