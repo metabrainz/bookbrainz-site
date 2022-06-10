@@ -184,10 +184,23 @@ function describeValidateEditionSectionLanguages() {
 	});
 }
 
-const VALID_ENTITY = {0: {
+const VALID_PUBLISHERS = {0: {
 	id: '21675f5b-e9f8-4a6b-9aac-d3c965aa7d83'
+},
+1: {
+	id: '21675f5b-e9f8-4a6b-9aac-d3c965aa7d84'
 }};
 
+const INVALID_PUBLISHERS = {0: {
+	id: '21675f5b-e9f8-4a6b-9aac-d3c965aa7d83'
+},
+1: {
+	id: '2'
+}};
+
+const VALID_ENTITY = {
+	id: '21675f5b-e9f8-4a6b-9aac-d3c965aa7d83'
+};
 const INVALID_ENTITY = {
 	id: '2'
 };
@@ -232,20 +245,20 @@ function describevalidateEditionSectionEditionGroup() {
 
 function describeValidateEditionSectionPublisher() {
 	it('should pass a valid Object', () => {
-		const result = validateEditionSectionPublisher(VALID_ENTITY);
+		const result = validateEditionSectionPublisher(VALID_PUBLISHERS);
 		expect(result).to.be.true;
 	});
 
 	it('should pass a valid Immutable.Map', () => {
 		const result = validateEditionSectionPublisher(
-			Immutable.fromJS(VALID_ENTITY)
+			Immutable.fromJS(VALID_PUBLISHERS)
 		);
 		expect(result).to.be.true;
 	});
 
 	it('should reject an Object with an invalid ID', () => {
 		const result = validateEditionSectionPublisher(
-			{...VALID_ENTITY, id: '2'}
+			{INVALID_PUBLISHERS}
 		);
 		expect(result).to.be.false;
 	});
@@ -275,7 +288,7 @@ const VALID_EDITION_SECTION = {
 	height: 24,
 	languages: VALID_LANGUAGES,
 	pages: 25,
-	publisher: VALID_ENTITY,
+	publisher: VALID_PUBLISHERS,
 	releaseDate: {day: '22', month: '12', year: '2017'},
 	status: 2,
 	weight: 23,
