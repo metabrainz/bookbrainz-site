@@ -23,6 +23,7 @@ import * as entityEditorHelpers from '../../client/entity-editor/helpers';
 import * as entityRoutes from '../routes/entity/entity';
 import * as error from '../../common/helpers/error';
 import * as propHelpers from '../../client/helpers/props';
+import * as unifiedRoutes from '../routes/entity/process-unified-form';
 import * as utils from './utils';
 
 import type {Request as $Request, Response as $Response} from 'express';
@@ -342,7 +343,7 @@ function validateUnifiedForm(body:Record<string, any>):boolean {
  * @param {object} res - Response object
  */
 
-export function createEntitesHandler(
+export function createEntitiesHandler(
 	req:$Request,
 	res:$Response
 ) {
@@ -352,6 +353,6 @@ export function createEntitesHandler(
 		return error.sendErrorAsJSON(res, err);
 	}
 	// transforming
-	req.body = entityRoutes.transformForm(req.body);
-	return entityRoutes.handleCreateEntities(req as PassportRequest, res);
+	req.body = unifiedRoutes.transformForm(req.body);
+	return unifiedRoutes.handleCreateMultipleEntities(req as PassportRequest, res);
 }
