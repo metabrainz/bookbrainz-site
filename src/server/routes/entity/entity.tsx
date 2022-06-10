@@ -51,6 +51,7 @@ import _ from 'lodash';
 import {getEntityLabel} from '../../../client/helpers/entity';
 import {getOrderedRevisionsForEntityPage} from '../../helpers/revisions';
 import log from 'log';
+import notificationService from '../../notificationService';
 import target from '../../templates/target';
 
 
@@ -1118,9 +1119,12 @@ export function handleCreateOrEditEntity(
 					await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
 				}
 			}
-
-
-			return savedMainEntity.toJSON();
+			const savedMainEntityJSON = savedMainEntity.toJSON();
+			notificationService.emit('send-notifications-for-entity',
+				savedMainEntityJSON.bbid,
+				req.user.id, savedMainEntityJSON.type,
+				savedMainEntityJSON.aliasSet.aliases.find((alias) => alias.primary).name);
+			return savedMainEntityJSON;
 		}
 		catch (err) {
 			log.error(err);

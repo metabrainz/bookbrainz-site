@@ -20,6 +20,7 @@ import * as handler from '../helpers/handler';
 import * as search from '../../common/helpers/search';
 import {camelCase, differenceWith, isEqual, toLower, upperFirst} from 'lodash';
 import {BadRequestError} from '../../common/helpers/error';
+import notificationEmitter from '../notificationService';
 
 
 /**
@@ -59,6 +60,9 @@ export async function collectionCreateOrEditHandler(req, res, next) {
 		newCollection.set('public', toLower(req.body.privacy) === 'public');
 		newCollection.set('entity_type', upperFirst(camelCase(req.body.entityType)));
 		await newCollection.save(null, {method});
+		if (!isNew) {
+			notificationEmitter.emit('send-notifications-for-collection', req.params.collectionId, req.user.id, req.body.name);
+		}
 
 		const oldCollaborators = res.locals.collection ? res.locals.collection.collaborators : [];
 		const newCollaborators = req.body.collaborators ? req.body.collaborators : [];

@@ -27,6 +27,7 @@ import EntityTitle from './title';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import SubscribeButton from '../../subscribe-button';
 import WorksTable from './work-table';
 import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons';
 
@@ -145,6 +146,7 @@ function EditionDisplayPage({entity, identifierTypes, user}) {
 					{editionGroupSection}
 				</Col>
 			</Row>
+			<SubscribeButton id={entity.bbid} type="edition"/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>

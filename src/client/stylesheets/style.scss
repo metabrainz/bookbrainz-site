@@ -721,3 +721,56 @@ ul {
 .input-group > .input-group-append > .btn {
 	padding: 6px 12px;
 }
+
+// Notifications
+.notify-container > .dropdown-menu{
+	width: max-content;
+}
+.notify-heading {
+	margin: 1rem;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.notify-heading > btn{
+	font-size: small;
+}
+
+a.notify-notification.dropdown-item{
+	display: flex;
+	flex-direction: column;
+	padding: 1rem;
+	color: #443f3f;
+	background-color: #ebf4f9;
+	&.notify-nread{
+		background-color: #cfefff;
+	}
+}
+
+a#notify-a:hover{
+	color: #443f3f !important;
+}
+
+.wrapword {
+    white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    white-space: pre-wrap;       /* css-3 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    white-space: -webkit-pre-wrap; /* Newer versions of Chrome/Safari*/
+    word-break: break-all;
+    white-space: normal;
+}
+
+.notify-date{
+	color: #5f6c5f;
+	margin-left: auto;
+	padding-top: 3px;
+}
+
+.notify-infscroll {
+	height: 400px;
+    overflow-x: hidden;
+ 	overflow-y: auto;
+	width: 350px;
+}
