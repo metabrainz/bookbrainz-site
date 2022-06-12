@@ -1,10 +1,12 @@
+import {DUMP_EDITION, LOAD_EDITION} from './action';
+import {ADD_WORK} from './content-tab/action';
 import ISBNReducer from './cover-tab/reducer';
+import Immutable from 'immutable';
 import aliasEditorReducer from '../entity-editor/alias-editor/reducer';
 import annotationSectionReducer from '../entity-editor/annotation-section/reducer';
 import buttonBarReducer from '../entity-editor/button-bar/reducer';
 import {combineReducers} from 'redux-immutable';
 import editionSectionReducer from '../entity-editor/edition-section/reducer';
-import {createRootReducer as getEntityReducer} from '../entity-editor/helpers';
 import identifierEditorReducer from '../entity-editor/identifier-editor/reducer';
 import nameSectionReducer from '../entity-editor/name-section/reducer';
 import relationshipSectionReducer from '../entity-editor/relationship-editor/reducer';
@@ -13,6 +15,7 @@ import {validateForm as validateAuthorForm} from '../entity-editor/validators/au
 import {validateForm as validateEditionForm} from '../entity-editor/validators/edition';
 import {validateForm as validatePublisherForm} from '../entity-editor/validators/publisher';
 import {validateForm as validateWorkForm} from '../entity-editor/validators/work';
+import workSectionReducer from '../entity-editor/work-section/reducer';
 import worksReducer from './content-tab/reducer';
 
 
@@ -30,19 +33,111 @@ export const validatorMap = {
 	work: validateWorkForm
 };
 
+// dummy reducer
+function newEditionReducer(state = Immutable.Map({}), action) {
+	const {type, payload} = action;
+	switch (type) {
+		case DUMP_EDITION:
+			return state.set(payload.id, Immutable.fromJS(payload.value));
+		case LOAD_EDITION:
+			return Immutable.Map({});
+		default:
+			return state;
+	}
+}
+const initialState = Immutable.Map({
+	aliasEditor: Immutable.Map({}),
+	annotationSection: Immutable.Map({content: ''}),
+	buttonBar: Immutable.Map({
+		aliasEditorVisible: false,
+		identifierEditorVisible: false
+	}),
+	editionSection: Immutable.Map({
+		format: null,
+		languages: Immutable.List([]),
+		matchingNameEditionGroups: [],
+		physicalEnable: true,
+		publisher: null,
+		releaseDate: '',
+		status: null
+	}),
+	identifierEditor: Immutable.OrderedMap(),
+	nameSection: Immutable.Map({
+		disambiguation: '',
+		exactMatches: [],
+		language: null,
+		name: '',
+		searchResults: [],
+		sortName: ''
+	}),
+	relationshipSection: Immutable.Map({
+		canEdit: true,
+		lastRelationships: null,
+		relationshipEditorProps: null,
+		relationshipEditorVisible: false,
+		relationships: Immutable.OrderedMap()
+	}),
+	submissionSection: Immutable.Map({
+		note: '',
+		submitError: '',
+		submitted: false
+	}),
+	workSection: Immutable.Map({
+		languages: Immutable.List([]),
+		type: null
+	})
+});
 
 export function createRootReducer() {
-	return combineReducers({
-		ISBN: ISBNReducer,
-		Work: getEntityReducer('work'),
-		Works: worksReducer,
-		aliasEditor: aliasEditorReducer,
-		annotationSection: annotationSectionReducer,
-		buttonBar: buttonBarReducer,
-		editionSection: editionSectionReducer,
-		identifierEditor: identifierEditorReducer,
-		nameSection: nameSectionReducer,
-		relationshipSection: relationshipSectionReducer,
-		submissionSection: submissionSectionReducer
-	});
+	return (state: Immutable.Map<string, any>, action) => {
+		const {type} = action;
+		let intermediateState = state;
+		const activeEntityState = {
+			aliasEditor: state.get('aliasEditor'),
+			annotationSection: state.get('annotationSection'),
+			buttonBar: state.get('buttonBar'),
+			identifierEditor: state.get('identifierEditor'),
+			nameSection: state.get('nameSection'),
+			relationshipSection: state.get('relationshipSection'),
+			submissionSection: state.get('submissionSection')
+		};
+		switch (type) {
+			case DUMP_EDITION:
+				action.payload.value = {
+					...activeEntityState,
+					editionSection: state.get('editionSection')
+				};
+				intermediateState = intermediateState.merge(initialState);
+				break;
+			case ADD_WORK:
+				action.payload.value = action.payload.value ?? {
+					...activeEntityState,
+					__isNew__: true,
+					id: action.payload.id,
+					text: activeEntityState.nameSection.get('name'),
+					type: 'Work',
+					workSection: intermediateState.get('workSection')
+				};
+				break;
+			case LOAD_EDITION:
+				intermediateState = intermediateState.merge(intermediateState.getIn(['Editions', action.payload.id]));
+				break;
+			default:
+				break;
+		}
+		return combineReducers({
+			Editions: newEditionReducer,
+			ISBN: ISBNReducer,
+			Works: worksReducer,
+			aliasEditor: aliasEditorReducer,
+			annotationSection: annotationSectionReducer,
+			buttonBar: buttonBarReducer,
+			editionSection: editionSectionReducer,
+			identifierEditor: identifierEditorReducer,
+			nameSection: nameSectionReducer,
+			relationshipSection: relationshipSectionReducer,
+			submissionSection: submissionSectionReducer,
+			workSection: workSectionReducer
+		})(intermediateState, action);
+	};
 }

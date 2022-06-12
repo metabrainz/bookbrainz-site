@@ -1,3 +1,5 @@
+import {CommonProps} from 'react-select';
+
 
 export type RInputEvent = React.ChangeEvent<HTMLInputElement>;
 
@@ -78,8 +80,13 @@ export type NavButtonsProps = {
     disableBack:boolean,
     disableNext:boolean
 };
+export type SearchEntityCreateDispatchProps = {
+	onModalOpen:()=>unknown,
+	onModalClose:()=>unknown,
+	onSubmitEntity:()=>unknown
+};
 
-export type SearchEntityCreateProps = {
+export type SearchEntityCreateOwnProps = {
 	bbid?:string,
 	empty?:boolean,
 	nextId:string|number,
@@ -89,7 +96,8 @@ export type SearchEntityCreateProps = {
 	tooltipText?:string,
 	languageOptions?:Array<any>,
 	value?:Array<EntitySelect> | EntitySelect
-	type:string | Array<string>,
+	type:string,
 	onChange:(arg)=>unknown
 
 };
+export type SearchEntityCreateProps = SearchEntityCreateDispatchProps & SearchEntityCreateOwnProps & CommonProps<any, any>;

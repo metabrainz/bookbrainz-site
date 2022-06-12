@@ -1,7 +1,11 @@
+import {SearchEntityCreateDispatchProps, SearchEntityCreateProps} from '../interface/type';
+import {dumpEdition, loadEdition} from '../action';
 import AsyncCreatable from 'react-select/async-creatable';
 import BaseEntitySearch from '../../entity-editor/common/entity-search-field-option';
-import {CommonProps} from 'react-select';
+import CreateEntityModal from './create-entity-modal';
 import React from 'react';
+import {addWork} from '../content-tab/action';
+import {connect} from 'react-redux';
 import makeImmutable from '../../entity-editor/common/make-immutable';
 
 
@@ -14,35 +18,55 @@ const defaultProps = {
 	languageOptions: [],
 	tooltipText: null
 };
-type SearchEntityCreateProps = {
-  bbid?:string,
-  empty?:boolean,
-  nextId:string|number,
-  error?:boolean,
-  filters?:Array<any>,
-  label:string,
-  tooltipText?:string,
-  languageOptions?:Array<any>,
-  type:string | Array<string>
-
-} & typeof defaultProps & CommonProps<any, any>;
-
+const addEntityActions = {
+	work: addWork
+};
 function SearchEntityCreate(props:SearchEntityCreateProps):JSX.Element {
-	const {type, nextId} = props;
+	const {type, nextId, onModalOpen, onModalClose, onSubmitEntity, ...rest} = props;
 	const createLabel = React.useCallback((input) => `Create ${type} "${input}"`, [type]);
+	const [showModal, setShowModal] = React.useState(false);
 	const getNewOptionData = React.useCallback((input, label) => ({
 		__isNew__: true,
 		id: nextId,
 		text: label,
 		type
 	}), [type, nextId]);
-	return (<BaseEntitySearch
-		SelectWrapper={ImmutableCreatableAsync}
-		formatCreateLabel={createLabel}
-		getNewOptionData={getNewOptionData}
-		{...props}
-	        />);
+	const openModalHandler = React.useCallback(() => {
+		setShowModal(true);
+		onModalOpen();
+	}, []);
+	const closeModalHandler = React.useCallback(() => {
+		setShowModal(false);
+		onModalClose();
+	}, []);
+	const submitModalHandler = React.useCallback((ev: React.FormEvent) => {
+		ev.stopPropagation();
+		setShowModal(false);
+		onSubmitEntity();
+		onModalClose();
+	}, []);
+
+	return (
+		<>
+			<BaseEntitySearch
+				SelectWrapper={ImmutableCreatableAsync}
+				formatCreateLabel={createLabel}
+				getNewOptionData={getNewOptionData}
+				onCreateOption={openModalHandler}
+				{...props}
+			/>
+			<CreateEntityModal handleClose={closeModalHandler} handleSubmit={submitModalHandler} show={showModal} type={type} {...rest}/>
+		</>);
 }
 SearchEntityCreate.defaultProps = defaultProps;
-export default SearchEntityCreate;
+
+function mapDispatchToProps(dispatch, {type}):SearchEntityCreateDispatchProps {
+	return {
+		onModalClose: () => dispatch(loadEdition()),
+		onModalOpen: () => dispatch(dumpEdition()),
+		onSubmitEntity: () => dispatch(addEntityActions[type]())
+	};
+}
+
+export default connect<null, SearchEntityCreateDispatchProps>(null, mapDispatchToProps)(SearchEntityCreate);
 
