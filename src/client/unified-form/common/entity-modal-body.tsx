@@ -18,13 +18,13 @@ type EntityModalBodyStateProps = {
 
 type EntityModalBodyOwnProps = {
     onModalSubmit:(e)=>unknown,
-    type:string,
+    entityType:string,
 	validate:(arg)=>unknown
 	children?: React.ReactElement
 };
 type EntityModalBodyProps = EntityModalBodyOwnProps & EntityModalBodyStateProps;
 
-function EntityModalBody({onModalSubmit, type, aliasEditorVisible, identifierEditorVisible, children, validate, ...rest}:EntityModalBodyProps) {
+function EntityModalBody({onModalSubmit, aliasEditorVisible, identifierEditorVisible, children, validate, ...rest}:EntityModalBodyProps) {
 	return (
 		<form onSubmit={onModalSubmit}>
 			<AliasEditor show={aliasEditorVisible} {...rest}/>
@@ -34,7 +34,7 @@ function EntityModalBody({onModalSubmit, type, aliasEditorVisible, identifierEdi
 					</Accordion.Toggle>
 					<Accordion.Collapse eventKey="0">
 						<Card.Body>
-							<NameSection {...rest} entityType={type} isUf={false}/>
+							<NameSection {...rest} isUf={false}/>
 							<ButtonBar {...rest} isUf={false}/>
 						</Card.Body>
 					</Accordion.Collapse>

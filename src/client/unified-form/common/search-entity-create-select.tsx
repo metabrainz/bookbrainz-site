@@ -4,6 +4,7 @@ import AsyncCreatable from 'react-select/async-creatable';
 import BaseEntitySearch from '../../entity-editor/common/entity-search-field-option';
 import CreateEntityModal from './create-entity-modal';
 import React from 'react';
+import {addPublisher} from '../cover-tab/action';
 import {addWork} from '../content-tab/action';
 import {connect} from 'react-redux';
 import makeImmutable from '../../entity-editor/common/make-immutable';
@@ -19,7 +20,8 @@ const defaultProps = {
 	languageOptions: [],
 	tooltipText: null
 };
-const addEntityActions = {
+const addEntityAction = {
+	publisher: addPublisher,
 	work: addWork
 };
 function SearchEntityCreate(props:SearchEntityCreateProps):JSX.Element {
@@ -42,6 +44,7 @@ function SearchEntityCreate(props:SearchEntityCreateProps):JSX.Element {
 	}, []);
 	const submitModalHandler = React.useCallback((ev: React.FormEvent) => {
 		ev.preventDefault();
+		ev.stopPropagation();
 		setShowModal(false);
 		onSubmitEntity();
 		onModalClose();
@@ -68,7 +71,7 @@ function mapDispatchToProps(dispatch, {type}):SearchEntityCreateDispatchProps {
 			dispatch(dumpEdition());
 			dispatch(updateNameField(name));
 		},
-		onSubmitEntity: () => dispatch(addEntityActions[type]())
+		onSubmitEntity: () => dispatch(addEntityAction[type]())
 	};
 }
 

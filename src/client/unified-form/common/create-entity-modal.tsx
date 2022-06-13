@@ -2,6 +2,8 @@ import * as Bootstrap from 'react-bootstrap';
 import {getEntitySection, getValidator} from '../../entity-editor/helpers';
 import EntityModalBody from './entity-modal-body';
 import React from 'react';
+import {filterIdentifierTypesByEntityType} from '../../../common/helpers/utils';
+import {upperFirst} from 'lodash';
 
 
 const {Modal} = Bootstrap;
@@ -15,13 +17,18 @@ export default function CreateEntityModal({show, handleClose, handleSubmit, type
 	const heading = `Add ${type}`;
 	const EntitySection = getEntitySection(type);
 	const validate = getValidator(type);
+	const {identifierTypes} = rest;
+	const entityIdentifierTypes = filterIdentifierTypesByEntityType(identifierTypes, upperFirst(type));
 	return (
 		<Modal dialogClassName="uf-dialog" show={show} onHide={handleClose}>
 			<Modal.Header closeButton>
 				<Modal.Title>{heading}</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				<EntityModalBody type={type} onModalSubmit={handleSubmit} {...rest} validate={validate}>
+				<EntityModalBody
+					type={type} onModalSubmit={handleSubmit} {...rest} entityType={type}
+					identifierTypes={entityIdentifierTypes} validate={validate}
+				>
 					<EntitySection/>
 				</EntityModalBody>
 			</Modal.Body>

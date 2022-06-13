@@ -22,6 +22,7 @@ export function CoverTab(props:CoverProps) {
 						type="publisher"
 						value={publisherValue}
 						onChange={onPublisherChange}
+						{...props}
 					/>
 				</Col>
 			</Row>

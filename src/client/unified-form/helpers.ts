@@ -1,6 +1,7 @@
 import {DUMP_EDITION, LOAD_EDITION} from './action';
+import ISBNReducer, {publishersReducer} from './cover-tab/reducer';
+import {ADD_PUBLISHER} from './cover-tab/action';
 import {ADD_WORK} from './content-tab/action';
-import ISBNReducer from './cover-tab/reducer';
 import Immutable from 'immutable';
 import aliasEditorReducer from '../entity-editor/alias-editor/reducer';
 import annotationSectionReducer from '../entity-editor/annotation-section/reducer';
@@ -9,6 +10,7 @@ import {combineReducers} from 'redux-immutable';
 import editionSectionReducer from '../entity-editor/edition-section/reducer';
 import identifierEditorReducer from '../entity-editor/identifier-editor/reducer';
 import nameSectionReducer from '../entity-editor/name-section/reducer';
+import publisherSectionReducer from '../entity-editor/publisher-section/reducer';
 import relationshipSectionReducer from '../entity-editor/relationship-editor/reducer';
 import submissionSectionReducer from '../entity-editor/submission-section/reducer';
 import {validateForm as validateAuthorForm} from '../entity-editor/validators/author';
@@ -88,46 +90,62 @@ const initialState = Immutable.Map({
 	})
 });
 
+function crossSliceReducer(state, action) {
+	const {type} = action;
+	let intermediateState = state;
+	const activeEntityState = {
+		aliasEditor: state.get('aliasEditor'),
+		annotationSection: state.get('annotationSection'),
+		buttonBar: state.get('buttonBar'),
+		identifierEditor: state.get('identifierEditor'),
+		nameSection: state.get('nameSection'),
+		relationshipSection: state.get('relationshipSection'),
+		submissionSection: state.get('submissionSection')
+	};
+	switch (type) {
+		case DUMP_EDITION:
+			action.payload.value = {
+				...activeEntityState,
+				editionSection: state.get('editionSection')
+			};
+			intermediateState = intermediateState.merge(initialState);
+			break;
+		case ADD_WORK:
+			action.payload.value = action.payload.value ?? {
+				...activeEntityState,
+				__isNew__: true,
+				id: action.payload.id,
+				text: activeEntityState.nameSection.get('name'),
+				type: 'Work',
+				workSection: intermediateState.get('workSection')
+			};
+			break;
+		case ADD_PUBLISHER:
+			action.payload.value = action.payload.value ?? {
+				...activeEntityState,
+				__isNew__: true,
+				id: action.payload.id,
+				publisherSection: intermediateState.get('publisherSection'),
+				text: activeEntityState.nameSection.get('name'),
+				type: 'Work'
+			};
+			break;
+		case LOAD_EDITION:
+			intermediateState = intermediateState.merge(intermediateState.getIn(['Editions', action.payload.id]));
+			break;
+		default:
+			break;
+	}
+	return intermediateState;
+}
+
 export function createRootReducer() {
 	return (state: Immutable.Map<string, any>, action) => {
-		const {type} = action;
-		let intermediateState = state;
-		const activeEntityState = {
-			aliasEditor: state.get('aliasEditor'),
-			annotationSection: state.get('annotationSection'),
-			buttonBar: state.get('buttonBar'),
-			identifierEditor: state.get('identifierEditor'),
-			nameSection: state.get('nameSection'),
-			relationshipSection: state.get('relationshipSection'),
-			submissionSection: state.get('submissionSection')
-		};
-		switch (type) {
-			case DUMP_EDITION:
-				action.payload.value = {
-					...activeEntityState,
-					editionSection: state.get('editionSection')
-				};
-				intermediateState = intermediateState.merge(initialState);
-				break;
-			case ADD_WORK:
-				action.payload.value = action.payload.value ?? {
-					...activeEntityState,
-					__isNew__: true,
-					id: action.payload.id,
-					text: activeEntityState.nameSection.get('name'),
-					type: 'Work',
-					workSection: intermediateState.get('workSection')
-				};
-				break;
-			case LOAD_EDITION:
-				intermediateState = intermediateState.merge(intermediateState.getIn(['Editions', action.payload.id]));
-				break;
-			default:
-				break;
-		}
+		const intermediateState = crossSliceReducer(state, action);
 		return combineReducers({
 			Editions: newEditionReducer,
 			ISBN: ISBNReducer,
+			Publishers: publishersReducer,
 			Works: worksReducer,
 			aliasEditor: aliasEditorReducer,
 			annotationSection: annotationSectionReducer,
@@ -135,6 +153,7 @@ export function createRootReducer() {
 			editionSection: editionSectionReducer,
 			identifierEditor: identifierEditorReducer,
 			nameSection: nameSectionReducer,
+			publisherSection: publisherSectionReducer,
 			relationshipSection: relationshipSectionReducer,
 			submissionSection: submissionSectionReducer,
 			workSection: workSectionReducer
