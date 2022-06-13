@@ -81,7 +81,7 @@ export type NavButtonsProps = {
     disableNext:boolean
 };
 export type SearchEntityCreateDispatchProps = {
-	onModalOpen:()=>unknown,
+	onModalOpen:(arg:string)=>unknown,
 	onModalClose:()=>unknown,
 	onSubmitEntity:()=>unknown
 };

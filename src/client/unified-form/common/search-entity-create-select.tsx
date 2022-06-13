@@ -7,6 +7,7 @@ import React from 'react';
 import {addWork} from '../content-tab/action';
 import {connect} from 'react-redux';
 import makeImmutable from '../../entity-editor/common/make-immutable';
+import {updateNameField} from '../../entity-editor/name-section/actions';
 
 
 const ImmutableCreatableAsync = makeImmutable(AsyncCreatable);
@@ -31,16 +32,16 @@ function SearchEntityCreate(props:SearchEntityCreateProps):JSX.Element {
 		text: label,
 		type
 	}), [type, nextId]);
-	const openModalHandler = React.useCallback(() => {
+	const openModalHandler = React.useCallback((name) => {
 		setShowModal(true);
-		onModalOpen();
+		onModalOpen(name);
 	}, []);
 	const closeModalHandler = React.useCallback(() => {
 		setShowModal(false);
 		onModalClose();
 	}, []);
 	const submitModalHandler = React.useCallback((ev: React.FormEvent) => {
-		ev.stopPropagation();
+		ev.preventDefault();
 		setShowModal(false);
 		onSubmitEntity();
 		onModalClose();
@@ -63,7 +64,10 @@ SearchEntityCreate.defaultProps = defaultProps;
 function mapDispatchToProps(dispatch, {type}):SearchEntityCreateDispatchProps {
 	return {
 		onModalClose: () => dispatch(loadEdition()),
-		onModalOpen: () => dispatch(dumpEdition()),
+		onModalOpen: (name) => {
+			dispatch(dumpEdition());
+			dispatch(updateNameField(name));
+		},
 		onSubmitEntity: () => dispatch(addEntityActions[type]())
 	};
 }
