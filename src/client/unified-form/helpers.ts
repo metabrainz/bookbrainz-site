@@ -1,5 +1,6 @@
 import {DUMP_EDITION, LOAD_EDITION} from './action';
 import {ISBNReducer, publishersReducer} from './cover-tab/reducer';
+import {ADD_EDITION_GROUP} from './detail-tab/action';
 import {ADD_PUBLISHER} from './cover-tab/action';
 import {ADD_WORK} from './content-tab/action';
 import Immutable from 'immutable';
@@ -7,6 +8,8 @@ import aliasEditorReducer from '../entity-editor/alias-editor/reducer';
 import annotationSectionReducer from '../entity-editor/annotation-section/reducer';
 import buttonBarReducer from '../entity-editor/button-bar/reducer';
 import {combineReducers} from 'redux-immutable';
+import editionGroupSectionReducer from '../entity-editor/edition-group-section/reducer';
+import editionGroupsReducer from './detail-tab/reducer';
 import editionSectionReducer from '../entity-editor/edition-section/reducer';
 import identifierEditorReducer from '../entity-editor/identifier-editor/reducer';
 import nameSectionReducer from '../entity-editor/name-section/reducer';
@@ -55,6 +58,7 @@ const initialState = Immutable.Map({
 		identifierEditorVisible: false
 	}),
 	editionSection: Immutable.Map({
+		editionGroupVisible: true,
 		format: null,
 		languages: Immutable.List([]),
 		matchingNameEditionGroups: [],
@@ -110,6 +114,16 @@ function crossSliceReducer(state, action) {
 			};
 			intermediateState = intermediateState.merge(initialState);
 			break;
+		case ADD_EDITION_GROUP:
+			action.payload.value = action.payload.value ?? {
+				...activeEntityState,
+				__isNew__: true,
+				editionGroupSection: intermediateState.get('editionGroupSection'),
+				id: action.payload.id,
+				text: activeEntityState.nameSection.get('name'),
+				type: 'Work'
+			};
+			break;
 		case ADD_WORK:
 			action.payload.value = action.payload.value ?? {
 				...activeEntityState,
@@ -143,6 +157,7 @@ export function createRootReducer() {
 	return (state: Immutable.Map<string, any>, action) => {
 		const intermediateState = crossSliceReducer(state, action);
 		return combineReducers({
+			EditionGroups: editionGroupsReducer,
 			Editions: newEditionReducer,
 			ISBN: ISBNReducer,
 			Publishers: publishersReducer,
@@ -150,6 +165,7 @@ export function createRootReducer() {
 			aliasEditor: aliasEditorReducer,
 			annotationSection: annotationSectionReducer,
 			buttonBar: buttonBarReducer,
+			editionGroupSection: editionGroupSectionReducer,
 			editionSection: editionSectionReducer,
 			identifierEditor: identifierEditorReducer,
 			nameSection: nameSectionReducer,

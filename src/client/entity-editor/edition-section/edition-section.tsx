@@ -195,7 +195,7 @@ function EditionSection({
 		label: language.name,
 		value: language.id
 	}));
-
+	rest.languageOptions = languageOptions;
 	const editionFormatsForDisplay = editionFormats.map((format) => ({
 		label: format.label,
 		value: format.id
@@ -232,7 +232,7 @@ function EditionSection({
 							<br/>For example paperback, hardcover and e-book editions.
 						</>
 					}
-					type="edition-group"
+					type="editionGroup"
 					value={editionGroupValue}
 					onChange={onEditionGroupChange}
 					{...rest}

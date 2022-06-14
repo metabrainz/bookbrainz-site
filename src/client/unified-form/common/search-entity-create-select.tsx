@@ -4,6 +4,7 @@ import AsyncCreatable from 'react-select/async-creatable';
 import BaseEntitySearch from '../../entity-editor/common/entity-search-field-option';
 import CreateEntityModal from './create-entity-modal';
 import React from 'react';
+import {addEditionGroup} from '../detail-tab/action';
 import {addPublisher} from '../cover-tab/action';
 import {addWork} from '../content-tab/action';
 import {connect} from 'react-redux';
@@ -21,6 +22,7 @@ const defaultProps = {
 	tooltipText: null
 };
 const addEntityAction = {
+	editionGroup: addEditionGroup,
 	publisher: addPublisher,
 	work: addWork
 };
