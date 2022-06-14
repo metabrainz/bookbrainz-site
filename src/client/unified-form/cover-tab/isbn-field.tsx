@@ -15,7 +15,7 @@ export function ISBNField(props:ISBNProps) {
 				empty={value.length === 0}
 				error={Boolean(!type && value)}
 				label="ISBN"
-				tooltipText="ISBN either 13 or 10"
+				tooltipText="ISBN of this book"
 				onChange={onChange}
 			/>
 		</div>);

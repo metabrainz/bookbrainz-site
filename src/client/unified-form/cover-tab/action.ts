@@ -9,7 +9,7 @@ export const ADD_PUBLISHER = 'ADD_PUBLISHER';
 let nextPublisherId = 0;
 export function addPublisher(value = null) {
 	return {
-		payload: {id: nextPublisherId++, value},
+		payload: {id: `n${nextPublisherId++}`, value},
 		type: ADD_PUBLISHER
 	};
 }

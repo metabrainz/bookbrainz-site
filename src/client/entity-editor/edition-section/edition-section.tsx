@@ -187,7 +187,8 @@ function EditionSection({
 	releaseDateValue,
 	statusValue,
 	weightValue,
-	widthValue
+	widthValue,
+	...rest
 }: Props) {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		frequency: language.frequency,
@@ -234,6 +235,7 @@ function EditionSection({
 					type="edition-group"
 					value={editionGroupValue}
 					onChange={onEditionGroupChange}
+					{...rest}
 				/>
 				<Button
 					block

@@ -7,7 +7,7 @@ export const UPDATE_WORKS = 'UPDATE_WORKS';
 let nextWorkId = 0;
 export function addWork(value = null) {
 	return {
-		payload: {id: nextWorkId++, value},
+		payload: {id: `n${nextWorkId++}`, value},
 		type: ADD_WORK
 	};
 }

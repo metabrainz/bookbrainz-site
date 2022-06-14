@@ -2,7 +2,7 @@ import {ADD_PUBLISHER, UPDATE_ISBN_TYPE, UPDATE_ISBN_VALUE} from './action';
 import Immutable from 'immutable';
 
 
-export default function reducer(state = Immutable.Map({
+export function ISBNReducer(state = Immutable.Map({
 	type: null,
 	value: ''
 }), action) {

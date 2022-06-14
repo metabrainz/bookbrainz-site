@@ -1,5 +1,5 @@
 import {DUMP_EDITION, LOAD_EDITION} from './action';
-import ISBNReducer, {publishersReducer} from './cover-tab/reducer';
+import {ISBNReducer, publishersReducer} from './cover-tab/reducer';
 import {ADD_PUBLISHER} from './cover-tab/action';
 import {ADD_WORK} from './content-tab/action';
 import Immutable from 'immutable';
@@ -127,7 +127,7 @@ function crossSliceReducer(state, action) {
 				id: action.payload.id,
 				publisherSection: intermediateState.get('publisherSection'),
 				text: activeEntityState.nameSection.get('name'),
-				type: 'Work'
+				type: 'Publisher'
 			};
 			break;
 		case LOAD_EDITION:
