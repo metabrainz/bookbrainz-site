@@ -66,8 +66,8 @@ export function validateEditionSectionPages(value: any): boolean {
 	return validatePositiveInteger(value);
 }
 
-export function validateEditionSectionEditionGroup(value: any, editionGroupRequired: boolean | null | undefined): boolean {
-	return validateUUID(get(value, 'id', null), editionGroupRequired);
+export function validateEditionSectionEditionGroup(value: any, editionGroupRequired: boolean | null | undefined, isCustom = false): boolean {
+	return isCustom ? !editionGroupRequired || Boolean(get(value, 'id', null)) : validateUUID(get(value, 'id', null), editionGroupRequired);
 }
 
 export function validateEditionSectionPublisher(value: any, isCustom = false): boolean {
@@ -104,7 +104,8 @@ export function validateEditionSection(data: any, isCustom = false): boolean {
 		validateEditionSectionPages(get(data, 'pages', null)) &&
 		validateEditionSectionEditionGroup(
 			get(data, 'editionGroup', null),
-			get(data, 'editionGroupRequired', null)
+			get(data, 'editionGroupRequired', null),
+			isCustom
 		) &&
 		validateEditionSectionPublisher(get(data, 'publisher', null), isCustom) &&
 		validateEditionSectionReleaseDate(get(data, 'releaseDate', null)).isValid &&

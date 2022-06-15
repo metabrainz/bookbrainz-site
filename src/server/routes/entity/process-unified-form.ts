@@ -162,8 +162,13 @@ export function handleCreateMultipleEntities(
 			const entityForm = body[entityKey];
 			const entityType = _.upperFirst(entityForm.type);
 			// edition entity should be on the bottom of the list
-			if (entityType === 'Edition' && !_.isEmpty(entityForm.publishers)) {
-				entityForm.publishers = entityForm.publishers.map((id) => bbidMap[id] ?? id);
+			if (entityType === 'Edition') {
+				if (!_.isEmpty(entityForm.publishers)) {
+					entityForm.publishers = entityForm.publishers.map((id) => bbidMap[id] ?? id);
+				}
+				if (entityForm.editionGroupBbid) {
+					entityForm.editionGroupBbid = bbidMap[entityForm.editionGroupBbid] ?? entityForm.editionGroupBbid;
+				}
 			}
 			allRelationships[entityKey] = entityForm.relationships;
 			const newEntity = await new Entity({type: entityType}).save(null, {transacting});

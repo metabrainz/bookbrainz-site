@@ -1,5 +1,5 @@
-import {baseState, createEditor, createPublisher,
-	createWork, getRandomUUID, languageAttribs, truncateEntities} from '../../../test-helpers/create-entities';
+import {baseState, createEditionGroup, createEditor,
+	createPublisher, createWork, getRandomUUID, languageAttribs, truncateEntities} from '../../../test-helpers/create-entities';
 import app from '../../../../src/server/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
@@ -25,12 +25,13 @@ describe('Unified form routes', () => {
 	let newRelationshipType;
 	const wBBID = getRandomUUID();
 	const pBBID = getRandomUUID();
-
+	const egBBID = getRandomUUID();
 	before(async () => {
 		try {
 			await createEditor(123456);
 			await createWork(wBBID);
 			await createPublisher(pBBID);
+			await createEditionGroup(egBBID);
 			newLanguage = await new Language({...languageAttribs})
 				.save(null, {method: 'insert'});
 			newRelationshipType = await new RelationshipType(relationshipTypeData)
@@ -199,7 +200,43 @@ describe('Unified form routes', () => {
 		expect(res).to.be.ok;
 		expect(res).to.have.status(200);
 	});
-
+	it('should not throw error while linking existing edition-group to edition', async () => {
+		const postData = {b0: {
+			...baseState,
+			editionSection: {
+				editionGroup: {
+					id: egBBID
+				}
+			},
+			type: 'Edition'
+		}};
+		postData.b0.nameSection.language = newLanguage.id;
+		const res = await agent.post('/create/handler').send(postData);
+		expect(res).to.be.ok;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw error while linking new edition-group to edition', async () => {
+		const postData = {b0: {
+			...baseState,
+			editionGroupSection: {
+				type: null
+			},
+			type: 'EditionGroup'
+		},
+		b1: {
+			...baseState,
+			editionSection: {
+				editionGroup: {
+					id: 'b0'
+				}
+			},
+			type: 'Edition'
+		}};
+		postData.b0.nameSection.language = newLanguage.id;
+		const res = await agent.post('/create/handler').send(postData);
+		expect(res).to.be.ok;
+		expect(res).to.have.status(200);
+	});
 	it('should throw bad request error while posting invalid form', async () => {
 		const postData = {b0: {
 			...baseState,
