@@ -42,7 +42,7 @@ export function CoverTab(props:CoverProps) {
 
 function mapStateToProps(rootState) {
 	// currently it only supports single publisher
-	const singleNewPublisher = rootState.getIn(['Publishers', 'n0'], null);
+	const singleNewPublisher = rootState.getIn(['Publishers', 'p0'], null);
 	return {
 		identifierEditorVisible: rootState.getIn(['buttonBar', 'identifierEditorVisible']),
 		publisherValue: singleNewPublisher ?? rootState.getIn(['editionSection', 'publisher'])

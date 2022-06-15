@@ -139,8 +139,8 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 		data.identifierEditor.m0 = data.ISBN;
 	}
 	// TO-DO will need to modify once we have multiple publisher
-	data.editionSection.publisher = _.get(data, ['Publishers', 'n0']) ?? data.editionSection.publisher;
-	data.editionSection.editionGroup = _.get(data, ['EditionGroups', 'n0']) ?? data.editionSection.editionGroup;
+	data.editionSection.publisher = _.get(data, ['Publishers', 'p0']) ?? data.editionSection.publisher;
+	data.editionSection.editionGroup = _.get(data, ['EditionGroups', 'eg0']) ?? data.editionSection.editionGroup;
 	data.relationshipSection.relationships = _.mapValues(data.Works, (work, key) => {
 		const relationship = {
 			attributeSetId: null,
