@@ -9,7 +9,7 @@ export const ADD_PUBLISHER = 'ADD_PUBLISHER';
 let nextPublisherId = 0;
 export function addPublisher(value = null):Action {
 	return {
-		payload: {id: `n${nextPublisherId++}`, value},
+		payload: {id: `p${nextPublisherId++}`, value},
 		type: ADD_PUBLISHER
 	};
 }

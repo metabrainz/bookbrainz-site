@@ -117,13 +117,31 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 	const newData = {};
 	const nextId = 0;
 	// add new publisher
+	_.forEach(data.Publishers, (publisher, pid) => {
+		if (publisher.__isNew__) {
+			newData[pid] = publisher;
+		}
+	});
 	// add new works
-
+	_.forEach(data.Works, (work, wid) => {
+		if (work.__isNew__) {
+			newData[wid] = work;
+		}
+	});
+	// add new ediiton groups
+	_.forEach(data.EditionGroups, (editionGroup, egid) => {
+		if (editionGroup.__isNew__) {
+			newData[egid] = editionGroup;
+		}
+	});
 	// add edition at last
 	if (data.ISBN.type) {
 		data.identifierEditor.m0 = data.ISBN;
 	}
-	data.relationshipSection.relationships = _.mapValues(data.works, (work, key) => {
+	// TO-DO will need to modify once we have multiple publisher
+	data.editionSection.publisher = _.get(data, ['Publishers', 'n0']) ?? data.editionSection.publisher;
+	data.editionSection.editionGroup = _.get(data, ['EditionGroups', 'n0']) ?? data.editionSection.editionGroup;
+	data.relationshipSection.relationships = _.mapValues(data.Works, (work, key) => {
 		const relationship = {
 			attributeSetId: null,
 			attributes: [],
@@ -132,7 +150,7 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 			},
 			rowID: key,
 			sourceEntity: {
-				bbid: nextId
+				bbid: `e${nextId}`
 			},
 			targetEntity: {
 				bbid: work.id
@@ -140,7 +158,7 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 		};
 		return relationship;
 	});
-	newData[`b${nextId}`] = {...data, type: 'Edition'};
+	newData[`e${nextId}`] = {...data, type: 'Edition'};
 	return newData;
 }
 

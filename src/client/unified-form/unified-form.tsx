@@ -67,7 +67,7 @@ function mapDispatchToProps(dispatch, {submissionUrl}) {
 	return {
 		onSubmit: (event:React.FormEvent) => {
 			event.preventDefault();
-			dispatch(submit(submissionUrl), true);
+			dispatch(submit(submissionUrl, true));
 		}
 	};
 }

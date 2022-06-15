@@ -121,7 +121,7 @@ function crossSliceReducer(state, action) {
 				editionGroupSection: intermediateState.get('editionGroupSection'),
 				id: action.payload.id,
 				text: activeEntityState.nameSection.get('name'),
-				type: 'Work'
+				type: 'EditionGroup'
 			};
 			break;
 		case ADD_WORK:

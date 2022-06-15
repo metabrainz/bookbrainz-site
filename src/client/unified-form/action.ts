@@ -5,14 +5,14 @@ const nextEditionId = 0;
 export function dumpEdition() {
 	return {
 		payload: {
-			id: `n${nextEditionId}`,
+			id: `e${nextEditionId}`,
 			value: null
 		},
 		type: DUMP_EDITION
 	};
 }
 
-export function loadEdition(editionId = 'n0') {
+export function loadEdition(editionId = 'e0') {
 	return {
 		payload: {
 			id: editionId

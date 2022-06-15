@@ -41,7 +41,7 @@ function mapDispatchToProps(dispatch) {
 		onChange: (options:any[]) => {
 			const mappedOptions = Object.fromEntries(options.map((value, index) => {
 				value.__isNew__ = Boolean(value.__isNew__);
-				return [index, value];
+				return [`w${index}`, value];
 			}));
 			return dispatch(updateWorks(mappedOptions));
 		}

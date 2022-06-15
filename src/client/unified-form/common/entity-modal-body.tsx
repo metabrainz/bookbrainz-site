@@ -34,8 +34,8 @@ function EntityModalBody({onModalSubmit, aliasEditorVisible, identifierEditorVis
 					</Accordion.Toggle>
 					<Accordion.Collapse eventKey="0">
 						<Card.Body>
-							<NameSection {...rest} isUf={false}/>
-							<ButtonBar {...rest} isUf={false}/>
+							<NameSection {...rest}/>
+							<ButtonBar {...rest}/>
 						</Card.Body>
 					</Accordion.Collapse>
 				</Card>
