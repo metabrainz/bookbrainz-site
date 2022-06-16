@@ -1,5 +1,6 @@
 import {SearchEntityCreateDispatchProps, SearchEntityCreateProps} from '../interface/type';
 import {dumpEdition, loadEdition} from '../action';
+import {updateNameField, updateSortNameField} from '../../entity-editor/name-section/actions';
 import AsyncCreatable from 'react-select/async-creatable';
 import BaseEntitySearch from '../../entity-editor/common/entity-search-field-option';
 import CreateEntityModal from './create-entity-modal';
@@ -9,7 +10,6 @@ import {addPublisher} from '../cover-tab/action';
 import {addWork} from '../content-tab/action';
 import {connect} from 'react-redux';
 import makeImmutable from '../../entity-editor/common/make-immutable';
-import {updateNameField} from '../../entity-editor/name-section/actions';
 
 
 const ImmutableCreatableAsync = makeImmutable(AsyncCreatable);
@@ -72,6 +72,7 @@ function mapDispatchToProps(dispatch, {type}):SearchEntityCreateDispatchProps {
 		onModalOpen: (name) => {
 			dispatch(dumpEdition());
 			dispatch(updateNameField(name));
+			dispatch(updateSortNameField(name));
 		},
 		onSubmitEntity: () => dispatch(addEntityAction[type]())
 	};

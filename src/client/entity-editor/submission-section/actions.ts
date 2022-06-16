@@ -167,12 +167,12 @@ function postUFSubmission(url: string, data: Map<string, any>): Promise<void> {
 	const jsonData = data.toJS();
 	const postData = transformFormData(jsonData);
 	return request.post(url).send(postData)
-		.then((response: Response) => {
+		.then((response) => {
 			if (!response.body) {
 				window.location.replace('/login');
 			}
-
-			const redirectUrl = '/';
+			const editionEntity = response.body.find((entity) => entity.type === 'Edition');
+			const redirectUrl = `/edition/${editionEntity.bbid}`;
 			if (response.body.alert) {
 				const alertParam = `?alert=${response.body.alert}`;
 				window.location.href = `${redirectUrl}${alertParam}`;

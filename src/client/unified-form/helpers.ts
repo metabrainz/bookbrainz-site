@@ -113,6 +113,7 @@ function crossSliceReducer(state, action) {
 				editionSection: state.get('editionSection')
 			};
 			intermediateState = intermediateState.merge(initialState);
+			intermediateState = intermediateState.setIn(['nameSection', 'language'], activeEntityState.nameSection.get('language', null));
 			break;
 		case ADD_EDITION_GROUP:
 			action.payload.value = action.payload.value ?? {
