@@ -55,6 +55,7 @@ function SearchEntityCreate(props:SearchEntityCreateProps):JSX.Element {
 	return (
 		<>
 			<BaseEntitySearch
+				isClearable
 				SelectWrapper={ImmutableCreatableAsync}
 				formatCreateLabel={createLabel}
 				getNewOptionData={getNewOptionData}

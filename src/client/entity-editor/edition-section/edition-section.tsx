@@ -225,6 +225,7 @@ function EditionSection({
 					error={!validateEditionSectionEditionGroup(editionGroupValue, true)}
 					help="Group with other Editions of the same book"
 					instanceId="edition-group"
+					isUf={isUf}
 					label="Edition Group"
 					tooltipText={
 						<>

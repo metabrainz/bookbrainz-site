@@ -42,7 +42,8 @@ type DispatchProps = {
 };
 
 type OwnProps = {
-	editionGroupTypes: Array<EditionGroupType>
+	editionGroupTypes: Array<EditionGroupType>,
+	isUf?: boolean
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -65,6 +66,7 @@ type Props = StateProps & DispatchProps & OwnProps;
 function EditionGroupSection({
 	editionGroupTypes,
 	typeValue,
+	isUf,
 	onTypeChange
 }: Props) {
 	const editionGroupTypesForDisplay = editionGroupTypes.map((type) => ({
@@ -73,18 +75,20 @@ function EditionGroupSection({
 	}));
 	const typeOption = editionGroupTypesForDisplay.filter((el) => el.value === typeValue);
 	const tooltip = <Tooltip>Physical format of the Edition Group</Tooltip>;
-
+	const heading = <h2>What else do you know about the Edition Group?</h2>;
+	const lgCol = {offset: 3, span: 6};
+	if (isUf) {
+		lgCol.offset = 0;
+	}
 	return (
 		<div>
-			<h2>
-				What else do you know about the Edition Group?
-			</h2>
+			{!isUf && heading}
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
 				know it
 			</p>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>
 							Type
@@ -109,6 +113,9 @@ function EditionGroupSection({
 	);
 }
 EditionGroupSection.displayName = 'EditionGroupSection';
+EditionGroupSection.defaultProps = {
+	isUf: false
+};
 
 function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('editionGroupSection');

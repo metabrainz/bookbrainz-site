@@ -146,8 +146,14 @@ function crossSliceReducer(state, action) {
 			};
 			break;
 		case LOAD_EDITION:
+		{
 			intermediateState = intermediateState.merge(intermediateState.getIn(['Editions', action.payload.id]));
+			const newEditionGroup = intermediateState.getIn(['EditionGroups', 'eg0'], null);
+			if (newEditionGroup) {
+				intermediateState = intermediateState.setIn(['editionSection', 'editionGroup'], newEditionGroup);
+			}
 			break;
+		}
 		default:
 			break;
 	}

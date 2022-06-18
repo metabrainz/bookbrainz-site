@@ -138,9 +138,8 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 	if (data.ISBN.type) {
 		data.identifierEditor.m0 = data.ISBN;
 	}
-	// TO-DO will need to modify once we have multiple publisher
+	// TODO: will need to modify once we have multiple publisher
 	data.editionSection.publisher = _.get(data, ['Publishers', 'p0']) ?? data.editionSection.publisher;
-	data.editionSection.editionGroup = _.get(data, ['EditionGroups', 'eg0']) ?? data.editionSection.editionGroup;
 	data.relationshipSection.relationships = _.mapValues(data.Works, (work, key) => {
 		const relationship = {
 			attributeSetId: null,
