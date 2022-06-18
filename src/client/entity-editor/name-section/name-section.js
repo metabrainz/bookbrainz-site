@@ -150,17 +150,15 @@ class NameSection extends React.Component {
 		}));
 
 		const warnIfExists = !_.isEmpty(exactMatches);
-		const colAttribs = {
-			lg: {offset: 3, span: 6}
-		};
+		const lgCol = {offset: 3, span: 6};
 		if (isUf) {
-			colAttribs.lg.offset = 0;
+			lgCol.offset = 0;
 		}
 		return (
 			<div>
 				{!isUf && <h2>{`What is the ${_.startCase(entityType)} called?`}</h2>}
 				<Row>
-					<Col {...colAttribs}>
+					<Col lg={lgCol}>
 						<NameField
 							defaultValue={nameValue}
 							empty={isAliasEmpty(
@@ -177,7 +175,7 @@ class NameSection extends React.Component {
 							onChange={this.handleNameChange}
 						/>
 					</Col>
-					<Col {...colAttribs}>
+					<Col lg={lgCol}>
 						{isRequiredDisambiguationEmpty(
 							warnIfExists,
 							disambiguationDefaultValue
@@ -211,7 +209,7 @@ class NameSection extends React.Component {
 					!warnIfExists &&
 						!_.isEmpty(searchResults) &&
 						<Row>
-							<Col {...colAttribs}>
+							<Col lg={lgCol}>
 								If the {_.startCase(entityType)} you want to add appears in the results
 								below, click on it to inspect it before adding a possible duplicate.<br/>
 								<small>Ctrl/Cmd + click to open in a new tab</small>
@@ -220,7 +218,7 @@ class NameSection extends React.Component {
 						</Row>
 				}
 				<Row>
-					<Col {...colAttribs}>
+					<Col lg={lgCol}>
 						<SortNameField
 							defaultValue={sortNameValue}
 							empty={isAliasEmpty(
@@ -233,7 +231,7 @@ class NameSection extends React.Component {
 					</Col>
 				</Row>
 				<Row>
-					<Col {...colAttribs}>
+					<Col lg={lgCol}>
 						<LanguageField
 							empty={isAliasEmpty(
 								nameValue, sortNameValue, languageValue
@@ -248,7 +246,7 @@ class NameSection extends React.Component {
 					</Col>
 				</Row>
 				<Row>
-					<Col {...colAttribs}>
+					<Col lg={lgCol}>
 						<DisambiguationField
 							defaultValue={disambiguationDefaultValue}
 							error={isRequiredDisambiguationEmpty(

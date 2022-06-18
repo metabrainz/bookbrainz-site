@@ -55,16 +55,16 @@ function AnnotationSection({
 			Additional freeform data that does not fit in the above form
 		</Tooltip>
 	);
-	const colSpan = {offset: 3, span: 6};
+	const lgCol = {offset: 3, span: 6};
 	if (isUf) {
-		colSpan.offset = 0;
+		lgCol.offset = 0;
 	}
 	const heading = <h2> Annotation</h2>;
 	return (
 		<div>
 			{!isUf && heading}
 			<Row>
-				<Col lg={colSpan}>
+				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>
 							{annotationLabel}

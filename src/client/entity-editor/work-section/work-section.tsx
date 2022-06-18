@@ -113,6 +113,10 @@ function WorkSection({
 		</Tooltip>
 	);
 	const heading = <h2> What else do you know about the Work?</h2>;
+	const lgCol = {offset: 3, span: 6};
+	if (isUf) {
+		lgCol.offset = 0;
+	}
 	return (
 		<div>
 			{!isUf && heading}
@@ -121,7 +125,7 @@ function WorkSection({
 				know it
 			</p>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>
 							Type
@@ -146,7 +150,7 @@ function WorkSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={lgCol}>
 					<ImmutableLanguageField
 						empty
 						multi
