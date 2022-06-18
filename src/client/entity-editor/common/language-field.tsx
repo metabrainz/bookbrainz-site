@@ -73,6 +73,7 @@ function LanguageField({
 		newOptions.sort(sortLang);
 		return newOptions;
 	};
+	// FIXME: Upgrade to new react-select version
 	return (
 		<Form.Group>
 			<Form.Label>

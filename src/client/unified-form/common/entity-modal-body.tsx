@@ -25,6 +25,11 @@ type EntityModalBodyOwnProps = {
 type EntityModalBodyProps = EntityModalBodyOwnProps & EntityModalBodyStateProps;
 
 function EntityModalBody({onModalSubmit, aliasEditorVisible, identifierEditorVisible, children, validate, ...rest}:EntityModalBodyProps) {
+	const [menuPortalTarget, setMenuPortalTarget] = React.useState(null);
+	React.useEffect(() => {
+		// FIXME: need better way to scrolling issue in react select menu https://github.com/JedWatson/react-select/issues/4088
+		setMenuPortalTarget(document.body);
+	}, []);
 	return (
 		<form onSubmit={onModalSubmit}>
 			<AliasEditor show={aliasEditorVisible} {...rest}/>
@@ -42,14 +47,14 @@ function EntityModalBody({onModalSubmit, aliasEditorVisible, identifierEditorVis
 			</Accordion>
 			<Accordion >
 				<Card>
-					<Accordion.Toggle as={Card.Header} eventKey="0">Entity Section
+					<Accordion.Toggle as={Card.Header} eventKey="0">Details
 					</Accordion.Toggle>
 					<Accordion.Collapse eventKey="0">
 						<Card.Body>
 							{
 								React.cloneElement(
 									React.Children.only(children),
-									{...rest}
+									{...rest, menuPortalTarget}
 								)
 							}
 						</Card.Body>

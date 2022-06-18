@@ -59,11 +59,10 @@ function AnnotationSection({
 	if (isUf) {
 		colSpan.offset = 0;
 	}
+	const heading = <h2> Annotation</h2>;
 	return (
 		<div>
-			<h2>
-				Annotation
-			</h2>
+			{!isUf && heading}
 			<Row>
 				<Col lg={colSpan}>
 					<Form.Group>

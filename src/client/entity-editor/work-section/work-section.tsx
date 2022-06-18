@@ -55,7 +55,9 @@ type DisplayLanguageOption = {
 };
 
 type OwnProps = {
+	isUf?: boolean,
 	languageOptions: Array<LanguageOption>,
+	menuPortalTarget?: HTMLElement,
 	workTypes: Array<WorkType>
 };
 
@@ -89,6 +91,8 @@ function WorkSection({
 	languageValues,
 	typeValue,
 	workTypes,
+	menuPortalTarget,
+	isUf,
 	onLanguagesChange,
 	onTypeChange
 }: Props) {
@@ -103,18 +107,15 @@ function WorkSection({
 		value: type.id
 	}));
 	const typeOption = workTypesForDisplay.filter((el) => el.value === typeValue);
-
 	const tooltip = (
 		<Tooltip>
 			Literary form or structure of the work
 		</Tooltip>
 	);
-
+	const heading = <h2> What else do you know about the Work?</h2>;
 	return (
 		<div>
-			<h2>
-				What else do you know about the Work?
-			</h2>
+			{!isUf && heading}
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
 				know it
@@ -132,9 +133,12 @@ function WorkSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
+							menuShouldBlockScroll
 							classNamePrefix="react-select"
 							instanceId="workType"
+							menuPortalTarget={menuPortalTarget}
 							options={workTypesForDisplay}
+							styles={{menuPortal: base => ({...base, zIndex: 9999})}}
 							value={typeOption}
 							onChange={onTypeChange}
 						/>
@@ -158,7 +162,10 @@ function WorkSection({
 	);
 }
 WorkSection.displayName = 'WorkSection';
-
+WorkSection.defaultProps = {
+	isUf: false,
+	menuPortalTarget: null
+};
 type RootState = Map<string, Map<string, any>>;
 function mapStateToProps(rootState: RootState): StateProps {
 	const state: Map<string, any> = rootState.get('workSection');
