@@ -43,7 +43,7 @@ import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {NumberAttribute} from './attributes';
 import ReactSelect from 'react-select';
-import Relationship from './relationship';
+import RelationshipSelect from './relationship-select';
 import _ from 'lodash';
 import {getEntityLink} from '../../../common/helpers/utils';
 
@@ -364,6 +364,7 @@ class RelationshipModal
 				bbid={bbid}
 				buttonAfter={openButton}
 				cache={false}
+				className="Select"
 				filters={additionalFilters}
 				instanceId="relationshipEntitySearchField"
 				label={label}
@@ -374,6 +375,10 @@ class RelationshipModal
 				onChange={this.handleEntityChange}
 			/>
 		);
+	}
+
+	getOptionValue(option) {
+		return option.selectedId;
 	}
 
 	renderRelationshipSelect() {
@@ -388,7 +393,7 @@ class RelationshipModal
 			type: _.get(this.state, ['targetEntity', 'type'])
 		};
 
-		const relationships = generateRelationshipSelection(
+		const relationships:_Relationship[] = generateRelationshipSelection(
 			relationshipTypes, baseEntity, otherEntity
 		);
 		if (baseEntity.type === 'Series') {
@@ -409,13 +414,13 @@ class RelationshipModal
 			<Form.Group>
 				<Form.Label>Relationship</Form.Label>
 				<ReactSelect
-					disabled={!this.state.targetEntity}
+					classNamePrefix="react-select"
+					components={{Option: RelationshipSelect, SingleValue: RelationshipSelect}}
+					getOptionValue={this.getOptionValue}
+					isDisabled={!this.state.targetEntity}
 					name="relationshipType"
-					optionRenderer={Relationship}
 					options={relationships}
 					value={this.state.relationship}
-					valueKey="selectId"
-					valueRenderer={Relationship}
 					onChange={this.handleRelationshipTypeChange}
 				/>
 				{this.state.relationshipType &&

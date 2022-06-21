@@ -34,6 +34,17 @@ export function get(
 	return _.get(object, path, defaultValue);
 }
 
+export function getIn(
+	object: any,
+	paths: string[],
+	defaultValue: unknown | null | undefined = null
+): any {
+	if (isIterable(object)) {
+		return object.getIn(paths, defaultValue);
+	}
+	return _.get(object, paths, defaultValue);
+}
+
 export function absentAndRequired(value: any, required: boolean | null | undefined): boolean {
 	return Boolean(required && _.isNil(value));
 }

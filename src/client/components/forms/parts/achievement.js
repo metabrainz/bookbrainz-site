@@ -23,12 +23,45 @@ import React from 'react';
 
 
 const {Card, Col, Container, Row} = bootstrap;
-
+const maxAchievementProgress = {
+	1: 1,
+	2: 50,
+	3: 250,
+	4: 1,
+	5: 10,
+	6: 100,
+	7: 1,
+	8: 10,
+	9: 100,
+	// eslint-disable-next-line sort-keys
+	10: 10,
+	11: 7,
+	12: 30,
+	13: 1,
+	14: 1,
+	15: 1,
+	16: 10,
+	17: 100,
+	18: 1,
+	19: 10,
+	20: 100,
+	21: 1,
+	22: 10,
+	23: 100,
+	24: 10,
+	25: 100,
+	26: 1000,
+	27: 1,
+	28: 1,
+	29: 10,
+	30: 100
+};
 class Achievement extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			achievement: props.achievement,
+			counter: props.counter,
 			unlocked: props.unlocked
 		};
 	}
@@ -69,6 +102,13 @@ class Achievement extends React.Component {
 							</div>
 							<p>{this.state.achievement.description}</p>
 						</Col>
+						{!this.state.unlocked &&
+						<Col>
+							<div className="h3">
+								{this.state.counter}/{maxAchievementProgress[this.state.achievement.id] ?? 0}
+							</div>
+						</Col>
+						}
 					</Row>
 				</Container>
 			</Card>
@@ -84,9 +124,11 @@ Achievement.propTypes = {
 		description: PropTypes.string,
 		name: PropTypes.string
 	}).isRequired,
+	counter: PropTypes.number,
 	unlocked: PropTypes.bool
 };
 Achievement.defaultProps = {
+	counter: 0,
 	unlocked: false
 };
 

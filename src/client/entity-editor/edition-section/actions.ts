@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 type LanguageOption = {
 	name: string,
 	id: number
@@ -37,7 +36,6 @@ export type Action = {
 	type: string,
 	meta?: Record<string, unknown>
 };
-
 
 export const DISABLE_PHYSICAL = 'DISABLE_PHYSICAL';
 export const ENABLE_PHYSICAL = 'ENABLE_PHYSICAL';
@@ -164,7 +162,7 @@ export function toggleShowEditionGroup(showEGSection: boolean): Action {
  *                                   the edition.
  * @returns {Action} The resulting UPDATE_PUBLISHER action.
  */
-export function updatePublisher(newPublisher: Publisher): Action {
+export function updatePublisher(newPublisher: Record<string, Publisher>): Action {
 	return {
 		payload: newPublisher,
 		type: UPDATE_PUBLISHER
@@ -265,3 +263,4 @@ export function debouncedUpdateDepth(value: number | null | undefined): Action {
 		type: UPDATE_DEPTH
 	};
 }
+

@@ -368,3 +368,8 @@ export function validateCollaboratorIdsForCollectionRemove(req, res, next) {
 
 	return next();
 }
+
+export function decodeUrlQueryParams(req:$Request, res:$Response, next:NextFunction) {
+	req.query = _.mapValues(req.query, decodeURIComponent);
+	return next();
+}

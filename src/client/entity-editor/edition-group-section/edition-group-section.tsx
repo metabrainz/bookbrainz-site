@@ -17,6 +17,7 @@
  */
 
 import * as React from 'react';
+import AuthorCreditSection from '../author-credit-editor/author-credit-section';
 import {Action, updateType} from './actions';
 import {Col, Form, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 
@@ -71,7 +72,7 @@ function EditionGroupSection({
 		label: type.label,
 		value: type.id
 	}));
-
+	const typeOption = editionGroupTypesForDisplay.filter((el) => el.value === typeValue);
 	const tooltip = <Tooltip>Physical format of the Edition Group</Tooltip>;
 
 	return (
@@ -79,6 +80,7 @@ function EditionGroupSection({
 			<h2>
 				What else do you know about the Edition Group?
 			</h2>
+			<AuthorCreditSection/>
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
 				know it
@@ -96,9 +98,10 @@ function EditionGroupSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
+							classNamePrefix="react-select"
 							instanceId="editionGroupType"
 							options={editionGroupTypesForDisplay}
-							value={typeValue}
+							value={typeOption}
 							onChange={onTypeChange}
 						/>
 					</Form.Group>

@@ -37,7 +37,7 @@ import {
 } from './actions';
 
 import {Alert, Button, Col, Form, ListGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
-import {DateObject, isNullDate} from '../../helpers/utils';
+import {DateObject, convertMapToObject, isNullDate} from '../../helpers/utils';
 import type {List, Map} from 'immutable';
 import {faClone, faExternalLinkAlt, faQuestionCircle, faSearch} from '@fortawesome/free-solid-svg-icons';
 import {
@@ -49,6 +49,8 @@ import {
 	validateEditionSectionWeight,
 	validateEditionSectionWidth
 } from '../validators/edition';
+
+import AuthorCreditSection from '../author-credit-editor/author-credit-section';
 import DateField from '../common/new-date-field';
 import type {Dispatch} from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
@@ -123,7 +125,7 @@ type DispatchProps = {
 	onHeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
 	onLanguagesChange: (arg: Array<LanguageOption>) => unknown,
 	onPagesChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
-	onPublisherChange: (arg: Publisher) => unknown,
+	onPublisherChange: (arg: Publisher[]) => unknown,
 	onToggleShowEditionGroupSection: (showEGSection: boolean) => unknown,
 	onEditionGroupChange: (arg: EditionGroup) => unknown,
 	onReleaseDateChange: (arg: string) => unknown,
@@ -180,7 +182,7 @@ function EditionSection({
 	editionGroupValue,
 	editionGroupVisible,
 	matchingNameEditionGroups,
-	publisherValue,
+	publisherValue: publishers,
 	releaseDateValue,
 	statusValue,
 	weightValue,
@@ -191,17 +193,18 @@ function EditionSection({
 		label: language.name,
 		value: language.id
 	}));
-
+	let publisherValue = publishers ?? {};
+	publisherValue = Object.values(convertMapToObject(publisherValue));
 	const editionFormatsForDisplay = editionFormats.map((format) => ({
 		label: format.label,
 		value: format.id
 	}));
-
+	const formatOption = editionFormatsForDisplay.filter((el) => el.value === formatValue);
 	const editionStatusesForDisplay = editionStatuses.map((status) => ({
 		label: status.label,
 		value: status.id
 	}));
-
+	const statusOption = editionStatusesForDisplay.filter((el) => el.value === statusValue);
 	const {isValid: isValidReleaseDate, errorMessage: dateErrorMessage} = validateEditionSectionReleaseDate(releaseDateValue);
 
 	const hasmatchingNameEditionGroups = Boolean(matchingNameEditionGroups?.length);
@@ -262,6 +265,7 @@ function EditionSection({
 			<h2>
 				What else do you know about the Edition?
 			</h2>
+			<AuthorCreditSection/>
 			<p className="text-muted">
 				Edition Group is required — this cannot be blank. You can search for and choose an existing Edition Group,
 				or choose to automatically create one instead.
@@ -304,7 +308,7 @@ function EditionSection({
 							<ListGroup className="margin-top-1">
 								{matchingNameEditionGroups.map(eg => (
 									<ListGroup.Item key={eg.bbid}>
-										<LinkedEntity option={entityToOption(eg)} onSelect={onEditionGroupChange}/>
+										<LinkedEntity data={entityToOption(eg)} onSelect={onEditionGroupChange}/>
 									</ListGroup.Item>
 								))}
 							</ListGroup>
@@ -319,6 +323,7 @@ function EditionSection({
 			<Row>
 				<Col lg={{offset: 3, span: 6}}>
 					<EntitySearchFieldOption
+						isMulti
 						instanceId="publisher"
 						label="Publisher"
 						type="publisher"
@@ -369,9 +374,10 @@ function EditionSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
+							classNamePrefix="react-select"
 							instanceId="editionFormat"
 							options={editionFormatsForDisplay}
-							value={formatValue}
+							value={formatOption}
 							onChange={onFormatChange}
 						/>
 					</Form.Group>
@@ -388,9 +394,10 @@ function EditionSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
+							classNamePrefix="react-select"
 							instanceId="editionStatus"
 							options={editionStatusesForDisplay}
-							value={statusValue}
+							value={statusOption}
 							onChange={onStatusChange}
 						/>
 					</Form.Group>
@@ -458,7 +465,6 @@ EditionSection.displayName = 'EditionSection';
 type RootState = Map<string, Map<string, any>>;
 function mapStateToProps(rootState: RootState): StateProps {
 	const state: Map<string, any> = rootState.get('editionSection');
-
 	return {
 		depthValue: state.get('depth'),
 		editionGroupRequired: state.get('editionGroupRequired'),
@@ -501,7 +507,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onPagesChange: (event) => dispatch(debouncedUpdatePages(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
-		onPublisherChange: (value) => dispatch(updatePublisher(value)),
+		onPublisherChange: (value) => dispatch(updatePublisher(Object.fromEntries(value.map((pub, index) => [index, pub])))),
 		onReleaseDateChange: (releaseDate) =>
 			dispatch(debouncedUpdateReleaseDate(releaseDate)),
 		onStatusChange: (value: {value: number} | null) =>
