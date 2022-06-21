@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>client/entity-editor/identifier-editor/actions.js - Documentation</title>
+    <title>client/entity-editor/author-credit-editor/author-credit-row.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">client/entity-editor/identifier-editor/actions.js</h1>
+    <h1 class="page-title">client/entity-editor/author-credit-editor/author-credit-row.js</h1>
     
 
     
@@ -41,19 +41,33 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.UPDATE_IDENTIFIER_VALUE = exports.UPDATE_IDENTIFIER_TYPE = exports.REMOVE_IDENTIFIER_ROW = exports.REMOVE_EMPTY_IDENTIFIERS = exports.HIDE_IDENTIFIER_EDITOR = exports.ADD_IDENTIFIER_ROW = void 0;
-exports.addIdentifierRow = addIdentifierRow;
-exports.debouncedUpdateIdentifierValue = debouncedUpdateIdentifierValue;
-exports.hideIdentifierEditor = hideIdentifierEditor;
-exports.removeEmptyIdentifiers = removeEmptyIdentifiers;
-exports.removeIdentifierRow = removeIdentifierRow;
-exports.updateIdentifierType = updateIdentifierType;
+exports.default = void 0;
+
+require("core-js/modules/es.function.name.js");
+
+var _actions = require("./actions");
+
+var _reactBootstrap = require("react-bootstrap");
+
+var _entitySearchFieldOption = _interopRequireDefault(require("../common/entity-search-field-option"));
+
+var _reactFontawesome = require("@fortawesome/react-fontawesome");
+
+var _react = _interopRequireDefault(require("react"));
+
+var _validationLabel = _interopRequireDefault(require("../common/validation-label"));
+
+var _reactRedux = require("react-redux");
+
+var _freeSolidSvgIcons = require("@fortawesome/free-solid-svg-icons");
 
 /*
- * Copyright (C) 2016  Ben Ockmore
+ * Copyright (C) 2020  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,129 +83,116 @@ exports.updateIdentifierType = updateIdentifierType;
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-var ADD_IDENTIFIER_ROW = 'ADD_IDENTIFIER_ROW';
-exports.ADD_IDENTIFIER_ROW = ADD_IDENTIFIER_ROW;
-var REMOVE_IDENTIFIER_ROW = 'REMOVE_IDENTIFIER_ROW';
-exports.REMOVE_IDENTIFIER_ROW = REMOVE_IDENTIFIER_ROW;
-var UPDATE_IDENTIFIER_TYPE = 'UPDATE_IDENTIFIER_TYPE';
-exports.UPDATE_IDENTIFIER_TYPE = UPDATE_IDENTIFIER_TYPE;
-var UPDATE_IDENTIFIER_VALUE = 'UPDATE_IDENTIFIER_VALUE';
-exports.UPDATE_IDENTIFIER_VALUE = UPDATE_IDENTIFIER_VALUE;
-var HIDE_IDENTIFIER_EDITOR = 'HIDE_IDENTIFIER_EDITOR';
-exports.HIDE_IDENTIFIER_EDITOR = HIDE_IDENTIFIER_EDITOR;
-var REMOVE_EMPTY_IDENTIFIERS = 'REMOVE_EMPTY_IDENTIFIERS';
-exports.REMOVE_EMPTY_IDENTIFIERS = REMOVE_EMPTY_IDENTIFIERS;
 
 /**
- * Produces an action indicating that the identifier editor should be hidden
- * from view.
+ * Container component. The IdentifierRow component renders a single Row
+ * containing several input fields, allowing the user to set the value and type
+ * for an identifier in the IdentifierEditor. A button is also included to
+ * remove the identifier from the editor.
  *
- * @see showIdentifierEditor
- *
- * @returns {Action} The resulting HIDE_IDENTIFIER_EDITOR action.
+ * @param {Object} props - The properties passed to the component.
+ * @param {string} props.index - The index of the row in the parent editor (i.e. 'n0')
+ * @param {string} props.author - The ID of the type currently selected.
+ * @param {string} props.joinPhrase - The ID of the type currently selected.
+ * @param {string} props.name - The value currently set for this
+ *        identifier.
+ * @param {Function} props.onAuthorChange - A function to be called when a new
+ *        identifier type is selected.
+ * @param {Function} props.onJoinPhraseChange - A function to be called when the
+ *        value for the identifier is changed.
+ * @param {Function} props.onNameChange - A function to be called when the
+ *        value for the identifier is changed.
+ * @param {Function} props.onRemoveButtonClick - A function to be called when
+ *        the button to remove the identifier is clicked.
+ * @returns {ReactElement} React element containing the rendered IdentifierRow.
  */
-function hideIdentifierEditor() {
+function AuthorCreditRow(_ref) {
+  var index = _ref.index,
+      author = _ref.author,
+      joinPhrase = _ref.joinPhrase,
+      name = _ref.name,
+      onAuthorChange = _ref.onAuthorChange,
+      onJoinPhraseChange = _ref.onJoinPhraseChange,
+      onNameChange = _ref.onNameChange,
+      onRemoveButtonClick = _ref.onRemoveButtonClick;
+  return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+    md: {
+      span: 3
+    }
+  }, /*#__PURE__*/_react.default.createElement(_entitySearchFieldOption.default, {
+    instanceId: "author".concat(index),
+    label: "Author",
+    type: "author",
+    validationState: !author ? 'error' : null,
+    value: author,
+    onChange: onAuthorChange
+  })), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+    md: {
+      span: 3
+    }
+  }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Group, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Label, null, /*#__PURE__*/_react.default.createElement(_validationLabel.default, {
+    empty: name.length === 0,
+    error: !name.length
+  }, "Author as credited")), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Control, {
+    type: "text",
+    value: name,
+    onChange: onNameChange
+  }))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+    md: {
+      span: 3
+    }
+  }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Group, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Label, null, "Join Phrase"), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Control, {
+    type: "text",
+    value: joinPhrase,
+    onChange: onJoinPhraseChange
+  }))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+    md: {
+      span: 3
+    }
+  }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Button, {
+    block: true,
+    className: "margin-top-d18",
+    variant: "danger",
+    onClick: onRemoveButtonClick
+  }, /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
+    icon: _freeSolidSvgIcons.faTimes
+  }), "\xA0Remove"))), /*#__PURE__*/_react.default.createElement("hr", null));
+}
+
+AuthorCreditRow.displayName = 'AuthorCreditEditor.CreditRow';
+
+function mapStateToProps(rootState, _ref2) {
+  var index = _ref2.index;
+  var state = rootState.get('authorCreditEditor');
   return {
-    type: HIDE_IDENTIFIER_EDITOR
+    author: state.getIn([index, 'author']),
+    joinPhrase: state.getIn([index, 'joinPhrase']),
+    name: state.getIn([index, 'name'])
   };
 }
 
-var nextIdentifierRowId = 0;
-/**
- * Produces an action indicating that a row for a new identifier should be added
- * to the identifier editor. The row is assigned an ID based on an incrementing
- * variable existing on the client.
- *
- * @returns {Action} The resulting ADD_IDENTIFIER_ROW action.
- */
-
-function addIdentifierRow() {
-  /*
-   * Prepend 'n' here to indicate new identifier, and avoid conflicts with IDs
-   * of existing identifiers.
-   */
+function mapDispatchToProps(dispatch, _ref3) {
+  var index = _ref3.index;
   return {
-    payload: "n".concat(nextIdentifierRowId++),
-    type: ADD_IDENTIFIER_ROW
-  };
-}
-/**
- * Produces an action indicating that the row with the provided ID should be
- * removed from the identifier editor.
- *
- * @param {number} rowId - The ID for the row to be deleted.
- * @returns {Action} The resulting REMOVE_IDENTIFIER_ROW action.
- */
-
-
-function removeIdentifierRow(rowId) {
-  return {
-    payload: rowId,
-    type: REMOVE_IDENTIFIER_ROW
-  };
-}
-/**
- * Produces an action indicating that the value for a particular identifier
- * within the editor should be updated with the provided value. Also
- * provides a suggestion for the identifier type based on the provided value,
- * if this is possible and it has not already been set. The action is marked to
- * be debounced by the keystroke debouncer defined for redux-debounce.
- *
- * @param {number} rowId - The ID of the row in the identifier editor to update.
- * @param {string} value - The new value to be used for the identifier value.
- * @param {number} suggestedType - The ID for the type suggested by the new
- *        value.
- * @param {boolean} doDebounce - flag for debouncing
- * @returns {Action} The resulting UPDATE_IDENTIFIER_VALUE action.
- */
-
-
-function debouncedUpdateIdentifierValue(rowId, value, suggestedType) {
-  var doDebounce = arguments.length > 3 &amp;&amp; arguments[3] !== undefined ? arguments[3] : true;
-  return {
-    meta: {
-      debounce: doDebounce ? 'keystroke' : null
+    onAuthorChange: function onAuthorChange(value) {
+      return dispatch((0, _actions.updateCreditAuthorValue)(index, value));
     },
-    payload: {
-      rowId: rowId,
-      suggestedType: suggestedType,
-      value: value
+    onJoinPhraseChange: function onJoinPhraseChange(event) {
+      return dispatch((0, _actions.updateCreditJoinPhraseValue)(index, event.target.value));
     },
-    type: UPDATE_IDENTIFIER_VALUE
-  };
-}
-/**
- * Produces an action indicating that the type for a particular identifier
- * within the editor should be updated with the provided value.
- *
- * @param {number} rowId - The ID of the row in the identifier editor to update.
- * @param {number} value - The new value to be used for the identifier type ID.
- * @returns {Action} The resulting UPDATE_IDENTIFIER_TYPE action.
- */
-
-
-function updateIdentifierType(rowId, value) {
-  return {
-    payload: {
-      rowId: rowId,
-      value: value
+    onNameChange: function onNameChange(event) {
+      return dispatch((0, _actions.updateCreditDisplayValue)(index, event.target.value));
     },
-    type: UPDATE_IDENTIFIER_TYPE
+    onRemoveButtonClick: function onRemoveButtonClick() {
+      return dispatch((0, _actions.removeAuthorCreditRow)(index));
+    }
   };
 }
-/**
- * Produces an action indicating that the empty rows should be deleted.
- *
- * @returns {Action} The resulting REMOVE_EMPTY_IDENTIFIERS action.
- */
 
+var _default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(AuthorCreditRow);
 
-function removeEmptyIdentifiers() {
-  return {
-    type: REMOVE_EMPTY_IDENTIFIERS
-  };
-}
-//# sourceMappingURL=actions.js.map</code></pre>
+exports.default = _default;
+//# sourceMappingURL=author-credit-row.js.map</code></pre>
         </article>
     </section>
 
