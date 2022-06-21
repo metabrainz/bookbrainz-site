@@ -42,7 +42,7 @@ function getEntityObjectForDisplay(entity: _Entity, makeLink: boolean) {
 	};
 }
 
-type RelationshipProps = {
+type Relationship = {
 	link: boolean, // eslint-disable-line react/require-default-props
 	contextEntity: _Entity | null | undefined, // eslint-disable-line react/require-default-props
 	sourceEntity: _Entity,
@@ -51,10 +51,11 @@ type RelationshipProps = {
 	showAttributes?: boolean,
 	relationshipType: RelationshipType
 };
+export {Relationship as RelationshipType};
+type RelationshipProps = Relationship & {Parent?:React.FunctionComponent<any>};
 
-function Relationship({
-	contextEntity, link, relationshipType, sourceEntity, attributes, showAttributes, targetEntity
-}: RelationshipProps) {
+function Relationship({Parent, ...props}: RelationshipProps) {
+	const {contextEntity, link, relationshipType, sourceEntity, attributes, showAttributes, targetEntity, ...rest} = props;
 	const {depth, description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
 
 	const reversed = contextEntity &&
@@ -74,29 +75,29 @@ function Relationship({
 	if (typeof depth !== 'undefined') {
 		indentationClass = `margin-left-d${8 * depth}`;
 	}
-
 	return (
 		<OverlayTrigger
 			delay={50}
 			overlay={<Tooltip id={`tooltip-${id}`}>{description}</Tooltip>}
 			placement="bottom"
 		>
-			<div aria-label={description} className={indentationClass}>
-				<Entity {...sourceObject}/>
-				{` ${usedLinkPhrase} `}
-				<Entity {...targetObject}/>
-				{' '}
-				<RelationshipAttribute attributes={attributes} showAttributes={showAttributes}/>
-			</div>
+			<Parent {...rest}>
+				<div aria-label={description} className={indentationClass}>
+					<Entity {...sourceObject}/>
+					{` ${usedLinkPhrase} `}
+					<Entity {...targetObject}/>
+					{' '}
+					<RelationshipAttribute attributes={attributes} showAttributes={showAttributes}/>
+				</div>
+			</Parent>
 		</OverlayTrigger>
 	);
 }
-Relationship.displayName = 'Relationship';
-Relationship.defaultProps = {
+Relationship.defaultProps =
+{
+	Parent: React.Fragment,
 	attributes: [],
-	contextEntity: null, // eslint-disable-line react/default-props-match-prop-types, max-len
-	link: false, // eslint-disable-line react/default-props-match-prop-types
 	showAttributes: false
 };
-
+Relationship.displayName = 'Relationship';
 export default Relationship;

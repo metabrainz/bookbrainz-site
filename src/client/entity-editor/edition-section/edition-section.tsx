@@ -196,12 +196,12 @@ function EditionSection({
 		label: format.label,
 		value: format.id
 	}));
-
+	const formatOption = editionFormatsForDisplay.filter((el) => el.value === formatValue);
 	const editionStatusesForDisplay = editionStatuses.map((status) => ({
 		label: status.label,
 		value: status.id
 	}));
-
+	const statusOption = editionStatusesForDisplay.filter((el) => el.value === statusValue);
 	const {isValid: isValidReleaseDate, errorMessage: dateErrorMessage} = validateEditionSectionReleaseDate(releaseDateValue);
 
 	const hasmatchingNameEditionGroups = Boolean(matchingNameEditionGroups?.length);
@@ -304,7 +304,7 @@ function EditionSection({
 							<ListGroup className="margin-top-1">
 								{matchingNameEditionGroups.map(eg => (
 									<ListGroup.Item key={eg.bbid}>
-										<LinkedEntity option={entityToOption(eg)} onSelect={onEditionGroupChange}/>
+										<LinkedEntity data={entityToOption(eg)} onSelect={onEditionGroupChange}/>
 									</ListGroup.Item>
 								))}
 							</ListGroup>
@@ -369,9 +369,10 @@ function EditionSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
+							classNamePrefix="react-select"
 							instanceId="editionFormat"
 							options={editionFormatsForDisplay}
-							value={formatValue}
+							value={formatOption}
 							onChange={onFormatChange}
 						/>
 					</Form.Group>
@@ -388,9 +389,10 @@ function EditionSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
+							classNamePrefix="react-select"
 							instanceId="editionStatus"
 							options={editionStatusesForDisplay}
-							value={statusValue}
+							value={statusOption}
 							onChange={onStatusChange}
 						/>
 					</Form.Group>

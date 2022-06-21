@@ -30,23 +30,25 @@ class LinkedEntity extends React.Component<any, any> {
 
 	static propTypes = {
 		className: PropTypes.string,
-		onSelect: PropTypes.func.isRequired,
-		option: PropTypes.object.isRequired
+		data: PropTypes.object.isRequired,
+		innerProps: PropTypes.object,
+		onSelect: PropTypes.func
 	};
 
 	static defaultProps = {
-		className: ''
+		className: '',
+		innerProps: null,
+		onSelect: null
 	};
 
 	constructor(props) {
 		super(props);
-
 		this.handleParentEvent = this.handleParentEvent.bind(this);
 		this.handleChildEvent = this.handleChildEvent.bind(this);
 	}
 
 	handleParentEvent(event) {
-		const option = this.getSafeOptionValue(this.props.option);
+		const option = this.getSafeOptionValue(this.props.data);
 		if (isFunction(this.props.onSelect)) {
 			this.props.onSelect(option, event);
 		}
@@ -56,7 +58,7 @@ class LinkedEntity extends React.Component<any, any> {
 		event.stopPropagation();
 		event.preventDefault();
 		let url = null;
-		const option = this.getSafeOptionValue(this.props.option);
+		const option = this.getSafeOptionValue(this.props.data);
 		const type = option && option.type;
 		const id = option && option.id;
 		if (type && id) {
@@ -77,13 +79,14 @@ class LinkedEntity extends React.Component<any, any> {
 	}
 
 	render() {
-		const option = this.getSafeOptionValue(this.props.option);
+		const option = this.getSafeOptionValue(this.props.data);
 		const {disambiguation, text, type, unnamedText, language} = option;
-
 		const nameComponent = text || <i>{unnamedText}</i>;
-
 		return (
-			<div className={this.props.className} onClick={this.handleParentEvent}>
+			<div
+				className={this.props.className}
+				onClick={this.handleParentEvent} {...this.props}
+			>
 				{
 					type && genEntityIconHTMLElement(type)
 				}
