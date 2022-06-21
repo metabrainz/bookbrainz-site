@@ -101,7 +101,7 @@ function transformNewForm(data) {
 		pages: data.editionSection.pages &&
 			parseInt(data.editionSection.pages, 10),
 		publishers: data.editionSection.publisher &&
-			[data.editionSection.publisher.id],
+			Object.values(data.editionSection.publisher).map((pub) => pub.id),
 		relationships,
 		releaseEvents,
 		statusId: data.editionSection.status &&
@@ -434,7 +434,7 @@ function editionToFormState(edition) {
 
 	const publisher = edition.publisherSet && (
 		_.isEmpty(edition.publisherSet.publishers) ?
-			null : utils.entityToOption(edition.publisherSet.publishers[0])
+			null : Object.fromEntries(edition.publisherSet.publishers.map(utils.entityToOption).map((op, index) => [index, op]))
 	);
 
 	const editionGroup = utils.entityToOption(edition.editionGroup);

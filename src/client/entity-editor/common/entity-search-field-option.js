@@ -146,6 +146,10 @@ class EntitySearchFieldOption extends React.Component {
 		return option.text;
 	}
 
+	getOptionValue(option) {
+		return option.id;
+	}
+
 	render() {
 		const labelElement = (
 			<ValidationLabel empty={this.props.empty} error={this.props.error}>
@@ -178,8 +182,8 @@ class EntitySearchFieldOption extends React.Component {
 				}}
 				filterOptions={false}
 				getOptionLabel={this.getOptionLabel}
+				getOptionValue={this.getOptionValue}
 				innerRef={this.selectRef}
-				labelKey="text"
 				loadOptions={this.fetchOptions}
 				onBlurResetsInput={false}
 			/>

@@ -50,7 +50,7 @@ function reducer(
 		languages: Immutable.List([]),
 		matchingNameEditionGroups: [],
 		physicalEnable: true,
-		publisher: null,
+		publisher: Immutable.fromJS({}),
 		releaseDate: '',
 		status: null
 	}),

@@ -30,6 +30,7 @@ import {
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
+import {convertMapToObject} from '../../helpers/utils';
 
 
 export function validateEditionSectionDepth(value: any): boolean {
@@ -76,8 +77,18 @@ export function validateEditionSectionPublisher(value: any): boolean {
 	if (!value) {
 		return true;
 	}
-
-	return validateUUID(get(value, 'id', null), true);
+	const publishers = convertMapToObject(value);
+	let flag = false;
+	for (const pubId in publishers) {
+		if (Object.prototype.hasOwnProperty.call(publishers, pubId)) {
+			const publisher = publishers[pubId];
+			if (!validateUUID(get(publisher, 'id', null), true)) {
+				return false;
+			}
+			flag = true;
+		}
+	}
+	return flag;
 }
 
 export function validateEditionSectionReleaseDate(value: any) {
