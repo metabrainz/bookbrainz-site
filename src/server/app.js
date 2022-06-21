@@ -31,6 +31,7 @@ import appCleanup from '../common/helpers/appCleanup';
 import compression from 'compression';
 import config from '../common/helpers/config';
 import {createClient} from 'redis';
+import {decodeUrlQueryParams} from './helpers/middleware';
 import express from 'express';
 import favicon from 'serve-favicon';
 import initInflux from './influx';
@@ -66,6 +67,7 @@ app.use(express.urlencoded({
 	extended: false
 }));
 app.use(compression());
+app.use(decodeUrlQueryParams);
 
 // Set up serving of static assets
 if (process.env.NODE_ENV === 'development') {
