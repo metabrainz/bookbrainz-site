@@ -203,11 +203,14 @@ export function getEditionPublishers(edition) {
 
 	if (hasPublishers) {
 		return edition.publisherSet.publishers.map(
-			(publisher) => (
-				<a href={`/publisher/${publisher.bbid}`} key={publisher.bbid}>
-					{_get(publisher, 'defaultAlias.name', publisher.bbid)}
-				</a>
-			)
+			(publisher, index) =>
+				(
+					<span key={publisher.bbid}>
+						<a href={`/publisher/${publisher.bbid}`}>
+							{_get(publisher, 'defaultAlias.name', publisher.bbid)}
+						</a>{index < (edition.publisherSet.publishers.length - 1) ? ', ' : ''}
+					</span>
+				)
 		);
 	}
 
