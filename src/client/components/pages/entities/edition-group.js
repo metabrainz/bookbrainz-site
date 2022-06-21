@@ -18,6 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
+import AuthorCreditDisplay from '../../author-credit-display';
 import EditionTable from './edition-table';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
@@ -65,6 +66,25 @@ EditionGroupAttributes.propTypes = {
 
 function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 	const urlPrefix = getEntityUrl(entity);
+
+	let authorCreditSection;
+	if (entity.authorCredit) {
+		authorCreditSection = (
+			<AuthorCreditDisplay
+				names={entity.authorCredit.names}
+			/>
+		);
+	}
+	else if (!entity.deleted) {
+		authorCreditSection = (
+			<div className="alert alert-warning text-center">
+				Author Credit unset; please&nbsp;
+				<a href={`/edition-group/${entity.bbid}/edit`}>edit this Edition Group</a>&nbsp;
+				and add its Author(s) if you see this!
+				You can copy the Author Credit from one of the Editions as well
+			</div>);
+	}
+
 	return (
 		<div>
 			<Row className="entity-display-background">
@@ -77,6 +97,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 				</Col>
 				<Col lg={10}>
 					<EntityTitle entity={entity}/>
+					{authorCreditSection}
 					<EditionGroupAttributes editionGroup={entity}/>
 				</Col>
 			</Row>

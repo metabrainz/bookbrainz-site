@@ -17,6 +17,7 @@
  */
 
 import * as React from 'react';
+import AuthorCreditSection from '../author-credit-editor/author-credit-section';
 import {Action, updateType} from './actions';
 import {Col, Form, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 
@@ -79,6 +80,7 @@ function EditionGroupSection({
 			<h2>
 				What else do you know about the Edition Group?
 			</h2>
+			<AuthorCreditSection/>
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
 				know it

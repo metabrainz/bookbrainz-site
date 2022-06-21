@@ -31,7 +31,7 @@ function makeImmutable<T extends Record<string, unknown>>(WrappedComponent: Reac
 			(value) => (isIterable(value) ? value.toJS() : value)
 		);
 
-		return <WrappedComponent {...propsJS}/>;
+		return <WrappedComponent {...propsJS} ref={propsJS.innerRef}/>;
 	}
 
 	immutableComponent.displayName = 'pureJS.immutableComponent';

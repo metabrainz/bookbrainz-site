@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as React from 'react';
+
 // eslint-disable-next-line import/named
 import {FontAwesomeIconProps as FAProps, FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst} from 'lodash';
@@ -215,6 +215,15 @@ export function getEditionPublishers(edition) {
 	}
 
 	return '?';
+}
+
+export function authorCreditToString(authorCredit) {
+	if (authorCredit) {
+		const {names} = authorCredit;
+		return names.map(acName => `${acName.name}${acName.joinPhrase}`);
+	}
+
+	return null;
 }
 
 export function getEntityDisambiguation(entity) {

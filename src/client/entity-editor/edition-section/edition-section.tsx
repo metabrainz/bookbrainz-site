@@ -49,6 +49,8 @@ import {
 	validateEditionSectionWeight,
 	validateEditionSectionWidth
 } from '../validators/edition';
+
+import AuthorCreditSection from '../author-credit-editor/author-credit-section';
 import DateField from '../common/new-date-field';
 import type {Dispatch} from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
@@ -263,6 +265,7 @@ function EditionSection({
 			<h2>
 				What else do you know about the Edition?
 			</h2>
+			<AuthorCreditSection/>
 			<p className="text-muted">
 				Edition Group is required — this cannot be blank. You can search for and choose an existing Edition Group,
 				or choose to automatically create one instead.
