@@ -436,6 +436,7 @@ async function getProgress(achievementId, editorId, orm) {
 		const {SeriesRevision} = orm;
 		return getTypeCreation(new SeriesRevision(), 'series_revision', editorId);
 	}
+	// Sprinter
 	if (achievementId === 10) {
 		const {bookshelf} = orm;
 		const rawSql =
@@ -445,13 +446,15 @@ async function getProgress(achievementId, editorId, orm) {
 		const out = await bookshelf.knex.raw(rawSql);
 		return out.rowCount;
 	}
+	// Fun Runner
 	if (achievementId === 11) {
 		return getEditsInDays(orm, editorId, 6);
 	}
+	// Marathoner
 	if (achievementId === 12) {
 		return getEditsInDays(orm, editorId, 29);
 	}
-
+	// Explorer achivements
 	const explorerVisits = [24, 25, 26];
 	if (explorerVisits.includes(achievementId)) {
 		return getEntityVisits(orm, editorId);

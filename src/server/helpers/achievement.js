@@ -516,10 +516,15 @@ async function processHotOffThePress(orm, editorId, revisionId) {
  */
 export async function getEntityVisits(orm, editorId) {
 	const {EditorEntityVisits} = orm;
-	const visits = await new EditorEntityVisits()
-		.where('editor_id', editorId)
-		.fetchAll({require: true});
-	return visits.length;
+	try {
+		const visits = await new EditorEntityVisits()
+			.where('editor_id', editorId)
+			.fetchAll({require: true});
+		return visits.length;
+	}
+	catch (err) {
+		return 0;
+	}
 }
 
 async function processExplorer(orm, editorId) {
