@@ -412,7 +412,7 @@ async function fetchOrCreatePublisherType(PublisherTypeModel, optionalPublisherA
 	return publisherType;
 }
 
-export async function createPublisher(optionalBBID, optionalPublisherAttribs = {}) {
+export async function createPublisher(optionalBBID, optionalPublisherAttribs = {}, optionalPublisherTypeAttribs = {}) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Publisher'})
 		.save(null, {method: 'insert'});
@@ -430,7 +430,6 @@ export async function createPublisher(optionalBBID, optionalPublisherAttribs = {
 			.save(null, {method: 'insert'});
 	}
 
-	const optionalPublisherTypeAttribs = {};
 	let publisherType;
 	if (!isNil(optionalPublisherAttribs.typeId)) {
 		optionalPublisherTypeAttribs.id = optionalPublisherAttribs.typeId;
