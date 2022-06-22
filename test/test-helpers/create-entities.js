@@ -19,6 +19,7 @@
 
 import {internet, random} from 'faker';
 
+import {faker} from '@faker-js/faker';
 import {isNil} from 'lodash';
 import orm from '../bookbrainz-data';
 import {v4 as uuidv4} from 'uuid';
@@ -425,7 +426,15 @@ export async function createSeries(optionalBBID, optionalSeriesAttribs = {}) {
 	return series;
 }
 
-export async function createPublisher(optionalBBID, optionalPublisherAttribs = {}) {
+async function fetchOrCreatePublisherType(PublisherTypeModel, optionalPublisherAttribs = {}) {
+	const PublisherTypeAttribs = {
+		label: faker.commerce.productAdjective()
+	};
+	const publisherType = await new PublisherTypeModel({...PublisherTypeAttribs, ...optionalPublisherAttribs}).save(null, {method: 'insert'});
+	return publisherType;
+}
+
+export async function createPublisher(optionalBBID, optionalPublisherAttribs = {}, optionalPublisherTypeAttribs = {}) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Publisher'})
 		.save(null, {method: 'insert'});
@@ -443,7 +452,6 @@ export async function createPublisher(optionalBBID, optionalPublisherAttribs = {
 			.save(null, {method: 'insert'});
 	}
 
-	const optionalPublisherTypeAttribs = {};
 	let publisherType;
 	if (!isNil(optionalPublisherAttribs.typeId)) {
 		optionalPublisherTypeAttribs.id = optionalPublisherAttribs.typeId;
@@ -451,10 +459,7 @@ export async function createPublisher(optionalBBID, optionalPublisherAttribs = {
 			.fetch({require: false});
 	}
 	if (!publisherType) {
-		publisherType = await new PublisherType(
-			{label: `Publisher Type ${optionalPublisherAttribs.typeId || random.number()}`, ...optionalPublisherTypeAttribs}
-		)
-			.save(null, {method: 'insert'});
+		publisherType = await fetchOrCreatePublisherType(PublisherType, optionalPublisherTypeAttribs);
 	}
 
 	const publisherAttribs = {

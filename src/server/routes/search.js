@@ -158,4 +158,14 @@ router.get('/reindex', auth.isAuthenticated, (req, res) => {
 	handler.sendPromiseResult(res, indexPromise);
 });
 
+router.get('/entity/:bbid', async (req, res) => {
+	const {orm} = res.app.locals;
+	const {bbid} = req.params;
+	const entity = await commonUtils.getEntityByBBID(orm, bbid);
+	if (!entity) {
+		return error.sendErrorAsJSON(res, new error.NotFoundError("Entity with this bbid doesn't exist", req));
+	}
+	return res.send(entity);
+});
+
 export default router;

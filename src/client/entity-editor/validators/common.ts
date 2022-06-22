@@ -18,20 +18,27 @@
 
 import {
 	get,
+	getIn,
 	validateOptionalString,
 	validatePositiveInteger,
-	validateRequiredString
+	validateRequiredString,
+	validateUUID
 } from './base';
 
 import {Iterable} from 'immutable';
 import _ from 'lodash';
+import {AuthorCredit} from '../author-credit-editor/actions';
 
 
 export function validateMultiple(
 	values: any[],
 	validationFunction: (value: any, ...rest: any[]) => boolean,
-	additionalArgs?: any
+	additionalArgs?: any,
+	requiresOneOrMore?: boolean
 ): boolean {
+	if (requiresOneOrMore && _.isEmpty(values)) {
+		return false;
+	}
 	let every = (object, predicate) => _.every(object, predicate);
 	if (Iterable.isIterable(values)) {
 		every = (object, predicate) => object.every(predicate);
@@ -175,4 +182,20 @@ export function validateSubmissionSection(
 		validateSubmissionSectionNote(get(data, 'note', null)) &&
 		validateSubmissionSectionAnnotation(get(data, 'annotation.content', null))
 	);
+}
+
+export function validateAuthorCreditRow(row: any): boolean {
+	return validateUUID(getIn(row, ['author', 'id'], null), true) &&
+	validateRequiredString(get(row, 'name', null)) &&
+	validateOptionalString(get(row, 'joinPhrase', null));
+}
+
+export const validateAuthorCreditSection = _.partialRight(
+	// Requires at least one Author Credit row
+	validateMultiple, _.partialRight.placeholder,
+	validateAuthorCreditRow, null, false
+);
+// In the merge editor we use the authorCredit directly instead of the authorCreditEditor state
+export function validateAuthorCreditSectionMerge(authorCredit:AuthorCredit) :boolean {
+	return validatePositiveInteger(get(authorCredit, 'id', null), true);
 }

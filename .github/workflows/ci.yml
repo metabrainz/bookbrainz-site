@@ -65,7 +65,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           # We could also test on multiple Node versions if needed: https://github.com/actions/setup-node#matrix-testing
-          node-version: '12'
+          node-version: '16'
           # Enables caching NPM dependencies (uses https://github.com/actions/cache under the hood)
           cache: 'yarn'
           

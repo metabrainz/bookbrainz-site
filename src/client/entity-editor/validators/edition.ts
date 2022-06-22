@@ -20,6 +20,8 @@
 import {get, validateDate, validatePositiveInteger, validateUUID} from './base';
 import {
 	validateAliases,
+	validateAuthorCreditSection,
+	validateAuthorCreditSectionMerge,
 	validateIdentifiers,
 	validateNameSection,
 	validateSubmissionSection
@@ -28,6 +30,7 @@ import {
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
+import {convertMapToObject} from '../../helpers/utils';
 
 
 export function validateEditionSectionDepth(value: any): boolean {
@@ -74,8 +77,19 @@ export function validateEditionSectionPublisher(value: any, isCustom = false): b
 	if (!value) {
 		return true;
 	}
-	// custom/dummy id is used for unified form
-	return isCustom ? Boolean(get(value, 'id', null)) : validateUUID(get(value, 'id', null), true);
+	const publishers = convertMapToObject(value);
+	let flag = false;
+	for (const pubId in publishers) {
+		if (Object.prototype.hasOwnProperty.call(publishers, pubId)) {
+			const publisher = publishers[pubId];
+			const isValid = isCustom ? Boolean(get(publisher, 'id', null)) : validateUUID(get(publisher, 'id', null), true);
+			if (!isValid) {
+				return false;
+			}
+			flag = true;
+		}
+	}
+	return flag;
 }
 
 export function validateEditionSectionReleaseDate(value: any) {
@@ -116,8 +130,16 @@ export function validateEditionSection(data: any, isCustom = false): boolean {
 }
 
 export function validateForm(
-	formData: any, identifierTypes?: Array<_IdentifierType> | null | undefined
+	formData: any, identifierTypes?: Array<_IdentifierType> | null | undefined,
+	isMerge?:boolean
 ): boolean {
+	let validAuthorCredit;
+	if (isMerge) {
+		validAuthorCredit = validateAuthorCreditSectionMerge(get(formData, 'authorCredit', {}));
+	}
+	else {
+		validAuthorCredit = validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}));
+	}
 	const conditions = [
 		validateAliases(get(formData, 'aliasEditor', {})),
 		validateIdentifiers(
@@ -125,6 +147,7 @@ export function validateForm(
 		),
 		validateNameSection(get(formData, 'nameSection', {})),
 		validateEditionSection(get(formData, 'editionSection', {}), Boolean(formData?.type)),
+		validAuthorCredit,
 		validateSubmissionSection(get(formData, 'submissionSection', {}))
 	];
 
