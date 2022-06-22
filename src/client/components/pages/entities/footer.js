@@ -94,45 +94,45 @@ class EntityFooter extends React.Component {
 				}
 				{
 					this.state.message.text ?
-						<Alert bsStyle={this.state.message.type} onDismiss={this.handleAlertDismiss}>{this.state.message.text}</Alert> : null
+						<Alert variant={this.state.message.type} onDismiss={this.handleAlertDismiss}>{this.state.message.text}</Alert> : null
 
 				}
 				<Row>
-					<Col className="text-center" md={10} mdOffset={1}>
+					<Col className="text-center" lg={{offset: 1, span: 10}}>
 						<Button
-							bsStyle="warning"
 							className="footer-button"
 							disabled={this.props.deleted}
 							href={`${this.props.entityUrl}/edit`}
 							title="Edit Entity"
+							variant="warning"
 						>
 							<FontAwesomeIcon icon={faPencilAlt}/>
 							&nbsp;Edit
 						</Button>
 						<Button
-							bsStyle="primary"
 							className="footer-button"
 							href={`${this.props.entityUrl}/revisions`}
 							title="Revision History"
+							variant="primary"
 						>
 							<FontAwesomeIcon icon={faHistory}/>
 							&nbsp;History
 						</Button>
 						<Button
-							bsStyle="danger"
 							className="footer-button"
 							disabled={this.props.deleted}
 							href={`${this.props.entityUrl}/delete`}
 							title="Delete Entity"
+							variant="danger"
 						>
 							<FontAwesomeIcon icon={faTimes}/>
 							&nbsp;Delete
 						</Button>
 						<Button
-							bsStyle="default"
 							className="footer-button"
 							href={`/merge/add/${this.props.bbid}`}
 							title="Select entity for merging"
+							variant="secondary"
 						>
 							<FontAwesomeIcon
 								flip="vertical"
@@ -141,10 +141,10 @@ class EntityFooter extends React.Component {
 							&nbsp;Merge
 						</Button>
 						<Button
-							bsStyle="primary"
 							className="footer-button"
 							href="#"
 							title="Add To Collection"
+							variant="primary"
 							onClick={this.handleShowModal}
 						>
 							<FontAwesomeIcon icon={faGripVertical}/>

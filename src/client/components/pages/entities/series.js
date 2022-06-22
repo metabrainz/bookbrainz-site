@@ -40,25 +40,25 @@ function SeriesAttributes({series}) {
 	return (
 		<div>
 			<Row>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>Sort Name</dt>
 						<dd>{sortNameOfDefaultAlias}</dd>
 					</dl>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>Series Type</dt>
 						<dd>{series.entityType}</dd>
 					</dl>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>Ordering Type</dt>
 						<dd>{series.seriesOrderingType.label}</dd>
 					</dl>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>Total Items</dt>
 						<dd>{series.seriesItems.length}</dd>
@@ -87,14 +87,14 @@ function SeriesDisplayPage({entity, identifierTypes, user}) {
 	return (
 		<div>
 			<Row className="entity-display-background">
-				<Col className="entity-display-image-box text-center" md={2}>
+				<Col className="entity-display-image-box text-center" lg={2}>
 					<EntityImage
 						backupIcon={ENTITY_TYPE_ICONS.Series}
 						deleted={entity.deleted}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>
-				<Col md={10}>
+				<Col lg={10}>
 					<EntityTitle entity={entity}/>
 					<SeriesAttributes series={entity}/>
 				</Col>

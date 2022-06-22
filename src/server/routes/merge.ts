@@ -142,7 +142,7 @@ function entitiesToFormState(entities: any[]) {
 		}
 	});
 
-	const annotations = entities.reduce((returnValue, entity, index) => {
+	const annotations = entities.reduce((returnValue, entity) => {
 		if (entity.annotation && entity.annotation.content) {
 			return `${returnValue}${returnValue ? '\n——————\n' : ''}${entity.annotation.content}`;
 		}
@@ -150,9 +150,19 @@ function entitiesToFormState(entities: any[]) {
 	}, '');
 	const annotationSection = {content: annotations};
 
+
+	const authorCredits = entities.reduce((returnValue, entity) => {
+		if (entity.authorCredit) {
+			return returnValue.concat(entity.authorCredit);
+		}
+		return returnValue;
+	}, []);
+	const authorCredit = authorCredits.length ? authorCredits[0] : null;
+
 	const props = {
 		aliasEditor,
 		annotationSection,
+		authorCredit,
 		identifierEditor,
 		nameSection,
 		relationshipSection
@@ -163,6 +173,9 @@ function entitiesToFormState(entities: any[]) {
 
 function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 	const {RelationshipSet} = orm;
+
+	// Default to empty array, its presence is expected down the line
+	entity.relationships = [];
 
 	if (!entity.relationshipSetId) {
 		return null;
@@ -180,8 +193,9 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 			]
 		})
 		.then((relationshipSet) => {
-			entity.relationships = relationshipSet ?
-				relationshipSet.related('relationships').toJSON() : [];
+			if (relationshipSet) {
+				entity.relationships = relationshipSet.related('relationships').toJSON();
+			}
 
 			attachAttributes(entity.relationships);
 

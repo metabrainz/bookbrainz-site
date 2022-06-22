@@ -18,6 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
+import AuthorCreditDisplay from '../../author-credit-display';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
@@ -33,7 +34,7 @@ import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons';
 
 const {
 	deletedEntityMessage, extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
-	getLanguageAttribute, getRelationshipTargetByTypeId, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias
+	getLanguageAttribute, getRelationshipTargetByTypeId, addAuthorsDataToWorks, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias
 } = entityHelper;
 const {Col, Row} = bootstrap;
 
@@ -58,7 +59,7 @@ function EditionAttributes({edition}) {
 		<div>
 
 			<Row>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>Sort Name</dt>
 						<dd>{sortNameOfDefaultAlias}</dd>
@@ -68,7 +69,7 @@ function EditionAttributes({edition}) {
 						<dd>{format}</dd>
 					</dl>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>Status</dt>
 						<dd>{status}</dd>
@@ -76,17 +77,20 @@ function EditionAttributes({edition}) {
 						<dd>{languages}</dd>
 					</dl>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
-						<dt>Dimensions (WxHxD)</dt>
-						<dd>{width}&times;{height}&times;{depth} mm</dd>
-						<dt>Weight</dt>
-						<dd>{weight} g</dd>
+						{format !== 'eBook' &&
+						<>
+							<dt>Dimensions (WxHxD)</dt>
+							<dd>{width}&times;{height}&times;{depth} mm</dd>
+							<dt>Weight</dt>
+							<dd>{weight} g</dd>
+						</>}
 						<dt>Page Count</dt>
 						<dd>{pageCount}</dd>
 					</dl>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>Publishers</dt>
 						<dd>{publishers}</dd>
@@ -106,7 +110,26 @@ function EditionDisplayPage({entity, identifierTypes, user}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
+	const worksContainedByEditionWithAuthors = addAuthorsDataToWorks(entity.authorsData, worksContainedByEdition);
 	const urlPrefix = getEntityUrl(entity);
+
+	let authorCreditSection;
+	if (entity.authorCredit) {
+		authorCreditSection = (
+			<AuthorCreditDisplay
+				names={entity.authorCredit.names}
+			/>
+		);
+	}
+	else if (!entity.deleted) {
+		authorCreditSection = (
+			<div className="alert alert-warning text-center">
+				Author Credit unset; please&nbsp;
+				<a href={`/edition/${entity.bbid}/edit`}>edit this Edition</a>&nbsp;
+				and add its Author(s) if you see this!
+			</div>);
+	}
+
 	let editionGroupSection;
 	if (entity.editionGroup) {
 		editionGroupSection = (
@@ -120,23 +143,27 @@ function EditionDisplayPage({entity, identifierTypes, user}) {
 	}
 	else if (!entity.deleted) {
 		editionGroupSection = (
-			<span className="bg-danger">
-				Edition Group unset - please edit this Edition and add one if you see this!
-			</span>
+			<div className="alert alert-warning text-center">
+				Edition Group unset - please&nbsp;
+				<a href={`/edition/${entity.bbid}/edit`}>edit this Edition</a>&nbsp;
+				and add one if you see this!
+			</div>
 		);
 	}
 	return (
 		<div>
 			<Row className="entity-display-background">
-				<Col className="entity-display-image-box text-center" md={2}>
+				<Col className="entity-display-image-box text-center" lg={2}>
 					<EntityImage
 						backupIcon={ENTITY_TYPE_ICONS.Edition}
 						deleted={entity.deleted}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>
-				<Col md={10}>
+				<Col lg={10}>
 					<EntityTitle entity={entity}/>
+					{authorCreditSection}
+					<hr/>
 					<EditionAttributes edition={entity}/>
 					{editionGroupSection}
 				</Col>
@@ -146,7 +173,7 @@ function EditionDisplayPage({entity, identifierTypes, user}) {
 			<React.Fragment>
 				<WorksTable
 					entity={entity}
-					works={worksContainedByEdition}
+					works={worksContainedByEditionWithAuthors}
 				/>
 				<EntityLinks
 					entity={entity}

@@ -26,23 +26,18 @@ import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {Button, DropdownButton, MenuItem, Table} = bootstrap;
+const {Button, ButtonGroup, Dropdown, DropdownButton, Table} = bootstrap;
 const {formatDate} = utilsHelper;
 
 
 class CollectionsTable extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			type: ''
-		};
-
 		// React does not autobind non-React class methods
 		this.handleEntitySelect = this.handleEntitySelect.bind(this);
 	}
 
 	handleEntitySelect(type) {
-		this.setState({type});
 		this.props.onTypeChange(type);
 	}
 
@@ -50,28 +45,28 @@ class CollectionsTable extends React.Component {
 		const {showLastModified, showOwner, showIfOwnerOrCollaborator, showPrivacy, results, tableHeading, user, ownerId} = this.props;
 		const entityTypeSelect = (
 			<DropdownButton
-				bsStyle="primary"
 				className="margin-bottom-d5"
 				id="entity-type-select"
-				title={_.startCase(this.state.type) || 'Entity Type'}
+				title={_.startCase(this.props.type) || 'Entity Type'}
+				variant="primary"
 				onSelect={this.handleEntitySelect}
 			>
 				{this.props.entityTypes.map((entityType) => (
-					<MenuItem
+					<Dropdown.Item
 						eventKey={entityType}
 						key={entityType}
 					>
 						{genEntityIconHTMLElement(entityType)}
 						{_.startCase(entityType)}
-					</MenuItem>
+					</Dropdown.Item>
 				))}
-				<MenuItem divider/>
-				<MenuItem
+				<Dropdown.Divider/>
+				<Dropdown.Item
 					eventKey={null}
 					key="allTypes"
 				>
 					All Types
-				</MenuItem>
+				</Dropdown.Item>
 			</DropdownButton>
 		);
 
@@ -82,10 +77,10 @@ class CollectionsTable extends React.Component {
 		if (user && (user.id === ownerId || !ownerId)) {
 			newCollectionButton = (
 				<Button
-					bsStyle="warning"
 					className="margin-bottom-d5"
 					href="/collection/create"
 					type="button"
+					variant="warning"
 				>
 					<FontAwesomeIcon icon={faPlus}/>
 					&nbsp;Create Collection
@@ -100,10 +95,10 @@ class CollectionsTable extends React.Component {
 		if (user && (!ownerId || user.id !== ownerId)) {
 			myCollectionButton = (
 				<Button
-					bsStyle="success"
 					className="margin-bottom-d5"
 					href={`/editor/${user.id}/collections`}
 					type="button"
+					variant="success"
 				>
 					My Collections
 				</Button>
@@ -117,9 +112,11 @@ class CollectionsTable extends React.Component {
 						{tableHeading}
 					</h1>
 					<div className="collection-page-buttons">
-				        {myCollectionButton}
-						{newCollectionButton}
-						{entityTypeSelect}
+						<ButtonGroup>
+							{myCollectionButton}
+							{newCollectionButton}
+							{entityTypeSelect}
+						</ButtonGroup>
 					</div>
 				</div>
 				<hr className="thin"/>
@@ -131,26 +128,26 @@ class CollectionsTable extends React.Component {
 						>
 							<thead>
 								<tr>
-									<th className="col-sm-2">Name</th>
-									<th className="col-sm-4">Description</th>
-									<th className="col-sm-2">Entity Type</th>
-									<th className="col-sm-2">Entities</th>
+									<th className="col-md-2">Name</th>
+									<th className="col-md-4">Description</th>
+									<th className="col-md-2">Entity Type</th>
+									<th className="col-md-2">Entities</th>
 									{
 										showPrivacy ?
-											<th className="col-sm-2">Privacy</th> : null
+											<th className="col-md-2">Privacy</th> : null
 									}
 									{
 										showIfOwnerOrCollaborator ?
-											<th className="col-sm-2">Collaborator/Owner</th> : null
+											<th className="col-md-2">Collaborator/Owner</th> : null
 									}
 									{
 										showOwner ?
-											<th className="col-sm-2">Owner</th> : null
+											<th className="col-md-2">Owner</th> : null
 
 									}
 									{
 										showLastModified ?
-											<th className="col-sm-2">Last Modified</th> : null
+											<th className="col-md-2">Last Modified</th> : null
 									}
 								</tr>
 							</thead>
@@ -213,6 +210,7 @@ CollectionsTable.propTypes = {
 	showOwner: PropTypes.bool,
 	showPrivacy: PropTypes.bool,
 	tableHeading: PropTypes.node,
+	type: PropTypes.string,
 	user: PropTypes.object
 };
 CollectionsTable.defaultProps = {
@@ -222,6 +220,7 @@ CollectionsTable.defaultProps = {
 	showOwner: false,
 	showPrivacy: false,
 	tableHeading: 'Collections',
+	type: '',
 	user: null
 };
 

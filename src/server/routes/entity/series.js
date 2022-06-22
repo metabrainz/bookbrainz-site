@@ -20,6 +20,7 @@
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
+import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
 import {
@@ -32,6 +33,7 @@ import {ConflictError} from '../../../common/helpers/error';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import log from 'log';
 import target from '../../templates/target';
 
 /** ****************************
@@ -87,10 +89,31 @@ const router = express.Router();
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages,
-	middleware.loadRelationshipTypes, middleware.loadSeriesOrderingTypes, (req, res) => {
+	middleware.loadRelationshipTypes, middleware.loadSeriesOrderingTypes,
+	async (req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'series', req, res, {}
 		));
+
+		const nameSection = {
+			disambiguation: '',
+			exactMatches: null,
+			language: null,
+			name: req.query?.name ?? '',
+			searchResults: null,
+			sortName: ''
+		};
+		if (nameSection.name) {
+			try {
+				nameSection.searchResults = await search.autocomplete(req.app.locals.orm, nameSection.name, 'Series');
+				nameSection.exactMatches = await search.checkIfExists(req.app.locals.orm, nameSection.name, 'Series');
+			}
+			catch (err) {
+				log.debug(err);
+			}
+		}
+
+		props.initialState.nameSection = nameSection;
 
 		return res.send(target({
 			markup,
@@ -101,6 +124,44 @@ router.get(
 	}
 );
 
+router.post(
+	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	middleware.loadLanguages,
+	middleware.loadRelationshipTypes, middleware.loadSeriesOrderingTypes, async (req, res) => {
+		const entity = await utils.parseInitialState(req, 'series');
+		if (entity.seriesSection) {
+			const orderingTypes = ['Automatic', 'Manual'];
+			const seriesTypes = ['Author', 'Work', 'EditionGroup', 'Edition', 'Publisher'];
+			if (entity.seriesSection.orderType) {
+				if (!orderingTypes.includes(entity.seriesSection.orderType)) {
+					delete entity.seriesSection.orderType;
+				}
+				else {
+					entity.seriesSection.orderType = orderingTypes.indexOf(entity.seriesSection.orderType) + 1;
+				}
+			}
+			if (entity.seriesSection.seriesType && !seriesTypes.includes(entity.seriesSection.seriesType)) {
+				delete entity.seriesSection.seriesType;
+			}
+		}
+		if (_.isEmpty(entity.seriesSection)) {
+			delete entity.seriesSection;
+		}
+		else {
+			entity.seriesSection.seriesItems = {};
+		}
+		const {markup, props} = entityEditorMarkup(generateEntityProps(
+			'series', req, res, {}, () => entity
+		));
+
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/entity-editor.js',
+			title: props.heading
+		}));
+	}
+);
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);

@@ -26,7 +26,6 @@ import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
-
 import type {Request as $Request, Response as $Response, NextFunction} from 'express';
 import type {
 	EntityTypeString,
@@ -36,12 +35,15 @@ import type {
 	Transaction
 } from 'bookbrainz-data/lib/func/types';
 import {escapeProps, generateProps} from '../../helpers/props';
+
+import {AuthorCreditRow} from '../../../client/entity-editor/author-credit-editor/actions';
 import AuthorPage from '../../../client/components/pages/entities/author';
 import DeletionForm from '../../../client/components/forms/deletion';
 import EditionGroupPage from '../../../client/components/pages/entities/edition-group';
 import EditionPage from '../../../client/components/pages/entities/edition';
 import EntityRevisions from '../../../client/components/pages/entity-revisions';
 import Layout from '../../../client/containers/layout';
+import PreviewPage from '../../../client/components/forms/preview';
 import PublisherPage from '../../../client/components/pages/entities/publisher';
 import ReactDOMServer from 'react-dom/server';
 import SeriesPage from '../../../client/components/pages/entities/series';
@@ -54,7 +56,6 @@ import target from '../../templates/target';
 
 
 type PassportRequest = $Request & {user: any, session: any};
-
 
 const entityComponents = {
 	author: AuthorPage,
@@ -200,7 +201,7 @@ export async function displayRevisions(
 	try {
 		// get 1 more revision than required to check nextEnabled
 		const orderedRevisions = await getOrderedRevisionsForEntityPage(orm, from, size + 1, RevisionModel, bbid);
-		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedRevisions, size);
+		const {newResultsArray, nextEnabled} = commonUtils.getNextEnabledAndResultsArray(orderedRevisions, size);
 		const props = generateProps(req, res, {
 			from,
 			nextEnabled,
@@ -328,7 +329,7 @@ async function saveEntitiesAndFinishRevision(
 		setParentRevisions(transacting, newRevision, parentRevisionIDs);
 
 	/** model.save returns a refreshed model */
-	// eslint-disable-next-line no-unused-vars
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [savedEntities, ...others] = await Promise.all([
 		entitiesSavedPromise,
 		editorUpdatePromise,
@@ -417,10 +418,12 @@ export function handleDelete(
 	RevisionModel: any
 ) {
 	const {entity}: {entity?: any} = res.locals;
+	if (!entity.dataId) {
+		throw new error.ConflictError('This entity has already been deleted');
+	}
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const {body}: {body: any} = req;
-
 	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
 		if (!body.note || !body.note.length) {
 			throw new error.FormSubmissionError('A revision note is required when deleting an entity');
@@ -673,13 +676,48 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 	return allEntitiesReturnArray;
 }
 
+type ProcessAuthorCreditBody = {
+	authorCredit: Array<AuthorCreditRow>
+};
+type ProcessAuthorCreditResult = {authorCreditId: number};
+
+async function processAuthorCredit(
+	orm: any,
+	currentEntity: Record<string, unknown> | null | undefined,
+	body: ProcessAuthorCreditBody,
+	transacting: Transaction
+): Promise<ProcessAuthorCreditResult> {
+	const authorCreditID = _.get(currentEntity, ['authorCredit', 'id']);
+
+	const oldAuthorCredit = await (
+		authorCreditID &&
+		orm.AuthorCredit.forge({id: authorCreditID})
+			.fetch({transacting, withRelated: ['names']})
+	);
+
+	const names = _.get(body, 'authorCredit') || [];
+	const newAuthorCredit = await orm.func.authorCredit.updateAuthorCredit(
+		orm, transacting, oldAuthorCredit,
+		names.map((name) => ({
+			authorBBID: name.authorBBID,
+			joinPhrase: name.joinPhrase,
+			name: name.name
+		}))
+	);
+
+	return {
+		authorCreditId: newAuthorCredit && newAuthorCredit.get('id')
+	};
+}
+
+
 type ProcessEditionSetsBody = {
 	languages: Array<Language>,
 	publishers: Array<Publisher>,
 	releaseEvents: Array<ReleaseEvent>
-};
+} & ProcessAuthorCreditBody;
+type ProcessEditionSetsResult = {languageSetId: number[], publisherSetId: number[], releaseEventSetId: number[]} & ProcessAuthorCreditResult;
 
-type ProcessEditionSetsResult = {languageSetId: number[], publisherSetId: number[], releaseEventSetId: number[]};
 async function processEditionSets(
 	orm: any,
 	currentEntity: Record<string, unknown> | null | undefined,
@@ -744,7 +782,10 @@ async function processEditionSets(
 		)
 			.then((set) => set && set.get('id'));
 
+	const authorCreditIDPromise = processAuthorCredit(orm, currentEntity, body, transacting).then(acResult => acResult.authorCreditId);
+
 	return commonUtils.makePromiseFromObject<ProcessEditionSetsResult>({
+		authorCreditId: authorCreditIDPromise,
 		languageSetId: newLanguageSetIDPromise,
 		publisherSetId: newPublisherSetIDPromise,
 		releaseEventSetId: newReleaseEventSetIDPromise
@@ -773,22 +814,30 @@ async function processWorkSets(
 	});
 }
 
-function processEntitySets(
+async function processEntitySets(
 	orm: any,
 	currentEntity: Record<string, unknown> | null | undefined,
 	entityType: EntityTypeString,
 	body: any,
 	transacting: Transaction
-): Promise<ProcessEditionSetsResult | ProcessWorkSetsResult | null> {
+): Promise<ProcessEditionSetsResult | ProcessWorkSetsResult | ProcessAuthorCreditResult | null> {
 	if (entityType === 'Edition') {
-		return processEditionSets(orm, currentEntity, body, transacting);
+		const editionSets = await processEditionSets(orm, currentEntity, body, transacting);
+		const authorCredit = await processAuthorCredit(orm, currentEntity, body, transacting);
+		return {...editionSets, ...authorCredit};
+	}
+
+	if (entityType === 'EditionGroup') {
+		const authorCredit = await processAuthorCredit(orm, currentEntity, body, transacting);
+		return authorCredit;
 	}
 
 	if (entityType === 'Work') {
-		return processWorkSets(orm, currentEntity, body, transacting);
+		const workSets = await processWorkSets(orm, currentEntity, body, transacting);
+		return workSets;
 	}
 
-	return new Promise(resolve => resolve(null));
+	return null;
 }
 
 
@@ -990,6 +1039,15 @@ async function indexAutoCreatedEditionGroup(orm, newEdition, transacting) {
 	}
 }
 
+function sanitizeBody(body:any) {
+	for (const alias of body.aliases) {
+		alias.name = commonUtils.sanitize(alias.name);
+		alias.sortName = commonUtils.sanitize(alias.sortName);
+	}
+	body.disambiguation = commonUtils.sanitize(body.disambiguation);
+	return body;
+}
+
 export function handleCreateOrEditEntity(
 	req: PassportRequest,
 	res: $Response,
@@ -1001,7 +1059,7 @@ export function handleCreateOrEditEntity(
 	const {Entity, Revision, bookshelf} = orm;
 	const editorJSON = req.user;
 
-	const {body}: {body: any} = req;
+	let {body}: {body: any} = req;
 	const {locals: resLocals}: {locals: any} = res;
 
 	let currentEntity: {
@@ -1017,7 +1075,8 @@ export function handleCreateOrEditEntity(
 		try {
 			// Determine if a new entity is being created
 			const isNew = !currentEntity;
-
+			// sanitize namesection inputs
+			body = sanitizeBody(body);
 			if (isNew) {
 				const newEntity = await new Entity({type: entityType})
 					.save(null, {transacting});
@@ -1273,4 +1332,51 @@ export function compareEntitiesByDate(a, b) {
 	}
 
 	return new Date(aDate).getTime() - new Date(bDate).getTime();
+}
+
+type AuthorT = {
+	value: string,
+	id: number
+};
+
+type AuthorCreditEditorT = {
+	author: AuthorT,
+	joinPhrase: string,
+	name: string
+};
+
+
+export function constructAuthorCredit(
+	authorCreditEditor: Record<string, AuthorCreditEditorT>
+) {
+	return _.map(
+		authorCreditEditor,
+		({author, joinPhrase, name}: AuthorCreditEditorT) =>
+			({authorBBID: author.id, joinPhrase, name})
+	);
+}
+export function displayPreview(req:PassportRequest, res:$Response, next) {
+	const baseUrl = `${req.protocol}://${req.get('host')}`;
+	const originalUrl = `${baseUrl}${req.originalUrl}`;
+	const sourceUrl = req.headers.origin !== 'null' ? req.headers.origin : '<Unknown Source>';
+	if (sourceUrl === baseUrl) {
+		return next();
+	}
+	const finalProps = {baseUrl, formBody: req.body, originalUrl, sourceUrl};
+	const props = generateProps(req, res, {
+		alert: [],
+		...finalProps
+
+	});
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(props)}>
+			<PreviewPage {...propHelpers.extractPreviewProps(props)}/>
+		</Layout>
+	);
+	return res.send(target({
+		markup,
+		props: JSON.stringify(props),
+		script: '/js/preview.js',
+		title: 'Preview'
+	}));
 }

@@ -53,7 +53,7 @@ export function init(app) {
 	const {orm} = app.locals;
 	try {
 		let strategy;
-		// eslint-disable-next-line no-process-env
+		// eslint-disable-next-line node/no-process-env
 		if (process.env.NODE_ENV === 'test') {
 			strategy = new StrategyMock({userId: 123456},
 				async (user, done) => {

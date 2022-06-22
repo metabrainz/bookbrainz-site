@@ -18,6 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
+import AuthorCreditDisplay from '../../author-credit-display';
 import EditionTable from './edition-table';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
@@ -41,13 +42,13 @@ function EditionGroupAttributes({editionGroup}) {
 	return (
 		<div>
 			<Row>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>Sort Name</dt>
 						<dd>{sortNameOfDefaultAlias}</dd>
 					</dl>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
 						<dt>Type</dt>
 						<dd>{type}</dd>
@@ -65,18 +66,38 @@ EditionGroupAttributes.propTypes = {
 
 function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 	const urlPrefix = getEntityUrl(entity);
+
+	let authorCreditSection;
+	if (entity.authorCredit) {
+		authorCreditSection = (
+			<AuthorCreditDisplay
+				names={entity.authorCredit.names}
+			/>
+		);
+	}
+	else if (!entity.deleted) {
+		authorCreditSection = (
+			<div className="alert alert-warning text-center">
+				Author Credit unset; please&nbsp;
+				<a href={`/edition-group/${entity.bbid}/edit`}>edit this Edition Group</a>&nbsp;
+				and add its Author(s) if you see this!
+				You can copy the Author Credit from one of the Editions as well
+			</div>);
+	}
+
 	return (
 		<div>
 			<Row className="entity-display-background">
-				<Col className="entity-display-image-box text-center" md={2}>
+				<Col className="entity-display-image-box text-center" lg={2}>
 					<EntityImage
 						backupIcon={ENTITY_TYPE_ICONS.EditionGroup}
 						deleted={entity.deleted}
 						imageUrl={entity.imageUrl}
 					/>
 				</Col>
-				<Col md={10}>
+				<Col lg={10}>
 					<EntityTitle entity={entity}/>
+					{authorCreditSection}
 					<EditionGroupAttributes editionGroup={entity}/>
 				</Col>
 			</Row>

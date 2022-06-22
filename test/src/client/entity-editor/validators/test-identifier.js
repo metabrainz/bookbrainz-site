@@ -41,14 +41,14 @@ function describeValidateIdentifierValueNoIdentifierTypes() {
 }
 
 function describeValidateIdentifierValueWithIdentifierTypes() {
-	it('should pass a non-empty string value that matches the validation regular expression', () => { // eslint-disable-line max-len
+	it('should pass a non-empty string value that matches the validation regular expression', () => {
 		const result = validateIdentifierValue(
 			'B076KQRJV1', 1, IDENTIFIER_TYPES
 		);
 		expect(result).to.be.true;
 	});
 
-	it('should reject a non-empty string value that doesn\'t match the validation regular expression', () => { // eslint-disable-line max-len
+	it('should reject a non-empty string value that doesn\'t match the validation regular expression', () => {
 		const result = validateIdentifierValue('B076K1', 1, IDENTIFIER_TYPES);
 		expect(result).to.be.false;
 	});
@@ -79,7 +79,7 @@ function describeValidateIdentifierTypeWithIdentifierTypes() {
 		expect(result).to.be.true;
 	});
 
-	it('should reject any positive integer value which isn\'t a type ID', () => { // eslint-disable-line max-len
+	it('should reject any positive integer value which isn\'t a type ID', () => {
 		const result = validateIdentifierType(1000, IDENTIFIER_TYPES);
 		expect(result).to.be.false;
 	});
@@ -159,7 +159,7 @@ function describeValidateIdentifiers() {
 		expect(result).to.be.true;
 	});
 
-	it('should pass an Immutable.Map of valid Immutable.Maps', () => { // eslint-disable-line max-len
+	it('should pass an Immutable.Map of valid Immutable.Maps', () => {
 		const result = validateIdentifiers(
 			Immutable.fromJS(VALID_IDENTIFIERS),
 			IDENTIFIER_TYPES
@@ -177,7 +177,7 @@ function describeValidateIdentifiers() {
 		expect(result).to.be.true;
 	});
 
-	it('should reject an Object containing one invalid Object', () => { // eslint-disable-line max-len
+	it('should reject an Object containing one invalid Object', () => {
 		const result = validateIdentifiers(
 			INVALID_IDENTIFIERS,
 			IDENTIFIER_TYPES
@@ -185,7 +185,7 @@ function describeValidateIdentifiers() {
 		expect(result).to.be.false;
 	});
 
-	it('should reject an Immutable.Map containing one invalid Immutable.Map', () => { // eslint-disable-line max-len
+	it('should reject an Immutable.Map containing one invalid Immutable.Map', () => {
 		const result = validateIdentifiers(
 			Immutable.fromJS(INVALID_IDENTIFIERS),
 			IDENTIFIER_TYPES

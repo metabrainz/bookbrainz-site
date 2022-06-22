@@ -20,15 +20,16 @@
 import * as Immutable from 'immutable';
 import * as React from 'react';
 import {Action, addSeriesItem, editSeriesItem, removeSeriesItem, sortSeriesItems, updateOrderType, updateSeriesType} from './actions';
-import {Col, Row} from 'react-bootstrap';
-import type {Entity, EntityType, RelationshipForDisplay, RelationshipType, Relationship as _Relationship} from '../relationship-editor/types';
-import CustomInput from '../../input';
+import {Col, Form, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
+import type {Entity, EntityType, RelationshipForDisplay, RelationshipType} from '../relationship-editor/types';
 import type {Dispatch} from 'redux';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
 import SeriesEditor from './series-editor';
 import _ from 'lodash';
 import {attachAttribToRelForDisplay} from '../helpers';
 import {connect} from 'react-redux';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {sortRelationshipOrdinal} from '../../../common/helpers/utils';
 
 
@@ -147,10 +148,23 @@ function SeriesSection({
 		label: type.label,
 		value: type.id
 	}));
+	const orderTypeOption = seriesOrderingTypesForDisplay.filter((el) => el.value === orderTypeValue);
+
 	const seriesTypesForDisplay = ['Author', 'Work', 'Edition', 'EditionGroup', 'Publisher'].map((type) => ({
 		label: type,
 		value: type
 	}));
+	const seriesTypeOption = seriesTypesForDisplay.filter((el) => el.value === seriesTypeValue);
+	const orderingTooltip = (
+		<Tooltip>
+		Ordering Type of the Series Entity
+		</Tooltip>
+	);
+	const seriesTypeTooltip = (
+		<Tooltip>
+		Entity Type of the Series
+		</Tooltip>
+	);
 	return (
 		<div>
 			<h2>
@@ -160,33 +174,48 @@ function SeriesSection({
 				All fields are mandatory — select the option from dropdown
 			</p>
 			<Row>
-				<Col md={6} mdOffset={3}>
-					<CustomInput
-						label="Ordering Type"
-						tooltipText="Ordering Type of the Series Entity"
-					>
+				<Col lg={{offset: 3, span: 6}}>
+					<Form.Group>
+						<Form.Label>
+							Ordering Type
+							<OverlayTrigger delay={50} overlay={orderingTooltip}>
+								<FontAwesomeIcon
+									className="margin-left-0-5"
+									icon={faQuestionCircle}
+								/>
+							</OverlayTrigger>
+						</Form.Label>
 						<Select
-							backspaceRemoves={false}
-							clearable={false}
-							deleteRemoves={false}
+							backspaceRemovesValue={false}
+							classNamePrefix="react-select"
 							instanceId="seriesOrderingType"
+							isClearable={false}
 							options={seriesOrderingTypesForDisplay}
-							value={orderTypeValue}
+							value={orderTypeOption}
 							onChange={onOrderTypeChange}
 						/>
-					</CustomInput>
-					<CustomInput label="Series Type" tooltipText="Entity Type of the Series">
+					</Form.Group>
+					<Form.Group>
+						<Form.Label>
+							Series Type
+							<OverlayTrigger delay={50} overlay={seriesTypeTooltip}>
+								<FontAwesomeIcon
+									className="margin-left-0-5"
+									icon={faQuestionCircle}
+								/>
+							</OverlayTrigger>
+						</Form.Label>
 						<Select
-							backspaceRemoves={false}
-							clearable={false}
-							deleteRemoves={false}
-							disabled={Boolean(seriesItemsArray.length)}
+							backspaceRemovesValue={false}
+							classNamePrefix="react-select"
 							instanceId="SeriesType"
+							isClearable={false}
+							isDisabled={Boolean(seriesItemsArray.length)}
 							options={seriesTypesForDisplay}
-							value={seriesTypeValue}
+							value={seriesTypeOption}
 							onChange={onSeriesTypeChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
 			</Row>
 			<SeriesEditor

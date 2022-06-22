@@ -17,14 +17,16 @@
  */
 
 import * as React from 'react';
+import AuthorCreditSection from '../author-credit-editor/author-credit-section';
 import {Action, updateType} from './actions';
-import {Col, Row} from 'react-bootstrap';
+import {Col, Form, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 
-import CustomInput from '../../input';
 import type {Dispatch} from 'redux';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import type {Map} from 'immutable';
 import Select from 'react-select';
 import {connect} from 'react-redux';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 
 type EditionGroupType = {
@@ -70,29 +72,39 @@ function EditionGroupSection({
 		label: type.label,
 		value: type.id
 	}));
+	const typeOption = editionGroupTypesForDisplay.filter((el) => el.value === typeValue);
+	const tooltip = <Tooltip>Physical format of the Edition Group</Tooltip>;
 
 	return (
 		<div>
 			<h2>
 				What else do you know about the Edition Group?
 			</h2>
+			<AuthorCreditSection/>
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
 				know it
 			</p>
 			<Row>
-				<Col md={6} mdOffset={3}>
-					<CustomInput
-						label="Type"
-						tooltipText="Physical format of the Edition Group"
-					>
+				<Col lg={{offset: 3, span: 6}}>
+					<Form.Group>
+						<Form.Label>
+							Type
+							<OverlayTrigger delay={50} overlay={tooltip}>
+								<FontAwesomeIcon
+									className="margin-left-0-5"
+									icon={faQuestionCircle}
+								/>
+							</OverlayTrigger>
+						</Form.Label>
 						<Select
+							classNamePrefix="react-select"
 							instanceId="editionGroupType"
 							options={editionGroupTypesForDisplay}
-							value={typeValue}
+							value={typeOption}
 							onChange={onTypeChange}
 						/>
-					</CustomInput>
+					</Form.Group>
 				</Col>
 			</Row>
 		</div>

@@ -22,9 +22,11 @@ import {
 	EMPTY_SUBMISSION_SECTION,
 	IDENTIFIER_TYPES,
 	INVALID_ALIASES,
+	INVALID_AUTHOR_CREDIT_EDITOR,
 	INVALID_IDENTIFIERS,
 	INVALID_NAME_SECTION,
 	VALID_ALIASES,
+	VALID_AUTHOR_CREDIT_EDITOR,
 	VALID_IDENTIFIERS,
 	VALID_NAME_SECTION,
 	VALID_SUBMISSION_SECTION
@@ -166,7 +168,7 @@ function describeValidateEditionSectionLanguages() {
 		expect(result).to.be.false;
 	});
 
-	it('should reject an Immutable.List containing one invalid Immutable.Map', () => { // eslint-disable-line max-len
+	it('should reject an Immutable.List containing one invalid Immutable.Map', () => {
 		const result = validateEditionSectionLanguages(
 			Immutable.fromJS(INVALID_LANGUAGES)
 		);
@@ -184,10 +186,23 @@ function describeValidateEditionSectionLanguages() {
 	});
 }
 
+const VALID_PUBLISHERS = {0: {
+	id: '21675f5b-e9f8-4a6b-9aac-d3c965aa7d83'
+},
+1: {
+	id: '21675f5b-e9f8-4a6b-9aac-d3c965aa7d84'
+}};
+
+const INVALID_PUBLISHERS = {0: {
+	id: '21675f5b-e9f8-4a6b-9aac-d3c965aa7d83'
+},
+1: {
+	id: '2'
+}};
+
 const VALID_ENTITY = {
 	id: '21675f5b-e9f8-4a6b-9aac-d3c965aa7d83'
 };
-
 const INVALID_ENTITY = {
 	id: '2'
 };
@@ -232,20 +247,20 @@ function describevalidateEditionSectionEditionGroup() {
 
 function describeValidateEditionSectionPublisher() {
 	it('should pass a valid Object', () => {
-		const result = validateEditionSectionPublisher(VALID_ENTITY);
+		const result = validateEditionSectionPublisher(VALID_PUBLISHERS);
 		expect(result).to.be.true;
 	});
 
 	it('should pass a valid Immutable.Map', () => {
 		const result = validateEditionSectionPublisher(
-			Immutable.fromJS(VALID_ENTITY)
+			Immutable.fromJS(VALID_PUBLISHERS)
 		);
 		expect(result).to.be.true;
 	});
 
 	it('should reject an Object with an invalid ID', () => {
 		const result = validateEditionSectionPublisher(
-			{...VALID_ENTITY, id: '2'}
+			{INVALID_PUBLISHERS}
 		);
 		expect(result).to.be.false;
 	});
@@ -275,7 +290,7 @@ const VALID_EDITION_SECTION = {
 	height: 24,
 	languages: VALID_LANGUAGES,
 	pages: 25,
-	publisher: VALID_ENTITY,
+	publisher: VALID_PUBLISHERS,
 	releaseDate: {day: '22', month: '12', year: '2017'},
 	status: 2,
 	weight: 23,
@@ -406,6 +421,7 @@ function describeValidateEditionSection() {
 function describeValidateForm() {
 	const validForm = {
 		aliasEditor: VALID_ALIASES,
+		authorCreditEditor: VALID_AUTHOR_CREDIT_EDITOR,
 		editionSection: VALID_EDITION_SECTION,
 		identifierEditor: VALID_IDENTIFIERS,
 		nameSection: VALID_NAME_SECTION,
@@ -434,6 +450,28 @@ function describeValidateForm() {
 			IDENTIFIER_TYPES
 		);
 		expect(result).to.be.false;
+	});
+
+	it('should reject an Object with an invalid author credit editor', () => {
+		const result = validateForm(
+			{
+				...validForm,
+				authorCreditEditor: INVALID_AUTHOR_CREDIT_EDITOR
+			},
+			IDENTIFIER_TYPES
+		);
+		expect(result).to.be.false;
+	});
+
+	it('should reject an Object with an empty author credit editor', () => {
+		const result = validateForm(
+			{
+				...validForm,
+				authorCreditEditor: {}
+			},
+			IDENTIFIER_TYPES
+		);
+		expect(result).to.be.true;
 	});
 
 	it('should reject an Object with an invalid identifier editor', () => {

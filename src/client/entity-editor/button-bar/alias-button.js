@@ -51,7 +51,7 @@ function AliasButton({
 		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes}/>;
 
 	return (
-		<Button bsStyle="link" {...props}>
+		<Button variant="link" {...props}>
 			{iconElement}
 			{text}
 		</Button>

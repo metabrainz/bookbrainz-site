@@ -24,8 +24,8 @@ import {
 } from './actions';
 import type {List, Map} from 'immutable';
 
-import CustomInput from '../../input';
 import type {Dispatch} from 'redux';
+import {Form} from 'react-bootstrap';
 import MergeField from '../common/merge-field';
 import Select from 'react-select';
 import {find as _find} from 'lodash';
@@ -34,6 +34,7 @@ import {convertMapToObject} from '../../helpers/utils';
 
 
 type LanguageOption = {
+	frequency: number,
 	name: string,
 	id: number
 };
@@ -90,14 +91,16 @@ function WorkSectionMerge({
 				options={typeOptions}
 				onChange={onTypeChange}
 			/>
-			<CustomInput label="Languages">
+			<Form.Group>
+				<Form.Label>Languages</Form.Label>
 				<Select
-					disabled
-					multi
+					isDisabled
+					isMulti
+					classNamePrefix="react-select"
 					instanceId="languages"
 					value={languageValues}
 				/>
-			</CustomInput>
+			</Form.Group>
 		</div>
 	);
 }

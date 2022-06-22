@@ -22,9 +22,8 @@ import * as React from 'react';
 import {
 	Button,
 	Col,
-	ControlLabel,
-	FormGroup,
-	HelpBlock,
+	Container,
+	Form,
 	Modal,
 	ProgressBar,
 	Row
@@ -44,9 +43,9 @@ import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {NumberAttribute} from './attributes';
 import ReactSelect from 'react-select';
-import Relationship from './relationship';
+import RelationshipSelect from './relationship-select';
 import _ from 'lodash';
-import {getEntityLink} from '../../../server/helpers/utils';
+import {getEntityLink} from '../../../common/helpers/utils';
 
 
 function isValidRelationship(relationship: _Relationship) {
@@ -344,12 +343,12 @@ class RelationshipModal
 		const link = targetEntity ? getEntityLink({bbid: targetEntity.id, type: targetEntity.type}) : '';
 		const openButton = (
 			<Button
-				bsStyle="info"
 				disabled={!targetEntity}
 				href={link}
 				rel="noreferrer noopener"
 				target="_blank"
 				title="Open in a new tab"
+				variant="info"
 			>
 				<FontAwesomeIcon icon={faExternalLinkAlt}/>
 			</Button>
@@ -365,6 +364,7 @@ class RelationshipModal
 				bbid={bbid}
 				buttonAfter={openButton}
 				cache={false}
+				className="Select"
 				filters={additionalFilters}
 				instanceId="relationshipEntitySearchField"
 				label={label}
@@ -375,6 +375,10 @@ class RelationshipModal
 				onChange={this.handleEntityChange}
 			/>
 		);
+	}
+
+	getOptionValue(option) {
+		return option.selectedId;
 	}
 
 	renderRelationshipSelect() {
@@ -389,7 +393,7 @@ class RelationshipModal
 			type: _.get(this.state, ['targetEntity', 'type'])
 		};
 
-		const relationships = generateRelationshipSelection(
+		const relationships:_Relationship[] = generateRelationshipSelection(
 			relationshipTypes, baseEntity, otherEntity
 		);
 		if (baseEntity.type === 'Series') {
@@ -407,20 +411,22 @@ class RelationshipModal
 			attributes = attributeTypes.map(attribute => attribute.name);
 		}
 		return (
-			<FormGroup>
-				<ControlLabel>Relationship</ControlLabel>
+			<Form.Group>
+				<Form.Label>Relationship</Form.Label>
 				<ReactSelect
-					disabled={!this.state.targetEntity}
+					classNamePrefix="react-select"
+					components={{Option: RelationshipSelect, SingleValue: RelationshipSelect}}
+					getOptionValue={this.getOptionValue}
+					isDisabled={!this.state.targetEntity}
 					name="relationshipType"
-					optionRenderer={Relationship}
 					options={relationships}
 					value={this.state.relationship}
-					valueKey="selectId"
-					valueRenderer={Relationship}
 					onChange={this.handleRelationshipTypeChange}
 				/>
 				{this.state.relationshipType &&
-					<HelpBlock>{this.state.relationshipType.description}</HelpBlock>
+					<Form.Text muted>
+						{this.state.relationshipType.description}
+					</Form.Text>
 				}
 				{
 					attributes.includes('number') ?
@@ -430,7 +436,7 @@ class RelationshipModal
 						/> :
 						null
 				}
-			</FormGroup>
+			</Form.Group>
 		);
 	}
 
@@ -444,7 +450,7 @@ class RelationshipModal
 		// display a helpful message instead of empty selects
 		if (entitySelect === null) {
 			return (
-				<Modal show bsSize="large" onHide={onClose}>
+				<Modal show size="lg" onHide={onClose}>
 					<Modal.Header>
 						<Modal.Title>Add a relationship</Modal.Title>
 					</Modal.Header>
@@ -456,14 +462,14 @@ class RelationshipModal
 						</p>
 					</Modal.Body>
 					<Modal.Footer>
-						<Button bsStyle="danger" onClick={onCancel}>Cancel</Button>
+						<Button variant="danger" onClick={onCancel}>Cancel</Button>
 					</Modal.Footer>
 				</Modal>
 			);
 		}
 
 		return (
-			<Modal show bsSize="large" onHide={onClose} onKeyUp={this.handleKeyPress}>
+			<Modal show size="lg" onHide={onClose} onKeyUp={this.handleKeyPress}>
 				<Modal.Header>
 					<Modal.Title>Add a relationship</Modal.Title>
 				</Modal.Header>
@@ -480,7 +486,7 @@ class RelationshipModal
 					</p>
 					<hr/>
 					<Row>
-						<Col md={10} mdOffset={1}>
+						<Col lg={{offset: 1, span: 10}}>
 							<div>
 								<div>
 									{entitySelect}
@@ -493,21 +499,23 @@ class RelationshipModal
 					</Row>
 				</Modal.Body>
 				<Modal.Footer>
-					<Row>
-						<Col md={10} mdOffset={1}>
-							<ProgressBar
-								bsStyle="success"
-								now={this.calculateProgressAmount()}
-							/>
-						</Col>
-					</Row>
-					<Button bsStyle="danger" onClick={onCancel}>
+					<Container fluid>
+						<Row>
+							<Col lg={{offset: 1, span: 10}}>
+								<ProgressBar
+									now={this.calculateProgressAmount()}
+									variant="success"
+								/>
+							</Col>
+						</Row>
+					</Container>
+					<Button variant="danger" onClick={onCancel}>
 						<FontAwesomeIcon icon={faTimes}/>
 						<span>&nbsp;Cancel</span>
 					</Button>
 					<Button
-						bsStyle="success"
 						disabled={submitDisabled}
+						variant="success"
 						onClick={this.handleAdd}
 					>
 						<FontAwesomeIcon icon={faPlus}/>

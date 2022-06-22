@@ -17,7 +17,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint global-require: 0, no-process-env: 0 */
+/* eslint-disable node/no-process-env */
 
 import * as auth from './helpers/auth';
 import * as error from '../common/helpers/error';
@@ -30,6 +30,8 @@ import {get as _get} from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
 import compression from 'compression';
 import config from '../common/helpers/config';
+import {createClient} from 'redis';
+import {decodeUrlQueryParams} from './helpers/middleware';
 import express from 'express';
 import favicon from 'serve-favicon';
 import initInflux from './influx';
@@ -65,6 +67,7 @@ app.use(express.urlencoded({
 	extended: false
 }));
 app.use(compression());
+app.use(decodeUrlQueryParams);
 
 // Set up serving of static assets
 if (process.env.NODE_ENV === 'development') {
@@ -97,10 +100,14 @@ const sessionOptions = {
 	secret: config.session.secret
 };
 if (process.env.NODE_ENV !== 'test') {
-	const RedisStore = redis(session);
-	sessionOptions.store = new RedisStore({
+	const redisClient = createClient({
 		host: _get(config, 'session.redis.host', 'localhost'),
 		port: _get(config, 'session.redis.port', 6379)
+	});
+
+	const RedisStore = redis(session);
+	sessionOptions.store = new RedisStore({
+		client: redisClient
 	});
 }
 app.use(session(sessionOptions));
@@ -130,7 +137,7 @@ if (existsSync(gitRevisionFilePath)) {
 }
 debug(`Git revision: ${siteRevision}`);
 
-const repositoryUrl = 'https://github.com/bookbrainz/bookbrainz-site/';
+const repositoryUrl = 'https://github.com/metabrainz/bookbrainz-site/';
 
 app.use((req, res, next) => {
 	// Set up globally-used properties
@@ -163,19 +170,19 @@ app.use((req, res, next) => {
 });
 
 // Error handler; arity MUST be 4 or express doesn't treat it as such
-app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err, req, res, next) => {
 	serverErrorHelper.renderError(req, res, err);
 });
 
 
 const DEFAULT_PORT = 9099;
-app.set('port', process.env.PORT || DEFAULT_PORT); // eslint-disable-line no-process-env,max-len
+app.set('port', process.env.PORT || DEFAULT_PORT); // eslint-disable-line no-process-env
 
 const server = app.listen(app.get('port'), () => {
 	debug(`Express server listening on port ${server.address().port}`);
 });
 
-/* eslint-disable no-console */
 function cleanupFunction() {
 	return new Promise((resolve, reject) => {
 		debug('Cleaning up before closing');
@@ -197,7 +204,6 @@ function cleanupFunction() {
 		}
 	});
 }
-/* eslint-enable no-console */
 
 // Run cleanup function
 if (process.env.NODE_ENV !== 'test') {

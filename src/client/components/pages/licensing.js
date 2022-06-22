@@ -21,7 +21,7 @@ import * as bootstrap from 'react-bootstrap';
 import React from 'react';
 
 
-const {PageHeader} = bootstrap;
+const {Col, Row} = bootstrap;
 
 function LicensingPage() {
 	const CC0Link = 'http://creativecommons.org/publicdomain/zero/1.0/';
@@ -33,7 +33,9 @@ function LicensingPage() {
 
 	return (
 		<div>
-			<PageHeader>Licensing</PageHeader>
+			<div className="page-header">
+				<h1>Licensing</h1>
+			</div>
 
 			<p>The BookBrainz core data is licensed under the&nbsp;
 				<a href={CC0Link}>
@@ -81,8 +83,8 @@ function LicensingPage() {
 				Please see the links below for more details about CC0 and CC BY-SA.
 			</p>
 
-			<div className="row margin-top-2">
-				<div className="col-md-4 col-md-offset-2 text-center">
+			<Row className="margin-top-2">
+				<Col className="text-center" lg={{offset: 2, span: 4}}>
 					<a
 						href={CC0Link}
 						rel="license"
@@ -95,8 +97,8 @@ function LicensingPage() {
 						</div>
 						CC0
 					</a>
-				</div>
-				<div className="col-md-4 text-center">
+				</Col>
+				<Col className="text-center" lg={4}>
 					<a
 						href={CCBYSALink}
 						rel="license"
@@ -109,8 +111,8 @@ function LicensingPage() {
 						</div>
 						CC BY-SA
 					</a>
-				</div>
-			</div>
+				</Col>
+			</Row>
 		</div>
 	);
 }

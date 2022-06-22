@@ -16,16 +16,52 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as bootstrap from 'react-bootstrap';
 import DragAndDropImage from '../../input/drag-and-drop-image';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 
+const {Card, Col, Container, Row} = bootstrap;
+const maxAchievementProgress = {
+	1: 1,
+	2: 50,
+	3: 250,
+	4: 1,
+	5: 10,
+	6: 100,
+	7: 1,
+	8: 10,
+	9: 100,
+	// eslint-disable-next-line sort-keys
+	10: 10,
+	11: 7,
+	12: 30,
+	13: 1,
+	14: 1,
+	15: 1,
+	16: 10,
+	17: 100,
+	18: 1,
+	19: 10,
+	20: 100,
+	21: 1,
+	22: 10,
+	23: 100,
+	24: 10,
+	25: 100,
+	26: 1000,
+	27: 1,
+	28: 1,
+	29: 10,
+	30: 100
+};
 class Achievement extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			achievement: props.achievement,
+			counter: props.counter,
 			unlocked: props.unlocked
 		};
 	}
@@ -54,17 +90,28 @@ class Achievement extends React.Component {
 			);
 		}
 		return (
-			<div className="row well">
-				<div className="col-sm-2">
-					{imgElement}
-				</div>
-				<div className="col-sm-8">
-					<div className="h2">
-						{this.state.achievement.name}
-					</div>
-					<p>{this.state.achievement.description}</p>
-				</div>
-			</div>
+			<Card bg="light">
+				<Container fluid>
+					<Row>
+						<Col md={2}>
+							{imgElement}
+						</Col>
+						<Col md={8}>
+							<div className="h2">
+								{this.state.achievement.name}
+							</div>
+							<p>{this.state.achievement.description}</p>
+						</Col>
+						{!this.state.unlocked &&
+						<Col>
+							<div className="h3">
+								{this.state.counter}/{maxAchievementProgress[this.state.achievement.id] ?? 0}
+							</div>
+						</Col>
+						}
+					</Row>
+				</Container>
+			</Card>
 		);
 	}
 }
@@ -77,9 +124,11 @@ Achievement.propTypes = {
 		description: PropTypes.string,
 		name: PropTypes.string
 	}).isRequired,
+	counter: PropTypes.number,
 	unlocked: PropTypes.bool
 };
 Achievement.defaultProps = {
+	counter: 0,
 	unlocked: false
 };
 

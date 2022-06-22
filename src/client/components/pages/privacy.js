@@ -16,11 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
 import React from 'react';
 
-
-const {PageHeader} = bootstrap;
 
 /**
  * Renders a page containing a link to the current MusicBrainz privacy
@@ -31,7 +28,9 @@ const {PageHeader} = bootstrap;
 function PrivacyPage() {
 	return (
 		<div>
-			<PageHeader>Privacy</PageHeader>
+			<div className="page-header">
+				<h1>Privacy</h1>
+			</div>
 			<p>
 				For a privacy policy, please see&nbsp;
 				<a href="http://musicbrainz.org/doc/About/Privacy_Policy">

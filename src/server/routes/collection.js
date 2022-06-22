@@ -17,29 +17,29 @@
  */
 /* eslint-disable consistent-return*/
 
-
 import * as auth from '../helpers/auth';
 import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
-import * as utils from '../helpers/utils';
 import {escapeProps, generateProps} from '../helpers/props';
 import CollectionPage from '../../client/components/pages/collection';
 import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import UserCollectionForm from '../../client/components/forms/userCollection';
+import {addAuthorsDataToWorks} from '../../client/helpers/entity';
 import {collectionCreateOrEditHandler} from '../helpers/collectionRouteUtils';
 import express from 'express';
 import {getCollectionItems} from '../helpers/collections';
+import {getNextEnabledAndResultsArray} from '../../common/helpers/utils';
+import {groupBy} from 'lodash';
 import log from 'log';
 import target from '../templates/target';
 
 
 const router = express.Router();
-
 
 function getEntityRelations(entityType) {
 	const authorRelations = [
@@ -128,17 +128,22 @@ router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, 
 		// fetch 1 more bbid to check next enabled for pagination
 		const items = await getCollectionItems(collection.id, from, size + 1, orm);
 		// get next enabled for pagination
-		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(items, size);
+		const {newResultsArray, nextEnabled} = getNextEnabledAndResultsArray(items, size);
 		// load entities from bbids
 		const entitiesPromise = newResultsArray.map(async item => ({
 			addedAt: item.added_at,
 			...await orm.func.entity.getEntity(orm, collection.entityType, item.bbid, relations)
 		}));
-		const entities = await Promise.all(entitiesPromise);
+		let entities = await Promise.all(entitiesPromise);
 		const isOwner = req.user && parseInt(collection.ownerId, 10) === parseInt(req.user?.id, 10);
 		const isCollaborator = req.user && collection.collaborators.filter(collaborator => collaborator.id === req.user.id).length;
 		const userId = req.user ? parseInt(req.user.id, 10) : null;
-
+		if (collection.entityType === 'Work') {
+			const workBBIDs = entities.map(entity => entity.bbid);
+			const authorsData = await orm.func.work.loadAuthorNames(orm, workBBIDs);
+			const authorsDataGroupedByWorkBBID = groupBy(authorsData, 'workbbid');
+			entities = addAuthorsDataToWorks(authorsDataGroupedByWorkBBID, entities);
+		}
 		const props = generateProps(req, res, {
 			collection,
 			entities,
@@ -214,7 +219,10 @@ router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, 
 	}));
 });
 
-router.post('/:collectionId/edit/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, middleware.validateCollectionParams, collectionCreateOrEditHandler);
+router.post(
+	'/:collectionId/edit/handler',
+	auth.isAuthenticatedForHandler, auth.isCollectionOwner, middleware.validateCollectionParams, collectionCreateOrEditHandler
+);
 
 router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, auth.isCollectionOwner, async (req, res, next) => {
 	try {
@@ -242,93 +250,105 @@ router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, aut
 	}
 });
 
-router.post('/:collectionId/remove', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, middleware.validateBBIDsForCollectionRemove, async (req, res, next) => {
-	const {bbids = []} = req.body;
-	const {collection} = res.locals;
-	try {
-		const {UserCollection, UserCollectionItem} = req.app.locals.orm;
-		await new UserCollectionItem()
-			.query((qb) => {
-				qb.where('collection_id', collection.id);
-				qb.whereIn('bbid', bbids);
-			}).destroy();
-		await new UserCollection({id: collection.id}).save({
-			lastModified: new Date()
-		}, {patch: true});
-		res.status(200).send();
+router.post(
+	'/:collectionId/remove',
+	auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, middleware.validateBBIDsForCollectionRemove,
+	async (req, res, next) => {
+		const {bbids = []} = req.body;
+		const {collection} = res.locals;
+		try {
+			const {UserCollection, UserCollectionItem} = req.app.locals.orm;
+			await new UserCollectionItem()
+				.query((qb) => {
+					qb.where('collection_id', collection.id);
+					qb.whereIn('bbid', bbids);
+				}).destroy();
+			await new UserCollection({id: collection.id}).save({
+				lastModified: new Date()
+			}, {patch: true});
+			res.status(200).send();
+		}
+		catch (err) {
+			log.debug(err);
+			return next(err);
+		}
 	}
-	catch (err) {
-		log.debug(err);
-		return next(err);
-	}
-});
+);
 
 /* eslint-disable no-await-in-loop */
-router.post('/:collectionId/add', auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, middleware.validateBBIDsForCollectionAdd, async (req, res, next) => {
-	const {bbids} = req.body;
-	const {collection} = res.locals;
-	try {
-		const {UserCollection, UserCollectionItem} = req.app.locals.orm;
-		for (const bbid of bbids) {
-			// because of the unique constraint, we can't add duplicate entities to a collection
-			// using try catch to make sure code doesn't break if user accidentally adds duplicate entity
-			try {
-				await new UserCollectionItem({
-					bbid,
-					collectionId: collection.id
-				}).save(null, {method: 'insert'});
-				await new UserCollection({id: collection.id}).save({
-					lastModified: new Date()
-				}, {patch: true});
-			}
-			catch (err) {
-				// throw error if it's not due to unique constraint
-				if (err.constraint !== 'user_collection_item_pkey') {
-					throw err;
+router.post(
+	'/:collectionId/add',
+	auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, middleware.validateBBIDsForCollectionAdd,
+	async (req, res, next) => {
+		const {bbids} = req.body;
+		const {collection} = res.locals;
+		try {
+			const {UserCollection, UserCollectionItem} = req.app.locals.orm;
+			for (const bbid of bbids) {
+				// because of the unique constraint, we can't add duplicate entities to a collection
+				// using try catch to make sure code doesn't break if user accidentally adds duplicate entity
+				try {
+					await new UserCollectionItem({
+						bbid,
+						collectionId: collection.id
+					}).save(null, {method: 'insert'});
+					await new UserCollection({id: collection.id}).save({
+						lastModified: new Date()
+					}, {patch: true});
+				}
+				catch (err) {
+					// throw error if it's not due to unique constraint
+					if (err.constraint !== 'user_collection_item_pkey') {
+						throw err;
+					}
 				}
 			}
+			res.status(200).send();
 		}
-		res.status(200).send();
+		catch (err) {
+			log.debug(err);
+			return next(err);
+		}
 	}
-	catch (err) {
-		log.debug(err);
-		return next(err);
-	}
-});
+);
 
-router.post('/:collectionId/collaborator/remove', auth.isAuthenticated, middleware.validateCollaboratorIdsForCollectionRemove, async (req, res, next) => {
-	try {
-		const {collection} = res.locals;
-		const collaboratorIdsToRemove = req.body.collaboratorIds;
-		const userId = parseInt(req.user.id, 10);
-		// user is allowed to make this change if they are owner of the collection OR they are collaborator and they want to remove themselves
-		let isAllowedToEdit = userId === collection.ownerId;
-		if (!isAllowedToEdit) {
-			if (collaboratorIdsToRemove.length === 1 && parseInt(collaboratorIdsToRemove[0], 10) === userId) {
-				isAllowedToEdit = true;
+router.post(
+	'/:collectionId/collaborator/remove',
+	auth.isAuthenticated, middleware.validateCollaboratorIdsForCollectionRemove,
+	async (req, res, next) => {
+		try {
+			const {collection} = res.locals;
+			const collaboratorIdsToRemove = req.body.collaboratorIds;
+			const userId = parseInt(req.user.id, 10);
+			// user is allowed to make this change if they are owner of the collection OR they are collaborator and they want to remove themselves
+			let isAllowedToEdit = userId === collection.ownerId;
+			if (!isAllowedToEdit) {
+				if (collaboratorIdsToRemove.length === 1 && parseInt(collaboratorIdsToRemove[0], 10) === userId) {
+					isAllowedToEdit = true;
+				}
 			}
-		}
-		if (!isAllowedToEdit) {
-			return next(new error.PermissionDeniedError(
-				'You do not have permission to remove collaborators from this collection', req
-			));
-		}
+			if (!isAllowedToEdit) {
+				return next(new error.PermissionDeniedError(
+					'You do not have permission to remove collaborators from this collection', req
+				));
+			}
 
-		const {UserCollection, UserCollectionCollaborator} = req.app.locals.orm;
-		await new UserCollectionCollaborator()
-			.query((qb) => {
-				qb.where('collection_id', collection.id);
-				qb.whereIn('collaborator_id', collaboratorIdsToRemove);
-			}).destroy();
-		await new UserCollection({id: collection.id}).save({
-			lastModified: new Date()
-		}, {patch: true});
-		res.status(200).send();
+			const {UserCollection, UserCollectionCollaborator} = req.app.locals.orm;
+			await new UserCollectionCollaborator()
+				.query((qb) => {
+					qb.where('collection_id', collection.id);
+					qb.whereIn('collaborator_id', collaboratorIdsToRemove);
+				}).destroy();
+			await new UserCollection({id: collection.id}).save({
+				lastModified: new Date()
+			}, {patch: true});
+			res.status(200).send();
+		}
+		catch (err) {
+			log.debug(err);
+			return next(err);
+		}
 	}
-	catch (err) {
-		log.debug(err);
-		return next(err);
-	}
-});
+);
 
 export default router;

@@ -25,7 +25,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Row} = bootstrap;
+const {Button, CardDeck, Col, Form, Row} = bootstrap;
 const {Sticky, StickyContainer} = ReactSticky;
 
 /**
@@ -58,6 +58,7 @@ class EditorAchievementTab extends React.Component {
 			const achievementHTML = (
 				<Achievement
 					achievement={achievement}
+					counter={achievement.counter}
 					key={`${this.state.editor.id}${achievement.id}`}
 					unlocked={achievement.unlocked}
 				/>
@@ -84,32 +85,32 @@ class EditorAchievementTab extends React.Component {
 		let rankUpdate;
 		if (this.props.isOwner) {
 			rankUpdate = (
-				<form
-					className="form-horizontal padding-bottom-1"
+				<Form
+					className="padding-bottom-1"
 					id="rankSelectForm"
 					method="post"
 				>
-					<div className="dnd-container">
+					<CardDeck className="mb-3">
 						<DragAndDrop name="rank1"/>
 						<DragAndDrop name="rank2"/>
 						<DragAndDrop name="rank3"/>
-					</div>
+					</CardDeck>
 					<span className="margin-left-1">
-						<button className="btn btn-success" type="submit">
+						<Button type="submit" variant="success">
 							Update
-						</button>
+						</Button>
 						<span className="margin-left-1">
 							click badge to unset
 						</span>
 					</span>
-				</form>
+				</Form>
 			);
 		}
 
 		const STICKY_TOP_MARGIN = 64;
 		return (
 			<Row>
-				<div className="col-md-10-offset-1">
+				<Col lg={{offset: 1, span: 10}}>
 					<div id="achievementsForm">
 						<StickyContainer>
 							<Sticky topOffset={-80}>
@@ -131,7 +132,7 @@ class EditorAchievementTab extends React.Component {
 									}
 								}
 							</Sticky>
-							<div className="margin-left-2 margin-right-2" style={{zIndex: 1}}>
+							<div style={{zIndex: 1}}>
 								<div className="h1">Unlocked Achievements</div>
 								{achievements}
 								<div className="h1">Locked Achievements</div>
@@ -139,7 +140,7 @@ class EditorAchievementTab extends React.Component {
 							</div>
 						</StickyContainer>
 					</div>
-				</div>
+				</Col>
 			</Row>
 		);
 	}

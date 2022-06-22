@@ -1,7 +1,6 @@
 /* eslint-disable import/unambiguous, import/no-commonjs, no-magic-numbers */
 /* eslint-disable no-inline-comments */
 
-
 const options = {
 	env: {
 		es6: true,
@@ -531,7 +530,8 @@ const es6ImportRules = {
 				'**/data/**',
 				'**/config/**',
 				'**/test/**',
-				'react-dom/server'
+				'react-dom/server',
+				'**/react-select/*'
 			]
 		}
 	],

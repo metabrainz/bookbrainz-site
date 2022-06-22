@@ -16,10 +16,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+
 import * as React from 'react';
-import CustomInput from '../../input';
+import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ValidationLabel from './validation-label';
 import VirtualizedSelect from 'react-virtualized-select';
+import {convertMapToObject} from '../../helpers/utils';
+import createFilterOptions from 'react-select-fast-filter-options';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import {isNumber} from 'lodash';
 
 
 type Props = {
@@ -52,10 +58,35 @@ function LanguageField({
 		<ValidationLabel empty={empty} error={error}>Language</ValidationLabel>
 	;
 
+	const tooltip = <Tooltip>{tooltipText}</Tooltip>;
+	rest.options = convertMapToObject(rest.options);
+	const filterOptions = createFilterOptions({
+		options: rest.options
+	});
+	const sortFilterOptions = (opts, input, selectOptions) => {
+		const newOptions = filterOptions(opts, input, selectOptions);
+		const sortLang = (a, b) => {
+			if (isNumber(a.frequency) && isNumber(b.frequency) && a.frequency !== b.frequency) {
+				return b.frequency - a.frequency;
+			}
+			return a.label.localeCompare(b.label);
+		};
+		newOptions.sort(sortLang);
+		return newOptions;
+	};
 	return (
-		<CustomInput label={label} tooltipText={tooltipText}>
-			<VirtualizedSelect {...rest}/>
-		</CustomInput>
+		<Form.Group>
+			<Form.Label>
+				{label}
+				<OverlayTrigger delay={50} overlay={tooltip}>
+					<FontAwesomeIcon
+						className="margin-left-0-5"
+						icon={faQuestionCircle}
+					/>
+				</OverlayTrigger>
+			</Form.Label>
+			<VirtualizedSelect filterOptions={sortFilterOptions} {...rest}/>
+		</Form.Group>
 	);
 }
 LanguageField.displayName = 'LanguageField';
@@ -65,4 +96,7 @@ LanguageField.defaultProps = {
 	tooltipText: null
 };
 
-export default LanguageField;
+function areEqual(prevProps, nextProps) {
+	return JSON.stringify(prevProps) === JSON.stringify(nextProps);
+}
+export default React.memo(LanguageField, areEqual);

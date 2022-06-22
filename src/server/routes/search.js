@@ -23,7 +23,6 @@ import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
-import * as utils from '../helpers/utils';
 
 import {keys as _keys, snakeCase as _snakeCase, isNil} from 'lodash';
 import {escapeProps, generateProps} from '../helpers/props';
@@ -42,49 +41,58 @@ const router = express.Router();
  * Generates React markup for the search page that is rendered by the user's
  * browser.
  */
-router.get('/', (req, res, next) => {
+router.get('/', async (req, res, next) => {
 	const {orm} = req.app.locals;
-	const query = req.query.q;
+	const query = req.query.q ?? '';
 	const type = req.query.type || 'allEntities';
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
-	// get 1 more results to check nextEnabled
-	search.searchByName(orm, query, _snakeCase(type), size + 1, from)
-		.then((entities) => ({
-			initialResults: entities.filter(entity => !isNil(entity)),
+	try {
+		let searchResults = {
+			initialResults: [],
 			query
-		}))
-		.then((searchResults) => {
-			const entityTypes = _keys(commonUtils.getEntityModels(orm));
-			const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(searchResults.initialResults, size);
-			searchResults.initialResults = newResultsArray;
+		};
+		if (query) {
+			// get 1 more results to check nextEnabled
+			const entities = await search.searchByName(orm, query, _snakeCase(type), size + 1, from);
+			searchResults = {
+				initialResults: entities.filter(entity => !isNil(entity)),
+				query
+			};
+		}
 
-			const props = generateProps(req, res, {
-				entityTypes,
-				from,
-				hideSearch: true,
-				nextEnabled,
-				resultsPerPage: size,
-				...searchResults,
-				type: req.query.type
-			});
-			const markup = ReactDOMServer.renderToString(
-				<Layout {...propHelpers.extractLayoutProps(props)}>
-					<SearchPage
-						user={props.user}
-						{...propHelpers.extractChildProps(props)}
-					/>
-				</Layout>
-			);
+		const entityTypes = _keys(commonUtils.getEntityModels(orm));
+		const {newResultsArray, nextEnabled} = commonUtils.getNextEnabledAndResultsArray(searchResults.initialResults, size);
+		searchResults.initialResults = newResultsArray;
 
-			res.send(target({
-				markup,
-				props: escapeProps(props),
-				script: '/js/search.js',
-				title: 'Search Results'
-			}));
-		})
-		.catch(next);
+		const props = generateProps(req, res, {
+			entityTypes,
+			from,
+			hideSearch: true,
+			nextEnabled,
+			resultsPerPage: size,
+			...searchResults,
+			type: req.query.type
+		});
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<SearchPage
+					user={props.user}
+					{...propHelpers.extractChildProps(props)}
+				/>
+			</Layout>
+		);
+
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/search.js',
+			title: 'Search Results'
+		}));
+	}
+	catch (err) {
+		return next(err);
+	}
 });
 
 router.get('/search', (req, res) => {
@@ -148,6 +156,16 @@ router.get('/reindex', auth.isAuthenticated, (req, res) => {
 		.then(() => ({success: true}));
 
 	handler.sendPromiseResult(res, indexPromise);
+});
+
+router.get('/entity/:bbid', async (req, res) => {
+	const {orm} = res.app.locals;
+	const {bbid} = req.params;
+	const entity = await commonUtils.getEntityByBBID(orm, bbid);
+	if (!entity) {
+		return error.sendErrorAsJSON(res, new error.NotFoundError("Entity with this bbid doesn't exist", req));
+	}
+	return res.send(entity);
 });
 
 export default router;

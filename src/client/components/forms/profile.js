@@ -20,16 +20,16 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 import * as validators from '../../helpers/react-validators';
-import CustomInput from '../../input';
 import LoadingSpinner from '../loading-spinner';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
-import SearchSelect from '../input/entity-search';
-import SelectWrapper from '../input/select-wrapper';
+import SearchSelect from '../../entity-editor/common/entity-search-field-option';
+import ValidationLabel from '../../entity-editor/common/validation-label';
+import {entityToOption} from '../../helpers/entity';
 
 
-const {Alert, Button, Col, Panel, Row} = bootstrap;
+const {Alert, Button, Col, Card, Form, Row} = bootstrap;
 const {injectDefaultAliasName} = utilsHelper;
 
 class ProfileForm extends React.Component {
@@ -116,9 +116,33 @@ class ProfileForm extends React.Component {
 		this.setState({[event.target.name]: event.target.value});
 	};
 
-	handleSelectChange = (value, idAttribute) => {
-		this.setState({[idAttribute]: value});
+	handleGenderChange= (option) => {
+		this.setState({genderId: option.id});
 	};
+
+	handleTitleChange = (option) => {
+		this.setState({titleId: option.unlockId});
+	};
+
+	handleAreaChange = (option) => {
+		this.setState({areaId: option.id});
+	};
+
+	getTitleOptionLabel(option) {
+		return option.title;
+	}
+
+	getTitleOptionValue(option) {
+		return option.unlockId;
+	}
+
+	getGenderOptionLabel(option) {
+		return option.name;
+	}
+
+	getGenderOptionValue(option) {
+		return option.id;
+	}
 
 	render() {
 		const loadingElement =
@@ -139,85 +163,94 @@ class ProfileForm extends React.Component {
 		let errorComponent = null;
 		if (this.state.error) {
 			errorComponent =
-				<Alert bsStyle="danger">{this.state.error.message}</Alert>;
+				<Alert variant="danger">{this.state.error.message}</Alert>;
 		}
 
 		const hasChanged = this.hasChanged();
+
+		const nameLabel = (
+			<ValidationLabel error={!this.valid()}>
+				Display Name
+			</ValidationLabel>
+		);
 
 		return (
 			<div>
 				<Row className="margin-top-2">
 					{loadingElement}
-					<Col md={8} mdOffset={2}>
+					<Col lg={{offset: 2, span: 8}}>
 						<form onSubmit={this.handleSubmit}>
-							<Panel>
-								<Panel.Heading>
-									<Panel.Title>
-										<span className="h3">Edit your public profile</span>
-									</Panel.Title>
-								</Panel.Heading>
-								<Panel.Body>
-									<CustomInput
-										defaultValue={name}
-										help="required"
-										label="Display Name"
-										name="name"
-										type="text"
-										validationState={this.valid() ? 'success' : 'error'}
-										onChange={this.handleValueChange}
-									/>
-									<CustomInput
-										defaultValue={bio}
-										label="Bio"
-										name="bio"
-										type="textarea"
-										onChange={this.handleValueChange}
-									/>
-									{titleOptions.length > 0 &&
-										<SelectWrapper
-											base={ReactSelect}
-											defaultValue={titleId}
-											idAttribute="unlockId"
-											instanceId="title"
-											label="Title"
-											labelAttribute="title"
-											name="titleId"
-											options={titleOptions}
-											placeholder="Select title"
-											onChange={this.handleSelectChange}
+							<Card>
+								<Card.Header as="h3">
+									Edit your public profile
+								</Card.Header>
+								<Card.Body>
+									<Form.Group>
+										<Form.Label>{nameLabel}</Form.Label>
+										<Form.Control
+											defaultValue={name}
+											name="name"
+											type="text"
+											onChange={this.handleValueChange}
 										/>
+										<Form.Text muted>required</Form.Text>
+									</Form.Group>
+									<Form.Group>
+										<Form.Label>Bio</Form.Label>
+										<Form.Control
+											as="textarea"
+											defaultValue={bio}
+											name="bio"
+											onChange={this.handleValueChange}
+										/>
+									</Form.Group>
+									{titleOptions.length > 0 &&
+										<Form.Group>
+											<Form.Label>title</Form.Label>
+											<ReactSelect
+												classNamePrefix="react-select"
+												getOptionLabel={this.getTitleOptionLabel}
+												getOptionValue={this.getTitleOptionValue}
+												instanceId="title"
+												options={titleOptions}
+												placeholder="Select title"
+												value={titleOptions.filter((option) => option.unlockId === titleId)}
+												onChange={this.handleTitleChange}
+											/>
+										</Form.Group>
+
 									}
 									<SearchSelect
-										defaultValue={transformedArea}
+										defaultValue={entityToOption(transformedArea)}
 										label="Area"
-										name="areaId"
 										placeholder="Select area..."
 										type="area"
-										onChange={this.handleSelectChange}
+										onChange={this.handleAreaChange}
 									/>
-									<SelectWrapper
-										base={ReactSelect}
-										defaultValue={genderId}
-										idAttribute="id"
-										label="Gender"
-										labelAttribute="name"
-										name="genderId"
-										options={genderOptions}
-										placeholder="Select Gender"
-										onChange={this.handleSelectChange}
-									/>
+									<Form.Group>
+										<Form.Label>Gender</Form.Label>
+										<ReactSelect
+											classNamePrefix="react-select"
+											getOptionLabel={this.getGenderOptionLabel}
+											getOptionValue={this.getGenderOptionValue}
+											options={genderOptions}
+											placeholder="Select Gender"
+											value={genderOptions.filter((option) => option.id === genderId)}
+											onChange={this.handleGenderChange}
+										/>
+									</Form.Group>
 									{errorComponent}
-								</Panel.Body>
-								<Panel.Footer>
+								</Card.Body>
+								<Card.Footer>
 									<Button
-										bsStyle="success"
 										disabled={!hasChanged}
 										type="submit"
+										variant="success"
 									>
 										Save changes
 									</Button>
-								</Panel.Footer>
-							</Panel>
+								</Card.Footer>
+							</Card>
 						</form>
 					</Col>
 				</Row>

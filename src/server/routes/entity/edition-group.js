@@ -20,6 +20,7 @@
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
+import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
 import {
@@ -32,6 +33,7 @@ import {ConflictError} from '../../../common/helpers/error';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
+import log from 'log';
 import target from '../../templates/target';
 
 /** ****************************
@@ -51,9 +53,19 @@ function transformNewForm(data) {
 		data.relationshipSection
 	);
 
+	let authorCredit = {};
+	if (!_.isNil(data.authorCredit)) {
+		// When merging entities, we use a separate reducer "authorCredit"
+		authorCredit = data.authorCredit.names;
+	}
+	else if (!_.isNil(data.authorCreditEditor)) {
+		authorCredit = entityRoutes.constructAuthorCredit(data.authorCreditEditor);
+	}
+
 	return {
 		aliases,
 		annotation: data.annotationSection.content,
+		authorCredit,
 		disambiguation: data.nameSection.disambiguation,
 		identifiers,
 		note: data.submissionSection.note,
@@ -81,10 +93,30 @@ const router = express.Router();
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadEditionGroupTypes,
-	middleware.loadRelationshipTypes, (req, res) => {
-		const {markup, props} = entityEditorMarkup(generateEntityProps(
+	middleware.loadRelationshipTypes, async (req, res) => {
+		const markupProps = generateEntityProps(
 			'editionGroup', req, res, {}
-		));
+		);
+		const nameSection = {
+			disambiguation: '',
+			exactMatches: null,
+			language: null,
+			name: req.query?.name ?? '',
+			searchResults: null,
+			sortName: ''
+		};
+		if (nameSection.name) {
+			try {
+				nameSection.searchResults = await search.autocomplete(req.app.locals.orm, nameSection.name, 'EditionGroup');
+				nameSection.exactMatches = await search.checkIfExists(req.app.locals.orm, nameSection.name, 'EditionGroup');
+			}
+			catch (err) {
+				log.debug(err);
+			}
+		}
+
+		markupProps.initialState.nameSection = nameSection;
+		const {markup, props} = entityEditorMarkup(markupProps);
 
 		return res.send(target({
 			markup,
@@ -95,6 +127,32 @@ router.get(
 	}
 );
 
+
+router.post(
+	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	middleware.loadLanguages, middleware.loadEditionGroupTypes,
+	middleware.loadRelationshipTypes, async (req, res) => {
+		const entity = await utils.parseInitialState(req, 'editionGroup');
+		const {orm} = req.app.locals;
+		const {EditionGroupType} = orm;
+		if (entity.editionGroupSection?.type) {
+			entity.editionGroupSection = {
+				type: await utils.getIdByField(EditionGroupType, 'label', entity.editionGroupSection.type)
+			};
+		}
+		const markupProps = generateEntityProps(
+			'editionGroup', req, res, {}, () => entity
+		);
+		const {markup, props} = entityEditorMarkup(markupProps);
+
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/entity-editor.js',
+			title: props.heading
+		}));
+	}
+);
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
@@ -109,6 +167,7 @@ router.param(
 	middleware.makeEntityLoader(
 		'EditionGroup',
 		[
+			'authorCredit.names.author.defaultAlias',
 			'editionGroupType',
 			'editions.defaultAlias',
 			'editions.disambiguation',
@@ -232,8 +291,28 @@ function editionGroupToFormState(editionGroup) {
 		optionalSections.annotationSection = editionGroup.annotation;
 	}
 
+	const credits = editionGroup.authorCredit ? editionGroup.authorCredit.names.map(
+		({author, ...rest}) => ({
+			author: utils.entityToOption(author),
+			...rest
+		})
+	) : [];
+
+	const authorCreditEditor = {};
+	for (const credit of credits) {
+		authorCreditEditor[credit.position] = credit;
+	}
+	if (_.isEmpty(authorCreditEditor)) {
+		authorCreditEditor.n0 = {
+			author: null,
+			joinPhrase: '',
+			name: ''
+		};
+	}
+
 	return {
 		aliasEditor,
+		authorCreditEditor,
 		buttonBar,
 		editionGroupSection,
 		identifierEditor,

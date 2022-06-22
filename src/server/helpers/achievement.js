@@ -21,7 +21,6 @@
  * @module Achievement
  */
 
-/* eslint prefer-spread: 1, prefer-reflect: 1, no-magic-numbers: 0 */
 import * as error from '../../common/helpers/error';
 
 import {flattenDeep, isNil} from 'lodash';
@@ -193,7 +192,7 @@ async function testTiers(orm, signal, editorId, tiers) {
  * @param {int} editor - Editor id being queried
  * @returns {int} - Number of revisions of type (type)
  */
-async function getTypeCreation(revisionType, revisionString, editor) {
+export async function getTypeCreation(revisionType, revisionString, editor) {
 	const out = await revisionType
 		.query((qb) => {
 			qb.innerJoin('bookbrainz.revision',
@@ -394,7 +393,7 @@ async function processSprinter(orm, editorId) {
  * @param {int} days - Number of days before today to collect edits from
  * @returns {int} - Number of days edits were performed on
  */
-async function getEditsInDays(orm, editorId, days) {
+export async function getEditsInDays(orm, editorId, days) {
 	const {bookshelf} = orm;
 	const rawSql =
 		`SELECT DISTINCT created_at::date from bookbrainz.revision \
@@ -515,17 +514,22 @@ async function processHotOffThePress(orm, editorId, revisionId) {
  * @param {int} editorId - Editor to get views for
  * @returns {int} - Number of views user has
  */
-async function getEntityVisits(orm, editorId) {
+export async function getEntityVisits(orm, editorId) {
 	const {EditorEntityVisits} = orm;
-	const visits = await new EditorEntityVisits()
-		.where('editor_id', editorId)
-		.fetchAll({require: true});
-	return visits.length;
+	try {
+		const visits = await new EditorEntityVisits()
+			.where('editor_id', editorId)
+			.fetchAll({require: true});
+		return visits.length;
+	}
+	catch (err) {
+		return 0;
+	}
 }
 
 async function processExplorer(orm, editorId) {
 	try {
-		const visits = await getEntityVisits(editorId);
+		const visits = await getEntityVisits(orm, editorId);
 
 		const tiers = [
 			{

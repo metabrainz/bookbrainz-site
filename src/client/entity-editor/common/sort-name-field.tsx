@@ -17,10 +17,10 @@
  */
 
 import * as React from 'react';
-import {Button} from 'react-bootstrap';
-import CustomInput from '../../input';
+import {Button, Form, InputGroup, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ValidationLabel from '../common/validation-label';
-
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Removes all period characters (dots) from the input string, returning a new
@@ -97,7 +97,7 @@ type onChangeParamType = {
 type Props = {
 	empty?: boolean,
 	error?: boolean,
-	onChange?: (onChangeParamType) => unknown,
+	onChange?: (value: onChangeParamType) => unknown,
 	storedNameValue: string
 };
 
@@ -156,27 +156,41 @@ function SortNameField({
 
 	/* eslint-disable react/jsx-no-bind */
 	const guessButton =
-		<Button bsStyle="primary" onClick={handleGuessClick}>Guess</Button>;
+		<Button variant="primary" onClick={handleGuessClick}>Guess</Button>;
 
 	const copyButton =
-		<Button bsStyle="primary" onClick={handleCopyClick}>Copy</Button>;
+		<Button className="ml-1" variant="primary" onClick={handleCopyClick}>Copy</Button>;
 	/* eslint-enable react/jsx-no-bind */
 
+	const tooltip = (
+		<Tooltip>
+			Alphabetical sorting name. Examples: &apos;Dickens, Charles&apos;, &apos;Christmas Carol, A&apos;.
+			<br/>You can try to fill it automatically with the guess button
+		</Tooltip>
+	);
+
 	return (
-		<CustomInput
-			buttonAfter={[guessButton, ' ', copyButton]}
-			label={label}
-			ref={(node) => { input = node; }}
-			tooltipText={
-				<>
-				Alphabetical sorting name. Examples: &apos;Dickens, Charles&apos;, &apos;Christmas Carol, A&apos;.
-					<br/>You can try to fill it automatically with the guess button
-				</>
-			}
-			type="text"
-			onChange={onChange}
-			{...rest}
-		/>
+		<Form.Group>
+			<Form.Label>
+				{label}
+				<OverlayTrigger delay={50} overlay={tooltip}>
+					<FontAwesomeIcon className="margin-left-0-5" icon={faQuestionCircle}/>
+				</OverlayTrigger>
+			</Form.Label>
+			<InputGroup>
+				<Form.Control
+					/* eslint-disable-next-line react/jsx-no-bind */
+					ref={(node) => { input = node; }}
+					type="text"
+					onChange={onChange}
+					{...rest}
+				/>
+				<InputGroup.Append>
+					{guessButton}
+					{copyButton}
+				</InputGroup.Append>
+			</InputGroup>
+		</Form.Group>
 	);
 }
 SortNameField.displayName = 'SortNameField';

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /*
  * Copyright (C) 2019  Nicolas Pelletier
  *
@@ -16,9 +15,11 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+/* eslint-disable no-console */
 
 import {internet, random} from 'faker';
 
+import {faker} from '@faker-js/faker';
 import {isNil} from 'lodash';
 import orm from '../bookbrainz-data';
 import {v4 as uuidv4} from 'uuid';
@@ -35,6 +36,15 @@ const {
 } = orm;
 const {updateLanguageSet} = orm.func.language;
 
+export const seedInitialState = {
+	annotationSection: 'annotation',
+	'identifierEditor.t0': '1234567',
+	'nameSection.disambiguation': 'disambiguation',
+	'nameSection.language': 'English',
+	'nameSection.name': 'name',
+	'nameSection.sname': 'sname',
+	submissionSection: 'note'
+};
 
 export const editorTypeAttribs = {
 	label: 'test_type'
@@ -302,7 +312,9 @@ export async function createEditionGroup(optionalBBID, optionalEditionGroupAttri
 	if (!isNil(optionalEditionGroupAttrib.typeId)) {
 		optionalEditionGroupTypeAttrib.id = optionalEditionGroupAttrib.typeId;
 	}
-	const editionGroupType = await new EditionGroupType({label: `Edition Group Type ${optionalEditionGroupAttrib.typeId || random.number()}`, ...optionalEditionGroupTypeAttrib})
+	const editionGroupType = await new EditionGroupType(
+		{label: `Edition Group Type ${optionalEditionGroupAttrib.typeId || random.number()}`, ...optionalEditionGroupTypeAttrib}
+	)
 		.save(null, {method: 'insert'});
 
 	const editionGroupAttribs = {
@@ -392,7 +404,15 @@ export async function createSeries(optionalBBID, optionalSeriesAttribs = {}) {
 	return series;
 }
 
-export async function createPublisher(optionalBBID, optionalPublisherAttribs = {}) {
+async function fetchOrCreatePublisherType(PublisherTypeModel, optionalPublisherAttribs = {}) {
+	const PublisherTypeAttribs = {
+		label: faker.commerce.productAdjective()
+	};
+	const publisherType = await new PublisherTypeModel({...PublisherTypeAttribs, ...optionalPublisherAttribs}).save(null, {method: 'insert'});
+	return publisherType;
+}
+
+export async function createPublisher(optionalBBID, optionalPublisherAttribs = {}, optionalPublisherTypeAttribs = {}) {
 	const bbid = optionalBBID || uuidv4();
 	await new Entity({bbid, type: 'Publisher'})
 		.save(null, {method: 'insert'});
@@ -410,7 +430,6 @@ export async function createPublisher(optionalBBID, optionalPublisherAttribs = {
 			.save(null, {method: 'insert'});
 	}
 
-	const optionalPublisherTypeAttribs = {};
 	let publisherType;
 	if (!isNil(optionalPublisherAttribs.typeId)) {
 		optionalPublisherTypeAttribs.id = optionalPublisherAttribs.typeId;
@@ -418,8 +437,7 @@ export async function createPublisher(optionalBBID, optionalPublisherAttribs = {
 			.fetch({require: false});
 	}
 	if (!publisherType) {
-		publisherType = await new PublisherType({label: `Publisher Type ${optionalPublisherAttribs.typeId || random.number()}`, ...optionalPublisherTypeAttribs})
-			.save(null, {method: 'insert'});
+		publisherType = await fetchOrCreatePublisherType(PublisherType, optionalPublisherTypeAttribs);
 	}
 
 	const publisherAttribs = {

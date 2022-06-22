@@ -16,14 +16,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Col, Row} from 'react-bootstrap';
+import {Col, Form, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 import {convertMapToObject, formatDate} from '../../helpers/utils';
 
-import CustomInput from '../../input';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
 import {debounceUpdateAnnotation} from './actions';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Container component. The AnnotationSection component contains a
@@ -48,26 +49,41 @@ function AnnotationSection({
 		</span>
 	);
 
+	const tooltip = (
+		<Tooltip>
+			Additional freeform data that does not fit in the above form
+		</Tooltip>
+	);
+
 	return (
 		<div>
 			<h2>
 				Annotation
 			</h2>
 			<Row>
-				<Col md={6} mdOffset={3}>
-					<CustomInput
-						defaultValue={annotation.content}
-						label={annotationLabel}
-						rows="4"
-						tooltipText="Additional freeform data that does not fit in the above form"
-						type="textarea"
-						onChange={onAnnotationChange}
-					/>
+				<Col lg={{offset: 3, span: 6}}>
+					<Form.Group>
+						<Form.Label>
+							{annotationLabel}
+							<OverlayTrigger delay={50} overlay={tooltip}>
+								<FontAwesomeIcon
+									className="margin-left-0-5"
+									icon={faQuestionCircle}
+								/>
+							</OverlayTrigger>
+						</Form.Label>
+						<Form.Control
+							as="textarea"
+							defaultValue={annotation.content}
+							rows="4"
+							onChange={onAnnotationChange}
+						/>
+					</Form.Group>
 					{
 						annotation && annotation.lastRevision &&
 						<p className="small text-muted">Last modified: {formatDate(new Date(annotation.lastRevision.createdAt))}</p>
 					}
-					<p className="help-block">
+					<p className="text-muted">
 						Annotations allow you to enter freeform data that does not otherwise fit in the above form.
 						<b> Do not submit any copyrighted text here.</b> The contents will be made available to the public under <a href="https://musicbrainz.org/doc/About/Data_License">open licenses</a>.
 					</p>

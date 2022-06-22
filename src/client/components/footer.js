@@ -24,14 +24,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Col, Grid, Row} = bootstrap;
+const {Col, Container, Row} = bootstrap;
 
 function Footer(props) {
 	const {repositoryUrl, siteRevision} = props;
 
 	return (
 		<footer className="footer">
-			<Grid fluid>
+			<Container fluid>
 				<Row>
 					<Col xs={4}>
 						<small>{'Tested with '}
@@ -59,23 +59,25 @@ function Footer(props) {
 						</small>
 					</Col>
 					<Col className="text-right" xs={4}>
-						<a href="/privacy">
-							<small>Privacy & Terms</small>
-						</a>
+						<small>
+							<a href="/privacy">
+								Privacy & Terms
+							</a>
+						</small>
 					</Col>
 				</Row>
-				<Row className="text-center">
+				<div className="text-center">
 					<small>
 						Alpha Software —{' '}
-						<a href={`${repositoryUrl}commit/${siteRevision}`}>
+						<a href={`${repositoryUrl}tree/${siteRevision}`}>
 							{siteRevision}
 						</a> —&nbsp;
 						<a href="https://tickets.metabrainz.org/projects/BB/issues/">
 							Report a Bug
 						</a>
 					</small>
-				</Row>
-			</Grid>
+				</div>
+			</Container>
 		</footer>
 	);
 }

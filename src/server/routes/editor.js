@@ -23,9 +23,9 @@ import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
-import * as utils from '../helpers/utils';
 import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
+import {getEditsInDays, getEntityVisits, getTypeCreation} from '../helpers/achievement';
 import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
 import CollectionsPage from '../../client/components/pages/collections';
 import EditorContainer from '../../client/containers/editor';
@@ -137,7 +137,8 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 		if (editor.get('areaId') === req.body.areaId &&
 			editor.get('bio') === req.body.bio &&
 			editor.get('name') === req.body.name &&
-			editor.get('titleUnlockId') === req.body.title
+			editor.get('titleUnlockId') === req.body.title &&
+			editor.get('genderId') === req.body.genderId
 		) {
 			throw new error.FormSubmissionError('No change to the profile');
 		}
@@ -231,9 +232,11 @@ export async function getEditorActivity(editorId, startDate, Revision, endDate =
 	);
 	const revisionsCount = _.countBy(revisionDates);
 
+	const firstRevisionDate = revisionJSON.length ? revisionJSON[0].createdAt : Date.now();
+	const activityStart = startDate > firstRevisionDate ? firstRevisionDate : startDate;
 	const allMonthsInInterval = eachMonthOfInterval({
 		end: endDate,
-		start: startDate
+		start: activityStart
 	})
 		.map(month => format(new Date(month), 'LLL-yy'))
 		.reduce((accumulator, month) => {
@@ -258,55 +261,56 @@ function achievementColToEditorGetJSON(achievementCol) {
 router.get('/:id', async (req, res, next) => {
 	const {AchievementUnlock, Revision} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
+	if (!userId) {
+		return next(new error.BadRequestError('Editor Id is not valid!', req));
+	}
+	try {
+		const editorJSON = await getIdEditorJSONPromise(userId, req);
 
-	const editorJSONPromise = getIdEditorJSONPromise(userId, req);
+		const achievementCol = await new AchievementUnlock()
+			.where('editor_id', userId)
+			.where('profile_rank', '<=', '3')
+			.query((qb) => qb.limit(3))
+			.orderBy('profile_rank', 'ASC')
+			.fetchAll({
+				require: false,
+				withRelated: ['achievement']
+			});
+		editorJSON.activityData =
+		await getEditorActivity(editorJSON.id, editorJSON.createdAt, Revision);
 
-	const achievementColPromise = new AchievementUnlock()
-		.where('editor_id', userId)
-		.where('profile_rank', '<=', '3')
-		.query((qb) => qb.limit(3))
-		.orderBy('profile_rank', 'ASC')
-		.fetchAll({
-			require: false,
-			withRelated: ['achievement']
+		const achievementJSON = achievementColToEditorGetJSON(achievementCol);
+
+		const props = generateProps(req, res, {
+			achievement: achievementJSON,
+			editor: editorJSON,
+			tabActive: 0
 		});
 
-	const [achievementCol, editorJSON] = await Promise.all(
-		[achievementColPromise, editorJSONPromise]
-	).catch(next);
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)} >
+				<EditorContainer
+					{...propHelpers.extractEditorProps(props)}
+				>
+					<ProfileTab
+						user={props.user}
+						{...propHelpers.extractChildProps(props)}
+					/>
+				</EditorContainer>
+			</Layout>
+		);
 
-	editorJSON.activityData =
-		await getEditorActivity(editorJSON.id, editorJSON.createdAt, Revision)
-			.catch(next);
-
-	const achievementJSON = achievementColToEditorGetJSON(achievementCol);
-
-	const props = generateProps(req, res, {
-		achievement: achievementJSON,
-		editor: editorJSON,
-		tabActive: 0
-	});
-
-	const markup = ReactDOMServer.renderToString(
-		<Layout {...propHelpers.extractLayoutProps(props)} >
-			<EditorContainer
-				{...propHelpers.extractEditorProps(props)}
-			>
-				<ProfileTab
-					user={props.user}
-					{...propHelpers.extractChildProps(props)}
-				/>
-			</EditorContainer>
-		</Layout>
-	);
-
-	res.send(target({
-		markup,
-		page: 'profile',
-		props: escapeProps(props),
-		script: '/js/editor/editor.js',
-		title: `${props.editor.name}'s Profile`
-	}));
+		return res.send(target({
+			markup,
+			page: 'profile',
+			props: escapeProps(props),
+			script: '/js/editor/editor.js',
+			title: `${props.editor.name}'s Profile`
+		}));
+	}
+	catch (err) {
+		return next(err);
+	}
 });
 
 // eslint-disable-next-line consistent-return
@@ -329,7 +333,7 @@ router.get('/:id/revisions', async (req, res, next) => {
 			await Promise.all([orderedRevisionsPromise, editorJSONPromise]);
 
 		const {newResultsArray, nextEnabled} =
-			utils.getNextEnabledAndResultsArray(orderedRevisions, size);
+			commonUtils.getNextEnabledAndResultsArray(orderedRevisions, size);
 
 		const props = generateProps(req, res, {
 			editor: editorJSON,
@@ -383,17 +387,93 @@ router.get('/:id/revisions/revisions', async (req, res, next) => {
 	res.send(orderedRevisions);
 });
 
-function setAchievementUnlockedField(achievements, unlocks) {
+/**
+ * Get progress counter of achievement for a editor
+ * @param {number} achievementId - Achivement Type id
+ * @param {number} editorId - editorId
+ * @param {object} orm - orm
+ * @returns {Promise<number>} - Promise resolved to progress counter
+ */
+async function getProgress(achievementId, editorId, orm) {
+	const revisionist = [1, 2, 3];
+	if (revisionist.includes(achievementId)) {
+		const {Editor} = orm;
+		const editor = await new Editor({id: editorId})
+			.fetch({require: false});
+		const revisions = editor.get('revisionsApplied');
+		return revisions;
+	}
+
+	// entity revisionist
+	const authorRevisionist = [4, 5, 6];
+	const editionGroupRevisionist = [7, 8, 9];
+	const publisherRevisionist = [15, 16, 17];
+	const editionRevisionist = [18, 19, 20];
+	const workRevisionist = [21, 22, 23];
+	const seriesRevisionist = [28, 29, 30];
+
+	if (authorRevisionist.includes(achievementId)) {
+		const {AuthorRevision} = orm;
+		return getTypeCreation(new AuthorRevision(), 'author_revision', editorId);
+	}
+	if (editionGroupRevisionist.includes(achievementId)) {
+		const {EditionGroupRevision} = orm;
+		return getTypeCreation(new EditionGroupRevision(), 'edition_group_revision', editorId);
+	}
+	if (editionRevisionist.includes(achievementId)) {
+		const {EditionRevision} = orm;
+		return getTypeCreation(new EditionRevision(), 'edition_revision', editorId);
+	}
+	if (publisherRevisionist.includes(achievementId)) {
+		const {PublisherRevision} = orm;
+		return getTypeCreation(new PublisherRevision(), 'publisher_revision', editorId);
+	}
+	if (workRevisionist.includes(achievementId)) {
+		const {WorkRevision} = orm;
+		return getTypeCreation(new WorkRevision(), 'work_revision', editorId);
+	}
+	if (seriesRevisionist.includes(achievementId)) {
+		const {SeriesRevision} = orm;
+		return getTypeCreation(new SeriesRevision(), 'series_revision', editorId);
+	}
+	// Sprinter
+	if (achievementId === 10) {
+		const {bookshelf} = orm;
+		const rawSql =
+		`SELECT * from bookbrainz.revision WHERE author_id=${editorId} \
+		and created_at > (SELECT CURRENT_DATE - INTERVAL '1 hour');`;
+
+		const out = await bookshelf.knex.raw(rawSql);
+		return out.rowCount;
+	}
+	// Fun Runner
+	if (achievementId === 11) {
+		return getEditsInDays(orm, editorId, 6);
+	}
+	// Marathoner
+	if (achievementId === 12) {
+		return getEditsInDays(orm, editorId, 29);
+	}
+	// Explorer achivements
+	const explorerVisits = [24, 25, 26];
+	if (explorerVisits.includes(achievementId)) {
+		return getEntityVisits(orm, editorId);
+	}
+	return 0;
+}
+
+async function setAchievementUnlockedField(achievements, unlocks, userId, orm) {
 	if (!unlocks) {
 		return null;
 	}
 
 	const unlockIDSet = new Set(unlocks.map('attributes.achievementId'));
 
-	const model = achievements.map((achievementType) => ({
+	const model = await Promise.all(achievements.map(async (achievementType) => ({
 		...achievementType.toJSON(),
+		counter: await getProgress(achievementType.id, userId, orm),
 		unlocked: unlockIDSet.has(achievementType.id)
-	}));
+	})));
 
 	return {model};
 }
@@ -420,7 +500,7 @@ router.get('/:id/achievements', async (req, res, next) => {
 	]);
 
 	const achievementJSON =
-		setAchievementUnlockedField(achievementTypes, unlocks);
+		await setAchievementUnlockedField(achievementTypes, unlocks, userId, res.app.locals.orm);
 
 	const props = generateProps(req, res, {
 		achievement: achievementJSON,
@@ -487,7 +567,6 @@ async function rankUpdate(orm, editorId, bodyRank, rank) {
 
 router.post('/:id/achievements/', auth.isAuthenticated, async (req, res) => {
 	const {orm} = req.app.locals;
-	const {Editor} = orm;
 	const userId = parseInt(req.params.id, 10);
 	if (!isCurrentUser(userId, req.user)) {
 		throw new Error('Not authenticated');
@@ -521,7 +600,7 @@ router.get('/:id/collections', async (req, res, next) => {
 
 		// fetch 1 more collections than required to check nextEnabled
 		const orderedCollections = await getOrderedCollectionsForEditorPage(from, size + 1, type, req);
-		const {newResultsArray, nextEnabled} = utils.getNextEnabledAndResultsArray(orderedCollections, size);
+		const {newResultsArray, nextEnabled} = commonUtils.getNextEnabledAndResultsArray(orderedCollections, size);
 		const editor = await new Editor({id: req.params.id}).fetch();
 		const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
 
