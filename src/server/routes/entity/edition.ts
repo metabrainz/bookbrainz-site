@@ -52,7 +52,7 @@ type PassportRequest = express.Request & {
 	user: any,
 	session: any
 };
-function transformNewForm(data) {
+export function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
 		data.aliasEditor, data.nameSection
 	);
