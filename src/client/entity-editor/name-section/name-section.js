@@ -46,6 +46,11 @@ import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {entityTypeProperty} from '../../helpers/react-validators';
 import {getEntityDisambiguation} from '../../helpers/entity';
+import makeImmutable from '../common/make-immutable';
+
+
+const ImmutableLanguageField = makeImmutable(LanguageField);
+
 
 /**
  * Container component. The NameSection component contains input fields for
@@ -232,7 +237,7 @@ class NameSection extends React.Component {
 				</Row>
 				<Row>
 					<Col lg={lgCol}>
-						<LanguageField
+						<ImmutableLanguageField
 							empty={isAliasEmpty(
 								nameValue, sortNameValue, languageValue
 							)}

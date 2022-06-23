@@ -19,6 +19,7 @@
 import * as React from 'react';
 import {Action, updateType} from './actions';
 import {Col, Form, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
+import AuthorCreditSection from '../author-credit-editor/author-credit-section';
 
 import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -83,6 +84,7 @@ function EditionGroupSection({
 	return (
 		<div>
 			{!isUf && heading}
+			<AuthorCreditSection/>
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
 				know it

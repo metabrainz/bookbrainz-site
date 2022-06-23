@@ -92,6 +92,7 @@ export function generateEntityProps(
 			`Add ${entityName}`,
 		identifierTypes: filteredIdentifierTypes,
 		initialState: initialStateCallback(entity),
+		isMerge: false,
 		languageOptions: res.locals.languages,
 		requiresJS: true,
 		subheading: isEdit ?
@@ -139,6 +140,7 @@ export function generateEntityMergeProps(
 		heading: `Merge ${mergingEntities.length} ${entityName}s`,
 		identifierTypes: filteredIdentifierTypes,
 		initialState: initialStateCallback(mergingEntities),
+		isMerge: true,
 		languageOptions: res.locals.languages,
 		requiresJS: true,
 		subheading: `You are merging ${mergingEntities.length} existing ${entityName}s:`,
@@ -156,7 +158,8 @@ export function generateEntityMergeProps(
  */
 export function entityEditorMarkup(
 	props: { initialState: any,
-			 entityType: string }
+			 entityType: string,
+			 heading?: string }
 ) {
 	const {initialState, ...rest} = props;
 	const rootReducer = createRootReducer(props.entityType);
@@ -194,7 +197,7 @@ export function entityMergeMarkup(
 			 entityType: string }
 ) {
 	const {initialState, ...rest} = props;
-	const rootReducer = createRootReducer(props.entityType);
+	const rootReducer = createRootReducer(props.entityType, true);
 	const store: any = createStore(rootReducer, Immutable.fromJS(initialState));
 	const EntitySection = getEntitySectionMerge(props.entityType);
 	const markup = ReactDOMServer.renderToString(
@@ -254,12 +257,12 @@ export function makeEntityCreateOrEditHandler(
 		req: PassportRequest,
 		res: $Response
 	) {
-		if (!validate(req.body)) {
+		const {mergeQueue} = req.session;
+		const isMergeOperation = isMergeHandler && mergeQueue && _.size(mergeQueue.mergingEntities) >= 2;
+		if (!validate(req.body, null, isMergeOperation)) {
 			const err = new error.FormSubmissionError();
 			error.sendErrorAsJSON(res, err);
 		}
-		const {mergeQueue} = req.session;
-		const isMergeOperation = isMergeHandler && mergeQueue && _.size(mergeQueue.mergingEntities) >= 2;
 
 		req.body = transformNewForm(req.body);
 

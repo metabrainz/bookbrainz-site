@@ -59,7 +59,7 @@ describe('Edition routes', () => {
 			'editionSection.width': '',
 			'identifierEditor.t10': '0374533555'
 		};
-		const res = await agent.get('/edition/create').set('Origin', `http://127.0.0.1:${agent.app.address().port}`).send(data);
+		const res = await agent.post('/edition/create').set('Origin', `http://127.0.0.1:${agent.app.address().port}`).send(data);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});

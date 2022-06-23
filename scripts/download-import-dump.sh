@@ -1,5 +1,10 @@
 #!/bin/bash
 
+DB_HOSTNAME=postgres
+DB_PORT=5432
+DB_USER=bookbrainz
+DB_NAME=bookbrainz
+
 DUMP_DIR=/tmp/bookbrainz-dumps
 DUMP_FILE=$DUMP_DIR/latest.sql.bz2
 
@@ -16,7 +21,7 @@ else
     fi
 fi
 
-bzcat $DUMP_FILE | psql -h postgres -U postgres -d bookbrainz
+bzcat $DUMP_FILE | psql -h $DB_HOSTNAME -p $DB_PORT -U $DB_USER -d $DB_NAME
 if [ $? -ne 0 ]
 then
     echo "Importing the bookbrainz database failed."

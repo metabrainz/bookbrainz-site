@@ -277,3 +277,30 @@ export function filterIdentifierTypesByEntityType(
 		(type) => type.entityType === entityType
 	);
 }
+
+/**
+ *
+ * @param {Object} orm - orm
+ * @param {string} bbid - bookbrainz id
+ * @returns {Promise} - Promise resolves to entity data if exist else null
+ */
+export async function getEntityByBBID(orm, bbid:string):Promise<Record<string, any> | null> {
+	if (!isValidBBID(bbid)) {
+		return null;
+	}
+	const {Entity} = orm;
+	const entity = await new Entity({bbid}).fetch({require: false});
+	if (!entity) {
+		return null;
+	}
+	const entityType = entity.get('type');
+	const baseRelations = [
+		'annotation',
+		'disambiguation',
+		'defaultAlias',
+		'aliasSet.aliases',
+		'identifierSet.identifiers'
+	];
+	const entityData = await orm.func.entity.getEntity(orm, entityType, bbid, baseRelations);
+	return entityData;
+}

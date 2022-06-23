@@ -22,6 +22,7 @@ import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ValidationLabel from './validation-label';
 import VirtualizedSelect from 'react-virtualized-select';
+import {convertMapToObject} from '../../helpers/utils';
 import createFilterOptions from 'react-select-fast-filter-options';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {isNumber} from 'lodash';
@@ -58,9 +59,9 @@ function LanguageField({
 	;
 
 	const tooltip = <Tooltip>{tooltipText}</Tooltip>;
-	const {options} = rest;
+	rest.options = convertMapToObject(rest.options);
 	const filterOptions = createFilterOptions({
-		options
+		options: rest.options
 	});
 	const sortFilterOptions = (opts, input, selectOptions) => {
 		const newOptions = filterOptions(opts, input, selectOptions);
@@ -96,4 +97,7 @@ LanguageField.defaultProps = {
 	tooltipText: null
 };
 
-export default LanguageField;
+function areEqual(prevProps, nextProps) {
+	return JSON.stringify(prevProps) === JSON.stringify(nextProps);
+}
+export default React.memo(LanguageField, areEqual);
