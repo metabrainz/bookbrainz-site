@@ -61,7 +61,7 @@ export type ISBNDispatchProps = {
 };
 export type ISBNProps = ISBNStateProps & ISBNDispatchProps;
 
-type EntitySelect = {
+export type EntitySelect = {
 	text:string,
 	id:string
 };

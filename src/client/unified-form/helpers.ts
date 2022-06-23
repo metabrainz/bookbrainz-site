@@ -6,6 +6,7 @@ import {ADD_WORK} from './content-tab/action';
 import Immutable from 'immutable';
 import aliasEditorReducer from '../entity-editor/alias-editor/reducer';
 import annotationSectionReducer from '../entity-editor/annotation-section/reducer';
+import authorCreditEditorReducer from '../entity-editor/author-credit-editor/reducer';
 import buttonBarReducer from '../entity-editor/button-bar/reducer';
 import {combineReducers} from 'redux-immutable';
 import editionGroupSectionReducer from '../entity-editor/edition-group-section/reducer';
@@ -171,6 +172,7 @@ export function createRootReducer() {
 			Works: worksReducer,
 			aliasEditor: aliasEditorReducer,
 			annotationSection: annotationSectionReducer,
+			authorCreditEditor: authorCreditEditorReducer,
 			buttonBar: buttonBarReducer,
 			editionGroupSection: editionGroupSectionReducer,
 			editionSection: editionSectionReducer,
