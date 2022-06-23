@@ -75,7 +75,7 @@ class EntitySearchFieldOption extends React.Component {
 			(index) => index.value === languageId
 		);
 		return {
-			author: entity.author ?? null,
+			authors: entity.authors?.join(', ') ?? null,
 			disambiguation: _.get(entity, ['disambiguation', 'comment']),
 			id,
 			language: language && language.label,

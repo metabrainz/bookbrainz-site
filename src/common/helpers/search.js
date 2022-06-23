@@ -34,13 +34,6 @@ const _maxJitter = 75;
 
 let _client = null;
 
-async function getEntityWithAlias(orm, bbid, type) {
-	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, null);
-	const model = commonUtils.getEntityModelByType(orm, type);
-	return model.forge({bbid: redirectBbid})
-		.fetch({require: false, withRelated: ['defaultAlias']});
-}
-
 async function _fetchEntityModelsForESResults(orm, results) {
 	const {Area, Editor, UserCollection} = orm;
 	if (!results.hits) {
@@ -95,7 +88,7 @@ async function _fetchEntityModelsForESResults(orm, results) {
 		const entity = await model.forge({bbid: entityStub.bbid})
 			.fetch({require: false, withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases', 'identifierSet.identifiers']});
 
-		return {...entity?.toJSON(), author: entityStub.author ?? null};
+		return {...entity?.toJSON(), authors: entityStub.authors ?? null};
 	})).catch(err => log.error(err));
 	return processedResults;
 }
@@ -275,7 +268,7 @@ export async function generateIndex(orm) {
 						},
 						type: 'object'
 					},
-					author: {
+					authors: {
 						analyzer: 'trigrams',
 						type: 'text'
 					},
@@ -382,24 +375,35 @@ export async function generateIndex(orm) {
 			})
 	);
 	const entityLists = await Promise.all(behaviorPromise);
-
+	/* eslint-disable @typescript-eslint/no-unused-vars */
+	const [authorsCollection,
+		editionCollection,
+		editionGroupCollection,
+		publisherCollection,
+		seriesCollection,
+		workCollection] = entityLists;
+	/* eslint-enable @typescript-eslint/no-unused-vars */
 	const listIndexes = [];
-	for (const [index, entityList] of entityLists.entries()) {
-		const listArray = entityList.toJSON();
-		if (index === (entityLists.length - 1)) {
-			for (const workEntity of listArray) {
-				if (workEntity.relationshipSetId) {
-					for (const relationship of workEntity.relationshipSet.relationships) {
-						if (relationship.typeId === 8) {
-							// eslint-disable-next-line no-await-in-loop
-							const source = await getEntityWithAlias(orm, relationship.sourceBbid, 'Author');
-							workEntity.author = source ? source.toJSON().defaultAlias.name : null;
-							break;
-						}
-					}
+
+	workCollection.forEach(workEntity => {
+		const relationshipSet = workEntity.related('relationshipSet');
+		if (relationshipSet) {
+			const authorWroteWorkRels = relationshipSet.related('relationships')?.filter(relationshipModel => relationshipModel.get('typeId') === 8);
+			const authorNames = authorWroteWorkRels.map(relationshipModel => {
+				// Search for the Author in the already fetched BookshelfJS Collection
+				const source = authorsCollection.get(relationshipModel.get('sourceBbid'));
+				if (!source) {
+					// This shouldn't happen, but just in case
+					return null;
 				}
-			}
+				return source.toJSON().defaultAlias.name;
+			});
+			workEntity.set('authors', authorNames);
 		}
+	});
+	// Index all the entities
+	for (const entityList of entityLists) {
+		const listArray = entityList.toJSON();
 		listIndexes.push(_processEntityListForBulk(listArray));
 	}
 	await Promise.all(listIndexes);
