@@ -63,7 +63,7 @@ export function transformForm(body:Record<string, any>):Record<string, any> {
 	for (const keyIndex in body) {
 		if (Object.prototype.hasOwnProperty.call(body, keyIndex)) {
 			const currentForm = body[keyIndex];
-			const transformedForm = transformFunctions[_.lowerFirst(currentForm.type)](currentForm);
+			const transformedForm = transformFunctions[_.camelCase(currentForm.type)](currentForm);
 			modifiedForm[keyIndex] = {type: currentForm.type, ...transformedForm};
 		}
 	}
@@ -169,6 +169,11 @@ export function handleCreateMultipleEntities(
 				if (entityForm.editionGroupBbid) {
 					entityForm.editionGroupBbid = bbidMap[entityForm.editionGroupBbid] ?? entityForm.editionGroupBbid;
 				}
+				if (!_.isNil(entityForm.authorCredit)) {
+					entityForm.authorCredit = entityForm.authorCredit.map(
+						(credit) => ({...credit, authorBBID: bbidMap[credit.authorBBID] ?? credit.authorBBID})
+					);
+				}
 			}
 			allRelationships[entityKey] = entityForm.relationships;
 			const newEntity = await new Entity({type: entityType}).save(null, {transacting});
@@ -179,7 +184,7 @@ export function handleCreateMultipleEntities(
 				authorId: editorJSON.id,
 				isMerge: false
 			}).save(null, {transacting});
-			const additionalProps = _.pick(entityForm, additionalEntityProps[_.snakeCase(entityType)]);
+			const additionalProps = _.pick(entityForm, additionalEntityProps[_.camelCase(entityType)]);
 			const changedProps = await getChangedProps(
 				orm, transacting, true, currentEntity, entityForm, entityType,
 				newRevision, additionalProps

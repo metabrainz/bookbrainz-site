@@ -203,7 +203,9 @@ describe('Unified form routes', () => {
 			...baseState,
 			editionSection: {
 				publisher: {
-					id: pBBID
+					0: {
+						id: pBBID
+					}
 				}
 			},
 			type: 'Edition'
@@ -244,7 +246,9 @@ describe('Unified form routes', () => {
 			...baseState,
 			editionSection: {
 				publisher: {
-					id: 'b0'
+					0: {
+						id: 'b0'
+					}
 				}
 			},
 			type: 'Edition'

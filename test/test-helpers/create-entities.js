@@ -51,6 +51,7 @@ export const baseState = {
 	annotationSection: {
 		content: ''
 	},
+	authorCreditEditor: {},
 	identifierEditor: {},
 	nameSection: {
 		disambiguation: '',
