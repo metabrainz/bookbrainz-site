@@ -37,6 +37,7 @@ import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import SearchEntityCreate from '../../unified-form/common/search-entity-create-select';
 import ValidationLabel from '../common/validation-label';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
@@ -44,6 +45,7 @@ import {validateAuthorCreditSection} from '../validators/common';
 
 
 type OwnProps = {
+	isUf?: boolean;
 };
 
 type StateProps = {
@@ -61,7 +63,7 @@ type DispatchProps = {
 type Props = OwnProps & StateProps & DispatchProps;
 
 function AuthorCreditSection({
-	authorCreditEditor, onEditAuthorCredit, onEditorClose, showEditor, onAuthorChange, isEditable
+	authorCreditEditor, onEditAuthorCredit, onEditorClose, showEditor, onAuthorChange, isEditable, isUf, ...rest
 }: Props) {
 	let editor;
 	if (showEditor) {
@@ -75,7 +77,7 @@ function AuthorCreditSection({
 	const authorCreditPreview = _map(authorCreditEditor, (credit) => `${credit.name}${credit.joinPhrase}`).join('');
 	const authorCreditRows = _values(authorCreditEditor);
 
-	const isValid = validateAuthorCreditSection(authorCreditRows);
+	const isValid = validateAuthorCreditSection(authorCreditRows.join, isUf);
 
 	const editButton = (
 		// eslint-disable-next-line react/jsx-no-bind
@@ -102,10 +104,15 @@ function AuthorCreditSection({
 			Name(s) of the Author(s) as they appear on the book cover
 		</Tooltip>
 	);
+	let resCol:any = {md: {offset: 3, span: 6}};
+	if (isUf) {
+		resCol = {lg: {offset: 0, span: 6}};
+	}
+	const SelectWrapper = !isUf ? EntitySearchFieldOption : SearchEntityCreate;
 	return (
 		<Row className="margin-bottom-2">
 			{editor}
-			<Col md={{offset: 3, span: 6}}>
+			<Col {...resCol}>
 				<Form.Group>
 					<Form.Label>
 						{label}
@@ -118,14 +125,17 @@ function AuthorCreditSection({
 					</Form.Label>
 					<InputGroup>
 						<div className="ac-select">
-							<EntitySearchFieldOption
+							<SelectWrapper
 								customComponents={{DropdownIndicator: null, SingleValue}}
 								instanceId="author0"
 								isDisabled={!isEditable}
+								isUf={isUf}
 								placeholder="Type to search or paste a BBID"
+								rowId="n0"
 								type="author"
 								value={optionValue}
 								onChange={onAuthorChange}
+								{...rest}
 							/>
 						</div>
 						<InputGroup.Append>{editButton}</InputGroup.Append>
@@ -143,6 +153,9 @@ AuthorCreditSection.propTypes = {
 	showEditor: PropTypes.bool.isRequired
 };
 
+AuthorCreditSection.defaultProps = {
+	isUf: false
+};
 function mapStateToProps(rootState): StateProps {
 	const firstRowKey = rootState.get('authorCreditEditor').keySeq().first();
 	const authorCreditRow = rootState.getIn(['authorCreditEditor', firstRowKey]);

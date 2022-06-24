@@ -1,5 +1,6 @@
 import {Col, Row} from 'react-bootstrap';
 import {CoverProps, EntitySelect} from '../interface/type';
+import AuthorCreditSection from '../../entity-editor/author-credit-editor/author-credit-section';
 import ButtonBar from '../../entity-editor/button-bar/button-bar';
 import ISBNField from './isbn-field';
 import IdentifierEditor from '../../entity-editor/identifier-editor/identifier-editor';
@@ -17,6 +18,7 @@ export function CoverTab(props:CoverProps) {
 	return (
 		<div>
 			<NameSection {...props}/>
+			<AuthorCreditSection {...props}/>
 			<Row>
 				<Col lg={{offset: 0, span: 6}}>
 					<SearchEntityCreate
