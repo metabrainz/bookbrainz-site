@@ -29,6 +29,7 @@ import type {Dispatch} from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
+import SearchEntityCreate from '../../unified-form/common/search-entity-create-select';
 import ValidationLabel from '../common/validation-label';
 import {connect} from 'react-redux';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
@@ -36,6 +37,7 @@ import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
 type OwnProps = {
 	index: string,
+	isUf?: boolean
 };
 
 type StateProps = {
@@ -80,22 +82,27 @@ function AuthorCreditRow({
 	author,
 	joinPhrase,
 	name,
+	isUf,
 	onAuthorChange,
 	onJoinPhraseChange,
 	onNameChange,
-	onRemoveButtonClick
+	onRemoveButtonClick,
+	...rest
 }: Props) {
+	const SelectWrapper = !isUf ? EntitySearchFieldOption : SearchEntityCreate;
 	return (
 		<div>
 			<Row>
 				<Col md={{span: 3}}>
-					<EntitySearchFieldOption
+					<SelectWrapper
 						instanceId={`author${index}`}
 						label="Author"
+						rowId={index}
 						type="author"
 						validationState={!author ? 'error' : null}
 						value={author}
 						onChange={onAuthorChange}
+						{...rest}
 					/>
 				</Col>
 				<Col md={{span: 3}}>
@@ -135,6 +142,9 @@ function AuthorCreditRow({
 	);
 }
 AuthorCreditRow.displayName = 'AuthorCreditEditor.CreditRow';
+AuthorCreditRow.defaultProps = {
+	isUf: false
+};
 
 function mapStateToProps(rootState, {index}: OwnProps): StateProps {
 	const state = rootState.get('authorCreditEditor');

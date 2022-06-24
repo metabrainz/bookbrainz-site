@@ -9,6 +9,7 @@ import annotationSectionReducer from '../entity-editor/annotation-section/reduce
 import authorCreditEditorReducer from '../entity-editor/author-credit-editor/reducer';
 import authorSectionReducer from '../entity-editor/author-section/reducer';
 import buttonBarReducer from '../entity-editor/button-bar/reducer';
+import {camelCase} from 'lodash';
 import {combineReducers} from 'redux-immutable';
 import editionGroupSectionReducer from '../entity-editor/edition-group-section/reducer';
 import editionGroupsReducer from './detail-tab/reducer';
@@ -52,6 +53,16 @@ function newEditionReducer(state = Immutable.Map({}), action) {
 			return state;
 	}
 }
+const initialACState = Immutable.fromJS(
+	{
+		n0: {
+			author: null,
+			automaticJoinPhrase: true,
+			joinPhrase: '',
+			name: ''
+		}
+	}
+);
 const initialState = Immutable.Map({
 	aliasEditor: Immutable.Map({}),
 	annotationSection: Immutable.Map({content: ''}),
@@ -60,6 +71,7 @@ const initialState = Immutable.Map({
 		identifierEditorVisible: false
 	}),
 	editionSection: Immutable.Map({
+		authorCreditEditorVisible: false,
 		editionGroupVisible: true,
 		format: null,
 		languages: Immutable.List([]),
@@ -110,14 +122,14 @@ function crossSliceReducer(state, action) {
 	};
 	switch (type) {
 		case ADD_AUTHOR:
-			intermediateState = intermediateState.setIn(['authorCreditEditor', action.payload.rowId, 'author'], Immutable.Map({
+			intermediateState = intermediateState.setIn(['Editions', 'e0', 'authorCreditEditor', action.payload.rowId, 'author'], Immutable.Map({
 				id: action.payload.id,
 				rowId: action.payload.rowId,
 				text: activeEntityState.nameSection.get('name'),
 				type: 'Author'
 			}));
 			intermediateState = intermediateState.setIn(
-				['authorCreditEditor', action.payload.rowId, 'name'], activeEntityState.nameSection.get('name')
+				['Editions', 'e0', 'authorCreditEditor', action.payload.rowId, 'name'], activeEntityState.nameSection.get('name')
 			);
 			action.payload.value = action.payload.value ?? {
 				...activeEntityState,
@@ -135,6 +147,11 @@ function crossSliceReducer(state, action) {
 				editionSection: state.get('editionSection')
 			};
 			intermediateState = intermediateState.merge(initialState);
+			intermediateState = intermediateState.setIn(['editionSection', 'authorCreditEditorVisible'],
+				state.getIn(['editionSection', 'authorCreditEditorVisible']));
+			if (action.payload.type && camelCase(action.payload.type) === 'editionGroup') {
+				intermediateState = intermediateState.set('authorCreditEditor', initialACState);
+			}
 			intermediateState = intermediateState.setIn(['nameSection', 'language'], activeEntityState.nameSection.get('language', null));
 			break;
 		case ADD_EDITION_GROUP:

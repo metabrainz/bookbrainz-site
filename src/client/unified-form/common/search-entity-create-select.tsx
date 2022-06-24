@@ -73,7 +73,7 @@ function mapDispatchToProps(dispatch, {type}):SearchEntityCreateDispatchProps {
 	return {
 		onModalClose: () => dispatch(loadEdition()),
 		onModalOpen: (name) => {
-			dispatch(dumpEdition());
+			dispatch(dumpEdition(type));
 			dispatch(updateNameField(name));
 			dispatch(updateSortNameField(name));
 		},
