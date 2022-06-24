@@ -13,11 +13,11 @@ import {submit} from '../entity-editor/submission-section/actions';
 
 const {Tabs, Tab} = Boostrap;
 function getUfValidator(validator) {
-	return (state, identifierTypes) => {
+	return (state, identifierTypes, ...args) => {
 		if (state.get('ISBN') && !state.getIn(['ISBN', 'type']) && state.getIn(['ISBN', 'value'], '').length > 0) {
 			return false;
 		}
-		return validator(state, identifierTypes);
+		return validator(state, identifierTypes, ...args);
 	};
 }
 export function UnifiedForm(props:UnifiedFormProps) {
@@ -57,7 +57,7 @@ export function UnifiedForm(props:UnifiedFormProps) {
 				disableBack={tabKeys.indexOf(tabKey) === 0} disableNext={tabKeys.indexOf(tabKey) === tabKeys.length - 1}
 				onBack={onBackHandler} onNext={onNextHandler}
 			/>
-			<SubmitSection identifierTypes={editionIdentifierTypes} validate={validators && getUfValidator(validators.edition)}/>
+			<SubmitSection isUf identifierTypes={editionIdentifierTypes} validate={validators && getUfValidator(validators.edition)}/>
 
 		</form>
 	);

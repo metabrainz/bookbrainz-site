@@ -1,4 +1,5 @@
 import {SearchEntityCreateDispatchProps, SearchEntityCreateProps} from '../interface/type';
+import {addAuthor, addPublisher} from '../cover-tab/action';
 import {dumpEdition, loadEdition} from '../action';
 import {updateNameField, updateSortNameField} from '../../entity-editor/name-section/actions';
 import AsyncCreatable from 'react-select/async-creatable';
@@ -6,7 +7,6 @@ import BaseEntitySearch from '../../entity-editor/common/entity-search-field-opt
 import CreateEntityModal from './create-entity-modal';
 import React from 'react';
 import {addEditionGroup} from '../detail-tab/action';
-import {addPublisher} from '../cover-tab/action';
 import {addWork} from '../content-tab/action';
 import {connect} from 'react-redux';
 import makeImmutable from '../../entity-editor/common/make-immutable';
@@ -19,15 +19,17 @@ const defaultProps = {
 	error: false,
 	filters: [],
 	languageOptions: [],
+	rowId: null,
 	tooltipText: null
 };
 const addEntityAction = {
+	author: addAuthor,
 	editionGroup: addEditionGroup,
 	publisher: addPublisher,
 	work: addWork
 };
 function SearchEntityCreate(props:SearchEntityCreateProps):JSX.Element {
-	const {type, nextId, onModalOpen, onModalClose, onSubmitEntity, ...rest} = props;
+	const {type, nextId, onModalOpen, onModalClose, onSubmitEntity, rowId, ...rest} = props;
 	const createLabel = React.useCallback((input) => `Create ${type} "${input}"`, [type]);
 	const [showModal, setShowModal] = React.useState(false);
 	const getNewOptionData = React.useCallback((input, label) => ({
@@ -48,7 +50,7 @@ function SearchEntityCreate(props:SearchEntityCreateProps):JSX.Element {
 		ev.preventDefault();
 		ev.stopPropagation();
 		setShowModal(false);
-		onSubmitEntity();
+		onSubmitEntity(rowId);
 		onModalClose();
 	}, []);
 
@@ -75,7 +77,7 @@ function mapDispatchToProps(dispatch, {type}):SearchEntityCreateDispatchProps {
 			dispatch(updateNameField(name));
 			dispatch(updateSortNameField(name));
 		},
-		onSubmitEntity: () => dispatch(addEntityAction[type]())
+		onSubmitEntity: (arg) => dispatch(addEntityAction[type](arg))
 	};
 }
 

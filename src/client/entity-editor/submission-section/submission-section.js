@@ -117,11 +117,11 @@ SubmissionSection.propTypes = {
 	submitted: PropTypes.bool.isRequired
 };
 
-function mapStateToProps(rootState, {validate, identifierTypes, isMerge}) {
+function mapStateToProps(rootState, {validate, identifierTypes, isMerge, isUf}) {
 	const state = rootState.get('submissionSection');
 	return {
 		errorText: state.get('submitError'),
-		formValid: validate && validate(rootState, identifierTypes, isMerge),
+		formValid: validate && validate(rootState, identifierTypes, isMerge, isUf),
 		note: state.get('note'),
 		submitted: state.get('submitted')
 	};

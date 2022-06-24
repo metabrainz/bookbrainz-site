@@ -78,17 +78,15 @@ export function validateEditionSectionPublisher(value: any): boolean {
 		return true;
 	}
 	const publishers = convertMapToObject(value);
-	let flag = false;
 	for (const pubId in publishers) {
 		if (Object.prototype.hasOwnProperty.call(publishers, pubId)) {
 			const publisher = publishers[pubId];
 			if (!validateUUID(get(publisher, 'id', null), true)) {
 				return false;
 			}
-			flag = true;
 		}
 	}
-	return flag;
+	return true;
 }
 
 export function validateEditionSectionReleaseDate(value: any) {
@@ -129,14 +127,15 @@ export function validateEditionSection(data: any): boolean {
 
 export function validateForm(
 	formData: any, identifierTypes?: Array<_IdentifierType> | null | undefined,
-	isMerge?:boolean
+	isMerge?:boolean,
+	isCustom?:boolean
 ): boolean {
 	let validAuthorCredit;
 	if (isMerge) {
 		validAuthorCredit = validateAuthorCreditSectionMerge(get(formData, 'authorCredit', {}));
 	}
 	else {
-		validAuthorCredit = validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}));
+		validAuthorCredit = validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}), isCustom);
 	}
 	const conditions = [
 		validateAliases(get(formData, 'aliasEditor', {})),
@@ -148,6 +147,5 @@ export function validateForm(
 		validAuthorCredit,
 		validateSubmissionSection(get(formData, 'submissionSection', {}))
 	];
-
 	return _.every(conditions);
 }

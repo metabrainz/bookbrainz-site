@@ -282,7 +282,7 @@ function EditionSection({
 	return (
 		<div>
 			{headingTag}
-			<AuthorCreditSection/>
+			{!isUf && <AuthorCreditSection/>}
 			<p className="text-muted">
 				Edition Group is required — this cannot be blank. You can search for and choose an existing Edition Group,
 				or choose to automatically create one instead.

@@ -122,6 +122,12 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 			newData[pid] = publisher;
 		}
 	});
+	// add new authors
+	_.forEach(data.Authors, (author, aid) => {
+		if (author.__isNew__) {
+			newData[aid] = author;
+		}
+	});
 	// add new works
 	_.forEach(data.Works, (work, wid) => {
 		if (work.__isNew__) {

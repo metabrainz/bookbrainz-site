@@ -83,7 +83,7 @@ export type NavButtonsProps = {
 export type SearchEntityCreateDispatchProps = {
 	onModalOpen:(arg:string)=>unknown,
 	onModalClose:()=>unknown,
-	onSubmitEntity:()=>unknown
+	onSubmitEntity:(arg:string)=>unknown
 };
 
 export type SearchEntityCreateOwnProps = {
@@ -97,6 +97,7 @@ export type SearchEntityCreateOwnProps = {
 	languageOptions?:Array<any>,
 	value?:Array<EntitySelect> | EntitySelect
 	type:string,
+	rowId?:string,
 	onChange:(arg)=>unknown
 
 };

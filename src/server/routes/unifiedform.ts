@@ -13,7 +13,9 @@ router.get('/create', isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats, middleware.loadEditionGroupTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes, middleware.loadGenders, middleware.loadPublisherTypes, middleware.loadAuthorTypes,
 	middleware.loadRelationshipTypes, (req:PassportRequest, res:express.Response) => {
-		const props = generateUnifiedProps(req, res, {});
+		const props = generateUnifiedProps(req, res, {
+			genderOptions: res.locals.genders
+		});
 		const formMarkup = unifiedFormMarkup(props);
 		const {markup, props: updatedProps} = formMarkup;
 		return res.send(target({

@@ -1,12 +1,13 @@
+import {ADD_AUTHOR, ADD_PUBLISHER} from './cover-tab/action';
 import {DUMP_EDITION, LOAD_EDITION} from './action';
-import {ISBNReducer, publishersReducer} from './cover-tab/reducer';
+import {ISBNReducer, authorsReducer, publishersReducer} from './cover-tab/reducer';
 import {ADD_EDITION_GROUP} from './detail-tab/action';
-import {ADD_PUBLISHER} from './cover-tab/action';
 import {ADD_WORK} from './content-tab/action';
 import Immutable from 'immutable';
 import aliasEditorReducer from '../entity-editor/alias-editor/reducer';
 import annotationSectionReducer from '../entity-editor/annotation-section/reducer';
 import authorCreditEditorReducer from '../entity-editor/author-credit-editor/reducer';
+import authorSectionReducer from '../entity-editor/author-section/reducer';
 import buttonBarReducer from '../entity-editor/button-bar/reducer';
 import {combineReducers} from 'redux-immutable';
 import editionGroupSectionReducer from '../entity-editor/edition-group-section/reducer';
@@ -108,9 +109,29 @@ function crossSliceReducer(state, action) {
 		submissionSection: state.get('submissionSection')
 	};
 	switch (type) {
+		case ADD_AUTHOR:
+			intermediateState = intermediateState.setIn(['authorCreditEditor', action.payload.rowId, 'author'], Immutable.Map({
+				id: action.payload.id,
+				rowId: action.payload.rowId,
+				text: activeEntityState.nameSection.get('name'),
+				type: 'Author'
+			}));
+			intermediateState = intermediateState.setIn(
+				['authorCreditEditor', action.payload.rowId, 'name'], activeEntityState.nameSection.get('name')
+			);
+			action.payload.value = action.payload.value ?? {
+				...activeEntityState,
+				__isNew__: true,
+				authorSection: intermediateState.get('authorSection'),
+				id: action.payload.id,
+				text: activeEntityState.nameSection.get('name'),
+				type: 'Author'
+			};
+			break;
 		case DUMP_EDITION:
 			action.payload.value = {
 				...activeEntityState,
+				authorCreditEditor: state.get('authorCreditEditor'),
 				editionSection: state.get('editionSection')
 			};
 			intermediateState = intermediateState.merge(initialState);
@@ -165,6 +186,7 @@ export function createRootReducer() {
 	return (state: Immutable.Map<string, any>, action) => {
 		const intermediateState = crossSliceReducer(state, action);
 		return combineReducers({
+			Authors: authorsReducer,
 			EditionGroups: editionGroupsReducer,
 			Editions: newEditionReducer,
 			ISBN: ISBNReducer,
@@ -173,6 +195,7 @@ export function createRootReducer() {
 			aliasEditor: aliasEditorReducer,
 			annotationSection: annotationSectionReducer,
 			authorCreditEditor: authorCreditEditorReducer,
+			authorSection: authorSectionReducer,
 			buttonBar: buttonBarReducer,
 			editionGroupSection: editionGroupSectionReducer,
 			editionSection: editionSectionReducer,
