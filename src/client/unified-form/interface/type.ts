@@ -40,7 +40,8 @@ export type CoverStateProps = {
     identifierEditorVisible:boolean
 };
 export type CoverDispatchProps = {
-    onPublisherChange: (arg:any)=>unknown
+    onPublisherChange: (arg:any)=>unknown,
+    onClearPublisher: (arg:string)=>unknown,
 };
 export type CoverProps = CoverOwnProps & CoverStateProps & CoverDispatchProps;
 
@@ -98,7 +99,7 @@ export type SearchEntityCreateOwnProps = {
 	value?:Array<EntitySelect> | EntitySelect
 	type:string,
 	rowId?:string,
-	onChange:(arg)=>unknown
+	onChange:(arg, ...optional)=>unknown
 
 };
 export type SearchEntityCreateProps = SearchEntityCreateDispatchProps & SearchEntityCreateOwnProps & CommonProps<any, any>;

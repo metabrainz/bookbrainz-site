@@ -1,4 +1,4 @@
-import {ADD_AUTHOR, ADD_PUBLISHER, UPDATE_ISBN_TYPE, UPDATE_ISBN_VALUE} from './action';
+import {ADD_AUTHOR, ADD_PUBLISHER, CLEAR_PUBLISHER, UPDATE_ISBN_TYPE, UPDATE_ISBN_VALUE} from './action';
 import Immutable from 'immutable';
 
 
@@ -21,6 +21,8 @@ export function publishersReducer(state = Immutable.Map({}), {type, payload}) {
 	switch (type) {
 		case ADD_PUBLISHER:
 			return state.set(payload.id, Immutable.fromJS(payload.value));
+		case CLEAR_PUBLISHER:
+			return state.delete(payload);
 		default:
 			return state;
 	}

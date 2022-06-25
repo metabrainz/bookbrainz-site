@@ -513,7 +513,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
 		onEditionGroupChange: (value, action) => {
-			if (action.action === 'clear') {
+			if (action.removedValues[0]?.__isNew__ && action.action === 'clear') {
 				dispatch(clearEditionGroups());
 			}
 			dispatch(updateEditionGroup(value));
