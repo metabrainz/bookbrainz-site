@@ -61,6 +61,7 @@ import NumericField from '../common/numeric-field';
 import SearchEntityCreate from '../../unified-form/common/search-entity-create-select';
 import Select from 'react-select';
 import _ from 'lodash';
+import {clearEditionGroups} from '../../unified-form/detail-tab/action';
 import {connect} from 'react-redux';
 import {entityToOption} from '../../helpers/entity';
 import makeImmutable from '../common/make-immutable';
@@ -90,6 +91,7 @@ type Publisher = {
 };
 
 type EditionGroup = {
+	__isNew__: boolean,
 	value: string,
 	id: number
 };
@@ -129,7 +131,7 @@ type DispatchProps = {
 	onPagesChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
 	onPublisherChange: (arg: Publisher[]) => unknown,
 	onToggleShowEditionGroupSection: (showEGSection: boolean) => unknown,
-	onEditionGroupChange: (arg: EditionGroup) => unknown,
+	onEditionGroupChange: (arg: EditionGroup, action) => unknown,
 	onReleaseDateChange: (arg: string) => unknown,
 	onStatusChange: (obj: {value: number} | null | undefined) => unknown,
 	onWeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
@@ -510,7 +512,12 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onDepthChange: (event) => dispatch(debouncedUpdateDepth(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
-		onEditionGroupChange: (value) => dispatch(updateEditionGroup(value)),
+		onEditionGroupChange: (value, action) => {
+			if (action === 'clear' && value.__isNew__) {
+				dispatch(clearEditionGroups());
+			}
+			dispatch(updateEditionGroup(value));
+		},
 		onFormatChange: (value: {value: number} | null) => {
 			dispatch(updateFormat(value && value.value));
 			if (value.value === 3) {
