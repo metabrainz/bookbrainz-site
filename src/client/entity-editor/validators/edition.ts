@@ -131,14 +131,16 @@ export function validateEditionSection(data: any, isCustom = false): boolean {
 
 export function validateForm(
 	formData: any, identifierTypes?: Array<_IdentifierType> | null | undefined,
-	isMerge?:boolean
+	isMerge?:boolean,
+	isUf?:boolean
 ): boolean {
 	let validAuthorCredit;
+	const isCustom = isUf || Boolean(formData?.type);
 	if (isMerge) {
 		validAuthorCredit = validateAuthorCreditSectionMerge(get(formData, 'authorCredit', {}));
 	}
 	else {
-		validAuthorCredit = validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}));
+		validAuthorCredit = validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}), isCustom);
 	}
 	const conditions = [
 		validateAliases(get(formData, 'aliasEditor', {})),
@@ -146,7 +148,7 @@ export function validateForm(
 			get(formData, 'identifierEditor', {}), identifierTypes
 		),
 		validateNameSection(get(formData, 'nameSection', {})),
-		validateEditionSection(get(formData, 'editionSection', {}), Boolean(formData?.type)),
+		validateEditionSection(get(formData, 'editionSection', {}), isCustom),
 		validAuthorCredit,
 		validateSubmissionSection(get(formData, 'submissionSection', {}))
 	];

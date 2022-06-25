@@ -1,4 +1,4 @@
-import {baseState, createEditionGroup, createEditor,
+import {baseState, createAuthor, createEditionGroup, createEditor,
 	createPublisher, createWork, getRandomUUID, languageAttribs, truncateEntities} from '../../../test-helpers/create-entities';
 import {every, forOwn, map} from 'lodash';
 import app from '../../../../src/server/app';
@@ -41,12 +41,14 @@ describe('Unified form routes', () => {
 	const wBBID = getRandomUUID();
 	const pBBID = getRandomUUID();
 	const egBBID = getRandomUUID();
+	const aBBID = getRandomUUID();
 	before(async () => {
 		try {
 			await createEditor(123456);
 			await createWork(wBBID);
 			await createPublisher(pBBID);
 			await createEditionGroup(egBBID);
+			await createAuthor(aBBID);
 			newLanguage = await new Language({...languageAttribs})
 				.save(null, {method: 'insert'});
 			newRelationshipType = await new RelationshipType(relationshipTypeData)
@@ -253,7 +255,9 @@ describe('Unified form routes', () => {
 			},
 			type: 'Edition'
 		}};
-		postData.b0.nameSection.language = newLanguage.id;
+		forOwn(postData, (value) => {
+			value.nameSection.language = newLanguage.id;
+		});
 		const res = await agent.post('/create/handler').send(postData);
 		const createdEntities = res.body;
 		expect(createdEntities.length).equal(2);
@@ -307,7 +311,9 @@ describe('Unified form routes', () => {
 			},
 			type: 'Edition'
 		}};
-		postData.b0.nameSection.language = newLanguage.id;
+		forOwn(postData, (value) => {
+			value.nameSection.language = newLanguage.id;
+		});
 		const res = await agent.post('/create/handler').send(postData);
 		const createdEntities = res.body;
 		expect(createdEntities.length).equal(2);
@@ -319,6 +325,67 @@ describe('Unified form routes', () => {
 		expect(Boolean(fetchedEditionGroupEntity)).to.be.true;
 		const linkedEditionGroupBbid = fetchedEditionEntity.editionGroup.bbid;
 		expect(linkedEditionGroupBbid).equal(fetchedEditionGroupEntity.bbid);
+		expect(res).to.be.ok;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw error while linking existing author to edition using AC', async () => {
+		const postData = {b0: {
+			...baseState,
+			authorCreditEditor: {
+				n0: {
+					author: {
+						id: aBBID
+					},
+					joinPhrase: '',
+					name: 'author1'
+				}
+			},
+			editionSection: {},
+			type: 'Edition'
+		}};
+		postData.b0.nameSection.language = newLanguage.id;
+		const res = await agent.post('/create/handler').send(postData);
+		const createdEntities = res.body;
+		expect(createdEntities.length).equal(1);
+		const editionEntity = createdEntities.find((entity) => entity.type === 'Edition');
+		const fetchedEditionEntity = await getEntityByBBID(orm, editionEntity.bbid, ['authorCredit']);
+		expect(Boolean(fetchedEditionEntity)).to.be.true;
+		expect(fetchedEditionEntity.authorCredit.authorCount).equal(1);
+		expect(res).to.be.ok;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw error while linking new author to edition using AC', async () => {
+		const postData = {
+			b0: {
+				...baseState,
+				authorSection: {},
+				type: 'Author'
+			},
+			b1: {
+				...baseState,
+				authorCreditEditor: {
+					n0: {
+						author: {
+							id: 'b0'
+						},
+						joinPhrase: '',
+						name: 'author1'
+					}
+				},
+				editionSection: {},
+				type: 'Edition'
+			}
+		};
+		forOwn(postData, (value) => {
+			value.nameSection.language = newLanguage.id;
+		});
+		const res = await agent.post('/create/handler').send(postData);
+		const createdEntities = res.body;
+		expect(createdEntities.length).equal(2);
+		const editionEntity = createdEntities.find((entity) => entity.type === 'Edition');
+		const fetchedEditionEntity = await getEntityByBBID(orm, editionEntity.bbid, ['authorCredit']);
+		expect(Boolean(fetchedEditionEntity)).to.be.true;
+		expect(fetchedEditionEntity.authorCredit.authorCount).equal(1);
 		expect(res).to.be.ok;
 		expect(res).to.have.status(200);
 	});

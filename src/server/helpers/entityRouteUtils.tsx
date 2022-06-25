@@ -328,7 +328,7 @@ function validateUnifiedForm(body:Record<string, any>):boolean {
 		if (Object.prototype.hasOwnProperty.call(body, entityKey)) {
 			const entityForm = body[entityKey];
 			const entityType = _.camelCase(entityForm.type);
-			if (!entityType && !validEntityTypes.includes(entityType)) {
+			if (!entityType || !validEntityTypes.includes(entityType)) {
 				return false;
 			}
 			const validator = getValidator(entityType);
