@@ -199,7 +199,7 @@ function EditionSection({
 		label: language.name,
 		value: language.id
 	}));
-	rest.languageOptions = languageOptions;
+	_.set(rest, 'languageOptions', languageOptions);
 	let publisherValue = publishers ?? {};
 	publisherValue = Object.values(convertMapToObject(publisherValue));
 	const editionFormatsForDisplay = editionFormats.map((format) => ({
@@ -227,7 +227,6 @@ function EditionSection({
 		<React.Fragment>
 			<Col className="margin-bottom-2" lg={{offset: isUf || showMatchingEditionGroups ? 0 : 3, span: 6}}>
 				<EntitySearchField
-					clearable={false}
 					error={!validateEditionSectionEditionGroup(editionGroupValue, true)}
 					help="Group with other Editions of the same book"
 					instanceId="edition-group"
@@ -513,7 +512,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
 		onEditionGroupChange: (value, action) => {
-			if (action.removedValues[0]?.__isNew__ && action.action === 'clear') {
+			// If the user selected a new edition group, we need to clear the old one
+			if (['clear', 'pop-value', 'select-option'].includes(action.action)) {
 				dispatch(clearEditionGroups());
 			}
 			dispatch(updateEditionGroup(value));
