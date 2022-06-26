@@ -42,6 +42,7 @@ export type CoverStateProps = {
 export type CoverDispatchProps = {
     onPublisherChange: (arg:any)=>unknown,
     onClearPublisher: (arg:string)=>unknown,
+	handleClearPublishers: ()=>unknown
 };
 export type CoverProps = CoverOwnProps & CoverStateProps & CoverDispatchProps;
 
