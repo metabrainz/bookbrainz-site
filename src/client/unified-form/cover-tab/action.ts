@@ -6,6 +6,7 @@ export const ADD_AUTHOR = 'ADD_AUTHOR';
 export const UPDATE_ISBN_TYPE = 'UPDATE_ISBN_TYPE';
 export const ADD_PUBLISHER = 'ADD_PUBLISHER';
 export const CLEAR_PUBLISHER = 'CLEAR_PUBLISHER';
+export const CLEAR_AUTHOR = 'CLEAR_AUTHOR';
 
 let nextPublisherId = 0;
 let nextAuthorId = 0;
@@ -21,6 +22,13 @@ export function clearPublisher(pid:string):Action {
 	return {
 		payload: pid,
 		type: CLEAR_PUBLISHER
+	};
+}
+
+export function clearAuthor(aid:string):Action {
+	return {
+		payload: aid,
+		type: CLEAR_AUTHOR
 	};
 }
 export function addAuthor(rowId:string, value = null):Action {

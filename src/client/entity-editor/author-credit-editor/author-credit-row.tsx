@@ -18,7 +18,6 @@
 
 import {
 	Action,
-	Author,
 	removeAuthorCreditRow,
 	updateCreditAuthorValue,
 	updateCreditDisplayValue,
@@ -28,9 +27,11 @@ import {Button, Col, Form, Row} from 'react-bootstrap';
 import type {Dispatch} from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import Immutable from 'immutable';
 import React from 'react';
 import SearchEntityCreate from '../../unified-form/common/search-entity-create-select';
 import ValidationLabel from '../common/validation-label';
+import {clearAuthor} from '../../unified-form/cover-tab/action';
 import {connect} from 'react-redux';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
@@ -41,13 +42,14 @@ type OwnProps = {
 };
 
 type StateProps = {
-	author: Author,
+	author: Immutable.Map<string, any>,
 	joinPhrase: string,
 	name: string
 };
 
 type DispatchProps = {
 	onAuthorChange: (Author) => unknown,
+	onClearHandler:(arg) => unknown,
 	onJoinPhraseChange: (string) => unknown,
 	onNameChange: (string) => unknown,
 	onRemoveButtonClick: () => unknown
@@ -85,11 +87,25 @@ function AuthorCreditRow({
 	isUf,
 	onAuthorChange,
 	onJoinPhraseChange,
+	onClearHandler,
 	onNameChange,
 	onRemoveButtonClick,
 	...rest
 }: Props) {
 	const SelectWrapper = !isUf ? EntitySearchFieldOption : SearchEntityCreate;
+	const onChangeHandler = React.useCallback((value, action) => {
+		if (['clear', 'pop-value', 'select-option'].includes(action.action) && author && author.get('__isNew__', false)) {
+			onClearHandler(author.get('id'));
+		}
+		onAuthorChange(value);
+	}, [author]);
+	const handleButtonClick = React.useCallback(() => {
+		// don't remove author if it's first row
+		if (index !== 'n0' && author.get('__isNew__')) {
+			onClearHandler(author.get('id'));
+		}
+		onRemoveButtonClick();
+	}, [author, index]);
 	return (
 		<div>
 			<Row>
@@ -101,7 +117,7 @@ function AuthorCreditRow({
 						type="author"
 						validationState={!author ? 'error' : null}
 						value={author}
-						onChange={onAuthorChange}
+						onChange={onChangeHandler}
 						{...rest}
 					/>
 				</Col>
@@ -130,7 +146,7 @@ function AuthorCreditRow({
 						block
 						className="margin-top-d18"
 						variant="danger"
-						onClick={onRemoveButtonClick}
+						onClick={handleButtonClick}
 					>
 						<FontAwesomeIcon icon={faTimes}/>
 						&nbsp;Remove
@@ -161,6 +177,7 @@ function mapDispatchToProps(
 ): DispatchProps {
 	return {
 		onAuthorChange: (value) => dispatch(updateCreditAuthorValue(index, value)),
+		onClearHandler: (aid) => dispatch(clearAuthor(aid)),
 		onJoinPhraseChange: (event: React.ChangeEvent<HTMLInputElement>) => dispatch(updateCreditJoinPhraseValue(index, event.target.value)),
 		onNameChange: (event: React.ChangeEvent<HTMLInputElement>) => dispatch(updateCreditDisplayValue(index, event.target.value)),
 		onRemoveButtonClick: () => dispatch(removeAuthorCreditRow(index))

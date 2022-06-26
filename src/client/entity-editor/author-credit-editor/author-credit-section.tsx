@@ -28,7 +28,7 @@ import {
 import {Button, Col, Form, InputGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 
 import {SingleValueProps, components} from 'react-select';
-import {map as _map, values as _values} from 'lodash';
+import {get as _get, map as _map, values as _values} from 'lodash';
 
 import {faPencilAlt, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import AuthorCreditEditor from './author-credit-editor';
@@ -39,6 +39,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import SearchEntityCreate from '../../unified-form/common/search-entity-create-select';
 import ValidationLabel from '../common/validation-label';
+import {clearAuthor} from '../../unified-form/cover-tab/action';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {validateAuthorCreditSection} from '../validators/common';
@@ -56,6 +57,7 @@ type StateProps = {
 
 type DispatchProps = {
 	onAuthorChange: (Author) => unknown,
+	onClearHandler:(arg) => unknown,
 	onEditAuthorCredit: (rowCount: number) => unknown,
 	onEditorClose: () => unknown,
 };
@@ -63,7 +65,7 @@ type DispatchProps = {
 type Props = OwnProps & StateProps & DispatchProps;
 
 function AuthorCreditSection({
-	authorCreditEditor, onEditAuthorCredit, onEditorClose, showEditor, onAuthorChange, isEditable, isUf, ...rest
+	authorCreditEditor, onEditAuthorCredit, onEditorClose, showEditor, onAuthorChange, isEditable, onClearHandler, isUf, ...rest
 }: Props) {
 	let editor;
 	if (showEditor) {
@@ -110,6 +112,13 @@ function AuthorCreditSection({
 	if (isUf) {
 		resCol = {lg: {offset: 0, span: 6}};
 	}
+	const onChangeHandler = React.useCallback((value, action) => {
+		const authorId = _get(authorCreditEditor, 'n0.author.id', null);
+		if (['clear', 'pop-value', 'select-option'].includes(action.action) && authorId) {
+			onClearHandler(authorId);
+		}
+		onAuthorChange(value);
+	}, [authorCreditEditor]);
 	const SelectWrapper = !isUf ? EntitySearchFieldOption : SearchEntityCreate;
 	return (
 		<Row className="margin-bottom-2">
@@ -130,13 +139,14 @@ function AuthorCreditSection({
 							<SelectWrapper
 								customComponents={{DropdownIndicator: null, SingleValue}}
 								instanceId="author0"
+								isClearable={false}
 								isDisabled={!isEditable}
 								isUf={isUf}
 								placeholder="Type to search or paste a BBID"
 								rowId="n0"
 								type="author"
 								value={optionValue}
-								onChange={onAuthorChange}
+								onChange={onChangeHandler}
 								{...rest}
 							/>
 						</div>
@@ -172,7 +182,10 @@ function mapStateToProps(rootState): StateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		onAuthorChange: (value) => dispatch(updateCreditAuthorValue(-1, value)),
+		onAuthorChange: (value) => {
+			dispatch(updateCreditAuthorValue(-1, value));
+		},
+		onClearHandler: (aid) => dispatch(clearAuthor(aid)),
 		onEditAuthorCredit: (rowCount:number) => {
 			dispatch(showAuthorCreditEditor());
 			// Automatically add an empty row if editor is empty

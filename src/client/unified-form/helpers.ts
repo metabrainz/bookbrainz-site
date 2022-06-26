@@ -123,6 +123,7 @@ function crossSliceReducer(state, action) {
 	switch (type) {
 		case ADD_AUTHOR:
 			intermediateState = intermediateState.setIn(['Editions', 'e0', 'authorCreditEditor', action.payload.rowId, 'author'], Immutable.Map({
+				__isNew__: true,
 				id: action.payload.id,
 				rowId: action.payload.rowId,
 				text: activeEntityState.nameSection.get('name'),
