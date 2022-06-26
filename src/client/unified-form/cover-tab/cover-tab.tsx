@@ -58,10 +58,9 @@ export function CoverTab(props:CoverProps) {
 }
 
 function mapStateToProps(rootState) {
-	const newPublishers = rootState.getIn(['Publishers'], {});
 	return {
 		identifierEditorVisible: rootState.getIn(['buttonBar', 'identifierEditorVisible']),
-		publisherValue: newPublishers.merge(rootState.getIn(['editionSection', 'publisher'], {}))
+		publisherValue: rootState.getIn(['editionSection', 'publisher'], {})
 	};
 }
 

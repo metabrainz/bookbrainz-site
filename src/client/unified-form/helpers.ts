@@ -77,7 +77,7 @@ const initialState = Immutable.Map({
 		languages: Immutable.List([]),
 		matchingNameEditionGroups: [],
 		physicalEnable: true,
-		publisher: null,
+		publisher: Immutable.Map({}),
 		releaseDate: '',
 		status: null
 	}),
@@ -175,16 +175,24 @@ function crossSliceReducer(state, action) {
 				workSection: intermediateState.get('workSection')
 			};
 			break;
-		case ADD_PUBLISHER:
-			action.payload.value = action.payload.value ?? {
-				...activeEntityState,
+		case ADD_PUBLISHER: {
+			const newPublisher = {
 				__isNew__: true,
 				id: action.payload.id,
 				publisherSection: intermediateState.get('publisherSection'),
 				text: activeEntityState.nameSection.get('name'),
 				type: 'Publisher'
 			};
+			action.payload.value = action.payload.value ?? {
+				...activeEntityState,
+				...newPublisher
+			};
+			intermediateState = intermediateState.setIn(
+				['Editions', 'e0', 'editionSection', 'publisher', newPublisher.id]
+				, Immutable.Map(newPublisher)
+			);
 			break;
+		}
 		case LOAD_EDITION:
 		{
 			intermediateState = intermediateState.merge(intermediateState.getIn(['Editions', action.payload.id]));
