@@ -159,6 +159,7 @@ function crossSliceReducer(state, action) {
 			action.payload.value = action.payload.value ?? {
 				...activeEntityState,
 				__isNew__: true,
+				authorCreditEditor: intermediateState.get('authorCreditEditor'),
 				editionGroupSection: intermediateState.get('editionGroupSection'),
 				id: action.payload.id,
 				text: activeEntityState.nameSection.get('name'),
