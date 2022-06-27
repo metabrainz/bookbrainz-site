@@ -52,6 +52,7 @@ import _ from 'lodash';
 import {getEntityLabel} from '../../../client/helpers/entity';
 import {getOrderedRevisionsForEntityPage} from '../../helpers/revisions';
 import log from 'log';
+import {processAchievement} from './process-unified-form';
 import target from '../../templates/target';
 
 
@@ -299,7 +300,7 @@ async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
 }
 
 
-async function saveEntitiesAndFinishRevision(
+export async function saveEntitiesAndFinishRevision(
 	orm, transacting, isNew: boolean, newRevision: any, mainEntity: any,
 	updatedEntities: any[], editorID: number, note: string
 ) {
@@ -399,7 +400,7 @@ export async function deleteRelationships(orm: any, transacting: Transaction, ma
 	return otherEntities;
 }
 
-function fetchOrCreateMainEntity(
+export function fetchOrCreateMainEntity(
 	orm, transacting, isNew, bbid, entityType
 ) {
 	const model = commonUtils.getEntityModelByType(orm, entityType);
@@ -875,7 +876,7 @@ async function getNextIdentifierSet(orm, transacting, currentEntity, body) {
 		orm, transacting, oldIdentifierSet, body.identifiers || []
 	);
 }
-async function getNextRelationshipAttributeSets(orm, transacting, body) {
+export async function getNextRelationshipAttributeSets(orm, transacting, body) {
 	const {RelationshipAttributeSet} = orm;
 	const relationships = await Promise.all(body.relationships.map(async (relationship) => {
 		const id = relationship.attributeSetId;
@@ -897,7 +898,7 @@ async function getNextRelationshipAttributeSets(orm, transacting, body) {
 	return relationships;
 }
 
-async function getNextRelationshipSets(
+export async function getNextRelationshipSets(
 	orm, transacting, currentEntity, body
 ) {
 	const {RelationshipSet} = orm;
@@ -947,7 +948,7 @@ async function getNextDisambiguation(orm, transacting, currentEntity, body) {
 	);
 }
 
-async function getChangedProps(
+export async function getChangedProps(
 	orm, transacting, isNew, currentEntity, body, entityType,
 	newRevision, derivedProps
 ) {
@@ -1002,7 +1003,7 @@ async function getChangedProps(
 }
 
 
-function fetchEntitiesForRelationships(
+export function fetchEntitiesForRelationships(
 	orm, transacting, currentEntity, relationshipSets
 ) {
 	const bbidsToFetch = _.without(
@@ -1022,7 +1023,7 @@ function fetchEntitiesForRelationships(
  * @description Edition Groups will be created automatically by the ORM if no EditionGroup BBID is set on a new Edition.
  * This method fetches and indexes (search) those potential new EditionGroups that may have been created automatically.
  */
-async function indexAutoCreatedEditionGroup(orm, newEdition, transacting) {
+export async function indexAutoCreatedEditionGroup(orm, newEdition, transacting) {
 	const {EditionGroup} = orm;
 	const bbid = newEdition.get('editionGroupBbid');
 	try {
@@ -1175,16 +1176,7 @@ export function handleCreateOrEditEntity(
 	});
 
 	const achievementPromise = entityEditPromise.then(
-		(entityJSON) => achievement.processEdit(
-			orm, editorJSON.id, entityJSON.revisionId
-		)
-			.then((unlock) => {
-				if (unlock.alert) {
-					entityJSON.alert = unlock.alert;
-				}
-				return entityJSON;
-			})
-			.catch(err => { throw err; })
+		(entityJSON) => processAchievement(orm, editorJSON.id, entityJSON)
 	);
 
 	return handler.sendPromiseResult(
@@ -1380,3 +1372,4 @@ export function displayPreview(req:PassportRequest, res:$Response, next) {
 		title: 'Preview'
 	}));
 }
+

@@ -274,9 +274,10 @@ export function isbn13To10(isbn13:string):string | null {
  *
  * @param {Object} orm - orm
  * @param {string} bbid - bookbrainz id
+ * @param {Array} otherRelations - entity specific relations to fetch
  * @returns {Promise} - Promise resolves to entity data if exist else null
  */
-export async function getEntityByBBID(orm, bbid:string):Promise<Record<string, any> | null> {
+export async function getEntityByBBID(orm, bbid:string, otherRelations:Array<string> = []):Promise<Record<string, any> | null> {
 	if (!isValidBBID(bbid)) {
 		return null;
 	}
@@ -290,8 +291,10 @@ export async function getEntityByBBID(orm, bbid:string):Promise<Record<string, a
 		'annotation',
 		'disambiguation',
 		'defaultAlias',
+		'relationshipSet.relationships.type',
 		'aliasSet.aliases',
-		'identifierSet.identifiers'
+		'identifierSet.identifiers',
+		...otherRelations
 	];
 	const entityData = await orm.func.entity.getEntity(orm, entityType, bbid, baseRelations);
 	return entityData;

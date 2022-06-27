@@ -69,11 +69,11 @@ export function validateEditionSectionPages(value: any): boolean {
 	return validatePositiveInteger(value);
 }
 
-export function validateEditionSectionEditionGroup(value: any, editionGroupRequired: boolean | null | undefined): boolean {
-	return validateUUID(get(value, 'id', null), editionGroupRequired);
+export function validateEditionSectionEditionGroup(value: any, editionGroupRequired: boolean | null | undefined, isCustom = false): boolean {
+	return isCustom ? !editionGroupRequired || Boolean(get(value, 'id', null)) : validateUUID(get(value, 'id', null), editionGroupRequired);
 }
 
-export function validateEditionSectionPublisher(value: any): boolean {
+export function validateEditionSectionPublisher(value: any, isCustom = false): boolean {
 	if (!value) {
 		return true;
 	}
@@ -82,7 +82,8 @@ export function validateEditionSectionPublisher(value: any): boolean {
 	for (const pubId in publishers) {
 		if (Object.prototype.hasOwnProperty.call(publishers, pubId)) {
 			const publisher = publishers[pubId];
-			if (!validateUUID(get(publisher, 'id', null), true)) {
+			const isValid = isCustom ? Boolean(get(publisher, 'id', null)) : validateUUID(get(publisher, 'id', null), true);
+			if (!isValid) {
 				return false;
 			}
 			flag = true;
@@ -108,7 +109,7 @@ export function validateEditionSectionWidth(value: any): boolean {
 	return validatePositiveInteger(value);
 }
 
-export function validateEditionSection(data: any): boolean {
+export function validateEditionSection(data: any, isCustom = false): boolean {
 	return (
 		validateEditionSectionDepth(get(data, 'depth', null)) &&
 		validateEditionSectionFormat(get(data, 'format', null)) &&
@@ -117,9 +118,10 @@ export function validateEditionSection(data: any): boolean {
 		validateEditionSectionPages(get(data, 'pages', null)) &&
 		validateEditionSectionEditionGroup(
 			get(data, 'editionGroup', null),
-			get(data, 'editionGroupRequired', null)
+			get(data, 'editionGroupRequired', null),
+			isCustom
 		) &&
-		validateEditionSectionPublisher(get(data, 'publisher', null)) &&
+		validateEditionSectionPublisher(get(data, 'publisher', null), isCustom) &&
 		validateEditionSectionReleaseDate(get(data, 'releaseDate', null)).isValid &&
 		validateEditionSectionStatus(get(data, 'status', null)) &&
 		validateEditionSectionWeight(get(data, 'weight', null)) &&
@@ -129,14 +131,16 @@ export function validateEditionSection(data: any): boolean {
 
 export function validateForm(
 	formData: any, identifierTypes?: Array<_IdentifierType> | null | undefined,
-	isMerge?:boolean
+	isMerge?:boolean,
+	isUf?:boolean
 ): boolean {
 	let validAuthorCredit;
+	const isCustom = isUf || Boolean(formData?.type);
 	if (isMerge) {
 		validAuthorCredit = validateAuthorCreditSectionMerge(get(formData, 'authorCredit', {}));
 	}
 	else {
-		validAuthorCredit = validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}));
+		validAuthorCredit = validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}), isCustom);
 	}
 	const conditions = [
 		validateAliases(get(formData, 'aliasEditor', {})),
@@ -144,7 +148,7 @@ export function validateForm(
 			get(formData, 'identifierEditor', {}), identifierTypes
 		),
 		validateNameSection(get(formData, 'nameSection', {})),
-		validateEditionSection(get(formData, 'editionSection', {})),
+		validateEditionSection(get(formData, 'editionSection', {}), isCustom),
 		validAuthorCredit,
 		validateSubmissionSection(get(formData, 'submissionSection', {}))
 	];

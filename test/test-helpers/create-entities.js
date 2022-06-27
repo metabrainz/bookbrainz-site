@@ -46,6 +46,29 @@ export const seedInitialState = {
 	submissionSection: 'note'
 };
 
+export const baseState = {
+	aliasEditor: {},
+	annotationSection: {
+		content: ''
+	},
+	authorCreditEditor: {},
+	identifierEditor: {},
+	nameSection: {
+		disambiguation: '',
+		language: 1,
+		name: 'bob',
+		sortName: 'bob'
+	},
+	relationshipSection: {
+		relationships: {}
+	},
+	submissionSection: {
+		note: 'first entity',
+		submitError: '',
+		submitted: false
+	}
+};
+
 export const editorTypeAttribs = {
 	label: 'test_type'
 };
@@ -59,7 +82,7 @@ export const editorAttribs = {
 	typeId: 1
 };
 
-const languageAttribs = {
+export const languageAttribs = {
 	frequency: 1,
 	isoCode1: 'en',
 	isoCode2b: 'eng',

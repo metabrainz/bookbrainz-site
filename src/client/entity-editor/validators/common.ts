@@ -25,16 +25,17 @@ import {
 	validateUUID
 } from './base';
 
+import {AuthorCredit} from '../author-credit-editor/actions';
 import {Iterable} from 'immutable';
 import _ from 'lodash';
-import {AuthorCredit} from '../author-credit-editor/actions';
 
 
 export function validateMultiple(
 	values: any[],
 	validationFunction: (value: any, ...rest: any[]) => boolean,
 	additionalArgs?: any,
-	requiresOneOrMore?: boolean
+	requiresOneOrMore?: boolean,
+	isCustom = false
 ): boolean {
 	if (requiresOneOrMore && _.isEmpty(values)) {
 		return false;
@@ -48,7 +49,7 @@ export function validateMultiple(
 	}
 
 	return every(values, (value) =>
-		validationFunction(value, additionalArgs));
+		validationFunction(value, isCustom, additionalArgs));
 }
 
 export function validateAliasName(value: any): boolean {
@@ -184,8 +185,8 @@ export function validateSubmissionSection(
 	);
 }
 
-export function validateAuthorCreditRow(row: any): boolean {
-	return validateUUID(getIn(row, ['author', 'id'], null), true) &&
+export function validateAuthorCreditRow(row: any, isCustom = false): boolean {
+	return (isCustom ? Boolean(getIn(row, ['author', 'id'], null)) : validateUUID(getIn(row, ['author', 'id'], null), true)) &&
 	validateRequiredString(get(row, 'name', null)) &&
 	validateOptionalString(get(row, 'joinPhrase', null));
 }
@@ -193,7 +194,7 @@ export function validateAuthorCreditRow(row: any): boolean {
 export const validateAuthorCreditSection = _.partialRight(
 	// Requires at least one Author Credit row
 	validateMultiple, _.partialRight.placeholder,
-	validateAuthorCreditRow, null, false
+	validateAuthorCreditRow, null, false, _.partialRight.placeholder
 );
 // In the merge editor we use the authorCredit directly instead of the authorCreditEditor state
 export function validateAuthorCreditSectionMerge(authorCredit:AuthorCredit) :boolean {
