@@ -19,9 +19,9 @@
 
 import * as React from 'react';
 import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import AsyncSelect from 'react-select/async';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ValidationLabel from './validation-label';
-import VirtualizedSelect from 'react-virtualized-select';
 import {convertMapToObject} from '../../helpers/utils';
 import createFilterOptions from 'react-select-fast-filter-options';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
@@ -57,14 +57,16 @@ function LanguageField({
 	const label =
 		<ValidationLabel empty={empty} error={error}>Language</ValidationLabel>
 	;
-
+	const MAX_F2_OPTIONS = 20;
+	const MAX_F1_OPTIONS = 400;
 	const tooltip = <Tooltip>{tooltipText}</Tooltip>;
 	rest.options = convertMapToObject(rest.options);
+	const {value, options} = rest;
 	const filterOptions = createFilterOptions({
-		options: rest.options
+		options
 	});
 	const sortFilterOptions = (opts, input, selectOptions) => {
-		const newOptions = filterOptions(opts, input, selectOptions);
+		const newOptions = filterOptions(opts, input, selectOptions).slice(0, MAX_F2_OPTIONS);
 		const sortLang = (a, b) => {
 			if (isNumber(a.frequency) && isNumber(b.frequency) && a.frequency !== b.frequency) {
 				return b.frequency - a.frequency;
@@ -74,6 +76,17 @@ function LanguageField({
 		newOptions.sort(sortLang);
 		return newOptions;
 	};
+	const f2Languagees = options.filter((lang) => lang.frequency === 2).slice(0, MAX_F2_OPTIONS);
+	const f1Languagees = options.filter((lang) => lang.frequency === 1).slice(0, MAX_F1_OPTIONS);
+	const defaultOptions = [{
+		label: 'Frequently Used',
+		options: f2Languagees
+	},
+	{
+		label: 'Other',
+		options: f1Languagees
+	}];
+	const fetchOptions = React.useCallback((input) => Promise.resolve(sortFilterOptions(options, input, value)), []);
 	return (
 		<Form.Group>
 			<Form.Label>
@@ -85,7 +98,12 @@ function LanguageField({
 					/>
 				</OverlayTrigger>
 			</Form.Label>
-			<VirtualizedSelect filterOptions={sortFilterOptions} {...rest}/>
+			<AsyncSelect
+				cacheOptions
+				className="Select"
+				classNamePrefix="react-select"
+				defaultOptions={defaultOptions} loadOptions={fetchOptions} placeholder="Search language" {...rest}
+			/>
 		</Form.Group>
 	);
 }
