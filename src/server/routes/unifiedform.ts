@@ -1,8 +1,8 @@
 import * as middleware from '../helpers/middleware';
-import {generateUnifiedProps, unifiedFormMarkup} from '../helpers/entityRouteUtils';
+import {createEntitiesHandler, generateUnifiedProps, unifiedFormMarkup} from '../helpers/entityRouteUtils';
+import {isAuthenticated, isAuthenticatedForHandler} from '../helpers/auth';
 import {escapeProps} from '../helpers/props';
 import express from 'express';
-import {isAuthenticated} from '../helpers/auth';
 import target from '../templates/target';
 
 
@@ -26,5 +26,7 @@ router.get('/create', isAuthenticated, middleware.loadIdentifierTypes,
 			title: 'Unified  form'
 		}));
 	});
+
+router.post('/create/handler', isAuthenticatedForHandler, createEntitiesHandler);
 
 export default router;

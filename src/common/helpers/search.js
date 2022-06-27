@@ -102,7 +102,7 @@ function _searchForEntities(orm, dslQuery) {
 		.catch(error => log.error(error));
 }
 
-async function _bulkIndexEntities(entities) {
+export async function _bulkIndexEntities(entities) {
 	if (!entities.length) {
 		return;
 	}

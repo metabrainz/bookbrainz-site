@@ -24,6 +24,7 @@ import * as entityEditorHelpers from '../../client/entity-editor/helpers';
 import * as entityRoutes from '../routes/entity/entity';
 import * as error from '../../common/helpers/error';
 import * as propHelpers from '../../client/helpers/props';
+import * as unifiedRoutes from '../routes/entity/process-unified-form';
 import * as utils from './utils';
 
 import type {Request as $Request, Response as $Response} from 'express';
@@ -41,7 +42,7 @@ import {generateProps} from './props';
 
 const {createRootReducer: ufCreateRootReducer} = UnifiedFormHelpers;
 const {createRootReducer, getEntitySection, getEntitySectionMerge, getValidator} = entityEditorHelpers;
-
+const validEntityTypes = ['author', 'edition', 'editionGroup', 'publisher', 'series', 'work'];
 type EntityAction = 'create' | 'edit';
 type PassportRequest = $Request & {user: any, session: any};
 
@@ -370,4 +371,47 @@ export function generateUnifiedProps(
 	}, additionalProps);
 
 	return generateProps(req, res, props);
+}
+
+/**
+ * Validate Unified form
+ * @param {object} body - request body
+ * @returns {boolean}
+ */
+
+function validateUnifiedForm(body:Record<string, any>):boolean {
+	for (const entityKey in body) {
+		if (Object.prototype.hasOwnProperty.call(body, entityKey)) {
+			const entityForm = body[entityKey];
+			const entityType = _.camelCase(entityForm.type);
+			if (!entityType || !validEntityTypes.includes(entityType)) {
+				return false;
+			}
+			const validator = getValidator(entityType);
+			if (!validator(entityForm)) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+/**
+ * Middleware for handling unified form submission
+ * @param {object} req - Request object
+ * @param {object} res - Response object
+ */
+
+export function createEntitiesHandler(
+	req:$Request,
+	res:$Response
+) {
+	// validating
+	if (!validateUnifiedForm(req.body)) {
+		const err = new error.FormSubmissionError();
+		return error.sendErrorAsJSON(res, err);
+	}
+	// transforming
+	req.body = unifiedRoutes.transformForm(req.body);
+	return unifiedRoutes.handleCreateMultipleEntities(req as PassportRequest, res);
 }
