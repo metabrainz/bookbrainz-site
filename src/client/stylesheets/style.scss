@@ -774,6 +774,9 @@ $uf-primary:#EB743B;
 .uf-dialog{
 	max-width: 700px;
 }
+.uf-dialog .modal-dialog{
+	margin: 1.75rem 2rem;
+}
 .ac-select {
 	flex-grow: 2;
 }

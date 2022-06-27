@@ -73,18 +73,16 @@ export function validateEditionSectionEditionGroup(value: any, editionGroupRequi
 	return isCustom ? !editionGroupRequired || Boolean(get(value, 'id', null)) : validateUUID(get(value, 'id', null), editionGroupRequired);
 }
 
-export function validateEditionSectionPublisher(value: any): boolean {
+export function validateEditionSectionPublisher(value: any, isCustom = false): boolean {
 	if (!value) {
 		return true;
 	}
 	const publishers = convertMapToObject(value);
-	if (!_.isPlainObject(publishers)) {
-		return false;
-	}
 	for (const pubId in publishers) {
 		if (Object.prototype.hasOwnProperty.call(publishers, pubId)) {
 			const publisher = publishers[pubId];
-			if (!validateUUID(get(publisher, 'id', null), true)) {
+			const isValid = isCustom ? Boolean(get(publisher, 'id', null)) : validateUUID(get(publisher, 'id', null), true);
+			if (!isValid) {
 				return false;
 			}
 		}
@@ -121,7 +119,7 @@ export function validateEditionSection(data: any, isCustom = false): boolean {
 			get(data, 'editionGroupRequired', null),
 			isCustom
 		) &&
-		validateEditionSectionPublisher(get(data, 'publisher', null)) &&
+		validateEditionSectionPublisher(get(data, 'publisher', null), isCustom) &&
 		validateEditionSectionReleaseDate(get(data, 'releaseDate', null)).isValid &&
 		validateEditionSectionStatus(get(data, 'status', null)) &&
 		validateEditionSectionWeight(get(data, 'weight', null)) &&

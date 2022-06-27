@@ -116,7 +116,7 @@ function postSubmission(url: string, data: Map<string, any>): Promise<void> {
 function transformFormData(data:Record<string, any>):Record<string, any> {
 	const newData = {};
 	const nextId = 0;
-	// add new publisher
+	// add new publishers
 	_.forEach(data.Publishers, (publisher, pid) => {
 		if (publisher.__isNew__) {
 			newData[pid] = publisher;
@@ -134,7 +134,7 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 			newData[wid] = work;
 		}
 	});
-	// add new ediiton groups
+	// add new ediiton group(s)
 	_.forEach(data.EditionGroups, (editionGroup, egid) => {
 		if (editionGroup.__isNew__) {
 			newData[egid] = editionGroup;
@@ -144,7 +144,7 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 	if (data.ISBN.type) {
 		data.identifierEditor.m0 = data.ISBN;
 	}
-	data.editionSection.publisher = _.merge(_.get(data, ['Publishers'], {}), _.get(data.editionSection, ['publisher'], {}));
+	data.editionSection.publisher = _.get(data.editionSection, ['publisher'], {});
 	data.relationshipSection.relationships = _.mapValues(data.Works, (work, key) => {
 		const relationship = {
 			attributeSetId: null,
