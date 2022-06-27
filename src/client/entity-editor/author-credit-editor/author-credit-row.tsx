@@ -112,6 +112,7 @@ function AuthorCreditRow({
 				<Col md={{span: 3}}>
 					<SelectWrapper
 						instanceId={`author${index}`}
+						isUf={isUf}
 						label="Author"
 						rowId={index}
 						type="author"
