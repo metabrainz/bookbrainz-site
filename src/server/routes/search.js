@@ -50,11 +50,13 @@ router.get('/', async (req, res, next) => {
 	try {
 		let searchResults = {
 			initialResults: [],
-			query
+			query,
+			total: 0
 		};
 		if (query) {
 			// get 1 more results to check nextEnabled
-			const entities = await search.searchByName(orm, query, _snakeCase(type), size + 1, from);
+			const searchResponse = await search.searchByName(orm, query, _snakeCase(type), size + 1, from);
+			const {results: entities, total} = searchResponse;
 			searchResults = {
 				initialResults: entities.filter(entity => !isNil(entity)),
 				query

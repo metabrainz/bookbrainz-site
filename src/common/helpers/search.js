@@ -51,7 +51,7 @@ function sanitizeEntityType(type) {
 async function _fetchEntityModelsForESResults(orm, results) {
 	const {Area, Editor, UserCollection} = orm;
 
-	if (!results.hits) {
+	if (!results?.hits) {
 		return null;
 	}
 
@@ -109,11 +109,16 @@ async function _fetchEntityModelsForESResults(orm, results) {
 }
 
 // Returns the results of a search translated to entity objects
-function _searchForEntities(orm, dslQuery) {
-	return _client.search(dslQuery)
-		.then((searchResponse) => searchResponse.body?.hits)
-		.then((results) => _fetchEntityModelsForESResults(orm, results))
-		.catch(error => log.error(error));
+async function _searchForEntities(orm, dslQuery) {
+	try {
+		const searchResponse = await _client.search(dslQuery);
+		const results = await _fetchEntityModelsForESResults(orm, searchResponse.body.hits);
+		return {results, total: searchResponse.body.hits.total};
+	}
+	catch (error) {
+		log.error(error);
+	}
+	return {results: [], total: 0};
 }
 
 async function _bulkIndexEntities(entities) {
@@ -194,7 +199,7 @@ async function _processEntityListForBulk(entityList) {
 	await Promise.all(indexOperations);
 }
 
-export function autocomplete(orm, query, type, size = 42) {
+export async function autocomplete(orm, query, type, size = 42) {
 	let queryBody = null;
 
 	if (commonUtils.isValidBBID(query)) {
@@ -225,7 +230,9 @@ export function autocomplete(orm, query, type, size = 42) {
 	};
 
 
-	return _searchForEntities(orm, dslQuery);
+	const searchResponse = await _searchForEntities(orm, dslQuery);
+	// Only return the results array, we're not interested in the total number of hits for this endpoint
+	return searchResponse.results;
 }
 
 // eslint-disable-next-line consistent-return
