@@ -34,6 +34,20 @@ const _maxJitter = 75;
 
 let _client = null;
 
+function sanitizeEntityType(type) {
+	if (!type) {
+		return null;
+	}
+	if (Array.isArray(type)) {
+		return type.map(snakeCase);
+	}
+	if (snakeCase(type) === 'all_entities') {
+		return ['author', 'edition', 'edition_group', 'series', 'work', 'publisher'];
+	}
+
+	return snakeCase(type);
+}
+
 async function _fetchEntityModelsForESResults(orm, results) {
 	const {Area, Editor, UserCollection} = orm;
 
@@ -206,17 +220,10 @@ export function autocomplete(orm, query, type, size = 42) {
 			query: queryBody,
 			size
 		},
-		index: _index
+		index: _index,
+		type: sanitizeEntityType(type)
 	};
 
-	if (type) {
-		if (Array.isArray(type)) {
-			dslQuery.type = type.map(snakeCase);
-		}
-		else {
-			dslQuery.type = snakeCase(type);
-		}
-	}
 
 	return _searchForEntities(orm, dslQuery);
 }
@@ -492,25 +499,9 @@ export function searchByName(orm, name, type, size, from) {
 			},
 			size
 		},
-		index: _index
+		index: _index,
+		type: sanitizeEntityType(type)
 	};
-
-	let modifiedType;
-	if (type === 'all_entities') {
-		modifiedType = ['author', 'edition', 'edition_group', 'series', 'work', 'publisher'];
-	}
-	else {
-		modifiedType = type;
-	}
-
-	if (modifiedType) {
-		if (Array.isArray(modifiedType)) {
-			dslQuery.type = modifiedType.map(snakeCase);
-		}
-		else {
-			dslQuery.type = snakeCase(modifiedType);
-		}
-	}
 
 	return _searchForEntities(orm, dslQuery);
 }
