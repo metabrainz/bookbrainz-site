@@ -19,6 +19,7 @@
 
 import * as React from 'react';
 import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {OptionProps, components} from 'react-select';
 import AsyncSelect from 'react-select/async';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ValidationLabel from './validation-label';
@@ -27,6 +28,12 @@ import createFilterOptions from 'react-select-fast-filter-options';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {isNumber} from 'lodash';
 
+
+function OptimizedOption(props: OptionProps<any, any>) {
+	delete props.innerProps.onMouseMove;
+	delete props.innerProps.onMouseOver;
+	return <components.Option {...props}>{props.children}</components.Option>;
+}
 
 type Props = {
 	empty?: boolean,
@@ -100,8 +107,10 @@ function LanguageField({
 			</Form.Label>
 			<AsyncSelect
 				cacheOptions
+				isClearable
 				className="Select"
 				classNamePrefix="react-select"
+				components={{Option: OptimizedOption}}
 				defaultOptions={defaultOptions} loadOptions={fetchOptions} placeholder="Search language" {...rest}
 			/>
 		</Form.Group>
