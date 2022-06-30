@@ -6,6 +6,7 @@ import DetailTab from './detail-tab/detail-tab';
 import NavButtons from './navbutton';
 import React from 'react';
 import SubmitSection from '../entity-editor/submission-section/submission-section';
+import SummarySection from './submit-tab/summary';
 import {connect} from 'react-redux';
 import {filterIdentifierTypesByEntityType} from '../../common/helpers/utils';
 import {submit} from '../entity-editor/submission-section/actions';
@@ -24,7 +25,7 @@ export function UnifiedForm(props:UnifiedFormProps) {
 	const {identifierTypes, validators, onSubmit} = props;
 	const [tabKey, setTabKey] = React.useState('cover');
 	const editionIdentifierTypes = filterIdentifierTypesByEntityType(identifierTypes, 'edition');
-	const tabKeys = ['cover', 'content', 'detail'];
+	const tabKeys = ['cover', 'content', 'detail', 'submit'];
 	const onNextHandler = React.useCallback(() => {
 		const index = tabKeys.indexOf(tabKey);
 		if (index >= 0 && index < tabKeys.length - 1) {
@@ -51,14 +52,17 @@ export function UnifiedForm(props:UnifiedFormProps) {
 					<Tab eventKey="detail" title="Details">
 						<DetailTab {...props}/>
 					</Tab>
+					<Tab eventKey="submit" title="Submit">
+						<SummarySection/>
+						<SubmitSection isUf identifierTypes={editionIdentifierTypes} validate={validators && getUfValidator(validators.edition)}/>
+
+					</Tab>
 				</Tabs>
 			</div>
 			<NavButtons
 				disableBack={tabKeys.indexOf(tabKey) === 0} disableNext={tabKeys.indexOf(tabKey) === tabKeys.length - 1}
 				onBack={onBackHandler} onNext={onNextHandler}
 			/>
-			<SubmitSection isUf identifierTypes={editionIdentifierTypes} validate={validators && getUfValidator(validators.edition)}/>
-
 		</form>
 	);
 }
