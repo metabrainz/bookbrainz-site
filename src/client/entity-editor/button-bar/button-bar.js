@@ -74,8 +74,8 @@ function ButtonBar({
 	const identifierEditorClass = `btn wrap${!isUf ? '' : ' btn-success'}`;
 	return (
 		<div>
-			{renderAliasButton()}
 			<Row className="margin-top-1">
+				{renderAliasButton()}
 				<Col className={className} lg={6}>
 					<IdentifierButton
 						className={identifierEditorClass}
