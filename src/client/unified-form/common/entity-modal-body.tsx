@@ -1,6 +1,6 @@
 // import * as Bootstrap from 'react-bootstrap';
 import {Accordion, Card} from 'react-bootstrap';
-import AliasEditor from '../../entity-editor/alias-editor/alias-editor';
+import AliasModalBody from '../../entity-editor/alias-editor/alias-modal-body';
 import AnnotationSection from '../../entity-editor/annotation-section/annotation-section';
 import ButtonBar from '../../entity-editor/button-bar/button-bar';
 import IdentifierEditor from '../../entity-editor/identifier-editor/identifier-editor';
@@ -12,7 +12,6 @@ import {connect} from 'react-redux';
 
 
 type EntityModalBodyStateProps = {
-	aliasEditorVisible:boolean,
 	identifierEditorVisible:boolean
 };
 
@@ -24,7 +23,7 @@ type EntityModalBodyOwnProps = {
 };
 type EntityModalBodyProps = EntityModalBodyOwnProps & EntityModalBodyStateProps;
 
-function EntityModalBody({onModalSubmit, aliasEditorVisible, identifierEditorVisible, children, validate, ...rest}:EntityModalBodyProps) {
+function EntityModalBody({onModalSubmit, identifierEditorVisible, children, validate, ...rest}:EntityModalBodyProps) {
 	const [menuPortalTarget, setMenuPortalTarget] = React.useState(null);
 	React.useEffect(() => {
 		// FIXME: need better way to scrolling issue in react select menu https://github.com/JedWatson/react-select/issues/4088
@@ -32,7 +31,6 @@ function EntityModalBody({onModalSubmit, aliasEditorVisible, identifierEditorVis
 	}, []);
 	return (
 		<form onSubmit={onModalSubmit}>
-			<AliasEditor show={aliasEditorVisible} {...rest}/>
 			<Accordion >
 				<Card>
 					<Accordion.Toggle as={Card.Header} eventKey="0">Basic
@@ -41,6 +39,17 @@ function EntityModalBody({onModalSubmit, aliasEditorVisible, identifierEditorVis
 						<Card.Body>
 							<NameSection {...rest}/>
 							<ButtonBar {...rest}/>
+						</Card.Body>
+					</Accordion.Collapse>
+				</Card>
+			</Accordion>
+			<Accordion >
+				<Card>
+					<Accordion.Toggle as={Card.Header} eventKey="0">Aliases
+					</Accordion.Toggle>
+					<Accordion.Collapse eventKey="0">
+						<Card.Body>
+							<AliasModalBody {...rest}/>
 						</Card.Body>
 					</Accordion.Collapse>
 				</Card>
@@ -95,7 +104,6 @@ EntityModalBody.defaultProps = {
 function mapStateToProps(rootState): EntityModalBodyStateProps {
 	const state = rootState.get('buttonBar');
 	return {
-		aliasEditorVisible: state.get('aliasEditorVisible'),
 		identifierEditorVisible: state.get('identifierEditorVisible')
 	};
 }
