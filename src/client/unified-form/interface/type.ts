@@ -25,7 +25,7 @@ export type UnifiedFormDispatchProps = {
 	onSubmit: (event:React.FormEvent) =>unknown
 };
 export type UnifiedFormProps = {
-    identifierTypes?:IdentifierType[],
+    allIdentifierTypes?:IdentifierType[],
     validators?:Record<string, any>,
 } & UnifiedFormDispatchProps;
 

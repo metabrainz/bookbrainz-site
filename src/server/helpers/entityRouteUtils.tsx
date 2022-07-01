@@ -362,7 +362,7 @@ export function generateUnifiedProps(
 	const submissionUrl = '/create/handler';
 	const props = Object.assign({
 		entityType: 'edition',
-		identifierTypes: res.locals.identifierTypes,
+		allIdentifierTypes: res.locals.identifierTypes,
 		initialState: initialStateCallback(),
 		isUf: true,
 		languageOptions: res.locals.languages,

@@ -102,10 +102,4 @@ function mapDispatchToProps(dispatch) {
 	};
 }
 
-function mapStateToProps(rootState) {
-	return {
-		aliases: rootState.get('aliasEditor')
-	};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AliasEditor);
+export default connect(null, mapDispatchToProps)(AliasEditor);

@@ -17,8 +17,8 @@ export default function CreateEntityModal({show, handleClose, handleSubmit, type
 	const heading = `Add ${type}`;
 	const EntitySection = getEntitySection(type);
 	const validate = getValidator(type);
-	const {identifierTypes} = rest;
-	const entityIdentifierTypes = filterIdentifierTypesByEntityType(identifierTypes, upperFirst(type));
+	const {allIdentifierTypes} = rest;
+	const entityIdentifierTypes = filterIdentifierTypesByEntityType(allIdentifierTypes, upperFirst(type));
 	return (
 		<Modal dialogClassName="uf-dialog" show={show} onHide={handleClose}>
 			<Modal.Header closeButton>

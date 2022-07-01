@@ -2,18 +2,12 @@
 import {Accordion, Card} from 'react-bootstrap';
 import AliasModalBody from '../../entity-editor/alias-editor/alias-modal-body';
 import AnnotationSection from '../../entity-editor/annotation-section/annotation-section';
-import ButtonBar from '../../entity-editor/button-bar/button-bar';
-import IdentifierEditor from '../../entity-editor/identifier-editor/identifier-editor';
+import IdentifierModalBody from '../../entity-editor/identifier-editor/identifier-modal-body';
 import NameSection from '../../entity-editor/name-section/name-section';
 import React from 'react';
 import RelationshipSection from '../../entity-editor/relationship-editor/relationship-section';
 import SubmissionSection from '../../entity-editor/submission-section/submission-section';
-import {connect} from 'react-redux';
 
-
-type EntityModalBodyStateProps = {
-	identifierEditorVisible:boolean
-};
 
 type EntityModalBodyOwnProps = {
     onModalSubmit:(e)=>unknown,
@@ -21,9 +15,9 @@ type EntityModalBodyOwnProps = {
 	validate:(arg)=>unknown
 	children?: React.ReactElement
 };
-type EntityModalBodyProps = EntityModalBodyOwnProps & EntityModalBodyStateProps;
+type EntityModalBodyProps = EntityModalBodyOwnProps;
 
-function EntityModalBody({onModalSubmit, identifierEditorVisible, children, validate, ...rest}:EntityModalBodyProps) {
+function EntityModalBody({onModalSubmit, children, validate, ...rest}:EntityModalBodyProps) {
 	const [menuPortalTarget, setMenuPortalTarget] = React.useState(null);
 	React.useEffect(() => {
 		// FIXME: need better way to scrolling issue in react select menu https://github.com/JedWatson/react-select/issues/4088
@@ -38,7 +32,6 @@ function EntityModalBody({onModalSubmit, identifierEditorVisible, children, vali
 					<Accordion.Collapse eventKey="0">
 						<Card.Body>
 							<NameSection {...rest}/>
-							<ButtonBar {...rest}/>
 						</Card.Body>
 					</Accordion.Collapse>
 				</Card>
@@ -50,6 +43,17 @@ function EntityModalBody({onModalSubmit, identifierEditorVisible, children, vali
 					<Accordion.Collapse eventKey="0">
 						<Card.Body>
 							<AliasModalBody {...rest}/>
+						</Card.Body>
+					</Accordion.Collapse>
+				</Card>
+			</Accordion>
+			<Accordion >
+				<Card>
+					<Accordion.Toggle as={Card.Header} eventKey="0">Identifiers
+					</Accordion.Toggle>
+					<Accordion.Collapse eventKey="0">
+						<Card.Body>
+							<IdentifierModalBody {...rest}/>
 						</Card.Body>
 					</Accordion.Collapse>
 				</Card>
@@ -81,7 +85,6 @@ function EntityModalBody({onModalSubmit, identifierEditorVisible, children, vali
 					</Accordion.Collapse>
 				</Card>
 			</Accordion>
-			<IdentifierEditor show={identifierEditorVisible} {...rest}/>
 			<Accordion >
 				<Card>
 					<Accordion.Toggle as={Card.Header} eventKey="0">Annotation
@@ -101,11 +104,4 @@ function EntityModalBody({onModalSubmit, identifierEditorVisible, children, vali
 EntityModalBody.defaultProps = {
 	children: null
 };
-function mapStateToProps(rootState): EntityModalBodyStateProps {
-	const state = rootState.get('buttonBar');
-	return {
-		identifierEditorVisible: state.get('identifierEditorVisible')
-	};
-}
-
-export default connect<EntityModalBodyStateProps, null>(mapStateToProps, null)(EntityModalBody);
+export default EntityModalBody;
