@@ -46,7 +46,9 @@ import {validateAuthorCreditSection} from '../validators/common';
 
 
 type OwnProps = {
-	isUf?: boolean;
+	isUf?: boolean,
+	isLeftAlign?: boolean;
+
 };
 
 type StateProps = {
@@ -65,7 +67,7 @@ type DispatchProps = {
 type Props = OwnProps & StateProps & DispatchProps;
 
 function AuthorCreditSection({
-	authorCreditEditor, onEditAuthorCredit, onEditorClose, showEditor, onAuthorChange, isEditable, onClearHandler, isUf, ...rest
+	authorCreditEditor, onEditAuthorCredit, onEditorClose, showEditor, onAuthorChange, isEditable, onClearHandler, isUf, isLeftAlign, ...rest
 }: Props) {
 	let editor;
 	if (showEditor) {
@@ -109,7 +111,7 @@ function AuthorCreditSection({
 		</Tooltip>
 	);
 	let resCol:any = {md: {offset: 3, span: 6}};
-	if (isUf) {
+	if (isUf || isLeftAlign) {
 		resCol = {lg: {offset: 0, span: 6}};
 	}
 	const onChangeHandler = React.useCallback((value, action) => {
@@ -166,6 +168,7 @@ AuthorCreditSection.propTypes = {
 };
 
 AuthorCreditSection.defaultProps = {
+	isLeftAlign: false,
 	isUf: false
 };
 function mapStateToProps(rootState): StateProps {

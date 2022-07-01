@@ -44,7 +44,8 @@ type DispatchProps = {
 
 type OwnProps = {
 	editionGroupTypes: Array<EditionGroupType>,
-	isUf?: boolean
+	isUf?: boolean,
+	isLeftAlign?:boolean
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -68,6 +69,7 @@ function EditionGroupSection({
 	editionGroupTypes,
 	typeValue,
 	isUf,
+	isLeftAlign,
 	onTypeChange
 }: Props) {
 	const editionGroupTypesForDisplay = editionGroupTypes.map((type) => ({
@@ -84,7 +86,7 @@ function EditionGroupSection({
 	return (
 		<div>
 			{!isUf && heading}
-			<AuthorCreditSection/>
+			<AuthorCreditSection isLeftAlign={isLeftAlign}/>
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
 				know it
@@ -116,6 +118,7 @@ function EditionGroupSection({
 }
 EditionGroupSection.displayName = 'EditionGroupSection';
 EditionGroupSection.defaultProps = {
+	isLeftAlign: false,
 	isUf: false
 };
 

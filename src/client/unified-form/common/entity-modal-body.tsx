@@ -54,7 +54,7 @@ function EntityModalBody({onModalSubmit, aliasEditorVisible, identifierEditorVis
 							{
 								React.cloneElement(
 									React.Children.only(children),
-									{...rest, menuPortalTarget}
+									{...rest, isLeftAlign: true, menuPortalTarget}
 								)
 							}
 						</Card.Body>
