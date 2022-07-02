@@ -132,6 +132,40 @@ class NameSection extends React.Component {
 		this.nameInputRef = inputRef;
 	}
 
+	renderDuplicateAlert(warnIfExists, disambiguationDefaultValue, exactMatches, entityType, lgCol) {
+		return (
+			<Col lg={lgCol}>
+				{isRequiredDisambiguationEmpty(
+					warnIfExists,
+					disambiguationDefaultValue
+				) ?
+					<Alert variant="warning">
+					We found the following&nbsp;
+						{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} with
+					exactly the same name or alias:
+						<br/><small className="text-muted">Click on a name to open it (Ctrl/Cmd + click to open in a new tab)</small>
+						<ListGroup activeKey={null} className="margin-top-1 margin-bottom-1">
+							{exactMatches.map((match) =>
+								(
+									<ListGroup.Item
+										action
+										href={`/${_.kebabCase(entityType)}/${match.bbid}`}
+										key={`${match.bbid}`}
+										rel="noopener noreferrer" target="_blank"
+										variant="warning"
+									>
+										{match.defaultAlias.name} {getEntityDisambiguation(match)}
+									</ListGroup.Item>
+								))}
+						</ListGroup>
+					If you are sure your entry is different, please fill the
+					disambiguation field below to help us differentiate between them.
+					</Alert> : null
+				}
+			</Col>
+		);
+	}
+
 	render() {
 		const {
 			disambiguationDefaultValue,
@@ -170,9 +204,11 @@ class NameSection extends React.Component {
 				<SearchResults condensed results={searchResults}/>
 			</Col>
 		</Row>;
+		const duplicateAlert = this.renderDuplicateAlert(warnIfExists, disambiguationDefaultValue, exactMatches, entityType, lgCol);
+		const heading = <h2>{`What is the ${_.startCase(entityType)} called?`}</h2>;
 		return (
 			<div>
-				{!isUf && <h2>{`What is the ${_.startCase(entityType)} called?`}</h2>}
+				{!isUf && heading}
 				<Row>
 					<Col lg={lgCol}>
 						<NameField
@@ -191,35 +227,7 @@ class NameSection extends React.Component {
 							onChange={this.handleNameChange}
 						/>
 					</Col>
-					<Col lg={lgCol}>
-						{isRequiredDisambiguationEmpty(
-							warnIfExists,
-							disambiguationDefaultValue
-						) ?
-							<Alert variant="warning">
-									We found the following&nbsp;
-								{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} with
-									exactly the same name or alias:
-								<br/><small className="text-muted">Click on a name to open it (Ctrl/Cmd + click to open in a new tab)</small>
-								<ListGroup activeKey={null} className="margin-top-1 margin-bottom-1">
-									{exactMatches.map((match) =>
-										(
-											<ListGroup.Item
-												action
-												href={`/${_.kebabCase(entityType)}/${match.bbid}`}
-												key={`${match.bbid}`}
-												rel="noopener noreferrer" target="_blank"
-												variant="warning"
-											>
-												{match.defaultAlias.name} {getEntityDisambiguation(match)}
-											</ListGroup.Item>
-										))}
-								</ListGroup>
-									If you are sure your entry is different, please fill the
-									disambiguation field below to help us differentiate between them.
-							</Alert> : null
-						}
-					</Col>
+					{!isModal && duplicateAlert}
 				</Row>
 				{
 					!isModal && duplicateSuggestions
@@ -268,6 +276,7 @@ class NameSection extends React.Component {
 						/>
 					</Col>
 				</Row>
+				{isModal && <Row>{duplicateAlert}</Row>}
 				{
 					isModal && duplicateSuggestions
 				}
