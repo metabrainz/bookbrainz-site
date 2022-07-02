@@ -18,11 +18,6 @@ type EntityModalBodyOwnProps = {
 type EntityModalBodyProps = EntityModalBodyOwnProps;
 
 function EntityModalBody({onModalSubmit, children, validate, ...rest}:EntityModalBodyProps) {
-	const [menuPortalTarget, setMenuPortalTarget] = React.useState(null);
-	React.useEffect(() => {
-		// FIXME: need better way to scrolling issue in react select menu https://github.com/JedWatson/react-select/issues/4088
-		setMenuPortalTarget(document.body);
-	}, []);
 	return (
 		<form onSubmit={onModalSubmit}>
 			<Accordion >
@@ -67,7 +62,7 @@ function EntityModalBody({onModalSubmit, children, validate, ...rest}:EntityModa
 							{
 								React.cloneElement(
 									React.Children.only(children),
-									{...rest, isLeftAlign: true, menuPortalTarget}
+									{...rest, isLeftAlign: true}
 								)
 							}
 						</Card.Body>

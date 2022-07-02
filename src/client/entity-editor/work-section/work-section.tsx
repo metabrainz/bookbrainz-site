@@ -57,7 +57,6 @@ type DisplayLanguageOption = {
 type OwnProps = {
 	isUf?: boolean,
 	languageOptions: Array<LanguageOption>,
-	menuPortalTarget?: HTMLElement,
 	workTypes: Array<WorkType>
 };
 
@@ -91,7 +90,6 @@ function WorkSection({
 	languageValues,
 	typeValue,
 	workTypes,
-	menuPortalTarget,
 	isUf,
 	onLanguagesChange,
 	onTypeChange
@@ -137,12 +135,9 @@ function WorkSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
-							menuShouldBlockScroll
 							classNamePrefix="react-select"
 							instanceId="workType"
-							menuPortalTarget={menuPortalTarget}
 							options={workTypesForDisplay}
-							styles={{menuPortal: base => ({...base, zIndex: 9999})}}
 							value={typeOption}
 							onChange={onTypeChange}
 						/>
@@ -167,8 +162,7 @@ function WorkSection({
 }
 WorkSection.displayName = 'WorkSection';
 WorkSection.defaultProps = {
-	isUf: false,
-	menuPortalTarget: null
+	isUf: false
 };
 type RootState = Map<string, Map<string, any>>;
 function mapStateToProps(rootState: RootState): StateProps {
