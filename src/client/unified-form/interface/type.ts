@@ -24,10 +24,14 @@ type LanguageOption = {
 export type UnifiedFormDispatchProps = {
 	onSubmit: (event:React.FormEvent) =>unknown
 };
-export type UnifiedFormProps = {
+export type UnifiedFormStateProps = {
+	formValid:boolean
+};
+export type UnifiedFormOwnProps = {
     allIdentifierTypes?:IdentifierType[],
     validators?:Record<string, any>,
-} & UnifiedFormDispatchProps;
+};
+export type UnifiedFormProps = UnifiedFormOwnProps & UnifiedFormDispatchProps & UnifiedFormStateProps;
 
 export type CoverOwnProps = {
     languageOptions?: LanguageOption[],

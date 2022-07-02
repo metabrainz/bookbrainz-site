@@ -1,5 +1,5 @@
 import * as Boostrap from 'react-bootstrap';
-import {IdentifierType, UnifiedFormDispatchProps, UnifiedFormProps} from './interface/type';
+import {IdentifierType, UnifiedFormDispatchProps, UnifiedFormOwnProps, UnifiedFormProps, UnifiedFormStateProps} from './interface/type';
 import ContentTab from './content-tab/content-tab';
 import CoverTab from './cover-tab/cover-tab';
 import DetailTab from './detail-tab/detail-tab';
@@ -22,9 +22,10 @@ function getUfValidator(validator) {
 	};
 }
 export function UnifiedForm(props:UnifiedFormProps) {
-	const {allIdentifierTypes, validators, onSubmit} = props;
+	const {allIdentifierTypes, validators, onSubmit, formValid} = props;
 	const [tabKey, setTabKey] = React.useState('cover');
 	const editionIdentifierTypes = filterIdentifierTypesByEntityType(allIdentifierTypes, 'Edition');
+	const editionValidator = validators && getUfValidator(validators.edition);
 	const tabKeys = ['cover', 'content', 'detail', 'submit'];
 	const onNextHandler = React.useCallback(() => {
 		const index = tabKeys.indexOf(tabKey);
@@ -38,6 +39,9 @@ export function UnifiedForm(props:UnifiedFormProps) {
 			setTabKey(tabKeys[index - 1]);
 		}
 	}, [tabKey]);
+	const tabIndex = tabKeys.indexOf(tabKey);
+	const disableNext = tabIndex === tabKeys.length - 1 || ((tabIndex === tabKeys.length - 2) && !formValid);
+	const disableBack = tabIndex === 0;
 	return (
 		<form className="uf-main" onSubmit={onSubmit}>
 			<div className="uf-tab">
@@ -52,21 +56,28 @@ export function UnifiedForm(props:UnifiedFormProps) {
 					<Tab eventKey="detail" title="Details">
 						<DetailTab {...props}/>
 					</Tab>
-					<Tab eventKey="submit" title="Submit">
+					<Tab disabled={!formValid} eventKey="submit" title="Submit">
 						<SummarySection/>
-						<SubmitSection isUf identifierTypes={editionIdentifierTypes} validate={validators && getUfValidator(validators.edition)}/>
+						<SubmitSection isUf formValid={formValid} identifierTypes={editionIdentifierTypes} validate={editionValidator}/>
 
 					</Tab>
 				</Tabs>
 			</div>
 			<NavButtons
-				disableBack={tabKeys.indexOf(tabKey) === 0} disableNext={tabKeys.indexOf(tabKey) === tabKeys.length - 1}
+				disableBack={disableBack} disableNext={disableNext}
 				onBack={onBackHandler} onNext={onNextHandler}
 			/>
 		</form>
 	);
 }
 
+function mapStateToProps(state, {validators, allIdentifierTypes}:UnifiedFormOwnProps) {
+	const editionValidator = validators && getUfValidator(validators.edition);
+	const editionIdentifierTypes = filterIdentifierTypesByEntityType(allIdentifierTypes, 'Edition');
+	return {
+		formValid: editionValidator && editionValidator(state, editionIdentifierTypes, false, true)
+	};
+}
 function mapDispatchToProps(dispatch, {submissionUrl}) {
 	return {
 		onSubmit: (event:React.FormEvent) => {
@@ -76,4 +87,4 @@ function mapDispatchToProps(dispatch, {submissionUrl}) {
 	};
 }
 
-export default connect<null, UnifiedFormDispatchProps>(null, mapDispatchToProps)(UnifiedForm);
+export default connect<UnifiedFormStateProps, UnifiedFormDispatchProps>(mapStateToProps, mapDispatchToProps)(UnifiedForm);
