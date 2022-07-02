@@ -145,7 +145,8 @@ class NameSection extends React.Component {
 			onSortNameChange,
 			onDisambiguationChange,
 			searchResults,
-			isUf
+			isUf,
+			isModal
 		} = this.props;
 
 		const languageOptionsForDisplay = languageOptions.map((language) => ({
@@ -159,6 +160,16 @@ class NameSection extends React.Component {
 		if (isUf) {
 			lgCol.offset = 0;
 		}
+		const duplicateSuggestions = !warnIfExists &&
+		!_.isEmpty(searchResults) &&
+		<Row>
+			<Col lg={lgCol}>
+				If the {_.startCase(entityType)} you want to add appears in the results
+				below, click on it to inspect it before adding a possible duplicate.<br/>
+				<small>Ctrl/Cmd + click to open in a new tab</small>
+				<SearchResults condensed results={searchResults}/>
+			</Col>
+		</Row>;
 		return (
 			<div>
 				{!isUf && <h2>{`What is the ${_.startCase(entityType)} called?`}</h2>}
@@ -211,16 +222,7 @@ class NameSection extends React.Component {
 					</Col>
 				</Row>
 				{
-					!warnIfExists &&
-						!_.isEmpty(searchResults) &&
-						<Row>
-							<Col lg={lgCol}>
-								If the {_.startCase(entityType)} you want to add appears in the results
-								below, click on it to inspect it before adding a possible duplicate.<br/>
-								<small>Ctrl/Cmd + click to open in a new tab</small>
-								<SearchResults condensed results={searchResults}/>
-							</Col>
-						</Row>
+					!isModal && duplicateSuggestions
 				}
 				<Row>
 					<Col lg={lgCol}>
@@ -266,6 +268,9 @@ class NameSection extends React.Component {
 						/>
 					</Col>
 				</Row>
+				{
+					isModal && duplicateSuggestions
+				}
 			</div>
 		);
 	}
@@ -276,6 +281,7 @@ NameSection.propTypes = {
 	disambiguationDefaultValue: PropTypes.string,
 	entityType: entityTypeProperty.isRequired,
 	exactMatches: PropTypes.array,
+	isModal: PropTypes.bool,
 	isUf: PropTypes.bool,
 	languageOptions: PropTypes.array.isRequired,
 	languageValue: PropTypes.number,
@@ -295,6 +301,7 @@ NameSection.defaultProps = {
 	action: 'create',
 	disambiguationDefaultValue: null,
 	exactMatches: [],
+	isModal: false,
 	isUf: false,
 	languageValue: null,
 	searchForExistingEditionGroup: true,

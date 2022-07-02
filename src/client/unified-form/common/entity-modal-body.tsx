@@ -31,7 +31,7 @@ function EntityModalBody({onModalSubmit, children, validate, ...rest}:EntityModa
 					</Accordion.Toggle>
 					<Accordion.Collapse eventKey="0">
 						<Card.Body>
-							<NameSection {...rest}/>
+							<NameSection isModal {...rest}/>
 						</Card.Body>
 					</Accordion.Collapse>
 				</Card>
