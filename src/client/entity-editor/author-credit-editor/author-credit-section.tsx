@@ -73,8 +73,8 @@ function AuthorCreditSection({
 	if (showEditor) {
 		editor = (
 			<AuthorCreditEditor
-				isUf
 				showEditor
+				isUf={isUf}
 				onClose={onEditorClose}
 				{...rest}
 			/>
