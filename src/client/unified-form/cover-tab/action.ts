@@ -12,6 +12,12 @@ export const CLEAR_AUTHOR = 'CLEAR_AUTHOR';
 let nextPublisherId = 0;
 let nextAuthorId = 0;
 
+/**
+ * Produces an action indicating that new Publisher should be added in `Publishers`.
+ *
+ * @param {Object} value - New publisher state.
+ * @returns {Action} The resulting ADD_PUBLISHER action.
+ */
 export function addPublisher(value = null):Action {
 	return {
 		payload: {id: `p${nextPublisherId++}`, value},
@@ -19,6 +25,13 @@ export function addPublisher(value = null):Action {
 	};
 }
 
+/**
+ * Produces an action indicating that newly created
+ * Publisher should be removed from `Publishers`.
+ *
+ * @param {string} pid - Publisher id to be removed.
+ * @returns {Action} The resulting CLEAR_PUBLISHER action.
+ */
 export function clearPublisher(pid:string):Action {
 	return {
 		payload: pid,
@@ -26,18 +39,39 @@ export function clearPublisher(pid:string):Action {
 	};
 }
 
+/**
+ * Produces an action indicating that all Publishers should be removed from `Publishers`.
+ *
+ * @returns {Action} The resulting CLEAR_PUBLISHERS action.
+ */
 export function clearPublishers():Action {
 	return {
 		type: CLEAR_PUBLISHERS
 	};
 }
 
+/**
+ * Produces an action indicating that newly created
+ * Author should be removed from `Authors`.
+ *
+ * @param {string}aid - Author id to be removed.
+ * @returns {Action} The resulting CLEAR_AUTHOR action.
+ */
 export function clearAuthor(aid:string):Action {
 	return {
 		payload: aid,
 		type: CLEAR_AUTHOR
 	};
 }
+
+/**
+ * Produces an action indicating that new Author should be added in `Authors`
+ * as well as in AC of Edition.
+ *
+ * @param {string} rowId - Row id of author credit editor.
+ * @param {object} value - New author credit state.
+ * @returns {Action} The resulting ADD_AUTHOR action.
+ */
 export function addAuthor(rowId:string, value = null):Action {
 	return {
 		payload: {id: `a${nextAuthorId++}`, rowId, value},
@@ -45,6 +79,12 @@ export function addAuthor(rowId:string, value = null):Action {
 	};
 }
 
+/**
+ * Produces an action indicating that `ISBN` value should be updated.
+ *
+ * @param {string} newValue - New value of ISBN Field.
+ * @returns {Action} The resulting UPDATE_ISBN_VALUE action.
+ */
 export function debouncedUpdateISBNValue(newValue: string): Action {
 	return {
 		meta: {debounce: 'keystroke'},
@@ -53,6 +93,12 @@ export function debouncedUpdateISBNValue(newValue: string): Action {
 	};
 }
 
+/**
+ * Produces an action indicating that `ISBN` type should be updated.
+ *
+ * @param {number} typeId - Type of corresponding ISBN value.
+ * @returns {Action} The resulting UPDATE_ISBN_TYPE action.
+ */
 export function updateISBNType(typeId:number) {
 	return {
 		payload: typeId,

@@ -29,6 +29,8 @@ type Props = {
 	error?: boolean,
 	label?: string,
 	tooltipText?: string,
+	defaultValue?:string,
+	onChange?:(arg)=>void,
 	warn?: boolean
 };
 
@@ -83,9 +85,11 @@ function NameField({
 }
 NameField.displayName = 'NameField';
 NameField.defaultProps = {
+	defaultValue: '',
 	empty: false,
 	error: false,
 	label: '',
+	onChange: null,
 	tooltipText: null,
 	warn: false
 };

@@ -3,6 +3,16 @@ import Immutable from 'immutable';
 
 export type RInputEvent = React.ChangeEvent<HTMLInputElement>;
 
+export type Action = {
+	type: string,
+	payload?: any,
+	meta?: {
+		debounce?: string
+	}
+};
+
+export type State = Immutable.Map<string, any>;
+
 export type IdentifierType = {
     id:number,
     entityType:string
@@ -50,14 +60,6 @@ export type CoverDispatchProps = {
 };
 export type CoverProps = CoverOwnProps & CoverStateProps & CoverDispatchProps;
 
-export type Action = {
-	type: string,
-	payload?: unknown,
-	meta?: {
-		debounce?: string
-	}
-};
-
 export type ISBNStateProps = {
 	type:number,
 	value:string
@@ -96,7 +98,7 @@ export type SearchEntityCreateOwnProps = {
 	bbid?:string,
 	empty?:boolean,
 	isMulti?:boolean,
-	nextId:string|number,
+	nextId?:string|number,
 	error?:boolean,
 	filters?:Array<any>,
 	label:string,

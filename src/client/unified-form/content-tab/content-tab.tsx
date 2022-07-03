@@ -1,5 +1,5 @@
 import * as Bootstrap from 'react-bootstrap/';
-import {ContentTabDispatchProps, ContentTabProps, ContentTabStateProps} from '../interface/type';
+import {ContentTabDispatchProps, ContentTabProps, ContentTabStateProps, State} from '../interface/type';
 import React from 'react';
 import SearchEntityCreate from '../common/search-entity-create-select';
 import {connect} from 'react-redux';
@@ -27,8 +27,9 @@ export function ContentTab({value, onChange, nextId, ...rest}:ContentTabProps) {
 		 );
 }
 
-function mapStateToProps(rootState) {
+function mapStateToProps(rootState:State) {
 	const worksObj = convertMapToObject(rootState.get('Works'));
+	// get next id for new work
 	const nextId = reduce(worksObj, (prev, value) => (value.__isNew__ ? prev + 1 : prev), 0);
 	return {
 		nextId,
