@@ -1,6 +1,7 @@
 import {Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
 
 import {isString, kebabCase, toString} from 'lodash';
+import {IdentifierType} from '../../client/unified-form/interface/type';
 
 /**
  * Regular expression for valid BookBrainz UUIDs (bbid)
@@ -272,7 +273,7 @@ export function isbn13To10(isbn13:string):string | null {
 export function filterIdentifierTypesByEntityType(
 	identifierTypes: Array<{id: number, entityType: string}>,
 	entityType: string
-): Array<Record<string, unknown>> {
+): Array<IdentifierType> {
 	return identifierTypes.filter(
 		(type) => type.entityType === entityType
 	);

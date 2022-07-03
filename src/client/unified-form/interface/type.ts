@@ -1,4 +1,3 @@
-import {CommonProps} from 'react-select';
 import Immutable from 'immutable';
 
 
@@ -96,6 +95,7 @@ export type SearchEntityCreateDispatchProps = {
 export type SearchEntityCreateOwnProps = {
 	bbid?:string,
 	empty?:boolean,
+	isMulti?:boolean,
 	nextId:string|number,
 	error?:boolean,
 	filters?:Array<any>,
@@ -108,12 +108,13 @@ export type SearchEntityCreateOwnProps = {
 	onChange:(arg, ...optional)=>unknown
 
 };
-export type SearchEntityCreateProps = SearchEntityCreateDispatchProps & SearchEntityCreateOwnProps & CommonProps<any, any>;
+export type SearchEntityCreateProps = SearchEntityCreateDispatchProps & SearchEntityCreateOwnProps;
 
 export type EntityModalBodyOwnProps = {
     onModalSubmit:(e)=>unknown,
     entityType:string,
-	validate:(arg)=>unknown
+	validate:(arg)=>unknown,
+	identifierTypes:IdentifierType[],
 	children?: React.ReactElement
 };
 export type EntityModalDispatchProps = {
@@ -122,3 +123,12 @@ export type EntityModalDispatchProps = {
 };
 
 export type EntityModalBodyProps = EntityModalDispatchProps & EntityModalBodyOwnProps;
+
+export type CreateEntityModalOwnProps = {
+	handleClose:() => unknown,
+	allIdentifierTypes?:Array<IdentifierType>,
+	handleSubmit:(e)=> unknown,
+	type:string,
+	show:boolean
+};
+export type CreateEntityModalProps = CreateEntityModalOwnProps;

@@ -1,4 +1,3 @@
-// import * as Bootstrap from 'react-bootstrap';
 import {Accordion, Card} from 'react-bootstrap';
 import {EntityModalBodyProps, EntityModalDispatchProps} from '../interface/type';
 import AliasModalBody from '../../entity-editor/alias-editor/alias-modal-body';
@@ -9,11 +8,13 @@ import React from 'react';
 import RelationshipSection from '../../entity-editor/relationship-editor/relationship-section';
 import SubmissionSection from '../../entity-editor/submission-section/submission-section';
 import {connect} from 'react-redux';
+import {omit} from 'lodash';
 import {removeEmptyAliases} from '../../entity-editor/alias-editor/actions';
 import {removeEmptyIdentifiers} from '../../entity-editor/identifier-editor/actions';
 
 
 function EntityModalBody({onModalSubmit, children, validate, onAliasClose, onIdentifierClose, ...rest}:EntityModalBodyProps) {
+	const genericProps:any = omit(rest, ['allIdentifierTypes', 'entityType']);
 	return (
 		<form onSubmit={onModalSubmit}>
 			<Accordion >
@@ -33,7 +34,7 @@ function EntityModalBody({onModalSubmit, children, validate, onAliasClose, onIde
 					</Accordion.Toggle>
 					<Accordion.Collapse eventKey="0">
 						<Card.Body>
-							<AliasModalBody {...rest}/>
+							<AliasModalBody {...genericProps}/>
 						</Card.Body>
 					</Accordion.Collapse>
 				</Card>
@@ -71,7 +72,7 @@ function EntityModalBody({onModalSubmit, children, validate, onAliasClose, onIde
 					</Accordion.Toggle>
 					<Accordion.Collapse eventKey="0">
 						<Card.Body>
-							<RelationshipSection {...rest}/>
+							<RelationshipSection {...genericProps}/>
 						</Card.Body>
 					</Accordion.Collapse>
 				</Card>

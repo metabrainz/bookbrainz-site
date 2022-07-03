@@ -28,7 +28,7 @@ const addEntityAction = {
 	publisher: addPublisher,
 	work: addWork
 };
-function SearchEntityCreate(props:SearchEntityCreateProps):JSX.Element {
+function SearchEntityCreate(props:SearchEntityCreateProps) {
 	const {type, nextId, onModalOpen, onModalClose, onSubmitEntity, rowId, ...rest} = props;
 	const createLabel = React.useCallback((input) => `Create ${type} "${input}"`, [type]);
 	const [showModal, setShowModal] = React.useState(false);

@@ -17,7 +17,7 @@ type AliasModalBodyDispatchProps = {
 };
 
 type AliasModalBodyOwnProps = {
-    languageOptions:any[],
+    languageOptions?:any[],
 };
 type AliasModalBodyProps = AliasModalBodyStateProps & AliasModalBodyDispatchProps & AliasModalBodyOwnProps;
 
@@ -57,6 +57,9 @@ export const AliasModalBody = ({aliases, onAddAlias, languageOptions}:AliasModal
 		</>);
 };
 
+AliasModalBody.defaultProps = {
+	languageOptions: []
+};
 
 function mapDispatchToProps(dispatch) {
 	return {
