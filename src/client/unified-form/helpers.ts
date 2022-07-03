@@ -19,10 +19,6 @@ import nameSectionReducer from '../entity-editor/name-section/reducer';
 import publisherSectionReducer from '../entity-editor/publisher-section/reducer';
 import relationshipSectionReducer from '../entity-editor/relationship-editor/reducer';
 import submissionSectionReducer from '../entity-editor/submission-section/reducer';
-import {validateForm as validateAuthorForm} from '../entity-editor/validators/author';
-import {validateForm as validateEditionForm} from '../entity-editor/validators/edition';
-import {validateForm as validatePublisherForm} from '../entity-editor/validators/publisher';
-import {validateForm as validateWorkForm} from '../entity-editor/validators/work';
 import workSectionReducer from '../entity-editor/work-section/reducer';
 import worksReducer from './content-tab/reducer';
 
@@ -34,14 +30,7 @@ export function shouldDevToolsBeInjected(): boolean {
 		(window as ReduxWindow).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
 	);
 }
-export const validatorMap = {
-	author: validateAuthorForm,
-	edition: validateEditionForm,
-	publisher: validatePublisherForm,
-	work: validateWorkForm
-};
 
-// dummy reducer
 function newEditionReducer(state = Immutable.Map({}), action) {
 	const {type, payload} = action;
 	switch (type) {
@@ -66,6 +55,7 @@ const initialACState = Immutable.fromJS(
 const initialState = Immutable.Map({
 	aliasEditor: Immutable.Map({}),
 	annotationSection: Immutable.Map({content: ''}),
+	authorCreditEditor: initialACState,
 	buttonBar: Immutable.Map({
 		aliasEditorVisible: false,
 		identifierEditorVisible: false
@@ -120,8 +110,10 @@ function crossSliceReducer(state, action) {
 		relationshipSection: state.get('relationshipSection'),
 		submissionSection: state.get('submissionSection')
 	};
+	// Designed for single edition entity, will need to be modified to support multiple editions
 	switch (type) {
 		case ADD_AUTHOR:
+			// add new author for AC in edition
 			intermediateState = intermediateState.setIn(['Editions', 'e0', 'authorCreditEditor', action.payload.rowId, 'author'], Immutable.Map({
 				__isNew__: true,
 				id: action.payload.id,
@@ -132,6 +124,7 @@ function crossSliceReducer(state, action) {
 			intermediateState = intermediateState.setIn(
 				['Editions', 'e0', 'authorCreditEditor', action.payload.rowId, 'name'], activeEntityState.nameSection.get('name')
 			);
+			// save new author state to `Authors`
 			action.payload.value = action.payload.value ?? {
 				...activeEntityState,
 				__isNew__: true,
@@ -142,20 +135,26 @@ function crossSliceReducer(state, action) {
 			};
 			break;
 		case DUMP_EDITION:
+			// dump/save current edition state to `Editions`
 			action.payload.value = {
 				...activeEntityState,
 				authorCreditEditor: state.get('authorCreditEditor'),
 				editionSection: state.get('editionSection')
 			};
+			// reset the state after saving
 			intermediateState = intermediateState.merge(initialState);
+			// keep the AC modal open after resetting state
 			intermediateState = intermediateState.setIn(['editionSection', 'authorCreditEditorVisible'],
 				state.getIn(['editionSection', 'authorCreditEditorVisible']));
 			if (action.payload.type && camelCase(action.payload.type) === 'editionGroup') {
+				// only reset AC state if required
 				intermediateState = intermediateState.set('authorCreditEditor', initialACState);
 			}
+			// default alias language of new entity will be same as of edition
 			intermediateState = intermediateState.setIn(['nameSection', 'language'], activeEntityState.nameSection.get('language', null));
 			break;
 		case ADD_EDITION_GROUP:
+			// add new edition group for edition
 			action.payload.value = action.payload.value ?? {
 				...activeEntityState,
 				__isNew__: true,
@@ -167,6 +166,7 @@ function crossSliceReducer(state, action) {
 			};
 			break;
 		case ADD_WORK:
+			// add new work for edition
 			action.payload.value = action.payload.value ?? {
 				...activeEntityState,
 				__isNew__: true,
@@ -177,6 +177,7 @@ function crossSliceReducer(state, action) {
 			};
 			break;
 		case ADD_PUBLISHER: {
+			// add new publisher for edition
 			const newPublisher = {
 				__isNew__: true,
 				id: action.payload.id,
@@ -188,6 +189,7 @@ function crossSliceReducer(state, action) {
 				...activeEntityState,
 				...newPublisher
 			};
+			// set new publisher in edition state as well
 			intermediateState = intermediateState.setIn(
 				['Editions', 'e0', 'editionSection', 'publisher', newPublisher.id]
 				, Immutable.Map(newPublisher)
@@ -196,6 +198,7 @@ function crossSliceReducer(state, action) {
 		}
 		case LOAD_EDITION:
 		{
+			// load old edition state from `Editions`
 			intermediateState = intermediateState.merge(intermediateState.getIn(['Editions', action.payload.id]));
 			const newEditionGroup = intermediateState.getIn(['EditionGroups', 'eg0'], null);
 			if (newEditionGroup) {

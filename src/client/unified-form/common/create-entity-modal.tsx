@@ -14,7 +14,7 @@ type CreateEntityModalProps = {
 	show:boolean
 };
 export default function CreateEntityModal({show, handleClose, handleSubmit, type, ...rest}:CreateEntityModalProps) {
-	const heading = `Add ${type}`;
+	const heading = `Add ${upperFirst(type)}`;
 	const EntitySection = getEntitySection(type);
 	const validate = getValidator(type);
 	const {allIdentifierTypes} = rest;

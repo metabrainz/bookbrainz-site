@@ -1,4 +1,5 @@
 import {CommonProps} from 'react-select';
+import Immutable from 'immutable';
 
 
 export type RInputEvent = React.ChangeEvent<HTMLInputElement>;
@@ -29,7 +30,7 @@ export type UnifiedFormStateProps = {
 };
 export type UnifiedFormOwnProps = {
     allIdentifierTypes?:IdentifierType[],
-    validators?:Record<string, any>,
+    validator?:(state:Immutable.Map<string, any>, ...args) => boolean,
 };
 export type UnifiedFormProps = UnifiedFormOwnProps & UnifiedFormDispatchProps & UnifiedFormStateProps;
 

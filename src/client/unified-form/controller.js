@@ -13,10 +13,11 @@ import ReactDOM from 'react-dom';
 import ReduxThunk from 'redux-thunk';
 import UnifiedForm from './unified-form';
 import createDebounce from 'redux-debounce';
+import {validateForm as validateEditionForm} from '../entity-editor/validators/edition';
 
 
 const {
-	createRootReducer, shouldDevToolsBeInjected, validatorMap
+	createRootReducer, shouldDevToolsBeInjected
 } = helpers;
 
 const KEYSTROKE_DEBOUNCE_TIME = 250;
@@ -32,7 +33,7 @@ const composeEnhancers = shouldDevToolsBeInjected() ?
 	window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : compose;
 
 function getEntityEditor() {
-	return <UnifiedForm validators={validatorMap} {...extractChildProps(rest)}/>;
+	return <UnifiedForm validator={validateEditionForm} {...extractChildProps(rest)}/>;
 }
 
 const store = createStore(

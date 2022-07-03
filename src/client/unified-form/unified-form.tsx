@@ -22,10 +22,10 @@ function getUfValidator(validator) {
 	};
 }
 export function UnifiedForm(props:UnifiedFormProps) {
-	const {allIdentifierTypes, validators, onSubmit, formValid} = props;
+	const {allIdentifierTypes, validator, onSubmit, formValid} = props;
 	const [tabKey, setTabKey] = React.useState('cover');
 	const editionIdentifierTypes = filterIdentifierTypesByEntityType(allIdentifierTypes, 'Edition');
-	const editionValidator = validators && getUfValidator(validators.edition);
+	const editionValidator = validator && getUfValidator(validator);
 	const tabKeys = ['cover', 'content', 'detail', 'submit'];
 	const onNextHandler = React.useCallback(() => {
 		const index = tabKeys.indexOf(tabKey);
@@ -71,8 +71,8 @@ export function UnifiedForm(props:UnifiedFormProps) {
 	);
 }
 
-function mapStateToProps(state, {validators, allIdentifierTypes}:UnifiedFormOwnProps) {
-	const editionValidator = validators && getUfValidator(validators.edition);
+function mapStateToProps(state, {validator, allIdentifierTypes}:UnifiedFormOwnProps) {
+	const editionValidator = validator && getUfValidator(validator);
 	const editionIdentifierTypes = filterIdentifierTypesByEntityType(allIdentifierTypes, 'Edition');
 	return {
 		formValid: editionValidator && editionValidator(state, editionIdentifierTypes, false, true)
