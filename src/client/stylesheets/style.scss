@@ -792,6 +792,7 @@ $uf-primary:#EB743B;
 
 .accordion > .icon-card{
 	display: flex;
+	overflow: visible;
 	flex-direction: column-reverse;
 }
 
