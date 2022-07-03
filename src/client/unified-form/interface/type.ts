@@ -108,3 +108,16 @@ export type SearchEntityCreateOwnProps = {
 
 };
 export type SearchEntityCreateProps = SearchEntityCreateDispatchProps & SearchEntityCreateOwnProps & CommonProps<any, any>;
+
+export type EntityModalBodyOwnProps = {
+    onModalSubmit:(e)=>unknown,
+    entityType:string,
+	validate:(arg)=>unknown
+	children?: React.ReactElement
+};
+export type EntityModalDispatchProps = {
+	onAliasClose: () => unknown,
+	onIdentifierClose: () => unknown
+};
+
+export type EntityModalBodyProps = EntityModalDispatchProps & EntityModalBodyOwnProps;
