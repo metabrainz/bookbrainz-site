@@ -809,3 +809,8 @@ div[class='card-header'] .accordion-arrow {
 div[class~='show'] + div[class='card-header'] .accordion-arrow {
 	transform: rotate(90deg);
 }
+
+.work-item{
+		border-bottom: 1px solid #EAE7E5;
+		margin-bottom: 0.5rem;
+}

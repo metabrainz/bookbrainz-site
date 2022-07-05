@@ -130,6 +130,28 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 	});
 	// add new works
 	_.forEach(data.Works, (work, wid) => {
+		if (work.checked && work.__isNew__) {
+			let relationshipCount = 0;
+			_.forEach(data.authorCreditEditor, (authorCredit) => {
+				const relationship = {
+					attributeSetId: null,
+					attributes: [],
+					relationshipType: {
+						id: 8
+					},
+					rowId: `a${relationshipCount}`,
+					sourceEntity: {
+					  bbid: authorCredit.author.id
+					},
+					targetEntity: {
+						bbid: wid
+				  }
+				};
+				work.relationshipSection.relationships[`a${relationshipCount}`] = relationship;
+				relationshipCount++;
+			});
+		}
+
 		if (work.__isNew__) {
 			newData[wid] = work;
 		}

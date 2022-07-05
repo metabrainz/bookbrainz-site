@@ -74,11 +74,10 @@ export type EntitySelect = {
 	id:string
 };
 export type ContentTabStateProps = {
-	nextId:string | number,
 	value:any | any[]
 };
 export type ContentTabDispatchProps = {
-	onChange:(arg:EntitySelect|EntitySelect[])=>unknown
+	onChange:(value:EntitySelect)=>unknown,
 };
 export type ContentTabProps = ContentTabStateProps & ContentTabDispatchProps;
 
@@ -97,11 +96,12 @@ export type SearchEntityCreateDispatchProps = {
 export type SearchEntityCreateOwnProps = {
 	bbid?:string,
 	empty?:boolean,
+	isClearable?:boolean,
 	isMulti?:boolean,
 	nextId?:string|number,
 	error?:boolean,
 	filters?:Array<any>,
-	label:string,
+	label?:string,
 	tooltipText?:string,
 	languageOptions?:Array<any>,
 	value?:Array<EntitySelect> | EntitySelect

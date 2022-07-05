@@ -1,9 +1,11 @@
 import {Action} from '../interface/type';
-import {size} from 'lodash';
 
 
 export const ADD_WORK = 'ADD_WORK';
 export const UPDATE_WORKS = 'UPDATE_WORKS';
+export const REMOVE_WORK = 'REMOVE_WORK';
+export const UPDATE_WORK = 'UPDATE_WORK';
+export const TOGGLE_CHECK = 'TOGGLE_CHECK';
 
 let nextWorkId = 0;
 
@@ -21,15 +23,41 @@ export function addWork(value = null):Action {
 }
 
 /**
- * Produces an action indicating that `Works` state should be updated.
+ * Produces an action indicating that a Work should be removed from `Works`.
  *
- * @param {Object} works - All Works.
- * @returns {Action} The resulting UPDATE_WORKS action.
+ * @param {string} id - id of the work to be removed
+ * @returns {Action} The resulting REMOVE_WORK action.
  */
-export function updateWorks(works:Record<string, any>):Action {
-	nextWorkId = size(works);
+export function removeWork(id:string):Action {
 	return {
-		payload: works,
-		type: UPDATE_WORKS
+		payload: id,
+		type: REMOVE_WORK
+	};
+}
+
+/**
+ * Produces an action indicating that a Work should be updated in `Works`.
+ *
+ * @param {string} id - id of work to be updated
+ * @param {Object} value - updated work state.
+ * @returns {Action} The resulting UPDATE_WORK action.
+ */
+export function updateWork(id:string, value):Action {
+	return {
+		payload: {id, value},
+		type: UPDATE_WORK
+	};
+}
+
+/**
+ * Produces an action indicating that a Work's checkbox should be toggled in `Works`.
+ *
+ * @param {string} id - id of the work to be toggle
+ * @returns {Action} The resulting TOGGLE_CHECK action.
+ */
+export function toggleCheck(id:string):Action {
+	return {
+		payload: id,
+		type: TOGGLE_CHECK
 	};
 }

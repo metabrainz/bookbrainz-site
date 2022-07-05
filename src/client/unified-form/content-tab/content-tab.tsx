@@ -2,50 +2,56 @@ import * as Bootstrap from 'react-bootstrap/';
 import {ContentTabDispatchProps, ContentTabProps, ContentTabStateProps, State} from '../interface/type';
 import React from 'react';
 import SearchEntityCreate from '../common/search-entity-create-select';
+import WorkRow from './work-row';
+import {addWork} from './action';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
-import {reduce} from 'lodash';
-import {updateWorks} from './action';
+import {map} from 'lodash';
 
 
-const {Row, Col} = Bootstrap;
-export function ContentTab({value, onChange, nextId, ...rest}:ContentTabProps) {
+const {Row, Col, FormCheck} = Bootstrap;
+export function ContentTab({value, onChange, ...rest}:ContentTabProps) {
+	const [isChecked, setIsChecked] = React.useState(false);
+	const toggleIsChecked = React.useCallback(() => setIsChecked(!isChecked), [isChecked]);
+	const onChangeHandler = React.useCallback((work:any) => {
+		work.checked = isChecked;
+		onChange(work);
+	}, [isChecked, onChange]);
 	return (
-		<Row>
-			<Col lg={{span: 6}}>
-				<SearchEntityCreate
-					isMulti
-					label="Works"
-					nextId={nextId}
-					type="work"
-					value={value}
-					onChange={onChange}
-					{...rest}
-				/>
-			</Col>
-		</Row>
-		 );
+		<>
+			<h3>Works</h3>
+			{map(value, (work, rowId) => <WorkRow key={rowId} rowId={rowId} {...rest}/>)}
+			<Row>
+				<Col lg={{span: 6}}>
+					<SearchEntityCreate
+						isClearable={false}
+						type="work"
+						value={null}
+						onChange={onChangeHandler}
+						{...rest}
+					/>
+				</Col>
+			</Row>
+			<FormCheck
+				className="ml-1"
+				defaultChecked={isChecked}
+				label="Copy authors from AC"
+				type="checkbox"
+				onChange={toggleIsChecked}
+			/>
+		</>
+	);
 }
 
 function mapStateToProps(rootState:State) {
 	const worksObj = convertMapToObject(rootState.get('Works'));
-	// get next id for new work
-	const nextId = reduce(worksObj, (prev, value) => (value.__isNew__ ? prev + 1 : prev), 0);
 	return {
-		nextId,
-		value: Object.values(worksObj)
+		value: worksObj
 	};
 }
-
 function mapDispatchToProps(dispatch) {
 	return {
-		onChange: (options:any[]) => {
-			const mappedOptions = Object.fromEntries(options.map((value, index) => {
-				value.__isNew__ = Boolean(value.__isNew__);
-				return [`w${index}`, value];
-			}));
-			return dispatch(updateWorks(mappedOptions));
-		}
+		onChange: (value:any) => dispatch(addWork(value))
 	};
 }
 
