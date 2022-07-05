@@ -824,8 +824,7 @@ async function processEntitySets(
 ): Promise<ProcessEditionSetsResult | ProcessWorkSetsResult | ProcessAuthorCreditResult | null> {
 	if (entityType === 'Edition') {
 		const editionSets = await processEditionSets(orm, currentEntity, body, transacting);
-		const authorCredit = await processAuthorCredit(orm, currentEntity, body, transacting);
-		return {...editionSets, ...authorCredit};
+		return editionSets;
 	}
 
 	if (entityType === 'EditionGroup') {

@@ -78,7 +78,9 @@ export function validateEditionSectionPublisher(value: any, isCustom = false): b
 		return true;
 	}
 	const publishers = convertMapToObject(value);
-	let flag = false;
+	if (!_.isPlainObject(publishers)) {
+		return false;
+	}
 	for (const pubId in publishers) {
 		if (Object.prototype.hasOwnProperty.call(publishers, pubId)) {
 			const publisher = publishers[pubId];
@@ -86,10 +88,9 @@ export function validateEditionSectionPublisher(value: any, isCustom = false): b
 			if (!isValid) {
 				return false;
 			}
-			flag = true;
 		}
 	}
-	return flag;
+	return true;
 }
 
 export function validateEditionSectionReleaseDate(value: any) {

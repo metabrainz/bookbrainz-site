@@ -97,6 +97,7 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadGenders, middleware.loadLanguages,
 	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
+	middleware.decodeUrlQueryParams,
 	async (req, res) => {
 		const markupProps = generateEntityProps(
 			'author', req, res, {
