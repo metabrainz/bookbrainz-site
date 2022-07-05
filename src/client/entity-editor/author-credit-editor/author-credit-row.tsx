@@ -101,7 +101,7 @@ function AuthorCreditRow({
 	}, [author]);
 	const handleButtonClick = React.useCallback(() => {
 		// don't remove author if it's first row
-		if (index !== 'n0' && author.get('__isNew__')) {
+		if (index !== 'n0' && author?.get('__isNew__')) {
 			onClearHandler(author.get('id'));
 		}
 		onRemoveButtonClick();

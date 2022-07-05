@@ -14,7 +14,7 @@ import {removeEmptyIdentifiers} from '../../entity-editor/identifier-editor/acti
 
 
 function EntityModalBody({onModalSubmit, children, validate, onAliasClose, onIdentifierClose, ...rest}:EntityModalBodyProps) {
-	const genericProps:any = omit(rest, ['allIdentifierTypes', 'entityType']);
+	const genericProps:any = omit(rest, ['allIdentifierTypes']);
 	return (
 		<form onSubmit={onModalSubmit}>
 			<Accordion >
