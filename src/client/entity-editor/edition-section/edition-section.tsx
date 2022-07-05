@@ -398,6 +398,7 @@ function EditionSection({
 						<Select
 							classNamePrefix="react-select"
 							instanceId="editionFormat"
+							isSearchable={false}
 							options={editionFormatsForDisplay}
 							value={formatOption}
 							onChange={onFormatChange}
@@ -418,6 +419,7 @@ function EditionSection({
 						<Select
 							classNamePrefix="react-select"
 							instanceId="editionStatus"
+							isSearchable={false}
 							options={editionStatusesForDisplay}
 							value={statusOption}
 							onChange={onStatusChange}

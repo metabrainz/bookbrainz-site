@@ -26,7 +26,7 @@ export function UnifiedForm(props:UnifiedFormProps) {
 	const [tabKey, setTabKey] = React.useState('cover');
 	const editionIdentifierTypes = filterIdentifierTypesByEntityType(allIdentifierTypes, 'Edition');
 	const editionValidator = validator && getUfValidator(validator);
-	const tabKeys = ['cover', 'content', 'detail', 'submit'];
+	const tabKeys = ['cover', 'detail', 'content', 'submit'];
 	const onNextHandler = React.useCallback(() => {
 		const index = tabKeys.indexOf(tabKey);
 		if (index >= 0 && index < tabKeys.length - 1) {
