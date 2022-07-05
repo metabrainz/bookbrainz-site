@@ -43,8 +43,6 @@
 
 require("core-js/modules/es.array.iterator.js");
 
-require("core-js/modules/es.object.to-string.js");
-
 require("core-js/modules/es.string.iterator.js");
 
 require("core-js/modules/es.weak-map.js");
@@ -62,7 +60,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+require("core-js/modules/es.array.slice.js");
+
 require("core-js/modules/es.array.sort.js");
+
+require("core-js/modules/es.array.filter.js");
+
+require("core-js/modules/es.object.to-string.js");
+
+require("core-js/modules/es.promise.js");
 
 var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
 
@@ -74,11 +80,15 @@ var React = _interopRequireWildcard(require("react"));
 
 var _reactBootstrap = require("react-bootstrap");
 
+var _reactSelect = require("react-select");
+
+var _async = _interopRequireDefault(require("react-select/async"));
+
 var _reactFontawesome = require("@fortawesome/react-fontawesome");
 
 var _validationLabel = _interopRequireDefault(require("./validation-label"));
 
-var _reactVirtualizedSelect = _interopRequireDefault(require("react-virtualized-select"));
+var _utils = require("../../helpers/utils");
 
 var _reactSelectFastFilterOptions = _interopRequireDefault(require("react-select-fast-filter-options"));
 
@@ -89,6 +99,12 @@ var _excluded = ["empty", "error", "tooltipText"];
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop &amp;&amp; obj &amp;&amp; obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" &amp;&amp; typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache &amp;&amp; cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty &amp;&amp; Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" &amp;&amp; Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc &amp;&amp; (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function OptimizedOption(props) {
+  delete props.innerProps.onMouseMove;
+  delete props.innerProps.onMouseOver;
+  return /*#__PURE__*/React.createElement(_reactSelect.components.Option, props, props.children);
+}
 
 /**
  * Presentational component. This component renders a dropdown selection box
@@ -112,14 +128,20 @@ function LanguageField(_ref) {
     empty: empty,
     error: error
   }, "Language");
-  var tooltip = /*#__PURE__*/React.createElement(_reactBootstrap.Tooltip, null, tooltipText);
-  var options = rest.options;
+  var MAX_DROPDOWN_OPTIONS = 20;
+  var MAX_F1_OPTIONS = 400;
+  var tooltip = /*#__PURE__*/React.createElement(_reactBootstrap.Tooltip, {
+    id: "language-tooltip"
+  }, tooltipText);
+  rest.options = (0, _utils.convertMapToObject)(rest.options);
+  var value = rest.value,
+      options = rest.options;
   var filterOptions = (0, _reactSelectFastFilterOptions.default)({
     options: options
   });
 
   var sortFilterOptions = function sortFilterOptions(opts, input, selectOptions) {
-    var newOptions = filterOptions(opts, input, selectOptions);
+    var newOptions = filterOptions(opts, input, selectOptions).slice(0, MAX_DROPDOWN_OPTIONS);
 
     var sortLang = function sortLang(a, b) {
       if ((0, _isNumber2.default)(a.frequency) &amp;&amp; (0, _isNumber2.default)(b.frequency) &amp;&amp; a.frequency !== b.frequency) {
@@ -133,14 +155,39 @@ function LanguageField(_ref) {
     return newOptions;
   };
 
+  var f2Languages = options.filter(function (lang) {
+    return lang.frequency === 2;
+  });
+  var f1Languages = options.filter(function (lang) {
+    return lang.frequency === 1;
+  }).slice(0, MAX_F1_OPTIONS);
+  var defaultOptions = [{
+    label: 'Frequently Used',
+    options: f2Languages
+  }, {
+    label: 'Other',
+    options: f1Languages
+  }];
+  var fetchOptions = React.useCallback(function (input) {
+    return Promise.resolve(sortFilterOptions(options, input, value));
+  }, []);
   return /*#__PURE__*/React.createElement(_reactBootstrap.Form.Group, null, /*#__PURE__*/React.createElement(_reactBootstrap.Form.Label, null, label, /*#__PURE__*/React.createElement(_reactBootstrap.OverlayTrigger, {
     delay: 50,
     overlay: tooltip
   }, /*#__PURE__*/React.createElement(_reactFontawesome.FontAwesomeIcon, {
     className: "margin-left-0-5",
     icon: _freeSolidSvgIcons.faQuestionCircle
-  }))), /*#__PURE__*/React.createElement(_reactVirtualizedSelect.default, (0, _extends2.default)({
-    filterOptions: sortFilterOptions
+  }))), /*#__PURE__*/React.createElement(_async.default, (0, _extends2.default)({
+    cacheOptions: true,
+    isClearable: true,
+    className: "Select",
+    classNamePrefix: "react-select",
+    components: {
+      Option: OptimizedOption
+    },
+    defaultOptions: defaultOptions,
+    loadOptions: fetchOptions,
+    placeholder: "Search language"
   }, rest)));
 }
 
@@ -170,7 +217,7 @@ exports.default = _default;
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Jul 04 2022 16:42:44 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Jul 05 2022 16:26:21 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
