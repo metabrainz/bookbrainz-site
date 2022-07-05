@@ -50,11 +50,11 @@ export function UnifiedForm(props:UnifiedFormProps) {
 					<Tab eventKey="cover" title="Cover">
 						<CoverTab {...props} identifierTypes={editionIdentifierTypes as IdentifierType[]}/>
 					</Tab>
-					<Tab eventKey="content" title="Contents">
-						<ContentTab {...props}/>
-					</Tab>
 					<Tab eventKey="detail" title="Details">
 						<DetailTab {...props}/>
+					</Tab>
+					<Tab eventKey="content" title="Contents">
+						<ContentTab {...props}/>
 					</Tab>
 					<Tab disabled={!formValid} eventKey="submit" title="Submit">
 						<SummarySection/>

@@ -53,7 +53,7 @@ function SearchEntityCreate(props:SearchEntityCreateProps) {
 		onSubmitEntity(rowId);
 		onModalClose();
 	}, []);
-
+	const isValidNewOption = React.useCallback((input) => input.length > 0, []);
 	return (
 		<>
 			<BaseEntitySearch
@@ -61,6 +61,7 @@ function SearchEntityCreate(props:SearchEntityCreateProps) {
 				SelectWrapper={ImmutableCreatableAsync}
 				formatCreateLabel={createLabel}
 				getNewOptionData={getNewOptionData}
+				isValidNewOption={isValidNewOption}
 				onCreateOption={openModalHandler}
 				{...props}
 			/>

@@ -10,7 +10,7 @@ const {Card, Accordion} = Bootstrap;
 export function DetailTab(props) {
 	return (
 		<div>
-			<Accordion >
+			<Accordion>
 				<Card className="icon-card">
 					<Accordion.Collapse eventKey="0">
 						<Card.Body>
