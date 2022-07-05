@@ -16,10 +16,10 @@ import {removeEmptyIdentifiers} from '../../entity-editor/identifier-editor/acti
 function EntityModalBody({onModalSubmit, children, validate, onAliasClose, onIdentifierClose, ...rest}:EntityModalBodyProps) {
 	const genericProps:any = omit(rest, ['allIdentifierTypes']);
 	return (
-		<form onSubmit={onModalSubmit}>
-			<Accordion >
+		<form className="uf-modal-body" onSubmit={onModalSubmit}>
+			<Accordion defaultActiveKey="0">
 				<Card>
-					<Accordion.Toggle as={Card.Header} eventKey="0">Basic
+					<Accordion.Toggle as={Card.Header} eventKey="0">Name
 					</Accordion.Toggle>
 					<Accordion.Collapse eventKey="0">
 						<Card.Body>
@@ -28,29 +28,7 @@ function EntityModalBody({onModalSubmit, children, validate, onAliasClose, onIde
 					</Accordion.Collapse>
 				</Card>
 			</Accordion>
-			<Accordion >
-				<Card>
-					<Accordion.Toggle as={Card.Header} eventKey="0" onClick={onAliasClose}>Aliases
-					</Accordion.Toggle>
-					<Accordion.Collapse eventKey="0">
-						<Card.Body>
-							<AliasModalBody {...genericProps}/>
-						</Card.Body>
-					</Accordion.Collapse>
-				</Card>
-			</Accordion>
-			<Accordion >
-				<Card>
-					<Accordion.Toggle as={Card.Header} eventKey="0" onClick={onIdentifierClose}>Identifiers
-					</Accordion.Toggle>
-					<Accordion.Collapse eventKey="0">
-						<Card.Body>
-							<IdentifierModalBody {...rest}/>
-						</Card.Body>
-					</Accordion.Collapse>
-				</Card>
-			</Accordion>
-			<Accordion >
+			<Accordion defaultActiveKey="0">
 				<Card>
 					<Accordion.Toggle as={Card.Header} eventKey="0">Details
 					</Accordion.Toggle>
@@ -66,7 +44,29 @@ function EntityModalBody({onModalSubmit, children, validate, onAliasClose, onIde
 					</Accordion.Collapse>
 				</Card>
 			</Accordion>
-			<Accordion >
+			<Accordion>
+				<Card>
+					<Accordion.Toggle as={Card.Header} eventKey="0" onClick={onAliasClose}>Aliases
+					</Accordion.Toggle>
+					<Accordion.Collapse eventKey="0">
+						<Card.Body>
+							<AliasModalBody {...genericProps}/>
+						</Card.Body>
+					</Accordion.Collapse>
+				</Card>
+			</Accordion>
+			<Accordion>
+				<Card>
+					<Accordion.Toggle as={Card.Header} eventKey="0" onClick={onIdentifierClose}>Identifiers
+					</Accordion.Toggle>
+					<Accordion.Collapse eventKey="0">
+						<Card.Body>
+							<IdentifierModalBody {...rest}/>
+						</Card.Body>
+					</Accordion.Collapse>
+				</Card>
+			</Accordion>
+			<Accordion>
 				<Card>
 					<Accordion.Toggle as={Card.Header} eventKey="0">Relationships
 					</Accordion.Toggle>
@@ -77,7 +77,7 @@ function EntityModalBody({onModalSubmit, children, validate, onAliasClose, onIde
 					</Accordion.Collapse>
 				</Card>
 			</Accordion>
-			<Accordion >
+			<Accordion>
 				<Card>
 					<Accordion.Toggle as={Card.Header} eventKey="0">Annotation
 					</Accordion.Toggle>
