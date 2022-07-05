@@ -64,16 +64,16 @@ function LanguageField({
 	const label =
 		<ValidationLabel empty={empty} error={error}>Language</ValidationLabel>
 	;
-	const MAX_F2_OPTIONS = 20;
+	const MAX_DROPDOWN_OPTIONS = 20;
 	const MAX_F1_OPTIONS = 400;
-	const tooltip = <Tooltip>{tooltipText}</Tooltip>;
+	const tooltip = <Tooltip id="language-tooltip">{tooltipText}</Tooltip>;
 	rest.options = convertMapToObject(rest.options);
 	const {value, options} = rest;
 	const filterOptions = createFilterOptions({
 		options
 	});
 	const sortFilterOptions = (opts, input, selectOptions) => {
-		const newOptions = filterOptions(opts, input, selectOptions).slice(0, MAX_F2_OPTIONS);
+		const newOptions = filterOptions(opts, input, selectOptions).slice(0, MAX_DROPDOWN_OPTIONS);
 		const sortLang = (a, b) => {
 			if (isNumber(a.frequency) && isNumber(b.frequency) && a.frequency !== b.frequency) {
 				return b.frequency - a.frequency;
@@ -83,15 +83,15 @@ function LanguageField({
 		newOptions.sort(sortLang);
 		return newOptions;
 	};
-	const f2Languagees = options.filter((lang) => lang.frequency === 2).slice(0, MAX_F2_OPTIONS);
-	const f1Languagees = options.filter((lang) => lang.frequency === 1).slice(0, MAX_F1_OPTIONS);
+	const f2Languages = options.filter((lang) => lang.frequency === 2);
+	const f1Languages = options.filter((lang) => lang.frequency === 1).slice(0, MAX_F1_OPTIONS);
 	const defaultOptions = [{
 		label: 'Frequently Used',
-		options: f2Languagees
+		options: f2Languages
 	},
 	{
 		label: 'Other',
-		options: f1Languagees
+		options: f1Languages
 	}];
 	const fetchOptions = React.useCallback((input) => Promise.resolve(sortFilterOptions(options, input, value)), []);
 	return (
