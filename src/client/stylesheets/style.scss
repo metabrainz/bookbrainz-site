@@ -28,9 +28,6 @@ $disabled-color: lighten($disabled-bg,15%);
 
 @import "lobes4/scss/bootstrap.scss";
 @import "react-datepicker/dist/react-datepicker.css";
-@import "react-virtualized/styles.css";
-@import "react-virtualized-select/node_modules/react-select/dist/react-select.css";
-@import "react-virtualized-select/styles.css";
 
 .navbar.BookBrainz {
 	background: rgba(255, 255, 255, 1);

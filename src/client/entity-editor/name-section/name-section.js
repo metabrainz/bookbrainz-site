@@ -154,7 +154,7 @@ class NameSection extends React.Component {
 		}));
 
 		const warnIfExists = !_.isEmpty(exactMatches);
-
+		const languageOption = languageOptionsForDisplay.filter((el) => el.value === languageValue);
 		return (
 			<div>
 				<h2>{`What is the ${_.startCase(entityType)} called?`}</h2>
@@ -241,7 +241,7 @@ class NameSection extends React.Component {
 							instanceId="language"
 							options={languageOptionsForDisplay}
 							tooltipText="Language used for the above name"
-							value={languageValue}
+							value={languageOption}
 							onChange={onLanguageChange}
 						/>
 					</Col>
