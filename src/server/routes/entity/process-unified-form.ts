@@ -219,9 +219,10 @@ export function handleCreateMultipleEntities(
 			await Object.keys(body).reduce((promise, entityKey) => promise.then(() => processEntity(entityKey)), Promise.resolve());
 
 			// adding relationship on newly created entites
-			await Promise.all(Object.keys(allRelationships).map((entityId) => processRelationship(
+			await Object.keys(allRelationships).reduce((promise, entityId) => promise.then(() => processRelationship(
 				allRelationships[entityId], savedMainEntities[entityId], bbidMap, editorJSON.id, orm, transacting
-			)));
+			)), Promise.resolve());
+
 			return savedMainEntities;
 		}
 		catch (err) {
