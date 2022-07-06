@@ -1,4 +1,3 @@
-import {Accordion, Card} from 'react-bootstrap';
 import {EntityModalBodyProps, EntityModalDispatchProps} from '../interface/type';
 import AliasModalBody from '../../entity-editor/alias-editor/alias-modal-body';
 import AnnotationSection from '../../entity-editor/annotation-section/annotation-section';
@@ -6,6 +5,7 @@ import IdentifierModalBody from '../../entity-editor/identifier-editor/identifie
 import NameSection from '../../entity-editor/name-section/name-section';
 import React from 'react';
 import RelationshipSection from '../../entity-editor/relationship-editor/relationship-section';
+import SingleAccordion from './single-accordion';
 import SubmissionSection from '../../entity-editor/submission-section/submission-section';
 import {connect} from 'react-redux';
 import {omit} from 'lodash';
@@ -17,77 +17,29 @@ function EntityModalBody({onModalSubmit, children, validate, onAliasClose, onIde
 	const genericProps:any = omit(rest, ['allIdentifierTypes']);
 	return (
 		<form className="uf-modal-body" onSubmit={onModalSubmit}>
-			<Accordion defaultActiveKey="0">
-				<Card>
-					<Accordion.Toggle as={Card.Header} eventKey="0">Name
-					</Accordion.Toggle>
-					<Accordion.Collapse eventKey="0">
-						<Card.Body>
-							<NameSection isModal {...rest}/>
-						</Card.Body>
-					</Accordion.Collapse>
-				</Card>
-			</Accordion>
-			<Accordion defaultActiveKey="0">
-				<Card>
-					<Accordion.Toggle as={Card.Header} eventKey="0">Details
-					</Accordion.Toggle>
-					<Accordion.Collapse eventKey="0">
-						<Card.Body>
-							{
-								React.cloneElement(
-									React.Children.only(children),
-									{...rest, isLeftAlign: true}
-								)
-							}
-						</Card.Body>
-					</Accordion.Collapse>
-				</Card>
-			</Accordion>
-			<Accordion>
-				<Card>
-					<Accordion.Toggle as={Card.Header} eventKey="0" onClick={onAliasClose}>Aliases
-					</Accordion.Toggle>
-					<Accordion.Collapse eventKey="0">
-						<Card.Body>
-							<AliasModalBody {...genericProps}/>
-						</Card.Body>
-					</Accordion.Collapse>
-				</Card>
-			</Accordion>
-			<Accordion>
-				<Card>
-					<Accordion.Toggle as={Card.Header} eventKey="0" onClick={onIdentifierClose}>Identifiers
-					</Accordion.Toggle>
-					<Accordion.Collapse eventKey="0">
-						<Card.Body>
-							<IdentifierModalBody {...rest}/>
-						</Card.Body>
-					</Accordion.Collapse>
-				</Card>
-			</Accordion>
-			<Accordion>
-				<Card>
-					<Accordion.Toggle as={Card.Header} eventKey="0">Relationships
-					</Accordion.Toggle>
-					<Accordion.Collapse eventKey="0">
-						<Card.Body>
-							<RelationshipSection {...genericProps}/>
-						</Card.Body>
-					</Accordion.Collapse>
-				</Card>
-			</Accordion>
-			<Accordion>
-				<Card>
-					<Accordion.Toggle as={Card.Header} eventKey="0">Annotation
-					</Accordion.Toggle>
-					<Accordion.Collapse eventKey="0">
-						<Card.Body>
-							<AnnotationSection {...rest}/>
-						</Card.Body>
-					</Accordion.Collapse>
-				</Card>
-			</Accordion>
+			<SingleAccordion defaultActive heading="Name">
+				<NameSection isModal {...rest}/>
+			</SingleAccordion>
+			<SingleAccordion defaultActive heading="Details">
+				{
+					React.cloneElement(
+						React.Children.only(children),
+						{...rest, isLeftAlign: true}
+					)
+				}
+			</SingleAccordion>
+			<SingleAccordion heading="Aliases" onToggle={onAliasClose}>
+				<AliasModalBody {...genericProps}/>
+			</SingleAccordion>
+			<SingleAccordion heading="Identifiers" onToggle={onIdentifierClose}>
+				<IdentifierModalBody {...rest}/>
+			</SingleAccordion>
+			<SingleAccordion heading="Relationships">
+				<RelationshipSection {...genericProps}/>
+			</SingleAccordion>
+			<SingleAccordion heading="Annotation">
+				<AnnotationSection {...rest}/>
+			</SingleAccordion>
 			<SubmissionSection {...rest} validate={validate} onSubmit={onModalSubmit}/>
 
 		</form>

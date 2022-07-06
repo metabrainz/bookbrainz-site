@@ -790,6 +790,7 @@ $uf-primary:#EB743B;
 	overflow:visible;
 }
 
+// Adding icon to accordion header 
 .accordion > .icon-card{
 	display: flex;
 	overflow: visible;
@@ -803,13 +804,13 @@ $uf-primary:#EB743B;
 	justify-content: space-between;
 }
 div[class='card-header'] .accordion-arrow {
-	transition: all 0.5s ease;
+	transition: all 0.3s linear;
 	transform: rotate(0deg);
 }
-div[class~='show'] + div[class='card-header'] .accordion-arrow {
+div[class~='show'] + div[class='card-header'] .accordion-arrow,
+div[class~=collapsing]+div[class=card-header] .accordion-arrow {
 	transform: rotate(90deg);
 }
-
 .work-item{
 		border-bottom: 1px solid #EAE7E5;
 		margin-bottom: 0.5rem;
