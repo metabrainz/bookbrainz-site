@@ -84,17 +84,18 @@ describe('Unified form routes', () => {
 	});
 	it('should not throw error while editing single entity', async () => {
 		const postData = {b0: {
-			...baseState,
 			__isNew__: false,
 			id: wBBID,
-			type: 'Work',
-			workSection: {
-				languages: [],
-				type: null
-			}
+			nameSection: {},
+			submissionSection: {
+				note: 'note',
+				submitError: '',
+				submitted: false
+			},
+			type: 'Work'
 		}};
 		const newName = 'changedName';
-		postData.b0.nameSection.language = newLanguage.id;
+		// postData.b0.nameSection.language = newLanguage.id;
 		postData.b0.nameSection.name = newName;
 		const res = await agent.post('/create/handler').send(postData);
 		const editEntities = res.body;
@@ -109,7 +110,6 @@ describe('Unified form routes', () => {
 	it('should not throw error while adding relationship to single entity', async () => {
 		// we need to pass extra id and __isNew__ attributes
 		const postData = {b0: {
-			...baseState,
 			__isNew__: false,
 			id: wBBID,
 			relationshipSection: {
@@ -130,13 +130,13 @@ describe('Unified form routes', () => {
 					}
 				}
 			},
-			type: 'Work',
-			workSection: {
-				languages: [],
-				type: null
-			}
+			submissionSection: {
+				note: 'note',
+				submitError: '',
+				submitted: false
+			},
+			type: 'Work'
 		}};
-		postData.b0.nameSection.language = newLanguage.id;
 		const res = await agent.post('/create/handler').send(postData);
 		const editEntities = res.body;
 		expect(editEntities.length).equal(1);
@@ -144,9 +144,10 @@ describe('Unified form routes', () => {
 		const fetchedworkEntity = await getEntityByBBID(orm, workEntity.bbid);
 		expect(Boolean(fetchedworkEntity)).to.be.true;
 		const relationships = get(fetchedworkEntity, ['relationshipSet', 'relationships'], []);
-		expect(relationships.length).to.be.equal(1);
-		expect(get(relationships[0], 'targetBbid')).to.be.equal(wBBID);
-		expect(get(relationships[0], 'sourceBbid')).to.be.equal(aBBID);
+		// one relationship added on creation
+		expect(relationships.length).to.be.equal(2);
+		expect(get(relationships[1], 'targetBbid')).to.be.equal(wBBID);
+		expect(get(relationships[1], 'sourceBbid')).to.be.equal(aBBID);
 		expect(res).to.be.ok;
 		expect(res).to.have.status(200);
 	});

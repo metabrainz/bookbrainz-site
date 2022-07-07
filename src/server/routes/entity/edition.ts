@@ -368,7 +368,7 @@ router.post(
 );
 
 
-function editionToFormState(edition) {
+export function editionToFormState(edition) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = edition.aliasSet ?
 		edition.aliasSet.aliases.map(({languageId, ...rest}) => ({

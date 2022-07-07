@@ -339,7 +339,7 @@ function validateUnifiedForm(body:Record<string, any>):boolean {
 				return false;
 			}
 			const validator = getValidator(entityType);
-			if (!validator(entityForm)) {
+			if (isNew && !validator(entityForm)) {
 				return false;
 			}
 		}
@@ -353,16 +353,18 @@ function validateUnifiedForm(body:Record<string, any>):boolean {
  * @param {object} res - Response object
  */
 
-export function createEntitiesHandler(
+export async function createEntitiesHandler(
 	req:$Request,
 	res:$Response
 ) {
+	const {orm} = req.app.locals;
+	 req.body = await unifiedRoutes.preprocessForm(req.body, orm);
 	// validating
 	if (!validateUnifiedForm(req.body)) {
 		const err = new error.FormSubmissionError();
 		return error.sendErrorAsJSON(res, err);
 	}
-	// transforming
+	// // // transforming
 	req.body = unifiedRoutes.transformForm(req.body);
 	return unifiedRoutes.handleCreateMultipleEntities(req as PassportRequest, res);
 }

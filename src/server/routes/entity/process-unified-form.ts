@@ -1,23 +1,26 @@
 import * as achievement from '../../helpers/achievement';
+import * as commonUtils from '../../../common/helpers/utils';
 import * as handler from '../../helpers/handler';
+import * as utils from '../../helpers/utils';
 import type {Request as $Request, Response as $Response} from 'express';
+import {authorToFormState, transformNewForm as authorTransform} from './author';
+import {editionGroupToFormState, transformNewForm as editionGroupTransform} from './edition-group';
+import {editionToFormState, transformNewForm as editionTransform} from './edition';
 import {
 	fetchEntitiesForRelationships, fetchOrCreateMainEntity, getChangedProps,
 	getNextRelationshipSets, indexAutoCreatedEditionGroup, saveEntitiesAndFinishRevision
 } from './entity';
+import {publisherToFormState, transformNewForm as publisherTransform} from './publisher';
+import {seriesToFormState, transformNewForm as seriesTransform} from './series';
+
+import {workToFormState, transformNewForm as workTransform} from './work';
 import type {
 	EntityTypeString
 } from 'bookbrainz-data/lib/func/types';
 import {FormSubmissionError} from '../../../common/helpers/error';
 import _ from 'lodash';
 import {_bulkIndexEntities} from '../../../common/helpers/search';
-import {transformNewForm as authorTransform} from './author';
-import {transformNewForm as editionGroupTransform} from './edition-group';
-import {transformNewForm as editionTransform} from './edition';
 import log from 'log';
-import {transformNewForm as publisherTransform} from './publisher';
-import {transformNewForm as seriesTransform} from './series';
-import {transformNewForm as workTransform} from './work';
 
 
 type PassportRequest = $Request & {user: any, session: any};
@@ -43,6 +46,15 @@ const additionalEntityProps = {
 	series: ['entityType', 'orderingTypeId'],
 	work: 'typeId'
 
+};
+
+const entityToFormStateMap = {
+	author: authorToFormState,
+	edition: editionToFormState,
+	editionGroup: editionGroupToFormState,
+	publisher: publisherToFormState,
+	series: seriesToFormState,
+	work: workToFormState
 };
 
 const baseRelations = [
@@ -100,18 +112,64 @@ export async function processAchievement(orm, editorId, entityJSON) {
 	}
 }
 
-export function transformForm(body:Record<string, any>):Record<string, any> {
-	const modifiedForm = {};
-	for (const keyIndex in body) {
-		if (Object.prototype.hasOwnProperty.call(body, keyIndex)) {
-			const currentForm = body[keyIndex];
-			const transformedForm = transformFunctions[_.camelCase(currentForm.type)](currentForm);
-			modifiedForm[keyIndex] = {__isNew__: currentForm.__isNew__, id: currentForm.id, type: currentForm.type, ...transformedForm};
-		}
-	}
-	return modifiedForm;
+function getEntityRelations(type:EntityTypeString) {
+	return [...baseRelations, ...additionalEntityAttributes[_.camelCase(type)]];
 }
 
+export function transformForm(body:Record<string, any>):Record<string, any> {
+	return _.mapValues(body, (currentForm) => {
+		const transformedForm = transformFunctions[_.camelCase(currentForm.type)](currentForm);
+		const __isNew__ = _.get(currentForm, '__isNew__', true);
+		const {id, type} = currentForm;
+		return {__isNew__, id, type, ...transformedForm};
+	});
+}
+
+export async function preprocessForm(body:Record<string, any>, orm):Promise<Record<string, any>> {
+	async function processForm(currentForm) {
+		async function getEntityWithAlias(relEntity) {
+			const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
+			const model = commonUtils.getEntityModelByType(orm, relEntity.type);
+
+			return model.forge({bbid: redirectBbid})
+				.fetch({require: false, withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))});
+		}
+		const {id, type} = currentForm;
+		const {RelationshipSet} = orm;
+		const isNew = _.get(currentForm, '__isNew__', true);
+		if (!isNew && id) {
+			const entityType = _.upperFirst(_.camelCase(type));
+			const currentEntity = await orm.func.entity.getEntity(orm, entityType, id, getEntityRelations(entityType as EntityTypeString));
+			const relationshipSet = await RelationshipSet.forge({id: currentEntity.relationshipSetId}).fetch({
+				require: false,
+				withRelated: [
+					'relationships.source',
+					'relationships.target',
+					'relationships.type.attributeTypes',
+					'relationships.attributeSet.relationshipAttributes.value',
+					'relationships.attributeSet.relationshipAttributes.type'
+				]
+			});
+			currentEntity.relationships = relationshipSet ?
+				relationshipSet.related('relationships').toJSON() : [];
+
+			utils.attachAttributes(currentEntity.relationships);
+			await Promise.all(currentEntity.relationships.map((relationship) =>
+				Promise.all([getEntityWithAlias(relationship.source), getEntityWithAlias(relationship.target)])
+					.then(([source, target]) => {
+						relationship.source = source.toJSON();
+						relationship.target = target.toJSON();
+
+						return relationship;
+					})));
+			const oldFormState = entityToFormStateMap[_.camelCase(type)](currentEntity);
+			return _.merge(oldFormState, currentForm);
+		}
+		return currentForm;
+	}
+	const allEntities = await Promise.all(_.values(body).map(processForm));
+	return Object.fromEntries(Object.keys(body).map((key, index) => [key, allEntities[index]]));
+}
 
 export async function handleAddRelationship(
 	body:Record<string, any>,
@@ -170,14 +228,10 @@ async function processRelationship(rels:Record<string, any>[], mainEntity, bbidM
 			{...rel, sourceBbid: _.get(bbidMap, rel.sourceBbid) ?? rel.sourceBbid,
 			 targetBbid: _.get(bbidMap, rel.targetBbid) ?? rel.targetBbid}
 		));
-		const {relationshipSetId} = await handleAddRelationship({relationships}, editorId,
+		const relationshipSet = await handleAddRelationship({relationships}, editorId,
 			 mainEntity, mainEntity.type, orm, transacting);
-		mainEntity.relationshipSetId = relationshipSetId;
+		mainEntity.relationshipSetId = relationshipSet.relationshipSetId;
 	}
-}
-
-function getEntityRelations(type:EntityTypeString) {
-	return [...baseRelations, ...additionalEntityAttributes[_.camelCase(type)]];
 }
 
 export function handleCreateMultipleEntities(
@@ -246,7 +300,9 @@ export function handleCreateMultipleEntities(
 			);
 			// If there are no differences, bail
 			if (_.isEmpty(changedProps)) {
-				throw new FormSubmissionError('No Updated Field');
+				savedMainEntities[entityKey] = currentEntity;
+				_.set(savedMainEntities[entityKey], ['relationshipSet', 'id'], savedMainEntities[entityKey].relationshipSetId);
+				return;
 			}
 			const mainEntity = await fetchOrCreateMainEntity(
 				orm, transacting, isNew, currentEntity.bbid, entityType
