@@ -1,5 +1,5 @@
 import {authorWorkRelationshipTypeData, baseState, createAuthor, createEditionGroup,
-	createEditor, createPublisher, createWork, getRandomUUID, truncateEntities} from '../../../test-helpers/create-entities';
+	createEditor, createPublisher, createWork, getRandomUUID, languageAttribs, truncateEntities} from '../../../test-helpers/create-entities';
 import {every, forOwn, get, map} from 'lodash';
 import app from '../../../../src/server/app';
 import chai from 'chai';
@@ -8,7 +8,7 @@ import {getEntityByBBID} from '../../../../src/common/helpers/utils';
 import orm from '../../../bookbrainz-data';
 
 
-const {RelationshipType} = orm;
+const {Language, RelationshipType} = orm;
 const relationshipTypeData = {
 	description: 'test descryption',
 	label: 'test label',
@@ -36,7 +36,7 @@ function testDefaultAlias(entity, languageId) {
 
 describe('Unified form routes', () => {
 	let agent;
-	const languageId = 42;
+	let newLanguage;
 	let newRelationshipType;
 	let authorWorkRelationshipType;
 	const wBBID = getRandomUUID();
@@ -51,6 +51,8 @@ describe('Unified form routes', () => {
 			await createEditionGroup(egBBID);
 			await createAuthor(aBBID);
 			newRelationshipType = await new RelationshipType(relationshipTypeData)
+				.save(null, {method: 'insert'});
+			newLanguage = await new Language({...languageAttribs})
 				.save(null, {method: 'insert'});
 			authorWorkRelationshipType = await new RelationshipType(authorWorkRelationshipTypeData)
 				.save(null, {method: 'insert'});
@@ -69,13 +71,14 @@ describe('Unified form routes', () => {
 			editionSection: {},
 			type: 'Edition'
 		}};
+		postData.b0.nameSection.language = newLanguage.id;
 		const res = await agent.post('/create/handler').send(postData);
 		const createdEntities = res.body;
 		expect(createdEntities.length).equal(1);
 		const editionEntity = createdEntities[0];
 		const fetchedEditionEntity = await getEntityByBBID(orm, editionEntity.bbid);
 		expect(Boolean(fetchedEditionEntity)).to.be.true;
-		expect(testDefaultAlias(fetchedEditionEntity, languageId)).to.be.true;
+		expect(testDefaultAlias(fetchedEditionEntity, newLanguage.id)).to.be.true;
 		expect(res).to.be.ok;
 		expect(res).to.have.status(200);
 	});
@@ -91,6 +94,7 @@ describe('Unified form routes', () => {
 			}
 		}};
 		const newName = 'changedName';
+		postData.b0.nameSection.language = newLanguage.id;
 		postData.b0.nameSection.name = newName;
 		const res = await agent.post('/create/handler').send(postData);
 		const editEntities = res.body;
@@ -132,6 +136,7 @@ describe('Unified form routes', () => {
 				type: null
 			}
 		}};
+		postData.b0.nameSection.language = newLanguage.id;
 		const res = await agent.post('/create/handler').send(postData);
 		const editEntities = res.body;
 		expect(editEntities.length).equal(1);
@@ -159,12 +164,15 @@ describe('Unified form routes', () => {
 				type: null
 			}
 		}};
+		forOwn(postData, (value) => {
+			value.nameSection.language = newLanguage.id;
+		});
 		const res = await agent.post('/create/handler').send(postData);
 		const createdEntities = res.body;
 		expect(createdEntities.length).equal(2);
 		const conditions = await map(createdEntities, async (entity) => {
 			const fetchedEntity = await getEntityByBBID(orm, entity.bbid);
-			return !fetchedEntity ? false : testDefaultAlias(fetchedEntity, languageId);
+			return !fetchedEntity ? false : testDefaultAlias(fetchedEntity, newLanguage.id);
 		});
 		expect(every(conditions)).to.be.true;
 		expect(res).to.be.ok;
@@ -195,6 +203,9 @@ describe('Unified form routes', () => {
 			},
 			type: 'Edition'
 		}};
+		forOwn(postData, (value) => {
+			value.nameSection.language = newLanguage.id;
+		});
 		const res = await agent.post('/create/handler').send(postData);
 		const createdEntities = res.body;
 		expect(createdEntities.length).equal(1);
@@ -240,6 +251,9 @@ describe('Unified form routes', () => {
 				type: null
 			}
 		}};
+		forOwn(postData, (value) => {
+			value.nameSection.language = newLanguage.id;
+		});
 		const res = await agent.post('/create/handler').send(postData);
 		const createdEntities = res.body;
 		expect(createdEntities.length).equal(2);
@@ -268,6 +282,7 @@ describe('Unified form routes', () => {
 			},
 			type: 'Edition'
 		}};
+		postData.b0.nameSection.language = newLanguage.id;
 		const res = await agent.post('/create/handler').send(postData);
 		const createdEntities = res.body;
 		expect(createdEntities.length).equal(1);
@@ -310,6 +325,9 @@ describe('Unified form routes', () => {
 			},
 			type: 'Edition'
 		}};
+		forOwn(postData, (value) => {
+			value.nameSection.language = newLanguage.id;
+		});
 		const res = await agent.post('/create/handler').send(postData);
 		const createdEntities = res.body;
 		expect(createdEntities.length).equal(2);
@@ -334,6 +352,7 @@ describe('Unified form routes', () => {
 			},
 			type: 'Edition'
 		}};
+		postData.b0.nameSection.language = newLanguage.id;
 		const res = await agent.post('/create/handler').send(postData);
 		const createdEntities = res.body;
 		expect(createdEntities.length).equal(1);
@@ -362,6 +381,9 @@ describe('Unified form routes', () => {
 			},
 			type: 'Edition'
 		}};
+		forOwn(postData, (value) => {
+			value.nameSection.language = newLanguage.id;
+		});
 		const res = await agent.post('/create/handler').send(postData);
 		const createdEntities = res.body;
 		expect(createdEntities.length).equal(2);
@@ -391,6 +413,7 @@ describe('Unified form routes', () => {
 			editionSection: {},
 			type: 'Edition'
 		}};
+		postData.b0.nameSection.language = newLanguage.id;
 		const res = await agent.post('/create/handler').send(postData);
 		const createdEntities = res.body;
 		expect(createdEntities.length).equal(1);
@@ -423,6 +446,9 @@ describe('Unified form routes', () => {
 				type: 'Edition'
 			}
 		};
+		forOwn(postData, (value) => {
+			value.nameSection.language = newLanguage.id;
+		});
 		const res = await agent.post('/create/handler').send(postData);
 		const createdEntities = res.body;
 		expect(createdEntities.length).equal(2);
