@@ -35,6 +35,7 @@ import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import {createStore} from 'redux';
 import {generateProps} from './props';
+import {isValidBBID} from '../../common/helpers/utils';
 
 
 const {createRootReducer, getEntitySection, getEntitySectionMerge, getValidator} = entityEditorHelpers;
@@ -328,6 +329,12 @@ function validateUnifiedForm(body:Record<string, any>):boolean {
 		if (Object.prototype.hasOwnProperty.call(body, entityKey)) {
 			const entityForm = body[entityKey];
 			const entityType = _.camelCase(entityForm.type);
+			const isNew = _.get(entityForm, '__isNew__', true);
+			const bbid = _.get(entityForm, 'id', null);
+			// for existing entity, it must have id attribute set to its bbid
+			if (!isNew && (!bbid || !isValidBBID(bbid))) {
+				return false;
+			}
 			if (!entityType || !validEntityTypes.includes(entityType)) {
 				return false;
 			}

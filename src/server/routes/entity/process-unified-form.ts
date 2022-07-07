@@ -8,6 +8,7 @@ import {
 import type {
 	EntityTypeString
 } from 'bookbrainz-data/lib/func/types';
+import {FormSubmissionError} from '../../../common/helpers/error';
 import _ from 'lodash';
 import {_bulkIndexEntities} from '../../../common/helpers/search';
 import {transformNewForm as authorTransform} from './author';
@@ -44,6 +45,47 @@ const additionalEntityProps = {
 
 };
 
+const baseRelations = [
+	'aliasSet.aliases.language',
+	'annotation.lastRevision',
+	'defaultAlias',
+	'disambiguation',
+	'identifierSet.identifiers.type',
+	'relationshipSet.relationships.type',
+	'revision.revision',
+	'collections.owner'
+];
+
+const additionalEntityAttributes = {
+	author: ['authorType', 'gender', 'beginArea', 'endArea'],
+	edition: [
+		'authorCredit.names.author.defaultAlias',
+		'editionGroup.defaultAlias',
+		'languageSet.languages',
+		'editionFormat',
+		'editionStatus',
+		'releaseEventSet.releaseEvents',
+		'publisherSet.publishers.defaultAlias'
+	],
+	editionGroup: [
+		'authorCredit.names.author.defaultAlias',
+		'editionGroupType',
+		'editions.defaultAlias',
+		'editions.disambiguation',
+		'editions.releaseEventSet.releaseEvents',
+		'editions.identifierSet.identifiers.type',
+		'editions.editionFormat'
+	],
+	publisher: ['publisherType', 'area'],
+	series: [
+		'defaultAlias',
+		'disambiguation',
+		'seriesOrderingType',
+		'identifierSet.identifiers.type'
+	],
+	work: ['workType', 'languageSet.languages']
+};
+
 export async function processAchievement(orm, editorId, entityJSON) {
 	const {revisionId} = entityJSON;
 	try {
@@ -64,7 +106,7 @@ export function transformForm(body:Record<string, any>):Record<string, any> {
 		if (Object.prototype.hasOwnProperty.call(body, keyIndex)) {
 			const currentForm = body[keyIndex];
 			const transformedForm = transformFunctions[_.camelCase(currentForm.type)](currentForm);
-			modifiedForm[keyIndex] = {type: currentForm.type, ...transformedForm};
+			modifiedForm[keyIndex] = {__isNew__: currentForm.__isNew__, id: currentForm.id, type: currentForm.type, ...transformedForm};
 		}
 	}
 	return modifiedForm;
@@ -134,6 +176,10 @@ async function processRelationship(rels:Record<string, any>[], mainEntity, bbidM
 	}
 }
 
+function getEntityRelations(type:EntityTypeString) {
+	return [...baseRelations, ...additionalEntityAttributes[_.camelCase(type)]];
+}
+
 export function handleCreateMultipleEntities(
 	req: PassportRequest,
 	res: $Response
@@ -144,6 +190,7 @@ export function handleCreateMultipleEntities(
 
 	const {body}: {body: Record<string, any>} = req;
 	let currentEntity: {
+		__isNew__: boolean | undefined,
 		aliasSet: {id: number} | null | undefined,
 		annotation: {id: number} | null | undefined,
 		bbid: string,
@@ -176,9 +223,17 @@ export function handleCreateMultipleEntities(
 				}
 			}
 			allRelationships[entityKey] = entityForm.relationships;
-			const newEntity = await new Entity({type: entityType}).save(null, {transacting});
-			currentEntity = newEntity.toJSON();
-
+			const isNew = _.get(entityForm, '__isNew__', true);
+			if (isNew) {
+				const newEntity = await new Entity({type: entityType}).save(null, {transacting});
+				currentEntity = newEntity.toJSON();
+			}
+			else {
+				currentEntity = await orm.func.entity.getEntity(orm, entityType, entityForm.id, getEntityRelations(entityType as EntityTypeString));
+				if (!currentEntity) {
+					throw new FormSubmissionError('Entity with given id not found');
+				}
+			}
 			// create new revision for each entity
 			const newRevision = await new Revision({
 				authorId: editorJSON.id,
@@ -186,18 +241,22 @@ export function handleCreateMultipleEntities(
 			}).save(null, {transacting});
 			const additionalProps = _.pick(entityForm, additionalEntityProps[_.camelCase(entityType)]);
 			const changedProps = await getChangedProps(
-				orm, transacting, true, currentEntity, entityForm, entityType,
+				orm, transacting, isNew, currentEntity, entityForm, entityType,
 				newRevision, additionalProps
 			);
+			// If there are no differences, bail
+			if (_.isEmpty(changedProps)) {
+				throw new FormSubmissionError('No Updated Field');
+			}
 			const mainEntity = await fetchOrCreateMainEntity(
-				orm, transacting, true, currentEntity.bbid, entityType
+				orm, transacting, isNew, currentEntity.bbid, entityType
 			);
-			mainEntity.shouldInsert = true;
+			mainEntity.shouldInsert = isNew;
 
 			// set changed attributes on main entity
 			_.forOwn(changedProps, (value, key) => mainEntity.set(key, value));
 			const savedMainEntity = await saveEntitiesAndFinishRevision(
-				orm, transacting, true, newRevision, mainEntity, [mainEntity],
+				orm, transacting, isNew, newRevision, mainEntity, [mainEntity],
 				editorJSON.id, entityForm.note
 			);
 
@@ -213,6 +272,10 @@ export function handleCreateMultipleEntities(
 			}
 			bbidMap[entityKey] = savedMainEntity.get('bbid');
 			savedMainEntities[entityKey] = savedMainEntity.toJSON();
+			// getNextRelationshipSet expects relationshipSet.id to exist
+			if (!isNew) {
+				_.set(savedMainEntities[entityKey], ['relationshipSet', 'id'], savedMainEntities[entityKey].relationshipSetId);
+			}
 		}
 		try {
 			// bookshelf's transaction have issue with Promise.All, refer https://github.com/bookshelf/bookshelf/issues/1498 for more details
