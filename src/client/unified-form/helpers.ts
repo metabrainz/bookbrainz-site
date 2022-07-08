@@ -55,7 +55,6 @@ const initialACState = Immutable.fromJS(
 const initialState = Immutable.Map({
 	aliasEditor: Immutable.Map({}),
 	annotationSection: Immutable.Map({content: ''}),
-	authorCreditEditor: initialACState,
 	buttonBar: Immutable.Map({
 		aliasEditorVisible: false,
 		identifierEditorVisible: false
