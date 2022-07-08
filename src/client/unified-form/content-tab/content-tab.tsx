@@ -12,7 +12,7 @@ import {map} from 'lodash';
 const {Row, Col, FormCheck} = Bootstrap;
 export function ContentTab({value, onChange, ...rest}:ContentTabProps) {
 	const [isChecked, setIsChecked] = React.useState(false);
-	const toggleIsChecked = React.useCallback(() => setIsChecked(!isChecked), [isChecked]);
+	const toggleCheck = React.useCallback(() => setIsChecked(!isChecked), [isChecked]);
 	const onChangeHandler = React.useCallback((work:any) => {
 		work.checked = isChecked;
 		onChange(work);
@@ -35,9 +35,10 @@ export function ContentTab({value, onChange, ...rest}:ContentTabProps) {
 			<FormCheck
 				className="ml-1"
 				defaultChecked={isChecked}
-				label="Copy authors from AC"
+				id="works-check"
+				label="Copy authors from AC for this work"
 				type="checkbox"
-				onChange={toggleIsChecked}
+				onChange={toggleCheck}
 			/>
 		</>
 	);

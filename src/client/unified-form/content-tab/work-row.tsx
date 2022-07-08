@@ -28,7 +28,6 @@ function WorkRow({onChange, work, onRemove, onToggle, ...rest}:WorkRowProps) {
 		value.checked = isChecked;
 		onChange(value);
 	}, [isChecked, onChange]);
-	// TODO: Add author to exisiting work from AC
 	return (
 		<div className="work-item">
 			<Row>
@@ -45,13 +44,14 @@ function WorkRow({onChange, work, onRemove, onToggle, ...rest}:WorkRowProps) {
 					<Button variant="danger" onClick={onRemove}>Remove</Button>
 				</Col>
 			</Row>
-			{work.__isNew__ && <FormCheck
+			<FormCheck
 				className="ml-1 mb-2"
 				defaultChecked={isChecked}
-				label="Copy authors from AC"
+				id={work.id}
+				label="Copy authors from AC for this work"
 				type="checkbox"
 				onChange={onToggle}
-			                   />}
+			/>
 		</div>
 		 );
 }

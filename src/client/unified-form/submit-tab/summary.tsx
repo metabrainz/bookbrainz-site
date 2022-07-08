@@ -33,10 +33,10 @@ function SummarySection({
 		Works
 	};
 	function renderEntityGroup(entities: Array<any>, entityType: string) {
-		if (entities.length === 0) {
+		const newEntities = entities.filter((entity) => entity.__isNew__);
+		if (newEntities.length === 0) {
 			return null;
 		}
-		const newEntities = entities.filter((entity) => entity.__isNew__);
 		return (
 			<ListGroup.Item
 				as="li"

@@ -129,15 +129,16 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 		}
 	});
 	// add new works
+	const authorWorkRelationshipTypeId = 8;
 	_.forEach(data.Works, (work, wid) => {
-		if (work.checked && work.__isNew__) {
+		if (work.checked) {
 			let relationshipCount = 0;
 			_.forEach(data.authorCreditEditor, (authorCredit) => {
 				const relationship = {
 					attributeSetId: null,
 					attributes: [],
 					relationshipType: {
-						id: 8
+						id: authorWorkRelationshipTypeId
 					},
 					rowId: `a${relationshipCount}`,
 					sourceEntity: {
@@ -147,12 +148,18 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 						bbid: wid
 				  }
 				};
-				work.relationshipSection.relationships[`a${relationshipCount}`] = relationship;
+				_.set(work, ['relationshipSection', 'relationships', `a${relationshipCount}`], relationship);
 				relationshipCount++;
 			});
+			if (!work.__isNew__) {
+				work.submissionSection = {
+					note: _.get(data, ['submissionSection', 'note'])
+				};
+				work.__isNew__ = false;
+			}
 		}
 
-		if (work.__isNew__) {
+		if (!work.__isNew__ || work.checked) {
 			newData[wid] = work;
 		}
 	});
