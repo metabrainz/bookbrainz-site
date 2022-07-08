@@ -145,7 +145,7 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 					  bbid: authorCredit.author.id
 					},
 					targetEntity: {
-						bbid: wid
+						bbid: work.id
 				  }
 				};
 				_.set(work, ['relationshipSection', 'relationships', `a${relationshipCount}`], relationship);
@@ -159,7 +159,7 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 			}
 		}
 
-		if (!work.__isNew__ || work.checked) {
+		if (work.__isNew__ || work.checked) {
 			newData[wid] = work;
 		}
 	});
