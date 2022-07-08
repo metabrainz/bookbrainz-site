@@ -146,6 +146,9 @@ export async function preprocessForm(body:Record<string, any>, orm):Promise<Reco
 				]
 			});
 			await addRelationships(currentEntity, relationshipSet, orm);
+			if (!currentEntity.annotation) {
+				_.set(currentEntity, ['annotation', 'content'], '');
+			}
 			// convert this state to normal entity-editor state
 			const oldFormState = entityToFormStateMap[_.camelCase(type)](currentEntity);
 			// deep merge the old state with new one
