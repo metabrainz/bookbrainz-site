@@ -1,7 +1,5 @@
 import * as achievement from '../../helpers/achievement';
-import * as commonUtils from '../../../common/helpers/utils';
 import * as handler from '../../helpers/handler';
-import * as utils from '../../helpers/utils';
 import type {Request as $Request, Response as $Response} from 'express';
 import {authorToFormState, transformNewForm as authorTransform} from './author';
 import {editionGroupToFormState, transformNewForm as editionGroupTransform} from './edition-group';
@@ -20,6 +18,7 @@ import type {
 import {FormSubmissionError} from '../../../common/helpers/error';
 import _ from 'lodash';
 import {_bulkIndexEntities} from '../../../common/helpers/search';
+import {addRelationships} from '../../helpers/middleware';
 import log from 'log';
 
 
@@ -127,19 +126,15 @@ export function transformForm(body:Record<string, any>):Record<string, any> {
 
 export async function preprocessForm(body:Record<string, any>, orm):Promise<Record<string, any>> {
 	async function processForm(currentForm) {
-		async function getEntityWithAlias(relEntity) {
-			const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
-			const model = commonUtils.getEntityModelByType(orm, relEntity.type);
-
-			return model.forge({bbid: redirectBbid})
-				.fetch({require: false, withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))});
-		}
 		const {id, type} = currentForm;
 		const {RelationshipSet} = orm;
 		const isNew = _.get(currentForm, '__isNew__', true);
+		// if new entity, no need to process further
 		if (!isNew && id) {
 			const entityType = _.upperFirst(_.camelCase(type));
+			// fetch the entity with all related attributes from the database
 			const currentEntity = await orm.func.entity.getEntity(orm, entityType, id, getEntityRelations(entityType as EntityTypeString));
+			// since relationship will not be set by default, we need to add it manually
 			const relationshipSet = await RelationshipSet.forge({id: currentEntity.relationshipSetId}).fetch({
 				require: false,
 				withRelated: [
@@ -150,19 +145,10 @@ export async function preprocessForm(body:Record<string, any>, orm):Promise<Reco
 					'relationships.attributeSet.relationshipAttributes.type'
 				]
 			});
-			currentEntity.relationships = relationshipSet ?
-				relationshipSet.related('relationships').toJSON() : [];
-
-			utils.attachAttributes(currentEntity.relationships);
-			await Promise.all(currentEntity.relationships.map((relationship) =>
-				Promise.all([getEntityWithAlias(relationship.source), getEntityWithAlias(relationship.target)])
-					.then(([source, target]) => {
-						relationship.source = source.toJSON();
-						relationship.target = target.toJSON();
-
-						return relationship;
-					})));
+			await addRelationships(currentEntity, relationshipSet, orm);
+			// convert this state to normal entity-editor state
 			const oldFormState = entityToFormStateMap[_.camelCase(type)](currentEntity);
+			// deep merge the old state with new one
 			return _.merge(oldFormState, currentForm);
 		}
 		return currentForm;
@@ -228,9 +214,9 @@ async function processRelationship(rels:Record<string, any>[], mainEntity, bbidM
 			{...rel, sourceBbid: _.get(bbidMap, rel.sourceBbid) ?? rel.sourceBbid,
 			 targetBbid: _.get(bbidMap, rel.targetBbid) ?? rel.targetBbid}
 		));
-		const relationshipSet = await handleAddRelationship({relationships}, editorId,
-			 mainEntity, mainEntity.type, orm, transacting);
-		mainEntity.relationshipSetId = relationshipSet.relationshipSetId;
+		const {relationshipSetId} = await handleAddRelationship({relationships}, editorId,
+			mainEntity, mainEntity.type, orm, transacting);
+	   mainEntity.relationshipSetId = relationshipSetId;
 	}
 }
 

@@ -95,7 +95,6 @@ describe('Unified form routes', () => {
 			type: 'Work'
 		}};
 		const newName = 'changedName';
-		// postData.b0.nameSection.language = newLanguage.id;
 		postData.b0.nameSection.name = newName;
 		const res = await agent.post('/create/handler').send(postData);
 		const editEntities = res.body;

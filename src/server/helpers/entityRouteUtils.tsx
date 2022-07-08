@@ -358,13 +358,14 @@ export async function createEntitiesHandler(
 	res:$Response
 ) {
 	const {orm} = req.app.locals;
+	// generate the state for current entity
 	 req.body = await unifiedRoutes.preprocessForm(req.body, orm);
-	// validating
+	// validating the uf state
 	if (!validateUnifiedForm(req.body)) {
 		const err = new error.FormSubmissionError();
 		return error.sendErrorAsJSON(res, err);
 	}
-	// // // transforming
+	// transforming uf state into separate entity state
 	req.body = unifiedRoutes.transformForm(req.body);
 	return unifiedRoutes.handleCreateMultipleEntities(req as PassportRequest, res);
 }
