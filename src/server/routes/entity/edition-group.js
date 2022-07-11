@@ -226,7 +226,7 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 });
 
 
-function editionGroupToFormState(editionGroup) {
+export function editionGroupToFormState(editionGroup) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = editionGroup.aliasSet ?
 		editionGroup.aliasSet.aliases.map(({languageId, ...rest}) => ({

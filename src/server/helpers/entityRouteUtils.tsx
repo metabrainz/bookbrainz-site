@@ -35,6 +35,7 @@ import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import {createStore} from 'redux';
 import {generateProps} from './props';
+import {isValidBBID} from '../../common/helpers/utils';
 
 
 const {createRootReducer, getEntitySection, getEntitySectionMerge, getValidator} = entityEditorHelpers;
@@ -328,11 +329,17 @@ function validateUnifiedForm(body:Record<string, any>):boolean {
 		if (Object.prototype.hasOwnProperty.call(body, entityKey)) {
 			const entityForm = body[entityKey];
 			const entityType = _.camelCase(entityForm.type);
+			const isNew = _.get(entityForm, '__isNew__', true);
+			const bbid = _.get(entityForm, 'id', null);
+			// for existing entity, it must have id attribute set to its bbid
+			if (!isNew && (!bbid || !isValidBBID(bbid))) {
+				return false;
+			}
 			if (!entityType || !validEntityTypes.includes(entityType)) {
 				return false;
 			}
 			const validator = getValidator(entityType);
-			if (!validator(entityForm)) {
+			if (isNew && !validator(entityForm)) {
 				return false;
 			}
 		}
@@ -346,16 +353,19 @@ function validateUnifiedForm(body:Record<string, any>):boolean {
  * @param {object} res - Response object
  */
 
-export function createEntitiesHandler(
+export async function createEntitiesHandler(
 	req:$Request,
 	res:$Response
 ) {
-	// validating
+	const {orm} = req.app.locals;
+	// generate the state for current entity
+	 req.body = await unifiedRoutes.preprocessForm(req.body, orm);
+	// validating the uf state
 	if (!validateUnifiedForm(req.body)) {
 		const err = new error.FormSubmissionError();
 		return error.sendErrorAsJSON(res, err);
 	}
-	// transforming
+	// transforming uf state into separate entity state
 	req.body = unifiedRoutes.transformForm(req.body);
 	return unifiedRoutes.handleCreateMultipleEntities(req as PassportRequest, res);
 }

@@ -246,7 +246,7 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 });
 
 
-function publisherToFormState(publisher) {
+export function publisherToFormState(publisher) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = publisher.aliasSet ?
 		publisher.aliasSet.aliases.map(({languageId, ...rest}) => ({

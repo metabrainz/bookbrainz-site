@@ -258,8 +258,7 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 	entityRoutes.updateDisplayedRevisions(req, res, next, WorkRevision);
 });
 
-
-function workToFormState(work) {
+export function workToFormState(work) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = work.aliasSet ?
 		work.aliasSet.aliases.map(({languageId, ...rest}) => ({

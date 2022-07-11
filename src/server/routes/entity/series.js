@@ -233,7 +233,7 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 	entityRoutes.updateDisplayedRevisions(req, res, next, SeriesRevision);
 });
 
-function seriesToFormState(series) {
+export function seriesToFormState(series) {
 	const aliases = series.aliasSet ?
 		series.aliasSet.aliases.map(({languageId, ...rest}) => ({
 			...rest,

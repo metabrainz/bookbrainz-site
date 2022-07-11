@@ -1,6 +1,6 @@
-import {baseState, createAuthor, createEditionGroup, createEditor,
-	createPublisher, createWork, getRandomUUID, languageAttribs, truncateEntities} from '../../../test-helpers/create-entities';
-import {every, forOwn, map} from 'lodash';
+import {authorWorkRelationshipTypeData, baseState, createAuthor, createEditionGroup,
+	createEditor, createPublisher, createWork, getRandomUUID, languageAttribs, truncateEntities} from '../../../test-helpers/create-entities';
+import {every, forOwn, get, map} from 'lodash';
 import app from '../../../../src/server/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
@@ -38,6 +38,7 @@ describe('Unified form routes', () => {
 	let agent;
 	let newLanguage;
 	let newRelationshipType;
+	let authorWorkRelationshipType;
 	const wBBID = getRandomUUID();
 	const pBBID = getRandomUUID();
 	const egBBID = getRandomUUID();
@@ -49,9 +50,11 @@ describe('Unified form routes', () => {
 			await createPublisher(pBBID);
 			await createEditionGroup(egBBID);
 			await createAuthor(aBBID);
+			newRelationshipType = await new RelationshipType(relationshipTypeData)
+				.save(null, {method: 'insert'});
 			newLanguage = await new Language({...languageAttribs})
 				.save(null, {method: 'insert'});
-			newRelationshipType = await new RelationshipType(relationshipTypeData)
+			authorWorkRelationshipType = await new RelationshipType(authorWorkRelationshipTypeData)
 				.save(null, {method: 'insert'});
 		}
 		catch (error) {
@@ -79,7 +82,74 @@ describe('Unified form routes', () => {
 		expect(res).to.be.ok;
 		expect(res).to.have.status(200);
 	});
-
+	it('should not throw error while editing single entity', async () => {
+		const postData = {b0: {
+			__isNew__: false,
+			id: wBBID,
+			nameSection: {},
+			submissionSection: {
+				note: 'note',
+				submitError: '',
+				submitted: false
+			},
+			type: 'Work'
+		}};
+		const newName = 'changedName';
+		postData.b0.nameSection.name = newName;
+		const res = await agent.post('/create/handler').send(postData);
+		const editEntities = res.body;
+		expect(editEntities.length).equal(1);
+		const workEntity = editEntities[0];
+		const fetchedworkEntity = await getEntityByBBID(orm, workEntity.bbid);
+		expect(Boolean(fetchedworkEntity)).to.be.true;
+		expect(fetchedworkEntity.defaultAlias.name).to.be.equal(newName);
+		expect(res).to.be.ok;
+		expect(res).to.have.status(200);
+	});
+	it('should not throw error while adding relationship to single entity', async () => {
+		// we need to pass extra id and __isNew__ attributes
+		const postData = {b0: {
+			__isNew__: false,
+			id: wBBID,
+			relationshipSection: {
+				relationships: {
+					a0: {
+						attributeSetId: null,
+						attributes: [],
+						relationshipType: {
+							id: authorWorkRelationshipType.id
+						},
+						rowId: 'a0',
+						sourceEntity: {
+							bbid: aBBID
+						},
+						targetEntity: {
+							bbid: wBBID
+						}
+					}
+				}
+			},
+			submissionSection: {
+				note: 'note',
+				submitError: '',
+				submitted: false
+			},
+			type: 'Work'
+		}};
+		const res = await agent.post('/create/handler').send(postData);
+		const editEntities = res.body;
+		expect(editEntities.length).equal(1);
+		const workEntity = editEntities[0];
+		const fetchedworkEntity = await getEntityByBBID(orm, workEntity.bbid);
+		expect(Boolean(fetchedworkEntity)).to.be.true;
+		const relationships = get(fetchedworkEntity, ['relationshipSet', 'relationships'], []);
+		// one relationship added on creation
+		expect(relationships.length).to.be.equal(2);
+		expect(get(relationships[1], 'targetBbid')).to.be.equal(wBBID);
+		expect(get(relationships[1], 'sourceBbid')).to.be.equal(aBBID);
+		expect(res).to.be.ok;
+		expect(res).to.have.status(200);
+	});
 	it('should not throw error while creating multiple entities', async () => {
 		const postData = {b0: {
 			...baseState,
