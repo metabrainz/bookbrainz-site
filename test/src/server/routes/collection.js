@@ -87,9 +87,11 @@ describe('POST /collection/create', () => {
 		await new Promise(resolve => setTimeout(resolve, 500));
 		await refreshIndex();
 		const searchResults = await searchByName(orm, data.name, 'Collection', '10', '0');
-
-		expect(searchResults[0].id).to.equal(res.body.id);
-		expect(searchResults[0].name).to.equal(data.name);
+		const {results, total} = searchResults;
+		expect(total).to.equal(1);
+		expect(results.length).to.equal(1);
+		expect(results[0].id).to.equal(res.body.id);
+		expect(results[0].name).to.equal(data.name);
 	});
 
 	it('should throw error for incorrect entityType', async () => {
@@ -306,8 +308,11 @@ describe('POST collection/edit', () => {
 		await new Promise(resolve => setTimeout(resolve, 500));
 		await refreshIndex();
 		const searchResults = await searchByName(orm, newData.name, 'Collection', '10', '0');
-		expect(searchResults[0].id).to.equal(collectionJSON.id);
-		expect(searchResults[0].name).to.equal(newData.name);
+		const {results, total} = searchResults;
+		expect(total).to.equal(1);
+		expect(results.length).to.equal(1);
+		expect(results[0].id).to.equal(collectionJSON.id);
+		expect(results[0].name).to.equal(newData.name);
 	});
 
 	it('should throw error for incorrect entityType', async () => {
@@ -617,9 +622,9 @@ describe('POST /collection/collectionID/delete', () => {
 		const collectionsJSON = collections.toJSON();
 
 		expect(res.status).to.equal(200);
-		expect(oldResult.length).to.equal(1);
-		expect(oldResult[0]?.id).to.equal(collection.get('id'));
-		expect(newResult.length).to.equal(0);
+		expect(oldResult.results.length).to.equal(1);
+		expect(oldResult.results[0]?.id).to.equal(collection.get('id'));
+		expect(newResult.results.length).to.equal(0);
 		expect(collectionsJSON.length).to.equal(0);
 	});
 });
