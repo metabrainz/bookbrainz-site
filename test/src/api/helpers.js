@@ -10,9 +10,11 @@ export function searchBasicTests(res) {
 	expect(res.body).to.be.an('object');
 	expect(res.body).to.have.all.keys(
 		'resultCount',
+		'totalCount',
 		'searchResult'
 	);
 	expect(res.body.resultCount).to.be.a('number');
+	expect(res.body.totalCount).to.be.a('number');
 	expect(res.body.searchResult).to.be.an('array');
 	res.body.searchResult.forEach((result) => {
 		expect(result).to.be.an('object');

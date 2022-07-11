@@ -50,11 +50,13 @@ router.get('/', async (req, res, next) => {
 	try {
 		let searchResults = {
 			initialResults: [],
-			query
+			query,
+			total: 0
 		};
 		if (query) {
 			// get 1 more results to check nextEnabled
-			const entities = await search.searchByName(orm, query, _snakeCase(type), size + 1, from);
+			const searchResponse = await search.searchByName(orm, query, _snakeCase(type), size + 1, from);
+			const {results: entities, total} = searchResponse;
 			searchResults = {
 				initialResults: entities.filter(entity => !isNil(entity)),
 				query
@@ -156,6 +158,16 @@ router.get('/reindex', auth.isAuthenticated, (req, res) => {
 		.then(() => ({success: true}));
 
 	handler.sendPromiseResult(res, indexPromise);
+});
+
+router.get('/entity/:bbid', async (req, res) => {
+	const {orm} = res.app.locals;
+	const {bbid} = req.params;
+	const entity = await commonUtils.getEntityByBBID(orm, bbid);
+	if (!entity) {
+		return error.sendErrorAsJSON(res, new error.NotFoundError("Entity with this bbid doesn't exist", req));
+	}
+	return res.send(entity);
 });
 
 export default router;

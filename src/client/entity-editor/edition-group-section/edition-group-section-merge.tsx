@@ -18,19 +18,24 @@
 
 import * as React from 'react';
 import {Action, updateType} from './actions';
+import {AuthorCredit, updateAuthorCredit} from '../author-credit-editor/actions';
+import {find as _find, isNil as _isNil} from 'lodash';
 import type {Dispatch} from 'redux';
 import EditionTable from '../../components/pages/entities/edition-table';
 import type {Map} from 'immutable';
 import MergeField from '../common/merge-field';
-import {find as _find} from 'lodash';
+import {authorCreditToString} from '../../helpers/entity';
 import {connect} from 'react-redux';
+import {convertMapToObject} from '../../helpers/utils';
 
 
 type StateProps = {
+	authorCreditValue: Record<string, unknown>
 	typeValue: Map<string, any>
 };
 
 type DispatchProps = {
+	onAuthorCreditChange: (arg: AuthorCredit) => unknown,
 	onTypeChange: (value: number | null) => unknown
 };
 
@@ -55,14 +60,21 @@ type Props = StateProps & DispatchProps & OwnProps;
  *          EditionGroupSectionMerge.
  */
 function EditionGroupSectionMerge({
+	authorCreditValue,
 	typeValue,
 	mergingEntities,
+	onAuthorCreditChange,
 	onTypeChange
 }: Props) {
+	const authorCreditOptions = [];
 	const typeOptions = [];
 	const editions = [];
 
 	mergingEntities.forEach(entity => {
+		const authorCredit = !_isNil(entity.authorCredit) && {label: authorCreditToString(entity.authorCredit), value: entity.authorCredit};
+		if (authorCredit && !_find(authorCreditOptions, ['value.id', authorCredit.value.id])) {
+			authorCreditOptions.push(authorCredit);
+		}
 		const typeOption = entity.editionGroupType && {label: entity.editionGroupType.label, value: entity.editionGroupType.id};
 		if (typeOption && !_find(typeOptions, ['value', typeOption.value])) {
 			typeOptions.push(typeOption);
@@ -72,6 +84,13 @@ function EditionGroupSectionMerge({
 
 	return (
 		<div>
+			<MergeField
+				currentValue={authorCreditValue}
+				label="Author Credit"
+				options={authorCreditOptions}
+				valueRenderer={authorCreditToString}
+				onChange={onAuthorCreditChange}
+			/>
 			<MergeField
 				currentValue={typeValue}
 				label="Type"
@@ -90,14 +109,19 @@ EditionGroupSectionMerge.displayName = 'EditionGroupSectionMerge';
 
 function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('editionGroupSection');
+	const authorCredit: Map<string, any> = rootState.get('authorCredit');
 
 	return {
+		authorCreditValue: convertMapToObject(authorCredit),
 		typeValue: state.get('type')
 	};
 }
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
+		onAuthorCreditChange: (selectedAuthorCredit:AuthorCredit) => {
+			dispatch(updateAuthorCredit(selectedAuthorCredit));
+		},
 		onTypeChange: (value: number) => dispatch(updateType(value))
 	};
 }

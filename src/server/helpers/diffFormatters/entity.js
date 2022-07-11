@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as authorCreditFormatter from './authorCredit';
 import * as base from './base';
-
 import _ from 'lodash';
 
 
@@ -408,6 +408,10 @@ function formatEntityChange(entity, change) {
 
 	if (_.isEqual(change.path, ['disambiguation', 'comment'])) {
 		return formatChangedDisambiguation(change);
+	}
+
+	if (authorCreditFormatter.changed(change)) {
+		return authorCreditFormatter.format(change);
 	}
 
 	return null;

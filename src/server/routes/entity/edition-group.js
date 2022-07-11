@@ -53,9 +53,19 @@ function transformNewForm(data) {
 		data.relationshipSection
 	);
 
+	let authorCredit = {};
+	if (!_.isNil(data.authorCredit)) {
+		// When merging entities, we use a separate reducer "authorCredit"
+		authorCredit = data.authorCredit.names;
+	}
+	else if (!_.isNil(data.authorCreditEditor)) {
+		authorCredit = entityRoutes.constructAuthorCredit(data.authorCreditEditor);
+	}
+
 	return {
 		aliases,
 		annotation: data.annotationSection.content,
+		authorCredit,
 		disambiguation: data.nameSection.disambiguation,
 		identifiers,
 		note: data.submissionSection.note,
@@ -83,7 +93,8 @@ const router = express.Router();
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadEditionGroupTypes,
-	middleware.loadRelationshipTypes, async (req, res) => {
+	middleware.loadRelationshipTypes, middleware.decodeUrlQueryParams,
+	 async (req, res) => {
 		const markupProps = generateEntityProps(
 			'editionGroup', req, res, {}
 		);
@@ -157,6 +168,7 @@ router.param(
 	middleware.makeEntityLoader(
 		'EditionGroup',
 		[
+			'authorCredit.names.author.defaultAlias',
 			'editionGroupType',
 			'editions.defaultAlias',
 			'editions.disambiguation',
@@ -280,8 +292,28 @@ function editionGroupToFormState(editionGroup) {
 		optionalSections.annotationSection = editionGroup.annotation;
 	}
 
+	const credits = editionGroup.authorCredit ? editionGroup.authorCredit.names.map(
+		({author, ...rest}) => ({
+			author: utils.entityToOption(author),
+			...rest
+		})
+	) : [];
+
+	const authorCreditEditor = {};
+	for (const credit of credits) {
+		authorCreditEditor[credit.position] = credit;
+	}
+	if (_.isEmpty(authorCreditEditor)) {
+		authorCreditEditor.n0 = {
+			author: null,
+			joinPhrase: '',
+			name: ''
+		};
+	}
+
 	return {
 		aliasEditor,
+		authorCreditEditor,
 		buttonBar,
 		editionGroupSection,
 		identifierEditor,

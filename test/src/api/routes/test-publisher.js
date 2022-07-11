@@ -180,12 +180,14 @@ describe('Browse Publishers', () => {
 			publisherAttrib.bbid = publisherBBID;
 			publisherAttrib.areaId = areaId;
 			publisherAttrib.typeId = 1;
-			await createPublisher(publisherBBID, publisherAttrib);
+			const publisherTypeAttrib = {label: 'publisher type 1'};
+			await createPublisher(publisherBBID, publisherAttrib, publisherTypeAttrib);
 
 			const publisherBBID2 = getRandomUUID();
 			publisherAttrib.bbid = publisherBBID2;
 			publisherAttrib.typeId = 2;
-			await createPublisher(publisherBBID2, publisherAttrib);
+			publisherTypeAttrib.label = 'publisher type 2';
+			await createPublisher(publisherBBID2, publisherAttrib, publisherTypeAttrib);
 
 			publisherBBIDs.push(publisherBBID, publisherBBID2);
 		}

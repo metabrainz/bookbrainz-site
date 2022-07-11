@@ -1,3 +1,7 @@
+# Only run the release drafter for our release branch ("stable")
+references:
+  - stable
+
 template: |
   ## :books: Changes since last version
 
