@@ -106,7 +106,15 @@ class PagerElement extends React.Component {
 		request.get(`${this.props.paginationUrl}?${searchParams.toString()}`)
 			.then((res) => JSON.parse(res.text))
 			.then((data) => {
-				const {newResultsArray, nextEnabled} = getNextEnabledAndResultsArray(data, newSize);
+				let results;
+				if (Array.isArray(data)) {
+					results = data;
+				}
+				else {
+					// Some endpoints (for example /search/search) return an object of type {result: array, total: number}
+					({results} = data);
+				}
+				const {newResultsArray, nextEnabled} = getNextEnabledAndResultsArray(results, newSize);
 				this.setState({
 					from: newFrom,
 					nextEnabled,

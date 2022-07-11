@@ -190,6 +190,7 @@ class NameSection extends React.Component {
 		}));
 
 		const warnIfExists = !_.isEmpty(exactMatches);
+		const languageOption = languageOptionsForDisplay.filter((el) => el.value === languageValue);
 		const lgCol = {offset: 3, span: 6};
 		if (isUf) {
 			lgCol.offset = 0;
@@ -255,7 +256,7 @@ class NameSection extends React.Component {
 							instanceId="language"
 							options={languageOptionsForDisplay}
 							tooltipText="Language used for the above name"
-							value={languageValue}
+							value={languageOption}
 							onChange={onLanguageChange}
 						/>
 					</Col>

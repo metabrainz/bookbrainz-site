@@ -93,7 +93,8 @@ const router = express.Router();
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadEditionGroupTypes,
-	middleware.loadRelationshipTypes, async (req, res) => {
+	middleware.loadRelationshipTypes, middleware.decodeUrlQueryParams,
+	 async (req, res) => {
 		const markupProps = generateEntityProps(
 			'editionGroup', req, res, {}
 		);
@@ -225,7 +226,7 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 });
 
 
-function editionGroupToFormState(editionGroup) {
+export function editionGroupToFormState(editionGroup) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = editionGroup.aliasSet ?
 		editionGroup.aliasSet.aliases.map(({languageId, ...rest}) => ({

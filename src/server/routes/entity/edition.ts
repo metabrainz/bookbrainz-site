@@ -143,6 +143,7 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages, middleware.loadRelationshipTypes,
+	middleware.decodeUrlQueryParams,
 	(req:PassportRequest, res, next) => {
 		const {EditionGroup, Publisher, Work} = req.app.locals.orm;
 		const propsPromise = generateEntityProps(
@@ -367,7 +368,7 @@ router.post(
 );
 
 
-function editionToFormState(edition) {
+export function editionToFormState(edition) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = edition.aliasSet ?
 		edition.aliasSet.aliases.map(({languageId, ...rest}) => ({

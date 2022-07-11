@@ -33,8 +33,10 @@ function EntityRelationships({contextEntity, relationships}) {
 					>
 						<Relationship
 							link
+							attributes={relationship.attributeSet?.relationshipAttributes ?? null}
 							contextEntity={contextEntity}
 							relationshipType={relationship.type}
+							showAttributes={Boolean(relationship.attributeSetId)}
 							sourceEntity={relationship.source}
 							targetEntity={relationship.target}
 						/>

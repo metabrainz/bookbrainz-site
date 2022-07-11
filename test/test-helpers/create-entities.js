@@ -55,9 +55,9 @@ export const baseState = {
 	identifierEditor: {},
 	nameSection: {
 		disambiguation: '',
-		language: 1,
-		name: 'bob',
-		sortName: 'bob'
+		language: 42,
+		name: 'Entity name',
+		sortName: 'Entity sort name'
 	},
 	relationshipSection: {
 		relationships: {}
@@ -67,6 +67,15 @@ export const baseState = {
 		submitError: '',
 		submitted: false
 	}
+};
+
+export const authorWorkRelationshipTypeData = {
+	description: 'test descryption',
+	label: 'test label',
+	linkPhrase: 'test phrase',
+	reverseLinkPhrase: 'test reverse link phrase',
+	sourceEntityType: 'Author',
+	targetEntityType: 'Work'
 };
 
 export const editorTypeAttribs = {

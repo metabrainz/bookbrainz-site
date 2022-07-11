@@ -19,14 +19,21 @@
 
 import * as React from 'react';
 import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {OptionProps, components} from 'react-select';
+import AsyncSelect from 'react-select/async';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ValidationLabel from './validation-label';
-import VirtualizedSelect from 'react-virtualized-select';
 import {convertMapToObject} from '../../helpers/utils';
 import createFilterOptions from 'react-select-fast-filter-options';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {isNumber} from 'lodash';
 
+
+function OptimizedOption(props: OptionProps<any, any>) {
+	delete props.innerProps.onMouseMove;
+	delete props.innerProps.onMouseOver;
+	return <components.Option {...props}>{props.children}</components.Option>;
+}
 
 type Props = {
 	empty?: boolean,
@@ -57,14 +64,16 @@ function LanguageField({
 	const label =
 		<ValidationLabel empty={empty} error={error}>Language</ValidationLabel>
 	;
-
-	const tooltip = <Tooltip>{tooltipText}</Tooltip>;
+	const MAX_DROPDOWN_OPTIONS = 20;
+	const MAX_F1_OPTIONS = 400;
+	const tooltip = <Tooltip id="language-tooltip">{tooltipText}</Tooltip>;
 	rest.options = convertMapToObject(rest.options);
+	const {value, options} = rest;
 	const filterOptions = createFilterOptions({
-		options: rest.options
+		options
 	});
 	const sortFilterOptions = (opts, input, selectOptions) => {
-		const newOptions = filterOptions(opts, input, selectOptions);
+		const newOptions = filterOptions(opts, input, selectOptions).slice(0, MAX_DROPDOWN_OPTIONS);
 		const sortLang = (a, b) => {
 			if (isNumber(a.frequency) && isNumber(b.frequency) && a.frequency !== b.frequency) {
 				return b.frequency - a.frequency;
@@ -74,7 +83,17 @@ function LanguageField({
 		newOptions.sort(sortLang);
 		return newOptions;
 	};
-	// FIXME: Upgrade to new react-select version
+	const f2Languages = options.filter((lang) => lang.frequency === 2);
+	const f1Languages = options.filter((lang) => lang.frequency === 1).slice(0, MAX_F1_OPTIONS);
+	const defaultOptions = [{
+		label: 'Frequently Used',
+		options: f2Languages
+	},
+	{
+		label: 'Other',
+		options: f1Languages
+	}];
+	const fetchOptions = React.useCallback((input) => Promise.resolve(sortFilterOptions(options, input, value)), []);
 	return (
 		<Form.Group>
 			<Form.Label>
@@ -86,7 +105,14 @@ function LanguageField({
 					/>
 				</OverlayTrigger>
 			</Form.Label>
-			<VirtualizedSelect filterOptions={sortFilterOptions} {...rest}/>
+			<AsyncSelect
+				cacheOptions
+				isClearable
+				className="Select"
+				classNamePrefix="react-select"
+				components={{Option: OptimizedOption}}
+				defaultOptions={defaultOptions} loadOptions={fetchOptions} placeholder="Search language" {...rest}
+			/>
 		</Form.Group>
 	);
 }

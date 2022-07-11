@@ -148,7 +148,7 @@ function WorkSection({
 				<Col lg={lgCol}>
 					<ImmutableLanguageField
 						empty
-						multi
+						isMulti
 						instanceId="language"
 						options={languageOptionsForDisplay}
 						tooltipText="Main language used for the content of the work"

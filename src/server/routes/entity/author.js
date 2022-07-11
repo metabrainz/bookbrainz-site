@@ -97,6 +97,7 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadGenders, middleware.loadLanguages,
 	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
+	middleware.decodeUrlQueryParams,
 	async (req, res) => {
 		const markupProps = generateEntityProps(
 			'author', req, res, {
@@ -235,7 +236,7 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 });
 
 
-function authorToFormState(author) {
+export function authorToFormState(author) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = author.aliasSet ?
 		author.aliasSet.aliases.map(({languageId, ...rest}) => ({
