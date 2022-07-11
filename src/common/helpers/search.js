@@ -283,7 +283,7 @@ export async function generateIndex(orm) {
 						},
 						type: 'object'
 					},
-					'disambiguation.comment': {
+					disambiguation: {
 						analyzer: 'trigrams',
 						type: 'text'
 					}
@@ -344,7 +344,6 @@ export async function generateIndex(orm) {
 
 	const baseRelations = [
 		'annotation',
-		'disambiguation',
 		'defaultAlias',
 		'aliasSet.aliases',
 		'identifierSet.identifiers'
@@ -355,7 +354,6 @@ export async function generateIndex(orm) {
 			model: Author,
 			relations: [
 				'gender',
-				'authorType',
 				'beginArea',
 				'endArea'
 			]
@@ -368,10 +366,10 @@ export async function generateIndex(orm) {
 				'editionStatus'
 			]
 		},
-		{model: EditionGroup, relations: ['editionGroupType']},
-		{model: Publisher, relations: ['publisherType', 'area']},
+		{model: EditionGroup, relations: []},
+		{model: Publisher, relations: ['area']},
 		{model: Series, relations: ['seriesOrderingType']},
-		{model: Work, relations: ['workType']}
+		{model: Work, relations: []}
 	];
 
 	// Update the indexed entries for each entity type
@@ -496,7 +494,7 @@ export function searchByName(orm, name, type, size, from) {
 					fields: [
 						'aliasSet.aliases.name^3',
 						'aliasSet.aliases.name.search',
-						'disambiguation.comment',
+						'disambiguation',
 						'identifierSet.identifiers.value'
 					],
 					minimum_should_match: '80%',
