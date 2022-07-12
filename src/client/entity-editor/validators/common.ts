@@ -49,7 +49,7 @@ export function validateMultiple(
 	}
 
 	return every(values, (value) =>
-		validationFunction(value, isCustom, additionalArgs));
+		validationFunction(value, additionalArgs, isCustom));
 }
 
 export function validateAliasName(value: any): boolean {
@@ -184,8 +184,8 @@ export function validateSubmissionSection(
 		validateSubmissionSectionAnnotation(get(data, 'annotation.content', null))
 	);
 }
-
-export function validateAuthorCreditRow(row: any, isCustom = false): boolean {
+// Hacky way to achieve polymorphism for both editors
+export function validateAuthorCreditRow(row: any, arg:any, isCustom = false): boolean {
 	return (isCustom ? Boolean(getIn(row, ['author', 'id'], null)) : validateUUID(getIn(row, ['author', 'id'], null), true)) &&
 	validateRequiredString(get(row, 'name', null)) &&
 	validateOptionalString(get(row, 'joinPhrase', null));

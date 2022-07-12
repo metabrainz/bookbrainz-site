@@ -112,6 +112,16 @@ export type SearchEntityCreateOwnProps = {
 };
 export type SearchEntityCreateProps = SearchEntityCreateDispatchProps & SearchEntityCreateOwnProps;
 
+export type EntityModalStateProps = {
+	isNameSectionValid:boolean,
+	isNameSectionEmpty:boolean,
+	isAliasEditorValid:boolean,
+	isIdentifierEditorValid:boolean,
+	isEntitySectionValid:boolean,
+	isAliasEditorEmpty:boolean,
+	isIdentifierEditorEmpty:boolean
+};
+
 export type EntityModalBodyOwnProps = {
     onModalSubmit:(e)=>unknown,
     entityType:string,
@@ -124,7 +134,7 @@ export type EntityModalDispatchProps = {
 	onIdentifierClose: () => unknown
 };
 
-export type EntityModalBodyProps = EntityModalDispatchProps & EntityModalBodyOwnProps;
+export type EntityModalBodyProps = EntityModalDispatchProps & EntityModalBodyOwnProps & EntityModalStateProps;
 
 export type CreateEntityModalOwnProps = {
 	handleClose:() => unknown,
