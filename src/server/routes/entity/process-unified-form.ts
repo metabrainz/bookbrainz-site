@@ -291,6 +291,8 @@ export function handleCreateMultipleEntities(
 			if (_.isEmpty(changedProps)) {
 				savedMainEntities[entityKey] = currentEntity;
 				_.set(savedMainEntities[entityKey], ['relationshipSet', 'id'], savedMainEntities[entityKey].relationshipSetId);
+				// remove the revision if no changes made
+				await newRevision.destroy({transacting});
 				return;
 			}
 			const mainEntity = await fetchOrCreateMainEntity(
