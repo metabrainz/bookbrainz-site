@@ -18,11 +18,12 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-
+import * as bootstrap from 'react-bootstrap';
+const {Row} = bootstrap;
 
 function EntityRelatedCollections({collections}) {
 	return (
-		<div>
+		<Row>
 			<h2>Related Collections</h2>
 			{collections &&
 			<ul className="list-unstyled">
@@ -34,7 +35,7 @@ function EntityRelatedCollections({collections}) {
 				))}
 			</ul>
 			}
-		</div>
+		</Row>
 	);
 }
 EntityRelatedCollections.displayName = 'EntityRelatedCollections';

@@ -16,6 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import EntityReviews from './cb-review';
+import { Rating } from "react-simple-star-rating";
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import AuthorCreditDisplay from '../../author-credit-display';
@@ -52,6 +54,24 @@ function EditionGroupAttributes({editionGroup}) {
 					<dl>
 						<dt>Type</dt>
 						<dd>{type}</dd>
+					</dl>
+				</Col>
+				<Col lg={3}>
+					<dl>
+						<dt>Ratings</dt>
+						<dd>
+							<Rating
+								className="rating-stars"
+                                ratingValue={0}
+								initialValue={3.5}
+								size={20}
+								stars={5}
+								readonly
+								allowHalfIcon
+								fillColor="#46433A"
+                                allowHover={false}
+							/>
+						</dd>
 					</dl>
 				</Col>
 			</Row>
@@ -105,12 +125,20 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 			{!entity.deleted &&
 			<React.Fragment>
 				<EditionTable editions={entity.editions} entity={entity}/>
-				<EntityLinks
-					entity={entity}
-					identifierTypes={identifierTypes}
-					urlPrefix={urlPrefix}
-				/>
-				<EntityRelatedCollections collections={entity.collections}/>
+				<Row>
+					<Col lg={8}>
+						<EntityLinks
+							entity={entity}
+							identifierTypes={identifierTypes}
+							urlPrefix={urlPrefix}
+						/>
+						<EntityRelatedCollections collections={entity.collections}/>
+
+					</Col>
+					<Col lg={4}>
+						<EntityReviews entity={entity} />
+					</Col>
+				</Row>
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter

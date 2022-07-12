@@ -23,6 +23,7 @@ import EntityIdentifiers from './identifiers';
 import EntityRelationships from './relationships';
 import PropTypes from 'prop-types';
 import React from 'react';
+import EntityReviews from './cb-review';
 
 
 const {filterOutRelationshipTypeById} = entityHelper;
@@ -33,21 +34,21 @@ function EntityLinks({entity, identifierTypes, urlPrefix}) {
 	const relationshipTypeId = 10;
 	const relationships = filterOutRelationshipTypeById(entity, relationshipTypeId);
 	return (
-		<Row>
-			<Col lg={8}>
+		<React.Fragment>
+			<Row>
 				<EntityRelationships
 					contextEntity={entity}
 					entityUrl={urlPrefix}
 					relationships={relationships}
 				/>
-			</Col>
-			<Col lg={4}>
+			</Row>
+			<Row>
 				<EntityIdentifiers
 					identifierTypes={identifierTypes}
 					identifiers={entity.identifierSet && entity.identifierSet.identifiers}
 				/>
-			</Col>
-		</Row>
+			</Row>
+		</React.Fragment>
 	);
 }
 EntityLinks.displayName = 'EntityLinks';
