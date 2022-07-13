@@ -1,16 +1,21 @@
 import * as bootstrap from 'react-bootstrap';
 import React from 'react';
 import {Rating} from 'react-simple-star-rating';
+import {getEntityLink} from '../../../../common/helpers/utils';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
 
 
-const {Col, Row} = bootstrap;
+const {Button, Col, Row} = bootstrap;
 
+
+const REVIEW_CONTENT_PREVIEW_LENGTH = 75;
 
 function ReviewCard({reviewData}) {
 	const publishedDate = new Date(reviewData.published_on).toDateString();
 	let reviewText = reviewData.text;
-	if (reviewText.length > 75) {
-		reviewText = `${reviewText.substring(0, 75)}...`;
+	if (reviewText.length > REVIEW_CONTENT_PREVIEW_LENGTH) {
+		reviewText = `${reviewText.substring(0, REVIEW_CONTENT_PREVIEW_LENGTH)}...`;
 	}
 	const reviewLink = `https://critiquebrainz.org/review/${reviewData.id}`;
 	return (
@@ -39,14 +44,15 @@ function ReviewCard({reviewData}) {
 	);
 }
 
-function EntityReviews({entity}) {
-	const {reviews} = entity.reviews;
+function EntityReviews({entityReviews, entityType, entityBBID}) {
 	let reviewContent;
 	const mapEntityType = {
-		EditionGroup: 'bb_edition_group'
+		EditionGroup: 'edition-group'
 	};
-	const entityType = mapEntityType[entity.type];
-	if (reviews.length) {
+	entityType = mapEntityType[entityType];
+	const entityLink = `https://critiquebrainz.org/${entityType}/${entityBBID}`;
+	if (entityReviews?.length) {
+		const {reviews} = entityReviews;
 		reviewContent = (
 			<React.Fragment>
 				{
@@ -57,8 +63,23 @@ function EntityReviews({entity}) {
 						/>
 					))
 				}
-				<a href={`https://critiquebrainz.org/${entityType}/${entity.bbid}`}>View all reviews &gt;</a>
+				<a href={entityLink}>View all reviews &gt;</a>
 			</React.Fragment>
+		);
+	}
+	else {
+		reviewContent = (
+			<div>
+				<h4>No reviews yet.</h4>
+				<Button
+					className="margin-top-d15"
+					href={entityLink}
+					variant="success"
+				>
+					<FontAwesomeIcon icon={faPlus}/>
+					{'  Add a review'}
+				</Button>
+			</div>
 		);
 	}
 	return (

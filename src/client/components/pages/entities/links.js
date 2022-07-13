@@ -23,7 +23,6 @@ import EntityIdentifiers from './identifiers';
 import EntityRelationships from './relationships';
 import PropTypes from 'prop-types';
 import React from 'react';
-import EntityReviews from './cb-review';
 
 
 const {filterOutRelationshipTypeById} = entityHelper;

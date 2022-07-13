@@ -136,7 +136,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 
 					</Col>
 					<Col lg={4}>
-						<EntityReviews entity={entity}/>
+						<EntityReviews entityBBID={entity.bbid} entityReviews={entity.reviews} entityType={entity.type}/>
 					</Col>
 				</Row>
 			</React.Fragment>}
