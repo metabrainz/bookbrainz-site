@@ -39,10 +39,11 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
  *          AnnotationSection.
  */
 function AnnotationSection({
-	annotation,
+	annotation: immutableAnnotation,
 	onAnnotationChange,
 	isUf
 }) {
+	const annotation = convertMapToObject(immutableAnnotation);
 	const annotationLabel = (
 		<span>
 			Annotation
@@ -106,7 +107,7 @@ AnnotationSection.defaultProps = {
 };
 function mapStateToProps(rootState) {
 	return {
-		annotation: convertMapToObject(rootState.get('annotationSection'))
+		annotation: rootState.get('annotationSection')
 	};
 }
 

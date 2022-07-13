@@ -14,7 +14,7 @@ import {updatePublisher} from '../../entity-editor/edition-section/actions';
 
 
 export function CoverTab(props:CoverProps) {
-	const {publisherValue: publishers, onPublisherChange, identifierEditorVisible, onClearPublisher, handleClearPublishers} = props;
+	const {publisherValue: publishers, onPublisherChange, identifierEditorVisible, onClearPublisher, handleClearPublishers, modalIsOpen} = props;
 	const publisherValue:EntitySelect[] = Object.values(convertMapToObject(publishers ?? {}));
 	const onChangeHandler = React.useCallback((value:EntitySelect[], action) => {
 		if (['remove-value', 'pop-value'].includes(action.action)) {
@@ -29,7 +29,7 @@ export function CoverTab(props:CoverProps) {
 	}, []);
 	return (
 		<div>
-			<NameSection {...props}/>
+			<NameSection {...props} setDefault={modalIsOpen}/>
 			<AuthorCreditSection {...props}/>
 			<Row>
 				<Col lg={{offset: 0, span: 6}}>
@@ -57,14 +57,15 @@ export function CoverTab(props:CoverProps) {
 		 );
 }
 
-function mapStateToProps(rootState) {
+function mapStateToProps(rootState):CoverStateProps {
 	return {
 		identifierEditorVisible: rootState.getIn(['buttonBar', 'identifierEditorVisible']),
+		modalIsOpen: rootState.get('entityModalIsOpen', false),
 		publisherValue: rootState.getIn(['editionSection', 'publisher'], {})
 	};
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch):CoverDispatchProps {
 	return {
 		handleClearPublishers: () => dispatch(clearPublishers()),
 		onClearPublisher: (arg) => dispatch(clearPublisher(arg)),

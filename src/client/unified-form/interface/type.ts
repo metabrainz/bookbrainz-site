@@ -51,6 +51,7 @@ export type CoverOwnProps = {
 };
 export type CoverStateProps = {
     publisherValue:any[],
+	modalIsOpen:boolean,
     identifierEditorVisible:boolean
 };
 export type CoverDispatchProps = {

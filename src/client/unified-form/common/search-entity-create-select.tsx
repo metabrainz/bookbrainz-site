@@ -1,7 +1,7 @@
 import {SearchEntityCreateDispatchProps, SearchEntityCreateProps} from '../interface/type';
 import {addAuthor, addPublisher} from '../cover-tab/action';
 import {checkIfNameExists, searchName, updateNameField, updateSortNameField} from '../../entity-editor/name-section/actions';
-import {dumpEdition, loadEdition} from '../action';
+import {closeEntityModal, dumpEdition, loadEdition, openEntityModal} from '../action';
 import AsyncCreatable from 'react-select/async-creatable';
 import BaseEntitySearch from '../../entity-editor/common/entity-search-field-option';
 import CreateEntityModal from './create-entity-modal';
@@ -72,13 +72,14 @@ SearchEntityCreate.defaultProps = defaultProps;
 
 function mapDispatchToProps(dispatch, {type}):SearchEntityCreateDispatchProps {
 	return {
-		onModalClose: () => dispatch(loadEdition()),
+		onModalClose: () => dispatch(loadEdition()) && dispatch(closeEntityModal()),
 		onModalOpen: (name) => {
 			dispatch(dumpEdition(type));
 			dispatch(updateNameField(name));
 			dispatch(updateSortNameField(name));
 			dispatch(checkIfNameExists(name, null, type, null));
 			dispatch(searchName(name, null, type));
+			dispatch(openEntityModal());
 		},
 		onSubmitEntity: (arg) => dispatch(addEntityAction[type](arg))
 	};

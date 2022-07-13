@@ -34,6 +34,7 @@ import {
 } from '../validators/common';
 
 import DisambiguationField from './disambiguation-field';
+import Immutable from 'immutable';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import PropTypes from 'prop-types';
@@ -320,7 +321,7 @@ NameSection.defaultProps = {
 };
 
 
-function mapStateToProps(rootState) {
+function mapStateToProps(rootState, {isUf, setDefault}) {
 	const state = rootState.get('nameSection');
 	const editionSectionState = rootState.get('editionSection');
 	const searchForExistingEditionGroup = Boolean(editionSectionState) &&
@@ -328,6 +329,17 @@ function mapStateToProps(rootState) {
 		!editionSectionState.get('editionGroup') ||
 		editionSectionState.get('editionGroupRequired')
 	);
+	// to prevent double double state updates on action caused by modal
+	if (isUf && setDefault) {
+		return {
+			disambiguationDefaultValue: '',
+			exactMatches: Immutable.Map([]),
+			languageValue: null,
+			nameValue: '',
+			searchResults: Immutable.Map([]),
+			sortNameValue: ''
+		};
+	}
 	return {
 		disambiguationDefaultValue: state.get('disambiguation'),
 		exactMatches: state.get('exactMatches'),

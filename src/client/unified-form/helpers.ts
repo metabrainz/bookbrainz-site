@@ -1,5 +1,5 @@
 import {ADD_AUTHOR, ADD_PUBLISHER} from './cover-tab/action';
-import {DUMP_EDITION, LOAD_EDITION} from './action';
+import {CLOSE_ENTITY_MODAL, DUMP_EDITION, LOAD_EDITION, OPEN_ENTITY_MODAL} from './action';
 import {ISBNReducer, authorsReducer, publishersReducer} from './cover-tab/reducer';
 import {ADD_EDITION_GROUP} from './detail-tab/action';
 import {ADD_WORK} from './content-tab/action';
@@ -38,6 +38,17 @@ function newEditionReducer(state = Immutable.Map({}), action) {
 			return state.set(payload.id, Immutable.fromJS(payload.value));
 		case LOAD_EDITION:
 			return Immutable.Map({});
+		default:
+			return state;
+	}
+}
+function entityModalIsOpenReducer(state = false, action) {
+	const {type} = action;
+	switch (type) {
+		case OPEN_ENTITY_MODAL:
+			return true;
+		case CLOSE_ENTITY_MODAL:
+			return false;
 		default:
 			return state;
 	}
@@ -228,6 +239,7 @@ export function createRootReducer() {
 			buttonBar: buttonBarReducer,
 			editionGroupSection: editionGroupSectionReducer,
 			editionSection: editionSectionReducer,
+			entityModalIsOpen: entityModalIsOpenReducer,
 			identifierEditor: identifierEditorReducer,
 			nameSection: nameSectionReducer,
 			publisherSection: publisherSectionReducer,
