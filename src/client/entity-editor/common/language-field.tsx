@@ -69,9 +69,7 @@ function LanguageField({
 	const tooltip = <Tooltip id="language-tooltip">{tooltipText}</Tooltip>;
 	rest.options = convertMapToObject(rest.options);
 	const {value, options} = rest;
-	const filterOptions = createFilterOptions({
-		options
-	});
+	const filterOptions = React.useMemo(() => createFilterOptions({options}), []);
 	const sortFilterOptions = (opts, input, selectOptions) => {
 		const newOptions = filterOptions(opts, input, selectOptions).slice(0, MAX_DROPDOWN_OPTIONS);
 		const sortLang = (a, b) => {

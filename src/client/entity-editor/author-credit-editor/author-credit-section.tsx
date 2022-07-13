@@ -67,8 +67,10 @@ type DispatchProps = {
 type Props = OwnProps & StateProps & DispatchProps;
 
 function AuthorCreditSection({
-	authorCreditEditor, onEditAuthorCredit, onEditorClose, showEditor, onAuthorChange, isEditable, onClearHandler, isUf, isLeftAlign, ...rest
+	authorCreditEditor: immutableAuthorCreditEditor, onEditAuthorCredit, onEditorClose,
+	showEditor, onAuthorChange, isEditable, onClearHandler, isUf, isLeftAlign, ...rest
 }: Props) {
+	const authorCreditEditor = convertMapToObject(immutableAuthorCreditEditor);
 	let editor;
 	if (showEditor) {
 		editor = (
@@ -177,7 +179,7 @@ function mapStateToProps(rootState): StateProps {
 	const isEditable = !(rootState.get('authorCreditEditor').size > 1) &&
 	 authorCreditRow.get('name') === authorCreditRow.getIn(['author', 'text'], '');
 	return {
-		authorCreditEditor: convertMapToObject(rootState.get('authorCreditEditor')),
+		authorCreditEditor: rootState.get('authorCreditEditor'),
 		isEditable,
 		showEditor: rootState.getIn(['editionSection', 'authorCreditEditorVisible'])
 	};

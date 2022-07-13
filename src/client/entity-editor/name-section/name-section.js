@@ -170,7 +170,7 @@ class NameSection extends React.Component {
 		const {
 			disambiguationDefaultValue,
 			entityType,
-			exactMatches,
+			exactMatches: immutableExactMatches,
 			languageOptions,
 			languageValue,
 			nameValue,
@@ -178,11 +178,12 @@ class NameSection extends React.Component {
 			onLanguageChange,
 			onSortNameChange,
 			onDisambiguationChange,
-			searchResults,
+			searchResults: immutableSearchResults,
 			isUf,
 			isModal
 		} = this.props;
-
+		const exactMatches = convertMapToObject(immutableExactMatches);
+		const searchResults = convertMapToObject(immutableSearchResults);
 		const languageOptionsForDisplay = languageOptions.map((language) => ({
 			frequency: language.frequency,
 			label: language.name,
@@ -329,11 +330,11 @@ function mapStateToProps(rootState) {
 	);
 	return {
 		disambiguationDefaultValue: state.get('disambiguation'),
-		exactMatches: convertMapToObject(state.get('exactMatches')),
+		exactMatches: state.get('exactMatches'),
 		languageValue: state.get('language'),
 		nameValue: state.get('name'),
 		searchForExistingEditionGroup,
-		searchResults: convertMapToObject(state.get('searchResults')),
+		searchResults: state.get('searchResults'),
 		sortNameValue: state.get('sortName')
 	};
 }

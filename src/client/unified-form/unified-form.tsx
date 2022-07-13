@@ -24,7 +24,7 @@ function getUfValidator(validator) {
 export function UnifiedForm(props:UnifiedFormProps) {
 	const {allIdentifierTypes, validator, onSubmit, formValid} = props;
 	const [tabKey, setTabKey] = React.useState('cover');
-	const editionIdentifierTypes = filterIdentifierTypesByEntityType(allIdentifierTypes, 'Edition');
+	const editionIdentifierTypes = React.useMemo(() => filterIdentifierTypesByEntityType(allIdentifierTypes, 'Edition'), []);
 	const editionValidator = validator && getUfValidator(validator);
 	const tabKeys = ['cover', 'detail', 'content', 'submit'];
 	const onNextHandler = React.useCallback(() => {
