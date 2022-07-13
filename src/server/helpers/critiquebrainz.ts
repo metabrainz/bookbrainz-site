@@ -1,14 +1,19 @@
 import request from 'superagent';
 
 
-export const getReviewsFromCB = async (bbid: string, entityType: string) => {
+export const getReviewsFromCB = async (
+	bbid: string,
+	entityType: string
+): Promise<any> => {
 	const mapEntityType = {
 		EditionGroup: 'bb_edition_group'
 	};
 	entityType = mapEntityType[entityType];
-	console.log(entityType);
+	if (!entityType) {
+		return [];
+	}
 	const res = await request
-		.get('https://beta.critiquebrainz.org/ws/1/review')
+		.get('https://critiquebrainz.org/ws/1/review')
 		.query({
 			entity_id: bbid,
 			entity_type: entityType,
