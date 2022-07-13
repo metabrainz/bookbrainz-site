@@ -19,6 +19,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import * as bootstrap from 'react-bootstrap';
+
+
 const {Row} = bootstrap;
 
 function EntityRelatedCollections({collections}) {

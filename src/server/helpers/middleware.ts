@@ -20,7 +20,7 @@
 import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
-import {getReviewsFromCB} from "./critiquebrainz";
+import {getReviewsFromCB} from './critiquebrainz';
 import type {Response as $Response, NextFunction, Request} from 'express';
 
 import _ from 'lodash';
@@ -226,10 +226,10 @@ export function makeEntityLoader(modelName: string, additionalRels: Array<string
 					entity.collections = entity.collections.filter(collection => collection.public === true ||
 					parseInt(collection.ownerId, 10) === parseInt(req.user?.id, 10));
 				}
-                let reviews = [];
-                if(entity.type == "EditionGroup"){
-                    reviews = await getReviewsFromCB(bbid, entity.type);
-                }
+				let reviews = [];
+				if (entity.type == 'EditionGroup') {
+					reviews = await getReviewsFromCB(bbid, entity.type);
+				}
 				entity.reviews = reviews;
 				res.locals.entity = entity;
 				return next();

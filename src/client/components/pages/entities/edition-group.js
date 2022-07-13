@@ -17,7 +17,7 @@
  */
 
 import EntityReviews from './cb-review';
-import { Rating } from "react-simple-star-rating";
+import {Rating} from 'react-simple-star-rating';
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import AuthorCreditDisplay from '../../author-credit-display';
@@ -61,15 +61,15 @@ function EditionGroupAttributes({editionGroup}) {
 						<dt>Ratings</dt>
 						<dd>
 							<Rating
+								allowHalfIcon
+								readonly
+								allowHover={false}
 								className="rating-stars"
-                                ratingValue={0}
+								fillColor="#46433A"
 								initialValue={3.5}
+								ratingValue={0}
 								size={20}
 								stars={5}
-								readonly
-								allowHalfIcon
-								fillColor="#46433A"
-                                allowHover={false}
 							/>
 						</dd>
 					</dl>
@@ -136,7 +136,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 
 					</Col>
 					<Col lg={4}>
-						<EntityReviews entity={entity} />
+						<EntityReviews entity={entity}/>
 					</Col>
 				</Row>
 			</React.Fragment>}
