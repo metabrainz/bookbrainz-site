@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2017  Eshan Singh
+ *               2022  Ansh Goyal
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +27,7 @@ import React from 'react';
 
 
 const {filterOutRelationshipTypeById} = entityHelper;
-const {Col, Row} = bootstrap;
+const {Row} = bootstrap;
 
 function EntityLinks({entity, identifierTypes, urlPrefix}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)

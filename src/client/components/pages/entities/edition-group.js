@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2017  Ben Ockmore
+ *               2022  Ansh Goyal
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +17,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import EntityReviews from './cb-review';
-import {Rating} from 'react-simple-star-rating';
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import AuthorCreditDisplay from '../../author-credit-display';
@@ -27,8 +26,10 @@ import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
 import EntityRelatedCollections from './related-collections';
+import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
+import {Rating} from 'react-simple-star-rating';
 import React from 'react';
 
 

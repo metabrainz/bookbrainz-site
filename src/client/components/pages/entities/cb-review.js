@@ -1,17 +1,35 @@
+/*
+ * Copyright (C) 2022       Ansh Goyal
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 import * as bootstrap from 'react-bootstrap';
-import React from 'react';
-import {Rating} from 'react-simple-star-rating';
-import {getEntityLink} from '../../../../common/helpers/utils';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import PropTypes from 'prop-types';
+import {Rating} from 'react-simple-star-rating';
+import React from 'react';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 
 
-const {Button, Col, Row} = bootstrap;
+const {Button} = bootstrap;
 
 
 const REVIEW_CONTENT_PREVIEW_LENGTH = 75;
 
-function ReviewCard({reviewData}) {
+function ReviewCard(reviewData) {
 	const publishedDate = new Date(reviewData.published_on).toDateString();
 	let reviewText = reviewData.text;
 	if (reviewText.length > REVIEW_CONTENT_PREVIEW_LENGTH) {
@@ -33,7 +51,7 @@ function ReviewCard({reviewData}) {
 					stars={5}
 				/>
 				<small className="float-right">
-                    Review by: <b>{reviewData.user.display_name}</b> {publishedDate}
+					Review by: <b>{reviewData.user.display_name}</b> {publishedDate}
 				</small>
 			</div>
 			<div>
@@ -44,13 +62,14 @@ function ReviewCard({reviewData}) {
 	);
 }
 
-function EntityReviews({entityReviews, entityType, entityBBID}) {
+function EntityReviews(props) {
+	const {entityReviews, entityType, entityBBID} = props;
 	let reviewContent;
 	const mapEntityType = {
 		EditionGroup: 'edition-group'
 	};
-	entityType = mapEntityType[entityType];
-	const entityLink = `https://critiquebrainz.org/${entityType}/${entityBBID}`;
+	const cbEntityType = mapEntityType[entityType];
+	const entityLink = `https://critiquebrainz.org/${cbEntityType}/${entityBBID}`;
 	if (entityReviews?.length) {
 		const {reviews} = entityReviews;
 		reviewContent = (
@@ -89,5 +108,30 @@ function EntityReviews({entityReviews, entityType, entityBBID}) {
 		</div>
 	);
 }
+
+
+ReviewCard.displayName = 'ReviewCard';
+ReviewCard.propTypes = {
+	reviewData: PropTypes.shape({
+		id: PropTypes.string.isRequired,
+		// eslint-disable-next-line camelcase
+		published_on: PropTypes.string.isRequired,
+		rating: PropTypes.number,
+		text: PropTypes.string.isRequired,
+		user: PropTypes.shape({
+			// eslint-disable-next-line camelcase
+			display_name: PropTypes.string.isRequired
+		}).isRequired
+	}).isRequired
+};
+
+
+EntityReviews.displayName = 'EntityReviews';
+EntityReviews.propTypes = {
+	entityBBID: PropTypes.string.isRequired,
+	entityReviews: PropTypes.array.isRequired,
+	entityType: PropTypes.string.isRequired
+};
+
 
 export default EntityReviews;
