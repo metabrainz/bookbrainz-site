@@ -17,11 +17,11 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {faPlus, faRotate} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import {Rating} from 'react-simple-star-rating';
 import React from 'react';
-import {faPlus} from '@fortawesome/free-solid-svg-icons';
 
 
 const {Button} = bootstrap;
@@ -62,51 +62,78 @@ function ReviewCard(reviewData) {
 	);
 }
 
-function EntityReviews(props) {
-	const {entityReviews, entityType, entityBBID} = props;
-	let reviewContent;
-	const mapEntityType = {
-		EditionGroup: 'edition-group'
-	};
-	const cbEntityType = mapEntityType[entityType];
-	const entityLink = `https://critiquebrainz.org/${cbEntityType}/${entityBBID}`;
-	if (entityReviews?.length) {
-		const {reviews} = entityReviews;
-		reviewContent = (
-			<React.Fragment>
-				{
-					reviews.slice(0, 3).map((review) => (
-						<ReviewCard
-							key={review.id}
-							reviewData={review}
-						/>
-					))
-				}
-				<a href={entityLink}>View all reviews &gt;</a>
-			</React.Fragment>
-		);
+class EntityReviews extends React.Component {
+	constructor(props) {
+		super(props);
+		this.handleRefresh = this.handleRefresh.bind(this);
 	}
-	else {
-		reviewContent = (
+
+	handleRefresh() {
+		window.location.reload(false);
+	}
+
+	render() {
+		const {entityReviews, entityType, entityBBID} = this.props;
+		const {reviews, successfullyFetched} = entityReviews;
+		let reviewContent;
+		const mapEntityType = {
+			EditionGroup: 'edition-group'
+		};
+		const cbEntityType = mapEntityType[entityType];
+		const entityLink = `https://critiquebrainz.org/${cbEntityType}/${entityBBID}`;
+
+		if (reviews?.length) {
+			const {reviewData} = entityReviews;
+			reviewContent = (
+				<React.Fragment>
+					{
+						reviewData.slice(0, 3).map((review) => (
+							<ReviewCard
+								key={review.id}
+								reviewData={review}
+							/>
+						))
+					}
+					<a href={entityLink}>View all reviews &gt;</a>
+				</React.Fragment>
+			);
+		}
+		else if (successfullyFetched) {
+			reviewContent = (
+				<div>
+					<h4>No reviews yet.</h4>
+					<Button
+						className="margin-top-d15"
+						href={entityLink}
+						variant="success"
+					>
+						<FontAwesomeIcon icon={faPlus}/>
+						{'  Add a review'}
+					</Button>
+				</div>
+			);
+		}
+		else {
+			reviewContent = (
+				<div>
+					<h4>Could not fetch reviews.</h4>
+					<Button
+						variant="danger"
+						onClick={this.handleRefresh}
+					>
+						<FontAwesomeIcon icon={faRotate}/>
+						{'   Retry'}
+					</Button>
+				</div>
+			);
+		}
+		return (
 			<div>
-				<h4>No reviews yet.</h4>
-				<Button
-					className="margin-top-d15"
-					href={entityLink}
-					variant="success"
-				>
-					<FontAwesomeIcon icon={faPlus}/>
-					{'  Add a review'}
-				</Button>
+				<h2>Reviews</h2>
+				{reviewContent}
 			</div>
 		);
 	}
-	return (
-		<div>
-			<h2>Reviews</h2>
-			{reviewContent}
-		</div>
-	);
 }
 
 
@@ -129,7 +156,7 @@ ReviewCard.propTypes = {
 EntityReviews.displayName = 'EntityReviews';
 EntityReviews.propTypes = {
 	entityBBID: PropTypes.string.isRequired,
-	entityReviews: PropTypes.array.isRequired,
+	entityReviews: PropTypes.object.isRequired,
 	entityType: PropTypes.string.isRequired
 };
 

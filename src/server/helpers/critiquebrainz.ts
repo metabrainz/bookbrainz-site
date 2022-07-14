@@ -26,17 +26,24 @@ export async function getReviewsFromCB(bbid: string,
 	};
 	const cbEntityType = mapEntityType[entityType];
 	if (!entityType) {
-		return [];
+		return {reviews: [], successfullyFetched: true};
 	}
-	const res = await request
-		.get('https://critiquebrainz.org/ws/1/review')
-		.query({
-			// eslint-disable-next-line camelcase
-			entity_id: bbid,
-			// eslint-disable-next-line camelcase
-			entity_type: cbEntityType,
-			limit: 10,
-			offset: 0
-		});
-	return res.body;
+	try {
+		const res = await request
+			.get('https://critiquebrainz.org/ws/1/review')
+			.query({
+				// eslint-disable-next-line camelcase
+				entity_id: bbid,
+				// eslint-disable-next-line camelcase
+				entity_type: cbEntityType,
+				limit: 10,
+				offset: 0
+			});
+		return {reviews: res.body, successfullyFetched: true};
+	}
+	catch (err) {
+		// eslint-disable-next-line no-console
+		console.error(err);
+		return {reviews: [], successfullyFetched: false};
+	}
 }
