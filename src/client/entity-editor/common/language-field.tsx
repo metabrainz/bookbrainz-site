@@ -26,6 +26,7 @@ import ValidationLabel from './validation-label';
 import {convertMapToObject} from '../../helpers/utils';
 import createFilterOptions from 'react-select-fast-filter-options';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import {freezeObjects} from '../../unified-form/common/freezed-objects';
 import {isNumber} from 'lodash';
 
 
@@ -69,7 +70,7 @@ function LanguageField({
 	const tooltip = <Tooltip id="language-tooltip">{tooltipText}</Tooltip>;
 	rest.options = convertMapToObject(rest.options);
 	const {value, options} = rest;
-	const filterOptions = React.useMemo(() => createFilterOptions({options}), []);
+	const filterOptions = freezeObjects.filterOptions ?? React.useMemo(() => createFilterOptions({options}), []);
 	const sortFilterOptions = (opts, input, selectOptions) => {
 		const newOptions = filterOptions(opts, input, selectOptions).slice(0, MAX_DROPDOWN_OPTIONS);
 		const sortLang = (a, b) => {

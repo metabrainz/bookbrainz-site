@@ -8,7 +8,9 @@ import React from 'react';
 import SubmitSection from '../entity-editor/submission-section/submission-section';
 import SummarySection from './submit-tab/summary';
 import {connect} from 'react-redux';
+import createFilterOptions from 'react-select-fast-filter-options';
 import {filterIdentifierTypesByEntityType} from '../../common/helpers/utils';
+import {freezeObjects} from './common/freezed-objects';
 import {submit} from '../entity-editor/submission-section/actions';
 
 
@@ -22,7 +24,16 @@ function getUfValidator(validator) {
 	};
 }
 export function UnifiedForm(props:UnifiedFormProps) {
-	const {allIdentifierTypes, validator, onSubmit, formValid} = props;
+	const {allIdentifierTypes, validator, onSubmit, formValid, languageOptions} = props;
+	React.useMemo(() => {
+		const options = languageOptions.map((language) => ({
+			frequency: language.frequency,
+			label: language.name,
+			value: language.id
+		}));
+		freezeObjects.filterOptions = createFilterOptions({options});
+		Object.freeze(freezeObjects);
+	}, []);
 	const [tabKey, setTabKey] = React.useState('cover');
 	const editionIdentifierTypes = React.useMemo(() => filterIdentifierTypesByEntityType(allIdentifierTypes, 'Edition'), []);
 	const editionValidator = validator && getUfValidator(validator);

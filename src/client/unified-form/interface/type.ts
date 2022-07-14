@@ -39,6 +39,7 @@ export type UnifiedFormStateProps = {
 };
 export type UnifiedFormOwnProps = {
     allIdentifierTypes?:IdentifierType[],
+	languageOptions?:LanguageOption[],
     validator?:(state:Immutable.Map<string, any>, ...args) => boolean,
 };
 export type UnifiedFormProps = UnifiedFormOwnProps & UnifiedFormDispatchProps & UnifiedFormStateProps;
