@@ -41,6 +41,7 @@ function SummarySection({
 			<ListGroup.Item
 				as="li"
 				className="d-flex justify-content-between align-items-start"
+				key={`${entityType}-new`}
 			>
 				<div className="ms-2 me-auto">
 					<div className="font-weight-bold">{entityType}</div>

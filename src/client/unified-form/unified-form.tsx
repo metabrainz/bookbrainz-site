@@ -26,13 +26,16 @@ function getUfValidator(validator) {
 export function UnifiedForm(props:UnifiedFormProps) {
 	const {allIdentifierTypes, validator, onSubmit, formValid, languageOptions} = props;
 	React.useMemo(() => {
-		const options = languageOptions.map((language) => ({
-			frequency: language.frequency,
-			label: language.name,
-			value: language.id
-		}));
-		freezeObjects.filterOptions = createFilterOptions({options});
-		Object.freeze(freezeObjects);
+		// without this check, it would cause undefined behaviour
+		if (!freezeObjects.filterOptions) {
+			const options = languageOptions.map((language) => ({
+				frequency: language.frequency,
+				label: language.name,
+				value: language.id
+			}));
+			freezeObjects.filterOptions = createFilterOptions({options});
+			Object.freeze(freezeObjects);
+		}
 	}, []);
 	const [tabKey, setTabKey] = React.useState('cover');
 	const editionIdentifierTypes = React.useMemo(() => filterIdentifierTypesByEntityType(allIdentifierTypes, 'Edition'), []);

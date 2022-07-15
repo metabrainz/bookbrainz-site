@@ -214,7 +214,7 @@ EntitySearchFieldOption.propTypes = {
 	error: PropTypes.bool,
 	filters: PropTypes.array,
 	isMulti: PropTypes.bool,
-	label: PropTypes.string.isRequired,
+	label: PropTypes.string,
 	languageOptions: PropTypes.array,
 	onChange: PropTypes.func.isRequired,
 	tooltipText: PropTypes.string,
@@ -225,7 +225,7 @@ EntitySearchFieldOption.propTypes = {
 	value: PropTypes.oneOfType([
 		PropTypes.object,
 		PropTypes.arrayOf(PropTypes.object)
-	]).isRequired
+	])
 };
 EntitySearchFieldOption.defaultProps = {
 	SelectWrapper: null,
@@ -236,8 +236,10 @@ EntitySearchFieldOption.defaultProps = {
 	error: false,
 	filters: [],
 	isMulti: false,
+	label: '',
 	languageOptions: [],
-	tooltipText: null
+	tooltipText: null,
+	value: null
 };
 
 export default EntitySearchFieldOption;
