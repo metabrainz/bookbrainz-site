@@ -22,6 +22,8 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import {Rating} from 'react-simple-star-rating';
 import React from 'react';
+import _ from 'lodash';
+import request from 'superagent';
 
 
 const {Button} = bootstrap;
@@ -29,7 +31,7 @@ const {Button} = bootstrap;
 
 const REVIEW_CONTENT_PREVIEW_LENGTH = 75;
 
-function ReviewCard(reviewData) {
+function ReviewCard({reviewData}) {
 	const publishedDate = new Date(reviewData.published_on).toDateString();
 	let reviewText = reviewData.text;
 	if (reviewText.length > REVIEW_CONTENT_PREVIEW_LENGTH) {
@@ -65,29 +67,41 @@ function ReviewCard(reviewData) {
 class EntityReviews extends React.Component {
 	constructor(props) {
 		super(props);
-		this.handleRefresh = this.handleRefresh.bind(this);
+		this.handleClick = this.handleClick.bind(this);
+		this.state = {
+			reviews: props.entityReviews.reviews,
+			successfullyFetched: props.entityReviews.successfullyFetched
+		};
+		this.entityType = props.entityType;
+		this.entityBBID = props.entityBBID;
 	}
 
-	handleRefresh() {
-		window.location.reload(false);
+	async handleClick() {
+		const data = await request.get('/external-service/critiquebrainz/reviews')
+			.query({
+				entityBBID: this.entityBBID,
+				entityType: this.entityType
+			});
+
+		this.setState({
+			reviews: data.body.reviews,
+			successfullyFetched: data.body.successfullyFetched
+		});
 	}
 
 	render() {
-		const {entityReviews, entityType, entityBBID} = this.props;
-		const {reviews, successfullyFetched} = entityReviews;
 		let reviewContent;
 		const mapEntityType = {
 			EditionGroup: 'edition-group'
 		};
-		const cbEntityType = mapEntityType[entityType];
-		const entityLink = `https://critiquebrainz.org/${cbEntityType}/${entityBBID}`;
-
-		if (reviews?.length) {
-			const {reviewData} = entityReviews;
+		const cbEntityType = mapEntityType[this.entityType];
+		const entityLink = `https://critiquebrainz.org/${cbEntityType}/${this.entityBBID}`;
+		if (this.state.reviews && !_.isEmpty(this.state.reviews)) {
+			const {reviews: reviewsData} = this.state.reviews;
 			reviewContent = (
 				<React.Fragment>
 					{
-						reviewData.slice(0, 3).map((review) => (
+						reviewsData.slice(0, 3).map((review) => (
 							<ReviewCard
 								key={review.id}
 								reviewData={review}
@@ -98,7 +112,7 @@ class EntityReviews extends React.Component {
 				</React.Fragment>
 			);
 		}
-		else if (successfullyFetched) {
+		else if (this.state.successfullyFetched) {
 			reviewContent = (
 				<div>
 					<h4>No reviews yet.</h4>
@@ -119,7 +133,7 @@ class EntityReviews extends React.Component {
 					<h4>Could not fetch reviews.</h4>
 					<Button
 						variant="danger"
-						onClick={this.handleRefresh}
+						onClick={this.handleClick}
 					>
 						<FontAwesomeIcon icon={faRotate}/>
 						{'   Retry'}
