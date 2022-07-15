@@ -31,10 +31,14 @@ const {Button} = bootstrap;
 
 const REVIEW_CONTENT_PREVIEW_LENGTH = 75;
 
-function ReviewCard({reviewData}) {
+function ReviewCard(props) {
+	if (!props?.reviewData || _.isEmpty(props.reviewData)) {
+		return null;
+	}
+	const {reviewData} = props;
 	const publishedDate = new Date(reviewData.published_on).toDateString();
 	let reviewText = reviewData.text;
-	if (reviewText.length > REVIEW_CONTENT_PREVIEW_LENGTH) {
+	if (reviewText?.length > REVIEW_CONTENT_PREVIEW_LENGTH) {
 		reviewText = `${reviewText.substring(0, REVIEW_CONTENT_PREVIEW_LENGTH)}...`;
 	}
 	const reviewLink = `https://critiquebrainz.org/review/${reviewData.id}`;
@@ -56,7 +60,7 @@ function ReviewCard({reviewData}) {
 					Review by: <b>{reviewData.user.display_name}</b> {publishedDate}
 				</small>
 			</div>
-			<div>
+			<div className="pb-3">
 				{reviewText}
 				<a className="float-right" href={reviewLink}>View &gt;</a>
 			</div>
@@ -96,7 +100,7 @@ class EntityReviews extends React.Component {
 		};
 		const cbEntityType = mapEntityType[this.entityType];
 		const entityLink = `https://critiquebrainz.org/${cbEntityType}/${this.entityBBID}`;
-		if (this.state.reviews && !_.isEmpty(this.state.reviews)) {
+		if (this.state.reviews.reviews?.length && !_.isEmpty(this.state.reviews)) {
 			const {reviews: reviewsData} = this.state.reviews;
 			reviewContent = (
 				<React.Fragment>
@@ -158,7 +162,7 @@ ReviewCard.propTypes = {
 		// eslint-disable-next-line camelcase
 		published_on: PropTypes.string.isRequired,
 		rating: PropTypes.number,
-		text: PropTypes.string.isRequired,
+		text: PropTypes.string,
 		user: PropTypes.shape({
 			// eslint-disable-next-line camelcase
 			display_name: PropTypes.string.isRequired
