@@ -18,16 +18,14 @@
 
 
 import * as cbHelper from '../helpers/critiquebrainz';
-
-
 import express from 'express';
 
 
 const router = express.Router();
 
-router.get('/critiquebrainz/reviews', async (req, res) => {
-	const {entityBBID, entityType} = req.query;
-	const reviews = await cbHelper.getReviewsFromCB(entityBBID, entityType);
+router.get('/:entityType/:bbid/reviews', async (req, res) => {
+	const {entityType, bbid} = req.params;
+	const reviews = await cbHelper.getReviewsFromCB(bbid, entityType);
 	res.json(reviews);
 });
 

@@ -81,11 +81,7 @@ class EntityReviews extends React.Component {
 	}
 
 	async handleClick() {
-		const data = await request.get('/external-service/critiquebrainz/reviews')
-			.query({
-				entityBBID: this.entityBBID,
-				entityType: this.entityType
-			});
+		const data = await request.get(`/${this.entityType}/${this.entityBBID}/reviews`);
 
 		this.setState({
 			reviews: data.body.reviews,
