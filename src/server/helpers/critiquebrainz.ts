@@ -16,8 +16,122 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+/* eslint-disable camelcase */
+
+import config from '../../common/helpers/config';
 import log from 'log';
 import request from 'superagent';
+
+
+const OAUTH_AUTHORIZE_URL = 'https://critiquebrainz.org/oauth/authorize';
+const OAUTH_TOKEN_URL = 'https://critiquebrainz.org/ws/1/oauth/token';
+const critiquebrainzScopes = ['review'];
+const cbConfig = config.critiquebrainz;
+
+export async function addNewUser(
+	editorId: number,
+	token: Record<string, any>,
+	orm: Record<string, any>
+): Promise<any> {
+	const expires = Math.floor(new Date().getTime() / 1000.0) + token.tokenExpires;
+
+	try {
+		const newUser = await orm.func.externalServiceOauth.saveOauthToken(
+			editorId,
+			'critiquebrainz',
+			token.accessToken,
+			token.refreshToken,
+			expires,
+			critiquebrainzScopes,
+			orm
+		);
+		return newUser;
+	}
+	catch (error) {
+		log.error(error);
+		return null;
+	}
+}
+
+
+export function getAuthURL(): string {
+	const authURL = new URL(OAUTH_AUTHORIZE_URL);
+	authURL.searchParams.set('client_id', cbConfig.clientID);
+	authURL.searchParams.set('redirect_uri', cbConfig.redirectURL);
+	authURL.searchParams.set('response_type', 'code');
+	authURL.searchParams.set('scope', critiquebrainzScopes.join(','));
+	return authURL.href;
+}
+
+
+export async function fetchAccessToken(
+	code: string,
+	editorId: number,
+	orm: Record<string, any>
+) : Promise<any> {
+	try {
+		const data = await request.post(OAUTH_TOKEN_URL)
+			.type('form')
+			.send({
+				client_id: cbConfig.clientID,
+				client_secret: cbConfig.clientSecret,
+				code,
+				grant_type: 'authorization_code',
+				redirect_uri: cbConfig.redirectURL
+			});
+
+		const token = await data.body;
+		const expires = Math.floor(new Date().getTime() / 1000.0) + token.expires_in;
+		const newUser = await orm.func.externalServiceOauth.saveOauthToken(
+			editorId,
+			'critiquebrainz',
+			token.access_token,
+			token.refresh_token,
+			expires,
+			critiquebrainzScopes,
+			orm
+		);
+		return newUser;
+	}
+	catch (error) {
+		log.error(error);
+		return null;
+	}
+}
+
+
+export async function refreshAccessToken(
+	editorId: number,
+	refreshToken: string,
+	orm: Record<string, any>
+): Promise<any> {
+	try {
+		const data = await request.post(OAUTH_TOKEN_URL)
+			.type('form')
+			.send({
+				client_id: cbConfig.clientID,
+				client_secret: cbConfig.clientSecret,
+				grant_type: 'refresh_token',
+				redirect_uri: cbConfig.redirectURL,
+				refresh_token: refreshToken
+			});
+		const token = await data.body;
+		const expires = Math.floor(new Date().getTime() / 1000.0) + token.expires_in;
+		const updatedToken = await orm.func.externalServiceOauth.updateOauthToken(
+			editorId,
+			'critiquebrainz',
+			token.access_token,
+			token.refresh_token,
+			expires,
+			orm
+		);
+		return updatedToken;
+	}
+	catch (error) {
+		log.error(error);
+		return null;
+	}
+}
 
 
 export async function getReviewsFromCB(bbid: string,
