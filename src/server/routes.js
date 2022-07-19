@@ -28,6 +28,7 @@ import indexRouter from './routes/index';
 import mergeRouter from './routes/merge';
 import publisherRouter from './routes/entity/publisher';
 import registerRouter from './routes/register';
+import reviewsRouter from './routes/reviews';
 import revisionRouter from './routes/revision';
 import revisionsRouter from './routes/revisions';
 import searchRouter from './routes/search';
@@ -39,6 +40,7 @@ import workRouter from './routes/entity/work';
 function initRootRoutes(app) {
 	app.use('/', indexRouter);
 	app.use('/', authRouter);
+	app.use('/', reviewsRouter);
 	app.use('/search', searchRouter);
 	app.use('/register', registerRouter);
 	app.use('/revisions', revisionsRouter);

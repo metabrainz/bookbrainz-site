@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2017  Ben Ockmore
+ *               2022  Ansh Goyal
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,8 +26,10 @@ import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
 import EntityRelatedCollections from './related-collections';
+import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
+import {Rating} from 'react-simple-star-rating';
 import React from 'react';
 
 
@@ -52,6 +55,24 @@ function EditionGroupAttributes({editionGroup}) {
 					<dl>
 						<dt>Type</dt>
 						<dd>{type}</dd>
+					</dl>
+				</Col>
+				<Col lg={3}>
+					<dl>
+						<dt>Ratings</dt>
+						<dd>
+							<Rating
+								allowHalfIcon
+								readonly
+								allowHover={false}
+								className="rating-stars"
+								fillColor="#46433A"
+								initialValue={3.5}
+								ratingValue={0}
+								size={20}
+								stars={5}
+							/>
+						</dd>
 					</dl>
 				</Col>
 			</Row>
@@ -105,12 +126,20 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 			{!entity.deleted &&
 			<React.Fragment>
 				<EditionTable editions={entity.editions} entity={entity}/>
-				<EntityLinks
-					entity={entity}
-					identifierTypes={identifierTypes}
-					urlPrefix={urlPrefix}
-				/>
-				<EntityRelatedCollections collections={entity.collections}/>
+				<Row>
+					<Col lg={8}>
+						<EntityLinks
+							entity={entity}
+							identifierTypes={identifierTypes}
+							urlPrefix={urlPrefix}
+						/>
+						<EntityRelatedCollections collections={entity.collections}/>
+
+					</Col>
+					<Col lg={4}>
+						<EntityReviews entityBBID={entity.bbid} entityReviews={entity.reviews} entityType={entity.type}/>
+					</Col>
+				</Row>
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter
