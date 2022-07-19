@@ -17,6 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import React from 'react';
 import request from 'superagent';
 
@@ -44,11 +45,10 @@ class ExternalServices extends React.Component {
 			}
 		}
 		else {
-			const data = request.post('/external-service/critiquebrainz/disconnect');
-
+			const data = await request.post('/external-service/critiquebrainz/disconnect');
 			if (data.statusCode === 200) {
 				this.setState({
-					cbPermission: 'review'
+					cbPermission: 'disable'
 				});
 			}
 			else {
@@ -140,5 +140,11 @@ class ExternalServices extends React.Component {
 		);
 	}
 }
+
+ExternalServices.displayName = 'ExternalServices';
+ExternalServices.propTypes = {
+	cbPermission: PropTypes.string.isRequired
+};
+
 
 export default ExternalServices;
