@@ -26,7 +26,8 @@ const {Alert} = bootstrap;
 class ExternalServices extends React.Component {
 	constructor(props) {
 		super(props);
-		this.alertType = false;
+		this.alertDetails = props.alertDetails;
+		this.alertType = props.alertType;
 		this.state = {
 			cbPermission: props.cbPermission
 		};
@@ -42,17 +43,17 @@ class ExternalServices extends React.Component {
 			}
 			else {
 				this.alertType = 'danger';
+				this.alertDetails = 'Something went wrong. Please try again.';
 			}
 		}
 		else {
 			const data = await request.post('/external-service/critiquebrainz/disconnect');
+			this.alertDetails = data.body.alertDetails;
+			this.alertType = data.body.alertType;
 			if (data.statusCode === 200) {
 				this.setState({
 					cbPermission: 'disable'
 				});
-			}
-			else {
-				this.alertType = 'danger';
 			}
 		}
 	};
@@ -86,25 +87,23 @@ class ExternalServices extends React.Component {
 			);
 		};
 
-		function showAlert(alertType) {
+		const showAlert = (alertType) => {
 			if (alertType === 'success') {
 				return (
 					<Alert variant="success">
-						<h4>Success!</h4>
-						You have successfully linked your account with CritiqueBrainz.
+						<strong>Success! {this.alertDetails}</strong>
 					</Alert>
 				);
 			}
 			else if (alertType === 'danger') {
 				return (
 					<Alert variant="danger">
-						<strong>Error!  </strong>
-						Unable to connect to CritiqueBrainz. Please try again.
+						<strong>Error! {this.alertDetails}</strong>
 					</Alert>
 				);
 			}
 			return null;
-		}
+		};
 
 		return (
 			<div>
@@ -143,7 +142,13 @@ class ExternalServices extends React.Component {
 
 ExternalServices.displayName = 'ExternalServices';
 ExternalServices.propTypes = {
+	alertDetails: PropTypes.string,
+	alertType: PropTypes.string,
 	cbPermission: PropTypes.string.isRequired
+};
+ExternalServices.defaultProps = {
+	alertDetails: '',
+	alertType: false
 };
 
 

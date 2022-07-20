@@ -20,6 +20,7 @@
 import * as auth from '../helpers/auth';
 import * as cbHelper from '../helpers/critiquebrainz.ts';
 import * as propHelpers from '../../client/helpers/props';
+import {BadRequestError, NotFoundError} from '../../common/helpers/error';
 import {escapeProps, generateProps} from '../helpers/props';
 import ExternalServices from '../../client/components/pages/externalService';
 import Layout from '../../client/containers/layout';
@@ -27,6 +28,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import express from 'express';
 import target from '../templates/target';
+import url from 'url';
 
 
 const marginTime = 5 * 60 * 1000;
@@ -37,6 +39,7 @@ router.get('/', async (req, res) => {
 	if (!req.user) {
 		return res.redirect('/register');
 	}
+	const {alertType, alertDetails} = req.query;
 	const {orm} = req.app.locals;
 	const editorId = req.user.id;
 	const cbUser = await orm.func.externalServiceOauth.getOauthToken(
@@ -49,6 +52,8 @@ router.get('/', async (req, res) => {
 		cbPermission = 'review';
 	}
 	const props = generateProps(req, res, {
+		alertDetails,
+		alertType,
 		cbPermission
 	});
 
@@ -56,6 +61,8 @@ router.get('/', async (req, res) => {
 		<Layout {...propHelpers.extractLayoutProps(props)}>
 			<ExternalServices
 				{...escapeProps(props)}
+				alertDetails={props.alertDetails}
+				alertType={props.alertType}
 				cbPermission={props.cbPermission}
 			/>
 		</Layout>
@@ -70,23 +77,34 @@ router.get('/', async (req, res) => {
 });
 
 
-router.get('/critiquebrainz/callback', auth.isAuthenticated, async (req, res) => {
+router.get('/critiquebrainz/callback', auth.isAuthenticated, async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const {code} = req.query;
 	const editorId = req.user.id;
 	if (!code) {
-		res.send('No code provided');
+		return next(new BadRequestError('Response type must be code'));
 	}
 	const token = await cbHelper.fetchAccessToken(code, editorId, orm);
 
-	if (token) {
-		res.redirect('/external-service');
+	let alertType = 'success';
+	let alertDetails = 'You have successfully linked your account with CritiqueBrainz.';
+	if (!token) {
+		alertType = 'danger';
+		alertDetails = 'Failed to connect to CritiqueBrainz';
 	}
-	res.send('Failed to fetch token');
+	return res.redirect(
+		url.format({
+			pathname: '/external-service',
+			query: {
+				alertDetails,
+				alertType
+			}
+		})
+	);
 });
 
 
-router.post('/critiquebrainz/refresh', auth.isAuthenticated, async (req, res) => {
+router.get('/critiquebrainz/refresh', auth.isAuthenticated, async (req, res, next) => {
 	const editorId = req.user.id;
 	const {orm} = req.app.locals;
 	let token = await orm.func.externalServiceOauth.getOauthToken(
@@ -95,7 +113,7 @@ router.post('/critiquebrainz/refresh', auth.isAuthenticated, async (req, res) =>
 		orm
 	);
 	if (!token?.length) {
-		res.send('User has not connected to CB');
+		return next(new NotFoundError('User has not authenticated to CritiqueBrainz'));
 	}
 	token = token[0];
 	const tokenExpired = new Date(token.token_expires).getTime() <= new Date(new Date().getTime() + marginTime).getTime();
@@ -135,12 +153,22 @@ router.post('/critiquebrainz/connect', auth.isAuthenticated, async (req, res) =>
 router.post('/critiquebrainz/disconnect', auth.isAuthenticated, async (req, res) => {
 	const editorId = req.user.id;
 	const {orm} = req.app.locals;
-	await orm.func.externalServiceOauth.deleteOauthToken(
-		editorId,
-		'critiquebrainz',
-		orm
-	);
-	return res.send('Successfully disconnected');
+
+	let alertType = 'success';
+	let alertDetails = 'You have successfully disconnected your account with CritiqueBrainz.';
+	try {
+		await orm.func.externalServiceOauth.deleteOauthToken(
+			editorId,
+			'critiquebrainz',
+			orm
+		);
+	}
+	catch {
+		alertType = 'danger';
+		alertDetails = 'Failed to disconnect from CritiqueBrainz';
+	}
+
+	res.send({alertDetails, alertType});
 });
 
 export default router;
