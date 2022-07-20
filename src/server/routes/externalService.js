@@ -132,6 +132,10 @@ router.get('/critiquebrainz/refresh', auth.isAuthenticated, async (req, res, nex
 router.post('/critiquebrainz/connect', auth.isAuthenticated, async (req, res) => {
 	const editorId = req.user.id;
 	const {orm} = req.app.locals;
+
+	// First we check if the user has already connected to CritiqueBrainz
+	// If so, we first delete the existing tokens and then try to connect again.
+
 	const token = await orm.func.externalServiceOauth.getOauthToken(
 		editorId,
 		'critiquebrainz',
