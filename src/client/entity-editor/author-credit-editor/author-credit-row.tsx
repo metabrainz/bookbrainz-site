@@ -94,7 +94,7 @@ function AuthorCreditRow({
 }: Props) {
 	const SelectWrapper = !isUf ? EntitySearchFieldOption : SearchEntityCreate;
 	const onChangeHandler = React.useCallback((value, action) => {
-		if (['clear', 'pop-value', 'select-option'].includes(action.action) && author && author.get('__isNew__', false)) {
+		if (action && ['clear', 'pop-value', 'select-option'].includes(action.action) && author && author.get('__isNew__', false)) {
 			onClearHandler(author.get('id'));
 		}
 		onAuthorChange(value);
@@ -146,6 +146,8 @@ function AuthorCreditRow({
 					<Button
 						block
 						className="margin-top-d18"
+						// disable button for first row
+						disabled={index === 'n0'}
 						variant="danger"
 						onClick={handleButtonClick}
 					>

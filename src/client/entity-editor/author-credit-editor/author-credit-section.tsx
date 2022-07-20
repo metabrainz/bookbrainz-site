@@ -118,7 +118,7 @@ function AuthorCreditSection({
 	}
 	const onChangeHandler = React.useCallback((value, action) => {
 		const authorId = _get(authorCreditEditor, 'n0.author.id', null);
-		if (['clear', 'pop-value', 'select-option'].includes(action.action) && authorId) {
+		if (action && ['clear', 'pop-value', 'select-option'].includes(action.action) && authorId) {
 			onClearHandler(authorId);
 		}
 		onAuthorChange(value);
