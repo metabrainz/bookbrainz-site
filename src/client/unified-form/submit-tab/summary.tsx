@@ -46,7 +46,7 @@ function SummarySection({
 				<div className="ms-2 me-auto">
 					<div className="font-weight-bold">{entityType}</div>
 					{newEntities.map((entity, index) => (
-						<span key={entity.id}>
+						<span className="entities-preview" key={entity.id}>
 							{_.get(entity, 'text') + (index === newEntities.length - 1 ? '' : ', ')}
 						</span>
 					))}
