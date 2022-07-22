@@ -1,5 +1,7 @@
 import * as Boostrap from 'react-bootstrap';
-import {IdentifierType, UnifiedFormDispatchProps, UnifiedFormOwnProps, UnifiedFormProps, UnifiedFormStateProps} from './interface/type';
+import {IdentifierType, State, UnifiedFormDispatchProps, UnifiedFormOwnProps, UnifiedFormProps, UnifiedFormStateProps} from './interface/type';
+import {isCoverTabEmpty, validateCoverTab} from './validators/cover-tab';
+import {isDetailTabEmpty, validateDetailTab} from './validators/detail-tab';
 import ContentTab from './content-tab/content-tab';
 import CoverTab from './cover-tab/cover-tab';
 import DetailTab from './detail-tab/detail-tab';
@@ -7,24 +9,24 @@ import NavButtons from './navbutton';
 import React from 'react';
 import SubmitSection from '../entity-editor/submission-section/submission-section';
 import SummarySection from './submit-tab/summary';
+import ValidationLabel from '../entity-editor/common/validation-label';
 import {connect} from 'react-redux';
+import {convertMapToObject} from '../helpers/utils';
 import createFilterOptions from 'react-select-fast-filter-options';
 import {filterIdentifierTypesByEntityType} from '../../common/helpers/utils';
 import {freezeObjects} from './common/freezed-objects';
+import {getUfValidator} from './validators/base';
+import {omit} from 'lodash';
 import {submit} from '../entity-editor/submission-section/actions';
 
 
 const {Tabs, Tab} = Boostrap;
-function getUfValidator(validator) {
-	return (state, identifierTypes, ...args) => {
-		if (state.get('ISBN') && !state.getIn(['ISBN', 'type']) && state.getIn(['ISBN', 'value'], '').length > 0) {
-			return false;
-		}
-		return validator(state, identifierTypes, ...args);
-	};
-}
+
+
 export function UnifiedForm(props:UnifiedFormProps) {
-	const {allIdentifierTypes, validator, onSubmit, formValid, languageOptions} = props;
+	const {allIdentifierTypes, validator, onSubmit, formValid,
+		languageOptions, contentTabEmpty, coverTabValid, coverTabEmpty, detailTabValid, detailTabEmpty} = props;
+	const rest = omit(props, ['contentTabEmpty', 'coverTabValid', 'coverTabEmpty', 'detailTabValid', 'formValid', 'detailTabEmpty']);
 	React.useMemo(() => {
 		// without this check, it would cause undefined behaviour
 		if (!freezeObjects.filterOptions) {
@@ -61,14 +63,14 @@ export function UnifiedForm(props:UnifiedFormProps) {
 			<div className="uf-tab">
 				<h4>Add Book</h4>
 				<Tabs activeKey={tabKey} className="uf-tab-header" id="controlled-tab" onSelect={setTabKey}>
-					<Tab eventKey="cover" title="Cover">
-						<CoverTab {...props} identifierTypes={editionIdentifierTypes as IdentifierType[]}/>
+					<Tab eventKey="cover" title={<ValidationLabel isUf empty={coverTabEmpty} error={!coverTabValid}>Cover</ValidationLabel>}>
+						<CoverTab {...rest} identifierTypes={editionIdentifierTypes as IdentifierType[]}/>
 					</Tab>
-					<Tab eventKey="detail" title="Details">
-						<DetailTab {...props}/>
+					<Tab eventKey="detail" title={<ValidationLabel isUf empty={detailTabEmpty} error={!detailTabValid}>Details</ValidationLabel>}>
+						<DetailTab {...rest}/>
 					</Tab>
-					<Tab eventKey="content" title="Contents">
-						<ContentTab {...props}/>
+					<Tab eventKey="content" title={<ValidationLabel isUf empty={contentTabEmpty}>Contents</ValidationLabel>}>
+						<ContentTab {...rest}/>
 					</Tab>
 					<Tab disabled={!formValid} eventKey="submit" title="Submit">
 						<SummarySection/>
@@ -85,11 +87,19 @@ export function UnifiedForm(props:UnifiedFormProps) {
 	);
 }
 
-function mapStateToProps(state, {validator, allIdentifierTypes}:UnifiedFormOwnProps) {
-	const editionValidator = validator && getUfValidator(validator);
+function mapStateToProps(state:State, {allIdentifierTypes}:UnifiedFormOwnProps) {
+	const jsonState = convertMapToObject(state);
 	const editionIdentifierTypes = filterIdentifierTypesByEntityType(allIdentifierTypes, 'Edition');
+	const coverTabEmpty = isCoverTabEmpty(jsonState);
+	const coverTabValid = !coverTabEmpty && validateCoverTab(jsonState, editionIdentifierTypes);
+	const detailTabValid = validateDetailTab(jsonState);
 	return {
-		formValid: editionValidator && editionValidator(state, editionIdentifierTypes, false, true)
+		contentTabEmpty: state.get('Works').size === 0,
+		coverTabEmpty,
+		coverTabValid,
+		detailTabEmpty: isDetailTabEmpty(jsonState),
+		detailTabValid,
+		formValid: coverTabValid && detailTabValid
 	};
 }
 function mapDispatchToProps(dispatch, {submissionUrl}) {

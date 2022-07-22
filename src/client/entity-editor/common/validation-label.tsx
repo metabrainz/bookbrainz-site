@@ -66,6 +66,7 @@ type Props = {
 	empty?: boolean,
 	error?: boolean,
 	errorMessage?: '',
+	isUf?: boolean,
 	warn?: boolean,
 	warnMessage?: ''
 };
@@ -88,6 +89,7 @@ function ValidationLabel({
 	children,
 	empty,
 	error,
+	isUf,
 	errorMessage,
 	warn,
 	warnMessage
@@ -96,7 +98,7 @@ function ValidationLabel({
 		<span className={contextualColor(empty, error, warn)}> {warnMessage} </span>;
 	const errorElement = errorMessage &&
 		<span className={contextualColor(empty, error, warn)}> {errorMessage} </span>;
-	const iconElement = icon(empty, error, warn) &&
+	const iconElement = !isUf && icon(empty, error, warn) &&
 		<FontAwesomeIcon className="margin-left-0-5" icon={icon(empty, error, warn)}/>;
 
 	return (
@@ -114,6 +116,7 @@ ValidationLabel.defaultProps = {
 	empty: false,
 	error: false,
 	errorMessage: '',
+	isUf: false,
 	warn: false,
 	warnMessage: ''
 };

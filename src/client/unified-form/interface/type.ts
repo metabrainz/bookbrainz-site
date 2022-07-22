@@ -35,6 +35,11 @@ export type UnifiedFormDispatchProps = {
 	onSubmit: (event:React.FormEvent) =>unknown
 };
 export type UnifiedFormStateProps = {
+	contentTabEmpty: boolean,
+	detailTabValid: boolean,
+	detailTabEmpty: boolean,
+	coverTabValid: boolean,
+	coverTabEmpty: boolean,
 	formValid:boolean
 };
 export type UnifiedFormOwnProps = {
