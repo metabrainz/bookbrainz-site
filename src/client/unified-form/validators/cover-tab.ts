@@ -25,7 +25,7 @@ export function validateISBN(isbn) {
 export function validateCoverTab(data:any, identifierTypes:any[]) {
 	return validateNameSection(get(data, 'nameSection')) &&
     validateIdentifiers(get(data, 'identifierEditor', {}), identifierTypes) &&
-    validateAuthorCreditSection(get(data, 'authorCreditEditor')) &&
+    validateAuthorCreditSection(get(data, 'authorCreditEditor'), true) &&
     validateISBN(get(data, 'ISBN'));
 }
 
