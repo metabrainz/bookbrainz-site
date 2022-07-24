@@ -2,7 +2,7 @@ import {get} from 'lodash';
 import {validateEditionSection} from '../../entity-editor/validators/edition';
 
 
-const initialEditionSection = JSON.stringify({
+export const initialEditionSection = {
 	authorCreditEditorVisible: false,
 	format: null,
 	languages: [],
@@ -11,7 +11,8 @@ const initialEditionSection = JSON.stringify({
 	publisher: {},
 	releaseDate: '',
 	status: null
-});
+};
+const stringifiedState = JSON.stringify(initialEditionSection);
 
 /**
  * 	Validates the Detail Tab state.
@@ -32,5 +33,5 @@ export function validateDetailTab(data: any): boolean {
 export function isDetailTabEmpty(data:any): boolean {
 	const editionSection = get(data, 'editionSection', {});
 	const annotationContent = get(data, ['annotationSection', 'content'], '');
-	return JSON.stringify(editionSection) === initialEditionSection && annotationContent.length === 0;
+	return JSON.stringify(editionSection) === stringifiedState && annotationContent.length === 0;
 }
