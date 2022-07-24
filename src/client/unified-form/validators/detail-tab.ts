@@ -21,7 +21,7 @@ const stringifiedState = JSON.stringify(initialEditionSection);
  * @returns {boolean} - true if detail tab state is valid
  */
 export function validateDetailTab(data: any): boolean {
-	return validateEditionSection(get(data, 'editionSection'));
+	return validateEditionSection(get(data, 'editionSection'), true);
 }
 
 /**

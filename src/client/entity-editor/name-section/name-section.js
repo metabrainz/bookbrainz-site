@@ -321,7 +321,7 @@ NameSection.defaultProps = {
 };
 
 
-function mapStateToProps(rootState, {isUf, setDefault}) {
+function mapStateToProps(rootState, {isUf, setDefault, entityType}) {
 	const state = rootState.get('nameSection');
 	const editionSectionState = rootState.get('editionSection');
 	const searchForExistingEditionGroup = Boolean(editionSectionState) &&
@@ -329,6 +329,30 @@ function mapStateToProps(rootState, {isUf, setDefault}) {
 		!editionSectionState.get('editionGroup') ||
 		editionSectionState.get('editionGroupRequired')
 	);
+	let exactMatches = state.get('exactMatches');
+	const nameValue = state.get('name');
+	// search for duplicates with same name in new entities
+	if (isUf && entityType && nameValue.length > 0 && _.size(exactMatches) === 0) {
+		const stateSelector = `${_.upperFirst(_.snakeCase(entityType))}s`;
+		const entities = rootState.get(stateSelector, {});
+		const entitiesJSON = convertMapToObject(entities);
+		const matchEntities = [];
+		_.map(entitiesJSON, (value) => {
+			if (value.__isNew__ && nameValue === _.get(value, ['nameSection', 'name'], '')) {
+				const disambiguation = _.get(value, ['nameSection', 'disambiguation'], '');
+				matchEntities.push({
+					bbid: '#',
+					defaultAlias: {
+						name: nameValue
+					},
+					disambiguation: disambiguation.length > 0 && {
+						comment: disambiguation
+					}
+				});
+			}
+		});
+		exactMatches = matchEntities;
+	}
 	// to prevent double double state updates on action caused by modal
 	if (isUf && setDefault) {
 		return {
@@ -342,9 +366,9 @@ function mapStateToProps(rootState, {isUf, setDefault}) {
 	}
 	return {
 		disambiguationDefaultValue: state.get('disambiguation'),
-		exactMatches: state.get('exactMatches'),
+		exactMatches,
 		languageValue: state.get('language'),
-		nameValue: state.get('name'),
+		nameValue,
 		searchForExistingEditionGroup,
 		searchResults: state.get('searchResults'),
 		sortNameValue: state.get('sortName')
