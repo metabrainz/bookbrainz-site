@@ -11,6 +11,12 @@ export type Action = {
 	}
 };
 
+export type Entity = {
+	__isNew__: boolean,
+	text:string,
+	type:string,
+	id:string
+};
 export type State = Immutable.Map<string, any>;
 
 export type IdentifierType = {
@@ -151,3 +157,16 @@ export type CreateEntityModalOwnProps = {
 	show:boolean
 };
 export type CreateEntityModalProps = CreateEntityModalOwnProps;
+
+export type SummarySectionStateProps = {
+	Authors: Array<any>;
+	EditionGroups: Array<any>;
+	Editions: Array<any>;
+	Publishers: Array<any>;
+	Works: Array<any>;
+};
+export type SummarySectionOwnProps = {
+	languageOptions: any[]
+};
+export type SummarySectionProps = SummarySectionOwnProps & SummarySectionStateProps;
+

@@ -816,3 +816,11 @@ div[class~=collapsing]+div[class=card-header] .accordion-arrow {
 .uf-modal-body .accordion > .card{
 	margin-bottom: 10px;
 }
+.entities-preview{
+	cursor: pointer;
+	color: $uf-primary;
+	transition: all 0.2s linear;
+}
+.entities-preview:hover{
+	color: #754E37;
+}

@@ -73,7 +73,7 @@ export function UnifiedForm(props:UnifiedFormProps) {
 						<ContentTab {...rest}/>
 					</Tab>
 					<Tab disabled={!formValid} eventKey="submit" title="Submit">
-						<SummarySection/>
+						<SummarySection languageOptions={languageOptions}/>
 						<SubmitSection isUf formValid={formValid} identifierTypes={editionIdentifierTypes} validate={editionValidator}/>
 
 					</Tab>

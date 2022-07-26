@@ -1,28 +1,19 @@
 import {Badge, ListGroup} from 'react-bootstrap';
+import {Entity, SummarySectionProps, SummarySectionStateProps} from '../interface/type';
 import Immutable from 'immutable';
 import React from 'react';
+import SingleEntity from './single-entity';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 
 
-type Entity = {
-	__isNew__: boolean,
-	text:string,
-	id:string
-};
-type SummarySectionProps = {
-	Authors: Array<any>;
-	EditionGroups: Array<any>;
-	Editions: Array<any>;
-	Publishers: Array<any>;
-	Works: Array<any>;
-};
 function SummarySection({
 	Publishers,
 	Works,
 	Authors,
 	EditionGroups,
+	languageOptions,
 	Editions
 }: SummarySectionProps) {
 	const createdEntities = {
@@ -45,11 +36,10 @@ function SummarySection({
 			>
 				<div className="ms-2 me-auto">
 					<div className="font-weight-bold">{entityType}</div>
-					{newEntities.map((entity, index) => (
-						<span className="entities-preview" key={entity.id}>
-							{_.get(entity, 'text') + (index === newEntities.length - 1 ? '' : ', ')}
-						</span>
-					))}
+					{newEntities.map((entity, index) => (<SingleEntity
+						entity={entity} isLast={index === newEntities.length - 1}
+						key={entity.id} languageOptions={languageOptions}
+					                                     />))}
 				</div>
 				<Badge pill bg="primary">
 					{newEntities.length}
@@ -74,10 +64,13 @@ function mapStateToProps(state) {
 	const Editions:Entity[] = [{
 		__isNew__: true,
 		id: 'e0',
-		text: state.getIn(['nameSection', 'name'])
+		text: state.getIn(['nameSection', 'name']),
+		type: 'Edition',
+		...convertMapToObject(state)
 	}];
 	if (EditionGroups.length === 0) {
-		EditionGroups = Editions;
+		EditionGroups = [{...Editions[0]}];
+		EditionGroups[0].type = 'EditionGroup';
 		EditionGroups[0].id = 'eg0';
 	}
 	return {
@@ -88,4 +81,4 @@ function mapStateToProps(state) {
 		Works: getEntitiesArray(state.get('Works'))
 	};
 }
-export default connect<SummarySectionProps>(mapStateToProps)(SummarySection);
+export default connect<SummarySectionStateProps>(mapStateToProps)(SummarySection);
