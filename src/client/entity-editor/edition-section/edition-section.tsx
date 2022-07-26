@@ -265,7 +265,7 @@ function EditionSection({
 			<h2>
 				What else do you know about the Edition?
 			</h2>
-			<AuthorCreditSection/>
+			<AuthorCreditSection type="edition"/>
 			<p className="text-muted">
 				Edition Group is required — this cannot be blank. You can search for and choose an existing Edition Group,
 				or choose to automatically create one instead.
