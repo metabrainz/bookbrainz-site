@@ -6,6 +6,7 @@ export const UPDATE_WORKS = 'UPDATE_WORKS';
 export const REMOVE_WORK = 'REMOVE_WORK';
 export const UPDATE_WORK = 'UPDATE_WORK';
 export const TOGGLE_CHECK = 'TOGGLE_CHECK';
+export const COPY_WORK = 'COPY_WORK';
 
 let nextWorkId = 0;
 
@@ -59,5 +60,18 @@ export function toggleCheck(id:string):Action {
 	return {
 		payload: id,
 		type: TOGGLE_CHECK
+	};
+}
+
+/**
+ * Produces an action indicating that a Work need to be copied.
+ *
+ * @param {string} id - id of the work to be copied
+ * @returns {Action} The resulting COPY_WORK action.
+ */
+export function copyWork(id:string):Action {
+	return {
+		payload: id,
+		type: COPY_WORK
 	};
 }

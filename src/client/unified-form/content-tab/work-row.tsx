@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 
 
-const {Row, Col, Button, FormCheck} = Bootstrap;
+const {Row, Col, Button, FormCheck, ButtonGroup} = Bootstrap;
 type WorkRowStateProps = {
     work: any;
 };
@@ -17,13 +17,15 @@ type WorkRowDispatchProps = {
 };
 
 type WorkRowOwnProps = {
+	onCopyHandler:(arg)=>unknown,
     rowId: string;
 };
 
 type WorkRowProps = WorkRowStateProps & WorkRowDispatchProps & WorkRowOwnProps;
 
-function WorkRow({onChange, work, onRemove, onToggle, ...rest}:WorkRowProps) {
+function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, ...rest}:WorkRowProps) {
 	const isChecked = work?.checked;
+	const handleCopy = React.useMemo(() => onCopyHandler(work.id), [onCopyHandler, work]);
 	const onChangeHandler = React.useCallback((value:any) => {
 		value.checked = isChecked;
 		onChange(value);
@@ -41,7 +43,12 @@ function WorkRow({onChange, work, onRemove, onToggle, ...rest}:WorkRowProps) {
 					/>
 				</Col>
 				<Col lg={{span: 2}}>
-					<Button variant="danger" onClick={onRemove}>Remove</Button>
+					<ButtonGroup>
+						{
+							work.__isNew__ && <Button variant="primary" onClick={handleCopy as React.MouseEventHandler}>Copy</Button>
+						}
+						<Button variant="danger" onClick={onRemove}>Remove</Button>
+					</ButtonGroup>
 				</Col>
 			</Row>
 			<FormCheck

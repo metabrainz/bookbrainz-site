@@ -1,8 +1,9 @@
 import {ADD_AUTHOR, ADD_PUBLISHER} from './cover-tab/action';
+import {ADD_WORK, COPY_WORK} from './content-tab/action';
+import {Action, State} from './interface/type';
 import {CLOSE_ENTITY_MODAL, DUMP_EDITION, LOAD_EDITION, OPEN_ENTITY_MODAL} from './action';
 import {ISBNReducer, authorsReducer, publishersReducer} from './cover-tab/reducer';
 import {ADD_EDITION_GROUP} from './detail-tab/action';
-import {ADD_WORK} from './content-tab/action';
 import Immutable from 'immutable';
 import aliasEditorReducer from '../entity-editor/alias-editor/reducer';
 import annotationSectionReducer from '../entity-editor/annotation-section/reducer';
@@ -108,7 +109,7 @@ const initialState = Immutable.Map({
 	})
 });
 
-function crossSliceReducer(state, action) {
+function crossSliceReducer(state:State, action:Action) {
 	const {type} = action;
 	let intermediateState = state;
 	const activeEntityState = {
@@ -204,6 +205,12 @@ function crossSliceReducer(state, action) {
 				['Editions', 'e0', 'editionSection', 'publisher', newPublisher.id]
 				, Immutable.Map(newPublisher)
 			);
+			break;
+		}
+		case COPY_WORK:
+		{
+			intermediateState = intermediateState.merge(intermediateState.getIn(['Works', action.payload]));
+			intermediateState = ['text', '__isNew__', 'type', 'id'].reduce((istate, key) => istate.delete(key), intermediateState);
 			break;
 		}
 		case LOAD_EDITION:

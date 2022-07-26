@@ -91,6 +91,8 @@ export type ContentTabStateProps = {
 };
 export type ContentTabDispatchProps = {
 	onChange:(value:EntitySelect)=>unknown,
+	onModalOpen:(arg)=>unknown,
+	onModalClose:()=>unknown,
 };
 export type ContentTabProps = ContentTabStateProps & ContentTabDispatchProps;
 
