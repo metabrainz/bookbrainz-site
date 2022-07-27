@@ -25,7 +25,7 @@ type WorkRowProps = WorkRowStateProps & WorkRowDispatchProps & WorkRowOwnProps;
 
 function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, ...rest}:WorkRowProps) {
 	const isChecked = work?.checked;
-	const handleCopy = React.useMemo(() => onCopyHandler(work.id), [onCopyHandler, work]);
+	const handleCopy = React.useCallback(() => onCopyHandler(work.id), [onCopyHandler, work]);
 	const onChangeHandler = React.useCallback((value:any) => {
 		value.checked = isChecked;
 		onChange(value);
