@@ -25,6 +25,7 @@ import request from 'superagent';
 
 const OAUTH_AUTHORIZE_URL = 'https://critiquebrainz.org/oauth/authorize';
 const OAUTH_TOKEN_URL = 'https://critiquebrainz.org/ws/1/oauth/token';
+const REVIEW_URL = 'https://critiquebrainz.org/ws/1/review/';
 const critiquebrainzScopes = ['review'];
 const cbConfig = config.critiquebrainz;
 
@@ -145,7 +146,7 @@ export async function getReviewsFromCB(bbid: string,
 	}
 	try {
 		const res = await request
-			.get('https://critiquebrainz.org/ws/1/review')
+			.get(REVIEW_URL)
 			.query({
 				// eslint-disable-next-line camelcase
 				entity_id: bbid,
@@ -159,5 +160,51 @@ export async function getReviewsFromCB(bbid: string,
 	catch (err) {
 		log.error(err);
 		return {reviews: [], successfullyFetched: false};
+	}
+}
+
+export async function submitReviewToCB(
+	accessToken: string,
+	review: Record<string, any>
+): Promise<any> {
+	const mapEntityType = {
+		EditionGroup: 'bb_edition_group'
+	};
+	const cbEntityType = mapEntityType[review.entityType];
+
+	if (!cbEntityType) {
+		return {
+			message: 'Entity type not supported',
+			reviewID: null,
+			successfullySubmitted: false
+		};
+	}
+
+	try {
+		const res = await request
+			.post(REVIEW_URL)
+			.set('Content-Type', 'application/json')
+			.auth(accessToken, {type: 'bearer'})
+			.send({
+				entity_id: review.entityBBID,
+				entity_type: cbEntityType,
+				lang: review.language,
+				license_choice: 'CC BY-SA 3.0',
+				rating: review.rating,
+				text: review.textContent
+			});
+		return {
+			message: res.body.message,
+			reviewID: res.body.id,
+			successfullySubmitted: true
+		};
+	}
+
+	catch (error) {
+		return {
+			message: error.response?.body?.description,
+			reviewID: null,
+			successfullySubmitted: false
+		};
 	}
 }

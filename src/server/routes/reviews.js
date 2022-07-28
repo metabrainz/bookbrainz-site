@@ -17,6 +17,7 @@
  */
 
 
+import * as auth from '../helpers/auth';
 import * as cbHelper from '../helpers/critiquebrainz';
 import express from 'express';
 
@@ -27,6 +28,46 @@ router.get('/:entityType/:bbid/reviews', async (req, res) => {
 	const {entityType, bbid} = req.params;
 	const reviews = await cbHelper.getReviewsFromCB(bbid, entityType);
 	res.json(reviews);
+});
+
+router.post('/:entityType/:bbid/reviews', auth.isAuthenticated, async (req, res) => {
+	const editorId = req.user.id;
+	const {orm} = req.app.locals;
+
+	const {accessToken} = req.body;
+	const {review} = req.body;
+
+	let response = await cbHelper.submitReviewToCB(
+		accessToken,
+		review
+	);
+
+	// If the token has expired, we try to refresh it and then submit the review again.
+	if (response.message === 'The provided authorization token is invalid, expired, revoked, or was issued to another client.') {
+		try {
+			const token = await orm.func.externalServiceOauth.getOauthToken(
+				editorId,
+				'critiquebrainz',
+				orm
+			);
+
+			const newAccessToken = await cbHelper.refreshAccessToken(
+				editorId,
+				token.refresh_token,
+				orm
+			);
+
+			response = await cbHelper.submitReviewToCB(
+				newAccessToken.access_token,
+				review
+			);
+		}
+		catch (error) {
+			return res.json({error: error.message});
+		}
+	}
+
+	return res.json(response);
 });
 
 export default router;
