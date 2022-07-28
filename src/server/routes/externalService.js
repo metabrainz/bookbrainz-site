@@ -18,7 +18,7 @@
 
 
 import * as auth from '../helpers/auth';
-import * as cbHelper from '../helpers/critiquebrainz.ts';
+import * as cbHelper from '../helpers/critiquebrainz';
 import * as propHelpers from '../../client/helpers/props';
 import {BadRequestError, NotFoundError} from '../../common/helpers/error';
 import {escapeProps, generateProps} from '../helpers/props';
@@ -42,15 +42,18 @@ router.get('/', async (req, res) => {
 	const {alertType, alertDetails} = req.query;
 	const {orm} = req.app.locals;
 	const editorId = req.user.id;
+
 	const cbUser = await orm.func.externalServiceOauth.getOauthToken(
 		editorId,
 		'critiquebrainz',
 		orm
 	);
+
 	let cbPermission = 'disable';
-	if (cbUser?.length) {
+	if (cbUser) {
 		cbPermission = 'review';
 	}
+
 	const props = generateProps(req, res, {
 		alertDetails,
 		alertType,
@@ -104,7 +107,7 @@ router.get('/critiquebrainz/callback', auth.isAuthenticated, async (req, res, ne
 });
 
 
-router.get('/critiquebrainz/refresh', auth.isAuthenticated, async (req, res, next) => {
+router.post('/critiquebrainz/refresh', auth.isAuthenticated, async (req, res, next) => {
 	const editorId = req.user.id;
 	const {orm} = req.app.locals;
 	let token = await orm.func.externalServiceOauth.getOauthToken(
@@ -112,10 +115,10 @@ router.get('/critiquebrainz/refresh', auth.isAuthenticated, async (req, res, nex
 		'critiquebrainz',
 		orm
 	);
-	if (!token?.length) {
+
+	if (!token) {
 		return next(new NotFoundError('User has not authenticated to CritiqueBrainz'));
 	}
-	token = token[0];
 	const tokenExpired = new Date(token.token_expires).getTime() <= new Date(new Date().getTime() + marginTime).getTime();
 	if (tokenExpired) {
 		try {
