@@ -19,7 +19,9 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
+import React, {useCallback} from 'react';
 import AuthorCreditDisplay from '../../author-credit-display';
+import CBReviewModal from './cbReviewModal';
 import EditionTable from './edition-table';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
@@ -30,7 +32,6 @@ import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import {Rating} from 'react-simple-star-rating';
-import React from 'react';
 
 
 const {deletedEntityMessage, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
@@ -86,6 +87,11 @@ EditionGroupAttributes.propTypes = {
 
 
 function EditionGroupDisplayPage({entity, identifierTypes, user}) {
+	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
+	const handleModalToggle = useCallback(() => {
+		setShowCBReviewModal(!showCBReviewModal);
+	}, [showCBReviewModal]);
+
 	const urlPrefix = getEntityUrl(entity);
 
 	let authorCreditSection;
@@ -108,6 +114,14 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 
 	return (
 		<div>
+			<CBReviewModal
+				entityBBID={entity.bbid}
+				entityName={entity.defaultAlias.name}
+				entityType={entity.type}
+				handleModalToggle={handleModalToggle}
+				showModal={showCBReviewModal}
+				userId={user.id}
+			/>
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" lg={2}>
 					<EntityImage
@@ -117,7 +131,10 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 				<Col lg={10}>
-					<EntityTitle entity={entity}/>
+					<EntityTitle
+						entity={entity}
+						handleModalToggle={handleModalToggle}
+					/>
 					{authorCreditSection}
 					<EditionGroupAttributes editionGroup={entity}/>
 				</Col>
@@ -137,7 +154,12 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 
 					</Col>
 					<Col lg={4}>
-						<EntityReviews entityBBID={entity.bbid} entityReviews={entity.reviews} entityType={entity.type}/>
+						<EntityReviews
+							entityBBID={entity.bbid}
+							entityReviews={entity.reviews}
+							entityType={entity.type}
+							handleModalToggle={handleModalToggle}
+						/>
 					</Col>
 				</Row>
 			</React.Fragment>}

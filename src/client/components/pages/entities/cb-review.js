@@ -78,6 +78,7 @@ class EntityReviews extends React.Component {
 		};
 		this.entityType = props.entityType;
 		this.entityBBID = props.entityBBID;
+		this.handleModalToggle = props.handleModalToggle;
 	}
 
 	async handleClick() {
@@ -118,8 +119,8 @@ class EntityReviews extends React.Component {
 					<h4>No reviews yet.</h4>
 					<Button
 						className="margin-top-d15"
-						href={entityLink}
 						variant="success"
+						onClick={this.handleModalToggle}
 					>
 						<FontAwesomeIcon icon={faPlus}/>
 						{'  Add a review'}
@@ -171,7 +172,8 @@ EntityReviews.displayName = 'EntityReviews';
 EntityReviews.propTypes = {
 	entityBBID: PropTypes.string.isRequired,
 	entityReviews: PropTypes.object.isRequired,
-	entityType: PropTypes.string.isRequired
+	entityType: PropTypes.string.isRequired,
+	handleModalToggle: PropTypes.func.isRequired
 };
 
 
