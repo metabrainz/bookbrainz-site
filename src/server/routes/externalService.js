@@ -20,7 +20,7 @@
 import * as auth from '../helpers/auth';
 import * as cbHelper from '../helpers/critiquebrainz';
 import * as propHelpers from '../../client/helpers/props';
-import {BadRequestError, NotFoundError} from '../../common/helpers/error';
+import {AuthenticationFailedError, BadRequestError} from '../../common/helpers/error';
 import {escapeProps, generateProps} from '../helpers/props';
 import ExternalServices from '../../client/components/pages/externalService';
 import Layout from '../../client/containers/layout';
@@ -117,7 +117,7 @@ router.post('/critiquebrainz/refresh', auth.isAuthenticated, async (req, res, ne
 	);
 
 	if (!token) {
-		return next(new NotFoundError('User has not authenticated to CritiqueBrainz'));
+		return next(new AuthenticationFailedError('User has not authenticated to CritiqueBrainz'));
 	}
 	const tokenExpired = new Date(token.token_expires).getTime() <= new Date(new Date().getTime() + marginTime).getTime();
 	if (tokenExpired) {
