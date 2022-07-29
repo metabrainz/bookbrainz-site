@@ -1,4 +1,4 @@
-import {ADD_WORK, REMOVE_WORK, TOGGLE_CHECK, UPDATE_WORK, UPDATE_WORKS} from './action';
+import {ADD_SERIES, ADD_WORK, REMOVE_WORK, TOGGLE_CHECK, UPDATE_WORK, UPDATE_WORKS} from './action';
 import {Action, State} from '../interface/type';
 import Immutable from 'immutable';
 
@@ -17,6 +17,16 @@ export default function reducer(state = Immutable.Map(initialState), {type, payl
 			return state.set(payload.id, Immutable.fromJS(payload.value));
 		case TOGGLE_CHECK:
 			return state.setIn([payload, 'checked'], !state.getIn([payload.id, 'checked']));
+		default:
+			return state;
+	}
+}
+
+const seriesInitialState = Immutable.Map({});
+export function seriesReducer(state = seriesInitialState, {type, payload}:Action):State {
+	switch (type) {
+		case ADD_SERIES:
+			return state.set(payload.id, Immutable.fromJS(payload.value));
 		default:
 			return state;
 	}

@@ -58,6 +58,7 @@ type DispatchProps = {
 
 type OwnProps = {
 	entity: Entity,
+	isUf: boolean,
 	entityType: EntityType,
 	seriesOrderingTypes: Array<SeriesOrderingType>,
 	relationshipTypes: Array<RelationshipType>,
@@ -109,6 +110,7 @@ function SeriesSection({
 	relationshipTypes,
 	seriesItems,
 	seriesOrderingTypes,
+	isUf,
 	seriesTypeValue
 }: Props) {
 	const baseEntity = {
@@ -165,11 +167,11 @@ function SeriesSection({
 		Entity Type of the Series
 		</Tooltip>
 	);
+	const heading = <h2>What else do you know about the Series?</h2>;
+
 	return (
 		<div>
-			<h2>
-				What else do you know about the Series?
-			</h2>
+			{!isUf && heading}
 			<p className="text-muted">
 				All fields are mandatory — select the option from dropdown
 			</p>
@@ -220,6 +222,7 @@ function SeriesSection({
 			</Row>
 			<SeriesEditor
 				baseEntity={baseEntity}
+				isUf={isUf}
 				orderType={orderTypeValue}
 				relationshipTypes={relationshipTypes}
 				seriesItemsArray={seriesItemsArray}

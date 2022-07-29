@@ -48,6 +48,7 @@ type SeriesItemsProps = {
     onRemove: (string) => unknown,
 	onSort: (_setPosition) => unknown,
 	orderType: number,
+	isUf?: boolean,
     relationshipTypes: Array<RelationshipType>,
     seriesItemsArray: RelationshipForDisplay[],
     seriesType: string
@@ -135,7 +136,8 @@ const SortableItem = SortableElement(({value, onRemove, baseEntity, handleNumber
 ));
 
 const SortableList = SortableContainer(({children}) => <div>{children}</div>);
-function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onRemove, onAdd, onEdit, onSort, seriesItemsArray}:SeriesItemsProps) {
+function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onRemove,
+	onAdd, onEdit, onSort, seriesItemsArray, isUf}:SeriesItemsProps) {
 	const [seriesItem, setSeriesItem] = useState(null);
 	const [targetEntity, setTargetEntity] = useState(null);
 
@@ -183,9 +185,10 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 		onEdit(attributeNumber, rowID);
 		onSort({newIndex: null, oldIndex: null});
 	};
+	const heading = <h2>What {seriesType}s are part of this Series?</h2>;
 	return (
 		<div>
-			<h2>What {seriesType}s are part of this Series?</h2>
+			{!isUf && heading}
 			{seriesItemsArray.length ?
 				<> {
 					orderType === 1 ?
@@ -242,5 +245,8 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 	);
 }
 SeriesEditor.displayName = 'SeriesEditor';
+SeriesEditor.defaultProps = {
+	isUf: false
+};
 
 export default SeriesEditor;

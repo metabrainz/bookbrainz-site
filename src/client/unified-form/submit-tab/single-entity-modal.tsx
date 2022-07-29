@@ -55,6 +55,11 @@ const ENTITY_FIELDS = {
 		'End-date': 'publisherSection.endDate'
 
 	},
+	series: {
+		...BASE_ENTITY,
+		orderType: 'seriesSection.orderType',
+		seriesType: 'seriesSection.seriesType'
+	},
 	work: {
 		...BASE_ENTITY,
 		type: 'workSection.type',

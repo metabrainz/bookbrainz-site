@@ -87,10 +87,12 @@ export type EntitySelect = {
 	id:string
 };
 export type ContentTabStateProps = {
-	value:any | any[]
+	value:any | any[],
+	series:any | any[]
 };
 export type ContentTabDispatchProps = {
 	onChange:(value:EntitySelect)=>unknown,
+	onSeriesChange:(value:EntitySelect)=>unknown,
 	onModalOpen:(arg)=>unknown,
 	onModalClose:()=>unknown,
 };
@@ -165,6 +167,7 @@ export type SummarySectionStateProps = {
 	EditionGroups: Array<any>;
 	Editions: Array<any>;
 	Publishers: Array<any>;
+	Series: Array<any>;
 	Works: Array<any>;
 };
 export type SummarySectionOwnProps = {

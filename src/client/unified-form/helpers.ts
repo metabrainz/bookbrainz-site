@@ -1,8 +1,9 @@
 import {ADD_AUTHOR, ADD_PUBLISHER} from './cover-tab/action';
-import {ADD_WORK, COPY_WORK} from './content-tab/action';
+import {ADD_SERIES, ADD_WORK, COPY_WORK} from './content-tab/action';
 import {Action, State} from './interface/type';
 import {CLOSE_ENTITY_MODAL, DUMP_EDITION, LOAD_EDITION, OPEN_ENTITY_MODAL} from './action';
 import {ISBNReducer, authorsReducer, publishersReducer} from './cover-tab/reducer';
+import worksReducer, {seriesReducer} from './content-tab/reducer';
 import {ADD_EDITION_GROUP} from './detail-tab/action';
 import Immutable from 'immutable';
 import aliasEditorReducer from '../entity-editor/alias-editor/reducer';
@@ -19,9 +20,9 @@ import identifierEditorReducer from '../entity-editor/identifier-editor/reducer'
 import nameSectionReducer from '../entity-editor/name-section/reducer';
 import publisherSectionReducer from '../entity-editor/publisher-section/reducer';
 import relationshipSectionReducer from '../entity-editor/relationship-editor/reducer';
+import seriesSectionReducer from '../entity-editor/series-section/reducer';
 import submissionSectionReducer from '../entity-editor/submission-section/reducer';
 import workSectionReducer from '../entity-editor/work-section/reducer';
-import worksReducer from './content-tab/reducer';
 
 
 type ReduxWindow = typeof window & {__REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any};
@@ -207,6 +208,16 @@ function crossSliceReducer(state:State, action:Action) {
 			);
 			break;
 		}
+		case ADD_SERIES:
+			action.payload.value = action.payload.value ?? {
+				...activeEntityState,
+				__isNew__: true,
+				id: action.payload.id,
+				seriesSection: intermediateState.get('seriesSection'),
+				text: activeEntityState.nameSection.get('name'),
+				type: 'Series'
+			};
+			break;
 		case COPY_WORK:
 		{
 			intermediateState = intermediateState.merge(intermediateState.getIn(['Works', action.payload]));
@@ -238,6 +249,7 @@ export function createRootReducer() {
 			Editions: newEditionReducer,
 			ISBN: ISBNReducer,
 			Publishers: publishersReducer,
+			Series: seriesReducer,
 			Works: worksReducer,
 			aliasEditor: aliasEditorReducer,
 			annotationSection: annotationSectionReducer,
@@ -251,6 +263,7 @@ export function createRootReducer() {
 			nameSection: nameSectionReducer,
 			publisherSection: publisherSectionReducer,
 			relationshipSection: relationshipSectionReducer,
+			seriesSection: seriesSectionReducer,
 			submissionSection: submissionSectionReducer,
 			workSection: workSectionReducer
 		})(intermediateState, action);

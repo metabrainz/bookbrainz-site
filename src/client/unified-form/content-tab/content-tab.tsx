@@ -1,6 +1,6 @@
 import * as Bootstrap from 'react-bootstrap/';
 import {ContentTabDispatchProps, ContentTabProps, ContentTabStateProps, State} from '../interface/type';
-import {addWork, copyWork} from './action';
+import {addSeries, addWork, copyWork} from './action';
 import {closeEntityModal, dumpEdition, loadEdition, openEntityModal} from '../action';
 import CreateEntityModal from '../common/create-entity-modal';
 import React from 'react';
@@ -12,7 +12,7 @@ import {map} from 'lodash';
 
 
 const {Row, Col, FormCheck} = Bootstrap;
-export function ContentTab({value, onChange, onModalClose, onModalOpen, ...rest}:ContentTabProps) {
+export function ContentTab({value, onChange, onModalClose, onModalOpen, onSeriesChange, series, ...rest}:ContentTabProps) {
 	const [isChecked, setIsChecked] = React.useState(false);
 	const toggleCheck = React.useCallback(() => setIsChecked(!isChecked), [isChecked]);
 	const [showModal, setShowModal] = React.useState(false);
@@ -37,35 +37,53 @@ export function ContentTab({value, onChange, onModalClose, onModalOpen, ...rest}
 	}, [isChecked, onChange]);
 	return (
 		<>
-			<h3>Works</h3>
-			{map(value, (work, rowId) => <WorkRow key={rowId} rowId={rowId} onCopyHandler={openModalHandler} {...rest}/>)}
-			<CreateEntityModal handleClose={closeModalHandler} handleSubmit={submitModalHandler} show={showModal} type="work" {...rest}/>
-			<Row>
-				<Col lg={{span: 6}}>
-					<SearchEntityCreate
-						isClearable={false}
-						type="work"
-						value={null}
-						onChange={onChangeHandler}
-						{...rest}
-					/>
-				</Col>
-			</Row>
-			<FormCheck
-				className="ml-1"
-				defaultChecked={isChecked}
-				id="works-check"
-				label="Copy authors from AC for this work"
-				type="checkbox"
-				onChange={toggleCheck}
-			/>
+			<div>
+				<h3>Works</h3>
+				{map(value, (work, rowId) => <WorkRow key={rowId} rowId={rowId} onCopyHandler={openModalHandler} {...rest}/>)}
+				<CreateEntityModal handleClose={closeModalHandler} handleSubmit={submitModalHandler} show={showModal} type="work" {...rest}/>
+				<Row>
+					<Col lg={{span: 6}}>
+						<SearchEntityCreate
+							isClearable={false}
+							type="work"
+							value={null}
+							onChange={onChangeHandler}
+							{...rest}
+						/>
+					</Col>
+				</Row>
+				<FormCheck
+					className="ml-1"
+					defaultChecked={isChecked}
+					id="works-check"
+					label="Copy authors from AC for this work"
+					type="checkbox"
+					onChange={toggleCheck}
+				/>
+			</div>
+			<div>
+				<h3>Series</h3>
+				<Row>
+					<Col lg={{span: 6}}>
+						<SearchEntityCreate
+							isClearable={false}
+							type="series"
+							value={series}
+							onChange={onSeriesChange}
+							{...rest}
+						/>
+					</Col>
+				</Row>
+			</div>
 		</>
 	);
 }
 
 function mapStateToProps(rootState:State) {
 	const worksObj = convertMapToObject(rootState.get('Works'));
+	const seriesObj = convertMapToObject(rootState.getIn(['Series', 's0'], null));
 	return {
+		series: seriesObj,
 		value: worksObj
 	};
 }
@@ -78,7 +96,8 @@ function mapDispatchToProps(dispatch) {
 			dispatch(dumpEdition(type));
 			dispatch(copyWork(id));
 			dispatch(openEntityModal());
-		}
+		},
+		onSeriesChange: (value:any) => dispatch(addSeries(value))
 	};
 }
 

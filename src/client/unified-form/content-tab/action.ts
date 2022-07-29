@@ -1,14 +1,17 @@
 import {Action} from '../interface/type';
 
-
+// Work Actions
 export const ADD_WORK = 'ADD_WORK';
 export const UPDATE_WORKS = 'UPDATE_WORKS';
 export const REMOVE_WORK = 'REMOVE_WORK';
 export const UPDATE_WORK = 'UPDATE_WORK';
 export const TOGGLE_CHECK = 'TOGGLE_CHECK';
 export const COPY_WORK = 'COPY_WORK';
+// Series Actions
+export const ADD_SERIES = 'ADD_SERIES';
 
 let nextWorkId = 0;
+const nextSeriesId = 0;
 
 /**
  * Produces an action indicating that new Work should be added in `Works`.
@@ -73,5 +76,18 @@ export function copyWork(id:string):Action {
 	return {
 		payload: id,
 		type: COPY_WORK
+	};
+}
+
+/**
+ * Produces an action indicating that new Series should be added in `Series`.
+ *
+ * @param {object} value - New series state.
+ * @returns {Action} The resulting ADD_SERIES action.
+ */
+export function addSeries(value = null):Action {
+	return {
+		payload: {id: `s${nextSeriesId}`, value},
+		type: ADD_SERIES
 	};
 }

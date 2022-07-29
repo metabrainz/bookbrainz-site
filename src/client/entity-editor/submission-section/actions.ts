@@ -128,6 +128,12 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 			newData[aid] = author;
 		}
 	});
+	// add new series
+	_.forEach(data.Series, (series, aid) => {
+		if (series.__isNew__) {
+			newData[aid] = series;
+		}
+	});
 	// add new works
 	const authorWorkRelationshipTypeId = 8;
 	_.forEach(data.Works, (work, wid) => {

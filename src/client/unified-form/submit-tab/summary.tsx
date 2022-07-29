@@ -12,6 +12,7 @@ function SummarySection({
 	Publishers,
 	Works,
 	Authors,
+	Series,
 	EditionGroups,
 	languageOptions,
 	Editions
@@ -21,6 +22,7 @@ function SummarySection({
 		EditionGroups,
 		Editions,
 		Publishers,
+		Series,
 		Works
 	};
 	function renderEntityGroup(entities: Array<any>, entityType: string) {
@@ -78,6 +80,7 @@ function mapStateToProps(state) {
 		EditionGroups,
 		Editions,
 		Publishers: getEntitiesArray(state.get('Publishers')),
+		Series: getEntitiesArray(state.get('Series')),
 		Works: getEntitiesArray(state.get('Works'))
 	};
 }
