@@ -129,9 +129,12 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 		}
 	});
 	// add new series
-	_.forEach(data.Series, (series, aid) => {
+	_.forEach(data.Series, (series, sid) => {
+		_.forEach(series.ser.seriesItems, (item) => {
+			_.set(item, 'targetEntity.bbid', sid);
+		});
 		if (series.__isNew__) {
-			newData[aid] = series;
+			newData[sid] = series;
 		}
 	});
 	// add new works
@@ -151,7 +154,7 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 					  bbid: authorCredit.author.id
 					},
 					targetEntity: {
-						bbid: work.id
+						bbid: wid
 				  }
 				};
 				_.set(work, ['relationshipSection', 'relationships', `a${relationshipCount}`], relationship);

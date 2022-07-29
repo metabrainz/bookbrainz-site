@@ -28,6 +28,7 @@ import * as unifiedRoutes from '../routes/entity/process-unified-form';
 import * as utils from './utils';
 
 import type {Request as $Request, Response as $Response} from 'express';
+import {filterIdentifierTypesByEntityType, isValidBBID} from '../../common/helpers/utils';
 import EntityEditor from '../../client/entity-editor/entity-editor';
 import EntityMerge from '../../client/entity-editor/entity-merge';
 import Layout from '../../client/containers/layout';
@@ -36,9 +37,7 @@ import ReactDOMServer from 'react-dom/server';
 import UnifiedForm from '../../client/unified-form/unified-form';
 import _ from 'lodash';
 import {createStore} from 'redux';
-import {filterIdentifierTypesByEntityType} from '../../common/helpers/utils';
 import {generateProps} from './props';
-import {isValidBBID} from '../../common/helpers/utils';
 
 
 const {createRootReducer: ufCreateRootReducer} = UnifiedFormHelpers;
@@ -362,8 +361,8 @@ export function generateUnifiedProps(
 ): any {
 	const submissionUrl = '/create/handler';
 	const props = Object.assign({
-		entityType: 'edition',
 		allIdentifierTypes: res.locals.identifierTypes,
+		entityType: 'edition',
 		initialState: initialStateCallback(),
 		isUf: true,
 		languageOptions: res.locals.languages,
