@@ -168,7 +168,10 @@ function SeriesSection({
 		</Tooltip>
 	);
 	const heading = <h2>What else do you know about the Series?</h2>;
-
+	const lgCol = {offset: 3, span: 6};
+	if (isUf) {
+		lgCol.offset = 0;
+	}
 	return (
 		<div>
 			{!isUf && heading}
@@ -176,7 +179,7 @@ function SeriesSection({
 				All fields are mandatory — select the option from dropdown
 			</p>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>
 							Ordering Type

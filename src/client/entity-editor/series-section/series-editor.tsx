@@ -75,13 +75,14 @@ type SeriesItemsProps = {
  * @param {Function} props.onAdd - A function to be called when the add button
  *        is clicked.
  * @param {Array} props.seriesItemsArray - The list of entities.
+ * @param {boolean} props.isUf - Whether the series section is render inside UF.
  *
  * @returns {ReactElement} React Component as a modular section within the entity editor.
  *
  */
 
-const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemove, dragHandler}) => (
-	<Row className="margin-top-d5" key={value.rowID}>
+const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemove, dragHandler, isUf}) => (
+	<Row className={`margin-top-d5 ${isUf ? 'w-100 align-items-center' : ''}`} key={value.rowID}>
 		<Col className="text-right form-control-static padding-left-0" lg={1}>
 			{dragHandler ? <><FontAwesomeIcon icon={faBars}/> &nbsp;&nbsp;</> : null}
 		</Col>
@@ -121,15 +122,17 @@ SeriesListItem.propTypes = {
 	baseEntity: PropTypes.object.isRequired,
 	dragHandler: PropTypes.bool.isRequired,
 	handleNumberAttributeChange: PropTypes.func.isRequired,
+	isUf: PropTypes.bool.isRequired,
 	onRemove: PropTypes.func.isRequired,
 	value: PropTypes.any.isRequired
 };
 
-const SortableItem = SortableElement(({value, onRemove, baseEntity, handleNumberAttributeChange}) => (
+const SortableItem = SortableElement(({value, onRemove, baseEntity, handleNumberAttributeChange, isUf}) => (
 	<SeriesListItem
 		dragHandler
 		baseEntity={baseEntity}
 		handleNumberAttributeChange={handleNumberAttributeChange}
+		isUf={isUf}
 		value={value}
 		onRemove={onRemove}
 	/>
@@ -186,6 +189,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 		onSort({newIndex: null, oldIndex: null});
 	};
 	const heading = <h2>What {seriesType}s are part of this Series?</h2>;
+	const alignText = isUf ? 'text-left' : 'text-right';
 	return (
 		<div>
 			{!isUf && heading}
@@ -198,6 +202,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 									baseEntity={baseEntity}
 									dragHandler={false}
 									handleNumberAttributeChange={handleNumberAttributeChange}
+									isUf={isUf}
 									key={value.rowID}
 									value={value}
 									onRemove={onRemove}
@@ -211,6 +216,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 									baseEntity={baseEntity}
 									handleNumberAttributeChange={handleNumberAttributeChange}
 									index={index}
+									isUf={isUf}
 									key={value.rowID}
 									value={value}
 									onRemove={onRemove}
@@ -221,10 +227,10 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 				</> : null
 			}
 			<Row className="margin-top-d8">
-				<Col className="text-right" lg={3}>
+				<Col className={alignText} lg={isUf ? 7 : 3}>
 					<p className="margin-top-d5">Add an entity to the series:</p>
 				</Col>
-				<Col lg={7} style={{marginTop: -22}}>
+				<Col lg={isUf ? 6 : 7} style={{marginTop: -22}}>
 					<EntitySearchFieldOption
 						className="series-editor-select"
 						instanceId="entitySearchField"
@@ -234,7 +240,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 						onChange={handleEntityChange}
 					/>
 				</Col>
-				<Col lg={2}>
+				<Col lg={isUf ? 7 : 2}>
 					<Button variant="success" onClick={handleAdd}>
 						<FontAwesomeIcon icon={faPlus}/>
 						<span>&nbsp;Add {seriesType}</span>
