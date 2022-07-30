@@ -29,6 +29,7 @@ import SeriesEditor from './series-editor';
 import _ from 'lodash';
 import {attachAttribToRelForDisplay} from '../helpers';
 import {connect} from 'react-redux';
+import {convertMapToObject} from '../../helpers/utils';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {sortRelationshipOrdinal} from '../../../common/helpers/utils';
 
@@ -39,6 +40,7 @@ type SeriesOrderingType = {
 };
 
 type StateProps = {
+	defaultOptions:Array<any>,
 	entityName: string
 	orderTypeValue: number,
 	seriesItems: Immutable.List<any>,
@@ -93,6 +95,7 @@ type Props = StateProps & DispatchProps & OwnProps;
  *        a different ordering type is selected.
  * @param {Function} props.onSeriesTypeChange - A function to be called when
  *        a different series type is selected.
+ * @param {Array} props.defaultOptions - A function to be
  * @returns {ReactElement} React element containing the rendered
  *        SeriesSection.
  */
@@ -110,6 +113,7 @@ function SeriesSection({
 	relationshipTypes,
 	seriesItems,
 	seriesOrderingTypes,
+	defaultOptions,
 	isUf,
 	seriesTypeValue
 }: Props) {
@@ -225,6 +229,7 @@ function SeriesSection({
 			</Row>
 			<SeriesEditor
 				baseEntity={baseEntity}
+				defaultOptions={defaultOptions}
 				isUf={isUf}
 				orderType={orderTypeValue}
 				relationshipTypes={relationshipTypes}
@@ -240,14 +245,28 @@ function SeriesSection({
 }
 SeriesSection.displayName = 'SeriesSection';
 
-function mapStateToProps(rootState): StateProps {
+function mapStateToProps(rootState, {isUf}): StateProps {
 	const state = rootState.get('seriesSection');
+	const seriesTypeValue = state.get('seriesType');
+	let defaultOptions = [];
+	if (isUf) {
+		const entities = convertMapToObject(seriesTypeValue === 'Series' ? rootState.get('Series', {}) : rootState.get(`${seriesTypeValue}s`, {}));
+		const neweEntities = _.filter(entities, (ent) => ent.__isNew__);
+		defaultOptions = _.map(neweEntities, (entity) => ({
+			disambiguation: _.get(entity, ['nameSection', 'disambiguation']),
+			id: _.get(entity, 'id'),
+			text: _.get(entity, ['nameSection', 'name']),
+			type: _.get(entity, 'type')
+		}));
+	}
+
 
 	return {
+		defaultOptions,
 		entityName: rootState.getIn(['nameSection', 'name']),
 		orderTypeValue: state.get('orderType'),
 		seriesItems: state.get('seriesItems'),
-		seriesTypeValue: state.get('seriesType')
+		seriesTypeValue
 	};
 }
 
