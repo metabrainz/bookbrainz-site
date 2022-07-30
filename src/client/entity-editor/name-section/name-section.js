@@ -17,6 +17,7 @@
  */
 
 import {Alert, Col, ListGroup, Row} from 'react-bootstrap';
+import {UPDATE_WARN_IF_EDITION_GROUP_EXISTS, addLanguage} from '../edition-section/actions';
 import {
 	checkIfNameExists,
 	debouncedUpdateDisambiguationField,
@@ -41,7 +42,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import SearchResults from '../../components/pages/parts/search-results';
 import SortNameField from '../common/sort-name-field';
-import {UPDATE_WARN_IF_EDITION_GROUP_EXISTS} from '../edition-section/actions';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
@@ -375,13 +375,13 @@ function mapStateToProps(rootState, {isUf, setDefault, entityType}) {
 	};
 }
 
-function mapDispatchToProps(dispatch, {entity, entityType}) {
+function mapDispatchToProps(dispatch, {entity, entityType, copyLanguages}) {
 	const entityBBID = entity && entity.bbid;
 	return {
 		onDisambiguationChange: (event) =>
 			dispatch(debouncedUpdateDisambiguationField(event.target.value)),
 		onLanguageChange: (value) =>
-			dispatch(updateLanguageField(value && value.value)),
+			dispatch(updateLanguageField(value && value.value)) && copyLanguages && dispatch(addLanguage(value)),
 		onNameChange: (value) =>
 			dispatch(debouncedUpdateNameField(value)),
 		onNameChangeCheckIfEditionGroupExists: _.debounce((value) => {

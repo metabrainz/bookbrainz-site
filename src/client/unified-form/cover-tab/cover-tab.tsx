@@ -29,7 +29,7 @@ export function CoverTab(props:CoverProps) {
 	}, []);
 	return (
 		<div>
-			<NameSection {...props} setDefault={modalIsOpen}/>
+			<NameSection {...props} copyLanguages setDefault={modalIsOpen}/>
 			<AuthorCreditSection {...props}/>
 			<Row>
 				<Col lg={{offset: 0, span: 6}}>
