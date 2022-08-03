@@ -27,7 +27,7 @@ export function addWork(value = null):Action {
 }
 
 /**
- * Produces an action indicating that a Work should be removed from `Works`.
+ * Produces an action indicating that a given Work should be removed from `Works`.
  *
  * @param {string} id - id of the work to be removed
  * @returns {Action} The resulting REMOVE_WORK action.
@@ -40,7 +40,7 @@ export function removeWork(id:string):Action {
 }
 
 /**
- * Produces an action indicating that a Work should be updated in `Works`.
+ * Produces an action indicating that `Works` State should be updated with the new `Works`.
  *
  * @param {string} id - id of work to be updated
  * @param {Object} value - updated work state.
@@ -82,7 +82,7 @@ export function copyWork(id:string):Action {
 /**
  * Produces an action indicating that new Series should be added in `Series`.
  *
- * @param {object} value - New series state.
+ * @param {object} value - New series entity state.
  * @returns {Action} The resulting ADD_SERIES action.
  */
 export function addSeries(value = null):Action {

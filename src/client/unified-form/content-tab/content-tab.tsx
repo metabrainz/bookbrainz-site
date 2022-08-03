@@ -12,7 +12,7 @@ import {map} from 'lodash';
 
 
 const {Row, Col, FormCheck} = Bootstrap;
-export function ContentTab({value, onChange, onModalClose, onModalOpen, onSeriesChange, series, ...rest}:ContentTabProps) {
+export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeriesChange, series, ...rest}:ContentTabProps) {
 	const [isChecked, setIsChecked] = React.useState(false);
 	const toggleCheck = React.useCallback(() => setIsChecked(!isChecked), [isChecked]);
 	const [showModal, setShowModal] = React.useState(false);
@@ -39,7 +39,7 @@ export function ContentTab({value, onChange, onModalClose, onModalOpen, onSeries
 		<>
 			<div>
 				<h3>Works</h3>
-				{map(value, (work, rowId) => <WorkRow key={rowId} rowId={rowId} onCopyHandler={openModalHandler} {...rest}/>)}
+				{map(works, (_, rowId) => <WorkRow key={rowId} rowId={rowId} onCopyHandler={openModalHandler} {...rest}/>)}
 				<CreateEntityModal handleClose={closeModalHandler} handleSubmit={submitModalHandler} show={showModal} type="work" {...rest}/>
 				<Row>
 					<Col lg={{span: 6}}>
@@ -79,15 +79,15 @@ export function ContentTab({value, onChange, onModalClose, onModalOpen, onSeries
 	);
 }
 
-function mapStateToProps(rootState:State) {
+function mapStateToProps(rootState:State):ContentTabStateProps {
 	const worksObj = convertMapToObject(rootState.get('Works'));
 	const seriesObj = convertMapToObject(rootState.getIn(['Series', 's0'], null));
 	return {
 		series: seriesObj,
-		value: worksObj
+		works: worksObj
 	};
 }
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch):ContentTabDispatchProps {
 	const type = 'Work';
 	return {
 		onChange: (value:any) => dispatch(addWork(value)),

@@ -37,6 +37,16 @@ type LanguageOption = {
 	name: string,
 	id: number
 };
+
+export type SingleAccordionProps = {
+	children: React.ReactNode,
+	defaultActive?: boolean,
+	onToggle?: () => void,
+	isEmpty?: boolean,
+	isValid?: boolean,
+	heading: string
+};
+
 export type UnifiedFormDispatchProps = {
 	onSubmit: (event:React.FormEvent) =>unknown
 };
@@ -87,7 +97,7 @@ export type EntitySelect = {
 	id:string
 };
 export type ContentTabStateProps = {
-	value:any | any[],
+	works:any | any[],
 	series:any | any[]
 };
 export type ContentTabDispatchProps = {
@@ -175,3 +185,31 @@ export type SummarySectionOwnProps = {
 };
 export type SummarySectionProps = SummarySectionOwnProps & SummarySectionStateProps;
 
+export type WorkRowStateProps = {
+    work: any;
+};
+export type WorkRowDispatchProps = {
+    onChange: (value:any) => void;
+    onRemove: () => void;
+	onToggle: () => void;
+};
+
+export type WorkRowOwnProps = {
+	onCopyHandler:(arg)=>unknown,
+    rowId: string;
+};
+
+export type WorkRowProps = WorkRowStateProps & WorkRowDispatchProps & WorkRowOwnProps;
+
+export type SingleEntityModalProps = {
+    entity:any,
+    show:boolean,
+    handleClose:()=>void,
+	languageOptions:any[]
+};
+
+export type SingleEntityProps = {
+    entity: any;
+    isLast: boolean;
+	languageOptions:any[]
+};

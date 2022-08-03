@@ -1,4 +1,5 @@
 import * as Bootstrap from 'react-bootstrap/';
+import {WorkRowDispatchProps, WorkRowProps, WorkRowStateProps} from '../interface/type';
 import {removeWork, toggleCheck, updateWork} from './action';
 import React from 'react';
 import SearchEntityCreate from '../common/search-entity-create-select';
@@ -7,21 +8,6 @@ import {convertMapToObject} from '../../helpers/utils';
 
 
 const {Row, Col, Button, FormCheck, ButtonGroup} = Bootstrap;
-type WorkRowStateProps = {
-    work: any;
-};
-type WorkRowDispatchProps = {
-    onChange: (value:any) => void;
-    onRemove: () => void;
-	onToggle: () => void;
-};
-
-type WorkRowOwnProps = {
-	onCopyHandler:(arg)=>unknown,
-    rowId: string;
-};
-
-type WorkRowProps = WorkRowStateProps & WorkRowDispatchProps & WorkRowOwnProps;
 
 function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, ...rest}:WorkRowProps) {
 	const isChecked = work?.checked;

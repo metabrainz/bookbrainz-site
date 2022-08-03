@@ -1,15 +1,10 @@
 import {Modal} from 'react-bootstrap';
 import React from 'react';
+import {SingleEntityModalProps} from '../interface/type';
 import _ from 'lodash';
 import {dateObjectToISOString} from '../../helpers/utils';
 
 
-type Props = {
-    entity:any,
-    show:boolean,
-    handleClose:()=>void,
-	languageOptions:any[]
-};
 /* eslint-disable sort-keys */
 const BASE_ENTITY = {
 	Name: 'nameSection.name',
@@ -66,7 +61,7 @@ const ENTITY_FIELDS = {
 		'Work-languages': 'workSection.languages'
 	}
 };
-export default function SingleEntityModal({entity, show, handleClose, languageOptions}:Props) {
+export default function SingleEntityModal({entity, show, handleClose, languageOptions}:SingleEntityModalProps) {
 	const id2LanguageMap = React.useMemo(() => Object.fromEntries(_.map(languageOptions, (option) => [option.id, option.name])), []);
 	function renderField(path, key) {
 		let fieldVal = _.get(entity, path, '');

@@ -1,5 +1,5 @@
 /* eslint-disable node/no-process-env */
-/* Blatantly copied from: ListenBrainz */
+/* Taken from: ListenBrainz */
 import * as Enzyme from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 

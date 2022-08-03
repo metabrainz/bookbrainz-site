@@ -3,9 +3,9 @@ import {Action, State} from '../interface/type';
 import Immutable from 'immutable';
 
 
-const initialState = {};
+const initialState = Immutable.Map({});
 
-export default function reducer(state = Immutable.Map(initialState), {type, payload}:Action):State {
+export function worksReducer(state = initialState, {type, payload}:Action):State {
 	switch (type) {
 		case ADD_WORK:
 			return state.set(payload.id, Immutable.fromJS(payload.value));
@@ -22,8 +22,7 @@ export default function reducer(state = Immutable.Map(initialState), {type, payl
 	}
 }
 
-const seriesInitialState = Immutable.Map({});
-export function seriesReducer(state = seriesInitialState, {type, payload}:Action):State {
+export function seriesReducer(state = initialState, {type, payload}:Action):State {
 	switch (type) {
 		case ADD_SERIES:
 			return state.set(payload.id, Immutable.fromJS(payload.value));

@@ -13,15 +13,6 @@ import makeImmutable from '../../entity-editor/common/make-immutable';
 
 
 const ImmutableCreatableAsync = makeImmutable(AsyncCreatable);
-const defaultProps = {
-	bbid: null,
-	empty: true,
-	error: false,
-	filters: [],
-	languageOptions: [],
-	rowId: null,
-	tooltipText: null
-};
 const addEntityAction = {
 	author: addAuthor,
 	editionGroup: addEditionGroup,
@@ -33,7 +24,7 @@ function SearchEntityCreate(props:SearchEntityCreateProps) {
 	const {type, nextId, onModalOpen, onModalClose, onSubmitEntity, rowId, ...rest} = props;
 	const createLabel = React.useCallback((input) => `Create ${type} "${input}"`, [type]);
 	const [showModal, setShowModal] = React.useState(false);
-	const getNewOptionData = React.useCallback((input, label) => ({
+	const getNewOptionData = React.useCallback((_, label) => ({
 		__isNew__: true,
 		id: nextId,
 		text: label,
@@ -54,6 +45,7 @@ function SearchEntityCreate(props:SearchEntityCreateProps) {
 		onSubmitEntity(rowId);
 		onModalClose();
 	}, []);
+	// always show `create new entity` Option when user types in the search field
 	const isValidNewOption = React.useCallback((input) => input.length > 0, []);
 	return (
 		<>
@@ -69,7 +61,15 @@ function SearchEntityCreate(props:SearchEntityCreateProps) {
 			<CreateEntityModal handleClose={closeModalHandler} handleSubmit={submitModalHandler} show={showModal} type={type} {...rest}/>
 		</>);
 }
-SearchEntityCreate.defaultProps = defaultProps;
+SearchEntityCreate.defaultProps = {
+	bbid: null,
+	empty: true,
+	error: false,
+	filters: [],
+	languageOptions: [],
+	rowId: null,
+	tooltipText: null
+};
 
 function mapDispatchToProps(dispatch, {type}):SearchEntityCreateDispatchProps {
 	return {

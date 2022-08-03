@@ -5,10 +5,10 @@ import React from 'react';
 
 export function DetailTab(props) {
 	return (
-		<div>
+		<>
 			<EditionSection {...props}/>
 			<AnnotationSection {...props}/>
-		</div>);
+		</>);
 }
 
 export default DetailTab;

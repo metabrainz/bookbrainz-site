@@ -3,7 +3,7 @@ import {ADD_SERIES, ADD_WORK, COPY_WORK} from './content-tab/action';
 import {Action, State} from './interface/type';
 import {CLOSE_ENTITY_MODAL, DUMP_EDITION, LOAD_EDITION, OPEN_ENTITY_MODAL} from './action';
 import {ISBNReducer, authorsReducer, publishersReducer} from './cover-tab/reducer';
-import worksReducer, {seriesReducer} from './content-tab/reducer';
+import {seriesReducer, worksReducer} from './content-tab/reducer';
 import {ADD_EDITION_GROUP} from './detail-tab/action';
 import Immutable from 'immutable';
 import aliasEditorReducer from '../entity-editor/alias-editor/reducer';
@@ -115,6 +115,7 @@ const initialState = Immutable.Map({
 	})
 });
 
+// this reducer act as a intermediary between the entity editor reducers and the UF state
 function crossSliceReducer(state:State, action:Action) {
 	const {type} = action;
 	let intermediateState = state;
@@ -214,6 +215,7 @@ function crossSliceReducer(state:State, action:Action) {
 			break;
 		}
 		case ADD_SERIES:
+			// add new series
 			action.payload.value = action.payload.value ?? {
 				...activeEntityState,
 				__isNew__: true,
@@ -224,8 +226,10 @@ function crossSliceReducer(state:State, action:Action) {
 			};
 			break;
 		case COPY_WORK:
+		// copy work state from `Works`
 		{
 			intermediateState = intermediateState.merge(intermediateState.getIn(['Works', action.payload]));
+			// get rid of properities that are not needed
 			intermediateState = ['text', '__isNew__', 'type', 'id'].reduce((istate, key) => istate.delete(key), intermediateState);
 			break;
 		}
@@ -233,6 +237,7 @@ function crossSliceReducer(state:State, action:Action) {
 		{
 			// load old edition state from `Editions`
 			intermediateState = intermediateState.merge(intermediateState.getIn(['Editions', action.payload.id]));
+			// check whether the new edition group has been added
 			const newEditionGroup = intermediateState.getIn(['EditionGroups', 'eg0'], null);
 			if (newEditionGroup) {
 				intermediateState = intermediateState.setIn(['editionSection', 'editionGroup'], newEditionGroup);
@@ -247,6 +252,7 @@ function crossSliceReducer(state:State, action:Action) {
 
 export function createRootReducer() {
 	return (state: Immutable.Map<string, any>, action) => {
+		// first pass the state to our cross slice reducer to handle UF specific actions.
 		const intermediateState = crossSliceReducer(state, action);
 		return combineReducers({
 			Authors: authorsReducer,

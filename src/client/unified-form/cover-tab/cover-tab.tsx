@@ -1,5 +1,5 @@
 import {Col, Row} from 'react-bootstrap';
-import {CoverDispatchProps, CoverProps, CoverStateProps, EntitySelect} from '../interface/type';
+import {CoverDispatchProps, CoverProps, CoverStateProps, EntitySelect, State} from '../interface/type';
 import {clearPublisher, clearPublishers} from './action';
 import AuthorCreditSection from '../../entity-editor/author-credit-editor/author-credit-section';
 import ButtonBar from '../../entity-editor/button-bar/button-bar';
@@ -57,7 +57,7 @@ export function CoverTab(props:CoverProps) {
 		 );
 }
 
-function mapStateToProps(rootState):CoverStateProps {
+function mapStateToProps(rootState:State):CoverStateProps {
 	return {
 		identifierEditorVisible: rootState.getIn(['buttonBar', 'identifierEditorVisible']),
 		modalIsOpen: rootState.get('entityModalIsOpen', false),

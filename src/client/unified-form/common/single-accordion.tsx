@@ -1,18 +1,11 @@
 import {Accordion, Card} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
+import {SingleAccordionProps} from '../interface/type';
 import ValidationLabel from '../../entity-editor/common/validation-label';
 import {faChevronRight} from '@fortawesome/free-solid-svg-icons';
 
 
-type SingleAccordionProps = {
-	children: React.ReactNode,
-	defaultActive?: boolean,
-	onToggle?: () => void,
-	isEmpty?: boolean,
-	isValid?: boolean,
-	heading: string
-};
 export default function SingleAccordion({children, defaultActive, heading, onToggle, isEmpty, isValid}:SingleAccordionProps) {
 	const inputLabel = (
 		<ValidationLabel empty={isEmpty} error={!isValid}>

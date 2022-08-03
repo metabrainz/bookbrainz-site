@@ -1,6 +1,5 @@
-import {ISBNDispatchProps, ISBNProps, ISBNStateProps, RInputEvent} from '../interface/type';
+import {ISBNDispatchProps, ISBNProps, ISBNStateProps, RInputEvent, State} from '../interface/type';
 import {debouncedUpdateISBNValue, updateISBNType} from './action';
-import Immutable from 'immutable';
 import NameField from '../../entity-editor/common/name-field';
 import React from 'react';
 import {connect} from 'react-redux';
@@ -21,7 +20,7 @@ export function ISBNField(props:ISBNProps) {
 		</div>);
 }
 
-function mapStateToProps(rootState:Immutable.Map<any, any>):ISBNStateProps {
+function mapStateToProps(rootState:State):ISBNStateProps {
 	return {
 		type: rootState.getIn(['ISBN', 'type']),
 		value: rootState.getIn(['ISBN', 'value'])
