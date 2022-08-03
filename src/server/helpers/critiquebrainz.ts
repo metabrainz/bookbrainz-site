@@ -138,6 +138,7 @@ export async function refreshAccessToken(
 export async function getReviewsFromCB(bbid: string,
 	entityType: string): Promise<any> {
 	const mapEntityType = {
+		Author: 'bb_author',
 		EditionGroup: 'bb_edition_group'
 	};
 	const cbEntityType = mapEntityType[entityType];
@@ -168,6 +169,7 @@ export async function submitReviewToCB(
 	review: Record<string, any>
 ): Promise<any> {
 	const mapEntityType = {
+		Author: 'bb_author',
 		EditionGroup: 'bb_edition_group'
 	};
 	const cbEntityType = mapEntityType[review.entityType];

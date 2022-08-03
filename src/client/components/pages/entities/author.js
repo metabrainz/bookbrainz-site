@@ -18,16 +18,19 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
+import React, {useCallback} from 'react';
 
+import CBReviewModal from './cbReviewModal';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
 import EntityRelatedCollections from './related-collections';
+import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import React from 'react';
+import {Rating} from 'react-simple-star-rating';
 import {kebabCase as _kebabCase} from 'lodash';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {labelsForAuthor} from '../../../helpers/utils';
@@ -37,7 +40,7 @@ const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
 	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias, transformISODateForDisplay} = entityHelper;
 const {Button, Col, Row} = bootstrap;
 
-function AuthorAttributes({author}) {
+function AuthorAttributes({author, averageRating}) {
 	if (author.deleted) {
 		return deletedEntityMessage;
 	}
@@ -64,6 +67,20 @@ function AuthorAttributes({author}) {
 					<dl>
 						<dt>Sort Name</dt>
 						<dd>{sortNameOfDefaultAlias}</dd>
+						<dt>Ratings</dt>
+						<dd>
+							<Rating
+								allowHalfIcon
+								readonly
+								allowHover={false}
+								className="rating-stars"
+								fillColor="#46433A"
+								initialValue={averageRating}
+								ratingValue={0}
+								size={20}
+								stars={5}
+							/>
+						</dd>
 					</dl>
 				</Col>
 				<Col lg={3}>
@@ -103,14 +120,28 @@ function AuthorAttributes({author}) {
 }
 AuthorAttributes.displayName = 'AuthorAttributes';
 AuthorAttributes.propTypes = {
-	author: PropTypes.object.isRequired
+	author: PropTypes.object.isRequired,
+	averageRating: PropTypes.number.isRequired
 };
 
 
 function AuthorDisplayPage({entity, identifierTypes, user}) {
+	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
+	const handleModalToggle = useCallback(() => {
+		setShowCBReviewModal(!showCBReviewModal);
+	}, [showCBReviewModal]);
+
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
+			<CBReviewModal
+				entityBBID={entity.bbid}
+				entityName={entity.defaultAlias.name}
+				entityType={entity.type}
+				handleModalToggle={handleModalToggle}
+				showModal={showCBReviewModal}
+				userId={user.id}
+			/>
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" lg={2}>
 					<EntityImage
@@ -120,27 +151,45 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 				<Col lg={10}>
-					<EntityTitle entity={entity}/>
-					<AuthorAttributes author={entity}/>
+					<EntityTitle
+						entity={entity}
+						handleModalToggle={handleModalToggle}
+					/>
+					<AuthorAttributes
+						author={entity}
+						averageRating={entity.reviews?.reviews?.average_rating || 0}
+					/>
 				</Col>
 			</Row>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
-			<React.Fragment>
-				<EntityLinks
-					entity={entity}
-					identifierTypes={identifierTypes}
-					urlPrefix={urlPrefix}
-				/>
-				<EntityRelatedCollections collections={entity.collections}/>
-				<Button
-					className="margin-top-d15"
-					href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
-					variant="success"
-				>
-					<FontAwesomeIcon className="margin-right-0-5" icon={faPlus}/>Add Work
-				</Button>
-			</React.Fragment>}
+				<React.Fragment>
+					<Row>
+						<Col lg={8}>
+							<EntityLinks
+								entity={entity}
+								identifierTypes={identifierTypes}
+								urlPrefix={urlPrefix}
+							/>
+							<EntityRelatedCollections collections={entity.collections}/>
+							<Button
+								className="margin-top-d15"
+								href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+								variant="success"
+							>
+								<FontAwesomeIcon className="margin-right-0-5" icon={faPlus}/>Add Work
+							</Button>
+						</Col>
+						<Col lg={4}>
+							<EntityReviews
+								entityBBID={entity.bbid}
+								entityReviews={entity.reviews}
+								entityType={entity.type}
+								handleModalToggle={handleModalToggle}
+							/>
+						</Col>
+					</Row>
+				</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter
 				bbid={entity.bbid}
