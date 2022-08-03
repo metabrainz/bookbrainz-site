@@ -139,7 +139,8 @@ export async function getReviewsFromCB(bbid: string,
 	entityType: string): Promise<any> {
 	const mapEntityType = {
 		Author: 'bb_author',
-		EditionGroup: 'bb_edition_group'
+		EditionGroup: 'bb_edition_group',
+		Work: 'bb_literary_work'
 	};
 	const cbEntityType = mapEntityType[entityType];
 	if (!entityType) {
@@ -170,7 +171,8 @@ export async function submitReviewToCB(
 ): Promise<any> {
 	const mapEntityType = {
 		Author: 'bb_author',
-		EditionGroup: 'bb_edition_group'
+		EditionGroup: 'bb_edition_group',
+		Work: 'bb_literary_work'
 	};
 	const cbEntityType = mapEntityType[review.entityType];
 
