@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "clean": "./scripts/clean.sh",
-    "prepublishOnly": "npm run clean",
-    "postinstall": "npm run prepublishOnly",
+    "prepare": "npm run clean",
     "build-server-js": "babel src --out-dir lib --source-maps --ignore src/api --extensions .js,.jsx,.ts,.tsx",
     "build-api-js": "babel src --out-dir lib --ignore 'src/server','src/client' --extensions .js,.jsx,.ts,.tsx",
     "build-scss": "./scripts/build-scss.sh",
@@ -25,7 +24,7 @@
     "dupreport": "npx jsinspect src/ || true"
   },
   "engines": {
-    "node": ">= 16.0.0"
+    "node": ">= 16.16.0"
   },
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
