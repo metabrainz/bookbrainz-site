@@ -113,7 +113,7 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 				entityType={entity.type}
 				handleModalToggle={handleModalToggle}
 				showModal={showCBReviewModal}
-				userId={user.id}
+				userId={user?.id}
 			/>
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" lg={2}>
