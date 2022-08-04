@@ -316,10 +316,10 @@ class CBReviewModal extends React.Component<
 		if (!hasPermissions) {
 			return (
 				<div>
-					Before you can submit reviews for your Listens to{' '}
+					Before you can submit reviews to{' '}
 					<a href={this.CBBaseUrl}>CritiqueBrainz</a>, you must{' '}
 					<b> connect to your CritiqueBrainz </b> account from
-					ListenBrainz.
+					BookBrainz.
 					{this.CBInfoButton}
 					<br/>
 					<br/>
