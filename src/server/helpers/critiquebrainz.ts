@@ -140,6 +140,7 @@ export async function getReviewsFromCB(bbid: string,
 	const mapEntityType = {
 		Author: 'bb_author',
 		EditionGroup: 'bb_edition_group',
+		Series: 'bb_series',
 		Work: 'bb_literary_work'
 	};
 	const cbEntityType = mapEntityType[entityType];
@@ -172,6 +173,7 @@ export async function submitReviewToCB(
 	const mapEntityType = {
 		Author: 'bb_author',
 		EditionGroup: 'bb_edition_group',
+		Series: 'bb_series',
 		Work: 'bb_literary_work'
 	};
 	const cbEntityType = mapEntityType[review.entityType];

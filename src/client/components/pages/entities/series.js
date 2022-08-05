@@ -18,21 +18,24 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
+import React, {useCallback} from 'react';
 import {getEntityKey, getEntityTable} from '../../../helpers/utils';
+import CBReviewModal from './cbReviewModal';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
 import EntityRelatedCollections from './related-collections';
+import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
-import React from 'react';
+import {Rating} from 'react-simple-star-rating';
 
 
 const {deletedEntityMessage, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
 
-function SeriesAttributes({series}) {
+function SeriesAttributes({averageRating, series}) {
 	if (series.deleted) {
 		return deletedEntityMessage;
 	}
@@ -46,22 +49,40 @@ function SeriesAttributes({series}) {
 						<dd>{sortNameOfDefaultAlias}</dd>
 					</dl>
 				</Col>
-				<Col lg={3}>
+				<Col lg={2}>
 					<dl>
 						<dt>Series Type</dt>
 						<dd>{series.entityType}</dd>
 					</dl>
 				</Col>
-				<Col lg={3}>
+				<Col lg={2}>
 					<dl>
 						<dt>Ordering Type</dt>
 						<dd>{series.seriesOrderingType.label}</dd>
 					</dl>
 				</Col>
-				<Col lg={3}>
+				<Col lg={2}>
 					<dl>
 						<dt>Total Items</dt>
 						<dd>{series.seriesItems.length}</dd>
+					</dl>
+				</Col>
+				<Col lg={3}>
+					<dl>
+						<dt>Ratings</dt>
+						<dd>
+							<Rating
+								allowHalfIcon
+								readonly
+								allowHover={false}
+								className="rating-stars"
+								fillColor="#46433A"
+								initialValue={averageRating}
+								ratingValue={0}
+								size={20}
+								stars={5}
+							/>
+						</dd>
 					</dl>
 				</Col>
 			</Row>
@@ -70,11 +91,17 @@ function SeriesAttributes({series}) {
 }
 SeriesAttributes.displayName = 'SeriesAttributes';
 SeriesAttributes.propTypes = {
+	averageRating: PropTypes.number.isRequired,
 	series: PropTypes.object.isRequired
 };
 
 
 function SeriesDisplayPage({entity, identifierTypes, user}) {
+	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
+	const handleModalToggle = useCallback(() => {
+		setShowCBReviewModal(!showCBReviewModal);
+	}, [showCBReviewModal]);
+
 	const urlPrefix = getEntityUrl(entity);
 	const EntityTable = getEntityTable(entity.entityType);
 	const entityKey = getEntityKey(entity.entityType);
@@ -86,6 +113,14 @@ function SeriesDisplayPage({entity, identifierTypes, user}) {
 	};
 	return (
 		<div>
+			<CBReviewModal
+				entityBBID={entity.bbid}
+				entityName={entity.defaultAlias.name}
+				entityType={entity.type}
+				handleModalToggle={handleModalToggle}
+				showModal={showCBReviewModal}
+				userId={user?.id}
+			/>
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" lg={2}>
 					<EntityImage
@@ -95,21 +130,39 @@ function SeriesDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 				<Col lg={10}>
-					<EntityTitle entity={entity}/>
-					<SeriesAttributes series={entity}/>
+					<EntityTitle
+						entity={entity}
+						handleModalToggle={handleModalToggle}
+					/>
+					<SeriesAttributes
+						averageRating={entity.reviews?.reviews?.average_rating || 0}
+						series={entity}
+					/>
 				</Col>
 			</Row>
 			<EntityAnnotation entity={entity}/>
 
 			{!entity.deleted &&
 			<React.Fragment>
-				<EntityTable {...propsForTable}/>
-				<EntityLinks
-					entity={entity}
-					identifierTypes={identifierTypes}
-					urlPrefix={urlPrefix}
-				/>
-				<EntityRelatedCollections collections={entity.collections}/>
+				<Row>
+					<Col lg={8}>
+						<EntityTable {...propsForTable}/>
+						<EntityLinks
+							entity={entity}
+							identifierTypes={identifierTypes}
+							urlPrefix={urlPrefix}
+						/>
+						<EntityRelatedCollections collections={entity.collections}/>
+					</Col>
+					<Col lg={4}>
+						<EntityReviews
+							entityBBID={entity.bbid}
+							entityReviews={entity.reviews}
+							entityType={entity.type}
+							handleModalToggle={handleModalToggle}
+						/>
+					</Col>
+				</Row>
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter
