@@ -5,15 +5,19 @@ import {closeEntityModal, dumpEdition, loadEdition, openEntityModal} from '../ac
 import CreateEntityModal from '../common/create-entity-modal';
 import React from 'react';
 import SearchEntityCreate from '../common/search-entity-create-select';
+import SeriesItemModal from './series-item-modal';
 import WorkRow from './work-row';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {map} from 'lodash';
 
 
-const {Row, Col, FormCheck} = Bootstrap;
+const {Row, Col, FormCheck, Button} = Bootstrap;
 export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeriesChange, series, ...rest}:ContentTabProps) {
 	const [isChecked, setIsChecked] = React.useState(false);
+	const [isSeriesModalOpen, setIsSeriesModalOpen] = React.useState(false);
+	const onHideHandler = React.useCallback(() => setIsSeriesModalOpen(false), [setIsSeriesModalOpen]);
+	const onShowHandler = React.useCallback(() => setIsSeriesModalOpen(true), [setIsSeriesModalOpen]);
 	const toggleCheck = React.useCallback(() => setIsChecked(!isChecked), [isChecked]);
 	const [showModal, setShowModal] = React.useState(false);
 	const openModalHandler = React.useCallback((id) => {
@@ -41,6 +45,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 				<h3>Works</h3>
 				{map(works, (_, rowId) => <WorkRow key={rowId} rowId={rowId} onCopyHandler={openModalHandler} {...rest}/>)}
 				<CreateEntityModal handleClose={closeModalHandler} handleSubmit={submitModalHandler} show={showModal} type="work" {...rest}/>
+				<SeriesItemModal show={isSeriesModalOpen} onHideHandler={onHideHandler} {...rest}/>
 				<Row>
 					<Col lg={{span: 6}}>
 						<SearchEntityCreate
@@ -72,6 +77,9 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							onChange={onSeriesChange}
 							{...rest}
 						/>
+					</Col>
+					<Col lg={{span: 2}}>
+						{series && <Button variant="primary" onClick={onShowHandler}>Add Items</Button>}
 					</Col>
 				</Row>
 			</div>

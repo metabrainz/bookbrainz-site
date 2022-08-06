@@ -130,10 +130,18 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 	});
 	// add new series
 	_.forEach(data.Series, (series, sid) => {
+		// sync local series section with global series section
+		series.seriesSection = data.seriesSection;
 		_.forEach(series.seriesSection.seriesItems, (item) => {
-			_.set(item, 'targetEntity.bbid', sid);
+			_.set(item, 'targetEntity.bbid', series.id);
 		});
-		if (series.__isNew__) {
+		if (series.__isNew__ || _.size(series.seriesSection.seriesItems) > 0) {
+			if (!series.__isNew__) {
+				series.__isNew__ = false;
+				series.submissionSection = {
+					note: _.get(data, ['submissionSection', 'note'])
+				};
+			}
 			newData[sid] = series;
 		}
 	});

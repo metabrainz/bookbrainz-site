@@ -59,8 +59,9 @@ type DispatchProps = {
 };
 
 type OwnProps = {
+	hideTypeOption?:boolean,
 	entity: Entity,
-	isUf: boolean,
+	isUf?: boolean,
 	entityType: EntityType,
 	seriesOrderingTypes: Array<SeriesOrderingType>,
 	relationshipTypes: Array<RelationshipType>,
@@ -103,6 +104,7 @@ function SeriesSection({
 	entity,
 	entityName,
 	entityType,
+	hideTypeOption,
 	onEdit,
 	onOrderTypeChange,
 	onRemove,
@@ -179,9 +181,11 @@ function SeriesSection({
 	return (
 		<div>
 			{!isUf && heading}
+			{!hideTypeOption &&
 			<p className="text-muted">
 				All fields are mandatory — select the option from dropdown
-			</p>
+			</p>}
+			{!hideTypeOption &&
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group>
@@ -227,6 +231,7 @@ function SeriesSection({
 					</Form.Group>
 				</Col>
 			</Row>
+			}
 			<SeriesEditor
 				baseEntity={baseEntity}
 				defaultOptions={defaultOptions}
@@ -244,6 +249,10 @@ function SeriesSection({
 	);
 }
 SeriesSection.displayName = 'SeriesSection';
+SeriesSection.defaultProps = {
+	hideTypeOption: false,
+	isUf: false
+};
 
 function mapStateToProps(rootState, {isUf}): StateProps {
 	const state = rootState.get('seriesSection');
