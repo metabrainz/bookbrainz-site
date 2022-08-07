@@ -2,6 +2,7 @@ import * as Bootstrap from 'react-bootstrap/';
 import {ContentTabDispatchProps, ContentTabProps, ContentTabStateProps, State} from '../interface/type';
 import {addSeries, addWork, copyWork} from './action';
 import {closeEntityModal, dumpEdition, loadEdition, openEntityModal} from '../action';
+import {updateOrderType, updateSeriesType} from '../../entity-editor/series-section/actions';
 import CreateEntityModal from '../common/create-entity-modal';
 import React from 'react';
 import SearchEntityCreate from '../common/search-entity-create-select';
@@ -105,7 +106,8 @@ function mapDispatchToProps(dispatch):ContentTabDispatchProps {
 			dispatch(copyWork(id));
 			dispatch(openEntityModal());
 		},
-		onSeriesChange: (value:any) => dispatch(addSeries(value))
+		onSeriesChange: (value:any) => dispatch(addSeries(value)) &&
+		value?.orderingTypeId && dispatch(updateOrderType(value.orderingTypeId)) && dispatch(updateSeriesType(value.seriesEntityType))
 	};
 }
 
