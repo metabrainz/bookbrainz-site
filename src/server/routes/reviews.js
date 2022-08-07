@@ -43,7 +43,7 @@ router.post('/:entityType/:bbid/reviews', auth.isAuthenticated, async (req, res)
 	);
 
 	// If the token has expired, we try to refresh it and then submit the review again.
-	if (response.message === 'The provided authorization token is invalid, expired, revoked, or was issued to another client.') {
+	if (response?.error === 'invalid_token') {
 		try {
 			const token = await orm.func.externalServiceOauth.getOauthToken(
 				editorId,

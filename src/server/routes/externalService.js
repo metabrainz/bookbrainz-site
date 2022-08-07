@@ -128,7 +128,7 @@ router.post('/critiquebrainz/refresh', auth.isAuthenticated, async (req, res, ne
 			return res.json({error: error.message});
 		}
 	}
-	return res.json({accessToken: token.access_token});
+	return res.json({accessToken: token?.access_token});
 });
 
 

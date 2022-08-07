@@ -194,12 +194,13 @@ export async function submitReviewToCB(
 			.send({
 				entity_id: review.entityBBID,
 				entity_type: cbEntityType,
-				lang: review.language,
+				language: review.language,
 				license_choice: 'CC BY-SA 3.0',
 				rating: review.rating,
 				text: review.textContent
 			});
 		return {
+			error: null,
 			message: res.body.message,
 			reviewID: res.body.id,
 			successfullySubmitted: true
@@ -208,6 +209,7 @@ export async function submitReviewToCB(
 
 	catch (error) {
 		return {
+			error: error.response?.body?.error,
 			message: error.response?.body?.description,
 			reviewID: null,
 			successfullySubmitted: false
