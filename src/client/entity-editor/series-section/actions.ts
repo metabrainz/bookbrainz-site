@@ -29,6 +29,7 @@ export const ADD_SERIES_ITEM = 'ADD_SERIES_ITEM';
 export const EDIT_SERIES_ITEM = 'EDIT_SERIES_ITEM';
 export const REMOVE_SERIES_ITEM = 'REMOVE_SERIES_ITEM';
 export const SORT_SERIES_ITEM = 'SORT_SERIES_ITEM';
+export const REMOVE_ALL_SERIES_ITEMS = 'REMOVE_ALL_SERIES_ITEMS';
 
 export type Action = {
 	type: string,
@@ -156,5 +157,17 @@ export function removeSeriesItem(rowID: string): Action {
 	return {
 		payload: {rowID},
 		type: REMOVE_SERIES_ITEM
+	};
+}
+
+/**
+ * Produces an action indicating that all series items should be removed.
+ *
+ * @returns {Action} The resulting REMOVE_ALL_SERIES_ITEMS action.
+ */
+export function removeAllSeriesItems(): Action {
+	return {
+		payload: {},
+		type: REMOVE_ALL_SERIES_ITEMS
 	};
 }
