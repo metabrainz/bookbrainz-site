@@ -18,7 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
-import React, {useCallback} from 'react';
+import React, {createRef, useCallback} from 'react';
 
 import CBReviewModal from './cbReviewModal';
 import EditionTable from './edition-table';
@@ -101,6 +101,13 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 		setShowCBReviewModal(!showCBReviewModal);
 	}, [showCBReviewModal]);
 
+	const reviewsRef = createRef();
+
+	const handleUpdateReviews = useCallback(() => {
+		reviewsRef.current.handleClick();
+	}, [reviewsRef]);
+
+
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const editionsContainWork = getRelationshipSourceByTypeId(entity, relationshipTypeId);
@@ -112,6 +119,7 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 				entityName={entity.defaultAlias.name}
 				entityType={entity.type}
 				handleModalToggle={handleModalToggle}
+				handleUpdateReviews={handleUpdateReviews}
 				showModal={showCBReviewModal}
 				userId={user?.id}
 			/>
@@ -153,6 +161,7 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 							entityReviews={entity.reviews}
 							entityType={entity.type}
 							handleModalToggle={handleModalToggle}
+							ref={reviewsRef}
 						/>
 					</Col>
 				</Row>

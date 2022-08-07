@@ -19,7 +19,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
-import React, {useCallback} from 'react';
+import React, {createRef, useCallback} from 'react';
 import AuthorCreditDisplay from '../../author-credit-display';
 import CBReviewModal from './cbReviewModal';
 import EditionTable from './edition-table';
@@ -93,6 +93,12 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 		setShowCBReviewModal(!showCBReviewModal);
 	}, [showCBReviewModal]);
 
+	const reviewsRef = createRef();
+
+	const handleUpdateReviews = useCallback(() => {
+		reviewsRef.current.handleClick();
+	}, [reviewsRef]);
+
 	const urlPrefix = getEntityUrl(entity);
 
 	let authorCreditSection;
@@ -120,6 +126,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 				entityName={entity.defaultAlias.name}
 				entityType={entity.type}
 				handleModalToggle={handleModalToggle}
+				handleUpdateReviews={handleUpdateReviews}
 				showModal={showCBReviewModal}
 				userId={user?.id}
 			/>
@@ -163,6 +170,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 							entityReviews={entity.reviews}
 							entityType={entity.type}
 							handleModalToggle={handleModalToggle}
+							ref={reviewsRef}
 						/>
 					</Col>
 				</Row>

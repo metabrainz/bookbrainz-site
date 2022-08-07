@@ -42,6 +42,7 @@ export interface CBReviewModalProps {
 	userId: number;
 	showModal: boolean;
 	handleModalToggle: () => void;
+    handleUpdateReviews: () => void;
 }
 
 export interface CBReviewModalState {
@@ -109,6 +110,7 @@ class CBReviewModal extends React.Component<
 			<ReactTooltip
 				clickable
 				html
+				className="cb-data-tip"
 				globalEventOff="click"
 				place="bottom"
 			/>
@@ -279,6 +281,7 @@ class CBReviewModal extends React.Component<
 						reviewID: result?.reviewID
 					});
 					this.resetCBReviewForm();
+					this.props.handleUpdateReviews();
 				}
 				else {
 					this.setState({
