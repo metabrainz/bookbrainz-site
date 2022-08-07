@@ -140,7 +140,7 @@ class CBReviewModal extends React.Component<
 			return null;
 		}
 		catch (error) {
-			this.handleError(error, 'Error');
+			this.handleError(error, 'We could not submit your review');
 		}
 		return null;
 	};
@@ -263,7 +263,7 @@ class CBReviewModal extends React.Component<
 						review
 					});
 
-				if (response.status >= 200 && response.status < 300) {
+				if (response.ok) {
 					result = response.body;
 				}
 
@@ -284,7 +284,7 @@ class CBReviewModal extends React.Component<
 					this.setState({
 						alert: {
 							message: result?.message,
-							title: 'Error',
+							title: 'Error submitting your review',
 							type: 'danger'
 						}
 					});

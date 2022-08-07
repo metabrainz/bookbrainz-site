@@ -26,7 +26,7 @@ import _ from 'lodash';
 import request from 'superagent';
 
 
-const {Button} = bootstrap;
+const {Button, Row} = bootstrap;
 
 
 const REVIEW_CONTENT_PREVIEW_LENGTH = 75;
@@ -60,10 +60,8 @@ function ReviewCard(props) {
 					Review by: <b>{reviewData.user.display_name}</b> {publishedDate}
 				</small>
 			</div>
-			<div className="pb-3">
-				{reviewText}
-				<a className="float-right" href={reviewLink}>View &gt;</a>
-			</div>
+			{reviewText}
+			<a className="float-right" href={reviewLink}>View &gt;</a>
 		</div>
 	);
 }
@@ -143,10 +141,10 @@ class EntityReviews extends React.Component {
 			);
 		}
 		return (
-			<div>
+			<Row className="flex-column">
 				<h2>Reviews</h2>
 				{reviewContent}
-			</div>
+			</Row>
 		);
 	}
 }
