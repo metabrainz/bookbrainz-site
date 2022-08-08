@@ -1,12 +1,13 @@
 import {ISBNDispatchProps, ISBNProps, ISBNStateProps, RInputEvent, State} from '../interface/type';
-import {debouncedUpdateISBNValue, updateISBNType} from './action';
+import {debouncedUpdateISBNValue, updateAutoISBN, updateISBNType} from './action';
+import {FormCheck} from 'react-bootstrap';
 import NameField from '../../entity-editor/common/name-field';
 import React from 'react';
 import {connect} from 'react-redux';
 
 
 export function ISBNField(props:ISBNProps) {
-	const {value, type, onChange} = props;
+	const {value, type, onChange, autoISBN, onAutoISBNChange} = props;
 	return (
 		<div>
 			<NameField
@@ -17,11 +18,20 @@ export function ISBNField(props:ISBNProps) {
 				tooltipText="ISBN of this book"
 				onChange={onChange}
 			/>
+			<FormCheck
+				defaultChecked={autoISBN}
+				disabled={!type}
+				id="autoisbn-check"
+				label="Automatically add other ISBN"
+				type="checkbox"
+				onChange={onAutoISBNChange}
+			/>
 		</div>);
 }
 
 function mapStateToProps(rootState:State):ISBNStateProps {
 	return {
+		autoISBN: rootState.get('autoISBN'),
 		type: rootState.getIn(['ISBN', 'type']),
 		value: rootState.getIn(['ISBN', 'value'])
 	};
@@ -46,6 +56,7 @@ function mapDispatchToProps(dispatch):ISBNDispatchProps {
 		dispatch(debouncedUpdateISBNValue(value));
 	}
 	return {
+		onAutoISBNChange: (event:RInputEvent) => dispatch(updateAutoISBN(event.target.checked)),
 		onChange
 	};
 }

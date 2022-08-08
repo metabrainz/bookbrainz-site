@@ -17,6 +17,7 @@
  */
 
 
+import {isbn10To13, isbn13To10} from '../../../common/helpers/utils';
 import type {Map} from 'immutable';
 import _ from 'lodash';
 import request from 'superagent';
@@ -189,6 +190,18 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 	// add edition at last
 	if (data.ISBN.type) {
 		data.identifierEditor.m0 = data.ISBN;
+		if (data.autoISBN) {
+			const otherISBN = {type: null, value: ''};
+			if (data.ISBN.type === 9) {
+				otherISBN.type = 10;
+				otherISBN.value = isbn13To10(data.ISBN.value);
+			}
+			else {
+				otherISBN.type = 9;
+				otherISBN.value = isbn10To13(data.ISBN.value);
+			}
+			data.identifierEditor.m1 = otherISBN;
+		}
 	}
 	data.editionSection.publisher = _.get(data.editionSection, ['publisher'], {});
 	data.relationshipSection.relationships = _.mapValues(data.Works, (work, key) => {

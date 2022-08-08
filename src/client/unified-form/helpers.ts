@@ -2,7 +2,7 @@ import {ADD_AUTHOR, ADD_PUBLISHER} from './cover-tab/action';
 import {ADD_SERIES, ADD_WORK, COPY_WORK} from './content-tab/action';
 import {Action, State} from './interface/type';
 import {CLOSE_ENTITY_MODAL, DUMP_EDITION, LOAD_EDITION, OPEN_ENTITY_MODAL} from './action';
-import {ISBNReducer, authorsReducer, publishersReducer} from './cover-tab/reducer';
+import {ISBNReducer, authorsReducer, autoISBNReducer, publishersReducer} from './cover-tab/reducer';
 import {seriesReducer, worksReducer} from './content-tab/reducer';
 import {ADD_EDITION_GROUP} from './detail-tab/action';
 import Immutable from 'immutable';
@@ -261,6 +261,7 @@ export function createRootReducer() {
 			annotationSection: annotationSectionReducer,
 			authorCreditEditor: authorCreditEditorReducer,
 			authorSection: authorSectionReducer,
+			autoISBN: autoISBNReducer,
 			buttonBar: buttonBarReducer,
 			editionGroupSection: editionGroupSectionReducer,
 			editionSection: editionSectionReducer,

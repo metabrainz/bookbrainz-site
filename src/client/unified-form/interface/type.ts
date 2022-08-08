@@ -84,11 +84,13 @@ export type CoverDispatchProps = {
 export type CoverProps = CoverOwnProps & CoverStateProps & CoverDispatchProps;
 
 export type ISBNStateProps = {
+	autoISBN: boolean,
 	type:number,
 	value:string
 };
 export type ISBNDispatchProps = {
-    onChange: (arg:RInputEvent)=>unknown
+    onChange: (arg:RInputEvent)=>unknown,
+	onAutoISBNChange: (arg:RInputEvent)=>unknown,
 };
 export type ISBNProps = ISBNStateProps & ISBNDispatchProps;
 

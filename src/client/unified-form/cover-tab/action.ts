@@ -8,6 +8,7 @@ export const ADD_PUBLISHER = 'ADD_PUBLISHER';
 export const CLEAR_PUBLISHER = 'CLEAR_PUBLISHER';
 export const CLEAR_PUBLISHERS = 'CLEAR_PUBLISHERS';
 export const CLEAR_AUTHOR = 'CLEAR_AUTHOR';
+export const AUTO_ISBN = 'AUTO_ISBN';
 
 let nextPublisherId = 0;
 let nextAuthorId = 0;
@@ -103,5 +104,18 @@ export function updateISBNType(typeId:number) {
 	return {
 		payload: typeId,
 		type: UPDATE_ISBN_TYPE
+	};
+}
+
+/**
+ * Produces an action indicating that `autoISBN` value should be updated.
+ *
+ * @param {boolean} value - New value for autoISBN.
+ * @returns {Action} The resulting AUTO_ISBN action.
+ */
+export function updateAutoISBN(value:boolean):Action {
+	return {
+		payload: value,
+		type: AUTO_ISBN
 	};
 }
