@@ -26,9 +26,9 @@ const {Alert} = bootstrap;
 class ExternalServices extends React.Component {
 	constructor(props) {
 		super(props);
-		this.alertDetails = props.alertDetails;
-		this.alertType = props.alertType;
 		this.state = {
+			alertDetails: props.alertDetails,
+			alertType: props.alertType,
 			cbPermission: props.cbPermission
 		};
 		this.handleClick = this.handleClick.bind(this);
@@ -42,14 +42,18 @@ class ExternalServices extends React.Component {
 				window.location.href = data.text;
 			}
 			else {
-				this.alertType = 'danger';
-				this.alertDetails = 'Something went wrong. Please try again.';
+				this.setState({
+					alertDetails: 'Something went wrong. Please try again.',
+					alertType: 'danger'
+				});
 			}
 		}
 		else {
 			const data = await request.post('/external-service/critiquebrainz/disconnect');
-			this.alertDetails = data.body.alertDetails;
-			this.alertType = data.body.alertType;
+			this.setState({
+				alertDetails: data.body.alertDetails,
+				alertType: data.body.alertType
+			});
 			if (data.statusCode === 200) {
 				this.setState({
 					cbPermission: 'disable'
@@ -91,14 +95,14 @@ class ExternalServices extends React.Component {
 			if (alertType === 'success') {
 				return (
 					<Alert variant="success">
-						<strong>Success! {this.alertDetails}</strong>
+						<strong>Success! {this.state.alertDetails}</strong>
 					</Alert>
 				);
 			}
 			else if (alertType === 'danger') {
 				return (
 					<Alert variant="danger">
-						<strong>Error! {this.alertDetails}</strong>
+						<strong>Error! {this.state.alertDetails}</strong>
 					</Alert>
 				);
 			}
@@ -107,7 +111,7 @@ class ExternalServices extends React.Component {
 
 		return (
 			<div>
-				{showAlert(this.alertType)}
+				{showAlert(this.state.alertType)}
 				<div className="page-header"><h1>Connect with third-party services</h1></div>
 				<div className="card">
 					<div className="card-header">
