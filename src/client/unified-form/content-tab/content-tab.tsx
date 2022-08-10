@@ -4,18 +4,20 @@ import {addSeries, addWork, copyWork} from './action';
 import {closeEntityModal, dumpEdition, loadEdition, openEntityModal} from '../action';
 import {removeAllSeriesItems, updateOrderType, updateSeriesType} from '../../entity-editor/series-section/actions';
 import CreateEntityModal from '../common/create-entity-modal';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
 import SearchEntityCreate from '../common/search-entity-create-select';
 import SeriesItemModal from './series-item-modal';
 import WorkRow from './work-row';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
+import {faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 import {map} from 'lodash';
 
 
-const {Row, Col, FormCheck, Button} = Bootstrap;
+const {Row, Col, FormCheck, Button, OverlayTrigger, FormLabel, Tooltip} = Bootstrap;
 export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeriesChange, series, ...rest}:ContentTabProps) {
-	const [isChecked, setIsChecked] = React.useState(false);
+	const [isChecked, setIsChecked] = React.useState(true);
 	const [isSeriesModalOpen, setIsSeriesModalOpen] = React.useState(false);
 	const onHideHandler = React.useCallback(() => setIsSeriesModalOpen(false), [setIsSeriesModalOpen]);
 	const onShowHandler = React.useCallback(() => setIsSeriesModalOpen(true), [setIsSeriesModalOpen]);
@@ -40,6 +42,25 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 		work.checked = isChecked;
 		onChange(work);
 	}, [isChecked, onChange]);
+	const checkToolTip = (
+		<Tooltip id="work-check">This will set the book&apos;s Author Credits from the &lsquo;Cover&lsquo; tab as this Work&apos;s
+	 Author
+		</Tooltip>);
+	const checkLabel = (
+		<>
+			<FormLabel className="font-weight-normal">
+			Copy Authors from Author Credit
+				<OverlayTrigger
+					delay={50}
+					overlay={checkToolTip}
+				>
+					<FontAwesomeIcon
+						className="margin-left-0-5"
+						icon={faInfoCircle}
+					/>
+				</OverlayTrigger>
+			</FormLabel>
+		</>);
 	return (
 		<>
 			<div>
@@ -62,7 +83,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 					className="ml-1"
 					defaultChecked={isChecked}
 					id="works-check"
-					label="Copy authors from AC for this work"
+					label={checkLabel}
 					type="checkbox"
 					onChange={toggleCheck}
 				/>

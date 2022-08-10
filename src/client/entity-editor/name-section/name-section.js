@@ -332,6 +332,7 @@ function mapStateToProps(rootState, {isUnifiedForm, setDefault, entityType}) {
 	let exactMatches = state.get('exactMatches');
 	const nameValue = state.get('name');
 	// search for duplicates with same name in new entities
+	// show warning when user tries to create a duplicate new entity
 	if (isUnifiedForm && entityType && nameValue.length > 0 && _.size(exactMatches) === 0) {
 		const stateSelector = `${_.upperFirst(_.snakeCase(entityType))}s`;
 		const entities = rootState.get(stateSelector, {});

@@ -1,13 +1,15 @@
 import * as Bootstrap from 'react-bootstrap/';
 import {WorkRowDispatchProps, WorkRowProps, WorkRowStateProps} from '../interface/type';
 import {removeWork, toggleCheck, updateWork} from './action';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
 import SearchEntityCreate from '../common/search-entity-create-select';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
+import {faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 
 
-const {Row, Col, Button, FormCheck, ButtonGroup} = Bootstrap;
+const {Row, Col, Button, FormCheck, ButtonGroup, Tooltip, OverlayTrigger, FormLabel} = Bootstrap;
 
 function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, ...rest}:WorkRowProps) {
 	const isChecked = work?.checked;
@@ -16,6 +18,25 @@ function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, ...rest}:Wo
 		value.checked = isChecked;
 		onChange(value);
 	}, [isChecked, onChange]);
+	const checkToolTip = (
+		<Tooltip id="work-check">This will set the book&apos;s Author Credits from the &lsquo;Cover&lsquo; tab as this Work&apos;s
+	 Author
+		</Tooltip>);
+	const checkLabel = (
+		<>
+			<FormLabel className="font-weight-normal">
+			Copy Authors from Author Credit
+				<OverlayTrigger
+					delay={50}
+					overlay={checkToolTip}
+				>
+					<FontAwesomeIcon
+						className="margin-left-0-5"
+						icon={faInfoCircle}
+					/>
+				</OverlayTrigger>
+			</FormLabel>
+		</>);
 	return (
 		<div className="work-item">
 			<Row>
@@ -41,7 +62,7 @@ function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, ...rest}:Wo
 				className="ml-1 mb-2"
 				defaultChecked={isChecked}
 				id={work.id}
-				label="Copy authors from AC for this work"
+				label={checkLabel}
 				type="checkbox"
 				onChange={onToggle}
 			/>

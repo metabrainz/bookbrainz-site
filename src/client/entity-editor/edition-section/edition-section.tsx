@@ -199,7 +199,6 @@ function EditionSection({
 		label: language.name,
 		value: language.id
 	}));
-	_.set(rest, 'languageOptions', languageOptions);
 	let publisherValue = publishers ?? {};
 	publisherValue = Object.values(convertMapToObject(publisherValue));
 	const editionFormatsForDisplay = editionFormats.map((format) => ({
@@ -232,6 +231,7 @@ function EditionSection({
 					instanceId="edition-group"
 					isUnifiedForm={isUnifiedForm}
 					label="Edition Group"
+					lanugageOptions={languageOptions}
 					tooltipText={
 						<>
 						Group together different Editions of the same book.
