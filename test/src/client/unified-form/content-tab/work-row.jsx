@@ -68,7 +68,7 @@ describe('WorkRow', () => {
 		checkbox.simulate('change');
 		const payload = dispatchSpy.args[0][0];
 		expect(dispatchSpy.callCount).equal(1);
-		expect(payload.type).equal('TOGGLE_CHECK');
+		expect(payload.type).equal('TOGGLE_COPY_AUTHOR_CREDITS');
 		expect(payload.payload).equal('n0');
 	});
 });

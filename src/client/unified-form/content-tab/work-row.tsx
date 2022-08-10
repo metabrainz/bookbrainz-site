@@ -52,7 +52,7 @@ function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, ...rest}:Wo
 				<Col lg={{span: 2}}>
 					<ButtonGroup>
 						{
-							work.__isNew__ && <Button variant="primary" onClick={handleCopy as React.MouseEventHandler}>Copy</Button>
+							work.__isNew__ && <Button variant="primary" onClick={handleCopy as React.MouseEventHandler}>Duplicate</Button>
 						}
 						<Button variant="danger" onClick={onRemove}>Remove</Button>
 					</ButtonGroup>

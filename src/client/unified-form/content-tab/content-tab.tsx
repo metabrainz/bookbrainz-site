@@ -1,6 +1,6 @@
 import * as Bootstrap from 'react-bootstrap/';
 import {ContentTabDispatchProps, ContentTabProps, ContentTabStateProps, State} from '../interface/type';
-import {addSeries, addWork, copyWork} from './action';
+import {addSeries, addWork, duplicateWork} from './action';
 import {closeEntityModal, dumpEdition, loadEdition, openEntityModal} from '../action';
 import {removeAllSeriesItems, updateOrderType, updateSeriesType} from '../../entity-editor/series-section/actions';
 import CreateEntityModal from '../common/create-entity-modal';
@@ -124,7 +124,7 @@ function mapDispatchToProps(dispatch):ContentTabDispatchProps {
 		onModalClose: () => dispatch(loadEdition()) && dispatch(closeEntityModal()),
 		onModalOpen: (id) => {
 			dispatch(dumpEdition(type));
-			dispatch(copyWork(id));
+			dispatch(duplicateWork(id));
 			dispatch(openEntityModal());
 		},
 		onSeriesChange: (value:any) => dispatch(addSeries(value)) && dispatch(removeAllSeriesItems()) &&

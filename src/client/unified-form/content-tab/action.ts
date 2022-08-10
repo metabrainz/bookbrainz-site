@@ -5,8 +5,8 @@ export const ADD_WORK = 'ADD_WORK';
 export const UPDATE_WORKS = 'UPDATE_WORKS';
 export const REMOVE_WORK = 'REMOVE_WORK';
 export const UPDATE_WORK = 'UPDATE_WORK';
-export const TOGGLE_CHECK = 'TOGGLE_CHECK';
-export const COPY_WORK = 'COPY_WORK';
+export const TOGGLE_COPY_AUTHOR_CREDITS = 'TOGGLE_COPY_AUTHOR_CREDITS';
+export const DUPLICATE_WORK = 'DUPLICATE_WORK';
 // Series Actions
 export const ADD_SERIES = 'ADD_SERIES';
 
@@ -57,12 +57,12 @@ export function updateWork(id:string, value):Action {
  * Produces an action indicating that a Work's checkbox should be toggled in `Works`.
  *
  * @param {string} id - id of the work to be toggle
- * @returns {Action} The resulting TOGGLE_CHECK action.
+ * @returns {Action} The resulting TOGGLE_COPY_AUTHOR_CREDITS action.
  */
 export function toggleCheck(id:string):Action {
 	return {
 		payload: id,
-		type: TOGGLE_CHECK
+		type: TOGGLE_COPY_AUTHOR_CREDITS
 	};
 }
 
@@ -70,12 +70,12 @@ export function toggleCheck(id:string):Action {
  * Produces an action indicating that a Work need to be copied.
  *
  * @param {string} id - id of the work to be copied
- * @returns {Action} The resulting COPY_WORK action.
+ * @returns {Action} The resulting DUPLICATE_WORK action.
  */
-export function copyWork(id:string):Action {
+export function duplicateWork(id:string):Action {
 	return {
 		payload: id,
-		type: COPY_WORK
+		type: DUPLICATE_WORK
 	};
 }
 

@@ -1,5 +1,5 @@
 import {ADD_AUTHOR, ADD_PUBLISHER} from './cover-tab/action';
-import {ADD_SERIES, ADD_WORK, COPY_WORK} from './content-tab/action';
+import {ADD_SERIES, ADD_WORK, DUPLICATE_WORK} from './content-tab/action';
 import {Action, State} from './interface/type';
 import {CLOSE_ENTITY_MODAL, DUMP_EDITION, LOAD_EDITION, OPEN_ENTITY_MODAL} from './action';
 import {ISBNReducer, authorsReducer, autoISBNReducer, publishersReducer} from './cover-tab/reducer';
@@ -220,7 +220,7 @@ function crossSliceReducer(state:State, action:Action) {
 				type: 'Series'
 			};
 			break;
-		case COPY_WORK:
+		case DUPLICATE_WORK:
 		// copy work state from `Works`
 		{
 			intermediateState = intermediateState.merge(intermediateState.getIn(['Works', action.payload]));

@@ -1,4 +1,4 @@
-import {ADD_SERIES, ADD_WORK, REMOVE_WORK, TOGGLE_CHECK, UPDATE_WORK, UPDATE_WORKS} from './action';
+import {ADD_SERIES, ADD_WORK, REMOVE_WORK, TOGGLE_COPY_AUTHOR_CREDITS, UPDATE_WORK, UPDATE_WORKS} from './action';
 import {Action, State} from '../interface/type';
 import Immutable from 'immutable';
 
@@ -15,7 +15,7 @@ export function worksReducer(state = initialState, {type, payload}:Action):State
 			return state.delete(payload);
 		case UPDATE_WORK:
 			return state.set(payload.id, Immutable.fromJS(payload.value));
-		case TOGGLE_CHECK:
+		case TOGGLE_COPY_AUTHOR_CREDITS:
 			return state.setIn([payload, 'checked'], !state.getIn([payload.id, 'checked']));
 		default:
 			return state;
