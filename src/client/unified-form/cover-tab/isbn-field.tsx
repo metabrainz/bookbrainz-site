@@ -15,7 +15,8 @@ export function ISBNField(props:ISBNProps) {
 				empty={value.length === 0}
 				error={Boolean(!type && value)}
 				label="ISBN"
-				tooltipText="ISBN of this book"
+				tooltipText="The International Standard Book Number (ISBN) is a commercial book identifier,
+				composed of 10 or 13 numbers, often also used as the barcode."
 				onChange={onChange}
 			/>
 			<FormCheck

@@ -51,7 +51,7 @@ function IdentifierButton({
 		text = `Edit ${numIdentifiers} identifiers (eg. ISBN, Wikidata ID)…`;
 	}
 	if (isUnifiedForm) {
-		text = `Add identifiers ${numIdentifiers}`;
+		text = `Add ${numIdentifiers} identifiers`;
 	}
 	const iconElement = identifiersInvalid &&
 		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes}/>;

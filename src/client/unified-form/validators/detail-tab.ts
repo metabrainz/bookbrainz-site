@@ -12,7 +12,7 @@ export const initialEditionSection = {
 	releaseDate: '',
 	status: null
 };
-const stringifiedState = JSON.stringify(initialEditionSection);
+const stringifiedInitialState = JSON.stringify(initialEditionSection);
 
 /**
  * 	Validates the Detail Tab state.
@@ -33,5 +33,5 @@ export function validateDetailTab(data: any): boolean {
 export function isDetailTabEmpty(data:any): boolean {
 	const editionSection = get(data, 'editionSection', {});
 	const annotationContent = get(data, ['annotationSection', 'content'], '');
-	return JSON.stringify(editionSection) === stringifiedState && annotationContent.length === 0;
+	return JSON.stringify(editionSection) === stringifiedInitialState && annotationContent.length === 0;
 }

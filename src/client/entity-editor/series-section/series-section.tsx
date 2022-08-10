@@ -259,6 +259,7 @@ function mapStateToProps(rootState, {isUnifiedForm}): StateProps {
 	const seriesTypeValue = state.get('seriesType');
 	let defaultOptions = [];
 	if (isUnifiedForm) {
+		// fetch and convert new entites state eg. Works
 		const entities = convertMapToObject(seriesTypeValue === 'Series' ? rootState.get('Series', {}) : rootState.get(`${seriesTypeValue}s`, {}));
 		const neweEntities = _.filter(entities, (ent) => ent.__isNew__);
 		defaultOptions = _.map(neweEntities, (entity) => ({

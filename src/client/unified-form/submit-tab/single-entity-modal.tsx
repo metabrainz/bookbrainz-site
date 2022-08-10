@@ -63,6 +63,7 @@ const ENTITY_FIELDS = {
 };
 export default function SingleEntityModal({entity, show, handleClose, languageOptions}:SingleEntityModalProps) {
 	const id2LanguageMap = React.useMemo(() => Object.fromEntries(_.map(languageOptions, (option) => [option.id, option.name])), []);
+	// display formatted entity attributes in modal
 	function renderField(path, key) {
 		let fieldVal = _.get(entity, path, '');
 		if (!fieldVal || (fieldVal.length === 0)) {
@@ -71,9 +72,11 @@ export default function SingleEntityModal({entity, show, handleClose, languageOp
 		if (key === 'Language') {
 			fieldVal = id2LanguageMap[fieldVal];
 		}
+		// correctly format multiple languages
 		if (key.includes('languages')) {
 			fieldVal = _.reduce(fieldVal, (acc, next) => `${acc}${acc.length !== 0 ? ',' : ''} ${next.label}`, '');
 		}
+		// correctly format date attribute
 		if (key.includes('date')) {
 			if (typeof fieldVal !== 'string') {
 				if (!fieldVal.day && !fieldVal.month && !fieldVal.year) {
@@ -82,6 +85,7 @@ export default function SingleEntityModal({entity, show, handleClose, languageOp
 				fieldVal = dateObjectToISOString(fieldVal);
 			}
 		}
+		// make sure attribute is stringified
 		// eslint-disable-next-line consistent-return
 		return <span className="d-block"><b>{key}</b>: {typeof fieldVal === 'string' ? fieldVal : JSON.stringify(fieldVal)}</span>;
 	}

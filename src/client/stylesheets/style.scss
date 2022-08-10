@@ -720,7 +720,6 @@ ul {
 }
 
 /* Unified  form */
-$uf-primary:#EB743B;
 .uf-main{
 	padding: 0.6rem;
 }
@@ -745,8 +744,8 @@ $uf-primary:#EB743B;
 		color: #754E37;
 	}
 	.nav-link.nav-item.active{
-		color: $uf-primary;
-		border-color: $uf-primary;
+		color: $orange;
+		border-color: $orange;
 		border-bottom: none;
 	}
 }
@@ -818,7 +817,7 @@ div[class~=collapsing]+div[class=card-header] .accordion-arrow {
 }
 .entities-preview{
 	cursor: pointer;
-	color: $uf-primary;
+	color: $orange;
 	transition: all 0.2s linear;
 }
 .entities-preview:hover{
