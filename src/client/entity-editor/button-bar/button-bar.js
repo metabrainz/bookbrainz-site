@@ -54,12 +54,12 @@ function ButtonBar({
 	numAliases,
 	numIdentifiers,
 	onAliasButtonClick,
-	isUf,
+	isUnifiedForm,
 	onIdentifierButtonClick
 }) {
-	const className = isUf ? 'text-right' : 'text-center';
+	const className = isUnifiedForm ? 'text-right' : 'text-center';
 	function renderAliasButton() {
-		if (isUf) {
+		if (isUnifiedForm) {
 			return null;
 		}
 		return (
@@ -71,7 +71,7 @@ function ButtonBar({
 				/>
 			</Col>);
 	}
-	const identifierEditorClass = `btn wrap${!isUf ? '' : ' btn-success'}`;
+	const identifierEditorClass = `btn wrap${!isUnifiedForm ? '' : ' btn-success'}`;
 	return (
 		<div>
 			<Row className="margin-top-1">
@@ -80,7 +80,7 @@ function ButtonBar({
 					<IdentifierButton
 						className={identifierEditorClass}
 						identifiersInvalid={identifiersInvalid}
-						isUf={isUf}
+						isUnifiedForm={isUnifiedForm}
 						numIdentifiers={numIdentifiers}
 						onClick={onIdentifierButtonClick}
 					/>
@@ -93,14 +93,14 @@ ButtonBar.displayName = 'ButtonBar';
 ButtonBar.propTypes = {
 	aliasesInvalid: PropTypes.bool.isRequired,
 	identifiersInvalid: PropTypes.bool.isRequired,
-	isUf: PropTypes.bool,
+	isUnifiedForm: PropTypes.bool,
 	numAliases: PropTypes.number.isRequired,
 	numIdentifiers: PropTypes.number.isRequired,
 	onAliasButtonClick: PropTypes.func.isRequired,
 	onIdentifierButtonClick: PropTypes.func.isRequired
 };
 ButtonBar.defaultProps = {
-	isUf: false
+	isUnifiedForm: false
 };
 
 function mapStateToProps(rootState, {identifierTypes}) {

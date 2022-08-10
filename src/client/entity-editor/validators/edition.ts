@@ -133,10 +133,10 @@ export function validateEditionSection(data: any, isCustom = false): boolean {
 export function validateForm(
 	formData: any, identifierTypes?: Array<_IdentifierType> | null | undefined,
 	isMerge?:boolean,
-	isUf?:boolean
+	isUnifiedForm?:boolean
 ): boolean {
 	let validAuthorCredit;
-	const isCustom = isUf || Boolean(formData?.type);
+	const isCustom = isUnifiedForm || Boolean(formData?.type);
 	if (isMerge) {
 		validAuthorCredit = validateAuthorCreditSectionMerge(get(formData, 'authorCredit', {}));
 	}

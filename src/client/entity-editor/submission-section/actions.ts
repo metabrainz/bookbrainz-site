@@ -249,12 +249,12 @@ function postUFSubmission(url: string, data: Map<string, any>): Promise<void> {
 type SubmitResult = (arg1: (Action) => unknown, arg2: () => Map<string, any>) => unknown;
 export function submit(
 	submissionUrl: string,
-	isUf = false
+	isUnifiedForm = false
 ): SubmitResult {
 	return (dispatch, getState) => {
 		const rootState = getState();
 		dispatch(setSubmitted(true));
-		if (isUf) {
+		if (isUnifiedForm) {
 			return postUFSubmission(submissionUrl, rootState)
 				.catch(
 					(error: {message: string}) => {

@@ -40,7 +40,7 @@ import {faTimes} from '@fortawesome/free-solid-svg-icons';
 function IdentifierButton({
 	identifiersInvalid,
 	numIdentifiers,
-	isUf,
+	isUnifiedForm,
 	...props
 }) {
 	let text = 'Add identifiers (eg. ISBN, Wikidata ID)…';
@@ -50,14 +50,14 @@ function IdentifierButton({
 	else if (numIdentifiers > 1) {
 		text = `Edit ${numIdentifiers} identifiers (eg. ISBN, Wikidata ID)…`;
 	}
-	if (isUf) {
+	if (isUnifiedForm) {
 		text = `Add identifiers ${numIdentifiers}`;
 	}
 	const iconElement = identifiersInvalid &&
 		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes}/>;
 
 	return (
-		<Button variant={!isUf && 'link'} {...props}>
+		<Button variant={!isUnifiedForm && 'link'} {...props}>
 			{iconElement}
 			{text}
 		</Button>
@@ -66,11 +66,11 @@ function IdentifierButton({
 IdentifierButton.displayName = 'IdentifierButton';
 IdentifierButton.propTypes = {
 	identifiersInvalid: PropTypes.bool.isRequired,
-	isUf: PropTypes.bool,
+	isUnifiedForm: PropTypes.bool,
 	numIdentifiers: PropTypes.number.isRequired
 };
 IdentifierButton.defaultProps = {
-	isUf: false
+	isUnifiedForm: false
 };
 
 export default IdentifierButton;

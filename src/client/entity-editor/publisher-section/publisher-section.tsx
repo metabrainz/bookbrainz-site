@@ -72,7 +72,7 @@ type DispatchProps = {
 
 type OwnProps = {
 	publisherTypes: Array<PublisherType>,
-	isUf?: boolean
+	isUnifiedForm?: boolean
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -115,7 +115,7 @@ function PublisherSection({
 	endedChecked,
 	publisherTypes,
 	typeValue,
-	isUf,
+	isUnifiedForm,
 	onAreaChange,
 	onBeginDateChange,
 	onEndDateChange,
@@ -131,12 +131,12 @@ function PublisherSection({
 	const {isValid: isValidEndDate, errorMessage: errorMessageEndDate} = validatePublisherSectionEndDate(beginDateValue, endDateValue, endedChecked);
 	const heading = <h2>What else do you know about the Publisher?</h2>;
 	const lgCol = {offset: 3, span: 6};
-	if (isUf) {
+	if (isUnifiedForm) {
 		lgCol.offset = 0;
 	}
 	return (
 		<div>
-			{!isUf && heading}
+			{!isUnifiedForm && heading}
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
 				know it
@@ -181,7 +181,7 @@ function PublisherSection({
 					/>
 				</Col>
 			</Row>
-			<div className={`${!isUf && 'text-center'}`}>
+			<div className={`${!isUnifiedForm && 'text-center'}`}>
 				<Form.Check
 					defaultChecked={endedChecked}
 					label="Dissolved?"
@@ -212,7 +212,7 @@ function PublisherSection({
 }
 PublisherSection.displayName = 'PublisherSection';
 PublisherSection.defaultProps = {
-	isUf: false
+	isUnifiedForm: false
 };
 
 function mapStateToProps(rootState): StateProps {

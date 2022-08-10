@@ -99,7 +99,7 @@ type EditionGroup = {
 type OwnProps = {
 	languageOptions: Array<LanguageOption>,
 	editionFormats: Array<EditionFormat>,
-	isUf:boolean,
+	isUnifiedForm:boolean,
 	editionStatuses: Array<EditionStatus>
 };
 
@@ -186,7 +186,7 @@ function EditionSection({
 	editionGroupValue,
 	editionGroupVisible,
 	matchingNameEditionGroups,
-	isUf,
+	isUnifiedForm,
 	publisherValue: publishers,
 	releaseDateValue,
 	statusValue,
@@ -222,15 +222,15 @@ function EditionSection({
 		!editionGroupRequired;
 
 	const showMatchingEditionGroups = Boolean(hasmatchingNameEditionGroups && !editionGroupValue);
-	const EntitySearchField = isUf ? SearchEntityCreate : EntitySearchFieldOption;
+	const EntitySearchField = isUnifiedForm ? SearchEntityCreate : EntitySearchFieldOption;
 	const getEditionGroupSearchSelect = () => (
 		<React.Fragment>
-			<Col className="margin-bottom-2" lg={{offset: isUf || showMatchingEditionGroups ? 0 : 3, span: 6}}>
+			<Col className="margin-bottom-2" lg={{offset: isUnifiedForm || showMatchingEditionGroups ? 0 : 3, span: 6}}>
 				<EntitySearchField
 					error={!validateEditionSectionEditionGroup(editionGroupValue, true)}
 					help="Group with other Editions of the same book"
 					instanceId="edition-group"
-					isUf={isUf}
+					isUnifiedForm={isUnifiedForm}
 					label="Edition Group"
 					tooltipText={
 						<>
@@ -267,7 +267,7 @@ function EditionSection({
 			Has the work been published, or is it in a draft stage?
 		</Tooltip>
 	);
-	const headingTag = !isUf && <h2>What else do you know about the Edition?</h2>;
+	const headingTag = !isUnifiedForm && <h2>What else do you know about the Edition?</h2>;
 	const colSpan = {
 		offset: 3,
 		span: 6
@@ -276,14 +276,14 @@ function EditionSection({
 		offset: 3,
 		span: 3
 	};
-	if (isUf) {
+	if (isUnifiedForm) {
 		colSpan.offset = 0;
 		shortColSpan.offset = 0;
 	}
 	return (
 		<div>
 			{headingTag}
-			{!isUf && <AuthorCreditSection/>}
+			{!isUnifiedForm && <AuthorCreditSection/>}
 			<p className="text-muted">
 				Edition Group is required — this cannot be blank. You can search for and choose an existing Edition Group,
 				or choose to automatically create one instead.
@@ -292,7 +292,7 @@ function EditionSection({
 			<Row className="margin-bottom-3">
 				{
 					showAutoCreateEditionGroupMessage ?
-						<Col lg={{offset: isUf || showMatchingEditionGroups ? 0 : 3, span: 6}}>
+						<Col lg={{offset: isUnifiedForm || showMatchingEditionGroups ? 0 : 3, span: 6}}>
 							<Alert variant="success">
 								<p>A new Edition Group with the same name will be created automatically.</p>
 								<br/>
@@ -342,7 +342,7 @@ function EditionSection({
 				don&rsquo;t know it
 			</p>
 			<Row>
-				{!isUf &&
+				{!isUnifiedForm &&
 				<Col lg={colSpan}>
 					<EntitySearchFieldOption
 						isMulti

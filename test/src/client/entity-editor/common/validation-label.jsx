@@ -34,7 +34,7 @@ describe('ValidationLabel', () => {
 		expect(wrapper.find('FontAwesomeIcon').length).to.equal(1);
 	});
 	it('should not show icon on unified form editor', () => {
-		const wrapper = mount(<ValidationLabel isUf empty={false}/>);
+		const wrapper = mount(<ValidationLabel isUnifiedForm empty={false}/>);
 		expect(wrapper.find('FontAwesomeIcon').length).to.equal(0);
 	});
 });

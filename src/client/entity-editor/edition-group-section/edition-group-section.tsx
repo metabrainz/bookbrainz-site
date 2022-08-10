@@ -44,7 +44,7 @@ type DispatchProps = {
 
 type OwnProps = {
 	editionGroupTypes: Array<EditionGroupType>,
-	isUf?: boolean,
+	isUnifiedForm?: boolean,
 	isLeftAlign?:boolean
 };
 
@@ -68,7 +68,7 @@ type Props = StateProps & DispatchProps & OwnProps;
 function EditionGroupSection({
 	editionGroupTypes,
 	typeValue,
-	isUf,
+	isUnifiedForm,
 	isLeftAlign,
 	onTypeChange
 }: Props) {
@@ -80,12 +80,12 @@ function EditionGroupSection({
 	const tooltip = <Tooltip>Physical format of the Edition Group</Tooltip>;
 	const heading = <h2>What else do you know about the Edition Group?</h2>;
 	const lgCol = {offset: 3, span: 6};
-	if (isUf) {
+	if (isUnifiedForm) {
 		lgCol.offset = 0;
 	}
 	return (
 		<div>
-			{!isUf && heading}
+			{!isUnifiedForm && heading}
 			<AuthorCreditSection isLeftAlign={isLeftAlign}/>
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
@@ -119,7 +119,7 @@ function EditionGroupSection({
 EditionGroupSection.displayName = 'EditionGroupSection';
 EditionGroupSection.defaultProps = {
 	isLeftAlign: false,
-	isUf: false
+	isUnifiedForm: false
 };
 
 function mapStateToProps(rootState): StateProps {

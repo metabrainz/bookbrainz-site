@@ -41,7 +41,7 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 function AnnotationSection({
 	annotation: immutableAnnotation,
 	onAnnotationChange,
-	isUf
+	isUnifiedForm
 }) {
 	const annotation = convertMapToObject(immutableAnnotation);
 	const annotationLabel = (
@@ -57,13 +57,13 @@ function AnnotationSection({
 		</Tooltip>
 	);
 	const lgCol = {offset: 3, span: 6};
-	if (isUf) {
+	if (isUnifiedForm) {
 		lgCol.offset = 0;
 	}
 	const heading = <h2> Annotation</h2>;
 	return (
 		<div>
-			{!isUf && heading}
+			{!isUnifiedForm && heading}
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group>
@@ -99,11 +99,11 @@ function AnnotationSection({
 AnnotationSection.displayName = 'AnnotationSection';
 AnnotationSection.propTypes = {
 	annotation: PropTypes.object.isRequired,
-	isUf: PropTypes.bool,
+	isUnifiedForm: PropTypes.bool,
 	onAnnotationChange: PropTypes.func.isRequired
 };
 AnnotationSection.defaultProps = {
-	isUf: false
+	isUnifiedForm: false
 };
 function mapStateToProps(rootState) {
 	return {

@@ -38,7 +38,7 @@ import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
 type OwnProps = {
 	index: string,
-	isUf?: boolean
+	isUnifiedForm?: boolean
 };
 
 type StateProps = {
@@ -84,7 +84,7 @@ function AuthorCreditRow({
 	author,
 	joinPhrase,
 	name,
-	isUf,
+	isUnifiedForm,
 	onAuthorChange,
 	onJoinPhraseChange,
 	onClearHandler,
@@ -92,7 +92,7 @@ function AuthorCreditRow({
 	onRemoveButtonClick,
 	...rest
 }: Props) {
-	const SelectWrapper = !isUf ? EntitySearchFieldOption : SearchEntityCreate;
+	const SelectWrapper = !isUnifiedForm ? EntitySearchFieldOption : SearchEntityCreate;
 	const onChangeHandler = React.useCallback((value, action) => {
 		if (action && ['clear', 'pop-value', 'select-option'].includes(action.action) && author && author.get('__isNew__', false)) {
 			onClearHandler(author.get('id'));
@@ -112,7 +112,7 @@ function AuthorCreditRow({
 				<Col md={{span: 3}}>
 					<SelectWrapper
 						instanceId={`author${index}`}
-						isUf={isUf}
+						isUnifiedForm={isUnifiedForm}
 						label="Author"
 						rowId={index}
 						type="author"
@@ -162,7 +162,7 @@ function AuthorCreditRow({
 }
 AuthorCreditRow.displayName = 'AuthorCreditEditor.CreditRow';
 AuthorCreditRow.defaultProps = {
-	isUf: false
+	isUnifiedForm: false
 };
 
 function mapStateToProps(rootState, {index}: OwnProps): StateProps {

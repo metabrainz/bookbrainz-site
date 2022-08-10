@@ -364,7 +364,7 @@ export function generateUnifiedProps(
 		allIdentifierTypes: res.locals.identifierTypes,
 		entityType: 'edition',
 		initialState: initialStateCallback(),
-		isUf: true,
+		isUnifiedForm: true,
 		languageOptions: res.locals.languages,
 		requiresJS: true,
 		submissionUrl

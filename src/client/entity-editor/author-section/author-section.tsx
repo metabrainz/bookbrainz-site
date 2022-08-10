@@ -92,7 +92,7 @@ type DispatchProps = {
 type OwnProps = {
 	authorTypes: Array<AuthorType>,
 	genderOptions: Array<GenderOptions>,
-	isUf?: boolean
+	isUnifiedForm?: boolean
 };
 
 export type Props = StateProps & DispatchProps & OwnProps;
@@ -150,7 +150,7 @@ function AuthorSection({
 	genderShow,
 	genderValue,
 	typeValue,
-	isUf,
+	isUnifiedForm,
 	onBeginAreaChange,
 	onBeginDateChange,
 	onEndAreaChange,
@@ -175,12 +175,12 @@ function AuthorSection({
 	const {isValid: isValidDod, errorMessage: dodError} = validateAuthorSectionEndDate(beginDateValue, endDateValue, currentAuthorType.label);
 	const heading = <h2>What else do you know about the Author?</h2>;
 	const lgCol = {offset: 3, span: 6};
-	if (isUf) {
+	if (isUnifiedForm) {
 		lgCol.offset = 0;
 	}
 	return (
 		<div>
-			{!isUf && heading}
+			{!isUnifiedForm && heading}
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
 				know it
@@ -237,7 +237,7 @@ function AuthorSection({
 					/>
 				</Col>
 			</Row>
-			<div className={!isUf && 'text-center'}>
+			<div className={!isUnifiedForm && 'text-center'}>
 				<Form.Check
 					defaultChecked={endedChecked}
 					label={endedLabel}

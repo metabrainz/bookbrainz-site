@@ -55,7 +55,7 @@ type DisplayLanguageOption = {
 };
 
 type OwnProps = {
-	isUf?: boolean,
+	isUnifiedForm?: boolean,
 	languageOptions: Array<LanguageOption>,
 	workTypes: Array<WorkType>
 };
@@ -90,7 +90,7 @@ function WorkSection({
 	languageValues,
 	typeValue,
 	workTypes,
-	isUf,
+	isUnifiedForm,
 	onLanguagesChange,
 	onTypeChange
 }: Props) {
@@ -112,12 +112,12 @@ function WorkSection({
 	);
 	const heading = <h2> What else do you know about the Work?</h2>;
 	const lgCol = {offset: 3, span: 6};
-	if (isUf) {
+	if (isUnifiedForm) {
 		lgCol.offset = 0;
 	}
 	return (
 		<div>
-			{!isUf && heading}
+			{!isUnifiedForm && heading}
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
 				know it
@@ -162,7 +162,7 @@ function WorkSection({
 }
 WorkSection.displayName = 'WorkSection';
 WorkSection.defaultProps = {
-	isUf: false
+	isUnifiedForm: false
 };
 type RootState = Map<string, Map<string, any>>;
 function mapStateToProps(rootState: RootState): StateProps {

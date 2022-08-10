@@ -46,7 +46,7 @@ import {validateAuthorCreditSection} from '../validators/common';
 
 
 type OwnProps = {
-	isUf?: boolean,
+	isUnifiedForm?: boolean,
 	isLeftAlign?: boolean;
 
 };
@@ -68,7 +68,7 @@ type Props = OwnProps & StateProps & DispatchProps;
 
 function AuthorCreditSection({
 	authorCreditEditor: immutableAuthorCreditEditor, onEditAuthorCredit, onEditorClose,
-	showEditor, onAuthorChange, isEditable, onClearHandler, isUf, isLeftAlign, ...rest
+	showEditor, onAuthorChange, isEditable, onClearHandler, isUnifiedForm, isLeftAlign, ...rest
 }: Props) {
 	const authorCreditEditor = convertMapToObject(immutableAuthorCreditEditor);
 	let editor;
@@ -76,7 +76,7 @@ function AuthorCreditSection({
 		editor = (
 			<AuthorCreditEditor
 				showEditor
-				isUf={isUf}
+				isUnifiedForm={isUnifiedForm}
 				onClose={onEditorClose}
 				{...rest}
 			/>
@@ -85,7 +85,7 @@ function AuthorCreditSection({
 	const authorCreditPreview = _map(authorCreditEditor, (credit) => `${credit.name}${credit.joinPhrase}`).join('');
 	const authorCreditRows = _values(authorCreditEditor);
 
-	const isValid = validateAuthorCreditSection(authorCreditRows, isUf);
+	const isValid = validateAuthorCreditSection(authorCreditRows, isUnifiedForm);
 
 	const editButton = (
 		// eslint-disable-next-line react/jsx-no-bind
@@ -113,7 +113,7 @@ function AuthorCreditSection({
 		</Tooltip>
 	);
 	let resCol:any = {md: {offset: 3, span: 6}};
-	if (isUf || isLeftAlign) {
+	if (isUnifiedForm || isLeftAlign) {
 		resCol = {lg: {offset: 0, span: 6}};
 	}
 	const onChangeHandler = React.useCallback((value, action) => {
@@ -123,7 +123,7 @@ function AuthorCreditSection({
 		}
 		onAuthorChange(value);
 	}, [authorCreditEditor]);
-	const SelectWrapper = !isUf ? EntitySearchFieldOption : SearchEntityCreate;
+	const SelectWrapper = !isUnifiedForm ? EntitySearchFieldOption : SearchEntityCreate;
 	return (
 		<Row className="margin-bottom-2">
 			{editor}
@@ -145,7 +145,7 @@ function AuthorCreditSection({
 								instanceId="author0"
 								isClearable={false}
 								isDisabled={!isEditable}
-								isUf={isUf}
+								isUnifiedForm={isUnifiedForm}
 								placeholder="Type to search or paste a BBID"
 								rowId="n0"
 								type="author"
@@ -171,7 +171,7 @@ AuthorCreditSection.propTypes = {
 
 AuthorCreditSection.defaultProps = {
 	isLeftAlign: false,
-	isUf: false
+	isUnifiedForm: false
 };
 function mapStateToProps(rootState): StateProps {
 	const firstRowKey = rootState.get('authorCreditEditor').keySeq().first();

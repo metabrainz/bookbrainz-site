@@ -61,7 +61,7 @@ type DispatchProps = {
 type OwnProps = {
 	hideTypeOption?:boolean,
 	entity: Entity,
-	isUf?: boolean,
+	isUnifiedForm?: boolean,
 	entityType: EntityType,
 	seriesOrderingTypes: Array<SeriesOrderingType>,
 	relationshipTypes: Array<RelationshipType>,
@@ -116,7 +116,7 @@ function SeriesSection({
 	seriesItems,
 	seriesOrderingTypes,
 	defaultOptions,
-	isUf,
+	isUnifiedForm,
 	seriesTypeValue
 }: Props) {
 	const baseEntity = {
@@ -175,12 +175,12 @@ function SeriesSection({
 	);
 	const heading = <h2>What else do you know about the Series?</h2>;
 	const lgCol = {offset: 3, span: 6};
-	if (isUf) {
+	if (isUnifiedForm) {
 		lgCol.offset = 0;
 	}
 	return (
 		<div>
-			{!isUf && heading}
+			{!isUnifiedForm && heading}
 			{!hideTypeOption &&
 			<p className="text-muted">
 				All fields are mandatory — select the option from dropdown
@@ -235,7 +235,7 @@ function SeriesSection({
 			<SeriesEditor
 				baseEntity={baseEntity}
 				defaultOptions={defaultOptions}
-				isUf={isUf}
+				isUnifiedForm={isUnifiedForm}
 				orderType={orderTypeValue}
 				relationshipTypes={relationshipTypes}
 				seriesItemsArray={seriesItemsArray}
@@ -251,14 +251,14 @@ function SeriesSection({
 SeriesSection.displayName = 'SeriesSection';
 SeriesSection.defaultProps = {
 	hideTypeOption: false,
-	isUf: false
+	isUnifiedForm: false
 };
 
-function mapStateToProps(rootState, {isUf}): StateProps {
+function mapStateToProps(rootState, {isUnifiedForm}): StateProps {
 	const state = rootState.get('seriesSection');
 	const seriesTypeValue = state.get('seriesType');
 	let defaultOptions = [];
-	if (isUf) {
+	if (isUnifiedForm) {
 		const entities = convertMapToObject(seriesTypeValue === 'Series' ? rootState.get('Series', {}) : rootState.get(`${seriesTypeValue}s`, {}));
 		const neweEntities = _.filter(entities, (ent) => ent.__isNew__);
 		defaultOptions = _.map(neweEntities, (entity) => ({

@@ -180,7 +180,7 @@ class NameSection extends React.Component {
 			onSortNameChange,
 			onDisambiguationChange,
 			searchResults: immutableSearchResults,
-			isUf,
+			isUnifiedForm,
 			isModal
 		} = this.props;
 		const exactMatches = convertMapToObject(immutableExactMatches);
@@ -194,7 +194,7 @@ class NameSection extends React.Component {
 		const warnIfExists = !_.isEmpty(exactMatches);
 		const languageOption = languageOptionsForDisplay.filter((el) => el.value === languageValue);
 		const lgCol = {offset: 3, span: 6};
-		if (isUf) {
+		if (isUnifiedForm) {
 			lgCol.offset = 0;
 		}
 		const duplicateSuggestions = !warnIfExists &&
@@ -211,7 +211,7 @@ class NameSection extends React.Component {
 		const heading = <h2>{`What is the ${_.startCase(entityType)} called?`}</h2>;
 		return (
 			<div>
-				{!isUf && heading}
+				{!isUnifiedForm && heading}
 				<Row>
 					<Col lg={lgCol}>
 						<NameField
@@ -294,7 +294,7 @@ NameSection.propTypes = {
 	entityType: entityTypeProperty.isRequired,
 	exactMatches: PropTypes.object,
 	isModal: PropTypes.bool,
-	isUf: PropTypes.bool,
+	isUnifiedForm: PropTypes.bool,
 	languageOptions: PropTypes.array.isRequired,
 	languageValue: PropTypes.number,
 	nameValue: PropTypes.string.isRequired,
@@ -314,14 +314,14 @@ NameSection.defaultProps = {
 	disambiguationDefaultValue: null,
 	exactMatches: [],
 	isModal: false,
-	isUf: false,
+	isUnifiedForm: false,
 	languageValue: null,
 	searchForExistingEditionGroup: true,
 	searchResults: []
 };
 
 
-function mapStateToProps(rootState, {isUf, setDefault, entityType}) {
+function mapStateToProps(rootState, {isUnifiedForm, setDefault, entityType}) {
 	const state = rootState.get('nameSection');
 	const editionSectionState = rootState.get('editionSection');
 	const searchForExistingEditionGroup = Boolean(editionSectionState) &&
@@ -332,7 +332,7 @@ function mapStateToProps(rootState, {isUf, setDefault, entityType}) {
 	let exactMatches = state.get('exactMatches');
 	const nameValue = state.get('name');
 	// search for duplicates with same name in new entities
-	if (isUf && entityType && nameValue.length > 0 && _.size(exactMatches) === 0) {
+	if (isUnifiedForm && entityType && nameValue.length > 0 && _.size(exactMatches) === 0) {
 		const stateSelector = `${_.upperFirst(_.snakeCase(entityType))}s`;
 		const entities = rootState.get(stateSelector, {});
 		const entitiesJSON = convertMapToObject(entities);
@@ -354,7 +354,7 @@ function mapStateToProps(rootState, {isUf, setDefault, entityType}) {
 		exactMatches = matchEntities;
 	}
 	// to prevent double double state updates on action caused by modal
-	if (isUf && setDefault) {
+	if (isUnifiedForm && setDefault) {
 		return {
 			disambiguationDefaultValue: '',
 			exactMatches: Immutable.Map([]),
