@@ -94,18 +94,17 @@ function AuthorCreditRow({
 }: Props) {
 	const SelectWrapper = !isUnifiedForm ? EntitySearchFieldOption : SearchEntityCreate;
 	const onChangeHandler = React.useCallback((value, action) => {
-		if (action && ['clear', 'pop-value', 'select-option'].includes(action.action) && author && author.get('__isNew__', false)) {
+		if (['clear', 'pop-value', 'select-option'].includes(action?.action) && author?.get('__isNew__', false)) {
 			onClearHandler(author.get('id'));
 		}
 		onAuthorChange(value);
-	}, [author]);
+	}, [author, onAuthorChange, onClearHandler]);
 	const handleButtonClick = React.useCallback(() => {
-		// don't remove author if it's first row
-		if (index !== 'n0' && author?.get('__isNew__')) {
+		if (author?.get('__isNew__', false)) {
 			onClearHandler(author.get('id'));
 		}
 		onRemoveButtonClick();
-	}, [author, index]);
+	}, [author, index, onClearHandler, onRemoveButtonClick]);
 	return (
 		<div>
 			<Row>
@@ -146,8 +145,6 @@ function AuthorCreditRow({
 					<Button
 						block
 						className="margin-top-d18"
-						// disable button for first row
-						disabled={index === 'n0'}
 						variant="danger"
 						onClick={handleButtonClick}
 					>
