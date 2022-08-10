@@ -36,14 +36,14 @@ export const AliasModalBody = ({aliases, onAddAlias, languageOptions}:AliasModal
 			</div>
 			<div>
 				{
-					aliases.map((alias, rowId) => (
+					aliases.toArray().map((_, rowId) => (
 						<AliasRow
 							index={rowId}
 							// eslint-disable-next-line react/no-array-index-key
-							key={rowId}
+							key={`alias-row-${rowId}`}
 							languageOptions={languageOptionsForDisplay}
 						/>
-					)).toArray()
+					))
 				}
 			</div>
 			<Row>

@@ -138,6 +138,11 @@ class Layout extends React.Component {
 					onSelect={this.handleDropdownClick}
 					onToggle={this.handleDropdownToggle}
 				>
+					<NavDropdown.Item href="/create">
+						{genEntityIconHTMLElement('Book')}
+						Book
+					</NavDropdown.Item>
+					<NavDropdown.Divider/>
 					<NavDropdown.Item href="/work/create">
 						{genEntityIconHTMLElement('Work')}
 						Work
@@ -154,7 +159,6 @@ class Layout extends React.Component {
 						{genEntityIconHTMLElement('Series')}
 						Series
 					</NavDropdown.Item>
-					<NavDropdown.Divider/>
 					<NavDropdown.Item href="/author/create">
 						{genEntityIconHTMLElement('Author')}
 						Author
@@ -162,10 +166,6 @@ class Layout extends React.Component {
 					<NavDropdown.Item href="/publisher/create">
 						{genEntityIconHTMLElement('Publisher')}
 						Publisher
-					</NavDropdown.Item>
-					<NavDropdown.Item href="/create">
-						{genEntityIconHTMLElement('Book')}
-						Book
 					</NavDropdown.Item>
 				</NavDropdown>
 				<NavDropdown

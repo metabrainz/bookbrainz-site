@@ -17,7 +17,7 @@
  */
 
 import {Button, Modal, OverlayTrigger, Tooltip} from 'react-bootstrap';
-import {addAliasRow, hideAliasEditor, removeEmptyAliases} from './actions';
+import {hideAliasEditor, removeEmptyAliases} from './actions';
 import AliasModalBody from './alias-modal-body';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -36,8 +36,6 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
  *        editor.
  * @param {Array} props.languageOptions - The list of possible languages for an
  *        alias.
- * @param {Function} props.onAddAlias - A function to be called when the button
- *        to add an alias is clicked.
  * @param {Function} props.onClose - A function to be called when the button to
  *        close the editor is clicked.
  * @param {boolean} props.show - Whether or not the editor modal should be
@@ -94,7 +92,6 @@ AliasEditor.defaultProps = {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		onAddAlias: () => dispatch(addAliasRow()),
 		onClose: () => {
 			dispatch(hideAliasEditor());
 			dispatch(removeEmptyAliases());
