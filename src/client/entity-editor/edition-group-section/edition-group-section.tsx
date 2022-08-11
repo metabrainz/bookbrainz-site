@@ -23,7 +23,6 @@ import AuthorCreditSection from '../author-credit-editor/author-credit-section';
 
 import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import type {Map} from 'immutable';
 import Select from 'react-select';
 import {connect} from 'react-redux';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
@@ -86,7 +85,7 @@ function EditionGroupSection({
 	return (
 		<div>
 			{!isUnifiedForm && heading}
-			<AuthorCreditSection isLeftAlign={isLeftAlign}/>
+			<AuthorCreditSection type="editionGroup" isLeftAlign={isLeftAlign}/>
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
 				know it

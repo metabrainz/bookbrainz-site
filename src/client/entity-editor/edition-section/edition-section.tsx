@@ -231,7 +231,7 @@ function EditionSection({
 					instanceId="edition-group"
 					isUnifiedForm={isUnifiedForm}
 					label="Edition Group"
-					lanugageOptions={languageOptions}
+					languageOptions={languageOptions}
 					tooltipText={
 						<>
 						Group together different Editions of the same book.
@@ -283,7 +283,7 @@ function EditionSection({
 	return (
 		<div>
 			{headingTag}
-			{!isUnifiedForm && <AuthorCreditSection/>}
+			{!isUnifiedForm && <AuthorCreditSection type="edition"/>}
 			<p className="text-muted">
 				Edition Group is required — this cannot be blank. You can search for and choose an existing Edition Group,
 				or choose to automatically create one instead.

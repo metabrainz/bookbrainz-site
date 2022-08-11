@@ -30,7 +30,7 @@ export function CoverTab(props:CoverProps) {
 	return (
 		<div>
 			<NameSection {...props} copyLanguages setDefault={modalIsOpen}/>
-			<AuthorCreditSection {...props}/>
+			<AuthorCreditSection {...props} type="edition"/>
 			<Row>
 				<Col lg={{offset: 0, span: 6}}>
 					<SearchEntityCreate

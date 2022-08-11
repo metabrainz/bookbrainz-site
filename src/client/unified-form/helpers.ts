@@ -183,6 +183,7 @@ function crossSliceReducer(state:State, action:Action) {
 			action.payload.value = action.payload.value ?? {
 				...activeEntityState,
 				__isNew__: true,
+				checked: true,
 				id: action.payload.id,
 				text: activeEntityState.nameSection.get('name'),
 				type: 'Work',

@@ -114,11 +114,11 @@ function AuthorCreditRow({
 						isUnifiedForm={isUnifiedForm}
 						label="Author"
 						rowId={index}
-						type="author"
 						validationState={!author ? 'error' : null}
 						value={author}
 						onChange={onChangeHandler}
 						{...rest}
+						type="author"
 					/>
 				</Col>
 				<Col md={{span: 3}}>

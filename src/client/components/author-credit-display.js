@@ -22,9 +22,10 @@ import {map as _map} from 'lodash';
 
 
 function AuthorCreditDisplay({names}) {
+	const authorBBID = name.authorBBID ?? name.author?.id;
 	const nameElements = _map(names, (name) => (
-		<span key={`author-credit-${name.author?.rowId}-${name.author?.id}`}>
-			<a href={`/author/${name.author?.id}`}>
+		<span key={`author-credit-${authorBBID}`}>
+			<a href={`/author/${authorBBID}`}>
 				{name.name}
 			</a>
 			{name.joinPhrase}

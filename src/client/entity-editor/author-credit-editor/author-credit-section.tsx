@@ -28,7 +28,7 @@ import {
 import {Button, Col, Form, InputGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 
 import {SingleValueProps, components} from 'react-select';
-import {get as _get, map as _map, values as _values} from 'lodash';
+import {get as _get, map as _map, values as _values, camelCase} from 'lodash';
 
 import {faPencilAlt, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import AuthorCreditEditor from './author-credit-editor';
@@ -148,10 +148,10 @@ function AuthorCreditSection({
 								isUnifiedForm={isUnifiedForm}
 								placeholder="Type to search or paste a BBID"
 								rowId="n0"
-								type="author"
 								value={optionValue}
 								onChange={onChangeHandler}
 								{...rest}
+								type="author"
 							/>
 						</div>
 						<InputGroup.Append>{editButton}</InputGroup.Append>
@@ -173,15 +173,16 @@ AuthorCreditSection.defaultProps = {
 	isLeftAlign: false,
 	isUnifiedForm: false
 };
-function mapStateToProps(rootState): StateProps {
+function mapStateToProps(rootState, {type}): StateProps {
 	const firstRowKey = rootState.get('authorCreditEditor').keySeq().first();
 	const authorCreditRow = rootState.getIn(['authorCreditEditor', firstRowKey]);
 	const isEditable = !(rootState.get('authorCreditEditor').size > 1) &&
-	 authorCreditRow.get('name') === authorCreditRow.getIn(['author', 'text'], '');
+	authorCreditRow.get('name') === authorCreditRow.getIn(['author', 'text'], '');
+	const entitySection = `${camelCase(type)}Section`;
 	return {
 		authorCreditEditor: rootState.get('authorCreditEditor'),
 		isEditable,
-		showEditor: rootState.getIn(['editionSection', 'authorCreditEditorVisible'])
+		showEditor: rootState.getIn([entitySection, 'authorCreditEditorVisible'])
 	};
 }
 
