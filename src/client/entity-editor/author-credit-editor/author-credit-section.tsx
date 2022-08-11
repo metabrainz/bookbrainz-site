@@ -85,7 +85,7 @@ function AuthorCreditSection({
 		</Button>);
 
 	const label = (
-		<ValidationLabel empty={authorCreditPreview.length === 0} error={!isValid}>
+		<ValidationLabel empty={false} error={!isValid}>
 			Author Credit
 		</ValidationLabel>
 	);
