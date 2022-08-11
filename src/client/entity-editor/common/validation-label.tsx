@@ -66,7 +66,7 @@ type Props = {
 	empty?: boolean,
 	error?: boolean,
 	errorMessage?: '',
-	isUnifiedForm?: boolean,
+	hideIcon?: boolean,
 	warn?: boolean,
 	warnMessage?: ''
 };
@@ -89,7 +89,7 @@ function ValidationLabel({
 	children,
 	empty,
 	error,
-	isUnifiedForm,
+	hideIcon,
 	errorMessage,
 	warn,
 	warnMessage
@@ -98,7 +98,7 @@ function ValidationLabel({
 		<span className={contextualColor(empty, error, warn)}> {warnMessage} </span>;
 	const errorElement = errorMessage && error &&
 		<span className={contextualColor(empty, error, warn)}> {errorMessage} </span>;
-	const iconElement = !isUnifiedForm && icon(empty, error, warn) &&
+	const iconElement = !hideIcon && icon(empty, error, warn) &&
 		<FontAwesomeIcon className="margin-left-0-5" icon={icon(empty, error, warn)}/>;
 
 	return (
@@ -116,7 +116,7 @@ ValidationLabel.defaultProps = {
 	empty: false,
 	error: false,
 	errorMessage: '',
-	isUnifiedForm: false,
+	hideIcon: false,
 	warn: false,
 	warnMessage: ''
 };

@@ -63,13 +63,13 @@ export function UnifiedForm(props:UnifiedFormProps) {
 			<div className="uf-tab">
 				<h4>Add Book</h4>
 				<Tabs activeKey={tabKey} className="uf-tab-header" id="controlled-tab" onSelect={setTabKey}>
-					<Tab eventKey="cover" title={<ValidationLabel isUnifiedForm empty={coverTabEmpty} error={!coverTabValid}>Cover</ValidationLabel>}>
+					<Tab eventKey="cover" title={<ValidationLabel hideIcon empty={coverTabEmpty} error={!coverTabValid}>Cover</ValidationLabel>}>
 						<CoverTab {...rest} identifierTypes={editionIdentifierTypes as IdentifierType[]}/>
 					</Tab>
-					<Tab eventKey="detail" title={<ValidationLabel isUnifiedForm empty={detailTabEmpty} error={!detailTabValid}>Details</ValidationLabel>}>
+					<Tab eventKey="detail" title={<ValidationLabel hideIcon empty={detailTabEmpty} error={!detailTabValid}>Details</ValidationLabel>}>
 						<DetailTab {...rest}/>
 					</Tab>
-					<Tab eventKey="content" title={<ValidationLabel isUnifiedForm empty={contentTabEmpty}>Contents</ValidationLabel>}>
+					<Tab eventKey="content" title={<ValidationLabel hideIcon empty={contentTabEmpty}>Contents</ValidationLabel>}>
 						<ContentTab {...rest}/>
 					</Tab>
 					<Tab disabled={!formValid} eventKey="submit" title="Submit">

@@ -22,15 +22,17 @@ import {map as _map} from 'lodash';
 
 
 function AuthorCreditDisplay({names}) {
-	const authorBBID = name.authorBBID ?? name.author?.id;
-	const nameElements = _map(names, (name) => (
-		<span key={`author-credit-${authorBBID}`}>
-			<a href={`/author/${authorBBID}`}>
-				{name.name}
-			</a>
-			{name.joinPhrase}
-		</span>
-	));
+	const nameElements = _map(names, (name) => {
+		const authorBBID = name.authorBBID ?? name.author?.id;
+		return (
+			<span key={`author-credit-${authorBBID}`}>
+				<a href={`/author/${authorBBID}`}>
+					{name.name}
+				</a>
+				{name.joinPhrase}
+			</span>
+		);
+	});
 
 	return (
 		<span>
