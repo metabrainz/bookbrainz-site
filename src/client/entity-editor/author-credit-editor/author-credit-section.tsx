@@ -28,7 +28,7 @@ import {
 import {Button, Col, Form, InputGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 
 import {SingleValueProps, components} from 'react-select';
-import {map as _map, values as _values} from 'lodash';
+import {map as _map, values as _values, camelCase} from 'lodash';
 
 import {faPencilAlt, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import AuthorCreditEditor from './author-credit-editor';
@@ -143,15 +143,16 @@ AuthorCreditSection.propTypes = {
 	showEditor: PropTypes.bool.isRequired
 };
 
-function mapStateToProps(rootState): StateProps {
+function mapStateToProps(rootState, {type}): StateProps {
 	const firstRowKey = rootState.get('authorCreditEditor').keySeq().first();
 	const authorCreditRow = rootState.getIn(['authorCreditEditor', firstRowKey]);
 	const isEditable = !(rootState.get('authorCreditEditor').size > 1) &&
-	 authorCreditRow.get('name') === authorCreditRow.getIn(['author', 'text'], '');
+	authorCreditRow.get('name') === authorCreditRow.getIn(['author', 'text'], '');
+	const entitySection = `${camelCase(type)}Section`;
 	return {
 		authorCreditEditor: convertMapToObject(rootState.get('authorCreditEditor')),
 		isEditable,
-		showEditor: rootState.getIn(['editionSection', 'authorCreditEditorVisible'])
+		showEditor: rootState.getIn([entitySection, 'authorCreditEditorVisible'])
 	};
 }
 
