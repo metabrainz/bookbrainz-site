@@ -55,7 +55,6 @@ export default ({
 		'BookBrainz – The Open Book Database'}</title>
 			<link rel='stylesheet' href='/stylesheets/bundle.css' />
 			<link rel='stylesheet' href='/stylesheets/style.css' />
-			<link rel='stylesheet' href='/stylesheets/external-services.css' />
 			<meta charset='utf-8'>
 			<meta name='viewport'
 				content='width=device-width, initial-scale=1, shrink-to-fit=no'>
