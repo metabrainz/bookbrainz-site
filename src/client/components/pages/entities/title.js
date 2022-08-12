@@ -36,14 +36,16 @@ function EntityTitle({entity, handleModalToggle}) {
 		<div>
 			<h1>
 				{label}{disambiguation}
-				<Button
-					className="float-right"
-					variant="success"
-					onClick={handleModalToggle}
-				>
-					<FontAwesomeIcon icon={faPlus}/>
-					{'  Add a review'}
-				</Button>
+				{handleModalToggle &&
+					<Button
+						className="float-right"
+						variant="success"
+						onClick={handleModalToggle}
+					>
+						<FontAwesomeIcon icon={faPlus}/>
+						{'  Add a review'}
+					</Button>
+				}
 			</h1>
 			{aliases}
 		</div>
@@ -52,7 +54,10 @@ function EntityTitle({entity, handleModalToggle}) {
 EntityTitle.displayName = 'EntityTitle';
 EntityTitle.propTypes = {
 	entity: PropTypes.object.isRequired,
-	handleModalToggle: PropTypes.func.isRequired
+	handleModalToggle: PropTypes.func
+};
+EntityTitle.defaultProps = {
+	handleModalToggle: null
 };
 
 export default EntityTitle;

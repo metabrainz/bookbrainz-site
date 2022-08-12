@@ -144,16 +144,14 @@ export async function getReviewsFromCB(bbid: string,
 		Work: 'bb_literary_work'
 	};
 	const cbEntityType = mapEntityType[entityType];
-	if (!entityType) {
+	if (!cbEntityType) {
 		return {reviews: [], successfullyFetched: true};
 	}
 	try {
 		const res = await request
 			.get(REVIEW_URL)
 			.query({
-				// eslint-disable-next-line camelcase
 				entity_id: bbid,
-				// eslint-disable-next-line camelcase
 				entity_type: cbEntityType,
 				limit: 3,
 				offset: 0
