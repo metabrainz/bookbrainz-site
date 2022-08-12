@@ -42,6 +42,7 @@ router.post('/:entityType/:bbid/reviews', auth.isAuthenticated, async (req, res)
 		review
 	);
 
+	let newAccessToken = '';
 	// If the token has expired, we try to refresh it and then submit the review again.
 	if (response?.error === 'invalid_token') {
 		try {
@@ -51,20 +52,20 @@ router.post('/:entityType/:bbid/reviews', auth.isAuthenticated, async (req, res)
 				orm
 			);
 
-			const newAccessToken = await cbHelper.refreshAccessToken(
+			newAccessToken = await cbHelper.refreshAccessToken(
 				editorId,
 				token.refresh_token,
 				orm
-			);
-
-			response = await cbHelper.submitReviewToCB(
-				newAccessToken.access_token,
-				review
 			);
 		}
 		catch (error) {
 			return res.json({error: error.message});
 		}
+
+		response = await cbHelper.submitReviewToCB(
+			newAccessToken.access_token,
+			review
+		);
 	}
 
 	return res.json(response);

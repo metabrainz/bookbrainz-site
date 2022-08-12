@@ -161,7 +161,7 @@ export async function getReviewsFromCB(bbid: string,
 		return {reviews: res.body, successfullyFetched: true};
 	}
 	catch (err) {
-		log.error(err);
+		log.error(err.response?.error);
 		return {reviews: [], successfullyFetched: false};
 	}
 }
