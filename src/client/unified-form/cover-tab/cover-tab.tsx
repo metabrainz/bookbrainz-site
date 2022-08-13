@@ -14,7 +14,8 @@ import {updatePublisher} from '../../entity-editor/edition-section/actions';
 
 
 export function CoverTab(props:CoverProps) {
-	const {publisherValue: publishers, onPublisherChange, identifierEditorVisible, onClearPublisher, handleClearPublishers, modalIsOpen} = props;
+	const {publisherValue: publishers, onPublisherChange, identifierEditorVisible,
+		onClearPublisher, handleClearPublishers, modalIsOpen, ...rest} = props;
 	const publisherValue:EntitySelect[] = Object.values(convertMapToObject(publishers ?? {}));
 	const onChangeHandler = React.useCallback((value:EntitySelect[], action) => {
 		if (['remove-value', 'pop-value'].includes(action.action)) {
@@ -29,8 +30,8 @@ export function CoverTab(props:CoverProps) {
 	}, []);
 	return (
 		<div>
-			<NameSection {...props} copyLanguages setDefault={modalIsOpen}/>
-			<AuthorCreditSection {...props} type="edition"/>
+			<NameSection copyLanguages setDefault={modalIsOpen} {...rest}/>
+			<AuthorCreditSection type="edition" {...rest}/>
 			<Row>
 				<Col lg={{offset: 0, span: 6}}>
 					<SearchEntityCreate
@@ -39,7 +40,7 @@ export function CoverTab(props:CoverProps) {
 						type="publisher"
 						value={publisherValue}
 						onChange={onChangeHandler}
-						{...props}
+						{...rest}
 					/>
 				</Col>
 			</Row>
@@ -50,8 +51,8 @@ export function CoverTab(props:CoverProps) {
 				</Col>
 			</Row>
 
-			<ButtonBar {...props}/>
-			<IdentifierEditor show={identifierEditorVisible} {...props}/>
+			<ButtonBar {...rest}/>
+			<IdentifierEditor show={identifierEditorVisible} {...rest}/>
 		</div>
 
 		 );

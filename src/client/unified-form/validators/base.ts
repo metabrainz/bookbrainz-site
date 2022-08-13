@@ -7,7 +7,7 @@ import {validateISBN} from './cover-tab';
  * Validate the unified form state
  *
  * @param {Function} validator - validator function
- * @returns {(state,...args) => boolean} - uf validator function
+ * @returns {Function} - uf validator function
  */
 
 export function getUfValidator(validator:any): {(state: State, ...args: any[]): boolean} {
