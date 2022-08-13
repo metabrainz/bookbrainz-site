@@ -89,8 +89,8 @@ export type ISBNStateProps = {
 	value:string
 };
 export type ISBNDispatchProps = {
-    onChange: (arg:RInputEvent)=>unknown,
-	onAutoISBNChange: (arg:RInputEvent)=>unknown,
+    onChange: (...arg)=>unknown,
+	onAutoISBNChange: (arg:boolean)=>unknown,
 };
 export type ISBNProps = ISBNStateProps & ISBNDispatchProps;
 
