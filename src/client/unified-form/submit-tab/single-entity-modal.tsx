@@ -4,7 +4,6 @@ import {SingleEntityModalProps} from '../interface/type';
 import _ from 'lodash';
 import {dateObjectToISOString} from '../../helpers/utils';
 
-
 /* eslint-disable sort-keys */
 const BASE_ENTITY = {
 	Name: 'nameSection.name',
@@ -21,7 +20,7 @@ const ENTITY_FIELDS = {
 		format: 'editionSection.format',
 		'Release-date': 'editionSection.releaseDate',
 		status: 'editionSection.status',
-		'Edition-languages': 'editionSection.languages',
+		'Edition-Languages': 'editionSection.languages',
 		pages: 'editionSection.pages',
 		width: 'editionSection.width',
 		height: 'editionSection.height',
@@ -36,29 +35,30 @@ const ENTITY_FIELDS = {
 		...BASE_ENTITY,
 		Gender: 'authorSection.gender',
 		Type: 'authorSection.type',
-		'Begin-date': 'authorSection.beginDate',
-		'Begin-area': 'authorSection.beginArea.text',
+		'Begin-Date': 'authorSection.beginDate',
+		'Begin-Area': 'authorSection.beginArea.text',
 		'Dead?': 'authorSection.ended',
-		'End-date': 'authorSection.endDate',
-		'End-area': 'authorSection.endArea.text'
+		'End-Date': 'authorSection.endDate',
+		'End-Area': 'authorSection.endArea.text'
 	},
 	publisher: {
 		...BASE_ENTITY,
 		Type: 'publisherSection.type',
-		'Begin-date': 'publisherSection.beginDate',
+		'Begin-Date': 'publisherSection.beginDate',
 		'Dissolved?': 'publisherSection.ended',
-		'End-date': 'publisherSection.endDate'
+		'End-Date': 'publisherSection.endDate'
 
 	},
 	series: {
 		...BASE_ENTITY,
 		orderType: 'seriesSection.orderType',
+		'Series-Items': 'seriesSection.seriesItems',
 		seriesType: 'seriesSection.seriesType'
 	},
 	work: {
 		...BASE_ENTITY,
 		type: 'workSection.type',
-		'Work-languages': 'workSection.languages'
+		'Work-Languages': 'workSection.languages'
 	}
 };
 export default function SingleEntityModal({entity, show, handleClose, languageOptions}:SingleEntityModalProps) {
@@ -73,11 +73,18 @@ export default function SingleEntityModal({entity, show, handleClose, languageOp
 			fieldVal = id2LanguageMap[fieldVal];
 		}
 		// correctly format multiple languages
-		if (key.includes('languages')) {
+		if (path.includes('languages')) {
 			fieldVal = _.reduce(fieldVal, (acc, next) => `${acc}${acc.length !== 0 ? ',' : ''} ${next.label}`, '');
 		}
+		// correctly format series items
+		if (path.includes('seriesItems')) {
+			fieldVal = _.reduce(
+				fieldVal,
+				(acc, nextVal) => `${acc.length > 0 ? `${acc}, ` : acc}${_.get(nextVal, ['sourceEntity', 'defaultAlias', 'name'], '<unknown>')}`, ''
+			);
+		}
 		// correctly format date attribute
-		if (key.includes('date')) {
+		if (path.includes('Date')) {
 			if (typeof fieldVal !== 'string') {
 				if (!fieldVal.day && !fieldVal.month && !fieldVal.year) {
 					return;

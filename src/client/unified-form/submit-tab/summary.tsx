@@ -1,5 +1,5 @@
 import {Badge, ListGroup} from 'react-bootstrap';
-import {Entity, SummarySectionProps, SummarySectionStateProps} from '../interface/type';
+import {Entity, State, SummarySectionProps, SummarySectionStateProps} from '../interface/type';
 import Immutable from 'immutable';
 import React from 'react';
 import SingleEntity from './single-entity';
@@ -61,7 +61,7 @@ function SummarySection({
 function getEntitiesArray(state: Immutable.Map<string, any>): Array<Entity> {
 	return Object.values(convertMapToObject(state));
 }
-function mapStateToProps(state) {
+function mapStateToProps(state:State) {
 	let EditionGroups = getEntitiesArray(state.get('EditionGroups'));
 	const Editions:Entity[] = [{
 		__isNew__: true,
@@ -75,12 +75,14 @@ function mapStateToProps(state) {
 		EditionGroups[0].type = 'EditionGroup';
 		EditionGroups[0].id = 'eg0';
 	}
+	// copy global series section to selected series.
+	const Series = getEntitiesArray(state.get('Series').map((series) => series.set('seriesSection', state.getIn(['seriesSection']))));
 	return {
 		Authors: getEntitiesArray(state.get('Authors')),
 		EditionGroups,
 		Editions,
 		Publishers: getEntitiesArray(state.get('Publishers')),
-		Series: getEntitiesArray(state.get('Series')),
+		Series,
 		Works: getEntitiesArray(state.get('Works'))
 	};
 }
