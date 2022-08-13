@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button} from 'react-bootstrap';
+import {Badge, Button} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -43,15 +43,20 @@ function IdentifierButton({
 	isUnifiedForm,
 	...props
 }) {
-	let text = 'Add identifiers (eg. ISBN, Wikidata ID)…';
-	if (numIdentifiers === 1) {
-		text = 'Edit 1 identifier (eg. ISBN, Wikidata ID)…';
+	let textComponent = 'Add identifiers (eg. ISBN, Wikidata ID)…';
+	if (!isUnifiedForm) {
+		if (numIdentifiers === 1) {
+			textComponent = 'Edit 1 identifier (eg. ISBN, Wikidata ID)…';
+		}
+		else if (numIdentifiers > 1) {
+			textComponent = `Edit ${numIdentifiers} identifiers (eg. ISBN, Wikidata ID)…`;
+		}
 	}
-	else if (numIdentifiers > 1) {
-		text = `Edit ${numIdentifiers} identifiers (eg. ISBN, Wikidata ID)…`;
+	else if (identifiersInvalid > 0) {
+		textComponent = <span>Edit identifiers <Badge className="ml-1" variant="light">{numIdentifiers}</Badge></span>;
 	}
-	if (isUnifiedForm) {
-		text = `Add ${numIdentifiers} identifiers`;
+	else {
+		textComponent = 'Add Identifiers';
 	}
 	const iconElement = identifiersInvalid &&
 		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes}/>;
@@ -59,7 +64,7 @@ function IdentifierButton({
 	return (
 		<Button variant={!isUnifiedForm && 'link'} {...props}>
 			{iconElement}
-			{text}
+			{textComponent}
 		</Button>
 	);
 }
