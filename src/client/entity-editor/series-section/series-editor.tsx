@@ -84,9 +84,10 @@ type SeriesItemsProps = {
 
 const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemove, dragHandler, isUnifiedForm}) => (
 	<Row className={`margin-top-d5 ${isUnifiedForm ? 'w-100 align-items-center' : ''}`} key={value.rowID}>
+		{(!isUnifiedForm || dragHandler) &&
 		<Col className="text-right form-control-static padding-left-0" lg={1}>
 			{dragHandler ? <><FontAwesomeIcon icon={faBars}/> &nbsp;&nbsp;</> : null}
-		</Col>
+		</Col>}
 		<Col lg={2}>
 			<input
 				className="form-control"

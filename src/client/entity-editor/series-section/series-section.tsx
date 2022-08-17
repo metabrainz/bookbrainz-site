@@ -208,6 +208,7 @@ function SeriesSection({
 							onChange={onOrderTypeChange}
 						/>
 					</Form.Group>
+					{!isUnifiedForm &&
 					<Form.Group>
 						<Form.Label>
 							Series Type
@@ -228,7 +229,7 @@ function SeriesSection({
 							value={seriesTypeOption}
 							onChange={onSeriesTypeChange}
 						/>
-					</Form.Group>
+					</Form.Group>}
 				</Col>
 			</Row>
 			}
@@ -269,11 +270,11 @@ function mapStateToProps(rootState, {isUnifiedForm}): StateProps {
 			type: _.get(entity, 'type')
 		}));
 	}
-
+	const entityPath = isUnifiedForm ? ['Series', 's0', 'text'] : ['nameSection', 'name'];
 
 	return {
 		defaultOptions,
-		entityName: rootState.getIn(['nameSection', 'name']),
+		entityName: rootState.getIn(entityPath),
 		orderTypeValue: state.get('orderType'),
 		seriesItems: state.get('seriesItems'),
 		seriesTypeValue
