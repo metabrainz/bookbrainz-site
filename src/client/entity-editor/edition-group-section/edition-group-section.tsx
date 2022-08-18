@@ -34,7 +34,7 @@ type EditionGroupType = {
 };
 
 type StateProps = {
-	typeValue: number
+	typeValue: Map<string, any>
 };
 
 type DispatchProps = {
@@ -42,7 +42,9 @@ type DispatchProps = {
 };
 
 type OwnProps = {
-	editionGroupTypes: Array<EditionGroupType>
+	editionGroupTypes: Array<EditionGroupType>,
+	isUnifiedForm?: boolean,
+	isLeftAlign?:boolean
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -65,6 +67,8 @@ type Props = StateProps & DispatchProps & OwnProps;
 function EditionGroupSection({
 	editionGroupTypes,
 	typeValue,
+	isUnifiedForm,
+	isLeftAlign,
 	onTypeChange
 }: Props) {
 	const editionGroupTypesForDisplay = editionGroupTypes.map((type) => ({
@@ -73,19 +77,21 @@ function EditionGroupSection({
 	}));
 	const typeOption = editionGroupTypesForDisplay.filter((el) => el.value === typeValue);
 	const tooltip = <Tooltip>Physical format of the Edition Group</Tooltip>;
-
+	const heading = <h2>What else do you know about the Edition Group?</h2>;
+	const lgCol = {offset: 3, span: 6};
+	if (isUnifiedForm) {
+		lgCol.offset = 0;
+	}
 	return (
 		<div>
-			<h2>
-				What else do you know about the Edition Group?
-			</h2>
-			<AuthorCreditSection type="editionGroup"/>
+			{!isUnifiedForm && heading}
+			<AuthorCreditSection type="editionGroup" isLeftAlign={isLeftAlign}/>
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
 				know it
 			</p>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>
 							Type
@@ -110,6 +116,10 @@ function EditionGroupSection({
 	);
 }
 EditionGroupSection.displayName = 'EditionGroupSection';
+EditionGroupSection.defaultProps = {
+	isLeftAlign: false,
+	isUnifiedForm: false
+};
 
 function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('editionGroupSection');

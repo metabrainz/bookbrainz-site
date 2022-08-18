@@ -214,8 +214,8 @@ export async function handleAddRelationship(
 async function processRelationship(rels:Record<string, any>[], mainEntity, bbidMap:Record<string, any>, editorId:number, orm, transacting) {
 	if (!_.isEmpty(rels)) {
 		const relationships = rels.map((rel) => (
-			{...rel, sourceBbid: _.get(bbidMap, rel.sourceBbid) ?? rel.sourceBbid,
-			 targetBbid: _.get(bbidMap, rel.targetBbid) ?? rel.targetBbid}
+			{...rel, sourceBbid: _.get(bbidMap, rel.sourceBbid) ?? rel.sourceBbid ?? mainEntity.bbid,
+			 targetBbid: _.get(bbidMap, rel.targetBbid) ?? rel.targetBbid ?? mainEntity.bbid}
 		));
 		const {relationshipSetId} = await handleAddRelationship({relationships}, editorId,
 			mainEntity, mainEntity.type, orm, transacting);
@@ -291,6 +291,8 @@ export function handleCreateMultipleEntities(
 			if (_.isEmpty(changedProps)) {
 				savedMainEntities[entityKey] = currentEntity;
 				_.set(savedMainEntities[entityKey], ['relationshipSet', 'id'], savedMainEntities[entityKey].relationshipSetId);
+				// remove the revision if no changes made
+				await newRevision.destroy({transacting});
 				return;
 			}
 			const mainEntity = await fetchOrCreateMainEntity(

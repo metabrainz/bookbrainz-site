@@ -17,6 +17,7 @@
  */
 
 
+import {isbn10To13, isbn13To10} from '../../../common/helpers/utils';
 import type {Map} from 'immutable';
 import _ from 'lodash';
 import request from 'superagent';
@@ -113,14 +114,146 @@ function postSubmission(url: string, data: Map<string, any>): Promise<void> {
 			}
 		});
 }
+function transformFormData(data:Record<string, any>):Record<string, any> {
+	const newData = {};
+	const nextId = 0;
+	// add new publishers
+	_.forEach(data.Publishers, (publisher, pid) => {
+		if (publisher.__isNew__) {
+			newData[pid] = publisher;
+		}
+	});
+	// add new authors
+	_.forEach(data.Authors, (author, aid) => {
+		if (author.__isNew__) {
+			newData[aid] = author;
+		}
+	});
+	// add new series
+	_.forEach(data.Series, (series, sid) => {
+		// sync local series section with global series section
+		series.seriesSection = data.seriesSection;
+		_.forEach(series.seriesSection.seriesItems, (item) => {
+			_.set(item, 'targetEntity.bbid', series.id);
+		});
+		if (series.__isNew__ || _.size(series.seriesSection.seriesItems) > 0) {
+			if (!series.__isNew__) {
+				series.__isNew__ = false;
+				series.submissionSection = {
+					note: _.get(data, ['submissionSection', 'note'])
+				};
+			}
+			newData[sid] = series;
+		}
+	});
+	// add new works
+	const authorWorkRelationshipTypeId = 8;
+	_.forEach(data.Works, (work, wid) => {
+		if (work.checked) {
+			let relationshipCount = 0;
+			_.forEach(data.authorCreditEditor, (authorCredit) => {
+				const relationship = {
+					attributeSetId: null,
+					attributes: [],
+					relationshipType: {
+						id: authorWorkRelationshipTypeId
+					},
+					rowId: `a${relationshipCount}`,
+					sourceEntity: {
+					  bbid: authorCredit.author.id
+					},
+					targetEntity: {
+						bbid: work.id
+				  }
+				};
+				_.set(work, ['relationshipSection', 'relationships', `a${relationshipCount}`], relationship);
+				relationshipCount++;
+			});
+			if (!work.__isNew__) {
+				work.submissionSection = {
+					note: _.get(data, ['submissionSection', 'note'])
+				};
+				work.__isNew__ = false;
+			}
+		}
+
+		if (work.__isNew__ || work.checked) {
+			newData[wid] = work;
+		}
+	});
+	// add new ediiton group(s)
+	_.forEach(data.EditionGroups, (editionGroup, egid) => {
+		if (editionGroup.__isNew__) {
+			newData[egid] = editionGroup;
+		}
+	});
+	// add edition at last
+	if (data.ISBN.type) {
+		data.identifierEditor.m0 = data.ISBN;
+	}
+	data.editionSection.publisher = _.get(data.editionSection, ['publisher'], {});
+	data.relationshipSection.relationships = _.mapValues(data.Works, (work, key) => {
+		const relationship = {
+			attributeSetId: null,
+			attributes: [],
+			relationshipType: {
+				id: 10
+			},
+			rowID: key,
+			sourceEntity: {
+				bbid: `e${nextId}`
+			},
+			targetEntity: {
+				bbid: work.id
+			}
+		};
+		return relationship;
+	});
+	newData[`e${nextId}`] = {...data, type: 'Edition'};
+	return newData;
+}
+
+function postUFSubmission(url: string, data: Map<string, any>): Promise<void> {
+	// transform data
+	const jsonData = data.toJS();
+	const postData = transformFormData(jsonData);
+	return request.post(url).send(postData)
+		.then((response) => {
+			if (!response.body) {
+				window.location.replace('/login');
+			}
+			const editionEntity = response.body.find((entity) => entity.type === 'Edition');
+			const redirectUrl = `/edition/${editionEntity.bbid}`;
+			if (response.body.alert) {
+				const alertParam = `?alert=${response.body.alert}`;
+				window.location.href = `${redirectUrl}${alertParam}`;
+			}
+			else {
+				window.location.href = redirectUrl;
+			}
+		});
+}
 
 type SubmitResult = (arg1: (Action) => unknown, arg2: () => Map<string, any>) => unknown;
 export function submit(
-	submissionUrl: string
+	submissionUrl: string,
+	isUnifiedForm = false
 ): SubmitResult {
 	return (dispatch, getState) => {
 		const rootState = getState();
 		dispatch(setSubmitted(true));
+		if (isUnifiedForm) {
+			return postUFSubmission(submissionUrl, rootState)
+				.catch(
+					(error: {message: string}) => {
+						const message =
+						_.get(error, ['response', 'body', 'error'], null) ||
+						error.message;
+						dispatch(setSubmitted(false));
+						return dispatch(setSubmitError(message));
+					}
+				);
+		}
 		return postSubmission(submissionUrl, rootState)
 			.catch(
 				(error: {message: string}) => {

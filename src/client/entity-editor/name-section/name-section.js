@@ -17,6 +17,7 @@
  */
 
 import {Alert, Col, ListGroup, Row} from 'react-bootstrap';
+import {UPDATE_WARN_IF_EDITION_GROUP_EXISTS, addLanguage} from '../edition-section/actions';
 import {
 	checkIfNameExists,
 	debouncedUpdateDisambiguationField,
@@ -34,13 +35,13 @@ import {
 } from '../validators/common';
 
 import DisambiguationField from './disambiguation-field';
+import Immutable from 'immutable';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SearchResults from '../../components/pages/parts/search-results';
 import SortNameField from '../common/sort-name-field';
-import {UPDATE_WARN_IF_EDITION_GROUP_EXISTS} from '../edition-section/actions';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
@@ -132,11 +133,45 @@ class NameSection extends React.Component {
 		this.nameInputRef = inputRef;
 	}
 
+	renderDuplicateAlert(warnIfExists, disambiguationDefaultValue, exactMatches, entityType, lgCol) {
+		return (
+			<Col lg={lgCol}>
+				{isRequiredDisambiguationEmpty(
+					warnIfExists,
+					disambiguationDefaultValue
+				) ?
+					<Alert variant="warning">
+					We found the following&nbsp;
+						{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} with
+					exactly the same name or alias:
+						<br/><small className="text-muted">Click on a name to open it (Ctrl/Cmd + click to open in a new tab)</small>
+						<ListGroup activeKey={null} className="margin-top-1 margin-bottom-1">
+							{exactMatches.map((match) =>
+								(
+									<ListGroup.Item
+										action
+										href={`/${_.kebabCase(entityType)}/${match.bbid}`}
+										key={`${match.bbid}`}
+										rel="noopener noreferrer" target="_blank"
+										variant="warning"
+									>
+										{match.defaultAlias.name} {getEntityDisambiguation(match)}
+									</ListGroup.Item>
+								))}
+						</ListGroup>
+					If you are sure your entry is different, please fill the
+					disambiguation field below to help us differentiate between them.
+					</Alert> : null
+				}
+			</Col>
+		);
+	}
+
 	render() {
 		const {
 			disambiguationDefaultValue,
 			entityType,
-			exactMatches,
+			exactMatches: immutableExactMatches,
 			languageOptions,
 			languageValue,
 			nameValue,
@@ -144,9 +179,12 @@ class NameSection extends React.Component {
 			onLanguageChange,
 			onSortNameChange,
 			onDisambiguationChange,
-			searchResults
+			searchResults: immutableSearchResults,
+			isUnifiedForm,
+			isModal
 		} = this.props;
-
+		const exactMatches = convertMapToObject(immutableExactMatches);
+		const searchResults = convertMapToObject(immutableSearchResults);
 		const languageOptionsForDisplay = languageOptions.map((language) => ({
 			frequency: language.frequency,
 			label: language.name,
@@ -155,11 +193,27 @@ class NameSection extends React.Component {
 
 		const warnIfExists = !_.isEmpty(exactMatches);
 		const languageOption = languageOptionsForDisplay.filter((el) => el.value === languageValue);
+		const lgCol = {offset: 3, span: 6};
+		if (isUnifiedForm) {
+			lgCol.offset = 0;
+		}
+		const duplicateSuggestions = !warnIfExists &&
+		!_.isEmpty(searchResults) &&
+		<Row>
+			<Col lg={lgCol}>
+				If the {_.startCase(entityType)} you want to add appears in the results
+				below, click on it to inspect it before adding a possible duplicate.<br/>
+				<small>Ctrl/Cmd + click to open in a new tab</small>
+				<SearchResults condensed results={searchResults}/>
+			</Col>
+		</Row>;
+		const duplicateAlert = this.renderDuplicateAlert(warnIfExists, disambiguationDefaultValue, exactMatches, entityType, lgCol);
+		const heading = <h2>{`What is the ${_.startCase(entityType)} called?`}</h2>;
 		return (
 			<div>
-				<h2>{`What is the ${_.startCase(entityType)} called?`}</h2>
+				{!isUnifiedForm && heading}
 				<Row>
-					<Col lg={{offset: 3, span: 6}}>
+					<Col lg={lgCol}>
 						<NameField
 							defaultValue={nameValue}
 							empty={isAliasEmpty(
@@ -176,50 +230,13 @@ class NameSection extends React.Component {
 							onChange={this.handleNameChange}
 						/>
 					</Col>
-					<Col lg={{offset: 3, span: 6}}>
-						{isRequiredDisambiguationEmpty(
-							warnIfExists,
-							disambiguationDefaultValue
-						) ?
-							<Alert variant="warning">
-									We found the following&nbsp;
-								{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} with
-									exactly the same name or alias:
-								<br/><small className="text-muted">Click on a name to open it (Ctrl/Cmd + click to open in a new tab)</small>
-								<ListGroup activeKey={null} className="margin-top-1 margin-bottom-1">
-									{exactMatches.map((match) =>
-										(
-											<ListGroup.Item
-												action
-												href={`/${_.kebabCase(entityType)}/${match.bbid}`}
-												key={`${match.bbid}`}
-												rel="noopener noreferrer" target="_blank"
-												variant="warning"
-											>
-												{match.defaultAlias.name} {getEntityDisambiguation(match)}
-											</ListGroup.Item>
-										))}
-								</ListGroup>
-									If you are sure your entry is different, please fill the
-									disambiguation field below to help us differentiate between them.
-							</Alert> : null
-						}
-					</Col>
+					{!isModal && duplicateAlert}
 				</Row>
 				{
-					!warnIfExists &&
-						!_.isEmpty(searchResults) &&
-						<Row>
-							<Col lg={{offset: 3, span: 6}}>
-								If the {_.startCase(entityType)} you want to add appears in the results
-								below, click on it to inspect it before adding a possible duplicate.<br/>
-								<small>Ctrl/Cmd + click to open in a new tab</small>
-								<SearchResults condensed results={searchResults}/>
-							</Col>
-						</Row>
+					!isModal && duplicateSuggestions
 				}
 				<Row>
-					<Col lg={{offset: 3, span: 6}}>
+					<Col lg={lgCol}>
 						<SortNameField
 							defaultValue={sortNameValue}
 							empty={isAliasEmpty(
@@ -232,7 +249,7 @@ class NameSection extends React.Component {
 					</Col>
 				</Row>
 				<Row>
-					<Col lg={{offset: 3, span: 6}}>
+					<Col lg={lgCol}>
 						<ImmutableLanguageField
 							empty={isAliasEmpty(
 								nameValue, sortNameValue, languageValue
@@ -247,7 +264,7 @@ class NameSection extends React.Component {
 					</Col>
 				</Row>
 				<Row>
-					<Col lg={{offset: 3, span: 6}}>
+					<Col lg={lgCol}>
 						<DisambiguationField
 							defaultValue={disambiguationDefaultValue}
 							error={isRequiredDisambiguationEmpty(
@@ -262,6 +279,10 @@ class NameSection extends React.Component {
 						/>
 					</Col>
 				</Row>
+				{isModal && <Row>{duplicateAlert}</Row>}
+				{
+					isModal && duplicateSuggestions
+				}
 			</div>
 		);
 	}
@@ -271,7 +292,9 @@ NameSection.propTypes = {
 	action: PropTypes.string,
 	disambiguationDefaultValue: PropTypes.string,
 	entityType: entityTypeProperty.isRequired,
-	exactMatches: PropTypes.array,
+	exactMatches: PropTypes.object,
+	isModal: PropTypes.bool,
+	isUnifiedForm: PropTypes.bool,
 	languageOptions: PropTypes.array.isRequired,
 	languageValue: PropTypes.number,
 	nameValue: PropTypes.string.isRequired,
@@ -283,20 +306,22 @@ NameSection.propTypes = {
 	onNameChangeSearchName: PropTypes.func.isRequired,
 	onSortNameChange: PropTypes.func.isRequired,
 	searchForExistingEditionGroup: PropTypes.bool,
-	searchResults: PropTypes.array,
+	searchResults: PropTypes.object,
 	sortNameValue: PropTypes.string.isRequired
 };
 NameSection.defaultProps = {
 	action: 'create',
 	disambiguationDefaultValue: null,
 	exactMatches: [],
+	isModal: false,
+	isUnifiedForm: false,
 	languageValue: null,
 	searchForExistingEditionGroup: true,
 	searchResults: []
 };
 
 
-function mapStateToProps(rootState) {
+function mapStateToProps(rootState, {isUnifiedForm, setDefault, entityType}) {
 	const state = rootState.get('nameSection');
 	const editionSectionState = rootState.get('editionSection');
 	const searchForExistingEditionGroup = Boolean(editionSectionState) &&
@@ -304,24 +329,60 @@ function mapStateToProps(rootState) {
 		!editionSectionState.get('editionGroup') ||
 		editionSectionState.get('editionGroupRequired')
 	);
+	let exactMatches = state.get('exactMatches');
+	const nameValue = state.get('name');
+	// search for duplicates with same name in new entities
+	// show warning when user tries to create a duplicate new entity
+	if (isUnifiedForm && entityType && nameValue.length > 0 && _.size(exactMatches) === 0) {
+		const stateSelector = `${_.upperFirst(_.snakeCase(entityType))}s`;
+		const entities = rootState.get(stateSelector, {});
+		const entitiesJSON = convertMapToObject(entities);
+		const matchEntities = [];
+		_.map(entitiesJSON, (value) => {
+			if (value.__isNew__ && nameValue === _.get(value, ['nameSection', 'name'], '')) {
+				const disambiguation = _.get(value, ['nameSection', 'disambiguation'], '');
+				matchEntities.push({
+					bbid: '#',
+					defaultAlias: {
+						name: nameValue
+					},
+					disambiguation: disambiguation.length > 0 && {
+						comment: disambiguation
+					}
+				});
+			}
+		});
+		exactMatches = matchEntities;
+	}
+	// to prevent double double state updates on action caused by modal
+	if (isUnifiedForm && setDefault) {
+		return {
+			disambiguationDefaultValue: '',
+			exactMatches: Immutable.Map([]),
+			languageValue: null,
+			nameValue: '',
+			searchResults: Immutable.Map([]),
+			sortNameValue: ''
+		};
+	}
 	return {
 		disambiguationDefaultValue: state.get('disambiguation'),
-		exactMatches: convertMapToObject(state.get('exactMatches')),
+		exactMatches,
 		languageValue: state.get('language'),
-		nameValue: state.get('name'),
+		nameValue,
 		searchForExistingEditionGroup,
-		searchResults: convertMapToObject(state.get('searchResults')),
+		searchResults: state.get('searchResults'),
 		sortNameValue: state.get('sortName')
 	};
 }
 
-function mapDispatchToProps(dispatch, {entity, entityType}) {
+function mapDispatchToProps(dispatch, {entity, entityType, copyLanguages}) {
 	const entityBBID = entity && entity.bbid;
 	return {
 		onDisambiguationChange: (event) =>
 			dispatch(debouncedUpdateDisambiguationField(event.target.value)),
 		onLanguageChange: (value) =>
-			dispatch(updateLanguageField(value && value.value)),
+			dispatch(updateLanguageField(value && value.value)) && copyLanguages && dispatch(addLanguage(value)),
 		onNameChange: (value) =>
 			dispatch(debouncedUpdateNameField(value)),
 		onNameChangeCheckIfEditionGroupExists: _.debounce((value) => {

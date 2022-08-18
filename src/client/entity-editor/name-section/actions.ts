@@ -37,6 +37,34 @@ export type Action = {
 
 /**
  * Produces an action indicating that the name for the entity being edited
+ * should be updated with the provided value.
+ *
+ * @param {string} newName - The new value to be used for the name.
+ * @returns {Action} The resulting UPDATE_NAME_FIELD action.
+ */
+export function updateNameField(newName: string): Action {
+	return {
+		payload: newName,
+		type: UPDATE_NAME_FIELD
+	};
+}
+
+/**
+ * Produces an action indicating that the sort name for the entity being edited
+ * should be updated with the provided value.
+ *
+ * @param {string} newSortName - The new value to be used for the sort name.
+ * @returns {Action} The resulting UPDATE_SORT_NAME_FIELD action.
+ */
+export function updateSortNameField(newSortName: string): Action {
+	return {
+		payload: newSortName,
+		type: UPDATE_SORT_NAME_FIELD
+	};
+}
+
+/**
+ * Produces an action indicating that the name for the entity being edited
  * should be updated with the provided value. The action is marked to be
  * debounced by the keystroke debouncer defined for redux-debounce.
  *
@@ -188,6 +216,7 @@ export function searchName(
 		request.get('/search/autocomplete')
 			.query({
 				q: name,
+				size: 3,
 				type
 			})
 			.then(res => {

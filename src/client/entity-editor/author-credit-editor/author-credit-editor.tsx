@@ -50,7 +50,8 @@ const AuthorCreditEditor = ({
 	authorCredit,
 	onAddAuthorCreditRow,
 	onClose,
-	showEditor
+	showEditor,
+	...rest
 }) => (
 	<Modal show={showEditor} size="lg" onHide={onClose} >
 		<Modal.Header>
@@ -79,6 +80,7 @@ const AuthorCreditEditor = ({
 							index={rowId}
 							// eslint-disable-next-line react/no-array-index-key
 							key={rowId}
+							{...rest}
 						/>
 					))
 				}

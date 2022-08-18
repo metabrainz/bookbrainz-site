@@ -36,6 +36,7 @@ import authorCreditEditorReducer from './author-credit-editor/reducer';
 import authorCreditMergeReducer from './author-credit-editor/merge-reducer';
 import authorSectionReducer from './author-section/reducer';
 import buttonBarReducer from './button-bar/reducer';
+import {camelCase} from 'lodash';
 import {combineReducers} from 'redux-immutable';
 import editionGroupSectionReducer from './edition-group-section/reducer';
 import editionSectionReducer from './edition-section/reducer';
@@ -79,7 +80,7 @@ export function getEntitySection(entityType: string) {
 		work: WorkSection
 	};
 
-	return SECTION_MAP[entityType];
+	return SECTION_MAP[camelCase(entityType)];
 }
 
 export function getEntitySectionMerge(entityType: string) {
@@ -118,7 +119,7 @@ export function getValidator(entityType: string) {
 		work: validateWorkForm
 	};
 
-	return VALIDATOR_MAP[entityType];
+	return VALIDATOR_MAP[camelCase(entityType)];
 }
 
 function getEntitySectionReducerName(entityType: string): string {

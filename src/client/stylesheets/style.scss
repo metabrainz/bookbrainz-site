@@ -718,6 +718,61 @@ ul {
 .input-group > .input-group-append > .btn {
 	padding: 6px 12px;
 }
+
+/* Unified  form */
+.uf-main{
+	padding: 0.6rem;
+}
+.uf-tab{
+	border: 1px #dfdfdf solid;
+	h4{
+		padding: 0.8rem;
+		margin-bottom: 0;
+		border-bottom: 0.125rem #ed8d60 solid;
+		background-color: #F7F7F7;
+
+	}
+	.tab-content{
+		padding: 1rem;	
+	}
+}
+.uf-tab-header{
+	padding: 0.6rem 0 0 0.6rem;
+	margin-bottom: 1rem;
+	background-color: #F4E9E3;
+	a{
+		color: #754E37;
+	}
+	.nav-link.nav-item.active{
+		color: $orange;
+		border-color: $orange;
+		border-bottom: none;
+	}
+}
+.uf-navbtn-row {
+	margin: 0;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+	button{
+		width: max-content;
+	}
+	.col{
+		align-items: stretch;
+		flex-grow: 0;
+		margin-right: 0.3rem;
+		padding: 0;
+	}
+	.col:nth-child(1)
+	{
+		margin-right: 3rem;
+	}
+}
+.uf-dialog{
+	max-width: 700px;
+}
+.uf-dialog.modal-dialog{
+	margin: 1.75rem 2rem;
+}
 .ac-select {
 	flex-grow: 2;
 }
@@ -726,4 +781,49 @@ ul {
 }
 .series-editor-select {
 	margin-top: 1.7em;
+}
+.uf-dialog .accordion > .card{
+	overflow:visible;
+}
+
+// Adding icon to accordion header 
+.accordion > .icon-card{
+	display: flex;
+	overflow: visible;
+	flex-direction: column-reverse;
+}
+
+.accordion > .card > .card-header{
+	border: none;
+	cursor: pointer;
+	display: flex;
+	justify-content: space-between;
+}
+div[class='card-header'] .accordion-arrow {
+	transition: all 0.3s linear;
+	transform: rotate(0deg);
+}
+div[class~='show'] + div[class='card-header'] .accordion-arrow,
+div[class~=collapsing]+div[class=card-header] .accordion-arrow {
+	transform: rotate(90deg);
+}
+.work-item{
+		border-bottom: 1px solid #EAE7E5;
+		margin-bottom: 0.5rem;
+}
+
+.uf-modal-body .accordion > .card{
+	margin-bottom: 10px;
+}
+.entities-preview{
+	cursor: pointer;
+	color: $orange;
+	transition: all 0.2s linear;
+}
+.entities-preview:hover{
+	color: #754E37;
+}
+
+.series-item-dialog{
+	max-width: 600px;
 }

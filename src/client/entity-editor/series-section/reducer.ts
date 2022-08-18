@@ -19,8 +19,8 @@
 
 import * as Immutable from 'immutable';
 import {
-	ADD_SERIES_ITEM, Action, EDIT_SERIES_ITEM, REMOVE_SERIES_ITEM,
-	SORT_SERIES_ITEM, UPDATE_ORDER_TYPE, UPDATE_SERIES_TYPE
+	ADD_SERIES_ITEM, Action, EDIT_SERIES_ITEM, REMOVE_ALL_SERIES_ITEMS,
+	REMOVE_SERIES_ITEM, SORT_SERIES_ITEM, UPDATE_ORDER_TYPE, UPDATE_SERIES_TYPE
 } from './actions';
 
 
@@ -59,6 +59,8 @@ function reducer(
 		}
 		case REMOVE_SERIES_ITEM:
 			return state.deleteIn(['seriesItems', payload.rowID]);
+		case REMOVE_ALL_SERIES_ITEMS:
+			return state.set('seriesItems', Immutable.OrderedMap());
 		// no default
 	}
 	return state;
