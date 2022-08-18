@@ -145,7 +145,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 					/>
 					{authorCreditSection}
 					<EditionGroupAttributes
-						averageRating={entity.reviews?.reviews?.average_rating || 0}
+						averageRating={entity.reviews?.reviews?.average_rating?.count || 0}
 						editionGroup={entity}
 					/>
 				</Col>

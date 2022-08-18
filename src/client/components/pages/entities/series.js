@@ -143,7 +143,7 @@ function SeriesDisplayPage({entity, identifierTypes, user}) {
 						handleModalToggle={handleModalToggle}
 					/>
 					<SeriesAttributes
-						averageRating={entity.reviews?.reviews?.average_rating || 0}
+						averageRating={entity.reviews?.reviews?.average_rating?.count || 0}
 						series={entity}
 					/>
 				</Col>
@@ -152,9 +152,9 @@ function SeriesDisplayPage({entity, identifierTypes, user}) {
 
 			{!entity.deleted &&
 			<React.Fragment>
+				<EntityTable {...propsForTable}/>
 				<Row>
 					<Col lg={8}>
-						<EntityTable {...propsForTable}/>
 						<EntityLinks
 							entity={entity}
 							identifierTypes={identifierTypes}
