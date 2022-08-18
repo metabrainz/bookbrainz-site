@@ -95,7 +95,7 @@ export async function fetchAccessToken(
 		return newUser;
 	}
 	catch (error) {
-		log.error(error);
+		log.error(error.response?.error);
 		return null;
 	}
 }
@@ -129,7 +129,7 @@ export async function refreshAccessToken(
 		return updatedToken;
 	}
 	catch (error) {
-		log.error(error);
+		log.error(error.response?.error);
 		return null;
 	}
 }
