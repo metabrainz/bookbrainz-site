@@ -167,9 +167,6 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							{...rest}
 						/>
 					</Col>
-					{/* <Col lg={{span: 2}}>
-						{series && <Button variant="primary" onClick={onShowHandler}>Add Items</Button>}
-					</Col> */}
 				</Row>
 				{series && <SeriesSection {...seriesSectionProps}/>}
 			</div>
