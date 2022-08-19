@@ -98,6 +98,24 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 				</OverlayTrigger>
 			</FormLabel>
 		</>);
+	const seriesWorkLabel = (
+
+		<>
+			<FormLabel className="font-weight-normal">
+			Add Selected Works to Series
+				<OverlayTrigger
+					delay={50}
+					overlay={<Tooltip id="series-work">This will automatically add each new selected work to series items (if present)</Tooltip>}
+				>
+					<FontAwesomeIcon
+						className="margin-left-0-5"
+						icon={faInfoCircle}
+					/>
+				</OverlayTrigger>
+			</FormLabel>
+		</>
+
+	);
 	const filterSeries = React.useCallback((item) => toLower(item.entityType) === 'work', []);
 	const filters = [filterSeries];
 	return (
@@ -130,7 +148,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 					defaultChecked={copyToSeries}
 					disabled={!series}
 					id="works-copy-to-series"
-					label="Add Work to Series"
+					label={seriesWorkLabel}
 					type="checkbox"
 					onChange={toggleCopyToSeries}
 				/>
