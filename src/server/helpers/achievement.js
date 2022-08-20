@@ -401,7 +401,19 @@ export async function getEditsInDays(orm, editorId, days) {
 		and created_at > (SELECT CURRENT_DATE - INTERVAL '${days} days');`;
 
 	const out = await bookshelf.knex.raw(rawSql);
-	return out.rowCount;
+	const dateList = out.rows.map(row => row.created_at);
+	let countDays = 0;
+	let lastDate = new Date();
+	const oneDayMs = 24 * 60 * 60 * 1000;
+	// count number of consecutive days starting from today
+	for (let i = dateList.length - 1; i >= 0; i--) {
+		if (lastDate.getTime() - dateList[i].getTime() > oneDayMs) {
+			break;
+		}
+		countDays++;
+		lastDate = dateList[i];
+	}
+	return countDays;
 }
 
 async function processFunRunner(orm, editorId) {
