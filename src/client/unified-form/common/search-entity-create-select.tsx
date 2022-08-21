@@ -1,6 +1,6 @@
 import {SearchEntityCreateDispatchProps, SearchEntityCreateProps} from '../interface/type';
 import {addAuthor, addPublisher} from '../cover-tab/action';
-import {addSeries, addWork} from '../content-tab/action';
+import {addSeries, addWork, nextWorkId} from '../content-tab/action';
 import {checkIfNameExists, searchName, updateNameField, updateSortNameField} from '../../entity-editor/name-section/actions';
 import {closeEntityModal, dumpEdition, loadEdition, openEntityModal} from '../action';
 import AsyncCreatable from 'react-select/async-creatable';
@@ -8,8 +8,10 @@ import BaseEntitySearch from '../../entity-editor/common/entity-search-field-opt
 import CreateEntityModal from './create-entity-modal';
 import React from 'react';
 import {addEditionGroup} from '../detail-tab/action';
+import {camelCase} from 'lodash';
 import {connect} from 'react-redux';
 import makeImmutable from '../../entity-editor/common/make-immutable';
+import {submit} from '../../entity-editor/submission-section/actions';
 
 
 const ImmutableCreatableAsync = makeImmutable(AsyncCreatable);
@@ -20,6 +22,14 @@ const addEntityAction = {
 	series: addSeries,
 	work: addWork
 };
+export function getNextBBID(type:string):string|null {
+	switch (camelCase(type)) {
+		case 'work':
+			return `w${nextWorkId - 1}`;
+		default:
+			return null;
+	}
+}
 function SearchEntityCreate(props:SearchEntityCreateProps) {
 	const {type, nextId, onModalOpen, onModalClose, onSubmitEntity, rowId, ...rest} = props;
 	const createLabel = React.useCallback((input) => `Create ${type} "${input}"`, [type]);
@@ -71,7 +81,7 @@ SearchEntityCreate.defaultProps = {
 	tooltipText: null
 };
 
-function mapDispatchToProps(dispatch, {type}):SearchEntityCreateDispatchProps {
+function mapDispatchToProps(dispatch, {type, submissionUrl}):SearchEntityCreateDispatchProps {
 	return {
 		onModalClose: () => dispatch(loadEdition()) && dispatch(closeEntityModal()),
 		onModalOpen: (name) => {
@@ -82,7 +92,7 @@ function mapDispatchToProps(dispatch, {type}):SearchEntityCreateDispatchProps {
 			dispatch(searchName(name, null, type));
 			dispatch(openEntityModal());
 		},
-		onSubmitEntity: (arg) => dispatch(addEntityAction[type](arg))
+		onSubmitEntity: (arg) => dispatch(addEntityAction[type](arg)) && dispatch(submit(submissionUrl, true, type))
 	};
 }
 

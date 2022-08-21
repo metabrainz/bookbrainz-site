@@ -1048,20 +1048,9 @@ function sanitizeBody(body:any) {
 	return body;
 }
 
-export function handleCreateOrEditEntity(
-	req: PassportRequest,
-	res: $Response,
-	entityType: EntityTypeString,
-	derivedProps: Record<string, unknown>,
-	isMergeOperation: boolean
-) {
-	const {orm}: {orm?: any} = req.app.locals;
+export function processSingleEntity(formBody, JSONEntity, reqSession, entityType, orm:any, editorJSON, derivedProps, isMergeOperation):Promise<any> {
 	const {Entity, Revision, bookshelf} = orm;
-	const editorJSON = req.user;
-
-	let {body}: {body: any} = req;
-	const {locals: resLocals}: {locals: any} = res;
-
+	let body = sanitizeBody(formBody);
 	let currentEntity: {
 		aliasSet: {id: number} | null | undefined,
 		annotation: {id: number} | null | undefined,
@@ -1069,7 +1058,7 @@ export function handleCreateOrEditEntity(
 		disambiguation: {id: number} | null | undefined,
 		identifierSet: {id: number} | null | undefined,
 		type: EntityTypeString
-	} | null | undefined = resLocals.entity;
+	} | null | undefined = JSONEntity;
 
 	const entityEditPromise = bookshelf.transaction(async (transacting) => {
 		try {
@@ -1132,7 +1121,7 @@ export function handleCreateOrEditEntity(
 				.filter(entity => entity.get('dataId') !== null);
 
 			if (isMergeOperation) {
-				allEntities = await processMergeOperation(orm, transacting, req.session,
+				allEntities = await processMergeOperation(orm, transacting, reqSession,
 					mainEntity, allEntities, relationshipSets);
 			}
 
@@ -1177,7 +1166,20 @@ export function handleCreateOrEditEntity(
 	const achievementPromise = entityEditPromise.then(
 		(entityJSON) => processAchievement(orm, editorJSON.id, entityJSON)
 	);
+	return achievementPromise;
+}
 
+export function handleCreateOrEditEntity(
+	req: PassportRequest,
+	res: $Response,
+	entityType: EntityTypeString,
+	derivedProps: Record<string, unknown>,
+	isMergeOperation: boolean
+) {
+	const {orm}: {orm?: any} = req.app.locals;
+	const editorJSON = req.user;
+	const achievementPromise = processSingleEntity(req.body, res.locals.entity, req.session, entityType,
+		orm, editorJSON, derivedProps, isMergeOperation);
 	return handler.sendPromiseResult(
 		res,
 		achievementPromise,

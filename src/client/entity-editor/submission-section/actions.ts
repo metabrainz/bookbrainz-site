@@ -17,10 +17,11 @@
  */
 
 
-import {isbn10To13, isbn13To10} from '../../../common/helpers/utils';
 import type {Map} from 'immutable';
 import _ from 'lodash';
+import {getNextBBID} from '../../unified-form/common/search-entity-create-select';
 import request from 'superagent';
+import {updateWorkId} from '../../unified-form/content-tab/action';
 
 
 export const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
@@ -201,7 +202,6 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 			},
 			rowID: key,
 			sourceEntity: {
-				bbid: `e${nextId}`
 			},
 			targetEntity: {
 				bbid: work.id
@@ -212,13 +212,20 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 	newData[`e${nextId}`] = {...data, type: 'Edition'};
 	return newData;
 }
-
-function postUFSubmission(url: string, data: Map<string, any>): Promise<void> {
+const updateEntityIdMap = {
+	work: updateWorkId
+};
+function postUFSubmission(url: string, data: Map<string, any>, newEntityType = null, dispatch): Promise<void> {
 	// transform data
 	const jsonData = data.toJS();
-	const postData = transformFormData(jsonData);
+	const postData = newEntityType ? {0: {...jsonData, type: newEntityType}} : transformFormData(jsonData);
 	return request.post(url).send(postData)
 		.then((response) => {
+			if (newEntityType) {
+				const entity = response.body[0];
+				dispatch(updateEntityIdMap[_.camelCase(entity.type)](getNextBBID(newEntityType), entity.bbid));
+				return;
+			}
 			if (!response.body) {
 				window.location.replace('/login');
 			}
@@ -237,13 +244,14 @@ function postUFSubmission(url: string, data: Map<string, any>): Promise<void> {
 type SubmitResult = (arg1: (Action) => unknown, arg2: () => Map<string, any>) => unknown;
 export function submit(
 	submissionUrl: string,
-	isUnifiedForm = false
+	isUnifiedForm = false,
+	newEntityType:string | undefined
 ): SubmitResult {
 	return (dispatch, getState) => {
 		const rootState = getState();
 		dispatch(setSubmitted(true));
 		if (isUnifiedForm) {
-			return postUFSubmission(submissionUrl, rootState)
+			return postUFSubmission(submissionUrl, rootState, newEntityType, dispatch)
 				.catch(
 					(error: {message: string}) => {
 						const message =

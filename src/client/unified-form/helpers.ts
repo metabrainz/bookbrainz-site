@@ -99,6 +99,11 @@ const initialState = Immutable.Map({
 		relationshipEditorVisible: false,
 		relationships: Immutable.OrderedMap()
 	}),
+	seriesSection: Immutable.Map({
+		orderType: 1,
+		seriesItems: Immutable.OrderedMap(),
+		seriesType: 'Work'
+	}),
 	submissionSection: Immutable.Map({
 		note: '',
 		submitError: '',
@@ -181,8 +186,7 @@ function crossSliceReducer(state:State, action:Action) {
 		case ADD_WORK:
 			// add new work for edition
 			action.payload.value = action.payload.value ?? {
-				...activeEntityState,
-				__isNew__: true,
+				__isNew__: false,
 				checked: true,
 				id: action.payload.id,
 				text: activeEntityState.nameSection.get('name'),
