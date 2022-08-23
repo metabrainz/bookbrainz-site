@@ -164,7 +164,7 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 					/>
 					<AuthorAttributes
 						author={entity}
-						averageRating={entity.reviews?.reviews?.average_rating?.count || 0}
+						averageRating={entity.reviews?.reviews?.average_rating?.rating || 0}
 					/>
 				</Col>
 			</Row>

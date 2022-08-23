@@ -134,7 +134,7 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 				<Col lg={10}>
 					<EntityTitle entity={entity}/>
 					<WorkAttributes
-						averageRating={entity.reviews?.reviews?.average_rating?.count || 0}
+						averageRating={entity.reviews?.reviews?.average_rating?.rating || 0}
 						work={entity}
 					/>
 				</Col>
