@@ -128,29 +128,21 @@ function crossSliceReducer(state:State, action:Action) {
 		relationshipSection: state.get('relationshipSection'),
 		submissionSection: state.get('submissionSection')
 	};
+	const newEntity = action.payload && action.payload.value;
 	// Designed for single edition entity, will need to be modified to support multiple editions
 	switch (type) {
 		case ADD_AUTHOR:
 			// add new author for AC in edition
-			intermediateState = intermediateState.setIn(['Editions', 'e0', 'authorCreditEditor', action.payload.rowId, 'author'], Immutable.Map({
+			intermediateState = intermediateState.setIn(['authorCreditEditor', action.payload.rowId, 'author'], Immutable.Map({
 				__isNew__: true,
-				id: action.payload.id,
+				id: newEntity.id,
 				rowId: action.payload.rowId,
-				text: activeEntityState.nameSection.get('name'),
+				text: newEntity.text,
 				type: 'Author'
 			}));
 			intermediateState = intermediateState.setIn(
-				['Editions', 'e0', 'authorCreditEditor', action.payload.rowId, 'name'], activeEntityState.nameSection.get('name')
+				['authorCreditEditor', action.payload.rowId, 'name'], newEntity.text
 			);
-			// save new author state to `Authors`
-			action.payload.value = action.payload.value ?? {
-				...activeEntityState,
-				__isNew__: true,
-				authorSection: intermediateState.get('authorSection'),
-				id: action.payload.id,
-				text: activeEntityState.nameSection.get('name'),
-				type: 'Author'
-			};
 			break;
 		case DUMP_EDITION:
 			// dump/save current edition state to `Editions`
@@ -173,33 +165,15 @@ function crossSliceReducer(state:State, action:Action) {
 			break;
 		case ADD_EDITION_GROUP:
 			// add new edition group for edition
-			action.payload.value = action.payload.value ?? {
-				...activeEntityState,
-				__isNew__: true,
-				authorCreditEditor: intermediateState.get('authorCreditEditor'),
-				editionGroupSection: intermediateState.get('editionGroupSection'),
-				id: action.payload.id,
-				text: activeEntityState.nameSection.get('name'),
-				type: 'EditionGroup'
-			};
+			intermediateState = intermediateState.setIn(['editionSection', 'editionGroup'], newEntity);
 			break;
 		case ADD_PUBLISHER: {
 			// add new publisher for edition
-			const newPublisher = {
-				__isNew__: true,
-				id: action.payload.id,
-				publisherSection: intermediateState.get('publisherSection'),
-				text: activeEntityState.nameSection.get('name'),
-				type: 'Publisher'
-			};
-			action.payload.value = action.payload.value ?? {
-				...activeEntityState,
-				...newPublisher
-			};
 			// set new publisher in edition state as well
+			const newPu = action.payload.value;
 			intermediateState = intermediateState.setIn(
-				['Editions', 'e0', 'editionSection', 'publisher', newPublisher.id]
-				, Immutable.Map(newPublisher)
+				['editionSection', 'publisher', newEntity.id]
+				, Immutable.Map(newEntity)
 			);
 			break;
 		}

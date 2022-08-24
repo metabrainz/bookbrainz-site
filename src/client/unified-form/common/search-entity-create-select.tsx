@@ -10,7 +10,6 @@ import React from 'react';
 import {addEditionGroup} from '../detail-tab/action';
 import {connect} from 'react-redux';
 import makeImmutable from '../../entity-editor/common/make-immutable';
-import {partialRight} from 'lodash';
 import {submitSingleEntity} from '../../entity-editor/submission-section/actions';
 
 
@@ -84,7 +83,7 @@ function mapDispatchToProps(dispatch, {type, submissionUrl}):SearchEntityCreateD
 			dispatch(searchName(name, null, type));
 			dispatch(openEntityModal());
 		},
-		onSubmitEntity: (arg) => dispatch(submitSingleEntity(submissionUrl, type, partialRight(addEntityAction[type], arg)))
+		onSubmitEntity: (arg) => dispatch(submitSingleEntity(submissionUrl, type, (val) => addEntityAction[type](val, arg)))
 	};
 }
 
