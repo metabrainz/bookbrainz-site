@@ -183,17 +183,6 @@ function crossSliceReducer(state:State, action:Action) {
 				type: 'EditionGroup'
 			};
 			break;
-		case ADD_WORK:
-			// add new work for edition
-			action.payload.value = action.payload.value ?? {
-				__isNew__: false,
-				checked: true,
-				id: action.payload.id,
-				text: activeEntityState.nameSection.get('name'),
-				type: 'Work',
-				workSection: intermediateState.get('workSection')
-			};
-			break;
 		case ADD_PUBLISHER: {
 			// add new publisher for edition
 			const newPublisher = {

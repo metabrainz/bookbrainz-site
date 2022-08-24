@@ -7,13 +7,10 @@ export const REMOVE_WORK = 'REMOVE_WORK';
 export const UPDATE_WORK = 'UPDATE_WORK';
 export const TOGGLE_COPY_AUTHOR_CREDITS = 'TOGGLE_COPY_AUTHOR_CREDITS';
 export const DUPLICATE_WORK = 'DUPLICATE_WORK';
-export const UPDATE_WORK_ID = 'UPDATE_WORK_ID';
-
 // Series Actions
 export const ADD_SERIES = 'ADD_SERIES';
 
-// eslint-disable-next-line import/no-mutable-exports
-export let nextWorkId = 0;
+let nextWorkId = 0;
 const nextSeriesId = 0;
 
 /**
@@ -24,7 +21,7 @@ const nextSeriesId = 0;
  */
 export function addWork(value = null):Action {
 	return {
-		payload: {id: `w${nextWorkId++}`, value},
+		payload: {id: `w${nextWorkId++}`, value: {checked: true, ...value}},
 		type: ADD_WORK
 	};
 }
@@ -92,20 +89,5 @@ export function addSeries(value = null):Action {
 	return {
 		payload: {id: `s${nextSeriesId}`, value},
 		type: ADD_SERIES
-	};
-}
-
-/**
- *  Produces an action indicating that a Work's id should be updated.
- *
- * @param {string} oldId - id of the work to be updated
- * @param {string} newId - new id of the work
- * @returns {Action} The resulting UPDATE_WORK_ID action.
- */
-
-export function updateWorkId(oldId:string, newId:string) {
-	return {
-		payload: {newId, oldId},
-		type: UPDATE_WORK_ID
 	};
 }

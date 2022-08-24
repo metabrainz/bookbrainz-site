@@ -17,11 +17,10 @@
  */
 
 
+import {EntityTypeString} from 'bookbrainz-data/lib/func/types';
 import type {Map} from 'immutable';
 import _ from 'lodash';
-import {getNextBBID} from '../../unified-form/common/search-entity-create-select';
 import request from 'superagent';
-import {updateWorkId} from '../../unified-form/content-tab/action';
 
 
 export const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
@@ -212,20 +211,13 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 	newData[`e${nextId}`] = {...data, type: 'Edition'};
 	return newData;
 }
-const updateEntityIdMap = {
-	work: updateWorkId
-};
-function postUFSubmission(url: string, data: Map<string, any>, newEntityType = null, dispatch): Promise<void> {
+
+function postUFSubmission(url: string, data: Map<string, any>): Promise<void> {
 	// transform data
 	const jsonData = data.toJS();
-	const postData = newEntityType ? {0: {...jsonData, type: newEntityType}} : transformFormData(jsonData);
+	const postData = transformFormData(jsonData);
 	return request.post(url).send(postData)
 		.then((response) => {
-			if (newEntityType) {
-				const entity = response.body[0];
-				dispatch(updateEntityIdMap[_.camelCase(entity.type)](getNextBBID(newEntityType), entity.bbid));
-				return;
-			}
 			if (!response.body) {
 				window.location.replace('/login');
 			}
@@ -244,14 +236,13 @@ function postUFSubmission(url: string, data: Map<string, any>, newEntityType = n
 type SubmitResult = (arg1: (Action) => unknown, arg2: () => Map<string, any>) => unknown;
 export function submit(
 	submissionUrl: string,
-	isUnifiedForm = false,
-	newEntityType:string | undefined
+	isUnifiedForm = false
 ): SubmitResult {
 	return (dispatch, getState) => {
 		const rootState = getState();
 		dispatch(setSubmitted(true));
 		if (isUnifiedForm) {
-			return postUFSubmission(submissionUrl, rootState, newEntityType, dispatch)
+			return postUFSubmission(submissionUrl, rootState)
 				.catch(
 					(error: {message: string}) => {
 						const message =
@@ -277,5 +268,35 @@ export function submit(
 					return dispatch(setSubmitError(message));
 				}
 			);
+	};
+}
+
+export function submitSingleEntity(submissionUrl:string, entityType:EntityTypeString, addEntity:(val)=>void, initialState = {}):SubmitResult {
+	return async (dispatch, getState) => {
+		const rootState = getState();
+		dispatch(setSubmitted(true));
+		const JSONState = rootState.toJS();
+		const entity = {...JSONState, type: entityType};
+		const postData = {
+			0: entity
+		};
+		try {
+			const response = await request.post(submissionUrl).send(postData);
+			const mainEntity = response.body[0];
+			const entityObject = {...initialState,
+				__isNew__: false,
+				id: mainEntity.bbid,
+				text: mainEntity.name,
+				type: mainEntity.type};
+			dispatch(addEntity(entityObject));
+			return dispatch(setSubmitted(false));
+		}
+		catch (error) {
+			const message =
+						_.get(error, ['response', 'body', 'error'], null) ||
+						error.message;
+			dispatch(setSubmitted(false));
+			return dispatch(setSubmitError(message));
+		}
 	};
 }
