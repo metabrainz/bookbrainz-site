@@ -132,7 +132,10 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 				<Col lg={10}>
-					<EntityTitle entity={entity}/>
+					<EntityTitle
+						entity={entity}
+						handleModalToggle={handleModalToggle}
+					/>
 					<WorkAttributes
 						averageRating={entity.reviews?.reviews?.average_rating?.rating || 0}
 						work={entity}

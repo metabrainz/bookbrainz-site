@@ -29,6 +29,13 @@ const REVIEW_URL = 'https://critiquebrainz.org/ws/1/review/';
 const critiquebrainzScopes = ['review'];
 const cbConfig = config.critiquebrainz;
 
+const mapEntityType = {
+	Author: 'bb_author',
+	EditionGroup: 'bb_edition_group',
+	Series: 'bb_series',
+	Work: 'bb_literary_work'
+};
+
 export async function addNewUser(
 	editorId: number,
 	token: Record<string, any>,
@@ -137,12 +144,6 @@ export async function refreshAccessToken(
 
 export async function getReviewsFromCB(bbid: string,
 	entityType: string): Promise<any> {
-	const mapEntityType = {
-		Author: 'bb_author',
-		EditionGroup: 'bb_edition_group',
-		Series: 'bb_series',
-		Work: 'bb_literary_work'
-	};
 	const cbEntityType = mapEntityType[entityType];
 	if (!cbEntityType) {
 		return {reviews: [], successfullyFetched: true};
@@ -168,12 +169,6 @@ export async function submitReviewToCB(
 	accessToken: string,
 	review: Record<string, any>
 ): Promise<any> {
-	const mapEntityType = {
-		Author: 'bb_author',
-		EditionGroup: 'bb_edition_group',
-		Series: 'bb_series',
-		Work: 'bb_literary_work'
-	};
 	const cbEntityType = mapEntityType[review.entityType];
 
 	if (!cbEntityType) {

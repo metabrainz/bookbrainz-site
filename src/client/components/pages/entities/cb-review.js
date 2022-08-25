@@ -91,7 +91,10 @@ class EntityReviews extends React.Component {
 	render() {
 		let reviewContent;
 		const mapEntityType = {
-			EditionGroup: 'edition-group'
+			Author: 'author',
+			EditionGroup: 'edition-group',
+			Series: 'series',
+			Work: 'literary-work'
 		};
 		const cbEntityType = mapEntityType[this.entityType];
 		const entityLink = `https://critiquebrainz.org/${cbEntityType}/${this.entityBBID}`;
