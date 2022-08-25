@@ -29,7 +29,6 @@ import SeriesEditor from './series-editor';
 import _ from 'lodash';
 import {attachAttribToRelForDisplay} from '../helpers';
 import {connect} from 'react-redux';
-import {convertMapToObject} from '../../helpers/utils';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {sortRelationshipOrdinal} from '../../../common/helpers/utils';
 
@@ -40,7 +39,6 @@ type SeriesOrderingType = {
 };
 
 type StateProps = {
-	defaultOptions:Array<any>,
 	entityName: string
 	orderTypeValue: number,
 	seriesItems: Immutable.List<any>,
@@ -115,7 +113,6 @@ function SeriesSection({
 	relationshipTypes,
 	seriesItems,
 	seriesOrderingTypes,
-	defaultOptions,
 	isUnifiedForm,
 	seriesTypeValue
 }: Props) {
@@ -235,7 +232,6 @@ function SeriesSection({
 			}
 			<SeriesEditor
 				baseEntity={baseEntity}
-				defaultOptions={defaultOptions}
 				isUnifiedForm={isUnifiedForm}
 				orderType={orderTypeValue}
 				relationshipTypes={relationshipTypes}
@@ -258,22 +254,9 @@ SeriesSection.defaultProps = {
 function mapStateToProps(rootState, {isUnifiedForm}): StateProps {
 	const state = rootState.get('seriesSection');
 	const seriesTypeValue = state.get('seriesType');
-	let defaultOptions = [];
-	if (isUnifiedForm) {
-		// fetch and convert new entites state eg. Works
-		const entities = convertMapToObject(seriesTypeValue === 'Series' ? rootState.get('Series', {}) : rootState.get(`${seriesTypeValue}s`, {}));
-		const neweEntities = _.filter(entities, (ent) => ent.__isNew__);
-		defaultOptions = _.map(neweEntities, (entity) => ({
-			disambiguation: _.get(entity, ['nameSection', 'disambiguation']),
-			id: _.get(entity, 'id'),
-			text: _.get(entity, ['nameSection', 'name']),
-			type: _.get(entity, 'type')
-		}));
-	}
 	const entityPath = isUnifiedForm ? ['Series', 's0', 'text'] : ['nameSection', 'name'];
 
 	return {
-		defaultOptions,
 		entityName: rootState.getIn(entityPath),
 		orderTypeValue: state.get('orderType'),
 		seriesItems: state.get('seriesItems'),
