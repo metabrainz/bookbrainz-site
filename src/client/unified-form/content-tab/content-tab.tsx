@@ -13,10 +13,12 @@ import WorkRow from './work-row';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {faInfoCircle} from '@fortawesome/free-solid-svg-icons';
+import {submitSingleEntity} from '../../entity-editor/submission-section/actions';
 
 
 const {Row, Col, FormCheck, OverlayTrigger, FormLabel, Tooltip} = Bootstrap;
-export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeriesChange, series, onAddSeriesItem, ...rest}:ContentTabProps) {
+export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeriesChange, series,
+	 onAddSeriesItem, onSubmitWork, ...rest}:ContentTabProps) {
 	const [isChecked, setIsChecked] = React.useState(true);
 	const [copyToSeries, setCopyToSeries] = React.useState(false);
 	const toggleCheck = React.useCallback(() => setIsChecked(!isChecked), [isChecked]);
@@ -34,7 +36,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 		ev.preventDefault();
 		ev.stopPropagation();
 		setShowModal(false);
-		onChange(null);
+		onSubmitWork();
 		onModalClose();
 	}, []);
 	const baseEntity = {
@@ -167,7 +169,7 @@ function mapStateToProps(rootState:State):ContentTabStateProps {
 		works: worksObj
 	};
 }
-function mapDispatchToProps(dispatch):ContentTabDispatchProps {
+function mapDispatchToProps(dispatch, {submissionUrl}):ContentTabDispatchProps {
 	const type = 'Work';
 	return {
 		onAddSeriesItem: (data) => dispatch(addSeriesItem(data)),
@@ -179,7 +181,8 @@ function mapDispatchToProps(dispatch):ContentTabDispatchProps {
 			dispatch(openEntityModal());
 		},
 		onSeriesChange: (value:any) => dispatch(addSeries(value)) && dispatch(removeAllSeriesItems()) &&
-		value?.orderingTypeId && dispatch(updateOrderType(value.orderingTypeId)) && dispatch(updateSeriesType(value.seriesEntityType))
+		value?.orderingTypeId && dispatch(updateOrderType(value.orderingTypeId)) && dispatch(updateSeriesType(value.seriesEntityType)),
+		onSubmitWork: () => dispatch(submitSingleEntity(submissionUrl, 'Work', addWork))
 	};
 }
 

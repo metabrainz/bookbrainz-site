@@ -190,7 +190,19 @@ function crossSliceReducer(state:State, action:Action) {
 		case DUPLICATE_WORK:
 		// copy work state from `Works`
 		{
-			intermediateState = intermediateState.merge(intermediateState.getIn(['Works', action.payload]));
+			const fromWork:State = intermediateState.getIn(['Works', action.payload]);
+			const defaultAlias = fromWork.getIn(['aliasSet', 'aliases']).first();
+			const changedAttributes = Immutable.fromJS({
+				nameSection: {
+					language: defaultAlias.get('languageId'),
+					name: defaultAlias.get('name'),
+					sortName: defaultAlias.get('sortName')
+				},
+				workSection: {
+					type: fromWork.get('typeId')
+				}
+			});
+			intermediateState = intermediateState.merge(changedAttributes);
 			// get rid of properities that are not needed
 			intermediateState = ['text', '__isNew__', 'type', 'id'].reduce((istate, key) => istate.delete(key), intermediateState);
 			break;

@@ -262,7 +262,7 @@ export function submitSingleEntity(submissionUrl:string, entityType:EntityTypeSt
 				__isNew__: true,
 				id: mainEntity.bbid,
 				text: mainEntity.name,
-				type: mainEntity.type};
+				...mainEntity};
 			dispatch(addEntity(entityObject));
 			return dispatch(setSubmitted(false));
 		}
