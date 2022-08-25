@@ -40,7 +40,7 @@ const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
 	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias, transformISODateForDisplay} = entityHelper;
 const {Button, Col, Row} = bootstrap;
 
-function AuthorAttributes({author, averageRating}) {
+function AuthorAttributes({author, averageRating, reviewsCount}) {
 	if (author.deleted) {
 		return deletedEntityMessage;
 	}
@@ -81,6 +81,11 @@ function AuthorAttributes({author, averageRating}) {
 								stars={5}
 							/>
 						</dd>
+						{reviewsCount ?
+							<dd className="small text-muted">
+								{reviewsCount} Review
+							</dd> : null
+						}
 					</dl>
 				</Col>
 				<Col lg={3}>
@@ -121,7 +126,8 @@ function AuthorAttributes({author, averageRating}) {
 AuthorAttributes.displayName = 'AuthorAttributes';
 AuthorAttributes.propTypes = {
 	author: PropTypes.object.isRequired,
-	averageRating: PropTypes.number.isRequired
+	averageRating: PropTypes.number.isRequired,
+	reviewsCount: PropTypes.number.isRequired
 };
 
 
@@ -165,6 +171,7 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 					<AuthorAttributes
 						author={entity}
 						averageRating={entity.reviews?.reviews?.average_rating?.rating || 0}
+						reviewsCount={entity.reviews?.reviews?.average_rating?.count || 0}
 					/>
 				</Col>
 			</Row>

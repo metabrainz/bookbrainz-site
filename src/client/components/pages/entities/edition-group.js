@@ -37,7 +37,7 @@ import {Rating} from 'react-simple-star-rating';
 const {deletedEntityMessage, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
 
-function EditionGroupAttributes({averageRating, editionGroup}) {
+function EditionGroupAttributes({averageRating, editionGroup, reviewsCount}) {
 	if (editionGroup.deleted) {
 		return deletedEntityMessage;
 	}
@@ -74,6 +74,11 @@ function EditionGroupAttributes({averageRating, editionGroup}) {
 								stars={5}
 							/>
 						</dd>
+						{reviewsCount ?
+							<dd className="small text-muted">
+								{reviewsCount} Review
+							</dd> : null
+						}
 					</dl>
 				</Col>
 			</Row>
@@ -83,7 +88,8 @@ function EditionGroupAttributes({averageRating, editionGroup}) {
 EditionGroupAttributes.displayName = 'EditionGroupAttributes';
 EditionGroupAttributes.propTypes = {
 	averageRating: PropTypes.number.isRequired,
-	editionGroup: PropTypes.object.isRequired
+	editionGroup: PropTypes.object.isRequired,
+	reviewsCount: PropTypes.number.isRequired
 };
 
 
@@ -147,6 +153,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 					<EditionGroupAttributes
 						averageRating={entity.reviews?.reviews?.average_rating?.rating || 0}
 						editionGroup={entity}
+						reviewsCount={entity.reviews?.reviews?.average_rating?.count || 0}
 					/>
 				</Col>
 			</Row>

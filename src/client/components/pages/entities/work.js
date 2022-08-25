@@ -38,7 +38,7 @@ const {deletedEntityMessage, getRelationshipSourceByTypeId, getLanguageAttribute
 const {Col, Row} = bootstrap;
 
 
-function WorkAttributes({averageRating, work}) {
+function WorkAttributes({averageRating, reviewsCount, work}) {
 	if (work.deleted) {
 		return deletedEntityMessage;
 	}
@@ -82,6 +82,11 @@ function WorkAttributes({averageRating, work}) {
 								stars={5}
 							/>
 						</dd>
+						{reviewsCount ?
+							<dd className="small text-muted">
+								{reviewsCount} Review
+							</dd> : null
+						}
 					</dl>
 				</Col>
 			</Row>
@@ -91,6 +96,7 @@ function WorkAttributes({averageRating, work}) {
 WorkAttributes.displayName = 'WorkAttributes';
 WorkAttributes.propTypes = {
 	averageRating: PropTypes.number.isRequired,
+	reviewsCount: PropTypes.number.isRequired,
 	work: PropTypes.object.isRequired
 };
 
@@ -138,6 +144,7 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 					/>
 					<WorkAttributes
 						averageRating={entity.reviews?.reviews?.average_rating?.rating || 0}
+						reviewsCount={entity.reviews?.reviews?.average_rating?.count || 0}
 						work={entity}
 					/>
 				</Col>

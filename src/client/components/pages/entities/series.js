@@ -35,7 +35,7 @@ import {Rating} from 'react-simple-star-rating';
 const {deletedEntityMessage, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
 
-function SeriesAttributes({averageRating, series}) {
+function SeriesAttributes({averageRating, reviewsCount, series}) {
 	if (series.deleted) {
 		return deletedEntityMessage;
 	}
@@ -83,6 +83,11 @@ function SeriesAttributes({averageRating, series}) {
 								stars={5}
 							/>
 						</dd>
+						{reviewsCount ?
+							<dd className="small text-muted">
+								{reviewsCount} Review
+							</dd> : null
+						}
 					</dl>
 				</Col>
 			</Row>
@@ -92,6 +97,7 @@ function SeriesAttributes({averageRating, series}) {
 SeriesAttributes.displayName = 'SeriesAttributes';
 SeriesAttributes.propTypes = {
 	averageRating: PropTypes.number.isRequired,
+	reviewsCount: PropTypes.number.isRequired,
 	series: PropTypes.object.isRequired
 };
 
@@ -144,6 +150,7 @@ function SeriesDisplayPage({entity, identifierTypes, user}) {
 					/>
 					<SeriesAttributes
 						averageRating={entity.reviews?.reviews?.average_rating?.rating || 0}
+						reviewsCount={entity.reviews?.reviews?.average_rating?.count || 0}
 						series={entity}
 					/>
 				</Col>
