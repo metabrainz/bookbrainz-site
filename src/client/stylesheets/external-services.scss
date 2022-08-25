@@ -63,4 +63,12 @@
 			box-shadow: 3px 1px 5px -2px #053b47;
 		}
 	}
+	&.disable {
+		label {
+			border-color: #a0a0a0;
+		}
+		input[type="radio"]:checked + label {
+			background: #a0a0a0;
+		}
+	}
 }

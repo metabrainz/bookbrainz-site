@@ -70,7 +70,7 @@ class ExternalServices extends React.Component {
 			} = optionData;
 			return (
 				<div
-					className="external-service-option"
+					className={`external-service-option ${value === 'disable' ? 'disable' : ''}`}
 				>
 					<input
 						checked={this.state.cbPermission === value}
