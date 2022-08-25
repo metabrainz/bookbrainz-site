@@ -77,6 +77,7 @@ class EntityReviews extends React.Component {
 		this.entityType = props.entityType;
 		this.entityBBID = props.entityBBID;
 		this.handleModalToggle = props.handleModalToggle;
+		this.reviewsCount = props.reviewsCount;
 	}
 
 	async handleClick() {
@@ -145,7 +146,14 @@ class EntityReviews extends React.Component {
 		}
 		return (
 			<Row className="flex-column">
-				<h2>Reviews</h2>
+				<h2>
+                    Reviews
+					{this.reviewsCount ?
+						<span className="small text-muted">
+						    {` ${this.reviewsCount} review`}
+						</span> : null
+					}
+				</h2>
 				{reviewContent}
 			</Row>
 		);
@@ -174,7 +182,8 @@ EntityReviews.propTypes = {
 	entityBBID: PropTypes.string.isRequired,
 	entityReviews: PropTypes.object.isRequired,
 	entityType: PropTypes.string.isRequired,
-	handleModalToggle: PropTypes.func.isRequired
+	handleModalToggle: PropTypes.func.isRequired,
+	reviewsCount: PropTypes.number.isRequired
 };
 
 

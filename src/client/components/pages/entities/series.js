@@ -176,6 +176,7 @@ function SeriesDisplayPage({entity, identifierTypes, user}) {
 							entityType={entity.type}
 							handleModalToggle={handleModalToggle}
 							ref={reviewsRef}
+							reviewsCount={entity.reviews?.reviews?.average_rating?.count || 0}
 						/>
 					</Col>
 				</Row>
