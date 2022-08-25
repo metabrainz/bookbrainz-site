@@ -6,17 +6,21 @@ import {dateObjectToISOString} from '../../helpers/utils';
 
 /* eslint-disable sort-keys */
 const BASE_ENTITY = {
-	Name: 'nameSection.name',
-	Language: 'nameSection.language',
-	'Sort-Name': 'nameSection.sortName',
-	Disambiguation: 'nameSection.disambiguation',
-	Annotation: 'annotationSection.content',
+	Name: 'name',
+	Language: 'aliasSet.aliases[0].languageId',
+	'Sort-Name': 'sortName',
+	Disambiguation: 'disambiguation',
+	Annotation: 'annotation',
 	'Edit-Note': 'submissionSection.note'
 
 };
 const ENTITY_FIELDS = {
 	edition: {
-		...BASE_ENTITY,
+		Name: 'nameSection.name',
+		Language: 'nameSection.language',
+		'Sort-Name': 'nameSection.sortName',
+		Disambiguation: 'nameSection.disambiguation',
+		Annotation: 'annotationSection.content',
 		format: 'editionSection.format',
 		'Release-date': 'editionSection.releaseDate',
 		status: 'editionSection.status',
@@ -29,36 +33,36 @@ const ENTITY_FIELDS = {
 	},
 	editionGroup: {
 		...BASE_ENTITY,
-		Type: 'editionGroupSection.type'
+		Type: 'typeId'
 	},
 	author: {
 		...BASE_ENTITY,
-		Gender: 'authorSection.gender',
-		Type: 'authorSection.type',
-		'Begin-Date': 'authorSection.beginDate',
-		'Begin-Area': 'authorSection.beginArea.text',
-		'Dead?': 'authorSection.ended',
-		'End-Date': 'authorSection.endDate',
-		'End-Area': 'authorSection.endArea.text'
+		Gender: 'genderId',
+		Type: 'typeId',
+		'Begin-Date': 'beginDate',
+		'Begin-Area': 'beginArea.text',
+		'Dead?': 'ended',
+		'End-Date': 'endDate',
+		'End-Area': 'endArea.text'
 	},
 	publisher: {
 		...BASE_ENTITY,
-		Type: 'publisherSection.type',
-		'Begin-Date': 'publisherSection.beginDate',
-		'Dissolved?': 'publisherSection.ended',
-		'End-Date': 'publisherSection.endDate'
+		Type: 'typeId',
+		'Begin-Date': 'beginDate',
+		'Dissolved?': 'ended',
+		'End-Date': 'endDate'
 
 	},
 	series: {
 		...BASE_ENTITY,
-		orderType: 'seriesSection.orderType',
+		orderType: 'orderingTypeId',
 		'Series-Items': 'seriesSection.seriesItems',
-		seriesType: 'seriesSection.seriesType'
+		seriesType: 'seriesEntityType'
 	},
 	work: {
 		...BASE_ENTITY,
-		type: 'workSection.type',
-		'Work-Languages': 'workSection.languages'
+		type: 'typeId',
+		'Work-Languages': 'languages'
 	}
 };
 export default function SingleEntityModal({entity, show, handleClose, languageOptions}:SingleEntityModalProps) {
