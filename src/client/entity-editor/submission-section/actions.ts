@@ -117,18 +117,6 @@ function postSubmission(url: string, data: Map<string, any>): Promise<void> {
 function transformFormData(data:Record<string, any>):Record<string, any> {
 	const newData = {};
 	const nextId = 0;
-	// add new publishers
-	_.forEach(data.Publishers, (publisher, pid) => {
-		if (publisher.__isNew__) {
-			newData[pid] = publisher;
-		}
-	});
-	// add new authors
-	_.forEach(data.Authors, (author, aid) => {
-		if (author.__isNew__) {
-			newData[aid] = author;
-		}
-	});
 	// add new series
 	_.forEach(data.Series, (series, sid) => {
 		// sync local series section with global series section
@@ -136,62 +124,49 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 		_.forEach(series.seriesSection.seriesItems, (item) => {
 			_.set(item, 'targetEntity.bbid', series.id);
 		});
-		if (series.__isNew__ || _.size(series.seriesSection.seriesItems) > 0) {
-			if (!series.__isNew__) {
-				series.__isNew__ = false;
-				series.submissionSection = {
-					note: _.get(data, ['submissionSection', 'note'])
-				};
-			}
+		// if new items have been added to series, then add series to the post data
+		if (_.size(series.seriesSection.seriesItems) > 0) {
+			series.__isNew__ = false;
+			series.submissionSection = {
+				note: 'added more series items'
+			};
 			newData[sid] = series;
 		}
 	});
 	// add new works
 	const authorWorkRelationshipTypeId = 8;
 	_.forEach(data.Works, (work, wid) => {
-		if (work.checked) {
-			let relationshipCount = 0;
-			_.forEach(data.authorCreditEditor, (authorCredit) => {
-				const relationship = {
-					attributeSetId: null,
-					attributes: [],
-					relationshipType: {
-						id: authorWorkRelationshipTypeId
-					},
-					rowId: `a${relationshipCount}`,
-					sourceEntity: {
+		// if authors have been added to the work, then add work to the post data
+		if (!work.checked) { return; }
+		let relationshipCount = 0;
+		_.forEach(data.authorCreditEditor, (authorCredit) => {
+			const relationship = {
+				attributeSetId: null,
+				attributes: [],
+				relationshipType: {
+					id: authorWorkRelationshipTypeId
+				},
+				rowId: `a${relationshipCount}`,
+				sourceEntity: {
 					  bbid: authorCredit.author.id
-					},
-					targetEntity: {
-						bbid: work.id
+				},
+				targetEntity: {
+					bbid: work.id
 				  }
-				};
-				_.set(work, ['relationshipSection', 'relationships', `a${relationshipCount}`], relationship);
-				relationshipCount++;
-			});
-			if (!work.__isNew__) {
-				work.submissionSection = {
-					note: _.get(data, ['submissionSection', 'note'])
-				};
-				work.__isNew__ = false;
-			}
-		}
-
-		if (work.__isNew__ || work.checked) {
-			newData[wid] = work;
-		}
-	});
-	// add new ediiton group(s)
-	_.forEach(data.EditionGroups, (editionGroup, egid) => {
-		if (editionGroup.__isNew__) {
-			newData[egid] = editionGroup;
-		}
+			};
+			_.set(work, ['relationshipSection', 'relationships', `a${relationshipCount}`], relationship);
+			relationshipCount++;
+		});
+		work.submissionSection = {
+			note: 'added authors from parent edition'
+		};
+		work.__isNew__ = false;
+		newData[wid] = work;
 	});
 	// add edition at last
 	if (data.ISBN.type) {
 		data.identifierEditor.m0 = data.ISBN;
 	}
-	data.editionSection.publisher = _.get(data.editionSection, ['publisher'], {});
 	data.relationshipSection.relationships = _.mapValues(data.Works, (work, key) => {
 		const relationship = {
 			attributeSetId: null,
@@ -284,7 +259,7 @@ export function submitSingleEntity(submissionUrl:string, entityType:EntityTypeSt
 			const response = await request.post(submissionUrl).send(postData);
 			const mainEntity = response.body[0];
 			const entityObject = {...initialState,
-				__isNew__: false,
+				__isNew__: true,
 				id: mainEntity.bbid,
 				text: mainEntity.name,
 				type: mainEntity.type};

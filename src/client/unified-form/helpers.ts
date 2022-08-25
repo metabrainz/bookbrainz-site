@@ -1,5 +1,5 @@
 import {ADD_AUTHOR, ADD_PUBLISHER} from './cover-tab/action';
-import {ADD_SERIES, ADD_WORK, DUPLICATE_WORK} from './content-tab/action';
+import {ADD_SERIES, DUPLICATE_WORK} from './content-tab/action';
 import {Action, State} from './interface/type';
 import {CLOSE_ENTITY_MODAL, DUMP_EDITION, LOAD_EDITION, OPEN_ENTITY_MODAL} from './action';
 import {ISBNReducer, authorsReducer, autoISBNReducer, publishersReducer} from './cover-tab/reducer';
@@ -170,7 +170,6 @@ function crossSliceReducer(state:State, action:Action) {
 		case ADD_PUBLISHER: {
 			// add new publisher for edition
 			// set new publisher in edition state as well
-			const newPu = action.payload.value;
 			intermediateState = intermediateState.setIn(
 				['editionSection', 'publisher', newEntity.id]
 				, Immutable.Map(newEntity)
