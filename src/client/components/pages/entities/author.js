@@ -20,6 +20,7 @@ import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import React, {createRef, useCallback} from 'react';
 
+import AverageRating from './average-ratings';
 import CBReviewModal from './cbReviewModal';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
@@ -30,7 +31,6 @@ import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import {Rating} from 'react-simple-star-rating';
 import {kebabCase as _kebabCase} from 'lodash';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {labelsForAuthor} from '../../../helpers/utils';
@@ -69,25 +69,10 @@ function AuthorAttributes({author}) {
 					<dl>
 						<dt>Sort Name</dt>
 						<dd>{sortNameOfDefaultAlias}</dd>
-						<dt>Ratings</dt>
-						<dd>
-							<Rating
-								allowHalfIcon
-								readonly
-								allowHover={false}
-								className="rating-stars"
-								fillColor="#46433A"
-								initialValue={averageRating}
-								ratingValue={0}
-								size={20}
-								stars={5}
-							/>
-						</dd>
-						{reviewsCount ?
-							<dd className="small text-muted">
-								{reviewsCount} Review
-							</dd> : null
-						}
+						<AverageRating
+							averageRatings={averageRating}
+							reviewsCount={reviewsCount}
+						/>
 					</dl>
 				</Col>
 				<Col lg={3}>

@@ -148,11 +148,11 @@ class EntityReviews extends React.Component {
 			<Row className="flex-column">
 				<h2>
                     Reviews
-					{this.reviewsCount ?
-						<span className="small text-muted">
-						    {` ${this.reviewsCount} review`}
-						</span> : null
-					}
+					<span className="small text-muted">
+					    {this.reviewsCount ?
+						    ` ${this.reviewsCount} review${this.reviewsCount > 1 ? 's' : ''}` : ' No reviews'
+						}
+					</span>
 				</h2>
 				{reviewContent}
 			</Row>

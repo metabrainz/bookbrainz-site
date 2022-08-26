@@ -20,6 +20,7 @@ import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import React, {createRef, useCallback} from 'react';
 import {getEntityKey, getEntityTable} from '../../../helpers/utils';
+import AverageRating from './average-ratings';
 import CBReviewModal from './cbReviewModal';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
@@ -29,7 +30,6 @@ import EntityRelatedCollections from './related-collections';
 import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
-import {Rating} from 'react-simple-star-rating';
 
 
 const {deletedEntityMessage, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
@@ -71,25 +71,10 @@ function SeriesAttributes({series}) {
 				</Col>
 				<Col lg={3}>
 					<dl>
-						<dt>Ratings</dt>
-						<dd>
-							<Rating
-								allowHalfIcon
-								readonly
-								allowHover={false}
-								className="rating-stars"
-								fillColor="#46433A"
-								initialValue={averageRating}
-								ratingValue={0}
-								size={20}
-								stars={5}
-							/>
-						</dd>
-						{reviewsCount ?
-							<dd className="small text-muted">
-								{reviewsCount} Review
-							</dd> : null
-						}
+						<AverageRating
+							averageRatings={averageRating}
+							reviewsCount={reviewsCount}
+						/>
 					</dl>
 				</Col>
 			</Row>
