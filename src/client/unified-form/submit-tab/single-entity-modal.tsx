@@ -7,10 +7,10 @@ import {dateObjectToISOString} from '../../helpers/utils';
 /* eslint-disable sort-keys */
 const BASE_ENTITY = {
 	Name: 'name',
-	Language: 'aliasSet.aliases[0].languageId',
+	Language: 'defaultAlias.languageId',
 	'Sort-Name': 'sortName',
 	Disambiguation: 'disambiguation',
-	Annotation: 'annotation',
+	Annotation: 'annotation.content',
 	'Edit-Note': 'submissionSection.note'
 
 };

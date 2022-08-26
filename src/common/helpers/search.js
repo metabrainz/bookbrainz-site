@@ -101,8 +101,8 @@ async function _fetchEntityModelsForESResults(orm, results) {
 		// Regular entity
 		const model = commonUtils.getEntityModelByType(orm, entityStub.type);
 		const entity = await model.forge({bbid: entityStub.bbid})
-			.fetch({require: false, withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases', 'identifierSet.identifiers']});
-
+			.fetch({require: false, withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases', 'identifierSet.identifiers',
+				'relationshipSet.relationships.source', 'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation']});
 		return entity?.toJSON();
 	})).catch(err => log.error(err));
 	return processedResults;

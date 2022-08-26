@@ -13,6 +13,7 @@ import authorSectionReducer from '../entity-editor/author-section/reducer';
 import buttonBarReducer from '../entity-editor/button-bar/reducer';
 import {camelCase} from 'lodash';
 import {combineReducers} from 'redux-immutable';
+import {convertMapToObject} from '../helpers/utils';
 import editionGroupSectionReducer from '../entity-editor/edition-group-section/reducer';
 import editionGroupsReducer from './detail-tab/reducer';
 import editionSectionReducer from '../entity-editor/edition-section/reducer';
@@ -191,7 +192,44 @@ function crossSliceReducer(state:State, action:Action) {
 		// copy work state from `Works`
 		{
 			const fromWork:State = intermediateState.getIn(['Works', action.payload]);
-			const defaultAlias = fromWork.getIn(['aliasSet', 'aliases']).first();
+			const defaultAlias = fromWork.get('defaultAlias');
+			const relationships = fromWork.getIn(['relationshipSet', 'relationships'], null);
+			const identifiers = fromWork.getIn(['identifierSet', 'identifiers'], null);
+			const other:any = {};
+			if (identifiers) {
+				const identifierEditor = identifiers.map((identifier) => Immutable.Map({type: identifier.get('typeId'),
+					value: identifier.get('value')}));
+				other.identifierEditor = identifierEditor;
+			}
+			if (relationships) {
+				const rels = relationships.map((rel, key) => {
+					const relationship = convertMapToObject(rel);
+					relationship.rowId = `t-${key}`;
+					relationship.sourceEntity = {
+						bbid: relationship.source.bbid,
+						defaultAlias: {
+							name: `unknown-${relationship.source.type}`
+						},
+						type: relationship.source.type
+					};
+					relationship.targetEntity = {
+						bbid: relationship.target.bbid,
+						defaultAlias: {
+							name: `unknown-${relationship.target.type}`
+						},
+						type: relationship.target.type
+					};
+					relationship.relationshipType = relationship.type;
+					return Immutable.fromJS(relationship);
+				});
+				other.relationshipSection = {
+					canEdit: true,
+					lastRelationships: null,
+					relationshipEditorProps: null,
+					relationshipEditorVisible: false,
+					relationships: rels
+				};
+			}
 			const changedAttributes = Immutable.fromJS({
 				nameSection: {
 					language: defaultAlias.get('languageId'),
@@ -200,7 +238,8 @@ function crossSliceReducer(state:State, action:Action) {
 				},
 				workSection: {
 					type: fromWork.get('typeId')
-				}
+				},
+				...other
 			});
 			intermediateState = intermediateState.merge(changedAttributes);
 			// get rid of properities that are not needed

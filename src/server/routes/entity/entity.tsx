@@ -1142,7 +1142,8 @@ export function processSingleEntity(formBody, JSONEntity, reqSession, entityType
 			);
 
 			/* We need to load the aliases for search reindexing and refresh it*/
-			await savedMainEntity.load('aliasSet.aliases', {transacting});
+			await savedMainEntity.load(['aliasSet.aliases', 'relationshipSet.relationships.source',
+				'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation'], {transacting});
 
 			/* New entities will lack some attributes like 'type' required for search indexing */
 			if (isNew) {
