@@ -1,6 +1,6 @@
-import {Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
+import {EntityType, Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
 
-import {isString, kebabCase, toString} from 'lodash';
+import {isString, kebabCase, toString, upperFirst} from 'lodash';
 import {IdentifierType} from '../../client/unified-form/interface/type';
 
 /**
@@ -291,7 +291,8 @@ export async function getEntityByBBID(orm, bbid:string, otherRelations:Array<str
 		return null;
 	}
 	const {Entity} = orm;
-	const entity = await new Entity({bbid}).fetch({require: false});
+	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, null);
+	const entity = await new Entity({redirectBbid}).fetch({require: false});
 	if (!entity) {
 		return null;
 	}
@@ -306,5 +307,14 @@ export async function getEntityByBBID(orm, bbid:string, otherRelations:Array<str
 		...otherRelations
 	];
 	const entityData = await orm.func.entity.getEntity(orm, entityType, bbid, baseRelations);
+	return entityData;
+}
+
+export async function getEntityAlias(orm, bbid:string, type:EntityType):Promise<any> {
+	if (!isValidBBID(bbid)) {
+		return null;
+	}
+	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, null);
+	const entityData = await orm.func.entity.getEntity(orm, upperFirst(type), redirectBbid, []);
 	return entityData;
 }

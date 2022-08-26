@@ -1142,7 +1142,7 @@ export function processSingleEntity(formBody, JSONEntity, reqSession, entityType
 			);
 
 			/* We need to load the aliases for search reindexing and refresh it*/
-			await savedMainEntity.load(['aliasSet.aliases', 'relationshipSet.relationships.source',
+			await savedMainEntity.load(['aliasSet.aliases', 'defaultAlias.language', 'relationshipSet.relationships.source',
 				'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation'], {transacting});
 
 			/* New entities will lack some attributes like 'type' required for search indexing */
@@ -1155,8 +1155,15 @@ export function processSingleEntity(formBody, JSONEntity, reqSession, entityType
 				}
 			}
 
-
-			return savedMainEntity.toJSON();
+			const entityJSON = savedMainEntity.toJSON();
+			if (entityJSON && entityJSON.relationshipSet) {
+				entityJSON.relationshipSet.relationships = await Promise.all(entityJSON.relationshipSet.relationships.map(async (rel) => {
+					rel.source = await commonUtils.getEntityAlias(orm, rel.source.bbid, rel.source.type);
+					rel.target = await commonUtils.getEntityAlias(orm, rel.target.bbid, rel.target.type);
+					return rel;
+				}));
+			}
+			return entityJSON;
 		}
 		catch (err) {
 			log.error(err);

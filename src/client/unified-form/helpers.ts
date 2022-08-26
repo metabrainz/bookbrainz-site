@@ -208,14 +208,14 @@ function crossSliceReducer(state:State, action:Action) {
 					relationship.sourceEntity = {
 						bbid: relationship.source.bbid,
 						defaultAlias: {
-							name: `unknown-${relationship.source.type}`
+							name: relationship.source.name
 						},
 						type: relationship.source.type
 					};
 					relationship.targetEntity = {
 						bbid: relationship.target.bbid,
 						defaultAlias: {
-							name: `unknown-${relationship.target.type}`
+							name: relationship.target.name
 						},
 						type: relationship.target.type
 					};
