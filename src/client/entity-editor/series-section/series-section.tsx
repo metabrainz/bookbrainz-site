@@ -94,7 +94,6 @@ type Props = StateProps & DispatchProps & OwnProps;
  *        a different ordering type is selected.
  * @param {Function} props.onSeriesTypeChange - A function to be called when
  *        a different series type is selected.
- * @param {Array} props.defaultOptions - A function to be
  * @returns {ReactElement} React element containing the rendered
  *        SeriesSection.
  */

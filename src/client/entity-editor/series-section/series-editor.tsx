@@ -42,7 +42,6 @@ type EntitySearchResult = {
 };
 
 type SeriesItemsProps = {
-	defaultOptions: Array<any>,
 	baseEntity: Entity,
 	onAdd: (_Relationship) => unknown,
     onEdit: (Attribute, string) => unknown,
@@ -142,7 +141,7 @@ const SortableItem = SortableElement(({value, onRemove, baseEntity, handleNumber
 
 const SortableList = SortableContainer(({children}) => <div>{children}</div>);
 function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onRemove,
-	onAdd, onEdit, onSort, seriesItemsArray, isUnifiedForm, defaultOptions}:SeriesItemsProps) {
+	onAdd, onEdit, onSort, seriesItemsArray, isUnifiedForm}:SeriesItemsProps) {
 	const [seriesItem, setSeriesItem] = useState(null);
 	const [targetEntity, setTargetEntity] = useState(null);
 
@@ -235,7 +234,6 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 				<Col lg={isUnifiedForm ? 6 : 7} style={{marginTop: -22}}>
 					<EntitySearchFieldOption
 						className="series-editor-select"
-						defaultOptions={defaultOptions}
 						instanceId="entitySearchField"
 						name="entity"
 						type={[seriesType]}

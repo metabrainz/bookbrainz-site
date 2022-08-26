@@ -321,7 +321,7 @@ NameSection.defaultProps = {
 };
 
 
-function mapStateToProps(rootState, {isUnifiedForm, setDefault, entityType}) {
+function mapStateToProps(rootState, {isUnifiedForm, setDefault}) {
 	const state = rootState.get('nameSection');
 	const editionSectionState = rootState.get('editionSection');
 	const searchForExistingEditionGroup = Boolean(editionSectionState) &&
@@ -329,31 +329,6 @@ function mapStateToProps(rootState, {isUnifiedForm, setDefault, entityType}) {
 		!editionSectionState.get('editionGroup') ||
 		editionSectionState.get('editionGroupRequired')
 	);
-	let exactMatches = state.get('exactMatches');
-	const nameValue = state.get('name');
-	// search for duplicates with same name in new entities
-	// show warning when user tries to create a duplicate new entity
-	if (isUnifiedForm && entityType && nameValue.length > 0 && _.size(exactMatches) === 0) {
-		const stateSelector = `${_.upperFirst(_.snakeCase(entityType))}s`;
-		const entities = rootState.get(stateSelector, {});
-		const entitiesJSON = convertMapToObject(entities);
-		const matchEntities = [];
-		_.map(entitiesJSON, (value) => {
-			if (value.__isNew__ && nameValue === _.get(value, ['nameSection', 'name'], '')) {
-				const disambiguation = _.get(value, ['nameSection', 'disambiguation'], '');
-				matchEntities.push({
-					bbid: '#',
-					defaultAlias: {
-						name: nameValue
-					},
-					disambiguation: disambiguation.length > 0 && {
-						comment: disambiguation
-					}
-				});
-			}
-		});
-		exactMatches = matchEntities;
-	}
 	// to prevent double double state updates on action caused by modal
 	if (isUnifiedForm && setDefault) {
 		return {
@@ -367,9 +342,9 @@ function mapStateToProps(rootState, {isUnifiedForm, setDefault, entityType}) {
 	}
 	return {
 		disambiguationDefaultValue: state.get('disambiguation'),
-		exactMatches,
+		exactMatches: state.get('exactMatches'),
 		languageValue: state.get('language'),
-		nameValue,
+		nameValue: state.get('name'),
 		searchForExistingEditionGroup,
 		searchResults: state.get('searchResults'),
 		sortNameValue: state.get('sortName')
