@@ -40,7 +40,7 @@ const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
 	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias, transformISODateForDisplay} = entityHelper;
 const {Button, Col, Row} = bootstrap;
 
-function AuthorAttributes({author, averageRating, reviewsCount}) {
+function AuthorAttributes({author}) {
 	if (author.deleted) {
 		return deletedEntityMessage;
 	}
@@ -51,6 +51,8 @@ function AuthorAttributes({author, averageRating, reviewsCount}) {
 	const beginDate = transformISODateForDisplay(extractAttribute(author.beginDate));
 	const endDate = transformISODateForDisplay(extractAttribute(author.endDate));
 	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(author);
+	const averageRating = author.reviews?.reviews?.average_rating?.rating || 0;
+	const reviewsCount = author.reviews?.reviews?.average_rating?.count || 0;
 
 	const isGroup = type === 'Group';
 	const {
@@ -125,9 +127,7 @@ function AuthorAttributes({author, averageRating, reviewsCount}) {
 }
 AuthorAttributes.displayName = 'AuthorAttributes';
 AuthorAttributes.propTypes = {
-	author: PropTypes.object.isRequired,
-	averageRating: PropTypes.number.isRequired,
-	reviewsCount: PropTypes.number.isRequired
+	author: PropTypes.object.isRequired
 };
 
 
@@ -170,8 +170,6 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 					/>
 					<AuthorAttributes
 						author={entity}
-						averageRating={entity.reviews?.reviews?.average_rating?.rating || 0}
-						reviewsCount={entity.reviews?.reviews?.average_rating?.count || 0}
 					/>
 				</Col>
 			</Row>
@@ -201,7 +199,6 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 								entityType={entity.type}
 								handleModalToggle={handleModalToggle}
 								ref={reviewsRef}
-								reviewsCount={entity.reviews?.reviews?.average_rating?.count || 0}
 							/>
 						</Col>
 					</Row>

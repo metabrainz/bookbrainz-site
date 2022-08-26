@@ -37,12 +37,14 @@ import {Rating} from 'react-simple-star-rating';
 const {deletedEntityMessage, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
 
-function EditionGroupAttributes({averageRating, editionGroup, reviewsCount}) {
+function EditionGroupAttributes({editionGroup}) {
 	if (editionGroup.deleted) {
 		return deletedEntityMessage;
 	}
 	const type = getTypeAttribute(editionGroup.editionGroupType).data;
 	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(editionGroup);
+	const averageRating = editionGroup.reviews?.reviews?.average_rating?.rating || 0;
+	const reviewsCount = editionGroup.reviews?.reviews?.average_rating?.count || 0;
 	return (
 		<div>
 			<Row>
@@ -87,9 +89,7 @@ function EditionGroupAttributes({averageRating, editionGroup, reviewsCount}) {
 }
 EditionGroupAttributes.displayName = 'EditionGroupAttributes';
 EditionGroupAttributes.propTypes = {
-	averageRating: PropTypes.number.isRequired,
-	editionGroup: PropTypes.object.isRequired,
-	reviewsCount: PropTypes.number.isRequired
+	editionGroup: PropTypes.object.isRequired
 };
 
 
@@ -151,9 +151,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 					/>
 					{authorCreditSection}
 					<EditionGroupAttributes
-						averageRating={entity.reviews?.reviews?.average_rating?.rating || 0}
 						editionGroup={entity}
-						reviewsCount={entity.reviews?.reviews?.average_rating?.count || 0}
 					/>
 				</Col>
 			</Row>
@@ -178,7 +176,6 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 							entityType={entity.type}
 							handleModalToggle={handleModalToggle}
 							ref={reviewsRef}
-							reviewsCount={entity.reviews?.reviews?.average_rating?.count || 0}
 						/>
 					</Col>
 				</Row>

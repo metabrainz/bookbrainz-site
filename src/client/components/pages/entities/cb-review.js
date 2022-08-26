@@ -77,7 +77,7 @@ class EntityReviews extends React.Component {
 		this.entityType = props.entityType;
 		this.entityBBID = props.entityBBID;
 		this.handleModalToggle = props.handleModalToggle;
-		this.reviewsCount = props.reviewsCount;
+		this.reviewsCount = props.entityReviews?.reviews?.average_rating?.count || 0;
 	}
 
 	async handleClick() {
@@ -182,8 +182,7 @@ EntityReviews.propTypes = {
 	entityBBID: PropTypes.string.isRequired,
 	entityReviews: PropTypes.object.isRequired,
 	entityType: PropTypes.string.isRequired,
-	handleModalToggle: PropTypes.func.isRequired,
-	reviewsCount: PropTypes.number.isRequired
+	handleModalToggle: PropTypes.func.isRequired
 };
 
 
