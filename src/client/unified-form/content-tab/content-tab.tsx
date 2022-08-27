@@ -81,7 +81,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 			bbid: series?.id
 		},
 		entityType: 'series',
-		hideTypeOption: true
+		hideItemSelect: true
 	};
 	const checkLabel = (
 		<>
@@ -102,7 +102,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 
 		<>
 			<FormLabel className="font-weight-normal">
-			Add Selected Works to Series
+			Add Works to Series
 				<OverlayTrigger
 					delay={50}
 					overlay={<Tooltip id="series-work">This will automatically add each new selected work to series items (if present)</Tooltip>}
@@ -143,19 +143,23 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 					type="checkbox"
 					onChange={toggleCheck}
 				/>
+			</div>
+			<hr/>
+			<div>
+				<h3>Series</h3>
+				<p className="text-muted">You can add all the Works above to an existing or new series if they are part of the
+					 same a set or sequence of related Works.
+					 Check the checkbox below to add the Works to a Series
+				</p>
 				<FormCheck
-					className="ml-1"
+					className="ml-1 mb-2"
 					defaultChecked={copyToSeries}
-					disabled={!series}
 					id="works-copy-to-series"
 					label={seriesWorkLabel}
 					type="checkbox"
 					onChange={toggleCopyToSeries}
 				/>
-			</div>
-			<hr/>
-			<div>
-				<h3>Series</h3>
+				{copyToSeries &&
 				<Row>
 					<Col lg={{span: 6}}>
 						<SearchEntityCreate
@@ -167,8 +171,8 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							{...rest}
 						/>
 					</Col>
-				</Row>
-				{series && <SeriesSection {...seriesSectionProps}/>}
+				</Row>}
+				{copyToSeries && <SeriesSection {...seriesSectionProps}/>}
 			</div>
 		</>
 	);
