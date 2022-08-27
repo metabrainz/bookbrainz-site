@@ -18,7 +18,7 @@
 
 
 import {isbn10To13, isbn13To10} from '../../../common/helpers/utils';
-import {Map} from 'immutable';
+import type {Map} from 'immutable';
 import _ from 'lodash';
 import request from 'superagent';
 
@@ -240,11 +240,8 @@ export function submit(
 	isUnifiedForm = false
 ): SubmitResult {
 	return (dispatch, getState) => {
-		let rootState = getState();
+		const rootState = getState();
 		dispatch(setSubmitted(true));
-		if (!rootState.getIn(['authorCreditEditor', 'n0', 'author'], null)) {
-			rootState = rootState.set('authorCreditEditor', Map({}));
-		}
 		if (isUnifiedForm) {
 			return postUFSubmission(submissionUrl, rootState)
 				.catch(

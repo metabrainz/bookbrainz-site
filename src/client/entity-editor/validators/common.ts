@@ -186,7 +186,6 @@ export function validateSubmissionSection(
 }
 // Hacky way to achieve polymorphism for both editors
 export function validateAuthorCreditRow(row: any, arg:any, isCustom = false): boolean {
-	if (!getIn(row, ['author', 'id'], null) && !get(row, 'name', null)) { return true; }
 	return (isCustom ? Boolean(getIn(row, ['author', 'id'], null)) : validateUUID(getIn(row, ['author', 'id'], null), true)) &&
 	validateRequiredString(get(row, 'name', null)) &&
 	validateOptionalString(get(row, 'joinPhrase', null));
