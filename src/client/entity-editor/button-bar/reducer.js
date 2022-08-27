@@ -17,7 +17,7 @@
  */
 
 import {
-	SHOW_ALIAS_EDITOR, SHOW_IDENTIFIER_EDITOR
+	SHOW_ALIAS_EDITOR, SHOW_IDENTIFIER_EDITOR, TOGGLE_AUTHOR_CREDIT
 } from './actions';
 import {HIDE_ALIAS_EDITOR} from '../alias-editor/actions';
 import {HIDE_IDENTIFIER_EDITOR} from '../identifier-editor/actions';
@@ -27,6 +27,7 @@ import Immutable from 'immutable';
 function reducer(
 	state = Immutable.Map({
 		aliasEditorVisible: false,
+		authorCreditEnable: true,
 		identifierEditorVisible: false
 	}),
 	action
@@ -40,6 +41,8 @@ function reducer(
 			return state.set('identifierEditorVisible', true);
 		case HIDE_IDENTIFIER_EDITOR:
 			return state.set('identifierEditorVisible', false);
+		case TOGGLE_AUTHOR_CREDIT:
+			return state.set('authorCreditEnable', !state.get('authorCreditEnable'));
 		// no default
 	}
 	return state;

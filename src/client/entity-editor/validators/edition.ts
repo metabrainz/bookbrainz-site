@@ -17,6 +17,7 @@
  */
 
 
+import {_IdentifierType, isIterable} from '../../../types';
 import {get, validateDate, validatePositiveInteger, validateUUID} from './base';
 import {
 	validateAliases,
@@ -29,7 +30,6 @@ import {
 
 import {Iterable} from 'immutable';
 import _ from 'lodash';
-import type {_IdentifierType} from '../../../types';
 import {convertMapToObject} from '../../helpers/utils';
 
 
@@ -133,11 +133,13 @@ export function validateForm(
 	isMerge?:boolean
 ): boolean {
 	let validAuthorCredit;
+	const authorCreditEnable = isIterable(formData) ? formData.getIn(['buttonBar', 'authorCreditEnable'], true) :
+		get(formData, 'buttonBar.authorCreditEnable', true);
 	if (isMerge) {
 		validAuthorCredit = validateAuthorCreditSectionMerge(get(formData, 'authorCredit', {}));
 	}
 	else {
-		validAuthorCredit = validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}));
+		validAuthorCredit = validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}), !authorCreditEnable);
 	}
 	const conditions = [
 		validateAliases(get(formData, 'aliasEditor', {})),

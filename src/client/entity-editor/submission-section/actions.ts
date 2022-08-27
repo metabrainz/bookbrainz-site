@@ -17,7 +17,7 @@
  */
 
 
-import type {Map} from 'immutable';
+import {Map} from 'immutable';
 import _ from 'lodash';
 import request from 'superagent';
 
@@ -119,7 +119,11 @@ export function submit(
 	submissionUrl: string
 ): SubmitResult {
 	return (dispatch, getState) => {
-		const rootState = getState();
+		let rootState = getState();
+		dispatch(setSubmitted(true));
+		if (!rootState.getIn(['authorCreditEditor', 'n0', 'author'], null)) {
+			rootState = rootState.set('authorCreditEditor', Map({}));
+		}
 		dispatch(setSubmitted(true));
 		return postSubmission(submissionUrl, rootState)
 			.catch(

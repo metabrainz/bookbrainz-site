@@ -24,10 +24,10 @@ import {
 	validateRequiredString,
 	validateUUID
 } from './base';
+import {AuthorCredit} from '../author-credit-editor/actions';
 
 import {Iterable} from 'immutable';
 import _ from 'lodash';
-import {AuthorCredit} from '../author-credit-editor/actions';
 
 
 export function validateMultiple(
@@ -184,7 +184,8 @@ export function validateSubmissionSection(
 	);
 }
 
-export function validateAuthorCreditRow(row: any): boolean {
+export function validateAuthorCreditRow(row: any, isOptional = false): boolean {
+	if (!getIn(row, ['author', 'id'], null) && !get(row, 'name', null) && isOptional) { return true; }
 	return validateUUID(getIn(row, ['author', 'id'], null), true) &&
 	validateRequiredString(get(row, 'name', null)) &&
 	validateOptionalString(get(row, 'joinPhrase', null));
@@ -193,7 +194,7 @@ export function validateAuthorCreditRow(row: any): boolean {
 export const validateAuthorCreditSection = _.partialRight(
 	// Requires at least one Author Credit row
 	validateMultiple, _.partialRight.placeholder,
-	validateAuthorCreditRow, null, true
+	validateAuthorCreditRow, _.partialRight.placeholder, false
 );
 // In the merge editor we use the authorCredit directly instead of the authorCreditEditor state
 export function validateAuthorCreditSectionMerge(authorCredit:AuthorCredit) :boolean {

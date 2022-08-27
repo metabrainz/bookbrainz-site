@@ -25,12 +25,12 @@ import {
 	showAuthorCreditEditor,
 	updateCreditAuthorValue
 } from './actions';
-import {Button, Col, Form, InputGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
+import {Button, Col, Form, FormLabel, InputGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 
 import {SingleValueProps, components} from 'react-select';
 import {map as _map, values as _values, camelCase} from 'lodash';
 
-import {faPencilAlt, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import {faInfoCircle, faPencilAlt, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import AuthorCreditEditor from './author-credit-editor';
 import type {Dispatch} from 'redux'; // eslint-disable-line import/named
 import EntitySearchFieldOption from '../common/entity-search-field-option';
@@ -40,6 +40,7 @@ import React from 'react';
 import ValidationLabel from '../common/validation-label';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
+import {toggleAuthorCredit} from '../button-bar/actions';
 import {validateAuthorCreditSection} from '../validators/common';
 
 
@@ -48,12 +49,14 @@ type OwnProps = {
 
 type StateProps = {
 	authorCreditEditor: Record<string, AuthorCreditRow>,
+	authorCreditEnable: boolean,
 	showEditor: boolean,
 	isEditable:boolean,
 };
 
 type DispatchProps = {
 	onAuthorChange: (Author) => unknown,
+	toggleAuthorCreditEnable: () => unknown,
 	onEditAuthorCredit: (rowCount: number) => unknown,
 	onEditorClose: () => unknown,
 };
@@ -61,7 +64,7 @@ type DispatchProps = {
 type Props = OwnProps & StateProps & DispatchProps;
 
 function AuthorCreditSection({
-	authorCreditEditor, onEditAuthorCredit, onEditorClose, showEditor, onAuthorChange, isEditable
+	authorCreditEditor, onEditAuthorCredit, onEditorClose, showEditor, onAuthorChange, isEditable, authorCreditEnable, toggleAuthorCreditEnable
 }: Props) {
 	let editor;
 	if (showEditor) {
@@ -75,7 +78,7 @@ function AuthorCreditSection({
 	const authorCreditPreview = _map(authorCreditEditor, (credit) => `${credit.name}${credit.joinPhrase}`).join('');
 	const authorCreditRows = _values(authorCreditEditor);
 
-	const isValid = validateAuthorCreditSection(authorCreditRows);
+	const isValid = validateAuthorCreditSection(authorCreditRows, !authorCreditEnable);
 
 	const editButton = (
 		// eslint-disable-next-line react/jsx-no-bind
@@ -102,6 +105,23 @@ function AuthorCreditSection({
 			Name(s) of the Author(s) as they appear on the book cover
 		</Tooltip>
 	);
+	const checkboxLabel = (
+		<>
+			<FormLabel className="font-weight-normal">
+			This Edition doesn&apos;t have an Author
+				<OverlayTrigger
+					delay={50}
+					overlay={<Tooltip id="ac-enabled">Select this checkbox if you don&apos;t know the author(s) of this edition </Tooltip>}
+				>
+					<FontAwesomeIcon
+						className="margin-left-0-5"
+						icon={faInfoCircle}
+					/>
+				</OverlayTrigger>
+			</FormLabel>
+		</>
+
+	);
 	return (
 		<Row className="margin-bottom-2">
 			{editor}
@@ -121,7 +141,7 @@ function AuthorCreditSection({
 							<EntitySearchFieldOption
 								customComponents={{DropdownIndicator: null, SingleValue}}
 								instanceId="author0"
-								isDisabled={!isEditable}
+								isDisabled={!isEditable || !authorCreditEnable}
 								placeholder="Type to search or paste a BBID"
 								type="author"
 								value={optionValue}
@@ -129,8 +149,16 @@ function AuthorCreditSection({
 							/>
 						</div>
 						<InputGroup.Append>{editButton}</InputGroup.Append>
-
 					</InputGroup>
+					<Form.Check
+						className="mt-2"
+						defaultChecked={!authorCreditEnable}
+						disabled={Boolean(optionValue)}
+						id="ac-enabled-check"
+						label={checkboxLabel}
+						type="checkbox"
+						onChange={toggleAuthorCreditEnable}
+					/>
 				</Form.Group>
 			</Col>
 		</Row>
@@ -151,6 +179,7 @@ function mapStateToProps(rootState, {type}): StateProps {
 	const entitySection = `${camelCase(type)}Section`;
 	return {
 		authorCreditEditor: convertMapToObject(rootState.get('authorCreditEditor')),
+		authorCreditEnable: rootState.getIn(['buttonBar', 'authorCreditEnable']),
 		isEditable,
 		showEditor: rootState.getIn([entitySection, 'authorCreditEditorVisible'])
 	};
@@ -169,7 +198,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onEditorClose: () => {
 			dispatch(removeEmptyCreditRows());
 			dispatch(hideAuthorCreditEditor());
-		}
+		},
+		toggleAuthorCreditEnable: () => dispatch(toggleAuthorCredit())
 	};
 }
 
