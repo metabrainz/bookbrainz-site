@@ -2,7 +2,7 @@ import {Badge, ListGroup} from 'react-bootstrap';
 import {Entity, State, SummarySectionProps, SummarySectionStateProps} from '../interface/type';
 import Immutable from 'immutable';
 import React from 'react';
-import SingleEntity from './single-entity';
+import SingleEntityCard from './single-entity-card';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
@@ -25,36 +25,31 @@ function SummarySection({
 		Series,
 		Works
 	};
-	function renderEntityGroup(entities: Array<any>, entityType: string) {
+	function renderEntityGroup(entities: Array<any>) {
 		const newEntities = entities.filter((entity) => entity.__isNew__);
 		if (newEntities.length === 0) {
 			return null;
 		}
 		return (
-			<ListGroup.Item
-				as="li"
-				className="d-flex justify-content-between align-items-start"
-				key={`${entityType}-new`}
-			>
-				<div className="ms-2 me-auto">
-					<div className="font-weight-bold">{entityType}</div>
-					{newEntities.map((entity, index) => (<SingleEntity
-						entity={entity} isLast={index === newEntities.length - 1}
-						key={entity.id} languageOptions={languageOptions}
-					                                     />))}
-				</div>
-				<Badge pill bg="primary">
-					{newEntities.length}
-				</Badge>
-			</ListGroup.Item>
+			<div className="ms-2 me-auto">
+				{newEntities.map((entity) => (<SingleEntityCard
+					entity={entity}
+					key={entity.id} languageOptions={languageOptions}
+				                              />))
+				}
+			</div>
 		);
 	}
 	return (
 		<div>
-			<h4>New Entities</h4>
-			<ListGroup as="ol">
+			<h3>New Entities</h3>
+			<p className="text-muted">Below you can see a preview of the entities you are about to create
+			or have created in the process of filling the form. Please verify the information and
+			make any adjustment if necessary before submitting the form
+			</p>
+			<section className="review-section">
 				{_.map(createdEntities, renderEntityGroup)}
-			</ListGroup>
+			</section>
 		</div>
 	);
 }

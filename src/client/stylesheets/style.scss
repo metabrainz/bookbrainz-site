@@ -815,15 +815,14 @@ div[class~=collapsing]+div[class=card-header] .accordion-arrow {
 .uf-modal-body .accordion > .card{
 	margin-bottom: 10px;
 }
-.entities-preview{
-	cursor: pointer;
-	color: $orange;
-	transition: all 0.2s linear;
-}
-.entities-preview:hover{
-	color: #754E37;
+.review-section{
+	display: flex;
 }
 
 .series-item-dialog{
 	max-width: 600px;
+}
+
+.review-card{
+	margin: 10px;
 }

@@ -1,12 +1,13 @@
-import {Modal} from 'react-bootstrap';
+import {Card} from 'react-bootstrap';
 import React from 'react';
-import {SingleEntityModalProps} from '../interface/type';
+import {SingleEntityCardProps} from '../interface/type';
 import _ from 'lodash';
 import {dateObjectToISOString} from '../../helpers/utils';
 
 /* eslint-disable sort-keys */
 const BASE_ENTITY = {
 	Name: 'nameSection.name',
+	Type: 'type',
 	Language: 'nameSection.language',
 	'Sort-Name': 'nameSection.sortName',
 	Disambiguation: 'nameSection.disambiguation',
@@ -29,12 +30,12 @@ const ENTITY_FIELDS = {
 	},
 	editionGroup: {
 		...BASE_ENTITY,
-		Type: 'editionGroupSection.type'
+		'EditionGroup-Type': 'editionGroupSection.type'
 	},
 	author: {
 		...BASE_ENTITY,
 		Gender: 'authorSection.gender',
-		Type: 'authorSection.type',
+		'Author-Type': 'authorSection.type',
 		'Begin-Date': 'authorSection.beginDate',
 		'Begin-Area': 'authorSection.beginArea.text',
 		'Dead?': 'authorSection.ended',
@@ -43,7 +44,7 @@ const ENTITY_FIELDS = {
 	},
 	publisher: {
 		...BASE_ENTITY,
-		Type: 'publisherSection.type',
+		'Publihser-Type': 'publisherSection.type',
 		'Begin-Date': 'publisherSection.beginDate',
 		'Dissolved?': 'publisherSection.ended',
 		'End-Date': 'publisherSection.endDate'
@@ -53,20 +54,20 @@ const ENTITY_FIELDS = {
 		...BASE_ENTITY,
 		orderType: 'seriesSection.orderType',
 		'Series-Items': 'seriesSection.seriesItems',
-		seriesType: 'seriesSection.seriesType'
+		'series-Type': 'seriesSection.seriesType'
 	},
 	work: {
 		...BASE_ENTITY,
-		type: 'workSection.type',
+		'Work-Type': 'workSection.type',
 		'Work-Languages': 'workSection.languages'
 	}
 };
-export default function SingleEntityModal({entity, show, handleClose, languageOptions}:SingleEntityModalProps) {
+export default function SingleEntityCard({entity, languageOptions}:SingleEntityCardProps) {
 	const id2LanguageMap = React.useMemo(() => Object.fromEntries(_.map(languageOptions, (option) => [option.id, option.name])), []);
 	// display formatted entity attributes in modal
 	function renderField(path, key) {
 		let fieldVal = _.get(entity, path, '');
-		if (!fieldVal || (fieldVal.length === 0)) {
+		if (!fieldVal || (fieldVal.length === 0) || key === 'Name') {
 			return;
 		}
 		if (key === 'Language') {
@@ -98,14 +99,11 @@ export default function SingleEntityModal({entity, show, handleClose, languageOp
 	}
 	const entityFields = ENTITY_FIELDS[_.camelCase(entity.type)] ?? {};
 	return (
-		<Modal show={show} onHide={handleClose}>
-			<Modal.Header closeButton>
-				<Modal.Title>{entity.type}</Modal.Title>
-			</Modal.Header>
-			<Modal.Body>
+		<Card className="review-card">
+			<Card.Header>{_.get(entity, entityFields.Name, '<unknown>')}</Card.Header>
+			<Card.Body>
 				{_.map(entityFields, renderField)}
-			</Modal.Body>
-
-		</Modal>
+			</Card.Body>
+		</Card>
 	);
 }
