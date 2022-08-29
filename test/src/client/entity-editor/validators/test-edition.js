@@ -441,6 +441,17 @@ function describeValidateForm() {
 		expect(result).to.be.true;
 	});
 
+	it('should pass an Object with an empty author credit editor', () => {
+		const result = validateForm(
+			{
+				...validForm,
+				authorCreditEditor: {}
+			},
+			IDENTIFIER_TYPES
+		);
+		expect(result).to.be.true;
+	});
+
 	it('should reject an Object with an invalid alias editor', () => {
 		const result = validateForm(
 			{
@@ -457,17 +468,6 @@ function describeValidateForm() {
 			{
 				...validForm,
 				authorCreditEditor: INVALID_AUTHOR_CREDIT_EDITOR
-			},
-			IDENTIFIER_TYPES
-		);
-		expect(result).to.be.false;
-	});
-
-	it('should reject an Object with an empty author credit editor', () => {
-		const result = validateForm(
-			{
-				...validForm,
-				authorCreditEditor: {}
 			},
 			IDENTIFIER_TYPES
 		);
