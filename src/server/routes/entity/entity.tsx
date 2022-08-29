@@ -1158,8 +1158,13 @@ export function processSingleEntity(formBody, JSONEntity, reqSession, entityType
 			const entityJSON = savedMainEntity.toJSON();
 			if (entityJSON && entityJSON.relationshipSet) {
 				entityJSON.relationshipSet.relationships = await Promise.all(entityJSON.relationshipSet.relationships.map(async (rel) => {
-					rel.source = await commonUtils.getEntityAlias(orm, rel.source.bbid, rel.source.type);
-					rel.target = await commonUtils.getEntityAlias(orm, rel.target.bbid, rel.target.type);
+					try {
+						rel.source = await commonUtils.getEntityAlias(orm, rel.source.bbid, rel.source.type);
+						rel.target = await commonUtils.getEntityAlias(orm, rel.target.bbid, rel.target.type);
+					}
+					catch (err) {
+						log.error(err);
+					}
 					return rel;
 				}));
 			}
