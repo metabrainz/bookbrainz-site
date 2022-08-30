@@ -139,7 +139,18 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 		// if authors have been added to the work, then add work to the post data
 		if (!work.checked) { return; }
 		let relationshipCount = 0;
+		// hashset in order to avoid duplicate relationships
+		const authorBBIDSet = new Set();
+		if (work.relationshipSet) {
+			_.forEach(work.relationshipSet.relationships, (rel) => {
+				if (rel.typeId === authorWorkRelationshipTypeId) {
+					authorBBIDSet.add(rel.sourceBbid);
+				}
+			});
+		}
+		let flag = false;
 		_.forEach(data.authorCreditEditor, (authorCredit) => {
+			if (authorBBIDSet.has(authorCredit.author.bbid)) { return; }
 			const relationship = {
 				attributeSetId: null,
 				attributes: [],
@@ -156,12 +167,15 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 			};
 			_.set(work, ['relationshipSection', 'relationships', `a${relationshipCount}`], relationship);
 			relationshipCount++;
+			flag = true;
 		});
-		work.submissionSection = {
-			note: 'added authors from parent edition'
-		};
-		work.__isNew__ = false;
-		newData[wid] = work;
+		if (flag) {
+			work.submissionSection = {
+				note: 'added authors from parent edition'
+			};
+			work.__isNew__ = false;
+			newData[wid] = work;
+		}
 	});
 	// add edition at last
 	if (data.ISBN.type) {
