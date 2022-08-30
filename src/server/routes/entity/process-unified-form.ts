@@ -239,8 +239,14 @@ export function handleCreateMultipleEntities(
 				throw new FormSubmissionError('Entity with given id not found');
 			}
 		}
-		// edition entity should be on the bottom of the list
-		return processSingleEntity(entityForm, currentEntity, null, entityType, orm, editorJSON, deriveProps, false);
+		const {bookshelf} = orm;
+		const entityEditPromise = bookshelf.transaction((transacting) =>
+			processSingleEntity(entityForm, currentEntity, null, entityType, orm, editorJSON, deriveProps, false, transacting));
+
+		const achievementPromise = entityEditPromise.then(
+			(entityJSON) => processAchievement(orm, editorJSON.id, entityJSON)
+		);
+		return achievementPromise;
 	}
 	// create all entities
 	const achievementPromise = Promise.all(_.keys(body).map(processEntity));
