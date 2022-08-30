@@ -26,7 +26,7 @@ import _ from 'lodash';
 import request from 'superagent';
 
 
-const {Button} = bootstrap;
+const {Button, Row} = bootstrap;
 
 
 const REVIEW_CONTENT_PREVIEW_LENGTH = 75;
@@ -60,10 +60,8 @@ function ReviewCard(props) {
 					Review by: <b>{reviewData.user.display_name}</b> {publishedDate}
 				</small>
 			</div>
-			<div className="pb-3">
-				{reviewText}
-				<a className="float-right" href={reviewLink}>View &gt;</a>
-			</div>
+			{reviewText}
+			<a className="float-right" href={reviewLink}>View &gt;</a>
 		</div>
 	);
 }
@@ -78,6 +76,8 @@ class EntityReviews extends React.Component {
 		};
 		this.entityType = props.entityType;
 		this.entityBBID = props.entityBBID;
+		this.handleModalToggle = props.handleModalToggle;
+		this.reviewsCount = props.entityReviews?.reviews?.average_rating?.count || 0;
 	}
 
 	async handleClick() {
@@ -92,7 +92,10 @@ class EntityReviews extends React.Component {
 	render() {
 		let reviewContent;
 		const mapEntityType = {
-			EditionGroup: 'edition-group'
+			Author: 'author',
+			EditionGroup: 'edition-group',
+			Series: 'series',
+			Work: 'literary-work'
 		};
 		const cbEntityType = mapEntityType[this.entityType];
 		const entityLink = `https://critiquebrainz.org/${cbEntityType}/${this.entityBBID}`;
@@ -118,8 +121,8 @@ class EntityReviews extends React.Component {
 					<h4>No reviews yet.</h4>
 					<Button
 						className="margin-top-d15"
-						href={entityLink}
 						variant="success"
+						onClick={this.handleModalToggle}
 					>
 						<FontAwesomeIcon icon={faPlus}/>
 						{'  Add a review'}
@@ -142,10 +145,17 @@ class EntityReviews extends React.Component {
 			);
 		}
 		return (
-			<div>
-				<h2>Reviews</h2>
+			<Row className="flex-column">
+				<h2>
+                    Reviews
+					<span className="small text-muted">
+					    {this.reviewsCount ?
+						    ` ${this.reviewsCount} review${this.reviewsCount > 1 ? 's' : ''}` : ' No reviews'
+						}
+					</span>
+				</h2>
 				{reviewContent}
-			</div>
+			</Row>
 		);
 	}
 }
@@ -171,7 +181,8 @@ EntityReviews.displayName = 'EntityReviews';
 EntityReviews.propTypes = {
 	entityBBID: PropTypes.string.isRequired,
 	entityReviews: PropTypes.object.isRequired,
-	entityType: PropTypes.string.isRequired
+	entityType: PropTypes.string.isRequired,
+	handleModalToggle: PropTypes.func.isRequired
 };
 
 

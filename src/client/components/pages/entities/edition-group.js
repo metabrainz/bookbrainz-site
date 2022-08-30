@@ -19,7 +19,10 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
+import React, {createRef, useCallback} from 'react';
 import AuthorCreditDisplay from '../../author-credit-display';
+import AverageRating from './average-ratings';
+import CBReviewModal from './cbReviewModal';
 import EditionTable from './edition-table';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
@@ -29,8 +32,6 @@ import EntityRelatedCollections from './related-collections';
 import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
-import {Rating} from 'react-simple-star-rating';
-import React from 'react';
 
 
 const {deletedEntityMessage, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
@@ -42,6 +43,8 @@ function EditionGroupAttributes({editionGroup}) {
 	}
 	const type = getTypeAttribute(editionGroup.editionGroupType).data;
 	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(editionGroup);
+	const averageRating = editionGroup.reviews?.reviews?.average_rating?.rating || 0;
+	const reviewsCount = editionGroup.reviews?.reviews?.average_rating?.count || 0;
 	return (
 		<div>
 			<Row>
@@ -59,20 +62,10 @@ function EditionGroupAttributes({editionGroup}) {
 				</Col>
 				<Col lg={3}>
 					<dl>
-						<dt>Ratings</dt>
-						<dd>
-							<Rating
-								allowHalfIcon
-								readonly
-								allowHover={false}
-								className="rating-stars"
-								fillColor="#46433A"
-								initialValue={3.5}
-								ratingValue={0}
-								size={20}
-								stars={5}
-							/>
-						</dd>
+						<AverageRating
+							averageRatings={averageRating}
+							reviewsCount={reviewsCount}
+						/>
 					</dl>
 				</Col>
 			</Row>
@@ -86,6 +79,17 @@ EditionGroupAttributes.propTypes = {
 
 
 function EditionGroupDisplayPage({entity, identifierTypes, user}) {
+	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
+	const handleModalToggle = useCallback(() => {
+		setShowCBReviewModal(!showCBReviewModal);
+	}, [showCBReviewModal]);
+
+	const reviewsRef = createRef();
+
+	const handleUpdateReviews = useCallback(() => {
+		reviewsRef.current.handleClick();
+	}, [reviewsRef]);
+
 	const urlPrefix = getEntityUrl(entity);
 
 	let authorCreditSection;
@@ -108,6 +112,15 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 
 	return (
 		<div>
+			<CBReviewModal
+				entityBBID={entity.bbid}
+				entityName={entity.defaultAlias.name}
+				entityType={entity.type}
+				handleModalToggle={handleModalToggle}
+				handleUpdateReviews={handleUpdateReviews}
+				showModal={showCBReviewModal}
+				userId={user?.id}
+			/>
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" lg={2}>
 					<EntityImage
@@ -117,9 +130,14 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 				<Col lg={10}>
-					<EntityTitle entity={entity}/>
+					<EntityTitle
+						entity={entity}
+						handleModalToggle={handleModalToggle}
+					/>
 					{authorCreditSection}
-					<EditionGroupAttributes editionGroup={entity}/>
+					<EditionGroupAttributes
+						editionGroup={entity}
+					/>
 				</Col>
 			</Row>
 			<EntityAnnotation entity={entity}/>
@@ -137,7 +155,13 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 
 					</Col>
 					<Col lg={4}>
-						<EntityReviews entityBBID={entity.bbid} entityReviews={entity.reviews} entityType={entity.type}/>
+						<EntityReviews
+							entityBBID={entity.bbid}
+							entityReviews={entity.reviews}
+							entityType={entity.type}
+							handleModalToggle={handleModalToggle}
+							ref={reviewsRef}
+						/>
 					</Col>
 				</Row>
 			</React.Fragment>}

@@ -85,6 +85,14 @@ function EditorContainer(props) {
 								Collections
 							</Nav.Link>
 						</Nav.Item>
+						<Nav.Item>
+							<Nav.Link
+								active={tabActive === 4}
+								href="/external-service"
+							>
+								External Services
+							</Nav.Link>
+						</Nav.Item>
 					</Nav>
 				</Col>
 			</Row>

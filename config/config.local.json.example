@@ -9,6 +9,11 @@
 		"clientSecret": null,
 		"callbackURL": "http://localhost:9099/cb"
 	},
+    "critiquebrainz": {
+        "clientID": null,
+        "clientSecret": null,
+        "redirectURL": "http://localhost:9099/external-service/critiquebrainz/callback"
+    },
 	"session": {
 		"maxAge": 2592000000,
 		"secret": "Something here!",

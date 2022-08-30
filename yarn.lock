@@ -1156,6 +1156,11 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
+"@cospired/i18n-iso-languages@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@cospired/i18n-iso-languages/-/i18n-iso-languages-4.0.0.tgz#fbd54bd046e28295a2ab8f3806c77b0d92852b29"
+  integrity sha512-8dKE8TJIhb6/JpwpshTV96Q/fT8kAohnAD2KnOuKkVemhDcWDjurPmzj8NnA25YW4gcKfvJYq/iDbXyB0gZ2jg==
+
 "@discoveryjs/json-ext@^0.5.0":
   version "0.5.6"
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.6.tgz#d5e0706cf8c6acd8c6032f8d54070af261bbbb2f"
@@ -2313,10 +2318,10 @@ body-parser@1.19.1:
     raw-body "2.4.2"
     type-is "~1.6.18"
 
-bookbrainz-data@2.14.1:
-  version "2.14.1"
-  resolved "https://registry.yarnpkg.com/bookbrainz-data/-/bookbrainz-data-2.14.1.tgz#77eba018f2af1894bef2ea0cfb4ddc4b417f3a12"
-  integrity sha512-VrGrRLEWEvKtFfR4/MCUBWjq7XEvrUQQ0dBj2Z90aSZrQy00HEJ5/WhO6xoOeYpnvPk6TRMUc8XZiBhjvNgKyw==
+bookbrainz-data@2.15.1:
+  version "2.15.1"
+  resolved "https://registry.yarnpkg.com/bookbrainz-data/-/bookbrainz-data-2.15.1.tgz#f918f0babb3b2ec986a5b588c0ca44c207fc07d8"
+  integrity sha512-RBdvQCCgDOJmaNr/r08M4TRjhz47zP+c1mirMJ4329HIMsLtnTHXCwcDhVHAUXFaZmdmSD39yWXkeOzp5IEmDw==
   dependencies:
     bookshelf "^1.2.0"
     bookshelf-virtuals-plugin "^0.1.1"
@@ -6918,6 +6923,14 @@ react-sticky@^6.0.1:
     prop-types "^15.5.8"
     raf "^3.3.0"
 
+react-tooltip@^4.2.21:
+  version "4.2.21"
+  resolved "https://registry.yarnpkg.com/react-tooltip/-/react-tooltip-4.2.21.tgz#840123ed86cf33d50ddde8ec8813b2960bfded7f"
+  integrity sha512-zSLprMymBDowknr0KVDiJ05IjZn9mQhhg4PRsqln0OZtURAJ1snt1xi5daZfagsh6vfsziZrc9pErPTDY1ACig==
+  dependencies:
+    prop-types "^15.7.2"
+    uuid "^7.0.3"
+
 react-transition-group@^4.3.0, react-transition-group@^4.4.1:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.2.tgz#8b59a56f09ced7b55cbd53c36768b922890d5470"
@@ -8291,6 +8304,11 @@ utils-merge@1.0.1, utils-merge@1.x.x:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
+
+uuid@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.3.tgz#c5c9f2c8cf25dc0a372c4df1441c41f5bd0c680b"
+  integrity sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==
 
 uuid@^8.3.2:
   version "8.3.2"
