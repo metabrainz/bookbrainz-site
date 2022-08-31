@@ -97,7 +97,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 			bbid: series?.id
 		},
 		entityType: 'series',
-		hideTypeOption: true
+		hideItemSelect: true
 	};
 	const checkLabel = (
 		<>
@@ -114,6 +114,24 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 				</OverlayTrigger>
 			</FormLabel>
 		</>);
+	const seriesWorkLabel = (
+
+		<>
+			<FormLabel className="font-weight-normal">
+			Add Works to Series
+				<OverlayTrigger
+					delay={50}
+					overlay={<Tooltip id="series-work">This will automatically add each new selected work to series items (if present)</Tooltip>}
+				>
+					<FontAwesomeIcon
+						className="margin-left-0-5"
+						icon={faInfoCircle}
+					/>
+				</OverlayTrigger>
+			</FormLabel>
+		</>
+
+	);
 	const filterSeries = React.useCallback((item) => toLower(item.entityType) === 'work', []);
 	const filters = [filterSeries];
 	return (
@@ -141,19 +159,23 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 					type="checkbox"
 					onChange={toggleCheck}
 				/>
-				<FormCheck
-					className="ml-1"
-					defaultChecked={copyToSeries}
-					disabled={!series}
-					id="works-copy-to-series"
-					label="Add Work to Series"
-					type="checkbox"
-					onChange={toggleCopyToSeries}
-				/>
 			</div>
 			<hr/>
 			<div>
 				<h3>Series</h3>
+				<p className="text-muted">You can add all the Works above to an existing or new series if they are part of the
+					 same a set or sequence of related Works.
+					 Check the checkbox below to add the Works to a Series
+				</p>
+				<FormCheck
+					className="ml-1 mb-2"
+					defaultChecked={copyToSeries}
+					id="works-copy-to-series"
+					label={seriesWorkLabel}
+					type="checkbox"
+					onChange={toggleCopyToSeries}
+				/>
+				{copyToSeries &&
 				<Row>
 					<Col lg={{span: 6}}>
 						<SearchEntityCreate
@@ -165,8 +187,8 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							{...rest}
 						/>
 					</Col>
-				</Row>
-				{series && <SeriesSection {...seriesSectionProps}/>}
+				</Row>}
+				{copyToSeries && <SeriesSection {...seriesSectionProps}/>}
 			</div>
 		</>
 	);

@@ -1,12 +1,13 @@
-import {Modal} from 'react-bootstrap';
+import {Card} from 'react-bootstrap';
 import React from 'react';
-import {SingleEntityModalProps} from '../interface/type';
+import {SingleEntityCardProps} from '../interface/type';
 import _ from 'lodash';
 import {dateObjectToISOString} from '../../helpers/utils';
 
 /* eslint-disable sort-keys */
 const BASE_ENTITY = {
 	Name: 'name',
+	Type: 'type',
 	Language: 'defaultAlias.languageId',
 	'Sort-Name': 'sortName',
 	Disambiguation: 'disambiguation',
@@ -33,12 +34,12 @@ const ENTITY_FIELDS = {
 	},
 	editionGroup: {
 		...BASE_ENTITY,
-		Type: 'typeId'
+		'EditionGroup-Type': 'typeId'
 	},
 	author: {
 		...BASE_ENTITY,
 		Gender: 'genderId',
-		Type: 'typeId',
+		'Author-Type': 'typeId',
 		'Begin-Date': 'beginDate',
 		'Begin-Area': 'beginArea.text',
 		'Dead?': 'ended',
@@ -47,7 +48,7 @@ const ENTITY_FIELDS = {
 	},
 	publisher: {
 		...BASE_ENTITY,
-		Type: 'typeId',
+		'Publihser-Type': 'typeId',
 		'Begin-Date': 'beginDate',
 		'Dissolved?': 'ended',
 		'End-Date': 'endDate'
@@ -57,20 +58,20 @@ const ENTITY_FIELDS = {
 		...BASE_ENTITY,
 		orderType: 'orderingTypeId',
 		'Series-Items': 'seriesSection.seriesItems',
-		seriesType: 'seriesEntityType'
+		'series-Type': 'seriesEntityType'
 	},
 	work: {
 		...BASE_ENTITY,
-		type: 'typeId',
+		'Work-Type': 'typeId',
 		'Work-Languages': 'languages'
 	}
 };
-export default function SingleEntityModal({entity, show, handleClose, languageOptions}:SingleEntityModalProps) {
+export default function SingleEntityCard({entity, languageOptions}:SingleEntityCardProps) {
 	const id2LanguageMap = React.useMemo(() => Object.fromEntries(_.map(languageOptions, (option) => [option.id, option.name])), []);
 	// display formatted entity attributes in modal
 	function renderField(path, key) {
 		let fieldVal = _.get(entity, path, '');
-		if (!fieldVal || (fieldVal.length === 0)) {
+		if (!fieldVal || (fieldVal.length === 0) || key === 'Name') {
 			return;
 		}
 		if (key === 'Language') {
@@ -102,14 +103,11 @@ export default function SingleEntityModal({entity, show, handleClose, languageOp
 	}
 	const entityFields = ENTITY_FIELDS[_.camelCase(entity.type)] ?? {};
 	return (
-		<Modal show={show} onHide={handleClose}>
-			<Modal.Header closeButton>
-				<Modal.Title>{entity.type}</Modal.Title>
-			</Modal.Header>
-			<Modal.Body>
+		<Card className="review-card">
+			<Card.Header>{_.get(entity, entityFields.Name, '<unknown>')}</Card.Header>
+			<Card.Body>
 				{_.map(entityFields, renderField)}
-			</Modal.Body>
-
-		</Modal>
+			</Card.Body>
+		</Card>
 	);
 }

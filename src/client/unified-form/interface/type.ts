@@ -205,15 +205,7 @@ export type WorkRowOwnProps = {
 
 export type WorkRowProps = WorkRowStateProps & WorkRowDispatchProps & WorkRowOwnProps;
 
-export type SingleEntityModalProps = {
+export type SingleEntityCardProps = {
     entity:any,
-    show:boolean,
-    handleClose:()=>void,
-	languageOptions:any[]
-};
-
-export type SingleEntityProps = {
-    entity: any;
-    isLast: boolean;
 	languageOptions:any[]
 };

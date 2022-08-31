@@ -42,6 +42,7 @@ type EntitySearchResult = {
 };
 
 type SeriesItemsProps = {
+	hideItemSelect: boolean
 	baseEntity: Entity,
 	onAdd: (_Relationship) => unknown,
     onEdit: (Attribute, string) => unknown,
@@ -140,7 +141,7 @@ const SortableItem = SortableElement(({value, onRemove, baseEntity, handleNumber
 ));
 
 const SortableList = SortableContainer(({children}) => <div>{children}</div>);
-function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onRemove,
+function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onRemove, hideItemSelect,
 	onAdd, onEdit, onSort, seriesItemsArray, isUnifiedForm}:SeriesItemsProps) {
 	const [seriesItem, setSeriesItem] = useState(null);
 	const [targetEntity, setTargetEntity] = useState(null);
@@ -227,6 +228,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 				}
 				</> : null
 			}
+			{!hideItemSelect &&
 			<Row className="margin-top-d8">
 				<Col className={alignText} lg={isUnifiedForm ? 7 : 3}>
 					<p className="margin-top-d5">Add an entity to the series:</p>
@@ -248,6 +250,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 					</Button>
 				</Col>
 			</Row>
+					   }
 		</div>
 	);
 }
