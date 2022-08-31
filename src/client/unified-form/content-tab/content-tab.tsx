@@ -1,7 +1,7 @@
 import * as Bootstrap from 'react-bootstrap/';
 import {ContentTabDispatchProps, ContentTabProps, ContentTabStateProps, State} from '../interface/type';
 import {addBulkSeriesItems, addSeriesItem, removeAllSeriesItems, updateOrderType, updateSeriesType} from '../../entity-editor/series-section/actions';
-import {addSeries, addWork, duplicateWork} from './action';
+import {addSeries, addWork, duplicateWork, removeSeries} from './action';
 import {closeEntityModal, dumpEdition, loadEdition, openEntityModal} from '../action';
 import {get, map, size, toLower} from 'lodash';
 import CreateEntityModal from '../common/create-entity-modal';
@@ -43,11 +43,18 @@ function generateRel(workEntity, seriesEntity, attributeSetId?) {
 	};
 }
 export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeriesChange, series,
-	 onAddSeriesItem, onSubmitWork, ...rest}:ContentTabProps) {
+	 onAddSeriesItem, onSubmitWork, resetSeries, ...rest}:ContentTabProps) {
 	const [isChecked, setIsChecked] = React.useState(true);
 	const [copyToSeries, setCopyToSeries] = React.useState(false);
-	const toggleCheck = React.useCallback(() => setIsChecked(!isChecked), [isChecked]);
-	const toggleCopyToSeries = React.useCallback(() => setCopyToSeries(!copyToSeries), [copyToSeries]);
+	const toggleCheck = React.useCallback(() => {
+		setIsChecked(!isChecked);
+	}, [isChecked]);
+	const toggleCopyToSeries = React.useCallback(() => {
+		if (!copyToSeries) {
+			 resetSeries();
+		}
+		setCopyToSeries(!copyToSeries);
+	}, [copyToSeries]);
 	const [showModal, setShowModal] = React.useState(false);
 	const openModalHandler = React.useCallback((id) => {
 		setShowModal(true);
@@ -64,16 +71,16 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 		onSubmitWork();
 		onModalClose();
 	}, []);
-	const baseEntity = {
-		bbid: series?.id,
-		defaultAlias: {
-			name: series?.text
-		},
-		type: 'Series'
-	};
 	const onChangeHandler = React.useCallback((work:any) => {
 		work.checked = isChecked;
 		if (copyToSeries) {
+			const baseEntity = {
+				bbid: series?.id,
+				defaultAlias: {
+					name: series?.text
+				},
+				type: 'Series'
+			};
 			const otherEntity = {
 				bbid: get(work, 'id'),
 				defaultAlias: {
@@ -86,7 +93,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 			onAddSeriesItem(relationship);
 		}
 		onChange(work);
-	}, [isChecked, onChange, copyToSeries]);
+	}, [isChecked, onChange, copyToSeries, series]);
 	const checkToolTip = (
 		<Tooltip id="work-check">This will set the book&apos;s Author Credits from the &lsquo;Cover&lsquo; tab as this Work&apos;s
 	 Author
@@ -221,7 +228,7 @@ function mapDispatchToProps(dispatch, {submissionUrl}):ContentTabDispatchProps {
 				dispatch(updateSeriesType(value.seriesEntityType));
 			}
 			// add all existing work rels to series items
-			if (value.relationshipSet) {
+			if (value?.relationshipSet) {
 				const relationships = value.relationshipSet.relationships.reduce((obj, rel, keyId) => {
 					if (rel.type.id === seriesWorkTypeId) {
 						obj[keyId] = generateRel(getRelEntity(rel.source), getRelEntity(rel.target), rel.attributeSetId);
@@ -233,7 +240,8 @@ function mapDispatchToProps(dispatch, {submissionUrl}):ContentTabDispatchProps {
 				}
 			}
 		},
-		onSubmitWork: () => dispatch(submitSingleEntity(submissionUrl, 'Work', addWork))
+		onSubmitWork: () => dispatch(submitSingleEntity(submissionUrl, 'Work', addWork)),
+		resetSeries: () => dispatch(removeAllSeriesItems()) && dispatch(removeSeries())
 	};
 }
 

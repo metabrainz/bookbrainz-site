@@ -1,4 +1,4 @@
-import {ADD_SERIES, ADD_WORK, REMOVE_WORK, TOGGLE_COPY_AUTHOR_CREDITS, UPDATE_WORK, UPDATE_WORKS} from './action';
+import {ADD_SERIES, ADD_WORK, REMOVE_SERIES, REMOVE_WORK, TOGGLE_COPY_AUTHOR_CREDITS, UPDATE_WORK, UPDATE_WORKS} from './action';
 import {Action, State} from '../interface/type';
 import Immutable from 'immutable';
 
@@ -26,6 +26,8 @@ export function seriesReducer(state = initialState, {type, payload}:Action):Stat
 	switch (type) {
 		case ADD_SERIES:
 			return state.set(payload.id, Immutable.fromJS(payload.value));
+		case REMOVE_SERIES:
+			return state.delete(payload);
 		default:
 			return state;
 	}

@@ -1,10 +1,10 @@
 import {ADD_AUTHOR, ADD_PUBLISHER} from './cover-tab/action';
-import {ADD_SERIES, DUPLICATE_WORK} from './content-tab/action';
 import {Action, State} from './interface/type';
 import {CLOSE_ENTITY_MODAL, DUMP_EDITION, LOAD_EDITION, OPEN_ENTITY_MODAL} from './action';
 import {ISBNReducer, authorsReducer, autoISBNReducer, publishersReducer} from './cover-tab/reducer';
 import {seriesReducer, worksReducer} from './content-tab/reducer';
 import {ADD_EDITION_GROUP} from './detail-tab/action';
+import {DUPLICATE_WORK} from './content-tab/action';
 import Immutable from 'immutable';
 import aliasEditorReducer from '../entity-editor/alias-editor/reducer';
 import annotationSectionReducer from '../entity-editor/annotation-section/reducer';
@@ -177,17 +177,6 @@ function crossSliceReducer(state:State, action:Action) {
 			);
 			break;
 		}
-		case ADD_SERIES:
-			// add new series
-			action.payload.value = action.payload.value ?? {
-				...activeEntityState,
-				__isNew__: true,
-				id: action.payload.id,
-				seriesSection: intermediateState.get('seriesSection'),
-				text: activeEntityState.nameSection.get('name'),
-				type: 'Series'
-			};
-			break;
 		case DUPLICATE_WORK:
 		// copy work state from `Works`
 		{

@@ -9,6 +9,7 @@ export const TOGGLE_COPY_AUTHOR_CREDITS = 'TOGGLE_COPY_AUTHOR_CREDITS';
 export const DUPLICATE_WORK = 'DUPLICATE_WORK';
 // Series Actions
 export const ADD_SERIES = 'ADD_SERIES';
+export const REMOVE_SERIES = 'REMOVE_SERIES';
 
 let nextWorkId = 0;
 const nextSeriesId = 0;
@@ -89,5 +90,18 @@ export function addSeries(value = null):Action {
 	return {
 		payload: {id: `s${nextSeriesId}`, value},
 		type: ADD_SERIES
+	};
+}
+
+/**
+ * Produces an action indicating that a given Series should be removed from `Series`.
+ *
+ * @param {string} id - id of the series to be removed
+ * @returns {Action} The resulting REMOVE_SERIES action.
+ */
+export function removeSeries(id = `s${nextSeriesId}`):Action {
+	return {
+		payload: id,
+		type: REMOVE_SERIES
 	};
 }
