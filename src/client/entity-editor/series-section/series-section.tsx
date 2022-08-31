@@ -59,7 +59,7 @@ type DispatchProps = {
 };
 
 type OwnProps = {
-	hideTypeOption?:boolean,
+	hideItemSelect?:boolean,
 	entity: Entity,
 	isUnifiedForm?: boolean,
 	entityType: EntityType,
@@ -104,7 +104,7 @@ function SeriesSection({
 	entity,
 	entityName,
 	entityType,
-	hideTypeOption,
+	hideItemSelect,
 	onEdit,
 	onOrderTypeChange,
 	onRemove,
@@ -181,11 +181,10 @@ function SeriesSection({
 	return (
 		<div>
 			{!isUnifiedForm && heading}
-			{!hideTypeOption &&
+			{!hideItemSelect &&
 			<p className="text-muted">
 				All fields are mandatory — select the option from dropdown
 			</p>}
-			{!hideTypeOption &&
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group>
@@ -232,10 +231,10 @@ function SeriesSection({
 					</Form.Group>}
 				</Col>
 			</Row>
-			}
 			<SeriesEditor
 				baseEntity={baseEntity}
 				defaultOptions={defaultOptions}
+				hideItemSelect={hideItemSelect}
 				isUnifiedForm={isUnifiedForm}
 				orderType={orderTypeValue}
 				relationshipTypes={relationshipTypes}
@@ -251,7 +250,7 @@ function SeriesSection({
 }
 SeriesSection.displayName = 'SeriesSection';
 SeriesSection.defaultProps = {
-	hideTypeOption: false,
+	hideItemSelect: false,
 	isUnifiedForm: false
 };
 
