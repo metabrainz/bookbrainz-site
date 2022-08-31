@@ -65,7 +65,7 @@ export async function addNewUser(
 export function getAuthURL(): string {
 	const authURL = new URL(OAUTH_AUTHORIZE_URL);
 	authURL.searchParams.set('client_id', cbConfig.clientID);
-	authURL.searchParams.set('redirect_uri', cbConfig.redirectURL);
+	authURL.searchParams.set('redirect_uri', cbConfig.callbackURL);
 	authURL.searchParams.set('response_type', 'code');
 	authURL.searchParams.set('scope', critiquebrainzScopes.join(','));
 	return authURL.href;
@@ -85,7 +85,7 @@ export async function fetchAccessToken(
 				client_secret: cbConfig.clientSecret,
 				code,
 				grant_type: 'authorization_code',
-				redirect_uri: cbConfig.redirectURL
+				redirect_uri: cbConfig.callbackURL
 			});
 
 		const token = await data.body;
@@ -120,7 +120,7 @@ export async function refreshAccessToken(
 				client_id: cbConfig.clientID,
 				client_secret: cbConfig.clientSecret,
 				grant_type: 'refresh_token',
-				redirect_uri: cbConfig.redirectURL,
+				redirect_uri: cbConfig.callbackURL,
 				refresh_token: refreshToken
 			});
 		const token = await data.body;
