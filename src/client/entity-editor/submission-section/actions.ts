@@ -259,7 +259,15 @@ export function submit(
 	};
 }
 
-export function submitSingleEntity(submissionUrl:string, entityType:EntityTypeString, addEntity:(val)=>void, initialState = {}):SubmitResult {
+/**
+ *
+ * @param {string} submissionUrl - The URL to post the submission to
+ * @param {string} entityType - The type of entity being submitted
+ * @param {Function} callback - A function that adds the entity to the store
+ * @param {Object} initialState - The initial state of the entity being submitted, this include some fields which are required by the server
+ * @returns {function} - A thunk that posts the submission to the server
+ */
+export function submitSingleEntity(submissionUrl:string, entityType:EntityTypeString, callback:(newEntity)=>void, initialState = {}):SubmitResult {
 	return async (dispatch, getState) => {
 		const rootState = getState();
 		dispatch(setSubmitted(true));
@@ -276,8 +284,7 @@ export function submitSingleEntity(submissionUrl:string, entityType:EntityTypeSt
 				id: mainEntity.bbid,
 				text: mainEntity.name,
 				...mainEntity};
-			dispatch(addEntity(entityObject));
-			return dispatch(setSubmitted(false));
+			return dispatch(callback(entityObject)) && dispatch(setSubmitted(false));
 		}
 		catch (error) {
 			const message =
