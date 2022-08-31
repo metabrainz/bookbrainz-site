@@ -1,9 +1,9 @@
 import * as Bootstrap from 'react-bootstrap/';
 import {ContentTabDispatchProps, ContentTabProps, ContentTabStateProps, State} from '../interface/type';
+import {addBulkSeriesItems, addSeriesItem, removeAllSeriesItems, updateOrderType, updateSeriesType} from '../../entity-editor/series-section/actions';
 import {addSeries, addWork, duplicateWork} from './action';
-import {addSeriesItem, removeAllSeriesItems, updateOrderType, updateSeriesType} from '../../entity-editor/series-section/actions';
 import {closeEntityModal, dumpEdition, loadEdition, openEntityModal} from '../action';
-import {get, map, toLower} from 'lodash';
+import {get, map, size, toLower} from 'lodash';
 import CreateEntityModal from '../common/create-entity-modal';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
@@ -17,6 +17,31 @@ import {submitSingleEntity} from '../../entity-editor/submission-section/actions
 
 
 const {Row, Col, FormCheck, OverlayTrigger, FormLabel, Tooltip} = Bootstrap;
+const seriesWorkTypeId = 71;
+function getRelEntity(entity) {
+	return {
+		bbid: entity?.bbid,
+		defaultAlias: {
+			name: entity?.name
+		},
+		type: entity.type
+	};
+}
+function generateRel(workEntity, seriesEntity, attributeSetId?) {
+	return {
+		attributeSetId,
+		attributes: [{attributeType: 1, value: {textValue: null}}, {attributeType: 2, value: {textValue: null}}],
+		relationshipType: {
+			id: seriesWorkTypeId,
+			linkPhrase: 'is part of',
+			reverseLinkPhrase: 'contains',
+			sourceEntityType: 'Work',
+			targetEntityType: 'Series'
+		},
+		sourceEntity: workEntity,
+		targetEntity: seriesEntity
+	};
+}
 export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeriesChange, series,
 	 onAddSeriesItem, onSubmitWork, ...rest}:ContentTabProps) {
 	const [isChecked, setIsChecked] = React.useState(true);
@@ -57,18 +82,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 				disambiguation: get(work, 'disambiguation'),
 				type: get(work, 'type')
 			};
-			const relationship = {
-				attributes: [{attributeType: 1, value: {textValue: null}}, {attributeType: 2, value: {textValue: null}}],
-				relationshipType: {
-					id: 71,
-					linkPhrase: 'is part of',
-					reverseLinkPhrase: 'contains',
-					sourceEntityType: 'Work',
-					targetEntityType: 'Series'
-				},
-				sourceEntity: otherEntity,
-				targetEntity: baseEntity
-			};
+			const relationship = generateRel(otherEntity, baseEntity);
 			onAddSeriesItem(relationship);
 		}
 		onChange(work);
@@ -151,9 +165,6 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							{...rest}
 						/>
 					</Col>
-					{/* <Col lg={{span: 2}}>
-						{series && <Button variant="primary" onClick={onShowHandler}>Add Items</Button>}
-					</Col> */}
 				</Row>
 				{series && <SeriesSection {...seriesSectionProps}/>}
 			</div>
@@ -180,8 +191,26 @@ function mapDispatchToProps(dispatch, {submissionUrl}):ContentTabDispatchProps {
 			dispatch(duplicateWork(id));
 			dispatch(openEntityModal());
 		},
-		onSeriesChange: (value:any) => dispatch(addSeries(value)) && dispatch(removeAllSeriesItems()) &&
-		value?.orderingTypeId && dispatch(updateOrderType(value.orderingTypeId)) && dispatch(updateSeriesType(value.seriesEntityType)),
+		onSeriesChange: (value:any) => {
+			dispatch(addSeries(value));
+			dispatch(removeAllSeriesItems());
+			if (value?.orderingTypeId) {
+				dispatch(updateOrderType(value.orderingTypeId));
+				dispatch(updateSeriesType(value.seriesEntityType));
+			}
+			// add all existing work rels to series items
+			if (value.relationshipSet) {
+				const relationships = value.relationshipSet.relationships.reduce((obj, rel, keyId) => {
+					if (rel.type.id === seriesWorkTypeId) {
+						obj[keyId] = generateRel(getRelEntity(rel.source), getRelEntity(rel.target), rel.attributeSetId);
+					}
+					return obj;
+				}, {});
+				if (size(relationships) > 0) {
+					dispatch(addBulkSeriesItems(relationships));
+				}
+			}
+		},
 		onSubmitWork: () => dispatch(submitSingleEntity(submissionUrl, 'Work', addWork))
 	};
 }

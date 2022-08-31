@@ -318,3 +318,9 @@ export async function getEntityAlias(orm, bbid:string, type:EntityType):Promise<
 	const entityData = await orm.func.entity.getEntity(orm, upperFirst(type), redirectBbid, []);
 	return entityData;
 }
+
+export function filterObject(obj, filter) {
+	return Object.keys(obj)
+		.filter((key) => filter(obj[key]))
+		.reduce((res, key) => Object.assign(res, {[key]: obj[key]}), {});
+}

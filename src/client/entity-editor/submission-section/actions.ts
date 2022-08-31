@@ -20,6 +20,7 @@
 import {EntityTypeString} from 'bookbrainz-data/lib/func/types';
 import type {Map} from 'immutable';
 import _ from 'lodash';
+import {filterObject} from '../../../common/helpers/utils';
 import request from 'superagent';
 
 
@@ -121,9 +122,7 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 	_.forEach(data.Series, (series, sid) => {
 		// sync local series section with global series section
 		series.seriesSection = data.seriesSection;
-		_.forEach(series.seriesSection.seriesItems, (item) => {
-			_.set(item, 'targetEntity.bbid', series.id);
-		});
+		series.seriesSection.seriesItems = filterObject(series.seriesSection.seriesItems, (rel) => !rel.attributeSetId);
 		// if new items have been added to series, then add series to the post data
 		if (_.size(series.seriesSection.seriesItems) > 0) {
 			series.__isNew__ = false;

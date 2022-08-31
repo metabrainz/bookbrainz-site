@@ -30,6 +30,7 @@ export const EDIT_SERIES_ITEM = 'EDIT_SERIES_ITEM';
 export const REMOVE_SERIES_ITEM = 'REMOVE_SERIES_ITEM';
 export const SORT_SERIES_ITEM = 'SORT_SERIES_ITEM';
 export const REMOVE_ALL_SERIES_ITEMS = 'REMOVE_ALL_SERIES_ITEMS';
+export const ADD_BULK_SERIES_ITEMS = 'ADD_BULK_SERIES_ITEMS';
 
 export type Action = {
 	type: string,
@@ -169,5 +170,19 @@ export function removeAllSeriesItems(): Action {
 	return {
 		payload: {},
 		type: REMOVE_ALL_SERIES_ITEMS
+	};
+}
+
+/**
+ * Produces an action indicating that the new series items should replace the old one.
+ *
+ * @param {Object} seriesItems - The series items object to be added.
+ * @returns {Action} The resulting ADD_BULK_SERIES_ITEMS action.
+ */
+
+export function addBulkSeriesItems(seriesItems: Record<string, string>): Action {
+	return {
+		payload: seriesItems,
+		type: ADD_BULK_SERIES_ITEMS
 	};
 }
