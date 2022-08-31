@@ -108,6 +108,7 @@ export type ContentTabDispatchProps = {
 	onSeriesChange:(value:EntitySelect)=>unknown,
 	resetSeries:()=>void,
 	onSubmitWork:()=>unknown,
+	bulkAddSeriesItems:(data)=>unknown,
 	onModalOpen:(arg)=>unknown,
 	onModalClose:()=>unknown,
 };

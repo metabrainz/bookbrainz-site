@@ -3,7 +3,7 @@ import {ContentTabDispatchProps, ContentTabProps, ContentTabStateProps, State} f
 import {addBulkSeriesItems, addSeriesItem, removeAllSeriesItems, updateOrderType, updateSeriesType} from '../../entity-editor/series-section/actions';
 import {addSeries, addWork, duplicateWork, removeSeries} from './action';
 import {closeEntityModal, dumpEdition, loadEdition, openEntityModal} from '../action';
-import {get, map, size, toLower} from 'lodash';
+import {forEach, get, map, size, toLower} from 'lodash';
 import CreateEntityModal from '../common/create-entity-modal';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
@@ -43,18 +43,32 @@ function generateRel(workEntity, seriesEntity, attributeSetId?) {
 	};
 }
 export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeriesChange, series,
-	 onAddSeriesItem, onSubmitWork, resetSeries, ...rest}:ContentTabProps) {
+	 onAddSeriesItem, onSubmitWork, resetSeries, bulkAddSeriesItems, ...rest}:ContentTabProps) {
 	const [isChecked, setIsChecked] = React.useState(true);
 	const [copyToSeries, setCopyToSeries] = React.useState(false);
 	const toggleCheck = React.useCallback(() => {
 		setIsChecked(!isChecked);
 	}, [isChecked]);
 	const toggleCopyToSeries = React.useCallback(() => {
-		if (!copyToSeries) {
+		if (copyToSeries) {
 			 resetSeries();
 		}
+		else {
+			const baseEntity = {
+				bbid: series?.id,
+				defaultAlias: {
+					name: series?.text
+				},
+				type: 'Series'
+			};
+			const relationships = {};
+			forEach(works, (work, key) => {
+				relationships[`m${key}`] = generateRel(work, baseEntity);
+			});
+			bulkAddSeriesItems(relationships);
+		}
 		setCopyToSeries(!copyToSeries);
-	}, [copyToSeries]);
+	}, [copyToSeries, series, works]);
 	const [showModal, setShowModal] = React.useState(false);
 	const openModalHandler = React.useCallback((id) => {
 		setShowModal(true);
@@ -212,6 +226,7 @@ function mapStateToProps(rootState:State):ContentTabStateProps {
 function mapDispatchToProps(dispatch, {submissionUrl}):ContentTabDispatchProps {
 	const type = 'Work';
 	return {
+		bulkAddSeriesItems: (data) => dispatch(addBulkSeriesItems(data)),
 		onAddSeriesItem: (data) => dispatch(addSeriesItem(data)),
 		onChange: (value:any) => dispatch(addWork(value)),
 		onModalClose: () => dispatch(loadEdition()) && dispatch(closeEntityModal()),
@@ -222,7 +237,6 @@ function mapDispatchToProps(dispatch, {submissionUrl}):ContentTabDispatchProps {
 		},
 		onSeriesChange: (value:any) => {
 			dispatch(addSeries(value));
-			dispatch(removeAllSeriesItems());
 			if (value?.orderingTypeId) {
 				dispatch(updateOrderType(value.orderingTypeId));
 				dispatch(updateSeriesType(value.seriesEntityType));

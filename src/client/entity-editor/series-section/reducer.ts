@@ -62,7 +62,7 @@ function reducer(
 		case REMOVE_ALL_SERIES_ITEMS:
 			return state.set('seriesItems', Immutable.OrderedMap());
 		case ADD_BULK_SERIES_ITEMS:
-			return state.set('seriesItems', Immutable.fromJS(payload));
+			return state.set('seriesItems', state.get('seriesItems').mergeDeep(Immutable.fromJS(payload)));
 		// no default
 	}
 	return state;
