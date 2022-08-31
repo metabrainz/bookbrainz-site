@@ -4,10 +4,6 @@ import type {Request as $Request, Response as $Response} from 'express';
 import {authorToFormState, transformNewForm as authorTransform} from './author';
 import {editionGroupToFormState, transformNewForm as editionGroupTransform} from './edition-group';
 import {editionToFormState, transformNewForm as editionTransform} from './edition';
-import {
-	fetchEntitiesForRelationships, fetchOrCreateMainEntity,
-	getNextRelationshipSets, processSingleEntity, saveEntitiesAndFinishRevision
-} from './entity';
 import {publisherToFormState, transformNewForm as publisherTransform} from './publisher';
 import {seriesToFormState, transformNewForm as seriesTransform} from './series';
 
@@ -19,6 +15,7 @@ import {FormSubmissionError} from '../../../common/helpers/error';
 import _ from 'lodash';
 import {_bulkIndexEntities} from '../../../common/helpers/search';
 import {addRelationships} from '../../helpers/middleware';
+import {processSingleEntity} from './entity';
 
 
 type PassportRequest = $Request & {user: any, session: any};
@@ -159,56 +156,6 @@ export async function preprocessForm(body:Record<string, any>, orm):Promise<Reco
 	return Object.fromEntries(Object.keys(body).map((key, index) => [key, allEntities[index]]));
 }
 
-export async function handleAddRelationship(
-	body:Record<string, any>,
-	editorId:number,
-	currentEntity,
-	entityType:EntityTypeString,
-	orm,
-	transacting
-) {
-	const {Revision} = orm;
-
-	// new revision for adding relationship
-	const newRevision = await new Revision({
-		authorId: editorId,
-		isMerge: false
-	}).save(null, {transacting});
-	const relationshipSets = await getNextRelationshipSets(
-		orm, transacting, currentEntity, body
-	);
-	if (_.isEmpty(relationshipSets)) {
-		return {};
-	}
-	// Fetch main entity
-	const mainEntity = await fetchOrCreateMainEntity(
-		orm, transacting, false, currentEntity.bbid, entityType
-	);
-
-	// Fetch all entities that definitely exist
-	const otherEntities = await fetchEntitiesForRelationships(
-		orm, transacting, currentEntity, relationshipSets
-	);
-	otherEntities.forEach(entity => { entity.shouldInsert = false; });
-	mainEntity.shouldInsert = false;
-	const allEntities = [...otherEntities, mainEntity]
-		.filter(entity => entity.get('dataId') !== null);
-	_.forEach(allEntities, (entityModel) => {
-		const bbid: string = entityModel.get('bbid');
-		if (_.has(relationshipSets, bbid)) {
-			entityModel.set(
-				'relationshipSetId',
-				// Set to relationshipSet id or null if empty set
-				relationshipSets[bbid] && relationshipSets[bbid].get('id')
-			);
-		}
-	});
-	const savedMainEntity = await saveEntitiesAndFinishRevision(
-		orm, transacting, false, newRevision, mainEntity, allEntities,
-		editorId, body.note
-	);
-	return savedMainEntity.toJSON();
-}
 
 export function handleCreateMultipleEntities(
 	req: PassportRequest,

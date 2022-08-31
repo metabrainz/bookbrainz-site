@@ -12,23 +12,8 @@ import {connect} from 'react-redux';
 import {omit} from 'lodash';
 import {removeEmptyAliases} from '../../entity-editor/alias-editor/actions';
 import {removeEmptyIdentifiers} from '../../entity-editor/identifier-editor/actions';
-// import {validateAuthorSection} from '../../entity-editor/validators/author';
-// import {validateEditionGroupSection} from '../../entity-editor/validators/edition-group';
-// import {validateEditionSection} from '../../entity-editor/validators/edition';
-// import {validatePublisherSection} from '../../entity-editor/validators/publisher';
-// import {validateSeriesSection} from '../../entity-editor/validators/series';
-// import {validateWorkSection} from '../../entity-editor/validators/work';
 
-/* currently disabling validations on modal due to slow performance issues of the form. */
 
-// const entitySectionValidators = {
-// 	authorSection: validateAuthorSection,
-// 	editionGroupSection: validateEditionGroupSection,
-// 	editionSection: validateEditionSection,
-// 	publisherSection: validatePublisherSection,
-// 	seriesSection: validateSeriesSection,
-// 	workSection: validateWorkSection
-// };
 function EntityModalBody({onModalSubmit, children, validate, onAliasClose, onIdentifierClose, ...rest}
 	:EntityModalBodyProps) {
 	const genericProps:any = omit(rest, ['allIdentifierTypes']);
@@ -65,20 +50,6 @@ function EntityModalBody({onModalSubmit, children, validate, onAliasClose, onIde
 EntityModalBody.defaultProps = {
 	children: null
 };
-// function mapStateToProps(state:State, {entityType, identifierTypes}) {
-// 	const nameSection = state.get('nameSection');
-// 	const entitySection = `${camelCase(entityType)}Section`;
-// 	return {
-// 		isAliasEditorEmpty:	state.get('aliasEditor', {}).size === 0,
-// 		isAliasEditorValid: validateAliases(state.get('aliasEditor', {})),
-// 		isEntitySectionValid: entitySectionValidators[entitySection](state.get(entitySection)),
-// 		isIdentifierEditorEmpty: state.get('identifierEditor', {}).size === 0,
-// 		isIdentifierEditorValid: validateIdentifiers(state.get('identifierEditor', {}), identifierTypes),
-// 		isNameSectionEmpty: !nameSection.get('name').length && !nameSection.get('sortName').length && !nameSection.get('language'),
-// 		isNameSectionValid: validateNameSection(nameSection) &&
-// 		 (!nameSection.get('exactMatches', [])?.length || nameSection.get('disambiguation').length > 0)
-// 	};
-// }
 function mapDispatchToProps(dispatch) {
 	return {
 		onAliasClose: () => dispatch(removeEmptyAliases()),

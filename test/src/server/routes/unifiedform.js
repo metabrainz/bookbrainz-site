@@ -66,7 +66,7 @@ describe('Unified form routes', () => {
 	});
 
 	after(truncateEntities);
-	it('should not throw error while creating single entityz', async () => {
+	it('should not throw error while creating single entity', async () => {
 		const postData = {b0: {
 			...baseState,
 			editionSection: {},
