@@ -150,9 +150,19 @@ function entitiesToFormState(entities: any[]) {
 	}, '');
 	const annotationSection = {content: annotations};
 
+
+	const authorCredits = entities.reduce((returnValue, entity) => {
+		if (entity.authorCredit) {
+			return returnValue.concat(entity.authorCredit);
+		}
+		return returnValue;
+	}, []);
+	const authorCredit = authorCredits.length ? authorCredits[0] : null;
+
 	const props = {
 		aliasEditor,
 		annotationSection,
+		authorCredit,
 		identifierEditor,
 		nameSection,
 		relationshipSection
@@ -166,7 +176,7 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 
 	// Default to empty array, its presence is expected down the line
 	entity.relationships = [];
-	
+
 	if (!entity.relationshipSetId) {
 		return null;
 	}
@@ -183,7 +193,7 @@ function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 			]
 		})
 		.then((relationshipSet) => {
-			if(relationshipSet){
+			if (relationshipSet) {
 				entity.relationships = relationshipSet.related('relationships').toJSON();
 			}
 

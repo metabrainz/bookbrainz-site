@@ -20,6 +20,8 @@
 import {get, validateDate, validatePositiveInteger, validateUUID} from './base';
 import {
 	validateAliases,
+	validateAuthorCreditSection,
+	validateAuthorCreditSectionMerge,
 	validateIdentifiers,
 	validateNameSection,
 	validateSubmissionSection
@@ -28,6 +30,7 @@ import {
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
+import {convertMapToObject} from '../../helpers/utils';
 
 
 export function validateEditionSectionDepth(value: any): boolean {
@@ -74,8 +77,19 @@ export function validateEditionSectionPublisher(value: any): boolean {
 	if (!value) {
 		return true;
 	}
-
-	return validateUUID(get(value, 'id', null), true);
+	const publishers = convertMapToObject(value);
+	if (!_.isPlainObject(publishers)) {
+		return false;
+	}
+	for (const pubId in publishers) {
+		if (Object.prototype.hasOwnProperty.call(publishers, pubId)) {
+			const publisher = publishers[pubId];
+			if (!validateUUID(get(publisher, 'id', null), true)) {
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 export function validateEditionSectionReleaseDate(value: any) {
@@ -115,8 +129,16 @@ export function validateEditionSection(data: any): boolean {
 }
 
 export function validateForm(
-	formData: any, identifierTypes?: Array<_IdentifierType> | null | undefined
+	formData: any, identifierTypes?: Array<_IdentifierType> | null | undefined,
+	isMerge?:boolean
 ): boolean {
+	let validAuthorCredit;
+	if (isMerge) {
+		validAuthorCredit = validateAuthorCreditSectionMerge(get(formData, 'authorCredit', {}));
+	}
+	else {
+		validAuthorCredit = validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}));
+	}
 	const conditions = [
 		validateAliases(get(formData, 'aliasEditor', {})),
 		validateIdentifiers(
@@ -124,6 +146,7 @@ export function validateForm(
 		),
 		validateNameSection(get(formData, 'nameSection', {})),
 		validateEditionSection(get(formData, 'editionSection', {})),
+		validAuthorCredit,
 		validateSubmissionSection(get(formData, 'submissionSection', {}))
 	];
 

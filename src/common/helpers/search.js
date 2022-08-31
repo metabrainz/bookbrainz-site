@@ -34,10 +34,24 @@ const _maxJitter = 75;
 
 let _client = null;
 
+function sanitizeEntityType(type) {
+	if (!type) {
+		return null;
+	}
+	if (Array.isArray(type)) {
+		return type.map(snakeCase);
+	}
+	if (snakeCase(type) === 'all_entities') {
+		return ['author', 'edition', 'edition_group', 'series', 'work', 'publisher'];
+	}
+
+	return snakeCase(type);
+}
+
 async function _fetchEntityModelsForESResults(orm, results) {
 	const {Area, Editor, UserCollection} = orm;
 
-	if (!results.hits) {
+	if (!results?.hits) {
 		return null;
 	}
 
@@ -95,11 +109,16 @@ async function _fetchEntityModelsForESResults(orm, results) {
 }
 
 // Returns the results of a search translated to entity objects
-function _searchForEntities(orm, dslQuery) {
-	return _client.search(dslQuery)
-		.then((searchResponse) => searchResponse.body?.hits)
-		.then((results) => _fetchEntityModelsForESResults(orm, results))
-		.catch(error => log.error(error));
+async function _searchForEntities(orm, dslQuery) {
+	try {
+		const searchResponse = await _client.search(dslQuery);
+		const results = await _fetchEntityModelsForESResults(orm, searchResponse.body.hits);
+		return {results, total: searchResponse.body.hits.total};
+	}
+	catch (error) {
+		log.error(error);
+	}
+	return {results: [], total: 0};
 }
 
 async function _bulkIndexEntities(entities) {
@@ -180,7 +199,7 @@ async function _processEntityListForBulk(entityList) {
 	await Promise.all(indexOperations);
 }
 
-export function autocomplete(orm, query, type, size = 42) {
+export async function autocomplete(orm, query, type, size = 42) {
 	let queryBody = null;
 
 	if (commonUtils.isValidBBID(query)) {
@@ -206,19 +225,14 @@ export function autocomplete(orm, query, type, size = 42) {
 			query: queryBody,
 			size
 		},
-		index: _index
+		index: _index,
+		type: sanitizeEntityType(type)
 	};
 
-	if (type) {
-		if (Array.isArray(type)) {
-			dslQuery.type = type.map(snakeCase);
-		}
-		else {
-			dslQuery.type = snakeCase(type);
-		}
-	}
 
-	return _searchForEntities(orm, dslQuery);
+	const searchResponse = await _searchForEntities(orm, dslQuery);
+	// Only return the results array, we're not interested in the total number of hits for this endpoint
+	return searchResponse.results;
 }
 
 // eslint-disable-next-line consistent-return
@@ -269,7 +283,7 @@ export async function generateIndex(orm) {
 						},
 						type: 'object'
 					},
-					'disambiguation.comment': {
+					disambiguation: {
 						analyzer: 'trigrams',
 						type: 'text'
 					}
@@ -330,7 +344,6 @@ export async function generateIndex(orm) {
 
 	const baseRelations = [
 		'annotation',
-		'disambiguation',
 		'defaultAlias',
 		'aliasSet.aliases',
 		'identifierSet.identifiers'
@@ -341,7 +354,6 @@ export async function generateIndex(orm) {
 			model: Author,
 			relations: [
 				'gender',
-				'authorType',
 				'beginArea',
 				'endArea'
 			]
@@ -354,10 +366,10 @@ export async function generateIndex(orm) {
 				'editionStatus'
 			]
 		},
-		{model: EditionGroup, relations: ['editionGroupType']},
-		{model: Publisher, relations: ['publisherType', 'area']},
+		{model: EditionGroup, relations: []},
+		{model: Publisher, relations: ['area']},
 		{model: Series, relations: ['seriesOrderingType']},
-		{model: Work, relations: ['workType']}
+		{model: Work, relations: []}
 	];
 
 	// Update the indexed entries for each entity type
@@ -482,7 +494,7 @@ export function searchByName(orm, name, type, size, from) {
 					fields: [
 						'aliasSet.aliases.name^3',
 						'aliasSet.aliases.name.search',
-						'disambiguation.comment',
+						'disambiguation',
 						'identifierSet.identifiers.value'
 					],
 					minimum_should_match: '80%',
@@ -492,25 +504,9 @@ export function searchByName(orm, name, type, size, from) {
 			},
 			size
 		},
-		index: _index
+		index: _index,
+		type: sanitizeEntityType(type)
 	};
-
-	let modifiedType;
-	if (type === 'all_entities') {
-		modifiedType = ['author', 'edition', 'edition_group', 'series', 'work', 'publisher'];
-	}
-	else {
-		modifiedType = type;
-	}
-
-	if (modifiedType) {
-		if (Array.isArray(modifiedType)) {
-			dslQuery.type = modifiedType.map(snakeCase);
-		}
-		else {
-			dslQuery.type = snakeCase(modifiedType);
-		}
-	}
 
 	return _searchForEntities(orm, dslQuery);
 }

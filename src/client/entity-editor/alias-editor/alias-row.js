@@ -107,7 +107,7 @@ const AliasRow = ({
 					error={!validateAliasLanguage(languageValue)}
 					instanceId="language"
 					options={languageOptions}
-					value={languageValue}
+					value={languageOptions.filter((el) => el.value === languageValue)}
 					onChange={onLanguageChange}
 				/>
 			</Col>

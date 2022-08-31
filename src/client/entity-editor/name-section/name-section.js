@@ -46,6 +46,11 @@ import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {entityTypeProperty} from '../../helpers/react-validators';
 import {getEntityDisambiguation} from '../../helpers/entity';
+import makeImmutable from '../common/make-immutable';
+
+
+const ImmutableLanguageField = makeImmutable(LanguageField);
+
 
 /**
  * Container component. The NameSection component contains input fields for
@@ -71,7 +76,6 @@ import {getEntityDisambiguation} from '../../helpers/entity';
  *        sort name is changed.
  * @param {Function} props.onDisambiguationChange - A function to be called when
  *        the disambiguation is changed.
- * @returns {ReactElement} React element containing the rendered NameSection.
  */
 class NameSection extends React.Component {
 	constructor(props) {
@@ -170,7 +174,7 @@ class NameSection extends React.Component {
 			this.setState({showButton: false});
 		}
 
-
+		const languageOption = languageOptionsForDisplay.filter((el) => el.value === languageValue);
 		return (
 			<div className="margin-right-1">
 				<h2>{`What is the ${_.startCase(entityType)} called?`}</h2>
@@ -200,7 +204,11 @@ class NameSection extends React.Component {
 							storedNameValue={nameValue}
 							onChange={onSortNameChange}
 						/>
-						<LanguageField
+					</Col>
+				</Row>
+				<Row>
+					<Col lg={{offset: 3, span: 6}}>
+						<ImmutableLanguageField
 							empty={isAliasEmpty(
 								nameValue, sortNameValue, languageValue
 							)}
@@ -208,7 +216,7 @@ class NameSection extends React.Component {
 							instanceId="language"
 							options={languageOptionsForDisplay}
 							tooltipText="Language used for the above name"
-							value={languageValue}
+							value={languageOption}
 							onChange={onLanguageChange}
 						/>
 						<DisambiguationField

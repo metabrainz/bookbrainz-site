@@ -26,7 +26,6 @@ import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
-
 import type {Request as $Request, Response as $Response, NextFunction} from 'express';
 import type {
 	EntityTypeString,
@@ -36,6 +35,8 @@ import type {
 	Transaction
 } from 'bookbrainz-data/lib/func/types';
 import {escapeProps, generateProps} from '../../helpers/props';
+
+import {AuthorCreditRow} from '../../../client/entity-editor/author-credit-editor/actions';
 import AuthorPage from '../../../client/components/pages/entities/author';
 import DeletionForm from '../../../client/components/forms/deletion';
 import EditionGroupPage from '../../../client/components/pages/entities/edition-group';
@@ -55,7 +56,6 @@ import target from '../../templates/target';
 
 
 type PassportRequest = $Request & {user: any, session: any};
-
 
 const entityComponents = {
 	author: AuthorPage,
@@ -676,13 +676,48 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 	return allEntitiesReturnArray;
 }
 
+type ProcessAuthorCreditBody = {
+	authorCredit: Array<AuthorCreditRow>
+};
+type ProcessAuthorCreditResult = {authorCreditId: number};
+
+async function processAuthorCredit(
+	orm: any,
+	currentEntity: Record<string, unknown> | null | undefined,
+	body: ProcessAuthorCreditBody,
+	transacting: Transaction
+): Promise<ProcessAuthorCreditResult> {
+	const authorCreditID = _.get(currentEntity, ['authorCredit', 'id']);
+
+	const oldAuthorCredit = await (
+		authorCreditID &&
+		orm.AuthorCredit.forge({id: authorCreditID})
+			.fetch({transacting, withRelated: ['names']})
+	);
+
+	const names = _.get(body, 'authorCredit') || [];
+	const newAuthorCredit = await orm.func.authorCredit.updateAuthorCredit(
+		orm, transacting, oldAuthorCredit,
+		names.map((name) => ({
+			authorBBID: name.authorBBID,
+			joinPhrase: name.joinPhrase,
+			name: name.name
+		}))
+	);
+
+	return {
+		authorCreditId: newAuthorCredit && newAuthorCredit.get('id')
+	};
+}
+
+
 type ProcessEditionSetsBody = {
 	languages: Array<Language>,
 	publishers: Array<Publisher>,
 	releaseEvents: Array<ReleaseEvent>
-};
+} & ProcessAuthorCreditBody;
+type ProcessEditionSetsResult = {languageSetId: number[], publisherSetId: number[], releaseEventSetId: number[]} & ProcessAuthorCreditResult;
 
-type ProcessEditionSetsResult = {languageSetId: number[], publisherSetId: number[], releaseEventSetId: number[]};
 async function processEditionSets(
 	orm: any,
 	currentEntity: Record<string, unknown> | null | undefined,
@@ -747,7 +782,10 @@ async function processEditionSets(
 		)
 			.then((set) => set && set.get('id'));
 
+	const authorCreditIDPromise = processAuthorCredit(orm, currentEntity, body, transacting).then(acResult => acResult.authorCreditId);
+
 	return commonUtils.makePromiseFromObject<ProcessEditionSetsResult>({
+		authorCreditId: authorCreditIDPromise,
 		languageSetId: newLanguageSetIDPromise,
 		publisherSetId: newPublisherSetIDPromise,
 		releaseEventSetId: newReleaseEventSetIDPromise
@@ -776,22 +814,29 @@ async function processWorkSets(
 	});
 }
 
-function processEntitySets(
+async function processEntitySets(
 	orm: any,
 	currentEntity: Record<string, unknown> | null | undefined,
 	entityType: EntityTypeString,
 	body: any,
 	transacting: Transaction
-): Promise<ProcessEditionSetsResult | ProcessWorkSetsResult | null> {
+): Promise<ProcessEditionSetsResult | ProcessWorkSetsResult | ProcessAuthorCreditResult | null> {
 	if (entityType === 'Edition') {
-		return processEditionSets(orm, currentEntity, body, transacting);
+		const editionSets = await processEditionSets(orm, currentEntity, body, transacting);
+		return editionSets;
+	}
+
+	if (entityType === 'EditionGroup') {
+		const authorCredit = await processAuthorCredit(orm, currentEntity, body, transacting);
+		return authorCredit;
 	}
 
 	if (entityType === 'Work') {
-		return processWorkSets(orm, currentEntity, body, transacting);
+		const workSets = await processWorkSets(orm, currentEntity, body, transacting);
+		return workSets;
 	}
 
-	return new Promise(resolve => resolve(null));
+	return null;
 }
 
 
@@ -1286,6 +1331,28 @@ export function compareEntitiesByDate(a, b) {
 	}
 
 	return new Date(aDate).getTime() - new Date(bDate).getTime();
+}
+
+type AuthorT = {
+	value: string,
+	id: number
+};
+
+type AuthorCreditEditorT = {
+	author: AuthorT,
+	joinPhrase: string,
+	name: string
+};
+
+
+export function constructAuthorCredit(
+	authorCreditEditor: Record<string, AuthorCreditEditorT>
+) {
+	return _.map(
+		authorCreditEditor,
+		({author, joinPhrase, name}: AuthorCreditEditorT) =>
+			({authorBBID: author.id, joinPhrase, name})
+	);
 }
 export function displayPreview(req:PassportRequest, res:$Response, next) {
 	const baseUrl = `${req.protocol}://${req.get('host')}`;

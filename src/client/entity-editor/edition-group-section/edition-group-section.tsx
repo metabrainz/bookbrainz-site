@@ -19,10 +19,10 @@
 import * as React from 'react';
 import {Action, updateType} from './actions';
 import {Col, Form, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
+import AuthorCreditSection from '../author-credit-editor/author-credit-section';
 
 import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import type {Map} from 'immutable';
 import Select from 'react-select';
 import {connect} from 'react-redux';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
@@ -34,7 +34,7 @@ type EditionGroupType = {
 };
 
 type StateProps = {
-	typeValue: Map<string, any>
+	typeValue: number
 };
 
 type DispatchProps = {
@@ -79,6 +79,7 @@ function EditionGroupSection({
 			<h2>
 				What else do you know about the Edition Group?
 			</h2>
+			<AuthorCreditSection type="editionGroup"/>
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
 				know it

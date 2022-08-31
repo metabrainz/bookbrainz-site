@@ -223,6 +223,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 				</Col>
 				<Col lg={7} style={{marginTop: -22}}>
 					<EntitySearchFieldOption
+						className="series-editor-select"
 						instanceId="entitySearchField"
 						name="entity"
 						type={[seriesType]}
