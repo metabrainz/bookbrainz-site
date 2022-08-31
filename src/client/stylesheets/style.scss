@@ -296,7 +296,7 @@ a.contact-text:visited {
 	border: 1px solid hsl(0, 0%, 70%) !important;
 	box-shadow: none  !important;
 	&:hover{
-		border: 1px solid hsl(0, 0%, 70%) !important; 
+		border: 1px solid hsl(0, 0%, 70%) !important;
 	}
 }
 
@@ -726,4 +726,24 @@ ul {
 }
 .series-editor-select {
 	margin-top: 1.7em;
+}
+
+.duplicate-result-scroll-window{
+	max-height: 17em;
+	overflow-y: scroll;
+	&:after {
+		display: block;
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		content: " ";
+		height: 20px;
+		background: -moz-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+		background: -webkit-gradient(linear,left top,left bottom,color-stop(0,rgba(255,255,255,0)),color-stop(100%,#fff));
+		background: -webkit-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+		background: -o-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+		background: -ms-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+		background: linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#ffffff', GradientType=0);
+	}
 }
