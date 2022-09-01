@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Alert, Col, ListGroup, Row} from 'react-bootstrap';
+import {Alert, Button, Col, ListGroup, Row} from 'react-bootstrap';
 import {
 	checkIfNameExists,
 	debouncedUpdateDisambiguationField,
@@ -76,7 +76,6 @@ const ImmutableLanguageField = makeImmutable(LanguageField);
  *        sort name is changed.
  * @param {Function} props.onDisambiguationChange - A function to be called when
  *        the disambiguation is changed.
- * @returns {ReactElement} React element containing the rendered NameSection.
  */
 class NameSection extends React.Component {
 	constructor(props) {
@@ -154,12 +153,13 @@ class NameSection extends React.Component {
 		}));
 
 		const warnIfExists = !_.isEmpty(exactMatches);
+
 		const languageOption = languageOptionsForDisplay.filter((el) => el.value === languageValue);
 		return (
-			<div>
+			<div className="margin-right-1">
 				<h2>{`What is the ${_.startCase(entityType)} called?`}</h2>
 				<Row>
-					<Col lg={{offset: 3, span: 6}}>
+					<Col md={{span: 6}}>
 						<NameField
 							defaultValue={nameValue}
 							empty={isAliasEmpty(
@@ -175,51 +175,6 @@ class NameSection extends React.Component {
 							))}
 							onChange={this.handleNameChange}
 						/>
-					</Col>
-					<Col lg={{offset: 3, span: 6}}>
-						{isRequiredDisambiguationEmpty(
-							warnIfExists,
-							disambiguationDefaultValue
-						) ?
-							<Alert variant="warning">
-									We found the following&nbsp;
-								{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} with
-									exactly the same name or alias:
-								<br/><small className="text-muted">Click on a name to open it (Ctrl/Cmd + click to open in a new tab)</small>
-								<ListGroup activeKey={null} className="margin-top-1 margin-bottom-1">
-									{exactMatches.map((match) =>
-										(
-											<ListGroup.Item
-												action
-												href={`/${_.kebabCase(entityType)}/${match.bbid}`}
-												key={`${match.bbid}`}
-												rel="noopener noreferrer" target="_blank"
-												variant="warning"
-											>
-												{match.defaultAlias.name} {getEntityDisambiguation(match)}
-											</ListGroup.Item>
-										))}
-								</ListGroup>
-									If you are sure your entry is different, please fill the
-									disambiguation field below to help us differentiate between them.
-							</Alert> : null
-						}
-					</Col>
-				</Row>
-				{
-					!warnIfExists &&
-						!_.isEmpty(searchResults) &&
-						<Row>
-							<Col lg={{offset: 3, span: 6}}>
-								If the {_.startCase(entityType)} you want to add appears in the results
-								below, click on it to inspect it before adding a possible duplicate.<br/>
-								<small>Ctrl/Cmd + click to open in a new tab</small>
-								<SearchResults condensed results={searchResults}/>
-							</Col>
-						</Row>
-				}
-				<Row>
-					<Col lg={{offset: 3, span: 6}}>
 						<SortNameField
 							defaultValue={sortNameValue}
 							empty={isAliasEmpty(
@@ -229,10 +184,6 @@ class NameSection extends React.Component {
 							storedNameValue={nameValue}
 							onChange={onSortNameChange}
 						/>
-					</Col>
-				</Row>
-				<Row>
-					<Col lg={{offset: 3, span: 6}}>
 						<ImmutableLanguageField
 							empty={isAliasEmpty(
 								nameValue, sortNameValue, languageValue
@@ -244,10 +195,6 @@ class NameSection extends React.Component {
 							value={languageOption}
 							onChange={onLanguageChange}
 						/>
-					</Col>
-				</Row>
-				<Row>
-					<Col lg={{offset: 3, span: 6}}>
 						<DisambiguationField
 							defaultValue={disambiguationDefaultValue}
 							error={isRequiredDisambiguationEmpty(
@@ -260,6 +207,49 @@ class NameSection extends React.Component {
 							required={warnIfExists}
 							onChange={onDisambiguationChange}
 						/>
+					</Col>
+					<Col md={{span: 6}} >
+						{isRequiredDisambiguationEmpty(
+							warnIfExists,
+							disambiguationDefaultValue
+						) ?
+							<div className="mt-4">
+								<Alert variant="warning">
+											We found the following&nbsp;
+									{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} with
+											exactly the same name or alias:
+									<br/><small className="text-muted">Click on a name to open it (Ctrl/Cmd + click to open in a new tab)</small>
+									<ListGroup activeKey={null} className="margin-top-1 margin-bottom-1">
+										{exactMatches.map((match) =>
+											(
+												<ListGroup.Item
+													action
+													href={`/${_.kebabCase(entityType)}/${match.bbid}`}
+													key={`${match.bbid}`}
+													rel="noopener noreferrer" target="_blank"
+													variant="warning"
+												>
+													{match.defaultAlias.name} {getEntityDisambiguation(match)}
+												</ListGroup.Item>
+											))}
+									</ListGroup>
+											If you are sure your entry is different, please fill the
+											disambiguation field below to help us differentiate between them.
+								</Alert>
+							</div> : null
+						}
+						{
+							!warnIfExists &&
+								!_.isEmpty(searchResults) &&
+								<div className="mt-4">
+										If the {_.startCase(entityType)} you want to add appears in the results
+										below, click on it to inspect it before adding a possible duplicate.<br/>
+									<small>Ctrl/Cmd + click to open in a new tab</small>
+									<div className="duplicate-result-scroll-window">
+										<SearchResults condensed results={searchResults}/>
+									</div>
+								</div>
+						}
 					</Col>
 				</Row>
 			</div>
