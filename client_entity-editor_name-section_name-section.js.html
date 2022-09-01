@@ -147,7 +147,6 @@ var ImmutableLanguageField = (0, _makeImmutable.default)(_languageField.default)
  *        sort name is changed.
  * @param {Function} props.onDisambiguationChange - A function to be called when
  *        the disambiguation is changed.
- * @returns {ReactElement} React element containing the rendered NameSection.
  */
 
 var NameSection = /*#__PURE__*/function (_React$Component) {
@@ -250,9 +249,10 @@ var NameSection = /*#__PURE__*/function (_React$Component) {
       var languageOption = languageOptionsForDisplay.filter(function (el) {
         return el.value === languageValue;
       });
-      return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h2", null, "What is the ".concat((0, _startCase2.default)(entityType), " called?")), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
-        lg: {
-          offset: 3,
+      return /*#__PURE__*/_react.default.createElement("div", {
+        className: "margin-right-1"
+      }, /*#__PURE__*/_react.default.createElement("h2", null, "What is the ".concat((0, _startCase2.default)(entityType), " called?")), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
+        md: {
           span: 6
         }
       }, /*#__PURE__*/_react.default.createElement(_nameField.default, {
@@ -263,12 +263,32 @@ var NameSection = /*#__PURE__*/function (_React$Component) {
         tooltipText: "Official name of the ".concat((0, _startCase2.default)(entityType), " in its original language.\n\t\t\t\t\t\t\t\tNames in other languages should be added as aliases."),
         warn: (0, _helpers.isRequiredDisambiguationEmpty)(warnIfExists, disambiguationDefaultValue),
         onChange: this.handleNameChange
+      }), /*#__PURE__*/_react.default.createElement(_sortNameField.default, {
+        defaultValue: sortNameValue,
+        empty: (0, _helpers.isAliasEmpty)(nameValue, sortNameValue, languageValue),
+        error: !(0, _common.validateNameSectionSortName)(sortNameValue),
+        storedNameValue: nameValue,
+        onChange: onSortNameChange
+      }), /*#__PURE__*/_react.default.createElement(ImmutableLanguageField, {
+        empty: (0, _helpers.isAliasEmpty)(nameValue, sortNameValue, languageValue),
+        error: !(0, _common.validateNameSectionLanguage)(languageValue),
+        instanceId: "language",
+        options: languageOptionsForDisplay,
+        tooltipText: "Language used for the above name",
+        value: languageOption,
+        onChange: onLanguageChange
+      }), /*#__PURE__*/_react.default.createElement(_disambiguationField.default, {
+        defaultValue: disambiguationDefaultValue,
+        error: (0, _helpers.isRequiredDisambiguationEmpty)(warnIfExists, disambiguationDefaultValue) || !(0, _common.validateNameSectionDisambiguation)(disambiguationDefaultValue),
+        required: warnIfExists,
+        onChange: onDisambiguationChange
       })), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
-        lg: {
-          offset: 3,
+        md: {
           span: 6
         }
-      }, (0, _helpers.isRequiredDisambiguationEmpty)(warnIfExists, disambiguationDefaultValue) ? /*#__PURE__*/_react.default.createElement(_reactBootstrap.Alert, {
+      }, (0, _helpers.isRequiredDisambiguationEmpty)(warnIfExists, disambiguationDefaultValue) ? /*#__PURE__*/_react.default.createElement("div", {
+        className: "mt-4"
+      }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Alert, {
         variant: "warning"
       }, "We found the following\xA0", (0, _startCase2.default)(entityType), exactMatches.length > 1 ? 's' : '', " with exactly the same name or alias:", /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement("small", {
         className: "text-muted"
@@ -284,49 +304,14 @@ var NameSection = /*#__PURE__*/function (_React$Component) {
           target: "_blank",
           variant: "warning"
         }, match.defaultAlias.name, " ", (0, _entity.getEntityDisambiguation)(match));
-      })), "If you are sure your entry is different, please fill the disambiguation field below to help us differentiate between them.") : null)), !warnIfExists &amp;&amp; !(0, _isEmpty2.default)(searchResults) &amp;&amp; /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
-        lg: {
-          offset: 3,
-          span: 6
-        }
-      }, "If the ", (0, _startCase2.default)(entityType), " you want to add appears in the results below, click on it to inspect it before adding a possible duplicate.", /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement("small", null, "Ctrl/Cmd + click to open in a new tab"), /*#__PURE__*/_react.default.createElement(_searchResults.default, {
+      })), "If you are sure your entry is different, please fill the disambiguation field below to help us differentiate between them.")) : null, !warnIfExists &amp;&amp; !(0, _isEmpty2.default)(searchResults) &amp;&amp; /*#__PURE__*/_react.default.createElement("div", {
+        className: "mt-4"
+      }, "If the ", (0, _startCase2.default)(entityType), " you want to add appears in the results below, click on it to inspect it before adding a possible duplicate.", /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement("small", null, "Ctrl/Cmd + click to open in a new tab"), /*#__PURE__*/_react.default.createElement("div", {
+        className: "duplicate-result-scroll-window"
+      }, /*#__PURE__*/_react.default.createElement(_searchResults.default, {
         condensed: true,
         results: searchResults
-      }))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
-        lg: {
-          offset: 3,
-          span: 6
-        }
-      }, /*#__PURE__*/_react.default.createElement(_sortNameField.default, {
-        defaultValue: sortNameValue,
-        empty: (0, _helpers.isAliasEmpty)(nameValue, sortNameValue, languageValue),
-        error: !(0, _common.validateNameSectionSortName)(sortNameValue),
-        storedNameValue: nameValue,
-        onChange: onSortNameChange
-      }))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
-        lg: {
-          offset: 3,
-          span: 6
-        }
-      }, /*#__PURE__*/_react.default.createElement(ImmutableLanguageField, {
-        empty: (0, _helpers.isAliasEmpty)(nameValue, sortNameValue, languageValue),
-        error: !(0, _common.validateNameSectionLanguage)(languageValue),
-        instanceId: "language",
-        options: languageOptionsForDisplay,
-        tooltipText: "Language used for the above name",
-        value: languageOption,
-        onChange: onLanguageChange
-      }))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Row, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Col, {
-        lg: {
-          offset: 3,
-          span: 6
-        }
-      }, /*#__PURE__*/_react.default.createElement(_disambiguationField.default, {
-        defaultValue: disambiguationDefaultValue,
-        error: (0, _helpers.isRequiredDisambiguationEmpty)(warnIfExists, disambiguationDefaultValue) || !(0, _common.validateNameSectionDisambiguation)(disambiguationDefaultValue),
-        required: warnIfExists,
-        onChange: onDisambiguationChange
-      }))));
+      }))))));
     }
   }]);
   return NameSection;
@@ -420,7 +405,7 @@ exports.default = _default;
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Wed Aug 31 2022 15:44:45 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Sep 01 2022 16:06:58 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
