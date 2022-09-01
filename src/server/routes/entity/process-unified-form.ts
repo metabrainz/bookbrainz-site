@@ -171,15 +171,17 @@ export function handleCreateMultipleEntities(
 		disambiguation: {id: number} | null | undefined,
 		identifierSet: {id: number} | null | undefined,
 		type: EntityTypeString
-	} | null | undefined = null;
+	} | null | undefined;
 
 
 	const {body}: {body: Record<string, any>} = req;
+	const processedAchievements = [];
 	async function processEntity(entityKey:string) {
 		const entityForm = body[entityKey];
 		const entityType = _.upperFirst(entityForm.type);
 		const deriveProps = _.pick(entityForm, additionalEntityProps[_.camelCase(entityType)]);
 		const isNew = _.get(entityForm, '__isNew__', true);
+		currentEntity = null;
 		if (!isNew) {
 			currentEntity = await orm.func.entity.getEntity(orm, entityType, entityForm.id, getEntityRelations(entityType as EntityTypeString));
 			if (!currentEntity) {
@@ -188,18 +190,22 @@ export function handleCreateMultipleEntities(
 		}
 		const {bookshelf} = orm;
 		const entityEditPromise = bookshelf.transaction((transacting) =>
-			processSingleEntity(entityForm, currentEntity, null, entityType, orm, editorJSON, deriveProps, false, transacting));
+			processSingleEntity(entityForm, isNew ? null : currentEntity, null, entityType, orm, editorJSON, deriveProps, false, transacting));
 
 		const achievementPromise = entityEditPromise.then(
 			(entityJSON) => processAchievement(orm, editorJSON.id, entityJSON)
 		);
+		processedAchievements.push(await achievementPromise);
 		return achievementPromise;
 	}
 	// create all entities
-	const achievementPromise = Promise.all(_.keys(body).map(processEntity));
+	async function getAchievementPromise() {
+		await Object.keys(body).reduce((promise, entityKey) => promise.then(() => processEntity(entityKey)), Promise.resolve());
+		return processedAchievements;
+	}
 	return handler.sendPromiseResult(
 		res,
-		achievementPromise,
+		getAchievementPromise(),
 		_bulkIndexEntities
 	);
 }
