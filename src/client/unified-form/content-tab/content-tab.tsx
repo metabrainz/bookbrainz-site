@@ -17,6 +17,7 @@ import {submitSingleEntity} from '../../entity-editor/submission-section/actions
 
 
 const {Row, Col, FormCheck, OverlayTrigger, FormLabel, Tooltip} = Bootstrap;
+let workSeriesItemId = 0;
 const seriesWorkTypeId = 71;
 function getRelEntity(entity) {
 	return {
@@ -38,6 +39,7 @@ function generateRel(workEntity, seriesEntity, attributeSetId?) {
 			sourceEntityType: 'Work',
 			targetEntityType: 'Series'
 		},
+		rowID: `ws${workSeriesItemId++}`,
 		sourceEntity: workEntity,
 		targetEntity: seriesEntity
 	};
@@ -49,26 +51,34 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 	const toggleCheck = React.useCallback(() => {
 		setIsChecked(!isChecked);
 	}, [isChecked]);
+	const addAllWorks = React.useCallback((seriesEntity = series) => {
+		const baseEntity = {
+			bbid: seriesEntity?.id,
+			defaultAlias: {
+				name: seriesEntity?.text
+			},
+			type: 'Series'
+		};
+		const relationships = {};
+		forEach(works, (work) => {
+			const rel = generateRel(work, baseEntity);
+			relationships[rel.rowID] = rel;
+		});
+		bulkAddSeriesItems(relationships);
+	}, [series, works]);
 	const toggleCopyToSeries = React.useCallback(() => {
 		if (copyToSeries) {
 			 resetSeries();
 		}
 		else {
-			const baseEntity = {
-				bbid: series?.id,
-				defaultAlias: {
-					name: series?.text
-				},
-				type: 'Series'
-			};
-			const relationships = {};
-			forEach(works, (work, key) => {
-				relationships[`m${key}`] = generateRel(work, baseEntity);
-			});
-			bulkAddSeriesItems(relationships);
+			addAllWorks();
 		}
 		setCopyToSeries(!copyToSeries);
 	}, [copyToSeries, series, works]);
+	const seriesChangeHandler = React.useCallback((value) => {
+		onSeriesChange(value);
+		addAllWorks(value);
+	}, [onSeriesChange, addAllWorks]);
 	const [showModal, setShowModal] = React.useState(false);
 	const openModalHandler = React.useCallback((id) => {
 		setShowModal(true);
@@ -204,7 +214,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							isClearable={false}
 							type="series"
 							value={series}
-							onChange={onSeriesChange}
+							onChange={seriesChangeHandler}
 							{...rest}
 						/>
 					</Col>
@@ -237,15 +247,17 @@ function mapDispatchToProps(dispatch, {submissionUrl}):ContentTabDispatchProps {
 		},
 		onSeriesChange: (value:any) => {
 			dispatch(addSeries(value));
+			dispatch(removeAllSeriesItems());
 			if (value?.orderingTypeId) {
 				dispatch(updateOrderType(value.orderingTypeId));
 				dispatch(updateSeriesType(value.seriesEntityType));
 			}
 			// add all existing work rels to series items
 			if (value?.relationshipSet) {
-				const relationships = value.relationshipSet.relationships.reduce((obj, rel, keyId) => {
+				const relationships = value.relationshipSet.relationships.reduce((obj, rel) => {
 					if (rel.type.id === seriesWorkTypeId) {
-						obj[keyId] = generateRel(getRelEntity(rel.source), getRelEntity(rel.target), rel.attributeSetId);
+						const workRel = generateRel(getRelEntity(rel.source), getRelEntity(rel.target), rel.attributeSetId);
+						obj[workRel.rowID] = workRel;
 					}
 					return obj;
 				}, {});

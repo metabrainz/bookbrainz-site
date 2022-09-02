@@ -44,7 +44,7 @@ function reducer(
 			const {rowID} = payload;
 			return state.setIn(
 				['seriesItems', rowID],
-				Immutable.fromJS({rowID, ...payload.data})
+				Immutable.fromJS({...payload.data, rowID})
 			);
 		}
 		case SORT_SERIES_ITEM:
