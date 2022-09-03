@@ -1254,10 +1254,12 @@ export function constructIdentifiers(
 export function constructRelationships(parentSection, childAttributeName = 'relationships') {
 	return _.map(
 		parentSection[childAttributeName],
-		({attributeSetId, rowID, relationshipType, sourceEntity, targetEntity, attributes}) => ({
+		({attributeSetId, rowID, relationshipType, sourceEntity, targetEntity, attributes, isRemoved, isAdded}) => ({
 			attributeSetId,
 			attributes,
 			id: rowID,
+			isAdded,
+			isRemoved,
 			sourceBbid: _.get(sourceEntity, 'bbid'),
 			targetBbid: _.get(targetEntity, 'bbid'),
 			typeId: relationshipType.id
