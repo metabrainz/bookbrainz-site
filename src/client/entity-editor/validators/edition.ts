@@ -29,7 +29,7 @@ import {
 } from './common';
 
 import {Iterable} from 'immutable';
-import _ from 'lodash';
+import _, {size} from 'lodash';
 import {convertMapToObject} from '../../helpers/utils';
 
 
@@ -139,7 +139,8 @@ export function validateForm(
 		validAuthorCredit = validateAuthorCreditSectionMerge(get(formData, 'authorCredit', {}));
 	}
 	else {
-		validAuthorCredit = validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}), !authorCreditEnable, authorCreditEnable);
+		validAuthorCredit = (authorCreditEnable || size(get(formData, 'authorCreditEditor', {})) === 0) &&
+		 validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}), !authorCreditEnable, authorCreditEnable);
 	}
 	const conditions = [
 		validateAliases(get(formData, 'aliasEditor', {})),

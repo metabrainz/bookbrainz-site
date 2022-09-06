@@ -486,6 +486,18 @@ function describeValidateForm() {
 		expect(result).to.be.false;
 	});
 
+	it('should reject an Object with a non empty author credit editor and AC disabled', () => {
+		const result = validateForm(
+			{
+				...validForm,
+				authorCreditEditor: VALID_AUTHOR_CREDIT_EDITOR,
+				buttonBar: {authorCreditEnable: false}
+			},
+			IDENTIFIER_TYPES
+		);
+		expect(result).to.be.false;
+	});
+
 	it('should reject an Object with an invalid identifier editor', () => {
 		const result = validateForm(
 			{
