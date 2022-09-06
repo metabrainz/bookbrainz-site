@@ -441,11 +441,12 @@ function describeValidateForm() {
 		expect(result).to.be.true;
 	});
 
-	it('should pass an Object with an empty author credit editor', () => {
+	it('should pass an Object with an empty author credit editor and AC disabled', () => {
 		const result = validateForm(
 			{
 				...validForm,
-				authorCreditEditor: {}
+				authorCreditEditor: {},
+				buttonBar: {authorCreditEnable: false}
 			},
 			IDENTIFIER_TYPES
 		);
@@ -468,6 +469,17 @@ function describeValidateForm() {
 			{
 				...validForm,
 				authorCreditEditor: INVALID_AUTHOR_CREDIT_EDITOR
+			},
+			IDENTIFIER_TYPES
+		);
+		expect(result).to.be.false;
+	});
+
+	it('should reject an Object with an empty author credit editor', () => {
+		const result = validateForm(
+			{
+				...validForm,
+				authorCreditEditor: {}
 			},
 			IDENTIFIER_TYPES
 		);

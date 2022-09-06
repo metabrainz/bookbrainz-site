@@ -139,7 +139,7 @@ export function validateForm(
 		validAuthorCredit = validateAuthorCreditSectionMerge(get(formData, 'authorCredit', {}));
 	}
 	else {
-		validAuthorCredit = validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}), !authorCreditEnable);
+		validAuthorCredit = validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}), !authorCreditEnable, authorCreditEnable);
 	}
 	const conditions = [
 		validateAliases(get(formData, 'aliasEditor', {})),

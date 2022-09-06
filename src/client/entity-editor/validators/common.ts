@@ -194,7 +194,7 @@ export function validateAuthorCreditRow(row: any, isOptional = false): boolean {
 export const validateAuthorCreditSection = _.partialRight(
 	// Requires at least one Author Credit row
 	validateMultiple, _.partialRight.placeholder,
-	validateAuthorCreditRow, _.partialRight.placeholder, false
+	validateAuthorCreditRow, _.partialRight.placeholder, _.partialRight.placeholder
 );
 // In the merge editor we use the authorCredit directly instead of the authorCreditEditor state
 export function validateAuthorCreditSectionMerge(authorCredit:AuthorCredit) :boolean {

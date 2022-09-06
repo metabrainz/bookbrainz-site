@@ -119,11 +119,7 @@ export function submit(
 	submissionUrl: string
 ): SubmitResult {
 	return (dispatch, getState) => {
-		let rootState = getState();
-		dispatch(setSubmitted(true));
-		if (!rootState.getIn(['authorCreditEditor', 'n0', 'author'], null)) {
-			rootState = rootState.set('authorCreditEditor', Map({}));
-		}
+		const rootState = getState();
 		dispatch(setSubmitted(true));
 		return postSubmission(submissionUrl, rootState)
 			.catch(

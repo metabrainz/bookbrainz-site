@@ -54,7 +54,10 @@ function transformNewForm(data) {
 	);
 
 	let authorCredit = {};
-	if (!_.isNil(data.authorCredit)) {
+	if (!_.get(data, ['buttonBar', 'authorCreditEnable'], true)) {
+		authorCredit = null;
+	}
+	else if (!_.isNil(data.authorCredit)) {
 		// When merging entities, we use a separate reducer "authorCredit"
 		authorCredit = data.authorCredit.names;
 	}

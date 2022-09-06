@@ -78,7 +78,7 @@ function AuthorCreditSection({
 	const authorCreditPreview = _map(authorCreditEditor, (credit) => `${credit.name}${credit.joinPhrase}`).join('');
 	const authorCreditRows = _values(authorCreditEditor);
 
-	const isValid = validateAuthorCreditSection(authorCreditRows, !authorCreditEnable);
+	const isValid = validateAuthorCreditSection(authorCreditRows, !authorCreditEnable, authorCreditEnable);
 
 	const editButton = (
 		// eslint-disable-next-line react/jsx-no-bind
@@ -111,7 +111,10 @@ function AuthorCreditSection({
 			This Edition doesn&apos;t have an Author
 				<OverlayTrigger
 					delay={50}
-					overlay={<Tooltip id="ac-enabled">Select this checkbox if you don&apos;t know the author(s) of this edition </Tooltip>}
+					overlay={
+						<Tooltip id="ac-enabled">Select this checkbox if this Edition doesn&apos;t have an Author or
+					if you don&apos;t know the Author(s)
+						</Tooltip>}
 				>
 					<FontAwesomeIcon
 						className="margin-left-0-5"
