@@ -877,6 +877,7 @@ async function getNextIdentifierSet(orm, transacting, currentEntity, body) {
 async function getNextRelationshipAttributeSets(orm, transacting, body) {
 	const {RelationshipAttributeSet} = orm;
 	const relationships = await Promise.all(body.relationships.map(async (relationship) => {
+		if (!relationship.isAdded) { return relationship; }
 		const id = relationship.attributeSetId;
 		const oldRelationshipAttributeSet = await (
 			id &&
