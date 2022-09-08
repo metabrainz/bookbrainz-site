@@ -565,7 +565,7 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 
 					let relsHaveChanged = false;
 					// Mark relationships with entity being merged as removed
-					const modifiedRelationships = otherEntityRelationships.forEach((rel) => {
+					otherEntityRelationships.forEach((rel) => {
 						if (entityBBID === rel.sourceBbid || entityBBID === rel.targetBbid) {
 							_.set(rel, 'isRemoved', true);
 							relsHaveChanged = true;
@@ -575,7 +575,7 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 					// If there's a difference, apply the new relationships array without rels to merged entity
 					if (relsHaveChanged) {
 						const updatedRelationshipSets = await orm.func.relationship.updateRelationshipSets(
-							orm, transacting, otherEntityRelationshipSet, modifiedRelationships
+							orm, transacting, otherEntityRelationshipSet, otherEntityRelationships
 						);
 						// Make sure the entity is later updated with its new relationshipSet id
 						allEntitiesReturnArray = _.unionBy(allEntitiesReturnArray, [otherEntity], 'id');
