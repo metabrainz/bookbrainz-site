@@ -378,9 +378,14 @@ export async function deleteRelationships(orm: any, transacting: Transaction, ma
 				// Fetch other entity relationships to remove relation with the deleted entity
 				let otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
 
-				// Filter out entites related to deleted entity
-				otherEntityRelationships = otherEntityRelationships.filter(({sourceBbid, targetBbid}) =>
-					mainBBID !== sourceBbid && mainBBID !== targetBbid);
+				// Mark entites related to deleted entity as removed
+				otherEntityRelationships = otherEntityRelationships.map((rel) => {
+					if (mainBBID !== rel.sourceBbid && mainBBID !== rel.targetBbid) {
+						return rel;
+					}
+					_.set(rel, 'isRemoved', true);
+					return rel;
+				});
 
 				const newRelationshipSet = await orm.func.relationship.updateRelationshipSets(
 					orm, transacting, otherEntityRelationshipSet, otherEntityRelationships
@@ -558,11 +563,14 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 					}
 					const otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
 
-					// Remove relationships with entity being merged
-					const cleanedUpRelationships = otherEntityRelationships
-						.filter(({sourceBbid, targetBbid}) =>
-							entityBBID !== sourceBbid &&
-							entityBBID !== targetBbid);
+					// Mark entity relationships removed with entity being merged
+					const cleanedUpRelationships = otherEntityRelationships.map((rel) => {
+						if (entityBBID !== rel.sourceBbid && entityBBID !== rel.targetBbid) {
+							return rel;
+						}
+						_.set(rel, 'isRemoved', true);
+						return rel;
+					});
 
 					// If there's a difference, apply the new relationships array without rels to merged entity
 					if (cleanedUpRelationships.length !== otherEntityRelationships.length) {
@@ -877,7 +885,10 @@ async function getNextIdentifierSet(orm, transacting, currentEntity, body) {
 async function getNextRelationshipAttributeSets(orm, transacting, body) {
 	const {RelationshipAttributeSet} = orm;
 	const relationships = await Promise.all(body.relationships.map(async (relationship) => {
-		if (!relationship.isAdded) { return relationship; }
+		if (!relationship.isAdded) {
+			relationship.attributeSetId = _.get(relationship, ['attributeSetId'], null);
+			return relationship;
+		}
 		const id = relationship.attributeSetId;
 		const oldRelationshipAttributeSet = await (
 			id &&
