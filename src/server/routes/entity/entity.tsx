@@ -563,19 +563,19 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 					}
 					const otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
 
-					// Mark entity relationships removed with entity being merged
-					const cleanedUpRelationships = otherEntityRelationships.map((rel) => {
-						if (entityBBID !== rel.sourceBbid && entityBBID !== rel.targetBbid) {
-							return rel;
+					let relsHaveChanged = false;
+					// Mark relationships with entity being merged as removed
+					const modifiedRelationships = otherEntityRelationships.forEach((rel) => {
+						if (entityBBID === rel.sourceBbid || entityBBID === rel.targetBbid) {
+							_.set(rel, 'isRemoved', true);
+							relsHaveChanged = true;
 						}
-						_.set(rel, 'isRemoved', true);
-						return rel;
 					});
 
 					// If there's a difference, apply the new relationships array without rels to merged entity
-					if (cleanedUpRelationships.length !== otherEntityRelationships.length) {
+					if (relsHaveChanged) {
 						const updatedRelationshipSets = await orm.func.relationship.updateRelationshipSets(
-							orm, transacting, otherEntityRelationshipSet, cleanedUpRelationships
+							orm, transacting, otherEntityRelationshipSet, modifiedRelationships
 						);
 						// Make sure the entity is later updated with its new relationshipSet id
 						allEntitiesReturnArray = _.unionBy(allEntitiesReturnArray, [otherEntity], 'id');
