@@ -18,8 +18,10 @@
 
 import {
 	ADD_AUTHOR_CREDIT_ROW,
+	CLEAR_AUTHOR_CREDIT,
 	REMOVE_AUTHOR_CREDIT_ROW,
 	REMOVE_EMPTY_CREDIT_ROWS,
+	RESET_AUTHOR_CREDIT,
 	UPDATE_CREDIT_AUTHOR_VALUE,
 	UPDATE_CREDIT_DISPLAY_VALUE,
 	UPDATE_CREDIT_JOIN_PHRASE_VALUE
@@ -148,6 +150,10 @@ function reducer(
 			return deleteAuthorCreditRow(state, payload);
 		case REMOVE_EMPTY_CREDIT_ROWS:
 			return deleteEmptyRows(state);
+		case CLEAR_AUTHOR_CREDIT:
+			return Immutable.OrderedMap({});
+		case RESET_AUTHOR_CREDIT:
+			return Immutable.OrderedMap(initialState);
 		// no default
 	}
 	return state;

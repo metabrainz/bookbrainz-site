@@ -184,17 +184,16 @@ export function validateSubmissionSection(
 	);
 }
 
-export function validateAuthorCreditRow(row: any, isOptional = false): boolean {
-	if (!getIn(row, ['author', 'id'], null) && !get(row, 'name', null) && isOptional) { return true; }
+export function validateAuthorCreditRow(row: any): boolean {
 	return validateUUID(getIn(row, ['author', 'id'], null), true) &&
 	validateRequiredString(get(row, 'name', null)) &&
 	validateOptionalString(get(row, 'joinPhrase', null));
 }
 
 export const validateAuthorCreditSection = _.partialRight(
-	// Requires at least one Author Credit row
+	// Requires at least one Author Credit row or zero in case of optional
 	validateMultiple, _.partialRight.placeholder,
-	validateAuthorCreditRow, _.partialRight.placeholder, _.partialRight.placeholder
+	validateAuthorCreditRow, null, _.partialRight.placeholder
 );
 // In the merge editor we use the authorCredit directly instead of the authorCreditEditor state
 export function validateAuthorCreditSectionMerge(authorCredit:AuthorCredit) :boolean {

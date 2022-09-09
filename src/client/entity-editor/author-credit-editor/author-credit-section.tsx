@@ -20,8 +20,10 @@ import {
 	Action,
 	AuthorCreditRow,
 	addAuthorCreditRow,
+	clearAuthorCredit,
 	hideAuthorCreditEditor,
 	removeEmptyCreditRows,
+	resetAuthorCredit,
 	showAuthorCreditEditor,
 	updateCreditAuthorValue
 } from './actions';
@@ -56,7 +58,7 @@ type StateProps = {
 
 type DispatchProps = {
 	onAuthorChange: (Author) => unknown,
-	toggleAuthorCreditEnable: () => unknown,
+	toggleAuthorCreditEnable: (newValue:boolean) => unknown,
 	onEditAuthorCredit: (rowCount: number) => unknown,
 	onEditorClose: () => unknown,
 };
@@ -78,11 +80,11 @@ function AuthorCreditSection({
 	const authorCreditPreview = _map(authorCreditEditor, (credit) => `${credit.name}${credit.joinPhrase}`).join('');
 	const authorCreditRows = _values(authorCreditEditor);
 
-	const isValid = validateAuthorCreditSection(authorCreditRows, !authorCreditEnable, authorCreditEnable);
+	const isValid = validateAuthorCreditSection(authorCreditRows, authorCreditEnable);
 
 	const editButton = (
 		// eslint-disable-next-line react/jsx-no-bind
-		<Button variant="success" onClick={function openEditor() { onEditAuthorCredit(authorCreditRows.length); }}>
+		<Button disabled={!authorCreditEnable} variant="success" onClick={function openEditor() { onEditAuthorCredit(authorCreditRows.length); }}>
 			<FontAwesomeIcon icon={faPencilAlt}/>
 			&nbsp;Edit
 		</Button>);
@@ -125,6 +127,9 @@ function AuthorCreditSection({
 		</>
 
 	);
+	const onCheckChangeHandler = React.useCallback(() => {
+		toggleAuthorCreditEnable(!authorCreditEnable);
+	}, [authorCreditEnable]);
 	return (
 		<Row className="margin-bottom-2">
 			{editor}
@@ -160,7 +165,7 @@ function AuthorCreditSection({
 						id="ac-enabled-check"
 						label={checkboxLabel}
 						type="checkbox"
-						onChange={toggleAuthorCreditEnable}
+						onChange={onCheckChangeHandler}
 					/>
 				</Form.Group>
 			</Col>
@@ -175,16 +180,22 @@ AuthorCreditSection.propTypes = {
 };
 
 function mapStateToProps(rootState, {type}): StateProps {
-	const firstRowKey = rootState.get('authorCreditEditor').keySeq().first();
-	const authorCreditRow = rootState.getIn(['authorCreditEditor', firstRowKey]);
-	const isEditable = !(rootState.get('authorCreditEditor').size > 1) &&
-	authorCreditRow.get('name') === authorCreditRow.getIn(['author', 'text'], '');
-	const entitySection = `${camelCase(type)}Section`;
+	const authorCreditEnable = rootState.getIn(['buttonBar', 'authorCreditEnable']);
+	let isEditable = false;
+	let showEditor = false;
+	if (authorCreditEnable) {
+		const firstRowKey = rootState.get('authorCreditEditor').keySeq().first();
+		const authorCreditRow = rootState.getIn(['authorCreditEditor', firstRowKey]);
+		isEditable = !(rootState.get('authorCreditEditor').size > 1) &&
+		authorCreditRow.get('name') === authorCreditRow.getIn(['author', 'text'], '');
+		const entitySection = `${camelCase(type)}Section`;
+		showEditor = rootState.getIn([entitySection, 'authorCreditEditorVisible']);
+	}
 	return {
 		authorCreditEditor: convertMapToObject(rootState.get('authorCreditEditor')),
-		authorCreditEnable: rootState.getIn(['buttonBar', 'authorCreditEnable']),
+		authorCreditEnable,
 		isEditable,
-		showEditor: rootState.getIn([entitySection, 'authorCreditEditorVisible'])
+		showEditor
 	};
 }
 
@@ -202,7 +213,15 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			dispatch(removeEmptyCreditRows());
 			dispatch(hideAuthorCreditEditor());
 		},
-		toggleAuthorCreditEnable: () => dispatch(toggleAuthorCredit())
+		toggleAuthorCreditEnable: (newValue) => {
+			if (newValue) {
+				dispatch(resetAuthorCredit());
+			}
+			else {
+				dispatch(clearAuthorCredit());
+			}
+			dispatch(toggleAuthorCredit());
+		}
 	};
 }
 

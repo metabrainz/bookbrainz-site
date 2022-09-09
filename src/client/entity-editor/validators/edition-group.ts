@@ -49,8 +49,12 @@ export function validateForm(
 	if (isMerge) {
 		validAuthorCredit = validateAuthorCreditSectionMerge(get(formData, 'authorCredit', {}));
 	}
+	else if (!authorCreditEnable) {
+		validAuthorCredit = isIterable(formData) ? formData.get('authorCreditEditor')?.size === 0 :
+			_.size(get(formData, 'authorCreditEditor', {})) === 0;
+	}
 	else {
-		validAuthorCredit = validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}), !authorCreditEnable, authorCreditEnable);
+		validAuthorCredit = validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}), authorCreditEnable);
 	}
 	const conditions = [
 		validateAliases(get(formData, 'aliasEditor', {})),
