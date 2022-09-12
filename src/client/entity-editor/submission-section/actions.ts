@@ -157,6 +157,7 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 			const relationship = {
 				attributeSetId: null,
 				attributes: [],
+				isAdded: true,
 				relationshipType: {
 					id: authorWorkRelationshipTypeId
 				},
@@ -188,6 +189,7 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 		const relationship = {
 			attributeSetId: null,
 			attributes: [],
+			isAdded: true,
 			relationshipType: {
 				id: 10
 			},

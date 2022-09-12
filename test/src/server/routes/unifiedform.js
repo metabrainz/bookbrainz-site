@@ -119,6 +119,7 @@ describe('Unified form routes', () => {
 					a0: {
 						attributeSetId: null,
 						attributes: [],
+						isAdded: true,
 						relationshipType: {
 							id: authorWorkRelationshipType.id
 						},
@@ -192,6 +193,7 @@ describe('Unified form routes', () => {
 					n0: {
 						attributeSetId: null,
 						attributes: [],
+						isAdded: true,
 						relationshipType: {
 							id: newRelationshipType.id
 						},

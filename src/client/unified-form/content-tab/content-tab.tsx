@@ -28,10 +28,12 @@ function getRelEntity(entity) {
 		type: entity.type
 	};
 }
-function generateRel(workEntity, seriesEntity, attributeSetId?) {
+function generateRel(workEntity, seriesEntity, attributeSetId?, isAdded = false, isRemoved = false) {
 	return {
 		attributeSetId,
 		attributes: [{attributeType: 1, value: {textValue: null}}, {attributeType: 2, value: {textValue: null}}],
+		isAdded,
+		isRemoved,
 		relationshipType: {
 			id: seriesWorkTypeId,
 			linkPhrase: 'is part of',
@@ -61,7 +63,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 		};
 		const relationships = {};
 		forEach(works, (work) => {
-			const rel = generateRel(work, baseEntity);
+			const rel = generateRel(work, baseEntity, null, true);
 			relationships[rel.rowID] = rel;
 		});
 		bulkAddSeriesItems(relationships);
@@ -113,7 +115,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 				disambiguation: get(work, 'disambiguation'),
 				type: get(work, 'type')
 			};
-			const relationship = generateRel(otherEntity, baseEntity);
+			const relationship = generateRel(otherEntity, baseEntity, null, true);
 			onAddSeriesItem(relationship);
 		}
 		onChange(work);

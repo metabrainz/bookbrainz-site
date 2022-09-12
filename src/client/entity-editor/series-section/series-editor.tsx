@@ -213,7 +213,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 							}
 						</> :
 						<SortableList distance={1} onSortEnd={onSort}>
-							{seriesItemsArray.map((value, index) => (
+							{seriesItemsArray.map((value, index) => !value.isRemoved && (
 								<SortableItem
 									baseEntity={baseEntity}
 									handleNumberAttributeChange={handleNumberAttributeChange}
