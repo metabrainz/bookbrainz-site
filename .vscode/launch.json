@@ -27,7 +27,7 @@
             ],
             "env": {"NODE_ENV":"test","SSR":true},
             "internalConsoleOptions": "openOnSessionStart",
-            "preLaunchTask": "build-website"
+            "preLaunchTask": ""
         },
         {
             "type": "node",

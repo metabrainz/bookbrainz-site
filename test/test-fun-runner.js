@@ -29,7 +29,7 @@ const funRunnerDays = 6;
 
 function rewireEditsInDaysTwo(threshold) {
 	return common.rewire(Achievement, {
-		getEditsInDays: (editorId, days) => {
+		getConsecutiveDaysWithEdits: (editorId, days) => {
 			let editPromise;
 			if (days === funRunnerDays) {
 				editPromise = Promise.resolve(threshold);
@@ -44,7 +44,7 @@ function rewireEditsInDaysTwo(threshold) {
 
 function rewireEditsInDaysThree(threshold) {
 	return common.rewire(Achievement, {
-		getEditsInDays: (_orm, editorId, days) => {
+		getConsecutiveDaysWithEdits: (_orm, editorId, days) => {
 			let editPromise;
 			if (days === funRunnerDays) {
 				editPromise = Promise.resolve(threshold);

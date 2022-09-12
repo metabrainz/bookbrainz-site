@@ -162,6 +162,8 @@ type RelationshipModalProps = {
 
 type RelationshipModalState = {
 	attributeSetId: number | null,
+	isAdded: boolean,
+	isRemoved: boolean,
 	relationshipType?: RelationshipType | null | undefined,
 	relationship?: _Relationship | null | undefined,
 	targetEntity?: EntitySearchResult | null | undefined,
@@ -179,6 +181,8 @@ function getInitState(
 			attributePosition: {attributeType: 1, value: {textValue: null}},
 			attributeSetId: null,
 			attributes: [],
+			isAdded: true,
+			isRemoved: false,
 			relationship: null,
 			relationshipType: null,
 			targetEntity: null
@@ -222,6 +226,8 @@ function getInitState(
 		attributePosition,
 		attributeSetId: _.get(initRelationship, ['attributeSetId']),
 		attributes,
+		isAdded: true,
+		isRemoved: false,
 		relationship: initRelationship,
 		relationshipType: _.get(initRelationship, ['relationshipType']),
 		targetEntity: searchFormatOtherEntity
