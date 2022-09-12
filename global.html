@@ -1657,7 +1657,7 @@ if a source_bbid appears as a target_bbid in other rows.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="server_routes_entity_work.js.html">server/routes/entity/work.js</a>, <a href="server_routes_entity_work.js.html#line125">line 125</a>
+        <a href="server_routes_entity_work.js.html">server/routes/entity/work.js</a>, <a href="server_routes_entity_work.js.html#line126">line 126</a>
     </li></ul></dd>
     
 
@@ -9304,7 +9304,7 @@ disambiguation to the entity and open the IdentifierEditor
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line278">line 278</a>
+        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line280">line 280</a>
     </li></ul></dd>
     
 
@@ -9464,7 +9464,7 @@ disambiguation to the entity and open the IdentifierEditor
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line313">line 313</a>
+        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line315">line 315</a>
     </li></ul></dd>
     
 
@@ -10164,7 +10164,7 @@ and you will have to run `process.kill(process.pid, errorCode)` yourself.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line174">line 174</a>
+        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line176">line 176</a>
     </li></ul></dd>
     
 
@@ -18745,7 +18745,7 @@ Returns null if there are no aliases in the set.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="server_routes_entity_entity.js.html">server/routes/entity/entity.js</a>, <a href="server_routes_entity_entity.js.html#line2167">line 2167</a>
+        <a href="server_routes_entity_entity.js.html">server/routes/entity/entity.js</a>, <a href="server_routes_entity_entity.js.html#line2187">line 2187</a>
     </li></ul></dd>
     
 
@@ -18939,7 +18939,7 @@ Returns null if there are no aliases in the set.
 
     
 
-    <h4 class="name" id="getEntityByBBID"><span class="type-signature"></span>getEntityByBBID<span class="signature">(orm, bbid)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    <h4 class="name" id="getEntityByBBID"><span class="type-signature"></span>getEntityByBBID<span class="signature">(orm, bbid, otherRelations)</span><span class="type-signature"> &rarr; {Promise}</span></h4>
 
     
 
@@ -18978,7 +18978,7 @@ Returns null if there are no aliases in the set.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line369">line 369</a>
+        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line372">line 372</a>
     </li></ul></dd>
     
 
@@ -19066,6 +19066,32 @@ Returns null if there are no aliases in the set.
 
             <td class="description last">
                 bookbrainz id
+                
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>otherRelations</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><code>Array</code></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                entity specific relations to fetch
                 
             </td>
         </tr>
@@ -19164,7 +19190,7 @@ Returns null if there are no aliases in the set.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line250">line 250</a>
+        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line252">line 252</a>
     </li></ul></dd>
     
 
@@ -19324,7 +19350,7 @@ Returns null if there are no aliases in the set.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line120">line 120</a>
+        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line122">line 122</a>
     </li></ul></dd>
     
 
@@ -19544,7 +19570,7 @@ single param
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line92">line 92</a>
+        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line94">line 94</a>
     </li></ul></dd>
     
 
@@ -23394,7 +23420,7 @@ This method fetches and indexes (search) those potential new EditionGroups that 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="server_routes_entity_entity.js.html">server/routes/entity/entity.js</a>, <a href="server_routes_entity_entity.js.html#line1845">line 1845</a>
+        <a href="server_routes_entity_entity.js.html">server/routes/entity/entity.js</a>, <a href="server_routes_entity_entity.js.html#line1861">line 1861</a>
     </li></ul></dd>
     
 
@@ -23902,7 +23928,7 @@ Area, using the present attributes.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line330">line 330</a>
+        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line332">line 332</a>
     </li></ul></dd>
     
 
@@ -24062,7 +24088,7 @@ Area, using the present attributes.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line349">line 349</a>
+        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line351">line 351</a>
     </li></ul></dd>
     
 
@@ -24547,7 +24573,7 @@ If any of the values don't exist, the default is an empty string.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line81">line 81</a>
+        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line83">line 83</a>
     </li></ul></dd>
     
 
@@ -25192,7 +25218,7 @@ resolves with `{a: resolvedValue}`.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line137">line 137</a>
+        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line139">line 139</a>
     </li></ul></dd>
     
 
@@ -28842,7 +28868,7 @@ removed.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_entity-editor_series-section_actions.js.html">client/entity-editor/series-section/actions.js</a>, <a href="client_entity-editor_series-section_actions.js.html#line193">line 193</a>
+        <a href="client_entity-editor_series-section_actions.js.html">client/entity-editor/series-section/actions.js</a>, <a href="client_entity-editor_series-section_actions.js.html#line194">line 194</a>
     </li></ul></dd>
     
 
@@ -29166,7 +29192,7 @@ relationships on entity display pages.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line187">line 187</a>
+        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line189">line 189</a>
     </li></ul></dd>
     
 
@@ -31997,7 +32023,7 @@ name value passed to the component to guess an appropriate sort name.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line157">line 157</a>
+        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line159">line 159</a>
     </li></ul></dd>
     
 
@@ -33998,7 +34024,7 @@ in the statistics page
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="server_routes_entity_work.js.html">server/routes/entity/work.js</a>, <a href="server_routes_entity_work.js.html#line100">line 100</a>
+        <a href="server_routes_entity_work.js.html">server/routes/entity/work.js</a>, <a href="server_routes_entity_work.js.html#line101">line 101</a>
     </li></ul></dd>
     
 
@@ -34082,7 +34108,7 @@ eg. { "a.c": 2 } -> { "a": { "c" : 2 } }
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line213">line 213</a>
+        <a href="common_helpers_utils.js.html">common/helpers/utils.js</a>, <a href="common_helpers_utils.js.html#line215">line 215</a>
     </li></ul></dd>
     
 
@@ -40487,7 +40513,7 @@ rendered as a modular section within the entity editor.
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Sep 08 2022 17:26:44 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Sep 12 2022 14:36:39 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

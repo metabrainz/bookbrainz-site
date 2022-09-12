@@ -171,6 +171,8 @@ var _without2 = _interopRequireDefault(require("lodash/without"));
 
 var _includes2 = _interopRequireDefault(require("lodash/includes"));
 
+var _set2 = _interopRequireDefault(require("lodash/set"));
+
 var _isNil2 = _interopRequireDefault(require("lodash/isNil"));
 
 var _uniq2 = _interopRequireDefault(require("lodash/uniq"));
@@ -732,13 +734,16 @@ function _deleteRelationships() {
 
                       case 8:
                         // Fetch other entity relationships to remove relation with the deleted entity
-                        otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON(); // Filter out entites related to deleted entity
+                        otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON(); // Mark entites related to deleted entity as removed
 
-                        // Filter out entites related to deleted entity
-                        otherEntityRelationships = otherEntityRelationships.filter(function (_ref9) {
-                          var sourceBbid = _ref9.sourceBbid,
-                              targetBbid = _ref9.targetBbid;
-                          return mainBBID !== sourceBbid &amp;&amp; mainBBID !== targetBbid;
+                        // Mark entites related to deleted entity as removed
+                        otherEntityRelationships = otherEntityRelationships.map(function (rel) {
+                          if (mainBBID !== rel.sourceBbid &amp;&amp; mainBBID !== rel.targetBbid) {
+                            return rel;
+                          }
+
+                          (0, _set2.default)(rel, 'isRemoved', true);
+                          return rel;
                         });
                         _context8.next = 12;
                         return orm.func.relationship.updateRelationshipSets(orm, transacting, otherEntityRelationshipSet, otherEntityRelationships);
@@ -917,8 +922,8 @@ function _processMergeOperation() {
             entitiesToMergeBBIDs = (0, _without2.default)(Object.keys(mergingEntities), currentEntityBBID);
             allEntitiesReturnArray = allEntities; // fetch entities we're merging to add them to to the array of modified entities
 
-            entitiesToMerge = (0, _values2.default)(mergingEntities).filter(function (_ref10) {
-              var bbid = _ref10.bbid;
+            entitiesToMerge = (0, _values2.default)(mergingEntities).filter(function (_ref9) {
+              var bbid = _ref9.bbid;
               return bbid !== currentEntityBBID;
             });
             _context15.next = 14;
@@ -935,7 +940,7 @@ function _processMergeOperation() {
 
             _context15.next = 18;
             return Promise.all((0, _map2.default)(relationshipSets, /*#__PURE__*/function () {
-              var _ref11 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee10(relationshipSet) {
+              var _ref10 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee10(relationshipSet) {
                 var refreshedrelationshipSet, relationshipsToRemove;
                 return _regenerator.default.wrap(function _callee10$(_context10) {
                   while (1) {
@@ -956,12 +961,12 @@ function _processMergeOperation() {
                         refreshedrelationshipSet = _context10.sent;
 
                         /** Find relationships with entities being merge and remove them from set */
-                        relationshipsToRemove = refreshedrelationshipSet.related('relationships').toJSON().filter(function (_ref12) {
-                          var sourceBbid = _ref12.sourceBbid,
-                              targetBbid = _ref12.targetBbid;
+                        relationshipsToRemove = refreshedrelationshipSet.related('relationships').toJSON().filter(function (_ref11) {
+                          var sourceBbid = _ref11.sourceBbid,
+                              targetBbid = _ref11.targetBbid;
                           return (0, _includes2.default)(entitiesToMergeBBIDs, sourceBbid) || (0, _includes2.default)(entitiesToMergeBBIDs, targetBbid);
-                        }).map(function (_ref13) {
-                          var id = _ref13.id;
+                        }).map(function (_ref12) {
+                          var id = _ref12.id;
                           return id;
                         });
 
@@ -984,14 +989,14 @@ function _processMergeOperation() {
               }));
 
               return function (_x87) {
-                return _ref11.apply(this, arguments);
+                return _ref10.apply(this, arguments);
               };
             }()));
 
           case 18:
             _context15.next = 20;
             return Promise.all(entitiesModelsToMerge.map( /*#__PURE__*/function () {
-              var _ref14 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee12(entity) {
+              var _ref13 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee12(entity) {
                 var entityBBID, relationshipSet, relationships, otherEntitiesToFetch;
                 return _regenerator.default.wrap(function _callee12$(_context12) {
                   while (1) {
@@ -1031,8 +1036,8 @@ function _processMergeOperation() {
                         });
                         _context12.next = 10;
                         return Promise.all(otherEntitiesToFetch.map( /*#__PURE__*/function () {
-                          var _ref15 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee11(bbid) {
-                            var otherEntity, otherEntityRelationshipSet, otherEntityRelationships, cleanedUpRelationships, updatedRelationshipSets;
+                          var _ref14 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee11(bbid) {
+                            var otherEntity, otherEntityRelationshipSet, otherEntityRelationships, relsHaveChanged, updatedRelationshipSets;
                             return _regenerator.default.wrap(function _callee11$(_context11) {
                               while (1) {
                                 switch (_context11.prev = _context11.next) {
@@ -1060,30 +1065,32 @@ function _processMergeOperation() {
                                     return _context11.abrupt("return");
 
                                   case 8:
-                                    otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON(); // Remove relationships with entity being merged
+                                    otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
+                                    relsHaveChanged = false; // Mark relationships with entity being merged as removed
 
-                                    // Remove relationships with entity being merged
-                                    cleanedUpRelationships = otherEntityRelationships.filter(function (_ref16) {
-                                      var sourceBbid = _ref16.sourceBbid,
-                                          targetBbid = _ref16.targetBbid;
-                                      return entityBBID !== sourceBbid &amp;&amp; entityBBID !== targetBbid;
+                                    // Mark relationships with entity being merged as removed
+                                    otherEntityRelationships.forEach(function (rel) {
+                                      if (entityBBID === rel.sourceBbid || entityBBID === rel.targetBbid) {
+                                        (0, _set2.default)(rel, 'isRemoved', true);
+                                        relsHaveChanged = true;
+                                      }
                                     }); // If there's a difference, apply the new relationships array without rels to merged entity
 
-                                    if (!(cleanedUpRelationships.length !== otherEntityRelationships.length)) {
-                                      _context11.next = 16;
+                                    if (!relsHaveChanged) {
+                                      _context11.next = 17;
                                       break;
                                     }
 
-                                    _context11.next = 13;
-                                    return orm.func.relationship.updateRelationshipSets(orm, transacting, otherEntityRelationshipSet, cleanedUpRelationships);
+                                    _context11.next = 14;
+                                    return orm.func.relationship.updateRelationshipSets(orm, transacting, otherEntityRelationshipSet, otherEntityRelationships);
 
-                                  case 13:
+                                  case 14:
                                     updatedRelationshipSets = _context11.sent;
                                     // Make sure the entity is later updated with its new relationshipSet id
                                     allEntitiesReturnArray = (0, _unionBy2.default)(allEntitiesReturnArray, [otherEntity], 'id');
                                     (0, _assign2.default)(relationshipSets, (0, _pick2.default)(updatedRelationshipSets, bbid));
 
-                                  case 16:
+                                  case 17:
                                   case "end":
                                     return _context11.stop();
                                 }
@@ -1092,7 +1099,7 @@ function _processMergeOperation() {
                           }));
 
                           return function (_x89) {
-                            return _ref15.apply(this, arguments);
+                            return _ref14.apply(this, arguments);
                           };
                         }()));
 
@@ -1105,7 +1112,7 @@ function _processMergeOperation() {
               }));
 
               return function (_x88) {
-                return _ref14.apply(this, arguments);
+                return _ref13.apply(this, arguments);
               };
             }()));
 
@@ -1160,7 +1167,7 @@ function _processMergeOperation() {
             _editionsToSet = (0, _reject2.default)(_editionsToSet, _isNil2.default);
             _context15.next = 34;
             return Promise.all(_editionsToSet.map( /*#__PURE__*/function () {
-              var _ref17 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee13(edition) {
+              var _ref15 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee13(edition) {
                 var oldPublisherSet, newPublisherSet;
                 return _regenerator.default.wrap(function _callee13$(_context13) {
                   while (1) {
@@ -1193,7 +1200,7 @@ function _processMergeOperation() {
               }));
 
               return function (_x90) {
-                return _ref17.apply(this, arguments);
+                return _ref15.apply(this, arguments);
               };
             }()));
 
@@ -1214,7 +1221,7 @@ function _processMergeOperation() {
              * Some actions we only want to take once the main entity has been saved
             */
             mainEntity.once('saved', /*#__PURE__*/function () {
-              var _ref18 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee14(model) {
+              var _ref16 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee14(model) {
                 var newEntityRevision;
                 return _regenerator.default.wrap(function _callee14$(_context14) {
                   while (1) {
@@ -1273,7 +1280,7 @@ function _processMergeOperation() {
               }));
 
               return function (_x91) {
-                return _ref18.apply(this, arguments);
+                return _ref16.apply(this, arguments);
               };
             }());
             /** Update the redirection table to redirect merged entities' bbids
@@ -1638,14 +1645,23 @@ function _getNextRelationshipAttributeSets() {
             RelationshipAttributeSet = orm.RelationshipAttributeSet;
             _context23.next = 3;
             return Promise.all(body.relationships.map( /*#__PURE__*/function () {
-              var _ref19 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee22(relationship) {
+              var _ref17 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee22(relationship) {
                 var id, oldRelationshipAttributeSet, attributeSet, attributeSetId;
                 return _regenerator.default.wrap(function _callee22$(_context22) {
                   while (1) {
                     switch (_context22.prev = _context22.next) {
                       case 0:
+                        if (relationship.isAdded) {
+                          _context22.next = 3;
+                          break;
+                        }
+
+                        relationship.attributeSetId = (0, _get2.default)(relationship, ['attributeSetId'], null);
+                        return _context22.abrupt("return", relationship);
+
+                      case 3:
                         id = relationship.attributeSetId;
-                        _context22.next = 3;
+                        _context22.next = 6;
                         return id &amp;&amp; new RelationshipAttributeSet({
                           id: id
                         }).fetch({
@@ -1654,19 +1670,19 @@ function _getNextRelationshipAttributeSets() {
                           withRelated: ['relationshipAttributes.value']
                         });
 
-                      case 3:
+                      case 6:
                         oldRelationshipAttributeSet = _context22.sent;
-                        _context22.next = 6;
+                        _context22.next = 9;
                         return orm.func.relationshipAttributes.updateRelationshipAttributeSet(orm, transacting, oldRelationshipAttributeSet, relationship.attributes || []);
 
-                      case 6:
+                      case 9:
                         attributeSet = _context22.sent;
                         attributeSetId = attributeSet &amp;&amp; attributeSet.get('id');
                         relationship.attributeSetId = attributeSetId;
                         delete relationship.attributes;
                         return _context22.abrupt("return", relationship);
 
-                      case 11:
+                      case 14:
                       case "end":
                         return _context22.stop();
                     }
@@ -1675,7 +1691,7 @@ function _getNextRelationshipAttributeSets() {
               }));
 
               return function (_x92) {
-                return _ref19.apply(this, arguments);
+                return _ref17.apply(this, arguments);
               };
             }()));
 
@@ -2183,11 +2199,15 @@ function constructRelationships(parentSection) {
         relationshipType = _ref6.relationshipType,
         sourceEntity = _ref6.sourceEntity,
         targetEntity = _ref6.targetEntity,
-        attributes = _ref6.attributes;
+        attributes = _ref6.attributes,
+        isRemoved = _ref6.isRemoved,
+        isAdded = _ref6.isAdded;
     return {
       attributeSetId: attributeSetId,
       attributes: attributes,
       id: rowID,
+      isAdded: isAdded,
+      isRemoved: isRemoved,
       sourceBbid: (0, _get2.default)(sourceEntity, 'bbid'),
       targetBbid: (0, _get2.default)(targetEntity, 'bbid'),
       typeId: relationshipType.id
@@ -2328,7 +2348,7 @@ function displayPreview(req, res, next) {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Sep 08 2022 17:26:44 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Mon Sep 12 2022 14:36:39 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
