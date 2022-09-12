@@ -1,6 +1,7 @@
+/* eslint-disable no-await-in-loop */
 import * as achievement from '../../helpers/achievement';
-import * as handler from '../../helpers/handler';
 import type {Request as $Request, Response as $Response} from 'express';
+import {FormSubmissionError, sendErrorAsJSON} from '../../../common/helpers/error';
 import {authorToFormState, transformNewForm as authorTransform} from './author';
 import {editionGroupToFormState, transformNewForm as editionGroupTransform} from './edition-group';
 import {editionToFormState, transformNewForm as editionTransform} from './edition';
@@ -11,10 +12,10 @@ import {workToFormState, transformNewForm as workTransform} from './work';
 import type {
 	EntityTypeString
 } from 'bookbrainz-data/lib/func/types';
-import {FormSubmissionError} from '../../../common/helpers/error';
 import _ from 'lodash';
 import {_bulkIndexEntities} from '../../../common/helpers/search';
 import {addRelationships} from '../../helpers/middleware';
+import log from 'log';
 import {processSingleEntity} from './entity';
 
 
@@ -157,7 +158,7 @@ export async function preprocessForm(body:Record<string, any>, orm):Promise<Reco
 }
 
 
-export function handleCreateMultipleEntities(
+export async function handleCreateMultipleEntities(
 	req: PassportRequest,
 	res: $Response
 ) {
@@ -175,7 +176,6 @@ export function handleCreateMultipleEntities(
 
 
 	const {body}: {body: Record<string, any>} = req;
-	const processedAchievements = [];
 	async function processEntity(entityKey:string) {
 		const entityForm = body[entityKey];
 		const entityType = _.upperFirst(entityForm.type);
@@ -190,22 +190,39 @@ export function handleCreateMultipleEntities(
 		}
 		const {bookshelf} = orm;
 		const entityEditPromise = bookshelf.transaction((transacting) =>
-			processSingleEntity(entityForm, isNew ? null : currentEntity, null, entityType, orm, editorJSON, deriveProps, false, transacting));
-
-		const achievementPromise = entityEditPromise.then(
-			(entityJSON) => processAchievement(orm, editorJSON.id, entityJSON)
-		);
-		processedAchievements.push(await achievementPromise);
-		return achievementPromise;
+			processSingleEntity(entityForm, currentEntity, null, entityType, orm, editorJSON, deriveProps, false, transacting));
+		return entityEditPromise;
 	}
-	// create all entities
-	async function getAchievementPromise() {
-		await Object.keys(body).reduce((promise, entityKey) => promise.then(() => processEntity(entityKey)), Promise.resolve());
-		return processedAchievements;
+	// first, process all entities
+	const processedEntities = [];
+	const processedAchievements = [];
+	try {
+		for (const entityKey in body) {
+			if (Object.prototype.hasOwnProperty.call(body, entityKey)) {
+				processedEntities.push(await processEntity(entityKey));
+			}
+		}
 	}
-	return handler.sendPromiseResult(
-		res,
-		getAchievementPromise(),
-		_bulkIndexEntities
-	);
+	catch (err) {
+		log.error(err);
+		return sendErrorAsJSON(res, err);
+	}
+	// log achievements error if any
+	try {
+		for (const entity of processedEntities) {
+			const achievementPromise = processAchievement(orm, editorJSON.id, entity);
+			processedAchievements.push(await achievementPromise);
+		}
+	}
+	catch (err) {
+		log.error(err);
+	}
+	// log indexing error if any
+	try {
+		_bulkIndexEntities(processedAchievements);
+	}
+	catch (err) {
+		log.error(err);
+	}
+	return res.send(processedEntities);
 }
