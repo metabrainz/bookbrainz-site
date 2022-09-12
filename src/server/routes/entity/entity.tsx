@@ -504,6 +504,28 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 	/** Add entities to be merged to the array of modified entities */
 	allEntitiesReturnArray = _.unionBy(allEntitiesReturnArray, entitiesModelsToMerge, 'id');
 
+	/** Remove relationships that concern entities being merged from already modified relationshipSets */
+	await Promise.all(_.map(relationshipSets, async (relationshipSet) => {
+		/** Some items in this object may be null */
+		if (relationshipSet) {
+			/** Refresh RelationshipSet to fetch both existing and new relationships */
+			const refreshedrelationshipSet = await relationshipSet
+				.refresh({transacting, withRelated: 'relationships'});
+
+			/** Find relationships with entities being merge and remove them from set */
+			const relationshipsToRemove = refreshedrelationshipSet
+				.related('relationships').toJSON()
+				.filter(({sourceBbid, targetBbid}) => _.includes(entitiesToMergeBBIDs, sourceBbid) ||
+						_.includes(entitiesToMergeBBIDs, targetBbid))
+				.map(({id}) => id);
+			if (relationshipsToRemove.length) {
+				await refreshedrelationshipSet
+					.related('relationships')
+					.detach(relationshipsToRemove, {transacting});
+			}
+		}
+	}));
+
 	/**
 	 * Fetch each merged entity, get its relationships, then fetch the related entity for each relationship.
 	 * Then on the related entity's side, remove any relationship with merged entities from its relationship set

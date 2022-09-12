@@ -14,7 +14,6 @@ import type {
 } from 'bookbrainz-data/lib/func/types';
 import _ from 'lodash';
 import {_bulkIndexEntities} from '../../../common/helpers/search';
-import {addRelationships} from '../../helpers/middleware';
 import log from 'log';
 import {processSingleEntity} from './entity';
 
@@ -124,25 +123,13 @@ export function transformForm(body:Record<string, any>):Record<string, any> {
 export async function preprocessForm(body:Record<string, any>, orm):Promise<Record<string, any>> {
 	async function processForm(currentForm) {
 		const {id, type} = currentForm;
-		const {RelationshipSet} = orm;
 		const isNew = _.get(currentForm, '__isNew__', true);
 		// if new entity, no need to process further
 		if (!isNew && id) {
 			const entityType = _.upperFirst(_.camelCase(type));
 			// fetch the entity with all related attributes from the database
 			const currentEntity = await orm.func.entity.getEntity(orm, entityType, id, getEntityRelations(entityType as EntityTypeString));
-			// since relationship will not be set by default, we need to add it manually
-			const relationshipSet = await RelationshipSet.forge({id: currentEntity.relationshipSetId}).fetch({
-				require: false,
-				withRelated: [
-					'relationships.source',
-					'relationships.target',
-					'relationships.type.attributeTypes',
-					'relationships.attributeSet.relationshipAttributes.value',
-					'relationships.attributeSet.relationshipAttributes.type'
-				]
-			});
-			await addRelationships(currentEntity, relationshipSet, orm);
+			currentEntity.relationships = [];
 			if (!currentEntity.annotation) {
 				_.set(currentEntity, ['annotation', 'content'], '');
 			}
