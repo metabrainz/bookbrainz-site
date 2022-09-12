@@ -301,6 +301,7 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
 
 	const initialRelationship = {
 		attributes: [],
+		isAdded: true,
 		label: relationship.linkPhrase,
 		relationshipType: relationship,
 		rowID: rowId,

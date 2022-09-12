@@ -38,6 +38,7 @@ export type Action = {
 		rowID?: string,
 		seriesType?: string,
 		newType?: number,
+		nextRowID?:string
 	}
 };
 
@@ -142,7 +143,7 @@ export function sortSeriesItems(oldIndex, newIndex):any {
  */
 export function editSeriesItem(data: Attribute, rowID: string): Action {
 	return {
-		payload: {data, rowID},
+		payload: {data, nextRowID: `n${nextRowID++}`, rowID},
 		type: EDIT_SERIES_ITEM
 	};
 }

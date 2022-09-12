@@ -45,13 +45,21 @@ function reducer(
 		case HIDE_RELATIONSHIP_EDITOR:
 			return state.set('relationshipEditorVisible', false);
 		case ADD_RELATIONSHIP: {
-			const rowID = state.getIn(
+			const editRowID = state.getIn(
 				['relationshipEditorProps', 'rowID'],
-				action.payload.rowID
+				null
 			);
-			return state.setIn(
+			let mstate = state;
+			if (editRowID) {
+				if (!mstate.getIn(['relationships', editRowID, 'isAdded'])) {
+					mstate = state.setIn(['relationships', editRowID, 'isRemoved'], true);
+				}
+				else { mstate = state.deleteIn(['relationships', editRowID]); }
+			}
+			const {rowID} = action.payload;
+			return mstate.setIn(
 				['relationships', rowID],
-				Immutable.fromJS({rowID, ...action.payload.data})
+				Immutable.fromJS({isAdded: true, rowID, ...action.payload.data})
 			)
 				.set('relationshipEditorProps', null)
 				.set('relationshipEditorVisible', false)
@@ -63,6 +71,10 @@ function reducer(
 				state.getIn(['relationships', action.payload])
 			).set('relationshipEditorVisible', true);
 		case REMOVE_RELATIONSHIP:
+		// if it is the original relationship
+			if (!state.getIn(['relationships', action.payload, 'isAdded'])) {
+				return state.setIn(['relationships', action.payload, 'isRemoved'], true);
+			}
 			return state.deleteIn(['relationships', action.payload])
 				.set('lastRelationships', state.get('relationships'));
 		case UNDO_LAST_SAVE:

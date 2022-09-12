@@ -23,6 +23,7 @@
 
 import * as error from '../../common/helpers/error';
 
+import {differenceInCalendarDays, parseISO} from 'date-fns';
 import {flattenDeep, isNil} from 'lodash';
 import log from 'log';
 
@@ -386,14 +387,14 @@ async function processSprinter(orm, editorId) {
 }
 
 /**
- * Gets number of distinct days the editor created revisions within specified
+ * Gets number of consecutive days from today the editor created revisions upto a specified
  * time limit
  * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @param {int} editorId - Editor to query on
  * @param {int} days - Number of days before today to collect edits from
- * @returns {int} - Number of days edits were performed on
+ * @returns {int} - Number of consecutive days edits were performed on
  */
-export async function getEditsInDays(orm, editorId, days) {
+export async function getConsecutiveDaysWithEdits(orm, editorId, days) {
 	const {bookshelf} = orm;
 	const rawSql =
 		`SELECT DISTINCT created_at::date from bookbrainz.revision \
@@ -401,11 +402,22 @@ export async function getEditsInDays(orm, editorId, days) {
 		and created_at > (SELECT CURRENT_DATE - INTERVAL '${days} days');`;
 
 	const out = await bookshelf.knex.raw(rawSql);
-	return out.rowCount;
+	const dateList = out.rows.map(row => parseISO(row.created_at));
+	let countDays = 0;
+	let lastDate = new Date();
+	// count number of consecutive days starting from today
+	for (let i = dateList.length - 1; i >= 0; i--) {
+		if (differenceInCalendarDays(lastDate, dateList[i]) > 1) {
+			break;
+		}
+		countDays++;
+		lastDate = dateList[i];
+	}
+	return countDays;
 }
 
 async function processFunRunner(orm, editorId) {
-	const rowCount = await getEditsInDays(orm, editorId, 6);
+	const rowCount = await getConsecutiveDaysWithEdits(orm, editorId, 6);
 	const tiers = [
 		{
 			name: 'Fun Runner',
@@ -417,7 +429,7 @@ async function processFunRunner(orm, editorId) {
 }
 
 async function processMarathoner(orm, editorId) {
-	const rowCount = await getEditsInDays(orm, editorId, 29);
+	const rowCount = await getConsecutiveDaysWithEdits(orm, editorId, 29);
 	const tiers = [{
 		name: 'Marathoner',
 		threshold: 30,

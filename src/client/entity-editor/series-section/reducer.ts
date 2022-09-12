@@ -44,7 +44,7 @@ function reducer(
 			const {rowID} = payload;
 			return state.setIn(
 				['seriesItems', rowID],
-				Immutable.fromJS({rowID, ...payload.data})
+				Immutable.fromJS({isAdded: true, rowID, ...payload.data})
 			);
 		}
 		case SORT_SERIES_ITEM:
@@ -52,12 +52,21 @@ function reducer(
 		case EDIT_SERIES_ITEM: {
 			// index of number attribute in the attributes array
 			const index = state.getIn(['seriesItems', payload.rowID, 'attributes']).findIndex(attribute => attribute.get('attributeType') === 2);
-			return state.setIn(
-				['seriesItems', payload.rowID, 'attributes', index],
+			let mstate = state.setIn(['seriesItems', payload.nextRowID], state.getIn(['seriesItems', payload.rowID]).set('rowID', payload.nextRowID))
+				.setIn(['seriesItems', payload.nextRowID, 'isAdded'], true);
+			if (!state.getIn(['seriesItems', payload.rowID, 'isAdded'])) {
+				mstate = mstate.setIn(['seriesItems', payload.rowID, 'isRemoved'], true);
+			}
+			else { mstate = mstate.deleteIn(['seriesItems', payload.rowID]); }
+			return mstate.setIn(
+				['seriesItems', payload.nextRowID, 'attributes', index],
 				Immutable.fromJS({...payload.data})
 			);
 		}
 		case REMOVE_SERIES_ITEM:
+			if (!state.getIn(['seriesItems', payload.rowID, 'isAdded'])) {
+				return state.setIn(['seriesItems', payload.rowID, 'isRemoved'], true);
+			}
 			return state.deleteIn(['seriesItems', payload.rowID]);
 		case REMOVE_ALL_SERIES_ITEMS:
 			return state.set('seriesItems', Immutable.OrderedMap());

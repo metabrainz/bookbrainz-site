@@ -291,7 +291,8 @@ export async function getEntityByBBID(orm, bbid:string, otherRelations:Array<str
 		return null;
 	}
 	const {Entity} = orm;
-	const entity = await new Entity({bbid}).fetch({require: false});
+	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, null);
+	const entity = await new Entity({bbid: redirectBbid}).fetch({require: false});
 	if (!entity) {
 		return null;
 	}
