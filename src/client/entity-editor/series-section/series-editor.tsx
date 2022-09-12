@@ -190,7 +190,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 				<> {
 					orderType === 1 ?
 						<>
-							{seriesItemsArray.map((value) => (
+							{seriesItemsArray.map((value) => !value.isRemoved && (
 								<SeriesListItem
 									baseEntity={baseEntity}
 									dragHandler={false}
