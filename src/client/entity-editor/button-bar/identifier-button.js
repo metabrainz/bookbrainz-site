@@ -52,7 +52,7 @@ function IdentifierButton({
 			textComponent = `Edit ${numIdentifiers} identifiers (eg. ISBN, Wikidata ID)…`;
 		}
 	}
-	else if (identifiersInvalid > 0) {
+	else if (numIdentifiers > 0) {
 		textComponent = <span>Edit identifiers <Badge className="ml-1" variant="light">{numIdentifiers}</Badge></span>;
 	}
 	else {

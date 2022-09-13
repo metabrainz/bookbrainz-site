@@ -314,8 +314,7 @@ export async function getEntityAlias(orm, bbid:string, type:EntityType):Promise<
 	if (!isValidBBID(bbid)) {
 		return null;
 	}
-	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, null);
-	const entityData = await orm.func.entity.getEntity(orm, upperFirst(type), redirectBbid, []);
+	const entityData = await orm.func.entity.getEntity(orm, upperFirst(type), bbid, []);
 	return entityData;
 }
 
