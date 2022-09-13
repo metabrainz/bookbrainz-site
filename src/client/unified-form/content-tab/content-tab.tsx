@@ -21,11 +21,12 @@ let workSeriesItemId = 0;
 const seriesWorkTypeId = 71;
 function getRelEntity(entity) {
 	return {
-		bbid: entity?.bbid,
+		bbid: get(entity, 'bbid'),
 		defaultAlias: {
-			name: entity?.name
+			name: get(entity, 'name')
 		},
-		type: entity.type
+		disambiguation: get(entity, 'disambiguation'),
+		type: get(entity, 'type')
 	};
 }
 function generateRel(workEntity, seriesEntity, attributeSetId?, isAdded = false, isRemoved = false) {
@@ -55,36 +56,18 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 	}, [isChecked]);
 	// react useCallback Hook was not able to track function properly thus normal function is used
 	function addAllWorks(seriesEntity = series) {
-		const baseEntity = {
-			bbid: seriesEntity?.id,
-			defaultAlias: {
-				name: seriesEntity?.text
-			},
-			type: 'Series'
-		};
+		resetSeries();
+		const baseEntity = getRelEntity(seriesEntity);
 		const relationships = {};
 		forEach(works, (work) => {
-			const rel = generateRel(work, baseEntity, null, true);
+			const rel = generateRel(getRelEntity(work), baseEntity, null, true);
 			relationships[rel.rowID] = rel;
 		});
 		bulkAddSeriesItems(relationships);
 	}
 	const addWorkItem = React.useCallback((workEntity, seriesEntity = series) => {
-		const baseEntity = {
-			bbid: seriesEntity?.id,
-			defaultAlias: {
-				name: seriesEntity?.text
-			},
-			type: 'Series'
-		};
-		const otherEntity = {
-			bbid: get(workEntity, 'id'),
-			defaultAlias: {
-				name: get(workEntity, 'text')
-			},
-			disambiguation: get(workEntity, 'disambiguation'),
-			type: get(workEntity, 'type')
-		};
+		const baseEntity = getRelEntity(seriesEntity);
+		const otherEntity = getRelEntity(workEntity);
 		const relationship = generateRel(otherEntity, baseEntity, null, true);
 		onAddSeriesItem(relationship);
 	}, [series, onAddSeriesItem]);
