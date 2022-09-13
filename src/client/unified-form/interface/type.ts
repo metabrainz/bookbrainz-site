@@ -128,6 +128,7 @@ export type SearchEntityCreateDispatchProps = {
 
 export type SearchEntityCreateOwnProps = {
 	bbid?:string,
+	onAddCallback?:(...arg)=>unknown,
 	empty?:boolean,
 	isClearable?:boolean,
 	isMulti?:boolean,

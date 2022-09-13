@@ -53,7 +53,8 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 	const toggleCheck = React.useCallback(() => {
 		setIsChecked(!isChecked);
 	}, [isChecked]);
-	const addAllWorks = React.useCallback((seriesEntity = series) => {
+	// react useCallback Hook was not able to track function properly thus normal function is used
+	function addAllWorks(seriesEntity = series) {
 		const baseEntity = {
 			bbid: seriesEntity?.id,
 			defaultAlias: {
@@ -67,7 +68,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 			relationships[rel.rowID] = rel;
 		});
 		bulkAddSeriesItems(relationships);
-	}, [series, works]);
+	}
 	const toggleCopyToSeries = React.useCallback(() => {
 		if (copyToSeries) {
 			 resetSeries();
@@ -216,6 +217,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							isClearable={false}
 							type="series"
 							value={series}
+							onAddCallback={addAllWorks}
 							onChange={seriesChangeHandler}
 							{...rest}
 						/>

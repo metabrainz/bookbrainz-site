@@ -72,7 +72,7 @@ SearchEntityCreate.defaultProps = {
 	tooltipText: null
 };
 
-function mapDispatchToProps(dispatch, {type, submissionUrl}):SearchEntityCreateDispatchProps {
+function mapDispatchToProps(dispatch, {type, submissionUrl, onAddCallback}):SearchEntityCreateDispatchProps {
 	return {
 		onModalClose: () => dispatch(loadEdition()) && dispatch(closeEntityModal()),
 		onModalOpen: (name) => {
@@ -83,7 +83,13 @@ function mapDispatchToProps(dispatch, {type, submissionUrl}):SearchEntityCreateD
 			dispatch(searchName(name, null, type));
 			dispatch(openEntityModal());
 		},
-		onSubmitEntity: (arg) => dispatch(submitSingleEntity(submissionUrl, type, (val) => addEntityAction[type](val, arg)))
+		onSubmitEntity: (arg) => dispatch(submitSingleEntity(submissionUrl, type,
+			(val) => {
+				if (typeof onAddCallback === 'function') {
+					onAddCallback(val);
+				}
+				return addEntityAction[type](val, arg);
+			}))
 	};
 }
 
