@@ -69,6 +69,25 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 		});
 		bulkAddSeriesItems(relationships);
 	}
+	const addWorkItem = React.useCallback((workEntity, seriesEntity = series) => {
+		const baseEntity = {
+			bbid: seriesEntity?.id,
+			defaultAlias: {
+				name: seriesEntity?.text
+			},
+			type: 'Series'
+		};
+		const otherEntity = {
+			bbid: get(workEntity, 'id'),
+			defaultAlias: {
+				name: get(workEntity, 'text')
+			},
+			disambiguation: get(workEntity, 'disambiguation'),
+			type: get(workEntity, 'type')
+		};
+		const relationship = generateRel(otherEntity, baseEntity, null, true);
+		onAddSeriesItem(relationship);
+	}, [series, onAddSeriesItem]);
 	const toggleCopyToSeries = React.useCallback(() => {
 		if (copyToSeries) {
 			 resetSeries();
@@ -101,23 +120,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 	const onChangeHandler = React.useCallback((work:any) => {
 		work.checked = isChecked;
 		if (copyToSeries) {
-			const baseEntity = {
-				bbid: series?.id,
-				defaultAlias: {
-					name: series?.text
-				},
-				type: 'Series'
-			};
-			const otherEntity = {
-				bbid: get(work, 'id'),
-				defaultAlias: {
-					name: get(work, 'text')
-				},
-				disambiguation: get(work, 'disambiguation'),
-				type: get(work, 'type')
-			};
-			const relationship = generateRel(otherEntity, baseEntity, null, true);
-			onAddSeriesItem(relationship);
+			addWorkItem(work);
 		}
 		onChange(work);
 	}, [isChecked, onChange, copyToSeries, series]);
@@ -180,6 +183,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							isClearable={false}
 							type="work"
 							value={null}
+							onAddCallback={addWorkItem}
 							onChange={onChangeHandler}
 							{...rest}
 						/>

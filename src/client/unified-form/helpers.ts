@@ -100,11 +100,6 @@ const initialState = Immutable.Map({
 		relationshipEditorVisible: false,
 		relationships: Immutable.OrderedMap()
 	}),
-	seriesSection: Immutable.Map({
-		orderType: 1,
-		seriesItems: Immutable.OrderedMap(),
-		seriesType: 'Work'
-	}),
 	submissionSection: Immutable.Map({
 		note: '',
 		submitError: '',
