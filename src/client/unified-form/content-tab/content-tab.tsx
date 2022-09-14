@@ -56,7 +56,6 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 	}, [isChecked]);
 	// react useCallback Hook was not able to track function properly thus normal function is used
 	function addAllWorks(seriesEntity = series) {
-		resetSeries(true);
 		const baseEntity = getRelEntity(seriesEntity);
 		const relationships = {};
 		forEach(works, (work) => {
@@ -71,6 +70,10 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 		const relationship = generateRel(otherEntity, baseEntity, null, true);
 		onAddSeriesItem(relationship);
 	}, [series, onAddSeriesItem]);
+	const addNewSeriesCallback = React.useCallback((seriesEntity) => {
+		resetSeries(true);
+		addAllWorks(seriesEntity);
+	}, [series, addAllWorks, works]);
 	const toggleCopyToSeries = React.useCallback(() => {
 		if (copyToSeries) {
 			 resetSeries();
@@ -182,7 +185,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 				/>
 			</div>
 			<hr/>
-			<div>
+			{/* <div>
 				<h3>Series</h3>
 				<p className="text-muted">You can add all the Works above to an existing or new series if they are part of the
 					 same a set or sequence of related Works.
@@ -204,14 +207,14 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							isClearable={false}
 							type="series"
 							value={series}
-							onAddCallback={addAllWorks}
+							onAddCallback={addNewSeriesCallback}
 							onChange={seriesChangeHandler}
 							{...rest}
 						/>
 					</Col>
 				</Row>}
 				{copyToSeries && <SeriesSection {...seriesSectionProps}/>}
-			</div>
+			</div> */}
 		</>
 	);
 }
