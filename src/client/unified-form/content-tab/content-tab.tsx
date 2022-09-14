@@ -56,7 +56,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 	}, [isChecked]);
 	// react useCallback Hook was not able to track function properly thus normal function is used
 	function addAllWorks(seriesEntity = series) {
-		resetSeries();
+		resetSeries(true);
 		const baseEntity = getRelEntity(seriesEntity);
 		const relationships = {};
 		forEach(works, (work) => {
@@ -258,7 +258,7 @@ function mapDispatchToProps(dispatch, {submissionUrl}):ContentTabDispatchProps {
 			}
 		},
 		onSubmitWork: () => dispatch(submitSingleEntity(submissionUrl, 'Work', addWork)),
-		resetSeries: () => dispatch(removeAllSeriesItems()) && dispatch(removeSeries())
+		resetSeries: (itemsOnly = false) => dispatch(removeAllSeriesItems()) && !itemsOnly && dispatch(removeSeries())
 	};
 }
 
