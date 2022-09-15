@@ -34,18 +34,18 @@ function SearchEntityCreate(props:SearchEntityCreateProps) {
 	const openModalHandler = React.useCallback((name) => {
 		setShowModal(true);
 		onModalOpen(name);
-	}, []);
+	}, [onModalOpen]);
 	const closeModalHandler = React.useCallback(() => {
 		setShowModal(false);
 		onModalClose();
-	}, []);
+	}, [onModalClose]);
 	const submitModalHandler = React.useCallback((ev: React.FormEvent) => {
 		ev.preventDefault();
 		ev.stopPropagation();
 		setShowModal(false);
 		onSubmitEntity(rowId);
 		onModalClose();
-	}, []);
+	}, [onSubmitEntity, onModalClose, rowId]);
 	// always show `create new entity` Option when user types in the search field
 	const isValidNewOption = React.useCallback((input) => input.length > 0, []);
 	return (
