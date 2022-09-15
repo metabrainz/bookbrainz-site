@@ -1,9 +1,9 @@
 import * as Bootstrap from 'react-bootstrap/';
 import {ContentTabDispatchProps, ContentTabProps, ContentTabStateProps, State} from '../interface/type';
-import {addSeries, addWork, duplicateWork} from './action';
-import {addSeriesItem, removeAllSeriesItems, updateOrderType, updateSeriesType} from '../../entity-editor/series-section/actions';
+import {addBulkSeriesItems, addSeriesItem, removeAllSeriesItems, updateOrderType, updateSeriesType} from '../../entity-editor/series-section/actions';
+import {addSeries, addWork, duplicateWork, removeSeries} from './action';
 import {closeEntityModal, dumpEdition, loadEdition, openEntityModal} from '../action';
-import {get, map, toLower} from 'lodash';
+import {forEach, get, map, size, toLower} from 'lodash';
 import CreateEntityModal from '../common/create-entity-modal';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
@@ -13,14 +13,80 @@ import WorkRow from './work-row';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {faInfoCircle} from '@fortawesome/free-solid-svg-icons';
+import {submitSingleEntity} from '../../entity-editor/submission-section/actions';
 
 
 const {Row, Col, FormCheck, OverlayTrigger, FormLabel, Tooltip} = Bootstrap;
-export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeriesChange, series, onAddSeriesItem, ...rest}:ContentTabProps) {
+let workSeriesItemId = 0;
+const seriesWorkTypeId = 71;
+function getRelEntity(entity) {
+	return {
+		bbid: get(entity, 'bbid'),
+		defaultAlias: {
+			name: get(entity, 'name')
+		},
+		disambiguation: get(entity, 'disambiguation'),
+		type: get(entity, 'type')
+	};
+}
+function generateRel(workEntity, seriesEntity, attributeSetId?, isAdded = false, isRemoved = false) {
+	return {
+		attributeSetId,
+		attributes: [{attributeType: 1, value: {textValue: null}}, {attributeType: 2, value: {textValue: null}}],
+		isAdded,
+		isRemoved,
+		relationshipType: {
+			id: seriesWorkTypeId,
+			linkPhrase: 'is part of',
+			reverseLinkPhrase: 'contains',
+			sourceEntityType: 'Work',
+			targetEntityType: 'Series'
+		},
+		rowID: `ws${workSeriesItemId++}`,
+		sourceEntity: workEntity,
+		targetEntity: seriesEntity
+	};
+}
+export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeriesChange, series,
+	 onAddSeriesItem, onSubmitWork, resetSeries, bulkAddSeriesItems, ...rest}:ContentTabProps) {
 	const [isChecked, setIsChecked] = React.useState(true);
 	const [copyToSeries, setCopyToSeries] = React.useState(false);
-	const toggleCheck = React.useCallback(() => setIsChecked(!isChecked), [isChecked]);
-	const toggleCopyToSeries = React.useCallback(() => setCopyToSeries(!copyToSeries), [copyToSeries]);
+	const toggleCheck = React.useCallback(() => {
+		setIsChecked(!isChecked);
+	}, [isChecked]);
+	// react useCallback Hook was not able to track function properly thus normal function is used
+	function addAllWorks(seriesEntity = series) {
+		const baseEntity = getRelEntity(seriesEntity);
+		const relationships = {};
+		forEach(works, (work) => {
+			const rel = generateRel(getRelEntity(work), baseEntity, null, true);
+			relationships[rel.rowID] = rel;
+		});
+		bulkAddSeriesItems(relationships);
+	}
+	const addWorkItem = React.useCallback((workEntity, seriesEntity = series) => {
+		const baseEntity = getRelEntity(seriesEntity);
+		const otherEntity = getRelEntity(workEntity);
+		const relationship = generateRel(otherEntity, baseEntity, null, true);
+		onAddSeriesItem(relationship);
+	}, [series, onAddSeriesItem]);
+	const addNewSeriesCallback = React.useCallback((seriesEntity) => {
+		resetSeries(true);
+		addAllWorks(seriesEntity);
+	}, [series, addAllWorks, works]);
+	const toggleCopyToSeries = React.useCallback(() => {
+		if (copyToSeries) {
+			 resetSeries();
+		}
+		else {
+			addAllWorks();
+		}
+		setCopyToSeries(!copyToSeries);
+	}, [copyToSeries, series, works]);
+	const seriesChangeHandler = React.useCallback((value) => {
+		onSeriesChange(value);
+		addAllWorks(value);
+	}, [onSeriesChange, addAllWorks]);
 	const [showModal, setShowModal] = React.useState(false);
 	const openModalHandler = React.useCallback((id) => {
 		setShowModal(true);
@@ -34,43 +100,16 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 		ev.preventDefault();
 		ev.stopPropagation();
 		setShowModal(false);
-		onChange(null);
+		onSubmitWork();
 		onModalClose();
 	}, []);
-	const baseEntity = {
-		bbid: series?.id,
-		defaultAlias: {
-			name: series?.text
-		},
-		type: 'Series'
-	};
 	const onChangeHandler = React.useCallback((work:any) => {
 		work.checked = isChecked;
 		if (copyToSeries) {
-			const otherEntity = {
-				bbid: get(work, 'id'),
-				defaultAlias: {
-					name: get(work, 'text')
-				},
-				disambiguation: get(work, 'disambiguation'),
-				type: get(work, 'type')
-			};
-			const relationship = {
-				attributes: [{attributeType: 1, value: {textValue: null}}, {attributeType: 2, value: {textValue: null}}],
-				relationshipType: {
-					id: 71,
-					linkPhrase: 'is part of',
-					reverseLinkPhrase: 'contains',
-					sourceEntityType: 'Work',
-					targetEntityType: 'Series'
-				},
-				sourceEntity: otherEntity,
-				targetEntity: baseEntity
-			};
-			onAddSeriesItem(relationship);
+			addWorkItem(work);
 		}
 		onChange(work);
-	}, [isChecked, onChange, copyToSeries]);
+	}, [isChecked, onChange, copyToSeries, series]);
 	const checkToolTip = (
 		<Tooltip id="work-check">This will set the book&apos;s Author Credits from the &lsquo;Cover&lsquo; tab as this Work&apos;s
 	 Author
@@ -130,6 +169,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							isClearable={false}
 							type="work"
 							value={null}
+							onAddCallback={addWorkItem}
 							onChange={onChangeHandler}
 							{...rest}
 						/>
@@ -145,7 +185,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 				/>
 			</div>
 			<hr/>
-			<div>
+			{/* <div>
 				<h3>Series</h3>
 				<p className="text-muted">You can add all the Works above to an existing or new series if they are part of the
 					 same a set or sequence of related Works.
@@ -167,13 +207,14 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							isClearable={false}
 							type="series"
 							value={series}
-							onChange={onSeriesChange}
+							onAddCallback={addNewSeriesCallback}
+							onChange={seriesChangeHandler}
 							{...rest}
 						/>
 					</Col>
 				</Row>}
 				{copyToSeries && <SeriesSection {...seriesSectionProps}/>}
-			</div>
+			</div> */}
 		</>
 	);
 }
@@ -186,9 +227,10 @@ function mapStateToProps(rootState:State):ContentTabStateProps {
 		works: worksObj
 	};
 }
-function mapDispatchToProps(dispatch):ContentTabDispatchProps {
+function mapDispatchToProps(dispatch, {submissionUrl}):ContentTabDispatchProps {
 	const type = 'Work';
 	return {
+		bulkAddSeriesItems: (data) => dispatch(addBulkSeriesItems(data)),
 		onAddSeriesItem: (data) => dispatch(addSeriesItem(data)),
 		onChange: (value:any) => dispatch(addWork(value)),
 		onModalClose: () => dispatch(loadEdition()) && dispatch(closeEntityModal()),
@@ -197,8 +239,29 @@ function mapDispatchToProps(dispatch):ContentTabDispatchProps {
 			dispatch(duplicateWork(id));
 			dispatch(openEntityModal());
 		},
-		onSeriesChange: (value:any) => dispatch(addSeries(value)) && dispatch(removeAllSeriesItems()) &&
-		value?.orderingTypeId && dispatch(updateOrderType(value.orderingTypeId)) && dispatch(updateSeriesType(value.seriesEntityType))
+		onSeriesChange: (value:any) => {
+			dispatch(addSeries(value));
+			dispatch(removeAllSeriesItems());
+			if (value?.orderingTypeId) {
+				dispatch(updateOrderType(value.orderingTypeId));
+				dispatch(updateSeriesType(value.seriesEntityType));
+			}
+			// add all existing work rels to series items
+			if (value?.relationshipSet) {
+				const relationships = value.relationshipSet.relationships.reduce((obj, rel) => {
+					if (rel.type.id === seriesWorkTypeId) {
+						const workRel = generateRel(getRelEntity(rel.source), getRelEntity(rel.target), rel.attributeSetId);
+						obj[workRel.rowID] = workRel;
+					}
+					return obj;
+				}, {});
+				if (size(relationships) > 0) {
+					dispatch(addBulkSeriesItems(relationships));
+				}
+			}
+		},
+		onSubmitWork: () => dispatch(submitSingleEntity(submissionUrl, 'Work', addWork)),
+		resetSeries: (itemsOnly = false) => dispatch(removeAllSeriesItems()) && !itemsOnly && dispatch(removeSeries())
 	};
 }
 

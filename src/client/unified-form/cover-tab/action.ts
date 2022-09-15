@@ -69,11 +69,11 @@ export function clearAuthor(aid:string):Action {
  * Produces an action indicating that new Author should be added in `Authors`
  * as well as in AC of Edition.
  *
- * @param {string} rowId - Row id of author credit editor.
  * @param {object} value - New author credit state.
+ * @param {string} rowId - Row id of author credit editor.
  * @returns {Action} The resulting ADD_AUTHOR action.
  */
-export function addAuthor(rowId:string, value = null):Action {
+export function addAuthor(value = null, rowId:string):Action {
 	return {
 		payload: {id: `a${nextAuthorId++}`, rowId, value},
 		type: ADD_AUTHOR

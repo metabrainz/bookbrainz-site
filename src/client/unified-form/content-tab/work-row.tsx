@@ -11,9 +11,9 @@ import {faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 
 const {Row, Col, Button, FormCheck, ButtonGroup, Tooltip, OverlayTrigger, FormLabel} = Bootstrap;
 
-function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, ...rest}:WorkRowProps) {
+function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, rowId, ...rest}:WorkRowProps) {
 	const isChecked = work?.checked;
-	const handleCopy = React.useCallback(() => onCopyHandler(work.id), [onCopyHandler, work]);
+	const handleCopy = React.useCallback(() => onCopyHandler(rowId), [onCopyHandler, work]);
 	const onChangeHandler = React.useCallback((value:any) => {
 		value.checked = isChecked;
 		onChange(value);
@@ -51,9 +51,7 @@ function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, ...rest}:Wo
 				</Col>
 				<Col lg={{span: 2}}>
 					<ButtonGroup>
-						{
-							work.__isNew__ && <Button variant="primary" onClick={handleCopy as React.MouseEventHandler}>Duplicate</Button>
-						}
+						<Button variant="primary" onClick={handleCopy as React.MouseEventHandler}>Duplicate</Button>
 						<Button variant="danger" onClick={onRemove}>Remove</Button>
 					</ButtonGroup>
 				</Col>

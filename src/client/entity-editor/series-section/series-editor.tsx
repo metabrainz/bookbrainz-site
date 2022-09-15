@@ -42,7 +42,6 @@ type EntitySearchResult = {
 };
 
 type SeriesItemsProps = {
-	defaultOptions: Array<any>,
 	hideItemSelect: boolean
 	baseEntity: Entity,
 	onAdd: (_Relationship) => unknown,
@@ -143,7 +142,7 @@ const SortableItem = SortableElement(({value, onRemove, baseEntity, handleNumber
 
 const SortableList = SortableContainer(({children}) => <div>{children}</div>);
 function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onRemove, hideItemSelect,
-	onAdd, onEdit, onSort, seriesItemsArray, isUnifiedForm, defaultOptions}:SeriesItemsProps) {
+	onAdd, onEdit, onSort, seriesItemsArray, isUnifiedForm}:SeriesItemsProps) {
 	const [seriesItem, setSeriesItem] = useState(null);
 	const [targetEntity, setTargetEntity] = useState(null);
 
@@ -214,7 +213,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 							}
 						</> :
 						<SortableList distance={1} onSortEnd={onSort}>
-							{seriesItemsArray.map((value, index) => (
+							{seriesItemsArray.map((value, index) => !value.isRemoved && (
 								<SortableItem
 									baseEntity={baseEntity}
 									handleNumberAttributeChange={handleNumberAttributeChange}
@@ -237,7 +236,6 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 				<Col lg={isUnifiedForm ? 6 : 7} style={{marginTop: -22}}>
 					<EntitySearchFieldOption
 						className="series-editor-select"
-						defaultOptions={defaultOptions}
 						instanceId="entitySearchField"
 						name="entity"
 						type={[seriesType]}

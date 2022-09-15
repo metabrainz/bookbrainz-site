@@ -57,7 +57,7 @@ function getEntitiesArray(state: Immutable.Map<string, any>): Array<Entity> {
 	return Object.values(convertMapToObject(state));
 }
 function mapStateToProps(state:State) {
-	let EditionGroups = getEntitiesArray(state.get('EditionGroups'));
+	let EditionGroups:any[] = getEntitiesArray(state.get('EditionGroups'));
 	const Editions:Entity[] = [{
 		__isNew__: true,
 		id: 'e0',
@@ -67,6 +67,10 @@ function mapStateToProps(state:State) {
 	}];
 	if (EditionGroups.length === 0) {
 		EditionGroups = [{...Editions[0]}];
+		EditionGroups[0].name = EditionGroups[0].text;
+		EditionGroups[0].language = EditionGroups[0].nameSection.language;
+		EditionGroups[0].sortName = EditionGroups[0].nameSection.sortName;
+
 		EditionGroups[0].type = 'EditionGroup';
 		EditionGroups[0].id = 'eg0';
 	}

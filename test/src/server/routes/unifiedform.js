@@ -64,6 +64,7 @@ describe('Unified form routes', () => {
 		agent = await chai.request.agent(app);
 		await agent.get('/cb');
 	});
+
 	after(truncateEntities);
 	it('should not throw error while creating single entity', async () => {
 		const postData = {b0: {
@@ -82,6 +83,7 @@ describe('Unified form routes', () => {
 		expect(res).to.be.ok;
 		expect(res).to.have.status(200);
 	});
+
 	it('should not throw error while editing single entity', async () => {
 		const postData = {b0: {
 			__isNew__: false,
@@ -106,6 +108,7 @@ describe('Unified form routes', () => {
 		expect(res).to.be.ok;
 		expect(res).to.have.status(200);
 	});
+
 	it('should not throw error while adding relationship to single entity', async () => {
 		// we need to pass extra id and __isNew__ attributes
 		const postData = {b0: {
@@ -116,6 +119,7 @@ describe('Unified form routes', () => {
 					a0: {
 						attributeSetId: null,
 						attributes: [],
+						isAdded: true,
 						relationshipType: {
 							id: authorWorkRelationshipType.id
 						},
@@ -150,6 +154,7 @@ describe('Unified form routes', () => {
 		expect(res).to.be.ok;
 		expect(res).to.have.status(200);
 	});
+
 	it('should not throw error while creating multiple entities', async () => {
 		const postData = {b0: {
 			...baseState,
@@ -188,12 +193,12 @@ describe('Unified form routes', () => {
 					n0: {
 						attributeSetId: null,
 						attributes: [],
+						isAdded: true,
 						relationshipType: {
 							id: newRelationshipType.id
 						},
 						rowID: 'n0',
 						sourceEntity: {
-							bbid: 'b0'
 						},
 						targetEntity: {
 							bbid: wBBID
@@ -215,57 +220,6 @@ describe('Unified form routes', () => {
 		const relationship = fetchedEditionEntity.relationshipSet.relationships[0];
 		expect(relationship.sourceBbid).equal(fetchedEditionEntity.bbid);
 		expect(relationship.targetBbid).equal(wBBID);
-		expect(res).to.be.ok;
-		expect(res).to.have.status(200);
-	});
-
-	it('should not throw error when linking newly created works to edition', async () => {
-		const postData = {b0: {
-			...baseState,
-			editionSection: {},
-			relationshipSection: {
-				relationships: {
-					n0: {
-						attributeSetId: null,
-						attributes: [],
-						relationshipType: {
-							id: newRelationshipType.id
-						},
-						rowID: 'n0',
-						sourceEntity: {
-							bbid: 'b0'
-						},
-						targetEntity: {
-							bbid: 'b1'
-						}
-					}
-				}
-			},
-			type: 'Edition'
-		},
-		b1: {
-			...baseState,
-			type: 'Work',
-			workSection: {
-				languages: [],
-				type: null
-			}
-		}};
-		forOwn(postData, (value) => {
-			value.nameSection.language = newLanguage.id;
-		});
-		const res = await agent.post('/create/handler').send(postData);
-		const createdEntities = res.body;
-		expect(createdEntities.length).equal(2);
-		const editionEntity = createdEntities.find((entity) => entity.type === 'Edition');
-		const workEntity = createdEntities.find((entity) => entity.type === 'Work');
-		const fetchedEditionEntity = await getEntityByBBID(orm, editionEntity.bbid);
-		expect(Boolean(fetchedEditionEntity)).to.be.true;
-		const fetchedWorkEntity = await getEntityByBBID(orm, workEntity.bbid);
-		expect(Boolean(fetchedWorkEntity)).to.be.true;
-		const relationship = fetchedEditionEntity.relationshipSet.relationships[0];
-		expect(relationship.sourceBbid).equal(fetchedEditionEntity.bbid);
-		expect(relationship.targetBbid).equal(fetchedWorkEntity.bbid);
 		expect(res).to.be.ok;
 		expect(res).to.have.status(200);
 	});
@@ -295,53 +249,7 @@ describe('Unified form routes', () => {
 		expect(res).to.have.status(200);
 	});
 
-	it('should not throw error while linking newly created publisher to edition', async () => {
-		const postData = {b0: {
-			...baseState,
-			publisherSection: {
-				beginDate: {
-				  day: '',
-				  month: '',
-				  year: ''
-				},
-				endDate: {
-				  day: '',
-				  month: '',
-				  year: ''
-				},
-				ended: false,
-				type: null
-			  },
-			type: 'Publisher'
-		},
-		b1: {
-			...baseState,
-			editionSection: {
-				publisher: {
-					0: {
-						id: 'b0'
-					}
-				}
-			},
-			type: 'Edition'
-		}};
-		forOwn(postData, (value) => {
-			value.nameSection.language = newLanguage.id;
-		});
-		const res = await agent.post('/create/handler').send(postData);
-		const createdEntities = res.body;
-		expect(createdEntities.length).equal(2);
-		const editionEntity = createdEntities.find((entity) => entity.type === 'Edition');
-		const publisherEntity = createdEntities.find((entity) => entity.type === 'Publisher');
-		const fetchedEditionEntity = await getEntityByBBID(orm, editionEntity.bbid, ['publisherSet.publishers']);
-		expect(Boolean(fetchedEditionEntity)).to.be.true;
-		const fetchedPublisherEntity = await getEntityByBBID(orm, publisherEntity.bbid);
-		expect(Boolean(fetchedPublisherEntity)).to.be.true;
-		const publisherId = fetchedEditionEntity.publisherSet.publishers[0].bbid;
-		expect(publisherId).equal(publisherEntity.bbid);
-		expect(res).to.be.ok;
-		expect(res).to.have.status(200);
-	});
+
 	it('should not throw error while linking existing edition-group to edition', async () => {
 		const postData = {b0: {
 			...baseState,
@@ -364,40 +272,7 @@ describe('Unified form routes', () => {
 		expect(res).to.be.ok;
 		expect(res).to.have.status(200);
 	});
-	it('should not throw error while linking new edition-group to edition', async () => {
-		const postData = {b0: {
-			...baseState,
-			editionGroupSection: {
-				type: null
-			},
-			type: 'EditionGroup'
-		},
-		b1: {
-			...baseState,
-			editionSection: {
-				editionGroup: {
-					id: 'b0'
-				}
-			},
-			type: 'Edition'
-		}};
-		forOwn(postData, (value) => {
-			value.nameSection.language = newLanguage.id;
-		});
-		const res = await agent.post('/create/handler').send(postData);
-		const createdEntities = res.body;
-		expect(createdEntities.length).equal(2);
-		const editionEntity = createdEntities.find((entity) => entity.type === 'Edition');
-		const editionGroupEntity = createdEntities.find((entity) => entity.type === 'EditionGroup');
-		const fetchedEditionEntity = await getEntityByBBID(orm, editionEntity.bbid, ['editionGroup']);
-		expect(Boolean(fetchedEditionEntity)).to.be.true;
-		const fetchedEditionGroupEntity = await getEntityByBBID(orm, editionGroupEntity.bbid);
-		expect(Boolean(fetchedEditionGroupEntity)).to.be.true;
-		const linkedEditionGroupBbid = fetchedEditionEntity.editionGroup.bbid;
-		expect(linkedEditionGroupBbid).equal(fetchedEditionGroupEntity.bbid);
-		expect(res).to.be.ok;
-		expect(res).to.have.status(200);
-	});
+
 	it('should not throw error while linking existing author to edition using AC', async () => {
 		const postData = {b0: {
 			...baseState,
@@ -424,41 +299,7 @@ describe('Unified form routes', () => {
 		expect(res).to.be.ok;
 		expect(res).to.have.status(200);
 	});
-	it('should not throw error while linking new author to edition using AC', async () => {
-		const postData = {
-			b0: {
-				...baseState,
-				authorSection: {},
-				type: 'Author'
-			},
-			b1: {
-				...baseState,
-				authorCreditEditor: {
-					n0: {
-						author: {
-							id: 'b0'
-						},
-						joinPhrase: '',
-						name: 'author1'
-					}
-				},
-				editionSection: {},
-				type: 'Edition'
-			}
-		};
-		forOwn(postData, (value) => {
-			value.nameSection.language = newLanguage.id;
-		});
-		const res = await agent.post('/create/handler').send(postData);
-		const createdEntities = res.body;
-		expect(createdEntities.length).equal(2);
-		const editionEntity = createdEntities.find((entity) => entity.type === 'Edition');
-		const fetchedEditionEntity = await getEntityByBBID(orm, editionEntity.bbid, ['authorCredit']);
-		expect(Boolean(fetchedEditionEntity)).to.be.true;
-		expect(fetchedEditionEntity.authorCredit.authorCount).equal(1);
-		expect(res).to.be.ok;
-		expect(res).to.have.status(200);
-	});
+
 	it('should throw bad request error while posting invalid form', async () => {
 		const postData = {b0: {
 			...baseState,

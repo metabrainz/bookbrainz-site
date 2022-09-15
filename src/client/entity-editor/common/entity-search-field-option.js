@@ -75,19 +75,13 @@ class EntitySearchFieldOption extends React.Component {
 			(index) => index.value === languageId
 		);
 		const entityOption = {
+			...entity,
 			disambiguation: _.get(entity, ['disambiguation', 'comment']),
 			id,
 			language: language && language.label,
 			text: _.get(entity, ['defaultAlias', 'name']),
 			type: entity.type
 		};
-		// for unified form editor, preserve the old ordering type
-		const orderingTypeId = _.get(entity, 'orderingTypeId', null);
-		const seriesEntityType = _.get(entity, 'entityType', null);
-		if (orderingTypeId && seriesEntityType) {
-			entityOption.orderingTypeId = orderingTypeId;
-			entityOption.seriesEntityType = seriesEntityType;
-		}
 		return entityOption;
 	}
 

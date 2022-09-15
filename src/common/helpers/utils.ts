@@ -1,6 +1,6 @@
-import {Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
+import {EntityType, Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
 
-import {isString, kebabCase, toString} from 'lodash';
+import {isString, kebabCase, toString, upperFirst} from 'lodash';
 import {IdentifierType} from '../../client/unified-form/interface/type';
 
 /**
@@ -308,4 +308,18 @@ export async function getEntityByBBID(orm, bbid:string, otherRelations:Array<str
 	];
 	const entityData = await orm.func.entity.getEntity(orm, entityType, bbid, baseRelations);
 	return entityData;
+}
+
+export async function getEntityAlias(orm, bbid:string, type:EntityType):Promise<any> {
+	if (!isValidBBID(bbid)) {
+		return null;
+	}
+	const entityData = await orm.func.entity.getEntity(orm, upperFirst(type), bbid, []);
+	return entityData;
+}
+
+export function filterObject(obj, filter) {
+	return Object.keys(obj)
+		.filter((key) => filter(obj[key]))
+		.reduce((res, key) => Object.assign(res, {[key]: obj[key]}), {});
 }

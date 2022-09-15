@@ -10,6 +10,7 @@ import React from 'react';
 import {addEditionGroup} from '../detail-tab/action';
 import {connect} from 'react-redux';
 import makeImmutable from '../../entity-editor/common/make-immutable';
+import {submitSingleEntity} from '../../entity-editor/submission-section/actions';
 
 
 const ImmutableCreatableAsync = makeImmutable(AsyncCreatable);
@@ -71,7 +72,7 @@ SearchEntityCreate.defaultProps = {
 	tooltipText: null
 };
 
-function mapDispatchToProps(dispatch, {type}):SearchEntityCreateDispatchProps {
+function mapDispatchToProps(dispatch, {type, submissionUrl, onAddCallback}):SearchEntityCreateDispatchProps {
 	return {
 		onModalClose: () => dispatch(loadEdition()) && dispatch(closeEntityModal()),
 		onModalOpen: (name) => {
@@ -82,7 +83,13 @@ function mapDispatchToProps(dispatch, {type}):SearchEntityCreateDispatchProps {
 			dispatch(searchName(name, null, type));
 			dispatch(openEntityModal());
 		},
-		onSubmitEntity: (arg) => dispatch(addEntityAction[type](arg))
+		onSubmitEntity: (arg) => dispatch(submitSingleEntity(submissionUrl, type,
+			(val) => {
+				if (typeof onAddCallback === 'function') {
+					onAddCallback(val);
+				}
+				return addEntityAction[type](val, arg);
+			}))
 	};
 }
 

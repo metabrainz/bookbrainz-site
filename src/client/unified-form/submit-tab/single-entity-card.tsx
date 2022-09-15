@@ -6,18 +6,22 @@ import {dateObjectToISOString} from '../../helpers/utils';
 
 /* eslint-disable sort-keys */
 const BASE_ENTITY = {
-	Name: 'nameSection.name',
+	Name: 'name',
 	Type: 'type',
-	Language: 'nameSection.language',
-	'Sort-Name': 'nameSection.sortName',
-	Disambiguation: 'nameSection.disambiguation',
-	Annotation: 'annotationSection.content',
+	Language: 'defaultAlias.languageId',
+	'Sort-Name': 'sortName',
+	Disambiguation: 'disambiguation',
+	Annotation: 'annotation.content',
 	'Edit-Note': 'submissionSection.note'
 
 };
 const ENTITY_FIELDS = {
 	edition: {
-		...BASE_ENTITY,
+		Name: 'nameSection.name',
+		Language: 'nameSection.language',
+		'Sort-Name': 'nameSection.sortName',
+		Disambiguation: 'nameSection.disambiguation',
+		Annotation: 'annotationSection.content',
 		format: 'editionSection.format',
 		'Release-date': 'editionSection.releaseDate',
 		status: 'editionSection.status',
@@ -30,36 +34,36 @@ const ENTITY_FIELDS = {
 	},
 	editionGroup: {
 		...BASE_ENTITY,
-		'EditionGroup-Type': 'editionGroupSection.type'
+		'EditionGroup-Type': 'typeId'
 	},
 	author: {
 		...BASE_ENTITY,
-		Gender: 'authorSection.gender',
-		'Author-Type': 'authorSection.type',
-		'Begin-Date': 'authorSection.beginDate',
-		'Begin-Area': 'authorSection.beginArea.text',
-		'Dead?': 'authorSection.ended',
-		'End-Date': 'authorSection.endDate',
-		'End-Area': 'authorSection.endArea.text'
+		Gender: 'genderId',
+		'Author-Type': 'typeId',
+		'Begin-Date': 'beginDate',
+		'Begin-Area': 'beginArea.text',
+		'Dead?': 'ended',
+		'End-Date': 'endDate',
+		'End-Area': 'endArea.text'
 	},
 	publisher: {
 		...BASE_ENTITY,
-		'Publihser-Type': 'publisherSection.type',
-		'Begin-Date': 'publisherSection.beginDate',
-		'Dissolved?': 'publisherSection.ended',
-		'End-Date': 'publisherSection.endDate'
+		'Publihser-Type': 'typeId',
+		'Begin-Date': 'beginDate',
+		'Dissolved?': 'ended',
+		'End-Date': 'endDate'
 
 	},
 	series: {
 		...BASE_ENTITY,
-		orderType: 'seriesSection.orderType',
+		orderType: 'orderingTypeId',
 		'Series-Items': 'seriesSection.seriesItems',
-		'series-Type': 'seriesSection.seriesType'
+		'series-Type': 'seriesEntityType'
 	},
 	work: {
 		...BASE_ENTITY,
-		'Work-Type': 'workSection.type',
-		'Work-Languages': 'workSection.languages'
+		'Work-Type': 'typeId',
+		'Work-Languages': 'languages'
 	}
 };
 export default function SingleEntityCard({entity, languageOptions}:SingleEntityCardProps) {

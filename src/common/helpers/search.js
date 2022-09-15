@@ -101,9 +101,17 @@ async function _fetchEntityModelsForESResults(orm, results) {
 		// Regular entity
 		const model = commonUtils.getEntityModelByType(orm, entityStub.type);
 		const entity = await model.forge({bbid: entityStub.bbid})
-			.fetch({require: false, withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases', 'identifierSet.identifiers']});
-
-		return entity?.toJSON();
+			.fetch({require: false, withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases', 'identifierSet.identifiers',
+				'relationshipSet.relationships.source', 'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation']});
+		const entityJSON = entity?.toJSON();
+		if (entityJSON && entityJSON.relationshipSet) {
+			entityJSON.relationshipSet.relationships = await Promise.all(entityJSON.relationshipSet.relationships.map(async (rel) => {
+				rel.source = await commonUtils.getEntityAlias(orm, rel.source.bbid, rel.source.type);
+				rel.target = await commonUtils.getEntityAlias(orm, rel.target.bbid, rel.target.type);
+				return rel;
+			}));
+		}
+		return entityJSON;
 	})).catch(err => log.error(err));
 	return processedResults;
 }

@@ -1,13 +1,10 @@
+/* eslint-disable no-await-in-loop */
 import * as achievement from '../../helpers/achievement';
-import * as handler from '../../helpers/handler';
 import type {Request as $Request, Response as $Response} from 'express';
+import {FormSubmissionError, sendErrorAsJSON} from '../../../common/helpers/error';
 import {authorToFormState, transformNewForm as authorTransform} from './author';
 import {editionGroupToFormState, transformNewForm as editionGroupTransform} from './edition-group';
 import {editionToFormState, transformNewForm as editionTransform} from './edition';
-import {
-	fetchEntitiesForRelationships, fetchOrCreateMainEntity, getChangedProps,
-	getNextRelationshipSets, indexAutoCreatedEditionGroup, saveEntitiesAndFinishRevision
-} from './entity';
 import {publisherToFormState, transformNewForm as publisherTransform} from './publisher';
 import {seriesToFormState, transformNewForm as seriesTransform} from './series';
 
@@ -15,11 +12,10 @@ import {workToFormState, transformNewForm as workTransform} from './work';
 import type {
 	EntityTypeString
 } from 'bookbrainz-data/lib/func/types';
-import {FormSubmissionError} from '../../../common/helpers/error';
 import _ from 'lodash';
 import {_bulkIndexEntities} from '../../../common/helpers/search';
-import {addRelationships} from '../../helpers/middleware';
 import log from 'log';
+import {processSingleEntity} from './entity';
 
 
 type PassportRequest = $Request & {user: any, session: any};
@@ -127,25 +123,13 @@ export function transformForm(body:Record<string, any>):Record<string, any> {
 export async function preprocessForm(body:Record<string, any>, orm):Promise<Record<string, any>> {
 	async function processForm(currentForm) {
 		const {id, type} = currentForm;
-		const {RelationshipSet} = orm;
 		const isNew = _.get(currentForm, '__isNew__', true);
 		// if new entity, no need to process further
 		if (!isNew && id) {
 			const entityType = _.upperFirst(_.camelCase(type));
 			// fetch the entity with all related attributes from the database
 			const currentEntity = await orm.func.entity.getEntity(orm, entityType, id, getEntityRelations(entityType as EntityTypeString));
-			// since relationship will not be set by default, we need to add it manually
-			const relationshipSet = await RelationshipSet.forge({id: currentEntity.relationshipSetId}).fetch({
-				require: false,
-				withRelated: [
-					'relationships.source',
-					'relationships.target',
-					'relationships.type.attributeTypes',
-					'relationships.attributeSet.relationshipAttributes.value',
-					'relationships.attributeSet.relationshipAttributes.type'
-				]
-			});
-			await addRelationships(currentEntity, relationshipSet, orm);
+			currentEntity.relationships = [];
 			if (!currentEntity.annotation) {
 				_.set(currentEntity, ['annotation', 'content'], '');
 			}
@@ -160,78 +144,13 @@ export async function preprocessForm(body:Record<string, any>, orm):Promise<Reco
 	return Object.fromEntries(Object.keys(body).map((key, index) => [key, allEntities[index]]));
 }
 
-export async function handleAddRelationship(
-	body:Record<string, any>,
-	editorId:number,
-	currentEntity,
-	entityType:EntityTypeString,
-	orm,
-	transacting
-) {
-	const {Revision} = orm;
 
-	// new revision for adding relationship
-	const newRevision = await new Revision({
-		authorId: editorId,
-		isMerge: false
-	}).save(null, {transacting});
-	const relationshipSets = await getNextRelationshipSets(
-		orm, transacting, currentEntity, body
-	);
-	if (_.isEmpty(relationshipSets)) {
-		return {};
-	}
-	// Fetch main entity
-	const mainEntity = await fetchOrCreateMainEntity(
-		orm, transacting, false, currentEntity.bbid, entityType
-	);
-
-	// Fetch all entities that definitely exist
-	const otherEntities = await fetchEntitiesForRelationships(
-		orm, transacting, currentEntity, relationshipSets
-	);
-	otherEntities.forEach(entity => { entity.shouldInsert = false; });
-	mainEntity.shouldInsert = false;
-	const allEntities = [...otherEntities, mainEntity]
-		.filter(entity => entity.get('dataId') !== null);
-	_.forEach(allEntities, (entityModel) => {
-		const bbid: string = entityModel.get('bbid');
-		if (_.has(relationshipSets, bbid)) {
-			entityModel.set(
-				'relationshipSetId',
-				// Set to relationshipSet id or null if empty set
-				relationshipSets[bbid] && relationshipSets[bbid].get('id')
-			);
-		}
-	});
-	const savedMainEntity = await saveEntitiesAndFinishRevision(
-		orm, transacting, false, newRevision, mainEntity, allEntities,
-		editorId, body.note
-	);
-	return savedMainEntity.toJSON();
-}
-
-async function processRelationship(rels:Record<string, any>[], mainEntity, bbidMap:Record<string, any>, editorId:number, orm, transacting) {
-	if (!_.isEmpty(rels)) {
-		const relationships = rels.map((rel) => (
-			{...rel, sourceBbid: _.get(bbidMap, rel.sourceBbid) ?? rel.sourceBbid ?? mainEntity.bbid,
-			 targetBbid: _.get(bbidMap, rel.targetBbid) ?? rel.targetBbid ?? mainEntity.bbid}
-		));
-		const {relationshipSetId} = await handleAddRelationship({relationships}, editorId,
-			mainEntity, mainEntity.type, orm, transacting);
-	   mainEntity.relationshipSetId = relationshipSetId;
-	}
-}
-
-export function handleCreateMultipleEntities(
+export async function handleCreateMultipleEntities(
 	req: PassportRequest,
 	res: $Response
 ) {
 	const {orm}: {orm?: any} = req.app.locals;
-	const {Entity, Revision, bookshelf} = orm;
 	const editorJSON = req.user;
-
-	const {body}: {body: Record<string, any>} = req;
 	let currentEntity: {
 		__isNew__: boolean | undefined,
 		aliasSet: {id: number} | null | undefined,
@@ -242,116 +161,55 @@ export function handleCreateMultipleEntities(
 		type: EntityTypeString
 	} | null | undefined;
 
-	const entityEditPromise = bookshelf.transaction(async (transacting) => {
-		const savedMainEntities = {};
-		// map dummy id to real bbid
-		const bbidMap = {};
-		const allRelationships = {};
-		// callback for creating entity
-		async function processEntity(entityKey:string) {
-			const entityForm = body[entityKey];
-			const entityType = _.upperFirst(entityForm.type);
-			// edition entity should be on the bottom of the list
-			if (entityType === 'Edition') {
-				if (!_.isEmpty(entityForm.publishers)) {
-					entityForm.publishers = entityForm.publishers.map((id) => bbidMap[id] ?? id);
-				}
-				if (entityForm.editionGroupBbid) {
-					entityForm.editionGroupBbid = bbidMap[entityForm.editionGroupBbid] ?? entityForm.editionGroupBbid;
-				}
-				if (!_.isNil(entityForm.authorCredit)) {
-					entityForm.authorCredit = entityForm.authorCredit.map(
-						(credit) => ({...credit, authorBBID: bbidMap[credit.authorBBID] ?? credit.authorBBID})
-					);
-				}
-			}
-			allRelationships[entityKey] = entityForm.relationships;
-			const isNew = _.get(entityForm, '__isNew__', true);
-			if (isNew) {
-				const newEntity = await new Entity({type: entityType}).save(null, {transacting});
-				currentEntity = newEntity.toJSON();
-			}
-			else {
-				currentEntity = await orm.func.entity.getEntity(orm, entityType, entityForm.id, getEntityRelations(entityType as EntityTypeString));
-				if (!currentEntity) {
-					throw new FormSubmissionError('Entity with given id not found');
-				}
-			}
-			// create new revision for each entity
-			const newRevision = await new Revision({
-				authorId: editorJSON.id,
-				isMerge: false
-			}).save(null, {transacting});
-			const additionalProps = _.pick(entityForm, additionalEntityProps[_.camelCase(entityType)]);
-			const changedProps = await getChangedProps(
-				orm, transacting, isNew, currentEntity, entityForm, entityType,
-				newRevision, additionalProps
-			);
-			// If there are no differences, bail
-			if (_.isEmpty(changedProps)) {
-				savedMainEntities[entityKey] = currentEntity;
-				_.set(savedMainEntities[entityKey], ['relationshipSet', 'id'], savedMainEntities[entityKey].relationshipSetId);
-				// remove the revision if no changes made
-				await newRevision.destroy({transacting});
-				return;
-			}
-			const mainEntity = await fetchOrCreateMainEntity(
-				orm, transacting, isNew, currentEntity.bbid, entityType
-			);
-			mainEntity.shouldInsert = isNew;
 
-			// set changed attributes on main entity
-			_.forOwn(changedProps, (value, key) => mainEntity.set(key, value));
-			const savedMainEntity = await saveEntitiesAndFinishRevision(
-				orm, transacting, isNew, newRevision, mainEntity, [mainEntity],
-				editorJSON.id, entityForm.note
-			);
-
-			/* We need to load the aliases for search reindexing and refresh it*/
-			await savedMainEntity.load('aliasSet.aliases', {transacting});
-
-			/* New entities will lack some attributes like 'type' required for search indexing */
-			await savedMainEntity.refresh({transacting});
-
-			/* fetch and reindex EditionGroups that may have been created automatically by the ORM and not indexed */
-			if (savedMainEntity.get('type') === 'Edition') {
-				await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
-			}
-			bbidMap[entityKey] = savedMainEntity.get('bbid');
-			savedMainEntities[entityKey] = savedMainEntity.toJSON();
-			// getNextRelationshipSet expects relationshipSet.id to exist
-			if (!isNew) {
-				_.set(savedMainEntities[entityKey], ['relationshipSet', 'id'], savedMainEntities[entityKey].relationshipSetId);
+	const {body}: {body: Record<string, any>} = req;
+	async function processEntity(entityKey:string) {
+		const entityForm = body[entityKey];
+		const entityType = _.upperFirst(entityForm.type);
+		const deriveProps = _.pick(entityForm, additionalEntityProps[_.camelCase(entityType)]);
+		const isNew = _.get(entityForm, '__isNew__', true);
+		currentEntity = null;
+		if (!isNew) {
+			currentEntity = await orm.func.entity.getEntity(orm, entityType, entityForm.id, getEntityRelations(entityType as EntityTypeString));
+			if (!currentEntity) {
+				throw new FormSubmissionError('Entity with given id not found');
 			}
 		}
-		try {
-			// bookshelf's transaction have issue with Promise.All, refer https://github.com/bookshelf/bookshelf/issues/1498 for more details
-			await Object.keys(body).reduce((promise, entityKey) => promise.then(() => processEntity(entityKey)), Promise.resolve());
-
-			// adding relationship on newly created entites
-			await Object.keys(allRelationships).reduce((promise, entityId) => promise.then(() => processRelationship(
-				allRelationships[entityId], savedMainEntities[entityId], bbidMap, editorJSON.id, orm, transacting
-			)), Promise.resolve());
-
-			return savedMainEntities;
-		}
-		catch (err) {
-			log.error(err);
-			throw err;
-		}
-	});
-	const achievementPromise = entityEditPromise.then(
-		(entitiesJSON:Record<string, any>) => {
-			const entitiesAchievementsPromise = [];
-			for (const entityJSON of Object.values(entitiesJSON)) {
-				entitiesAchievementsPromise.push(processAchievement(orm, editorJSON.id, entityJSON));
+		const {bookshelf} = orm;
+		const entityEditPromise = bookshelf.transaction((transacting) =>
+			processSingleEntity(entityForm, currentEntity, null, entityType, orm, editorJSON, deriveProps, false, transacting));
+		return entityEditPromise;
+	}
+	// first, process all entities
+	const processedEntities = [];
+	const processedAchievements = [];
+	try {
+		for (const entityKey in body) {
+			if (Object.prototype.hasOwnProperty.call(body, entityKey)) {
+				processedEntities.push(await processEntity(entityKey));
 			}
-			return Promise.all(entitiesAchievementsPromise).catch(err => { throw err; });
 		}
-	);
-	return handler.sendPromiseResult(
-		res,
-		achievementPromise,
-		_bulkIndexEntities
-	);
+	}
+	catch (err) {
+		log.error(err);
+		return sendErrorAsJSON(res, err);
+	}
+	// log achievements error if any
+	try {
+		for (const entity of processedEntities) {
+			const achievementPromise = processAchievement(orm, editorJSON.id, entity);
+			processedAchievements.push(await achievementPromise);
+		}
+	}
+	catch (err) {
+		log.error(err);
+	}
+	// log indexing error if any
+	try {
+		_bulkIndexEntities(processedAchievements);
+	}
+	catch (err) {
+		log.error(err);
+	}
+	return res.send(processedEntities);
 }

@@ -1,10 +1,10 @@
 import {ADD_AUTHOR, ADD_PUBLISHER} from './cover-tab/action';
-import {ADD_SERIES, ADD_WORK, DUPLICATE_WORK} from './content-tab/action';
 import {Action, State} from './interface/type';
 import {CLOSE_ENTITY_MODAL, DUMP_EDITION, LOAD_EDITION, OPEN_ENTITY_MODAL} from './action';
 import {ISBNReducer, authorsReducer, autoISBNReducer, publishersReducer} from './cover-tab/reducer';
 import {seriesReducer, worksReducer} from './content-tab/reducer';
 import {ADD_EDITION_GROUP} from './detail-tab/action';
+import {DUPLICATE_WORK} from './content-tab/action';
 import Immutable from 'immutable';
 import aliasEditorReducer from '../entity-editor/alias-editor/reducer';
 import annotationSectionReducer from '../entity-editor/annotation-section/reducer';
@@ -13,6 +13,7 @@ import authorSectionReducer from '../entity-editor/author-section/reducer';
 import buttonBarReducer from '../entity-editor/button-bar/reducer';
 import {camelCase} from 'lodash';
 import {combineReducers} from 'redux-immutable';
+import {convertMapToObject} from '../helpers/utils';
 import editionGroupSectionReducer from '../entity-editor/edition-group-section/reducer';
 import editionGroupsReducer from './detail-tab/reducer';
 import editionSectionReducer from '../entity-editor/edition-section/reducer';
@@ -123,29 +124,21 @@ function crossSliceReducer(state:State, action:Action) {
 		relationshipSection: state.get('relationshipSection'),
 		submissionSection: state.get('submissionSection')
 	};
+	const newEntity = action.payload && action.payload.value;
 	// Designed for single edition entity, will need to be modified to support multiple editions
 	switch (type) {
 		case ADD_AUTHOR:
 			// add new author for AC in edition
-			intermediateState = intermediateState.setIn(['Editions', 'e0', 'authorCreditEditor', action.payload.rowId, 'author'], Immutable.Map({
+			intermediateState = intermediateState.setIn(['authorCreditEditor', action.payload.rowId, 'author'], Immutable.Map({
 				__isNew__: true,
-				id: action.payload.id,
+				id: newEntity.id,
 				rowId: action.payload.rowId,
-				text: activeEntityState.nameSection.get('name'),
+				text: newEntity.text,
 				type: 'Author'
 			}));
 			intermediateState = intermediateState.setIn(
-				['Editions', 'e0', 'authorCreditEditor', action.payload.rowId, 'name'], activeEntityState.nameSection.get('name')
+				['authorCreditEditor', action.payload.rowId, 'name'], newEntity.text
 			);
-			// save new author state to `Authors`
-			action.payload.value = action.payload.value ?? {
-				...activeEntityState,
-				__isNew__: true,
-				authorSection: intermediateState.get('authorSection'),
-				id: action.payload.id,
-				text: activeEntityState.nameSection.get('name'),
-				type: 'Author'
-			};
 			break;
 		case DUMP_EDITION:
 			// dump/save current edition state to `Editions`
@@ -168,63 +161,71 @@ function crossSliceReducer(state:State, action:Action) {
 			break;
 		case ADD_EDITION_GROUP:
 			// add new edition group for edition
-			action.payload.value = action.payload.value ?? {
-				...activeEntityState,
-				__isNew__: true,
-				authorCreditEditor: intermediateState.get('authorCreditEditor'),
-				editionGroupSection: intermediateState.get('editionGroupSection'),
-				id: action.payload.id,
-				text: activeEntityState.nameSection.get('name'),
-				type: 'EditionGroup'
-			};
-			break;
-		case ADD_WORK:
-			// add new work for edition
-			action.payload.value = action.payload.value ?? {
-				...activeEntityState,
-				__isNew__: true,
-				checked: true,
-				id: action.payload.id,
-				text: activeEntityState.nameSection.get('name'),
-				type: 'Work',
-				workSection: intermediateState.get('workSection')
-			};
+			intermediateState = intermediateState.setIn(['editionSection', 'editionGroup'], newEntity);
 			break;
 		case ADD_PUBLISHER: {
 			// add new publisher for edition
-			const newPublisher = {
-				__isNew__: true,
-				id: action.payload.id,
-				publisherSection: intermediateState.get('publisherSection'),
-				text: activeEntityState.nameSection.get('name'),
-				type: 'Publisher'
-			};
-			action.payload.value = action.payload.value ?? {
-				...activeEntityState,
-				...newPublisher
-			};
 			// set new publisher in edition state as well
 			intermediateState = intermediateState.setIn(
-				['Editions', 'e0', 'editionSection', 'publisher', newPublisher.id]
-				, Immutable.Map(newPublisher)
+				['editionSection', 'publisher', newEntity.id]
+				, Immutable.Map(newEntity)
 			);
 			break;
 		}
-		case ADD_SERIES:
-			// add new series
-			action.payload.value = action.payload.value ?? {
-				...activeEntityState,
-				__isNew__: true,
-				id: action.payload.id,
-				seriesSection: intermediateState.get('seriesSection'),
-				text: activeEntityState.nameSection.get('name'),
-				type: 'Series'
-			};
-			break;
 		case DUPLICATE_WORK:
 		// copy work state from `Works`
 		{
-			intermediateState = intermediateState.merge(intermediateState.getIn(['Works', action.payload]));
+			const fromWork:State = intermediateState.getIn(['Works', action.payload]);
+			const defaultAlias = fromWork.get('defaultAlias');
+			const relationships = fromWork.getIn(['relationshipSet', 'relationships'], null);
+			const identifiers = fromWork.getIn(['identifierSet', 'identifiers'], null);
+			const other:any = {};
+			if (identifiers) {
+				const identifierEditor = identifiers.map((identifier) => Immutable.Map({type: identifier.get('typeId'),
+					value: identifier.get('value')}));
+				other.identifierEditor = identifierEditor;
+			}
+			if (relationships) {
+				const rels = relationships.map((rel, key) => {
+					const relationship = convertMapToObject(rel);
+					relationship.rowId = `t-${key}`;
+					relationship.sourceEntity = {
+						bbid: relationship.source.bbid,
+						defaultAlias: {
+							name: relationship.source.name
+						},
+						type: relationship.source.type
+					};
+					relationship.targetEntity = {
+						bbid: relationship.target.bbid,
+						defaultAlias: {
+							name: relationship.target.name
+						},
+						type: relationship.target.type
+					};
+					relationship.relationshipType = relationship.type;
+					return Immutable.fromJS(relationship);
+				});
+				other.relationshipSection = {
+					canEdit: true,
+					lastRelationships: null,
+					relationshipEditorProps: null,
+					relationshipEditorVisible: false,
+					relationships: rels
+				};
+			}
+			const changedAttributes = Immutable.fromJS({
+				nameSection: {
+					language: defaultAlias.get('languageId'),
+					name: defaultAlias.get('name'),
+					sortName: defaultAlias.get('sortName')
+				},
+				workSection: {
+					type: fromWork.get('typeId')
+				},
+				...other
+			});
+			intermediateState = intermediateState.merge(changedAttributes);
 			// get rid of properities that are not needed
 			intermediateState = ['text', '__isNew__', 'type', 'id'].reduce((istate, key) => istate.delete(key), intermediateState);
 			break;

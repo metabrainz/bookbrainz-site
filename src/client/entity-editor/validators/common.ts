@@ -34,8 +34,7 @@ export function validateMultiple(
 	values: any[],
 	validationFunction: (value: any, ...rest: any[]) => boolean,
 	additionalArgs?: any,
-	requiresOneOrMore?: boolean,
-	isCustom = false
+	requiresOneOrMore?: boolean
 ): boolean {
 	if (requiresOneOrMore && _.isEmpty(values)) {
 		return false;
@@ -49,7 +48,7 @@ export function validateMultiple(
 	}
 
 	return every(values, (value) =>
-		validationFunction(value, additionalArgs, isCustom));
+		validationFunction(value, additionalArgs));
 }
 
 export function validateAliasName(value: any): boolean {
@@ -184,9 +183,9 @@ export function validateSubmissionSection(
 		validateSubmissionSectionAnnotation(get(data, 'annotation.content', null))
 	);
 }
-// Hacky way to achieve polymorphism for both editors
-export function validateAuthorCreditRow(row: any, arg:any, isCustom = false): boolean {
-	return (isCustom ? Boolean(getIn(row, ['author', 'id'], null)) : validateUUID(getIn(row, ['author', 'id'], null), true)) &&
+
+export function validateAuthorCreditRow(row: any): boolean {
+	return validateUUID(getIn(row, ['author', 'id'], null), true) &&
 	validateRequiredString(get(row, 'name', null)) &&
 	validateOptionalString(get(row, 'joinPhrase', null));
 }
@@ -194,7 +193,7 @@ export function validateAuthorCreditRow(row: any, arg:any, isCustom = false): bo
 export const validateAuthorCreditSection = _.partialRight(
 	// Requires at least one Author Credit row
 	validateMultiple, _.partialRight.placeholder,
-	validateAuthorCreditRow, null, false, _.partialRight.placeholder
+	validateAuthorCreditRow, null, false
 );
 // In the merge editor we use the authorCredit directly instead of the authorCreditEditor state
 export function validateAuthorCreditSectionMerge(authorCredit:AuthorCredit) :boolean {

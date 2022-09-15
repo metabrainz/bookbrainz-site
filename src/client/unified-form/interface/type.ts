@@ -106,6 +106,9 @@ export type ContentTabDispatchProps = {
 	onChange:(value:EntitySelect)=>unknown,
 	onAddSeriesItem:(data:any)=>unknown,
 	onSeriesChange:(value:EntitySelect)=>unknown,
+	resetSeries:(itemsOnly?:boolean)=>void,
+	onSubmitWork:()=>unknown,
+	bulkAddSeriesItems:(data)=>unknown,
 	onModalOpen:(arg)=>unknown,
 	onModalClose:()=>unknown,
 };
@@ -125,6 +128,7 @@ export type SearchEntityCreateDispatchProps = {
 
 export type SearchEntityCreateOwnProps = {
 	bbid?:string,
+	onAddCallback?:(...arg)=>unknown,
 	empty?:boolean,
 	isClearable?:boolean,
 	isMulti?:boolean,
