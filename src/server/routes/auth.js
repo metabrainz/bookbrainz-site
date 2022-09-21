@@ -16,10 +16,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import config from '../../../superagent-mock-config';
 import express from 'express';
+import mock from 'superagent-mock';
 import passport from 'passport';
 import request from 'superagent';
 import status from 'http-status';
+
+
+// Setting up mocking agent for test
+// eslint-disable-next-line node/no-process-env
+if (process.env.NODE_ENV === 'test') {
+	mock(request, config);
+}
 
 
 const router = express.Router();
