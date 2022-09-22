@@ -213,6 +213,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							value={series}
 							onAddCallback={addNewSeriesCallback}
 							onChange={seriesChangeHandler}
+							onOpenCallback={resetSeries}
 							{...rest}
 						/>
 					</Col>

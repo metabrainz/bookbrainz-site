@@ -22,7 +22,7 @@ const addEntityAction = {
 	work: addWork
 };
 function SearchEntityCreate(props:SearchEntityCreateProps) {
-	const {type, nextId, onModalOpen, onModalClose, onSubmitEntity, rowId, ...rest} = props;
+	const {type, nextId, onModalOpen, onModalClose, onSubmitEntity, rowId, onOpenCallback, ...rest} = props;
 	const createLabel = React.useCallback((input) => `Create ${type} "${input}"`, [type]);
 	const [showModal, setShowModal] = React.useState(false);
 	const getNewOptionData = React.useCallback((_, label) => ({
@@ -32,6 +32,9 @@ function SearchEntityCreate(props:SearchEntityCreateProps) {
 		type
 	}), [type, nextId]);
 	const openModalHandler = React.useCallback((name) => {
+		if (typeof onOpenCallback === 'function') {
+			onOpenCallback();
+		}
 		setShowModal(true);
 		onModalOpen(name);
 	}, [onModalOpen]);
