@@ -2,7 +2,7 @@ import {createEditor, truncateEntities} from '../../../test-helpers/create-entit
 import app from '../../../../src/server/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import config from '../../../../superagent-mock-config';
+import config from '../../../test-helpers/superagent-mock-config';
 import mock from 'superagent-mock';
 import {omit} from 'lodash';
 import orm from '../../../bookbrainz-data';
