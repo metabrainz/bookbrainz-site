@@ -41,13 +41,16 @@ describe('delete user', () => {
 		agent = chai.request.agent(app);
 		await agent.get('/cb');
 	});
+
 	after(truncateEntities);
+
 	it('Normal User should not be able to delete other users', async () => {
 		const res = await agent.post(`/delete-user/${userMBId}?access_token=${otherEditorId}`);
 		expect(res.ok).to.be.false;
 		// unauthorized
 		expect(res.status).to.be.equal(401);
 	});
+
 	it('User Deleter should be able to delete a user', async () => {
 		const res = await agent.post(`/delete-user/${userMBId}?access_token=${adminEditorId}`);
 		expect(res.ok).to.be.true;
@@ -55,5 +58,12 @@ describe('delete user', () => {
 		expect(editor).to.exist;
 		const editorJson = omit(editor.toJSON(), ['activeAt', 'createdAt', 'typeId']);
 		expect(editorJson).to.deep.equal(deletedUserAttrib);
+	});
+
+	it('Unauthenticated user should not be able to delete other users', async () => {
+		const res = await chai.request(app).post(`/delete-user/${userMBId}`);
+		expect(res.ok).to.be.false;
+		// unauthorized
+		expect(res.status).to.be.equal(401);
 	});
 });
