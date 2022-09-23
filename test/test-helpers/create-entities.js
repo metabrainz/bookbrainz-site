@@ -112,7 +112,7 @@ const entityAttribs = {
 	revisionId: 1
 };
 
-export function createEditor(editorId) {
+export function createEditor(editorId, otherEditorAttribs) {
 	return orm.bookshelf.knex.transaction(async (transacting) => {
 		const editorType = await new EditorType(editorTypeAttribs)
 			.save(null, {method: 'insert', transacting});
@@ -126,7 +126,7 @@ export function createEditor(editorId) {
 		editorAttribs.metabrainzUserId = random.number();
 		editorAttribs.cachedMetabrainzName = editorAttribs.name;
 
-		const editor = await new Editor(editorAttribs)
+		const editor = await new Editor({...editorAttribs, ...otherEditorAttribs})
 			.save(null, {method: 'insert', transacting});
 		return editor;
 	});

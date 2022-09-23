@@ -18,6 +18,7 @@
 
 import express from 'express';
 import passport from 'passport';
+import request from 'superagent';
 import status from 'http-status';
 
 
@@ -72,5 +73,45 @@ router.get('/logout', (req, res) => {
 	req.logOut();
 	res.redirect(status.SEE_OTHER, '/');
 });
+
+router.post('/delete-user/:mbRowId', async (req, res) => {
+	// Special Account on MB
+	const USER_DELETER = 'UserDeleter';
+	const USER_DELETER_MBID = 2007538;
+	const {access_token: accessToken} = req.query;
+	const {mbRowId} = req.params;
+	try {
+		const rBody = await request.get('https://musicbrainz.org/oauth2/userinfo').set('Authorization', `Bearer ${accessToken}`).then((rs) => rs.body);
+		if (rBody.metabrainz_user_id !== USER_DELETER_MBID || rBody.sub !== USER_DELETER) {
+			return res.status(401).send();
+		}
+		const {orm} = req.app.locals;
+		const {Editor} = orm;
+		const editor = await Editor.forge({metabrainzUserId: mbRowId}).fetch({require: false});
+		if (!editor) {
+			return res.status(404).send();
+		}
+		// deleting all user info
+		const deletedUser = `Deleted User #${editor.get('id')}`;
+		editor.set('bio', '');
+		editor.set('genderId', null);
+		editor.set('areaId', null);
+		editor.set('revisionsApplied', 0);
+		editor.set('revisionsReverted', 0);
+		editor.set('totalRevisions', 0);
+		editor.set('metabrainzUserId', null);
+		editor.set('cachedMetabrainzName', null);
+		editor.set('titleUnlockId', null);
+
+
+		editor.set('name', deletedUser);
+		await editor.save();
+		return res.status(200).send();
+	}
+	catch (err) {
+		return res.status(err.status ?? 500).send();
+	}
+});
+
 
 export default router;
