@@ -121,11 +121,11 @@ export function createEditor(editorId, otherEditorAttribs) {
 		editorAttribs.id = editorId || random.number();
 		editorAttribs.genderId = gender.id;
 		editorAttribs.typeId = editorType.id;
-		editorAttribs.name = otherEditorAttribs?.name || internet.userName();
+		editorAttribs.name = internet.userName();
 		editorAttribs.metabrainzUserId = random.number();
 		editorAttribs.cachedMetabrainzName = editorAttribs.name;
 
-		const editor = await new Editor(editorAttribs)
+		const editor = await new Editor({...editorAttribs, ...otherEditorAttribs})
 			.save(null, {method: 'insert', transacting});
 		return editor;
 	});
