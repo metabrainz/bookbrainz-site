@@ -94,6 +94,10 @@ class SearchPage extends React.Component<Props, State> {
 	 * @param {string} type - Entity type selected from dropdown
 	 */
 	handleSearch = (query: string, type: string) => {
+		// if no change in query or type, refresh the page to get new results
+		if (query === this.state.query && type === this.state.type) {
+			window.location.reload();
+		}
 		this.setState({query, type});
 	};
 
