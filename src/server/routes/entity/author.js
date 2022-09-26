@@ -186,7 +186,12 @@ router.param(
 	'bbid',
 	middleware.makeEntityLoader(
 		'Author',
-		['authorType', 'gender', 'beginArea', 'endArea'],
+		['authorType', 'gender', 'beginArea', 'endArea',
+			'authorCredits.editions.defaultAlias',
+			'authorCredits.editions.disambiguation',
+			'authorCredits.editions.releaseEventSet.releaseEvents',
+			'authorCredits.editions.identifierSet.identifiers.type',
+			'authorCredits.editions.editionFormat'],
 		'Author not found'
 	)
 );
@@ -201,6 +206,7 @@ function _setAuthorTitle(res) {
 
 router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
 	_setAuthorTitle(res);
+	console.log('res locals i author', JSON.stringify(res.locals.entity.authorCredits));
 	entityRoutes.displayEntity(req, res);
 });
 

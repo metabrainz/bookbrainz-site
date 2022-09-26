@@ -19,6 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 
+import EditionTable from './edition-table';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
@@ -109,6 +110,12 @@ AuthorAttributes.propTypes = {
 
 function AuthorDisplayPage({entity, identifierTypes, user}) {
 	const urlPrefix = getEntityUrl(entity);
+	const editions = [];
+	if (entity?.authorCredits) {
+		entity.authorCredits.forEach((authorCredit) => {
+			editions.push(...authorCredit.editions);
+		});
+	}
 	return (
 		<div>
 			<Row className="entity-display-background">
@@ -127,6 +134,7 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
+				<EditionTable editions={editions} entity={entity}/>
 				<EntityLinks
 					entity={entity}
 					identifierTypes={identifierTypes}
