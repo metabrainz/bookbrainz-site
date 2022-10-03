@@ -206,7 +206,6 @@ function _setAuthorTitle(res) {
 
 router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
 	_setAuthorTitle(res);
-	console.log('res locals i author', JSON.stringify(res.locals.entity.authorCredits));
 	entityRoutes.displayEntity(req, res);
 });
 
