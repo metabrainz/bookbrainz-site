@@ -373,3 +373,34 @@ export function decodeUrlQueryParams(req:$Request, res:$Response, next:NextFunct
 	req.query = _.mapValues(req.query, decodeURIComponent);
 	return next();
 }
+
+export function makeRevisionLoader(modelName: string, additionalRels: Array<string>, errMessage: string) {
+	const relations = [
+		'aliasSet.aliases.language',
+		'annotation.lastRevision',
+		'defaultAlias',
+		'disambiguation',
+		'identifierSet.identifiers.type',
+		'relationshipSet.relationships.type',
+		'revision.revision'
+	].concat(additionalRels);
+	return async (req: $Request, res: $Response, next: NextFunction, revisionId: number) => {
+		const {orm}: any = req.app.locals;
+		const fetchedEntity = res.locals.entity;
+		try {
+			const model = commonUtils.getEntityModelByType(orm, modelName);
+			const entity = await model.forge({bbid: fetchedEntity.bbid, revisionId}).fetch({
+				require: true,
+				withRelated: relations
+			});
+			if (!entity.dataId) {
+				entity.deleted = true;
+			}
+			res.locals.entity = entity.toJSON();
+			return next();
+		}
+		catch (err) {
+			return next(new error.NotFoundError(errMessage, req));
+		}
+	};
+}

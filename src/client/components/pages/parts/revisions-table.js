@@ -18,18 +18,18 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
+import {faCodeBranch, faEye, faUndo} from '@fortawesome/free-solid-svg-icons';
 import {genEntityIconHTMLElement, getEntityLabel, getEntityUrl} from '../../../helpers/entity';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {faCodeBranch} from '@fortawesome/free-solid-svg-icons';
 
 
-const {Table} = bootstrap;
+const {Table, OverlayTrigger, Tooltip, Badge} = bootstrap;
 const {formatDate, stringToHTMLWithLinks} = utilsHelper;
 
 function RevisionsTable(props) {
-	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading} = props;
+	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading, masterRevisionId} = props;
 	return (
 		<div>
 			<div>
@@ -59,6 +59,7 @@ function RevisionsTable(props) {
 										<th className="col-md-3">Note</th> : null
 								}
 								<th className="col-md-2">Date</th>
+								<th className="col-md-2">Actions</th>
 							</tr>
 						</thead>
 
@@ -83,6 +84,10 @@ function RevisionsTable(props) {
 														/>
 													</span>
 												}
+												{revision.revisionId === masterRevisionId &&
+												<Badge className="ml-2 bg-success text-white">
+													Active
+												</Badge>}
 											</a>
 										</td>
 										{
@@ -127,6 +132,32 @@ function RevisionsTable(props) {
 												</td> : null
 										}
 										<td>{formatDate(new Date(revision.createdAt), true)}</td>
+										<td>
+											<div className="d-flex align-items-center">
+												<OverlayTrigger
+													delay={50}
+													overlay={
+														<Tooltip>
+														View entity at this revision
+														</Tooltip>}
+													placement="right"
+												>
+													<a href={`revision/${revision.revisionId}`}>
+														<FontAwesomeIcon className="mr-2 text-secondary" icon={faEye}/>
+													</a>
+												</OverlayTrigger>
+												<OverlayTrigger
+													delay={50}
+													overlay={
+														<Tooltip>
+															Revert entity to this revision
+														</Tooltip>}
+													placement="right"
+												>
+													<FontAwesomeIcon className="ml-2 text-danger" icon={faUndo}/>
+												</OverlayTrigger>
+											</div>
+										</td>
 									</tr>
 								))
 							}
@@ -144,6 +175,7 @@ function RevisionsTable(props) {
 }
 
 RevisionsTable.propTypes = {
+	masterRevisionId: PropTypes.number,
 	results: PropTypes.array.isRequired,
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
@@ -151,6 +183,7 @@ RevisionsTable.propTypes = {
 	tableHeading: PropTypes.node
 };
 RevisionsTable.defaultProps = {
+	masterRevisionId: null,
 	showEntities: false,
 	showRevisionEditor: false,
 	showRevisionNote: false,
