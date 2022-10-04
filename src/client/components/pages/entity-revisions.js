@@ -23,6 +23,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import RevisionsTable from './parts/revisions-table';
 import {get} from 'lodash';
+import request from 'superagent';
 
 
 /**
@@ -44,6 +45,7 @@ class EntityRevisions extends React.Component {
 		// React does not autobind non-React class methods
 		this.renderHeader = this.renderHeader.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
+		this.onChangeMasterRevisionId = this.onChangeMasterRevisionId.bind(this);
 		this.paginationUrl = './revisions/revisions';
 	}
 
@@ -72,6 +74,16 @@ class EntityRevisions extends React.Component {
 		);
 	}
 
+	async onChangeMasterRevisionId(newMasterRevisionId) {
+		if (newMasterRevisionId === get(this.props.entity, 'revisionId', null)) { return; }
+		try {
+			await request.post('master').send({revisionId: newMasterRevisionId});
+			window.location.reload();
+		}
+		catch (err) {
+			// error handling
+		}
+	}
 
 	/**
 	 * Renders the EntityRevisions page, which is a list of all the revisions
@@ -84,6 +96,7 @@ class EntityRevisions extends React.Component {
 		return (
 			<div id="pageWithPagination">
 				<RevisionsTable
+					handleMasterChange={this.onChangeMasterRevisionId}
 					masterRevisionId={revisionId}
 					results={this.state.results}
 					showEntities={this.props.showEntities}

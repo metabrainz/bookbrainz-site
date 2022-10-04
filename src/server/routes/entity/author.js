@@ -23,13 +23,13 @@ import * as middleware from '../../helpers/middleware';
 import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
+import {BadRequestError, ConflictError} from '../../../common/helpers/error';
 import {
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
-import {ConflictError} from '../../../common/helpers/error';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
@@ -360,5 +360,26 @@ router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 
 router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler,
 	mergeHandler);
+
+
+router.post('/:bbid/master', auth.isAuthenticatedForHandler, async (req, res, next) => {
+	const {orm} = req.app.locals;
+	const {bbid} = req.params;
+	const {revisionId} = req.body;
+	const {AuthorHeader, AuthorRevision} = orm;
+	try {
+		await new AuthorRevision({bbid, id: revisionId}).fetch({
+			require: true
+		});
+		// update author header with new revision id
+		await new AuthorHeader({bbid}).save({masterRevisionId: revisionId}, {method: 'update'});
+	}
+	catch (err) {
+		return next(BadRequestError(err.message));
+	}
+	return res.status(200).send({
+		changed: true
+	});
+});
 
 export default router;

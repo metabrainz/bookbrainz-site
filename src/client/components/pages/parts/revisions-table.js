@@ -29,7 +29,10 @@ const {Table, OverlayTrigger, Tooltip, Badge} = bootstrap;
 const {formatDate, stringToHTMLWithLinks} = utilsHelper;
 
 function RevisionsTable(props) {
-	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading, masterRevisionId} = props;
+	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading, masterRevisionId, handleMasterChange} = props;
+	function makeMasterChangeHandler(revisionId) {
+		return () => handleMasterChange(revisionId);
+	}
 	return (
 		<div>
 			<div>
@@ -154,7 +157,11 @@ function RevisionsTable(props) {
 														</Tooltip>}
 													placement="right"
 												>
-													<FontAwesomeIcon className="ml-2 text-danger" icon={faUndo}/>
+													<FontAwesomeIcon
+														className={`ml-2 ${revision.revisionId === masterRevisionId ? 'text-muted' : 'text-danger'}`}
+														icon={faUndo}
+														onClick={makeMasterChangeHandler(revision.revisionId)}
+													/>
 												</OverlayTrigger>
 											</div>
 										</td>
@@ -175,6 +182,7 @@ function RevisionsTable(props) {
 }
 
 RevisionsTable.propTypes = {
+	handleMasterChange: PropTypes.func,
 	masterRevisionId: PropTypes.number,
 	results: PropTypes.array.isRequired,
 	showEntities: PropTypes.bool,
@@ -183,6 +191,7 @@ RevisionsTable.propTypes = {
 	tableHeading: PropTypes.node
 };
 RevisionsTable.defaultProps = {
+	handleMasterChange: null,
 	masterRevisionId: null,
 	showEntities: false,
 	showRevisionEditor: false,
