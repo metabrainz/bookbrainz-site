@@ -25,6 +25,7 @@ import type {Response as $Response, NextFunction, Request} from 'express';
 
 import _ from 'lodash';
 import {getRelationshipTargetBBIDByTypeId} from '../../client/helpers/entity';
+import {recursivelyGetMergedEntitiesBBIDs} from './revisions';
 
 
 interface $Request extends Request {
@@ -386,10 +387,22 @@ export function makeRevisionLoader(modelName: string, additionalRels: Array<stri
 	].concat(additionalRels);
 	return async (req: $Request, res: $Response, next: NextFunction, revisionId: number) => {
 		const {orm}: any = req.app.locals;
-		const fetchedEntity = res.locals.entity;
+		const mainEntity:any = res.locals.entity;
+		const {bbid} = mainEntity;
+		const otherMergedBBIDs = await recursivelyGetMergedEntitiesBBIDs(orm, [bbid]);
 		try {
-			const model = commonUtils.getEntityModelByType(orm, modelName);
-			const entity = await model.forge({bbid: fetchedEntity.bbid, revisionId}).fetch({
+			const Model = commonUtils.getEntityModelByType(orm, modelName);
+			const RevisionModel = orm[`${modelName}Revision`];
+			// check if it is valid revision or not
+			await new RevisionModel()
+				.query((qb) => {
+					qb.distinct(`${RevisionModel.prototype.tableName}.id`, 'revision.created_at');
+					qb.whereIn('bbid', [bbid, ...otherMergedBBIDs]);
+					qb.join('bookbrainz.revision', `${RevisionModel.prototype.tableName}.id`, '=', 'bookbrainz.revision.id');
+					qb.where('bookbrainz.revision.id', '=', revisionId);
+					qb.orderBy('revision.created_at', 'DESC');
+				}).fetch({debug: true, require: true});
+			const entity = await Model.forge({revisionId}).fetch({
 				require: true,
 				withRelated: relations
 			});

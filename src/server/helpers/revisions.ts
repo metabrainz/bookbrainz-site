@@ -189,7 +189,7 @@ export async function getOrderedRevisionForEditorPage(from, size, req) {
  * In order to fetch the complete history tree containing all three entities, we need to recursively check
  * if a source_bbid appears as a target_bbid in other rows.
  */
-async function recursivelyGetMergedEntitiesBBIDs(orm: any, bbids: string[]) {
+export async function recursivelyGetMergedEntitiesBBIDs(orm: any, bbids: string[]) {
 	const returnValue: string[] = [];
 	await Promise.all(bbids.map(async (bbid) => {
 		let thisLevelBBIDs = await orm.bookshelf.knex
