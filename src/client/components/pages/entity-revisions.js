@@ -99,6 +99,7 @@ class EntityRevisions extends React.Component {
 					handleMasterChange={this.onChangeMasterRevisionId}
 					masterRevisionId={revisionId}
 					results={this.state.results}
+					showActions={this.props.showActions}
 					showEntities={this.props.showEntities}
 					showRevisionEditor={this.props.showRevisionEditor}
 					showRevisionNote={this.props.showRevisionNote}
@@ -126,6 +127,7 @@ EntityRevisions.propTypes = {
 	from: PropTypes.number,
 	nextEnabled: PropTypes.bool.isRequired,
 	revisions: PropTypes.array.isRequired,
+	showActions: PropTypes.bool,
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
 	showRevisionNote: PropTypes.bool,
@@ -133,6 +135,7 @@ EntityRevisions.propTypes = {
 };
 EntityRevisions.defaultProps = {
 	from: 0,
+	showActions: false,
 	showEntities: false,
 	showRevisionEditor: false,
 	showRevisionNote: false,

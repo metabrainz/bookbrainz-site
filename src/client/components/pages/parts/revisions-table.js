@@ -29,7 +29,7 @@ const {Table, OverlayTrigger, Tooltip, Badge} = bootstrap;
 const {formatDate, stringToHTMLWithLinks} = utilsHelper;
 
 function RevisionsTable(props) {
-	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading, masterRevisionId, handleMasterChange} = props;
+	const {results, showEntities, showActions, showRevisionNote, showRevisionEditor, tableHeading, masterRevisionId, handleMasterChange} = props;
 	function makeMasterChangeHandler(revisionId) {
 		return () => handleMasterChange(revisionId);
 	}
@@ -62,7 +62,7 @@ function RevisionsTable(props) {
 										<th className="col-md-3">Note</th> : null
 								}
 								<th className="col-md-2">Date</th>
-								<th className="col-md-2">Actions</th>
+								{showActions && <th className="col-md-2">Actions</th>}
 							</tr>
 						</thead>
 
@@ -87,7 +87,7 @@ function RevisionsTable(props) {
 														/>
 													</span>
 												}
-												{revision.revisionId === masterRevisionId &&
+												{showActions && revision.revisionId === masterRevisionId &&
 												<Badge className="ml-2 bg-success text-white">
 													Active
 												</Badge>}
@@ -135,13 +135,14 @@ function RevisionsTable(props) {
 												</td> : null
 										}
 										<td>{formatDate(new Date(revision.createdAt), true)}</td>
+										{showActions &&
 										<td>
 											<div className="d-flex align-items-center">
 												<OverlayTrigger
 													delay={50}
 													overlay={
 														<Tooltip>
-														View entity at this revision
+													View entity at this revision
 														</Tooltip>}
 													placement="right"
 												>
@@ -153,19 +154,20 @@ function RevisionsTable(props) {
 													delay={50}
 													overlay={
 														<Tooltip>
-															Revert entity to this revision
+														Revert entity to this revision
 														</Tooltip>}
 													placement="right"
 												>
 													<FontAwesomeIcon
 														className={`ml-2 cursor-pointer
-														${revision.revisionId === masterRevisionId ? 'text-muted' : 'text-danger'}`}
+													${revision.revisionId === masterRevisionId ? 'text-muted' : 'text-danger'}`}
 														icon={faUndo}
 														onClick={makeMasterChangeHandler(revision.revisionId)}
 													/>
 												</OverlayTrigger>
 											</div>
 										</td>
+										}
 									</tr>
 								))
 							}
@@ -186,6 +188,7 @@ RevisionsTable.propTypes = {
 	handleMasterChange: PropTypes.func,
 	masterRevisionId: PropTypes.number,
 	results: PropTypes.array.isRequired,
+	showActions: PropTypes.bool,
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
 	showRevisionNote: PropTypes.bool,
@@ -194,6 +197,7 @@ RevisionsTable.propTypes = {
 RevisionsTable.defaultProps = {
 	handleMasterChange: null,
 	masterRevisionId: null,
+	showActions: false,
 	showEntities: false,
 	showRevisionEditor: false,
 	showRevisionNote: false,
