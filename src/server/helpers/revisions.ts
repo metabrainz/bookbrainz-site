@@ -17,7 +17,8 @@
  */
 
 import * as error from '../../common/helpers/error';
-import {flatMap} from 'lodash';
+import {camelCase, flatMap, upperFirst} from 'lodash';
+import {EntityType} from '../../client/entity-editor/relationship-editor/types';
 
 
 function getRevisionModels(orm) {
@@ -239,3 +240,116 @@ export async function getOrderedRevisionsForEntityPage(orm: any, from: number, s
 	});
 }
 
+const EntityTypes = ['Author',
+	'Edition',
+	'EditionGroup', 'Publisher', 'Work'];
+
+function getEntityRevisionModal(type:EntityType, orm) {
+	const entityType = upperFirst(camelCase(type));
+	if (!EntityTypes.includes(entityType)) { return null; }
+	return orm[`${entityType}Revision`];
+}
+function getEntityHeaderModal(type:EntityType, orm) {
+	const entityType = upperFirst(camelCase(type));
+	if (!EntityTypes.includes(entityType)) { return null; }
+	return orm[`${entityType}Header`];
+}
+
+export async function getAllRevisionEntity(revisionId:number, orm, isUndo = true) {
+	const revisions = {};
+	const key = isUndo ? 'parents' : 'children';
+	for (const type of EntityTypes) {
+		const entityRevisionModel = getEntityRevisionModal(type, orm);
+		// eslint-disable-next-line no-await-in-loop
+		const entityRevision = await entityRevisionModel.forge().where('id', revisionId).fetchAll({merge: false,
+			remove: false,
+			require: false});
+		const RevisionModal = getEntityRevisionModal(type, orm);
+		const typeRevisions = [];
+		for (const entity of entityRevision.models) {
+			const revisionParent = await entity.related('revision').fetch({require: false})
+				.then((revision) => revision.related(key).fetch({require: false}))
+				.then((entities) => entities.map((ety) => ety.get('id')))
+				.then((entitiesId) => {
+					if (entitiesId.length === 0) {
+						return null;
+					}
+					return new RevisionModal()
+						.where('bbid', entity.get('bbid'))
+						.query('whereIn', 'id', entitiesId)
+						.orderBy('id', 'DESC')
+						.fetch({require: false});
+				});
+			const entityJSON = entity.toJSON();
+			if (revisionParent) {
+				entityJSON.nextId = revisionParent.get('id');
+				entityJSON.nextIsMerge = revisionParent.get('isMerge');
+				entityJSON.nextDataId = revisionParent.get('dataId');
+			}
+			typeRevisions.push(entityJSON);
+		}
+		revisions[type] = typeRevisions;
+	}
+	return revisions;
+}
+
+/**
+ *
+ * @param {number} fromRevisionID - The revision ID to start from
+ * @param {number} toRevisionID - The revision ID to end at
+ * @param {string} bbid - The BBID of the entity
+ * @param {Object} orm - The BookBrainz ORM
+ * @param {boolean} isUndo - Whether to go backward in history or forward
+ * @returns
+ */
+
+export async function recursivelyDoRevision(fromRevisionID:number, toRevisionID:number, bbid:string, orm, isUndo = true) {
+	if (fromRevisionID === toRevisionID) {
+		return;
+	}
+	if ((isUndo && fromRevisionID < toRevisionID) || (!isUndo && fromRevisionID > toRevisionID)) {
+		return;
+	}
+	const effectedEntities = await getAllRevisionEntity(fromRevisionID, orm, isUndo);
+	let nextId;
+	for (const type of EntityTypes) {
+		const EntityHeader = getEntityHeaderModal(type, orm);
+		const entityRevision = effectedEntities[type];
+		// let mergeToBBID = null;
+		// const mergeEffectedEntities = [];
+		for (const revision of entityRevision) {
+			await new EntityHeader({bbid: revision.bbid}).save({masterRevisionId: revision.nextId}, {method: 'update'});
+			if (revision.bbid === bbid) {
+				({nextId} = revision);
+			}
+			// handle merged entities
+			// if (isUndo && revision.isMerge) {
+			// 	if (revision.dataId !== null) { mergeToBBID = revision.bbid; }
+			// 	else {
+			// 		mergeEffectedEntities.push(revision);
+			// 	}
+			// }
+			// if (!isUndo && revision.nextIsMerge) {
+			// 	if (revision.nextDataId !== null) { mergeToBBID = revision.bbid; }
+			// 	else {
+			// 		mergeEffectedEntities.push(revision);
+			// 	}
+			// }
+		}
+		// if merged revision, then update redirect table
+		// if (mergeToBBID !== null) {
+		// 	if (isUndo) {
+		// 		for (const revision of entityRevision) {
+		// 			const sourceBbid = revision.bbid;
+		// 			await orm.bookshelf.knex('bookbrainz.entity_redirect').where('source_bbid', sourceBbid).where('target_bbid', mergeToBBID).del();
+		// 		}
+		// 	}
+		// 	else {
+
+		// 	}
+		// }
+	}
+	if (nextId) {
+		recursivelyDoRevision(nextId, toRevisionID, orm, bbid);
+	}
+}

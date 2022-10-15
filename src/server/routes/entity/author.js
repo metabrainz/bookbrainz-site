@@ -34,6 +34,7 @@ import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import log from 'log';
+import {recursivelyDoRevision} from '../../helpers/revisions';
 import target from '../../templates/target';
 
 /** ****************************
@@ -366,16 +367,19 @@ router.post('/:bbid/master', auth.isAuthenticatedForHandler, async (req, res, ne
 	const {orm} = req.app.locals;
 	const {bbid} = req.params;
 	const {revisionId} = req.body;
-	const {AuthorHeader, AuthorRevision} = orm;
+	const {entity} = res.locals;
+	const startRevisionId = entity.revision.id;
+	const isUndo = startRevisionId > revisionId;
+	const {AuthorRevision} = orm;
 	try {
 		await new AuthorRevision({bbid, id: revisionId}).fetch({
 			require: true
 		});
 		// update author header with new revision id
-		await new AuthorHeader({bbid}).save({masterRevisionId: revisionId}, {method: 'update'});
+		await recursivelyDoRevision(startRevisionId, revisionId, bbid, orm, isUndo);
 	}
 	catch (err) {
-		return next(BadRequestError(err.message));
+		return next(new BadRequestError(err.message));
 	}
 	return res.status(200).send({
 		changed: true

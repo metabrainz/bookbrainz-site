@@ -158,7 +158,8 @@ function RevisionsTable(props) {
 													placement="right"
 												>
 													<FontAwesomeIcon
-														className={`ml-2 ${revision.revisionId === masterRevisionId ? 'text-muted' : 'text-danger'}`}
+														className={`ml-2 cursor-pointer
+														${revision.revisionId === masterRevisionId ? 'text-muted' : 'text-danger'}`}
 														icon={faUndo}
 														onClick={makeMasterChangeHandler(revision.revisionId)}
 													/>
