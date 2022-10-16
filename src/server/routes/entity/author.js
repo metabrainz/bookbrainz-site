@@ -372,11 +372,11 @@ router.post('/:bbid/master', auth.isAuthenticatedForHandler, async (req, res, ne
 	const isUndo = startRevisionId > revisionId;
 	const {AuthorRevision} = orm;
 	try {
+		// check if author revision exist for this entity
 		await new AuthorRevision({bbid, id: revisionId}).fetch({
 			require: true
 		});
-		// update author header with new revision id
-		await recursivelyDoRevision(startRevisionId, revisionId, bbid, orm, isUndo);
+		await orm.bookshelf.transaction((transacting) => recursivelyDoRevision(startRevisionId, revisionId, bbid, orm, transacting, isUndo));
 	}
 	catch (err) {
 		return next(new BadRequestError(err.message));
