@@ -294,6 +294,29 @@ export async function getAllRevisionEntity(revisionId:number, orm, isUndo = true
 }
 
 /**
+ * This will add the redirect entries back into entity_redirect table
+ *
+ * @param {number} revisionId - Merge Revision Id
+ * @param {string} mergeToBBID - Merged Entity BBID
+ * @param {Object} orm - ORM
+ */
+
+async function redoMerge(revisionId:number, mergeToBBID:string, orm) {
+	const effectedEntities = await getAllRevisionEntity(revisionId, orm, false);
+	for (const type of EntityTypes) {
+		const revisions = effectedEntities[type];
+		for (const revision of revisions) {
+			if (revision.bbid !== mergeToBBID) {
+				const sourceBbid = revision.bbid;
+				// eslint-disable-next-line camelcase
+				await orm.bookshelf.knex('bookbrainz.entity_redirect').insert({source_bbid: sourceBbid, target_bbid: mergeToBBID});
+			}
+		}
+	}
+}
+
+/**
+ * This is responsible for reverting revisions given start and end revision id.
  *
  * @param {number} fromRevisionID - The revision ID to start from
  * @param {number} toRevisionID - The revision ID to end at
@@ -315,39 +338,41 @@ export async function recursivelyDoRevision(fromRevisionID:number, toRevisionID:
 	for (const type of EntityTypes) {
 		const EntityHeader = getEntityHeaderModal(type, orm);
 		const entityRevision = effectedEntities[type];
-		// let mergeToBBID = null;
-		// const mergeEffectedEntities = [];
+		let mergeToBBID = null;
+		let mergeRevisionID;
+		const mergeEffectedEntities = [];
 		for (const revision of entityRevision) {
 			await new EntityHeader({bbid: revision.bbid}).save({masterRevisionId: revision.nextId}, {method: 'update'});
 			if (revision.bbid === bbid) {
 				({nextId} = revision);
 			}
 			// handle merged entities
-			// if (isUndo && revision.isMerge) {
-			// 	if (revision.dataId !== null) { mergeToBBID = revision.bbid; }
-			// 	else {
-			// 		mergeEffectedEntities.push(revision);
-			// 	}
-			// }
-			// if (!isUndo && revision.nextIsMerge) {
-			// 	if (revision.nextDataId !== null) { mergeToBBID = revision.bbid; }
-			// 	else {
-			// 		mergeEffectedEntities.push(revision);
-			// 	}
-			// }
+			if (isUndo && revision.isMerge) {
+				if (revision.dataId !== null) {
+					mergeToBBID = revision.bbid;
+					mergeRevisionID = revision.id;
+				}
+				else {
+					mergeEffectedEntities.push(revision);
+				}
+			}
+			if (!isUndo && revision.nextIsMerge && revision.nextDataId !== null) {
+				mergeToBBID = revision.bbid;
+				mergeRevisionID = revision.nextId;
+			}
 		}
 		// if merged revision, then update redirect table
-		// if (mergeToBBID !== null) {
-		// 	if (isUndo) {
-		// 		for (const revision of entityRevision) {
-		// 			const sourceBbid = revision.bbid;
-		// 			await orm.bookshelf.knex('bookbrainz.entity_redirect').where('source_bbid', sourceBbid).where('target_bbid', mergeToBBID).del();
-		// 		}
-		// 	}
-		// 	else {
-
-		// 	}
-		// }
+		if (mergeToBBID !== null) {
+			if (isUndo) {
+				for (const revision of entityRevision) {
+					const sourceBbid = revision.bbid;
+					await orm.bookshelf.knex('bookbrainz.entity_redirect').where('source_bbid', sourceBbid).where('target_bbid', mergeToBBID).del();
+				}
+			}
+			else {
+				redoMerge(mergeRevisionID, mergeToBBID, orm);
+			}
+		}
 	}
 	if (nextId) {
 		recursivelyDoRevision(nextId, toRevisionID, orm, bbid);
