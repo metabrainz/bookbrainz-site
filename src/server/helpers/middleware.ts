@@ -191,7 +191,9 @@ export async function redirectedBbid(req: $Request, res: $Response, next: NextFu
 		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid);
 		if (redirectBbid !== bbid) {
 			// res.location(`${req.baseUrl}/${redirectBbid}`);
-			return res.redirect(301, `${req.baseUrl}${req.path.replace(bbid, redirectBbid)}`);
+			// Prevent redirecting to the same page even after revert
+			// For more info on Cache headers see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+			return res.set('Cache-control', 'no-cache').redirect(301, `${req.baseUrl}${req.path.replace(bbid, redirectBbid)}`);
 		}
 	}
 	catch (err) {
