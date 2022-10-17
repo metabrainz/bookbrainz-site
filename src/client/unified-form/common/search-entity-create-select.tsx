@@ -22,7 +22,7 @@ const addEntityAction = {
 	work: addWork
 };
 function SearchEntityCreate(props:SearchEntityCreateProps) {
-	const {type, nextId, onModalOpen, onModalClose, onSubmitEntity, rowId, ...rest} = props;
+	const {type, nextId, onModalOpen, onModalClose, onSubmitEntity, rowId, onOpenCallback, ...rest} = props;
 	const createLabel = React.useCallback((input) => `Create ${type} "${input}"`, [type]);
 	const [showModal, setShowModal] = React.useState(false);
 	const getNewOptionData = React.useCallback((_, label) => ({
@@ -32,20 +32,23 @@ function SearchEntityCreate(props:SearchEntityCreateProps) {
 		type
 	}), [type, nextId]);
 	const openModalHandler = React.useCallback((name) => {
+		if (typeof onOpenCallback === 'function') {
+			onOpenCallback();
+		}
 		setShowModal(true);
 		onModalOpen(name);
-	}, []);
+	}, [onModalOpen]);
 	const closeModalHandler = React.useCallback(() => {
 		setShowModal(false);
 		onModalClose();
-	}, []);
+	}, [onModalClose]);
 	const submitModalHandler = React.useCallback((ev: React.FormEvent) => {
 		ev.preventDefault();
 		ev.stopPropagation();
 		setShowModal(false);
 		onSubmitEntity(rowId);
 		onModalClose();
-	}, []);
+	}, [onSubmitEntity, onModalClose, rowId]);
 	// always show `create new entity` Option when user types in the search field
 	const isValidNewOption = React.useCallback((input) => input.length > 0, []);
 	return (

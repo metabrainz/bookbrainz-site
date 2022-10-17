@@ -80,11 +80,12 @@ let nextRowID = 0;
  * to the series section. The row is assigned an ID based on an incrementing
  * variable existing on the client.
  * @param {Relationship} data - The new entity to be added in the list.
+ * @param {string} rowID - The rowID of the new entity to be added in the list.
  * @returns {Action} The resulting ADD_SERIES_ITEM action.
  */
-export function addSeriesItem(data: Relationship): Action {
+export function addSeriesItem(data: Relationship, rowID?:string): Action {
 	return {
-		payload: {data, rowID: `n${nextRowID++}`},
+		payload: {data, rowID: rowID ?? `n${nextRowID++}`},
 		type: ADD_SERIES_ITEM
 	};
 }

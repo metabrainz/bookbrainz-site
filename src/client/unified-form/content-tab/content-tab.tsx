@@ -54,7 +54,6 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 	const toggleCheck = React.useCallback(() => {
 		setIsChecked(!isChecked);
 	}, [isChecked]);
-	// react useCallback Hook was not able to track function properly thus normal function is used
 	function addAllWorks(seriesEntity = series) {
 		const baseEntity = getRelEntity(seriesEntity);
 		const relationships = {};
@@ -64,8 +63,8 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 		});
 		bulkAddSeriesItems(relationships);
 	}
-	const addWorkItem = React.useCallback((workEntity, seriesEntity = series) => {
-		const baseEntity = getRelEntity(seriesEntity);
+	const addWorkItem = React.useCallback((workEntity) => {
+		const baseEntity = getRelEntity(series);
 		const otherEntity = getRelEntity(workEntity);
 		const relationship = generateRel(otherEntity, baseEntity, null, true);
 		onAddSeriesItem(relationship);
@@ -74,6 +73,11 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 		resetSeries(true);
 		addAllWorks(seriesEntity);
 	}, [series, addAllWorks, works]);
+	const addNewWorkCallback = React.useCallback((workEntity) => {
+		if (copyToSeries) {
+			addWorkItem(workEntity);
+		}
+	}, [series, addWorkItem, copyToSeries]);
 	const toggleCopyToSeries = React.useCallback(() => {
 		if (copyToSeries) {
 			 resetSeries();
@@ -169,7 +173,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							isClearable={false}
 							type="work"
 							value={null}
-							onAddCallback={addWorkItem}
+							onAddCallback={addNewWorkCallback}
 							onChange={onChangeHandler}
 							{...rest}
 						/>
@@ -185,7 +189,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 				/>
 			</div>
 			<hr/>
-			{/* <div>
+			<div>
 				<h3>Series</h3>
 				<p className="text-muted">You can add all the Works above to an existing or new series if they are part of the
 					 same a set or sequence of related Works.
@@ -209,12 +213,13 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							value={series}
 							onAddCallback={addNewSeriesCallback}
 							onChange={seriesChangeHandler}
+							onOpenCallback={resetSeries}
 							{...rest}
 						/>
 					</Col>
 				</Row>}
 				{copyToSeries && <SeriesSection {...seriesSectionProps}/>}
-			</div> */}
+			</div>
 		</>
 	);
 }
@@ -231,7 +236,7 @@ function mapDispatchToProps(dispatch, {submissionUrl}):ContentTabDispatchProps {
 	const type = 'Work';
 	return {
 		bulkAddSeriesItems: (data) => dispatch(addBulkSeriesItems(data)),
-		onAddSeriesItem: (data) => dispatch(addSeriesItem(data)),
+		onAddSeriesItem: (data) => dispatch(addSeriesItem(data, data.rowID)),
 		onChange: (value:any) => dispatch(addWork(value)),
 		onModalClose: () => dispatch(loadEdition()) && dispatch(closeEntityModal()),
 		onModalOpen: (id) => {
