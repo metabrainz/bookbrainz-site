@@ -9,15 +9,14 @@ function AverageRating({averageRatings, reviewsCount}) {
 			<dt>Ratings</dt>
 			<dd>
 				<Rating
-					allowHalfIcon
+					allowFraction
 					readonly
 					allowHover={false}
 					className="rating-stars"
 					fillColor="#46433A"
+					iconsCount={5}
 					initialValue={averageRatings}
-					ratingValue={0}
 					size={20}
-					stars={5}
 				/>
 			</dd>
 			<dd className="mt-n2 small text-muted">

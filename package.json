@@ -73,7 +73,7 @@
     "react-redux": "^7.2.6",
     "react-select": "^4.3.1",
     "react-select-fast-filter-options": "^0.2.3",
-    "react-simple-star-rating": "^4.0.5",
+    "react-simple-star-rating": "^5",
     "react-sortable-hoc": "^2.0.0",
     "react-sticky": "^6.0.1",
     "react-tooltip": "^4.2.21",
