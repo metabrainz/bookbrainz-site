@@ -438,9 +438,7 @@ class CBReviewModal extends React.Component<
 							&nbsp; You acknowledge and agree that your
 							contributed reviews to CritiqueBrainz are licensed
 							under a Creative Commons Attribution-ShareAlike 3.0
-							Unported or Creative Commons
-							Attribution-ShareAlike-NonCommercial license as per
-							your choice above. You agree to license your work
+							Unported (CC BY-SA 3.0) license. You agree to license your work
 							under this license. You represent and warrant that
 							you own or control all rights in and to the work,
 							that nothing in the work infringes the rights of any
