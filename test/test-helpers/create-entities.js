@@ -46,6 +46,38 @@ export const seedInitialState = {
 	submissionSection: 'note'
 };
 
+export const baseState = {
+	aliasEditor: {},
+	annotationSection: {
+		content: ''
+	},
+	authorCreditEditor: {},
+	identifierEditor: {},
+	nameSection: {
+		disambiguation: '',
+		language: 42,
+		name: 'Entity name',
+		sortName: 'Entity sort name'
+	},
+	relationshipSection: {
+		relationships: {}
+	},
+	submissionSection: {
+		note: 'first entity',
+		submitError: '',
+		submitted: false
+	}
+};
+
+export const authorWorkRelationshipTypeData = {
+	description: 'test descryption',
+	label: 'test label',
+	linkPhrase: 'test phrase',
+	reverseLinkPhrase: 'test reverse link phrase',
+	sourceEntityType: 'Author',
+	targetEntityType: 'Work'
+};
+
 export const editorTypeAttribs = {
 	label: 'test_type'
 };
@@ -59,7 +91,7 @@ export const editorAttribs = {
 	typeId: 1
 };
 
-const languageAttribs = {
+export const languageAttribs = {
 	frequency: 1,
 	isoCode1: 'en',
 	isoCode2b: 'eng',

@@ -43,7 +43,7 @@ const additionalSeriesProps = [
 	'entityType', 'orderingTypeId'
 ];
 
-function transformNewForm(data) {
+export function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
 		data.aliasEditor, data.nameSection
 	);
@@ -233,7 +233,7 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 	entityRoutes.updateDisplayedRevisions(req, res, next, SeriesRevision);
 });
 
-function seriesToFormState(series) {
+export function seriesToFormState(series) {
 	const aliases = series.aliasSet ?
 		series.aliasSet.aliases.map(({languageId, ...rest}) => ({
 			...rest,

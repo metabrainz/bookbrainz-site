@@ -57,7 +57,9 @@ type DispatchProps = {
 };
 
 type OwnProps = {
+	hideItemSelect?:boolean,
 	entity: Entity,
+	isUnifiedForm?: boolean,
 	entityType: EntityType,
 	seriesOrderingTypes: Array<SeriesOrderingType>,
 	relationshipTypes: Array<RelationshipType>,
@@ -99,6 +101,7 @@ function SeriesSection({
 	entity,
 	entityName,
 	entityType,
+	hideItemSelect,
 	onEdit,
 	onOrderTypeChange,
 	onRemove,
@@ -109,6 +112,7 @@ function SeriesSection({
 	relationshipTypes,
 	seriesItems,
 	seriesOrderingTypes,
+	isUnifiedForm,
 	seriesTypeValue
 }: Props) {
 	const baseEntity = {
@@ -165,16 +169,20 @@ function SeriesSection({
 		Entity Type of the Series
 		</Tooltip>
 	);
+	const heading = <h2>What else do you know about the Series?</h2>;
+	const lgCol = {offset: 3, span: 6};
+	if (isUnifiedForm) {
+		lgCol.offset = 0;
+	}
 	return (
 		<div>
-			<h2>
-				What else do you know about the Series?
-			</h2>
+			{!isUnifiedForm && heading}
+			{!hideItemSelect &&
 			<p className="text-muted">
 				All fields are mandatory — select the option from dropdown
-			</p>
+			</p>}
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>
 							Ordering Type
@@ -195,6 +203,7 @@ function SeriesSection({
 							onChange={onOrderTypeChange}
 						/>
 					</Form.Group>
+					{!isUnifiedForm &&
 					<Form.Group>
 						<Form.Label>
 							Series Type
@@ -215,11 +224,13 @@ function SeriesSection({
 							value={seriesTypeOption}
 							onChange={onSeriesTypeChange}
 						/>
-					</Form.Group>
+					</Form.Group>}
 				</Col>
 			</Row>
 			<SeriesEditor
 				baseEntity={baseEntity}
+				hideItemSelect={hideItemSelect}
+				isUnifiedForm={isUnifiedForm}
 				orderType={orderTypeValue}
 				relationshipTypes={relationshipTypes}
 				seriesItemsArray={seriesItemsArray}
@@ -233,15 +244,21 @@ function SeriesSection({
 	);
 }
 SeriesSection.displayName = 'SeriesSection';
+SeriesSection.defaultProps = {
+	hideItemSelect: false,
+	isUnifiedForm: false
+};
 
-function mapStateToProps(rootState): StateProps {
+function mapStateToProps(rootState, {isUnifiedForm}): StateProps {
 	const state = rootState.get('seriesSection');
+	const seriesTypeValue = state.get('seriesType');
+	const entityPath = isUnifiedForm ? ['Series', 's0', 'text'] : ['nameSection', 'name'];
 
 	return {
-		entityName: rootState.getIn(['nameSection', 'name']),
+		entityName: rootState.getIn(entityPath),
 		orderTypeValue: state.get('orderType'),
 		seriesItems: state.get('seriesItems'),
-		seriesTypeValue: state.get('seriesType')
+		seriesTypeValue
 	};
 }
 

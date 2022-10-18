@@ -71,7 +71,8 @@ type DispatchProps = {
 };
 
 type OwnProps = {
-	publisherTypes: Array<PublisherType>
+	publisherTypes: Array<PublisherType>,
+	isUnifiedForm?: boolean
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -114,6 +115,7 @@ function PublisherSection({
 	endedChecked,
 	publisherTypes,
 	typeValue,
+	isUnifiedForm,
 	onAreaChange,
 	onBeginDateChange,
 	onEndDateChange,
@@ -127,17 +129,20 @@ function PublisherSection({
 	const typeOption = publisherTypesForDisplay.filter((el) => el.value === typeValue);
 	const {isValid: isValidBeginDate, errorMessage: errorMessageBeginDate} = validatePublisherSectionBeginDate(beginDateValue);
 	const {isValid: isValidEndDate, errorMessage: errorMessageEndDate} = validatePublisherSectionEndDate(beginDateValue, endDateValue, endedChecked);
+	const heading = <h2>What else do you know about the Publisher?</h2>;
+	const lgCol = {offset: 3, span: 6};
+	if (isUnifiedForm) {
+		lgCol.offset = 0;
+	}
 	return (
 		<div>
-			<h2>
-				What else do you know about the Publisher?
-			</h2>
+			{!isUnifiedForm && heading}
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
 				know it
 			</p>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>Type</Form.Label>
 						<Select
@@ -151,7 +156,7 @@ function PublisherSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={lgCol}>
 					<EntitySearchFieldOption
 						instanceId="area"
 						label="Area"
@@ -163,7 +168,7 @@ function PublisherSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={lgCol}>
 					<DateField
 						show
 						defaultValue={beginDateValue}
@@ -176,7 +181,7 @@ function PublisherSection({
 					/>
 				</Col>
 			</Row>
-			<div className="text-center">
+			<div className={`${!isUnifiedForm && 'text-center'}`}>
 				<Form.Check
 					defaultChecked={endedChecked}
 					label="Dissolved?"
@@ -187,7 +192,7 @@ function PublisherSection({
 			{endedChecked &&
 				<div>
 					<Row>
-						<Col lg={{offset: 3, span: 6}}>
+						<Col lg={lgCol}>
 							<DateField
 								show
 								defaultValue={endDateValue}
@@ -206,6 +211,9 @@ function PublisherSection({
 	);
 }
 PublisherSection.displayName = 'PublisherSection';
+PublisherSection.defaultProps = {
+	isUnifiedForm: false
+};
 
 function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('publisherSection');

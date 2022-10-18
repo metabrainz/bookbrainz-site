@@ -29,6 +29,8 @@ export const ADD_SERIES_ITEM = 'ADD_SERIES_ITEM';
 export const EDIT_SERIES_ITEM = 'EDIT_SERIES_ITEM';
 export const REMOVE_SERIES_ITEM = 'REMOVE_SERIES_ITEM';
 export const SORT_SERIES_ITEM = 'SORT_SERIES_ITEM';
+export const REMOVE_ALL_SERIES_ITEMS = 'REMOVE_ALL_SERIES_ITEMS';
+export const ADD_BULK_SERIES_ITEMS = 'ADD_BULK_SERIES_ITEMS';
 
 export type Action = {
 	type: string,
@@ -78,11 +80,12 @@ let nextRowID = 0;
  * to the series section. The row is assigned an ID based on an incrementing
  * variable existing on the client.
  * @param {Relationship} data - The new entity to be added in the list.
+ * @param {string} rowID - The rowID of the new entity to be added in the list.
  * @returns {Action} The resulting ADD_SERIES_ITEM action.
  */
-export function addSeriesItem(data: Relationship): Action {
+export function addSeriesItem(data: Relationship, rowID?:string): Action {
 	return {
-		payload: {data, rowID: `n${nextRowID++}`},
+		payload: {data, rowID: rowID ?? `n${nextRowID++}`},
 		type: ADD_SERIES_ITEM
 	};
 }
@@ -157,5 +160,31 @@ export function removeSeriesItem(rowID: string): Action {
 	return {
 		payload: {rowID},
 		type: REMOVE_SERIES_ITEM
+	};
+}
+
+/**
+ * Produces an action indicating that all series items should be removed.
+ *
+ * @returns {Action} The resulting REMOVE_ALL_SERIES_ITEMS action.
+ */
+export function removeAllSeriesItems(): Action {
+	return {
+		payload: {},
+		type: REMOVE_ALL_SERIES_ITEMS
+	};
+}
+
+/**
+ * Produces an action indicating that the new series items should replace the old one.
+ *
+ * @param {Object} seriesItems - The series items object to be added.
+ * @returns {Action} The resulting ADD_BULK_SERIES_ITEMS action.
+ */
+
+export function addBulkSeriesItems(seriesItems: Record<string, string>): Action {
+	return {
+		payload: seriesItems,
+		type: ADD_BULK_SERIES_ITEMS
 	};
 }

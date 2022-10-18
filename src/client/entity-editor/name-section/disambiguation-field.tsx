@@ -86,4 +86,4 @@ DisambiguationField.defaultProps = {
 	required: false
 };
 
-export default DisambiguationField;
+export default React.memo(DisambiguationField);
