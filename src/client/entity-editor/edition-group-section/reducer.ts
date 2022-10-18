@@ -21,6 +21,7 @@ import * as Immutable from 'immutable';
 import {
 	Action, UPDATE_TYPE
 } from './actions';
+import {HIDE_AUTHOR_CREDIT_EDITOR, SHOW_AUTHOR_CREDIT_EDITOR} from '../author-credit-editor/actions';
 
 
 type State = Immutable.Map<string, any>;
@@ -35,6 +36,11 @@ function reducer(
 	switch (type) {
 		case UPDATE_TYPE:
 			return state.set('type', payload);
+		case SHOW_AUTHOR_CREDIT_EDITOR:
+			return state.set('authorCreditEditorVisible', true);
+		case HIDE_AUTHOR_CREDIT_EDITOR:
+			return state.set('authorCreditEditorVisible', false);
+
 		// no default
 	}
 	return state;

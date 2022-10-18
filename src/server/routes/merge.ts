@@ -122,9 +122,11 @@ function entitiesToFormState(entities: any[]) {
 	}, []);
 	const otherEntitiesBBIDs = otherEntities.map(entity => entity.bbid);
 	relationships.forEach((relationship) => {
+		const isAffectedByMerge = otherEntitiesBBIDs.includes(relationship.sourceBbid) || otherEntitiesBBIDs.includes(relationship.targetBbid);
 		const formattedRelationship = {
 			attributeSetId: relationship.attributeSetId,
 			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
+			isAdded: isAffectedByMerge,
 			relationshipType: relationship.type,
 			rendered: relationship.rendered,
 			rowID: `n${relationship.id}`,

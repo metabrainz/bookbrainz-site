@@ -65,7 +65,7 @@ export function RelationshipList(
 	/* eslint-disable react/jsx-no-bind */
 	const renderedRelationships = _.map(
 		relationships,
-		({relationshipType, sourceEntity, targetEntity, attributes}, rowID) => (
+		({relationshipType, sourceEntity, targetEntity, attributes, isRemoved}, rowID) => !isRemoved && (
 			<Row className="margin-top-d5" key={rowID}>
 				<Col lg={onEdit || onRemove ? 8 : 12}>
 					<Relationship

@@ -378,9 +378,14 @@ export async function deleteRelationships(orm: any, transacting: Transaction, ma
 				// Fetch other entity relationships to remove relation with the deleted entity
 				let otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
 
-				// Filter out entites related to deleted entity
-				otherEntityRelationships = otherEntityRelationships.filter(({sourceBbid, targetBbid}) =>
-					mainBBID !== sourceBbid && mainBBID !== targetBbid);
+				// Mark entites related to deleted entity as removed
+				otherEntityRelationships = otherEntityRelationships.map((rel) => {
+					if (mainBBID !== rel.sourceBbid && mainBBID !== rel.targetBbid) {
+						return rel;
+					}
+					_.set(rel, 'isRemoved', true);
+					return rel;
+				});
 
 				const newRelationshipSet = await orm.func.relationship.updateRelationshipSets(
 					orm, transacting, otherEntityRelationshipSet, otherEntityRelationships
@@ -558,16 +563,19 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 					}
 					const otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
 
-					// Remove relationships with entity being merged
-					const cleanedUpRelationships = otherEntityRelationships
-						.filter(({sourceBbid, targetBbid}) =>
-							entityBBID !== sourceBbid &&
-							entityBBID !== targetBbid);
+					let relsHaveChanged = false;
+					// Mark relationships with entity being merged as removed
+					otherEntityRelationships.forEach((rel) => {
+						if (entityBBID === rel.sourceBbid || entityBBID === rel.targetBbid) {
+							_.set(rel, 'isRemoved', true);
+							relsHaveChanged = true;
+						}
+					});
 
 					// If there's a difference, apply the new relationships array without rels to merged entity
-					if (cleanedUpRelationships.length !== otherEntityRelationships.length) {
+					if (relsHaveChanged) {
 						const updatedRelationshipSets = await orm.func.relationship.updateRelationshipSets(
-							orm, transacting, otherEntityRelationshipSet, cleanedUpRelationships
+							orm, transacting, otherEntityRelationshipSet, otherEntityRelationships
 						);
 						// Make sure the entity is later updated with its new relationshipSet id
 						allEntitiesReturnArray = _.unionBy(allEntitiesReturnArray, [otherEntity], 'id');
@@ -877,6 +885,10 @@ async function getNextIdentifierSet(orm, transacting, currentEntity, body) {
 async function getNextRelationshipAttributeSets(orm, transacting, body) {
 	const {RelationshipAttributeSet} = orm;
 	const relationships = await Promise.all(body.relationships.map(async (relationship) => {
+		if (!relationship.isAdded) {
+			relationship.attributeSetId = _.get(relationship, ['attributeSetId'], null);
+			return relationship;
+		}
 		const id = relationship.attributeSetId;
 		const oldRelationshipAttributeSet = await (
 			id &&
@@ -1254,10 +1266,12 @@ export function constructIdentifiers(
 export function constructRelationships(parentSection, childAttributeName = 'relationships') {
 	return _.map(
 		parentSection[childAttributeName],
-		({attributeSetId, rowID, relationshipType, sourceEntity, targetEntity, attributes}) => ({
+		({attributeSetId, rowID, relationshipType, sourceEntity, targetEntity, attributes, isRemoved, isAdded}) => ({
 			attributeSetId,
 			attributes,
 			id: rowID,
+			isAdded,
+			isRemoved,
 			sourceBbid: _.get(sourceEntity, 'bbid'),
 			targetBbid: _.get(targetEntity, 'bbid'),
 			typeId: relationshipType.id
