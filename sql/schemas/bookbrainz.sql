@@ -16,6 +16,10 @@ CREATE TYPE bookbrainz.entity_type AS ENUM (
 	'Series'
 );
 
+CREATE TYPE bookbrainz.external_service_oauth_type AS ENUM (
+    'critiquebrainz'
+);
+
 CREATE TABLE bookbrainz.editor_type (
 	id SERIAL PRIMARY KEY,
 	label VARCHAR(255) NOT NULL CHECK (label <> '')
@@ -805,6 +809,20 @@ CREATE TABLE bookbrainz.user_collection_collaborator (
 );
 ALTER TABLE bookbrainz.user_collection_collaborator ADD FOREIGN KEY (collection_id) REFERENCES bookbrainz.user_collection (id) ON DELETE CASCADE;
 ALTER TABLE bookbrainz.user_collection_collaborator ADD FOREIGN KEY (collaborator_id) REFERENCES bookbrainz.editor (id);
+
+CREATE TABLE bookbrainz.external_service_oauth (
+    id SERIAL,
+    editor_id INTEGER NOT NULL,
+    service bookbrainz.external_service_oauth_type NOT NULL,
+    access_token TEXT NOT NULL,
+    refresh_token TEXT,
+    token_expires TIMESTAMP,
+    scopes TEXT[]
+);
+
+ALTER TABLE bookbrainz.external_service_oauth ADD CONSTRAINT external_service_oauth_editor_id_service UNIQUE (editor_id, service);
+
+ALTER TABLE bookbrainz.external_service_oauth ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
 
 -- Views --
 

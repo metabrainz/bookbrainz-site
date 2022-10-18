@@ -28,6 +28,7 @@ $disabled-color: lighten($disabled-bg,15%);
 
 @import "lobes4/scss/bootstrap.scss";
 @import "react-datepicker/dist/react-datepicker.css";
+@import "./external-services.scss";
 
 .navbar.BookBrainz {
 	background: rgba(255, 255, 255, 1);
@@ -726,6 +727,10 @@ ul {
 }
 .series-editor-select {
 	margin-top: 1.7em;
+}
+
+.cb-data-tip {
+    width: 300px;
 }
 
 .duplicate-result-scroll-window{

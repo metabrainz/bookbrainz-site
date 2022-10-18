@@ -219,3 +219,12 @@ export function getEntityKey(entityType:string) {
 	};
 	return keys[entityType];
 }
+
+export function countWords(text: string) : number {
+	// Credit goes to iamwhitebox https://stackoverflow.com/a/39125279/14911205
+	const words = text.match(/\w+/g);
+	if (words === null) {
+		return 0;
+	}
+	return words.length;
+}
