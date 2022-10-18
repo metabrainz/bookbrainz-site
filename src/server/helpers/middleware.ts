@@ -2,6 +2,7 @@
  * Copyright (C) 2015       Ben Ockmore
  *               2015-2016  Sean Burke
  *				 2021       Akash Gupta
+ *				 2022       Ansh Goyal
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -20,11 +21,11 @@
 import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
-
 import type {Response as $Response, NextFunction, Request} from 'express';
 
 import _ from 'lodash';
 import {getRelationshipTargetBBIDByTypeId} from '../../client/helpers/entity';
+import {getReviewsFromCB} from './critiquebrainz';
 
 
 interface $Request extends Request {
@@ -237,6 +238,8 @@ export function makeEntityLoader(modelName: string, additionalRels: Array<string
 					entity.collections = entity.collections.filter(collection => collection.public === true ||
 					parseInt(collection.ownerId, 10) === parseInt(req.user?.id, 10));
 				}
+				const reviews = await getReviewsFromCB(bbid, entity.type);
+				entity.reviews = reviews;
 				res.locals.entity = entity;
 				return next();
 			}

@@ -18,16 +18,19 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
+import React, {createRef, useCallback} from 'react';
 
+import AverageRating from './average-ratings';
+import CBReviewModal from './cbReviewModal';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
 import EntityRelatedCollections from './related-collections';
+import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {labelsForAuthor} from '../../../helpers/utils';
@@ -48,6 +51,8 @@ function AuthorAttributes({author}) {
 	const beginDate = transformISODateForDisplay(extractAttribute(author.beginDate));
 	const endDate = transformISODateForDisplay(extractAttribute(author.endDate));
 	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(author);
+	const averageRating = author.reviews?.reviews?.average_rating?.rating || 0;
+	const reviewsCount = author.reviews?.reviews?.average_rating?.count || 0;
 
 	const isGroup = type === 'Group';
 	const {
@@ -64,6 +69,10 @@ function AuthorAttributes({author}) {
 					<dl>
 						<dt>Sort Name</dt>
 						<dd>{sortNameOfDefaultAlias}</dd>
+						<AverageRating
+							averageRatings={averageRating}
+							reviewsCount={reviewsCount}
+						/>
 					</dl>
 				</Col>
 				<Col lg={3}>
@@ -108,9 +117,29 @@ AuthorAttributes.propTypes = {
 
 
 function AuthorDisplayPage({entity, identifierTypes, user}) {
+	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
+	const handleModalToggle = useCallback(() => {
+		setShowCBReviewModal(!showCBReviewModal);
+	}, [showCBReviewModal]);
+
+	const reviewsRef = createRef();
+
+	const handleUpdateReviews = useCallback(() => {
+		reviewsRef.current.handleClick();
+	}, [reviewsRef]);
+
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
+			<CBReviewModal
+				entityBBID={entity.bbid}
+				entityName={entity.defaultAlias.name}
+				entityType={entity.type}
+				handleModalToggle={handleModalToggle}
+				handleUpdateReviews={handleUpdateReviews}
+				showModal={showCBReviewModal}
+				userId={user?.id}
+			/>
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" lg={2}>
 					<EntityImage
@@ -120,27 +149,45 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 				<Col lg={10}>
-					<EntityTitle entity={entity}/>
-					<AuthorAttributes author={entity}/>
+					<EntityTitle
+						entity={entity}
+						handleModalToggle={handleModalToggle}
+					/>
+					<AuthorAttributes
+						author={entity}
+					/>
 				</Col>
 			</Row>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
-			<React.Fragment>
-				<EntityLinks
-					entity={entity}
-					identifierTypes={identifierTypes}
-					urlPrefix={urlPrefix}
-				/>
-				<EntityRelatedCollections collections={entity.collections}/>
-				<Button
-					className="margin-top-d15"
-					href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
-					variant="success"
-				>
-					<FontAwesomeIcon className="margin-right-0-5" icon={faPlus}/>Add Work
-				</Button>
-			</React.Fragment>}
+				<React.Fragment>
+					<Row>
+						<Col lg={8}>
+							<EntityLinks
+								entity={entity}
+								identifierTypes={identifierTypes}
+								urlPrefix={urlPrefix}
+							/>
+							<EntityRelatedCollections collections={entity.collections}/>
+							<Button
+								className="margin-top-d15"
+								href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+								variant="success"
+							>
+								<FontAwesomeIcon className="margin-right-0-5" icon={faPlus}/>Add Work
+							</Button>
+						</Col>
+						<Col lg={4}>
+							<EntityReviews
+								entityBBID={entity.bbid}
+								entityReviews={entity.reviews}
+								entityType={entity.type}
+								handleModalToggle={handleModalToggle}
+								ref={reviewsRef}
+							/>
+						</Col>
+					</Row>
+				</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter
 				bbid={entity.bbid}

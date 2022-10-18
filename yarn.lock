@@ -1355,6 +1355,7 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
+
 "@babel/types@^7.18.6", "@babel/types@^7.18.9", "@babel/types@^7.3.0", "@babel/types@^7.3.3":
   version "7.18.9"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.18.9.tgz#7148d64ba133d8d73a41b3172ac4b83a1452205f"
@@ -1362,6 +1363,12 @@
   dependencies:
     "@babel/helper-validator-identifier" "^7.18.6"
     to-fast-properties "^2.0.0"
+
+"@cospired/i18n-iso-languages@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@cospired/i18n-iso-languages/-/i18n-iso-languages-4.0.0.tgz#fbd54bd046e28295a2ab8f3806c77b0d92852b29"
+  integrity sha512-8dKE8TJIhb6/JpwpshTV96Q/fT8kAohnAD2KnOuKkVemhDcWDjurPmzj8NnA25YW4gcKfvJYq/iDbXyB0gZ2jg==
+
 
 "@discoveryjs/json-ext@^0.5.0":
   version "0.5.6"
@@ -8126,6 +8133,11 @@ react-select@^4.3.1:
     react-input-autosize "^3.0.0"
     react-transition-group "^4.3.0"
 
+react-simple-star-rating@^4.0.5:
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/react-simple-star-rating/-/react-simple-star-rating-4.0.5.tgz#030e576015c9fca881677c9eeb55218f42278cd8"
+  integrity sha512-995YpXtLNNLim/K59lhRqFnvpRXJHsiJAnYAu2iHEjfCn4u8hP9Eam53hi+ubc6stU25FzvBPyXKzjhu7wl+hA==
+
 react-sortable-hoc@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/react-sortable-hoc/-/react-sortable-hoc-2.0.0.tgz#f6780d8aa4b922a21f3e754af542f032677078b7"
@@ -8143,6 +8155,7 @@ react-sticky@^6.0.1:
     prop-types "^15.5.8"
     raf "^3.3.0"
 
+
 react-test-renderer@^16.0.0-0:
   version "16.14.0"
   resolved "https://registry.yarnpkg.com/react-test-renderer/-/react-test-renderer-16.14.0.tgz#e98360087348e260c56d4fe2315e970480c228ae"
@@ -8152,6 +8165,14 @@ react-test-renderer@^16.0.0-0:
     prop-types "^15.6.2"
     react-is "^16.8.6"
     scheduler "^0.19.1"
+
+react-tooltip@^4.2.21:
+  version "4.2.21"
+  resolved "https://registry.yarnpkg.com/react-tooltip/-/react-tooltip-4.2.21.tgz#840123ed86cf33d50ddde8ec8813b2960bfded7f"
+  integrity sha512-zSLprMymBDowknr0KVDiJ05IjZn9mQhhg4PRsqln0OZtURAJ1snt1xi5daZfagsh6vfsziZrc9pErPTDY1ACig==
+  dependencies:
+    prop-types "^15.7.2"
+    uuid "^7.0.3"
 
 react-transition-group@^4.3.0, react-transition-group@^4.4.1:
   version "4.4.2"
@@ -9649,6 +9670,11 @@ utils-merge@1.0.1, utils-merge@1.x.x:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
+
+uuid@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.3.tgz#c5c9f2c8cf25dc0a372c4df1441c41f5bd0c680b"
+  integrity sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==
 
 uuid@^8.3.2:
   version "8.3.2"

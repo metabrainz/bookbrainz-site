@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2021  Akash Gupta
+ *               2022  Ansh Goyal
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,13 +17,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as bootstrap from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 
+const {Row} = bootstrap;
+
 function EntityRelatedCollections({collections}) {
 	return (
-		<div>
+		<Row>
 			<h2>Related Collections</h2>
 			{collections &&
 			<ul className="list-unstyled">
@@ -34,7 +38,7 @@ function EntityRelatedCollections({collections}) {
 				))}
 			</ul>
 			}
-		</div>
+		</Row>
 	);
 }
 EntityRelatedCollections.displayName = 'EntityRelatedCollections';
