@@ -68,7 +68,7 @@ function reducer(
 		case UPDATE_LANGUAGES:
 			return state.set('languages', Immutable.fromJS(payload));
 		case ADD_LANGUAGE:
-			return state.update('languages', (languages) => languages.push(payload));
+			return state.update('languages', (languages) => (!payload ? languages : languages.push(payload)));
 		case UPDATE_FORMAT:
 			return state.set('format', payload);
 		case UPDATE_PUBLISHER:
