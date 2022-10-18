@@ -244,12 +244,12 @@ const EntityTypes = ['Author',
 	'Edition',
 	'EditionGroup', 'Publisher', 'Work'];
 
-function getEntityRevisionModal(type:EntityType, orm) {
+function getEntityRevisionModel(type:EntityType, orm) {
 	const entityType = upperFirst(camelCase(type));
 	if (!EntityTypes.includes(entityType)) { return null; }
 	return orm[`${entityType}Revision`];
 }
-function getEntityHeaderModal(type:EntityType, orm) {
+function getEntityHeaderModel(type:EntityType, orm) {
 	const entityType = upperFirst(camelCase(type));
 	if (!EntityTypes.includes(entityType)) { return null; }
 	return orm[`${entityType}Header`];
@@ -259,13 +259,13 @@ export async function getAllRevisionEntity(revisionId:number, orm, transacting, 
 	const revisions = {};
 	const key = isUndo ? 'parents' : 'children';
 	for (const type of EntityTypes) {
-		const entityRevisionModel = getEntityRevisionModal(type, orm);
+		const entityRevisionModel = getEntityRevisionModel(type, orm);
 		// eslint-disable-next-line no-await-in-loop
 		const entityRevision = await entityRevisionModel.forge().where('id', revisionId).fetchAll({merge: false,
 			remove: false,
 			require: false,
 			transacting});
-		const RevisionModal = getEntityRevisionModal(type, orm);
+		const RevisionModel = getEntityRevisionModel(type, orm);
 		const typeRevisions = [];
 		for (const entity of entityRevision.models) {
 			const revisionParent = await entity.related('revision').fetch({require: false, transacting})
@@ -275,7 +275,7 @@ export async function getAllRevisionEntity(revisionId:number, orm, transacting, 
 					if (entitiesId.length === 0) {
 						return null;
 					}
-					return new RevisionModal()
+					return new RevisionModel()
 						.where('bbid', entity.get('bbid'))
 						.query('whereIn', 'id', entitiesId)
 						.orderBy('id', 'DESC')
@@ -299,17 +299,19 @@ export async function getAllRevisionEntity(revisionId:number, orm, transacting, 
  *
  * @param {number} revisionId - Merge Revision Id
  * @param {string} mergeToBBID - Merged Entity BBID
+ * @param {Object} EntityHeader - Bookshelf Model for the Revision
  * @param {Object} transacting - Bookshelf transaction object
  * @param {Object} orm - ORM
  */
 
-async function redoMerge(revisionId:number, mergeToBBID:string, transacting, orm) {
+async function redoMerge(revisionId:number, mergeToBBID:string, EntityHeader, transacting, orm) {
 	const effectedEntities = await getAllRevisionEntity(revisionId, orm, false);
 	for (const type of EntityTypes) {
 		const revisions = effectedEntities[type];
 		for (const revision of revisions) {
 			if (revision.bbid !== mergeToBBID) {
 				const sourceBbid = revision.bbid;
+				await new EntityHeader({bbid: sourceBbid}).save({masterRevisionId: revisionId}, {method: 'update', transacting});
 				// eslint-disable-next-line camelcase
 				await orm.bookshelf
 					.knex('bookbrainz.entity_redirect')
@@ -344,7 +346,7 @@ export async function recursivelyDoRevision(fromRevisionID:number, toRevisionID:
 	const effectedEntities = await getAllRevisionEntity(fromRevisionID, orm, transacting, isUndo);
 	let nextId;
 	for (const type of EntityTypes) {
-		const EntityHeader = getEntityHeaderModal(type, orm);
+		const EntityHeader = getEntityHeaderModel(type, orm);
 		const entityRevision = effectedEntities[type];
 		let mergeToBBID = null;
 		let mergeRevisionID;
@@ -383,7 +385,7 @@ export async function recursivelyDoRevision(fromRevisionID:number, toRevisionID:
 				}
 			}
 			else {
-				await redoMerge(mergeRevisionID, mergeToBBID, transacting, orm);
+				await redoMerge(mergeRevisionID, mergeToBBID, EntityHeader, transacting, orm);
 			}
 		}
 	}
