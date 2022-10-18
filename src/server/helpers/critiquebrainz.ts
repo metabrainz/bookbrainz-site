@@ -102,7 +102,7 @@ export async function fetchAccessToken(
 		return newUser;
 	}
 	catch (error) {
-		log.error(error.response?.error);
+		log.error(error.error ?? error.response?.error ?? error);
 		return null;
 	}
 }
