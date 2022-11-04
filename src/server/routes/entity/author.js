@@ -34,7 +34,7 @@ import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import log from 'log';
-import {recursivelyDoRevision} from '../../helpers/revisions';
+import {revertRevision} from '../../helpers/revisions';
 import target from '../../templates/target';
 
 /** ****************************
@@ -367,16 +367,14 @@ router.post('/:bbid/master', auth.isAuthenticatedForHandler, async (req, res, ne
 	const {orm} = req.app.locals;
 	const {bbid} = req.params;
 	const {revisionId} = req.body;
-	const {entity} = res.locals;
-	const startRevisionId = entity.revision.id;
-	const isUndo = startRevisionId > revisionId;
 	const {AuthorRevision} = orm;
+	const userID = req.user.id;
 	try {
 		// check if author revision exist for this entity
 		await new AuthorRevision({bbid, id: revisionId}).fetch({
 			require: true
 		});
-		await orm.bookshelf.transaction((transacting) => recursivelyDoRevision(startRevisionId, revisionId, bbid, orm, transacting, isUndo));
+		await orm.bookshelf.transaction((transacting) => revertRevision(revisionId, bbid, userID, 'Author', orm, transacting));
 	}
 	catch (err) {
 		return next(new BadRequestError(err.message));
