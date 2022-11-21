@@ -180,9 +180,10 @@ function RevisionsTable(props) {
 												>
 													<FontAwesomeIcon
 														className={`ml-2 cursor-pointer
-													${revision.revisionId === masterRevisionId ? 'text-muted' : 'text-danger'}`}
+													${revision.revisionId === masterRevisionId || revision.isMerge ? 'text-muted' : 'text-danger'}`}
 														icon={faUndo}
-														onClick={makeClickHandler(revision.revisionId)}
+														onClick={revision.revisionId === masterRevisionId || revision.isMerge ? null :
+															makeClickHandler(revision.revisionId)}
 													/>
 												</OverlayTrigger>
 											</div>

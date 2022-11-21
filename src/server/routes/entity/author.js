@@ -371,9 +371,12 @@ router.post('/:bbid/master', auth.isAuthenticatedForHandler, async (req, res, ne
 	const userID = req.user.id;
 	try {
 		// check if author revision exist for this entity
-		await new AuthorRevision({bbid, id: revisionId}).fetch({
+		const targetRevision = await new AuthorRevision({bbid, id: revisionId}).fetch({
 			require: true
 		});
+		if (targetRevision.get('isMerge')) {
+			return next(new BadRequestError('Cannot revert to a merged revision'));
+		}
 		await orm.bookshelf.transaction((transacting) => revertRevision(revisionId, bbid, userID, 'Author', orm, transacting));
 	}
 	catch (err) {
