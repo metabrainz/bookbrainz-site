@@ -23,17 +23,18 @@ import * as middleware from '../../helpers/middleware';
 import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
+import {BadRequestError, ConflictError} from '../../../common/helpers/error';
 import {
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
-import {ConflictError} from '../../../common/helpers/error';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import log from 'log';
+import {revertRevision} from '../../helpers/revisions';
 import target from '../../templates/target';
 
 /** ****************************
@@ -337,5 +338,30 @@ router.get(
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
 	createOrEditHandler);
+
+router.post('/:bbid/master', auth.isAuthenticatedForHandler, async (req, res, next) => {
+	const {orm} = req.app.locals;
+	const {bbid} = req.params;
+	const {revisionId} = req.body;
+	const {SeriesRevision} = orm;
+	const userID = req.user.id;
+	try {
+		// check if Series revision exist for this entity
+		const targetRevision = await new SeriesRevision({bbid, id: revisionId}).fetch({
+			require: true
+		});
+		if (targetRevision.get('isMerge')) {
+			return next(new BadRequestError('Cannot revert to a merged revision'));
+		}
+		await orm.bookshelf.transaction((transacting) => revertRevision(revisionId, bbid, userID, 'Series', orm, transacting));
+	}
+	catch (err) {
+		return next(new BadRequestError(err.message));
+	}
+	return res.status(200).send({
+		changed: true
+	});
+});
+
 
 export default router;
