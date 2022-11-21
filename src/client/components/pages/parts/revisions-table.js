@@ -20,6 +20,7 @@ import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
 import {faCodeBranch, faEye, faUndo} from '@fortawesome/free-solid-svg-icons';
 import {genEntityIconHTMLElement, getEntityLabel, getEntityUrl} from '../../../helpers/entity';
+import ConfirmationModal from './confirmation-modal';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -30,11 +31,30 @@ const {formatDate, stringToHTMLWithLinks} = utilsHelper;
 
 function RevisionsTable(props) {
 	const {results, showEntities, showActions, showRevisionNote, showRevisionEditor, tableHeading, masterRevisionId, handleMasterChange} = props;
-	function makeMasterChangeHandler(revisionId) {
-		return () => handleMasterChange(revisionId);
+	const [show, setShow] = React.useState(false);
+	const [revisionId, setRevisionId] = React.useState(null);
+	const showConfirmModal = React.useCallback((rid) => {
+		setRevisionId(rid);
+		setShow(true);
+	}, []);
+	const hideConfirmModal = React.useCallback(() => setShow(false), []);
+	const onConfirm = React.useCallback(() => {
+		handleMasterChange(revisionId);
+		hideConfirmModal();
+	}, [revisionId]);
+	function makeClickHandler(rid) {
+		return () => showConfirmModal(rid);
 	}
 	return (
 		<div>
+			<ConfirmationModal
+				message={`Are you sure you want to change the master revision from #${masterRevisionId} to #${revisionId} ?`}
+				show={show}
+				title="Revert Revision"
+				onCancel={hideConfirmModal}
+				onConfirm={onConfirm}
+			/>
+
 			<div>
 				<h1 className="text-center">{tableHeading}</h1>
 			</div>
@@ -162,7 +182,7 @@ function RevisionsTable(props) {
 														className={`ml-2 cursor-pointer
 													${revision.revisionId === masterRevisionId ? 'text-muted' : 'text-danger'}`}
 														icon={faUndo}
-														onClick={makeMasterChangeHandler(revision.revisionId)}
+														onClick={makeClickHandler(revision.revisionId)}
 													/>
 												</OverlayTrigger>
 											</div>
