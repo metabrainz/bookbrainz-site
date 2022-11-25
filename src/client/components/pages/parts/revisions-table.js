@@ -48,7 +48,7 @@ function RevisionsTable(props) {
 	return (
 		<div>
 			<ConfirmationModal
-				message={`Are you sure you want to change the master revision from #${masterRevisionId} to #${revisionId} ?`}
+				message={`Are you sure you want to revert all the changes from #${revisionId} revision?`}
 				show={show}
 				title="Revert Revision"
 				onCancel={hideConfirmModal}
@@ -180,9 +180,11 @@ function RevisionsTable(props) {
 												>
 													<FontAwesomeIcon
 														className={`ml-2 cursor-pointer
-													${revision.revisionId === masterRevisionId || revision.isMerge ? 'text-muted' : 'text-danger'}`}
+													${revision.revisionId === masterRevisionId || revision.isMerge ||
+														 !revision.dataId ? 'text-muted' : 'text-danger'}`}
 														icon={faUndo}
-														onClick={revision.revisionId === masterRevisionId || revision.isMerge ? null :
+														onClick={revision.revisionId === masterRevisionId || revision.isMerge ||
+															 !revision.dataId ? null :
 															makeClickHandler(revision.revisionId)}
 													/>
 												</OverlayTrigger>

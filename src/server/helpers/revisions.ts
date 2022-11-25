@@ -211,7 +211,7 @@ export async function getOrderedRevisionsForEntityPage(orm: any, from: number, s
 
 	const revisions = await new RevisionModel()
 		.query((qb) => {
-			qb.distinct(`${RevisionModel.prototype.tableName}.id`, 'revision.created_at');
+			qb.distinct(`${RevisionModel.prototype.tableName}.id`, 'revision.created_at', 'data_id');
 			qb.whereIn('bbid', [bbid, ...otherMergedBBIDs]);
 			qb.join('bookbrainz.revision', `${RevisionModel.prototype.tableName}.id`, '=', 'bookbrainz.revision.id');
 			qb.orderBy('revision.created_at', 'DESC');
@@ -234,10 +234,11 @@ export async function getOrderedRevisionsForEntityPage(orm: any, from: number, s
 		const {revision} = rev;
 		const editor = revision.author;
 		const revisionId = revision.id;
+		const {dataId} = rev;
 		delete revision.author;
 		delete revision.authorId;
 		delete revision.id;
-		return {editor, revisionId, ...revision};
+		return {dataId, editor, revisionId, ...revision};
 	});
 }
 
