@@ -15,7 +15,8 @@ import {
 	getAssociatedEntityRevisions,
 	getOrderedRevisionForEditorPage,
 	getOrderedRevisions,
-	getOrderedRevisionsForEntityPage
+	getOrderedRevisionsForEntityPage,
+	revertRevision
 } from '../../../../src/server/helpers/revisions';
 
 import chai from 'chai';
@@ -30,7 +31,8 @@ chai.use(isSorted);
 const {
 	AuthorData, AuthorRevision, Revision, AliasSet,
 	EditionData, EditionRevision, EditionGroupData, EditionGroupRevision,
-	Note, PublisherData, PublisherRevision, WorkData, WorkRevision
+	Note, PublisherData, PublisherRevision, WorkData, WorkRevision,
+	Work
 } = orm;
 
 
@@ -616,5 +618,41 @@ describe('getOrderedRevisionsForEntityPage', () => {
 		expect(orderedRevision[0].revisionId).to.be.equal(revisionID3);
 		expect(orderedRevision[1].revisionId).to.be.equal(revisionID2);
 		expect(orderedRevision[2].revisionId).to.be.equal(revisionID1);
+	});
+});
+
+describe.only('revertRevision', () => {
+	let aliasSetId; let author; let editionGroup; let edition;
+	let editorJSON; let publisher; let workEntity;
+	beforeEach(async () => {
+		author = await createAuthor();
+		edition = await createEdition();
+		editionGroup = await createEditionGroup();
+		publisher = await createPublisher();
+		workEntity = await createWork();
+		const editor = await createEditor();
+		editorJSON = editor.toJSON();
+
+		// In each revision, we will change the alias of entity to AuthorJSON alias.
+		// We need expectedDefaultAliasId to check the test
+		aliasSetId = author.get('aliasSetId');
+	});
+	after(truncateEntities);
+	it('should be able to revert simple revision to a previous revision (work)', async () => {
+		// create new revision for revert
+		const revision = await new Revision({authorId: editorJSON.id})
+			.save(null, {method: 'insert'});
+		const oldAliasSetId = workEntity.get('aliasSetId');
+		const oldRevisionId = workEntity.get('revisionId');
+		// set parent of new revision to last revision
+		const parents =
+			await revision.related('parents').fetch();
+		parents.attach([oldRevisionId]);
+		await workEntity.save({aliasSetId, revisionId: revision.get('id')}, {method: 'update'});
+		await orm.bookshelf.transaction((trx) => revertRevision(oldRevisionId, workEntity.get('bbid'), editorJSON.id, 'Work', orm, trx));
+		const rWork = await new Work({bbid: workEntity.get('bbid')}).fetch({withRelated: ['revision']});
+		const currentAliasSetId = rWork.get('aliasSetId');
+		// check if aliasSetId is changed to expectedDefaultAliasId
+		expect(currentAliasSetId).to.be.equal(oldAliasSetId);
 	});
 });
