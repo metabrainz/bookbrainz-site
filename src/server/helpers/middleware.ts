@@ -2,6 +2,7 @@
  * Copyright (C) 2015       Ben Ockmore
  *               2015-2016  Sean Burke
  *				 2021       Akash Gupta
+ *				 2022       Ansh Goyal
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -20,11 +21,11 @@
 import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
-
 import type {Response as $Response, NextFunction, Request} from 'express';
 
 import _ from 'lodash';
 import {getRelationshipTargetBBIDByTypeId} from '../../client/helpers/entity';
+import {getReviewsFromCB} from './critiquebrainz';
 import {recursivelyGetMergedEntitiesBBIDs} from './revisions';
 
 
@@ -122,6 +123,44 @@ export async function loadWorkTableAuthors(req: $Request, res: $Response, next: 
 	return next();
 }
 
+/**
+ * Add the relationships on entity object.
+ *
+ * @param {Object} entity - The entity to load the relationships for.
+ * @param {Object} relationshipSet - The RelationshipSet model.
+ * @param {Object} orm - The ORM instance.
+ * @returns
+ */
+
+export function addRelationships(entity, relationshipSet, orm) {
+	async function getEntityWithAlias(relEntity) {
+		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
+		const model = commonUtils.getEntityModelByType(orm, relEntity.type);
+
+		return model.forge({bbid: redirectBbid})
+			.fetch({require: false, withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))});
+	}
+	entity.relationships = relationshipSet ?
+		relationshipSet.related('relationships').toJSON() : [];
+
+	utils.attachAttributes(entity.relationships);
+
+
+	/**
+	 * Source and target are generic Entity objects, so until we have
+	 * a good way of polymorphically fetching the right specific entity,
+	 * we need to fetch default alias in a somewhat sketchier way.
+	 */
+	return Promise.all(entity.relationships.map((relationship) =>
+		Promise.all([getEntityWithAlias(relationship.source), getEntityWithAlias(relationship.target)])
+			.then(([source, target]) => {
+				relationship.source = source.toJSON();
+				relationship.target = target.toJSON();
+
+				return relationship;
+			})));
+}
+
 export function loadEntityRelationships(req: $Request, res: $Response, next: NextFunction) {
 	const {orm}: any = req.app.locals;
 	const {RelationshipSet} = orm;
@@ -147,34 +186,7 @@ export function loadEntityRelationships(req: $Request, res: $Response, next: Nex
 					]
 				})
 		)
-		.then((relationshipSet) => {
-			entity.relationships = relationshipSet ?
-				relationshipSet.related('relationships').toJSON() : [];
-
-			utils.attachAttributes(entity.relationships);
-
-			async function getEntityWithAlias(relEntity) {
-				const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
-				const model = commonUtils.getEntityModelByType(orm, relEntity.type);
-
-				return model.forge({bbid: redirectBbid})
-					.fetch({require: false, withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))});
-			}
-
-			/**
-			 * Source and target are generic Entity objects, so until we have
-			 * a good way of polymorphically fetching the right specific entity,
-			 * we need to fetch default alias in a somewhat sketchier way.
-			 */
-			return Promise.all(entity.relationships.map((relationship) =>
-				Promise.all([getEntityWithAlias(relationship.source), getEntityWithAlias(relationship.target)])
-					.then(([source, target]) => {
-						relationship.source = source.toJSON();
-						relationship.target = target.toJSON();
-
-						return relationship;
-					})));
-		})
+		.then((relationshipSet) => addRelationships(entity, relationshipSet, orm))
 		.then(() => {
 			next();
 			return null;
@@ -229,6 +241,8 @@ export function makeEntityLoader(modelName: string, additionalRels: Array<string
 					entity.collections = entity.collections.filter(collection => collection.public === true ||
 					parseInt(collection.ownerId, 10) === parseInt(req.user?.id, 10));
 				}
+				const reviews = await getReviewsFromCB(bbid, entity.type);
+				entity.reviews = reviews;
 				res.locals.entity = entity;
 				return next();
 			}

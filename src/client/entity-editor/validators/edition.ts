@@ -84,7 +84,8 @@ export function validateEditionSectionPublisher(value: any): boolean {
 	for (const pubId in publishers) {
 		if (Object.prototype.hasOwnProperty.call(publishers, pubId)) {
 			const publisher = publishers[pubId];
-			if (!validateUUID(get(publisher, 'id', null), true)) {
+			const isValid = validateUUID(get(publisher, 'id', null), true);
+			if (!isValid) {
 				return false;
 			}
 		}

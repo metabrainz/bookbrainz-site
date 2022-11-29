@@ -44,7 +44,7 @@ import target from '../../templates/target';
 *********** Helpers ************
 *******************************/
 
-function transformNewForm(data) {
+export function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
 		data.aliasEditor, data.nameSection
 	);
@@ -258,7 +258,6 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 	_setWorkTitle(res);
 	entityRoutes.updateDisplayedRevisions(req, res, next, WorkRevision);
 });
-
 
 export function workToFormState(work) {
 	/** The front-end expects a language id rather than the language object. */

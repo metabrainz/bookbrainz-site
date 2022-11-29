@@ -42,12 +42,14 @@ type EntitySearchResult = {
 };
 
 type SeriesItemsProps = {
+	hideItemSelect: boolean
 	baseEntity: Entity,
 	onAdd: (_Relationship) => unknown,
     onEdit: (Attribute, string) => unknown,
     onRemove: (string) => unknown,
 	onSort: (_setPosition) => unknown,
 	orderType: number,
+	isUnifiedForm?: boolean,
     relationshipTypes: Array<RelationshipType>,
     seriesItemsArray: RelationshipForDisplay[],
     seriesType: string
@@ -74,16 +76,18 @@ type SeriesItemsProps = {
  * @param {Function} props.onAdd - A function to be called when the add button
  *        is clicked.
  * @param {Array} props.seriesItemsArray - The list of entities.
+ * @param {boolean} props.isUnifiedForm - Whether the series section is render inside UF.
  *
  * @returns {ReactElement} React Component as a modular section within the entity editor.
  *
  */
 
-const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemove, dragHandler}) => (
-	<Row className="margin-top-d5" key={value.rowID}>
+const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemove, dragHandler, isUnifiedForm}) => (
+	<Row className={`margin-top-d5 ${isUnifiedForm ? 'w-100 align-items-center' : ''}`} key={value.rowID}>
+		{(!isUnifiedForm || dragHandler) &&
 		<Col className="text-right form-control-static padding-left-0" lg={1}>
 			{dragHandler ? <><FontAwesomeIcon icon={faBars}/> &nbsp;&nbsp;</> : null}
-		</Col>
+		</Col>}
 		<Col lg={2}>
 			<input
 				className="form-control"
@@ -120,22 +124,25 @@ SeriesListItem.propTypes = {
 	baseEntity: PropTypes.object.isRequired,
 	dragHandler: PropTypes.bool.isRequired,
 	handleNumberAttributeChange: PropTypes.func.isRequired,
+	isUnifiedForm: PropTypes.bool.isRequired,
 	onRemove: PropTypes.func.isRequired,
 	value: PropTypes.any.isRequired
 };
 
-const SortableItem = SortableElement(({value, onRemove, baseEntity, handleNumberAttributeChange}) => (
+const SortableItem = SortableElement(({value, onRemove, baseEntity, handleNumberAttributeChange, isUnifiedForm}) => (
 	<SeriesListItem
 		dragHandler
 		baseEntity={baseEntity}
 		handleNumberAttributeChange={handleNumberAttributeChange}
+		isUnifiedForm={isUnifiedForm}
 		value={value}
 		onRemove={onRemove}
 	/>
 ));
 
 const SortableList = SortableContainer(({children}) => <div>{children}</div>);
-function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onRemove, onAdd, onEdit, onSort, seriesItemsArray}:SeriesItemsProps) {
+function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onRemove, hideItemSelect,
+	onAdd, onEdit, onSort, seriesItemsArray, isUnifiedForm}:SeriesItemsProps) {
 	const [seriesItem, setSeriesItem] = useState(null);
 	const [targetEntity, setTargetEntity] = useState(null);
 
@@ -183,9 +190,11 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 		onEdit(attributeNumber, rowID);
 		onSort({newIndex: null, oldIndex: null});
 	};
+	const heading = <h2>What {seriesType}s are part of this Series?</h2>;
+	const alignText = isUnifiedForm ? 'text-left' : 'text-right';
 	return (
 		<div>
-			<h2>What {seriesType}s are part of this Series?</h2>
+			{!isUnifiedForm && heading}
 			{seriesItemsArray.length ?
 				<> {
 					orderType === 1 ?
@@ -195,6 +204,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 									baseEntity={baseEntity}
 									dragHandler={false}
 									handleNumberAttributeChange={handleNumberAttributeChange}
+									isUnifiedForm={isUnifiedForm}
 									key={value.rowID}
 									value={value}
 									onRemove={onRemove}
@@ -203,11 +213,12 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 							}
 						</> :
 						<SortableList distance={1} onSortEnd={onSort}>
-							{seriesItemsArray.map((value, index) => (
+							{seriesItemsArray.map((value, index) => !value.isRemoved && (
 								<SortableItem
 									baseEntity={baseEntity}
 									handleNumberAttributeChange={handleNumberAttributeChange}
 									index={index}
+									isUnifiedForm={isUnifiedForm}
 									key={value.rowID}
 									value={value}
 									onRemove={onRemove}
@@ -217,11 +228,12 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 				}
 				</> : null
 			}
+			{!hideItemSelect &&
 			<Row className="margin-top-d8">
-				<Col className="text-right" lg={3}>
+				<Col className={alignText} lg={isUnifiedForm ? 7 : 3}>
 					<p className="margin-top-d5">Add an entity to the series:</p>
 				</Col>
-				<Col lg={7} style={{marginTop: -22}}>
+				<Col lg={isUnifiedForm ? 6 : 7} style={{marginTop: -22}}>
 					<EntitySearchFieldOption
 						className="series-editor-select"
 						instanceId="entitySearchField"
@@ -231,16 +243,20 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 						onChange={handleEntityChange}
 					/>
 				</Col>
-				<Col lg={2}>
+				<Col lg={isUnifiedForm ? 7 : 2}>
 					<Button variant="success" onClick={handleAdd}>
 						<FontAwesomeIcon icon={faPlus}/>
 						<span>&nbsp;Add {seriesType}</span>
 					</Button>
 				</Col>
 			</Row>
+					   }
 		</div>
 	);
 }
 SeriesEditor.displayName = 'SeriesEditor';
+SeriesEditor.defaultProps = {
+	isUnifiedForm: false
+};
 
 export default SeriesEditor;
