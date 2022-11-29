@@ -181,6 +181,23 @@ router.param(
 	)
 );
 
+router.param(
+	'revisionId',
+	middleware.makeRevisionLoader(
+		'EditionGroup',
+		[
+			'authorCredit.names.author.defaultAlias',
+			'editionGroupType',
+			'editions.defaultAlias',
+			'editions.disambiguation',
+			'editions.releaseEventSet.releaseEvents',
+			'editions.identifierSet.identifiers.type',
+			'editions.editionFormat'
+		],
+		'Edition Group Revision not found'
+	)
+);
+
 function _setEditionGroupTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
@@ -192,6 +209,11 @@ function _setEditionGroupTitle(res) {
 router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
 	_setEditionGroupTitle(res);
 	res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
+	entityRoutes.displayEntity(req, res);
+});
+
+router.get('/:bbid/revision/:revisionId', middleware.loadEntityRelationships, (req, res) => {
+	_setEditionGroupTitle(res);
 	entityRoutes.displayEntity(req, res);
 });
 

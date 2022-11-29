@@ -214,7 +214,14 @@ router.param(
 		'Work not found'
 	)
 );
-
+router.param(
+	'revisionId',
+	middleware.makeRevisionLoader(
+		'Work',
+		['workType', 'languageSet.languages'],
+		'Work Revision not found'
+	)
+);
 function _setWorkTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
@@ -224,6 +231,11 @@ function _setWorkTitle(res) {
 }
 
 router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
+	_setWorkTitle(res);
+	entityRoutes.displayEntity(req, res);
+});
+
+router.get('/:bbid/revision/:revisionId', middleware.loadEntityRelationships, (req, res) => {
 	_setWorkTitle(res);
 	entityRoutes.displayEntity(req, res);
 });

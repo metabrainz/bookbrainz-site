@@ -182,6 +182,15 @@ router.param(
 	)
 );
 
+router.param(
+	'revisionId',
+	middleware.makeRevisionLoader(
+		'Publisher',
+		['publisherType', 'area'],
+		'Publisher Revision not found'
+	)
+);
+
 function _setPublisherTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
@@ -213,6 +222,11 @@ router.get('/:bbid', middleware.loadEntityRelationships, (req, res, next) => {
 			return entityRoutes.displayEntity(req, res);
 		})
 		.catch(next);
+});
+
+router.get('/:bbid/revision/:revisionId', middleware.loadEntityRelationships, (req, res) => {
+	_setPublisherTitle(res);
+	entityRoutes.displayEntity(req, res);
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {

@@ -190,6 +190,21 @@ router.param(
 	)
 );
 
+router.param(
+	'revisionId',
+	middleware.makeRevisionLoader(
+		'Series',
+		[
+			'defaultAlias',
+			'disambiguation',
+			'seriesOrderingType',
+			'identifierSet.identifiers.type'
+		],
+		'Series Revision not found'
+	)
+);
+
+
 function _setSeriesTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
@@ -199,6 +214,11 @@ function _setSeriesTitle(res) {
 }
 
 router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadSeriesItems, (req, res) => {
+	_setSeriesTitle(res);
+	entityRoutes.displayEntity(req, res);
+});
+
+router.get('/:bbid/revision/:revisionId', middleware.loadEntityRelationships, (req, res) => {
 	_setSeriesTitle(res);
 	entityRoutes.displayEntity(req, res);
 });

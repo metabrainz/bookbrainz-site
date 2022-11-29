@@ -323,6 +323,23 @@ router.param(
 	)
 );
 
+router.param(
+	'revisionId',
+	middleware.makeRevisionLoader(
+		'Edition',
+		[
+			'authorCredit.names.author.defaultAlias',
+			'editionGroup.defaultAlias',
+			'languageSet.languages',
+			'editionFormat',
+			'editionStatus',
+			'releaseEventSet.releaseEvents',
+			'publisherSet.publishers.defaultAlias'
+		],
+		'Edition Revision not found'
+	)
+);
+
 function _setEditionTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
@@ -332,6 +349,11 @@ function _setEditionTitle(res) {
 }
 
 router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWorkTableAuthors, (req:PassportRequest, res) => {
+	_setEditionTitle(res);
+	entityRoutes.displayEntity(req, res);
+});
+
+router.get('/:bbid/revision/:revisionId', middleware.loadEntityRelationships, (req, res) => {
 	_setEditionTitle(res);
 	entityRoutes.displayEntity(req, res);
 });
