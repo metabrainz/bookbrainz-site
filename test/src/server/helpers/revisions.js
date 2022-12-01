@@ -32,7 +32,7 @@ const {
 	AuthorData, AuthorRevision, Revision, AliasSet,
 	EditionData, EditionRevision, EditionGroupData, EditionGroupRevision,
 	Note, PublisherData, PublisherRevision, WorkData, WorkRevision,
-	Work, WorkHeader, RelationshipType, Relationship, RelationshipSet
+	Work, WorkHeader, RelationshipType, Edition
 } = orm;
 
 
@@ -696,12 +696,15 @@ describe('revertRevision', () => {
 		expect(rWork1.get('aliasSetId')).to.be.equal(oldAliasSetId1);
 		expect(rWork2.get('aliasSetId')).to.be.equal(oldAliasSetId2);
 	});
-	it('should be able to revert revision involving multiple(two) entities of same type(work)', async () => {
+	it('should be able to revert revision involving multiple(two) related entities of same type(work)', async () => {
 		const revision = await new Revision({authorId: editorJSON.id}).save(null, {method: 'insert'});
-		const work2 = await createWork();
-		const oldRelationshipSetId1 = workEntity.get('relationshipSetId');
-		const oldRelationshipSetId2 = work2.get('relationshipSetId');
+		const relsAttrib = ['relationshipSet.relationships'];
+		const work2 = await (await createWork()).load(relsAttrib);
+		workEntity = await workEntity.load(relsAttrib);
+		const work1Rel = workEntity.toJSON().relationshipSet.relationships.at(0);
+		const work2Rel = work2.toJSON().relationshipSet.relationships.at(0);
 		const oldRevisionId = workEntity.get('revisionId');
+		// creating relationship type for testing
 		const relationshipTypeData = {
 			description: 'test descryption',
 			label: 'test label',
@@ -713,27 +716,87 @@ describe('revertRevision', () => {
 		const relationshipType = await new RelationshipType(relationshipTypeData).save(null, {method: 'insert'});
 		const relationshipData = {
 			attributeSetId: null,
+			isAdded: true,
 			sourceBbid: work2.get('bbid'),
 			targetBbid: workEntity.get('bbid'),
 			typeId: relationshipType.get('id')
 		};
-		const relationship = await new Relationship(relationshipData).save(null, {method: 'insert'});
-		const relationshipSet = await new RelationshipSet().save(null, {method: 'insert'});
-		relationshipSet.relationships().attach([relationship.get('id')]);
+		const relsSet = await orm.func.relationship.updateRelationshipSets(
+			orm, null, null, [relationshipData]
+		);
 		const parents = await revision.related('parents').fetch();
 		parents.attach([workEntity.get('revisionId'), work2.get('revisionId')]);
 		// update entity revision
-		await workEntity.save({relationshipSetId: relationshipSet.get('id'), revisionId: revision.get('id')}, {method: 'update'});
-		await work2.save({relationshipSetId: relationshipSet.get('id'), revisionId: revision.get('id')}, {method: 'update'});
+		await workEntity.save({relationshipSetId: relsSet[workEntity.get('bbid')].get('id'), revisionId: revision.get('id')}, {method: 'update'});
+		await work2.save({relationshipSetId: relsSet[work2.get('bbid')].get('id'), revisionId: revision.get('id')}, {method: 'update'});
 		// revert just before this revision
-		// await orm.bookshelf.transaction((trx) => revertRevision(oldRevisionId, workEntity.get('bbid'), editorJSON.id, 'Work', orm, trx));
-		const rWork1 = await new Work({bbid: workEntity.get('bbid')}).fetch({withRelated: ['revision']});
-		const rWork2 = await new Work({bbid: work2.get('bbid')}).fetch({withRelated: ['revision']});
+		await orm.bookshelf.transaction((trx) => revertRevision(oldRevisionId, workEntity.get('bbid'), editorJSON.id, 'Work', orm, trx));
+		const rWork1 = await new Work({bbid: workEntity.get('bbid')}).fetch({withRelated: [...relsAttrib]});
+		const rWork2 = await new Work({bbid: work2.get('bbid')}).fetch({withRelated: [...relsAttrib]});
 		// relationshipSetId should not be null since both had set id before revision
-		// TO-Do: fix rels null on both entities
-		// expect(rWork1.get('relationshipSetId')).to.be.not.null;
-		// expect(rWork2.get('relationshipSetId')).to.be.not.null;
-		// expect(rWork1.get('relationshipSetId')).to.be.equal(oldRelationshipSetId1);
-		// expect(rWork2.get('relationshipSetId')).to.be.equal(oldRelationshipSetId2);
+		expect(rWork1.get('relationshipSetId')).to.be.not.null;
+		expect(rWork2.get('relationshipSetId')).to.be.not.null;
+		const actualWork1Rel = rWork1.toJSON().relationshipSet.relationships;
+		const actualWork2Rel = rWork2.toJSON().relationshipSet.relationships;
+		expect(actualWork1Rel.length).to.be.equal(1);
+		expect(actualWork2Rel.length).to.be.equal(1);
+		expect(actualWork1Rel.at(0).typeId).to.be.equal(work1Rel.typeId);
+		expect(actualWork2Rel.at(0).typeId).to.be.equal(work2Rel.typeId);
+		expect(actualWork1Rel.at(0).sourceBbid).to.be.equal(work1Rel.sourceBbid);
+		expect(actualWork2Rel.at(0).sourceBbid).to.be.equal(work2Rel.sourceBbid);
+		expect(actualWork1Rel.at(0).targetBbid).to.be.equal(work1Rel.targetBbid);
+		expect(actualWork2Rel.at(0).targetBbid).to.be.equal(work2Rel.targetBbid);
+	});
+
+	it('should be able to revert revision involving multiple(two) related entities of different type(work and edition)', async () => {
+		const revision = await new Revision({authorId: editorJSON.id}).save(null, {method: 'insert'});
+		const relsAttrib = ['relationshipSet.relationships'];
+		const edition = await (await createEdition()).load(relsAttrib);
+		workEntity = await workEntity.load(relsAttrib);
+		const workRel = workEntity.toJSON().relationshipSet.relationships.at(0);
+		const editionRel = edition.toJSON().relationshipSet.relationships.at(0);
+		const oldRevisionId = workEntity.get('revisionId');
+		// creating relationship type for testing
+		const relationshipTypeData = {
+			description: 'test descryption',
+			label: 'test label',
+			linkPhrase: 'test phrase',
+			reverseLinkPhrase: 'test reverse link phrase',
+			sourceEntityType: 'Work',
+			targetEntityType: 'Edition'
+		};
+		const relationshipType = await new RelationshipType(relationshipTypeData).save(null, {method: 'insert'});
+		const relationshipData = {
+			attributeSetId: null,
+			isAdded: true,
+			sourceBbid: edition.get('bbid'),
+			targetBbid: workEntity.get('bbid'),
+			typeId: relationshipType.get('id')
+		};
+		const relsSet = await orm.func.relationship.updateRelationshipSets(
+			orm, null, null, [relationshipData]
+		);
+		const parents = await revision.related('parents').fetch();
+		parents.attach([workEntity.get('revisionId'), edition.get('revisionId')]);
+		// update entity revision
+		await workEntity.save({relationshipSetId: relsSet[workEntity.get('bbid')].get('id'), revisionId: revision.get('id')}, {method: 'update'});
+		await edition.save({relationshipSetId: relsSet[edition.get('bbid')].get('id'), revisionId: revision.get('id')}, {method: 'update'});
+		// revert just before this revision
+		await orm.bookshelf.transaction((trx) => revertRevision(oldRevisionId, workEntity.get('bbid'), editorJSON.id, 'Work', orm, trx));
+		const rWork = await new Work({bbid: workEntity.get('bbid')}).fetch({withRelated: [...relsAttrib]});
+		const rEdition = await new Edition({bbid: edition.get('bbid')}).fetch({withRelated: [...relsAttrib]});
+		// relationshipSetId should not be null since both had set id before revision
+		expect(rWork.get('relationshipSetId')).to.be.not.null;
+		expect(rEdition.get('relationshipSetId')).to.be.not.null;
+		const actualWorkRel = rWork.toJSON().relationshipSet.relationships;
+		const actualEditionRel = rEdition.toJSON().relationshipSet.relationships;
+		expect(actualWorkRel.length).to.be.equal(1);
+		expect(actualEditionRel.length).to.be.equal(1);
+		expect(actualWorkRel.at(0).typeId).to.be.equal(workRel.typeId);
+		expect(actualEditionRel.at(0).typeId).to.be.equal(editionRel.typeId);
+		expect(actualWorkRel.at(0).sourceBbid).to.be.equal(workRel.sourceBbid);
+		expect(actualEditionRel.at(0).sourceBbid).to.be.equal(editionRel.sourceBbid);
+		expect(actualWorkRel.at(0).targetBbid).to.be.equal(workRel.targetBbid);
+		expect(actualEditionRel.at(0).targetBbid).to.be.equal(editionRel.targetBbid);
 	});
 });
