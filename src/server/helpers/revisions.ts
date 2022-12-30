@@ -242,9 +242,14 @@ export async function getOrderedRevisionsForEntityPage(orm: any, from: number, s
 	});
 }
 
-const EntityTypes = ['Author',
+const EntityTypes = [
+	'Author',
 	'Edition',
-	'EditionGroup', 'Publisher', 'Work'];
+	'EditionGroup',
+	'Publisher',
+	'Series',
+	'Work'
+];
 
 function getEntityRevisionModel(type:EntityType, orm) {
 	const entityType = upperFirst(camelCase(type));
