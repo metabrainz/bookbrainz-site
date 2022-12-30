@@ -629,11 +629,10 @@ describe('getOrderedRevisionsForEntityPage', () => {
 });
 
 describe('revertRevision', () => {
+	const entityTypes = ['Author', 'Edition', 'EditionGroup', 'Publisher', 'Series', 'Work'];
 	let aliasSetId; let author; let editorJSON; let workEntity;
 	let testEntities;
-	beforeEach(async () => {
-		author = await createAuthor();
-		workEntity = await createWork();
+	before(async () => {
 		const editor = await createEditor();
 		editorJSON = editor.toJSON();
 		testEntities = {
@@ -644,34 +643,34 @@ describe('revertRevision', () => {
 			Series: await createSeries(),
 			Work: await createWork()
 		};
+	});
+	beforeEach(async () => {
+		author = await createAuthor();
+		workEntity = await createWork();
 		// In each revision, we will change the alias of entity to Author alias.
 		aliasSetId = author.get('aliasSetId');
 	});
-
-	it('please ignore me!', () => {
-		describe('simple revision', () => {
-			after(truncateEntities);
-			forEach(testEntities, (mainEntity, type) => {
-				it(`should be able to revert simple revision to a previous revision (${type})`, async () => {
-					// create new revision for revert
-					const revision = await new Revision({authorId: editorJSON.id})
-						.save(null, {method: 'insert'});
-					const oldAliasSetId = mainEntity.get('aliasSetId');
-					const oldRevisionId = mainEntity.get('revisionId');
-					// set parent of new revision to last revision
-					const parents =
+	after(truncateEntities);
+	forEach(entityTypes, (type) => {
+		it(`should be able to revert simple revision to a previous revision (${type})`, async () => {
+			// create new revision for revert
+			const mainEntity = testEntities[type];
+			const revision = await new Revision({authorId: editorJSON.id})
+				.save(null, {method: 'insert'});
+			const oldAliasSetId = mainEntity.get('aliasSetId');
+			const oldRevisionId = mainEntity.get('revisionId');
+			// set parent of new revision to last revision
+			const parents =
 							await revision.related('parents').fetch();
-					parents.attach([oldRevisionId]);
-					await mainEntity.save({aliasSetId, revisionId: revision.get('id')}, {method: 'update'});
-					// eslint-disable-next-line max-nested-callbacks
-					await orm.bookshelf.transaction((trx) => revertRevision(oldRevisionId, mainEntity.get('bbid'), editorJSON.id, type, orm, trx));
-					const EntityModel = orm[type];
-					const rEntity = await new EntityModel({bbid: mainEntity.get('bbid')}).fetch({withRelated: ['revision']});
-					const currentAliasSetId = rEntity.get('aliasSetId');
-					// check if revert was successful
-					expect(currentAliasSetId).to.be.equal(oldAliasSetId);
-				});
-			});
+			parents.attach([oldRevisionId]);
+			await mainEntity.save({aliasSetId, revisionId: revision.get('id')}, {method: 'update'});
+			// eslint-disable-next-line max-nested-callbacks
+			await orm.bookshelf.transaction((trx) => revertRevision(oldRevisionId, mainEntity.get('bbid'), editorJSON.id, type, orm, trx));
+			const EntityModel = orm[type];
+			const rEntity = await new EntityModel({bbid: mainEntity.get('bbid')}).fetch({withRelated: ['revision']});
+			const currentAliasSetId = rEntity.get('aliasSetId');
+			// check if revert was successful
+			expect(currentAliasSetId).to.be.equal(oldAliasSetId);
 		});
 	});
 	it('should be able to revert delete revision (work)', async () => {
@@ -745,7 +744,8 @@ describe('revertRevision', () => {
 		const parents = await revision.related('parents').fetch();
 		parents.attach([workEntity.get('revisionId'), work2.get('revisionId')]);
 		// update entity revision
-		await workEntity.save({relationshipSetId: relsSet[workEntity.get('bbid')].get('id'), revisionId: revision.get('id')}, {method: 'update'});
+		await workEntity.save({relationshipSetId: relsSet[workEntity.get('bbid')]
+			.get('id'), revisionId: revision.get('id')}, {method: 'update'});
 		await work2.save({relationshipSetId: relsSet[work2.get('bbid')].get('id'), revisionId: revision.get('id')}, {method: 'update'});
 		// revert just before this revision
 		await orm.bookshelf.transaction((trx) => revertRevision(oldRevisionId, workEntity.get('bbid'), editorJSON.id, 'Work', orm, trx));
@@ -797,7 +797,8 @@ describe('revertRevision', () => {
 		const parents = await revision.related('parents').fetch();
 		parents.attach([workEntity.get('revisionId'), edition.get('revisionId')]);
 		// update entity revision
-		await workEntity.save({relationshipSetId: relsSet[workEntity.get('bbid')].get('id'), revisionId: revision.get('id')}, {method: 'update'});
+		await workEntity.save({relationshipSetId: relsSet[workEntity.get('bbid')]
+			.get('id'), revisionId: revision.get('id')}, {method: 'update'});
 		await edition.save({relationshipSetId: relsSet[edition.get('bbid')].get('id'), revisionId: revision.get('id')}, {method: 'update'});
 		// revert just before this revision
 		await orm.bookshelf.transaction((trx) => revertRevision(oldRevisionId, workEntity.get('bbid'), editorJSON.id, 'Work', orm, trx));
