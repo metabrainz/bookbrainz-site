@@ -438,7 +438,7 @@ export async function createSeries(optionalBBID, optionalSeriesAttribs = {}) {
 
 async function fetchOrCreatePublisherType(PublisherTypeModel, optionalPublisherAttribs = {}) {
 	const PublisherTypeAttribs = {
-		label: faker.commerce.productAdjective()
+		label: faker.unique(faker.commerce.productAdjective)
 	};
 	const publisherType = await new PublisherTypeModel({...PublisherTypeAttribs, ...optionalPublisherAttribs}).save(null, {method: 'insert'});
 	return publisherType;
