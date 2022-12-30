@@ -8,6 +8,7 @@ import {
 	createEditionGroup,
 	createEditor,
 	createPublisher,
+	createSeries,
 	createWork,
 	truncateEntities
 } from '../../../test-helpers/create-entities';
@@ -21,6 +22,7 @@ import {
 
 import chai from 'chai';
 import {date} from 'faker';
+import {forEach} from 'lodash';
 import isSorted from 'chai-sorted';
 import orm from '../../../bookbrainz-data';
 
@@ -628,34 +630,50 @@ describe('getOrderedRevisionsForEntityPage', () => {
 
 describe('revertRevision', () => {
 	let aliasSetId; let author; let editorJSON; let workEntity;
+	let testEntities;
 	beforeEach(async () => {
 		author = await createAuthor();
 		workEntity = await createWork();
 		const editor = await createEditor();
 		editorJSON = editor.toJSON();
-
+		testEntities = {
+			Author: await createAuthor(),
+			Edition: await createEdition(),
+			EditionGroup: await createEditionGroup(),
+			Publisher: await createPublisher(),
+			Series: await createSeries(),
+			Work: await createWork()
+		};
 		// In each revision, we will change the alias of entity to Author alias.
 		aliasSetId = author.get('aliasSetId');
 	});
-	after(truncateEntities);
-	it('should be able to revert simple revision to a previous revision (work)', async () => {
-		// create new revision for revert
-		const revision = await new Revision({authorId: editorJSON.id})
-			.save(null, {method: 'insert'});
-		const oldAliasSetId = workEntity.get('aliasSetId');
-		const oldRevisionId = workEntity.get('revisionId');
-		// set parent of new revision to last revision
-		const parents =
-			await revision.related('parents').fetch();
-		parents.attach([oldRevisionId]);
-		await workEntity.save({aliasSetId, revisionId: revision.get('id')}, {method: 'update'});
-		await orm.bookshelf.transaction((trx) => revertRevision(oldRevisionId, workEntity.get('bbid'), editorJSON.id, 'Work', orm, trx));
-		const rWork = await new Work({bbid: workEntity.get('bbid')}).fetch({withRelated: ['revision']});
-		const currentAliasSetId = rWork.get('aliasSetId');
-		// check if revert was successful
-		expect(currentAliasSetId).to.be.equal(oldAliasSetId);
-	});
 
+	it('please ignore me!', () => {
+		describe('simple revision', () => {
+			after(truncateEntities);
+			forEach(testEntities, (mainEntity, type) => {
+				it(`should be able to revert simple revision to a previous revision (${type})`, async () => {
+					// create new revision for revert
+					const revision = await new Revision({authorId: editorJSON.id})
+						.save(null, {method: 'insert'});
+					const oldAliasSetId = mainEntity.get('aliasSetId');
+					const oldRevisionId = mainEntity.get('revisionId');
+					// set parent of new revision to last revision
+					const parents =
+							await revision.related('parents').fetch();
+					parents.attach([oldRevisionId]);
+					await mainEntity.save({aliasSetId, revisionId: revision.get('id')}, {method: 'update'});
+					// eslint-disable-next-line max-nested-callbacks
+					await orm.bookshelf.transaction((trx) => revertRevision(oldRevisionId, mainEntity.get('bbid'), editorJSON.id, type, orm, trx));
+					const EntityModel = orm[type];
+					const rEntity = await new EntityModel({bbid: mainEntity.get('bbid')}).fetch({withRelated: ['revision']});
+					const currentAliasSetId = rEntity.get('aliasSetId');
+					// check if revert was successful
+					expect(currentAliasSetId).to.be.equal(oldAliasSetId);
+				});
+			});
+		});
+	});
 	it('should be able to revert delete revision (work)', async () => {
 		const revision = await new Revision({authorId: editorJSON.id}).save(null, {method: 'insert'});
 		const oldAliasSetId = workEntity.get('aliasSetId');
@@ -800,3 +818,4 @@ describe('revertRevision', () => {
 		expect(actualEditionRel.at(0).targetBbid).to.be.equal(editionRel.targetBbid);
 	});
 });
+
