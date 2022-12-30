@@ -34,7 +34,7 @@ const {
 	AuthorData, AuthorRevision, Revision, AliasSet,
 	EditionData, EditionRevision, EditionGroupData, EditionGroupRevision,
 	Note, PublisherData, PublisherRevision, WorkData, WorkRevision,
-	Work, WorkHeader, RelationshipType, Edition
+	RelationshipType
 } = orm;
 
 
@@ -646,35 +646,24 @@ function getCreateEntityFunction(type) {
 	}
 }
 
-describe.only('revertRevision', () => {
+describe('revertRevision', () => {
 	const entityTypes = ['Author', 'Edition', 'EditionGroup', 'Publisher', 'Series', 'Work'];
-	let aliasSetId; let author; let editorJSON; let workEntity;
-	let testEntities;
+	let aliasSetId; let author; let editorJSON;
 
 	before(async () => {
 		const editor = await createEditor();
 		editorJSON = editor.toJSON();
-		testEntities = {
-			Author: await createAuthor(),
-			Edition: await createEdition(),
-			EditionGroup: await createEditionGroup(),
-			Publisher: await createPublisher(),
-			Series: await createSeries(),
-			Work: await createWork()
-		};
-	});
-	beforeEach(async () => {
 		author = await createAuthor();
-		workEntity = await createWork();
 		// In each revision, we will change the alias of entity to Author alias.
 		aliasSetId = author.get('aliasSetId');
 	});
+
 	after(truncateEntities);
 
 	forEach(entityTypes, (type) => {
 		it(`should be able to revert simple revision to a previous revision (${type})`, async () => {
 			// create new revision for revert
-			const mainEntity = testEntities[type];
+			const mainEntity = await getCreateEntityFunction(type)();
 			const revision = await new Revision({authorId: editorJSON.id})
 				.save(null, {method: 'insert'});
 			const oldAliasSetId = mainEntity.get('aliasSetId');
@@ -696,7 +685,7 @@ describe.only('revertRevision', () => {
 
 	forEach(entityTypes, (type) => {
 		it(`should be able to revert delete revision (${type})`, async () => {
-			const mainEntity = testEntities[type];
+			const mainEntity = await getCreateEntityFunction(type)();
 			const revision = await new Revision({authorId: editorJSON.id}).save(null, {method: 'insert'});
 			const oldAliasSetId = mainEntity.get('aliasSetId');
 			const oldRevisionId = mainEntity.get('revisionId');
@@ -719,9 +708,9 @@ describe.only('revertRevision', () => {
 
 	forEach(entityTypes, (type) => {
 		it(`should be able to revert merge revision involving two entities (${type})`, async () => {
-			const revision = await new Revision({authorId: editorJSON.id}).save(null, {method: 'insert'});
-			const mainEntity = testEntities[type];
+			const mainEntity = await getCreateEntityFunction(type)();
 			const mainEntity2 = await getCreateEntityFunction(type)();
+			const revision = await new Revision({authorId: editorJSON.id}).save(null, {method: 'insert'});
 			const oldAliasSetId1 = mainEntity.get('aliasSetId');
 			const oldAliasSetId2 = mainEntity2.get('aliasSetId');
 			// will try to revert back to workEntity revision
@@ -749,7 +738,7 @@ describe.only('revertRevision', () => {
 
 	forEach(entityTypes, (type) => {
 		it(`should be able to revert revision involving multiple(two) related entities of same type(${type})`, async () => {
-			let entity = testEntities[type];
+			let entity = await getCreateEntityFunction(type)();
 			const revision = await new Revision({authorId: editorJSON.id}).save(null, {method: 'insert'});
 			const relsAttrib = ['relationshipSet.relationships'];
 			const entity2 = await (await getCreateEntityFunction(type)()).load(relsAttrib);
@@ -803,58 +792,72 @@ describe.only('revertRevision', () => {
 		});
 	});
 
-
-	it('should be able to revert revision involving multiple(two) related entities of different type(work and edition)', async () => {
-		const revision = await new Revision({authorId: editorJSON.id}).save(null, {method: 'insert'});
-		const relsAttrib = ['relationshipSet.relationships'];
-		const edition = await (await createEdition()).load(relsAttrib);
-		workEntity = await workEntity.load(relsAttrib);
-		const workRel = workEntity.toJSON().relationshipSet.relationships.at(0);
-		const editionRel = edition.toJSON().relationshipSet.relationships.at(0);
-		const oldRevisionId = workEntity.get('revisionId');
-		// creating relationship type for testing
-		const relationshipTypeData = {
-			description: 'test descryption',
-			label: 'test label',
-			linkPhrase: 'test phrase',
-			reverseLinkPhrase: 'test reverse link phrase',
-			sourceEntityType: 'Work',
-			targetEntityType: 'Edition'
-		};
-		const relationshipType = await new RelationshipType(relationshipTypeData).save(null, {method: 'insert'});
-		const relationshipData = {
-			attributeSetId: null,
-			isAdded: true,
-			sourceBbid: edition.get('bbid'),
-			targetBbid: workEntity.get('bbid'),
-			typeId: relationshipType.get('id')
-		};
-		const relsSet = await orm.func.relationship.updateRelationshipSets(
-			orm, null, null, [relationshipData]
-		);
-		const parents = await revision.related('parents').fetch();
-		parents.attach([workEntity.get('revisionId'), edition.get('revisionId')]);
-		// update entity revision
-		await workEntity.save({relationshipSetId: relsSet[workEntity.get('bbid')]
-			.get('id'), revisionId: revision.get('id')}, {method: 'update'});
-		await edition.save({relationshipSetId: relsSet[edition.get('bbid')].get('id'), revisionId: revision.get('id')}, {method: 'update'});
-		// revert just before this revision
-		await orm.bookshelf.transaction((trx) => revertRevision(oldRevisionId, workEntity.get('bbid'), editorJSON.id, 'Work', orm, trx));
-		const rWork = await new Work({bbid: workEntity.get('bbid')}).fetch({withRelated: [...relsAttrib]});
-		const rEdition = await new Edition({bbid: edition.get('bbid')}).fetch({withRelated: [...relsAttrib]});
-		// relationshipSetId should not be null since both had set id before revision
-		expect(rWork.get('relationshipSetId')).to.be.not.null;
-		expect(rEdition.get('relationshipSetId')).to.be.not.null;
-		const actualWorkRel = rWork.toJSON().relationshipSet.relationships;
-		const actualEditionRel = rEdition.toJSON().relationshipSet.relationships;
-		expect(actualWorkRel.length).to.be.equal(1);
-		expect(actualEditionRel.length).to.be.equal(1);
-		expect(actualWorkRel.at(0).typeId).to.be.equal(workRel.typeId);
-		expect(actualEditionRel.at(0).typeId).to.be.equal(editionRel.typeId);
-		expect(actualWorkRel.at(0).sourceBbid).to.be.equal(workRel.sourceBbid);
-		expect(actualEditionRel.at(0).sourceBbid).to.be.equal(editionRel.sourceBbid);
-		expect(actualWorkRel.at(0).targetBbid).to.be.equal(workRel.targetBbid);
-		expect(actualEditionRel.at(0).targetBbid).to.be.equal(editionRel.targetBbid);
+	// try all possible pairs of entity types
+	const allPairs = [];
+	for (let i = 0; i < entityTypes.length; i++) {
+		for (let jj = 0; jj < entityTypes.length; jj++) {
+			if (i !== jj) {
+				allPairs.push([entityTypes[i], entityTypes[jj]]);
+			}
+		}
+	}
+	forEach(allPairs, ([sourceEntityType, targetEntityType]) => {
+		it(`should be able to revert revision involving multiple(two) related entities of 
+		different type(${sourceEntityType} and ${targetEntityType})`,
+		async () => {
+			const relsAttrib = ['relationshipSet.relationships'];
+			const sourceEntity = await (await getCreateEntityFunction(sourceEntityType)()).load(relsAttrib);
+			const targetEntity = await (await getCreateEntityFunction(targetEntityType)()).load(relsAttrib);
+			const sourceRel = sourceEntity.toJSON().relationshipSet.relationships.at(0);
+			const targetRel = targetEntity.toJSON().relationshipSet.relationships.at(0);
+			const revision = await new Revision({authorId: editorJSON.id}).save(null, {method: 'insert'});
+			const oldRevisionId = sourceEntity.get('revisionId');
+			// creating relationship type for testing
+			const relationshipTypeData = {
+				description: 'test descryption',
+				label: 'test label',
+				linkPhrase: 'test phrase',
+				reverseLinkPhrase: 'test reverse link phrase',
+				sourceEntityType,
+				targetEntityType
+			};
+			const relationshipType = await new RelationshipType(relationshipTypeData).save(null, {method: 'insert'});
+			const relationshipData = {
+				attributeSetId: null,
+				isAdded: true,
+				sourceBbid: targetEntity.get('bbid'),
+				targetBbid: sourceEntity.get('bbid'),
+				typeId: relationshipType.get('id')
+			};
+			const relsSet = await orm.func.relationship.updateRelationshipSets(
+				orm, null, null, [relationshipData]
+			);
+			const parents = await revision.related('parents').fetch();
+			parents.attach([sourceEntity.get('revisionId'), targetEntity.get('revisionId')]);
+			// update entity revision
+			await sourceEntity.save({relationshipSetId: relsSet[sourceEntity.get('bbid')]
+				.get('id'), revisionId: revision.get('id')}, {method: 'update'});
+			await targetEntity.save({relationshipSetId: relsSet[targetEntity.get('bbid')].get('id'),
+				revisionId: revision.get('id')}, {method: 'update'});
+			// revert just before this revision
+			await orm.bookshelf.transaction((trx) => revertRevision(oldRevisionId, sourceEntity.get('bbid'),
+				editorJSON.id, sourceEntityType, orm, trx));
+			const rSourceEntity = await new sourceEntity.constructor({bbid: sourceEntity.get('bbid')}).fetch({withRelated: [...relsAttrib]});
+			const rTargetEntity = await new targetEntity.constructor({bbid: targetEntity.get('bbid')}).fetch({withRelated: [...relsAttrib]});
+			// relationshipSetId should not be null since both had set id before revision
+			expect(rSourceEntity.get('relationshipSetId')).to.be.not.null;
+			expect(rTargetEntity.get('relationshipSetId')).to.be.not.null;
+			const actualSourceRel = rSourceEntity.toJSON().relationshipSet.relationships;
+			const actualTargetRel = rTargetEntity.toJSON().relationshipSet.relationships;
+			expect(actualSourceRel.length).to.be.equal(1);
+			expect(actualTargetRel.length).to.be.equal(1);
+			expect(actualSourceRel.at(0).typeId).to.be.equal(sourceRel.typeId);
+			expect(actualTargetRel.at(0).typeId).to.be.equal(targetRel.typeId);
+			expect(actualSourceRel.at(0).sourceBbid).to.be.equal(sourceRel.sourceBbid);
+			expect(actualTargetRel.at(0).sourceBbid).to.be.equal(targetRel.sourceBbid);
+			expect(actualSourceRel.at(0).targetBbid).to.be.equal(sourceRel.targetBbid);
+			expect(actualTargetRel.at(0).targetBbid).to.be.equal(targetRel.targetBbid);
+		});
 	});
 });
 
