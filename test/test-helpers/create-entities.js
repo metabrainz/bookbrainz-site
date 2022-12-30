@@ -438,9 +438,12 @@ export async function createSeries(optionalBBID, optionalSeriesAttribs = {}) {
 
 async function fetchOrCreatePublisherType(PublisherTypeModel, optionalPublisherAttribs = {}) {
 	const PublisherTypeAttribs = {
-		label: faker.unique(faker.commerce.productAdjective)
+		label: faker.commerce.productAdjective()
 	};
-	const publisherType = await new PublisherTypeModel({...PublisherTypeAttribs, ...optionalPublisherAttribs}).save(null, {method: 'insert'});
+	let publisherType = await new PublisherTypeModel({...PublisherTypeAttribs}).fetch({require: false});
+	if (!publisherType) {
+		publisherType = await new PublisherTypeModel({...PublisherTypeAttribs, ...optionalPublisherAttribs}).save(null, {method: 'insert'});
+	}
 	return publisherType;
 }
 
