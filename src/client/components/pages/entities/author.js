@@ -133,7 +133,7 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 		<div>
 			<CBReviewModal
 				entityBBID={entity.bbid}
-				entityName={entity.defaultAlias.name}
+				entityName={entity.defaultAlias?.name}
 				entityType={entity.type}
 				handleModalToggle={handleModalToggle}
 				handleUpdateReviews={handleUpdateReviews}

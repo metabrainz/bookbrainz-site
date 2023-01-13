@@ -455,6 +455,9 @@ export function handleDelete(
 			transacting
 		});
 
+		// set parent revision
+		await setParentRevisions(transacting, newRevision, [entity.revisionId]);
+
 		await new HeaderModel({
 			bbid: entity.bbid,
 			masterRevisionId: entityRevision.get('id')
