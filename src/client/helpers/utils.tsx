@@ -173,25 +173,19 @@ export function dateObjectToISOString(value: DateObject) {
  * Convert any string url that has a prefix http|https|ftp|ftps to a clickable link
  * and then rendered the HTML string as real HTML.
  * @function stringToHTMLWithLinks
- * @param {string} text - Can be either revision notes or annotation content etc...
+ * @param {string} string - Can be either revision notes or annotation content etc...
  * @returns {JSX} returns a JSX Element
  */
-export function stringToHTMLWithLinks(text: string) {
-	let urlRegex = /(?:http|\S+\.\S).+?(?=[.,;:?!-]?(?:\s|$))/g;
-	const matches = text.match(urlRegex)
-	if (!matches) return text;
-	const contentString = []
-	matches.forEach(x => {
-		const [t1, ...t2] = text.split(x)
-		contentString.push(t1)
-		text = t2.join(x)
-		const y = (!(x.match(/(http(s?)):\/\//)) ? 'https://' : '') + x;
-		contentString.push('<a href="' + y + '" target="_blank">' + y + '</a>');
-	})
-	contentString.push(text);
-	const finalText = contentString.join('');
-
-	const sanitizedHtml = DOMPurify.sanitize(finalText);
+export function stringToHTMLWithLinks(string: string) {
+	const addHttpRegex = /(^(|\b))www\./igm;
+	// eslint-disable-next-line max-len, no-useless-escape
+	const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%~*@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
+	let content = string.replace(addHttpRegex, '$1https://www.');
+	content = content.replace(
+		urlRegex,
+		'<a href="$1" target="_blank">$1</a>'
+	);
+	const sanitizedHtml = DOMPurify.sanitize(content);
 	// eslint-disable-next-line react/no-danger
 	return <span dangerouslySetInnerHTML={{__html: sanitizedHtml}}/>;
 }
