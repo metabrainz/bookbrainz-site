@@ -192,6 +192,17 @@ export function loadEntityRelationships(req: $Request, res: $Response, next: Nex
 		})
 		.catch(next);
 }
+
+export function checkValidRevisionId(req: $Request, res: $Response, next: NextFunction, id: string) {
+	function isNumeric(value) {
+		return (/^-?\d+$/).test(value);
+	}
+	if (!isNumeric(id)) {
+		return next(new error.BadRequestError(`Invalid revision id: ${req.params.id}`, req));
+	}
+	return next();
+}
+
 export async function redirectedBbid(req: $Request, res: $Response, next: NextFunction, bbid: string) {
 	if (!commonUtils.isValidBBID(bbid)) {
 		return next(new error.BadRequestError(`Invalid bbid: ${req.params.bbid}`, req));
