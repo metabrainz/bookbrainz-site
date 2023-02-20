@@ -13,6 +13,11 @@
 		"clientSecret": "{{template "KEY" "musicbrainz/client_secret"}}",
 		"callbackURL": "{{template "KEY" "musicbrainz/callback_url"}}"
 	},
+	"critiquebrainz": {
+		"clientID": "{{template "KEY" "critiquebrainz/client_id"}}",
+		"clientSecret": "{{template "KEY" "critiquebrainz/client_secret"}}",
+		"callbackURL": "{{template "KEY" "critiquebrainz/callback_url"}}"
+	},
 	"session": {
 		{{if service "bookbrainz-redis"}}
 		{{with index (service "bookbrainz-redis") 0}}

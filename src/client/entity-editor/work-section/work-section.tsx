@@ -55,6 +55,7 @@ type DisplayLanguageOption = {
 };
 
 type OwnProps = {
+	isUnifiedForm?: boolean,
 	languageOptions: Array<LanguageOption>,
 	workTypes: Array<WorkType>
 };
@@ -89,6 +90,7 @@ function WorkSection({
 	languageValues,
 	typeValue,
 	workTypes,
+	isUnifiedForm,
 	onLanguagesChange,
 	onTypeChange
 }: Props) {
@@ -103,24 +105,25 @@ function WorkSection({
 		value: type.id
 	}));
 	const typeOption = workTypesForDisplay.filter((el) => el.value === typeValue);
-
 	const tooltip = (
 		<Tooltip>
 			Literary form or structure of the work
 		</Tooltip>
 	);
-
+	const heading = <h2> What else do you know about the Work?</h2>;
+	const lgCol = {offset: 3, span: 6};
+	if (isUnifiedForm) {
+		lgCol.offset = 0;
+	}
 	return (
 		<div>
-			<h2>
-				What else do you know about the Work?
-			</h2>
+			{!isUnifiedForm && heading}
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
 				know it
 			</p>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>
 							Type
@@ -142,7 +145,7 @@ function WorkSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={lgCol}>
 					<ImmutableLanguageField
 						empty
 						isMulti
@@ -158,7 +161,9 @@ function WorkSection({
 	);
 }
 WorkSection.displayName = 'WorkSection';
-
+WorkSection.defaultProps = {
+	isUnifiedForm: false
+};
 type RootState = Map<string, Map<string, any>>;
 function mapStateToProps(rootState: RootState): StateProps {
 	const state: Map<string, any> = rootState.get('workSection');

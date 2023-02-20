@@ -52,7 +52,7 @@ type PassportRequest = express.Request & {
 	user: any,
 	session: any
 };
-function transformNewForm(data) {
+export function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
 		data.aliasEditor, data.nameSection
 	);
@@ -101,7 +101,7 @@ function transformNewForm(data) {
 		pages: data.editionSection.pages &&
 			parseInt(data.editionSection.pages, 10),
 		publishers: data.editionSection.publisher &&
-			Object.values(data.editionSection.publisher).map((pub) => pub.id),
+			Object.values(data.editionSection.publisher).map((pub:any) => pub.id),
 		relationships,
 		releaseEvents,
 		statusId: data.editionSection.status &&
@@ -251,7 +251,7 @@ router.post(
 	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages, middleware.loadRelationshipTypes,
-	async (req, res, next) => {
+	async (req:PassportRequest, res, next) => {
 		// parsing submitted data to correct format
 		const entity = await utils.parseInitialState(req, 'edition');
 		if (entity.editionSection) {
@@ -330,7 +330,7 @@ function _setEditionTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWorkTableAuthors, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWorkTableAuthors, (req:PassportRequest, res) => {
 	_setEditionTitle(res);
 	entityRoutes.displayEntity(req, res);
 });
@@ -348,7 +348,7 @@ router.get('/:bbid/revisions/revisions', (req:PassportRequest, res, next) => {
 });
 
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
+router.get('/:bbid/delete', auth.isAuthenticated, (req:PassportRequest, res, next) => {
 	if (!res.locals.entity.dataId) {
 		return next(new ConflictError('This entity has already been deleted'));
 	}
@@ -368,7 +368,7 @@ router.post(
 );
 
 
-function editionToFormState(edition) {
+export function editionToFormState(edition) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = edition.aliasSet ?
 		edition.aliasSet.aliases.map(({languageId, ...rest}) => ({
@@ -402,7 +402,7 @@ function editionToFormState(edition) {
 		})
 	) : [];
 
-	const authorCreditEditor = {};
+	const authorCreditEditor:any = {};
 	for (const credit of credits) {
 		authorCreditEditor[credit.position] = credit;
 	}

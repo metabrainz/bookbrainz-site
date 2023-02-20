@@ -73,6 +73,8 @@ export type RelationshipWithLabel = {
 
 export type RelationshipForDisplay = {
 	attributes: Array<Attribute>,
+	isAdded: boolean,
+	isRemoved: boolean,
 	relationshipType: RelationshipType,
 	sourceEntity: Entity,
 	targetEntity: Entity,
