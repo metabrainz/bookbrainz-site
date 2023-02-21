@@ -4,7 +4,7 @@ services:
 
   bookbrainz-site:
     container_name: bookbrainz-site
-    command: yarn start debug
+    command: yarn start
     build:
       context: ./
       dockerfile: Dockerfile
@@ -19,7 +19,6 @@ services:
       - postgres
     volumes:
       - "./config/config.json:/home/bookbrainz/bookbrainz-site/config/config.json:ro"
-      - "./src:/home/bookbrainz/bookbrainz-site/src"
 
   postgres:
     container_name: postgres
