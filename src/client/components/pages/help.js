@@ -31,9 +31,8 @@ const {ListGroup, Col, Row} = bootstrap;
  */
 function HelpPage() {
 	const IRCLink = 'https://kiwiirc.com/nextclient/irc.libera.chat/?#bookbrainz';
-	const styleLink =
-		'https://bookbrainz-user-guide.readthedocs.io/' +
-		'en/latest/style/introduction/';
+	const userGuideLink =
+		'https://bookbrainz-user-guide.readthedocs.io/';
 
 	return (
 		<div>
@@ -46,7 +45,7 @@ function HelpPage() {
 				used across BookBrainz, as well as an F.A.Q and a glossary.
 				<br/>
 				Still having some trouble with something?
-				You can refer to the <a href={styleLink}>style documentation</a>,
+				You can refer to the <a href={userGuideLink}>user guide and documentation</a>,
 				or come ask us directly on our <a href={IRCLink}>IRC channel</a>.
 			</p>
 			<hr/>
