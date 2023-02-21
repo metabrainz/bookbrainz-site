@@ -228,7 +228,7 @@ export function authorCreditToString(authorCredit) {
 
 export function getEntityDisambiguation(entity) {
 	if (entity.disambiguation) {
-		return <small>{` (${entity.disambiguation.comment})`}</small>;
+		return <small>{` (${entity.disambiguation})`}</small>;
 	}
 
 	return null;

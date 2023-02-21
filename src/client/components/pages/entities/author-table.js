@@ -27,11 +27,12 @@ const {Table} = bootstrap;
 const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
 function AuthorTableRow({author, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
+	console.log(author)
 	const name = getEntityLabel(author);
 	const disambiguation = getEntityDisambiguation(author);
 	const number = author.number || '?';
-	const authorType = author.authorType ? author.authorType.label : '?';
-	const gender = author.gender ? author.gender.name : '?';
+	const authorType = author.authorType || author.authorType?.label || author?.type || '?';
+	const gender = author.genderId === 1 ? "Male" : author.genderId ? "Female" : "?";
 	const beginDate = transformISODateForDisplay(extractAttribute(author.beginDate));
 	const endDate = transformISODateForDisplay(extractAttribute(author.endDate));
 	const addedAt = showAddedAtColumn ? utilHelper.formatDate(new Date(author.addedAt), true) : null;
