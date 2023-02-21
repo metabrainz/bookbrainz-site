@@ -27,7 +27,6 @@ const {Table} = bootstrap;
 const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
 function AuthorTableRow({author, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
-	console.log(author)
 	const name = getEntityLabel(author);
 	const disambiguation = getEntityDisambiguation(author);
 	const number = author.number || '?';
