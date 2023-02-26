@@ -236,7 +236,6 @@ async function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 	  console.error(error);
 	}
   }
-  
   async function getEntityByBBID(orm, transacting, bbid) {
 	try {
 		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, transacting);
