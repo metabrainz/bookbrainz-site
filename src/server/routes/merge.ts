@@ -193,7 +193,7 @@ async function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 				'relationships.attributeSet.relationshipAttributes.value',
 				'relationships.attributeSet.relationshipAttributes.type'
 			]
-		});
+		})
 	  if (relationshipSet) {
 		entity.relationships = relationshipSet.related('relationships').toJSON();
 	  }
