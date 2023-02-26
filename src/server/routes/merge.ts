@@ -174,15 +174,15 @@ function entitiesToFormState(entities: any[]) {
 }
 
 async function loadEntityRelationships(entity, orm, transacting): Promise<any> {
-	const { RelationshipSet } = orm;
-  
+	const {RelationshipSet} = orm;
+
 	// Default to empty array, its presence is expected down the line
 	entity.relationships = [];
-  
+
 	if (!entity.relationshipSetId) {
-	  return null;
+		return null;
 	}
-  
+
 	try {
 	  const relationshipSet = await RelationshipSet.forge({ id: entity.relationshipSetId })
 		.fetch({
@@ -195,7 +195,6 @@ async function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 			'relationships.attributeSet.relationshipAttributes.type'
 		  ]
 		});
-  
 	  if (relationshipSet) {
 		entity.relationships = relationshipSet.related('relationships').toJSON();
 	  }
@@ -238,7 +237,6 @@ async function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 	}
   }
   
-
   async function getEntityByBBID(orm, transacting, bbid) {
 	try {
 		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, transacting);
