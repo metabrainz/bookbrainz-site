@@ -73,6 +73,7 @@ AuthorTableRow.propTypes = {
 	showCheckboxes: PropTypes.bool
 };
 AuthorTableRow.defaultProps = {
+	genderOptions: [],
 	onToggleRow: null,
 	selectedEntities: [],
 	showCheckboxes: false
