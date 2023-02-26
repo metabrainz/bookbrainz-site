@@ -236,12 +236,12 @@ async function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 	  console.error(error);
 	}
   }
-  async function getEntityByBBID(orm, transacting, bbid) {
+async function getEntityByBBID(orm, transacting, bbid) {
 	try {
-		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, transacting);
-		const entityHeader = await orm.Entity.forge({bbid: redirectBbid}).fetch({transacting});
-		const entityType = entityHeader.get('type');
-		const model = commonUtils.getEntityModelByType(orm, entityType);
+	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, transacting);
+	const entityHeader = await orm.Entity.forge({bbid: redirectBbid}).fetch({transacting});
+	const entityType = entityHeader.get('type');
+	const model = commonUtils.getEntityModelByType(orm, entityType);
 
 		const entity = await model.forge({bbid: redirectBbid})
 			.fetch({
