@@ -185,14 +185,14 @@ async function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 	try {
 	  const relationshipSet = await RelationshipSet.forge({ id: entity.relationshipSetId })
 		.fetch({
-		  transacting,
-		  withRelated: [
-			'relationships.source',
-			'relationships.target',
-			'relationships.type.attributeTypes',
-			'relationships.attributeSet.relationshipAttributes.value',
-			'relationships.attributeSet.relationshipAttributes.type'
-		  ]
+			transacting,
+		  	withRelated: [
+				'relationships.source',
+				'relationships.target',
+				'relationships.type.attributeTypes',
+				'relationships.attributeSet.relationshipAttributes.value',
+				'relationships.attributeSet.relationshipAttributes.type'
+		  	]
 		});
 	  if (relationshipSet) {
 		entity.relationships = relationshipSet.related('relationships').toJSON();
