@@ -26,12 +26,12 @@ import React from 'react';
 const {Table} = bootstrap;
 const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-function AuthorTableRow({author, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
+function AuthorTableRow({author, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow,genderOptions}) {
 	const name = getEntityLabel(author);
 	const disambiguation = getEntityDisambiguation(author);
 	const number = author.number || '?';
-	const authorType = author.authorType || author.authorType?.label || author?.type || '?';
-	const gender = author.genderId === 1 ? "Male" : author.genderId ? "Female" : "?";
+	const authorType = author.authorType?.label || author.authorType || '?';
+	const gender = genderOptions.find((option) => option.id === author.genderId).name || '?';
 	const beginDate = transformISODateForDisplay(extractAttribute(author.beginDate));
 	const endDate = transformISODateForDisplay(extractAttribute(author.endDate));
 	const addedAt = showAddedAtColumn ? utilHelper.formatDate(new Date(author.addedAt), true) : null;
@@ -69,7 +69,8 @@ AuthorTableRow.propTypes = {
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool.isRequired,
-	showCheckboxes: PropTypes.bool
+	showCheckboxes: PropTypes.bool,
+	genderOptions: PropTypes.array
 };
 AuthorTableRow.defaultProps = {
 	onToggleRow: null,
@@ -77,7 +78,7 @@ AuthorTableRow.defaultProps = {
 	showCheckboxes: false
 };
 
-function AuthorTable({authors, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
+function AuthorTable({authors, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow, genderOptions}) {
 	let tableContent;
 	if (authors.length) {
 		tableContent = (
@@ -106,6 +107,7 @@ function AuthorTable({authors, showAddedAtColumn, showCheckboxes, selectedEntiti
 									showAddedAtColumn={showAddedAtColumn}
 									showCheckboxes={showCheckboxes}
 									onToggleRow={onToggleRow}
+									genderOptions={genderOptions}
 								/>
 							))
 						}
@@ -130,7 +132,8 @@ AuthorTable.propTypes = {
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool,
-	showCheckboxes: PropTypes.bool
+	showCheckboxes: PropTypes.bool,
+	genderOptions: PropTypes.array
 };
 AuthorTable.defaultProps = {
 	onToggleRow: null,

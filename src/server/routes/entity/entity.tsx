@@ -150,9 +150,9 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 		if (EntityComponent) {
 			const props = generateProps(req, res, {
 				alert,
-				identifierTypes
+				identifierTypes,
+				genderOptions: res.locals.genders
 			});
-
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...propHelpers.extractLayoutProps(props)}>
 					<EntityComponent

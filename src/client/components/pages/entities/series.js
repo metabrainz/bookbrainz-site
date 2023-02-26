@@ -87,7 +87,7 @@ SeriesAttributes.propTypes = {
 };
 
 
-function SeriesDisplayPage({entity, identifierTypes, user}) {
+function SeriesDisplayPage({entity, identifierTypes, user,genderOptions}) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);
@@ -107,7 +107,8 @@ function SeriesDisplayPage({entity, identifierTypes, user}) {
 		[entityKey]: entity.seriesItems,
 		showAdd: false,
 		showAddedAtColumn: false,
-		showCheckboxes: false
+		showCheckboxes: false,
+		genderOptions
 	};
 	return (
 		<div>
@@ -179,7 +180,8 @@ SeriesDisplayPage.displayName = 'SeriesDisplayPage';
 SeriesDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired
+	user: PropTypes.object.isRequired,
+	genderOptions: PropTypes.array
 };
 SeriesDisplayPage.defaultProps = {
 	identifierTypes: []
