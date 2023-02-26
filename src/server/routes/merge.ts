@@ -182,7 +182,6 @@ async function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 	if (!entity.relationshipSetId) {
 		return null;
 	}
-
 	try {
 	  const relationshipSet = await RelationshipSet.forge({ id: entity.relationshipSetId })
 		.fetch({
