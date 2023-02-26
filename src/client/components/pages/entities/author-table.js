@@ -26,7 +26,7 @@ import React from 'react';
 const {Table} = bootstrap;
 const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-function AuthorTableRow({author, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow,genderOptions}) {
+function AuthorTableRow({author, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow, genderOptions}) {
 	const name = getEntityLabel(author);
 	const disambiguation = getEntityDisambiguation(author);
 	const number = author.number || '?';

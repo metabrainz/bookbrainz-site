@@ -53,9 +53,9 @@ export function extractEntityProps(props) {
 	return {
 		alert: props.alert,
 		entity: props.entity,
-		identifierTypes: props.identifierTypes,
-		user: props.user,
 		genderOptions: props.genderOptions,
+		identifierTypes: props.identifierTypes,
+		user: props.user
 	};
 }
 

@@ -105,10 +105,10 @@ function SeriesDisplayPage({entity, identifierTypes, user,genderOptions}) {
 	const entityKey = getEntityKey(entity.entityType);
 	const propsForTable = {
 		[entityKey]: entity.seriesItems,
+		genderOptions,
 		showAdd: false,
 		showAddedAtColumn: false,
 		showCheckboxes: false,
-		genderOptions
 	};
 	return (
 		<div>
@@ -179,11 +179,12 @@ function SeriesDisplayPage({entity, identifierTypes, user,genderOptions}) {
 SeriesDisplayPage.displayName = 'SeriesDisplayPage';
 SeriesDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
+	genderOptions: PropTypes.array,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired,
-	genderOptions: PropTypes.array
+	user: PropTypes.object.isRequired
 };
 SeriesDisplayPage.defaultProps = {
+	genderOptions: [],
 	identifierTypes: []
 };
 
