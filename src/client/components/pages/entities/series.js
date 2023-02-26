@@ -87,7 +87,7 @@ SeriesAttributes.propTypes = {
 };
 
 
-function SeriesDisplayPage({entity, identifierTypes, user,genderOptions}) {
+function SeriesDisplayPage({entity, identifierTypes, user, genderOptions}) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);
@@ -108,7 +108,7 @@ function SeriesDisplayPage({entity, identifierTypes, user,genderOptions}) {
 		genderOptions,
 		showAdd: false,
 		showAddedAtColumn: false,
-		showCheckboxes: false,
+		showCheckboxes: false
 	};
 	return (
 		<div>

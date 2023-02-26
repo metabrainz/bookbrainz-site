@@ -66,11 +66,11 @@ function AuthorTableRow({author, showAddedAtColumn, showCheckboxes, selectedEnti
 AuthorTableRow.displayName = 'AuthorTableRow';
 AuthorTableRow.propTypes = {
 	author: PropTypes.object.isRequired,
+	genderOptions: PropTypes.array,
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool.isRequired,
-	showCheckboxes: PropTypes.bool,
-	genderOptions: PropTypes.array
+	showCheckboxes: PropTypes.bool
 };
 AuthorTableRow.defaultProps = {
 	onToggleRow: null,
@@ -102,12 +102,12 @@ function AuthorTable({authors, showAddedAtColumn, showCheckboxes, selectedEntiti
 							authors.map((author) => (
 								<AuthorTableRow
 									author={author}
+									genderOptions={genderOptions}
 									key={author.bbid}
 									selectedEntities={selectedEntities}
 									showAddedAtColumn={showAddedAtColumn}
 									showCheckboxes={showCheckboxes}
 									onToggleRow={onToggleRow}
-									genderOptions={genderOptions}
 								/>
 							))
 						}
@@ -129,13 +129,14 @@ function AuthorTable({authors, showAddedAtColumn, showCheckboxes, selectedEntiti
 AuthorTable.displayName = 'AuthorTable';
 AuthorTable.propTypes = {
 	authors: PropTypes.array.isRequired,
+	genderOptions: PropTypes.array,
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool,
-	showCheckboxes: PropTypes.bool,
-	genderOptions: PropTypes.array
+	showCheckboxes: PropTypes.bool
 };
 AuthorTable.defaultProps = {
+	genderOptions: [],
 	onToggleRow: null,
 	selectedEntities: [],
 	showAddedAtColumn: false,
