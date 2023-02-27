@@ -45,7 +45,7 @@ async function makeLoader(modelName, propName, sortFunc?, relations = []) {
 			return null;
 		};
 	} catch (error) {
-		throw error;
+		next(error);
 	}
 }
 
