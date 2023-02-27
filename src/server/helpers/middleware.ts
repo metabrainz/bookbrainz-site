@@ -33,8 +33,8 @@ interface $Request extends Request {
 }
 
 async function makeLoader(modelName, propName, sortFunc?, relations = []) {
-	try {
-		return async function loaderFunc(req: $Request, res: $Response, next: NextFunction) {
+	return async function loaderFunc(req: $Request, res: $Response, next: NextFunction) {
+		try {
 			const {orm}: any = req.app.locals;
 			const model = orm[modelName];
 			const results = await model.fetchAll({withRelated: [...relations]});
@@ -43,10 +43,10 @@ async function makeLoader(modelName, propName, sortFunc?, relations = []) {
 				sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
 			next();
 			return null;
-		};
-	} catch (error) {
-		next(error);
-	}
+		} catch (error) {
+			next(error);
+		}
+	};
 }
 
 
