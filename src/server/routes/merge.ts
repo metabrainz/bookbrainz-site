@@ -173,7 +173,7 @@ function entitiesToFormState(entities: any[]) {
 	return props;
 }
 
-async function loadEntityRelationships(entity, orm, transacting): Promise<any> {
+function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 	const {RelationshipSet} = orm;
 
 	// Default to empty array, its presence is expected down the line
@@ -182,8 +182,8 @@ async function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 	if (!entity.relationshipSetId) {
 		return null;
 	}
-	try {
-	  const relationshipSet = await RelationshipSet.forge({ id: entity.relationshipSetId })
+
+	return RelationshipSet.forge({id: entity.relationshipSetId})
 		.fetch({
 			transacting,
 			withRelated: [
@@ -194,69 +194,75 @@ async function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 				'relationships.attributeSet.relationshipAttributes.type'
 			]
 		})
-	  if (relationshipSet) {
-		entity.relationships = relationshipSet.related('relationships').toJSON();
-	  }
-  
-	  attachAttributes(entity.relationships);
-  
-	  async function getEntityWithAlias(relEntity) {
-		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
-		const model = commonUtils.getEntityModelByType(orm, relEntity.type);
-  
-		return model.forge({ bbid: redirectBbid })
-		  .fetch({ require: true, withRelated: ['defaultAlias'].concat(getAdditionalRelations(relEntity.type)) });
-	  }
-  
-	  /**
-	   * Source and target are generic Entity objects, so until we have
-	   * a good way of polymorphically fetching the right specific entity,
-	   * we need to fetch default alias in a somewhat sketchier way.
-	   */
-	  const relationships = await Promise.all(entity.relationships.map(async (relationship) => {
-		const [relationshipSource, relationshipTarget] = await Promise.all([
-		  getEntityWithAlias(relationship.source),
-		  getEntityWithAlias(relationship.target)
-		]);
-  
-		relationship.source = relationshipSource.toJSON();
-		relationship.target = relationshipTarget.toJSON();
-  
-		return relationship;
-	  }));
-  
-	  // Set rendered relationships on relationship objects
-	  relationships.forEach((relationship) => {
-		relationship.rendered = renderRelationship(relationship);
-	  });
-  
-	  return entity;
-	} catch (error) {
-	  console.error(error);
-	}
-  }
+		.then((relationshipSet) => {
+			if (relationshipSet) {
+				entity.relationships = relationshipSet.related('relationships').toJSON();
+			}
+
+			attachAttributes(entity.relationships);
+
+			async function getEntityWithAlias(relEntity) {
+				const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
+				const model = commonUtils.getEntityModelByType(orm, relEntity.type);
+
+				return model.forge({bbid: redirectBbid})
+					.fetch({require: true, withRelated: ['defaultAlias'].concat(getAdditionalRelations(relEntity.type))});
+			}
+
+			/**
+			 * Source and target are generic Entity objects, so until we have
+			 * a good way of polymorphically fetching the right specific entity,
+			 * we need to fetch default alias in a somewhat sketchier way.
+			 */
+			return Promise.all(entity.relationships.map(
+				(relationship) => Promise.all(
+					[getEntityWithAlias(relationship.source),
+						getEntityWithAlias(relationship.target)]
+				)
+					.then(([relationshipSource, relationshipTarget]) => {
+						relationship.source = relationshipSource.toJSON();
+						relationship.target = relationshipTarget.toJSON();
+
+						return relationship;
+					})
+			));
+		})
+		.then((relationships) => {
+			// Set rendered relationships on relationship objects
+			relationships.forEach((relationship) => {
+				relationship.rendered = renderRelationship(relationship);
+			});
+
+			return entity;
+		});
+}
+
 async function getEntityByBBID(orm, transacting, bbid) {
-	try {
 	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, transacting);
 	const entityHeader = await orm.Entity.forge({bbid: redirectBbid}).fetch({transacting});
 	const entityType = entityHeader.get('type');
 	const model = commonUtils.getEntityModelByType(orm, entityType);
 
-		const entity = await model.forge({bbid: redirectBbid})
-			.fetch({
-				require: true,
-				transacting,
-				withRelated: basicRelations.concat(getEntityFetchPropertiesByType(entityType))
-			});
-
-		const entityJSON = entity.toJSON();
-		await loadEntityRelationships(entityJSON, orm, transacting);
-
-		// Return the loaded entity as JSON
-		return entityJSON;
-	} catch (error) {
-		throw error;
-	}
+	return model.forge({bbid: redirectBbid})
+		.fetch({
+			require: true,
+			transacting,
+			withRelated: basicRelations.concat(getEntityFetchPropertiesByType(entityType))
+		})
+		.then(async (entity) => {
+			const entityJSON = entity.toJSON();
+			try {
+				await loadEntityRelationships(entityJSON, orm, transacting);
+			}
+			catch (error) {
+				// eslint-disable-next-line no-console
+				console.error(error);
+			}
+			return entityJSON;
+		})
+		.catch(error => {
+			throw error;
+		});
 }
 
 
