@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2015       Ben Ockmore
- *               2015-2016  Sean Burke
- *				 2021       Akash Gupta
- *				 2022       Ansh Goyal
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+* Copyright (C) 2015       Ben Ockmore
+*               2015-2016  Sean Burke
+*				 2021       Akash Gupta
+*				 2022       Ansh Goyal
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published b
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
 
 import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
@@ -32,24 +32,23 @@ interface $Request extends Request {
 	user: any
 }
 
-function makeLoader(modelName, propName, sortFunc?, relations = []) {
-	return function loaderFunc(req: $Request, res: $Response, next: NextFunction) {
-		const {orm}: any = req.app.locals;
-		const model = orm[modelName];
-		return model.fetchAll({withRelated: [...relations]})
-			.then((results) => {
-				const resultsSerial = results.toJSON();
-
-				res.locals[propName] =
-					sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
-
-				next();
-
-				return null;
-			})
-			.catch(next);
-	};
+async function makeLoader(modelName, propName, sortFunc?, relations = []) {
+	try {
+		return async function loaderFunc(req: $Request, res: $Response, next: NextFunction) {
+			const {orm}: any = req.app.locals;
+			const model = orm[modelName];
+			const results = await model.fetchAll({withRelated: [...relations]});
+			const resultsSerial = results.toJSON();
+			res.locals[propName] =
+				sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
+			next();
+			return null;
+		};
+	} catch (error) {
+		throw error;
+	}
 }
+
 
 export const loadAuthorTypes = makeLoader('AuthorType', 'authorTypes');
 export const loadEditionFormats = makeLoader('EditionFormat', 'editionFormats');
@@ -131,7 +130,7 @@ export async function loadWorkTableAuthors(req: $Request, res: $Response, next: 
  * @returns
  */
 
-export function addRelationships(entity, relationshipSet, orm) {
+export async function addRelationships(entity, relationshipSet, orm) {
 	async function getEntityWithAlias(relEntity) {
 		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
 		const model = commonUtils.getEntityModelByType(orm, relEntity.type);
@@ -139,59 +138,59 @@ export function addRelationships(entity, relationshipSet, orm) {
 		return model.forge({bbid: redirectBbid})
 			.fetch({require: false, withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))});
 	}
+
 	entity.relationships = relationshipSet ?
 		relationshipSet.related('relationships').toJSON() : [];
 
 	utils.attachAttributes(entity.relationships);
-
 
 	/**
 	 * Source and target are generic Entity objects, so until we have
 	 * a good way of polymorphically fetching the right specific entity,
 	 * we need to fetch default alias in a somewhat sketchier way.
 	 */
-	return Promise.all(entity.relationships.map((relationship) =>
-		Promise.all([getEntityWithAlias(relationship.source), getEntityWithAlias(relationship.target)])
-			.then(([source, target]) => {
-				relationship.source = source.toJSON();
-				relationship.target = target.toJSON();
+	const relationshipPromises = entity.relationships.map(async (relationship) => {
+		const [source, target] = await Promise.all([getEntityWithAlias(relationship.source), getEntityWithAlias(relationship.target)]);
+		relationship.source = source.toJSON();
+		relationship.target = target.toJSON();
 
-				return relationship;
-			})));
+		return relationship;
+	});
+
+	return Promise.all(relationshipPromises);
 }
 
-export function loadEntityRelationships(req: $Request, res: $Response, next: NextFunction) {
+
+export async function loadEntityRelationships(req: $Request, res: $Response, next: NextFunction) {
 	const {orm}: any = req.app.locals;
 	const {RelationshipSet} = orm;
 	const {entity} = res.locals;
 
-	new Promise<void>((resolve) => {
+	try {
 		if (!entity) {
 			throw new error.SiteError('Failed to load entity');
 		}
 
-		resolve();
-	})
-		.then(
-			() => RelationshipSet.forge({id: entity.relationshipSetId})
-				.fetch({
-					require: false,
-					withRelated: [
-						'relationships.source',
-						'relationships.target',
-						'relationships.type.attributeTypes',
-						'relationships.attributeSet.relationshipAttributes.value',
-						'relationships.attributeSet.relationshipAttributes.type'
-					]
-				})
-		)
-		.then((relationshipSet) => addRelationships(entity, relationshipSet, orm))
-		.then(() => {
-			next();
-			return null;
-		})
-		.catch(next);
+		const relationshipSet = await RelationshipSet.forge({id: entity.relationshipSetId})
+			.fetch({
+				require: false,
+				withRelated: [
+					'relationships.source',
+					'relationships.target',
+					'relationships.type.attributeTypes',
+					'relationships.attributeSet.relationshipAttributes.value',
+					'relationships.attributeSet.relationshipAttributes.type'
+				]
+			});
+
+		await addRelationships(entity, relationshipSet, orm);
+
+		next();
+	} catch (err) {
+		next(err);
+	}
 }
+
 export async function redirectedBbid(req: $Request, res: $Response, next: NextFunction, bbid: string) {
 	if (!commonUtils.isValidBBID(bbid)) {
 		return next(new error.BadRequestError(`Invalid bbid: ${req.params.bbid}`, req));
@@ -291,7 +290,7 @@ export async function validateCollectionParams(req, res, next) {
 		return next(new error.BadRequestError('Invalid collection name: Empty string not allowed', req));
 	}
 	const entityTypes = _.keys(commonUtils.getEntityModels(orm));
-	if (!entityTypes.includes(_.upperFirst(_.camelCase(entityType)))) {
+	if (!entityTypes.includes(.upperFirst(.camelCase(entityType)))) {
 		return next(new error.BadRequestError(`Invalid entity type: ${entityType} does not exist`, req));
 	}
 	const collaboratorIds = collaborators.map(collaborator => collaborator.id);
