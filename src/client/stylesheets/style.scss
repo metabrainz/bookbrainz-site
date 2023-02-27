@@ -383,6 +383,20 @@ a.contact-text:visited {
 	height: 10px;
 }
 
+/* Style inline alias lists the same way as the previously used h4 elements */
+ul.inline-aliases {
+	@extend h4;
+	padding: 0;
+	li {
+		display: inline;
+	}
+	li::after {
+		content: ", ";
+	}
+	li:last-child:after {
+		content: "";
+	}
+}
 
 /* Text wrapping in list-group-items (for long revision notes, for example) */
 /* ============= */
