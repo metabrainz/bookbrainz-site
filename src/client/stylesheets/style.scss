@@ -391,7 +391,8 @@ ul.inline-aliases {
 		display: inline;
 	}
 	li::after {
-		content: ", ";
+		content: " · ";
+		font-weight: bolder;
 	}
 	li:last-child:after {
 		content: "";
