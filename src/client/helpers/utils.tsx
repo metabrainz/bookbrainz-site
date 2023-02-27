@@ -185,7 +185,7 @@ export function stringToHTMLWithLinks(string: string) {
 		urlRegex,
 		'<a href="$1" target="_blank">$1</a>'
 	);
-	const sanitizedHtml = DOMPurify.sanitize(content);
+	const sanitizedHtml = DOMPurify.sanitize(content, { ADD_ATTR: ['target'] });
 	// eslint-disable-next-line react/no-danger
 	return <span dangerouslySetInnerHTML={{__html: sanitizedHtml}}/>;
 }
