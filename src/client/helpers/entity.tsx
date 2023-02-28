@@ -232,9 +232,8 @@ export function getEntityDisambiguation(entity) {
 	} else if(entity.disambiguation){
 		return <small>{` (${entity.disambiguation})`} </small>;
 	}
-  }
   return null;
-}
+  }
 
 export function getEntitySecondaryAliases(entity) {
 	if (entity.aliasSet && Array.isArray(entity.aliasSet.aliases) && entity.aliasSet.aliases.length > 1) {
