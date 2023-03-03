@@ -81,6 +81,7 @@ class WikipediaExtract extends React.Component<Props, State> {
 
 	render() {
 		const {extract, url} = this.state;
+		const licenseUrl = 'https://creativecommons.org/licenses/by-sa/3.0/';
 		return extract ? (
 			<Row className="wikipedia-extract">
 				<Col>
@@ -89,8 +90,7 @@ class WikipediaExtract extends React.Component<Props, State> {
 					<a href={url?.href}>Continue reading at Wikipedia...</a>
 					{' '}
 					<small>
-						{'Wikipedia content provided under the terms of the '}
-						<a href="https://creativecommons.org/licenses/by-sa/3.0/">Creative Commons BY-SA license</a>
+						Wikipedia content provided under the terms of the <a href={licenseUrl}>Creative Commons BY-SA license</a>
 					</small>
 				</Col>
 			</Row>
