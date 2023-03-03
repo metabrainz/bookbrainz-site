@@ -3303,10 +3303,10 @@ configstore@^5.0.1:
     write-file-atomic "^3.0.0"
     xdg-basedir "^4.0.0"
 
-connect-redis@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/connect-redis/-/connect-redis-6.0.0.tgz#7e443fc7028eca43302bee59f51a315f65cd56b5"
-  integrity sha512-6eGEAAPHYvcfbRNCMmPzBIjrqRWLw7at9lCUH4G6NQ8gwWDJelaUmFNOqPIhehbw941euVmIuqWsaWiKXfb+5g==
+connect-redis@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/connect-redis/-/connect-redis-7.0.0.tgz#8a322a5f43146aaff1644aa6355a6527007dd23b"
+  integrity sha512-f7TlBs7J0Zz6y3mSKArBEN6qQ3T8BzsD1+tFSnnbvvCG1PjHllsQU/L7dTEaJsuZgzl/XU9hz+DMiPq1UJQMAQ==
 
 content-disposition@0.5.4:
   version "0.5.4"
