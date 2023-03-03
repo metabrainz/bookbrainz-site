@@ -99,7 +99,10 @@ const sessionOptions = {
 };
 if (process.env.NODE_ENV !== 'test') {
 	const redisClient = createClient({
+		// connect-redis requires we maintain the redis v3 argument structure, with legacyMode:
+		// https://github.com/tj/connect-redis/issues/361#issuecomment-1182015683
 		host: _get(config, 'session.redis.host', 'localhost'),
+		legacyMode: true,
 		port: _get(config, 'session.redis.port', 6379)
 	});
 
