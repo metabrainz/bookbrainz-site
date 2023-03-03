@@ -108,10 +108,7 @@ if (process.env.NODE_ENV !== 'test') {
 
 	// eslint-disable-next-line no-console
 	redisClient.connect().catch(redisError => { console.error('Redis error:', redisError); });
-	redisClient.on('connection', (stream) => {
-		// eslint-disable-next-line no-console
-		console.log('someone connected!');
-	  });
+
 	redisClient.on('error', (err) => debug('Error while closing server connections', err));
 	const redisStore = new RedisStore({
 		client: redisClient
