@@ -41,7 +41,7 @@
     "chartjs-adapter-date-fns": "^1.0.0",
     "classnames": "^2.3.2",
     "compression": "^1.7.4",
-    "connect-redis": "^6.0.0",
+    "connect-redis": "^7.0.0",
     "core-js": "^3.20.3",
     "cross-env": "^7.0.3",
     "date-fns": "^2.15.0",
