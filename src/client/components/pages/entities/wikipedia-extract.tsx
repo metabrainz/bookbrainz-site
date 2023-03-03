@@ -62,7 +62,11 @@ class WikipediaExtract extends React.Component<Props, State> {
 
 	componentDidMount() {
 		if (!this.state.extract) {
-			const {identifiers} = this.props.entity.identifierSet;
+			const identifiers = this.props.entity.identifierSet?.identifiers;
+			if (!identifiers?.length) {
+				return;
+			}
+
 			const wikidataId = identifiers.find((identifier) => identifier.typeId === WIKIDATA_TYPE_ID)?.value;
 			getWikipediaExtractForWikidata(wikidataId).then((result) => {
 				if (result.extract) {
