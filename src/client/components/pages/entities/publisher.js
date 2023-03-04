@@ -27,6 +27,7 @@ import EntityRelatedCollections from './related-collections';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
+import WikipediaExtract from './wikipedia-extract';
 
 
 const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
@@ -98,6 +99,7 @@ function PublisherDisplayPage({entity, identifierTypes, user}) {
 					<PublisherAttributes publisher={entity}/>
 				</Col>
 			</Row>
+			<WikipediaExtract entity={entity}/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>

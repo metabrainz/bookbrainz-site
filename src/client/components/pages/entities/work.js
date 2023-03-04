@@ -31,6 +31,7 @@ import EntityRelatedCollections from './related-collections';
 import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
+import WikipediaExtract from './wikipedia-extract';
 
 
 const {deletedEntityMessage, getRelationshipSourceByTypeId, getLanguageAttribute, getTypeAttribute, getEntityUrl,
@@ -132,6 +133,7 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 			</Row>
+			<WikipediaExtract entity={entity}/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>

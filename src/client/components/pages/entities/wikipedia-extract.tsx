@@ -17,7 +17,7 @@
  */
 
 import {Col, Row} from 'react-bootstrap';
-import {WikipediaArticleExtract, buildWikipediaUrl} from '../../../../common/helpers/wikimedia';
+import {WikipediaArticleExtract, buildWikipediaUrl, getWikidataId} from '../../../../common/helpers/wikimedia';
 import type {EntityT} from 'bookbrainz-data/lib/types/entity';
 import React from 'react';
 
@@ -42,9 +42,6 @@ async function getWikipediaExtractForWikidata(wikidataId: string) {
 }
 
 
-const WIKIDATA_TYPE_ID = 18;
-
-
 class WikipediaExtract extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
@@ -56,12 +53,11 @@ class WikipediaExtract extends React.Component<Props, State> {
 
 	componentDidMount() {
 		if (!this.state.extract) {
-			const identifiers = this.props.entity.identifierSet?.identifiers;
-			if (!identifiers?.length) {
+			const wikidataId = getWikidataId(this.props.entity);
+			if (!wikidataId) {
 				return;
 			}
 
-			const wikidataId = identifiers.find((identifier) => identifier.typeId === WIKIDATA_TYPE_ID)?.value;
 			getWikipediaExtractForWikidata(wikidataId).then((result) => {
 				if (result.extract) {
 					this.setState({

@@ -28,6 +28,7 @@ import EntityTitle from './title';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import WikipediaExtract from './wikipedia-extract';
 import WorksTable from './work-table';
 import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons';
 
@@ -168,6 +169,7 @@ function EditionDisplayPage({entity, identifierTypes, user}) {
 					{editionGroupSection}
 				</Col>
 			</Row>
+			<WikipediaExtract entity={entity}/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
