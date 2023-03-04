@@ -18,6 +18,7 @@
 
 import {Col, Row} from 'react-bootstrap';
 import {WikipediaArticleExtract, buildWikipediaUrl} from '../../../../common/helpers/wikimedia';
+import type {EntityT} from 'bookbrainz-data/lib/types/entity';
 import React from 'react';
 
 
@@ -27,14 +28,7 @@ type State = {
 };
 
 type Props = {
-	entity: {
-		identifierSet: {
-			identifiers: Array<{
-				typeId: number,
-				value: string,
-			}>,
-		},
-	},
+	entity: EntityT,
 } & Partial<State>;
 
 
