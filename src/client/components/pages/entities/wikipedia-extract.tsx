@@ -18,6 +18,7 @@
 
 import {Col, Row} from 'react-bootstrap';
 import {WikipediaArticleExtract, buildWikipediaUrl, getWikidataId} from '../../../../common/helpers/wikimedia';
+import DOMPurify from 'isomorphic-dompurify';
 import type {EntityT} from 'bookbrainz-data/lib/types/entity';
 import React from 'react';
 
@@ -76,7 +77,8 @@ class WikipediaExtract extends React.Component<Props, State> {
 			<Row className="wikipedia-extract">
 				<Col>
 					<h2>Wikipedia</h2>
-					<div dangerouslySetInnerHTML={{__html: extract}}/>
+					{/* eslint-disable-next-line react/no-danger */}
+					<div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(extract)}}/>
 					<a href={url?.href}>Continue reading at Wikipedia...</a>
 					{' '}
 					<small>
