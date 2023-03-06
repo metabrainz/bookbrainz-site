@@ -35,10 +35,13 @@ type Props = {
 
 /**
  * Fetches a Wikipedia extract for the given Wikidata item.
- * @param wikidataId - Wikidata item ID.
+ * @param {string} wikidataId - Wikidata item ID.
+ * @param {string[]} preferredLanguages - List of language codes, preference in descending order.
  */
-async function getWikipediaExtractForWikidata(wikidataId: string) {
-	const response = await fetch(`/wikipedia-extract/wikidata/${wikidataId}`);
+async function getWikipediaExtractForWikidata(wikidataId: string, preferredLanguages = ['en']) {
+	const apiUrl = new URL(`/wikidata/${wikidataId}/wikipedia-extract`, document.location.href);
+	apiUrl.search = new URLSearchParams(preferredLanguages.map((lang) => ['language', lang])).toString();
+	const response = await fetch(apiUrl);
 	return response.json() as Promise<WikipediaArticleExtract>;
 }
 

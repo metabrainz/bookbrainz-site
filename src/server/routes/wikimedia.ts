@@ -18,15 +18,26 @@
 
 import {getWikipediaExtract, selectWikipediaPage} from '../helpers/wikimedia';
 import express from 'express';
+import {getAcceptedLanguageCodes} from '../helpers/i18n';
 import log from 'log';
+
+
+function parseQuery(url: string) {
+	return new URLSearchParams(url.replace(/^.+?\?/, ''));
+}
 
 
 const router = express.Router();
 
 
-router.get('/wikipedia-extract/wikidata/:id', async (req, res) => {
+router.get('/wikidata/:id/wikipedia-extract', async (req, res) => {
+	const browserLanguages = getAcceptedLanguageCodes(req);
+	// using `req.query.language` for a parameter that might be `string`, `string[]` (or something else) is a pain
+	const queryLanguages = parseQuery(req.url).getAll('language');
+	// try to use the user's browser languages, fallback to queried languages and English
+	const preferredLanguages = browserLanguages.concat(queryLanguages, 'en');
 	try {
-		const article = await selectWikipediaPage(req.params.id);
+		const article = await selectWikipediaPage(req.params.id, preferredLanguages);
 		if (article) {
 			const extract = await getWikipediaExtract(article);
 			res.json({article, ...extract});

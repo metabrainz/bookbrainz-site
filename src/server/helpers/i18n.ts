@@ -39,3 +39,11 @@ export function parseAcceptLanguage(acceptLanguage: string) {
 		.sort((a, b) => b.weight - a.weight);
 }
 
+/**
+ * Extracts language codes from the Accept-Language header, ordered by weight/preference.
+ * @param {Request} request - Request object which includes HTTP headers.
+ */
+export function getAcceptedLanguageCodes(request: Request) {
+	return parseAcceptLanguage(request.headers['accept-language'])
+		.map((language) => language.code);
+}
