@@ -17,6 +17,7 @@
  */
 
 import type {WikipediaArticle, WikipediaPageExtract} from '../../common/helpers/wikimedia';
+import {toLower, uniq} from 'lodash';
 import request from 'superagent';
 
 
@@ -92,8 +93,8 @@ export async function selectWikipediaPage(wikidataId: string, preferredLanguages
 	const articles = await getAvailableWikipediaArticles(wikidataId);
 
 	let result: WikipediaArticle;
-	for (const language of preferredLanguages) {
-		result = articles.find((page) => page.language === language);
+	for (const language of uniq(preferredLanguages)) {
+		result = articles.find((page) => page.language === toLower(language));
 		if (result) {
 			break;
 		}
