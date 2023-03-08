@@ -194,10 +194,8 @@ export function loadEntityRelationships(req: $Request, res: $Response, next: Nex
 }
 
 export function checkValidRevisionId(req: $Request, res: $Response, next: NextFunction, id: string) {
-	function isNumeric(value) {
-		return (/^-?\d+$/).test(value);
-	}
-	if (!isNumeric(id)) {
+	const idToNumber = _.toNumber(id);
+	if (!_.isInteger(idToNumber) || (_.isInteger(idToNumber) && idToNumber <= 0)) {
 		return next(new error.BadRequestError(`Invalid revision id: ${req.params.id}`, req));
 	}
 	return next();
