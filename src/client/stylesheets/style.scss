@@ -390,12 +390,9 @@ ul.inline-aliases {
 	li {
 		display: inline;
 	}
-	li::after {
+	li:not(:last-child)::after {
 		content: " · ";
 		font-weight: bolder;
-	}
-	li:last-child:after {
-		content: "";
 	}
 }
 
