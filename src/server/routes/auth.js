@@ -69,8 +69,9 @@ router.get('/cb', (req, res, next) => {
 });
 
 router.get('/logout', (req, res) => {
-	req.logOut();
-	res.redirect(status.SEE_OTHER, '/');
+	req.logOut(() => {
+		res.redirect(status.SEE_OTHER, '/');
+	});
 });
 
 export default router;
