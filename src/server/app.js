@@ -150,13 +150,14 @@ app.use((req, res, next) => {
 	res.locals.repositoryUrl = repositoryUrl;
 	res.locals.alerts = [];
 	req.signUpDisabled = false;
-	
+
 	if (process.env.DEPLOY_ENV === 'test' || process.env.DEPLOY_ENV === 'beta') {
 		res.locals.alerts.push({
 			level: 'danger',
-			message: ` You are on a ${process.env.DEPLOY_ENV} site`
+			message: `You are on a ${process.env.DEPLOY_ENV} site`
 		});
 	}
+
 	if (!req.session || !authInitiated) {
 		res.locals.alerts.push({
 			level: 'danger',
