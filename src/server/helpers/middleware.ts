@@ -186,10 +186,11 @@ export async function loadEntityRelationships(req: $Request, res: $Response, nex
 
 		await addRelationships(entity, relationshipSet, orm);
 
-		next();
+		
 	} catch (err) {
 		next(err);
 	}
+	next();
 }
 
 export async function redirectedBbid(req: $Request, res: $Response, next: NextFunction, bbid: string) {
