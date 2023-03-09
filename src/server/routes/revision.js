@@ -245,7 +245,7 @@ router.get('/:id', async (req, res, next) => {
 				.where('id', req.params.id)
 				.fetchAll({merge: false, remove: false, require: false, withRelated: 'entity'});
 			return await diffRevisionsWithParents(req.app.locals.orm, entityRevisions, entityType);
-		} 
+		}
 		catch (err) {
 			log.error(err);
 			throw err;
