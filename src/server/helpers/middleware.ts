@@ -43,8 +43,8 @@ async function makeLoader(modelName, propName, sortFunc?, relations = []) {
 				sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
 			next();
 			return null;
-		} catch (error) {
-			next(error);
+		catch (err) {
+			next(err);
 		}
 	};
 }
