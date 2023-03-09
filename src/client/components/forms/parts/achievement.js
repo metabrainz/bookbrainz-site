@@ -21,7 +21,6 @@ import DragAndDropImage from '../../input/drag-and-drop-image';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 const {Card, Col, Container, Row} = bootstrap;
 const maxAchievementProgress = {
 	1: 1,
@@ -56,64 +55,51 @@ const maxAchievementProgress = {
 	29: 10,
 	30: 100
 };
-class Achievement extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			achievement: props.achievement,
-			counter: props.counter,
-			unlocked: props.unlocked
-		};
-	}
 
-	render() {
-		let imgElement;
-		if (this.state.unlocked) {
-			imgElement = (
-				<DragAndDropImage
-					achievementId={this.state.achievement.id}
-					achievementName={this.state.achievement.name}
-					height="100px"
-					src={this.state.achievement.badgeUrl}
-					style={{zIndex: 2}}
-				/>
-			);
-		}
-		else {
-			imgElement = (
-				<img
-					alt={this.state.achievement.name}
-					height="100px"
-					src={this.state.achievement.badgeUrl}
-					style={{zIndex: 2}}
-				/>
-			);
-		}
-		return (
-			<Card bg="light">
-				<Container fluid>
-					<Row>
-						<Col md={2}>
-							{imgElement}
-						</Col>
-						<Col md={8}>
-							<div className="h2">
-								{this.state.achievement.name}
-							</div>
-							<p>{this.state.achievement.description}</p>
-						</Col>
-						{!this.state.unlocked &&
-						<Col>
-							<div className="h3">
-								{this.state.counter}/{maxAchievementProgress[this.state.achievement.id] ?? 0}
-							</div>
-						</Col>
-						}
-					</Row>
-				</Container>
-			</Card>
-		);
-	}
+function Achievement(props){
+
+	const { achievement, counter, unlocked } = props;
+	const imgElement = unlocked ? (
+		<DragAndDropImage
+			achievementId={achievement.id}
+			achievementName={achievement.name}
+			height="100px"
+			src={achievement.badgeUrl}
+			style={{ zIndex: 2 }}
+		/>
+	) : (
+		<img
+			alt={achievement.name}
+			height="100px"
+			src={achievement.badgeUrl}
+			style={{ zIndex: 2 }}
+		/>
+	);
+
+	return (
+		<Card bg="light">
+			<Container fluid>
+				<Row>
+					<Col md={2}>
+						{imgElement}
+					</Col>
+					<Col md={8}>
+						<div className="h2">
+							{achievement.name}
+						</div>
+						<p>{achievement.description}</p>
+					</Col>
+					{!unlocked &&
+					<Col>
+						<div className="h3">
+							{counter}/{maxAchievementProgress[achievement.id] ?? 0}
+						</div>
+					</Col>
+					}
+				</Row>
+			</Container>
+		</Card>
+	);
 }
 
 Achievement.displayName = 'achievement';
