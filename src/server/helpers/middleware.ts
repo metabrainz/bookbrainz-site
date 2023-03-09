@@ -41,11 +41,12 @@ function makeLoader(modelName, propName, sortFunc?, relations = []) {
 			const resultsSerial = results.toJSON();
 			res.locals[propName] =
 				sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
-			next();
+			
 			return null;
 		catch (err) {
 			next(err);
 		}
+		next();
 	};
 }
 
