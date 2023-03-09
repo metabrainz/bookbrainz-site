@@ -176,19 +176,19 @@ function formatEditionGroupChange(change) {
 	return [];
 }
 
-function diffRevisionsWithParents(orm, entityRevisions, entityType) {
+async function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 	// entityRevisions - collection of *entityType*_revisions matching id
-	return Promise.all(entityRevisions.map(
+	const promises = entityRevisions.map(
 		async (revision) => {
 			const dataId = revision.get('dataId');
 			const revisionEntity = revision.related('entity');
 			const entityBBID = revisionEntity.get('bbid');
 			const entity = await orm.func.entity.getEntity(orm, entityType, entityBBID);
 			const isEntityDeleted = !entity.dataId;
-			return revision.parent()
-				.then(
-					(parent) => {
-						let isNew = false;
+			try {
+				const parent = await revision.parent();
+				let isNew = false;
+				
 						const isDeletion = !dataId;
 						if (!parent) {
 							isNew = Boolean(dataId);
@@ -197,7 +197,7 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 							changes: revision.diff(parent),
 							entity: revisionEntity,
 							entityAlias: dataId ?
-								revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
+								await revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
 								orm.func.entity.getEntityParentAlias(
 									orm, entityType, revision.get('bbid')
 								),
@@ -206,13 +206,14 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 							isNew,
 							revision
 						});
-					},
+			} 
 					// If calling .parent() is rejected (no parent rev), we still want to go ahead without the parent
-					() => makePromiseFromObject({
+			catch {
+				return makePromiseFromObject({
 						changes: revision.diff(null),
 						entity: revisionEntity,
-						entityAlias: revision.get('dataId') ?
-							revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
+						entityAlias: dataId ?
+							await revision.related('data').fetch({require: false, withRelated: ['aliasSet.defaultAlias', 'aliasSet.aliases']}) :
 							orm.func.entity.getEntityParentAlias(
 								orm, entityType, revision.get('bbid')
 							),
@@ -220,10 +221,12 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 						isEntityDeleted,
 						isNew: Boolean(dataId),
 						revision
-					})
+					}
 				);
 		}
-	));
+	
+	});
+	return Promise.all(promises);
 }
 
 router.get('/:id', async (req, res, next) => {
@@ -233,18 +236,23 @@ router.get('/:id', async (req, res, next) => {
 	} = req.app.locals.orm;
 
 	let revision;
-	function _createRevision(EntityRevisionModel, entityType) {
+	async function _createRevision(EntityRevisionModel, entityType) {
 		/**
 		 * EntityRevisions can have duplicate ids
 		 * the 'merge' and 'remove' options instructs the ORM to consider that normal instead of merging
 		 * see https://github.com/bookshelf/bookshelf/pull/1846
 		 */
-		return EntityRevisionModel.forge()
-			.where('id', req.params.id)
-			.fetchAll({merge: false, remove: false, require: false, withRelated: 'entity'})
-			.then((entityRevisions) => diffRevisionsWithParents(req.app.locals.orm, entityRevisions, entityType))
-			.catch(err => { log.error(err); throw err; });
+		try {
+			const entityRevisions = await EntityRevisionModel.forge()
+				.where('id', req.params.id)
+				.fetchAll({merge: false, remove: false, require: false, withRelated: 'entity'});
+			return await diffRevisionsWithParents(req.app.locals.orm, entityRevisions, entityType);
+		} catch (err) {
+			log.error(err);
+			throw err;
+		}
 	}
+	
 	try {
 		/*
 		* Here, we need to get the Revision, then get all <Entity>Revision
