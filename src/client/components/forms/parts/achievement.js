@@ -21,6 +21,7 @@ import DragAndDropImage from '../../input/drag-and-drop-image';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+
 const {Card, Col, Container, Row} = bootstrap;
 const maxAchievementProgress = {
 	1: 1,
@@ -56,7 +57,7 @@ const maxAchievementProgress = {
 	30: 100
 };
 
-function Achievement(props){
+function Achievement(props) {
 
 	const { achievement, counter, unlocked } = props;
 	const imgElement = unlocked ? (
@@ -106,6 +107,7 @@ Achievement.displayName = 'achievement';
 
 Achievement.propTypes = {
 	achievement: PropTypes.shape({
+		id: PropTypes.number,
 		badgeUrl: PropTypes.string,
 		description: PropTypes.string,
 		name: PropTypes.string
