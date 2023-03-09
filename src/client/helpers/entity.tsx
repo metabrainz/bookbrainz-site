@@ -239,9 +239,8 @@ export function getEntitySecondaryAliases(entity) {
 	if (entity.aliasSet && Array.isArray(entity.aliasSet.aliases) && entity.aliasSet.aliases.length > 1) {
 		const aliases = entity.aliasSet.aliases
 			.filter(item => item.id !== entity.defaultAlias.id)
-			.map(item => item.name)
-			.join(', ');
-		return <h4>{aliases}</h4>;
+			.map((item) => <li key={item.id}>{item.name}</li>);
+		return <ul className="inline-aliases">{aliases}</ul>;
 	}
 
 	return null;
