@@ -157,7 +157,8 @@ export async function addRelationships(entity, relationshipSet, orm) {
 		return relationship;
 	});
 
-	return Promise.all(relationshipPromises);
+	const relationships = await Promise.all(relationshipPromises);
+	return relationships;
 }
 
 
