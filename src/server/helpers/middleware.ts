@@ -32,7 +32,7 @@ interface $Request extends Request {
 	user: any
 }
 
-async function makeLoader(modelName, propName, sortFunc?, relations = []) {
+function makeLoader(modelName, propName, sortFunc?, relations = []) {
 	return async function loaderFunc(req: $Request, res: $Response, next: NextFunction) {
 		try {
 			const {orm}: any = req.app.locals;
