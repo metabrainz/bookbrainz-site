@@ -107,9 +107,9 @@ Achievement.displayName = 'achievement';
 
 Achievement.propTypes = {
 	achievement: PropTypes.shape({
-		id: PropTypes.number,
 		badgeUrl: PropTypes.string,
 		description: PropTypes.string,
+		id: PropTypes.number,
 		name: PropTypes.string
 	}).isRequired,
 	counter: PropTypes.number,
