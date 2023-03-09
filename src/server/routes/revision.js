@@ -22,6 +22,7 @@ import * as entityFormatter from '../helpers/diffFormatters/entity';
 import * as entityRoutes from './entity/entity';
 import * as error from '../../common/helpers/error';
 import * as languageSetFormatter from '../helpers/diffFormatters/languageSet';
+import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
 import * as publisherSetFormatter from '../helpers/diffFormatters/publisherSet';
 import * as releaseEventSetFormatter from
@@ -225,6 +226,11 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 		}
 	));
 }
+
+router.param(
+	'id',
+	middleware.checkValidRevisionId
+);
 
 router.get('/:id', async (req, res, next) => {
 	const {
