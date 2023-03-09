@@ -65,14 +65,18 @@ function Achievement(props) {
 			achievementName={achievement.name}
 			height="100px"
 			src={achievement.badgeUrl}
-			style={{ zIndex: 2 }}
+			style={{
+				zIndex: 2
+			}}
 		/>
 	) : (
 		<img
 			alt={achievement.name}
 			height="100px"
 			src={achievement.badgeUrl}
-			style={{ zIndex: 2 }}
+			style={{
+				zIndex: 2
+			}}
 		/>
 	);
 
