@@ -36,16 +36,18 @@ const router = express.Router();
  * where each object contains the entity name and its count. The results are sorted by count in
  * descending order.
  *
+ * @param {Object} orm - An object representing the ORM.
  * @returns {Array<Object>} An array of objects, where each object contains the entity name and its count
+ * @throws {Error} If there is an error fetching entities lifetime total
  */
-function getAllEntities(orm) {
+async function getAllEntities(orm) {
 	try {
 		const entityModels = commonUtils.getEntityModels(orm);
 		const allEntities = [];
 
 		for (const modelName in entityModels) {
 			const model = entityModels[modelName];
-			const Count = model
+			const Count = await model
 				.query((qb) => {
 					qb
 						.leftJoin(
@@ -60,7 +62,7 @@ function getAllEntities(orm) {
 		}
 		allEntities.sort((a, b) => b.Count - a.Count);
 		return allEntities;
-	} 
+	}
 	catch (error) {
 		throw new Error('Error fetching all entities total');
 	}
@@ -70,16 +72,18 @@ function getAllEntities(orm) {
  * Retrieves the count of entities created in the last 30 days and returns it as an object, where
  * each key is the entity name and its value is the count.
  *
+ * @param {Object} orm - An object representing the ORM.
  * @returns {Object} An object where each key is the entity name and its value is the count
+ * @throws {Error} If there is an error fetching entities total cound from last 30 days
  */
-function getLast30DaysEntities(orm) {
+async function getLast30DaysEntities(orm) {
 	try {
 		const entityModels = commonUtils.getEntityModels(orm);
 		const last30DaysEntities = {};
 		// eslint-disable-next-line guard-for-in
 		for (const modelName in entityModels) {
 			const model = entityModels[modelName];
-			const Count = model
+			const Count = await model
 				.query((qb) => {
 					qb
 						.leftJoin(
@@ -99,19 +103,21 @@ function getLast30DaysEntities(orm) {
 			last30DaysEntities[modelName] = Count;
 		}
 		return last30DaysEntities;
-	} 
+	}
 	catch (error) {
 		throw new Error('Error fetching entities from last 30 days');
 	}
-};
+}
 
 /**
  * Retrieves the top 10 editors with the most revisions and returns them as an array of objects,
  * where each object contains the editor's information.
  *
- * @returns {Array<Object>} An array of objects, where each object contains the editor's information
+ * @param {Object} orm - An object representing the ORM.
+ * @returns {Array<Object>} An array of objects, where each object contains the editor's information.
+ * @throws {Error} If there is an error fetching the top 10 editors.
  */
-function getTop10Editors(orm) {
+async function getTop10Editors(orm) {
 	try {
 		const {Editor} = orm;
 		const topEditorsQuery = await new Editor()
@@ -126,7 +132,7 @@ function getTop10Editors(orm) {
 	catch (error) {
 		throw new Error('Error fetching top 10 editors');
 	}
-};
+}
 
 /* Get Statistics Page */
 router.get('/', async (req, res) => {
