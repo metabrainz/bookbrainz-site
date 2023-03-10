@@ -36,7 +36,7 @@ router.get('/', async (req, res) => {
 	const {orm} = req.app.locals;
 	const {Editor} = orm;
 
-	try{
+	try {
 		const entityModels = commonUtils.getEntityModels(orm);
 
 		// queryPromises1 is used to extract total count of all entities
@@ -60,7 +60,7 @@ router.get('/', async (req, res) => {
 					`bookbrainz.${_.snakeCase(modelName)}.revision_id`,
 					'bookbrainz.revision.id'
 				)
-				.where('master', true)	
+				.where('master', true);
 			}).count();
 			queryPromises1.push({Count, modelName});
 		}
@@ -85,7 +85,7 @@ router.get('/', async (req, res) => {
 				.where('master', true)
 				.where(
 					'bookbrainz.revision.created_at', '>=',	utils.getDateBeforeDays(30)
-				)
+				);
 			}).count();
 			queryPromises2.push({Count, modelName});
 		}
@@ -102,7 +102,7 @@ router.get('/', async (req, res) => {
 			.query((q) =>
 				q.orderBy('total_revisions', 'desc')
 				.limit(10))
-			.fetchAll()
+			.fetchAll();
 
 		const topEditors = getTopEditors.models.map((model) => model.attributes);
 
@@ -126,7 +126,8 @@ router.get('/', async (req, res) => {
 			script: '/js/statistics.js',
 			title: 'Statistics'
 		}));
-	} catch (error){
+	} 
+	catch (error) {
 		throw error;
 	}
 });
