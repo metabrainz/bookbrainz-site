@@ -36,100 +36,95 @@ router.get('/', async (req, res) => {
 	const {orm} = req.app.locals;
 	const {Editor} = orm;
 
-	try {
-		const entityModels = commonUtils.getEntityModels(orm);
+	const entityModels = commonUtils.getEntityModels(orm);
 
-		// queryPromises1 is used to extract total count of all entities
-		const queryPromises1 = [];
+	// queryPromises1 is used to extract total count of all entities
+	const queryPromises1 = [];
 
-		// queryPromises2 is used for total count of entities added in 30 days
-		const queryPromises2 = [];
+	// queryPromises2 is used for total count of entities added in 30 days
+	const queryPromises2 = [];
 
-		/*
-		*	Here We are fetching count of master revisions
-		*  for every type of entities added from beginning
-		*/
+	/*
+	*	Here We are fetching count of master revisions
+	*  for every type of entities added from beginning
+	*/
 
-		// eslint-disable-next-line guard-for-in
-		for (const modelName in entityModels) {
-			const model = entityModels[modelName];
-			const Count = await model.query((qb) => {
-			qb
-				.leftJoin(
-					'bookbrainz.revision',
-					`bookbrainz.${_.snakeCase(modelName)}.revision_id`,
-					'bookbrainz.revision.id'
-				)
-				.where('master', true);
-			}).count();
-			queryPromises1.push({Count, modelName});
-		}
-		const allEntities = await Promise.all(queryPromises1);
-		allEntities.sort((a, b) => b.Count - a.Count);
-
-		/*
-		*	Here We are fetching count of master revision
-		*  for every type of entities added in last 30 days
-		*/
-
-		// eslint-disable-next-line guard-for-in
-		for (const modelName in entityModels) {
-			const model = entityModels[modelName];
-			const Count = await model.query((qb) => {
-			qb
-				.leftJoin(
-					'bookbrainz.revision',
-					`bookbrainz.${_.snakeCase(modelName)}.revision_id`,
-					'bookbrainz.revision.id'
-				)
-				.where('master', true)
-				.where(
-					'bookbrainz.revision.created_at', '>=',	utils.getDateBeforeDays(30)
-				);
-			}).count();
-			queryPromises2.push({Count, modelName});
-		}
-		const last30DaysEntitiesHelper = await Promise.all(queryPromises2);
-		const last30DaysEntities = {};
-		for (const model of last30DaysEntitiesHelper) {
-			last30DaysEntities[model.modelName] = model.Count;
-		}
-
-		/*
-		*	Fetch the top 10 Editors on the basis of total revisions
-		*/
-		const getTopEditors = await new Editor()
-			.query((q) =>
-				q.orderBy('total_revisions', 'desc')
-				.limit(10))
-			.fetchAll();
-
-		const topEditors = getTopEditors.models.map((model) => model.attributes);
-
-		const props = generateProps(req, res, {
-			allEntities,
-			last30DaysEntities,
-			topEditors
-		});
-		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<StatisticsPage
-					allEntities={allEntities}
-					last30DaysEntities={last30DaysEntities}
-					topEditors={topEditors}
-				/>
-			</Layout>
-		);
-		res.send(target({
-			markup,
-			props: escapeProps(props),
-			script: '/js/statistics.js',
-			title: 'Statistics'
-		}));
-	} 
-	catch (error) {
-		throw error;
+	// eslint-disable-next-line guard-for-in
+	for (const modelName in entityModels) {
+		const model = entityModels[modelName];
+		const Count = model.query((qb) => {
+		qb
+			.leftJoin(
+				'bookbrainz.revision',
+				`bookbrainz.${_.snakeCase(modelName)}.revision_id`,
+				'bookbrainz.revision.id'
+			)
+			.where('master', true);
+		}).count();
+		queryPromises1.push({Count, modelName});
 	}
+	const allEntities = await Promise.all(queryPromises1);
+	allEntities.sort((a, b) => b.Count - a.Count);
+
+	/*
+	*	Here We are fetching count of master revision
+	*  for every type of entities added in last 30 days
+	*/
+
+	// eslint-disable-next-line guard-for-in
+	for (const modelName in entityModels) {
+		const model = entityModels[modelName];
+		const Count = model.query((qb) => {
+		qb
+			.leftJoin(
+				'bookbrainz.revision',
+				`bookbrainz.${_.snakeCase(modelName)}.revision_id`,
+				'bookbrainz.revision.id'
+			)
+			.where('master', true)
+			.where(
+				'bookbrainz.revision.created_at', '>=',	utils.getDateBeforeDays(30)
+			);
+		}).count();
+		queryPromises2.push({Count, modelName});
+	}
+	const last30DaysEntitiesHelper = await Promise.all(queryPromises2);
+	const last30DaysEntities = {};
+	for (const model of last30DaysEntitiesHelper) {
+		last30DaysEntities[model.modelName] = model.Count;
+	}
+
+	/*
+	*	Fetch the top 10 Editors on the basis of total revisions
+	*/
+	const getTopEditors = await new Editor()
+		.query((q) =>
+			q.orderBy('total_revisions', 'desc')
+			.limit(10))
+		.fetchAll();
+
+	const topEditors = getTopEditors.models.map((model) => model.attributes);
+
+	const props = generateProps(req, res, {
+		allEntities,
+		last30DaysEntities,
+		topEditors
+	});
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(props)}>
+			<StatisticsPage
+				allEntities={allEntities}
+				last30DaysEntities={last30DaysEntities}
+				topEditors={topEditors}
+			/>
+		</Layout>
+	);
+	res.send(target({
+		markup,
+		props: escapeProps(props),
+		script: '/js/statistics.js',
+		title: 'Statistics'
+	}));
 });
 
 export default router;
