@@ -53,14 +53,14 @@ router.get('/', async (req, res) => {
 	for (const modelName in entityModels) {
 		const model = entityModels[modelName];
 		const Count = model.query((qb) => {
-		qb
-			.leftJoin(
-				'bookbrainz.revision',
-				`bookbrainz.${_.snakeCase(modelName)}.revision_id`,
-				'bookbrainz.revision.id'
-			)
-			.where('master', true);
-		}).count();
+			qb
+				.leftJoin(
+					'bookbrainz.revision',
+					`bookbrainz.${_.snakeCase(modelName)}.revision_id`,
+					'bookbrainz.revision.id'
+				)
+				.where('master', true);
+			}).count();
 		queryPromises1.push({Count, modelName});
 	}
 	const allEntities = await Promise.all(queryPromises1);
@@ -75,17 +75,17 @@ router.get('/', async (req, res) => {
 	for (const modelName in entityModels) {
 		const model = entityModels[modelName];
 		const Count = model.query((qb) => {
-		qb
-			.leftJoin(
-				'bookbrainz.revision',
-				`bookbrainz.${_.snakeCase(modelName)}.revision_id`,
-				'bookbrainz.revision.id'
-			)
-			.where('master', true)
-			.where(
-				'bookbrainz.revision.created_at', '>=',	utils.getDateBeforeDays(30)
-			);
-		}).count();
+			qb
+				.leftJoin(
+					'bookbrainz.revision',
+					`bookbrainz.${_.snakeCase(modelName)}.revision_id`,
+					'bookbrainz.revision.id'
+				)
+				.where('master', true)
+				.where(
+					'bookbrainz.revision.created_at', '>=',	utils.getDateBeforeDays(30)
+				);
+			}).count();
 		queryPromises2.push({Count, modelName});
 	}
 	const last30DaysEntitiesHelper = await Promise.all(queryPromises2);
@@ -100,7 +100,7 @@ router.get('/', async (req, res) => {
 	const getTopEditors = await new Editor()
 		.query((q) =>
 			q.orderBy('total_revisions', 'desc')
-			.limit(10))
+				.limit(10))
 		.fetchAll();
 
 	const topEditors = getTopEditors.models.map((model) => model.attributes);
