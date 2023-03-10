@@ -38,14 +38,14 @@ const router = express.Router();
  *
  * @returns {Array<Object>} An array of objects, where each object contains the entity name and its count
  */
-const getAllEntities = async (orm) => {
+function getAllEntities(orm) {
 	try {
 		const entityModels = commonUtils.getEntityModels(orm);
 		const allEntities = [];
 
 		for (const modelName in entityModels) {
 			const model = entityModels[modelName];
-			const Count = await model
+			const Count = model
 				.query((qb) => {
 					qb
 						.leftJoin(
@@ -56,14 +56,15 @@ const getAllEntities = async (orm) => {
 						.where('master', true);
 				})
 				.count();
-			allEntities.push({ Count, modelName });
+			allEntities.push({Count, modelName});
 		}
 		allEntities.sort((a, b) => b.Count - a.Count);
 		return allEntities;
-	} catch (error) {
+	} 
+	catch (error) {
 		throw new Error('Error fetching all entities total');
 	}
-};
+}
 
 /**
  * Retrieves the count of entities created in the last 30 days and returns it as an object, where
@@ -71,15 +72,14 @@ const getAllEntities = async (orm) => {
  *
  * @returns {Object} An object where each key is the entity name and its value is the count
  */
-const getLast30DaysEntities = async (orm) => {
+function getLast30DaysEntities(orm) {
 	try {
 		const entityModels = commonUtils.getEntityModels(orm);
 		const last30DaysEntities = {};
-		
 		// eslint-disable-next-line guard-for-in
 		for (const modelName in entityModels) {
 			const model = entityModels[modelName];
-			const Count = await model
+			const Count = model
 				.query((qb) => {
 					qb
 						.leftJoin(
@@ -99,7 +99,8 @@ const getLast30DaysEntities = async (orm) => {
 			last30DaysEntities[modelName] = Count;
 		}
 		return last30DaysEntities;
-	} catch (error) {
+	} 
+	catch (error) {
 		throw new Error('Error fetching entities from last 30 days');
 	}
 };
@@ -110,7 +111,7 @@ const getLast30DaysEntities = async (orm) => {
  *
  * @returns {Array<Object>} An array of objects, where each object contains the editor's information
  */
-const getTop10Editors = async (orm) => {
+function getTop10Editors(orm) {
 	try {
 		const {Editor} = orm;
 		const topEditorsQuery = await new Editor()
@@ -121,7 +122,8 @@ const getTop10Editors = async (orm) => {
 
 		const topEditors = topEditorsQuery.models.map((model) => model.attributes);
 		return topEditors;
-	} catch (error) {
+	} 
+	catch (error) {
 		throw new Error('Error fetching top 10 editors');
 	}
 };
