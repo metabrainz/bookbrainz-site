@@ -43,8 +43,8 @@ const router = express.Router();
 async function getAllEntities(orm) {
 	try {
 		const entityModels = commonUtils.getEntityModels(orm);
-		const allEntities = [];
-
+		const countPromises = [];
+		// eslint-disable-next-line guard-for-in
 		for (const modelName in entityModels) {
 			const model = entityModels[modelName];
 			const Count = await model
@@ -58,8 +58,9 @@ async function getAllEntities(orm) {
 						.where('master', true);
 				})
 				.count();
-			allEntities.push({Count, modelName});
+			countPromises.push({Count, modelName});
 		}
+		const allEntities = await Promise.all(countPromises);
 		allEntities.sort((a, b) => b.Count - a.Count);
 		return allEntities;
 	}
@@ -79,7 +80,7 @@ async function getAllEntities(orm) {
 async function getLast30DaysEntities(orm) {
 	try {
 		const entityModels = commonUtils.getEntityModels(orm);
-		const last30DaysEntities = {};
+		const countPromises = [];
 		// eslint-disable-next-line guard-for-in
 		for (const modelName in entityModels) {
 			const model = entityModels[modelName];
@@ -99,8 +100,12 @@ async function getLast30DaysEntities(orm) {
 						);
 				})
 				.count();
-
-			last30DaysEntities[modelName] = Count;
+			countPromises.push({Count, modelName});
+		}
+		const last30DaysEntitiesHelper = await Promise.all(countPromises);
+		const last30DaysEntities = {};
+		for (const model of last30DaysEntitiesHelper) {
+			last30DaysEntities[model.modelName] = model.Count;
 		}
 		return last30DaysEntities;
 	}
@@ -128,7 +133,7 @@ async function getTop10Editors(orm) {
 
 		const topEditors = topEditorsQuery.models.map((model) => model.attributes);
 		return topEditors;
-	} 
+	}
 	catch (error) {
 		throw new Error('Error fetching top 10 editors');
 	}
