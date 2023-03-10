@@ -136,6 +136,7 @@ class CBReviewModal extends React.Component<
 				.post('/external-service/critiquebrainz/refresh');
 
 			if (response?.status === 200 && response?.body?.accessToken) {
+				localStorage.setItem('accessToken', response.body.accessToken);
 				return response.body.accessToken;
 			}
 
@@ -502,7 +503,9 @@ class CBReviewModal extends React.Component<
 	private accessToken = '';
 
 	componentDidMount = async () => {
-		this.accessToken = await this.getAccessToken();
+		if (!this.accessToken) {
+			this.accessToken = localStorage.getItem('accessToken') || await this.getAccessToken();
+		}
 	};
 
 	render() {
