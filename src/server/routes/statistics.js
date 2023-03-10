@@ -60,7 +60,7 @@ router.get('/', async (req, res) => {
 					'bookbrainz.revision.id'
 				)
 				.where('master', true);
-			}).count();
+		}).count();
 		queryPromises1.push({Count, modelName});
 	}
 	const allEntities = await Promise.all(queryPromises1);
@@ -85,7 +85,7 @@ router.get('/', async (req, res) => {
 				.where(
 					'bookbrainz.revision.created_at', '>=',	utils.getDateBeforeDays(30)
 				);
-			}).count();
+		}).count();
 		queryPromises2.push({Count, modelName});
 	}
 	const last30DaysEntitiesHelper = await Promise.all(queryPromises2);
