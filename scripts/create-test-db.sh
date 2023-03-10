@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # set up variables with defaults
-: "${POSTGRES_USER:=postgres}"
+: "${POSTGRES_USER:=bookbrainz}"
 : "${POSTGRES_PASSWORD:=}"
 : "${POSTGRES_DB:=bookbrainz_test}"
-: "${POSTGRES_HOST:=localhost}"
+: "${POSTGRES_HOST:=postgres}"
 
 export PGPASSWORD=$POSTGRES_PASSWORD
 
