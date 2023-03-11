@@ -80,12 +80,12 @@ class IndexPage extends React.Component {
 											</Button>
 										</span>
 									</form>
-									<Row className="margin-top-4">
+									<Row className="margin-top-2">
 										<Col md={4}>
 											<Button
 												block
 												href="/about"
-												size="lg"
+												size="md"
 												variant="secondary"
 											>
 												About
@@ -95,7 +95,7 @@ class IndexPage extends React.Component {
 											<Button
 												block
 												href="/contribute"
-												size="lg"
+												size="md"
 												variant="secondary"
 											>
 												Contribute
@@ -105,17 +105,17 @@ class IndexPage extends React.Component {
 											<Button
 												block
 												href="/develop"
-												size="lg"
+												size="md"
 												variant="secondary"
 											>
 												Develop
 											</Button>
 										</Col>
 									</Row>
-									<div className="margin-top-3">
-										<h4 className="contact-text">
+									<div className="margin-top-2">
+										<h3 className="contact-text">
 											Contact Us
-										</h4>
+										</h3>
 										<div style={{
 											alignItems: 'center',
 											display: 'flex',
@@ -125,54 +125,59 @@ class IndexPage extends React.Component {
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
 												icon={faCircle}
+												size="xs"
 											/>
 											<a className="contact-text" href="//kiwiirc.com/nextclient/irc.libera.chat/?#bookbrainz">
 												<FontAwesomeIcon
 													className="contact-text"
 													icon={faCommentDots}
-													size="2x"
+													size="lg"
 												/>
 												IRC
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
 												icon={faCircle}
+												size="xs"
 											/>
 											<a className="contact-text" href="//community.metabrainz.org/c/bookbrainz">
 												<FontAwesomeIcon
 													className="contact-text"
 													icon={faComments}
-													size="2x"
+													size="lg"
 												/>
 												Forums
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
 												icon={faCircle}
+												size="xs"
 											/>
 											<a className="contact-text" href="//twitter.com/intent/tweet?screen_name=BookBrainz">
 												<FontAwesomeIcon
 													className="contact-text"
 													icon={faTwitter}
-													size="2x"
+													size="lg"
 												/>
 												Twitter
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
 												icon={faCircle}
+												size="xs"
 											/>
 											<a className="contact-text" href="mailto:bookbrainz@metabrainz.org">
 												<FontAwesomeIcon
 													className="contact-text"
 													icon={faEnvelope}
-													size="2x"
+													size="lg"
 												/>
 												Email
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
 												icon={faCircle}
+												size="xs"
 											/>
 										</div>
 									</div>
