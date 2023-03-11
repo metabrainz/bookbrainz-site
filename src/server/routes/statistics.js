@@ -43,10 +43,7 @@ const router = express.Router();
 async function getAllEntities(orm) {
 	try {
 		const entityModels = commonUtils.getEntityModels(orm);
-		const countPromises = [];
-		// eslint-disable-next-line guard-for-in
-		for (const modelName in entityModels) {
-			const model = entityModels[modelName];
+		const countPromises = Object.entries(entityModels).map(async ([modelName, model]) => {
 			const Count = await model
 				.query((qb) => {
 					qb
@@ -58,8 +55,8 @@ async function getAllEntities(orm) {
 						.where('master', true);
 				})
 				.count();
-			countPromises.push({Count, modelName});
-		}
+			return {Count, modelName};
+		});
 		const allEntities = await Promise.all(countPromises);
 		allEntities.sort((a, b) => b.Count - a.Count);
 		return allEntities;
@@ -80,9 +77,7 @@ async function getAllEntities(orm) {
 async function getLast30DaysEntities(orm) {
 	try {
 		const entityModels = commonUtils.getEntityModels(orm);
-		const countPromises = [];
-		// eslint-disable-next-line guard-for-in
-		for (const modelName in entityModels) {
+		const countPromises = Object.keys(entityModels).map(async (modelName) => {
 			const model = entityModels[modelName];
 			const Count = await model
 				.query((qb) => {
@@ -100,13 +95,13 @@ async function getLast30DaysEntities(orm) {
 						);
 				})
 				.count();
-			countPromises.push({Count, modelName});
-		}
+			return {Count, modelName};
+		});
 		const last30DaysEntitiesHelper = await Promise.all(countPromises);
 		const last30DaysEntities = {};
-		for (const model of last30DaysEntitiesHelper) {
+		last30DaysEntitiesHelper.forEach((model) => {
 			last30DaysEntities[model.modelName] = model.Count;
-		}
+		});
 		return last30DaysEntities;
 	}
 	catch (error) {
@@ -140,36 +135,39 @@ async function getTop10Editors(orm) {
 }
 
 /* Get Statistics Page */
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
 	const {orm} = req.app.locals;
-
 	const entityModels = commonUtils.getEntityModels(orm);
-
-	const [allEntities, last30DaysEntities, topEditors] = await Promise.all([
-		getAllEntities(orm),
-		getLast30DaysEntities(orm),
-		getTop10Editors(orm)
-	]);
-	const props = generateProps(req, res, {
-		allEntities,
-		last30DaysEntities,
-		topEditors
-	});
-	const markup = ReactDOMServer.renderToString(
-		<Layout {...propHelpers.extractLayoutProps(props)}>
-			<StatisticsPage
-				allEntities={allEntities}
-				last30DaysEntities={last30DaysEntities}
-				topEditors={topEditors}
-			/>
-		</Layout>
-	);
-	res.send(target({
-		markup,
-		props: escapeProps(props),
-		script: '/js/statistics.js',
-		title: 'Statistics'
-	}));
+	try {
+		const [allEntities, last30DaysEntities, topEditors] = await Promise.all([
+			getAllEntities(orm),
+			getLast30DaysEntities(orm),
+			getTop10Editors(orm)
+		]);
+		const props = generateProps(req, res, {
+			allEntities,
+			last30DaysEntities,
+			topEditors
+		});
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<StatisticsPage
+					allEntities={allEntities}
+					last30DaysEntities={last30DaysEntities}
+					topEditors={topEditors}
+				/>
+			</Layout>
+		);
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/statistics.js',
+			title: 'Statistics'
+		}));
+	}
+	catch (err) {
+		return next(err);
+	}
 });
 
 export default router;
