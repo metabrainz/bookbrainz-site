@@ -491,7 +491,7 @@ export async function checkIfExists(orm, name, type) {
 			bbid => orm.func.entity.getEntity(orm, upperFirst(camelCase(type)), bbid, baseRelations)
 		)
 	);
-	
+
 	return processedResults;
 }
 
