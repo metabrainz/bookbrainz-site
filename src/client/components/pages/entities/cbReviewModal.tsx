@@ -17,22 +17,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
+import * as bootstrap from "react-bootstrap";
 // eslint-disable-next-line import/no-internal-modules
-import * as eng from '@cospired/i18n-iso-languages/langs/en.json';
-import * as iso from '@cospired/i18n-iso-languages';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import * as eng from "@cospired/i18n-iso-languages/langs/en.json";
+import * as iso from "@cospired/i18n-iso-languages";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // eslint-disable-next-line import/named
-import {IconProp} from '@fortawesome/fontawesome-svg-core';
-import {Rating} from 'react-simple-star-rating';
-import React from 'react';
-import ReactTooltip from 'react-tooltip';
-import {countWords} from '../../../helpers/utils';
-import {faInfoCircle} from '@fortawesome/free-solid-svg-icons';
-import request from 'superagent';
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { Rating } from "react-simple-star-rating";
+import React from "react";
+import ReactTooltip from "react-tooltip";
+import { countWords } from "../../../helpers/utils";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import request from "superagent";
+import { clearAuthor } from "../../../unified-form/cover-tab/action";
 
-
-const {Alert, Modal} = bootstrap;
+const { Alert, Modal } = bootstrap;
 iso.registerLocale(eng);
 
 export interface CBReviewModalProps {
@@ -42,7 +42,7 @@ export interface CBReviewModalProps {
 	userId: number;
 	showModal: boolean;
 	handleModalToggle: () => void;
-    handleUpdateReviews: () => void;
+	handleUpdateReviews: () => void;
 }
 
 export interface CBReviewModalState {
@@ -65,16 +65,17 @@ class CBReviewModal extends React.Component<
 		this.state = {
 			acceptLicense: false,
 			alert: {
-				message: '',
-				title: '',
-				type: ''
+				message: "",
+				title: "",
+				type: "",
 			},
-			language: 'en',
+			language: "en",
 			rating: 0,
-			reviewID: '',
+			reviewID: "",
 			reviewValidateAlert: null,
 			success: false,
-			textContent: ''
+			textContent: "",
+			showModal: false,
 		};
 	}
 
@@ -83,12 +84,12 @@ class CBReviewModal extends React.Component<
 
 	readonly maxTextLength = 100000;
 
-	private CBBaseUrl = 'https://critiquebrainz.org';
+	private CBBaseUrl = "https://critiquebrainz.org";
 
-	private MBBaseUrl = 'https://metabrainz.org';
+	private MBBaseUrl = "https://metabrainz.org";
 
 	// gets all iso-639-1 languages and codes for dropdown
-	private allLanguagesKeyValue = Object.entries(iso.getNames('en'));
+	private allLanguagesKeyValue = Object.entries(iso.getNames("en"));
 
 	private CBInfoButton = (
 		<span>
@@ -104,7 +105,7 @@ class CBReviewModal extends React.Component<
 			>
 				<FontAwesomeIcon
 					icon={faInfoCircle as IconProp}
-					style={{color: 'black'}}
+					style={{ color: "black" }}
 				/>
 			</span>
 			<ReactTooltip
@@ -123,66 +124,73 @@ class CBReviewModal extends React.Component<
 		}
 		this.setState({
 			alert: {
-				message: typeof error === 'object' ? error.message : error,
-				title: title || 'Error',
-				type: 'danger'
-			}
+				message: typeof error === "object" ? error.message : error,
+				title: title || "Error",
+				type: "danger",
+			},
 		});
 	};
 
 	getAccessToken = async () => {
 		try {
-			const response = await request
-				.post('/external-service/critiquebrainz/refresh');
+			await request
+				.post("/external-service/critiquebrainz/refresh")
+				.then((response: any) => {
+					if (
+						response?.status === 200 &&
+						response?.body?.accessToken
+					) {
+						localStorage.setItem("hasComponentUpdated", "true");
 
-			if (response?.status === 200 && response?.body?.accessToken) {
-				return response.body.accessToken;
-			}
+						return response.body.accessToken;
+					}
+				})
+				.catch(() => {
+					return null;
+				});
+		} catch (error) {
+			this.handleError(error, "We could not submit your review");
+		}
 
-			return null;
-		}
-		catch (error) {
-			this.handleError(error, 'We could not submit your review');
-		}
 		return null;
 	};
 
 	handleInputChange = (
 		event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
 	) => {
-		const {target} = event;
+		const { target } = event;
 		const value =
-			target.type === 'checkbox' ?
-				(target as HTMLInputElement).checked :
-				target.value;
-		const {name} = target;
+			target.type === "checkbox"
+				? (target as HTMLInputElement).checked
+				: target.value;
+		const { name } = target;
 
 		this.setState({
-			[name]: value
+			[name]: value,
 		} as any);
 	};
 
 	handleTextInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-		const {reviewValidateAlert} = this.state;
+		const { reviewValidateAlert } = this.state;
 		event.preventDefault();
 		// remove excessive line breaks to match formatting to CritiqueBrainz
-		const input = event.target.value.replace(/\n\s*\n\s*\n/g, '\n');
+		const input = event.target.value.replace(/\n\s*\n\s*\n/g, "\n");
 		if (input.length <= this.maxTextLength) {
 			// cap input at maxTextLength
-			this.setState({textContent: input});
+			this.setState({ textContent: input });
 		}
 
 		if (reviewValidateAlert && input.length >= this.minTextLength) {
 			// if warning was shown, rehide it when the input meets minTextLength
 			this.setState({
-				reviewValidateAlert: null
+				reviewValidateAlert: null,
 			});
 		}
 	};
 
 	handleRatingsChange = (rate: number) => {
 		this.setState({
-			rating: rate / 20
+			rating: rate / 20,
 		});
 	};
 
@@ -192,7 +200,7 @@ class CBReviewModal extends React.Component<
 			rating: 0,
 			reviewValidateAlert: null,
 			success: true,
-			textContent: ''
+			textContent: "",
 		});
 	};
 
@@ -200,14 +208,14 @@ class CBReviewModal extends React.Component<
 		this.setState({
 			acceptLicense: false,
 			alert: {
-				message: '',
-				title: '',
-				type: ''
+				message: "",
+				title: "",
+				type: "",
 			},
-			language: 'en',
+			language: "en",
 			rating: 0,
 			reviewValidateAlert: null,
-			textContent: ''
+			textContent: "",
 		});
 		this.props.handleModalToggle();
 	};
@@ -219,30 +227,18 @@ class CBReviewModal extends React.Component<
 			event.preventDefault();
 		}
 
-		const {
-			entityBBID,
-			entityType,
-			userId
-		} = this.props;
+		const { entityBBID, entityType, userId } = this.props;
 
-		const {
-			acceptLicense,
-			language,
-			rating,
-			textContent
-		} = this.state;
+		const { acceptLicense, language, rating, textContent } = this.state;
 
 		if (textContent.length < this.minTextLength) {
 			this.setState({
-				reviewValidateAlert: `Your review needs to be longer than ${this.minTextLength} characters.`
+				reviewValidateAlert: `Your review needs to be longer than ${this.minTextLength} characters.`,
 			});
 			return null;
 		}
 
-		if (userId &&
-			this.accessToken &&
-			acceptLicense
-		) {
+		if (userId && this.accessToken && acceptLicense) {
 			let nonZeroRating: number;
 			if (rating !== 0) {
 				nonZeroRating = rating;
@@ -253,16 +249,17 @@ class CBReviewModal extends React.Component<
 				entityType,
 				language,
 				rating: nonZeroRating,
-				textContent
+				textContent,
 			};
 
 			try {
 				let result: any;
-				const response = await request.post(`/${entityType}/${entityBBID}/reviews`)
-					.set('Content-Type', 'application/json')
+				const response = await request
+					.post(`/${entityType}/${entityBBID}/reviews`)
+					.set("Content-Type", "application/json")
 					.send({
 						accessToken: this.accessToken,
-						review
+						review,
 					});
 
 				if (response.ok) {
@@ -272,37 +269,35 @@ class CBReviewModal extends React.Component<
 				if (result?.reviewID) {
 					this.setState({
 						alert: {
-							message: 'Your review was submitted to CritiqueBrainz!',
-							title: 'Success',
-							type: 'success'
-						}
+							message:
+								"Your review was submitted to CritiqueBrainz!",
+							title: "Success",
+							type: "success",
+						},
 					});
 					this.setState({
-						reviewID: result?.reviewID
+						reviewID: result?.reviewID,
 					});
 					this.resetCBReviewForm();
 					this.props.handleUpdateReviews();
-				}
-				else {
+				} else {
 					this.setState({
 						alert: {
 							message: result?.message,
-							title: 'Error submitting your review',
-							type: 'danger'
-						}
+							title: "Error submitting your review",
+							type: "danger",
+						},
 					});
 				}
-			}
-			catch (error) {
+			} catch (error) {
 				this.handleError(
 					error,
-					'Error while submitting review to CritiqueBrainz'
+					"Error while submitting review to CritiqueBrainz"
 				);
 			}
 		}
 		return null;
 	};
-
 
 	getModalBody = (hasPermissions: boolean) => {
 		const {
@@ -313,23 +308,23 @@ class CBReviewModal extends React.Component<
 			reviewID,
 			reviewValidateAlert,
 			success,
-			textContent
+			textContent,
 		} = this.state;
 
 		if (!hasPermissions) {
 			return (
 				<div>
-					Before you can submit reviews to{' '}
-					<a href={this.CBBaseUrl}>CritiqueBrainz</a>, you must{' '}
+					Before you can submit reviews to{" "}
+					<a href={this.CBBaseUrl}>CritiqueBrainz</a>, you must{" "}
 					<b> connect to your CritiqueBrainz </b> account from
 					BookBrainz.
 					{this.CBInfoButton}
-					<br/>
-					<br/>
+					<br />
+					<br />
 					You can connect to your CritiqueBrainz account by visiting
 					the
 					<a href={`${window.location.origin}/external-service/`}>
-						{' '}
+						{" "}
 						external services page.
 					</a>
 				</div>
@@ -339,15 +334,12 @@ class CBReviewModal extends React.Component<
 		if (success) {
 			return (
 				<div>
-					Thanks for submitting your review for{' '}
+					Thanks for submitting your review for{" "}
 					<b>{this.props.entityName}</b>!
-					<br/>
-					<br/>
-					You can access your CritiqueBrainz review by clicking{' '}
-					<a href={`${this.CBBaseUrl}/review/${reviewID}`}>
-						{' '}
-						here.
-					</a>
+					<br />
+					<br />
+					You can access your CritiqueBrainz review by clicking{" "}
+					<a href={`${this.CBBaseUrl}/review/${reviewID}`}> here.</a>
 				</div>
 			);
 		}
@@ -360,19 +352,14 @@ class CBReviewModal extends React.Component<
 						<p>{alert.message}</p>
 					</Alert>
 				)}
-
 				{reviewValidateAlert && (
 					<Alert variant="danger">
 						<p>{reviewValidateAlert}</p>
 					</Alert>
 				)}
-
 				You are reviewing
-				<b>
-					{` ${this.props.entityName} (${this.props.entityType}) `}
-				</b>
-				for <a href={this.CBBaseUrl}>CritiqueBrainz</a>.{' '}
-
+				<b>{` ${this.props.entityName} (${this.props.entityType}) `}</b>
+				for <a href={this.CBBaseUrl}>CritiqueBrainz</a>.{" "}
 				{this.CBInfoButton}
 				<div className="form-group">
 					<textarea
@@ -383,20 +370,20 @@ class CBReviewModal extends React.Component<
 						placeholder={`Review length must be at least ${this.minTextLength} characters.`}
 						rows={6}
 						spellCheck="false"
-						style={{resize: 'vertical'}}
+						style={{ resize: "vertical" }}
 						value={textContent}
 						onChange={this.handleTextInputChange}
 					/>
 				</div>
 				<small
 					className={
-						textContent.length < this.minTextLength ?
-							'text-danger' :
-							''
+						textContent.length < this.minTextLength
+							? "text-danger"
+							: ""
 					}
-					style={{display: 'block', textAlign: 'right'}}
+					style={{ display: "block", textAlign: "right" }}
 				>
-					Words: {countWords(textContent)} / Characters:{' '}
+					Words: {countWords(textContent)} / Characters:{" "}
 					{textContent?.length}
 				</small>
 				<div className="rating-container">
@@ -438,17 +425,17 @@ class CBReviewModal extends React.Component<
 							&nbsp; You acknowledge and agree that your
 							contributed reviews to CritiqueBrainz are licensed
 							under a Creative Commons Attribution-ShareAlike 3.0
-							Unported (CC BY-SA 3.0) license. You agree to license your work
-							under this license. You represent and warrant that
-							you own or control all rights in and to the work,
-							that nothing in the work infringes the rights of any
-							third-party, and that you have the permission to use
-							and to license the work under the selected Creative
-							Commons license. Finally, you give the MetaBrainz
-							Foundation permission to license this content for
-							commercial use outside of Creative Commons licenses
-							in order to support the operations of the
-							organization.
+							Unported (CC BY-SA 3.0) license. You agree to
+							license your work under this license. You represent
+							and warrant that you own or control all rights in
+							and to the work, that nothing in the work infringes
+							the rights of any third-party, and that you have the
+							permission to use and to license the work under the
+							selected Creative Commons license. Finally, you give
+							the MetaBrainz Foundation permission to license this
+							content for commercial use outside of Creative
+							Commons licenses in order to support the operations
+							of the organization.
 						</small>
 					</label>
 				</div>
@@ -457,7 +444,7 @@ class CBReviewModal extends React.Component<
 	};
 
 	getModalFooter = (hasPermissions: boolean) => {
-		const {success} = this.state;
+		const { success } = this.state;
 
 		if (!hasPermissions) {
 			return (
@@ -466,18 +453,18 @@ class CBReviewModal extends React.Component<
 					href={`${window.location.origin}/external-service/`}
 					role="button"
 				>
-					{' '}
-					Connect To CritiqueBrainz{' '}
+					{" "}
+					Connect To CritiqueBrainz{" "}
 				</a>
 			);
 		}
 		if (!success) {
-			const {reviewValidateAlert} = this.state;
+			const { reviewValidateAlert } = this.state;
 
 			return (
 				<button
 					className={`btn btn-success ${
-						reviewValidateAlert ? 'disabled' : ''
+						reviewValidateAlert ? "disabled" : ""
 					}`}
 					id="submitReviewButton"
 					type="submit"
@@ -499,10 +486,16 @@ class CBReviewModal extends React.Component<
 		);
 	};
 
-	private accessToken = '';
+	private accessToken = "";
 
-	componentDidMount = async () => {
-		this.accessToken = await this.getAccessToken();
+	componentDidUpdate = async () => {
+		if (this.props.showModal !== false) {
+			if (!localStorage.getItem("hasComponentUpdated")) {
+				this.accessToken = await this.getAccessToken();
+			}
+			return;
+		}
+		return;
 	};
 
 	render() {
@@ -522,20 +515,18 @@ class CBReviewModal extends React.Component<
 					className="modal-content"
 					onSubmit={this.handleSubmitToCB}
 				>
-					<Modal.Header
-						closeButton
-					>
+					<Modal.Header closeButton>
 						<h4
 							className="modal-title"
 							id="CBReviewModalLabel"
-							style={{padding: 'auto'}}
+							style={{ padding: "auto" }}
 						>
 							<img
 								alt="CritiqueBrainz Logo"
 								className="cb-img-responsive"
 								height="30"
 								src="/images/critiquebrainz-logo.svg"
-								style={{margin: '8px'}}
+								style={{ margin: "8px" }}
 							/>
 						</h4>
 					</Modal.Header>
