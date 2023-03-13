@@ -130,6 +130,7 @@ class CBReviewModal extends React.Component<
 		});
 	};
 
+
 	getAccessToken = async () => {
 		try {
 			const response = await request
@@ -143,7 +144,25 @@ class CBReviewModal extends React.Component<
 		}
 		catch (error) {
 			this.handleError(error, 'We could not submit your review');
+			await request
+				.post("/external-service/critiquebrainz/refresh")
+				.then((response: any) => {
+					if (
+						response?.status === 200 &&
+						response?.body?.accessToken
+					) {
+						localStorage.setItem("hasComponentUpdated", "true");
+
+						return response.body.accessToken;
+					}
+				})
+				.catch(() => {
+					return null;
+				});
+		} catch (error) {
+			this.handleError(error, "We could not submit your review");
 		}
+
 		return null;
 	};
 
@@ -500,10 +519,17 @@ class CBReviewModal extends React.Component<
 	};
 
 	private accessToken = '';
-
-	componentDidMount = async () => {
-		this.accessToken = await this.getAccessToken();
+	
+	componentDidUpdate = async () => {
+		if (this.props.showModal !== false) {
+			if (!localStorage.getItem("hasComponentUpdated")) {
+				this.accessToken = await this.getAccessToken();
+			}
+			return;
+		}
+		return;
 	};
+
 
 	render() {
 		const hasPermissions = this.accessToken !== null;
