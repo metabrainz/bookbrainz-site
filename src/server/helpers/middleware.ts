@@ -196,6 +196,14 @@ export async function loadEntityRelationships(req: $Request, res: $Response, nex
 	next();
 }
 
+export function checkValidRevisionId(req: $Request, res: $Response, next: NextFunction, id: string) {
+	const idToNumber = _.toNumber(id);
+	if (!_.isInteger(idToNumber) || (_.isInteger(idToNumber) && idToNumber <= 0)) {
+		return next(new error.BadRequestError(`Invalid revision id: ${req.params.id}`, req));
+	}
+	return next();
+}
+
 export async function redirectedBbid(req: $Request, res: $Response, next: NextFunction, bbid: string) {
 	if (!commonUtils.isValidBBID(bbid)) {
 		return next(new error.BadRequestError(`Invalid bbid: ${req.params.bbid}`, req));
@@ -384,10 +392,5 @@ export function validateCollaboratorIdsForCollectionRemove(req, res, next) {
 		}
 	}
 
-	return next();
-}
-
-export function decodeUrlQueryParams(req:$Request, res:$Response, next:NextFunction) {
-	req.query = _.mapValues(req.query, decodeURIComponent);
 	return next();
 }

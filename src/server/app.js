@@ -23,9 +23,12 @@ import * as auth from './helpers/auth';
 import * as error from '../common/helpers/error';
 import * as search from '../common/helpers/search';
 import * as serverErrorHelper from './helpers/error';
+
 import {existsSync, readFileSync} from 'fs';
+
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
+import RedisStore from 'connect-redis';
 import {get as _get} from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
 import compression from 'compression';
@@ -37,7 +40,6 @@ import initInflux from './influx';
 import logNode from 'log-node';
 import logger from 'morgan';
 import path from 'path';
-import redis from 'connect-redis';
 import routes from './routes';
 import serveStatic from 'serve-static';
 import session from 'express-session';
@@ -98,15 +100,20 @@ const sessionOptions = {
 	secret: config.session.secret
 };
 if (process.env.NODE_ENV !== 'test') {
+	const redisHost = _get(config, 'session.redis.host', 'localhost');
+	const redisPort = _get(config, 'session.redis.port', 6379);
 	const redisClient = createClient({
-		host: _get(config, 'session.redis.host', 'localhost'),
-		port: _get(config, 'session.redis.port', 6379)
+		url: `redis://${redisHost}:${redisPort}`
 	});
 
-	const RedisStore = redis(session);
-	sessionOptions.store = new RedisStore({
+	// eslint-disable-next-line no-console
+	redisClient.connect().catch(redisError => { console.error('Redis error:', redisError); });
+
+	redisClient.on('error', (err) => debug('Error while closing server connections', err));
+	const redisStore = new RedisStore({
 		client: redisClient
-	});
+	  });
+	sessionOptions.store = redisStore;
 }
 app.use(session(sessionOptions));
 
