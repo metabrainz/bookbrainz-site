@@ -58,7 +58,7 @@ const maxAchievementProgress = {
 };
 
 function Achievement(props) {
-	const {achievement: { id, name, description, badgeUrl }}, counter, unlocked} = props;
+	const {achievement: { id, name, description, badgeUrl }, counter, unlocked} = props;
 	const imgElement = unlocked ? (
 		<DragAndDropImage
 			achievementId={id}
