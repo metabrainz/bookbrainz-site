@@ -198,7 +198,8 @@ router.get('/:bbid', middleware.loadEntityRelationships, (req, res, next) => {
 		'disambiguation',
 		'releaseEventSet.releaseEvents',
 		'identifierSet.identifiers.type',
-		'editionFormat'
+		'editionFormat',
+		'authorCredit.names'
 	];
 	const editionsPromise =
 		Publisher.forge({bbid: res.locals.entity.bbid})
@@ -207,6 +208,7 @@ router.get('/:bbid', middleware.loadEntityRelationships, (req, res, next) => {
 	return editionsPromise
 		.then((editions) => {
 			res.locals.entity.editions = editions.toJSON();
+			res.locals.entity.showAuthorCreditsColumn = true;
 			_setPublisherTitle(res);
 			res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
 			return entityRoutes.displayEntity(req, res);
