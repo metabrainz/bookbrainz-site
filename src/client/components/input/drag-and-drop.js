@@ -58,7 +58,7 @@ function DragAndDrop(props) {
 		}
 		addChild(data);
 	}
-
+	/* eslint-disable react/jsx-no-bind */
 	return (
 		<Card
 			bg="light"
