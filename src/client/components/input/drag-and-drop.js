@@ -29,6 +29,9 @@ function DragAndDrop(props) {
 		name: 'drag badge to set',
 		src: '/images/blankbadge.svg'
 	});
+	function addChild(data) {
+		setAchievement(data);
+	}
 	const handleClick = useCallback((ev) => {
 		ev.preventDefault();
 		setAchievement({
@@ -51,9 +54,6 @@ function DragAndDrop(props) {
 		}
 		addChild(data);
 	});
-	function addChild(data) {
-		setAchievement(data);
-	}
 	return (
 		<Card
 			bg="light"
