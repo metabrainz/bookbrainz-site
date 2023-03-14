@@ -150,13 +150,13 @@ app.use((req, res, next) => {
 	res.locals.repositoryUrl = repositoryUrl;
 	res.locals.alerts = [];
 	req.signUpDisabled = false;
-
+	const msg = '';
 	if (process.env.DEPLOY_ENV === 'test' || process.env.DEPLOY_ENV === 'beta') {
 		if (process.env.DEPLOY_ENV === 'beta') {
-		const msg = 'You are on the beta website, which uses the main database but with a newer version of the code to test new features.'
+		msg = 'You are on the beta website, which uses the main database but with a newer version of the code to test new features.'
 	}
 	else {
-		const msg = 'You are on the test website; all changes made here are not synced with the main database and will be overwritten periodically.'
+		msg = 'You are on the test website; all changes made here are not synced with the main database and will be overwritten periodically.'
 	}
 		res.locals.alerts.push({
 		level: 'info',
