@@ -19,10 +19,10 @@
 import * as bootstrap from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useState } from 'react';
 
 
 const {Card, Form} = bootstrap;
+const {useState} = React;
 
 function DragAndDrop(props) {
 	const [achievement, setAchievement] = useState({
@@ -30,7 +30,7 @@ function DragAndDrop(props) {
 		src: '/images/blankbadge.svg'
 	});
 
-	const handleClick = (ev) => {
+	function handleClick(ev) {
 		ev.preventDefault();
 		setAchievement({
 			name: 'drag badge to set',
@@ -38,15 +38,15 @@ function DragAndDrop(props) {
 		});
 	}
 
-	const handleDragOver = (ev) => {
+	function handleDragOver(ev) {
 		ev.preventDefault();
 	}
 
-	const addChild = (data) => {
+	function addChild(data) {
 		setAchievement(data);
 	}
 
-	const handleDrop = (ev) => {
+	function handleDrop(ev) {
 		ev.preventDefault();
 		let data;
 
