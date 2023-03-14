@@ -151,7 +151,7 @@ app.use((req, res, next) => {
 	res.locals.alerts = [];
 	req.signUpDisabled = false;
 	if (process.env.DEPLOY_ENV === 'test' || process.env.DEPLOY_ENV === 'beta') {
-		const msg = '';
+		let msg;
 		if (process.env.DEPLOY_ENV === 'beta') {
 			msg = 'You are on the beta website, which uses the main database but with a newer version of the code to test new features.';
 		}
