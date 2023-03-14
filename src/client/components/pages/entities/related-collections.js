@@ -22,22 +22,24 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Row} = bootstrap;
+const {Row, Col} = bootstrap;
 
 function EntityRelatedCollections({collections}) {
 	return (
 		<Row>
-			<h2>Related Collections</h2>
-			{collections &&
-			<ul className="list-unstyled">
-				{collections.map((collection) => (
-					<li key={collection.id}>
-						<a href={`/collection/${collection.id}`}>{collection.name}</a> by {' '}
-						<a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a>
-					</li>
-				))}
-			</ul>
-			}
+			<Col>
+				<h2>Related Collections</h2>
+				{collections &&
+				<ul className="list-unstyled">
+					{collections.map((collection) => (
+						<li key={collection.id}>
+							<a href={`/collection/${collection.id}`}>{collection.name}</a> by {' '}
+							<a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a>
+						</li>
+					))}
+				</ul>
+				}
+			</Col>
 		</Row>
 	);
 }

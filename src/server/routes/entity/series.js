@@ -196,7 +196,7 @@ function _setSeriesTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadSeriesItems, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadSeriesItems, middleware.loadGenders, (req, res) => {
 	_setSeriesTitle(res);
 	entityRoutes.displayEntity(req, res);
 });
