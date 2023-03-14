@@ -19,53 +19,26 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+const {useCallback} = React;
 
-/**
- * This class is derived from the React Component base class and renders
- * an image which supports drag and drop functionality.
- */
-class DragAndDropImage extends React.Component {
-	/**
-	 * Binds the class methods to their respective data.
-	 * @constructor
-	 */
-	constructor() {
-		super();
-		this.handleDragStart = this.handleDragStart.bind(this);
-	}
-
-	/**
-	 * Transfers the data of the achievement badge component properties to the
-	 * DragAndDrop event, which in turn transfers the data on handleDrop to that
-	 * of the achievement badge which will be showcased on editor's
-	 * public profile.
-	 * @param {object} ev - Passed in the function to be initialized with data
-	 * onDragStart.
-	 */
-	handleDragStart(ev) {
+function DragAndDropImage({achievementId, achievementName, height, src}) {
+	const handleDragStart = useCallback((ev) => {
 		const data = {
-			id: this.props.achievementId,
-			name: this.props.achievementName,
-			src: this.props.src
+			id: achievementId,
+			name: achievementName,
+			src
 		};
 		ev.dataTransfer.setData('text', JSON.stringify(data));
-	}
+	}, [achievementId, achievementName, src]);
 
-	/**
-	 * Renders an image of a particular achievement badge, which can be dragged
-	 * to set the user's publicly showcased achievements
-	 * @returns {ReactElement} - The rendered image element.
-	 */
-	render() {
-		return (
-			<img
-				draggable="true"
-				height={this.props.height}
-				src={this.props.src}
-				onDragStart={this.handleDragStart}
-			/>
-		);
-	}
+	return (
+		<img
+			draggable="true"
+			height={height}
+			src={src}
+			onDragStart={handleDragStart}
+		/>
+	);
 }
 
 DragAndDropImage.displayName = 'DragAndDropImage';
