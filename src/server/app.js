@@ -152,9 +152,15 @@ app.use((req, res, next) => {
 	req.signUpDisabled = false;
 
 	if (process.env.DEPLOY_ENV === 'test' || process.env.DEPLOY_ENV === 'beta') {
+		if (process.env.DEPLOY_ENV === 'beta') {
+		const msg = 'You are on the beta website, which uses the main database but with a newer version of the code to test new features.'
+	}
+	else {
+		const msg = 'You are on the test website; all changes made here are not synced with the main database and will be overwritten periodically.'
+	}
 		res.locals.alerts.push({
-			level: 'danger',
-			message: `You are on a ${process.env.DEPLOY_ENV} site`
+		level: 'info',
+		message: `${msg}`
 		});
 	}
 
