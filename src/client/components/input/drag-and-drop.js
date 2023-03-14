@@ -22,31 +22,24 @@ import React from 'react';
 
 
 const {Card, Form} = bootstrap;
-const {useState} = React;
+const {useState, useCallback} = React;
 
 function DragAndDrop(props) {
 	const [achievement, setAchievement] = useState({
 		name: 'drag badge to set',
 		src: '/images/blankbadge.svg'
 	});
-
-	function handleClick(ev) {
+	const handleClick = useCallback((ev) => {
 		ev.preventDefault();
 		setAchievement({
 			name: 'drag badge to set',
 			src: '/images/blankbadge.svg'
 		});
-	}
-
-	function handleDragOver(ev) {
+	});
+	const handleDragOver = useCallback((ev) => {
 		ev.preventDefault();
-	}
-
-	function addChild(data) {
-		setAchievement(data);
-	}
-
-	function handleDrop(ev) {
+	});
+	const handleDrop = useCallback((ev) => {
 		ev.preventDefault();
 		let data;
 
@@ -57,8 +50,10 @@ function DragAndDrop(props) {
 			return;
 		}
 		addChild(data);
+	});
+	function addChild(data) {
+		setAchievement(data);
 	}
-	/* eslint-disable react/jsx-no-bind */
 	return (
 		<Card
 			bg="light"
