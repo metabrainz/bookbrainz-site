@@ -19,43 +19,34 @@
 import * as bootstrap from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { useState } from 'react';
 
 
 const {Card, Form} = bootstrap;
 
-class DragAndDrop extends React.Component {
-	constructor() {
-		super();
-		this.handleClick = this.handleClick.bind(this);
-		this.handleDragOver = this.handleDragOver.bind(this);
-		this.handleDrop = this.handleDrop.bind(this);
-		this.state = {
-			achievement: {
-				name: 'drag badge to set',
-				src: '/images/blankbadge.svg'
-			}
-		};
-	}
+function DragAndDrop(props) {
+	const [achievement, setAchievement] = useState({
+		name: 'drag badge to set',
+		src: '/images/blankbadge.svg'
+	});
 
-	handleClick(ev) {
+	const handleClick = (ev) => {
 		ev.preventDefault();
-		this.setState({
-			achievement: {
-				name: 'drag badge to set',
-				src: '/images/blankbadge.svg'
-			}
+		setAchievement({
+			name: 'drag badge to set',
+			src: '/images/blankbadge.svg'
 		});
 	}
 
-	handleDragOver(ev) {
+	const handleDragOver = (ev) => {
 		ev.preventDefault();
 	}
 
-	addChild(data) {
-		this.setState({achievement: data});
+	const addChild = (data) => {
+		setAchievement(data);
 	}
 
-	handleDrop(ev) {
+	const handleDrop = (ev) => {
 		ev.preventDefault();
 		let data;
 
@@ -65,38 +56,36 @@ class DragAndDrop extends React.Component {
 		catch (err) {
 			return;
 		}
-		this.addChild(data);
+		addChild(data);
 	}
 
-	render() {
-		return (
-			<Card
-				bg="light"
-				onClick={this.handleClick}
-				onDragOver={this.handleDragOver}
-				onDrop={this.handleDrop}
-			>
-				<Card.Img
-					className="mt-4"
-					height={100}
-					src={this.state.achievement.src}
-					variant="top"
-				/>
-				<Card.Body className="text-center">
-					<Form.Group>
-						<Form.Control
-							name={this.props.name}
-							type="hidden"
-							value={this.state.achievement.id}
-						/>
-					</Form.Group>
-					<div className="h3">
-						{this.state.achievement.name}
-					</div>
-				</Card.Body>
-			</Card>
-		);
-	}
+	return (
+		<Card
+			bg="light"
+			onClick={handleClick}
+			onDragOver={handleDragOver}
+			onDrop={handleDrop}
+		>
+			<Card.Img
+				className="mt-4"
+				height={100}
+				src={achievement.src}
+				variant="top"
+			/>
+			<Card.Body className="text-center">
+				<Form.Group>
+					<Form.Control
+						name={props.name}
+						type="hidden"
+						value={achievement.id}
+					/>
+				</Form.Group>
+				<div className="h3">
+					{achievement.name}
+				</div>
+			</Card.Body>
+		</Card>
+	);
 }
 
 DragAndDrop.displayName = 'DragAndDrop';
