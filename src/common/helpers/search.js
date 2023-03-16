@@ -486,11 +486,13 @@ export async function checkIfExists(orm, name, type) {
 		'relationshipSet.relationships.type',
 		'revision.revision'
 	];
-	return Promise.all(
+	const processedResults = await Promise.all(
 		bbids.map(
 			bbid => orm.func.entity.getEntity(orm, upperFirst(camelCase(type)), bbid, baseRelations)
 		)
 	);
+
+	return processedResults;
 }
 
 export function searchByName(orm, name, type, size, from) {
