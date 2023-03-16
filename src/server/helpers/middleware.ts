@@ -33,23 +33,25 @@ interface $Request extends Request {
 }
 
 function makeLoader(modelName, propName, sortFunc?, relations = []) {
-	return function loaderFunc(req: $Request, res: $Response, next: NextFunction) {
-		const {orm}: any = req.app.locals;
-		const model = orm[modelName];
-		return model.fetchAll({withRelated: [...relations]})
-			.then((results) => {
-				const resultsSerial = results.toJSON();
-
-				res.locals[propName] =
-					sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
-
-				next();
-
-				return null;
-			})
-			.catch(next);
+	return async function loaderFunc(req: $Request, res: $Response, next: NextFunction) {
+		try {
+			const {orm}: any = req.app.locals;
+			const model = orm[modelName];
+			const results = await model.fetchAll({withRelated: [...relations]});
+			const resultsSerial = results.toJSON();
+			res.locals[propName] =
+				sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
+			
+			
+			}
+		catch (err) {
+			next(err);
+		}
+		next();
+		return null;
 	};
 }
+
 
 export const loadAuthorTypes = makeLoader('AuthorType', 'authorTypes');
 export const loadEditionFormats = makeLoader('EditionFormat', 'editionFormats');
@@ -131,7 +133,7 @@ export async function loadWorkTableAuthors(req: $Request, res: $Response, next: 
  * @returns
  */
 
-export function addRelationships(entity, relationshipSet, orm) {
+export async function addRelationships(entity, relationshipSet, orm) {
 	async function getEntityWithAlias(relEntity) {
 		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
 		const model = commonUtils.getEntityModelByType(orm, relEntity.type);
@@ -139,58 +141,59 @@ export function addRelationships(entity, relationshipSet, orm) {
 		return model.forge({bbid: redirectBbid})
 			.fetch({require: false, withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))});
 	}
+
 	entity.relationships = relationshipSet ?
 		relationshipSet.related('relationships').toJSON() : [];
 
 	utils.attachAttributes(entity.relationships);
-
 
 	/**
 	 * Source and target are generic Entity objects, so until we have
 	 * a good way of polymorphically fetching the right specific entity,
 	 * we need to fetch default alias in a somewhat sketchier way.
 	 */
-	return Promise.all(entity.relationships.map((relationship) =>
-		Promise.all([getEntityWithAlias(relationship.source), getEntityWithAlias(relationship.target)])
-			.then(([source, target]) => {
-				relationship.source = source.toJSON();
-				relationship.target = target.toJSON();
+	const relationshipPromises = entity.relationships.map(async (relationship) => {
+		const [source, target] = await Promise.all([getEntityWithAlias(relationship.source), getEntityWithAlias(relationship.target)]);
+		relationship.source = source.toJSON();
+		relationship.target = target.toJSON();
 
-				return relationship;
-			})));
+		return relationship;
+	});
+
+	const relationships = await Promise.all(relationshipPromises);
+	return relationships;
 }
 
-export function loadEntityRelationships(req: $Request, res: $Response, next: NextFunction) {
+
+export async function loadEntityRelationships(req: $Request, res: $Response, next: NextFunction) {
 	const {orm}: any = req.app.locals;
 	const {RelationshipSet} = orm;
 	const {entity} = res.locals;
 
-	new Promise<void>((resolve) => {
+	try {
 		if (!entity) {
 			throw new error.SiteError('Failed to load entity');
 		}
 
-		resolve();
-	})
-		.then(
-			() => RelationshipSet.forge({id: entity.relationshipSetId})
-				.fetch({
-					require: false,
-					withRelated: [
-						'relationships.source',
-						'relationships.target',
-						'relationships.type.attributeTypes',
-						'relationships.attributeSet.relationshipAttributes.value',
-						'relationships.attributeSet.relationshipAttributes.type'
-					]
-				})
-		)
-		.then((relationshipSet) => addRelationships(entity, relationshipSet, orm))
-		.then(() => {
-			next();
-			return null;
-		})
-		.catch(next);
+		const relationshipSet = await RelationshipSet.forge({id: entity.relationshipSetId})
+			.fetch({
+				require: false,
+				withRelated: [
+					'relationships.source',
+					'relationships.target',
+					'relationships.type.attributeTypes',
+					'relationships.attributeSet.relationshipAttributes.value',
+					'relationships.attributeSet.relationshipAttributes.type'
+				]
+			});
+
+		await addRelationships(entity, relationshipSet, orm);
+
+		
+	} catch (err) {
+		next(err);
+	}
+	next();
 }
 
 export function checkValidRevisionId(req: $Request, res: $Response, next: NextFunction, id: string) {
