@@ -137,7 +137,6 @@ async function getTop10Editors(orm) {
 /* Get Statistics Page */
 router.get('/', async (req, res, next) => {
 	const {orm} = req.app.locals;
-	const entityModels = commonUtils.getEntityModels(orm);
 	try {
 		const [allEntities, last30DaysEntities, topEditors] = await Promise.all([
 			getAllEntities(orm),
