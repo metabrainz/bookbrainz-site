@@ -6638,10 +6638,10 @@ min-document@^2.19.0:
   dependencies:
     dom-walk "^0.1.0"
 
-mini-css-extract-plugin@^2.5.3:
-  version "2.5.3"
-  resolved "https://registry.yarnpkg.com/mini-css-extract-plugin/-/mini-css-extract-plugin-2.5.3.tgz#c5c79f9b22ce9b4f164e9492267358dbe35376d9"
-  integrity sha512-YseMB8cs8U/KCaAGQoqYmfUuhhGW0a9p9XvWXrxVOkE3/IiISTLw4ALNt7JR5B2eYauFM+PQGSbXMDmVbR7Tfw==
+mini-css-extract-plugin@^2.7.4:
+  version "2.7.4"
+  resolved "https://registry.yarnpkg.com/mini-css-extract-plugin/-/mini-css-extract-plugin-2.7.4.tgz#1e92eaafb0dd598d36b68b699ac553ae4d52ae60"
+  integrity sha512-V5zkjajQx9gnedglDap7ZjD1mNFNISzyllzrc+9+R4iwPRUAR0St20ADflQbWkVUQ2u/QU55t8mKaxUek8Cciw==
   dependencies:
     schema-utils "^4.0.0"
 
