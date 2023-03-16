@@ -221,10 +221,10 @@ function diffRevisionsWithParents(orm, entityRevisions, entityType) {
 					isEntityDeleted,
 					isNew: Boolean(dataId),
 					revision
-				}
-				);
+				});
 			}
-		});
+		}
+	);
 	return Promise.all(promises);
 }
 
