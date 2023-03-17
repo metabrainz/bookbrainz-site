@@ -136,7 +136,7 @@
     "nodemon": "^2.0.2",
     "redux-mock-store": "^1.5.4",
     "resolve-url-loader": "^5.0.0",
-    "rewire": "^5.0.0",
+    "rewire": "^6.0.0",
     "sass": "^1.59.2",
     "sass-loader": "^13.2.0",
     "sinon": "^14.0.0",
