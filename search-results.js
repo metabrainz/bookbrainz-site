@@ -232,15 +232,9 @@ class SearchResults extends React.Component {
 						!this.props.condensed &&
 						<thead>
 							<tr>
-								 {/* 
-								 The issue was that the safari browser would reserve the row width as per the elements inside;
-								 to solve this issue, we have to override .row:before and .row:after as : ".row:before, .row:after {display: none !important;}" because this is the one which causes irregularities in safari.
-								since your stylesheets/bootstrap is in .gitignore,i was unable to modify that and provide you the corrected code.
-								or else i can include external css file , include it and then provide the results.
-								 hope that this helps */}
-								<th className="col-md-3">Type</th>
-								<th className="col-md-5">Name</th>
-								<th className="col-md-4">Aliases</th>
+								<th width="25%">Type</th>
+								<th width="42%">Name</th>
+								<th width="33%">Aliases</th>
 							</tr>
 						</thead>
 					}
