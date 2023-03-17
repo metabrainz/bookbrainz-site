@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# BookBrainz rc.local
+# Enables a specific runit service depending on what the
+# CONTAINER_NAME variable is set to
+
+
+if [ "${CONTAINER_NAME}" = "bookbrainz-web-prod" ]
+then
+    rm -f /etc/service/webserver/down
+    exit 0
+fi
+
+if [ "${CONTAINER_NAME}" = "bookbrainz-cron-prod" ]
+then
+    rm -f /etc/service/cron/down
+    exit 0
+fi
+
+echo "init script has no clue which service to start. Set env var CONTAINER_NAME"
+exit 1

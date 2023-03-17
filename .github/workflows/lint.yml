@@ -1,0 +1,33 @@
+# Run ESLint with autofix on push to master branch
+
+name: Lint and autofix issues
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push events for the master branch
+  push:
+    branches: [ master ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'push' && github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+          
+      - name: NPM install
+        uses: bahmutov/npm-install@v1
+
+      - name: Run linters and autofix issues
+        uses: wearerequired/lint-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Enable linters with auto-fix
+          auto_fix: true
+          eslint: true
