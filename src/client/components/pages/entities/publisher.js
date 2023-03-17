@@ -101,7 +101,7 @@ function PublisherDisplayPage({entity, identifierTypes, user}) {
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
-				<EditionTable editions={entity.editions} entity={entity} showAuthorCreditsColumn/>
+				<EditionTable showAuthorCreditsColumn editions={entity.editions} entity={entity}/>
 				<EntityLinks
 					entity={entity}
 					identifierTypes={identifierTypes}
