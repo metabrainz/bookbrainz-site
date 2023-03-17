@@ -1,9 +1,10 @@
 /* eslint-disable sort-keys */
-
+import {createEditor, truncateEntities} from '../../../test-helpers/create-entities';
 import app from '../../../../src/server/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import orm from '../../../bookbrainz-data';
+
 
 chai.use(chaiHttp);
 const {expect} = chai;
@@ -13,37 +14,12 @@ const revisionAttribs = {
 	id: 1
 };
 
-const editorData = {
-	genderId: 1,
-	id: 1,
-	name: 'bob',
-	typeId: 1
-};
-
-const genderData = {
-	id: 1,
-	name: 'test'
-};
-const editorTypeData = {
-	id: 1,
-	label: 'test_type'
-};
-
 describe('checkValidRevisionId', () => {
-	beforeEach(async () => {
-		await new Gender(genderData).save(null, {method: 'insert'});
-		await new EditorType(editorTypeData).save(null, {method: 'insert'});
-		await new Editor(editorData).save(null, {method: 'insert'});
+	before(async () => {
+		await createEditor(1);
 		await new Revision(revisionAttribs).save(null, {method: 'insert'});
 	});
-	afterEach(async () => {
-		await util.truncateTables(bookshelf, [
-			'bookbrainz.revision',
-			'bookbrainz.editor',
-			'bookbrainz.editor_type',
-			'musicbrainz.gender'
-		]);
-	});
+	after(truncateEntities);
 
 	it('should not throw an error when revision id is valid and found', async () => {
 		const revisionId = 1;
