@@ -8,7 +8,7 @@ import orm from '../../../bookbrainz-data';
 
 chai.use(chaiHttp);
 const {expect} = chai;
-const {bookshelf, util, Revision, Gender, EditorType, Editor} = orm;
+const {Revision} = orm;
 const revisionAttribs = {
 	authorId: 1,
 	id: 1
