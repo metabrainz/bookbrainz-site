@@ -1,0 +1,36 @@
+{
+	"site": {
+		"clientID": "f8accd51-33d2-4d9b-a2c1-c01a76a4f096"
+	},
+	"musicbrainz": {
+		"clientID": "y0dHLdQC2CAXbGvZa4IbZm",
+		"clientSecret": "M0PFECp7vPYW9Vn4kB4L2B",
+		"callbackURL": "http://localhost:9099/cb"
+	},
+	"session": {
+		"secret": "Something here!",
+		"redis": {
+			"host": "localhost",
+			"port": 6379,
+			"ttl": 3600
+		}
+	},
+	"database": {
+		"client": "pg",
+		"debug": false,
+		"connection": {
+			"host": "localhost",
+			"database": "bookbrainz_test",
+			"user": "postgres",
+			"password": "postgres"
+		}
+	},
+	"search": {
+		"node": "http://localhost:9200",
+		"auth": {
+			"username": "elastic",
+			"password": "changeme"
+		},
+		"requestTimeout": 30000
+	}
+}
