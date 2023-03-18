@@ -48,10 +48,10 @@ function TopEditorsTable(props) {
 			>
 				<thead>
 					<tr>
-						<th className="col-md-1" >#</th>
-						<th className="col-md-5" >Editor&apos;s Name</th>
-						<th className="col-md-3" >Total Revisions</th>
-						<th className="col-md-3" >Registration Date</th>
+						<th width="8.33%" >#</th>
+						<th width="41.66%" >Editor&apos;s Name</th>
+						<th width="25%" >Total Revisions</th>
+						<th width="25%" >Registration Date</th>
 					</tr>
 				</thead>
 				<tbody>
