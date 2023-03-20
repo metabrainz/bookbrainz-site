@@ -198,7 +198,8 @@ router.get('/:bbid', middleware.loadEntityRelationships, (req, res, next) => {
 		'disambiguation',
 		'releaseEventSet.releaseEvents',
 		'identifierSet.identifiers.type',
-		'editionFormat'
+		'editionFormat',
+		'authorCredit.names'
 	];
 	const editionsPromise =
 		Publisher.forge({bbid: res.locals.entity.bbid})
