@@ -88,7 +88,7 @@ SeriesAttributes.propTypes = {
 };
 
 
-function SeriesDisplayPage({entity, identifierTypes, user}) {
+function SeriesDisplayPage({entity, identifierTypes, user, genderOptions}) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);
@@ -106,21 +106,13 @@ function SeriesDisplayPage({entity, identifierTypes, user}) {
 	const entityKey = getEntityKey(entity.entityType);
 	const propsForTable = {
 		[entityKey]: entity.seriesItems,
+		genderOptions,
 		showAdd: false,
 		showAddedAtColumn: false,
 		showCheckboxes: false
 	};
 	return (
 		<div>
-			<CBReviewModal
-				entityBBID={entity.bbid}
-				entityName={entity.defaultAlias.name}
-				entityType={entity.type}
-				handleModalToggle={handleModalToggle}
-				handleUpdateReviews={handleUpdateReviews}
-				showModal={showCBReviewModal}
-				userId={user?.id}
-			/>
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" lg={2}>
 					<EntityImage
@@ -174,16 +166,27 @@ function SeriesDisplayPage({entity, identifierTypes, user}) {
 				lastModified={entity.revision.revision.createdAt}
 				user={user}
 			/>
+			{!entity.deleted && <CBReviewModal
+				entityBBID={entity.bbid}
+				entityName={entity.defaultAlias.name}
+				entityType={entity.type}
+				handleModalToggle={handleModalToggle}
+				handleUpdateReviews={handleUpdateReviews}
+				showModal={showCBReviewModal}
+				userId={user?.id}
+			                    />}
 		</div>
 	);
 }
 SeriesDisplayPage.displayName = 'SeriesDisplayPage';
 SeriesDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
+	genderOptions: PropTypes.array,
 	identifierTypes: PropTypes.array,
 	user: PropTypes.object.isRequired
 };
 SeriesDisplayPage.defaultProps = {
+	genderOptions: [],
 	identifierTypes: []
 };
 

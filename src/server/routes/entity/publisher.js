@@ -93,7 +93,7 @@ const router = express.Router();
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadPublisherTypes,
-	middleware.loadRelationshipTypes, middleware.decodeUrlQueryParams,
+	middleware.loadRelationshipTypes,
 	async (req, res) => {
 		const markupProps = generateEntityProps(
 			'publisher', req, res, {}

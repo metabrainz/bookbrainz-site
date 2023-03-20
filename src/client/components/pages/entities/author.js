@@ -132,15 +132,6 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
-			<CBReviewModal
-				entityBBID={entity.bbid}
-				entityName={entity.defaultAlias?.name}
-				entityType={entity.type}
-				handleModalToggle={handleModalToggle}
-				handleUpdateReviews={handleUpdateReviews}
-				showModal={showCBReviewModal}
-				userId={user?.id}
-			/>
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" lg={2}>
 					<EntityImage
@@ -199,6 +190,15 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 				lastModified={entity.revision.revision.createdAt}
 				user={user}
 			/>
+			{!entity.deleted && <CBReviewModal
+				entityBBID={entity.bbid}
+				entityName={entity.defaultAlias.name}
+				entityType={entity.type}
+				handleModalToggle={handleModalToggle}
+				handleUpdateReviews={handleUpdateReviews}
+				showModal={showCBReviewModal}
+				userId={user?.id}
+			                    />}
 		</div>
 	);
 }

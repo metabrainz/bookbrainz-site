@@ -28,7 +28,7 @@
 		"connection": {
 			"host": "localhost",
 			"database": "bookbrainz",
-			"user": "postgres",
+			"user": "bookbrainz",
 			"password": ""
 		}
 	},

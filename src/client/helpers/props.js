@@ -53,6 +53,7 @@ export function extractEntityProps(props) {
 	return {
 		alert: props.alert,
 		entity: props.entity,
+		genderOptions: props.genderOptions,
 		identifierTypes: props.identifierTypes,
 		user: props.user
 	};
