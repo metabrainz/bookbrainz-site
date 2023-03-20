@@ -32,17 +32,20 @@ describe('checkValidRevisionId', () => {
 		const res = await chai.request(app).get(`/revision/${revisionId}`);
 		expect(res.ok).to.be.false;
 		expect(res).to.have.status(400);
+		expect(res.res.statusMessage).to.equal(`Invalid revision id: ${revisionId}`);
 	});
 	it('should throw an error when revision id is a decimal', async () => {
 		const revisionId = 1.367;
 		const res = await chai.request(app).get(`/revision/${revisionId}`);
 		expect(res.ok).to.be.false;
 		expect(res).to.have.status(400);
+		expect(res.res.statusMessage).to.equal(`Invalid revision id: ${revisionId}`);
 	});
 	it('should throw an error when revision id is unavailable', async () => {
 		const revisionId = 1367;
 		const res = await chai.request(app).get(`/revision/${revisionId}`);
 		expect(res.ok).to.be.false;
 		expect(res).to.have.status(404);
+		expect(res.res.statusMessage).to.equal(`Revision #${revisionId} not found`);
 	});
 });
