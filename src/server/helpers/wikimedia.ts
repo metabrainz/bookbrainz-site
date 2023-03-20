@@ -18,6 +18,8 @@
 
 import type {WikipediaArticle, WikipediaPageExtract} from '../../common/helpers/wikimedia';
 import {toLower, uniq} from 'lodash';
+import {hoursToSeconds} from 'date-fns';
+import redisClient from '../../common/helpers/cache';
 import request from 'superagent';
 
 
@@ -53,11 +55,24 @@ type WikipediaExtractResult = {
 };
 
 
+/** Maximum age of cached results in seconds. */
+const cacheMaxAge = {
+	articles: hoursToSeconds(24 * 7),
+	extract: hoursToSeconds(24 * 3)
+};
+
 /**
  * Fetches a list of Wikipedia articles in all available languages for the given Wikidata item.
  * @param wikidataId - Wikidata item ID.
  */
-export async function getAvailableWikipediaArticles(wikidataId: string) {
+export async function getAvailableWikipediaArticles(wikidataId: string): Promise<WikipediaArticle[]> {
+	const cacheKey = `wiki:articles:${wikidataId}`;
+	const cachedArticles = await redisClient.get(cacheKey);
+
+	if (cachedArticles) {
+		return JSON.parse(cachedArticles);
+	}
+
 	const apiUrl = new URL('https://www.wikidata.org/w/api.php');
 	apiUrl.search = new URLSearchParams({
 		action: 'wbgetentities',
@@ -74,14 +89,18 @@ export async function getAvailableWikipediaArticles(wikidataId: string) {
 		throw new Error(`Failed to fetch Wikidata item ${wikidataId}`);
 	}
 
-	return Object.values(item.sitelinks)
-		 // only keep Wikipedia pages
+	const articles = Object.values(item.sitelinks)
+		// only keep Wikipedia pages
 		.filter((link) => link.site.endsWith('wiki'))
 		.map((page) => <WikipediaArticle>({
 			// drop project suffix
 			language: page.site.replace(/wiki$/, ''),
 			title: page.title
 		}));
+
+	redisClient.set(cacheKey, JSON.stringify(articles), {EX: cacheMaxAge.articles});
+
+	return articles;
 }
 
 /**
@@ -107,7 +126,14 @@ export async function selectWikipediaPage(wikidataId: string, preferredLanguages
  * Fetches the page extract of the given Wikipedia article.
  * @param article - Title and language of the article.
  */
-export async function getWikipediaExtract(article: WikipediaArticle) {
+export async function getWikipediaExtract(article: WikipediaArticle): Promise<WikipediaPageExtract> {
+	const cacheKey = `wiki:extract:${article.language}:${article.title}`;
+	const cachedExtract = await redisClient.get(cacheKey);
+
+	if (cachedExtract) {
+		return JSON.parse(cachedExtract);
+	}
+
 	const apiUrl = new URL(`https://${article.language}.wikipedia.org/w/api.php`);
 	apiUrl.search = new URLSearchParams({
 		action: 'query',
@@ -121,6 +147,9 @@ export async function getWikipediaExtract(article: WikipediaArticle) {
 
 	const response = await request.get(apiUrl.href);
 	const result = response.body as WikipediaExtractResult;
+	const pageExtract = result.query?.pages?.[0];
 
-	return result.query?.pages?.[0];
+	redisClient.set(cacheKey, JSON.stringify(pageExtract), {EX: cacheMaxAge.extract});
+
+	return pageExtract;
 }
