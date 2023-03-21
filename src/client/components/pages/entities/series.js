@@ -183,11 +183,13 @@ SeriesDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	genderOptions: PropTypes.array,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired
+	user: PropTypes.object.isRequired,
+	wikipediaExtract: PropTypes.object
 };
 SeriesDisplayPage.defaultProps = {
 	genderOptions: [],
-	identifierTypes: []
+	identifierTypes: [],
+	wikipediaExtract: {}
 };
 
 export default SeriesDisplayPage;

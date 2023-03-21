@@ -206,11 +206,12 @@ AuthorDisplayPage.displayName = 'AuthorDisplayPage';
 AuthorDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired
-
+	user: PropTypes.object.isRequired,
+	wikipediaExtract: PropTypes.object
 };
 AuthorDisplayPage.defaultProps = {
-	identifierTypes: []
+	identifierTypes: [],
+	wikipediaExtract: {}
 };
 
 export default AuthorDisplayPage;
