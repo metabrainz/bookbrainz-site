@@ -24,35 +24,41 @@ import React from 'react';
 const {Card, Form} = bootstrap;
 const {useState, useCallback} = React;
 
-function DragAndDrop(props) {
-	const [achievement, setAchievement] = useState({
+type Achievement = {
+	name: string;
+	src: string;
+	id: string;
+};
+type Props = {
+  name: string;
+};
+
+function DragAndDrop({name}: Props) {
+	const [achievement, setAchievement] = useState<Achievement>({
 		name: 'drag badge to set',
 		src: '/images/blankbadge.svg'
 	});
-	function addChild(data) {
-		setAchievement(data);
-	}
-	const handleClick = useCallback((ev) => {
-		ev.preventDefault();
+	const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+		event.preventDefault();
 		setAchievement({
 			name: 'drag badge to set',
 			src: '/images/blankbadge.svg'
 		});
 	});
-	const handleDragOver = useCallback((ev) => {
-		ev.preventDefault();
+	const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+		event.preventDefault();
 	});
-	const handleDrop = useCallback((ev) => {
-		ev.preventDefault();
+	const handleDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+		event.preventDefault();
 		let data;
 
 		try {
-			data = JSON.parse(ev.dataTransfer.getData('text'));
+			data = JSON.parse(event.dataTransfer.getData('text'));
 		}
-		catch (err) {
+		catch (error) {
 			return;
 		}
-		addChild(data);
+		setAchievement(data);
 	});
 	return (
 		<Card
@@ -70,7 +76,7 @@ function DragAndDrop(props) {
 			<Card.Body className="text-center">
 				<Form.Group>
 					<Form.Control
-						name={props.name}
+						name={name}
 						type="hidden"
 						value={achievement.id}
 					/>
