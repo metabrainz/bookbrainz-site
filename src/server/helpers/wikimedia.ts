@@ -72,7 +72,7 @@ export async function getAvailableWikipediaArticles(wikidataId: string, {
 	const cachedArticles = await getCachedJSON<WikipediaArticle[]>(cacheKey);
 
 	if (cachedArticles || forceCache) {
-		return cachedArticles;
+		return cachedArticles || [];
 	}
 
 	const apiUrl = new URL('https://www.wikidata.org/w/api.php');

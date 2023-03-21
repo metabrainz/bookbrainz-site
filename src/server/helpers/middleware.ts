@@ -221,7 +221,9 @@ export async function loadWikipediaExtract(req: $Request, res: $Response, next: 
 	const article = await selectWikipediaPage(wikidataId, {forceCache: true, preferredLanguages});
 	if (article) {
 		const extract = await getWikipediaExtract(article, {forceCache: true});
-		res.locals.wikipediaExtract = {article, ...extract};
+		if (extract) {
+			res.locals.wikipediaExtract = {article, ...extract};
+		}
 	}
 
 	next();
