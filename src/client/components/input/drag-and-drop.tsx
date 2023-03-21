@@ -24,15 +24,34 @@ import React from 'react';
 const {Card, Form} = bootstrap;
 const {useState, useCallback} = React;
 
+/**
+* The Achievement interface, defining the properties of an achievement.
+* @typedef
+* @property {string} name - The name of the achievement.
+* @property {string} src - The source URL of the achievement's badge image.
+* @property {string} id - The ID of the achievement.
+*/
 type Achievement = {
 	name: string;
 	src: string;
 	id: string;
 };
+/**
+ * Props for DragAndDropImage component
+ * @typedef {Object} Props
+ * @property {string} name - The name of the DragAndDrop component.
+ */
 type Props = {
   name: string;
 };
 
+/**
+* A component for a drag-and-drop card that displays an achievement.
+* The card displays an image of the achievement and allows the user to drag and drop a different achievement onto it.
+* When a new achievement is dropped onto the card, it is displayed instead of the original achievement.
+* @param {Props} props - The props object containing the following:
+* @returns {JSX.Element} A React component that displays a drag-and-drop card for an achievement.
+*/
 function DragAndDrop({name}: Props) {
 	const [achievement, setAchievement] = useState<Achievement>({
 		name: 'drag badge to set',
