@@ -1,6 +1,7 @@
 import {EntityType, Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
 
 import {isString, kebabCase, toString, upperFirst} from 'lodash';
+import type {EntityT} from 'bookbrainz-data/lib/types/entity';
 import {IdentifierType} from '../../client/unified-form/interface/type';
 
 /**
@@ -316,6 +317,14 @@ export async function getEntityAlias(orm, bbid:string, type:EntityType):Promise<
 	}
 	const entityData = await orm.func.entity.getEntity(orm, upperFirst(type), bbid, []);
 	return entityData;
+}
+
+export function getAliasLanguageCodes(entity: EntityT) {
+	return entity.aliasSet?.aliases
+		.map((alias) => alias.language?.isoCode1)
+		// less common languages (and [Multiple languages]) do not have a two-letter ISO code, ignore them for now
+		.filter((language) => language !== null)
+		?? [];
 }
 
 export function filterObject(obj, filter) {

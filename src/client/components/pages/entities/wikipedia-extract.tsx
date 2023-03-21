@@ -21,6 +21,7 @@ import {WikipediaArticleExtract, buildWikipediaUrl, getWikidataId} from '../../.
 import DOMPurify from 'isomorphic-dompurify';
 import type {EntityT} from 'bookbrainz-data/lib/types/entity';
 import React from 'react';
+import {getAliasLanguageCodes} from '../../../../common/helpers/utils';
 import {uniq} from 'lodash';
 
 
@@ -58,11 +59,7 @@ class WikipediaExtract extends React.Component<Props, State> {
 				return;
 			}
 
-			const aliasLanguages = this.props.entity.aliasSet?.aliases
-				.map((alias) => alias.language?.isoCode1)
-				// less common languages (and [Multiple languages]) do not have a two-letter ISO code, ignore them for now
-				.filter((language) => language !== null)
-				?? [];
+			const aliasLanguages = getAliasLanguageCodes(this.props.entity);
 			const preferredLanguages = uniq(['en', ...aliasLanguages]);
 
 			getWikipediaExtractForWikidata(wikidataId, preferredLanguages).then((result) => {
