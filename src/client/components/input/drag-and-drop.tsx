@@ -52,7 +52,7 @@ type Props = {
 * @param {Props} props - The props object containing the following:
 * @returns {JSX.Element} A React component that displays a drag-and-drop card for an achievement.
 */
-function DragAndDrop({name}: Props) {
+function DragAndDrop({name}: Props): JSX.Element {
 	const [achievement, setAchievement] = useState<Achievement>({
 		name: 'drag badge to set',
 		src: '/images/blankbadge.svg'
