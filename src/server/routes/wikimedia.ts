@@ -37,7 +37,7 @@ router.get('/wikidata/:id/wikipedia-extract', async (req, res) => {
 	// try to use the user's browser languages, fallback to queried languages and English
 	const preferredLanguages = browserLanguages.concat(queryLanguages, 'en');
 	try {
-		const article = await selectWikipediaPage(req.params.id, preferredLanguages);
+		const article = await selectWikipediaPage(req.params.id, {preferredLanguages});
 		if (article) {
 			const extract = await getWikipediaExtract(article);
 			res.json({article, ...extract});

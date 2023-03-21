@@ -1,8 +1,10 @@
 /*
  * Copyright (C) 2015       Ben Ockmore
  *               2015-2016  Sean Burke
- *				 2021       Akash Gupta
- *				 2022       Ansh Goyal
+ *               2021       Akash Gupta
+ *               2022       Ansh Goyal
+ *               2023       David Kellner
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -22,10 +24,13 @@ import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
 import type {Response as $Response, NextFunction, Request} from 'express';
+import {getWikipediaExtract, selectWikipediaPage} from './wikimedia';
 
 import _ from 'lodash';
+import {getAcceptedLanguageCodes} from './i18n';
 import {getRelationshipTargetBBIDByTypeId} from '../../client/helpers/entity';
 import {getReviewsFromCB} from './critiquebrainz';
+import {getWikidataId} from '../../common/helpers/wikimedia';
 
 
 interface $Request extends Request {
@@ -193,6 +198,32 @@ export async function loadEntityRelationships(req: $Request, res: $Response, nex
 	} catch (err) {
 		next(err);
 	}
+	next();
+}
+
+export async function loadWikipediaExtract(req: $Request, res: $Response, next: NextFunction) {
+	const {entity} = res.locals;
+	if (!entity) {
+		return next(new error.SiteError('Failed to load entity'));
+	}
+
+	const wikidataId = getWikidataId(entity);
+	if (!wikidataId) {
+		return next();
+	}
+
+	// try to use the user's browser languages, fallback to English and alias languages
+	const browserLanguages = getAcceptedLanguageCodes(req);
+	const aliasLanguages = commonUtils.getAliasLanguageCodes(entity);
+	const preferredLanguages = browserLanguages.concat('en', aliasLanguages);
+
+	// only pre-load Wikipedia extracts which are already cached
+	const article = await selectWikipediaPage(wikidataId, {forceCache: true, preferredLanguages});
+	if (article) {
+		const extract = await getWikipediaExtract(article, {forceCache: true});
+		res.locals.wikipediaExtract = {article, ...extract};
+	}
+
 	next();
 }
 

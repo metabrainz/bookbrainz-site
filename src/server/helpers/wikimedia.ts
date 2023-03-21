@@ -65,11 +65,13 @@ const cacheMaxAge = {
  * Fetches a list of Wikipedia articles in all available languages for the given Wikidata item.
  * @param wikidataId - Wikidata item ID.
  */
-export async function getAvailableWikipediaArticles(wikidataId: string): Promise<WikipediaArticle[]> {
+export async function getAvailableWikipediaArticles(wikidataId: string, {
+	forceCache = false
+} = {}): Promise<WikipediaArticle[]> {
 	const cacheKey = `wiki:articles:${wikidataId}`;
 	const cachedArticles = await getCachedJSON<WikipediaArticle[]>(cacheKey);
 
-	if (cachedArticles) {
+	if (cachedArticles || forceCache) {
 		return cachedArticles;
 	}
 
@@ -108,8 +110,11 @@ export async function getAvailableWikipediaArticles(wikidataId: string): Promise
  * @param wikidataId - Wikidata item ID.
  * @param preferredLanguages - List of language codes, preference in descending order.
  */
-export async function selectWikipediaPage(wikidataId: string, preferredLanguages = ['en']) {
-	const articles = await getAvailableWikipediaArticles(wikidataId);
+export async function selectWikipediaPage(wikidataId: string, {
+	forceCache = false,
+	preferredLanguages = ['en']
+} = {}) {
+	const articles = await getAvailableWikipediaArticles(wikidataId, {forceCache});
 
 	let result: WikipediaArticle;
 	for (const language of uniq(preferredLanguages)) {
@@ -126,11 +131,13 @@ export async function selectWikipediaPage(wikidataId: string, preferredLanguages
  * Fetches the page extract of the given Wikipedia article.
  * @param article - Title and language of the article.
  */
-export async function getWikipediaExtract(article: WikipediaArticle): Promise<WikipediaPageExtract> {
+export async function getWikipediaExtract(article: WikipediaArticle, {
+	forceCache = false
+} = {}): Promise<WikipediaPageExtract> {
 	const cacheKey = `wiki:extract:${article.language}:${article.title}`;
 	const cachedExtract = await getCachedJSON<WikipediaPageExtract>(cacheKey);
 
-	if (cachedExtract) {
+	if (cachedExtract || forceCache) {
 		return cachedExtract;
 	}
 
