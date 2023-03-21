@@ -24,14 +24,12 @@ import React from 'react';
 import {uniq} from 'lodash';
 
 
-type State = {
-	extract: string,
-	url: URL,
-};
+type State = Partial<WikipediaArticleExtract>;
 
 type Props = {
 	entity: EntityT,
-} & Partial<State>;
+	articleExtract?: WikipediaArticleExtract,
+};
 
 
 /**
@@ -50,10 +48,7 @@ async function getWikipediaExtractForWikidata(wikidataId: string, preferredLangu
 class WikipediaExtract extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props);
-		this.state = {
-			extract: props.extract,
-			url: props.url
-		};
+		this.state = props.articleExtract ?? {};
 	}
 
 	componentDidMount() {
@@ -72,25 +67,23 @@ class WikipediaExtract extends React.Component<Props, State> {
 
 			getWikipediaExtractForWikidata(wikidataId, preferredLanguages).then((result) => {
 				if (result.extract) {
-					this.setState({
-						extract: result.extract,
-						url: buildWikipediaUrl(result.article)
-					});
+					this.setState(result);
 				}
 			});
 		}
 	}
 
 	render() {
-		const {extract, url} = this.state;
+		const {extract, article} = this.state;
 		const licenseUrl = 'https://creativecommons.org/licenses/by-sa/3.0/';
+
 		return extract ? (
 			<Row className="wikipedia-extract">
 				<Col>
 					<h2>Wikipedia</h2>
 					{/* eslint-disable-next-line react/no-danger */}
 					<div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(extract)}}/>
-					<a href={url?.href}>Continue reading at Wikipedia...</a>
+					<a href={buildWikipediaUrl(article)?.href}>Continue reading at Wikipedia...</a>
 					{' '}
 					<small>
 						Wikipedia content provided under the terms of the <a href={licenseUrl}>Creative Commons BY-SA license</a>
