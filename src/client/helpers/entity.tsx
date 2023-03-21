@@ -197,6 +197,13 @@ export function getEditionReleaseDate(edition) {
 	return '?';
 }
 
+export function getAuthorCreditNames(edition) {
+	if (edition.authorCreditId === null) {
+		return [];
+	}
+	return edition.authorCredit.names;
+}
+
 export function getEditionPublishers(edition) {
 	const hasPublishers = edition.publisherSet &&
 		edition.publisherSet.publishers.length > 0;

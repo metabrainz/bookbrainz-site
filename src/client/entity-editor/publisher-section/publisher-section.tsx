@@ -151,6 +151,7 @@ function PublisherSection({
 							options={publisherTypesForDisplay}
 							value={typeOption}
 							onChange={onTypeChange}
+							isClearable={true}
 						/>
 					</Form.Group>
 				</Col>

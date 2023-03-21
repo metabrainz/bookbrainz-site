@@ -56,64 +56,55 @@ const maxAchievementProgress = {
 	29: 10,
 	30: 100
 };
-class Achievement extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			achievement: props.achievement,
-			counter: props.counter,
-			unlocked: props.unlocked
-		};
-	}
 
-	render() {
-		let imgElement;
-		if (this.state.unlocked) {
-			imgElement = (
-				<DragAndDropImage
-					achievementId={this.state.achievement.id}
-					achievementName={this.state.achievement.name}
-					height="100px"
-					src={this.state.achievement.badgeUrl}
-					style={{zIndex: 2}}
-				/>
-			);
-		}
-		else {
-			imgElement = (
-				<img
-					alt={this.state.achievement.name}
-					height="100px"
-					src={this.state.achievement.badgeUrl}
-					style={{zIndex: 2}}
-				/>
-			);
-		}
-		return (
-			<Card bg="light">
-				<Container fluid>
-					<Row>
-						<Col md={2}>
-							{imgElement}
-						</Col>
-						<Col md={8}>
-							<div className="h2">
-								{this.state.achievement.name}
-							</div>
-							<p>{this.state.achievement.description}</p>
-						</Col>
-						{!this.state.unlocked &&
-						<Col>
-							<div className="h3">
-								{this.state.counter}/{maxAchievementProgress[this.state.achievement.id] ?? 0}
-							</div>
-						</Col>
-						}
-					</Row>
-				</Container>
-			</Card>
-		);
-	}
+function Achievement(props) {
+	const {achievement, counter, unlocked} = props;
+	const {id, name, description, badgeUrl} = achievement;
+	const imgElement = unlocked ? (
+		<DragAndDropImage
+			achievementId={id}
+			achievementName={name}
+			height="100px"
+			src={badgeUrl}
+			style={{
+				zIndex: 2
+			}}
+		/>
+	) : (
+		<img
+			alt={name}
+			height="100px"
+			src={badgeUrl}
+			style={{
+				zIndex: 2
+			}}
+		/>
+	);
+
+	return (
+		<Card bg="light">
+			<Container fluid>
+				<Row>
+					<Col md={2}>
+						{imgElement}
+					</Col>
+					<Col md={8}>
+						<div className="h2">
+							{name}
+						</div>
+						<p>{description}</p>
+					</Col>
+					{!unlocked &&
+					<Col>
+						<div className="h3">
+							{counter}/{maxAchievementProgress[achievement.id] ?? 0}
+						</div>
+					</Col>
+					}
+				</Row>
+			</Container>
+		</Card>
+	);
 }
 
 Achievement.displayName = 'achievement';
@@ -122,6 +113,7 @@ Achievement.propTypes = {
 	achievement: PropTypes.shape({
 		badgeUrl: PropTypes.string,
 		description: PropTypes.string,
+		id: PropTypes.number,
 		name: PropTypes.string
 	}).isRequired,
 	counter: PropTypes.number,

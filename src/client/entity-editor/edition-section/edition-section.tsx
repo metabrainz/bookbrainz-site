@@ -402,6 +402,7 @@ function EditionSection({
 							options={editionFormatsForDisplay}
 							value={formatOption}
 							onChange={onFormatChange}
+							isClearable={true}
 						/>
 					</Form.Group>
 				</Col>
@@ -423,6 +424,7 @@ function EditionSection({
 							options={editionStatusesForDisplay}
 							value={statusOption}
 							onChange={onStatusChange}
+							isClearable={true}
 						/>
 					</Form.Group>
 				</Col>
