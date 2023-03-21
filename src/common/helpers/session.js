@@ -11,6 +11,7 @@ const debug = Debug('bbsite');
 /**
  * Set up sessions, using Redis in production and default to in-memory for testing environment.
  * @param {string} [environment] - Node.js environment.
+ * @returns {function} Express session request handler.
  */
 function setupSessions(environment) {
 	const sessionOptions = {
