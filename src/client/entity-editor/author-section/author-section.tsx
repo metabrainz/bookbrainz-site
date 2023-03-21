@@ -195,6 +195,7 @@ function AuthorSection({
 							options={authorTypesForDisplay}
 							value={typeOption}
 							onChange={onTypeChange}
+							isClearable={true}
 						/>
 					</Form.Group>
 				</Col>
@@ -209,6 +210,7 @@ function AuthorSection({
 							options={genderOptionsForDisplay}
 							value={genderOption}
 							onChange={onGenderChange}
+							isClearable={true}
 						/>
 					</Form.Group>
 				</Col>

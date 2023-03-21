@@ -26,9 +26,7 @@ import React from 'react';
  */
 function ContributePage() {
 	const IRCLink = 'https://kiwiirc.com/nextclient/irc.libera.chat/?#bookbrainz';
-	const styleLink =
-		'https://bookbrainz-user-guide.readthedocs.io/' +
-		'en/latest/style/introduction/';
+	const styleLink = 'https://bookbrainz-user-guide.readthedocs.io/';
 
 	return (
 		<div>

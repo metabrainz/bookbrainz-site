@@ -108,6 +108,7 @@ function EditionGroupSection({
 							options={editionGroupTypesForDisplay}
 							value={typeOption}
 							onChange={onTypeChange}
+							isClearable={true}
 						/>
 					</Form.Group>
 				</Col>
