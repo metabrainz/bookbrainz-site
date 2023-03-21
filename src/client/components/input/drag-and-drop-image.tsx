@@ -45,7 +45,7 @@ type Props = {
  * @returns {JSX.Element} - The rendered image element.
  */
 
-function DragAndDropImage({achievementId, achievementName, height, src}: Props) {
+function DragAndDropImage({achievementId, achievementName, height, src}: Props): JSX.Element {
 	/**
 	 * Transfers the data of the achievement badge component properties to the DragEvent, which in turn transfers the data on handleDrop to that of the achievement badge which will be showcased on editor's public profile.
 	 * @param {React.DragEvent<HTMLImageElement>} ev - The drag event object.
