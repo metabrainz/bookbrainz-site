@@ -17,9 +17,9 @@
  */
 
 import type {WikipediaArticle, WikipediaPageExtract} from '../../common/helpers/wikimedia';
+import {cacheJSON, getCachedJSON} from '../../common/helpers/cache';
 import {toLower, uniq} from 'lodash';
 import {hoursToSeconds} from 'date-fns';
-import redisClient from '../../common/helpers/cache';
 import request from 'superagent';
 
 
@@ -67,10 +67,10 @@ const cacheMaxAge = {
  */
 export async function getAvailableWikipediaArticles(wikidataId: string): Promise<WikipediaArticle[]> {
 	const cacheKey = `wiki:articles:${wikidataId}`;
-	const cachedArticles = await redisClient.get(cacheKey);
+	const cachedArticles = await getCachedJSON<WikipediaArticle[]>(cacheKey);
 
 	if (cachedArticles) {
-		return JSON.parse(cachedArticles);
+		return cachedArticles;
 	}
 
 	const apiUrl = new URL('https://www.wikidata.org/w/api.php');
@@ -98,7 +98,7 @@ export async function getAvailableWikipediaArticles(wikidataId: string): Promise
 			title: page.title
 		}));
 
-	redisClient.set(cacheKey, JSON.stringify(articles), {EX: cacheMaxAge.articles});
+	cacheJSON(cacheKey, articles, {expireTime: cacheMaxAge.articles});
 
 	return articles;
 }
@@ -128,10 +128,10 @@ export async function selectWikipediaPage(wikidataId: string, preferredLanguages
  */
 export async function getWikipediaExtract(article: WikipediaArticle): Promise<WikipediaPageExtract> {
 	const cacheKey = `wiki:extract:${article.language}:${article.title}`;
-	const cachedExtract = await redisClient.get(cacheKey);
+	const cachedExtract = await getCachedJSON<WikipediaPageExtract>(cacheKey);
 
 	if (cachedExtract) {
-		return JSON.parse(cachedExtract);
+		return cachedExtract;
 	}
 
 	const apiUrl = new URL(`https://${article.language}.wikipedia.org/w/api.php`);
@@ -149,7 +149,7 @@ export async function getWikipediaExtract(article: WikipediaArticle): Promise<Wi
 	const result = response.body as WikipediaExtractResult;
 	const pageExtract = result.query?.pages?.[0];
 
-	redisClient.set(cacheKey, JSON.stringify(pageExtract), {EX: cacheMaxAge.extract});
+	cacheJSON(cacheKey, pageExtract, {expireTime: cacheMaxAge.extract});
 
 	return pageExtract;
 }

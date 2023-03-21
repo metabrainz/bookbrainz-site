@@ -10,4 +10,19 @@ const redisClient = createClient({
 	url: `redis://${redisHost}:${redisPort}`
 });
 
+export async function getCachedJSON<T>(cacheKey: string) {
+	if (redisClient.isReady) {
+		const cachedValue = await redisClient.get(cacheKey);
+		if (cachedValue) {
+			return JSON.parse(cachedValue) as T;
+		}
+	}
+}
+
+export function cacheJSON(cacheKey: string, value: any, options: {expireTime: number}) {
+	if (redisClient.isReady) {
+		return redisClient.set(cacheKey, JSON.stringify(value), {EX: options.expireTime});
+	}
+}
+
 export default redisClient;
