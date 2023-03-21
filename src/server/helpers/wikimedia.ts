@@ -21,6 +21,7 @@ import {cacheJSON, getCachedJSON} from '../../common/helpers/cache';
 import {toLower, uniq} from 'lodash';
 import {hoursToSeconds} from 'date-fns';
 import request from 'superagent';
+import {userAgent} from '../info';
 
 
 type WikidataSiteLink = {
@@ -83,7 +84,8 @@ export async function getAvailableWikipediaArticles(wikidataId: string, {
 		ids: wikidataId,
 	}).toString();
 
-	const response = await request.get(apiUrl.href);
+	const response = await request.get(apiUrl.href)
+		.set('User-Agent', userAgent);
 	const result = response.body as WikidataSiteLinksResult;
 	const item = result.entities?.[wikidataId];
 
@@ -152,7 +154,8 @@ export async function getWikipediaExtract(article: WikipediaArticle, {
 		titles: article.title
 	}).toString();
 
-	const response = await request.get(apiUrl.href);
+	const response = await request.get(apiUrl.href)
+		.set('User-Agent', userAgent);
 	const result = response.body as WikipediaExtractResult;
 	const pageExtract = result.query?.pages?.[0];
 

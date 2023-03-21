@@ -40,6 +40,7 @@ import path from 'path';
 import routes from './routes';
 import serveStatic from 'serve-static';
 import session from '../common/helpers/session';
+import {userAgent} from './info';
 
 
 // Initialize log-to-stdout  writer
@@ -112,6 +113,7 @@ if (existsSync(gitRevisionFilePath)) {
 	}
 }
 debug(`Git revision: ${siteRevision}`);
+debug('User-Agent:', userAgent);
 
 const repositoryUrl = 'https://github.com/metabrainz/bookbrainz-site/';
 
