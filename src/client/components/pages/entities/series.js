@@ -88,7 +88,7 @@ SeriesAttributes.propTypes = {
 };
 
 
-function SeriesDisplayPage({entity, identifierTypes, user, genderOptions}) {
+function SeriesDisplayPage({entity, identifierTypes, user, genderOptions, wikipediaExtract}) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);
@@ -131,7 +131,7 @@ function SeriesDisplayPage({entity, identifierTypes, user, genderOptions}) {
 					/>
 				</Col>
 			</Row>
-			<WikipediaExtract entity={entity}/>
+			<WikipediaExtract articleExtract={wikipediaExtract} entity={entity}/>
 			<EntityAnnotation entity={entity}/>
 
 			{!entity.deleted &&

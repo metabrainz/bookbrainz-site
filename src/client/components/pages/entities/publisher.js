@@ -82,7 +82,7 @@ PublisherAttributes.propTypes = {
 };
 
 
-function PublisherDisplayPage({entity, identifierTypes, user}) {
+function PublisherDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
@@ -99,7 +99,7 @@ function PublisherDisplayPage({entity, identifierTypes, user}) {
 					<PublisherAttributes publisher={entity}/>
 				</Col>
 			</Row>
-			<WikipediaExtract entity={entity}/>
+			<WikipediaExtract articleExtract={wikipediaExtract} entity={entity}/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>

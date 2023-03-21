@@ -107,7 +107,7 @@ EditionAttributes.propTypes = {
 };
 
 
-function EditionDisplayPage({entity, identifierTypes, user}) {
+function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
@@ -169,7 +169,7 @@ function EditionDisplayPage({entity, identifierTypes, user}) {
 					{editionGroupSection}
 				</Col>
 			</Row>
-			<WikipediaExtract entity={entity}/>
+			<WikipediaExtract articleExtract={wikipediaExtract} entity={entity}/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>

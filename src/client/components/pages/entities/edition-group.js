@@ -79,7 +79,7 @@ EditionGroupAttributes.propTypes = {
 };
 
 
-function EditionGroupDisplayPage({entity, identifierTypes, user}) {
+function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);
@@ -132,7 +132,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 			</Row>
-			<WikipediaExtract entity={entity}/>
+			<WikipediaExtract articleExtract={wikipediaExtract} entity={entity}/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>

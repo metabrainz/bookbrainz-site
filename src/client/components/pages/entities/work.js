@@ -87,7 +87,7 @@ WorkAttributes.propTypes = {
 };
 
 
-function WorkDisplayPage({entity, identifierTypes, user}) {
+function WorkDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);
@@ -124,7 +124,7 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 			</Row>
-			<WikipediaExtract entity={entity}/>
+			<WikipediaExtract articleExtract={wikipediaExtract} entity={entity}/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
