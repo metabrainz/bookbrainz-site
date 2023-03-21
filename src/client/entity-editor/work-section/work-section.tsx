@@ -140,6 +140,7 @@ function WorkSection({
 							options={workTypesForDisplay}
 							value={typeOption}
 							onChange={onTypeChange}
+							isClearable={true}
 						/>
 					</Form.Group>
 				</Col>

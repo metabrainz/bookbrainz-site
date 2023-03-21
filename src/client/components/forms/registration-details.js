@@ -146,6 +146,7 @@ class RegistrationForm extends React.Component {
 										defaultValue={this.props.genders.filter((option) => option.id === initialGender)}
 										getOptionLabel={this.getOptionLabel}
 										instanceId="gender"
+										isClearable="true"
 										options={this.props.genders}
 										placeholder="Select gender…"
 										ref={(ref) => this.gender = ref}
