@@ -21,8 +21,36 @@ import React from 'react';
 
 const {useCallback} = React;
 
-function DragAndDropImage({achievementId, achievementName, height, src}) {
-	const handleDragStart = useCallback((ev) => {
+/**
+ * Props for DragAndDropImage component
+ * @typedef {Object} Props
+ * @property {number} achievementId - ID of the achievement
+ * @property {string} achievementName - Name of the achievement
+ * @property {string} height - Height of the image
+ * @property {string} src - Image source URL
+ */
+
+type Props = {
+	achievementId: number;
+	achievementName: string;
+	height: string;
+	src: string;
+};
+
+/**
+ * The `DragAndDropImage` component renders an image of a particular achievement badge, which can be dragged to set the user's publicly showcased achievements.
+ *
+ * @param {Props} props - Props for the component
+ *
+ * @returns {JSX.Element} - The rendered image element.
+ */
+
+function DragAndDropImage({achievementId, achievementName, height, src}: Props) {
+	/**
+	 * Transfers the data of the achievement badge component properties to the DragEvent, which in turn transfers the data on handleDrop to that of the achievement badge which will be showcased on editor's public profile.
+	 * @param {React.DragEvent<HTMLImageElement>} ev - The drag event object.
+	 */
+	const handleDragStart = useCallback((ev: React.DragEvent<HTMLImageElement>) => {
 		const data = {
 			id: achievementId,
 			name: achievementName,
@@ -33,7 +61,7 @@ function DragAndDropImage({achievementId, achievementName, height, src}) {
 
 	return (
 		<img
-			draggable="true"
+			draggable
 			height={height}
 			src={src}
 			onDragStart={handleDragStart}
