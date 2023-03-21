@@ -24,10 +24,9 @@ function setupSessions(environment) {
 	};
 
 	if (environment !== 'test') {
-		// eslint-disable-next-line no-console
-		redisClient.connect().catch(redisError => { console.error('Redis error:', redisError); });
+		redisClient.connect().catch((redisError) => debug('Redis error:', redisError));
 
-		redisClient.on('error', (err) => debug('Redis error:', err));
+		redisClient.on('error', (redisError) => debug('Redis error:', redisError));
 
 		const redisStore = new RedisStore({
 			client: redisClient
