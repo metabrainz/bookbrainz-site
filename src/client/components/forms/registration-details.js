@@ -91,11 +91,8 @@ class RegistrationForm extends React.Component {
 			errorComponent =
 				<Alert variant="danger">{this.state.error}</Alert>;
 		}
-
 		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
-
 		const initialGender = this.props.gender && this.props.gender.id;
-
 		return (
 			<div>
 				<div className="page-header"><h1>Register</h1></div>
@@ -143,17 +140,16 @@ class RegistrationForm extends React.Component {
 								<Form.Label className="col-lg-4 col-form-label">Gender</Form.Label>
 								<div className="col-lg-4">
 									<ReactSelect
+										isClearable
 										defaultValue={this.props.genders.filter((option) => option.id === initialGender)}
 										getOptionLabel={this.getOptionLabel}
 										instanceId="gender"
-										isClearable="true"
 										options={this.props.genders}
 										placeholder="Select gender…"
 										ref={(ref) => this.gender = ref}
 									/>
 								</div>
 							</Form.Group>
-
 							<hr/>
 							{errorComponent}
 							<div className="text-center">

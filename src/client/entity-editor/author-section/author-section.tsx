@@ -190,12 +190,12 @@ function AuthorSection({
 					<Form.Group>
 						<Form.Label>Type</Form.Label>
 						<Select
+							isClearable
 							classNamePrefix="react-select"
 							instanceId="authorType"
 							options={authorTypesForDisplay}
 							value={typeOption}
 							onChange={onTypeChange}
-							isClearable={true}
 						/>
 					</Form.Group>
 				</Col>
@@ -207,10 +207,10 @@ function AuthorSection({
 						<Select
 							classNamePrefix="react-select"
 							instanceId="gender"
+							isClearable="true"
 							options={genderOptionsForDisplay}
 							value={genderOption}
 							onChange={onGenderChange}
-							isClearable={true}
 						/>
 					</Form.Group>
 				</Col>
