@@ -24,7 +24,7 @@ import * as error from '../common/helpers/error';
 import * as search from '../common/helpers/search';
 import * as serverErrorHelper from './helpers/error';
 
-import {siteRevision, userAgent} from './info';
+import {repositoryUrl, siteRevision, userAgent} from './info';
 
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
@@ -103,8 +103,6 @@ search.init(app.locals.orm, Object.assign({}, config.search));
 // Set up constants that will remain valid for the life of the app
 debug(`Git revision: ${siteRevision}`);
 debug('User-Agent:', userAgent);
-
-const repositoryUrl = 'https://github.com/metabrainz/bookbrainz-site/';
 
 app.use((req, res, next) => {
 	// Set up globally-used properties
