@@ -24,7 +24,7 @@ import * as error from '../common/helpers/error';
 import * as search from '../common/helpers/search';
 import * as serverErrorHelper from './helpers/error';
 
-import {existsSync, readFileSync} from 'fs';
+import {siteRevision, userAgent} from './info';
 
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
@@ -40,7 +40,6 @@ import path from 'path';
 import routes from './routes';
 import serveStatic from 'serve-static';
 import session from '../common/helpers/session';
-import {userAgent} from './info';
 
 
 // Initialize log-to-stdout  writer
@@ -102,16 +101,6 @@ const authInitiated = auth.init(app);
 search.init(app.locals.orm, Object.assign({}, config.search));
 
 // Set up constants that will remain valid for the life of the app
-let siteRevision = 'unknown';
-const gitRevisionFilePath = '.git-version';
-if (existsSync(gitRevisionFilePath)) {
-	try {
-		siteRevision = readFileSync(gitRevisionFilePath).toString();
-	}
-	catch (err) {
-		debug(err);
-	}
-}
 debug(`Git revision: ${siteRevision}`);
 debug('User-Agent:', userAgent);
 
