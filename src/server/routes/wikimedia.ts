@@ -45,7 +45,8 @@ router.get('/wikidata/:id/wikipedia-extract', async (req, res) => {
 		else {
 			res.json({});
 		}
-	} catch (error) {
+	}
+	catch (error) {
 		log.warning(error);
 		res.json({});
 	}

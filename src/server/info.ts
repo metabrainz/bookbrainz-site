@@ -3,6 +3,7 @@ export const repositoryName = 'bookbrainz-site';
 
 export const repositoryUrl = 'https://github.com/metabrainz/bookbrainz-site/';
 
+// eslint-disable-next-line node/no-process-env
 export const siteRevision = process.env.GIT_COMMIT_SHA;
 
 // In production, a git tag (e.g. `v0.15.2` or `v-2023-02-20.0`) might be passed instead of a commit SHA.

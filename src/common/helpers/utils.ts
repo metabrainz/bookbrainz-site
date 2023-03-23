@@ -324,6 +324,7 @@ export function getAliasLanguageCodes(entity: EntityT) {
 		.map((alias) => alias.language?.isoCode1)
 		// less common languages (and [Multiple languages]) do not have a two-letter ISO code, ignore them for now
 		.filter((language) => language !== null)
+		// eslint-disable-next-line operator-linebreak -- fallback refers to the whole optional chain
 		?? [];
 }
 

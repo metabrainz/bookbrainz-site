@@ -64,7 +64,7 @@ const cacheMaxAge = {
 
 /**
  * Fetches a list of Wikipedia articles in all available languages for the given Wikidata item.
- * @param wikidataId - Wikidata item ID.
+ * @param {string} wikidataId - Wikidata item ID.
  */
 export async function getAvailableWikipediaArticles(wikidataId: string, {
 	forceCache = false
@@ -80,8 +80,8 @@ export async function getAvailableWikipediaArticles(wikidataId: string, {
 	apiUrl.search = new URLSearchParams({
 		action: 'wbgetentities',
 		format: 'json',
-		props: 'sitelinks',
 		ids: wikidataId,
+		props: 'sitelinks'
 	}).toString();
 
 	const response = await request.get(apiUrl.href)
@@ -109,8 +109,8 @@ export async function getAvailableWikipediaArticles(wikidataId: string, {
 
 /**
  * Tries to find a Wikipedia article for the given Wikidata item in the first preferred language which is available.
- * @param wikidataId - Wikidata item ID.
- * @param preferredLanguages - List of language codes, preference in descending order.
+ * @param {string} wikidataId - Wikidata item ID.
+ * @param {string[]} preferredLanguages - List of language codes, preference in descending order.
  */
 export async function selectWikipediaPage(wikidataId: string, {
 	forceCache = false,
@@ -131,7 +131,7 @@ export async function selectWikipediaPage(wikidataId: string, {
 
 /**
  * Fetches the page extract of the given Wikipedia article.
- * @param article - Title and language of the article.
+ * @param {object} article - Title and language of the article.
  */
 export async function getWikipediaExtract(article: WikipediaArticle, {
 	forceCache = false
@@ -149,6 +149,7 @@ export async function getWikipediaExtract(article: WikipediaArticle, {
 		format: 'json',
 		formatversion: '2',
 		prop: 'extracts',
+		// eslint-disable-next-line sort-keys -- `exintro` only allowed with `prop: 'extracts'`
 		exintro: '1',
 		redirects: '1',
 		titles: article.title

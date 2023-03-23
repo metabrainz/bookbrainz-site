@@ -226,7 +226,7 @@ export async function loadWikipediaExtract(req: $Request, res: $Response, next: 
 		}
 	}
 
-	next();
+	return next();
 }
 
 export function checkValidRevisionId(req: $Request, res: $Response, next: NextFunction, id: string) {

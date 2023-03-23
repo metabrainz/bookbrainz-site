@@ -17,12 +17,14 @@ export async function getCachedJSON<T>(cacheKey: string) {
 			return JSON.parse(cachedValue) as T;
 		}
 	}
+	return null;
 }
 
 export function cacheJSON(cacheKey: string, value: any, options: {expireTime: number}) {
 	if (redisClient.isReady) {
 		return redisClient.set(cacheKey, JSON.stringify(value), {EX: options.expireTime});
 	}
+	return null;
 }
 
 export default redisClient;

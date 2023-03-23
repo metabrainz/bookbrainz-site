@@ -19,12 +19,18 @@
 import type {Request} from 'express';
 
 
+type AcceptedLanguage = {
+	code: string,
+	subtags: string[],
+	weight: number,
+};
+
 /**
  * Parses an Accept-Language header to obtain the language codes, optional subtags and weights.
  * @param {string} acceptLanguage - Accept-Language header value.
- * @returns Parsed languages, sorted by weight in descending order.
+ * @returns {Array} Parsed languages, sorted by weight in descending order.
  */
-export function parseAcceptLanguage(acceptLanguage: string) {
+export function parseAcceptLanguage(acceptLanguage: string): AcceptedLanguage[] {
 	return acceptLanguage
 		.split(',')
 		.map((value) => {
@@ -42,8 +48,9 @@ export function parseAcceptLanguage(acceptLanguage: string) {
 /**
  * Extracts language codes from the Accept-Language header, ordered by weight/preference.
  * @param {Request} request - Request object which includes HTTP headers.
+ * @returns {string[]} Parsed language codes, sorted by weight in descending order.
  */
-export function getAcceptedLanguageCodes(request: Request) {
+export function getAcceptedLanguageCodes(request: Request): string[] {
 	return parseAcceptLanguage(request.headers['accept-language'])
 		.map((language) => language.code);
 }
