@@ -26,11 +26,9 @@ import {
 	updateCreditAuthorValue
 } from './actions';
 import {Button, Col, Form, InputGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
-
-import {SingleValueProps, components} from 'react-select';
 import {get as _get, map as _map, values as _values, camelCase} from 'lodash';
-
 import {faPencilAlt, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+
 import AuthorCreditEditor from './author-credit-editor';
 import type {Dispatch} from 'redux'; // eslint-disable-line import/named
 import EntitySearchFieldOption from '../common/entity-search-field-option';
@@ -38,8 +36,10 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SearchEntityCreate from '../../unified-form/common/search-entity-create-select';
+import {SingleValueProps} from 'react-select/src/components/SingleValue';
 import ValidationLabel from '../common/validation-label';
 import {clearAuthor} from '../../unified-form/cover-tab/action';
+import {components} from 'react-select';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {validateAuthorCreditSection} from '../validators/common';

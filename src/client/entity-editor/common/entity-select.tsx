@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {SingleValueProps, components} from 'react-select';
+import {SingleValueProps} from 'react-select/src/components/SingleValue';
+import {components} from 'react-select';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 
