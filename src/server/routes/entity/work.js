@@ -180,30 +180,31 @@ router.post(
 	middleware.loadRelationshipTypes,
 	async (req, res, next) => {
 		const {WorkType} = req.app.locals.orm;
-    try {
-		const entity = await utils.parseInitialState(req, 'work');
-		if (entity.workSection?.type) {
-			entity.workSection.type = await utils.getIdByField(WorkType, 'label', entity.workSection.type);
-		}
-		if (entity.workSection) {
-			entity.workSection = await utils.parseLanguages(entity.workSection, req.app.locals.orm);
-		}
-		const props = await generateEntityProps(
-			'work', req, res, {}, () => entity
-		);
+		try {
+			const entity = await utils.parseInitialState(req, 'work');
+			if (entity.workSection?.type) {
+				entity.workSection.type = await utils.getIdByField(WorkType, 'label', entity.workSection.type);
+			}
+			if (entity.workSection) {
+				entity.workSection = await utils.parseLanguages(entity.workSection, req.app.locals.orm);
+			}
+			const props = await generateEntityProps(
+				'work', req, res, {}, () => entity
+			);
 			const editorMarkup = entityEditorMarkup(props);
 			const {markup} = editorMarkup;
 			const updatedProps = editorMarkup.props;
-      		res.send(target({
+			res.send(target({
 				markup,
 				props: escapeProps(updatedProps),
 				script: '/js/entity-editor.js',
 				title: props.heading
 			}));
-		} catch (err) {
-				next(err);
-			}
-}
+		}
+		catch (err) {
+			next(err);
+		}
+	}
 );
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
