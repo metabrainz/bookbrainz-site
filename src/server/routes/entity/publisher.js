@@ -191,27 +191,27 @@ function _setPublisherTitle(res) {
 
 
 router.get('/:bbid', middleware.loadEntityRelationships, async (req, res, next) => {
-    try {
-        // Fetch editions
-	const {Publisher} = req.app.locals.orm;
-	const editionRelationsToFetch = [
-		'defaultAlias',
-		'disambiguation',
-		'releaseEventSet.releaseEvents',
-		'identifierSet.identifiers.type',
-		'editionFormat','authorCredit.names'
-	];
-        const editions = await Publisher.forge({bbid: res.locals.entity.bbid})
+ try {
+ // Fetch editions
+	 const {Publisher} = req.app.locals.orm;
+	 const editionRelationsToFetch = [
+		 'defaultAlias',
+		 'disambiguation',
+		 'releaseEventSet.releaseEvents',
+		 'identifierSet.identifiers.type',
+		 'editionFormat', 'authorCredit.names'
+	 ];
+  const editions = await Publisher.forge({bbid: res.locals.entity.bbid})
 			.editions({withRelated: editionRelationsToFetch});
-
-        		
-			res.locals.entity.editions = editions.toJSON();
-			_setPublisherTitle(res);
-			res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
-			await entityRoutes.displayEntity(req, res);
-    	} catch (err) {
-        	next(err);
+		
+		res.locals.entity.editions = editions.toJSON();
+		_setPublisherTitle(res);
+		res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
+		await entityRoutes.displayEntity(req, res);
     	}
+	catch(err){
+		next(err);
+	}
 });
 
 
