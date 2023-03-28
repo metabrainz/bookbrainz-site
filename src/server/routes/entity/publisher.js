@@ -202,12 +202,12 @@ router.get('/:bbid', middleware.loadEntityRelationships, async (req, res, next) 
 			'editionFormat', 'authorCredit.names'
 		];
 		const editions = await Publisher.forge({bbid: res.locals.entity.bbid})
-		.editions({withRelated: editionRelationsToFetch});
+			.editions({withRelated: editionRelationsToFetch});
 		res.locals.entity.editions = editions.toJSON();
 		_setPublisherTitle(res);
 		res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
 		await entityRoutes.displayEntity(req, res);
-    	}
+	}
 	catch (err) {
 		next(err);
 	}
