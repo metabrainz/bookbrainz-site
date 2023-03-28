@@ -190,30 +190,30 @@ function _setPublisherTitle(res) {
 }
 
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res, next) => {
-	// Fetch editions
+router.get('/:bbid', middleware.loadEntityRelationships, async (req, res, next) => {
+    try {
+        // Fetch editions
 	const {Publisher} = req.app.locals.orm;
 	const editionRelationsToFetch = [
 		'defaultAlias',
 		'disambiguation',
 		'releaseEventSet.releaseEvents',
 		'identifierSet.identifiers.type',
-		'editionFormat',
-		'authorCredit.names'
+		'editionFormat','authorCredit.names'
 	];
-	const editionsPromise =
-		Publisher.forge({bbid: res.locals.entity.bbid})
+        const editions = await Publisher.forge({bbid: res.locals.entity.bbid})
 			.editions({withRelated: editionRelationsToFetch});
 
-	return editionsPromise
-		.then((editions) => {
+        		
 			res.locals.entity.editions = editions.toJSON();
 			_setPublisherTitle(res);
 			res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
-			return entityRoutes.displayEntity(req, res);
-		})
-		.catch(next);
+			await entityRoutes.displayEntity(req, res);
+    	} catch (err) {
+        	next(err);
+    	}
 });
+
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
 	if (!res.locals.entity.dataId) {

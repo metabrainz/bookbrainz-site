@@ -92,37 +92,45 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes,
 	middleware.loadRelationshipTypes,
-	(req, res, next) => {
+	async (req, res, next) => {
 		const {Author, Edition} = req.app.locals.orm;
 		let relationshipTypeId;
 		let initialRelationshipIndex = 0;
-		const propsPromise = generateEntityProps(
+		const propsPromise = await generateEntityProps(
 			'work', req, res, {}
 		);
 
 		if (req.query.author) {
-			propsPromise.author =
-				Author.forge({bbid: req.query.author})
-					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && utils.entityToOption(data.toJSON()));
+			try {
+				const data = await Author.forge({bbid: req.query.author})
+					.fetch({require: false, withRelated: 'defaultAlias'});
+				propsPromise.author = data && utils.entityToOption(data.toJSON());
+			}
+			catch (err) {
+				log.debug(err);
+			}
 		}
 
 		if (req.query.edition) {
-			propsPromise.edition =
-				Edition.forge({bbid: req.query.edition})
-					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && utils.entityToOption(data.toJSON()));
+			try {
+				const data = await Edition.forge({bbid: req.query.edition})
+					.fetch({require: false, withRelated: 'defaultAlias'});
+				propsPromise.edition = data && utils.entityToOption(data.toJSON());
+			}
+			catch (err) {
+				log.debug(err);
+			}
 		}
 
 		async function render(props) {
 			if (props.author) {
-				// add initial ralationship with relationshipTypeId = 8 (<Work> is written by <Author>)
+				// add initial relationship with relationshipTypeId = 8 (<Work> is written by <Author>)
 				relationshipTypeId = RelationshipTypes.AuthorWroteWork;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.author);
 			}
 
 			if (props.edition) {
-				// add initial ralationship with relationshipTypeId = 10 (<Work> is contained in <Edition>)
+				// add initial relationship with relationshipTypeId = 10 (<Work> is contained in <Edition>)
 				relationshipTypeId = RelationshipTypes.EditionContainsWork;
 				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.edition);
 			}
@@ -155,11 +163,16 @@ router.get(
 				title: props.heading
 			}));
 		}
-		makePromiseFromObject(propsPromise)
-			.then(render)
-			.catch(next);
+		try {
+			const props = await makePromiseFromObject(propsPromise);
+			await render(props);
+		}
+		catch (err) {
+			next(err);
+		}
 	}
 );
+
 
 router.post(
 	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
@@ -167,6 +180,7 @@ router.post(
 	middleware.loadRelationshipTypes,
 	async (req, res, next) => {
 		const {WorkType} = req.app.locals.orm;
+    try {
 		const entity = await utils.parseInitialState(req, 'work');
 		if (entity.workSection?.type) {
 			entity.workSection.type = await utils.getIdByField(WorkType, 'label', entity.workSection.type);
@@ -174,26 +188,22 @@ router.post(
 		if (entity.workSection) {
 			entity.workSection = await utils.parseLanguages(entity.workSection, req.app.locals.orm);
 		}
-		const propsPromise = generateEntityProps(
+		const props = await generateEntityProps(
 			'work', req, res, {}, () => entity
 		);
-
-		function render(props) {
 			const editorMarkup = entityEditorMarkup(props);
 			const {markup} = editorMarkup;
 			const updatedProps = editorMarkup.props;
-
-			return res.send(target({
+      		res.send(target({
 				markup,
 				props: escapeProps(updatedProps),
 				script: '/js/entity-editor.js',
 				title: props.heading
 			}));
-		}
-		makePromiseFromObject(propsPromise)
-			.then(render)
-			.catch(next);
-	}
+		} catch (err) {
+				next(err);
+			}
+}
 );
 
 router.post('/create/handler', auth.isAuthenticatedForHandler,
