@@ -209,7 +209,7 @@ router.get('/:bbid', middleware.loadEntityRelationships, async (req, res, next) 
 		await entityRoutes.displayEntity(req, res);
 	}
 	catch (err) {
-		next(err);
+		log.debug(err);
 	}
 });
 

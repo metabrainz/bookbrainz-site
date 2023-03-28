@@ -168,7 +168,7 @@ router.get(
 			await render(props);
 		}
 		catch (err) {
-			next(err);
+			log.debug(err);
 		}
 	}
 );
@@ -202,7 +202,7 @@ router.post(
 			}));
 		}
 		catch (err) {
-			next(err);
+			log.debug(err);
 		}
 	}
 );
