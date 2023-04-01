@@ -194,19 +194,17 @@ class NameSection extends React.Component {
 		const warnIfExists = !_.isEmpty(exactMatches);
 		const languageOption = languageOptionsForDisplay.filter((el) => el.value === languageValue);
 		const lgCol = {offset: 3, span: 6};
-		if (isUnifiedForm) {
-			lgCol.offset = 0;
-		}
 		const duplicateSuggestions = !warnIfExists &&
-		!_.isEmpty(searchResults) &&
-		<Row>
-			<Col lg={lgCol}>
-				If the {_.startCase(entityType)} you want to add appears in the results
-				below, click on it to inspect it before adding a possible duplicate.<br/>
-				<small>Ctrl/Cmd + click to open in a new tab</small>
-				<SearchResults condensed results={searchResults}/>
-			</Col>
-		</Row>;
+			!_.isEmpty(searchResults) &&
+
+			<Row>
+				<Col lg={lgCol}>
+					If the {_.startCase(entityType)} you want to add appears in the results
+					below, click on it to inspect it before adding a possible duplicate.<br/>
+					<small>Ctrl/Cmd + click to open in a new tab</small>
+					<SearchResults condensed results={searchResults}/>
+				</Col>
+			</Row>;
 		const duplicateAlert = this.renderDuplicateAlert(warnIfExists, disambiguationDefaultValue, exactMatches, entityType, lgCol);
 		const heading = <h2>{`What is the ${_.startCase(entityType)} called?`}</h2>;
 		return (
@@ -325,10 +323,10 @@ function mapStateToProps(rootState, {isUnifiedForm, setDefault}) {
 	const state = rootState.get('nameSection');
 	const editionSectionState = rootState.get('editionSection');
 	const searchForExistingEditionGroup = Boolean(editionSectionState) &&
-	(
-		!editionSectionState.get('editionGroup') ||
-		editionSectionState.get('editionGroupRequired')
-	);
+		(
+			!editionSectionState.get('editionGroup') ||
+			editionSectionState.get('editionGroupRequired')
+		);
 	// to prevent double double state updates on action caused by modal
 	if (isUnifiedForm && setDefault) {
 		return {

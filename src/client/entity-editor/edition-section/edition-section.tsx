@@ -276,10 +276,6 @@ function EditionSection({
 		offset: 3,
 		span: 3
 	};
-	if (isUnifiedForm) {
-		colSpan.offset = 0;
-		shortColSpan.offset = 0;
-	}
 	return (
 		<div>
 			{headingTag}
@@ -292,9 +288,9 @@ function EditionSection({
 			<Row className="margin-bottom-3">
 				{
 					showAutoCreateEditionGroupMessage ?
-						<Col lg={{offset: isUnifiedForm || showMatchingEditionGroups ? 0 : 3, span: 6}}>
-							<Alert variant="success">
-								<p>A new Edition Group with the same name will be created automatically.</p>
+						 <Col lg={{offset: 3, span: 6}}>
+						   <Alert variant="success">
+								<p className='h5'>A new Edition Group with the same name will be created automatically.</p>
 								<br/>
 								<Button
 									block

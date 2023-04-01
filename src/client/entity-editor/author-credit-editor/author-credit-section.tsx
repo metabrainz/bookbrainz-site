@@ -113,9 +113,6 @@ function AuthorCreditSection({
 		</Tooltip>
 	);
 	let resCol:any = {md: {offset: 3, span: 6}};
-	if (isUnifiedForm || isLeftAlign) {
-		resCol = {lg: {offset: 0, span: 6}};
-	}
 	const onChangeHandler = React.useCallback((value, action) => {
 		const authorId = _get(authorCreditEditor, 'n0.author.id', null);
 		if (action && ['clear', 'pop-value', 'select-option'].includes(action.action) && authorId) {

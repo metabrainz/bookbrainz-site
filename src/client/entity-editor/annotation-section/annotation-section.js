@@ -57,9 +57,6 @@ function AnnotationSection({
 		</Tooltip>
 	);
 	const lgCol = {offset: 3, span: 6};
-	if (isUnifiedForm) {
-		lgCol.offset = 0;
-	}
 	const heading = <h2> Annotation</h2>;
 	return (
 		<div>

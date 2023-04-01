@@ -175,9 +175,6 @@ function AuthorSection({
 	const {isValid: isValidDod, errorMessage: dodError} = validateAuthorSectionEndDate(beginDateValue, endDateValue, currentAuthorType.label);
 	const heading = <h2>What else do you know about the Author?</h2>;
 	const lgCol = {offset: 3, span: 6};
-	if (isUnifiedForm) {
-		lgCol.offset = 0;
-	}
 	return (
 		<div>
 			{!isUnifiedForm && heading}
