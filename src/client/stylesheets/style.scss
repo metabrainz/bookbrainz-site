@@ -31,7 +31,7 @@ $disabled-color: lighten($disabled-bg,15%);
 @import "./external-services.scss";
 
 .navbar.BookBrainz {
-	background: rgba(255, 255, 255, 1);
+	background:#F9F6F5;
 	margin-bottom: 0px;
 	padding-right: 0px;
 	.navbar-nav {
@@ -407,6 +407,7 @@ ul.inline-aliases {
 hr.thin {
 	margin-top: 10px;
     margin-bottom: 10px;
+	height: 22px;
 }
 hr.wide {
 	margin-top: 40px;
@@ -589,6 +590,9 @@ hr.wide {
 	margin-top: 8px;
 }
 
+.collection-table{
+	width: 14px;
+}
 .collection-page-buttons {
     text-align: right;
 }
@@ -737,6 +741,7 @@ ul {
 .uf-main{
 	padding: 0.6rem;
 }
+
 .uf-tab{
 	border: 1px #dfdfdf solid;
 	h4{
@@ -750,6 +755,7 @@ ul {
 		padding: 1rem;	
 	}
 }
+
 .uf-tab-header{
 	padding: 0.6rem 0 0 0.6rem;
 	margin-bottom: 1rem;

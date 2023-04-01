@@ -79,9 +79,9 @@ function EditionGroupSection({
 	const tooltip = <Tooltip>Physical format of the Edition Group</Tooltip>;
 	const heading = <h2>What else do you know about the Edition Group?</h2>;
 	const lgCol = {offset: 3, span: 6};
-	if (isUnifiedForm) {
-		lgCol.offset = 0;
-	}
+	  if (isUnifiedForm) {
+	 	lgCol.offset = 3;
+	  }
 	return (
 		<div>
 			{!isUnifiedForm && heading}

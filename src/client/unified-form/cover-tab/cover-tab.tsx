@@ -14,6 +14,7 @@ import {updatePublisher} from '../../entity-editor/edition-section/actions';
 
 
 export function CoverTab(props:CoverProps) {
+	const lgCol = { offset: 3, span: 6 };
 	const {publisherValue: publishers, onPublisherChange, identifierEditorVisible,
 		onClearPublisher, handleClearPublishers, modalIsOpen, ...rest} = props;
 	const publisherValue:EntitySelect[] = Object.values(convertMapToObject(publishers ?? {}));
@@ -30,10 +31,11 @@ export function CoverTab(props:CoverProps) {
 	}, []);
 	return (
 		<div>
+			<h2 className='mt-1'>What is the Book called?</h2>
 			<NameSection copyLanguages setDefault={modalIsOpen} {...rest}/>
 			<AuthorCreditSection type="edition" {...rest}/>
 			<Row>
-				<Col lg={{offset: 0, span: 6}}>
+				<Col lg={{offset: 3, span: 6}}>
 					<SearchEntityCreate
 						isMulti
 						label="Publisher"
@@ -46,13 +48,14 @@ export function CoverTab(props:CoverProps) {
 			</Row>
 			<Row>
 
-				<Col lg={{offset: 0, span: 6}}>
+				<Col lg={{offset: 3, span: 6}}>
 					<ISBNField/>
 				</Col>
 			</Row>
 
 			<ButtonBar {...rest}/>
 			<IdentifierEditor show={identifierEditorVisible} {...rest}/>
+			
 		</div>
 
 		 );

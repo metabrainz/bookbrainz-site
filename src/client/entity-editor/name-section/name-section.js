@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Alert, Col, ListGroup, Row} from 'react-bootstrap';
-import {UPDATE_WARN_IF_EDITION_GROUP_EXISTS, addLanguage} from '../edition-section/actions';
+import { Alert, Col, ListGroup, Row } from 'react-bootstrap';
+import { UPDATE_WARN_IF_EDITION_GROUP_EXISTS, addLanguage } from '../edition-section/actions';
 import {
 	checkIfNameExists,
 	debouncedUpdateDisambiguationField,
@@ -26,7 +26,7 @@ import {
 	searchName,
 	updateLanguageField
 } from './actions';
-import {isAliasEmpty, isRequiredDisambiguationEmpty} from '../helpers';
+import { isAliasEmpty, isRequiredDisambiguationEmpty } from '../helpers';
 import {
 	validateNameSectionDisambiguation,
 	validateNameSectionLanguage,
@@ -43,10 +43,10 @@ import React from 'react';
 import SearchResults from '../../components/pages/parts/search-results';
 import SortNameField from '../common/sort-name-field';
 import _ from 'lodash';
-import {connect} from 'react-redux';
-import {convertMapToObject} from '../../helpers/utils';
-import {entityTypeProperty} from '../../helpers/react-validators';
-import {getEntityDisambiguation} from '../../helpers/entity';
+import { connect } from 'react-redux';
+import { convertMapToObject } from '../../helpers/utils';
+import { entityTypeProperty } from '../../helpers/react-validators';
+import { getEntityDisambiguation } from '../../helpers/entity';
 import makeImmutable from '../common/make-immutable';
 
 
@@ -96,12 +96,12 @@ class NameSection extends React.Component {
 	*/
 	componentDidMount() {
 		if (this.props.action !== 'edit' && !_.isNil(this.nameInputRef)) {
-			this.handleNameChange({target: {value: this.nameInputRef.value}});
+			this.handleNameChange({ target: { value: this.nameInputRef.value } });
 		}
 	}
 
 	componentDidUpdate(prevProps) {
-		const {nameValue, searchForExistingEditionGroup} = this.props;
+		const { nameValue, searchForExistingEditionGroup } = this.props;
 		if (prevProps.searchForExistingEditionGroup === searchForExistingEditionGroup ||
 			searchForExistingEditionGroup === false) {
 			return;
@@ -141,26 +141,26 @@ class NameSection extends React.Component {
 					disambiguationDefaultValue
 				) ?
 					<Alert variant="warning">
-					We found the following&nbsp;
+						We found the following&nbsp;
 						{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} with
-					exactly the same name or alias:
-						<br/><small className="text-muted">Click on a name to open it (Ctrl/Cmd + click to open in a new tab)</small>
+						exactly the same name or alias:
+						<br /><small className="text-muted">Click on a name to open it (Ctrl/Cmd + click to open in a new tab)</small>
 						<ListGroup activeKey={null} className="margin-top-1 margin-bottom-1">
 							{exactMatches.map((match) =>
-								(
-									<ListGroup.Item
-										action
-										href={`/${_.kebabCase(entityType)}/${match.bbid}`}
-										key={`${match.bbid}`}
-										rel="noopener noreferrer" target="_blank"
-										variant="warning"
-									>
-										{match.defaultAlias.name} {getEntityDisambiguation(match)}
-									</ListGroup.Item>
-								))}
+							(
+								<ListGroup.Item
+									action
+									href={`/${_.kebabCase(entityType)}/${match.bbid}`}
+									key={`${match.bbid}`}
+									rel="noopener noreferrer" target="_blank"
+									variant="warning"
+								>
+									{match.defaultAlias.name} {getEntityDisambiguation(match)}
+								</ListGroup.Item>
+							))}
 						</ListGroup>
-					If you are sure your entry is different, please fill the
-					disambiguation field below to help us differentiate between them.
+						If you are sure your entry is different, please fill the
+						disambiguation field below to help us differentiate between them.
 					</Alert> : null
 				}
 			</Col>
@@ -193,20 +193,18 @@ class NameSection extends React.Component {
 
 		const warnIfExists = !_.isEmpty(exactMatches);
 		const languageOption = languageOptionsForDisplay.filter((el) => el.value === languageValue);
-		const lgCol = {offset: 3, span: 6};
-		if (isUnifiedForm) {
-			lgCol.offset = 0;
-		}
+		const lgCol = { offset: 3, span: 6 };
 		const duplicateSuggestions = !warnIfExists &&
-		!_.isEmpty(searchResults) &&
-		<Row>
-			<Col lg={lgCol}>
-				If the {_.startCase(entityType)} you want to add appears in the results
-				below, click on it to inspect it before adding a possible duplicate.<br/>
-				<small>Ctrl/Cmd + click to open in a new tab</small>
-				<SearchResults condensed results={searchResults}/>
-			</Col>
-		</Row>;
+			!_.isEmpty(searchResults) &&
+
+			<Row>
+				<Col lg={lgCol}>
+					If the {_.startCase(entityType)} you want to add appears in the results
+					below, click on it to inspect it before adding a possible duplicate.<br />
+					<small>Ctrl/Cmd + click to open in a new tab</small>
+					<SearchResults condensed results={searchResults} />
+				</Col>
+			</Row>;
 		const duplicateAlert = this.renderDuplicateAlert(warnIfExists, disambiguationDefaultValue, exactMatches, entityType, lgCol);
 		const heading = <h2>{`What is the ${_.startCase(entityType)} called?`}</h2>;
 		return (
@@ -321,14 +319,14 @@ NameSection.defaultProps = {
 };
 
 
-function mapStateToProps(rootState, {isUnifiedForm, setDefault}) {
+function mapStateToProps(rootState, { isUnifiedForm, setDefault }) {
 	const state = rootState.get('nameSection');
 	const editionSectionState = rootState.get('editionSection');
 	const searchForExistingEditionGroup = Boolean(editionSectionState) &&
-	(
-		!editionSectionState.get('editionGroup') ||
-		editionSectionState.get('editionGroupRequired')
-	);
+		(
+			!editionSectionState.get('editionGroup') ||
+			editionSectionState.get('editionGroupRequired')
+		);
 	// to prevent double double state updates on action caused by modal
 	if (isUnifiedForm && setDefault) {
 		return {
@@ -351,7 +349,7 @@ function mapStateToProps(rootState, {isUnifiedForm, setDefault}) {
 	};
 }
 
-function mapDispatchToProps(dispatch, {entity, entityType, copyLanguages}) {
+function mapDispatchToProps(dispatch, { entity, entityType, copyLanguages }) {
 	const entityBBID = entity && entity.bbid;
 	return {
 		onDisambiguationChange: (event) =>

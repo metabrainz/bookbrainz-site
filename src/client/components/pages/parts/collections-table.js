@@ -130,8 +130,8 @@ class CollectionsTable extends React.Component {
 								<tr>
 									<th className="col-md-2">Name</th>
 									<th className="col-md-4">Description</th>
-									<th className="col-md-2">Entity Type</th>
-									<th className="col-md-2">Entities</th>
+									<th className="collection-table">Entity Type</th>
+									<th className="collection-table">Entities</th>
 									{
 										showPrivacy ?
 											<th className="col-md-2">Privacy</th> : null
@@ -147,7 +147,7 @@ class CollectionsTable extends React.Component {
 									}
 									{
 										showLastModified ?
-											<th className="col-md-2">Last Modified</th> : null
+											<th className="collection-table">Last Modified</th> : null
 									}
 								</tr>
 							</thead>
