@@ -29,7 +29,7 @@ function EntityRelatedCollections({collections}) {
 		<Row>
 			<Col>
 				<h2>Related Collections</h2>
-				{collections &&
+				{collections && collections.length > 0 ? (
 				<ul className="list-unstyled">
 					{collections.map((collection) => (
 						<li key={collection.id}>
@@ -38,6 +38,9 @@ function EntityRelatedCollections({collections}) {
 						</li>
 					))}
 				</ul>
+				) : (
+					<p class="text-muted"><b>No collections found.</b> Click the <b>"Add to collection"</b> button below to add it to your existing or newer collections. </p>
+				)
 				}
 			</Col>
 		</Row>

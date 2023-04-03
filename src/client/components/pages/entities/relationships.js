@@ -22,10 +22,13 @@ import Relationship from '../../../entity-editor/relationship-editor/relationshi
 
 
 function EntityRelationships({contextEntity, relationships}) {
+	const editLink = typeof window !== 'undefined' ? `${window.location.pathname}/edit` : '';
+
 	return (
 		<div>
 			<h2>Relationships</h2>
-			{relationships &&
+			{relationships && relationships.length > 0 ?(
+
 			<ul className="list-unstyled">
 				{relationships.map((relationship) => (
 					<li
@@ -43,7 +46,9 @@ function EntityRelationships({contextEntity, relationships}) {
 					</li>
 				))}
 			</ul>
-			}
+			) : (
+				<p class="text-muted"> <b>No relationships found.</b> Click the <a href={editLink}>"Edit"</a> button to create a new relationship. </p>
+			)}
 		</div>
 	);
 }
