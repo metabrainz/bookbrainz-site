@@ -399,7 +399,7 @@ export async function getConsecutiveDaysWithEdits(orm, editorId, days) {
 	const rawSql = `SELECT DATE_PART('day', CURRENT_DATE - (SELECT MAX(dt_valid) FROM \
 		( \
 		SELECT dt_valid, dt FROM \
-			generate_series(CURRENT_DATE - 29, CURRENT_DATE, '1 day') AS valid_dates(dt_valid) \
+			generate_series(CURRENT_DATE - ${days}, CURRENT_DATE, '1 day') AS valid_dates(dt_valid) \
 		LEFT JOIN \
 			(SELECT DISTINCT created_at::date AS dt from bookbrainz.revision \
 			WHERE author_id=${editorId} \
