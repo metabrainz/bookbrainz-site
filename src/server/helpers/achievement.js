@@ -23,7 +23,6 @@
 
 import * as error from '../../common/helpers/error';
 
-import {differenceInCalendarDays, parseISO} from 'date-fns';
 import {flattenDeep, isNil} from 'lodash';
 import log from 'log';
 
