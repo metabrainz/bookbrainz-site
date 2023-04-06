@@ -18,74 +18,107 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
-
-import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Col, Container, Row} = bootstrap;
-
-function Footer(props) {
-	const {repositoryUrl, siteRevision} = props;
-
+function Footer() {
 	return (
-		<footer className="footer">
-			<Container fluid>
-				<Row>
-					<Col xs={4}>
-						<small>{'Tested with '}
-							<a
-								href="https://www.browserstack.com/"
-								rel="noopener noreferrer"
-								target="_blank"
-							>
-								<img
-									alt="BrowserStack Logo"
-									height="25"
-									src="/images/BrowserStack.png"
-								/>
-							</a>
-						</small>
-					</Col>
-					<Col className="text-center" xs={4}>
-						<small>Cover image by{' '}
-							<a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">
-								Stewart Butterfield
-							</a> (
-							<a href="https://creativecommons.org/licenses/by/2.0/deed.en">
-								CC-BY-2.0
-							</a>)
-						</small>
-					</Col>
-					<Col className="text-right" xs={4}>
-						<small>
-							<a href="/privacy">
-								Privacy & Terms
-							</a>
-						</small>
-					</Col>
-				</Row>
-				<div className="text-center">
-					<small>
-						Alpha Software —{' '}
-						<a href={`${repositoryUrl}tree/${siteRevision}`}>
-							{siteRevision}
-						</a> —&nbsp;
-						<a href="https://tickets.metabrainz.org/projects/BB/issues/">
-							Report a Bug
-						</a>
-					</small>
+		 <section className="section-footer">
+			<div className="container">
+				<div className="row">
+					<div className="col-sm-12 col-md-6">
+						<h3>
+							<img alt="BookBrainz" src="/images/BookBrainz_logo.svg" width="180"/>
+						</h3>
+						<br/>
+						<p className="color-gray">
+							BookBrainz is a project to create an online database
+							of information about every single book, magazine, journal
+							and other publication ever written.
+						</p>
+						<ul className="list-unstyled">
+							<li className="color-a">
+								<span className="color-gray">Development IRC: </span> <a href="https://kiwiirc.com/nextclient/irc.libera.chat/?#metabrainz" rel="noopener noreferrer" target="_blank" > #metabrainz</a>
+							</li>
+							<li className="color-a">
+								<span className="color-gray">Discussion IRC: </span> <a href="https://kiwiirc.com/nextclient/irc.libera.chat/?#bookbrainz" rel="noopener noreferrer" target="_blank" > #bookbrainz</a>
+							</li>
+							<li className="color-a" >
+								<span className="color-gray">Email: </span> <a href="mailto:support@metabrainz.org">support@metabrainz.org </a>
+							</li>
+						</ul>
+					</div>
+					<div className="col-sm-12 col-md-3">
+						<h3 className="w-title-a text-brand">Useful Links</h3>
+						<ul className="list-unstyled">
+							<li className="item-list-a">
+								<img height="18" src="/images/icons/angle_double_right_icon.svg" width="18"/> <a href="https://metabrainz.org/donate" rel="noopener noreferrer" target="_blank" >Donate</a>
+							</li>
+							<li className="item-list-a">
+								<img height="18" src="/images/icons/angle_double_right_icon.svg" width="18"/> <a href="https://wiki.musicbrainz.org/Main_Page" rel="noopener noreferrer" target="_blank" >Wiki</a>
+							</li>
+							<li className="item-list-a">
+								<img height="18" src="/images/icons/angle_double_right_icon.svg" width="18"/> <a href="https://community.metabrainz.org/" rel="noopener noreferrer" target="_blank" >Community</a>
+							</li>
+							<li className="item-list-a">
+								<img height="18" src="/images/icons/angle_double_right_icon.svg" width="18"/> <a href="https://blog.metabrainz.org/" rel="noopener noreferrer" target="_blank" >Blog</a>
+							</li>
+							<li className="item-list-a">
+								<img height="18" src="/images/icons/angle_double_right_icon.svg" width="18"/> <a href="https://www.redbubble.com/people/metabrainz/shop" rel="noopener noreferrer" target="_blank" >Shop</a>
+							</li>
+							<li className="item-list-a">
+								<img height="18" src="/images/icons/angle_double_right_icon.svg" width="18"/> <a href="https://metabrainz.org/" rel="noopener noreferrer" target="_blank" >MetaBrainz</a>
+							</li>
+
+						</ul>
+					</div>
+					<div className="col-sm-12 col-md-3">
+						<h3 className="w-title-a text-brand">Fellow Projects</h3>
+						<ul className="list-unstyled">
+							<li className="item-list-a">
+								 <img height="18" src="/images/icons/angle_double_right_icon.svg" width="18"/> <img alt="image" height="24" src="/images/meb-icons/MusicBrainz.svg" width="24"/> <a href="https://musicbrainz.org/" rel="noopener noreferrer" target="_blank" >MusicBrainz</a>
+							</li>
+							<li className="item-list-a">
+								 <img height="18" src="/images/icons/angle_double_right_icon.svg" width="18"/> <img alt="image" height="24" src="/images/meb-icons/ListenBrainz.svg" width="24"/> <a href="https://listenbrainz.org/" rel="noopener noreferrer" target="_blank" >ListenBrainz</a>
+							</li>
+							<li className="item-list-a">
+								<img height="18" src="/images/icons/angle_double_right_icon.svg" width="18"/> <img alt="image" height="24" src="/images/meb-icons/CritiqueBrainz.svg" width="24"/> <a href="https://critiquebrainz.org/" rel="noopener noreferrer" target="_blank" >CritiqueBrainz</a>
+							</li>
+							<li className="item-list-a">
+								<img height="18" src="/images/icons/angle_double_right_icon.svg" width="18"/> <img alt="image" height="24" src="/images/meb-icons/Picard.svg" width="24"/> <a href="https://picard.musicbrainz.org/" rel="noopener noreferrer" target="_blank" >Picard</a>
+							</li>
+							<li className="item-list-a">
+								<img height="18" src="/images/icons/angle_double_right_icon.svg" width="18"/> <img alt="image" height="24" src="/images/meb-icons/AcousticBrainz.svg" width="24"/> <a href="https://acousticbrainz.org/" rel="noopener noreferrer" target="_blank" >AcousticBrainz</a>
+							</li>
+							<li className="item-list-a">
+								<img height="18" src="/images/icons/angle_double_right_icon.svg" width="18"/> <img alt="image" height="24" src="/images/meb-icons/CoverArtArchive.svg" width="24"/> <a href="https://coverartarchive.org" rel="noopener noreferrer" target="_blank" >Cover Art Archive</a>
+							</li>
+						</ul>
+					</div>
 				</div>
-			</Container>
-		</footer>
+				<div className="row center-p">
+					<div className="col-md-3 d-none d-md-block">
+						<p className="color-gray section-line">
+					OSS Geek?  <a href="https://github.com/metabrainz/bookbrainz-site" rel="noopener noreferrer" target="_blank" > <span className="color-a"> Contribute Here </span> </a>
+						</p>
+					</div>
+					<div className="col-md-6">
+						<p className="section-line">
+					Brought to you by
+							<img alt="image" height="30" src="/images/meb-icons/MetaBrainz.svg" width="30"/>
+							<span className="color-a"> MetaBrainz Foundation </span>
+						</p>
+					</div>
+					<div className="col-md-3 d-none d-md-block">
+						<p className="color-gray section-line">
+					Found an Issue?
+							<a href="https://tickets.metabrainz.org/" rel="noopener noreferrer" target="_blank" > <span className="color-a"> Report Here </span></a>
+						</p>
+					</div>
+				</div>
+			</div>
+		 </section>
 	);
 }
-
-Footer.displayName = 'Footer';
-Footer.propTypes = {
-	repositoryUrl: PropTypes.string.isRequired,
-	siteRevision: PropTypes.string.isRequired
-};
 
 export default Footer;
