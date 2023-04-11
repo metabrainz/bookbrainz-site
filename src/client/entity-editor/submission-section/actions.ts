@@ -17,7 +17,7 @@
  */
 
 
-import {EntityTypeString} from 'bookbrainz-data/lib/func/types';
+import {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import type {Map} from 'immutable';
 import _ from 'lodash';
 import {filterObject} from '../../../common/helpers/utils';
