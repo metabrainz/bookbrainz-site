@@ -31,6 +31,7 @@ import {getAcceptedLanguageCodes} from './i18n';
 import {getRelationshipTargetBBIDByTypeId} from '../../client/helpers/entity';
 import {getReviewsFromCB} from './critiquebrainz';
 import {getWikidataId} from '../../common/helpers/wikimedia';
+import log from 'log';
 
 
 interface $Request extends Request {
@@ -217,13 +218,18 @@ export async function loadWikipediaExtract(req: $Request, res: $Response, next: 
 	const aliasLanguages = commonUtils.getAliasLanguageCodes(entity);
 	const preferredLanguages = browserLanguages.concat('en', aliasLanguages);
 
-	// only pre-load Wikipedia extracts which are already cached
-	const article = await selectWikipediaPage(wikidataId, {forceCache: true, preferredLanguages});
-	if (article) {
-		const extract = await getWikipediaExtract(article, {forceCache: true});
-		if (extract) {
-			res.locals.wikipediaExtract = {article, ...extract};
+	try {
+		// only pre-load Wikipedia extracts which are already cached
+		const article = await selectWikipediaPage(wikidataId, {forceCache: true, preferredLanguages});
+		if (article) {
+			const extract = await getWikipediaExtract(article, {forceCache: true});
+			if (extract) {
+				res.locals.wikipediaExtract = {article, ...extract};
+			}
 		}
+	}
+	catch (err) {
+		log.warning(`Failed to pre-load Wikipedia extract for ${wikidataId}: ${err.message}`);
 	}
 
 	return next();

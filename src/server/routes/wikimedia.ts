@@ -36,8 +36,10 @@ router.get('/wikidata/:id/wikipedia-extract', async (req, res) => {
 	const queryLanguages = parseQuery(req.url).getAll('language');
 	// try to use the user's browser languages, fallback to queried languages and English
 	const preferredLanguages = browserLanguages.concat(queryLanguages, 'en');
+
+	const wikidataId = req.params.id;
 	try {
-		const article = await selectWikipediaPage(req.params.id, {preferredLanguages});
+		const article = await selectWikipediaPage(wikidataId, {preferredLanguages});
 		if (article) {
 			const extract = await getWikipediaExtract(article);
 			res.json({article, ...extract});
@@ -46,8 +48,8 @@ router.get('/wikidata/:id/wikipedia-extract', async (req, res) => {
 			res.json({});
 		}
 	}
-	catch (error) {
-		log.warning(error);
+	catch (err) {
+		log.warning(`Failed to load Wikipedia extract for ${wikidataId}: ${err.message}`);
 		res.json({});
 	}
 });
