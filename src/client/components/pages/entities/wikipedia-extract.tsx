@@ -38,7 +38,7 @@ type Props = {
  * @param {string} wikidataId - Wikidata item ID.
  * @param {string[]} preferredLanguages - List of language codes, preference in descending order.
  */
-async function getWikipediaExtractForWikidata(wikidataId: string, preferredLanguages = ['en']) {
+async function getWikipediaExtractForWikidata(wikidataId: string, preferredLanguages: string[] = ['en']) {
 	const apiUrl = new URL(`/wikidata/${wikidataId}/wikipedia-extract`, document.location.href);
 	apiUrl.search = new URLSearchParams(preferredLanguages.map((lang) => ['language', lang])).toString();
 	const response = await fetch(apiUrl);
@@ -66,6 +66,9 @@ class WikipediaExtract extends React.Component<Props, State> {
 				if (result.extract) {
 					this.setState(result);
 				}
+			}).catch((error) => {
+				// eslint-disable-next-line no-console -- no other logger available for browser
+				console.warn('Failed to load Wikipedia extract:', error);
 			});
 		}
 	}
