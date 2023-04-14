@@ -17,15 +17,13 @@
  */
 
 import {Col, Row} from 'react-bootstrap';
+import React, {useEffect, useState} from 'react';
 import {WikipediaArticleExtract, buildWikipediaUrl, getWikidataId} from '../../../../common/helpers/wikimedia';
 import DOMPurify from 'isomorphic-dompurify';
 import type {EntityT} from 'bookbrainz-data/lib/types/entity';
-import React from 'react';
 import {getAliasLanguageCodes} from '../../../../common/helpers/utils';
 import {uniq} from 'lodash';
 
-
-type State = Partial<WikipediaArticleExtract>;
 
 type Props = {
 	entity: EntityT,
@@ -46,53 +44,52 @@ async function getWikipediaExtractForWikidata(wikidataId: string, preferredLangu
 }
 
 
-class WikipediaExtract extends React.Component<Props, State> {
-	constructor(props: Props) {
-		super(props);
-		this.state = props.articleExtract ?? {};
-	}
+function WikipediaExtract({entity, articleExtract}: Props) {
+	const [state, setState] = useState(articleExtract);
 
-	componentDidMount() {
-		if (!this.state.extract) {
-			const wikidataId = getWikidataId(this.props.entity);
+	useEffect(() => {
+		if (!state.extract) {
+			const wikidataId = getWikidataId(entity);
 			if (!wikidataId) {
 				return;
 			}
 
-			const aliasLanguages = getAliasLanguageCodes(this.props.entity);
+			const aliasLanguages = getAliasLanguageCodes(entity);
 			const preferredLanguages = uniq(['en', ...aliasLanguages]);
 
 			getWikipediaExtractForWikidata(wikidataId, preferredLanguages).then((result) => {
 				if (result.extract) {
-					this.setState(result);
+					setState(result);
 				}
 			}).catch((error) => {
 				// eslint-disable-next-line no-console -- no other logger available for browser
 				console.warn('Failed to load Wikipedia extract:', error);
 			});
 		}
-	}
+	}, [entity]);
 
-	render() {
-		const {extract, article} = this.state;
-		const licenseUrl = 'https://creativecommons.org/licenses/by-sa/3.0/';
+	const {extract, article} = state;
+	const licenseUrl = 'https://creativecommons.org/licenses/by-sa/3.0/';
 
-		return extract ? (
-			<Row className="wikipedia-extract">
-				<Col>
-					<h2>Wikipedia</h2>
-					{/* eslint-disable-next-line react/no-danger */}
-					<div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(extract)}}/>
-					<a href={buildWikipediaUrl(article)?.href}>Continue reading at Wikipedia...</a>
-					{' '}
-					<small>
-						Wikipedia content provided under the terms of the <a href={licenseUrl}>Creative Commons BY-SA license</a>
-					</small>
-				</Col>
-			</Row>
-		) : null;
-	}
+	return extract ? (
+		<Row className="wikipedia-extract">
+			<Col>
+				<h2>Wikipedia</h2>
+				{/* eslint-disable-next-line react/no-danger */}
+				<div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(extract)}}/>
+				<a href={buildWikipediaUrl(article)?.href}>Continue reading at Wikipedia...</a>
+				{' '}
+				<small>
+					Wikipedia content provided under the terms of the <a href={licenseUrl}>Creative Commons BY-SA license</a>
+				</small>
+			</Col>
+		</Row>
+	) : null;
 }
+
+WikipediaExtract.defaultProps = {
+	articleExtract: {}
+};
 
 
 export default WikipediaExtract;
