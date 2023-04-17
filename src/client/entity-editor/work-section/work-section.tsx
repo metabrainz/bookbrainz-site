@@ -135,12 +135,12 @@ function WorkSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
+							isClearable
 							classNamePrefix="react-select"
 							instanceId="workType"
 							options={workTypesForDisplay}
 							value={typeOption}
 							onChange={onTypeChange}
-							isClearable={true}
 						/>
 					</Form.Group>
 				</Col>

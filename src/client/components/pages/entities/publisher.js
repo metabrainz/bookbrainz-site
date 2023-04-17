@@ -103,7 +103,7 @@ function PublisherDisplayPage({entity, identifierTypes, user, wikipediaExtract})
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
-				<EditionTable editions={entity.editions} entity={entity}/>
+				<EditionTable showAuthorCreditsColumn editions={entity.editions} entity={entity}/>
 				<EntityLinks
 					entity={entity}
 					identifierTypes={identifierTypes}

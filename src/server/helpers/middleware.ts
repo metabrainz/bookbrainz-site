@@ -47,11 +47,9 @@ function makeLoader(modelName, propName, sortFunc?, relations = []) {
 			const resultsSerial = results.toJSON();
 			res.locals[propName] =
 				sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
-			
-			
-			}
+		}
 		catch (err) {
-			next(err);
+			return next(err);
 		}
 		next();
 		return null;
@@ -194,12 +192,11 @@ export async function loadEntityRelationships(req: $Request, res: $Response, nex
 			});
 
 		await addRelationships(entity, relationshipSet, orm);
-
-		
-	} catch (err) {
-		next(err);
 	}
-	next();
+	catch (err) {
+		return next(err);
+	}
+	return next();
 }
 
 export async function loadWikipediaExtract(req: $Request, res: $Response, next: NextFunction) {
