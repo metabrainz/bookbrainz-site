@@ -200,8 +200,7 @@ router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadSeriesIt
 	middleware.loadWikipediaExtract, (req, res) => {
 		_setSeriesTitle(res);
 		entityRoutes.displayEntity(req, res);
-	}
-);
+	});
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
 	if (!res.locals.entity.dataId) {
