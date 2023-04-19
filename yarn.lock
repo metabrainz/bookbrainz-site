@@ -30,17 +30,17 @@
   resolved "https://registry.yarnpkg.com/@apidevtools/swagger-methods/-/swagger-methods-3.0.2.tgz#b789a362e055b0340d04712eafe7027ddc1ac267"
   integrity sha512-QAkD5kK2b1WfjDS/UQn/qQkbwF31uqRjPTrsCs5ZG9BQGAkjwvqGFjjPqAuzac/IYzpPtRzjCP1WrTuAIjMrXg==
 
-"@apidevtools/swagger-parser@10.0.2":
-  version "10.0.2"
-  resolved "https://registry.yarnpkg.com/@apidevtools/swagger-parser/-/swagger-parser-10.0.2.tgz#f4145afb7c3a3bafe0376f003b5c3bdeae17a952"
-  integrity sha512-JFxcEyp8RlNHgBCE98nwuTkZT6eNFPc1aosWV6wPcQph72TSEEu1k3baJD4/x1qznU+JiDdz8F5pTwabZh+Dhg==
+"@apidevtools/swagger-parser@10.0.3":
+  version "10.0.3"
+  resolved "https://registry.yarnpkg.com/@apidevtools/swagger-parser/-/swagger-parser-10.0.3.tgz#32057ae99487872c4dd96b314a1ab4b95d89eaf5"
+  integrity sha512-sNiLY51vZOmSPFZA5TF35KZ2HbgYklQnTSDnkghamzLb3EkNtcQnrBQEj5AOCxHpTtXpqMCRM1CrmV2rG6nw4g==
   dependencies:
     "@apidevtools/json-schema-ref-parser" "^9.0.6"
     "@apidevtools/openapi-schemas" "^2.0.4"
     "@apidevtools/swagger-methods" "^3.0.2"
     "@jsdevtools/ono" "^7.1.3"
     call-me-maybe "^1.0.1"
-    z-schema "^4.2.3"
+    z-schema "^5.0.1"
 
 "@babel/cli@^7.17.6":
   version "7.17.6"
@@ -3093,7 +3093,12 @@ commander@6.2.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-6.2.0.tgz#b990bfb8ac030aedc6d11bc04d1488ffef56db75"
   integrity sha512-zP4jEKbe8SHzKJYQmq8Y9gYjtO/POJLgIdKgV7B9qNmABVFVc+ctqSX6iXh4mCpJfRBOabiZ2YKPg8ciDw6C+Q==
 
-commander@^2.19.0, commander@^2.20.0, commander@^2.7.1:
+commander@^10.0.0:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-10.0.1.tgz#881ee46b4f77d1c1dccc5823433aa39b022cbe06"
+  integrity sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==
+
+commander@^2.19.0, commander@^2.20.0:
   version "2.20.3"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
@@ -4728,19 +4733,7 @@ glob@7.1.7:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@^7.0.0, glob@^7.0.3, glob@^7.1.1, glob@^7.1.3:
-  version "7.2.0"
-  resolved "https://registry.yarnpkg.com/glob/-/glob-7.2.0.tgz#d15535af7732e02e948f4c41628bd910293f6023"
-  integrity sha512-lmLf6gtyrPq8tTjSmrO94wBeQbFR3HbLHbuyD69wuyQkImp2hWqMGB47OX65FBkPffO641IP9jWa1z4ivqG26Q==
-  dependencies:
-    fs.realpath "^1.0.0"
-    inflight "^1.0.4"
-    inherits "2"
-    minimatch "^3.0.4"
-    once "^1.3.0"
-    path-is-absolute "^1.0.0"
-
-glob@^7.1.4:
+glob@^7.0.0, glob@^7.0.3, glob@^7.1.1, glob@^7.1.3, glob@^7.1.4:
   version "7.2.3"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.2.3.tgz#b8df0fb802bbfa8e89bd1d938b4e16578ed44f2b"
   integrity sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==
@@ -8210,24 +8203,24 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-swagger-jsdoc@^6.2.5:
-  version "6.2.5"
-  resolved "https://registry.yarnpkg.com/swagger-jsdoc/-/swagger-jsdoc-6.2.5.tgz#65bffa142276436b2b131255f59a6b55384a0e8e"
-  integrity sha512-l+cdsKS2y+QDhrH1TJSUiE0y9XKuf5xaGSatjf0hR/wjTlMpO8WfubBK9d/nASdbHPMtj9iJZLBH2ogBEhL7Sw==
+swagger-jsdoc@^6.2.8:
+  version "6.2.8"
+  resolved "https://registry.yarnpkg.com/swagger-jsdoc/-/swagger-jsdoc-6.2.8.tgz#6d33d9fb07ff4a7c1564379c52c08989ec7d0256"
+  integrity sha512-VPvil1+JRpmJ55CgAtn8DIcpBs0bL5L3q5bVQvF4tAW/k/9JYSj7dCpaYCAv5rufe0vcCbBRQXGvzpkWjvLklQ==
   dependencies:
     commander "6.2.0"
     doctrine "3.0.0"
     glob "7.1.6"
     lodash.mergewith "^4.6.2"
-    swagger-parser "10.0.2"
+    swagger-parser "^10.0.3"
     yaml "2.0.0-1"
 
-swagger-parser@10.0.2:
-  version "10.0.2"
-  resolved "https://registry.yarnpkg.com/swagger-parser/-/swagger-parser-10.0.2.tgz#d7f18faa09c9c145e938977c9bd6c3435998b667"
-  integrity sha512-9jHkHM+QXyLGFLk1DkXBwV+4HyNm0Za3b8/zk/+mjr8jgOSiqm3FOTHBSDsBjtn9scdL+8eWcHdupp2NLM8tDw==
+swagger-parser@^10.0.3:
+  version "10.0.3"
+  resolved "https://registry.yarnpkg.com/swagger-parser/-/swagger-parser-10.0.3.tgz#04cb01c18c3ac192b41161c77f81e79309135d03"
+  integrity sha512-nF7oMeL4KypldrQhac8RyHerJeGPD1p2xDh900GPvc+Nk7nWP6jX2FcC7WmkinMoAmoO774+AFXcWsW8gMWEIg==
   dependencies:
-    "@apidevtools/swagger-parser" "10.0.2"
+    "@apidevtools/swagger-parser" "10.0.3"
 
 swagger-ui-dist@>=4.11.0:
   version "4.15.5"
@@ -8653,7 +8646,7 @@ v8flags@^3.1.1:
   dependencies:
     homedir-polyfill "^1.0.1"
 
-validator@^13.6.0, validator@^13.7.0:
+validator@^13.7.0:
   version "13.7.0"
   resolved "https://registry.yarnpkg.com/validator/-/validator-13.7.0.tgz#4f9658ba13ba8f3d82ee881d3516489ea85c0857"
   integrity sha512-nYXQLCBkpJ8X6ltALua9dRrZDHVYxjJ1wgskNt1lH9fzGjs3tgojGSCBjmEPwkWS1y29+DrizMTW19Pr9uB2nw==
@@ -9061,13 +9054,13 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-z-schema@^4.2.3:
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/z-schema/-/z-schema-4.2.4.tgz#73102a49512179b12a8ec50b1daa676b984da6e4"
-  integrity sha512-YvBeW5RGNeNzKOUJs3rTL4+9rpcvHXt5I051FJbOcitV8bl40pEfcG0Q+dWSwS0/BIYrMZ/9HHoqLllMkFhD0w==
+z-schema@^5.0.1:
+  version "5.0.6"
+  resolved "https://registry.yarnpkg.com/z-schema/-/z-schema-5.0.6.tgz#46d6a687b15e4a4369e18d6cb1c7b8618fc256c5"
+  integrity sha512-+XR1GhnWklYdfr8YaZv/iu+vY+ux7V5DS5zH1DQf6bO5ufrt/5cgNhVO5qyhsjFXvsqQb/f08DWE9b6uPscyAg==
   dependencies:
     lodash.get "^4.4.2"
     lodash.isequal "^4.5.0"
-    validator "^13.6.0"
+    validator "^13.7.0"
   optionalDependencies:
-    commander "^2.7.1"
+    commander "^10.0.0"
