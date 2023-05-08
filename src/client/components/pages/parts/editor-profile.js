@@ -97,26 +97,26 @@ class EditorProfileTab extends React.Component {
 					}
 				</h2>
 				<dl className="row editor-info">
-					<dt className="col-md-2">MusicBrainz Account</dt>
-					<dd className="col-md-10">
+					<dt style={{width: '16%'}}>MusicBrainz Account</dt>
+					<dd style={{width: '84%'}}>
 						{musicbrainzAccount}
 					</dd>
-					<dt className="col-md-2">Display Name</dt>
-					<dd className="col-md-10">{name}</dd>
-					<dt className="col-md-2">Area</dt>
-					<dd className="col-md-10">{editor.area ? editor.area.name : '?'}</dd>
-					<dt className="col-md-2">Gender</dt>
-					<dd className="col-md-10">{gender ? gender.name : '?'}</dd>
-					<dt className="col-md-2">Type</dt>
-					<dd className="col-md-10">{editor.type.label}</dd>
-					<dt className="col-md-2">Reputation</dt>
-					<dd className="col-md-10">0</dd>
-					<dt className="col-md-2">Joined</dt>
-					<dd className="col-md-10">{createdAtDate}</dd>
-					<dt className="col-md-2">Last login</dt>
-					<dd className="col-md-10">{lastActiveDate}</dd>
-					<dt className="col-md-2">Bio</dt>
-					<dd className="col-md-10">{editor.bio ? editor.bio : '-'}</dd>
+					<dt style={{width: '16%'}}>Display Name</dt>
+					<dd style={{width: '84%'}}>{name}</dd>
+					<dt style={{width: '16%'}}>Area</dt>
+					<dd style={{width: '84%'}}>{editor.area ? editor.area.name : '?'}</dd>
+					<dt style={{width: '16%'}}>Gender</dt>
+					<dd style={{width: '84%'}}>{gender ? gender.name : '?'}</dd>
+					<dt style={{width: '16%'}}>Type</dt>
+					<dd style={{width: '84%'}}>{editor.type.label}</dd>
+					<dt style={{width: '16%'}}>Reputation</dt>
+					<dd style={{width: '84%'}}>0</dd>
+					<dt style={{width: '16%'}}>Joined</dt>
+					<dd style={{width: '84%'}}>{createdAtDate}</dd>
+					<dt style={{width: '16%'}}>Last login</dt>
+					<dd style={{width: '84%'}}>{lastActiveDate}</dd>
+					<dt style={{width: '16%'}}>Bio</dt>
+					<dd style={{width: '84%'}}>{editor.bio ? editor.bio : '-'}</dd>
 				</dl>
 			</div>
 		);
@@ -129,12 +129,12 @@ class EditorProfileTab extends React.Component {
 			<div>
 				<h2>Stats</h2>
 				<dl className="row editor-info">
-					<dt className="col-md-8">Total Revisions</dt>
-					<dd className="col-md-4">{editor.totalRevisions}</dd>
-					<dt className="col-md-8">Revisions Applied</dt>
-					<dd className="col-md-4">{editor.revisionsApplied}</dd>
-					<dt className="col-md-8">Revisions Reverted</dt>
-					<dd className="col-md-4">{editor.revisionsReverted}</dd>
+					<dt style={{width: '67%'}}>Total Revisions</dt>
+					<dd style={{width: '33%'}}>{editor.totalRevisions}</dd>
+					<dt style={{width: '67%'}}>Revisions Applied</dt>
+					<dd style={{width: '33%'}}>{editor.revisionsApplied}</dd>
+					<dt style={{width: '67%'}}>Revisions Reverted</dt>
+					<dd style={{width: '33%'}}>{editor.revisionsReverted}</dd>
 				</dl>
 			</div>
 		);
