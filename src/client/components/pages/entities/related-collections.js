@@ -39,7 +39,7 @@ function EntityRelatedCollections({collections}) {
 					))}
 				</ul>
 				) : (
-					<p class="text-muted"><b>No collections found.</b> Click the <b>"Add to collection"</b> button below to add it to your existing or newer collections. </p>
+					<p className="text-muted"><b>No collections found.</b> Click the <b>"Add to collection"</b> button below to add it to your existing or newer collections. </p>
 				)
 				}
 			</Col>
