@@ -36,6 +36,7 @@ import searchRouter from './routes/search';
 import seriesRouter from './routes/entity/series';
 import statisticsRouter from './routes/statistics';
 import unifiedFormRouter from './routes/unifiedform';
+import wikimediaRouter from './routes/wikimedia';
 import workRouter from './routes/entity/work';
 
 
@@ -44,6 +45,7 @@ function initRootRoutes(app) {
 	app.use('/', authRouter);
 	app.use('/', unifiedFormRouter);
 	app.use('/', reviewsRouter);
+	app.use('/', wikimediaRouter);
 	app.use('/search', searchRouter);
 	app.use('/register', registerRouter);
 	app.use('/revisions', revisionsRouter);
