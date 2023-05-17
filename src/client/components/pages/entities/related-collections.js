@@ -30,17 +30,20 @@ function EntityRelatedCollections({collections}) {
 			<Col>
 				<h2>Related Collections</h2>
 				{collections && collections.length > 0 ? (
-				<ul className="list-unstyled">
-					{collections.map((collection) => (
-						<li key={collection.id}>
-							<a href={`/collection/${collection.id}`}>{collection.name}</a> by {' '}
-							<a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a>
-						</li>
-					))}
-				</ul>
-				) : (
-					<p class="text-muted"><b>No collections found.</b> Click the <b>"Add to collection"</b> button below to add it to your existing or newer collections. </p>
-				)
+					<ul className="list-unstyled">
+						{collections.map((collection) => (
+							<li key={collection.id}>
+								<a href={`/collection/${collection.id}`}>{collection.name}</a> by {' '}
+								<a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a>
+							</li>
+						))}
+					</ul>
+				) :
+					<p className="text-muted">
+						<b>No collections found.</b>
+						Click the <b>&quot;Add to collection&quot;</b>
+						button below to add it to your existing or newer collections.
+					</p>
 				}
 			</Col>
 		</Row>

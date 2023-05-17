@@ -20,38 +20,37 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Relationship from '../../../entity-editor/relationship-editor/relationship';
 
-
 function EntityRelationships({contextEntity, relationships}) {
 	const editLink = typeof window !== 'undefined' ? `${window.location.pathname}/edit` : '';
 
 	return (
 		<div>
 			<h2>Relationships</h2>
-			{relationships && relationships.length > 0 ?(
-
-			<ul className="list-unstyled">
-				{relationships.map((relationship) => (
-					<li
-						key={relationship.id}
-					>
-						<Relationship
-							link
-							attributes={relationship.attributeSet?.relationshipAttributes ?? null}
-							contextEntity={contextEntity}
-							relationshipType={relationship.type}
-							showAttributes={Boolean(relationship.attributeSetId)}
-							sourceEntity={relationship.source}
-							targetEntity={relationship.target}
-						/>
-					</li>
-				))}
-			</ul>
+			{relationships && relationships.length > 0 ? (
+				<ul className="list-unstyled">
+					{relationships.map((relationship) => (
+						<li key={relationship.id}>
+							<Relationship
+								link
+								attributes={relationship.attributeSet?.relationshipAttributes ?? null}
+								contextEntity={contextEntity}
+								relationshipType={relationship.type}
+								showAttributes={Boolean(relationship.attributeSetId)}
+								sourceEntity={relationship.source}
+								targetEntity={relationship.target}
+							/>
+						</li>
+					))}
+				</ul>
 			) : (
-				<p class="text-muted"> <b>No relationships found.</b> Click the <a href={editLink}>"Edit"</a> button to create a new relationship. </p>
+				<p className="text-muted">
+					<b>No relationships found.</b> Click the <a href={editLink}>&quot;Edit&quot;</a> button to create a new relationship.
+				</p>
 			)}
 		</div>
 	);
 }
+
 EntityRelationships.displayName = 'EntityRelationships';
 EntityRelationships.propTypes = {
 	contextEntity: PropTypes.object.isRequired,

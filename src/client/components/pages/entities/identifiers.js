@@ -30,8 +30,8 @@ function EntityIdentifiers({identifiers, identifierTypes}) {
 			{
 
 				identifiers && identifiers.length > 0 ?
-				identifierTypes.sort((a, b) => a.label.localeCompare(b.label)).map((type) => {
-					const identifierValues =
+					identifierTypes.sort((a, b) => a.label.localeCompare(b.label)).map((type) => {
+						const identifierValues =
 						identifiers
 							.filter(
 								(identifier) => identifier.type.id === type.id || identifier.typeId === type.id
@@ -46,16 +46,16 @@ function EntityIdentifiers({identifiers, identifierTypes}) {
 									</dd>
 								)
 							);
-					if (!identifierValues.length) {
-						return null;
-					}
-					return [
-						<dt key={type.id}>{type.label}</dt>,
-						identifierValues
-					];
-				}):
-				<p className="text-muted">
-					<b>No identifiers found.</b> Click the <a href={editLink}>"Edit"</a> button to create a new identifier (e.g. ISBN, Wikidata ID).
+						if (!identifierValues.length) {
+							return null;
+						}
+						return [
+							<dt key={type.id}>{type.label}</dt>,
+							identifierValues
+						];
+					}) :
+					<p className="text-muted">
+						<b>No identifiers found.</b> Click the <a href={editLink}>&quot;Edit&quot;</a> button to create a new identifier (e.g. ISBN, Wikidata ID).
 					</p>
 			}
 		</div>
