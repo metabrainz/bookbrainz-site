@@ -28,6 +28,7 @@ import EntityTitle from './title';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import WikipediaExtract from './wikipedia-extract';
 import WorksTable from './work-table';
 import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons';
 
@@ -106,7 +107,7 @@ EditionAttributes.propTypes = {
 };
 
 
-function EditionDisplayPage({entity, identifierTypes, user}) {
+function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
@@ -168,6 +169,7 @@ function EditionDisplayPage({entity, identifierTypes, user}) {
 					{editionGroupSection}
 				</Col>
 			</Row>
+			<WikipediaExtract articleExtract={wikipediaExtract} entity={entity}/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
@@ -198,10 +200,12 @@ EditionDisplayPage.displayName = 'EditionDisplayPage';
 EditionDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired
+	user: PropTypes.object.isRequired,
+	wikipediaExtract: PropTypes.object
 };
 EditionDisplayPage.defaultProps = {
-	identifierTypes: []
+	identifierTypes: [],
+	wikipediaExtract: {}
 };
 
 export default EditionDisplayPage;

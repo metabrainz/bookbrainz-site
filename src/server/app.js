@@ -24,16 +24,13 @@ import * as error from '../common/helpers/error';
 import * as search from '../common/helpers/search';
 import * as serverErrorHelper from './helpers/error';
 
-import {existsSync, readFileSync} from 'fs';
+import {repositoryUrl, siteRevision, userAgent} from './info';
 
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
-import RedisStore from 'connect-redis';
-import {get as _get} from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
 import compression from 'compression';
 import config from '../common/helpers/config';
-import {createClient} from 'redis';
 import express from 'express';
 import favicon from 'serve-favicon';
 import initInflux from './influx';
@@ -42,7 +39,7 @@ import logger from 'morgan';
 import path from 'path';
 import routes from './routes';
 import serveStatic from 'serve-static';
-import session from 'express-session';
+import session from '../common/helpers/session';
 
 
 // Initialize log-to-stdout  writer
@@ -89,33 +86,7 @@ else {
 }
 app.use(express.static(path.join(rootDir, 'static')));
 
-/* Set up sessions, using Redis in production and default in-memory for testing environment*/
-const sessionOptions = {
-	cookie: {
-		maxAge: _get(config, 'session.maxAge', 2592000000),
-		secure: _get(config, 'session.secure', false)
-	},
-	resave: false,
-	saveUninitialized: false,
-	secret: config.session.secret
-};
-if (process.env.NODE_ENV !== 'test') {
-	const redisHost = _get(config, 'session.redis.host', 'localhost');
-	const redisPort = _get(config, 'session.redis.port', 6379);
-	const redisClient = createClient({
-		url: `redis://${redisHost}:${redisPort}`
-	});
-
-	// eslint-disable-next-line no-console
-	redisClient.connect().catch(redisError => { console.error('Redis error:', redisError); });
-
-	redisClient.on('error', (err) => debug('Error while closing server connections', err));
-	const redisStore = new RedisStore({
-		client: redisClient
-	  });
-	sessionOptions.store = redisStore;
-}
-app.use(session(sessionOptions));
+app.use(session(process.env.NODE_ENV));
 
 
 if (config.influx) {
@@ -130,19 +101,8 @@ const authInitiated = auth.init(app);
 search.init(app.locals.orm, Object.assign({}, config.search));
 
 // Set up constants that will remain valid for the life of the app
-let siteRevision = 'unknown';
-const gitRevisionFilePath = '.git-version';
-if (existsSync(gitRevisionFilePath)) {
-	try {
-		siteRevision = readFileSync(gitRevisionFilePath).toString();
-	}
-	catch (err) {
-		debug(err);
-	}
-}
 debug(`Git revision: ${siteRevision}`);
-
-const repositoryUrl = 'https://github.com/metabrainz/bookbrainz-site/';
+debug('User-Agent:', userAgent);
 
 app.use((req, res, next) => {
 	// Set up globally-used properties

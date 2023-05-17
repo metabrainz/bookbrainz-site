@@ -329,10 +329,12 @@ function _setEditionTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWorkTableAuthors, (req:PassportRequest, res) => {
-	_setEditionTitle(res);
-	entityRoutes.displayEntity(req, res);
-});
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWorkTableAuthors,
+	middleware.loadWikipediaExtract, (req:PassportRequest, res) => {
+		_setEditionTitle(res);
+		entityRoutes.displayEntity(req, res);
+	}
+);
 
 router.get('/:bbid/revisions', (req:PassportRequest, res, next) => {
 	const {EditionRevision} = req.app.locals.orm;

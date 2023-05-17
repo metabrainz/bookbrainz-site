@@ -69,8 +69,8 @@ function Footer(props) {
 				<div className="text-center">
 					<small>
 						Alpha Software —{' '}
-						<a href={`${repositoryUrl}tree/${siteRevision}`}>
-							{siteRevision}
+						<a href={`${repositoryUrl}tree/${siteRevision || 'master'}`}>
+							{siteRevision || 'unknown revision'}
 						</a> —&nbsp;
 						<a href="https://tickets.metabrainz.org/projects/BB/issues/">
 							Report a Bug
