@@ -44,7 +44,7 @@ function EntityRelationships({contextEntity, relationships}) {
 				</ul>
 			) : (
 				<p className="text-muted">
-					<b>No relationships found.</b> Click the <a href={editLink}>&quot;Edit&quot;</a> button to create a new relationship.
+					<b>No relationships.</b> <a href={editLink}>Click here to edit</a> and create new relationships.
 				</p>
 			)}
 		</div>
