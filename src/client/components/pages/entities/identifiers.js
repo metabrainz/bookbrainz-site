@@ -55,7 +55,7 @@ function EntityIdentifiers({identifiers, identifierTypes}) {
 						];
 					}) :
 					<p className="text-muted">
-						<b>No identifiers found.</b> Click the <a href={editLink}>&quot;Edit&quot;</a> button to create a new identifier (e.g. ISBN, Wikidata ID).
+						<b>No identifiers.</b> <a href={editLink}>Click here to edit</a> and add new identifiers (e.g. ISBN, Wikidata ID, etc.).
 					</p>
 			}
 		</div>
