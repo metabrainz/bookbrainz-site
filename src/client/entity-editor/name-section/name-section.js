@@ -84,7 +84,7 @@ class NameSection extends React.Component {
 		super(props);
 		this.updateNameFieldInputRef = this.updateNameFieldInputRef.bind(this);
 		this.handleNameChange = this.handleNameChange.bind(this);
-		this.searchForMatchindEditionGroups = this.searchForMatchindEditionGroups.bind(this);
+		this.searchForMatchingEditionGroups = this.searchForMatchingEditionGroups.bind(this);
 	}
 
 	/*
@@ -106,17 +106,17 @@ class NameSection extends React.Component {
 			searchForExistingEditionGroup === false) {
 			return;
 		}
-		this.searchForMatchindEditionGroups(nameValue);
+		this.searchForMatchingEditionGroups(nameValue);
 	}
 
 	handleNameChange(event) {
 		this.props.onNameChange(event.target.value);
 		this.props.onNameChangeCheckIfExists(event.target.value);
 		this.props.onNameChangeSearchName(event.target.value);
-		this.searchForMatchindEditionGroups(event.target.value);
+		this.searchForMatchingEditionGroups(event.target.value);
 	}
 
-	searchForMatchindEditionGroups(nameValue) {
+	searchForMatchingEditionGroups(nameValue) {
 		const {
 			entityType,
 			onNameChangeCheckIfEditionGroupExists,

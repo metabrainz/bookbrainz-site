@@ -94,7 +94,7 @@ const router = express.Router();
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadEditionGroupTypes,
-	middleware.loadRelationshipTypes, middleware.decodeUrlQueryParams,
+	middleware.loadRelationshipTypes,
 	 async (req, res) => {
 		const markupProps = generateEntityProps(
 			'editionGroup', req, res, {}
@@ -206,7 +206,7 @@ function _setEditionGroupTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
 	_setEditionGroupTitle(res);
 	res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
 	entityRoutes.displayEntity(req, res);

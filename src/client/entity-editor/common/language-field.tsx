@@ -19,10 +19,11 @@
 
 import * as React from 'react';
 import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
-import {OptionProps, components} from 'react-select';
 import AsyncSelect from 'react-select/async';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {OptionProps} from 'react-select/src/components/Option';
 import ValidationLabel from './validation-label';
+import {components} from 'react-select';
 import {convertMapToObject} from '../../helpers/utils';
 import createFilterOptions from 'react-select-fast-filter-options';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';

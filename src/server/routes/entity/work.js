@@ -92,7 +92,7 @@ const router = express.Router();
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes,
-	middleware.loadRelationshipTypes, middleware.decodeUrlQueryParams,
+	middleware.loadRelationshipTypes,
 	(req, res, next) => {
 		const {Author, Edition} = req.app.locals.orm;
 		let relationshipTypeId;
@@ -230,7 +230,7 @@ function _setWorkTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
 	_setWorkTitle(res);
 	entityRoutes.displayEntity(req, res);
 });

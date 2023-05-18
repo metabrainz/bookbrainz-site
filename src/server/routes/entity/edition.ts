@@ -144,7 +144,6 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages, middleware.loadRelationshipTypes,
-	middleware.decodeUrlQueryParams,
 	(req:PassportRequest, res, next) => {
 		const {EditionGroup, Publisher, Work} = req.app.locals.orm;
 		const propsPromise = generateEntityProps(
@@ -348,10 +347,12 @@ function _setEditionTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWorkTableAuthors, (req:PassportRequest, res) => {
-	_setEditionTitle(res);
-	entityRoutes.displayEntity(req, res);
-});
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWorkTableAuthors,
+	middleware.loadWikipediaExtract, (req:PassportRequest, res) => {
+		_setEditionTitle(res);
+		entityRoutes.displayEntity(req, res);
+	}
+);
 
 router.get('/:bbid/revision/:revisionId', middleware.loadEntityRelationships, (req, res) => {
 	_setEditionTitle(res);
