@@ -29,7 +29,7 @@ function EntityRelatedCollections({collections}) {
 		<Row>
 			<Col>
 				<h2>Related Collections</h2>
-				{collections && collections.length > 0 ? (
+				{collections?.length > 0 ? (
 					<ul className="list-unstyled">
 						{collections.map((collection) => (
 							<li key={collection.id}>
