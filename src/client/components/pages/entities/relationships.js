@@ -26,7 +26,7 @@ function EntityRelationships({contextEntity, relationships}) {
 	return (
 		<div>
 			<h2>Relationships</h2>
-			{relationships && relationships.length > 0 ? (
+			{relationships?.length > 0 ? (
 				<ul className="list-unstyled">
 					{relationships.map((relationship) => (
 						<li key={relationship.id}>
