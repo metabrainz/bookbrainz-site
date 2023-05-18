@@ -29,7 +29,7 @@ function EntityIdentifiers({identifiers, identifierTypes}) {
 			<h2>Identifiers</h2>
 			{
 
-				identifiers && identifiers.length > 0 ?
+				identifiers?.length > 0 ?
 					identifierTypes.sort((a, b) => a.label.localeCompare(b.label)).map((type) => {
 						const identifierValues =
 						identifiers
