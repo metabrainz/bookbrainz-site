@@ -233,7 +233,7 @@ function _setWorkTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
 	_setWorkTitle(res);
 	entityRoutes.displayEntity(req, res);
 });

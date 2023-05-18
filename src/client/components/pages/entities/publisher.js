@@ -27,6 +27,7 @@ import EntityRelatedCollections from './related-collections';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
+import WikipediaExtract from './wikipedia-extract';
 
 
 const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
@@ -81,7 +82,7 @@ PublisherAttributes.propTypes = {
 };
 
 
-function PublisherDisplayPage({entity, identifierTypes, user}) {
+function PublisherDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
@@ -98,6 +99,7 @@ function PublisherDisplayPage({entity, identifierTypes, user}) {
 					<PublisherAttributes publisher={entity}/>
 				</Col>
 			</Row>
+			<WikipediaExtract articleExtract={wikipediaExtract} entity={entity}/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
@@ -125,10 +127,12 @@ PublisherDisplayPage.displayName = 'PublisherDisplayPage';
 PublisherDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired
+	user: PropTypes.object.isRequired,
+	wikipediaExtract: PropTypes.object
 };
 PublisherDisplayPage.defaultProps = {
-	identifierTypes: []
+	identifierTypes: [],
+	wikipediaExtract: {}
 };
 
 export default PublisherDisplayPage;
