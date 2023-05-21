@@ -232,9 +232,9 @@ class SearchResults extends React.Component {
 						!this.props.condensed &&
 						<thead>
 							<tr>
-								<th style={{width: '25%'}}>Type</th>
-								<th style={{width: '42%'}}>Name</th>
-								<th style={{width: '33%'}}>Aliases</th>
+								<th width="25%">Type</th>
+								<th width="42%">Name</th>
+								<th width="33%">Aliases</th>
 							</tr>
 						</thead>
 					}

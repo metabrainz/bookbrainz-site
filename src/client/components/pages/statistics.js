@@ -48,10 +48,10 @@ function TopEditorsTable(props) {
 			>
 				<thead>
 					<tr>
-						<th style={{width: '8%'}} >#</th>
-						<th style={{width: '42%'}} >Editor&apos;s Name</th>
-						<th style={{width: '25%'}} >Total Revisions</th>
-						<th style={{width: '25%'}} >Registration Date</th>
+						<th width="8%" >#</th>
+						<th width="42%" >Editor&apos;s Name</th>
+						<th width="25%" >Total Revisions</th>
+						<th width="25%" >Registration Date</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -101,10 +101,10 @@ function EntityCountTable(props) {
 			>
 				<thead>
 					<tr>
-						<th style={{width: '8%'}} >#</th>
-						<th style={{width: '42%'}} >Entity Type</th>
-						<th style={{width: '25%'}} >Total</th>
-						<th style={{width: '25%'}} >Added in Last 30 days</th>
+						<th width="8%" >#</th>
+						<th width="42%" >Entity Type</th>
+						<th width="25%" >Total</th>
+						<th width="25%" >Added in Last 30 days</th>
 					</tr>
 				</thead>
 				<tbody>

@@ -97,26 +97,26 @@ class EditorProfileTab extends React.Component {
 					}
 				</h2>
 				<dl className="row editor-info">
-					<dt style={{width: '16%'}}>MusicBrainz Account</dt>
-					<dd style={{width: '84%'}}>
+					<dt width="16%">MusicBrainz Account</dt>
+					<dd width="84%">
 						{musicbrainzAccount}
 					</dd>
-					<dt style={{width: '16%'}}>Display Name</dt>
-					<dd style={{width: '84%'}}>{name}</dd>
-					<dt style={{width: '16%'}}>Area</dt>
-					<dd style={{width: '84%'}}>{editor.area ? editor.area.name : '?'}</dd>
-					<dt style={{width: '16%'}}>Gender</dt>
-					<dd style={{width: '84%'}}>{gender ? gender.name : '?'}</dd>
-					<dt style={{width: '16%'}}>Type</dt>
-					<dd style={{width: '84%'}}>{editor.type.label}</dd>
-					<dt style={{width: '16%'}}>Reputation</dt>
-					<dd style={{width: '84%'}}>0</dd>
-					<dt style={{width: '16%'}}>Joined</dt>
-					<dd style={{width: '84%'}}>{createdAtDate}</dd>
-					<dt style={{width: '16%'}}>Last login</dt>
-					<dd style={{width: '84%'}}>{lastActiveDate}</dd>
-					<dt style={{width: '16%'}}>Bio</dt>
-					<dd style={{width: '84%'}}>{editor.bio ? editor.bio : '-'}</dd>
+					<dt width="16%">Display Name</dt>
+					<dd width="84%">{name}</dd>
+					<dt width="16%">Area</dt>
+					<dd width="84%">{editor.area ? editor.area.name : '?'}</dd>
+					<dt width="16%">Gender</dt>
+					<dd width="84%">{gender ? gender.name : '?'}</dd>
+					<dt width="16%">Type</dt>
+					<dd width="84%">{editor.type.label}</dd>
+					<dt width="16%">Reputation</dt>
+					<dd width="84%">0</dd>
+					<dt width="16%">Joined</dt>
+					<dd width="84%">{createdAtDate}</dd>
+					<dt width="16%">Last login</dt>
+					<dd width="84%">{lastActiveDate}</dd>
+					<dt width="16%">Bio</dt>
+					<dd width="84%">{editor.bio ? editor.bio : '-'}</dd>
 				</dl>
 			</div>
 		);
@@ -129,12 +129,12 @@ class EditorProfileTab extends React.Component {
 			<div>
 				<h2>Stats</h2>
 				<dl className="row editor-info">
-					<dt style={{width: '67%'}}>Total Revisions</dt>
-					<dd style={{width: '33%'}}>{editor.totalRevisions}</dd>
-					<dt style={{width: '67%'}}>Revisions Applied</dt>
-					<dd style={{width: '33%'}}>{editor.revisionsApplied}</dd>
-					<dt style={{width: '67%'}}>Revisions Reverted</dt>
-					<dd style={{width: '33%'}}>{editor.revisionsReverted}</dd>
+					<dt width="67%">Total Revisions</dt>
+					<dd width="33%">{editor.totalRevisions}</dd>
+					<dt width="67%">Revisions Applied</dt>
+					<dd width="33%">{editor.revisionsApplied}</dd>
+					<dt width="67%">Revisions Reverted</dt>
+					<dd width="33%">{editor.revisionsReverted}</dd>
 				</dl>
 			</div>
 		);

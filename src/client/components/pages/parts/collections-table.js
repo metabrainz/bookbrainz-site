@@ -128,26 +128,26 @@ class CollectionsTable extends React.Component {
 						>
 							<thead>
 								<tr>
-									<th style={{width: '16%'}}>Name</th>
-									<th style={{width: '33%'}}>Description</th>
-									<th style={{width: '16%'}}>Entity Type</th>
-									<th style={{width: '16%'}}>Entities</th>
+									<th width="16%">Name</th>
+									<th width="33%">Description</th>
+									<th width="16%">Entity Type</th>
+									<th width="16%">Entities</th>
 									{
 										showPrivacy ?
-											<th style={{width: '16%'}}>Privacy</th> : null
+											<th width="16%">Privacy</th> : null
 									}
 									{
 										showIfOwnerOrCollaborator ?
-											<th style={{width: '16%'}}>Collaborator/Owner</th> : null
+											<th width="16%">Collaborator/Owner</th> : null
 									}
 									{
 										showOwner ?
-											<th style={{width: '16%'}}>Owner</th> : null
+											<th width="16%">Owner</th> : null
 
 									}
 									{
 										showLastModified ?
-											<th style={{width: '16%'}}>Last Modified</th> : null
+											<th width="16%">Last Modified</th> : null
 									}
 								</tr>
 							</thead>
