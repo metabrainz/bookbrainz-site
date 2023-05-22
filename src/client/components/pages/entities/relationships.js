@@ -20,6 +20,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Relationship from '../../../entity-editor/relationship-editor/relationship';
 
+
 function EntityRelationships({contextEntity, relationships}) {
 	const editLink = typeof window !== 'undefined' ? `${window.location.pathname}/edit` : '';
 
