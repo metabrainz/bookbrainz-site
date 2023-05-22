@@ -22,13 +22,16 @@ import React from 'react';
 
 
 function EntityIdentifiers({identifiers, identifierTypes}) {
+	const editLink = typeof window !== 'undefined' ? `${window.location.pathname}/edit` : '';
+
 	return (
 		<div>
 			<h2>Identifiers</h2>
 			{
-				identifiers &&
-				identifierTypes.sort((a, b) => a.label.localeCompare(b.label)).map((type) => {
-					const identifierValues =
+
+				identifiers?.length > 0 ?
+					identifierTypes.sort((a, b) => a.label.localeCompare(b.label)).map((type) => {
+						const identifierValues =
 						identifiers
 							.filter(
 								(identifier) => identifier.type.id === type.id || identifier.typeId === type.id
@@ -43,14 +46,17 @@ function EntityIdentifiers({identifiers, identifierTypes}) {
 									</dd>
 								)
 							);
-					if (!identifierValues.length) {
-						return null;
-					}
-					return [
-						<dt key={type.id}>{type.label}</dt>,
-						identifierValues
-					];
-				})
+						if (!identifierValues.length) {
+							return null;
+						}
+						return [
+							<dt key={type.id}>{type.label}</dt>,
+							identifierValues
+						];
+					}) :
+					<p className="text-muted">
+						<b>No identifiers.</b> <a href={editLink}>Click here to edit</a> and add new identifiers (e.g. ISBN, Wikidata ID, etc.).
+					</p>
 			}
 		</div>
 	);
