@@ -154,7 +154,7 @@ function WorkSection({
 	const validWorkTypes = workTypes.filter(type => !type.deprecated);
 	const workTypesForDisplay = sortWorkTypes(validWorkTypes);
 
-	const selectedTypeOption = workTypesForDisplay.filter((el) => el.id === typeValue);
+	const selectedTypeOption:WorkType = workTypesForDisplay.filter((el) => el.id === typeValue);
 	const tooltip = (
 		<Tooltip id="work-type-tooltip">
 			Literary form or structure of the work
@@ -195,6 +195,11 @@ function WorkSection({
 							value={selectedTypeOption}
 							onChange={onTypeChange}
 						/>
+						{selectedTypeOption &&
+							<Form.Text className="text-muted">
+								{selectedTypeOption.description}
+							</Form.Text>
+						}
 					</Form.Group>
 				</Col>
 			</Row>
