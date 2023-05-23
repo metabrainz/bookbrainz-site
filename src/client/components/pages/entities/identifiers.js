@@ -54,6 +54,7 @@ function EntityIdentifiers({entityUrl, identifiers, identifierTypes}) {
 					}) :
 					<p className="text-muted">
 						<b>No identifiers.</b>
+						&nbsp;
 						<a href={`${entityUrl}/edit`}>
 							Click here to edit
 						</a> and add new identifiers (e.g. ISBN, Wikidata ID, etc.).
