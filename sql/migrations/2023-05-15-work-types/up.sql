@@ -46,6 +46,13 @@ BEGIN TRANSACTION;
 			parent_id=13,
 			child_order=2
 		WHERE id=5;
+	
+	-- Novel, id 1
+	UPDATE bookbrainz.work_type
+		SET description='Prose narrative of considerable length and a certain complexity.',
+			parent_id=13,
+			child_order=1
+		WHERE id=1;
 
 	-- Epic, id 3
 	UPDATE bookbrainz.work_type
@@ -103,12 +110,6 @@ BEGIN TRANSACTION;
 		parent_id=14,
 		child_order=1
 	WHERE id=12;
-	-- Novel
-	UPDATE bookbrainz.work_type
-	SET description='Prose narrative of considerable length and a certain complexity.',
-		parent_id=13,
-		child_order=1
-	WHERE id=1;
 	
 	-- Scientific Paper
 	UPDATE bookbrainz.work_type
