@@ -33,7 +33,7 @@ BEGIN TRANSACTION;
 
 	INSERT INTO bookbrainz.work_type ("id","label","description","parent_id","child_order")
 	VALUES
-		(13, 'Fiction','Literary work portraying individuals or events that are imaginary, though it may be based on a true story or situation.',NULL,0);
+		(13,'Fiction','Literary work portraying individuals or events that are imaginary, though it may be based on a true story or situation.',NULL,0);
 
 COMMIT;
 

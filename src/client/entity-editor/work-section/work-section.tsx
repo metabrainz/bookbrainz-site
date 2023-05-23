@@ -44,7 +44,7 @@ type WorkType = {
 	description: string,
 	parentId: number,
 	childOrder: number,
-	deprecated:boolean
+	deprecated: boolean,
 	depth?: number, // added for display
 };
 
@@ -102,7 +102,7 @@ function sortWorkTypes(
 	return sortedArray;
 }
 
-function workTypeSelectMenuOption(props:OptionProps<WorkType, false>) {
+function workTypeSelectMenuOption(props: OptionProps<WorkType, false>) {
 	const {data, label} = props;
 	const {depth, id, description} = data;
 	let indentationClass;
@@ -189,7 +189,7 @@ function WorkSection({
 							classNamePrefix="react-select"
 							components={{Option: workTypeSelectMenuOption}}
 							// eslint-disable-next-line react/jsx-no-bind
-							getOptionValue={(type:WorkType) => type.id.toString()}
+							getOptionValue={(type: WorkType) => type.id.toString()}
 							instanceId="workType"
 							options={workTypesForDisplay}
 							value={selectedTypeOption}
