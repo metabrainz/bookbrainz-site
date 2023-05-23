@@ -21,9 +21,7 @@ import React from 'react';
 import Relationship from '../../../entity-editor/relationship-editor/relationship';
 
 
-function EntityRelationships({contextEntity, relationships}) {
-	const editLink = typeof window !== 'undefined' ? `${window.location.pathname}/edit` : '';
-
+function EntityRelationships({contextEntity, relationships, entityUrl}) {
 	return (
 		<div>
 			<h2>Relationships</h2>
@@ -45,7 +43,7 @@ function EntityRelationships({contextEntity, relationships}) {
 				</ul>
 			) : (
 				<p className="text-muted">
-					<b>No relationships.</b> <a href={editLink}>Click here to edit</a> and create new relationships.
+					<b>No relationships.</b> <a href={`${entityUrl}/edit`}>Click here to edit</a> and create new relationships.
 				</p>
 			)}
 		</div>
@@ -55,6 +53,7 @@ function EntityRelationships({contextEntity, relationships}) {
 EntityRelationships.displayName = 'EntityRelationships';
 EntityRelationships.propTypes = {
 	contextEntity: PropTypes.object.isRequired,
+	entityUrl: PropTypes.string.isRequired,
 	relationships: PropTypes.array.isRequired
 };
 
