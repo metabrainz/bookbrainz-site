@@ -41,7 +41,7 @@ function EntityRelatedCollections({collections}) {
 				) :
 					<p className="text-muted">
 						<b>This entity does not appear in any public collection.</b>
-						Click the <b>&quot;Add to collection&quot;</b>
+						<br/>Click the <b>&quot;Add to collection&quot;</b>
 						button below to add it to an existing collection or create a new one.
 					</p>
 				}
