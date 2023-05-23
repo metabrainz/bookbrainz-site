@@ -21,9 +21,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-function EntityIdentifiers({identifiers, identifierTypes}) {
-	const editLink = typeof window !== 'undefined' ? `${window.location.pathname}/edit` : '';
-
+function EntityIdentifiers({entityUrl, identifiers, identifierTypes}) {
 	return (
 		<div>
 			<h2>Identifiers</h2>
@@ -55,7 +53,10 @@ function EntityIdentifiers({identifiers, identifierTypes}) {
 						];
 					}) :
 					<p className="text-muted">
-						<b>No identifiers.</b> <a href={editLink}>Click here to edit</a> and add new identifiers (e.g. ISBN, Wikidata ID, etc.).
+						<b>No identifiers.</b>
+						<a href={`${entityUrl}/edit`}>
+							Click here to edit
+						</a> and add new identifiers (e.g. ISBN, Wikidata ID, etc.).
 					</p>
 			}
 		</div>
@@ -64,6 +65,7 @@ function EntityIdentifiers({identifiers, identifierTypes}) {
 
 EntityIdentifiers.displayName = 'EntityIdentifiers';
 EntityIdentifiers.propTypes = {
+	entityUrl: PropTypes.string.isRequired,
 	identifierTypes: PropTypes.array.isRequired,
 	identifiers: PropTypes.array
 };
