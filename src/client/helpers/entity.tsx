@@ -197,6 +197,13 @@ export function getEditionReleaseDate(edition) {
 	return '?';
 }
 
+export function getAuthorCreditNames(edition) {
+	if (edition.authorCreditId === null) {
+		return [];
+	}
+	return edition.authorCredit.names;
+}
+
 export function getEditionPublishers(edition) {
 	const hasPublishers = edition.publisherSet &&
 		edition.publisherSet.publishers.length > 0;
@@ -227,10 +234,12 @@ export function authorCreditToString(authorCredit) {
 }
 
 export function getEntityDisambiguation(entity) {
-	if (entity.disambiguation) {
+	if (entity.disambiguation?.comment) {
 		return <small>{` (${entity.disambiguation.comment})`}</small>;
 	}
-
+	else if (entity.disambiguation) {
+		return <small>{` (${entity.disambiguation})`} </small>;
+	}
 	return null;
 }
 
@@ -238,9 +247,8 @@ export function getEntitySecondaryAliases(entity) {
 	if (entity.aliasSet && Array.isArray(entity.aliasSet.aliases) && entity.aliasSet.aliases.length > 1) {
 		const aliases = entity.aliasSet.aliases
 			.filter(item => item.id !== entity.defaultAlias.id)
-			.map(item => item.name)
-			.join(', ');
-		return <h4>{aliases}</h4>;
+			.map((item) => <li key={item.id}>{item.name}</li>);
+		return <ul className="inline-aliases">{aliases}</ul>;
 	}
 
 	return null;

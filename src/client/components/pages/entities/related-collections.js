@@ -22,22 +22,30 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Row} = bootstrap;
+const {Row, Col} = bootstrap;
 
 function EntityRelatedCollections({collections}) {
 	return (
 		<Row>
-			<h2>Related Collections</h2>
-			{collections &&
-			<ul className="list-unstyled">
-				{collections.map((collection) => (
-					<li key={collection.id}>
-						<a href={`/collection/${collection.id}`}>{collection.name}</a> by {' '}
-						<a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a>
-					</li>
-				))}
-			</ul>
-			}
+			<Col>
+				<h2>Related Collections</h2>
+				{collections?.length > 0 ? (
+					<ul className="list-unstyled">
+						{collections.map((collection) => (
+							<li key={collection.id}>
+								<a href={`/collection/${collection.id}`}>{collection.name}</a> by {' '}
+								<a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a>
+							</li>
+						))}
+					</ul>
+				) :
+					<p className="text-muted">
+						<b>This entity does not appear in any public collection.</b>
+						<br/>Click the <b>&quot;Add to collection&quot;</b>&nbsp;
+						button below to add it to an existing collection or create a new one.
+					</p>
+				}
+			</Col>
 		</Row>
 	);
 }

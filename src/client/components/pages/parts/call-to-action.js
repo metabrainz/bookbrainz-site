@@ -34,11 +34,10 @@ const {Button, ButtonGroup} = bootstrap;
  * the 'CallToAction' component.
  */
 function CallToAction(props) {
-	// double encoding to prevent browser from automatically decoding it
-	const nameQueryParameter = props.query ? `?name=${encodeURIComponent(encodeURIComponent(props.query))}` : '';
+	const seedingParameters = new URLSearchParams({name: props.query});
 	function renderEntityLink(type) {
 		return (
-			<a href={`/${camelCase(type)}/create${nameQueryParameter}`}>
+			<a href={`/${camelCase(type)}/create?${seedingParameters}`}>
 				<Button
 					className="padding-bottom-1 padding-sides-2 padding-top-1"
 					variant="secondary"

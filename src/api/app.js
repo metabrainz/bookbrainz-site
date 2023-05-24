@@ -22,16 +22,13 @@
 import * as search from '../common/helpers/search';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
-import RedisStore from 'connect-redis';
-import {get as _get} from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
 import compression from 'compression';
 import config from '../common/helpers/config';
-import {createClient} from 'redis';
 import express from 'express';
 import initRoutes from './routes';
 import logger from 'morgan';
-import session from 'express-session';
+import session from '../common/helpers/session';
 
 
 // Initialize application
@@ -50,34 +47,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(compression());
 
-/* Set up sessions, using Redis in production and default in-memory for testing environment*/
-const sessionOptions = {
-	cookie: {
-		maxAge: _get(config, 'session.maxAge', 2592000000),
-		secure: _get(config, 'session.secure', false)
-	},
-	resave: false,
-	saveUninitialized: false,
-	secret: config.session.secret
-};
-
-if (process.env.NODE_ENV !== 'test') {
-	const redisHost = _get(config, 'session.redis.host', 'localhost');
-	const redisPort = _get(config, 'session.redis.port', 6379);
-	const redisClient = createClient({
-		url: `redis://${redisHost}:${redisPort}`
-	});
-
-	// eslint-disable-next-line no-console
-	redisClient.connect().catch(redisError => { console.error('Redis error:', redisError); });
-
-	redisClient.on('error', (err) => debug('Error while closing server connections', err));
-	const redisStore = new RedisStore({
-		client: redisClient
-	  });
-	sessionOptions.store = redisStore;
-}
-app.use(session(sessionOptions));
+app.use(session(process.env.NODE_ENV));
 
 // Set up routes
 const mainRouter = initRoutes();

@@ -135,6 +135,7 @@ function WorkSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
+							isClearable
 							classNamePrefix="react-select"
 							instanceId="workType"
 							options={workTypesForDisplay}

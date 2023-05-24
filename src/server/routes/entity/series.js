@@ -90,7 +90,6 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages,
 	middleware.loadRelationshipTypes, middleware.loadSeriesOrderingTypes,
-	middleware.decodeUrlQueryParams,
 	async (req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'series', req, res, {}
@@ -197,10 +196,11 @@ function _setSeriesTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadSeriesItems, (req, res) => {
-	_setSeriesTitle(res);
-	entityRoutes.displayEntity(req, res);
-});
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadSeriesItems, middleware.loadGenders,
+	middleware.loadWikipediaExtract, (req, res) => {
+		_setSeriesTitle(res);
+		entityRoutes.displayEntity(req, res);
+	});
 
 router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
 	if (!res.locals.entity.dataId) {

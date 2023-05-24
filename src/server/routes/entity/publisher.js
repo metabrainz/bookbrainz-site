@@ -93,7 +93,7 @@ const router = express.Router();
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadPublisherTypes,
-	middleware.loadRelationshipTypes, middleware.decodeUrlQueryParams,
+	middleware.loadRelationshipTypes,
 	async (req, res) => {
 		const markupProps = generateEntityProps(
 			'publisher', req, res, {}
@@ -190,7 +190,7 @@ function _setPublisherTitle(res) {
 }
 
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res, next) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res, next) => {
 	// Fetch editions
 	const {Publisher} = req.app.locals.orm;
 	const editionRelationsToFetch = [
@@ -198,7 +198,8 @@ router.get('/:bbid', middleware.loadEntityRelationships, (req, res, next) => {
 		'disambiguation',
 		'releaseEventSet.releaseEvents',
 		'identifierSet.identifiers.type',
-		'editionFormat'
+		'editionFormat',
+		'authorCredit.names'
 	];
 	const editionsPromise =
 		Publisher.forge({bbid: res.locals.entity.bbid})
