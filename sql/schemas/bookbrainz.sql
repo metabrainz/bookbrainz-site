@@ -20,6 +20,10 @@ CREATE TYPE bookbrainz.external_service_oauth_type AS ENUM (
     'critiquebrainz'
 );
 
+CREATE TYPE bookbrainz.admin_action_type AS ENUM (
+	'Change Privileges'
+);
+
 CREATE TABLE bookbrainz.editor_type (
 	id SERIAL PRIMARY KEY,
 	label VARCHAR(255) NOT NULL CHECK (label <> '')
@@ -46,6 +50,8 @@ ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.editor_type (id);
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.area (id) DEFERRABLE;
 
+ALTER TABLE bookbrainz.editor ADD COLUMN privs INT NOT NULL DEFAULT 1;
+
 CREATE TABLE bookbrainz.editor__language (
 	editor_id INT,
 	language_id INT,
@@ -55,6 +61,20 @@ CREATE TABLE bookbrainz.editor__language (
 		language_id
 	)
 );
+
+CREATE TABLE bookbrainz.admin_log (
+    id SERIAL PRIMARY KEY,
+    user1_id INT NOT NULL,
+    user2_id INT NOT NULL,
+    old_privs INT,
+    new_privs INT,
+    action_type bookbrainz.admin_action_type NOT NULL,
+    time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
+    note VARCHAR NOT NULL
+);
+
+ALTER TABLE bookbrainz.admin_log ADD FOREIGN KEY (user1_id) REFERENCES bookbrainz.editor (id);
+ALTER TABLE bookbrainz.admin_log ADD FOREIGN KEY (user2_id) REFERENCES bookbrainz.editor (id);
 
 CREATE TABLE bookbrainz.entity (
 	bbid UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
