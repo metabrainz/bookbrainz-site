@@ -97,26 +97,26 @@ class EditorProfileTab extends React.Component {
 					}
 				</h2>
 				<dl className="row editor-info">
-					<dt width="16%">MusicBrainz Account</dt>
-					<dd width="84%">
+					<dt className="col-md-2">MusicBrainz Account</dt>
+					<dd className="col-md-10">
 						{musicbrainzAccount}
 					</dd>
-					<dt width="16%">Display Name</dt>
-					<dd width="84%">{name}</dd>
-					<dt width="16%">Area</dt>
-					<dd width="84%">{editor.area ? editor.area.name : '?'}</dd>
-					<dt width="16%">Gender</dt>
-					<dd width="84%">{gender ? gender.name : '?'}</dd>
-					<dt width="16%">Type</dt>
-					<dd width="84%">{editor.type.label}</dd>
-					<dt width="16%">Reputation</dt>
-					<dd width="84%">0</dd>
-					<dt width="16%">Joined</dt>
-					<dd width="84%">{createdAtDate}</dd>
-					<dt width="16%">Last login</dt>
-					<dd width="84%">{lastActiveDate}</dd>
-					<dt width="16%">Bio</dt>
-					<dd width="84%">{editor.bio ? editor.bio : '-'}</dd>
+					<dt className="col-md-2">Display Name</dt>
+					<dd className="col-md-10">{name}</dd>
+					<dt className="col-md-2">Area</dt>
+					<dd className="col-md-10">{editor.area ? editor.area.name : '?'}</dd>
+					<dt className="col-md-2">Gender</dt>
+					<dd className="col-md-10">{gender ? gender.name : '?'}</dd>
+					<dt className="col-md-2">Type</dt>
+					<dd className="col-md-10">{editor.type.label}</dd>
+					<dt className="col-md-2">Reputation</dt>
+					<dd className="col-md-10">0</dd>
+					<dt className="col-md-2">Joined</dt>
+					<dd className="col-md-10">{createdAtDate}</dd>
+					<dt className="col-md-2">Last login</dt>
+					<dd className="col-md-10">{lastActiveDate}</dd>
+					<dt className="col-md-2">Bio</dt>
+					<dd className="col-md-10">{editor.bio ? editor.bio : '-'}</dd>
 				</dl>
 			</div>
 		);
@@ -129,12 +129,12 @@ class EditorProfileTab extends React.Component {
 			<div>
 				<h2>Stats</h2>
 				<dl className="row editor-info">
-					<dt width="67%">Total Revisions</dt>
-					<dd width="33%">{editor.totalRevisions}</dd>
-					<dt width="67%">Revisions Applied</dt>
-					<dd width="33%">{editor.revisionsApplied}</dd>
-					<dt width="67%">Revisions Reverted</dt>
-					<dd width="33%">{editor.revisionsReverted}</dd>
+					<dt className="col-md-8">Total Revisions</dt>
+					<dd className="col-md-4">{editor.totalRevisions}</dd>
+					<dt className="col-md-8">Revisions Applied</dt>
+					<dd className="col-md-4">{editor.revisionsApplied}</dd>
+					<dt className="col-md-8">Revisions Reverted</dt>
+					<dd className="col-md-4">{editor.revisionsReverted}</dd>
 				</dl>
 			</div>
 		);
