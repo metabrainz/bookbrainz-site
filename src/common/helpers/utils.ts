@@ -1,6 +1,8 @@
-import {Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
+import {EntityType, Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
 
-import {isString, kebabCase, toString} from 'lodash';
+import {isString, kebabCase, toString, upperFirst} from 'lodash';
+import type {EntityT} from 'bookbrainz-data/lib/types/entity';
+import {IdentifierType} from '../../client/unified-form/interface/type';
 
 /**
  * Regular expression for valid BookBrainz UUIDs (bbid)
@@ -269,6 +271,14 @@ export function isbn13To10(isbn13:string):string | null {
 
 	return digits.join('');
 }
+export function filterIdentifierTypesByEntityType(
+	identifierTypes: Array<{id: number, entityType: string}>,
+	entityType: string
+): Array<IdentifierType> {
+	return identifierTypes.filter(
+		(type) => type.entityType === entityType
+	);
+}
 
 /**
  *
@@ -299,4 +309,27 @@ export async function getEntityByBBID(orm, bbid:string, otherRelations:Array<str
 	];
 	const entityData = await orm.func.entity.getEntity(orm, entityType, bbid, baseRelations);
 	return entityData;
+}
+
+export async function getEntityAlias(orm, bbid:string, type:EntityType):Promise<any> {
+	if (!isValidBBID(bbid)) {
+		return null;
+	}
+	const entityData = await orm.func.entity.getEntity(orm, upperFirst(type), bbid, []);
+	return entityData;
+}
+
+export function getAliasLanguageCodes(entity: EntityT) {
+	return entity.aliasSet?.aliases
+		.map((alias) => alias.language?.isoCode1)
+		// less common languages (and [Multiple languages]) do not have a two-letter ISO code, ignore them for now
+		.filter((language) => language !== null)
+		// eslint-disable-next-line operator-linebreak -- fallback refers to the whole optional chain
+		?? [];
+}
+
+export function filterObject(obj, filter) {
+	return Object.keys(obj)
+		.filter((key) => filter(obj[key]))
+		.reduce((res, key) => Object.assign(res, {[key]: obj[key]}), {});
 }

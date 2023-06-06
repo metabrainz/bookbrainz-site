@@ -28,8 +28,11 @@ type RelationshipAttributeProps = {
 };
 
 function getAttributeForDisplay(attribute, key) {
+	if (!attribute) {
+		return null;
+	}
 	const attributeName = getAttributeName(attribute.attributeType);
-	const attributeValue = attribute.value.textValue;
+	const attributeValue = attribute.value?.textValue;
 	if (!attributeValue) {
 		return null;
 	}

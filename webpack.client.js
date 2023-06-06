@@ -25,6 +25,7 @@ const clientConfig = {
 		deletion: ['./controllers/deletion.js'],
 		preview: ['./controllers/preview.js'],
 		error: ['./controllers/error.js'],
+		externalService: ['./controllers/externalService.js'],
 		index: ['./controllers/index.js'],
 		registrationDetails: ['./controllers/registrationDetails.js'],
 		revision: ['./controllers/revision.js'],
@@ -36,6 +37,7 @@ const clientConfig = {
 		'editor/editor': ['./controllers/editor/editor.js'],
 		'entity/entity': ['./controllers/entity/entity.js'],
 		'entity-editor': ['./entity-editor/controller.js'],
+		'unified-form':['./unified-form/controller.js'],
 		'entity-merge': ['./entity-editor/entity-merge.tsx'],
 		style: './stylesheets/style.scss'
 	},

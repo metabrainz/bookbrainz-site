@@ -17,8 +17,10 @@
  */
 
 
+import {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import type {Map} from 'immutable';
 import _ from 'lodash';
+import {filterObject} from '../../../common/helpers/utils';
 import request from 'superagent';
 
 
@@ -113,14 +115,138 @@ function postSubmission(url: string, data: Map<string, any>): Promise<void> {
 			}
 		});
 }
+function transformFormData(data:Record<string, any>):Record<string, any> {
+	const newData = {};
+	const nextId = 0;
+	// add new series
+	_.forEach(data.Series, (series, sid) => {
+		// sync local series section with global series section
+		series.seriesSection = data.seriesSection;
+		// might be possible for series items to not have target id
+		_.forEach(series.seriesSection.seriesItems, (item) => {
+			_.set(item, 'targetEntity.bbid', series.id);
+		});
+		series.seriesSection.seriesItems = filterObject(series.seriesSection.seriesItems, (rel) => !rel.attributeSetId);
+		// if new items have been added to series, then add series to the post data
+		if (_.size(series.seriesSection.seriesItems) > 0) {
+			series.__isNew__ = false;
+			series.submissionSection = {
+				note: 'added more series items'
+			};
+			newData[sid] = series;
+		}
+	});
+	// add new works
+	const authorWorkRelationshipTypeId = 8;
+	_.forEach(data.Works, (work, wid) => {
+		// if authors have been added to the work, then add work to the post data
+		if (!work.checked) { return; }
+		let relationshipCount = 0;
+		// hashset in order to avoid duplicate relationships
+		const authorBBIDSet = new Set();
+		if (work.relationshipSet) {
+			_.forEach(work.relationshipSet.relationships, (rel) => {
+				if (rel.typeId === authorWorkRelationshipTypeId) {
+					authorBBIDSet.add(rel.sourceBbid);
+				}
+			});
+		}
+		let flag = false;
+		_.forEach(data.authorCreditEditor, (authorCredit) => {
+			if (authorBBIDSet.has(authorCredit.author.bbid)) { return; }
+			const relationship = {
+				attributeSetId: null,
+				attributes: [],
+				isAdded: true,
+				relationshipType: {
+					id: authorWorkRelationshipTypeId
+				},
+				rowId: `a${relationshipCount}`,
+				sourceEntity: {
+					  bbid: authorCredit.author.id
+				},
+				targetEntity: {
+					bbid: work.id
+				  }
+			};
+			_.set(work, ['relationshipSection', 'relationships', `a${relationshipCount}`], relationship);
+			relationshipCount++;
+			flag = true;
+		});
+		if (flag) {
+			work.submissionSection = {
+				note: 'added authors from parent edition'
+			};
+			work.__isNew__ = false;
+			newData[wid] = work;
+		}
+	});
+	// add edition at last
+	if (data.ISBN.type) {
+		data.identifierEditor.m0 = data.ISBN;
+	}
+	data.relationshipSection.relationships = _.mapValues(data.Works, (work, key) => {
+		const relationship = {
+			attributeSetId: null,
+			attributes: [],
+			isAdded: true,
+			relationshipType: {
+				id: 10
+			},
+			rowID: key,
+			sourceEntity: {
+			},
+			targetEntity: {
+				bbid: work.id
+			}
+		};
+		return relationship;
+	});
+	newData[`e${nextId}`] = {...data, type: 'Edition'};
+	return newData;
+}
+
+function postUFSubmission(url: string, data: Map<string, any>): Promise<void> {
+	// transform data
+	const jsonData = data.toJS();
+	const postData = transformFormData(jsonData);
+	return request.post(url).send(postData)
+		.then((response) => {
+			if (!response.body) {
+				window.location.replace('/login');
+			}
+			const editionEntity = response.body.find((entity) => entity.type === 'Edition');
+			const redirectUrl = `/edition/${editionEntity.bbid}`;
+			if (response.body.alert) {
+				const alertParam = `?alert=${response.body.alert}`;
+				window.location.href = `${redirectUrl}${alertParam}`;
+			}
+			else {
+				window.location.href = redirectUrl;
+			}
+		});
+}
 
 type SubmitResult = (arg1: (Action) => unknown, arg2: () => Map<string, any>) => unknown;
 export function submit(
-	submissionUrl: string
+	submissionUrl: string,
+	isUnifiedForm = false
 ): SubmitResult {
 	return (dispatch, getState) => {
 		const rootState = getState();
 		dispatch(setSubmitted(true));
+		if (isUnifiedForm) {
+			return postUFSubmission(submissionUrl, rootState)
+				.catch(
+					(error: {message: string}) => {
+						const message =
+						_.get(error, ['response', 'body', 'error'], null) ||
+						error.message;
+						dispatch(setSubmitted(false));
+						return dispatch(setSubmitError(message));
+					}
+				);
+		}
 		return postSubmission(submissionUrl, rootState)
 			.catch(
 				(error: {message: string}) => {
@@ -136,5 +262,42 @@ export function submit(
 					return dispatch(setSubmitError(message));
 				}
 			);
+	};
+}
+
+/**
+ *
+ * @param {string} submissionUrl - The URL to post the submission to
+ * @param {string} entityType - The type of entity being submitted
+ * @param {Function} callback - A function that adds the entity to the store
+ * @param {Object} initialState - The initial state of the entity being submitted, this include some fields which are required by the server
+ * @returns {function} - A thunk that posts the submission to the server
+ */
+export function submitSingleEntity(submissionUrl:string, entityType:EntityTypeString, callback:(newEntity)=>void, initialState = {}):SubmitResult {
+	return async (dispatch, getState) => {
+		const rootState = getState();
+		dispatch(setSubmitted(true));
+		const JSONState = rootState.toJS();
+		const entity = {...JSONState, type: entityType};
+		const postData = {
+			0: entity
+		};
+		try {
+			const response = await request.post(submissionUrl).send(postData);
+			const mainEntity = response.body[0];
+			const entityObject = {...initialState,
+				__isNew__: true,
+				id: mainEntity.bbid,
+				text: mainEntity.name,
+				...mainEntity};
+			return dispatch(callback(entityObject)) && dispatch(setSubmitted(false));
+		}
+		catch (error) {
+			const message =
+						_.get(error, ['response', 'body', 'error'], null) ||
+						error.message;
+			dispatch(setSubmitted(false));
+			return dispatch(setSubmitError(message));
+		}
 	};
 }

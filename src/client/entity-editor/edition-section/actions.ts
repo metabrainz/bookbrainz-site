@@ -44,6 +44,7 @@ export const UPDATE_PUBLISHER = 'UPDATE_PUBLISHER';
 export const UPDATE_RELEASE_DATE = 'UPDATE_RELEASE_DATE';
 export const UPDATE_FORMAT = 'UPDATE_FORMAT';
 export const UPDATE_LANGUAGES = 'UPDATE_LANGUAGES';
+export const ADD_LANGUAGE = 'ADD_LANGUAGE';
 export const UPDATE_STATUS = 'UPDATE_STATUS';
 export const UPDATE_WEIGHT = 'UPDATE_WEIGHT';
 export const UPDATE_PAGES = 'UPDATE_PAGES';
@@ -112,6 +113,19 @@ export function updateLanguages(newLanguages: Array<LanguageOption>): Action {
 	return {
 		payload: newLanguages,
 		type: UPDATE_LANGUAGES
+	};
+}
+
+/**
+ * Produces an action indicating that new language should be added to languages field.
+ *
+ * @param {LanguageOption} newLanguage - The new language to be added/
+ * @returns {Action} The resulting ADD_LANGUAGE action.
+ */
+export function addLanguage(newLanguage: LanguageOption): Action {
+	return {
+		payload: newLanguage,
+		type: ADD_LANGUAGE
 	};
 }
 

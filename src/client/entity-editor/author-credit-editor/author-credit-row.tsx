@@ -18,7 +18,6 @@
 
 import {
 	Action,
-	Author,
 	removeAuthorCreditRow,
 	updateCreditAuthorValue,
 	updateCreditDisplayValue,
@@ -28,24 +27,29 @@ import {Button, Col, Form, Row} from 'react-bootstrap';
 import type {Dispatch} from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import Immutable from 'immutable';
 import React from 'react';
+import SearchEntityCreate from '../../unified-form/common/search-entity-create-select';
 import ValidationLabel from '../common/validation-label';
+import {clearAuthor} from '../../unified-form/cover-tab/action';
 import {connect} from 'react-redux';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
 
 type OwnProps = {
 	index: string,
+	isUnifiedForm?: boolean
 };
 
 type StateProps = {
-	author: Author,
+	author: Immutable.Map<string, any>,
 	joinPhrase: string,
 	name: string
 };
 
 type DispatchProps = {
 	onAuthorChange: (Author) => unknown,
+	onClearHandler:(arg) => unknown,
 	onJoinPhraseChange: (string) => unknown,
 	onNameChange: (string) => unknown,
 	onRemoveButtonClick: () => unknown
@@ -80,22 +84,41 @@ function AuthorCreditRow({
 	author,
 	joinPhrase,
 	name,
+	isUnifiedForm,
 	onAuthorChange,
 	onJoinPhraseChange,
+	onClearHandler,
 	onNameChange,
-	onRemoveButtonClick
+	onRemoveButtonClick,
+	...rest
 }: Props) {
+	const SelectWrapper = !isUnifiedForm ? EntitySearchFieldOption : SearchEntityCreate;
+	const onChangeHandler = React.useCallback((value, action) => {
+		if (['clear', 'pop-value', 'select-option'].includes(action?.action) && author?.get('__isNew__', false)) {
+			onClearHandler(author.get('id'));
+		}
+		onAuthorChange(value);
+	}, [author, onAuthorChange, onClearHandler]);
+	const handleButtonClick = React.useCallback(() => {
+		if (author?.get('__isNew__', false)) {
+			onClearHandler(author.get('id'));
+		}
+		onRemoveButtonClick();
+	}, [author, index, onClearHandler, onRemoveButtonClick]);
 	return (
 		<div>
 			<Row>
 				<Col md={{span: 3}}>
-					<EntitySearchFieldOption
+					<SelectWrapper
 						instanceId={`author${index}`}
+						isUnifiedForm={isUnifiedForm}
 						label="Author"
-						type="author"
+						rowId={index}
 						validationState={!author ? 'error' : null}
 						value={author}
-						onChange={onAuthorChange}
+						onChange={onChangeHandler}
+						{...rest}
+						type="author"
 					/>
 				</Col>
 				<Col md={{span: 3}}>
@@ -123,7 +146,7 @@ function AuthorCreditRow({
 						block
 						className="margin-top-d18"
 						variant="danger"
-						onClick={onRemoveButtonClick}
+						onClick={handleButtonClick}
 					>
 						<FontAwesomeIcon icon={faTimes}/>
 						&nbsp;Remove
@@ -135,6 +158,9 @@ function AuthorCreditRow({
 	);
 }
 AuthorCreditRow.displayName = 'AuthorCreditEditor.CreditRow';
+AuthorCreditRow.defaultProps = {
+	isUnifiedForm: false
+};
 
 function mapStateToProps(rootState, {index}: OwnProps): StateProps {
 	const state = rootState.get('authorCreditEditor');
@@ -151,6 +177,7 @@ function mapDispatchToProps(
 ): DispatchProps {
 	return {
 		onAuthorChange: (value) => dispatch(updateCreditAuthorValue(index, value)),
+		onClearHandler: (aid) => dispatch(clearAuthor(aid)),
 		onJoinPhraseChange: (event: React.ChangeEvent<HTMLInputElement>) => dispatch(updateCreditJoinPhraseValue(index, event.target.value)),
 		onNameChange: (event: React.ChangeEvent<HTMLInputElement>) => dispatch(updateCreditDisplayValue(index, event.target.value)),
 		onRemoveButtonClick: () => dispatch(removeAuthorCreditRow(index))

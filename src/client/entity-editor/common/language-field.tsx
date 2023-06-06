@@ -19,13 +19,15 @@
 
 import * as React from 'react';
 import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
-import {OptionProps, components} from 'react-select';
 import AsyncSelect from 'react-select/async';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {OptionProps} from 'react-select/src/components/Option';
 import ValidationLabel from './validation-label';
+import {components} from 'react-select';
 import {convertMapToObject} from '../../helpers/utils';
 import createFilterOptions from 'react-select-fast-filter-options';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import {freezeObjects} from '../../unified-form/common/freezed-objects';
 import {isNumber} from 'lodash';
 
 
@@ -69,9 +71,7 @@ function LanguageField({
 	const tooltip = <Tooltip id="language-tooltip">{tooltipText}</Tooltip>;
 	rest.options = convertMapToObject(rest.options);
 	const {value, options} = rest;
-	const filterOptions = createFilterOptions({
-		options
-	});
+	const filterOptions = freezeObjects.filterOptions ?? React.useMemo(() => createFilterOptions({options}), []);
 	const sortFilterOptions = (opts, input, selectOptions) => {
 		const newOptions = filterOptions(opts, input, selectOptions).slice(0, MAX_DROPDOWN_OPTIONS);
 		const sortLang = (a, b) => {

@@ -23,7 +23,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import {
-	faChartLine, faGripVertical, faListUl, faPlus, faQuestionCircle,
+	faChartLine, faGripVertical, faLink, faListUl, faPlus, faQuestionCircle,
 	faSearch, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -138,6 +138,11 @@ class Layout extends React.Component {
 					onSelect={this.handleDropdownClick}
 					onToggle={this.handleDropdownToggle}
 				>
+					<NavDropdown.Item href="/create">
+						{genEntityIconHTMLElement('Book')}
+						Book
+					</NavDropdown.Item>
+					<NavDropdown.Divider/>
 					<NavDropdown.Item href="/work/create">
 						{genEntityIconHTMLElement('Work')}
 						Work
@@ -154,7 +159,6 @@ class Layout extends React.Component {
 						{genEntityIconHTMLElement('Series')}
 						Series
 					</NavDropdown.Item>
-					<NavDropdown.Divider/>
 					<NavDropdown.Item href="/author/create">
 						{genEntityIconHTMLElement('Author')}
 						Author
@@ -185,6 +189,10 @@ class Layout extends React.Component {
 					<NavDropdown.Item href={`/editor/${user.id}/collections`}>
 						<FontAwesomeIcon fixedWidth icon={faGripVertical}/>
 						{' Collections'}
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/external-service/">
+						<FontAwesomeIcon fixedWidth icon={faLink}/>
+						{' External Services'}
 					</NavDropdown.Item>
 					<NavDropdown.Item {...disableSignUp} href="/logout">
 						<FontAwesomeIcon fixedWidth icon={faSignOutAlt}/>

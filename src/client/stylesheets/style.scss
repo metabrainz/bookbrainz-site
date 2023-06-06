@@ -28,6 +28,7 @@ $disabled-color: lighten($disabled-bg,15%);
 
 @import "lobes4/scss/bootstrap.scss";
 @import "react-datepicker/dist/react-datepicker.css";
+@import "./external-services.scss";
 
 .navbar.BookBrainz {
 	background: rgba(255, 255, 255, 1);
@@ -382,6 +383,18 @@ a.contact-text:visited {
 	height: 10px;
 }
 
+/* Style inline alias lists the same way as the previously used h4 elements */
+ul.inline-aliases {
+	@extend h4;
+	padding: 0;
+	li {
+		display: inline;
+	}
+	li:not(:last-child)::after {
+		content: " · ";
+		font-weight: bolder;
+	}
+}
 
 /* Text wrapping in list-group-items (for long revision notes, for example) */
 /* ============= */
@@ -452,6 +465,7 @@ hr.wide {
 
 .annotation-content {
 	white-space: pre-wrap;
+	word-break: break-word;
 	position: relative;
 	font-family: inherit;
 	font-size: inherit;
@@ -718,6 +732,61 @@ ul {
 .input-group > .input-group-append > .btn {
 	padding: 6px 12px;
 }
+
+/* Unified  form */
+.uf-main{
+	padding: 0.6rem;
+}
+.uf-tab{
+	border: 1px #dfdfdf solid;
+	h4{
+		padding: 0.8rem;
+		margin-bottom: 0;
+		border-bottom: 0.125rem #ed8d60 solid;
+		background-color: #F7F7F7;
+
+	}
+	.tab-content{
+		padding: 1rem;	
+	}
+}
+.uf-tab-header{
+	padding: 0.6rem 0 0 0.6rem;
+	margin-bottom: 1rem;
+	background-color: #F4E9E3;
+	a{
+		color: #754E37;
+	}
+	.nav-link.nav-item.active{
+		color: $orange;
+		border-color: $orange;
+		border-bottom: none;
+	}
+}
+.uf-navbtn-row {
+	margin: 0;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+	button{
+		width: max-content;
+	}
+	.col{
+		align-items: stretch;
+		flex-grow: 0;
+		margin-right: 0.3rem;
+		padding: 0;
+	}
+	.col:nth-child(1)
+	{
+		margin-right: 3rem;
+	}
+}
+.uf-dialog{
+	max-width: 700px;
+}
+.uf-dialog.modal-dialog{
+	margin: 1.75rem 2rem;
+}
 .ac-select {
 	flex-grow: 2;
 }
@@ -726,6 +795,10 @@ ul {
 }
 .series-editor-select {
 	margin-top: 1.7em;
+}
+
+.cb-data-tip {
+    width: 300px;
 }
 
 .duplicate-result-scroll-window{
@@ -746,4 +819,61 @@ ul {
 		background: linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#ffffff', GradientType=0);
 	}
+}
+.uf-dialog .accordion > .card{
+	overflow:visible;
+}
+
+// Adding icon to accordion header 
+.accordion > .icon-card{
+	display: flex;
+	overflow: visible;
+	flex-direction: column-reverse;
+}
+
+.accordion > .card > .card-header{
+	border: none;
+	cursor: pointer;
+	display: flex;
+	justify-content: space-between;
+}
+div[class='card-header'] .accordion-arrow {
+	transition: all 0.3s linear;
+	transform: rotate(0deg);
+}
+div[class~='show'] + div[class='card-header'] .accordion-arrow,
+div[class~=collapsing]+div[class=card-header] .accordion-arrow {
+	transform: rotate(90deg);
+}
+.work-item{
+		border-bottom: 1px solid #EAE7E5;
+		margin-bottom: 0.5rem;
+}
+
+.uf-modal-body .accordion > .card{
+	margin-bottom: 10px;
+}
+.review-section{
+	display: flex;
+}
+
+.series-item-dialog{
+	max-width: 600px;
+}
+
+.review-card{
+	margin: 10px;
+	max-width: 200px;
+}
+
+.hierarchy-arrow {
+	border-left: 1px solid $gray-400;
+    width: 1em;
+    height: 1em;
+    content: "";
+    display: inline-block;
+    border-bottom: 1px solid $gray-400;
+    position: relative;
+    bottom: 0.3em;
+	left: -0.5em;
 }

@@ -21,6 +21,7 @@
 import * as Immutable from 'immutable';
 
 import {
+	ADD_LANGUAGE,
 	Action,
 	DISABLE_PHYSICAL,
 	ENABLE_PHYSICAL,
@@ -66,6 +67,8 @@ function reducer(
 			return state.set('editionGroupVisible', payload);
 		case UPDATE_LANGUAGES:
 			return state.set('languages', Immutable.fromJS(payload));
+		case ADD_LANGUAGE:
+			return state.update('languages', (languages) => (!payload ? languages : languages.push(payload)));
 		case UPDATE_FORMAT:
 			return state.set('format', payload);
 		case UPDATE_PUBLISHER:

@@ -40,7 +40,7 @@ import target from '../../templates/target';
 *********** Helpers ************
 *******************************/
 
-function transformNewForm(data) {
+export function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
 		data.aliasEditor, data.nameSection
 	);
@@ -93,7 +93,7 @@ const router = express.Router();
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadEditionGroupTypes,
-	middleware.loadRelationshipTypes, middleware.decodeUrlQueryParams,
+	middleware.loadRelationshipTypes,
 	 async (req, res) => {
 		const markupProps = generateEntityProps(
 			'editionGroup', req, res, {}
@@ -188,7 +188,7 @@ function _setEditionGroupTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
 	_setEditionGroupTitle(res);
 	res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
 	entityRoutes.displayEntity(req, res);
@@ -226,7 +226,7 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 });
 
 
-function editionGroupToFormState(editionGroup) {
+export function editionGroupToFormState(editionGroup) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = editionGroup.aliasSet ?
 		editionGroup.aliasSet.aliases.map(({languageId, ...rest}) => ({
