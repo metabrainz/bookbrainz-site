@@ -10,8 +10,8 @@ BEGIN TRANSACTION;
 
 CREATE TABLE bookbrainz.admin_log (
     id SERIAL PRIMARY KEY,
-    user1_id INT NOT NULL,
-    user2_id INT NOT NULL,
+    admin_id INT NOT NULL,
+    target_user_id INT NOT NULL,
     old_privs INT,
     new_privs INT,
     action_type bookbrainz.admin_action_type NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE bookbrainz.admin_log (
     note VARCHAR NOT NULL
 );
 
-ALTER TABLE bookbrainz.admin_log ADD FOREIGN KEY (user1_id) REFERENCES bookbrainz.editor(id);
-ALTER TABLE bookbrainz.admin_log ADD FOREIGN KEY (user2_id) REFERENCES bookbrainz.editor(id);
+ALTER TABLE bookbrainz.admin_log ADD FOREIGN KEY (admin_id) REFERENCES bookbrainz.editor(id);
+ALTER TABLE bookbrainz.admin_log ADD FOREIGN KEY (target_user_id) REFERENCES bookbrainz.editor(id);
 
 COMMIT;

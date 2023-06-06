@@ -41,6 +41,7 @@ CREATE TABLE bookbrainz.editor (
 	type_id INT NOT NULL,
 	gender_id INT,
 	area_id INT,
+	privs INT NOT NULL DEFAULT 1,
 	revisions_applied INT NOT NULL DEFAULT 0 CHECK (revisions_applied >= 0),
 	revisions_reverted INT NOT NULL DEFAULT 0 CHECK (revisions_reverted >= 0),
 	total_revisions INT NOT NULL DEFAULT 0 CHECK (total_revisions >= 0),
@@ -49,8 +50,6 @@ CREATE TABLE bookbrainz.editor (
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (gender_id) REFERENCES musicbrainz.gender (id) DEFERRABLE;
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.editor_type (id);
 ALTER TABLE bookbrainz.editor ADD FOREIGN KEY (area_id) REFERENCES musicbrainz.area (id) DEFERRABLE;
-
-ALTER TABLE bookbrainz.editor ADD COLUMN privs INT NOT NULL DEFAULT 1;
 
 CREATE TABLE bookbrainz.editor__language (
 	editor_id INT,
@@ -64,8 +63,8 @@ CREATE TABLE bookbrainz.editor__language (
 
 CREATE TABLE bookbrainz.admin_log (
     id SERIAL PRIMARY KEY,
-    user1_id INT NOT NULL,
-    user2_id INT NOT NULL,
+    admin_id INT NOT NULL,
+    target_user_id INT NOT NULL,
     old_privs INT,
     new_privs INT,
     action_type bookbrainz.admin_action_type NOT NULL,
@@ -73,8 +72,8 @@ CREATE TABLE bookbrainz.admin_log (
     note VARCHAR NOT NULL
 );
 
-ALTER TABLE bookbrainz.admin_log ADD FOREIGN KEY (user1_id) REFERENCES bookbrainz.editor (id);
-ALTER TABLE bookbrainz.admin_log ADD FOREIGN KEY (user2_id) REFERENCES bookbrainz.editor (id);
+ALTER TABLE bookbrainz.admin_log ADD FOREIGN KEY (admin_id) REFERENCES bookbrainz.editor (id);
+ALTER TABLE bookbrainz.admin_log ADD FOREIGN KEY (target_user_id) REFERENCES bookbrainz.editor (id);
 
 CREATE TABLE bookbrainz.entity (
 	bbid UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
