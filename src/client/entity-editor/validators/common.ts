@@ -26,6 +26,7 @@ import {
 } from './base';
 import {AuthorCredit} from '../author-credit-editor/actions';
 
+import {AuthorCredit} from '../author-credit-editor/actions';
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 

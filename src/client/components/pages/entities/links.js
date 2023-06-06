@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2017  Eshan Singh
+ *               2022  Ansh Goyal
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,28 +27,33 @@ import React from 'react';
 
 
 const {filterOutRelationshipTypeById} = entityHelper;
-const {Col, Row} = bootstrap;
+const {Row, Col} = bootstrap;
 
 function EntityLinks({entity, identifierTypes, urlPrefix}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const relationships = filterOutRelationshipTypeById(entity, relationshipTypeId);
 	return (
-		<Row>
-			<Col lg={8}>
-				<EntityRelationships
-					contextEntity={entity}
-					entityUrl={urlPrefix}
-					relationships={relationships}
-				/>
-			</Col>
-			<Col lg={4}>
-				<EntityIdentifiers
-					identifierTypes={identifierTypes}
-					identifiers={entity.identifierSet && entity.identifierSet.identifiers}
-				/>
-			</Col>
-		</Row>
+		<React.Fragment>
+			<Row>
+				<Col>
+					<EntityRelationships
+						contextEntity={entity}
+						entityUrl={urlPrefix}
+						relationships={relationships}
+					/>
+				</Col>
+			</Row>
+			<Row>
+				<Col>
+					<EntityIdentifiers
+						entityUrl={urlPrefix}
+						identifierTypes={identifierTypes}
+						identifiers={entity.identifierSet && entity.identifierSet.identifiers}
+					/>
+				</Col>
+			</Row>
+		</React.Fragment>
 	);
 }
 EntityLinks.displayName = 'EntityLinks';

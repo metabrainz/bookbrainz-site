@@ -117,8 +117,9 @@ router.get('/autocomplete', (req, res) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
 	const type = req.query.type || 'allEntities';
+	const size = req.query.size || 42;
 
-	const searchPromise = search.autocomplete(orm, query, type);
+	const searchPromise = search.autocomplete(orm, query, type, size);
 
 	handler.sendPromiseResult(res, searchPromise);
 });

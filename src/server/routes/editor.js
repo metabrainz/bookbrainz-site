@@ -25,7 +25,7 @@ import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
 import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
-import {getEditsInDays, getEntityVisits, getTypeCreation} from '../helpers/achievement';
+import {getConsecutiveDaysWithEdits, getEntityVisits, getTypeCreation} from '../helpers/achievement';
 import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
 import CollectionsPage from '../../client/components/pages/collections';
 import EditorContainer from '../../client/containers/editor';
@@ -448,11 +448,11 @@ async function getProgress(achievementId, editorId, orm) {
 	}
 	// Fun Runner
 	if (achievementId === 11) {
-		return getEditsInDays(orm, editorId, 6);
+		return getConsecutiveDaysWithEdits(orm, editorId, 6);
 	}
 	// Marathoner
 	if (achievementId === 12) {
-		return getEditsInDays(orm, editorId, 29);
+		return getConsecutiveDaysWithEdits(orm, editorId, 29);
 	}
 	// Explorer achivements
 	const explorerVisits = [24, 25, 26];

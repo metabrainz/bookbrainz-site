@@ -46,7 +46,7 @@ const additionalAuthorProps = [
 ];
 
 
-function transformNewForm(data) {
+export function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
 		data.aliasEditor, data.nameSection
 	);
@@ -97,7 +97,6 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadGenders, middleware.loadLanguages,
 	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
-	middleware.decodeUrlQueryParams,
 	async (req, res) => {
 		const markupProps = generateEntityProps(
 			'author', req, res, {
@@ -199,7 +198,7 @@ function _setAuthorTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
 	_setAuthorTitle(res);
 	entityRoutes.displayEntity(req, res);
 });
@@ -236,7 +235,7 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 });
 
 
-function authorToFormState(author) {
+export function authorToFormState(author) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = author.aliasSet ?
 		author.aliasSet.aliases.map(({languageId, ...rest}) => ({

@@ -91,7 +91,8 @@ type DispatchProps = {
 
 type OwnProps = {
 	authorTypes: Array<AuthorType>,
-	genderOptions: Array<GenderOptions>
+	genderOptions: Array<GenderOptions>,
+	isUnifiedForm?: boolean
 };
 
 export type Props = StateProps & DispatchProps & OwnProps;
@@ -149,6 +150,7 @@ function AuthorSection({
 	genderShow,
 	genderValue,
 	typeValue,
+	isUnifiedForm,
 	onBeginAreaChange,
 	onBeginDateChange,
 	onEndAreaChange,
@@ -171,22 +173,24 @@ function AuthorSection({
 
 	const {isValid: isValidDob, errorMessage: dobError} = validateAuthorSectionBeginDate(beginDateValue);
 	const {isValid: isValidDod, errorMessage: dodError} = validateAuthorSectionEndDate(beginDateValue, endDateValue, currentAuthorType.label);
-
-
+	const heading = <h2>What else do you know about the Author?</h2>;
+	const lgCol = {offset: 3, span: 6};
+	if (isUnifiedForm) {
+		lgCol.offset = 0;
+	}
 	return (
 		<div>
-			<h2>
-				What else do you know about the Author?
-			</h2>
+			{!isUnifiedForm && heading}
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
 				know it
 			</p>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>Type</Form.Label>
 						<Select
+							isClearable
 							classNamePrefix="react-select"
 							instanceId="authorType"
 							options={authorTypesForDisplay}
@@ -197,12 +201,13 @@ function AuthorSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={lgCol}>
 					<Form.Group className={genderShow ? null : 'd-none'}>
 						<Form.Label>Gender</Form.Label>
 						<Select
 							classNamePrefix="react-select"
 							instanceId="gender"
+							isClearable="true"
 							options={genderOptionsForDisplay}
 							value={genderOption}
 							onChange={onGenderChange}
@@ -211,7 +216,7 @@ function AuthorSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={lgCol}>
 					<DateField
 						show
 						defaultValue={beginDateValue}
@@ -224,7 +229,7 @@ function AuthorSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={lgCol}>
 					<EntitySearchFieldOption
 						instanceId="beginArea"
 						label={beginAreaLabel}
@@ -234,7 +239,7 @@ function AuthorSection({
 					/>
 				</Col>
 			</Row>
-			<div className="text-center">
+			<div className={!isUnifiedForm && 'text-center'}>
 				<Form.Check
 					defaultChecked={endedChecked}
 					label={endedLabel}
@@ -245,7 +250,7 @@ function AuthorSection({
 			{endedChecked &&
 				<div>
 					<Row>
-						<Col lg={{offset: 3, span: 6}}>
+						<Col lg={lgCol}>
 							<DateField
 								show
 								defaultValue={endDateValue}
@@ -258,7 +263,7 @@ function AuthorSection({
 						</Col>
 					</Row>
 					<Row>
-						<Col lg={{offset: 3, span: 6}}>
+						<Col lg={lgCol}>
 							<EntitySearchFieldOption
 								instanceId="endArea"
 								label={endAreaLabel}

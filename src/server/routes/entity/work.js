@@ -43,7 +43,7 @@ import target from '../../templates/target';
 *********** Helpers ************
 *******************************/
 
-function transformNewForm(data) {
+export function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
 		data.aliasEditor, data.nameSection
 	);
@@ -91,7 +91,7 @@ const router = express.Router();
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes,
-	middleware.loadRelationshipTypes, middleware.decodeUrlQueryParams,
+	middleware.loadRelationshipTypes,
 	(req, res, next) => {
 		const {Author, Edition} = req.app.locals.orm;
 		let relationshipTypeId;
@@ -222,7 +222,7 @@ function _setWorkTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
 	_setWorkTitle(res);
 	entityRoutes.displayEntity(req, res);
 });
@@ -258,8 +258,7 @@ router.get('/:bbid/revisions/revisions', (req, res, next) => {
 	entityRoutes.updateDisplayedRevisions(req, res, next, WorkRevision);
 });
 
-
-function workToFormState(work) {
+export function workToFormState(work) {
 	/** The front-end expects a language id rather than the language object. */
 	const aliases = work.aliasSet ?
 		work.aliasSet.aliases.map(({languageId, ...rest}) => ({

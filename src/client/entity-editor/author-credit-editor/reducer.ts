@@ -105,7 +105,7 @@ function setNewAuthorAndDisplay(state, payload) {
 function deleteAuthorCreditRow(state, payload) {
 	const firstRowKey = state.keySeq().first();
 	if (firstRowKey === payload) {
-		return state.setIn([payload, 'author'], null).setIn([payload, 'name'], '');
+		return state.set(payload, EMPTY_CREDIT_ROW);
 	}
 	let returnState = state.delete(payload);
 

@@ -48,7 +48,7 @@ function tests() {
 	describe('awardAchievement', () => {
 		afterEach(testData.truncate);
 
-		it('should award achievements', () => {
+		it('should award achievements', async () => {
 			const unlockPromise = testData.createEditor()
 				.then(() => testData.createRevisionist())
 				.then(
@@ -59,7 +59,7 @@ function tests() {
 					)
 				);
 
-			return Promise.all([
+			const result = await Promise.all([
 				expect(unlockPromise).to.eventually.have.nested.property(
 					'Revisionist I.editorId',
 					testData.editorAttribs.id
@@ -69,6 +69,7 @@ function tests() {
 					testData.revisionistIAttribs.id
 				)
 			]);
+			return result;
 		});
 
 		// suppress warnings from rejections
@@ -112,7 +113,7 @@ function tests() {
 	describe('awardTitle', () => {
 		afterEach(testData.truncate);
 
-		it('should award titles', () => {
+		it('should award titles', async () => {
 			const unlockPromise = testData.createEditor()
 				.then(() => testData.createRevisionist())
 				.then(
@@ -123,7 +124,7 @@ function tests() {
 					)
 				);
 
-			return Promise.all([
+			const result = await Promise.all([
 				expect(unlockPromise).to.eventually.have.nested.property(
 					'Revisionist.editorId',
 					testData.editorAttribs.id
@@ -133,6 +134,7 @@ function tests() {
 					testData.revisionistAttribs.id
 				)
 			]);
+			return result;
 		});
 
 		it('should reject invalid editors', () => {

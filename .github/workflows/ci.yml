@@ -60,6 +60,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: bookbrainz_test
+          POSTGRES_HOST: localhost
       
       - name: Set up node
         uses: actions/setup-node@v1

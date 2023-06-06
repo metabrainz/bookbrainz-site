@@ -1,5 +1,5 @@
 import LinkedEntity from './linked-entity';
-import {OptionProps} from 'react-select';
+import {OptionProps} from 'react-select/src/components/Option';
 import React from 'react';
 
 

@@ -18,7 +18,7 @@
 
 import * as Immutable from 'immutable';
 import {
-	ADD_IDENTIFIER_ROW, REMOVE_EMPTY_IDENTIFIERS, REMOVE_IDENTIFIER_ROW,
+	ADD_IDENTIFIER_ROW, ADD_OTHER_ISBN, REMOVE_EMPTY_IDENTIFIERS, REMOVE_IDENTIFIER_ROW,
 	UPDATE_IDENTIFIER_TYPE, UPDATE_IDENTIFIER_VALUE
 } from './actions';
 
@@ -59,6 +59,19 @@ function reducer(
 		case REMOVE_EMPTY_IDENTIFIERS:
 			return state.filterNot(identifier =>
 				identifier.get('value') === '' && identifier.get('type') === null);
+		case ADD_OTHER_ISBN: {
+			const {rowId, value, type: typeId} = payload;
+			// search if given identifier already exists
+			const existingIdentifierKey = state.findKey((row) => row.get('type') === typeId);
+			if (!existingIdentifierKey) {
+				return state.set(rowId, Immutable.Map({
+					type: typeId,
+					value
+				}));
+			}
+			// override the existing one if user enter different ISBN
+			return state.setIn([existingIdentifierKey, 'value'], value);
+		}
 		// no default
 	}
 	return state;

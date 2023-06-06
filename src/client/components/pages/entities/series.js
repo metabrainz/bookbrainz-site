@@ -18,15 +18,19 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
+import React, {createRef, useCallback} from 'react';
 import {getEntityKey, getEntityTable} from '../../../helpers/utils';
+import AverageRating from './average-ratings';
+import CBReviewModal from './cbReviewModal';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
 import EntityRelatedCollections from './related-collections';
+import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
-import React from 'react';
+import WikipediaExtract from './wikipedia-extract';
 
 
 const {deletedEntityMessage, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
@@ -37,6 +41,8 @@ function SeriesAttributes({series}) {
 		return deletedEntityMessage;
 	}
 	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(series);
+	const averageRating = series.reviews?.reviews?.average_rating?.rating || 0;
+	const reviewsCount = series.reviews?.reviews?.average_rating?.count || 0;
 	return (
 		<div>
 			<Row>
@@ -46,22 +52,30 @@ function SeriesAttributes({series}) {
 						<dd>{sortNameOfDefaultAlias}</dd>
 					</dl>
 				</Col>
-				<Col lg={3}>
+				<Col lg={2}>
 					<dl>
 						<dt>Series Type</dt>
 						<dd>{series.entityType}</dd>
 					</dl>
 				</Col>
-				<Col lg={3}>
+				<Col lg={2}>
 					<dl>
 						<dt>Ordering Type</dt>
 						<dd>{series.seriesOrderingType.label}</dd>
 					</dl>
 				</Col>
-				<Col lg={3}>
+				<Col lg={2}>
 					<dl>
 						<dt>Total Items</dt>
 						<dd>{series.seriesItems.length}</dd>
+					</dl>
+				</Col>
+				<Col lg={3}>
+					<dl>
+						<AverageRating
+							averageRatings={averageRating}
+							reviewsCount={reviewsCount}
+						/>
 					</dl>
 				</Col>
 			</Row>
@@ -74,12 +88,25 @@ SeriesAttributes.propTypes = {
 };
 
 
-function SeriesDisplayPage({entity, identifierTypes, user}) {
+function SeriesDisplayPage({entity, identifierTypes, user, genderOptions, wikipediaExtract}) {
+	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
+	const handleModalToggle = useCallback(() => {
+		setShowCBReviewModal(!showCBReviewModal);
+	}, [showCBReviewModal]);
+
+	const reviewsRef = createRef();
+
+	const handleUpdateReviews = useCallback(() => {
+		reviewsRef.current.handleClick();
+	}, [reviewsRef]);
+
+
 	const urlPrefix = getEntityUrl(entity);
 	const EntityTable = getEntityTable(entity.entityType);
 	const entityKey = getEntityKey(entity.entityType);
 	const propsForTable = {
 		[entityKey]: entity.seriesItems,
+		genderOptions,
 		showAdd: false,
 		showAddedAtColumn: false,
 		showCheckboxes: false
@@ -95,21 +122,40 @@ function SeriesDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 				<Col lg={10}>
-					<EntityTitle entity={entity}/>
-					<SeriesAttributes series={entity}/>
+					<EntityTitle
+						entity={entity}
+						handleModalToggle={handleModalToggle}
+					/>
+					<SeriesAttributes
+						series={entity}
+					/>
 				</Col>
 			</Row>
+			<WikipediaExtract articleExtract={wikipediaExtract} entity={entity}/>
 			<EntityAnnotation entity={entity}/>
 
 			{!entity.deleted &&
 			<React.Fragment>
 				<EntityTable {...propsForTable}/>
-				<EntityLinks
-					entity={entity}
-					identifierTypes={identifierTypes}
-					urlPrefix={urlPrefix}
-				/>
-				<EntityRelatedCollections collections={entity.collections}/>
+				<Row>
+					<Col lg={8}>
+						<EntityLinks
+							entity={entity}
+							identifierTypes={identifierTypes}
+							urlPrefix={urlPrefix}
+						/>
+						<EntityRelatedCollections collections={entity.collections}/>
+					</Col>
+					<Col lg={4}>
+						<EntityReviews
+							entityBBID={entity.bbid}
+							entityReviews={entity.reviews}
+							entityType={entity.type}
+							handleModalToggle={handleModalToggle}
+							ref={reviewsRef}
+						/>
+					</Col>
+				</Row>
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter
@@ -120,17 +166,30 @@ function SeriesDisplayPage({entity, identifierTypes, user}) {
 				lastModified={entity.revision.revision.createdAt}
 				user={user}
 			/>
+			{!entity.deleted && <CBReviewModal
+				entityBBID={entity.bbid}
+				entityName={entity.defaultAlias.name}
+				entityType={entity.type}
+				handleModalToggle={handleModalToggle}
+				handleUpdateReviews={handleUpdateReviews}
+				showModal={showCBReviewModal}
+				userId={user?.id}
+			                    />}
 		</div>
 	);
 }
 SeriesDisplayPage.displayName = 'SeriesDisplayPage';
 SeriesDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
+	genderOptions: PropTypes.array,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired
+	user: PropTypes.object.isRequired,
+	wikipediaExtract: PropTypes.object
 };
 SeriesDisplayPage.defaultProps = {
-	identifierTypes: []
+	genderOptions: [],
+	identifierTypes: [],
+	wikipediaExtract: {}
 };
 
 export default SeriesDisplayPage;
