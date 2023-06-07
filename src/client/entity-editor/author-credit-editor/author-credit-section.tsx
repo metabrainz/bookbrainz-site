@@ -218,7 +218,7 @@ function mapStateToProps(rootState, {type}): StateProps {
 
 	const authorCreditRow = authorCreditState.first();
 	const isEditable = Boolean(authorCreditEnable) &&
-	authorCreditState.size < 1 &&
+	authorCreditState.size <= 1 &&
 	Boolean(authorCreditRow) &&
 	authorCreditRow.get('name') === authorCreditRow.getIn(['author', 'text'], '');
 
