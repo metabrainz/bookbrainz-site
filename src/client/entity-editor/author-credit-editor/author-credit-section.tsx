@@ -29,7 +29,6 @@ import {
 } from './actions';
 import {Button, Col, Form, FormLabel, InputGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 
-// import {SingleValueProps, components} from 'react-select';
 import {get as _get, map as _map, values as _values, camelCase} from 'lodash';
 
 import {faInfoCircle, faPencilAlt, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
@@ -214,7 +213,7 @@ AuthorCreditSection.defaultProps = {
 	isUnifiedForm: false
 };
 function mapStateToProps(rootState, {type}): StateProps {
-	const authorCreditEnable = rootState.getIn(['buttonBar', 'authorCreditEnable']);
+	const authorCreditEnable = rootState.getIn(['editionSection', 'authorCreditEnable']);
 	let isEditable = false;
 	let showEditor = false;
 	if (authorCreditEnable) {

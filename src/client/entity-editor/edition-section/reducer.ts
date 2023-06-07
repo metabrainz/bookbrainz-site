@@ -25,6 +25,7 @@ import {
 	Action,
 	DISABLE_PHYSICAL,
 	ENABLE_PHYSICAL,
+	TOGGLE_AUTHOR_CREDIT,
 	TOGGLE_SHOW_EDITION_GROUP,
 	UPDATE_DEPTH,
 	UPDATE_EDITION_GROUP,
@@ -47,6 +48,7 @@ type State = Immutable.Map<string, any>;
 function reducer(
 	state: State = Immutable.Map({
 		authorCreditEditorVisible: false,
+		authorCreditEnable: true,
 		format: null,
 		languages: Immutable.List([]),
 		matchingNameEditionGroups: [],
@@ -98,6 +100,8 @@ function reducer(
 				return state.set('matchingNameEditionGroups', []);
 			}
 			return state.set('matchingNameEditionGroups', payload);
+		case TOGGLE_AUTHOR_CREDIT:
+			return state.set('authorCreditEnable', !state.get('authorCreditEnable'));
 		// no default
 	}
 	return state;

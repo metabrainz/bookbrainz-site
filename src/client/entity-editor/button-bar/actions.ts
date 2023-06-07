@@ -18,7 +18,6 @@
 
 export const SHOW_ALIAS_EDITOR = 'SHOW_ALIAS_EDITOR';
 export const SHOW_IDENTIFIER_EDITOR = 'SHOW_IDENTIFIER_EDITOR';
-export const TOGGLE_AUTHOR_CREDIT = 'TOGGLE_AUTHOR_CREDIT';
 
 export type Action = {
 	type: string,
@@ -55,13 +54,3 @@ export function showIdentifierEditor(): Action {
 	};
 }
 
-/**
- *  Produces an action indicating that the AC checkbox should be toggled.
- *
- * @returns {Action} The resulting TOGGLE_AUTHOR_CREDIT action.
- */
-export function toggleAuthorCredit(): Action {
-	return {
-		type: TOGGLE_AUTHOR_CREDIT
-	};
-}

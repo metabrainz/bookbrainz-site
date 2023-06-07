@@ -53,6 +53,7 @@ export const UPDATE_HEIGHT = 'UPDATE_HEIGHT';
 export const UPDATE_DEPTH = 'UPDATE_DEPTH';
 export const TOGGLE_SHOW_EDITION_GROUP = 'TOGGLE_SHOW_EDITION_GROUP';
 export const UPDATE_WARN_IF_EDITION_GROUP_EXISTS = 'UPDATE_WARN_IF_EDITION_GROUP_EXISTS';
+export const TOGGLE_AUTHOR_CREDIT = 'TOGGLE_AUTHOR_CREDIT';
 
 /**
  * Produces an action indicating that the edition status for the edition being
@@ -278,3 +279,13 @@ export function debouncedUpdateDepth(value: number | null | undefined): Action {
 	};
 }
 
+/**
+ *  Produces an action indicating that the AC checkbox should be toggled.
+ *
+ * @returns {Action} The resulting TOGGLE_AUTHOR_CREDIT action.
+ */
+export function toggleAuthorCredit(): Action {
+	return {
+		type: TOGGLE_AUTHOR_CREDIT
+	};
+}
