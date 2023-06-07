@@ -25,7 +25,6 @@ import {
 	Action,
 	DISABLE_PHYSICAL,
 	ENABLE_PHYSICAL,
-	TOGGLE_AUTHOR_CREDIT,
 	TOGGLE_SHOW_EDITION_GROUP,
 	UPDATE_DEPTH,
 	UPDATE_EDITION_GROUP,
@@ -40,7 +39,7 @@ import {
 	UPDATE_WEIGHT,
 	UPDATE_WIDTH
 } from './actions';
-import {HIDE_AUTHOR_CREDIT_EDITOR, SHOW_AUTHOR_CREDIT_EDITOR} from '../author-credit-editor/actions';
+import {HIDE_AUTHOR_CREDIT_EDITOR, SHOW_AUTHOR_CREDIT_EDITOR, TOGGLE_AUTHOR_CREDIT} from '../author-credit-editor/actions';
 
 
 type State = Immutable.Map<string, any>;

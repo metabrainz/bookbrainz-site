@@ -18,6 +18,7 @@
 
 import {
 	Action,
+import {Action,
 	AuthorCreditRow,
 	addAuthorCreditRow,
 	clearAuthorCredit,
@@ -27,6 +28,8 @@ import {
 	showAuthorCreditEditor,
 	updateCreditAuthorValue
 } from './actions';
+	toggleAuthorCredit
+	, updateCreditAuthorValue} from './actions';
 import {Button, Col, Form, FormLabel, InputGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 
 import {get as _get, map as _map, values as _values, camelCase} from 'lodash';
@@ -46,7 +49,6 @@ import {clearAuthor} from '../../unified-form/cover-tab/action';
 import {components} from 'react-select';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
-import {toggleAuthorCredit} from '../button-bar/actions';
 import {validateAuthorCreditSection} from '../validators/common';
 
 
