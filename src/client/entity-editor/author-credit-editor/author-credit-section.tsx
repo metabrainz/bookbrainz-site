@@ -217,7 +217,9 @@ function mapStateToProps(rootState, {type}): StateProps {
 	const showEditor = rootState.getIn([entitySection, 'authorCreditEditorVisible']);
 
 	const authorCreditRow = authorCreditState.first();
-	const isEditable = Boolean(authorCreditEnable) && !(authorCreditState.size > 1) &&
+	const isEditable = Boolean(authorCreditEnable) &&
+	authorCreditState.size < 1 &&
+	Boolean(authorCreditRow) &&
 	authorCreditRow.get('name') === authorCreditRow.getIn(['author', 'text'], '');
 
 	return {
