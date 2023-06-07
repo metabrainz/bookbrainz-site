@@ -114,7 +114,7 @@ function AuthorCreditSection({
 	);
 	const optionValue = authorCreditPreview.length && {label: authorCreditPreview, value: authorCreditPreview};
 	const tooltip = (
-		<Tooltip>
+		<Tooltip id="AC-checkbox-tooltip">
 			Name(s) of the Author(s) as they appear on the book cover
 		</Tooltip>
 	);
