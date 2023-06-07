@@ -54,7 +54,7 @@ export function transformNewForm(data) {
 	);
 
 	let authorCredit = {};
-	if (!_.get(data, ['buttonBar', 'authorCreditEnable'], true)) {
+	if (!_.get(data, ['editionGroupSection', 'authorCreditEnable'], true)) {
 		authorCredit = null;
 	}
 	else if (!_.isNil(data.authorCredit)) {

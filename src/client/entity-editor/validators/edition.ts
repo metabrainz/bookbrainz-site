@@ -134,8 +134,8 @@ export function validateForm(
 	isMerge?:boolean
 ): boolean {
 	let validAuthorCredit;
-	const authorCreditEnable = isIterable(formData) ? formData.getIn(['buttonBar', 'authorCreditEnable'], true) :
-		get(formData, 'buttonBar.authorCreditEnable', true);
+	const authorCreditEnable = isIterable(formData) ? formData.getIn(['editionSection', 'authorCreditEnable'], true) :
+		get(formData, 'editionSection.authorCreditEnable', true);
 	if (isMerge) {
 		validAuthorCredit = validateAuthorCreditSectionMerge(get(formData, 'authorCredit', {}));
 	}

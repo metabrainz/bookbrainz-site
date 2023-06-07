@@ -74,7 +74,7 @@ export function transformNewForm(data) {
 		data.editionSection.languages, (language) => language.value
 	);
 	let authorCredit = {};
-	if (!_.get(data, ['buttonBar', 'authorCreditEnable'], true)) {
+	if (!_.get(data, ['editionSection', 'authorCreditEnable'], true)) {
 		authorCredit = null;
 	}
 	else if (!_.isNil(data.authorCredit)) {

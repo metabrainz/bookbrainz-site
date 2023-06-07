@@ -446,7 +446,10 @@ function describeValidateForm() {
 			{
 				...validForm,
 				authorCreditEditor: {},
-				buttonBar: {authorCreditEnable: false}
+				editionSection: {
+					...validForm.editionSection,
+					authorCreditEnable: false
+				}
 			},
 			IDENTIFIER_TYPES
 		);
@@ -491,7 +494,10 @@ function describeValidateForm() {
 			{
 				...validForm,
 				authorCreditEditor: VALID_AUTHOR_CREDIT_EDITOR,
-				buttonBar: {authorCreditEnable: false}
+				editionSection: {
+					...validForm.editionSection,
+					authorCreditEnable: false
+				}
 			},
 			IDENTIFIER_TYPES
 		);
