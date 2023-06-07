@@ -16,8 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {
-	Action,
 import {Action,
 	AuthorCreditRow,
 	addAuthorCreditRow,
@@ -26,8 +24,6 @@ import {Action,
 	removeEmptyCreditRows,
 	resetAuthorCredit,
 	showAuthorCreditEditor,
-	updateCreditAuthorValue
-} from './actions';
 	toggleAuthorCredit
 	, updateCreditAuthorValue} from './actions';
 import {Button, Col, Form, FormLabel, InputGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
@@ -99,7 +95,7 @@ function AuthorCreditSection({
 
 	const editButton = (
 		// eslint-disable-next-line react/jsx-no-bind
-		<Button disabled={!authorCreditEnable} variant="success" onClick={function openEditor() { onEditAuthorCredit(authorCreditRows.length); }}>
+		<Button disabled={!isEditable} variant="success" onClick={function openEditor() { onEditAuthorCredit(authorCreditRows.length); }}>
 			<FontAwesomeIcon icon={faPencilAlt}/>
 			&nbsp;Edit
 		</Button>);
@@ -177,7 +173,7 @@ function AuthorCreditSection({
 								customComponents={{DropdownIndicator: null, SingleValue}}
 								instanceId="author0"
 								isClearable={false}
-								isDisabled={!isEditable || !authorCreditEnable}
+								isDisabled={!isEditable}
 								isUnifiedForm={isUnifiedForm}
 								placeholder="Type to search or paste a BBID"
 								rowId="n0"
@@ -190,9 +186,9 @@ function AuthorCreditSection({
 						<InputGroup.Append>{editButton}</InputGroup.Append>
 					</InputGroup>
 					<Form.Check
+						checked={!authorCreditEnable}
 						className="mt-2"
-						defaultChecked={!authorCreditEnable}
-						disabled={Boolean(optionValue)}
+						// disabled={!immutableAuthorCreditEditor.size}
 						id="ac-enabled-check"
 						label={checkboxLabel}
 						type="checkbox"
@@ -215,17 +211,15 @@ AuthorCreditSection.defaultProps = {
 	isUnifiedForm: false
 };
 function mapStateToProps(rootState, {type}): StateProps {
-	const authorCreditEnable = rootState.getIn(['editionSection', 'authorCreditEnable']);
-	let isEditable = false;
-	let showEditor = false;
-	if (authorCreditEnable) {
-		const firstRowKey = rootState.get('authorCreditEditor').keySeq().first();
-		const authorCreditRow = rootState.getIn(['authorCreditEditor', firstRowKey]);
-		isEditable = !(rootState.get('authorCreditEditor').size > 1) &&
-		authorCreditRow.get('name') === authorCreditRow.getIn(['author', 'text'], '');
-		const entitySection = `${camelCase(type)}Section`;
-		showEditor = rootState.getIn([entitySection, 'authorCreditEditorVisible']);
-	}
+	const entitySection = `${camelCase(type)}Section`;
+	const authorCreditEnable = rootState.getIn([entitySection, 'authorCreditEnable']);
+	const authorCreditState = rootState.get('authorCreditEditor');
+	const showEditor = rootState.getIn([entitySection, 'authorCreditEditorVisible']);
+
+	const authorCreditRow = authorCreditState.first();
+	const isEditable = Boolean(authorCreditEnable) && !(authorCreditState.size > 1) &&
+	authorCreditRow.get('name') === authorCreditRow.getIn(['author', 'text'], '');
+
 	return {
 		authorCreditEditor: rootState.get('authorCreditEditor'),
 		authorCreditEnable,
