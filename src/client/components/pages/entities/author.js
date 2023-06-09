@@ -163,7 +163,7 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 				<React.Fragment>
 					<Row>
 						<Col lg={8}>
-              <EditionTable editions={editions} entity={entity}/>
+							<EditionTable editions={editions} entity={entity}/>
 							<EntityLinks
 								entity={entity}
 								identifierTypes={identifierTypes}
