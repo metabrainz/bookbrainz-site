@@ -19,6 +19,7 @@ const cleanWebpackPluginOpts = {
 const clientConfig = {
 	context: path.resolve(__dirname, 'src', 'client'),
 	entry: {
+		adminPanel: ['./controllers/admin-panel'],
 		collection: ['./controllers/collection/collection'],
 		'collection/create': ['./controllers/collection/userCollectionForm'],
 		collections: ['./controllers/collections'],
