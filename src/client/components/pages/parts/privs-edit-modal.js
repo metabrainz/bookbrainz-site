@@ -30,7 +30,7 @@ class PrivsEditModal extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			privs: props.targetUser.privs ? props.targetUser.privs : null,
+			privs: props.targetUser.privs,
 			submittable: false
 		};
 
