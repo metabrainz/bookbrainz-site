@@ -22,6 +22,7 @@ import AdminPanelSearchResults from './parts/admin-panel-search-results';
 import {Card} from 'react-bootstrap';
 import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
+import {findIndex} from 'lodash';
 
 type Props = {
 	from?: number,
@@ -114,6 +115,22 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 	};
 
 	/**
+	 * When we update the privileges of the user, we need to update the information in the results page
+	 *
+	 * @param {Record<string, any>} updatedUserData - The modified user after privileges change
+	 */
+	updatePrivsOnResultsList = (updatedUserData: Record<string, any>) => {
+		const {results} = this.state;
+		const selectedIndex = findIndex(results, {id: updatedUserData.id});
+		const updatedUsers = results;
+		updatedUsers[selectedIndex] = updatedUserData;
+
+		this.setState({
+			results: updatedUsers
+		});
+	};
+
+	/**
 	 * Renders the component: Search bar with results table located vertically
 	 * below it.
 	 *
@@ -135,6 +152,7 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 						/>
 						<AdminPanelSearchResults
 							results={this.state.results}
+							updatePrivsOnResultsList={this.updatePrivsOnResultsList}
 							user={this.props.user}
 						/>
 						<PagerElement

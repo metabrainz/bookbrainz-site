@@ -60,11 +60,15 @@ class PrivsEditModal extends React.Component {
 				},
 				method: 'POST'
 			});
+
 			if (!response.ok) {
 				const {error} = await response.json();
 				throw new Error(error ?? response.statusText);
 			}
-			window.location.reload();
+			let updatedUserData = this.props.targetUser;
+			updatedUserData.privs = privs;
+			this.props.updatePrivsOnResultsList(updatedUserData);
+			this.props.handleCloseModal();
 		}
 		catch (err) {
 			throw new Error(err);
@@ -143,7 +147,8 @@ PrivsEditModal.propTypes = {
 	adminId: PropTypes.number.isRequired,
 	handleCloseModal: PropTypes.func.isRequired,
 	show: PropTypes.bool.isRequired,
-	targetUser: PropTypes.object.isRequired
+	targetUser: PropTypes.object.isRequired,
+	updatePrivsOnResultsList: PropTypes.func.isRequired
 };
 
 export default PrivsEditModal;
