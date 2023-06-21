@@ -34,7 +34,7 @@ type AdminPanelSearchResultsState = {
 };
 type AdminPanelSearchResultsProps = {
 	results?: any[],
-	updatePrivsOnResultsList: (user: Record<string, any>) => void,
+	updateResultsOnPrivsChange: () => void,
 	user: Record<string, unknown>
 };
 
@@ -49,7 +49,7 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 
 	static propTypes = {
 		results: PropTypes.array,
-		updatePrivsOnResultsList: PropTypes.func.isRequired,
+		updateResultsOnPrivsChange: PropTypes.func.isRequired,
 		user: PropTypes.object.isRequired
 	};
 
@@ -127,7 +127,7 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 								handleCloseModal={this.onCloseModal}
 								show={this.state.showModal}
 								targetUser={this.state.selectedUser}
-								updatePrivsOnResultsList={this.props.updatePrivsOnResultsList}
+								updateResultsOnPrivsChange={this.props.updateResultsOnPrivsChange}
 							/>
 						</div>
 					)

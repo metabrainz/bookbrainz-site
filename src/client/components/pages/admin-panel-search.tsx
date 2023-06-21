@@ -22,7 +22,6 @@ import AdminPanelSearchResults from './parts/admin-panel-search-results';
 import {Card} from 'react-bootstrap';
 import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
-import {findIndex} from 'lodash';
 
 type Props = {
 	from?: number,
@@ -36,6 +35,7 @@ type Props = {
 type State = {
 	query: string | null | undefined;
 	results: any[];
+	updateResultsTrigger: number;
 };
 
 class AdminPanelSearchPage extends React.Component<Props, State> {
@@ -69,7 +69,8 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 
 		this.state = {
 			query: props.query,
-			results: props.initialResults
+			results: props.initialResults,
+			updateResultsTrigger: 0
 		};
 
 		this.paginationUrl = './admin-panel/search';
@@ -116,17 +117,16 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 
 	/**
 	 * When we update the privileges of the user, we need to update the information in the results page
-	 *
-	 * @param {Record<string, any>} updatedUserData - The modified user after privileges change
+	 * The updateResultsTrigger is passed as a prop in the Pager Component, whenever we want to
+	 * get updated results, we need to just use the triggerSearch function in the Pager Component. In order to
+	 * trigger that function without any change in query, we can just update this prop by flipping it between 0 and 1.
+	 * This will trigger the componentDidUpdate lifecycle method in Pager component and then we can run the
+	 * triggerSearch function
 	 */
-	updatePrivsOnResultsList = (updatedUserData: Record<string, any>) => {
-		const {results} = this.state;
-		const selectedIndex = findIndex(results, {id: updatedUserData.id});
-		const updatedUsers = results;
-		updatedUsers[selectedIndex] = updatedUserData;
-
+	updateResultsOnPrivsChange = () => {
+		const {updateResultsTrigger: trigger} = this.state;
 		this.setState({
-			results: updatedUsers
+			updateResultsTrigger: 1 - trigger
 		});
 	};
 
@@ -137,7 +137,7 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 	 * @returns {object} - JSX to render.
 	 */
 	render() {
-		const {query, results} = this.state;
+		const {query, results, updateResultsTrigger} = this.state;
 		const querySearchParams = `q=${query}&type=editor`;
 		return (
 			<Card>
@@ -152,7 +152,7 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 						/>
 						<AdminPanelSearchResults
 							results={this.state.results}
-							updatePrivsOnResultsList={this.updatePrivsOnResultsList}
+							updateResultsOnPrivsChange={this.updateResultsOnPrivsChange}
 							user={this.props.user}
 						/>
 						<PagerElement
@@ -164,6 +164,7 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 							searchParamsChangeCallback={this.searchParamsChangeCallback}
 							searchResultsCallback={this.searchResultsCallback}
 							size={this.props.resultsPerPage}
+							updateResultsTrigger={updateResultsTrigger}
 						/>
 						<div className="text-center">
 							{results.length === 0 && query.length !== 0 &&
