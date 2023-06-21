@@ -146,12 +146,12 @@ function PublisherSection({
 					<Form.Group>
 						<Form.Label>Type</Form.Label>
 						<Select
+							isClearable
 							classNamePrefix="react-select"
 							instanceId="publisherType"
 							options={publisherTypesForDisplay}
 							value={typeOption}
 							onChange={onTypeChange}
-							isClearable={true}
 						/>
 					</Form.Group>
 				</Col>

@@ -174,6 +174,12 @@ function entitiesToFormState(entities: any[]) {
 }
 
 async function loadEntityRelationships(entity, orm, transacting): Promise<any> {
+	async function getEntityWithAlias(relEntity) {
+		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
+		const model = commonUtils.getEntityModelByType(orm, relEntity.type);
+		return model.forge({bbid: redirectBbid})
+		  .fetch({require: true, withRelated: ['defaultAlias'].concat(getAdditionalRelations(relEntity.type))});
+	}
 	const {RelationshipSet} = orm;
 
 	// Default to empty array, its presence is expected down the line
@@ -183,80 +189,70 @@ async function loadEntityRelationships(entity, orm, transacting): Promise<any> {
 		return null;
 	}
 	try {
-	  const relationshipSet = await RelationshipSet.forge({ id: entity.relationshipSetId })
-		.fetch({
-			transacting,
-			withRelated: [
-				'relationships.source',
-				'relationships.target',
-				'relationships.type.attributeTypes',
-				'relationships.attributeSet.relationshipAttributes.value',
-				'relationships.attributeSet.relationshipAttributes.type'
-			]
-		})
-	  if (relationshipSet) {
-		entity.relationships = relationshipSet.related('relationships').toJSON();
-	  }
-  
+	  const relationshipSet = await RelationshipSet.forge({id: entity.relationshipSetId})
+			.fetch({
+				transacting,
+				withRelated: [
+					'relationships.source',
+					'relationships.target',
+					'relationships.type.attributeTypes',
+					'relationships.attributeSet.relationshipAttributes.value',
+					'relationships.attributeSet.relationshipAttributes.type'
+				]
+			});
+		if (relationshipSet) {
+			entity.relationships = relationshipSet.related('relationships').toJSON();
+		}
+
 	  attachAttributes(entity.relationships);
-  
-	  async function getEntityWithAlias(relEntity) {
-		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
-		const model = commonUtils.getEntityModelByType(orm, relEntity.type);
-  
-		return model.forge({ bbid: redirectBbid })
-		  .fetch({ require: true, withRelated: ['defaultAlias'].concat(getAdditionalRelations(relEntity.type)) });
-	  }
-  
+
 	  /**
 	   * Source and target are generic Entity objects, so until we have
 	   * a good way of polymorphically fetching the right specific entity,
 	   * we need to fetch default alias in a somewhat sketchier way.
 	   */
 	  const relationships = await Promise.all(entity.relationships.map(async (relationship) => {
-		const [relationshipSource, relationshipTarget] = await Promise.all([
-		  getEntityWithAlias(relationship.source),
-		  getEntityWithAlias(relationship.target)
-		]);
-  
-		relationship.source = relationshipSource.toJSON();
-		relationship.target = relationshipTarget.toJSON();
-  
-		return relationship;
+			const [relationshipSource, relationshipTarget] = await Promise.all([
+				getEntityWithAlias(relationship.source),
+				getEntityWithAlias(relationship.target)
+			]);
+
+			relationship.source = relationshipSource.toJSON();
+			relationship.target = relationshipTarget.toJSON();
+			return relationship;
 	  }));
-  
+
 	  // Set rendered relationships on relationship objects
-	  relationships.forEach((relationship) => {
-		relationship.rendered = renderRelationship(relationship);
-	  });
-  
+		relationships.forEach((relationship) => {
+			relationship.rendered = renderRelationship(relationship);
+		});
 	  return entity;
-	} catch (error) {
-	  console.error(error);
 	}
-  }
+	catch (error) {
+		/* eslint-disable no-console */
+		console.error(error);
+		/* eslint-enable no-console */
+	}
+	return null;
+}
 async function getEntityByBBID(orm, transacting, bbid) {
-	try {
 	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, transacting);
 	const entityHeader = await orm.Entity.forge({bbid: redirectBbid}).fetch({transacting});
 	const entityType = entityHeader.get('type');
 	const model = commonUtils.getEntityModelByType(orm, entityType);
 
-		const entity = await model.forge({bbid: redirectBbid})
-			.fetch({
-				require: true,
-				transacting,
-				withRelated: basicRelations.concat(getEntityFetchPropertiesByType(entityType))
-			});
+	const entity = await model.forge({bbid: redirectBbid})
+		.fetch({
+			require: true,
+			transacting,
+			withRelated: basicRelations.concat(getEntityFetchPropertiesByType(entityType))
+		});
 
-		const entityJSON = entity.toJSON();
-		await loadEntityRelationships(entityJSON, orm, transacting);
+	const entityJSON = entity.toJSON();
+	await loadEntityRelationships(entityJSON, orm, transacting);
 
-		// Return the loaded entity as JSON
-		return entityJSON;
-	} catch (error) {
-		throw error;
-	}
+	// Return the loaded entity as JSON
+	return entityJSON;
 }
 
 

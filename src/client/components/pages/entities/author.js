@@ -31,6 +31,7 @@ import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
+import WikipediaExtract from './wikipedia-extract';
 import {kebabCase as _kebabCase} from 'lodash';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {labelsForAuthor} from '../../../helpers/utils';
@@ -116,7 +117,7 @@ AuthorAttributes.propTypes = {
 };
 
 
-function AuthorDisplayPage({entity, identifierTypes, user}) {
+function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);
@@ -149,6 +150,7 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 			</Row>
+			<WikipediaExtract articleExtract={wikipediaExtract} entity={entity}/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 				<React.Fragment>
@@ -204,11 +206,12 @@ AuthorDisplayPage.displayName = 'AuthorDisplayPage';
 AuthorDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired
-
+	user: PropTypes.object.isRequired,
+	wikipediaExtract: PropTypes.object
 };
 AuthorDisplayPage.defaultProps = {
-	identifierTypes: []
+	identifierTypes: [],
+	wikipediaExtract: {}
 };
 
 export default AuthorDisplayPage;

@@ -31,6 +31,7 @@ import EntityRelatedCollections from './related-collections';
 import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
+import WikipediaExtract from './wikipedia-extract';
 
 
 const {deletedEntityMessage, getRelationshipSourceByTypeId, getLanguageAttribute, getTypeAttribute, getEntityUrl,
@@ -86,7 +87,7 @@ WorkAttributes.propTypes = {
 };
 
 
-function WorkDisplayPage({entity, identifierTypes, user}) {
+function WorkDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);
@@ -123,6 +124,7 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 			</Row>
+			<WikipediaExtract articleExtract={wikipediaExtract} entity={entity}/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
@@ -175,10 +177,12 @@ WorkDisplayPage.displayName = 'WorkDisplayPage';
 WorkDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired
+	user: PropTypes.object.isRequired,
+	wikipediaExtract: PropTypes.object
 };
 WorkDisplayPage.defaultProps = {
-	identifierTypes: []
+	identifierTypes: [],
+	wikipediaExtract: {}
 };
 
 export default WorkDisplayPage;

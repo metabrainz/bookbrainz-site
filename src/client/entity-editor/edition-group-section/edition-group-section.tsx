@@ -85,7 +85,7 @@ function EditionGroupSection({
 	return (
 		<div>
 			{!isUnifiedForm && heading}
-			<AuthorCreditSection type="editionGroup" isLeftAlign={isLeftAlign}/>
+			<AuthorCreditSection isLeftAlign={isLeftAlign} type="editionGroup"/>
 			<p className="text-muted">
 				All fields optional — leave something blank if you don&rsquo;t
 				know it
@@ -103,12 +103,12 @@ function EditionGroupSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
+							isClearable
 							classNamePrefix="react-select"
 							instanceId="editionGroupType"
 							options={editionGroupTypesForDisplay}
 							value={typeOption}
 							onChange={onTypeChange}
-							isClearable={true}
 						/>
 					</Form.Group>
 				</Col>

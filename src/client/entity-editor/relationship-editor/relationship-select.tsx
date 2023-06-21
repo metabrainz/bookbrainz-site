@@ -1,6 +1,8 @@
-import {OptionProps, SingleValueProps, components} from 'react-select';
 import Relationship, {RelationshipType} from './relationship';
+import {OptionProps} from 'react-select/src/components/Option';
 import React from 'react';
+import {SingleValueProps} from 'react-select/src/components/SingleValue';
+import {components} from 'react-select';
 
 
 const RelationshipSelect = (props:OptionProps<RelationshipType, any>|SingleValueProps<RelationshipType>) => {
