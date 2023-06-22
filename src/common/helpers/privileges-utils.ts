@@ -1,20 +1,49 @@
 /* eslint-disable sort-keys */
+export const PRIVILEGE_PROPERTIES = {
+	0: {
+		title: 'Entity Editor',
+		badgeVariant: 'secondary'
+	},
+	1: {
+		title: 'Identifier Type Editor',
+		badgeVariant: 'warning'
+	},
+	2: {
+		title: 'Relationship Type Editor',
+		badgeVariant: 'info'
+	},
+	3: {
+		title: 'Reindex Search Engine',
+		badgeVariant: 'succes'
+	},
+	4: {
+		title: 'Administrator',
+		badgeVariant: 'danger'
+	}
+};
+
 export const PrivilegeTypes = {
-	ADMIN_PRIV: 16,
-	REINDEX_SEARCH_SERVER_PRIV: 8,
-	RELATIONSHIP_TYPE_EDITOR_PRIV: 4,
-	IDENTIFIER_TYPE_EDITOR_PRIV: 2,
-	ENTITY_EDITING_PRIV: 1
+	ADMIN_PRIV: {
+		bit: 4,
+		value: 16
+	},
+	REINDEX_SEARCH_SERVER_PRIV: {
+		bit: 3,
+		value: 8
+	},
+	RELATIONSHIP_TYPE_EDITOR_PRIV: {
+		bit: 2,
+		value: 4
+	},
+	IDENTIFIER_TYPE_EDITOR_PRIV: {
+		bit: 1,
+		value: 2
+	},
+	ENTITY_EDITING_PRIV: {
+		bit: 0,
+		value: 1
+	}
 };
-
-export const PrivilegeTypeBits = {
-	ADMIN_PRIV: 4,
-	REINDEX_SEARCH_SERVER_PRIV: 3,
-	RELATIONSHIP_TYPE_EDITOR_PRIV: 2,
-	IDENTIFIER_TYPE_EDITOR_PRIV: 1,
-	ENTITY_EDITING_PRIV: 0
-};
-
 
 /* eslint-disable no-bitwise */
 /**
@@ -25,7 +54,7 @@ export const PrivilegeTypeBits = {
  */
 export function getPrivilegeShieldIcon(privs: number) {
 	// if the user has admin privilege
-	if (privs & PrivilegeTypes.ADMIN_PRIV) {
+	if (privs & PrivilegeTypes.ADMIN_PRIV.value) {
 		return '/images/icons/shield-check-orange-filled.svg';
 	}
 	// if the user has some special privileges, but not the admin privilege
@@ -41,42 +70,26 @@ export function getPrivilegeShieldIcon(privs: number) {
 }
 
 export function getPrivilegeTitleFromBit(bit: number) {
-	const privTypes = {
-		0: 'Entity Editor',
-		1: 'Identifier Type Editor',
-		2: 'Relationship Type Editor',
-		3: 'Reindex Search Engine',
-		4: 'Administrator'
-	};
-
-	return privTypes[bit];
+	return PRIVILEGE_PROPERTIES[bit].title;
 }
 
-export function getBadgeVariantFromTitle(title: string) {
-	const variants = {
-		'Entity Editor': 'secondary',
-		'Identifier Type Editor': 'warning',
-		'Relationship Type Editor': 'info',
-		'Reindex Search Engine': 'success',
-		Administrator: 'danger'
-	};
-
-	return variants[title];
+export function getBadgeVariantFromBit(bit: number) {
+	return PRIVILEGE_PROPERTIES[bit].badgeVariant;
 }
 
 /**
- * Retrieves the titles of all the privileges contained in the privs variable
+ * Retrieves the bits of all the privileges set in the privs variable
  *
  * @param {number} privs - the privileges of the user
  * @throws {Error} Throws a custom error if there is some unsupported privilege type
- * @returns {Array} - returns an array of containing the titles of all the privileges the user has
+ * @returns {Array} - returns an array of containing the bits of all the privileges the user has set
  */
-export function getPrivilegeTitlesArray(privs: number): any {
-	const PrivTitles = Object.values(PrivilegeTypeBits).filter(bit => privs & (1 << bit)).map(bit => getPrivilegeTitleFromBit(bit));
-	const maxBits = Object.keys(PrivilegeTypeBits).length;
+export function getPrivilegeBitsArray(privs: number): any {
+	const PrivBits = Object.values(PrivilegeTypes).filter(priv => privs & (1 << priv.bit)).map(priv => priv.bit);
+	const maxBits = Object.keys(PrivilegeTypes).length;
 
 	if (privs >= (1 << maxBits)) {
 		throw new Error(`Unsupported set of Privileges: '${privs}'`);
 	}
-	return PrivTitles;
+	return PrivBits;
 }

@@ -17,7 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import {PrivilegeTypeBits, getPrivilegeShieldIcon, getPrivilegeTitleFromBit} from '../../../../common/helpers/privileges-utils';
+import {PrivilegeTypes, getPrivilegeShieldIcon, getPrivilegeTitleFromBit} from '../../../../common/helpers/privileges-utils';
 import {faPencilAlt, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PrivilegeBadges from './privilege-badges';
@@ -94,14 +94,14 @@ class PrivsEditModal extends React.Component {
 	render() {
 		const link = `/editor/${this.props.targetUser.bbid}`;
 
-		const switches = Object.values(PrivilegeTypeBits).map(bit => (
+		const switches = Object.values(PrivilegeTypes).map(priv => (
 			<Form.Check
-				checked={this.state.privs & (1 << bit)}
-				id={`bit${bit}`}
-				key={bit}
-				label={getPrivilegeTitleFromBit(bit)}
+				checked={this.state.privs & priv.value}
+				id={`bit${priv.bit}`}
+				key={priv.bit}
+				label={getPrivilegeTitleFromBit(priv.bit)}
 				type="switch"
-				onChange={() => this.handleBitChange(bit)}
+				onChange={() => this.handleBitChange(priv.bit)}
 			/>
 		));
 

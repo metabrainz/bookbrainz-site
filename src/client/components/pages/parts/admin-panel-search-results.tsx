@@ -26,7 +26,7 @@ import {faPencilAlt} from '@fortawesome/free-solid-svg-icons';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 import {getPrivilegeShieldIcon} from '../../../../common/helpers/privileges-utils';
 
-const {Badge, Button, Table} = bootstrap;
+const {Button, Table} = bootstrap;
 
 type AdminPanelSearchResultsState = {
 	selectedUser?: Record<string, unknown>,

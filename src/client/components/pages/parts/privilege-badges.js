@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {getBadgeVariantFromTitle, getPrivilegeTitlesArray} from '../../../../common/helpers/privileges-utils';
+import {getBadgeVariantFromBit, getPrivilegeBitsArray, getPrivilegeTitleFromBit} from '../../../../common/helpers/privileges-utils';
 import {Badge} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -24,11 +24,11 @@ import React from 'react';
 
 
 function PrivilegeBadges({privs}) {
-	const privTitles = getPrivilegeTitlesArray(privs);
-	const privilegeListComp = privTitles.map(title => (
-		<span key={title}>
-			<Badge pill variant={getBadgeVariantFromTitle(title)}>
-				{title}
+	const privBits = getPrivilegeBitsArray(privs);
+	const privilegeListComp = privBits.map(bit => (
+		<span key={bit}>
+			<Badge pill variant={getBadgeVariantFromBit(bit)}>
+				{getPrivilegeTitleFromBit(bit)}
 			</Badge>
 			{' '}
 		</span>
