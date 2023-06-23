@@ -51,6 +51,6 @@ export function parseAcceptLanguage(acceptLanguage: string): AcceptedLanguage[] 
  * @returns {string[]} Parsed language codes, sorted by weight in descending order.
  */
 export function getAcceptedLanguageCodes(request: Request): string[] {
-	return parseAcceptLanguage(request.headers['accept-language'])
+	return parseAcceptLanguage(request.headers['accept-language'] ?? '')
 		.map((language) => language.code);
 }
