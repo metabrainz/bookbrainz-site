@@ -24,7 +24,7 @@
 import * as bootstrap from 'react-bootstrap';
 import {
 	faChartLine, faGripVertical, faLink, faListUl, faPlus, faQuestionCircle,
-	faSearch, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle
+	faSearch, faShieldHalved, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle, faUserGear
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Footer from './../components/footer';
@@ -123,12 +123,33 @@ class Layout extends React.Component {
 			</span>
 		);
 
+		const privilegesDropdownTitle = (
+			<span>
+				<FontAwesomeIcon icon={faShieldHalved}/>
+				{' Privileges'}
+			</span>
+		);
+
 		const disableSignUp = this.props.disableSignUp ?
 			{disabled: true} :
 			{};
 
 		return (
 			<Nav>
+				<NavDropdown
+					alignRight
+					id="privs-dropdown"
+					open={this.state.menuOpen}
+					title={privilegesDropdownTitle}
+					onMouseDown={this.handleMouseDown}
+					onSelect={this.handleDropdownClick}
+					onToggle={this.handleDropdownToggle}
+				>
+					<NavDropdown.Item href="/admin-panel">
+						<FontAwesomeIcon icon={faUserGear}/>
+						{' Admin Panel'}
+					</NavDropdown.Item>
+				</NavDropdown>
 				<NavDropdown
 					alignRight
 					id="create-dropdown"

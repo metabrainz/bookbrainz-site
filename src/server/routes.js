@@ -17,6 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import adminPanelRouter from './routes/adminPanel';
 import authRouter from './routes/auth';
 import authorRouter from './routes/entity/author';
 import collectionRouter from './routes/collection';
@@ -52,6 +53,7 @@ function initRootRoutes(app) {
 	app.use('/collections', collectionsRouter);
 	app.use('/statistics', statisticsRouter);
 	app.use('/external-service', externalServiceRouter);
+	app.use('/admin-panel', adminPanelRouter);
 }
 
 function initEditionGroupRoutes(app) {

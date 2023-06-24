@@ -174,6 +174,26 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 	handler.sendPromiseResult(res, runAsync(), search.indexEntity);
 });
 
+router.post('/privs/edit/handler', auth.isAuthenticatedForHandler, async (req, res, next) => {
+	const {Editor} = req.app.locals.orm;
+	try {
+		const editor = await Editor
+			.forge({id: parseInt(req.body.targetUserId, 10)})
+			.fetch({require: true})
+			.catch(Editor.NotFoundError, () => next(new error.NotFoundError('Editor not found', req)));
+		if (editor.get('privs') === req.body.newPrivs) {
+			return next(new error.FormSubmissionError(
+				'No change to Privileges', req
+			));
+		}
+		await editor.save({privs: req.body.newPrivs});
+		return res.status(200).send();
+	}
+	catch (err) {
+		return next(err);
+	}
+});
+
 async function getEditorTitleJSON(editorJSON, TitleUnlock) {
 	const unlockID = editorJSON.titleUnlockId;
 	if (unlockID === null) {
