@@ -16,13 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as auth from '../helpers/auth';
 import * as commonUtils from '../../common/helpers/utils';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
 
-import {keys as _keys, snakeCase as _snakeCase, isNil} from 'lodash';
+import {snakeCase as _snakeCase, isNil} from 'lodash';
 import {escapeProps, generateProps} from '../helpers/props';
 import AdminPanelSearchPage from '../../client/components/pages/admin-panel-search';
 import Layout from '../../client/containers/layout';
@@ -53,7 +52,7 @@ router.get('/', async (req, res, next) => {
 		if (query) {
 			// get 1 more results to check nextEnabled
 			const searchResponse = await search.searchByName(orm, query, _snakeCase(type), size + 1, from);
-			const {results: entities, total} = searchResponse;
+			const {results: entities} = searchResponse;
 			searchResults = {
 				initialResults: entities.filter(entity => !isNil(entity)),
 				query

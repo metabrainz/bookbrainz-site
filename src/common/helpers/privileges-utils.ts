@@ -14,7 +14,7 @@ export const PRIVILEGE_PROPERTIES = {
 	},
 	3: {
 		title: 'Reindex Search Engine',
-		badgeVariant: 'succes'
+		badgeVariant: 'success'
 	},
 	4: {
 		title: 'Administrator',

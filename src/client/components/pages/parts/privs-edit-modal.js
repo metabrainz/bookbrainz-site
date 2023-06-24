@@ -24,6 +24,7 @@ import PrivilegeBadges from './privilege-badges';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+
 const {Button, Form, Modal} = bootstrap;
 
 class PrivsEditModal extends React.Component {

@@ -24,6 +24,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
 
+
 const {Button, Col, InputGroup, Form, Row} = bootstrap;
 
 const SearchButton = (

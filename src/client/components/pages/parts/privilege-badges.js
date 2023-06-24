@@ -18,7 +18,6 @@
 
 import {getBadgeVariantFromBit, getPrivilegeBitsArray, getPrivilegeTitleFromBit} from '../../../../common/helpers/privileges-utils';
 import {Badge} from 'react-bootstrap';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 

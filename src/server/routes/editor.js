@@ -186,7 +186,7 @@ router.post('/privs/edit/handler', auth.isAuthenticatedForHandler, async (req, r
 				'No change to Privileges', req
 			));
 		}
-		const modifiedEditor = await editor.save({privs: req.body.newPrivs});
+		await editor.save({privs: req.body.newPrivs});
 		return res.status(200).send();
 	}
 	catch (err) {

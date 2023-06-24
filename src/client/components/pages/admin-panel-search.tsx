@@ -23,6 +23,7 @@ import {Card} from 'react-bootstrap';
 import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 
+
 type Props = {
 	from?: number,
 	initialResults?: any[],

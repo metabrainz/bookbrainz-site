@@ -26,6 +26,7 @@ import {faPencilAlt} from '@fortawesome/free-solid-svg-icons';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 import {getPrivilegeShieldIcon} from '../../../../common/helpers/privileges-utils';
 
+
 const {Button, Table} = bootstrap;
 
 type AdminPanelSearchResultsState = {
@@ -112,7 +113,7 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 				</tr>
 			);
 		});
-		let tableCssClasses = 'table table-striped';
+		const tableCssClasses = 'table table-striped';
 		if (noResults) {
 			return null;
 		}
