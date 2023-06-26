@@ -30,6 +30,7 @@ import EntityRelatedCollections from './related-collections';
 import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
+import WikipediaExtract from './wikipedia-extract';
 
 
 const {deletedEntityMessage, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
@@ -87,7 +88,7 @@ SeriesAttributes.propTypes = {
 };
 
 
-function SeriesDisplayPage({entity, identifierTypes, user, genderOptions}) {
+function SeriesDisplayPage({entity, identifierTypes, user, genderOptions, wikipediaExtract}) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);
@@ -130,6 +131,7 @@ function SeriesDisplayPage({entity, identifierTypes, user, genderOptions}) {
 					/>
 				</Col>
 			</Row>
+			<WikipediaExtract articleExtract={wikipediaExtract} entity={entity}/>
 			<EntityAnnotation entity={entity}/>
 
 			{!entity.deleted &&
@@ -181,11 +183,13 @@ SeriesDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	genderOptions: PropTypes.array,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired
+	user: PropTypes.object.isRequired,
+	wikipediaExtract: PropTypes.object
 };
 SeriesDisplayPage.defaultProps = {
 	genderOptions: [],
-	identifierTypes: []
+	identifierTypes: [],
+	wikipediaExtract: {}
 };
 
 export default SeriesDisplayPage;

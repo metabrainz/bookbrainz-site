@@ -190,7 +190,7 @@ function _setPublisherTitle(res) {
 }
 
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res, next) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res, next) => {
 	// Fetch editions
 	const {Publisher} = req.app.locals.orm;
 	const editionRelationsToFetch = [

@@ -865,3 +865,15 @@ div[class~=collapsing]+div[class=card-header] .accordion-arrow {
 	margin: 10px;
 	max-width: 200px;
 }
+
+.hierarchy-arrow {
+	border-left: 1px solid $gray-400;
+    width: 1em;
+    height: 1em;
+    content: "";
+    display: inline-block;
+    border-bottom: 1px solid $gray-400;
+    position: relative;
+    bottom: 0.3em;
+	left: -0.5em;
+}
