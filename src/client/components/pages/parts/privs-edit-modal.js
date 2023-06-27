@@ -93,8 +93,6 @@ class PrivsEditModal extends React.Component {
 
 	/* eslint-disable react/jsx-no-bind */
 	render() {
-		const link = `/editor/${this.props.targetUser.bbid}`;
-
 		const switches = Object.values(PrivilegeTypes).map(priv => (
 			<Form.Check
 				checked={this.state.privs & priv.value}
@@ -114,10 +112,8 @@ class PrivsEditModal extends React.Component {
 			>
 				<Modal.Header closeButton>
 					<Modal.Title>
-						<img height="20" src={getPrivilegeShieldIcon(this.state.privs)}/> {' '}
-						<a href={link}>
-							{this.props.targetUser.defaultAlias.name}
-						</a>
+						<img className="margin-right-0-3" height="20" src={getPrivilegeShieldIcon(this.state.privs)}/>
+						{this.props.targetUser.defaultAlias.name}
 					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>

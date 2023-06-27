@@ -17,13 +17,10 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PrivilegeBadges from './privilege-badges';
 import PrivsEditModal from './privs-edit-modal';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {faPencilAlt} from '@fortawesome/free-solid-svg-icons';
-import {genEntityIconHTMLElement} from '../../../helpers/entity';
 import {getPrivilegeShieldIcon} from '../../../../common/helpers/privileges-utils';
 
 
@@ -94,7 +91,7 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 				<tr key={result.bbid}>
 					<td>
 						<a href={link}>
-							{genEntityIconHTMLElement('editor')}
+							<img className="margin-right-0-3" height="15" src={getPrivilegeShieldIcon(result.privs)}/>
 							{name}
 						</a>
 					</td>
@@ -103,11 +100,11 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 					</td>
 					<td>
 						<Button
-							variant="link"
+							className="btn btn-sm"
+							variant="outline-info"
 							onClick={() => this.openPrivsEditModal(result)}
 						>
-							<img height="18" src={getPrivilegeShieldIcon(result.privs)}/> {' '}
-							<FontAwesomeIcon icon={faPencilAlt}/>
+							Edit
 						</Button>
 					</td>
 				</tr>
@@ -133,7 +130,7 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 						</div>
 					)
 				}
-				<h3 style={{color: '#754e37'}}>
+				<h3 className="search-results-heading">
 					Search Results
 				</h3>
 				<hr className="thin"/>
@@ -143,9 +140,9 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 				>
 					<thead>
 						<tr>
-							<th className="col-md-5">Name</th>
-							<th className="col-md-5">Privileges</th>
-							<th className="col-md-5"/>
+							<th width="42%">Name</th>
+							<th width="42%">Privileges</th>
+							<th width="42%"/>
 						</tr>
 					</thead>
 					<tbody>

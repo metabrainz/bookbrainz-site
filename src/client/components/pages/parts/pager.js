@@ -60,10 +60,6 @@ class PagerElement extends React.Component {
 			// eslint-disable-next-line react/no-did-update-set-state
 			this.setState({from: 0}, this.triggerSearch);
 		}
-
-		if (prevProps.updateResultsTrigger !== this.props.updateResultsTrigger) {
-			this.triggerSearch(this.state.from, this.state.size);
-		}
 	}
 
 	componentWillUnmount() {
@@ -204,8 +200,7 @@ PagerElement.propTypes = {
 	results: PropTypes.array,
 	searchParamsChangeCallback: PropTypes.func,
 	searchResultsCallback: PropTypes.func.isRequired,
-	size: PropTypes.number,
-	updateResultsTrigger: PropTypes.number.isRequired
+	size: PropTypes.number
 };
 PagerElement.defaultProps = {
 	from: 0,
