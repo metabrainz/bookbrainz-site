@@ -73,12 +73,12 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 		};
 
 		this.paginationUrl = './admin-panel/search';
-		this.pagerRef = React.createRef();
+		this.pagerRef = React.createRef<PagerElement>();
 	}
 
 	paginationUrl: string;
 
-	pagerRef: any;
+	pagerRef: React.RefObject<PagerElement>;
 
 	/**
 	 * Gets user text query from the browser's URL search parameters and

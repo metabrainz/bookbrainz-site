@@ -142,7 +142,7 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 						<tr>
 							<th width="42%">Name</th>
 							<th width="42%">Privileges</th>
-							<th width="42%"/>
+							<th width="16%"/>
 						</tr>
 					</thead>
 					<tbody>
