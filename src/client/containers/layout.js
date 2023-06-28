@@ -125,8 +125,8 @@ class Layout extends React.Component {
 
 		const privilegesDropdownTitle = (
 			<span>
-				<FontAwesomeIcon icon={faShieldHalved}/>
-				{' Privileges'}
+				<FontAwesomeIcon className="margin-right-0-3" icon={faShieldHalved}/>
+				Privileges
 			</span>
 		);
 
@@ -146,8 +146,8 @@ class Layout extends React.Component {
 					onToggle={this.handleDropdownToggle}
 				>
 					<NavDropdown.Item href="/admin-panel">
-						<FontAwesomeIcon icon={faUserGear}/>
-						{' Admin Panel'}
+						<FontAwesomeIcon className="margin-right-0-3" icon={faUserGear}/>
+						Admin Panel
 					</NavDropdown.Item>
 				</NavDropdown>
 				<NavDropdown

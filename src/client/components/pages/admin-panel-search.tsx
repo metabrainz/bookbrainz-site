@@ -36,7 +36,6 @@ type Props = {
 type State = {
 	query: string | null | undefined;
 	results: any[];
-	updateResultsTrigger: number;
 };
 
 class AdminPanelSearchPage extends React.Component<Props, State> {
@@ -70,14 +69,16 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 
 		this.state = {
 			query: props.query,
-			results: props.initialResults,
-			updateResultsTrigger: 0
+			results: props.initialResults
 		};
 
 		this.paginationUrl = './admin-panel/search';
+		this.pagerRef = React.createRef<PagerElement>();
 	}
 
 	paginationUrl: string;
+
+	pagerRef: React.RefObject<PagerElement>;
 
 	/**
 	 * Gets user text query from the browser's URL search parameters and
@@ -125,10 +126,7 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 	 * triggerSearch function
 	 */
 	updateResultsOnPrivsChange = () => {
-		const {updateResultsTrigger: trigger} = this.state;
-		this.setState({
-			updateResultsTrigger: 1 - trigger
-		});
+		this.pagerRef?.current?.triggerSearch();
 	};
 
 	/**
@@ -138,7 +136,7 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 	 * @returns {object} - JSX to render.
 	 */
 	render() {
-		const {query, results, updateResultsTrigger} = this.state;
+		const {query, results} = this.state;
 		const querySearchParams = `q=${query}&type=editor`;
 		return (
 			<Card>
@@ -161,11 +159,11 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 							nextEnabled={this.props.nextEnabled}
 							paginationUrl={this.paginationUrl}
 							querySearchParams={querySearchParams}
+							ref={this.pagerRef}
 							results={results}
 							searchParamsChangeCallback={this.searchParamsChangeCallback}
 							searchResultsCallback={this.searchResultsCallback}
 							size={this.props.resultsPerPage}
-							updateResultsTrigger={updateResultsTrigger}
 						/>
 						<div className="text-center">
 							{results.length === 0 && query.length !== 0 &&
