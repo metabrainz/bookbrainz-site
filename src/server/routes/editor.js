@@ -31,6 +31,7 @@ import CollectionsPage from '../../client/components/pages/collections';
 import EditorContainer from '../../client/containers/editor';
 import EditorRevisionPage from '../../client/components/pages/editor-revision';
 import Layout from '../../client/containers/layout';
+import {PrivilegeTypes} from '../../common/helpers/privileges-utils';
 import ProfileForm from '../../client/components/forms/profile';
 import ProfileTab from '../../client/components/pages/parts/editor-profile';
 import React from 'react';
@@ -41,6 +42,8 @@ import {getOrderedCollectionsForEditorPage} from '../helpers/collections';
 import {getOrderedRevisionForEditorPage} from '../helpers/revisions';
 import target from '../templates/target';
 
+
+const ADMIN = PrivilegeTypes.ADMIN_PRIV.value;
 
 const router = express.Router();
 
@@ -174,7 +177,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 	handler.sendPromiseResult(res, runAsync(), search.indexEntity);
 });
 
-router.post('/privs/edit/handler', auth.isAuthenticatedForHandler, async (req, res, next) => {
+router.post('/privs/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ADMIN), async (req, res, next) => {
 	const {Editor} = req.app.locals.orm;
 	try {
 		const editor = await Editor

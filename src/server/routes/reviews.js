@@ -19,8 +19,11 @@
 
 import * as auth from '../helpers/auth';
 import * as cbHelper from '../helpers/critiquebrainz';
+import {PrivilegeTypes} from '../../common/helpers/privileges-utils';
 import express from 'express';
 
+
+const ENTITY_EDITOR = PrivilegeTypes.ENTITY_EDITING_PRIV.value;
 
 const router = express.Router();
 
@@ -30,7 +33,7 @@ router.get('/:entityType/:bbid/reviews', async (req, res) => {
 	res.json(reviews);
 });
 
-router.post('/:entityType/:bbid/reviews', auth.isAuthenticated, async (req, res) => {
+router.post('/:entityType/:bbid/reviews', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), async (req, res) => {
 	const editorId = req.user.id;
 	const {orm} = req.app.locals;
 

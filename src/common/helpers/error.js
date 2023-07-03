@@ -126,6 +126,24 @@ export class PermissionDeniedError extends PathError {
 	}
 }
 
+export class NotAuthorizedError extends PathError {
+	static get defaultMessage() {
+		return 'You do not have permission to access this route';
+	}
+
+	static get status() {
+		return status.FORBIDDEN;
+	}
+
+	static detailedMessage(req) {
+		return [
+			`You do not have permission to access the following path:
+			${req.path}`,
+			'Please make sure you have the privileges to access the route!'
+		];
+	}
+}
+
 function _logError(err) {
 	log.error(err);
 }
