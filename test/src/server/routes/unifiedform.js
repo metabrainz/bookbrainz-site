@@ -34,7 +34,7 @@ function testDefaultAlias(entity, languageId) {
 	return areKeysEqual(expectedDefaultAlias, actualDefaultAlias);
 }
 
-describe('Unified form routes', () => {
+describe('Unified form routes with entity editing priv', () => {
 	let agent;
 	let newLanguage;
 	let newRelationshipType;
@@ -307,5 +307,31 @@ describe('Unified form routes', () => {
 		}};
 		const res = await agent.post('/create/handler').send(postData);
 		expect(res).to.have.status(400);
+	});
+});
+
+
+describe('Unified form routes without entity editing priv', () => {
+	let agent;
+	before(async () => {
+		try {
+			await createEditor(123456, 0);
+		}
+		catch (error) {
+			// console.log(error);
+		}
+		// Log in; use agent to use logged in session
+		agent = await chai.request.agent(app);
+		await agent.get('/cb');
+	});
+
+	after(truncateEntities);
+
+	it('should throw an error if trying to open unified form create page', async () => {
+		const res = await agent
+			.get('/create');
+		expect(res.ok).to.be.false;
+		expect(res).to.have.status(403);
+		expect(res.res.statusMessage).to.equal('You do not have the privilege to access this route');
 	});
 });
