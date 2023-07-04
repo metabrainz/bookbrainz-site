@@ -172,3 +172,23 @@ export function isAuthenticatedForCollectionView(req, res, next) {
 		'You do not have permission to view this collection', req
 	);
 }
+
+export function isAuthorized(flag) {
+	return async (req, res, next) => {
+		try {
+			const {Editor} = req.app.locals.orm;
+			const editor = await Editor.query({where: {id: req.user.id}})
+				.fetch({require: true});
+			/* eslint-disable no-bitwise */
+			if (editor.get('privs') & flag) {
+				return next();
+			}
+			throw new error.NotAuthorizedError(
+				'You do not have the privilege to access this route', req
+			);
+		}
+		catch (err) {
+			return next(err);
+		}
+	};
+}

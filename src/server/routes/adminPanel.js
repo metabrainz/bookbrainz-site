@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as auth from '../helpers/auth';
 import * as commonUtils from '../../common/helpers/utils';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
@@ -25,11 +26,14 @@ import {snakeCase as _snakeCase, isNil} from 'lodash';
 import {escapeProps, generateProps} from '../helpers/props';
 import AdminPanelSearchPage from '../../client/components/pages/admin-panel-search';
 import Layout from '../../client/containers/layout';
+import {PrivilegeTypes} from '../../common/helpers/privileges-utils';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import express from 'express';
 import target from '../templates/target';
 
+
+const ADMIN = PrivilegeTypes.ADMIN_PRIV.value;
 
 const router = express.Router();
 
@@ -37,7 +41,7 @@ const router = express.Router();
  * Generates React markup for the search page that is rendered by the user's
  * browser.
  */
-router.get('/', async (req, res, next) => {
+router.get('/', auth.isAuthenticated, auth.isAuthorized(ADMIN), async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q ?? '';
 	const type = 'editor';
@@ -90,7 +94,7 @@ router.get('/', async (req, res, next) => {
 	}
 });
 
-router.get('/search', (req, res) => {
+router.get('/search', auth.isAuthenticated, auth.isAuthorized(ADMIN), (req, res) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
 	const type = 'editor';

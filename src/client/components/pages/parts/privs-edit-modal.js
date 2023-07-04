@@ -61,8 +61,10 @@ class PrivsEditModal extends React.Component {
 				},
 				method: 'POST'
 			});
-
 			if (!response.ok) {
+				if (response.status === 403) {
+					throw new Error(response.statusText);
+				}
 				const {error} = await response.json();
 				throw new Error(error ?? response.statusText);
 			}

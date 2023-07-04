@@ -30,6 +30,7 @@ import {
 } from '../../helpers/entityRouteUtils';
 
 import {ConflictError} from '../../../common/helpers/error';
+import {PrivilegeTypes} from '../../../common/helpers/privileges-utils';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
@@ -82,6 +83,7 @@ const mergeHandler = makeEntityCreateOrEditHandler(
 	'editionGroup', transformNewForm, 'typeId', true
 );
 
+const ENTITY_EDITOR = PrivilegeTypes.ENTITY_EDITING_PRIV.value;
 
 /** ****************************
 *********** Routes ************
@@ -91,7 +93,7 @@ const router = express.Router();
 
 // Creation
 router.get(
-	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
+	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadEditionGroupTypes,
 	middleware.loadRelationshipTypes,
 	 async (req, res) => {
@@ -130,7 +132,7 @@ router.get(
 
 
 router.post(
-	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadEditionGroupTypes,
 	middleware.loadRelationshipTypes, async (req, res) => {
 		const entity = await utils.parseInitialState(req, 'editionGroup');
@@ -155,7 +157,7 @@ router.post(
 	}
 );
 
-router.post('/create/handler', auth.isAuthenticatedForHandler,
+router.post('/create/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	createOrEditHandler);
 
 /* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
@@ -194,7 +196,7 @@ router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipedi
 	entityRoutes.displayEntity(req, res);
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
+router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req, res, next) => {
 	if (!res.locals.entity.dataId) {
 		return next(new ConflictError('This entity has already been deleted'));
 	}
@@ -203,7 +205,7 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
 });
 
 router.post(
-	'/:bbid/delete/handler', auth.isAuthenticatedForHandler,
+	'/:bbid/delete/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	(req, res) => {
 		const {orm} = req.app.locals;
 		const {EditionGroupHeader, EditionGroupRevision} = orm;
@@ -324,7 +326,7 @@ export function editionGroupToFormState(editionGroup) {
 }
 
 router.get(
-	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
+	'/:bbid/edit', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadEditionGroupTypes, middleware.loadLanguages,
 	 middleware.loadEntityRelationships, middleware.loadRelationshipTypes,
 	(req, res) => {
@@ -341,10 +343,10 @@ router.get(
 	}
 );
 
-router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
+router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	createOrEditHandler);
 
-router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler,
+router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	mergeHandler);
 
 export default router;
