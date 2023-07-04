@@ -138,7 +138,7 @@ export class NotAuthorizedError extends PathError {
 	static detailedMessage(req) {
 		return [
 			`You do not have permission to access the following path:
-			${req.path}`,
+			${req.originalUrl}`,
 			'Please make sure you have the privileges to access the route!'
 		];
 	}

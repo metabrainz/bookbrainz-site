@@ -8,7 +8,7 @@ import chaiHttp from 'chai-http';
 chai.use(chaiHttp);
 const {expect} = chai;
 
-describe('Work routes', () => {
+describe('Work routes with entity editing priv', () => {
 	const aBBID = getRandomUUID();
 	const inValidBBID = 'have-you-seen-the-fnords';
 	let agent;

@@ -27,7 +27,7 @@ import chaiHttp from 'chai-http';
 chai.use(chaiHttp);
 const {expect} = chai;
 
-describe('Series routes', () => {
+describe('Series routes with entity editing priv', () => {
 	const aBBID = getRandomUUID();
 	const inValidBBID = 'have-you-seen-the-fnords';
 	let agent;

@@ -177,11 +177,10 @@ export function isAuthorized(flag) {
 	return async (req, res, next) => {
 		try {
 			const {Editor} = req.app.locals.orm;
-			const latestPrivs = await Editor.query({where: {id: req.user.id}})
-				.fetch({require: true})
-				.then(editor => editor.get('privs'));
+			const editor = await Editor.query({where: {id: req.user.id}})
+				.fetch({require: true});
 			/* eslint-disable no-bitwise */
-			if (latestPrivs & flag) {
+			if (editor.get('privs') & flag) {
 				return next();
 			}
 			throw new error.NotAuthorizedError(
