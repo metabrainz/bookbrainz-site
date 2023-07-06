@@ -4,7 +4,7 @@ import {createEditor, truncateEntities} from '../../../test-helpers/create-entit
 import app from '../../../../src/server/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import {getEditorActivity} from '../../../../src/server/routes/editor.js';
+import {getEditorActivity} from '../../../../src/server/routes/editor';
 import orm from '../../../bookbrainz-data';
 
 

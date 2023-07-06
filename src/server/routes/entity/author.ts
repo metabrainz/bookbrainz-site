@@ -30,7 +30,7 @@ import {
 } from '../../helpers/entityRouteUtils';
 
 import {ConflictError} from '../../../common/helpers/error';
-import {PrivilegeTypes} from '../../../common/helpers/privileges-utils';
+import {PrivilegeType} from '../../../common/helpers/privileges-utils';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
@@ -40,6 +40,16 @@ import target from '../../templates/target';
 /** ****************************
 *********** Helpers ************
 *******************************/
+
+const additionalAuthorProps = [
+	'typeId', 'genderId', 'beginAreaId', 'beginDate', 'endDate', 'ended',
+	'endAreaId'
+];
+
+type PassportRequest = express.Request & {
+	user: any,
+	session: any
+};
 
 export function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
@@ -54,36 +64,34 @@ export function transformNewForm(data) {
 		data.relationshipSection
 	);
 
-	let authorCredit = {};
-	if (!_.isNil(data.authorCredit)) {
-		// When merging entities, we use a separate reducer "authorCredit"
-		authorCredit = data.authorCredit.names;
-	}
-	else if (!_.isNil(data.authorCreditEditor)) {
-		authorCredit = entityRoutes.constructAuthorCredit(data.authorCreditEditor);
-	}
-
 	return {
 		aliases,
 		annotation: data.annotationSection.content,
-		authorCredit,
+		beginAreaId: data.authorSection.beginArea &&
+			data.authorSection.beginArea.id,
+		beginDate: data.authorSection.beginDate,
 		disambiguation: data.nameSection.disambiguation,
+		endAreaId: data.authorSection.endArea &&
+			data.authorSection.endArea.id,
+		endDate: data.authorSection.endDate ? data.authorSection.endDate : null,
+		ended: data.authorSection.ended,
+		genderId: data.authorSection.gender,
 		identifiers,
 		note: data.submissionSection.note,
 		relationships,
-		typeId: data.editionGroupSection.type
+		typeId: data.authorSection.type
 	};
 }
 
 const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'editionGroup', transformNewForm, 'typeId'
+	'author', transformNewForm, additionalAuthorProps
 );
 
 const mergeHandler = makeEntityCreateOrEditHandler(
-	'editionGroup', transformNewForm, 'typeId', true
+	'author', transformNewForm, additionalAuthorProps, true
 );
 
-const ENTITY_EDITOR = PrivilegeTypes.ENTITY_EDITING_PRIV.value;
+const {ENTITY_EDITOR} = PrivilegeType;
 
 /** ****************************
 *********** Routes ************
@@ -94,11 +102,13 @@ const router = express.Router();
 // Creation
 router.get(
 	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadLanguages, middleware.loadEditionGroupTypes,
-	middleware.loadRelationshipTypes,
-	 async (req, res) => {
+	middleware.loadGenders, middleware.loadLanguages,
+	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
+	async (req: PassportRequest, res) => {
 		const markupProps = generateEntityProps(
-			'editionGroup', req, res, {}
+			'author', req, res, {
+				genderOptions: res.locals.genders
+			}
 		);
 		const nameSection = {
 			disambiguation: '',
@@ -110,8 +120,8 @@ router.get(
 		};
 		if (nameSection.name) {
 			try {
-				nameSection.searchResults = await search.autocomplete(req.app.locals.orm, nameSection.name, 'EditionGroup');
-				nameSection.exactMatches = await search.checkIfExists(req.app.locals.orm, nameSection.name, 'EditionGroup');
+				nameSection.searchResults = await search.autocomplete(req.app.locals.orm, nameSection.name, 'Author');
+				nameSection.exactMatches = await search.checkIfExists(req.app.locals.orm, nameSection.name, 'Author');
 			}
 			catch (err) {
 				log.debug(err);
@@ -130,21 +140,34 @@ router.get(
 	}
 );
 
-
 router.post(
 	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadLanguages, middleware.loadEditionGroupTypes,
-	middleware.loadRelationshipTypes, async (req, res) => {
-		const entity = await utils.parseInitialState(req, 'editionGroup');
+	middleware.loadGenders, middleware.loadLanguages,
+	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
+	async (req: PassportRequest, res) => {
 		const {orm} = req.app.locals;
-		const {EditionGroupType} = orm;
-		if (entity.editionGroupSection?.type) {
-			entity.editionGroupSection = {
-				type: await utils.getIdByField(EditionGroupType, 'label', entity.editionGroupSection.type)
-			};
+		const entity = await utils.parseInitialState(req, 'author');
+		if (entity.authorSection) {
+			if (entity.authorSection.endDate || entity.authorSection.endArea) {
+				entity.authorSection.ended = true;
+			}
+			if (entity.authorSection.gender) {
+				entity.authorSection.gender = utils.getIdByLabel(res.locals.genders, entity.authorSection.gender, 'name');
+			}
+			if (entity.authorSection.type) {
+				entity.authorSection.type = utils.getIdByLabel(res.locals.authorTypes, entity.authorSection.type, 'label');
+			}
+			if (entity.authorSection.beginArea) {
+				entity.authorSection.beginArea = await utils.searchOption(orm, 'area', entity.authorSection.beginArea);
+			}
+			if (entity.authorSection.endArea) {
+				entity.authorSection.endArea = await utils.searchOption(orm, 'area', entity.authorSection.endArea);
+			}
 		}
 		const markupProps = generateEntityProps(
-			'editionGroup', req, res, {}, () => entity
+			'author', req, res, {
+				genderOptions: res.locals.genders
+			}, () => entity
 		);
 		const {markup, props} = entityEditorMarkup(markupProps);
 
@@ -168,75 +191,66 @@ router.param(
 router.param(
 	'bbid',
 	middleware.makeEntityLoader(
-		'EditionGroup',
-		[
-			'authorCredit.names.author.defaultAlias',
-			'editionGroupType',
-			'editions.defaultAlias',
-			'editions.disambiguation',
-			'editions.releaseEventSet.releaseEvents',
-			'editions.identifierSet.identifiers.type',
-			'editions.editionFormat'
-		],
-		'Edition Group not found'
+		'Author',
+		['authorType', 'gender', 'beginArea', 'endArea'],
+		'Author not found'
 	)
 );
 
-function _setEditionGroupTitle(res) {
+function _setAuthorTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
-		'EditionGroup',
-		utils.template`Edition Group “${'name'}”`
+		'Author',
+		utils.template`Author “${'name'}”`
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
-	_setEditionGroupTitle(res);
-	res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req: PassportRequest, res) => {
+	_setAuthorTitle(res);
 	entityRoutes.displayEntity(req, res);
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req, res, next) => {
+router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req: PassportRequest, res, next) => {
 	if (!res.locals.entity.dataId) {
 		return next(new ConflictError('This entity has already been deleted'));
 	}
-	_setEditionGroupTitle(res);
+	_setAuthorTitle(res);
 	return entityRoutes.displayDeleteEntity(req, res);
 });
 
 router.post(
 	'/:bbid/delete/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
-	(req, res) => {
+	(req: PassportRequest, res) => {
 		const {orm} = req.app.locals;
-		const {EditionGroupHeader, EditionGroupRevision} = orm;
+		const {AuthorHeader, AuthorRevision} = orm;
 		return entityRoutes.handleDelete(
-			orm, req, res, EditionGroupHeader, EditionGroupRevision
+			orm, req, res, AuthorHeader, AuthorRevision
 		);
 	}
 );
 
-router.get('/:bbid/revisions', (req, res, next) => {
-	const {EditionGroupRevision} = req.app.locals.orm;
-	_setEditionGroupTitle(res);
-	entityRoutes.displayRevisions(req, res, next, EditionGroupRevision);
+router.get('/:bbid/revisions', (req: PassportRequest, res, next) => {
+	const {AuthorRevision} = req.app.locals.orm;
+	_setAuthorTitle(res);
+	entityRoutes.displayRevisions(req, res, next, AuthorRevision);
 });
 
-router.get('/:bbid/revisions/revisions', (req, res, next) => {
-	const {EditionGroupRevision} = req.app.locals.orm;
-	_setEditionGroupTitle(res);
-	entityRoutes.updateDisplayedRevisions(req, res, next, EditionGroupRevision);
+router.get('/:bbid/revisions/revisions', (req: PassportRequest, res, next) => {
+	const {AuthorRevision} = req.app.locals.orm;
+	_setAuthorTitle(res);
+	entityRoutes.updateDisplayedRevisions(req, res, next, AuthorRevision);
 });
 
 
-export function editionGroupToFormState(editionGroup) {
+export function authorToFormState(author) {
 	/** The front-end expects a language id rather than the language object. */
-	const aliases = editionGroup.aliasSet ?
-		editionGroup.aliasSet.aliases.map(({languageId, ...rest}) => ({
+	const aliases = author.aliasSet ?
+		author.aliasSet.aliases.map(({languageId, ...rest}) => ({
 			...rest,
 			language: languageId
 		})) : [];
 
-	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(editionGroup.aliasSet);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(author.aliasSet);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
 	const aliasEditor = {};
@@ -253,10 +267,10 @@ export function editionGroupToFormState(editionGroup) {
 		sortName: ''
 	} : defaultAliasList[0];
 	nameSection.disambiguation =
-		editionGroup.disambiguation && editionGroup.disambiguation.comment;
+		author.disambiguation && author.disambiguation.comment;
 
-	const identifiers = editionGroup.identifierSet ?
-		editionGroup.identifierSet.identifiers.map(({type, ...rest}) => ({
+	const identifiers = author.identifierSet ?
+		author.identifierSet.identifiers.map(({type, ...rest}) => ({
 			type: type.id,
 			...rest
 		})) : [];
@@ -266,8 +280,14 @@ export function editionGroupToFormState(editionGroup) {
 		(identifier) => { identifierEditor[identifier.id] = identifier; }
 	);
 
-	const editionGroupSection = {
-		type: editionGroup.editionGroupType && editionGroup.editionGroupType.id
+	const authorSection = {
+		beginArea: entityRoutes.areaToOption(author.beginArea),
+		beginDate: author.beginDate,
+		endArea: entityRoutes.areaToOption(author.endArea),
+		endDate: author.endDate,
+		ended: author.ended,
+		gender: author.gender && author.gender.id,
+		type: author.authorType && author.authorType.id
 	};
 
 	const relationshipSection = {
@@ -278,7 +298,7 @@ export function editionGroupToFormState(editionGroup) {
 		relationships: {}
 	};
 
-	editionGroup.relationships.forEach((relationship) => (
+	author.relationships.forEach((relationship) => (
 		relationshipSection.relationships[`n${relationship.id}`] = {
 			attributeSetId: relationship.attributeSetId,
 			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
@@ -289,35 +309,15 @@ export function editionGroupToFormState(editionGroup) {
 		}
 	));
 
-	const optionalSections = {};
-	if (editionGroup.annotation) {
-		optionalSections.annotationSection = editionGroup.annotation;
-	}
-
-	const credits = editionGroup.authorCredit ? editionGroup.authorCredit.names.map(
-		({author, ...rest}) => ({
-			author: utils.entityToOption(author),
-			...rest
-		})
-	) : [];
-
-	const authorCreditEditor = {};
-	for (const credit of credits) {
-		authorCreditEditor[credit.position] = credit;
-	}
-	if (_.isEmpty(authorCreditEditor)) {
-		authorCreditEditor.n0 = {
-			author: null,
-			joinPhrase: '',
-			name: ''
-		};
+	const optionalSections: any = {};
+	if (author.annotation) {
+		optionalSections.annotationSection = author.annotation;
 	}
 
 	return {
 		aliasEditor,
-		authorCreditEditor,
+		authorSection,
 		buttonBar,
-		editionGroupSection,
 		identifierEditor,
 		nameSection,
 		relationshipSection,
@@ -325,13 +325,17 @@ export function editionGroupToFormState(editionGroup) {
 	};
 }
 
+
 router.get(
 	'/:bbid/edit', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadEditionGroupTypes, middleware.loadLanguages,
-	 middleware.loadEntityRelationships, middleware.loadRelationshipTypes,
-	(req, res) => {
+	middleware.loadGenders, middleware.loadLanguages,
+	middleware.loadAuthorTypes, middleware.loadEntityRelationships,
+	middleware.loadRelationshipTypes,
+	(req: PassportRequest, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'editionGroup', req, res, {}, editionGroupToFormState
+			'author', req, res, {
+				genderOptions: res.locals.genders
+			}, authorToFormState
 		));
 
 		return res.send(target({
@@ -342,6 +346,7 @@ router.get(
 		}));
 	}
 );
+
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	createOrEditHandler);

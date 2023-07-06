@@ -31,7 +31,7 @@ import CollectionsPage from '../../client/components/pages/collections';
 import EditorContainer from '../../client/containers/editor';
 import EditorRevisionPage from '../../client/components/pages/editor-revision';
 import Layout from '../../client/containers/layout';
-import {PrivilegeTypes} from '../../common/helpers/privileges-utils';
+import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import ProfileForm from '../../client/components/forms/profile';
 import ProfileTab from '../../client/components/pages/parts/editor-profile';
 import React from 'react';
@@ -43,11 +43,17 @@ import {getOrderedRevisionForEditorPage} from '../helpers/revisions';
 import target from '../templates/target';
 
 
-const ADMIN = PrivilegeTypes.ADMIN_PRIV.value;
+type PassportRequest = express.Request & {
+	user: any,
+	session: any,
+	query: any
+};
+
+const {ADMIN} = PrivilegeType;
 
 const router = express.Router();
 
-router.get('/edit', auth.isAuthenticated, async (req, res, next) => {
+router.get('/edit', auth.isAuthenticated, async (req: PassportRequest, res, next) => {
 	const {Editor, Gender, TitleUnlock} = req.app.locals.orm;
 
 	// Prepare three promises to be resolved in parallel to fetch the required
@@ -73,7 +79,7 @@ router.get('/edit', auth.isAuthenticated, async (req, res, next) => {
 	// Parallel fetch the three required models. Only "editorModelPromise" has
 	// "require: true", so only that can throw a NotFoundError, which is why the
 	// other two model fetch operations have no error handling.
-	const [editorModel, titleUnlockModel, genderModel] = await Promise.all([
+	const [editorModel, titleUnlockModel, genderModel]: any = await Promise.all([
 		editorModelPromise, titleUnlockModelPromise, gendersModelPromise
 	]).catch(next);
 
@@ -120,7 +126,7 @@ function isCurrentUser(reqUserID, sessionUser) {
 	return reqUserID === sessionUser.id;
 }
 
-router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
+router.post('/edit/handler', auth.isAuthenticatedForHandler, (req: PassportRequest, res) => {
 	async function runAsync() {
 		const {Editor} = req.app.locals.orm;
 
@@ -281,7 +287,7 @@ function achievementColToEditorGetJSON(achievementCol) {
 	};
 }
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', async (req: PassportRequest, res, next) => {
 	const {AchievementUnlock, Revision} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
 	if (!userId) {
@@ -337,7 +343,7 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // eslint-disable-next-line consistent-return
-router.get('/:id/revisions', async (req, res, next) => {
+router.get('/:id/revisions', async (req: PassportRequest, res, next) => {
 	const DEFAULT_MAX_REVISIONS = 20;
 	const DEFAULT_REVISION_OFFSET = 0;
 
@@ -395,7 +401,7 @@ router.get('/:id/revisions', async (req, res, next) => {
 });
 
 
-router.get('/:id/revisions/revisions', async (req, res, next) => {
+router.get('/:id/revisions/revisions', async (req: PassportRequest, res, next) => {
 	const DEFAULT_MAX_REVISIONS = 20;
 	const DEFAULT_REVISION_OFFSET = 0;
 
@@ -501,7 +507,7 @@ async function setAchievementUnlockedField(achievements, unlocks, userId, orm) {
 	return {model};
 }
 
-router.get('/:id/achievements', async (req, res, next) => {
+router.get('/:id/achievements', async (req: PassportRequest, res, next) => {
 	const {AchievementType, AchievementUnlock} = req.app.locals.orm;
 
 	const userId = parseInt(req.params.id, 10);
@@ -588,7 +594,7 @@ async function rankUpdate(orm, editorId, bodyRank, rank) {
 }
 
 
-router.post('/:id/achievements/', auth.isAuthenticated, async (req, res) => {
+router.post('/:id/achievements/', auth.isAuthenticated, async (req: PassportRequest, res) => {
 	const {orm} = req.app.locals;
 	const userId = parseInt(req.params.id, 10);
 	if (!isCurrentUser(userId, req.user)) {
@@ -602,7 +608,7 @@ router.post('/:id/achievements/', auth.isAuthenticated, async (req, res) => {
 
 
 // eslint-disable-next-line consistent-return
-router.get('/:id/collections', async (req, res, next) => {
+router.get('/:id/collections', async (req: PassportRequest, res, next) => {
 	const {Editor, TitleUnlock} = req.app.locals.orm;
 
 	const DEFAULT_MAX_COLLECTIONS = 20;
@@ -665,7 +671,7 @@ router.get('/:id/collections', async (req, res, next) => {
 });
 
 // eslint-disable-next-line consistent-return
-router.get('/:id/collections/collections', async (req, res, next) => {
+router.get('/:id/collections/collections', async (req: PassportRequest, res, next) => {
 	try {
 		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 		const from = req.query.from ? parseInt(req.query.from, 10) : 0;

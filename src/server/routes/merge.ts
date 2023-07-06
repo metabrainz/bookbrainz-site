@@ -30,7 +30,7 @@ import {
 	entityMergeMarkup,
 	generateEntityMergeProps
 } from '../helpers/entityRouteUtils';
-import {PrivilegeTypes} from '../../common/helpers/privileges-utils';
+import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import _ from 'lodash';
 import {escapeProps} from '../helpers/props';
 import express from 'express';
@@ -43,7 +43,7 @@ type PassportRequest = express.Request & {
 	session: any
 };
 
-const ENTITY_EDITOR = PrivilegeTypes.ENTITY_EDITING_PRIV.value;
+const {ENTITY_EDITOR} = PrivilegeType;
 
 const router = express.Router();
 

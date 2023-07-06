@@ -26,14 +26,20 @@ import {snakeCase as _snakeCase, isNil} from 'lodash';
 import {escapeProps, generateProps} from '../helpers/props';
 import AdminPanelSearchPage from '../../client/components/pages/admin-panel-search';
 import Layout from '../../client/containers/layout';
-import {PrivilegeTypes} from '../../common/helpers/privileges-utils';
+import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import express from 'express';
 import target from '../templates/target';
 
 
-const ADMIN = PrivilegeTypes.ADMIN_PRIV.value;
+type PassportRequest = express.Request & {
+	user: any,
+	session: any,
+	query: any
+};
+
+const {ADMIN} = PrivilegeType;
 
 const router = express.Router();
 
@@ -41,14 +47,14 @@ const router = express.Router();
  * Generates React markup for the search page that is rendered by the user's
  * browser.
  */
-router.get('/', auth.isAuthenticated, auth.isAuthorized(ADMIN), async (req, res, next) => {
+router.get('/', auth.isAuthenticated, auth.isAuthorized(ADMIN), async (req: PassportRequest, res, next) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q ?? '';
 	const type = 'editor';
 	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
 	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
 	try {
-		let searchResults = {
+		let searchResults: any = {
 			initialResults: [],
 			query,
 			total: 0

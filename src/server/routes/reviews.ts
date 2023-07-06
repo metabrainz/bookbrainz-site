@@ -19,11 +19,15 @@
 
 import * as auth from '../helpers/auth';
 import * as cbHelper from '../helpers/critiquebrainz';
-import {PrivilegeTypes} from '../../common/helpers/privileges-utils';
+import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import express from 'express';
 
 
-const ENTITY_EDITOR = PrivilegeTypes.ENTITY_EDITING_PRIV.value;
+type PassportRequest = express.Request & {
+	user: any,
+	session: any
+};
+const {ENTITY_EDITOR} = PrivilegeType;
 
 const router = express.Router();
 
@@ -33,7 +37,7 @@ router.get('/:entityType/:bbid/reviews', async (req, res) => {
 	res.json(reviews);
 });
 
-router.post('/:entityType/:bbid/reviews', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), async (req, res) => {
+router.post('/:entityType/:bbid/reviews', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), async (req: PassportRequest, res) => {
 	const editorId = req.user.id;
 	const {orm} = req.app.locals;
 
@@ -45,7 +49,7 @@ router.post('/:entityType/:bbid/reviews', auth.isAuthenticated, auth.isAuthorize
 		review
 	);
 
-	let newAccessToken = '';
+	let newAccessToken: any = '';
 	// If the token has expired, we try to refresh it and then submit the review again.
 	if (response?.error === 'invalid_token') {
 		try {

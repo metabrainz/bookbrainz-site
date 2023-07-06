@@ -20,6 +20,7 @@
 import * as MusicBrainzOAuth from 'passport-musicbrainz-oauth2';
 import * as error from '../../common/helpers/error';
 
+import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import StrategyMock from './mock-passport-strategy';
 import _ from 'lodash';
 import config from '../../common/helpers/config';
@@ -173,14 +174,14 @@ export function isAuthenticatedForCollectionView(req, res, next) {
 	);
 }
 
-export function isAuthorized(flag) {
+export function isAuthorized(priv: PrivilegeType) {
 	return async (req, res, next) => {
 		try {
 			const {Editor} = req.app.locals.orm;
 			const editor = await Editor.query({where: {id: req.user.id}})
 				.fetch({require: true});
 			/* eslint-disable no-bitwise */
-			if (editor.get('privs') & flag) {
+			if (editor.get('privs') & priv) {
 				return next();
 			}
 			throw new error.NotAuthorizedError(

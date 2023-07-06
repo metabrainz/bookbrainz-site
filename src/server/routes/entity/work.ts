@@ -31,7 +31,7 @@ import {
 } from '../../helpers/entityRouteUtils';
 
 import {ConflictError} from '../../../common/helpers/error';
-import {PrivilegeTypes} from '../../../common/helpers/privileges-utils';
+import {PrivilegeType} from '../../../common/helpers/privileges-utils';
 import {RelationshipTypes} from '../../../client/entity-editor/relationship-editor/types';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
@@ -43,6 +43,11 @@ import target from '../../templates/target';
 /** ****************************
 *********** Helpers ************
 *******************************/
+
+type PassportRequest = express.Request & {
+	user: any,
+	session: any
+};
 
 export function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
@@ -81,7 +86,7 @@ const mergeHandler = makeEntityCreateOrEditHandler(
 	'work', transformNewForm, 'typeId', true
 );
 
-const ENTITY_EDITOR = PrivilegeTypes.ENTITY_EDITING_PRIV.value;
+const {ENTITY_EDITOR} = PrivilegeType;
 
 /** ****************************
 *********** Routes *************
@@ -95,7 +100,7 @@ router.get(
 	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes,
 	middleware.loadRelationshipTypes,
-	(req, res, next) => {
+	(req: PassportRequest, res, next) => {
 		const {Author, Edition} = req.app.locals.orm;
 		let relationshipTypeId;
 		let initialRelationshipIndex = 0;
@@ -168,7 +173,7 @@ router.post(
 	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes,
 	middleware.loadRelationshipTypes,
-	async (req, res, next) => {
+	async (req: PassportRequest, res, next) => {
 		const {WorkType} = req.app.locals.orm;
 		const entity = await utils.parseInitialState(req, 'work');
 		if (entity.workSection?.type) {
@@ -225,12 +230,12 @@ function _setWorkTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req: PassportRequest, res) => {
 	_setWorkTitle(res);
 	entityRoutes.displayEntity(req, res);
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req, res, next) => {
+router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req: PassportRequest, res, next) => {
 	if (!res.locals.entity.dataId) {
 		return next(new ConflictError('This entity has already been deleted'));
 	}
@@ -240,7 +245,7 @@ router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITO
 
 router.post(
 	'/:bbid/delete/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
-	(req, res) => {
+	(req: PassportRequest, res) => {
 		const {orm} = req.app.locals;
 		const {WorkHeader, WorkRevision} = orm;
 		return entityRoutes.handleDelete(
@@ -249,13 +254,13 @@ router.post(
 	}
 );
 
-router.get('/:bbid/revisions', (req, res, next) => {
+router.get('/:bbid/revisions', (req: PassportRequest, res, next) => {
 	const {WorkRevision} = req.app.locals.orm;
 	_setWorkTitle(res);
 	entityRoutes.displayRevisions(req, res, next, WorkRevision);
 });
 
-router.get('/:bbid/revisions/revisions', (req, res, next) => {
+router.get('/:bbid/revisions/revisions', (req: PassportRequest, res, next) => {
 	const {WorkRevision} = req.app.locals.orm;
 	_setWorkTitle(res);
 	entityRoutes.updateDisplayedRevisions(req, res, next, WorkRevision);
@@ -325,7 +330,7 @@ export function workToFormState(work) {
 		}
 	));
 
-	const optionalSections = {};
+	const optionalSections: any = {};
 	if (work.annotation) {
 		optionalSections.annotationSection = work.annotation;
 	}
@@ -345,7 +350,7 @@ router.get(
 	'/:bbid/edit', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadWorkTypes, middleware.loadLanguages,
 	 middleware.loadEntityRelationships, middleware.loadRelationshipTypes,
-	(req, res) => {
+	(req: PassportRequest, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'work', req, res, {}, workToFormState
 		));
