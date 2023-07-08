@@ -37,13 +37,17 @@ import express from 'express';
 import log from 'log';
 import target from '../../templates/target';
 
+
 /** ****************************
 *********** Helpers ************
 *******************************/
 
-type PassportRequest = express.Request & {
-	user: any,
-	session: any
+type OptionalSectionsT = {
+	annotationSection?: any
+};
+
+type AuthorCreditEditorT = {
+	n0?: entityRoutes.AuthorCreditEditorT
 };
 
 export function transformNewForm(data) {
@@ -101,7 +105,7 @@ router.get(
 	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadEditionGroupTypes,
 	middleware.loadRelationshipTypes,
-	 async (req: PassportRequest, res) => {
+	 async (req, res) => {
 		const markupProps = generateEntityProps(
 			'editionGroup', req, res, {}
 		);
@@ -139,7 +143,7 @@ router.get(
 router.post(
 	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadEditionGroupTypes,
-	middleware.loadRelationshipTypes, async (req: PassportRequest, res) => {
+	middleware.loadRelationshipTypes, async (req, res) => {
 		const entity = await utils.parseInitialState(req, 'editionGroup');
 		const {orm} = req.app.locals;
 		const {EditionGroupType} = orm;
@@ -195,13 +199,13 @@ function _setEditionGroupTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req: PassportRequest, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
 	_setEditionGroupTitle(res);
 	res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
 	entityRoutes.displayEntity(req, res);
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req: PassportRequest, res, next) => {
+router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req, res, next) => {
 	if (!res.locals.entity.dataId) {
 		return next(new ConflictError('This entity has already been deleted'));
 	}
@@ -211,7 +215,7 @@ router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITO
 
 router.post(
 	'/:bbid/delete/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
-	(req: PassportRequest, res) => {
+	(req, res) => {
 		const {orm} = req.app.locals;
 		const {EditionGroupHeader, EditionGroupRevision} = orm;
 		return entityRoutes.handleDelete(
@@ -220,13 +224,13 @@ router.post(
 	}
 );
 
-router.get('/:bbid/revisions', (req: PassportRequest, res, next) => {
+router.get('/:bbid/revisions', (req, res, next) => {
 	const {EditionGroupRevision} = req.app.locals.orm;
 	_setEditionGroupTitle(res);
 	entityRoutes.displayRevisions(req, res, next, EditionGroupRevision);
 });
 
-router.get('/:bbid/revisions/revisions', (req: PassportRequest, res, next) => {
+router.get('/:bbid/revisions/revisions', (req, res, next) => {
 	const {EditionGroupRevision} = req.app.locals.orm;
 	_setEditionGroupTitle(res);
 	entityRoutes.updateDisplayedRevisions(req, res, next, EditionGroupRevision);
@@ -294,7 +298,7 @@ export function editionGroupToFormState(editionGroup) {
 		}
 	));
 
-	const optionalSections: any = {};
+	const optionalSections: OptionalSectionsT = {};
 	if (editionGroup.annotation) {
 		optionalSections.annotationSection = editionGroup.annotation;
 	}
@@ -306,7 +310,7 @@ export function editionGroupToFormState(editionGroup) {
 		})
 	) : [];
 
-	const authorCreditEditor: any = {};
+	const authorCreditEditor: AuthorCreditEditorT = {};
 	for (const credit of credits) {
 		authorCreditEditor[credit.position] = credit;
 	}
@@ -334,7 +338,7 @@ router.get(
 	'/:bbid/edit', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadEditionGroupTypes, middleware.loadLanguages,
 	 middleware.loadEntityRelationships, middleware.loadRelationshipTypes,
-	(req: PassportRequest, res) => {
+	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'editionGroup', req, res, {}, editionGroupToFormState
 		));

@@ -40,20 +40,15 @@ import _ from 'lodash';
 import express from 'express';
 import {getOrderedCollectionsForEditorPage} from '../helpers/collections';
 import {getOrderedRevisionForEditorPage} from '../helpers/revisions';
+import {parseQuery} from '../helpers/utils';
 import target from '../templates/target';
 
-
-type PassportRequest = express.Request & {
-	user: any,
-	session: any,
-	query: any
-};
 
 const {ADMIN} = PrivilegeType;
 
 const router = express.Router();
 
-router.get('/edit', auth.isAuthenticated, async (req: PassportRequest, res, next) => {
+router.get('/edit', auth.isAuthenticated, async (req, res, next) => {
 	const {Editor, Gender, TitleUnlock} = req.app.locals.orm;
 
 	// Prepare three promises to be resolved in parallel to fetch the required
@@ -126,7 +121,7 @@ function isCurrentUser(reqUserID, sessionUser) {
 	return reqUserID === sessionUser.id;
 }
 
-router.post('/edit/handler', auth.isAuthenticatedForHandler, (req: PassportRequest, res) => {
+router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 	async function runAsync() {
 		const {Editor} = req.app.locals.orm;
 
@@ -287,7 +282,7 @@ function achievementColToEditorGetJSON(achievementCol) {
 	};
 }
 
-router.get('/:id', async (req: PassportRequest, res, next) => {
+router.get('/:id', async (req, res, next) => {
 	const {AchievementUnlock, Revision} = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
 	if (!userId) {
@@ -343,14 +338,14 @@ router.get('/:id', async (req: PassportRequest, res, next) => {
 });
 
 // eslint-disable-next-line consistent-return
-router.get('/:id/revisions', async (req: PassportRequest, res, next) => {
+router.get('/:id/revisions', async (req, res, next) => {
 	const DEFAULT_MAX_REVISIONS = 20;
 	const DEFAULT_REVISION_OFFSET = 0;
 
 	const size =
-		req.query.size ? parseInt(req.query.size, 10) : DEFAULT_MAX_REVISIONS;
+		req.query.size ? parseInt(parseQuery(req.url).get('size'), 10) : DEFAULT_MAX_REVISIONS;
 	const from =
-		req.query.from ? parseInt(req.query.from, 10) : DEFAULT_REVISION_OFFSET;
+		req.query.from ? parseInt(parseQuery(req.url).get('from'), 10) : DEFAULT_REVISION_OFFSET;
 
 	try {
 		// get 1 more result to check nextEnabled
@@ -401,14 +396,14 @@ router.get('/:id/revisions', async (req: PassportRequest, res, next) => {
 });
 
 
-router.get('/:id/revisions/revisions', async (req: PassportRequest, res, next) => {
+router.get('/:id/revisions/revisions', async (req, res, next) => {
 	const DEFAULT_MAX_REVISIONS = 20;
 	const DEFAULT_REVISION_OFFSET = 0;
 
 	const size =
-		req.query.size ? parseInt(req.query.size, 10) : DEFAULT_MAX_REVISIONS;
+		req.query.size ? parseInt(parseQuery(req.url).get('size'), 10) : DEFAULT_MAX_REVISIONS;
 	const from =
-		req.query.from ? parseInt(req.query.from, 10) : DEFAULT_REVISION_OFFSET;
+		req.query.from ? parseInt(parseQuery(req.url).get('from'), 10) : DEFAULT_REVISION_OFFSET;
 
 	const orderedRevisions =
 		await getOrderedRevisionForEditorPage(from, size, req).catch(next);
@@ -507,7 +502,7 @@ async function setAchievementUnlockedField(achievements, unlocks, userId, orm) {
 	return {model};
 }
 
-router.get('/:id/achievements', async (req: PassportRequest, res, next) => {
+router.get('/:id/achievements', async (req, res, next) => {
 	const {AchievementType, AchievementUnlock} = req.app.locals.orm;
 
 	const userId = parseInt(req.params.id, 10);
@@ -594,7 +589,7 @@ async function rankUpdate(orm, editorId, bodyRank, rank) {
 }
 
 
-router.post('/:id/achievements/', auth.isAuthenticated, async (req: PassportRequest, res) => {
+router.post('/:id/achievements/', auth.isAuthenticated, async (req, res) => {
 	const {orm} = req.app.locals;
 	const userId = parseInt(req.params.id, 10);
 	if (!isCurrentUser(userId, req.user)) {
@@ -608,18 +603,18 @@ router.post('/:id/achievements/', auth.isAuthenticated, async (req: PassportRequ
 
 
 // eslint-disable-next-line consistent-return
-router.get('/:id/collections', async (req: PassportRequest, res, next) => {
+router.get('/:id/collections', async (req, res, next) => {
 	const {Editor, TitleUnlock} = req.app.locals.orm;
 
 	const DEFAULT_MAX_COLLECTIONS = 20;
 	const DEFAULT_COLLECTION_OFFSET = 0;
 
 	const size =
-		req.query.size ? parseInt(req.query.size, 10) : DEFAULT_MAX_COLLECTIONS;
+		req.query.size ? parseInt(parseQuery(req.url).get('size'), 10) : DEFAULT_MAX_COLLECTIONS;
 	const from =
-		req.query.from ? parseInt(req.query.from, 10) : DEFAULT_COLLECTION_OFFSET;
+		req.query.from ? parseInt(parseQuery(req.url).get('from'), 10) : DEFAULT_COLLECTION_OFFSET;
 
-	const type = req.query.type ? req.query.type : null;
+	const type = req.query.type ? parseQuery(req.url).get('type') : null;
 
 	try {
 		const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
@@ -671,11 +666,11 @@ router.get('/:id/collections', async (req: PassportRequest, res, next) => {
 });
 
 // eslint-disable-next-line consistent-return
-router.get('/:id/collections/collections', async (req: PassportRequest, res, next) => {
+router.get('/:id/collections/collections', async (req, res, next) => {
 	try {
-		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
-		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
-		const type = req.query.type ? req.query.type : null;
+		const size = req.query.size ? parseInt(parseQuery(req.url).get('size'), 10) : 20;
+		const from = req.query.from ? parseInt(parseQuery(req.url).get('from'), 10) : 0;
+		const type = req.query.type ? parseQuery(req.url).get('type') : null;
 		const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
 		if (!entityTypes.includes(type) && type !== null) {
 			throw new error.BadRequestError(`Type ${type} do not exist`);

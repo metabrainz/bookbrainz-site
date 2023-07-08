@@ -30,16 +30,17 @@ import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import express from 'express';
+import {parseQuery} from '../helpers/utils';
 import target from '../templates/target';
 
 
-type PassportRequest = express.Request & {
-	user: any,
-	session: any,
-	query: any
-};
-
 const {ADMIN} = PrivilegeType;
+
+type SearchResultsT = {
+	initialResults: any,
+	query: string,
+	total?: number
+};
 
 const router = express.Router();
 
@@ -47,14 +48,14 @@ const router = express.Router();
  * Generates React markup for the search page that is rendered by the user's
  * browser.
  */
-router.get('/', auth.isAuthenticated, auth.isAuthorized(ADMIN), async (req: PassportRequest, res, next) => {
+router.get('/', auth.isAuthenticated, auth.isAuthorized(ADMIN), async (req, res, next) => {
 	const {orm} = req.app.locals;
-	const query = req.query.q ?? '';
+	const query = parseQuery(req.url).get('q') ?? '';
 	const type = 'editor';
-	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
-	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+	const size = req.query.size ? parseInt(parseQuery(req.url).get('size'), 10) : 20;
+	const from = req.query.from ? parseInt(parseQuery(req.url).get('from'), 10) : 0;
 	try {
-		let searchResults: any = {
+		let searchResults: SearchResultsT = {
 			initialResults: [],
 			query,
 			total: 0

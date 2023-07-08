@@ -9,13 +9,11 @@ import target from '../templates/target';
 
 const {ENTITY_EDITOR} = PrivilegeType;
 
-type PassportRequest = express.Request & {user: any, session: any};
-
 const router = express.Router();
 router.get('/create', isAuthenticated, isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats, middleware.loadEditionGroupTypes, middleware.loadSeriesOrderingTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes, middleware.loadGenders, middleware.loadPublisherTypes, middleware.loadAuthorTypes,
-	middleware.loadRelationshipTypes, (req:PassportRequest, res:express.Response) => {
+	middleware.loadRelationshipTypes, (req, res:express.Response) => {
 		const props = generateUnifiedProps(req, res, {
 			genderOptions: res.locals.genders
 		});

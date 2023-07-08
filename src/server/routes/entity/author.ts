@@ -37,19 +37,19 @@ import express from 'express';
 import log from 'log';
 import target from '../../templates/target';
 
+
 /** ****************************
 *********** Helpers ************
 *******************************/
+
+type OptionalSectionsT = {
+	annotationSection?: any
+};
 
 const additionalAuthorProps = [
 	'typeId', 'genderId', 'beginAreaId', 'beginDate', 'endDate', 'ended',
 	'endAreaId'
 ];
-
-type PassportRequest = express.Request & {
-	user: any,
-	session: any
-};
 
 export function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
@@ -104,7 +104,7 @@ router.get(
 	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadGenders, middleware.loadLanguages,
 	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
-	async (req: PassportRequest, res) => {
+	async (req, res) => {
 		const markupProps = generateEntityProps(
 			'author', req, res, {
 				genderOptions: res.locals.genders
@@ -144,7 +144,7 @@ router.post(
 	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadGenders, middleware.loadLanguages,
 	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
-	async (req: PassportRequest, res) => {
+	async (req, res) => {
 		const {orm} = req.app.locals;
 		const entity = await utils.parseInitialState(req, 'author');
 		if (entity.authorSection) {
@@ -205,12 +205,12 @@ function _setAuthorTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req: PassportRequest, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
 	_setAuthorTitle(res);
 	entityRoutes.displayEntity(req, res);
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req: PassportRequest, res, next) => {
+router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req, res, next) => {
 	if (!res.locals.entity.dataId) {
 		return next(new ConflictError('This entity has already been deleted'));
 	}
@@ -220,7 +220,7 @@ router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITO
 
 router.post(
 	'/:bbid/delete/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
-	(req: PassportRequest, res) => {
+	(req, res) => {
 		const {orm} = req.app.locals;
 		const {AuthorHeader, AuthorRevision} = orm;
 		return entityRoutes.handleDelete(
@@ -229,13 +229,13 @@ router.post(
 	}
 );
 
-router.get('/:bbid/revisions', (req: PassportRequest, res, next) => {
+router.get('/:bbid/revisions', (req, res, next) => {
 	const {AuthorRevision} = req.app.locals.orm;
 	_setAuthorTitle(res);
 	entityRoutes.displayRevisions(req, res, next, AuthorRevision);
 });
 
-router.get('/:bbid/revisions/revisions', (req: PassportRequest, res, next) => {
+router.get('/:bbid/revisions/revisions', (req, res, next) => {
 	const {AuthorRevision} = req.app.locals.orm;
 	_setAuthorTitle(res);
 	entityRoutes.updateDisplayedRevisions(req, res, next, AuthorRevision);
@@ -309,7 +309,7 @@ export function authorToFormState(author) {
 		}
 	));
 
-	const optionalSections: any = {};
+	const optionalSections: OptionalSectionsT = {};
 	if (author.annotation) {
 		optionalSections.annotationSection = author.annotation;
 	}
@@ -331,7 +331,7 @@ router.get(
 	middleware.loadGenders, middleware.loadLanguages,
 	middleware.loadAuthorTypes, middleware.loadEntityRelationships,
 	middleware.loadRelationshipTypes,
-	(req: PassportRequest, res) => {
+	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'author', req, res, {
 				genderOptions: res.locals.genders

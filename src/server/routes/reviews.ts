@@ -23,10 +23,6 @@ import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import express from 'express';
 
 
-type PassportRequest = express.Request & {
-	user: any,
-	session: any
-};
 const {ENTITY_EDITOR} = PrivilegeType;
 
 const router = express.Router();
@@ -37,7 +33,7 @@ router.get('/:entityType/:bbid/reviews', async (req, res) => {
 	res.json(reviews);
 });
 
-router.post('/:entityType/:bbid/reviews', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), async (req: PassportRequest, res) => {
+router.post('/:entityType/:bbid/reviews', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), async (req, res) => {
 	const editorId = req.user.id;
 	const {orm} = req.app.locals;
 

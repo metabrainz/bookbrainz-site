@@ -42,9 +42,8 @@ import target from '../../templates/target';
 *********** Helpers ************
 *******************************/
 
-type PassportRequest = express.Request & {
-	user: any,
-	session: any
+type OptionalSectionsT = {
+	annotationSection?: any
 };
 
 const additionalPublisherProps = [
@@ -101,7 +100,7 @@ router.get(
 	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadPublisherTypes,
 	middleware.loadRelationshipTypes,
-	async (req: PassportRequest, res) => {
+	async (req, res) => {
 		const markupProps = generateEntityProps(
 			'publisher', req, res, {}
 		);
@@ -140,7 +139,7 @@ router.post(
 	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadPublisherTypes,
 	middleware.loadRelationshipTypes,
-	async (req: PassportRequest, res) => {
+	async (req, res) => {
 		const {orm} = req.app.locals;
 		const {PublisherType} = orm;
 		const entity = await utils.parseInitialState(req, 'publisher');
@@ -197,7 +196,7 @@ function _setPublisherTitle(res) {
 }
 
 
-router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req: PassportRequest, res, next) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res, next) => {
 	// Fetch editions
 	const {Publisher} = req.app.locals.orm;
 	const editionRelationsToFetch = [
@@ -222,7 +221,7 @@ router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipedi
 		.catch(next);
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req: PassportRequest, res, next) => {
+router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req, res, next) => {
 	if (!res.locals.entity.dataId) {
 		return next(new ConflictError('This entity has already been deleted'));
 	}
@@ -232,7 +231,7 @@ router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITO
 
 router.post(
 	'/:bbid/delete/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
-	(req: PassportRequest, res) => {
+	(req, res) => {
 		const {orm} = req.app.locals;
 		const {PublisherHeader, PublisherRevision} = orm;
 		return entityRoutes.handleDelete(
@@ -241,13 +240,13 @@ router.post(
 	}
 );
 
-router.get('/:bbid/revisions', (req: PassportRequest, res, next) => {
+router.get('/:bbid/revisions', (req, res, next) => {
 	const {PublisherRevision} = req.app.locals.orm;
 	_setPublisherTitle(res);
 	entityRoutes.displayRevisions(req, res, next, PublisherRevision);
 });
 
-router.get('/:bbid/revisions/revisions', (req: PassportRequest, res, next) => {
+router.get('/:bbid/revisions/revisions', (req, res, next) => {
 	const {PublisherRevision} = req.app.locals.orm;
 	_setPublisherTitle(res);
 	entityRoutes.updateDisplayedRevisions(req, res, next, PublisherRevision);
@@ -318,7 +317,7 @@ export function publisherToFormState(publisher) {
 		}
 	));
 
-	const optionalSections: any = {};
+	const optionalSections: OptionalSectionsT = {};
 	if (publisher.annotation) {
 		optionalSections.annotationSection = publisher.annotation;
 	}
@@ -338,7 +337,7 @@ router.get(
 	'/:bbid/edit', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadPublisherTypes, middleware.loadLanguages,
 	 middleware.loadEntityRelationships, middleware.loadRelationshipTypes,
-	(req: PassportRequest, res) => {
+	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
 			'publisher', req, res, {}, publisherToFormState
 		));

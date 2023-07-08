@@ -29,6 +29,12 @@ import passport from 'passport';
 import status from 'http-status';
 
 
+declare module 'express-serve-static-core' {
+	interface Request {
+		user: any;
+	}
+}
+
 async function _linkMBAccount(orm, bbUserJSON, mbUserJSON) {
 	const {Editor} = orm;
 	const fetchedEditor = await new Editor({id: bbUserJSON.id})
