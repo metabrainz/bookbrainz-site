@@ -60,6 +60,12 @@ function Footer(props) {
 					</Col>
 					<Col className="text-right" xs={4}>
 						<small>
+							<a href="/admin-logs">
+								Admin logs
+							</a>
+						</small>
+						&nbsp;—&nbsp;
+						<small>
 							<a href="/privacy">
 								Privacy & Terms
 							</a>
