@@ -31,16 +31,18 @@ class PrivsEditModal extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			note: '',
 			privs: props.targetUser.privs,
 			submittable: false
 		};
 
 		this.handleBitChange = this.handleBitChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleNoteChange = this.handleNoteChange.bind(this);
 	}
 
 	async handleSubmit() {
-		const {privs} = this.state;
+		const {privs, note} = this.state;
 		const oldPrivs = this.props.targetUser.privs;
 		if (privs === oldPrivs) {
 			return;
@@ -49,6 +51,7 @@ class PrivsEditModal extends React.Component {
 		const data = {
 			adminId: this.props.adminId,
 			newPrivs: privs,
+			note,
 			oldPrivs,
 			targetUserId: this.props.targetUser.id
 		};
@@ -93,6 +96,12 @@ class PrivsEditModal extends React.Component {
 		}
 	}
 
+	handleNoteChange(event) {
+		this.setState({
+			note: event.target.value
+		});
+	}
+
 	/* eslint-disable react/jsx-no-bind */
 	render() {
 		const switches = Object.values(PrivilegeTypes).map(priv => (
@@ -105,6 +114,19 @@ class PrivsEditModal extends React.Component {
 				onChange={() => this.handleBitChange(priv.bit)}
 			/>
 		));
+
+		const noteField = this.state.submittable &&
+			<Form.Group>
+				<Form.Label>
+					Note/Reason:
+				</Form.Label>
+				<Form.Control
+					as="textarea"
+					defaultValue={this.state.note}
+					rows="2"
+					onChange={this.handleNoteChange}
+				/>
+			</Form.Group>;
 
 		return (
 			<Modal
@@ -123,6 +145,8 @@ class PrivsEditModal extends React.Component {
 					<hr/>
 					<Form>
 						{switches}
+						<hr/>
+						{noteField}
 					</Form>
 				</Modal.Body>
 				<Modal.Footer>
