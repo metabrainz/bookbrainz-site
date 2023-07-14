@@ -30,6 +30,10 @@ export enum PrivilegeType {
 	ENTITY_EDITOR = 1
 }
 
+export enum AdminActionType {
+	CHANGE_PRIV = 'Change Privileges'
+}
+
 export const PrivilegeTypes = {
 	ADMIN_PRIV: {
 		bit: 4,

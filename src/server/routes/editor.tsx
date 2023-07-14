@@ -23,6 +23,7 @@ import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
+import {AdminActionType, PrivilegeType} from '../../common/helpers/privileges-utils';
 import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
 import {getConsecutiveDaysWithEdits, getEntityVisits, getTypeCreation} from '../helpers/achievement';
@@ -31,12 +32,12 @@ import CollectionsPage from '../../client/components/pages/collections';
 import EditorContainer from '../../client/containers/editor';
 import EditorRevisionPage from '../../client/components/pages/editor-revision';
 import Layout from '../../client/containers/layout';
-import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import ProfileForm from '../../client/components/forms/profile';
 import ProfileTab from '../../client/components/pages/parts/editor-profile';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
+import {createAdminLog} from '../helpers/adminLogs';
 import express from 'express';
 import {getOrderedCollectionsForEditorPage} from '../helpers/collections';
 import {getOrderedRevisionForEditorPage} from '../helpers/revisions';
@@ -179,18 +180,21 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 });
 
 router.post('/privs/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ADMIN), async (req, res, next) => {
-	const {Editor} = req.app.locals.orm;
+	const {Editor, AdminLog} = req.app.locals.orm;
+	const {adminId, newPrivs, note, oldPrivs, targetUserId} = req.body;
+	const actionType = AdminActionType.CHANGE_PRIV;
 	try {
 		const editor = await Editor
-			.forge({id: parseInt(req.body.targetUserId, 10)})
+			.forge({id: parseInt(targetUserId, 10)})
 			.fetch({require: true})
 			.catch(Editor.NotFoundError, () => next(new error.NotFoundError('Editor not found', req)));
-		if (editor.get('privs') === req.body.newPrivs) {
+		if (editor.get('privs') === newPrivs) {
 			return next(new error.FormSubmissionError(
 				'No change to Privileges', req
 			));
 		}
-		await editor.save({privs: req.body.newPrivs});
+		await editor.save({privs: newPrivs});
+		await createAdminLog(actionType, adminId, newPrivs, note, oldPrivs, targetUserId, AdminLog);
 		return res.status(200).send();
 	}
 	catch (err) {
