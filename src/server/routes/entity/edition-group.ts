@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2021  Akash Gupta
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +17,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
@@ -30,19 +30,25 @@ import {
 } from '../../helpers/entityRouteUtils';
 
 import {ConflictError} from '../../../common/helpers/error';
-import {PrivilegeTypes} from '../../../common/helpers/privileges-utils';
+import {PrivilegeType} from '../../../common/helpers/privileges-utils';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import log from 'log';
 import target from '../../templates/target';
 
+
 /** ****************************
 *********** Helpers ************
 *******************************/
-const additionalSeriesProps = [
-	'entityType', 'orderingTypeId'
-];
+
+type OptionalSectionsT = {
+	annotationSection?: any
+};
+
+type AuthorCreditEditorT = {
+	n0?: entityRoutes.AuthorCreditEditorT
+};
 
 export function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
@@ -52,35 +58,41 @@ export function transformNewForm(data) {
 	const identifiers = entityRoutes.constructIdentifiers(
 		data.identifierEditor
 	);
-	const seriesItems = entityRoutes.constructRelationships(
-		data.seriesSection, 'seriesItems'
+
+	const relationships = entityRoutes.constructRelationships(
+		data.relationshipSection
 	);
-	const relationshipsItems = entityRoutes.constructRelationships(
-		data.relationshipSection, 'relationships'
-	);
-	const relationships = seriesItems.concat(relationshipsItems);
+
+	let authorCredit = {};
+	if (!_.isNil(data.authorCredit)) {
+		// When merging entities, we use a separate reducer "authorCredit"
+		authorCredit = data.authorCredit.names;
+	}
+	else if (!_.isNil(data.authorCreditEditor)) {
+		authorCredit = entityRoutes.constructAuthorCredit(data.authorCreditEditor);
+	}
 
 	return {
 		aliases,
 		annotation: data.annotationSection.content,
+		authorCredit,
 		disambiguation: data.nameSection.disambiguation,
-		entityType: data.seriesSection.seriesType,
 		identifiers,
 		note: data.submissionSection.note,
-		orderingTypeId: data.seriesSection.orderType,
-		relationships
+		relationships,
+		typeId: data.editionGroupSection.type
 	};
 }
 
 const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'series', transformNewForm, additionalSeriesProps
+	'editionGroup', transformNewForm, 'typeId'
 );
 
 const mergeHandler = makeEntityCreateOrEditHandler(
-	'series', transformNewForm, additionalSeriesProps, true
+	'editionGroup', transformNewForm, 'typeId', true
 );
 
-const ENTITY_EDITOR = PrivilegeTypes.ENTITY_EDITING_PRIV.value;
+const {ENTITY_EDITOR} = PrivilegeType;
 
 /** ****************************
 *********** Routes ************
@@ -91,13 +103,12 @@ const router = express.Router();
 // Creation
 router.get(
 	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadLanguages,
-	middleware.loadRelationshipTypes, middleware.loadSeriesOrderingTypes,
-	async (req, res) => {
-		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'series', req, res, {}
-		));
-
+	middleware.loadLanguages, middleware.loadEditionGroupTypes,
+	middleware.loadRelationshipTypes,
+	 async (req, res) => {
+		const markupProps = generateEntityProps(
+			'editionGroup', req, res, {}
+		);
 		const nameSection = {
 			disambiguation: '',
 			exactMatches: null,
@@ -108,15 +119,16 @@ router.get(
 		};
 		if (nameSection.name) {
 			try {
-				nameSection.searchResults = await search.autocomplete(req.app.locals.orm, nameSection.name, 'Series');
-				nameSection.exactMatches = await search.checkIfExists(req.app.locals.orm, nameSection.name, 'Series');
+				nameSection.searchResults = await search.autocomplete(req.app.locals.orm, nameSection.name, 'EditionGroup');
+				nameSection.exactMatches = await search.checkIfExists(req.app.locals.orm, nameSection.name, 'EditionGroup');
 			}
 			catch (err) {
 				log.debug(err);
 			}
 		}
 
-		props.initialState.nameSection = nameSection;
+		markupProps.initialState.nameSection = nameSection;
+		const {markup, props} = entityEditorMarkup(markupProps);
 
 		return res.send(target({
 			markup,
@@ -127,35 +139,23 @@ router.get(
 	}
 );
 
+
 router.post(
 	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadLanguages,
-	middleware.loadRelationshipTypes, middleware.loadSeriesOrderingTypes, async (req, res) => {
-		const entity = await utils.parseInitialState(req, 'series');
-		if (entity.seriesSection) {
-			const orderingTypes = ['Automatic', 'Manual'];
-			const seriesTypes = ['Author', 'Work', 'EditionGroup', 'Edition', 'Publisher'];
-			if (entity.seriesSection.orderType) {
-				if (!orderingTypes.includes(entity.seriesSection.orderType)) {
-					delete entity.seriesSection.orderType;
-				}
-				else {
-					entity.seriesSection.orderType = orderingTypes.indexOf(entity.seriesSection.orderType) + 1;
-				}
-			}
-			if (entity.seriesSection.seriesType && !seriesTypes.includes(entity.seriesSection.seriesType)) {
-				delete entity.seriesSection.seriesType;
-			}
+	middleware.loadLanguages, middleware.loadEditionGroupTypes,
+	middleware.loadRelationshipTypes, async (req, res) => {
+		const entity = await utils.parseInitialState(req, 'editionGroup');
+		const {orm} = req.app.locals;
+		const {EditionGroupType} = orm;
+		if (entity.editionGroupSection?.type) {
+			entity.editionGroupSection = {
+				type: await utils.getIdByField(EditionGroupType, 'label', entity.editionGroupSection.type)
+			};
 		}
-		if (_.isEmpty(entity.seriesSection)) {
-			delete entity.seriesSection;
-		}
-		else {
-			entity.seriesSection.seriesItems = {};
-		}
-		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'series', req, res, {}, () => entity
-		));
+		const markupProps = generateEntityProps(
+			'editionGroup', req, res, {}, () => entity
+		);
+		const {markup, props} = entityEditorMarkup(markupProps);
 
 		return res.send(target({
 			markup,
@@ -169,9 +169,6 @@ router.post(
 router.post('/create/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	createOrEditHandler);
 
-router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
-	mergeHandler);
-
 /* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
 router.param(
 	'bbid',
@@ -180,36 +177,39 @@ router.param(
 router.param(
 	'bbid',
 	middleware.makeEntityLoader(
-		'Series',
+		'EditionGroup',
 		[
-			'defaultAlias',
-			'disambiguation',
-			'seriesOrderingType',
-			'identifierSet.identifiers.type'
+			'authorCredit.names.author.defaultAlias',
+			'editionGroupType',
+			'editions.defaultAlias',
+			'editions.disambiguation',
+			'editions.releaseEventSet.releaseEvents',
+			'editions.identifierSet.identifiers.type',
+			'editions.editionFormat'
 		],
-		'Series not found'
+		'Edition Group not found'
 	)
 );
 
-function _setSeriesTitle(res) {
+function _setEditionGroupTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
-		'Series',
-		utils.template`Series “${'name'}”`
+		'EditionGroup',
+		utils.template`Edition Group “${'name'}”`
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadSeriesItems, middleware.loadGenders,
-	middleware.loadWikipediaExtract, (req, res) => {
-		_setSeriesTitle(res);
-		entityRoutes.displayEntity(req, res);
-	});
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
+	_setEditionGroupTitle(res);
+	res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
+	entityRoutes.displayEntity(req, res);
+});
 
 router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req, res, next) => {
 	if (!res.locals.entity.dataId) {
 		return next(new ConflictError('This entity has already been deleted'));
 	}
-	_setSeriesTitle(res);
+	_setEditionGroupTitle(res);
 	return entityRoutes.displayDeleteEntity(req, res);
 });
 
@@ -217,33 +217,35 @@ router.post(
 	'/:bbid/delete/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	(req, res) => {
 		const {orm} = req.app.locals;
-		const {SeriesHeader, SeriesRevision} = orm;
+		const {EditionGroupHeader, EditionGroupRevision} = orm;
 		return entityRoutes.handleDelete(
-			orm, req, res, SeriesHeader, SeriesRevision
+			orm, req, res, EditionGroupHeader, EditionGroupRevision
 		);
 	}
 );
 
 router.get('/:bbid/revisions', (req, res, next) => {
-	const {SeriesRevision} = req.app.locals.orm;
-	_setSeriesTitle(res);
-	entityRoutes.displayRevisions(req, res, next, SeriesRevision);
+	const {EditionGroupRevision} = req.app.locals.orm;
+	_setEditionGroupTitle(res);
+	entityRoutes.displayRevisions(req, res, next, EditionGroupRevision);
 });
 
 router.get('/:bbid/revisions/revisions', (req, res, next) => {
-	const {SeriesRevision} = req.app.locals.orm;
-	_setSeriesTitle(res);
-	entityRoutes.updateDisplayedRevisions(req, res, next, SeriesRevision);
+	const {EditionGroupRevision} = req.app.locals.orm;
+	_setEditionGroupTitle(res);
+	entityRoutes.updateDisplayedRevisions(req, res, next, EditionGroupRevision);
 });
 
-export function seriesToFormState(series) {
-	const aliases = series.aliasSet ?
-		series.aliasSet.aliases.map(({languageId, ...rest}) => ({
+
+export function editionGroupToFormState(editionGroup) {
+	/** The front-end expects a language id rather than the language object. */
+	const aliases = editionGroup.aliasSet ?
+		editionGroup.aliasSet.aliases.map(({languageId, ...rest}) => ({
 			...rest,
 			language: languageId
 		})) : [];
 
-	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(series.aliasSet);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(editionGroup.aliasSet);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
 	const aliasEditor = {};
@@ -260,10 +262,10 @@ export function seriesToFormState(series) {
 		sortName: ''
 	} : defaultAliasList[0];
 	nameSection.disambiguation =
-		series.disambiguation && series.disambiguation.comment;
+		editionGroup.disambiguation && editionGroup.disambiguation.comment;
 
-	const identifiers = series.identifierSet ?
-		series.identifierSet.identifiers.map(({type, ...rest}) => ({
+	const identifiers = editionGroup.identifierSet ?
+		editionGroup.identifierSet.identifiers.map(({type, ...rest}) => ({
 			type: type.id,
 			...rest
 		})) : [];
@@ -272,10 +274,9 @@ export function seriesToFormState(series) {
 	identifiers.forEach(
 		(identifier) => { identifierEditor[identifier.id] = identifier; }
 	);
-	const seriesSection = {
-		orderType: series.seriesOrderingType && series.seriesOrderingType.id,
-		seriesItems: {},
-		seriesType: series.entityType
+
+	const editionGroupSection = {
+		type: editionGroup.editionGroupType && editionGroup.editionGroupType.id
 	};
 
 	const relationshipSection = {
@@ -286,47 +287,60 @@ export function seriesToFormState(series) {
 		relationships: {}
 	};
 
-	series.relationships.forEach((relationship) => {
-		const formattedRelationship = {
+	editionGroup.relationships.forEach((relationship) => (
+		relationshipSection.relationships[`n${relationship.id}`] = {
 			attributeSetId: relationship.attributeSetId,
 			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
 			relationshipType: relationship.type,
 			rowID: `n${relationship.id}`,
 			sourceEntity: relationship.source,
 			targetEntity: relationship.target
-		};
-		// separate series items from relationships
-		if (relationship.typeId > 69 && relationship.typeId < 75) {
-			seriesSection.seriesItems[`n${relationship.id}`] = formattedRelationship;
 		}
-		else {
-			relationshipSection.relationships[`n${relationship.id}`] = formattedRelationship;
-		}
-	});
+	));
 
-	const optionalSections = {};
-	if (series.annotation) {
-		optionalSections.annotationSection = series.annotation;
+	const optionalSections: OptionalSectionsT = {};
+	if (editionGroup.annotation) {
+		optionalSections.annotationSection = editionGroup.annotation;
+	}
+
+	const credits = editionGroup.authorCredit ? editionGroup.authorCredit.names.map(
+		({author, ...rest}) => ({
+			author: utils.entityToOption(author),
+			...rest
+		})
+	) : [];
+
+	const authorCreditEditor: AuthorCreditEditorT = {};
+	for (const credit of credits) {
+		authorCreditEditor[credit.position] = credit;
+	}
+	if (_.isEmpty(authorCreditEditor)) {
+		authorCreditEditor.n0 = {
+			author: null,
+			joinPhrase: '',
+			name: ''
+		};
 	}
 
 	return {
 		aliasEditor,
+		authorCreditEditor,
 		buttonBar,
+		editionGroupSection,
 		identifierEditor,
 		nameSection,
 		relationshipSection,
-		seriesSection,
 		...optionalSections
 	};
 }
 
 router.get(
 	'/:bbid/edit', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadSeriesOrderingTypes, middleware.loadLanguages,
+	middleware.loadEditionGroupTypes, middleware.loadLanguages,
 	 middleware.loadEntityRelationships, middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'series', req, res, {}, seriesToFormState
+			'editionGroup', req, res, {}, editionGroupToFormState
 		));
 
 		return res.send(target({
@@ -340,5 +354,8 @@ router.get(
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	createOrEditHandler);
+
+router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
+	mergeHandler);
 
 export default router;

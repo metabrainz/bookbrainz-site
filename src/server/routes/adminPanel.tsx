@@ -26,14 +26,21 @@ import {snakeCase as _snakeCase, isNil} from 'lodash';
 import {escapeProps, generateProps} from '../helpers/props';
 import AdminPanelSearchPage from '../../client/components/pages/admin-panel-search';
 import Layout from '../../client/containers/layout';
-import {PrivilegeTypes} from '../../common/helpers/privileges-utils';
+import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import express from 'express';
+import {parseQuery} from '../helpers/utils';
 import target from '../templates/target';
 
 
-const ADMIN = PrivilegeTypes.ADMIN_PRIV.value;
+const {ADMIN} = PrivilegeType;
+
+type SearchResultsT = {
+	initialResults: any,
+	query: string,
+	total?: number
+};
 
 const router = express.Router();
 
@@ -43,12 +50,12 @@ const router = express.Router();
  */
 router.get('/', auth.isAuthenticated, auth.isAuthorized(ADMIN), async (req, res, next) => {
 	const {orm} = req.app.locals;
-	const query = req.query.q ?? '';
+	const query = parseQuery(req.url).get('q') ?? '';
 	const type = 'editor';
-	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
-	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+	const size = req.query.size ? parseInt(parseQuery(req.url).get('size'), 10) : 20;
+	const from = req.query.from ? parseInt(parseQuery(req.url).get('from'), 10) : 0;
 	try {
-		let searchResults = {
+		let searchResults: SearchResultsT = {
 			initialResults: [],
 			query,
 			total: 0

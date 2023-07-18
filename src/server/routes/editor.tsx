@@ -31,7 +31,7 @@ import CollectionsPage from '../../client/components/pages/collections';
 import EditorContainer from '../../client/containers/editor';
 import EditorRevisionPage from '../../client/components/pages/editor-revision';
 import Layout from '../../client/containers/layout';
-import {PrivilegeTypes} from '../../common/helpers/privileges-utils';
+import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import ProfileForm from '../../client/components/forms/profile';
 import ProfileTab from '../../client/components/pages/parts/editor-profile';
 import React from 'react';
@@ -40,10 +40,11 @@ import _ from 'lodash';
 import express from 'express';
 import {getOrderedCollectionsForEditorPage} from '../helpers/collections';
 import {getOrderedRevisionForEditorPage} from '../helpers/revisions';
+import {parseQuery} from '../helpers/utils';
 import target from '../templates/target';
 
 
-const ADMIN = PrivilegeTypes.ADMIN_PRIV.value;
+const {ADMIN} = PrivilegeType;
 
 const router = express.Router();
 
@@ -73,7 +74,7 @@ router.get('/edit', auth.isAuthenticated, async (req, res, next) => {
 	// Parallel fetch the three required models. Only "editorModelPromise" has
 	// "require: true", so only that can throw a NotFoundError, which is why the
 	// other two model fetch operations have no error handling.
-	const [editorModel, titleUnlockModel, genderModel] = await Promise.all([
+	const [editorModel, titleUnlockModel, genderModel]: any = await Promise.all([
 		editorModelPromise, titleUnlockModelPromise, gendersModelPromise
 	]).catch(next);
 
@@ -342,9 +343,9 @@ router.get('/:id/revisions', async (req, res, next) => {
 	const DEFAULT_REVISION_OFFSET = 0;
 
 	const size =
-		req.query.size ? parseInt(req.query.size, 10) : DEFAULT_MAX_REVISIONS;
+		req.query.size ? parseInt(parseQuery(req.url).get('size'), 10) : DEFAULT_MAX_REVISIONS;
 	const from =
-		req.query.from ? parseInt(req.query.from, 10) : DEFAULT_REVISION_OFFSET;
+		req.query.from ? parseInt(parseQuery(req.url).get('from'), 10) : DEFAULT_REVISION_OFFSET;
 
 	try {
 		// get 1 more result to check nextEnabled
@@ -400,9 +401,9 @@ router.get('/:id/revisions/revisions', async (req, res, next) => {
 	const DEFAULT_REVISION_OFFSET = 0;
 
 	const size =
-		req.query.size ? parseInt(req.query.size, 10) : DEFAULT_MAX_REVISIONS;
+		req.query.size ? parseInt(parseQuery(req.url).get('size'), 10) : DEFAULT_MAX_REVISIONS;
 	const from =
-		req.query.from ? parseInt(req.query.from, 10) : DEFAULT_REVISION_OFFSET;
+		req.query.from ? parseInt(parseQuery(req.url).get('from'), 10) : DEFAULT_REVISION_OFFSET;
 
 	const orderedRevisions =
 		await getOrderedRevisionForEditorPage(from, size, req).catch(next);
@@ -609,11 +610,11 @@ router.get('/:id/collections', async (req, res, next) => {
 	const DEFAULT_COLLECTION_OFFSET = 0;
 
 	const size =
-		req.query.size ? parseInt(req.query.size, 10) : DEFAULT_MAX_COLLECTIONS;
+		req.query.size ? parseInt(parseQuery(req.url).get('size'), 10) : DEFAULT_MAX_COLLECTIONS;
 	const from =
-		req.query.from ? parseInt(req.query.from, 10) : DEFAULT_COLLECTION_OFFSET;
+		req.query.from ? parseInt(parseQuery(req.url).get('from'), 10) : DEFAULT_COLLECTION_OFFSET;
 
-	const type = req.query.type ? req.query.type : null;
+	const type = req.query.type ? parseQuery(req.url).get('type') : null;
 
 	try {
 		const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
@@ -667,9 +668,9 @@ router.get('/:id/collections', async (req, res, next) => {
 // eslint-disable-next-line consistent-return
 router.get('/:id/collections/collections', async (req, res, next) => {
 	try {
-		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
-		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
-		const type = req.query.type ? req.query.type : null;
+		const size = req.query.size ? parseInt(parseQuery(req.url).get('size'), 10) : 20;
+		const from = req.query.from ? parseInt(parseQuery(req.url).get('from'), 10) : 0;
+		const type = req.query.type ? parseQuery(req.url).get('type') : null;
 		const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
 		if (!entityTypes.includes(type) && type !== null) {
 			throw new error.BadRequestError(`Type ${type} do not exist`);

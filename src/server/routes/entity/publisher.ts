@@ -24,25 +24,31 @@ import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
 import {
-	addInitialRelationship,
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
 import {ConflictError} from '../../../common/helpers/error';
-import {PrivilegeTypes} from '../../../common/helpers/privileges-utils';
-import {RelationshipTypes} from '../../../client/entity-editor/relationship-editor/types';
+import {PrivilegeType} from '../../../common/helpers/privileges-utils';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import log from 'log';
-import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
+
 
 /** ****************************
 *********** Helpers ************
 *******************************/
+
+type OptionalSectionsT = {
+	annotationSection?: any
+};
+
+const additionalPublisherProps = [
+	'typeId', 'areaId', 'beginDate', 'endDate', 'ended'
+];
 
 export function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
@@ -56,32 +62,31 @@ export function transformNewForm(data) {
 	const relationships = entityRoutes.constructRelationships(
 		data.relationshipSection
 	);
-
-	const languages = _.map(
-		data.workSection.languages, (language) => language.value
-	);
-
 	return {
 		aliases,
 		annotation: data.annotationSection.content,
+		areaId: data.publisherSection.area && data.publisherSection.area.id,
+		beginDate: data.publisherSection.beginDate,
 		disambiguation: data.nameSection.disambiguation,
+		endDate: data.publisherSection.endDate ?
+			data.publisherSection.endDate : null,
+		ended: data.publisherSection.ended,
 		identifiers,
-		languages,
 		note: data.submissionSection.note,
 		relationships,
-		typeId: data.workSection.type
+		typeId: data.publisherSection.type
 	};
 }
 
 const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'work', transformNewForm, 'typeId'
+	'publisher', transformNewForm, additionalPublisherProps
 );
 
 const mergeHandler = makeEntityCreateOrEditHandler(
-	'work', transformNewForm, 'typeId', true
+	'publisher', transformNewForm, additionalPublisherProps, true
 );
 
-const ENTITY_EDITOR = PrivilegeTypes.ENTITY_EDITING_PRIV.value;
+const {ENTITY_EDITOR} = PrivilegeType;
 
 /** ****************************
 *********** Routes *************
@@ -93,111 +98,76 @@ const router = express.Router();
 
 router.get(
 	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadLanguages, middleware.loadWorkTypes,
+	middleware.loadLanguages, middleware.loadPublisherTypes,
 	middleware.loadRelationshipTypes,
-	(req, res, next) => {
-		const {Author, Edition} = req.app.locals.orm;
-		let relationshipTypeId;
-		let initialRelationshipIndex = 0;
-		const propsPromise = generateEntityProps(
-			'work', req, res, {}
+	async (req, res) => {
+		const markupProps = generateEntityProps(
+			'publisher', req, res, {}
 		);
-
-		if (req.query.author) {
-			propsPromise.author =
-				Author.forge({bbid: req.query.author})
-					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && utils.entityToOption(data.toJSON()));
+		const nameSection = {
+			disambiguation: '',
+			exactMatches: null,
+			language: null,
+			name: req.query?.name ?? '',
+			searchResults: null,
+			sortName: ''
+		};
+		if (nameSection.name) {
+			try {
+				nameSection.searchResults = await search.autocomplete(req.app.locals.orm, nameSection.name, 'Publisher');
+				nameSection.exactMatches = await search.checkIfExists(req.app.locals.orm, nameSection.name, 'Publisher');
+			}
+			catch (err) {
+				log.debug(err);
+			}
 		}
 
-		if (req.query.edition) {
-			propsPromise.edition =
-				Edition.forge({bbid: req.query.edition})
-					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && utils.entityToOption(data.toJSON()));
-		}
+		markupProps.initialState.nameSection = nameSection;
+		const {markup, props} = entityEditorMarkup(markupProps);
 
-		async function render(props) {
-			if (props.author) {
-				// add initial ralationship with relationshipTypeId = 8 (<Work> is written by <Author>)
-				relationshipTypeId = RelationshipTypes.AuthorWroteWork;
-				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.author);
-			}
-
-			if (props.edition) {
-				// add initial ralationship with relationshipTypeId = 10 (<Work> is contained in <Edition>)
-				relationshipTypeId = RelationshipTypes.EditionContainsWork;
-				addInitialRelationship(props, relationshipTypeId, initialRelationshipIndex++, props.edition);
-			}
-			const nameSection = {
-				disambiguation: '',
-				exactMatches: null,
-				language: null,
-				name: req.query?.name ?? '',
-				searchResults: null,
-				sortName: ''
-			};
-			if (nameSection.name) {
-				try {
-					nameSection.searchResults = await search.autocomplete(req.app.locals.orm, nameSection.name, 'Work');
-					nameSection.exactMatches = await search.checkIfExists(req.app.locals.orm, nameSection.name, 'Work');
-				}
-				catch (err) {
-					log.debug(err);
-				}
-			}
-			props.initialState.nameSection = nameSection;
-			const editorMarkup = entityEditorMarkup(props);
-			const {markup} = editorMarkup;
-			const updatedProps = editorMarkup.props;
-
-			return res.send(target({
-				markup,
-				props: escapeProps(updatedProps),
-				script: '/js/entity-editor.js',
-				title: props.heading
-			}));
-		}
-		makePromiseFromObject(propsPromise)
-			.then(render)
-			.catch(next);
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/entity-editor.js',
+			title: props.heading
+		}));
 	}
 );
+
 
 router.post(
 	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadLanguages, middleware.loadWorkTypes,
+	middleware.loadLanguages, middleware.loadPublisherTypes,
 	middleware.loadRelationshipTypes,
-	async (req, res, next) => {
-		const {WorkType} = req.app.locals.orm;
-		const entity = await utils.parseInitialState(req, 'work');
-		if (entity.workSection?.type) {
-			entity.workSection.type = await utils.getIdByField(WorkType, 'label', entity.workSection.type);
+	async (req, res) => {
+		const {orm} = req.app.locals;
+		const {PublisherType} = orm;
+		const entity = await utils.parseInitialState(req, 'publisher');
+		if (entity.publisherSection) {
+			if (entity.publisherSection.type) {
+				entity.publisherSection.type = await utils.getIdByField(PublisherType, 'label', entity.publisherSection.type);
+			}
+			if (entity.publisherSection.endDate) {
+				entity.publisherSection.ended = true;
+			}
+			if (entity.publisherSection.area) {
+				entity.publisherSection.area = await utils.searchOption(orm, 'area', entity.publisherSection.area);
+			}
 		}
-		if (entity.workSection) {
-			entity.workSection = await utils.parseLanguages(entity.workSection, req.app.locals.orm);
-		}
-		const propsPromise = generateEntityProps(
-			'work', req, res, {}, () => entity
+		const markupProps = generateEntityProps(
+			'publisher', req, res, {}, () => entity
 		);
+		const {markup, props} = entityEditorMarkup(markupProps);
 
-		function render(props) {
-			const editorMarkup = entityEditorMarkup(props);
-			const {markup} = editorMarkup;
-			const updatedProps = editorMarkup.props;
-
-			return res.send(target({
-				markup,
-				props: escapeProps(updatedProps),
-				script: '/js/entity-editor.js',
-				title: props.heading
-			}));
-		}
-		makePromiseFromObject(propsPromise)
-			.then(render)
-			.catch(next);
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/entity-editor.js',
+			title: props.heading
+		}));
 	}
 );
+
 
 router.post('/create/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	createOrEditHandler);
@@ -211,30 +181,51 @@ router.param(
 router.param(
 	'bbid',
 	middleware.makeEntityLoader(
-		'Work',
-		['workType', 'languageSet.languages'],
-		'Work not found'
+		'Publisher',
+		['publisherType', 'area'],
+		'Publisher not found'
 	)
 );
 
-function _setWorkTitle(res) {
+function _setPublisherTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
-		'Work',
-		utils.template`Work “${'name'}”`
+		'Publisher',
+		utils.template`Publisher “${'name'}”`
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
-	_setWorkTitle(res);
-	entityRoutes.displayEntity(req, res);
+
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res, next) => {
+	// Fetch editions
+	const {Publisher} = req.app.locals.orm;
+	const editionRelationsToFetch = [
+		'defaultAlias',
+		'disambiguation',
+		'releaseEventSet.releaseEvents',
+		'identifierSet.identifiers.type',
+		'editionFormat',
+		'authorCredit.names'
+	];
+	const editionsPromise =
+		Publisher.forge({bbid: res.locals.entity.bbid})
+			.editions({withRelated: editionRelationsToFetch});
+
+	return editionsPromise
+		.then((editions) => {
+			res.locals.entity.editions = editions.toJSON();
+			_setPublisherTitle(res);
+			res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
+			return entityRoutes.displayEntity(req, res);
+		})
+		.catch(next);
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req, res, next) => {
 	if (!res.locals.entity.dataId) {
 		return next(new ConflictError('This entity has already been deleted'));
 	}
-	_setWorkTitle(res);
+	_setPublisherTitle(res);
 	return entityRoutes.displayDeleteEntity(req, res);
 });
 
@@ -242,34 +233,35 @@ router.post(
 	'/:bbid/delete/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	(req, res) => {
 		const {orm} = req.app.locals;
-		const {WorkHeader, WorkRevision} = orm;
+		const {PublisherHeader, PublisherRevision} = orm;
 		return entityRoutes.handleDelete(
-			orm, req, res, WorkHeader, WorkRevision
+			orm, req, res, PublisherHeader, PublisherRevision
 		);
 	}
 );
 
 router.get('/:bbid/revisions', (req, res, next) => {
-	const {WorkRevision} = req.app.locals.orm;
-	_setWorkTitle(res);
-	entityRoutes.displayRevisions(req, res, next, WorkRevision);
+	const {PublisherRevision} = req.app.locals.orm;
+	_setPublisherTitle(res);
+	entityRoutes.displayRevisions(req, res, next, PublisherRevision);
 });
 
 router.get('/:bbid/revisions/revisions', (req, res, next) => {
-	const {WorkRevision} = req.app.locals.orm;
-	_setWorkTitle(res);
-	entityRoutes.updateDisplayedRevisions(req, res, next, WorkRevision);
+	const {PublisherRevision} = req.app.locals.orm;
+	_setPublisherTitle(res);
+	entityRoutes.updateDisplayedRevisions(req, res, next, PublisherRevision);
 });
 
-export function workToFormState(work) {
+
+export function publisherToFormState(publisher) {
 	/** The front-end expects a language id rather than the language object. */
-	const aliases = work.aliasSet ?
-		work.aliasSet.aliases.map(({languageId, ...rest}) => ({
+	const aliases = publisher.aliasSet ?
+		publisher.aliasSet.aliases.map(({languageId, ...rest}) => ({
 			...rest,
 			language: languageId
 		})) : [];
 
-	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(work.aliasSet);
+	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(publisher.aliasSet);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
 	const aliasEditor = {};
@@ -286,10 +278,10 @@ export function workToFormState(work) {
 		sortName: ''
 	} : defaultAliasList[0];
 	nameSection.disambiguation =
-		work.disambiguation && work.disambiguation.comment;
+		publisher.disambiguation && publisher.disambiguation.comment;
 
-	const identifiers = work.identifierSet ?
-		work.identifierSet.identifiers.map(({type, ...rest}) => ({
+	const identifiers = publisher.identifierSet ?
+		publisher.identifierSet.identifiers.map(({type, ...rest}) => ({
 			type: type.id,
 			...rest
 		})) : [];
@@ -299,13 +291,13 @@ export function workToFormState(work) {
 		(identifier) => { identifierEditor[identifier.id] = identifier; }
 	);
 
-	const workSection = {
-		languages: work.languageSet ? work.languageSet.languages.map(
-			({id, name}) => ({label: name, value: id})
-		) : [],
-		type: work.workType && work.workType.id
+	const publisherSection = {
+		area: entityRoutes.areaToOption(publisher.area),
+		beginDate: publisher.beginDate,
+		endDate: publisher.endDate,
+		ended: publisher.ended,
+		type: publisher.publisherType && publisher.publisherType.id
 	};
-
 	const relationshipSection = {
 		canEdit: true,
 		lastRelationships: null,
@@ -314,7 +306,7 @@ export function workToFormState(work) {
 		relationships: {}
 	};
 
-	work.relationships.forEach((relationship) => (
+	publisher.relationships.forEach((relationship) => (
 		relationshipSection.relationships[`n${relationship.id}`] = {
 			attributeSetId: relationship.attributeSetId,
 			attributes: relationship.attributeSet ? relationship.attributeSet.relationshipAttributes : [],
@@ -325,9 +317,9 @@ export function workToFormState(work) {
 		}
 	));
 
-	const optionalSections = {};
-	if (work.annotation) {
-		optionalSections.annotationSection = work.annotation;
+	const optionalSections: OptionalSectionsT = {};
+	if (publisher.annotation) {
+		optionalSections.annotationSection = publisher.annotation;
 	}
 
 	return {
@@ -335,19 +327,19 @@ export function workToFormState(work) {
 		buttonBar,
 		identifierEditor,
 		nameSection,
+		publisherSection,
 		relationshipSection,
-		workSection,
 		...optionalSections
 	};
 }
 
 router.get(
 	'/:bbid/edit', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadWorkTypes, middleware.loadLanguages,
+	middleware.loadPublisherTypes, middleware.loadLanguages,
 	 middleware.loadEntityRelationships, middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
-			'work', req, res, {}, workToFormState
+			'publisher', req, res, {}, publisherToFormState
 		));
 
 		return res.send(target({
@@ -358,6 +350,7 @@ router.get(
 		}));
 	}
 );
+
 
 router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	createOrEditHandler);

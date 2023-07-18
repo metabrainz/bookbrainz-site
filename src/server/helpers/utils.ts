@@ -357,3 +357,7 @@ export async function parseInitialState(req, type):Promise<Record<string, any>> 
 	}
 	return initialState;
 }
+
+export function parseQuery(url: string) {
+	return new URLSearchParams(url.replace(/^.+?\?/, ''));
+}

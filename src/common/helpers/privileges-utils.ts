@@ -22,26 +22,34 @@ export const PRIVILEGE_PROPERTIES = {
 	}
 };
 
+export enum PrivilegeType {
+	ADMIN = 16,
+	REINDEX_SEARCH_SERVER = 8,
+	RELATIONSHIP_TYPE_EDITOR = 4,
+	IDENTIFIER_TYPE_EDITOR = 2,
+	ENTITY_EDITOR = 1
+}
+
 export const PrivilegeTypes = {
 	ADMIN_PRIV: {
 		bit: 4,
-		value: 16
+		value: PrivilegeType.ADMIN
 	},
 	REINDEX_SEARCH_SERVER_PRIV: {
 		bit: 3,
-		value: 8
+		value: PrivilegeType.REINDEX_SEARCH_SERVER
 	},
 	RELATIONSHIP_TYPE_EDITOR_PRIV: {
 		bit: 2,
-		value: 4
+		value: PrivilegeType.RELATIONSHIP_TYPE_EDITOR
 	},
 	IDENTIFIER_TYPE_EDITOR_PRIV: {
 		bit: 1,
-		value: 2
+		value: PrivilegeType.IDENTIFIER_TYPE_EDITOR
 	},
-	ENTITY_EDITING_PRIV: {
+	ENTITY_EDITOR_PRIV: {
 		bit: 0,
-		value: 1
+		value: PrivilegeType.ENTITY_EDITOR
 	}
 };
 
