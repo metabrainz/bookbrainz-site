@@ -74,7 +74,10 @@ export function transformNewForm(data) {
 		data.editionSection.languages, (language) => language.value
 	);
 	let authorCredit = {};
-	if (!_.isNil(data.authorCredit)) {
+	if (!_.get(data, ['editionSection', 'authorCreditEnable'], true)) {
+		authorCredit = null;
+	}
+	else if (!_.isNil(data.authorCredit)) {
 		// When merging entities, we use a separate reducer "authorCredit"
 		authorCredit = data.authorCredit.names;
 	}
@@ -333,8 +336,7 @@ router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWorkTabl
 	middleware.loadWikipediaExtract, (req:PassportRequest, res) => {
 		_setEditionTitle(res);
 		entityRoutes.displayEntity(req, res);
-	}
-);
+	});
 
 router.get('/:bbid/revisions', (req:PassportRequest, res, next) => {
 	const {EditionRevision} = req.app.locals.orm;
@@ -442,6 +444,7 @@ export function editionToFormState(edition) {
 	const editionGroup = utils.entityToOption(edition.editionGroup);
 
 	const editionSection = {
+		authorCreditEnable: true,
 		depth: edition.depth,
 		editionGroup,
 		// Determines whether the EG can be left blank (an EG will be auto-created) for existing Editions
