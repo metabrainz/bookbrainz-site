@@ -19,8 +19,21 @@
 import {AdminActionType} from '../../common/helpers/privileges-utils';
 
 
-export async function createAdminLog(actionType: AdminActionType, adminId: number,
-	newPrivs: number, note: string, oldPrivs: number, targetUserId: number, AdminLog) {
+export type AdminLogDataT = {
+	actionType: AdminActionType,
+	admin?: any,
+	adminId: number,
+	id?: number,
+	newPrivs: number,
+	note: string,
+	oldPrivs: number,
+	targetUser?: any,
+	targetUserId: number,
+	time?: any
+};
+
+export async function createAdminLog(logData: AdminLogDataT, AdminLog, transacting: any) {
+	const {actionType, adminId, newPrivs, note, oldPrivs, targetUserId} = logData;
 	await new AdminLog({
 		actionType,
 		adminId,
@@ -28,7 +41,7 @@ export async function createAdminLog(actionType: AdminActionType, adminId: numbe
 		note,
 		oldPrivs,
 		targetUserId
-	}).save(null, {method: 'insert'});
+	}).save(null, {method: 'insert', transacting});
 }
 
 /**

@@ -18,11 +18,12 @@
 
 import * as React from 'react';
 import {AdminActionType, PrivilegeTypes, getPrivilegeTitleFromBit} from '../../common/helpers/privileges-utils';
+import {AdminLogDataT} from '../../server/helpers/adminLogs';
 import {sanitize} from 'isomorphic-dompurify';
 
 
 /* eslint-disable no-bitwise */
-function getPrivsAdded(newPrivs, oldPrivs) {
+function getPrivsAdded(newPrivs: number, oldPrivs: number) {
 	const privsAdded = [];
 	const totalBits = Object.keys(PrivilegeTypes).length;
 
@@ -35,7 +36,7 @@ function getPrivsAdded(newPrivs, oldPrivs) {
 	return privsAdded;
 }
 
-function getPrivsRemoved(newPrivs, oldPrivs) {
+function getPrivsRemoved(newPrivs: number, oldPrivs: number) {
 	const privsRemoved = [];
 	const totalBits = Object.keys(PrivilegeTypes).length;
 
@@ -48,7 +49,7 @@ function getPrivsRemoved(newPrivs, oldPrivs) {
 	return privsRemoved;
 }
 
-function constructPrivsChangeStatement(logData) {
+function constructPrivsChangeStatement(logData: AdminLogDataT) {
 	const {newPrivs, oldPrivs, targetUserId, targetUser, adminId, admin} = logData;
 	const privsAdded = getPrivsAdded(newPrivs, oldPrivs);
 	const privsRemoved = getPrivsRemoved(newPrivs, oldPrivs);
@@ -56,19 +57,13 @@ function constructPrivsChangeStatement(logData) {
 	let grantStatement = '';
 	if (privsAdded.length) {
 		grantStatement = ' granted ';
-		for (let i = 0; i < privsAdded.length; i++) {
-			if (i !== 0 && i === privsAdded.length - 1) {
-				grantStatement += ' and ';
-				grantStatement += `<strong>${privsAdded[i]}</strong>`;
-			}
-			else if (i !== 0) {
-				grantStatement += ', ';
-				grantStatement += `<strong>${privsAdded[i]}</strong>`;
-			}
-			else {
-				grantStatement += `<strong>${privsAdded[i]}</strong>`;
-			}
+		const lastItem = privsAdded.at(-1);
+		const otherPrivs = privsAdded.slice(0, -1);
+		if (otherPrivs.length) {
+		  grantStatement += otherPrivs.map(priv => `<strong>${priv}</strong>`).join(', ');
+		  grantStatement += ' and ';
 		}
+		grantStatement += `<strong>${lastItem}</strong>`;
 		grantStatement += ' privilege';
 		if (privsAdded.length > 1) {
 			grantStatement += 's';
@@ -79,19 +74,13 @@ function constructPrivsChangeStatement(logData) {
 	let removedStatement = '';
 	if (privsRemoved.length) {
 		removedStatement = ' removed ';
-		for (let i = 0; i < privsRemoved.length; i++) {
-			if (i !== 0 && i === privsRemoved.length - 1) {
-				removedStatement += ' and ';
-				removedStatement += `<strong>${privsRemoved[i]}</strong>`;
-			}
-			else if (i !== 0) {
-				removedStatement += ', ';
-				removedStatement += `<strong>${privsRemoved[i]}</strong>`;
-			}
-			else {
-				removedStatement += `<strong>${privsRemoved[i]}</strong>`;
-			}
+		const lastItem = privsRemoved.at(-1);
+		const otherPrivs = privsRemoved.slice(0, -1);
+		if (otherPrivs.length) {
+		  removedStatement += otherPrivs.map(priv => `<strong>${priv}</strong>`).join(', ');
+		  removedStatement += ' and ';
 		}
+		removedStatement += `<strong>${lastItem}</strong>`;
 		removedStatement += ' privilege';
 		if (privsRemoved.length > 1) {
 			removedStatement += 's';
@@ -119,10 +108,10 @@ function constructPrivsChangeStatement(logData) {
 /**
  * Constructs a log statement for each administrative action for the Admin Logs Page
  * @function constructAdminLogStatement
- * @param {object} logData - the data for the admin log action
+ * @param {AdminLogDataT} logData - the data for the admin log action
  * @returns {string} A statement of the log depending upon the AdminActionType
  */
-export function constructAdminLogStatement(logData) {
+export function constructAdminLogStatement(logData: AdminLogDataT) {
 	if (logData.actionType === AdminActionType.CHANGE_PRIV) {
 		return constructPrivsChangeStatement(logData);
 	}

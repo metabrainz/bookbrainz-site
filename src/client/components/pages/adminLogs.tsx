@@ -16,55 +16,42 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import React, {useCallback, useState} from 'react';
+import {AdminLogDataT} from '../../../server/helpers/adminLogs';
 import AdminLogsTable from './parts/admin-logs-table';
 import PagerElement from './parts/pager';
-import PropTypes from 'prop-types';
-import React from 'react';
 
 
-class AdminLogsPage extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			results: this.props.results
-		};
+type Props = {
+	from?: number,
+	nextEnabled: number,
+	results?: AdminLogDataT[],
+	size?: number
+};
 
-		// React does not autobind non-React class methods
-		this.searchResultsCallback = this.searchResultsCallback.bind(this);
-		this.paginationUrl = './admin-logs/admin-logs';
-	}
-
-	searchResultsCallback(newResults) {
-		this.setState({results: newResults});
-	}
-
-	render() {
-		return (
-			<div id="pageWithPagination">
-				<AdminLogsTable
-					results={this.state.results}
-				/>
-				<PagerElement
-					from={this.props.from}
-					nextEnabled={this.props.nextEnabled}
-					paginationUrl={this.paginationUrl}
-					results={this.state.results}
-					searchResultsCallback={this.searchResultsCallback}
-					size={this.props.size}
-				/>
-			</div>
-		);
-	}
+function AdminLogsPage({from, nextEnabled, results, size}: Props) {
+	const [logs, setLogs] = useState(results);
+	const searchResultsCallback = useCallback((newResults) => setLogs(newResults), []);
+	const paginationUrl = './admin-logs/admin-logs';
+	return (
+		<div id="pageWithPagination">
+			<AdminLogsTable
+				results={logs}
+			/>
+			<PagerElement
+				from={from}
+				nextEnabled={nextEnabled}
+				paginationUrl={paginationUrl}
+				results={logs}
+				searchResultsCallback={searchResultsCallback}
+				size={size}
+			/>
+		</div>
+	);
 }
 
 
 AdminLogsPage.displayName = 'AdminLogsPage';
-AdminLogsPage.propTypes = {
-	from: PropTypes.number,
-	nextEnabled: PropTypes.bool.isRequired,
-	results: PropTypes.array,
-	size: PropTypes.number
-};
 AdminLogsPage.defaultProps = {
 	from: 0,
 	results: [],

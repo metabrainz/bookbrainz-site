@@ -24,6 +24,7 @@ import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
 import {AdminActionType, PrivilegeType} from '../../common/helpers/privileges-utils';
+import {AdminLogDataT, createAdminLog} from '../helpers/adminLogs';
 import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
 import {getConsecutiveDaysWithEdits, getEntityVisits, getTypeCreation} from '../helpers/achievement';
@@ -37,7 +38,6 @@ import ProfileTab from '../../client/components/pages/parts/editor-profile';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
-import {createAdminLog} from '../helpers/adminLogs';
 import express from 'express';
 import {getOrderedCollectionsForEditorPage} from '../helpers/collections';
 import {getOrderedRevisionForEditorPage} from '../helpers/revisions';
@@ -180,13 +180,14 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 });
 
 router.post('/privs/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ADMIN), async (req, res, next) => {
-	const {Editor, AdminLog} = req.app.locals.orm;
+	const {Editor, AdminLog, bookshelf} = req.app.locals.orm;
 	const {adminId, newPrivs, note, oldPrivs, targetUserId} = req.body;
 	const actionType = AdminActionType.CHANGE_PRIV;
 	try {
+		const trx = await bookshelf.transaction();
 		const editor = await Editor
 			.forge({id: parseInt(targetUserId, 10)})
-			.fetch({require: true})
+			.fetch({require: true, transacting: trx})
 			.catch(Editor.NotFoundError, () => next(new error.NotFoundError('Editor not found', req)));
 		if (editor.get('privs') === newPrivs) {
 			return next(new error.FormSubmissionError(
@@ -194,7 +195,16 @@ router.post('/privs/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthor
 			));
 		}
 		await editor.save({privs: newPrivs});
-		await createAdminLog(actionType, adminId, newPrivs, note, oldPrivs, targetUserId, AdminLog);
+		const logData: AdminLogDataT = {
+			actionType,
+			adminId,
+			newPrivs,
+			note,
+			oldPrivs,
+			targetUserId
+		};
+		await createAdminLog(logData, AdminLog, trx);
+		await trx.commit();
 		return res.status(200).send();
 	}
 	catch (err) {
