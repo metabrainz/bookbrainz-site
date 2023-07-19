@@ -83,10 +83,19 @@ class PrivsEditModal extends React.Component {
 	handleBitChange(bit) {
 		const newPrivs = this.state.privs ^ (1 << bit);
 		if (this.props.targetUser.privs !== newPrivs) {
-			this.setState({
-				privs: newPrivs,
-				submittable: true
-			});
+			// If we have also added a note, then set submittable also true
+			if (this.state.note.length) {
+				this.setState({
+					privs: newPrivs,
+					submittable: true
+				});
+			}
+			else {
+				this.setState({
+					privs: newPrivs,
+					submittable: false
+				});
+			}
 		}
 		else {
 			this.setState({
@@ -97,9 +106,27 @@ class PrivsEditModal extends React.Component {
 	}
 
 	handleNoteChange(event) {
-		this.setState({
-			note: event.target.value
-		});
+		const newPrivs = this.state.privs;
+		if (event.target.value.length) {
+			// If the privs have also been changed, then set submittable to true
+			if (this.props.targetUser.privs !== newPrivs) {
+				this.setState({
+					note: event.target.value,
+					submittable: true
+				});
+			}
+			else {
+				this.setState({
+					note: event.target.value
+				});
+			}
+		}
+		else {
+			this.setState({
+				note: event.target.value,
+				submittable: false
+			});
+		}
 	}
 
 	/* eslint-disable react/jsx-no-bind */
@@ -115,7 +142,7 @@ class PrivsEditModal extends React.Component {
 			/>
 		));
 
-		const noteField = this.state.submittable &&
+		const noteField = (
 			<Form.Group>
 				<Form.Label>
 					Note/Reason:
@@ -126,7 +153,8 @@ class PrivsEditModal extends React.Component {
 					rows="2"
 					onChange={this.handleNoteChange}
 				/>
-			</Form.Group>;
+			</Form.Group>
+		);
 
 		return (
 			<Modal
