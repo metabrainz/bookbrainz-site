@@ -362,6 +362,6 @@ export function parseQuery(url: string) {
 	return new URLSearchParams(url.replace(/^.+?\?/, ''));
 }
 
-export function getIntFromQueryParams(query: URLSearchParams, type: string, fallback = 0) {
-	return parseInt(query.get(type), 10) || fallback;
+export function getIntFromQueryParams(query: URLSearchParams, name: string, fallback = 0) {
+	return parseInt(query.get(name), 10) || fallback;
 }

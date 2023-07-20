@@ -50,11 +50,11 @@ const router = express.Router();
  */
 router.get('/', auth.isAuthenticated, auth.isAuthorized(ADMIN), async (req, res, next) => {
 	const {orm} = req.app.locals;
-	const query = parseQuery(req.url).get('q') ?? '';
 	const type = 'editor';
-	const urlQry = parseQuery(req.url);
-	const size = getIntFromQueryParams(urlQry, 'size', 20);
-	const from = getIntFromQueryParams(urlQry, 'from');
+	const urlQuery = parseQuery(req.url);
+	const query = urlQuery.get('q') ?? '';
+	const size = getIntFromQueryParams(urlQuery, 'size', 20);
+	const from = getIntFromQueryParams(urlQuery, 'from');
 	try {
 		let searchResults: SearchResultsT = {
 			initialResults: [],
