@@ -147,10 +147,15 @@ router.get(
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages, middleware.loadRelationshipTypes,
 	(req:PassportRequest, res, next) => {
-		const {EditionGroup, Publisher, Work} = req.app.locals.orm;
+		const {EditionGroup, Publisher, Work, Author} = req.app.locals.orm;
 		const propsPromise = generateEntityProps(
 			'edition', req, res, {}
 		);
+		if (req.query.author) {
+			propsPromise.author = Author.forge({bbid: req.query.author})
+				.fetch({require: false, withRelated: 'defaultAlias'})
+				.then((data) => data && utils.entityToOption(data.toJSON()));
+		}
 
 		// Access edition-group property: can't write req.query.edition-group as the dash makes it invalid Javascript
 		if (req.query['edition-group']) {
@@ -188,6 +193,21 @@ router.get(
 			let initialRelationshipIndex = 0;
 
 			initialState.editionSection = initialState.editionSection ?? {};
+			if (props.author) {
+				initialState.authorCreditEditor = {
+					a0: {
+					  author: {
+							id: props.author.id,
+							rowId: 'a0',
+							text: props.author.text,
+							type: 'Author'
+					  },
+					  automaticJoinPhrase: true,
+					  joinPhrase: '',
+					  name: props.author.text
+					}
+				  };
+			}
 
 			if (props.publisher) {
 				initialState.editionSection.publisher = props.publisher;

@@ -22,6 +22,7 @@ import React, {createRef, useCallback} from 'react';
 
 import AverageRating from './average-ratings';
 import CBReviewModal from './cbReviewModal';
+import EditionTable from './edition-table';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
@@ -130,6 +131,12 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	}, [reviewsRef]);
 
 	const urlPrefix = getEntityUrl(entity);
+	const editions = [];
+	if (entity?.authorCredits) {
+		entity.authorCredits.forEach((authorCredit) => {
+			editions.push(...authorCredit.editions);
+		});
+	}
 	return (
 		<div>
 			<Row className="entity-display-background">
@@ -156,6 +163,7 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 				<React.Fragment>
 					<Row>
 						<Col lg={8}>
+							<EditionTable editions={editions} entity={entity}/>
 							<EntityLinks
 								entity={entity}
 								identifierTypes={identifierTypes}
