@@ -33,8 +33,9 @@ const router = express.Router();
 
 router.get('/', async (req, res, next) => {
 	const {orm} = req.app.locals;
-	const size = req.query.size ? parseInt(parseQuery(req.url).get('size'), 10) : 20;
-	const from = req.query.from ? parseInt(parseQuery(req.url).get('from'), 10) : 0;
+	const query = parseQuery(req.url);
+	const size = parseInt(query.get('size'), 10) || 20;
+	const from = parseInt(query.get('from'), 10) || 0;
 
 	function render(results, nextEnabled) {
 		const props = generateProps(req, res, {
@@ -73,8 +74,9 @@ router.get('/', async (req, res, next) => {
 // eslint-disable-next-line consistent-return
 router.get('/admin-logs', async (req, res, next) => {
 	const {orm} = req.app.locals;
-	const size = req.query.size ? parseInt(parseQuery(req.url).get('size'), 10) : 20;
-	const from = req.query.from ? parseInt(parseQuery(req.url).get('from'), 10) : 0;
+	const query = parseQuery(req.url);
+	const size = parseInt(query.get('size'), 10) || 20;
+	const from = parseInt(query.get('from'), 10) || 0;
 
 	try {
 		const orderedRevisions = await getOrderedAdminLogs(from, size, orm);

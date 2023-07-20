@@ -84,18 +84,10 @@ class PrivsEditModal extends React.Component {
 		const newPrivs = this.state.privs ^ (1 << bit);
 		if (this.props.targetUser.privs !== newPrivs) {
 			// If we have also added a note, then set submittable also true
-			if (this.state.note.length) {
-				this.setState({
-					privs: newPrivs,
-					submittable: true
-				});
-			}
-			else {
-				this.setState({
-					privs: newPrivs,
-					submittable: false
-				});
-			}
+			this.setState(prevState => ({
+				privs: newPrivs,
+				submittable: Boolean(prevState.note.length)
+			}));
 		}
 		else {
 			this.setState({
@@ -109,17 +101,10 @@ class PrivsEditModal extends React.Component {
 		const newPrivs = this.state.privs;
 		if (event.target.value.length) {
 			// If the privs have also been changed, then set submittable to true
-			if (this.props.targetUser.privs !== newPrivs) {
-				this.setState({
-					note: event.target.value,
-					submittable: true
-				});
-			}
-			else {
-				this.setState({
-					note: event.target.value
-				});
-			}
+			this.setState({
+				note: event.target.value,
+				submittable: Boolean(this.props.targetUser.privs !== newPrivs)
+			});
 		}
 		else {
 			this.setState({

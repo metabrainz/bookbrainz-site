@@ -52,8 +52,9 @@ router.get('/', auth.isAuthenticated, auth.isAuthorized(ADMIN), async (req, res,
 	const {orm} = req.app.locals;
 	const query = parseQuery(req.url).get('q') ?? '';
 	const type = 'editor';
-	const size = req.query.size ? parseInt(parseQuery(req.url).get('size'), 10) : 20;
-	const from = req.query.from ? parseInt(parseQuery(req.url).get('from'), 10) : 0;
+	const urlQry = parseQuery(req.url);
+	const size = parseInt(urlQry.get('size'), 10) || 20;
+	const from = parseInt(urlQry.get('from'), 10) || 0;
 	try {
 		let searchResults: SearchResultsT = {
 			initialResults: [],
