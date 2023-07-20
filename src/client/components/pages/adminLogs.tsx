@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import React, {useCallback, useState} from 'react';
+import React, {useState} from 'react';
 import {AdminLogDataT} from '../../../server/helpers/adminLogs';
 import AdminLogsTable from './parts/admin-logs-table';
 import PagerElement from './parts/pager';
@@ -31,7 +31,6 @@ type Props = {
 
 function AdminLogsPage({from, nextEnabled, results, size}: Props) {
 	const [logs, setLogs] = useState(results);
-	const searchResultsCallback = useCallback((newResults) => setLogs(newResults), []);
 	const paginationUrl = './admin-logs/admin-logs';
 	return (
 		<div id="pageWithPagination">
@@ -43,7 +42,7 @@ function AdminLogsPage({from, nextEnabled, results, size}: Props) {
 				nextEnabled={nextEnabled}
 				paginationUrl={paginationUrl}
 				results={logs}
-				searchResultsCallback={searchResultsCallback}
+				searchResultsCallback={setLogs}
 				size={size}
 			/>
 		</div>

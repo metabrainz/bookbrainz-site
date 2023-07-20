@@ -133,6 +133,7 @@ class PrivsEditModal extends React.Component {
 					Note/Reason:
 				</Form.Label>
 				<Form.Control
+					required
 					as="textarea"
 					defaultValue={this.state.note}
 					rows="2"

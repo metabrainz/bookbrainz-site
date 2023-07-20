@@ -60,7 +60,7 @@ router.get('/', async (req, res, next) => {
 	}
 
 	try {
-		// fetch 1 more revision than required to check nextEnabled
+		// fetch 1 more log item than required to check nextEnabled
 		const orderedLogs = await getOrderedAdminLogs(from, size + 1, orm);
 		const {newResultsArray, nextEnabled} = getNextEnabledAndResultsArray(orderedLogs, size);
 		return render(newResultsArray, nextEnabled);

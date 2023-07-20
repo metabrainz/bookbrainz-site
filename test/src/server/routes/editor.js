@@ -151,7 +151,7 @@ describe('Editor with Administrator priv', () => {
 
 	it('should be able to edit privs of an editor', async () => {
 		await createEditor(targetUserId, oldPrivs);
-		const note = '';
+		const note = 'testing';
 		const data = {
 			adminId,
 			newPrivs,
@@ -181,7 +181,7 @@ describe('Editor without Administrator priv', () => {
 
 	it('should not be able to edit privs of an editor', async () => {
 		await createEditor(targetUserId, oldPrivs);
-		const note = '';
+		const note = 'testing';
 		const data = {
 			adminId,
 			newPrivs,

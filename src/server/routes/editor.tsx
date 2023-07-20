@@ -194,7 +194,12 @@ router.post('/privs/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthor
 				'No change to Privileges', req
 			));
 		}
-		await editor.save({privs: newPrivs});
+		if (!note.length) {
+			return next(new error.FormSubmissionError(
+				'You must add a note to this action!', req
+			));
+		}
+		await editor.save({privs: newPrivs}, {transacting: trx});
 		const logData: AdminLogDataT = {
 			actionType,
 			adminId,

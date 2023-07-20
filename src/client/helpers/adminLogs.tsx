@@ -23,36 +23,26 @@ import {sanitize} from 'isomorphic-dompurify';
 
 
 /* eslint-disable no-bitwise */
-function getPrivsAdded(newPrivs: number, oldPrivs: number) {
-	const privsAdded = [];
-	const totalBits = Object.keys(PrivilegeTypes).length;
-
-	for (let i = 0; i < totalBits; i++) {
-		if (!(oldPrivs & (1 << i)) && (newPrivs & (1 << i))) {
-			privsAdded.push(getPrivilegeTitleFromBit(i));
-		}
-	}
-
-	return privsAdded;
-}
-
-function getPrivsRemoved(newPrivs: number, oldPrivs: number) {
+function getPrivsChanged(newPrivs: number, oldPrivs: number) {
 	const privsRemoved = [];
+	const privsAdded = [];
 	const totalBits = Object.keys(PrivilegeTypes).length;
 
 	for (let i = 0; i < totalBits; i++) {
 		if (!(newPrivs & (1 << i)) && (oldPrivs & (1 << i))) {
 			privsRemoved.push(getPrivilegeTitleFromBit(i));
 		}
+		if (!(oldPrivs & (1 << i)) && (newPrivs & (1 << i))) {
+			privsAdded.push(getPrivilegeTitleFromBit(i));
+		}
 	}
 
-	return privsRemoved;
+	return {privsAdded, privsRemoved};
 }
 
 function constructPrivsChangeStatement(logData: AdminLogDataT) {
 	const {newPrivs, oldPrivs, targetUserId, targetUser, adminId, admin} = logData;
-	const privsAdded = getPrivsAdded(newPrivs, oldPrivs);
-	const privsRemoved = getPrivsRemoved(newPrivs, oldPrivs);
+	const {privsAdded, privsRemoved} = getPrivsChanged(newPrivs, oldPrivs);
 
 	let grantStatement = '';
 	if (privsAdded.length) {
