@@ -361,3 +361,7 @@ export async function parseInitialState(req, type):Promise<Record<string, any>> 
 export function parseQuery(url: string) {
 	return new URLSearchParams(url.replace(/^.+?\?/, ''));
 }
+
+export function getIntFromQueryParams(query: URLSearchParams, type: string, fallback = 0) {
+	return parseInt(query.get(type), 10) || fallback;
+}

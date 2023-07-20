@@ -18,6 +18,7 @@
 
 import * as propHelpers from '../../client/helpers/props';
 import {escapeProps, generateProps} from '../helpers/props';
+import {getIntFromQueryParams, parseQuery} from '../helpers/utils';
 import AdminLogsPage from '../../client/components/pages/adminLogs';
 import Layout from '../../client/containers/layout';
 import React from 'react';
@@ -25,7 +26,6 @@ import ReactDOMServer from 'react-dom/server';
 import express from 'express';
 import {getNextEnabledAndResultsArray} from '../../common/helpers/utils';
 import {getOrderedAdminLogs} from '../helpers/adminLogs';
-import {parseQuery} from '../helpers/utils';
 import target from '../templates/target';
 
 
@@ -34,8 +34,8 @@ const router = express.Router();
 router.get('/', async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const query = parseQuery(req.url);
-	const size = parseInt(query.get('size'), 10) || 20;
-	const from = parseInt(query.get('from'), 10) || 0;
+	const size = getIntFromQueryParams(query, 'size', 20);
+	const from = getIntFromQueryParams(query, 'from');
 
 	function render(results, nextEnabled) {
 		const props = generateProps(req, res, {
@@ -75,8 +75,8 @@ router.get('/', async (req, res, next) => {
 router.get('/admin-logs', async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const query = parseQuery(req.url);
-	const size = parseInt(query.get('size'), 10) || 20;
-	const from = parseInt(query.get('from'), 10) || 0;
+	const size = getIntFromQueryParams(query, 'size', 20);
+	const from = getIntFromQueryParams(query, 'from');
 
 	try {
 		const orderedRevisions = await getOrderedAdminLogs(from, size, orm);

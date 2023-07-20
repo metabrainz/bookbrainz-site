@@ -28,6 +28,7 @@ import {AdminLogDataT, createAdminLog} from '../helpers/adminLogs';
 import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
 import {getConsecutiveDaysWithEdits, getEntityVisits, getTypeCreation} from '../helpers/achievement';
+import {getIntFromQueryParams, parseQuery} from '../helpers/utils';
 import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
 import CollectionsPage from '../../client/components/pages/collections';
 import EditorContainer from '../../client/containers/editor';
@@ -41,7 +42,6 @@ import _ from 'lodash';
 import express from 'express';
 import {getOrderedCollectionsForEditorPage} from '../helpers/collections';
 import {getOrderedRevisionForEditorPage} from '../helpers/revisions';
-import {parseQuery} from '../helpers/utils';
 import target from '../templates/target';
 
 
@@ -356,8 +356,8 @@ router.get('/:id/revisions', async (req, res, next) => {
 	const DEFAULT_MAX_REVISIONS = 20;
 	const DEFAULT_REVISION_OFFSET = 0;
 	const query = parseQuery(req.url);
-	const size = parseInt(query.get('size'), 10) || DEFAULT_MAX_REVISIONS;
-	const from = parseInt(query.get('from'), 10) || DEFAULT_REVISION_OFFSET;
+	const size = getIntFromQueryParams(query, 'size', DEFAULT_MAX_REVISIONS);
+	const from = getIntFromQueryParams(query, 'from', DEFAULT_REVISION_OFFSET);
 
 	try {
 		// get 1 more result to check nextEnabled
@@ -413,8 +413,8 @@ router.get('/:id/revisions/revisions', async (req, res, next) => {
 	const DEFAULT_REVISION_OFFSET = 0;
 
 	const query = parseQuery(req.url);
-	const size = parseInt(query.get('size'), 10) || DEFAULT_MAX_REVISIONS;
-	const from = parseInt(query.get('from'), 10) || DEFAULT_REVISION_OFFSET;
+	const size = getIntFromQueryParams(query, 'size', DEFAULT_MAX_REVISIONS);
+	const from = getIntFromQueryParams(query, 'from', DEFAULT_REVISION_OFFSET);
 
 	const orderedRevisions =
 		await getOrderedRevisionForEditorPage(from, size, req).catch(next);
@@ -621,10 +621,10 @@ router.get('/:id/collections', async (req, res, next) => {
 	const DEFAULT_COLLECTION_OFFSET = 0;
 
 	const query = parseQuery(req.url);
-	const size = parseInt(query.get('size'), 10) || DEFAULT_MAX_COLLECTIONS;
-	const from = parseInt(query.get('from'), 10) || DEFAULT_COLLECTION_OFFSET;
+	const size = getIntFromQueryParams(query, 'size', DEFAULT_MAX_COLLECTIONS);
+	const from = getIntFromQueryParams(query, 'from', DEFAULT_COLLECTION_OFFSET);
 
-	const type = req.query.type ? parseQuery(req.url).get('type') : null;
+	const type = query.get('type');
 
 	try {
 		const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
@@ -679,8 +679,8 @@ router.get('/:id/collections', async (req, res, next) => {
 router.get('/:id/collections/collections', async (req, res, next) => {
 	try {
 		const query = parseQuery(req.url);
-		const size = parseInt(query.get('size'), 10) || 20;
-		const from = parseInt(query.get('from'), 10) || 0;
+		const size = getIntFromQueryParams(query, 'size', 20);
+		const from = getIntFromQueryParams(query, 'from');
 		const type = query.get('type');
 		const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
 		if (!entityTypes.includes(type) && type !== null) {
