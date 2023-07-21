@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
+import {Button, Form, Modal} from 'react-bootstrap';
 import {PrivilegeTypes, getPrivilegeShieldIcon, getPrivilegeTitleFromBit} from '../../../../common/helpers/privileges-utils';
 import {faPencilAlt, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -24,8 +24,6 @@ import PrivilegeBadges from './privilege-badges';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
-const {Button, Form, Modal} = bootstrap;
 
 class PrivsEditModal extends React.Component {
 	constructor(props) {
@@ -135,8 +133,8 @@ class PrivsEditModal extends React.Component {
 				<Form.Control
 					required
 					as="textarea"
-					defaultValue={this.state.note}
 					rows="2"
+					value={this.state.note}
 					onChange={this.handleNoteChange}
 				/>
 			</Form.Group>

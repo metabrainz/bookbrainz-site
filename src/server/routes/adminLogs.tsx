@@ -79,8 +79,8 @@ router.get('/admin-logs', async (req, res, next) => {
 	const from = getIntFromQueryParams(query, 'from');
 
 	try {
-		const orderedRevisions = await getOrderedAdminLogs(from, size, orm);
-		res.send(orderedRevisions);
+		const orderedLogs = await getOrderedAdminLogs(from, size, orm);
+		res.json(orderedLogs);
 	}
 	catch (err) {
 		return next(err);

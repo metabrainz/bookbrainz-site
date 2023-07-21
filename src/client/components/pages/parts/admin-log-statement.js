@@ -24,7 +24,7 @@ import {constructAdminLogStatement} from '../../../helpers/adminLogs';
 function AdminLogStatement({logData}) {
 	const {note} = logData;
 	return (
-		<div>
+		<>
 			{constructAdminLogStatement(logData)}
 			{
 				note.length ?
@@ -32,7 +32,7 @@ function AdminLogStatement({logData}) {
 						<strong>Note/Reason:&nbsp;</strong>{note}
 					</div> : null
 			}
-		</div>
+		</>
 	);
 }
 

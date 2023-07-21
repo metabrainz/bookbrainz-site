@@ -16,15 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
-import * as utilsHelper from '../../../helpers/utils';
 import AdminLogStatement from './admin-log-statement';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {Table} from 'react-bootstrap';
+import {formatDate} from '../../../helpers/utils';
 
-
-const {Table} = bootstrap;
-const {formatDate} = utilsHelper;
 
 function AdminLogsTable(props) {
 	const {results, tableHeading} = props;
