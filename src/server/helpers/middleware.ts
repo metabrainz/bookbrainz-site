@@ -71,6 +71,8 @@ export const loadSeriesOrderingTypes =
 	makeLoader('SeriesOrderingType', 'seriesOrderingTypes');
 export const loadRelationshipTypes =
 	makeLoader('RelationshipType', 'relationshipTypes', null, ['attributeTypes']);
+export const loadParentRelationshipTypes =
+	makeLoader('RelationshipType', 'parentTypes');
 
 export const loadGenders =
 	makeLoader('Gender', 'genders', (a, b) => a.id > b.id);
