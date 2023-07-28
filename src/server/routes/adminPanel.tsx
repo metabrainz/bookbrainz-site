@@ -24,13 +24,13 @@ import * as search from '../../common/helpers/search';
 
 import {snakeCase as _snakeCase, isNil} from 'lodash';
 import {escapeProps, generateProps} from '../helpers/props';
+import {getIntFromQueryParams, parseQuery} from '../helpers/utils';
 import AdminPanelSearchPage from '../../client/components/pages/admin-panel-search';
 import Layout from '../../client/containers/layout';
 import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import express from 'express';
-import {parseQuery} from '../helpers/utils';
 import target from '../templates/target';
 
 
@@ -50,10 +50,11 @@ const router = express.Router();
  */
 router.get('/', auth.isAuthenticated, auth.isAuthorized(ADMIN), async (req, res, next) => {
 	const {orm} = req.app.locals;
-	const query = parseQuery(req.url).get('q') ?? '';
 	const type = 'editor';
-	const size = req.query.size ? parseInt(parseQuery(req.url).get('size'), 10) : 20;
-	const from = req.query.from ? parseInt(parseQuery(req.url).get('from'), 10) : 0;
+	const urlQuery = parseQuery(req.url);
+	const query = urlQuery.get('q') ?? '';
+	const size = getIntFromQueryParams(urlQuery, 'size', 20);
+	const from = getIntFromQueryParams(urlQuery, 'from');
 	try {
 		let searchResults: SearchResultsT = {
 			initialResults: [],

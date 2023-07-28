@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
+import {Button, Form, Modal} from 'react-bootstrap';
 import {PrivilegeTypes, getPrivilegeShieldIcon, getPrivilegeTitleFromBit} from '../../../../common/helpers/privileges-utils';
 import {faPencilAlt, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -25,22 +25,22 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Button, Form, Modal} = bootstrap;
-
 class PrivsEditModal extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			note: '',
 			privs: props.targetUser.privs,
 			submittable: false
 		};
 
 		this.handleBitChange = this.handleBitChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleNoteChange = this.handleNoteChange.bind(this);
 	}
 
 	async handleSubmit() {
-		const {privs} = this.state;
+		const {privs, note} = this.state;
 		const oldPrivs = this.props.targetUser.privs;
 		if (privs === oldPrivs) {
 			return;
@@ -49,6 +49,7 @@ class PrivsEditModal extends React.Component {
 		const data = {
 			adminId: this.props.adminId,
 			newPrivs: privs,
+			note,
 			oldPrivs,
 			targetUserId: this.props.targetUser.id
 		};
@@ -80,14 +81,32 @@ class PrivsEditModal extends React.Component {
 	handleBitChange(bit) {
 		const newPrivs = this.state.privs ^ (1 << bit);
 		if (this.props.targetUser.privs !== newPrivs) {
-			this.setState({
+			// If we have also added a note, then set submittable also true
+			this.setState(prevState => ({
 				privs: newPrivs,
-				submittable: true
-			});
+				submittable: Boolean(prevState.note.length)
+			}));
 		}
 		else {
 			this.setState({
 				privs: newPrivs,
+				submittable: false
+			});
+		}
+	}
+
+	handleNoteChange(event) {
+		const newPrivs = this.state.privs;
+		if (event.target.value.length) {
+			// If the privs have also been changed, then set submittable to true
+			this.setState({
+				note: event.target.value,
+				submittable: Boolean(this.props.targetUser.privs !== newPrivs)
+			});
+		}
+		else {
+			this.setState({
+				note: event.target.value,
 				submittable: false
 			});
 		}
@@ -106,6 +125,21 @@ class PrivsEditModal extends React.Component {
 			/>
 		));
 
+		const noteField = (
+			<Form.Group>
+				<Form.Label>
+					Note/Reason:
+				</Form.Label>
+				<Form.Control
+					required
+					as="textarea"
+					rows="2"
+					value={this.state.note}
+					onChange={this.handleNoteChange}
+				/>
+			</Form.Group>
+		);
+
 		return (
 			<Modal
 				scrollable
@@ -123,6 +157,8 @@ class PrivsEditModal extends React.Component {
 					<hr/>
 					<Form>
 						{switches}
+						<hr/>
+						{noteField}
 					</Form>
 				</Modal.Body>
 				<Modal.Footer>

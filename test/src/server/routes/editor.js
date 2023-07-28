@@ -12,6 +12,7 @@ chai.use(chaiHttp);
 const {expect} = chai;
 const {Editor} = orm;
 
+const adminId = 123456;
 const targetUserId = 1;
 const oldPrivs = 1;
 const newPrivs = 3;
@@ -142,7 +143,7 @@ describe('getEditorActivity', () => {
 describe('Editor with Administrator priv', () => {
 	let agent;
 	beforeEach(async () => {
-		await createEditor(123456, 16);
+		await createEditor(adminId, 16);
 		agent = await chai.request.agent(app);
 		await agent.get('/cb');
 	});
@@ -150,9 +151,13 @@ describe('Editor with Administrator priv', () => {
 
 	it('should be able to edit privs of an editor', async () => {
 		await createEditor(targetUserId, oldPrivs);
+		const note = 'testing';
 		const data = {
-			targetUserId,
-			newPrivs
+			adminId,
+			newPrivs,
+			note,
+			oldPrivs,
+			targetUserId
 		};
 
 		const res = await agent.post('/editor/privs/edit/handler').send(data);
@@ -168,7 +173,7 @@ describe('Editor with Administrator priv', () => {
 describe('Editor without Administrator priv', () => {
 	let agent;
 	beforeEach(async () => {
-		await createEditor(123456, 15);
+		await createEditor(adminId, 15);
 		agent = await chai.request.agent(app);
 		await agent.get('/cb');
 	});
@@ -176,9 +181,13 @@ describe('Editor without Administrator priv', () => {
 
 	it('should not be able to edit privs of an editor', async () => {
 		await createEditor(targetUserId, oldPrivs);
+		const note = 'testing';
 		const data = {
-			targetUserId,
-			newPrivs
+			adminId,
+			newPrivs,
+			note,
+			oldPrivs,
+			targetUserId
 		};
 
 		const res = await agent.post('/editor/privs/edit/handler').send(data);
