@@ -15,10 +15,12 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+import * as auth from '../helpers/auth';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
 import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
+import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import RelationshipTypesPage from '../../client/components/pages/relationshipTypes';
@@ -28,7 +30,9 @@ import target from '../templates/target';
 
 const router = express.Router();
 
-router.get('/', middleware.loadRelationshipTypes, (req, res) => {
+const {RELATIONSHIP_TYPE_EDITOR} = PrivilegeType;
+
+router.get('/', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYPE_EDITOR), middleware.loadRelationshipTypes, (req, res) => {
 	const {relationshipTypes} = res.locals;
 	const props = generateProps(req, res, {
 		relationshipTypes

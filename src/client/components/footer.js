@@ -60,8 +60,8 @@ function Footer(props) {
 					</Col>
 					<Col className="text-right" xs={4}>
 						<small>
-							<a href="/admin-logs">
-								Admin logs
+							<a href="/privacy">
+								Privacy & Terms
 							</a>
 						</small>
 					</Col>
@@ -76,13 +76,6 @@ function Footer(props) {
 							</a> —&nbsp;
 							<a href="https://tickets.metabrainz.org/projects/BB/issues/">
 								Report a Bug
-							</a>
-						</small>
-					</Col>
-					<Col className="text-right" xs={4}>
-						<small>
-							<a href="/privacy">
-								Privacy & Terms
 							</a>
 						</small>
 					</Col>

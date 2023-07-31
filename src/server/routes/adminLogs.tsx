@@ -15,12 +15,13 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
+import * as auth from '../helpers/auth';
 import * as propHelpers from '../../client/helpers/props';
 import {escapeProps, generateProps} from '../helpers/props';
 import {getIntFromQueryParams, parseQuery} from '../helpers/utils';
 import AdminLogsPage from '../../client/components/pages/adminLogs';
 import Layout from '../../client/containers/layout';
+import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import express from 'express';
@@ -31,7 +32,9 @@ import target from '../templates/target';
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
+const {ADMIN} = PrivilegeType;
+
+router.get('/', auth.isAuthenticated, auth.isAuthorized(ADMIN), async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const query = parseQuery(req.url);
 	const size = getIntFromQueryParams(query, 'size', 20);
@@ -72,7 +75,7 @@ router.get('/', async (req, res, next) => {
 
 
 // eslint-disable-next-line consistent-return
-router.get('/admin-logs', async (req, res, next) => {
+router.get('/admin-logs', auth.isAuthenticated, auth.isAuthorized(ADMIN), async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const query = parseQuery(req.url);
 	const size = getIntFromQueryParams(query, 'size', 20);

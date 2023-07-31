@@ -5,6 +5,7 @@
  * 				 2016  Sean Burke
  * 				 2016  Ohm Patel
  * 				 2015  Leo Verto
+ * 				 2023  Shivam Awasthi
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +23,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {PrivilegeType, checkPrivilege} from '../../common/helpers/privileges-utils';
 import {
 	faChartLine, faGripVertical, faLink, faListUl, faNewspaper, faPlus, faQuestionCircle,
 	faSearch, faShieldHalved, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle, faUserGear
@@ -130,37 +132,53 @@ class Layout extends React.Component {
 			</span>
 		);
 
+		const showPrivilegeDropdown = user.privs > 1;
+		const adminOptions = (
+			<>
+				<NavDropdown.Item href="/admin-panel">
+					<FontAwesomeIcon className="margin-right-0-3" icon={faUserGear}/>
+					Admin Panel
+				</NavDropdown.Item>
+				<NavDropdown.Item href="/admin-logs">
+					<FontAwesomeIcon className="margin-right-0-3" icon={faNewspaper}/>
+					Admin Logs
+				</NavDropdown.Item>
+			</>
+		);
+
+		const relationshipTypeEditorOptions = (
+			<>
+				<NavDropdown.Item href="/relationship-type/create">
+					Relationship Type Editor
+				</NavDropdown.Item>
+				<NavDropdown.Item href="/relationship-types">
+					Relationship Types
+				</NavDropdown.Item>
+			</>
+		);
+
+		const privilegeDropDown = (
+			<NavDropdown
+				alignRight
+				id="privs-dropdown"
+				open={this.state.menuOpen}
+				title={privilegesDropdownTitle}
+				onMouseDown={this.handleMouseDown}
+				onSelect={this.handleDropdownClick}
+				onToggle={this.handleDropdownToggle}
+			>
+				{checkPrivilege(user.privs, PrivilegeType.ADMIN) && adminOptions}
+				{checkPrivilege(user.privs, PrivilegeType.RELATIONSHIP_TYPE_EDITOR) && relationshipTypeEditorOptions}
+			</NavDropdown>
+		);
+
 		const disableSignUp = this.props.disableSignUp ?
 			{disabled: true} :
 			{};
 
 		return (
 			<Nav>
-				<NavDropdown
-					alignRight
-					id="privs-dropdown"
-					open={this.state.menuOpen}
-					title={privilegesDropdownTitle}
-					onMouseDown={this.handleMouseDown}
-					onSelect={this.handleDropdownClick}
-					onToggle={this.handleDropdownToggle}
-				>
-					<NavDropdown.Item href="/admin-panel">
-						<FontAwesomeIcon className="margin-right-0-3" icon={faUserGear}/>
-						Admin Panel
-					</NavDropdown.Item>
-					<NavDropdown.Item href="/admin-logs">
-						<FontAwesomeIcon className="margin-right-0-3" icon={faNewspaper}/>
-						Admin Logs
-					</NavDropdown.Item>
-					<NavDropdown.Divider/>
-					<NavDropdown.Item href="/relationship-type/create">
-						Relationship Type Editor
-					</NavDropdown.Item>
-					<NavDropdown.Item href="/relationship-types">
-						Relationship Types
-					</NavDropdown.Item>
-				</NavDropdown>
+				{showPrivilegeDropdown && privilegeDropDown}
 				<NavDropdown
 					alignRight
 					id="create-dropdown"
