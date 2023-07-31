@@ -30,6 +30,7 @@ const clientConfig = {
 		externalService: ['./controllers/externalService.js'],
 		index: ['./controllers/index.js'],
 		registrationDetails: ['./controllers/registrationDetails.js'],
+		relationshipTypes: ['./controllers/relationshipTypes.tsx'],
 		revision: ['./controllers/revision.js'],
 		revisions: ['./controllers/revisions.js'],
 		search: ['./controllers/search.js'],
