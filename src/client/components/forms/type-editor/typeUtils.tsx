@@ -20,6 +20,7 @@ import React from 'react';
 
 
 export interface RelationshipTypeDataT {
+	attributeTypes: number[];
 	id?: number;
 	label: string;
 	description: string;
@@ -32,14 +33,25 @@ export interface RelationshipTypeDataT {
 	targetEntityType: EntityTypeString;
 }
 
+export interface AttributeTypeDataT {
+	childOrder: number,
+	description: string,
+	id?: number,
+	lastUpdated: Date,
+	name: string,
+	parent: number | null,
+	root: number
+}
+
 export interface RelationshipTypeEditorPropsT {
 	relationshipTypeData: RelationshipTypeDataT;
 	parentTypes: RelationshipTypeDataT[];
-	attributeTypes: any;
+	attributeTypes: AttributeTypeDataT[];
 	user: any;
 }
 
 export const defaultRelationshipTypeData: RelationshipTypeDataT = {
+	attributeTypes: [],
 	childOrder: 0,
 	deprecated: false,
 	description: '',
@@ -51,7 +63,7 @@ export const defaultRelationshipTypeData: RelationshipTypeDataT = {
 	targetEntityType: null
 };
 
-export const entityTypeOptions = ['Author', 'Work', 'Series', 'Edition', 'Edition-Group', 'Publisher'].map((entity) => ({
+export const entityTypeOptions = ['Author', 'Work', 'Series', 'Edition', 'EditionGroup', 'Publisher'].map((entity) => ({
 	name: entity
 }));
 

@@ -17,6 +17,7 @@
  */
 
 import * as auth from '../../helpers/auth';
+import * as error from '../../../common/helpers/error';
 import * as middleware from '../../helpers/middleware';
 import * as propHelpers from '../../../client/helpers/props';
 import {escapeProps, generateProps} from '../../helpers/props';
@@ -25,15 +26,16 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import RelationshipTypeEditor from '../../../client/components/forms/type-editor/relationship-type';
 import express from 'express';
+import {relationshipTypeCreateOrEditHandler} from '../../helpers/typeRouteUtils';
 import target from '../../templates/target';
 
 
 const router = express.Router();
 
-router.get('/create', auth.isAuthenticated, middleware.loadParentRelationshipTypes, (req, res) => {
-	const {parentTypes} = res.locals;
+router.get('/create', auth.isAuthenticated, middleware.loadParentRelationshipTypes, middleware.loadRelationshipAttributeTypes, (req, res) => {
+	const {parentTypes, attributeTypes} = res.locals;
 	const props = generateProps(req, res, {
-		parentTypes
+		attributeTypes, parentTypes
 	});
 	const script = '/js/relationship-type/create.js';
 	const markup = ReactDOMServer.renderToString(
@@ -47,5 +49,46 @@ router.get('/create', auth.isAuthenticated, middleware.loadParentRelationshipTyp
 		script
 	}));
 });
+
+router.post('/create/handler', auth.isAuthenticated, relationshipTypeCreateOrEditHandler);
+
+router.param(
+	'id',
+	middleware.checkValidRelationshipTypeId
+);
+
+router.get('/:id/edit', auth.isAuthenticated, middleware.loadParentRelationshipTypes, middleware.loadRelationshipAttributeTypes, async (req, res) => {
+	const {RelationshipType} = req.app.locals.orm;
+	const {parentTypes, attributeTypes} = res.locals;
+	const relationshipType = await new RelationshipType({id: req.params.id})
+		.fetch({withRelated: ['attributeTypes']})
+		.catch(RelationshipType.NotFoundError, () => {
+			throw new error.NotFoundError(`RelationshipType with id ${req.params.id} not found`, req);
+		});
+	const relationshipTypeData = relationshipType.toJSON();
+	const attributeTypesIds = relationshipTypeData.attributeTypes.map(attributeTypeData => attributeTypeData.id);
+
+	relationshipTypeData.attributeTypes = attributeTypesIds;
+
+	const props = generateProps(req, res, {
+		attributeTypes, parentTypes, relationshipTypeData
+	});
+	const script = '/js/relationship-type/create.js';
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(props)}>
+			<RelationshipTypeEditor
+				relationshipTypeData={props.relationshipTypeData}
+				{...propHelpers.extractChildProps(props)}
+			/>
+		</Layout>
+	);
+	res.send(target({
+		markup,
+		props: escapeProps(props),
+		script
+	}));
+});
+
+router.post('/:id/edit/handler', auth.isAuthenticated, relationshipTypeCreateOrEditHandler);
 
 export default router;
