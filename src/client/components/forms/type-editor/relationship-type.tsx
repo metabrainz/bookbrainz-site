@@ -342,7 +342,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 					<Row>
 						<Col lg={lgCol}>
 							<Form.Group>
-								<Form.Label>Deprecated:</Form.Label>
+								<Form.Label>Deprecated</Form.Label>
 								<Form.Control
 									required
 									as="select"
@@ -359,7 +359,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 					<Row>
 						<Col lg={lgCol}>
 							<Form.Group>
-								<Form.Label>Attribute Types:</Form.Label>
+								<Form.Label>Attribute Types</Form.Label>
 								<ReactSelect
 									closeMenuOnSelect
 									isMulti
@@ -407,7 +407,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 								/>
 							</Form.Group>
 							<Form.Group >
-								<Form.Label>Child Order:</Form.Label>
+								<Form.Label>Child Order</Form.Label>
 								<Form.Control
 									required
 									min={0}
