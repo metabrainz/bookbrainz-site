@@ -23,7 +23,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import {
-	faChartLine, faGripVertical, faLink, faListUl, faPlus, faQuestionCircle,
+	faChartLine, faGripVertical, faLink, faListUl, faNewspaper, faPlus, faQuestionCircle,
 	faSearch, faShieldHalved, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle, faUserGear
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -148,6 +148,17 @@ class Layout extends React.Component {
 					<NavDropdown.Item href="/admin-panel">
 						<FontAwesomeIcon className="margin-right-0-3" icon={faUserGear}/>
 						Admin Panel
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/admin-logs">
+						<FontAwesomeIcon className="margin-right-0-3" icon={faNewspaper}/>
+						Admin Logs
+					</NavDropdown.Item>
+					<NavDropdown.Divider/>
+					<NavDropdown.Item href="/relationship-type/create">
+						Relationship Type Editor
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/relationship-types">
+						Relationship Types
 					</NavDropdown.Item>
 				</NavDropdown>
 				<NavDropdown
