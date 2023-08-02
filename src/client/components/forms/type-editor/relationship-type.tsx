@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 import {Alert, Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
-import React, {ChangeEvent, FormEvent, useCallback, useState} from 'react';
+import React, {ChangeEvent, FormEvent, useCallback, useEffect, useState} from 'react';
 import {RelationshipTypeDataT, RelationshipTypeEditorPropsT, defaultRelationshipTypeData, entityTypeOptions, renderSelectedParent} from './typeUtils';
 import {faPencilAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -33,7 +33,19 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 	const [selectedParentType, setSelectedParentType] = useState<number | null>(formData.parentId);
 	const [childOrder, setChildOrder] = useState<number>(formData.childOrder);
 
-	const [showError, setShowError] = useState<boolean>(false);
+	const [isFormEdited, setIsFormEdited] = useState(false);
+
+	// Check if the form data is different from the initial data
+	useEffect(() => {
+		const isEdited = JSON.stringify(formData) !== JSON.stringify(relationshipTypeData);
+		setIsFormEdited(isEdited);
+	  }, [formData, relationshipTypeData]);
+
+	// This flag is used to check if any field has been updated while editing a type
+	const [noChangesError, setNoChangesError] = useState<boolean>(false);
+
+	// This flag is used to check whether we have selected source and target entity types
+	const [showIncompleteFormError, setShowIncompleteFormError] = useState<boolean>(false);
 
 	const handleAttributeTypesChange = useCallback(
 		(selectedOptions) => {
@@ -138,7 +150,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 		if (selectedOption) {
 			setFormData({...formData, sourceEntityType: selectedOption.name});
 			if (formData.targetEntityType) {
-				setShowError(false);
+				setShowIncompleteFormError(false);
 			}
 		}
 		else {
@@ -150,7 +162,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 		if (selectedOption) {
 			setFormData({...formData, targetEntityType: selectedOption.name});
 			if (formData.sourceEntityType) {
-				setShowError(false);
+				setShowIncompleteFormError(false);
 			}
 		}
 		else {
@@ -158,7 +170,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 		}
 	}, [formData]);
 
-	const errorAlertClass = classNames('text-center', 'margin-top-1', {'d-none': !showError});
+	const errorAlertClass = classNames('text-center', 'margin-top-1', {'d-none': !showIncompleteFormError});
 
 	function isValid() {
 		return Boolean(formData.sourceEntityType && formData.targetEntityType);
@@ -167,7 +179,17 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 	const handleSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		if (!isValid()) {
-			setShowError(true);
+			setShowIncompleteFormError(true);
+			return;
+		}
+
+		if (!isFormEdited) {
+			// Display an error message if no changes were made
+			setNoChangesError(true);
+			// Hide the error message after 3 seconds
+			setTimeout(() => {
+			  setNoChangesError(false);
+			}, 3000);
 			return;
 		}
 
@@ -187,7 +209,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 		catch (err) {
 			throw new Error(err);
 		}
-	}, [formData, showError]);
+	}, [formData, showIncompleteFormError]);
 
 	const lgCol = {offset: 3, span: 6};
 
@@ -376,10 +398,18 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 					<Row>
 						<Col lg={lgCol}>
 							{
-								showError &&
+								showIncompleteFormError &&
 								<div className={errorAlertClass}>
 									<Alert variant="danger">Error: Incomplete form! Select Source and Target Parent Types.</Alert>
 								</div>
+							}
+						</Col>
+					</Row>
+					<Row>
+						<Col lg={lgCol}>
+							{
+								noChangesError &&
+								<Alert variant="danger">Error: No updated field.</Alert>
 							}
 						</Col>
 					</Row>
