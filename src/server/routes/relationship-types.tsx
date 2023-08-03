@@ -32,7 +32,7 @@ import target from '../templates/target';
 
 const router = express.Router();
 
-router.get('/', auth.isAuthenticated, (req, res) => {
+router.get('/', (req, res) => {
 	const props = generateProps(req, res);
 
 	const markup = ReactDOMServer.renderToString(
@@ -52,7 +52,7 @@ router.get('/', auth.isAuthenticated, (req, res) => {
 router.param('type1', middleware.checkValidEntityType);
 router.param('type2', middleware.checkValidEntityType);
 
-router.get('/:type1-:type2', auth.isAuthenticated, async (req, res) => {
+router.get('/:type1-:type2', async (req, res) => {
 	const {type1, type2} = req.params;
 
 	const EntityType1 = upperFirst(camelCase(type1));
