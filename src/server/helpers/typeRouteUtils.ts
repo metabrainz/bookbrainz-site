@@ -78,21 +78,23 @@ export async function relationshipTypeCreateOrEditHandler(req, res, next) {
 		// Attributes
 		const {attributesToBeAdded, attributesToBeRemoved} = getChangedAttributeTypes(oldAttributeTypes, attributeTypes);
 
-		attributesToBeRemoved.map(async attributeID => {
+		const attributesToBeRemovedPromises = attributesToBeRemoved.map(async attributeID => {
 			await new RelationshipTypeAttributeType()
 				.query((qb) => {
 					qb.where('relationship_type', newRelationshipType.id);
 					qb.where('attribute_type', attributeID);
-				}).destroy();
+				}).destroy({transacting: trx});
 		});
+		await Promise.all(attributesToBeRemovedPromises);
 
-		attributesToBeAdded.map(async attributeID => {
+		const attributesToBeAddedPromises = attributesToBeAdded.map(async attributeID => {
 			const newRelTypeAttrType = await new RelationshipTypeAttributeType();
 			newRelTypeAttrType.set('relationshipType', relationshipType.id);
 			newRelTypeAttrType.set('attributeType', attributeID);
 
 			await newRelTypeAttrType.save(null, {method: 'insert'}, {transacting: trx});
 		});
+		await Promise.all(attributesToBeAddedPromises);
 
 		await trx.commit();
 

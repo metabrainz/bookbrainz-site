@@ -15,6 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+import {ENTITY_TYPES} from '../../../helpers/entity';
 import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import React from 'react';
 
@@ -63,7 +64,7 @@ export const defaultRelationshipTypeData: RelationshipTypeDataT = {
 	targetEntityType: null
 };
 
-export const entityTypeOptions = ['Author', 'Work', 'Series', 'Edition', 'EditionGroup', 'Publisher'].map((entity) => ({
+export const entityTypeOptions = ENTITY_TYPES.map((entity) => ({
 	name: entity
 }));
 

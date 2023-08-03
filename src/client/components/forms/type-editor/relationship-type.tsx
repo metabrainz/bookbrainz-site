@@ -182,7 +182,6 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 			setShowIncompleteFormError(true);
 			return;
 		}
-
 		if (!isFormEdited) {
 			// Display an error message if no changes were made
 			setNoChangesError(true);
@@ -209,7 +208,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 		catch (err) {
 			throw new Error(err);
 		}
-	}, [formData, showIncompleteFormError]);
+	}, [formData, isFormEdited, showIncompleteFormError]);
 
 	const lgCol = {offset: 3, span: 6};
 

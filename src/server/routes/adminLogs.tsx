@@ -21,7 +21,6 @@ import {escapeProps, generateProps} from '../helpers/props';
 import {getIntFromQueryParams, parseQuery} from '../helpers/utils';
 import AdminLogsPage from '../../client/components/pages/adminLogs';
 import Layout from '../../client/containers/layout';
-import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import express from 'express';
@@ -32,9 +31,7 @@ import target from '../templates/target';
 
 const router = express.Router();
 
-const {ADMIN} = PrivilegeType;
-
-router.get('/', auth.isAuthenticated, auth.isAuthorized(ADMIN), async (req, res, next) => {
+router.get('/', auth.isAuthenticated, async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const query = parseQuery(req.url);
 	const size = getIntFromQueryParams(query, 'size', 20);
@@ -75,7 +72,7 @@ router.get('/', auth.isAuthenticated, auth.isAuthorized(ADMIN), async (req, res,
 
 
 // eslint-disable-next-line consistent-return
-router.get('/admin-logs', auth.isAuthenticated, auth.isAuthorized(ADMIN), async (req, res, next) => {
+router.get('/admin-logs', auth.isAuthenticated, async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const query = parseQuery(req.url);
 	const size = getIntFromQueryParams(query, 'size', 20);

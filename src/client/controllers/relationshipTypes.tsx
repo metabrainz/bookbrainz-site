@@ -30,6 +30,7 @@ const markup = (
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
 			<RelationshipTypesPage
+				heading={props.heading}
 				relationshipTypes={props.relationshipTypes}
 			/>
 		</Layout>

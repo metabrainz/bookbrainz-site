@@ -18,24 +18,41 @@
 import * as auth from '../helpers/auth';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
+import {camelCase, upperFirst} from 'lodash';
 import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
-import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import RelationshipTypesPage from '../../client/components/pages/relationshipTypes';
 import express from 'express';
+import {snakeCaseToSentenceCase} from '../../common/helpers/utils';
 import target from '../templates/target';
 
 
 const router = express.Router();
 
-const {RELATIONSHIP_TYPE_EDITOR} = PrivilegeType;
+router.param('type1', middleware.checkValidEntityType);
+router.param('type2', middleware.checkValidEntityType);
 
-router.get('/', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYPE_EDITOR), middleware.loadRelationshipTypes, (req, res) => {
-	const {relationshipTypes} = res.locals;
+router.get('/:type1-:type2', auth.isAuthenticated, async (req, res) => {
+	const {type1, type2} = req.params;
+
+	const EntityType1 = upperFirst(camelCase(type1));
+	const EntityType2 = upperFirst(camelCase(type2));
+
+	const {RelationshipType} = req.app.locals.orm;
+
+	const rows = await RelationshipType.query((qb) => {
+		// eslint-disable-next-line camelcase
+		qb.where({source_entity_type: EntityType1, target_entity_type: EntityType2})
+			// eslint-disable-next-line camelcase
+			.orWhere({source_entity_type: EntityType2, target_entity_type: EntityType1});
+	}).fetchAll();
+	const relationshipTypes = rows.toJSON();
+
+	const heading = `${snakeCaseToSentenceCase(type1)}-${snakeCaseToSentenceCase(type2)} relationship types`;
 	const props = generateProps(req, res, {
-		relationshipTypes
+		heading, relationshipTypes
 	});
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
@@ -46,7 +63,7 @@ router.get('/', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYPE_EDITOR
 		markup,
 		props: escapeProps(props),
 		script: '/js/relationshipTypes.js',
-		title: 'Relationship Types'
+		title: heading
 	}));
 });
 

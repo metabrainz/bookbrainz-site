@@ -1,6 +1,6 @@
 import {EntityType, Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
 
-import {isString, kebabCase, toString, upperFirst} from 'lodash';
+import {camelCase, isString, kebabCase, toString, upperFirst} from 'lodash';
 import type {EntityT} from 'bookbrainz-data/lib/types/entity';
 import {IdentifierType} from '../../client/unified-form/interface/type';
 
@@ -171,6 +171,12 @@ export function getEntityLink(entity: {type: string, bbid: string}): string {
 	return `/${kebabCase(entity.type)}/${entity.bbid}`;
 }
 
+export function snakeCaseToSentenceCase(str) {
+	const camelCaseString = camelCase(str);
+	const wordsArray = camelCaseString.split(/(?=[A-Z])/);
+	const sentenceCaseString = wordsArray.map(word => upperFirst(word)).join(' ');
+	return sentenceCaseString;
+}
 
 export function getNextEnabledAndResultsArray(array, size) {
 	if (array.length > size) {

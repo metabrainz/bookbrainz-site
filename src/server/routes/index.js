@@ -28,6 +28,7 @@ import Index from '../../client/components/pages/index';
 import Layout from '../../client/containers/layout';
 import LicensingPage from '../../client/components/pages/licensing';
 import PrivacyPage from '../../client/components/pages/privacy';
+import RelationshipTypeMatrix from '../../client/components/pages/relationship-type-matrix';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import express from 'express';
@@ -107,5 +108,6 @@ _createStaticRoute('/develop', 'Develop', DevelopPage);
 _createStaticRoute('/help', 'Help', HelpPage);
 _createStaticRoute('/licensing', 'Licensing', LicensingPage);
 _createStaticRoute('/privacy', 'Privacy', PrivacyPage);
+_createStaticRoute('/relationship-types', 'Relationship Types', RelationshipTypeMatrix);
 
 export default router;

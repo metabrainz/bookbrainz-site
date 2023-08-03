@@ -41,7 +41,7 @@ router.get('/create', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYPE_
 		const props = generateProps(req, res, {
 			attributeTypes, parentTypes
 		});
-		const script = '/js/relationship-type/create.js';
+		const script = '/js/relationship-type-editor.js';
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
 				<RelationshipTypeEditor {...propHelpers.extractChildProps(props)}/>
@@ -78,7 +78,7 @@ router.get('/:id/edit', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYP
 		const props = generateProps(req, res, {
 			attributeTypes, parentTypes, relationshipTypeData
 		});
-		const script = '/js/relationship-type/create.js';
+		const script = '/js/relationship-type-editor.js';
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
 				<RelationshipTypeEditor
