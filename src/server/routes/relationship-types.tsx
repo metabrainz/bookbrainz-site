@@ -23,6 +23,7 @@ import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
+import RelationshipTypeMatrix from '../../client/components/pages/relationship-type-matrix';
 import RelationshipTypesPage from '../../client/components/pages/relationshipTypes';
 import express from 'express';
 import {snakeCaseToSentenceCase} from '../../common/helpers/utils';
@@ -30,6 +31,23 @@ import target from '../templates/target';
 
 
 const router = express.Router();
+
+router.get('/', auth.isAuthenticated, (req, res) => {
+	const props = generateProps(req, res);
+
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(props)}>
+			<RelationshipTypeMatrix/>
+		</Layout>
+	);
+
+	res.send(target({
+		markup,
+		props: escapeProps(props),
+		script: '/js/index.js',
+		title: 'Relationship Types'
+	}));
+});
 
 router.param('type1', middleware.checkValidEntityType);
 router.param('type2', middleware.checkValidEntityType);
