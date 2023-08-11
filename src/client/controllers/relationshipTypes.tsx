@@ -16,22 +16,33 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {extractChildProps, extractLayoutProps} from '../helpers/props';
 import {AppContainer} from 'react-hot-loader';
 import Layout from '../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import RelationshipTypeMatrixPage from '../components/pages/relationship-type-matrix';
 import RelationshipTypesPage from '../components/pages/relationshipTypes';
-import {extractLayoutProps} from '../helpers/props';
 
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
+
+const pageTarget = document.getElementById('page');
+const page = propsTarget ? pageTarget.innerHTML : '';
+
+const pageMap = {
+	RelationshipTypeMatrix: RelationshipTypeMatrixPage,
+	RelationshipTypes: RelationshipTypesPage
+};
+
+const Child = pageMap[page];
+
 const markup = (
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
-			<RelationshipTypesPage
-				heading={props.heading}
-				relationshipTypes={props.relationshipTypes}
+			<Child
+				{...extractChildProps(props)}
 			/>
 		</Layout>
 	</AppContainer>

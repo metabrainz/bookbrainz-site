@@ -17,9 +17,9 @@
  */
 
 function getChangedAttributeTypes(oldAttributes, newAttributes) {
-	const attributesCommon = oldAttributes.filter(value => newAttributes.includes(value));
-	const attributesToBeRemoved = oldAttributes.filter(value => !attributesCommon.includes(value));
-	const attributesToBeAdded = newAttributes.filter(value => !attributesCommon.includes(value));
+	const commonAttributes = oldAttributes.filter(value => newAttributes.includes(value));
+	const attributesToBeRemoved = oldAttributes.filter(value => !commonAttributes.includes(value));
+	const attributesToBeAdded = newAttributes.filter(value => !commonAttributes.includes(value));
 
 	return {attributesToBeAdded, attributesToBeRemoved};
 }

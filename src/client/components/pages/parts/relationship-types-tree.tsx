@@ -18,6 +18,7 @@
 import React, {useCallback, useState} from 'react';
 import {Button} from 'react-bootstrap';
 import {RelationshipTypeDataT} from '../../forms/type-editor/typeUtils';
+import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
 type RelationshipTypeTreePropsT = {
@@ -41,39 +42,48 @@ function RelationshipTypeTree({relationshipTypes, parentId, indentLevel}: Relati
 	const handleClick = useCallback((event) => {
 		const relationshipTypeId = parseInt(event.target.value, 10);
 		toggleExpand(relationshipTypeId);
-	}, [expandedRelationshipTypeIds]);
+	}, []);
 
 	const filteredRelationshipTypes = relationshipTypes.filter((relType) => relType.parentId === parentId);
 
 	return (
 		<ul>
 			{filteredRelationshipTypes.map(relType => {
-				let relOuterClass = `margin-left-d${indentLevel * 20}`;
+				let relOuterClass = `margin-left-d${indentLevel * 10}`;
 				if (relType.deprecated) {
-					relOuterClass = `margin-left-d${indentLevel * 20} text-muted`;
+					relOuterClass = `margin-left-d${indentLevel * 10} text-muted`;
 				}
+				const sourceIconElement = genEntityIconHTMLElement(relType.sourceEntityType);
+				const targetIconElement = genEntityIconHTMLElement(relType.targetEntityType);
+				const relInnerElementsClass = `margin-left-d${(indentLevel + 1) * 10} small`;
 				return (
 					<li className={relOuterClass} key={relType.id}>
-						<span >
-							<strong>{relType.label}</strong>
+						<p>
+							<strong>{relType.label}:&nbsp;</strong>
+							{sourceIconElement}{relType.sourceEntityType}&nbsp;
+							<strong>{relType.linkPhrase}</strong>&nbsp;{targetIconElement}&nbsp;{relType.targetEntityType}
 							<Button
+								className="btn btn-sm margin-left-d10"
 								value={relType.id}
 								variant="link"
 								onClick={handleClick}
 							>
 								{expandedRelationshipTypeIds.includes(relType.id) ? '(Less)' : '(More)'}
 							</Button>
-						</span>
+							<p>
+								<small>{relType.description}</small>
+							</p>
+						</p>
 						{expandedRelationshipTypeIds.includes(relType.id) && (
-							<div className={`margin-left-d${(indentLevel + 1) * 20}`}>
-								<div className="small"><strong>Forward link phrase: </strong>{relType.linkPhrase}</div>
-								<div className="small"><strong>Reverse link phrase: </strong>{relType.reverseLinkPhrase}</div>
-								<div className="small"><strong>Source Entity Type: </strong>{relType.sourceEntityType}</div>
-								<div className="small"><strong>Target Entity Type: </strong>{relType.targetEntityType}</div>
-								<div className="small"><strong>Description: </strong>{relType.description}</div>
-								<div className="small"><strong>Child Order: </strong>{relType.childOrder}</div>
-								<div className="small"><strong>Deprecated: </strong>{relType.deprecated ? 'Yes' : 'No'}</div>
-								<div className="small">
+							<div className="relationship-type-details">
+								<div className={relInnerElementsClass}><strong>Forward link phrase: </strong>{relType.linkPhrase}</div>
+								<div className={relInnerElementsClass}><strong>Reverse link phrase: </strong>{relType.reverseLinkPhrase}</div>
+								<div className={relInnerElementsClass}><strong>Source Entity Type: </strong>{relType.sourceEntityType}</div>
+								<div className={relInnerElementsClass}><strong>Target Entity Type: </strong>{relType.targetEntityType}</div>
+								<div className={relInnerElementsClass}><strong>Description: </strong>{relType.description}</div>
+								<div className={relInnerElementsClass}><strong>Child Order: </strong>{relType.childOrder}</div>
+								<div className={relInnerElementsClass}><strong>Deprecated: </strong>{relType.deprecated ? 'Yes' : 'No'}</div>
+								<div className={relInnerElementsClass}>
 									<Button
 										className="btn btn-sm"
 										href={`/relationship-type/${relType.id}/edit`}

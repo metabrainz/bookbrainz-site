@@ -15,7 +15,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-import * as auth from '../helpers/auth';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
 import {camelCase, upperFirst} from 'lodash';
@@ -43,8 +42,9 @@ router.get('/', (req, res) => {
 
 	res.send(target({
 		markup,
+		page: 'RelationshipTypeMatrix',
 		props: escapeProps(props),
-		script: '/js/index.js',
+		script: '/js/relationshipTypes.js',
 		title: 'Relationship Types'
 	}));
 });
@@ -79,6 +79,7 @@ router.get('/:type1-:type2', async (req, res) => {
 	);
 	res.send(target({
 		markup,
+		page: 'RelationshipTypes',
 		props: escapeProps(props),
 		script: '/js/relationshipTypes.js',
 		title: heading

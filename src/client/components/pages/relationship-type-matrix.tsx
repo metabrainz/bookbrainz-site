@@ -21,7 +21,7 @@ import React from 'react';
 import {snakeCase} from 'lodash';
 
 
-function RelationshipTypeMatrix() {
+function RelationshipTypeMatrixPage() {
 	return (
 		<Card>
 			<Card.Header as="h2">
@@ -58,4 +58,6 @@ function RelationshipTypeMatrix() {
 	);
 }
 
-export default RelationshipTypeMatrix;
+RelationshipTypeMatrixPage.displayName = 'RelationshipTypeMatrixPage';
+
+export default RelationshipTypeMatrixPage;
