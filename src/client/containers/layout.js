@@ -25,7 +25,7 @@
 import * as bootstrap from 'react-bootstrap';
 import {PrivilegeType, checkPrivilege} from '../../common/helpers/privileges-utils';
 import {
-	faChartLine, faGripVertical, faLink, faListUl, faNewspaper, faPlus, faQuestionCircle,
+	faChartLine, faClipboardQuestion, faFileLines, faGripVertical, faLink, faListUl, faNewspaper, faPlus, faQuestionCircle,
 	faSearch, faShieldHalved, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle, faUserGear
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -44,6 +44,7 @@ class Layout extends React.Component {
 		this.state = {keepMenuOpen: false, menuOpen: false};
 		this.renderNavContent = this.renderNavContent.bind(this);
 		this.renderNavHeader = this.renderNavHeader.bind(this);
+		this.renderDocsDropdown = this.renderDocsDropdown.bind(this);
 		this.handleDropdownToggle = this.handleDropdownToggle.bind(this);
 		this.handleDropdownClick = this.handleDropdownClick.bind(this);
 		this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -88,6 +89,38 @@ class Layout extends React.Component {
 					)}
 				</a>
 			</Navbar.Brand>
+		);
+	}
+
+	renderDocsDropdown() {
+		const docsDropdownTitle = (
+			<span>
+				<FontAwesomeIcon icon={faFileLines}/>
+				{'  Docs'}
+			</span>
+		);
+		return (
+			<Nav>
+				<NavDropdown
+					alignRight
+					id="docs-dropdown"
+					title={docsDropdownTitle}
+					onMouseDown={this.handleMouseDown}
+				>
+					<NavDropdown.Item href="/help">
+						<FontAwesomeIcon icon={faQuestionCircle}/>
+						{' Help '}
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/faq">
+						<FontAwesomeIcon icon={faClipboardQuestion}/>
+						{' FAQs '}
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/relationship-types">
+						<FontAwesomeIcon icon={faLink}/>
+						{' Relationship Types '}
+					</NavDropdown.Item>
+				</NavDropdown>
+			</Nav>
 		);
 	}
 
@@ -151,9 +184,6 @@ class Layout extends React.Component {
 				<NavDropdown.Item href="/relationship-type/create">
 					Relationship Type Editor
 				</NavDropdown.Item>
-				<NavDropdown.Item href="/relationship-types">
-					Relationship Types
-				</NavDropdown.Item>
 			</>
 		);
 
@@ -161,11 +191,8 @@ class Layout extends React.Component {
 			<NavDropdown
 				alignRight
 				id="privs-dropdown"
-				open={this.state.menuOpen}
 				title={privilegesDropdownTitle}
 				onMouseDown={this.handleMouseDown}
-				onSelect={this.handleDropdownClick}
-				onToggle={this.handleDropdownToggle}
 			>
 				{checkPrivilege(user.privs, PrivilegeType.ADMIN) && adminOptions}
 				{checkPrivilege(user.privs, PrivilegeType.RELATIONSHIP_TYPE_EDITOR) && relationshipTypeEditorOptions}
@@ -309,14 +336,7 @@ class Layout extends React.Component {
 						</Nav.Link>
 					</Nav.Item>
 				</Nav>
-				<Nav>
-					<Nav.Item>
-						<Nav.Link href="/help">
-							<FontAwesomeIcon icon={faQuestionCircle}/>
-							{' Help '}
-						</Nav.Link>
-					</Nav.Item>
-				</Nav>
+				{this.renderDocsDropdown()}
 				{
 					user && user.id ?
 						this.renderLoggedInDropdown() : this.renderGuestDropdown()
