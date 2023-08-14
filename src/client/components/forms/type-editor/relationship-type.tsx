@@ -35,6 +35,35 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 
 	const [isFormEdited, setIsFormEdited] = useState(false);
 
+	const [filteredParentTypes, setFilteredParentTypes] = useState<RelationshipTypeDataT[]>(parentTypes);
+	useEffect(() => {
+		if (formData.sourceEntityType && formData.targetEntityType) {
+			const filteredTypes = parentTypes.filter(
+				type =>
+					type.sourceEntityType === formData.sourceEntityType &&
+					type.targetEntityType === formData.targetEntityType
+			);
+			setFilteredParentTypes(filteredTypes);
+		}
+		else if (formData.sourceEntityType) {
+			const filteredTypes = parentTypes.filter(
+				type =>
+				  type.sourceEntityType === formData.sourceEntityType
+			);
+			setFilteredParentTypes(filteredTypes);
+		}
+		else if (formData.targetEntityType) {
+			const filteredTypes = parentTypes.filter(
+				type =>
+				  type.targetEntityType === formData.targetEntityType
+			);
+			setFilteredParentTypes(filteredTypes);
+		}
+		else {
+			setFilteredParentTypes(parentTypes);
+		}
+	}, [formData.targetEntityType, formData.sourceEntityType]);
+
 	// Check if the form data is different from the initial data
 	useEffect(() => {
 		const isEdited = JSON.stringify(formData) !== JSON.stringify(relationshipTypeData);
@@ -209,6 +238,20 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 			throw new Error(err);
 		}
 	}, [formData, isFormEdited, showIncompleteFormError]);
+
+	// When we change sourceEntityType or a parentEntityType, then we must check the validity of the parentType
+	// in case it is already selected
+	useEffect(() => {
+		if (formData.parentId) {
+			const parentType = parentTypes.find(type => type.id === formData.parentId);
+			if (formData.sourceEntityType && formData.sourceEntityType !== parentType.sourceEntityType) {
+				handleRemoveParent();
+			}
+			if (formData.targetEntityType && formData.targetEntityType !== parentType.targetEntityType) {
+				handleRemoveParent();
+			}
+		}
+	}, [formData.sourceEntityType, formData.targetEntityType]);
 
 	const lgCol = {offset: 3, span: 6};
 
@@ -430,8 +473,8 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 									formatOptionLabel={formatParentTypeOptionLabel}
 									getOptionValue={getParentTypeValue}
 									instanceId="parentType"
-									options={parentTypes}
-									value={parentTypes.find((option) => option.id === selectedParentType)}
+									options={filteredParentTypes}
+									value={filteredParentTypes.find((option) => option.id === selectedParentType)}
 									onChange={handleParentTypeChange}
 								/>
 							</Form.Group>
