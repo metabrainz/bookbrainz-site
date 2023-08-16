@@ -27,24 +27,31 @@ describe('Relationship Type routes with Relationship Editor priv', () => {
 	});
 	after(truncateEntities);
 
-	it('should not throw an error if creating new relationship type', async () => {
+	it('should not throw an error while accessing Relationship Type Editor to create new relationship type', async () => {
 		const res = await agent.get('/relationship-type/create');
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
 
-	it('should not throw an error trying to edit an existing relationship type', async () => {
+	it('should not throw an error while accessing Relationship Type Editor to edit an existing relationship type', async () => {
 		const relationshipTypeId = 1;
 		const res = await agent.get(`/relationship-type/${relationshipTypeId}/edit`);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
 	});
 
-	it('should throw a 404 error when trying to edit a non-existent relationship type', async () => {
+	it('should throw a 404 error when trying to access Relationship Type Editor with a non-existent id', async () => {
 		const relationshipTypeId = 222;
 		const res = await agent.get(`/relationship-type/${relationshipTypeId}/edit`);
 		expect(res.ok).to.be.false;
 		expect(res).to.have.status(404);
+	});
+
+	it('should throw an error when trying to access Relationship Type Editor with an invalid id', async () => {
+		const relationshipTypeId = 'hello';
+		const res = await agent.get(`/relationship-type/${relationshipTypeId}/edit`);
+		expect(res.ok).to.be.false;
+		expect(res).to.have.status(400);
 	});
 
 	it('should be able to create a new relationship type and return with status code 200', async () => {
@@ -121,14 +128,14 @@ describe('Relationship Type routes without Relationship Editor priv', () => {
 	});
 	after(truncateEntities);
 
-	it('should throw an error if creating new relationship type', async () => {
+	it('should throw an error while accessing Relationship Type Editor to create new relationship type', async () => {
 		const res = await agent.get('/relationship-type/create');
 		expect(res.ok).to.be.false;
 		expect(res).to.have.status(403);
 		expect(res.res.statusMessage).to.equal('You do not have the privilege to access this route');
 	});
 
-	it('should throw an error trying to edit an existing relationship type', async () => {
+	it('should throw an error while accessing Relationship Type Editor to edit an existing relationship type', async () => {
 		const relationshipTypeId = 1;
 		const res = await agent.get(`/relationship-type/${relationshipTypeId}/edit`);
 		expect(res.ok).to.be.false;
@@ -136,7 +143,7 @@ describe('Relationship Type routes without Relationship Editor priv', () => {
 		expect(res.res.statusMessage).to.equal('You do not have the privilege to access this route');
 	});
 
-	it('should throw an error when trying to edit a non-existent relationship type', async () => {
+	it('should throw an error when trying to access Relationship Type Editor with a non-existent id', async () => {
 		const relationshipTypeId = 222;
 		const res = await agent.get(`/relationship-type/${relationshipTypeId}/edit`);
 		expect(res.ok).to.be.false;
