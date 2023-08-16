@@ -16,10 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {faLink, faPlus} from '@fortawesome/free-solid-svg-icons';
 import AuthorTable from '../components/pages/entities/author-table';
 import DOMPurify from 'isomorphic-dompurify';
 import EditionGroupTable from '../components/pages/entities/editionGroup-table';
 import EditionTable from '../components/pages/entities/edition-table';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PublisherTable from '../components/pages/entities/publisher-table';
 import React from 'react';
 import SeriesTable from '../components/pages/entities/series-table';
@@ -226,3 +228,10 @@ export function countWords(text: string) : number {
 	}
 	return words.length;
 }
+
+export const RelationshipTypeEditorIcon = (
+	<span className="fa-layers fa-fw margin-right-0-3">
+		<FontAwesomeIcon icon={faLink} transform="left-3"/>
+		<FontAwesomeIcon icon={faPlus} transform="shrink-8 right-5 down-5"/>
+	</span>
+);

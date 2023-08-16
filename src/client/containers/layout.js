@@ -33,6 +33,7 @@ import Footer from './../components/footer';
 import MergeQueue from '../components/pages/parts/merge-queue';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {RelationshipTypeEditorIcon} from '../helpers/utils';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 
 
@@ -182,7 +183,8 @@ class Layout extends React.Component {
 		const relationshipTypeEditorOptions = (
 			<>
 				<NavDropdown.Item href="/relationship-type/create">
-					Relationship Type Editor
+					{RelationshipTypeEditorIcon}
+					Add Relationship Type
 				</NavDropdown.Item>
 			</>
 		);
