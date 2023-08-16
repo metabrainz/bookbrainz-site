@@ -62,36 +62,41 @@ router.param(
 );
 
 router.get('/:id/edit', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYPE_EDITOR),
-	middleware.loadParentRelationshipTypes, middleware.loadRelationshipAttributeTypes, async (req, res) => {
+	middleware.loadParentRelationshipTypes, middleware.loadRelationshipAttributeTypes, async (req, res, next) => {
 		const {RelationshipType} = req.app.locals.orm;
 		const {parentTypes, attributeTypes} = res.locals;
-		const relationshipType = await new RelationshipType({id: req.params.id})
-			.fetch({withRelated: ['attributeTypes']})
-			.catch(RelationshipType.NotFoundError, () => {
-				throw new error.NotFoundError(`RelationshipType with id ${req.params.id} not found`, req);
+		try {
+			const relationshipType = await new RelationshipType({id: req.params.id})
+				.fetch({require: true, withRelated: ['attributeTypes']})
+				.catch(RelationshipType.NotFoundError, () => {
+					throw new error.NotFoundError(`Relationship Type with id ${req.params.id} not found`, req);
+				});
+			const relationshipTypeData = relationshipType.toJSON();
+			const attributeTypesIds = relationshipTypeData.attributeTypes.map(attributeTypeData => attributeTypeData.id);
+
+			relationshipTypeData.attributeTypes = attributeTypesIds;
+
+			const props = generateProps(req, res, {
+				attributeTypes, parentTypes, relationshipTypeData
 			});
-		const relationshipTypeData = relationshipType.toJSON();
-		const attributeTypesIds = relationshipTypeData.attributeTypes.map(attributeTypeData => attributeTypeData.id);
-
-		relationshipTypeData.attributeTypes = attributeTypesIds;
-
-		const props = generateProps(req, res, {
-			attributeTypes, parentTypes, relationshipTypeData
-		});
-		const script = '/js/relationship-type-editor.js';
-		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<RelationshipTypeEditor
-					relationshipTypeData={props.relationshipTypeData}
-					{...propHelpers.extractChildProps(props)}
-				/>
-			</Layout>
-		);
-		res.send(target({
-			markup,
-			props: escapeProps(props),
-			script
-		}));
+			const script = '/js/relationship-type-editor.js';
+			const markup = ReactDOMServer.renderToString(
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<RelationshipTypeEditor
+						relationshipTypeData={props.relationshipTypeData}
+						{...propHelpers.extractChildProps(props)}
+					/>
+				</Layout>
+			);
+			return res.send(target({
+				markup,
+				props: escapeProps(props),
+				script
+			}));
+		}
+		catch (err) {
+			return next(err);
+		}
 	});
 
 router.post('/:id/edit/handler', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYPE_EDITOR), relationshipTypeCreateOrEditHandler);
