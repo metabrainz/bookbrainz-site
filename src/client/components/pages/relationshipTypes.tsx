@@ -33,9 +33,13 @@ function RelationshipTypesPage({heading, relationshipTypes}: Props) {
 				{heading}
 			</Card.Header>
 			<Card.Body>
-				<RelationshipTypeTree
-					relationshipTypes={relationshipTypes}
-				/>
+				{
+					relationshipTypes.length ?
+						<RelationshipTypeTree
+							relationshipTypes={relationshipTypes}
+						/> :
+						`No ${heading} found.`
+				}
 			</Card.Body>
 		</Card>
 	);

@@ -18,6 +18,7 @@
 import React, {useCallback, useState} from 'react';
 import {Button} from 'react-bootstrap';
 import {RelationshipTypeDataT} from '../../forms/type-editor/typeUtils';
+import {orderBy as _orderBy} from 'lodash';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
@@ -44,7 +45,8 @@ function RelationshipTypeTree({relationshipTypes, parentId, indentLevel}: Relati
 		toggleExpand(relationshipTypeId);
 	}, []);
 
-	const filteredRelationshipTypes = relationshipTypes.filter((relType) => relType.parentId === parentId);
+	let filteredRelationshipTypes = relationshipTypes.filter((relType) => relType.parentId === parentId);
+	filteredRelationshipTypes = _orderBy(filteredRelationshipTypes, ['childOrder', 'id']);
 
 	return (
 		<ul>
