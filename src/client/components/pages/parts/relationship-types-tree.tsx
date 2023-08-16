@@ -55,7 +55,6 @@ function RelationshipTypeTree({relationshipTypes, parentId, indentLevel}: Relati
 				}
 				const sourceIconElement = genEntityIconHTMLElement(relType.sourceEntityType);
 				const targetIconElement = genEntityIconHTMLElement(relType.targetEntityType);
-				const relInnerElementsClass = `margin-left-d${(indentLevel + 1) * 10} small`;
 				return (
 					<li className={relOuterClass} key={relType.id}>
 						<p>
@@ -75,15 +74,15 @@ function RelationshipTypeTree({relationshipTypes, parentId, indentLevel}: Relati
 							</p>
 						</p>
 						{expandedRelationshipTypeIds.includes(relType.id) && (
-							<div className="relationship-type-details">
-								<div className={relInnerElementsClass}><strong>Forward link phrase: </strong>{relType.linkPhrase}</div>
-								<div className={relInnerElementsClass}><strong>Reverse link phrase: </strong>{relType.reverseLinkPhrase}</div>
-								<div className={relInnerElementsClass}><strong>Source Entity Type: </strong>{relType.sourceEntityType}</div>
-								<div className={relInnerElementsClass}><strong>Target Entity Type: </strong>{relType.targetEntityType}</div>
-								<div className={relInnerElementsClass}><strong>Description: </strong>{relType.description}</div>
-								<div className={relInnerElementsClass}><strong>Child Order: </strong>{relType.childOrder}</div>
-								<div className={relInnerElementsClass}><strong>Deprecated: </strong>{relType.deprecated ? 'Yes' : 'No'}</div>
-								<div className={relInnerElementsClass}>
+							<div className="relationship-type-details small">
+								<div><strong>Forward link phrase: </strong>{relType.linkPhrase}</div>
+								<div><strong>Reverse link phrase: </strong>{relType.reverseLinkPhrase}</div>
+								<div><strong>Source Entity Type: </strong>{relType.sourceEntityType}</div>
+								<div><strong>Target Entity Type: </strong>{relType.targetEntityType}</div>
+								<div><strong>Description: </strong>{relType.description}</div>
+								<div><strong>Child Order: </strong>{relType.childOrder}</div>
+								<div><strong>Deprecated: </strong>{relType.deprecated ? 'Yes' : 'No'}</div>
+								<div>
 									<Button
 										className="btn btn-sm"
 										href={`/relationship-type/${relType.id}/edit`}
