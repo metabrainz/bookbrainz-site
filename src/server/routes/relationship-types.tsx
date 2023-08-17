@@ -17,7 +17,7 @@
  */
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
-import {camelCase, upperFirst} from 'lodash';
+import {camelCase, startCase, upperFirst} from 'lodash';
 import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
 import React from 'react';
@@ -25,7 +25,6 @@ import ReactDOMServer from 'react-dom/server';
 import RelationshipTypeMatrix from '../../client/components/pages/relationship-type-matrix';
 import RelationshipTypesPage from '../../client/components/pages/relationshipTypes';
 import express from 'express';
-import {snakeCaseToSentenceCase} from '../../common/helpers/utils';
 import target from '../templates/target';
 
 
@@ -68,7 +67,7 @@ router.get('/:type1-:type2', async (req, res) => {
 	}).fetchAll();
 	const relationshipTypes = rows.toJSON();
 
-	const heading = `${snakeCaseToSentenceCase(type1)}-${snakeCaseToSentenceCase(type2)} relationship types`;
+	const heading = `${startCase(type1)}-${startCase(type2)} relationship types`;
 	const props = generateProps(req, res, {
 		heading, relationshipTypes
 	});

@@ -11,11 +11,11 @@ chai.use(chaiHttp);
 const {expect} = chai;
 
 describe('Relationship Type routes with Relationship Editor priv', () => {
-	const id1 = 1;
+	let id1;
 	let agent;
 	before(async () => {
 		try {
-			await createRelationshipType(id1);
+			id1 = await createRelationshipType();
 			await createEditor(123456, 4);
 		}
 		catch (error) {
@@ -34,7 +34,7 @@ describe('Relationship Type routes with Relationship Editor priv', () => {
 	});
 
 	it('should not throw an error while accessing Relationship Type Editor to edit an existing relationship type', async () => {
-		const relationshipTypeId = 1;
+		const relationshipTypeId = id1;
 		const res = await agent.get(`/relationship-type/${relationshipTypeId}/edit`);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
@@ -112,11 +112,11 @@ describe('Relationship Type routes with Relationship Editor priv', () => {
 
 
 describe('Relationship Type routes without Relationship Editor priv', () => {
-	const id1 = 1;
+	let id1;
 	let agent;
 	before(async () => {
 		try {
-			await createRelationshipType(id1);
+			id1 = await createRelationshipType();
 			await createEditor(123456, 1);
 		}
 		catch (error) {
@@ -136,7 +136,7 @@ describe('Relationship Type routes without Relationship Editor priv', () => {
 	});
 
 	it('should throw an error while accessing Relationship Type Editor to edit an existing relationship type', async () => {
-		const relationshipTypeId = 1;
+		const relationshipTypeId = id1;
 		const res = await agent.get(`/relationship-type/${relationshipTypeId}/edit`);
 		expect(res.ok).to.be.false;
 		expect(res).to.have.status(403);

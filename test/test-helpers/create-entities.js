@@ -165,13 +165,12 @@ export function createEditor(editorId, privs = 1) {
 	});
 }
 
-export function createRelationshipType(relTypeId) {
+export function createRelationshipType() {
 	return orm.bookshelf.knex.transaction(async (transacting) => {
-		relationshipTypeData.id = relTypeId;
 		const relationshipType = await new RelationshipType(relationshipTypeData)
 			.save(null, {method: 'insert', transacting});
 
-		return relationshipType;
+		return relationshipType.id;
 	});
 }
 
