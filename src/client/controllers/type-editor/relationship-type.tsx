@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016  Sean Burke
+ * Copyright (C) 2023 Shivam Awasthi
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,54 +15,29 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
-import {
-	extractChildProps,
-	extractLayoutProps
-} from '../helpers/props';
-
-import AboutPage from '../../client/components/pages/about';
+import {extractChildProps, extractLayoutProps} from '../../helpers/props';
 import {AppContainer} from 'react-hot-loader';
-import ContributePage from '../../client/components/pages/contribute';
-import DevelopPage from '../../client/components/pages/develop';
-import FAQPage from '../components/pages/faq';
-import HelpPage from '../../client/components/pages/help';
-import Index from '../components/pages/index';
-import Layout from '../containers/layout';
-import LicensingPage from '../../client/components/pages/licensing';
-import PrivacyPage from '../../client/components/pages/privacy';
+import Layout from '../../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import RelationshipTypeEditor from '../../components/forms/type-editor/relationship-type';
 
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
-const pageTarget = document.getElementById('page');
-const page = propsTarget ? pageTarget.innerHTML : '';
-
-const pageMap = {
-	About: AboutPage,
-	Contribute: ContributePage,
-	Develop: DevelopPage,
-	FAQs: FAQPage,
-	Help: HelpPage,
-	Index,
-	Licensing: LicensingPage,
-	Privacy: PrivacyPage
-};
-
-const Child = pageMap[page] || Index;
-
-const markup = (
+ReactDOM.hydrate(
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
-			<Child {...extractChildProps(props)}/>
+			<RelationshipTypeEditor
+				relationshipTypeData={props.relationshipTypeData}
+				{...extractChildProps(props)}
+			/>
 		</Layout>
-	</AppContainer>
+	</AppContainer>,
+	document.getElementById('target')
 );
 
-ReactDOM.hydrate(markup, document.getElementById('target'));
 
 /*
  * As we are not exporting a component,
@@ -73,3 +48,4 @@ ReactDOM.hydrate(markup, document.getElementById('target'));
 if (module.hot) {
 	module.hot.accept();
 }
+

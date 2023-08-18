@@ -274,6 +274,8 @@ export const ENTITY_TYPE_ICONS = {
 	Work: faPenNib
 };
 
+export const ENTITY_TYPES = ['Author', 'Work', 'Series', 'Edition', 'EditionGroup', 'Publisher'];
+
 type FASize = FAProps['size'];
 export function genEntityIconHTMLElement(entityType: string, size: FASize = '1x', margin = true) {
 	const correctCaseEntityType = upperFirst(entityType);

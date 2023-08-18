@@ -30,6 +30,7 @@ const clientConfig = {
 		externalService: ['./controllers/externalService.js'],
 		index: ['./controllers/index.js'],
 		registrationDetails: ['./controllers/registrationDetails.js'],
+		relationshipTypes: ['./controllers/relationshipTypes.tsx'],
 		revision: ['./controllers/revision.js'],
 		revisions: ['./controllers/revisions.js'],
 		search: ['./controllers/search.js'],
@@ -41,7 +42,8 @@ const clientConfig = {
 		'entity-editor': ['./entity-editor/controller.js'],
 		'unified-form':['./unified-form/controller.js'],
 		'entity-merge': ['./entity-editor/entity-merge.tsx'],
-		style: './stylesheets/style.scss'
+		style: './stylesheets/style.scss',
+		'relationship-type-editor': ['./controllers/type-editor/relationship-type.tsx']
 	},
 	externals: {
 		moment: 'moment'

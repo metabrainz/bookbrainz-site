@@ -5,6 +5,7 @@
  * 				 2016  Sean Burke
  * 				 2016  Ohm Patel
  * 				 2015  Leo Verto
+ * 				 2023  Shivam Awasthi
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +23,9 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {PrivilegeType, checkPrivilege} from '../../common/helpers/privileges-utils';
 import {
-	faChartLine, faGripVertical, faLink, faListUl, faPlus, faQuestionCircle,
+	faChartLine, faClipboardQuestion, faFileLines, faGripVertical, faLink, faListUl, faNewspaper, faPlus, faQuestionCircle,
 	faSearch, faShieldHalved, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle, faUserGear
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -31,6 +33,7 @@ import Footer from './../components/footer';
 import MergeQueue from '../components/pages/parts/merge-queue';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {RelationshipTypeEditorIcon} from '../helpers/utils';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 
 
@@ -42,6 +45,7 @@ class Layout extends React.Component {
 		this.state = {keepMenuOpen: false, menuOpen: false};
 		this.renderNavContent = this.renderNavContent.bind(this);
 		this.renderNavHeader = this.renderNavHeader.bind(this);
+		this.renderDocsDropdown = this.renderDocsDropdown.bind(this);
 		this.handleDropdownToggle = this.handleDropdownToggle.bind(this);
 		this.handleDropdownClick = this.handleDropdownClick.bind(this);
 		this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -89,6 +93,38 @@ class Layout extends React.Component {
 		);
 	}
 
+	renderDocsDropdown() {
+		const docsDropdownTitle = (
+			<span>
+				<FontAwesomeIcon icon={faFileLines}/>
+				{'  Docs'}
+			</span>
+		);
+		return (
+			<Nav>
+				<NavDropdown
+					alignRight
+					id="docs-dropdown"
+					title={docsDropdownTitle}
+					onMouseDown={this.handleMouseDown}
+				>
+					<NavDropdown.Item href="/help">
+						<FontAwesomeIcon icon={faQuestionCircle}/>
+						{' Help '}
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/faq">
+						<FontAwesomeIcon icon={faClipboardQuestion}/>
+						{' FAQs '}
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/relationship-types">
+						<FontAwesomeIcon icon={faLink}/>
+						{' Relationship Types '}
+					</NavDropdown.Item>
+				</NavDropdown>
+			</Nav>
+		);
+	}
+
 	renderGuestDropdown() {
 		const disableSignUp = this.props.disableSignUp ?
 			{disabled: true} :
@@ -130,26 +166,48 @@ class Layout extends React.Component {
 			</span>
 		);
 
+		const showPrivilegeDropdown = user.privs > 1;
+		const adminOptions = (
+			<>
+				<NavDropdown.Item href="/admin-panel">
+					<FontAwesomeIcon className="margin-right-0-3" icon={faUserGear}/>
+					Admin Panel
+				</NavDropdown.Item>
+				<NavDropdown.Item href="/admin-logs">
+					<FontAwesomeIcon className="margin-right-0-3" icon={faNewspaper}/>
+					Admin Logs
+				</NavDropdown.Item>
+			</>
+		);
+
+		const relationshipTypeEditorOptions = (
+			<>
+				<NavDropdown.Item href="/relationship-type/create">
+					{RelationshipTypeEditorIcon}
+					Add Relationship Type
+				</NavDropdown.Item>
+			</>
+		);
+
+		const privilegeDropDown = (
+			<NavDropdown
+				alignRight
+				id="privs-dropdown"
+				title={privilegesDropdownTitle}
+				onMouseDown={this.handleMouseDown}
+			>
+				{checkPrivilege(user.privs, PrivilegeType.ADMIN) && adminOptions}
+				{checkPrivilege(user.privs, PrivilegeType.RELATIONSHIP_TYPE_EDITOR) && relationshipTypeEditorOptions}
+			</NavDropdown>
+		);
+
 		const disableSignUp = this.props.disableSignUp ?
 			{disabled: true} :
 			{};
 
 		return (
 			<Nav>
-				<NavDropdown
-					alignRight
-					id="privs-dropdown"
-					open={this.state.menuOpen}
-					title={privilegesDropdownTitle}
-					onMouseDown={this.handleMouseDown}
-					onSelect={this.handleDropdownClick}
-					onToggle={this.handleDropdownToggle}
-				>
-					<NavDropdown.Item href="/admin-panel">
-						<FontAwesomeIcon className="margin-right-0-3" icon={faUserGear}/>
-						Admin Panel
-					</NavDropdown.Item>
-				</NavDropdown>
+				{showPrivilegeDropdown && privilegeDropDown}
 				<NavDropdown
 					alignRight
 					id="create-dropdown"
@@ -280,14 +338,7 @@ class Layout extends React.Component {
 						</Nav.Link>
 					</Nav.Item>
 				</Nav>
-				<Nav>
-					<Nav.Item>
-						<Nav.Link href="/help">
-							<FontAwesomeIcon icon={faQuestionCircle}/>
-							{' Help '}
-						</Nav.Link>
-					</Nav.Item>
-				</Nav>
+				{this.renderDocsDropdown()}
 				{
 					user && user.id ?
 						this.renderLoggedInDropdown() : this.renderGuestDropdown()

@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
+import * as auth from '../helpers/auth';
 import * as propHelpers from '../../client/helpers/props';
 import {escapeProps, generateProps} from '../helpers/props';
 import {getIntFromQueryParams, parseQuery} from '../helpers/utils';
@@ -31,7 +31,7 @@ import target from '../templates/target';
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
+router.get('/', auth.isAuthenticated, async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const query = parseQuery(req.url);
 	const size = getIntFromQueryParams(query, 'size', 20);
@@ -72,7 +72,7 @@ router.get('/', async (req, res, next) => {
 
 
 // eslint-disable-next-line consistent-return
-router.get('/admin-logs', async (req, res, next) => {
+router.get('/admin-logs', auth.isAuthenticated, async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const query = parseQuery(req.url);
 	const size = getIntFromQueryParams(query, 'size', 20);

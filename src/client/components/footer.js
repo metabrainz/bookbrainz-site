@@ -59,16 +59,20 @@ function Footer(props) {
 						</small>
 					</Col>
 					<Col className="text-right" xs={4}>
-						<small>
+						<div className="small">
 							<a href="/admin-logs">
-								Admin logs
+								Admin Logs
 							</a>
-						</small>
+						</div>
+						<div className="small">
+							<a href="/privacy">
+								Privacy & Terms
+							</a>
+						</div>
 					</Col>
 				</Row>
 				<Row>
-					<Col xs={4}/>
-					<Col className="text-center" xs={4}>
+					<Col className="text-center" xs={12}>
 						<small>
 							Alpha Software —{' '}
 							<a href={`${repositoryUrl}tree/${siteRevision || 'master'}`}>
@@ -76,13 +80,6 @@ function Footer(props) {
 							</a> —&nbsp;
 							<a href="https://tickets.metabrainz.org/projects/BB/issues/">
 								Report a Bug
-							</a>
-						</small>
-					</Col>
-					<Col className="text-right" xs={4}>
-						<small>
-							<a href="/privacy">
-								Privacy & Terms
 							</a>
 						</small>
 					</Col>

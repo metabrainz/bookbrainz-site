@@ -23,6 +23,7 @@ import {escapeProps, generateProps} from '../helpers/props';
 import AboutPage from '../../client/components/pages/about';
 import ContributePage from '../../client/components/pages/contribute';
 import DevelopPage from '../../client/components/pages/develop';
+import FAQPage from '../../client/components/pages/faq';
 import HelpPage from '../../client/components/pages/help';
 import Index from '../../client/components/pages/index';
 import Layout from '../../client/containers/layout';
@@ -107,5 +108,6 @@ _createStaticRoute('/develop', 'Develop', DevelopPage);
 _createStaticRoute('/help', 'Help', HelpPage);
 _createStaticRoute('/licensing', 'Licensing', LicensingPage);
 _createStaticRoute('/privacy', 'Privacy', PrivacyPage);
+_createStaticRoute('/faq', 'FAQs', FAQPage);
 
 export default router;

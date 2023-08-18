@@ -24,11 +24,11 @@ import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
 import type {Response as $Response, NextFunction, Request} from 'express';
+import {ENTITY_TYPES, getRelationshipTargetBBIDByTypeId} from '../../client/helpers/entity';
 import {getWikipediaExtract, selectWikipediaPage} from './wikimedia';
 
 import _ from 'lodash';
 import {getAcceptedLanguageCodes} from './i18n';
-import {getRelationshipTargetBBIDByTypeId} from '../../client/helpers/entity';
 import {getReviewsFromCB} from './critiquebrainz';
 import {getWikidataId} from '../../common/helpers/wikimedia';
 import log from 'log';
@@ -71,6 +71,10 @@ export const loadSeriesOrderingTypes =
 	makeLoader('SeriesOrderingType', 'seriesOrderingTypes');
 export const loadRelationshipTypes =
 	makeLoader('RelationshipType', 'relationshipTypes', null, ['attributeTypes']);
+export const loadParentRelationshipTypes =
+	makeLoader('RelationshipType', 'parentTypes');
+export const loadRelationshipAttributeTypes =
+	makeLoader('RelationshipAttributeType', 'attributeTypes');
 
 export const loadGenders =
 	makeLoader('Gender', 'genders', (a, b) => a.id > b.id);
@@ -236,6 +240,22 @@ export function checkValidRevisionId(req: $Request, res: $Response, next: NextFu
 	const idToNumber = _.toNumber(id);
 	if (!_.isInteger(idToNumber) || (_.isInteger(idToNumber) && idToNumber <= 0)) {
 		return next(new error.BadRequestError(`Invalid revision id: ${req.params.id}`, req));
+	}
+	return next();
+}
+
+export function checkValidRelationshipTypeId(req: $Request, res: $Response, next: NextFunction, id: string) {
+	const idToNumber = _.toNumber(id);
+	if (!_.isInteger(idToNumber) || idToNumber <= 0) {
+		return next(new error.BadRequestError(`Invalid Relationship Type id: ${req.params.id}`, req));
+	}
+	return next();
+}
+
+export function checkValidEntityType(req: $Request, res: $Response, next: NextFunction, entityType: string) {
+	const entityTypes = ENTITY_TYPES.map(entity => _.snakeCase(entity));
+	if (!_.includes(entityTypes, entityType)) {
+		return next(new error.BadRequestError(`Invalid Entity Type: ${commonUtils.snakeCaseToSentenceCase(entityType)}`, req));
 	}
 	return next();
 }

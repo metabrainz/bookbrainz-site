@@ -171,7 +171,6 @@ export function getEntityLink(entity: {type: string, bbid: string}): string {
 	return `/${kebabCase(entity.type)}/${entity.bbid}`;
 }
 
-
 export function getNextEnabledAndResultsArray(array, size) {
 	if (array.length > size) {
 		while (array.length > size) {

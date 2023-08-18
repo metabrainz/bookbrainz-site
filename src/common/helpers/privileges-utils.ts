@@ -81,6 +81,17 @@ export function getPrivilegeShieldIcon(privs: number) {
 	return '/images/icons/shield-grey-center.svg';
 }
 
+/**
+ * Returns whether the user has a particular Privilege or not
+ *
+ * @param {number} privs - the privileges of the user
+ * @param {PrivilegeType} privType - the privilege type being checked
+ * @returns {boolean} - whether the user has the privilege type or not
+ */
+export function checkPrivilege(privs: number, privType: PrivilegeType) {
+	return Boolean(privs & privType);
+}
+
 export function getPrivilegeTitleFromBit(bit: number) {
 	return PRIVILEGE_PROPERTIES[bit].title;
 }
