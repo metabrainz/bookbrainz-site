@@ -17,7 +17,8 @@
  */
 import {Alert, Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
 import React, {ChangeEvent, FormEvent, useCallback, useEffect, useState} from 'react';
-import {RelationshipTypeDataT, RelationshipTypeEditorPropsT, defaultRelationshipTypeData, entityTypeOptions, renderSelectedParent} from './typeUtils';
+import {RelationshipTypeDataT, RelationshipTypeEditorPropsT,
+	defaultRelationshipTypeData, entityTypeOptions, renderSelectedParentRelationshipType} from './typeUtils';
 import {faPencilAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ReactSelect from 'react-select';
@@ -373,7 +374,8 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 								) : (
 									<Row className="margin-top-d5">
 										<Col className="text-center">
-											{formData.parentId && renderSelectedParent(formData.parentId, formData.childOrder, parentTypes)}
+											{formData.parentId &&
+											renderSelectedParentRelationshipType(formData.parentId, formData.childOrder, parentTypes)}
 											<div className="btn-group d-flex margin-top-1" role="group">
 												<Button
 													className="w-100"

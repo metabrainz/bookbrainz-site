@@ -58,7 +58,7 @@ router.post('/create/handler', auth.isAuthenticated, auth.isAuthorized(RELATIONS
 
 router.param(
 	'id',
-	middleware.checkValidRelationshipTypeId
+	middleware.checkValidTypeId
 );
 
 router.get('/:id/edit', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYPE_EDITOR),

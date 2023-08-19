@@ -71,7 +71,7 @@ function IdentifierTypeTree({identifierTypes, parentId, indentLevel}: Identifier
 							</p>
 						</p>
 						{expandedIdentifierTypeIds.includes(idenType.id) && (
-							<div className="relationship-type-details small">
+							<div className="type-details small">
 								<div><strong>Detection RegEx: </strong>{idenType.detectionRegex}</div>
 								<div><strong>Validation RegEx: </strong>{idenType.validationRegex}</div>
 								<div><strong>Display Template: </strong>{idenType.displayTemplate}</div>

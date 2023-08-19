@@ -99,7 +99,7 @@ export const entityTypeOptions = ENTITY_TYPES.map((entity) => ({
 	name: entity
 }));
 
-export function renderSelectedParent(selectedParentID: number, childOrder: number, parentTypes: RelationshipTypeDataT[]) {
+export function renderSelectedParentRelationshipType(selectedParentID: number, childOrder: number, parentTypes: RelationshipTypeDataT[]) {
 	const parent = parentTypes.find(relationship => relationship.id === selectedParentID);
 	if (parent) {
 		return (
