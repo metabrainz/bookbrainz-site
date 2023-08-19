@@ -104,3 +104,58 @@ export async function relationshipTypeCreateOrEditHandler(req, res, next) {
 		return next(err);
 	}
 }
+
+/**
+ * A handler for create or edit actions on identifier types.
+ * @param {object} req - request object
+ * @param {object} res - response object
+ * @param {object} next - next object
+ * @returns {promise} res.send promise
+ * @description
+ * Creates a new identifier type or updates an existing identifier type
+ */
+export async function identifierTypeCreateOrEditHandler(req, res, next) {
+	try {
+		const {IdentifierType} = req.app.locals.orm;
+		let newIdentifierType;
+		let method;
+		if (!req.params.id) {
+			newIdentifierType = await IdentifierType.forge();
+			method = 'insert';
+		}
+		else {
+			newIdentifierType = await IdentifierType.forge({id: parseInt(req.params.id, 10)}).fetch({
+				require: true
+			});
+			method = 'update';
+		}
+		const {
+			childOrder,
+			deprecated,
+			description,
+			detectionRegex,
+			displayTemplate,
+			entityType,
+			label,
+			parentId,
+			validationRegex
+		} = req.body;
+
+		newIdentifierType.set('description', description);
+		newIdentifierType.set('label', label);
+		newIdentifierType.set('deprecated', deprecated);
+		newIdentifierType.set('detectionRegex', detectionRegex);
+		newIdentifierType.set('displayTemplate', displayTemplate);
+		newIdentifierType.set('childOrder', childOrder);
+		newIdentifierType.set('parentId', parentId);
+		newIdentifierType.set('entityType', entityType);
+		newIdentifierType.set('validationRegex', validationRegex);
+
+		const identifierType = await newIdentifierType.save(null, {method});
+
+		return res.send(identifierType.toJSON());
+	}
+	catch (err) {
+		return next(err);
+	}
+}

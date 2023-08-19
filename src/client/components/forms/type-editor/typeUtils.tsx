@@ -34,6 +34,19 @@ export interface RelationshipTypeDataT {
 	targetEntityType: EntityTypeString;
 }
 
+export interface IdentifierTypeDataT {
+	childOrder: number;
+	deprecated: boolean;
+	description: string;
+	detectionRegex: string | null;
+	displayTemplate: string;
+	entityType: EntityTypeString;
+	id?: number;
+	label: string;
+	parentId: number | null;
+	validationRegex: string;
+}
+
 export interface AttributeTypeDataT {
 	childOrder: number,
 	description: string,
@@ -51,6 +64,12 @@ export interface RelationshipTypeEditorPropsT {
 	user: any;
 }
 
+export interface IdentifierTypeEditorPropsT {
+	identifierTypeData: IdentifierTypeDataT;
+	parentTypes: IdentifierTypeDataT[];
+	user: any;
+}
+
 export const defaultRelationshipTypeData: RelationshipTypeDataT = {
 	attributeTypes: [],
 	childOrder: 0,
@@ -62,6 +81,18 @@ export const defaultRelationshipTypeData: RelationshipTypeDataT = {
 	reverseLinkPhrase: '',
 	sourceEntityType: null,
 	targetEntityType: null
+};
+
+export const defaultIdentifierTypeData: IdentifierTypeDataT = {
+	childOrder: 0,
+	deprecated: false,
+	description: '',
+	detectionRegex: null,
+	displayTemplate: '',
+	entityType: null,
+	label: '',
+	parentId: null,
+	validationRegex: ''
 };
 
 export const entityTypeOptions = ENTITY_TYPES.map((entity) => ({
@@ -85,3 +116,22 @@ export function renderSelectedParent(selectedParentID: number, childOrder: numbe
 	}
 	return null;
 }
+
+export function renderSelectedParentIdentifierType(selectedParentID: number, childOrder: number, parentTypes: IdentifierTypeDataT[]) {
+	const parent = parentTypes.find(identifierType => identifierType.id === selectedParentID);
+	if (parent) {
+		return (
+			<div className="small">
+				<div>
+					<strong>Label:&nbsp;</strong>{parent.label}
+				</div>
+				<div>
+					<strong>Description:&nbsp;</strong>{parent.description}
+				</div>
+				<div><strong>Child Order:&nbsp;</strong>{childOrder}</div>
+			</div>
+		);
+	}
+	return null;
+}
+

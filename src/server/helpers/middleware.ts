@@ -73,6 +73,8 @@ export const loadRelationshipTypes =
 	makeLoader('RelationshipType', 'relationshipTypes', null, ['attributeTypes']);
 export const loadParentRelationshipTypes =
 	makeLoader('RelationshipType', 'parentTypes');
+export const loadParentIdentifierTypes =
+	makeLoader('IdentifierType', 'parentTypes');
 export const loadRelationshipAttributeTypes =
 	makeLoader('RelationshipAttributeType', 'attributeTypes');
 
