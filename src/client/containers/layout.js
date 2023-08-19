@@ -25,6 +25,7 @@
 import * as bootstrap from 'react-bootstrap';
 import {PrivilegeType, checkPrivilege} from '../../common/helpers/privileges-utils';
 import {
+	faBarcode,
 	faChartLine, faClipboardQuestion, faFileLines, faGripVertical, faLink, faListUl, faNewspaper, faPlus, faQuestionCircle,
 	faSearch, faShieldHalved, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle, faUserGear
 } from '@fortawesome/free-solid-svg-icons';
@@ -120,6 +121,10 @@ class Layout extends React.Component {
 						<FontAwesomeIcon icon={faLink}/>
 						{' Relationship Types '}
 					</NavDropdown.Item>
+					<NavDropdown.Item href="/identifier-types">
+						<FontAwesomeIcon icon={faBarcode}/>
+						{' Identifier Types '}
+					</NavDropdown.Item>
 				</NavDropdown>
 			</Nav>
 		);
@@ -189,6 +194,14 @@ class Layout extends React.Component {
 			</>
 		);
 
+		const identifierTypeEditorOptions = (
+			<>
+				<NavDropdown.Item href="/identifier-type/create">
+					Add Identifier Type
+				</NavDropdown.Item>
+			</>
+		);
+
 		const privilegeDropDown = (
 			<NavDropdown
 				alignRight
@@ -198,6 +211,7 @@ class Layout extends React.Component {
 			>
 				{checkPrivilege(user.privs, PrivilegeType.ADMIN) && adminOptions}
 				{checkPrivilege(user.privs, PrivilegeType.RELATIONSHIP_TYPE_EDITOR) && relationshipTypeEditorOptions}
+				{checkPrivilege(user.privs, PrivilegeType.IDENTIFIER_TYPE_EDITOR) && identifierTypeEditorOptions}
 			</NavDropdown>
 		);
 
