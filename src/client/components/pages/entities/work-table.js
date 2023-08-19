@@ -64,7 +64,19 @@ function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities
 				<a href={`/work/${work.bbid}`}>{name}</a>
 				{disambiguation}
 			</td>
-			{authorData && <td>{authorData.length ? renderAuthors(authorData) : '?'}</td>}
+			{authorData &&
+			<td>
+				{authorData.length ? renderAuthors(authorData) :
+					<a
+						href={`/author/create?work=${work.bbid}`}
+						title="Add Author"
+						variant="link"
+					>
+						?
+					</a>
+				}
+			</td>
+			}
 			<td>{languages}</td>
 			<td>{workType}</td>
 			{showAddedAtColumn ? <td>{addedAt}</td> : null}
