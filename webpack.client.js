@@ -28,6 +28,7 @@ const clientConfig = {
 		preview: ['./controllers/preview.js'],
 		error: ['./controllers/error.js'],
 		externalService: ['./controllers/externalService.js'],
+		identifierTypes: ['./controllers/identifierTypes.tsx'],
 		index: ['./controllers/index.js'],
 		registrationDetails: ['./controllers/registrationDetails.js'],
 		relationshipTypes: ['./controllers/relationshipTypes.tsx'],

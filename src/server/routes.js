@@ -27,6 +27,7 @@ import editionGroupRouter from './routes/entity/edition-group';
 import editionRouter from './routes/entity/edition';
 import editorRouter from './routes/editor';
 import externalServiceRouter from './routes/externalService';
+import identifierTypesRouter from './routes/identifier-types';
 import indexRouter from './routes/index';
 import mergeRouter from './routes/merge';
 import publisherRouter from './routes/entity/publisher';
@@ -60,6 +61,7 @@ function initRootRoutes(app) {
 	app.use('/admin-logs', adminLogsRouter);
 	app.use('/relationship-type', relationshipTypeRouter);
 	app.use('/relationship-types', relationshipTypesRouter);
+	app.use('/identifier-types', identifierTypesRouter);
 }
 
 function initEditionGroupRoutes(app) {
