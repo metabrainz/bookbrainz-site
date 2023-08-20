@@ -62,30 +62,35 @@ router.param(
 );
 
 router.get('/:id/edit', auth.isAuthenticated, auth.isAuthorized(IDENTIFIER_TYPE_EDITOR),
-	middleware.loadParentIdentifierTypes, async (req, res) => {
+	middleware.loadParentIdentifierTypes, async (req, res, next) => {
 		const {IdentifierType} = req.app.locals.orm;
 		const {parentTypes} = res.locals;
-		const identifierType = await new IdentifierType({id: req.params.id})
-			.fetch({require: true})
-			.catch(IdentifierType.NotFoundError, () => {
-				throw new error.NotFoundError(`IdentifierType with id ${req.params.id} not found`, req);
-			});
-		const identifierTypeData = identifierType.toJSON();
-		const props = generateProps(req, res, {identifierTypeData, parentTypes});
-		const script = '/js/identifier-type-editor.js';
-		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<IdentifierTypeEditor
-					identifierTypeData={props.identifierTypeData}
-					{...propHelpers.extractChildProps(props)}
-				/>
-			</Layout>
-		);
-		res.send(target({
-			markup,
-			props: escapeProps(props),
-			script
-		}));
+		try {
+			const identifierType = await new IdentifierType({id: req.params.id})
+				.fetch({require: true})
+				.catch(IdentifierType.NotFoundError, () => {
+					throw new error.NotFoundError(`IdentifierType with id ${req.params.id} not found`, req);
+				});
+			const identifierTypeData = identifierType.toJSON();
+			const props = generateProps(req, res, {identifierTypeData, parentTypes});
+			const script = '/js/identifier-type-editor.js';
+			const markup = ReactDOMServer.renderToString(
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<IdentifierTypeEditor
+						identifierTypeData={props.identifierTypeData}
+						{...propHelpers.extractChildProps(props)}
+					/>
+				</Layout>
+			);
+			return res.send(target({
+				markup,
+				props: escapeProps(props),
+				script
+			}));
+		}
+		catch (err) {
+			return next(err);
+		}
 	});
 
 router.post('/:id/edit/handler', auth.isAuthenticated, auth.isAuthorized(IDENTIFIER_TYPE_EDITOR), identifierTypeCreateOrEditHandler);

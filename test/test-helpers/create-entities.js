@@ -174,6 +174,15 @@ export function createRelationshipType() {
 	});
 }
 
+export function createIdentifierType() {
+	return orm.bookshelf.knex.transaction(async (transacting) => {
+		const identifierType = await new IdentifierType(identifierTypeData)
+			.save(null, {method: 'insert', transacting});
+
+		return identifierType.id;
+	});
+}
+
 async function createAliasAndAliasSet() {
 	const language = await new Language({...languageAttribs})
 		.save(null, {method: 'insert'})
