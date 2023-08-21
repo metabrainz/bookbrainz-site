@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {faLink, faPlus} from '@fortawesome/free-solid-svg-icons';
+import {faBarcode, faLink, faPlus} from '@fortawesome/free-solid-svg-icons';
 import AuthorTable from '../components/pages/entities/author-table';
 import DOMPurify from 'isomorphic-dompurify';
 import EditionGroupTable from '../components/pages/entities/editionGroup-table';
@@ -233,5 +233,12 @@ export const RelationshipTypeEditorIcon = (
 	<span className="fa-layers fa-fw margin-right-0-3">
 		<FontAwesomeIcon icon={faLink} transform="left-3"/>
 		<FontAwesomeIcon icon={faPlus} transform="shrink-8 right-5 down-5"/>
+	</span>
+);
+
+export const IdentifierTypeEditorIcon = (
+	<span className="fa-layers fa-fw margin-right-0-3">
+		<FontAwesomeIcon icon={faBarcode} transform="shrink-3 left-5"/>
+		<FontAwesomeIcon icon={faPlus} transform="shrink-8 right-5 down-2"/>
 	</span>
 );

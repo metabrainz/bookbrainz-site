@@ -34,8 +34,6 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 	const [selectedParentType, setSelectedParentType] = useState<number | null>(formData.parentId);
 	const [childOrder, setChildOrder] = useState<number>(formData.childOrder);
 
-	const [isFormEdited, setIsFormEdited] = useState(false);
-
 	const [filteredParentTypes, setFilteredParentTypes] = useState<IdentifierTypeDataT[]>(parentTypes);
 	useEffect(() => {
 		if (formData.entityType) {
@@ -47,17 +45,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 		}
 	}, [formData.entityType]);
 
-	// Check if the form data is different from the initial data
-	useEffect(() => {
-		const isEdited = JSON.stringify(formData) !== JSON.stringify(identifierTypeData);
-		setIsFormEdited(isEdited);
-	  }, [formData, identifierTypeData]);
-
-	// This flag is used to check if any field has been updated while editing a type
-	const [noChangesError, setNoChangesError] = useState<boolean>(false);
-
-	// This flag is used to check whether we have selected source and target entity types
-	const [showIncompleteFormError, setShowIncompleteFormError] = useState<boolean>(false);
+	const [errorMsg, setErrorMsg] = useState<string>('');
 
 	// Callback function for opening the modal
 	const handleAddParent = useCallback(() => {
@@ -128,7 +116,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 		}));
 	}, [formData]);
 
-	const errorAlertClass = classNames('text-center', 'margin-top-1', {'d-none': !showIncompleteFormError});
+	const errorAlertClass = classNames('text-center', 'margin-top-1', {'d-none': !errorMsg.length});
 
 	const getEntityTypeLabel = useCallback(option => option.name, []);
 
@@ -161,19 +149,24 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 		return Boolean(formData.entityType);
 	}
 
+	function isFormEdited() {
+		return Boolean(JSON.stringify(formData) !== JSON.stringify(identifierTypeData));
+	}
+
 	const handleSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		if (!isValid()) {
-			setShowIncompleteFormError(true);
+			setErrorMsg('Error: Incomplete form! Select Entity Type.');
+			setTimeout(() => {
+				setErrorMsg('');
+			  }, 3000);
 			return;
 		}
-		if (!isFormEdited) {
-			// Display an error message if no changes were made
-			setNoChangesError(true);
-			// Hide the error message after 3 seconds
+		if (!isFormEdited()) {
+			setErrorMsg('No updated field!');
 			setTimeout(() => {
-			  setNoChangesError(false);
-			}, 3000);
+				setErrorMsg('');
+			  }, 3000);
 			return;
 		}
 
@@ -186,25 +179,37 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 		}
 
 		try {
-			await request.post(submissionURL)
-				.send(formData);
-			window.location.href = '/identifier-types';
+			await request.post(submissionURL).send(formData)
+				.end((error, response) => {
+					if (error) {
+						if (response && response.body && response.body.error) {
+							const errorMessage = response.body.error;
+							setErrorMsg(errorMessage);
+							setTimeout(() => {
+								setErrorMsg('');
+							}, 3000);
+						}
+					}
+					else {
+						window.location.href = '/identifier-types';
+					}
+				});
 		}
 		catch (err) {
 			throw new Error(err);
 		}
-	}, [formData, isFormEdited, showIncompleteFormError]);
+	}, [formData, isFormEdited, errorMsg]);
 
 	// When we change EntityType, then we must check the validity of the parentType
 	// in case it is already selected
 	useEffect(() => {
 		if (formData.parentId) {
 			const parentType = parentTypes.find(type => type.id === formData.parentId);
-			if (formData.entityType !== parentType.entityType) {
+			if (formData.entityType && formData.entityType !== parentType.entityType) {
 				handleRemoveParent();
 			}
 		}
-	}, [formData.entityType]);
+	}, [formData.entityType, formData.parentId]);
 
 	const lgCol = {offset: 3, span: 6};
 
@@ -327,7 +332,6 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 											renderSelectedParentIdentifierType(formData.parentId, formData.childOrder, parentTypes)}
 											<div className="btn-group d-flex margin-top-1" role="group">
 												<Button
-													className="w-100"
 													href="#"
 													role="button"
 													variant="warning"
@@ -337,7 +341,6 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 													<span>&nbsp;Edit</span>
 												</Button>
 												<Button
-													className="w-100"
 													href="#"
 													role="button"
 													variant="danger"
@@ -374,18 +377,10 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 					<Row>
 						<Col lg={lgCol}>
 							{
-								showIncompleteFormError &&
+								Boolean(errorMsg.length) &&
 								<div className={errorAlertClass}>
-									<Alert variant="danger">Error: Incomplete form! Select Entity Type.</Alert>
+									<Alert variant="danger">{errorMsg}</Alert>
 								</div>
-							}
-						</Col>
-					</Row>
-					<Row>
-						<Col lg={lgCol}>
-							{
-								noChangesError &&
-								<Alert variant="danger">Error: No updated field.</Alert>
 							}
 						</Col>
 					</Row>

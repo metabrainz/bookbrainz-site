@@ -23,6 +23,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {IdentifierTypeEditorIcon, RelationshipTypeEditorIcon} from '../helpers/utils';
 import {PrivilegeType, checkPrivilege} from '../../common/helpers/privileges-utils';
 import {
 	faBarcode,
@@ -34,7 +35,6 @@ import Footer from './../components/footer';
 import MergeQueue from '../components/pages/parts/merge-queue';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {RelationshipTypeEditorIcon} from '../helpers/utils';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 
 
@@ -110,19 +110,19 @@ class Layout extends React.Component {
 					onMouseDown={this.handleMouseDown}
 				>
 					<NavDropdown.Item href="/help">
-						<FontAwesomeIcon icon={faQuestionCircle}/>
+						<FontAwesomeIcon fixedWidth icon={faQuestionCircle}/>
 						{' Help '}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/faq">
-						<FontAwesomeIcon icon={faClipboardQuestion}/>
+						<FontAwesomeIcon fixedWidth icon={faClipboardQuestion}/>
 						{' FAQs '}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/relationship-types">
-						<FontAwesomeIcon icon={faLink}/>
+						<FontAwesomeIcon fixedWidth icon={faLink}/>
 						{' Relationship Types '}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/identifier-types">
-						<FontAwesomeIcon icon={faBarcode}/>
+						<FontAwesomeIcon fixedWidth icon={faBarcode}/>
 						{' Identifier Types '}
 					</NavDropdown.Item>
 				</NavDropdown>
@@ -175,11 +175,11 @@ class Layout extends React.Component {
 		const adminOptions = (
 			<>
 				<NavDropdown.Item href="/admin-panel">
-					<FontAwesomeIcon className="margin-right-0-3" icon={faUserGear}/>
+					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faUserGear}/>
 					Admin Panel
 				</NavDropdown.Item>
 				<NavDropdown.Item href="/admin-logs">
-					<FontAwesomeIcon className="margin-right-0-3" icon={faNewspaper}/>
+					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faNewspaper}/>
 					Admin Logs
 				</NavDropdown.Item>
 			</>
@@ -197,6 +197,7 @@ class Layout extends React.Component {
 		const identifierTypeEditorOptions = (
 			<>
 				<NavDropdown.Item href="/identifier-type/create">
+					{IdentifierTypeEditorIcon}
 					Add Identifier Type
 				</NavDropdown.Item>
 			</>

@@ -15,7 +15,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
 function getChangedAttributeTypes(oldAttributes, newAttributes) {
 	const commonAttributes = oldAttributes.filter(value => newAttributes.includes(value));
 	const attributesToBeRemoved = oldAttributes.filter(value => !commonAttributes.includes(value));
@@ -109,12 +108,11 @@ export async function relationshipTypeCreateOrEditHandler(req, res, next) {
  * A handler for create or edit actions on identifier types.
  * @param {object} req - request object
  * @param {object} res - response object
- * @param {object} next - next object
  * @returns {promise} res.send promise
  * @description
  * Creates a new identifier type or updates an existing identifier type
  */
-export async function identifierTypeCreateOrEditHandler(req, res, next) {
+export async function identifierTypeCreateOrEditHandler(req, res) {
 	try {
 		const {IdentifierType} = req.app.locals.orm;
 		let newIdentifierType;
@@ -153,9 +151,9 @@ export async function identifierTypeCreateOrEditHandler(req, res, next) {
 
 		const identifierType = await newIdentifierType.save(null, {method});
 
-		return res.send(identifierType.toJSON());
+		return res.status(200).send(identifierType.toJSON());
 	}
 	catch (err) {
-		return next(err);
+		return res.status(500).json({error: 'A problem occured when processing the data'});
 	}
 }
