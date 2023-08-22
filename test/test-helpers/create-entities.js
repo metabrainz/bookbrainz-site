@@ -165,22 +165,18 @@ export function createEditor(editorId, privs = 1) {
 	});
 }
 
-export function createRelationshipType() {
-	return orm.bookshelf.knex.transaction(async (transacting) => {
-		const relationshipType = await new RelationshipType(relationshipTypeData)
-			.save(null, {method: 'insert', transacting});
+export async function createRelationshipType() {
+	const relationshipType = await new RelationshipType(relationshipTypeData)
+		.save(null, {method: 'insert'});
 
-		return relationshipType.id;
-	});
+	return relationshipType.id;
 }
 
-export function createIdentifierType() {
-	return orm.bookshelf.knex.transaction(async (transacting) => {
-		const identifierType = await new IdentifierType(identifierTypeData)
-			.save(null, {method: 'insert', transacting});
+export async function createIdentifierType() {
+	const identifierType = await new IdentifierType(identifierTypeData)
+		.save(null, {method: 'insert'});
 
-		return identifierType.id;
-	});
+	return identifierType.id;
 }
 
 async function createAliasAndAliasSet() {
