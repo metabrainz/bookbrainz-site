@@ -209,7 +209,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 				handleRemoveParent();
 			}
 		}
-	}, [formData.entityType, formData.parentId]);
+	}, [formData.entityType]);
 
 	const lgCol = {offset: 3, span: 6};
 

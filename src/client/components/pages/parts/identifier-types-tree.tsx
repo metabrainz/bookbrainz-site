@@ -56,7 +56,7 @@ function IdentifierTypeTree({identifierTypes, parentId, indentLevel}: Identifier
 				}
 				return (
 					<li className={idenOuterClass} key={idenType.id}>
-						<p>
+						<div>
 							<strong>{idenType.label}&nbsp;</strong>
 							<Button
 								className="btn btn-sm margin-left-d10"
@@ -66,10 +66,11 @@ function IdentifierTypeTree({identifierTypes, parentId, indentLevel}: Identifier
 							>
 								{expandedIdentifierTypeIds.includes(idenType.id) ? '(Less)' : '(More)'}
 							</Button>
-							<p>
-								<small>{idenType.description}</small>
-							</p>
-						</p>
+							<div className="small">
+								<div className="text-muted">{idenType.displayTemplate}</div>
+								<div>{idenType.description}</div>
+							</div>
+						</div>
 						{expandedIdentifierTypeIds.includes(idenType.id) && (
 							<div className="type-details small">
 								<div><strong>Detection RegEx: </strong>{idenType.detectionRegex}</div>
