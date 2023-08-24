@@ -128,7 +128,7 @@ export async function identifierTypeCreateOrEditHandler(req, res) {
 			newIdentifierType = await IdentifierType.forge({id: parseInt(req.params.id, 10)}).fetch({
 				require: true
 			});
-			method = 'insert';
+			method = 'update';
 		}
 		const {
 			childOrder,
