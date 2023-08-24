@@ -1,3 +1,3 @@
 BEGIN TRANSACTION;
-ALTER SEQUENCE identifier_type_id_seq RESTART WITH 40;
+SELECT SETVAL('identifier_type_id_seq', (SELECT MAX(id) FROM identifier_type));
 COMMIT;

@@ -30,18 +30,18 @@ type IdentifierTypeTreePropsT = {
 function IdentifierTypeTree({identifierTypes, parentId, indentLevel}: IdentifierTypeTreePropsT) {
 	const [expandedIdentifierTypeIds, setExpandedIdentifierTypeIds] = useState([]);
 
-	function toggleExpand(idenTypeId) {
+	function toggleExpand(identifierTypeId) {
 		setExpandedIdentifierTypeIds((prevExpandedIds) => {
-			if (prevExpandedIds.includes(idenTypeId)) {
-				return prevExpandedIds.filter((id) => id !== idenTypeId);
+			if (prevExpandedIds.includes(identifierTypeId)) {
+				return prevExpandedIds.filter((id) => id !== identifierTypeId);
 			}
-			return [...prevExpandedIds, idenTypeId];
+			return [...prevExpandedIds, identifierTypeId];
 		});
 	}
 
 	const handleClick = useCallback((event) => {
-		const IdentifierTypeId = parseInt(event.target.value, 10);
-		toggleExpand(IdentifierTypeId);
+		const identifierTypeId = parseInt(event.target.value, 10);
+		toggleExpand(identifierTypeId);
 	}, []);
 
 	let filteredIdentifierTypes = identifierTypes.filter((idenType) => idenType.parentId === parentId);

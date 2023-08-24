@@ -31,7 +31,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 
 	// State for the ParentType modal
 	const [showModal, setShowModal] = useState<boolean>(false);
-	const [selectedParentType, setSelectedParentType] = useState<number | null>(formData.parentId);
+	const [selectedParentType, setSelectedParentType] = useState<number | null>(identifierTypeData.parentId);
 	const [childOrder, setChildOrder] = useState<number>(formData.childOrder);
 
 	const [filteredParentTypes, setFilteredParentTypes] = useState<IdentifierTypeDataT[]>(parentTypes);

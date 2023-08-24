@@ -15,6 +15,9 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+import * as error from '../../common/helpers/error';
+
+
 function getChangedAttributeTypes(oldAttributes, newAttributes) {
 	const commonAttributes = oldAttributes.filter(value => newAttributes.includes(value));
 	const attributesToBeRemoved = oldAttributes.filter(value => !commonAttributes.includes(value));
@@ -125,7 +128,7 @@ export async function identifierTypeCreateOrEditHandler(req, res) {
 			newIdentifierType = await IdentifierType.forge({id: parseInt(req.params.id, 10)}).fetch({
 				require: true
 			});
-			method = 'update';
+			method = 'insert';
 		}
 		const {
 			childOrder,
@@ -154,6 +157,6 @@ export async function identifierTypeCreateOrEditHandler(req, res) {
 		return res.status(200).send(identifierType.toJSON());
 	}
 	catch (err) {
-		return res.status(500).json({error: 'A problem occured when processing the data'});
+		return error.sendErrorAsJSON(res, new error.SiteError('A problem occurred while saving the identifier type'));
 	}
 }
