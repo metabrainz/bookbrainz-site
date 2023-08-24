@@ -35,6 +35,7 @@ import Footer from './../components/footer';
 import MergeQueue from '../components/pages/parts/merge-queue';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {faSearchengin} from '@fortawesome/free-brands-svg-icons';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 
 
@@ -194,6 +195,15 @@ class Layout extends React.Component {
 			</>
 		);
 
+		const reindexSearchEngineOption = (
+			<>
+				<NavDropdown.Item href="/search/reindex">
+					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faSearchengin}/>
+					Reindex Search Server
+				</NavDropdown.Item>
+			</>
+		);
+
 		const identifierTypeEditorOptions = (
 			<>
 				<NavDropdown.Item href="/identifier-type/create">
@@ -213,6 +223,7 @@ class Layout extends React.Component {
 				{checkPrivilege(user.privs, PrivilegeType.ADMIN) && adminOptions}
 				{checkPrivilege(user.privs, PrivilegeType.RELATIONSHIP_TYPE_EDITOR) && relationshipTypeEditorOptions}
 				{checkPrivilege(user.privs, PrivilegeType.IDENTIFIER_TYPE_EDITOR) && identifierTypeEditorOptions}
+				{checkPrivilege(user.privs, PrivilegeType.REINDEX_SEARCH_SERVER) && reindexSearchEngineOption}
 			</NavDropdown>
 		);
 
