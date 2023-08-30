@@ -46,10 +46,10 @@ class RegistrationForm extends React.Component {
 	handleSubmit(event) {
 		event.preventDefault();
 
-		const gender = this.gender.select.getValue()[0].id;
+		const genderId = this.gender?.select?.getValue()?.[0]?.id;
 		const data = {
 			displayName: this.displayName.value,
-			gender: gender ? parseInt(gender, 10) : null
+			gender: genderId ? parseInt(genderId, 10) : null
 		};
 
 		this.setState({
