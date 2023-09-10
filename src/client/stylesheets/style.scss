@@ -38,7 +38,7 @@ $disabled-color: lighten($disabled-bg,15%);
 		// The following prevents menu items from wrapping to two lines (icon on top text on the bottom)
 		// in browsers sizes between collapsed menu and enough horizontal space for all menu items
 		white-space: nowrap;
-		
+
 		& > .disabled > a {
 			color: $disabled-color;
 			background: $disabled-bg;
@@ -734,7 +734,7 @@ ul {
 
 	}
 	.tab-content{
-		padding: 1rem;	
+		padding: 1rem;
 	}
 }
 .uf-tab-header{
@@ -811,7 +811,7 @@ ul {
 	overflow:visible;
 }
 
-// Adding icon to accordion header 
+// Adding icon to accordion header
 .accordion > .icon-card{
 	display: flex;
 	overflow: visible;
@@ -851,4 +851,21 @@ div[class~=collapsing]+div[class=card-header] .accordion-arrow {
 .review-card{
 	margin: 10px;
 	max-width: 200px;
+}
+// Define variables for dark mode colors
+$dark-background-color: #121212;
+$dark-text-color: #ffffff;
+$dark-link-color: #3498db;
+
+
+// Check if the user's system prefers dark mode
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: $dark-background-color;
+    color: $dark-text-color;
+    
+    a {
+      color: $dark-link-color;
+    }
+  }
 }
