@@ -54,7 +54,10 @@ export function transformNewForm(data) {
 	);
 
 	let authorCredit = {};
-	if (!_.isNil(data.authorCredit)) {
+	if (!_.get(data, ['editionGroupSection', 'authorCreditEnable'], true)) {
+		authorCredit = null;
+	}
+	else if (!_.isNil(data.authorCredit)) {
 		// When merging entities, we use a separate reducer "authorCredit"
 		authorCredit = data.authorCredit.names;
 	}
@@ -93,7 +96,7 @@ const router = express.Router();
 router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadEditionGroupTypes,
-	middleware.loadRelationshipTypes, middleware.decodeUrlQueryParams,
+	middleware.loadRelationshipTypes,
 	 async (req, res) => {
 		const markupProps = generateEntityProps(
 			'editionGroup', req, res, {}
@@ -188,7 +191,7 @@ function _setEditionGroupTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
 	_setEditionGroupTitle(res);
 	res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
 	entityRoutes.displayEntity(req, res);

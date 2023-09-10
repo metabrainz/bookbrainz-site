@@ -173,19 +173,17 @@ export function dateObjectToISOString(value: DateObject) {
  * Convert any string url that has a prefix http|https|ftp|ftps to a clickable link
  * and then rendered the HTML string as real HTML.
  * @function stringToHTMLWithLinks
- * @param {string} string - Can be either revision notes or annotation content etc...
+ * @param {string} content - Can be either revision notes or annotation content etc...
  * @returns {JSX} returns a JSX Element
  */
-export function stringToHTMLWithLinks(string: string) {
-	const addHttpRegex = /(^|\b)www\./ig;
+export function stringToHTMLWithLinks(content: string) {
 	// eslint-disable-next-line max-len, no-useless-escape
 	const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%~*@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
-	let content = string.replace(addHttpRegex, '$1https://www.');
 	content = content.replace(
 		urlRegex,
-		'<a href="$1" target="_blank">$1</a>'
+		(url) => `<a href="${url.startsWith('www.') ? 'https://' + url : url}" target="_blank">${url}</a>`
 	);
-	const sanitizedHtml = DOMPurify.sanitize(content);
+	const sanitizedHtml = DOMPurify.sanitize(content, {ADD_ATTR: ['target']});
 	// eslint-disable-next-line react/no-danger
 	return <span dangerouslySetInnerHTML={{__html: sanitizedHtml}}/>;
 }

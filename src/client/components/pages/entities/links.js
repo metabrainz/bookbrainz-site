@@ -27,7 +27,7 @@ import React from 'react';
 
 
 const {filterOutRelationshipTypeById} = entityHelper;
-const {Row} = bootstrap;
+const {Row, Col} = bootstrap;
 
 function EntityLinks({entity, identifierTypes, urlPrefix}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
@@ -36,17 +36,22 @@ function EntityLinks({entity, identifierTypes, urlPrefix}) {
 	return (
 		<React.Fragment>
 			<Row>
-				<EntityRelationships
-					contextEntity={entity}
-					entityUrl={urlPrefix}
-					relationships={relationships}
-				/>
+				<Col>
+					<EntityRelationships
+						contextEntity={entity}
+						entityUrl={urlPrefix}
+						relationships={relationships}
+					/>
+				</Col>
 			</Row>
 			<Row>
-				<EntityIdentifiers
-					identifierTypes={identifierTypes}
-					identifiers={entity.identifierSet && entity.identifierSet.identifiers}
-				/>
+				<Col>
+					<EntityIdentifiers
+						entityUrl={urlPrefix}
+						identifierTypes={identifierTypes}
+						identifiers={entity.identifierSet && entity.identifierSet.identifiers}
+					/>
+				</Col>
 			</Row>
 		</React.Fragment>
 	);

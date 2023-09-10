@@ -82,9 +82,12 @@ class SearchPage extends React.Component<Props, State> {
 		};
 
 		this.paginationUrl = './search/search';
+		this.pagerElementRef = React.createRef();
 	}
 
 	paginationUrl: string;
+
+	pagerElementRef: React.RefObject<PagerElement>;
 
 	/**
 	 * Gets user text query from the browser's URL search parameters and
@@ -94,7 +97,13 @@ class SearchPage extends React.Component<Props, State> {
 	 * @param {string} type - Entity type selected from dropdown
 	 */
 	handleSearch = (query: string, type: string) => {
-		this.setState({query, type});
+		if (query === this.state.query && type === this.state.type && this.pagerElementRef.current) {
+			// if no change in query or type, re-run the search
+			this.pagerElementRef.current.triggerSearch();
+		}
+		else {
+			this.setState({query, type});
+		}
 	};
 
 	/**
@@ -154,6 +163,7 @@ class SearchPage extends React.Component<Props, State> {
 					nextEnabled={this.props.nextEnabled}
 					paginationUrl={this.paginationUrl}
 					querySearchParams={querySearchParams}
+					ref={this.pagerElementRef}
 					results={results}
 					searchParamsChangeCallback={this.searchParamsChangeCallback}
 					searchResultsCallback={this.searchResultsCallback}

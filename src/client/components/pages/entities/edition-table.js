@@ -22,6 +22,7 @@ import * as utilHelper from '../../../helpers/utils';
 
 import {faBook, faPlus} from '@fortawesome/free-solid-svg-icons';
 
+import AuthorCreditDisplay from '../../author-credit-display';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -30,17 +31,18 @@ import {kebabCase as _kebabCase} from 'lodash';
 
 const {
 	getEditionReleaseDate, getEntityLabel, getEntityDisambiguation,
-	getISBNOfEdition, getEditionFormat
+	getISBNOfEdition, getEditionFormat, getAuthorCreditNames
 } = entityHelper;
 const {Button, Table} = bootstrap;
 
-function EditionTableRow({edition, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
+function EditionTableRow({edition, showAddedAtColumn, showAuthorCreditsColumn, showCheckboxes, selectedEntities, onToggleRow}) {
 	const name = getEntityLabel(edition);
 	const disambiguation = getEntityDisambiguation(edition);
 	const number = edition.number || '?';
 	const releaseDate = getEditionReleaseDate(edition);
 	const isbn = getISBNOfEdition(edition);
 	const editionFormat = getEditionFormat(edition);
+	const authorCreditNames = showAuthorCreditsColumn ? getAuthorCreditNames(edition) : [];
 	const addedAt = showAddedAtColumn ? utilHelper.formatDate(new Date(edition.addedAt), true) : null;
 
 	/* eslint-disable react/jsx-no-bind */
@@ -61,6 +63,7 @@ function EditionTableRow({edition, showAddedAtColumn, showCheckboxes, selectedEn
 				<a href={`/edition/${edition.bbid}`}>{name}</a>
 				{disambiguation}
 			</td>
+			{showAuthorCreditsColumn && <td>{authorCreditNames.length ? <AuthorCreditDisplay names={authorCreditNames}/> : '?'}</td>}
 			<td>{editionFormat}</td>
 			<td>
 				{
@@ -87,15 +90,17 @@ EditionTableRow.propTypes = {
 	onToggleRow: PropTypes.func,
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool.isRequired,
+	showAuthorCreditsColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool
 };
 EditionTableRow.defaultProps = {
 	onToggleRow: null,
 	selectedEntities: [],
+	showAuthorCreditsColumn: false,
 	showCheckboxes: false
 };
 
-function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
+function EditionTable({editions, entity, showAddedAtColumn, showAdd, showAuthorCreditsColumn, showCheckboxes, selectedEntities, onToggleRow}) {
 	let tableContent;
 	if (editions.length) {
 		tableContent = (
@@ -105,6 +110,7 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckbo
 						<tr>
 							{editions[0].displayNumber && <th style={{width: '10%'}}>#</th>}
 							<th>Name</th>
+							{showAuthorCreditsColumn && <th>Author Credits</th>}
 							<th>Format</th>
 							<th>ISBN</th>
 							<th>Release Date</th>
@@ -121,6 +127,7 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showCheckbo
 									key={edition.bbid}
 									selectedEntities={selectedEntities}
 									showAddedAtColumn={showAddedAtColumn}
+									showAuthorCreditsColumn={showAuthorCreditsColumn}
 									showCheckboxes={showCheckboxes}
 									onToggleRow={onToggleRow}
 								/>
@@ -184,6 +191,7 @@ EditionTable.propTypes = {
 	selectedEntities: PropTypes.array,
 	showAdd: PropTypes.bool,
 	showAddedAtColumn: PropTypes.bool,
+	showAuthorCreditsColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool
 };
 EditionTable.defaultProps = {
@@ -192,6 +200,7 @@ EditionTable.defaultProps = {
 	selectedEntities: [],
 	showAdd: true,
 	showAddedAtColumn: false,
+	showAuthorCreditsColumn: false,
 	showCheckboxes: false
 };
 

@@ -54,6 +54,7 @@ export const UPDATE_DEPTH = 'UPDATE_DEPTH';
 export const TOGGLE_SHOW_EDITION_GROUP = 'TOGGLE_SHOW_EDITION_GROUP';
 export const UPDATE_WARN_IF_EDITION_GROUP_EXISTS = 'UPDATE_WARN_IF_EDITION_GROUP_EXISTS';
 
+
 /**
  * Produces an action indicating that the edition status for the edition being
  * edited should be updated with the provided value.
