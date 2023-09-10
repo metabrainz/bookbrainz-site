@@ -22,6 +22,7 @@ import React, {createRef, useCallback} from 'react';
 
 import AverageRating from './average-ratings';
 import CBReviewModal from './cbReviewModal';
+import EditionTable from './edition-table';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
@@ -31,6 +32,7 @@ import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
+import WikipediaExtract from './wikipedia-extract';
 import {kebabCase as _kebabCase} from 'lodash';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {labelsForAuthor} from '../../../helpers/utils';
@@ -116,7 +118,7 @@ AuthorAttributes.propTypes = {
 };
 
 
-function AuthorDisplayPage({entity, identifierTypes, user}) {
+function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);
@@ -129,17 +131,14 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 	}, [reviewsRef]);
 
 	const urlPrefix = getEntityUrl(entity);
+	const editions = [];
+	if (entity?.authorCredits) {
+		entity.authorCredits.forEach((authorCredit) => {
+			editions.push(...authorCredit.editions);
+		});
+	}
 	return (
 		<div>
-			<CBReviewModal
-				entityBBID={entity.bbid}
-				entityName={entity.defaultAlias.name}
-				entityType={entity.type}
-				handleModalToggle={handleModalToggle}
-				handleUpdateReviews={handleUpdateReviews}
-				showModal={showCBReviewModal}
-				userId={user?.id}
-			/>
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" lg={2}>
 					<EntityImage
@@ -158,11 +157,13 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 			</Row>
+			<WikipediaExtract articleExtract={wikipediaExtract} entity={entity}/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 				<React.Fragment>
 					<Row>
 						<Col lg={8}>
+							<EditionTable editions={editions} entity={entity}/>
 							<EntityLinks
 								entity={entity}
 								identifierTypes={identifierTypes}
@@ -197,6 +198,15 @@ function AuthorDisplayPage({entity, identifierTypes, user}) {
 				lastModified={entity.revision.revision.createdAt}
 				user={user}
 			/>
+			{!entity.deleted && <CBReviewModal
+				entityBBID={entity.bbid}
+				entityName={entity.defaultAlias.name}
+				entityType={entity.type}
+				handleModalToggle={handleModalToggle}
+				handleUpdateReviews={handleUpdateReviews}
+				showModal={showCBReviewModal}
+				userId={user?.id}
+			                    />}
 		</div>
 	);
 }
@@ -204,11 +214,12 @@ AuthorDisplayPage.displayName = 'AuthorDisplayPage';
 AuthorDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired
-
+	user: PropTypes.object.isRequired,
+	wikipediaExtract: PropTypes.object
 };
 AuthorDisplayPage.defaultProps = {
-	identifierTypes: []
+	identifierTypes: [],
+	wikipediaExtract: {}
 };
 
 export default AuthorDisplayPage;

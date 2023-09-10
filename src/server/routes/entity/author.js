@@ -97,7 +97,6 @@ router.get(
 	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
 	middleware.loadGenders, middleware.loadLanguages,
 	middleware.loadAuthorTypes, middleware.loadRelationshipTypes,
-	middleware.decodeUrlQueryParams,
 	async (req, res) => {
 		const markupProps = generateEntityProps(
 			'author', req, res, {
@@ -186,7 +185,12 @@ router.param(
 	'bbid',
 	middleware.makeEntityLoader(
 		'Author',
-		['authorType', 'gender', 'beginArea', 'endArea'],
+		['authorType', 'gender', 'beginArea', 'endArea',
+			'authorCredits.editions.defaultAlias',
+			'authorCredits.editions.disambiguation',
+			'authorCredits.editions.releaseEventSet.releaseEvents',
+			'authorCredits.editions.identifierSet.identifiers.type',
+			'authorCredits.editions.editionFormat'],
 		'Author not found'
 	)
 );
@@ -199,7 +203,7 @@ function _setAuthorTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
 	_setAuthorTitle(res);
 	entityRoutes.displayEntity(req, res);
 });

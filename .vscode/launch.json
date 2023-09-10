@@ -6,6 +6,25 @@
     "configurations": [
         {
             "type": "node",
+            "request": "attach",
+            "name": "Docker: Attach to Node",
+            "port": 9229,
+            "localRoot": "${workspaceFolder}/src/server/",
+            "remoteRoot": "/home/bookbrainz/bookbrainz-site/src/server/",
+            "restart": true,
+            "sourceMaps": true,
+            "smartStep": true,
+            "outFiles": [
+                "${workspaceFolder}/**/*.js",
+                "!**/node_modules/**"
+            ],       
+            "skipFiles": [
+            "/home/bookbrainz/bookbrainz-site/node_modules/**/*.js",
+            "<node_internals>/**"
+            ]
+        },
+        {
+            "type": "node",
             "request": "launch",
             "name": "Launch Program",
             "env": {"SSR":true},

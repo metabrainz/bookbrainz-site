@@ -22,22 +22,20 @@
 import * as search from '../common/helpers/search';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
-import {get as _get} from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
 import compression from 'compression';
 import config from '../common/helpers/config';
-import {createClient} from 'redis';
 import express from 'express';
 import initRoutes from './routes';
 import logger from 'morgan';
-import redis from 'connect-redis';
-import session from 'express-session';
+import session from '../common/helpers/session';
 
 
 // Initialize application
 const app = express();
 app.locals.orm = BookBrainzData(config.database);
 
+const debug = Debug('bbapi');
 
 app.set('trust proxy', config.site.proxyTrust);
 
@@ -49,28 +47,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(compression());
 
-/* Set up sessions, using Redis in production and default in-memory for testing environment*/
-const sessionOptions = {
-	cookie: {
-		maxAge: _get(config, 'session.maxAge', 2592000000),
-		secure: _get(config, 'session.secure', false)
-	},
-	resave: false,
-	saveUninitialized: false,
-	secret: config.session.secret
-};
-if (process.env.NODE_ENV !== 'test') {
-	const redisClient = createClient({
-		host: _get(config, 'session.redis.host', 'localhost'),
-		port: _get(config, 'session.redis.port', 6379)
-	});
-
-	const RedisStore = redis(session);
-	sessionOptions.store = new RedisStore({
-		client: redisClient
-	});
-}
-app.use(session(sessionOptions));
+app.use(session(process.env.NODE_ENV));
 
 // Set up routes
 const mainRouter = initRoutes();
@@ -92,8 +69,6 @@ mainRouter.use((req, res) => {
 // https://github.com/elastic/elasticsearch-js/issues/33
 search.init(app.locals.orm, Object.assign({}, config.search));
 
-
-const debug = Debug('bbapi');
 
 const DEFAULT_API_PORT = 9098;
 app.set('port', process.env.PORT || DEFAULT_API_PORT);

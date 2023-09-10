@@ -27,7 +27,9 @@ export const SHOW_AUTHOR_CREDIT_EDITOR = 'SHOW_AUTHOR_CREDIT_EDITOR';
 export const HIDE_AUTHOR_CREDIT_EDITOR = 'HIDE_AUTHOR_CREDIT_EDITOR';
 export const REMOVE_EMPTY_CREDIT_ROWS = 'REMOVE_EMPTY_CREDIT_ROWS';
 export const UPDATE_AUTHOR_CREDIT = 'UPDATE_AUTHOR_CREDIT';
-
+export const CLEAR_AUTHOR_CREDIT = 'CLEAR_AUTHOR_CREDIT';
+export const RESET_AUTHOR_CREDIT = 'RESET_AUTHOR_CREDIT';
+export const TOGGLE_AUTHOR_CREDIT = 'TOGGLE_AUTHOR_CREDIT';
 
 export type Action = {
 	type: string,
@@ -191,5 +193,34 @@ export function updateAuthorCredit(authorCredit: AuthorCredit): Action {
 	return {
 		payload: authorCredit,
 		type: UPDATE_AUTHOR_CREDIT
+	};
+}
+
+/**
+ * @returns {Action} The resulting CLEAR_AUTHOR_CREDIT action.
+ */
+export function clearAuthorCredit(): Action {
+	return {
+		type: CLEAR_AUTHOR_CREDIT
+	};
+}
+
+/**
+ * @returns {Action} The resulting RESET_AUTHOR_CREDIT action.
+ */
+export function resetAuthorCredit(): Action {
+	return {
+		type: RESET_AUTHOR_CREDIT
+	};
+}
+
+/**
+ *  Produces an action indicating that the AC checkbox should be toggled.
+ *
+ * @returns {Action} The resulting TOGGLE_AUTHOR_CREDIT action.
+ */
+export function toggleAuthorCredit(): Action {
+	return {
+		type: TOGGLE_AUTHOR_CREDIT
 	};
 }

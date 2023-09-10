@@ -383,6 +383,18 @@ a.contact-text:visited {
 	height: 10px;
 }
 
+/* Style inline alias lists the same way as the previously used h4 elements */
+ul.inline-aliases {
+	@extend h4;
+	padding: 0;
+	li {
+		display: inline;
+	}
+	li:not(:last-child)::after {
+		content: " · ";
+		font-weight: bolder;
+	}
+}
 
 /* Text wrapping in list-group-items (for long revision notes, for example) */
 /* ============= */
@@ -453,6 +465,7 @@ hr.wide {
 
 .annotation-content {
 	white-space: pre-wrap;
+	word-break: break-word;
 	position: relative;
 	font-family: inherit;
 	font-size: inherit;
@@ -852,6 +865,7 @@ div[class~=collapsing]+div[class=card-header] .accordion-arrow {
 	margin: 10px;
 	max-width: 200px;
 }
+<<<<<<< HEAD
 // Define variables for dark mode colors
 $dark-background-color: #121212;
 $dark-text-color: #ffffff;
@@ -869,3 +883,17 @@ $dark-link-color: #3498db;
     }
   }
 }
+=======
+
+.hierarchy-arrow {
+	border-left: 1px solid $gray-400;
+    width: 1em;
+    height: 1em;
+    content: "";
+    display: inline-block;
+    border-bottom: 1px solid $gray-400;
+    position: relative;
+    bottom: 0.3em;
+	left: -0.5em;
+}
+>>>>>>> 2fd1062fd4acef90b072951ba0c2c9b4614e9510

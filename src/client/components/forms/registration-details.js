@@ -46,10 +46,10 @@ class RegistrationForm extends React.Component {
 	handleSubmit(event) {
 		event.preventDefault();
 
-		const gender = this.gender.select.getValue()[0].id;
+		const genderId = this.gender?.select?.getValue()?.[0]?.id;
 		const data = {
 			displayName: this.displayName.value,
-			gender: gender ? parseInt(gender, 10) : null
+			gender: genderId ? parseInt(genderId, 10) : null
 		};
 
 		this.setState({
@@ -91,11 +91,8 @@ class RegistrationForm extends React.Component {
 			errorComponent =
 				<Alert variant="danger">{this.state.error}</Alert>;
 		}
-
 		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
-
 		const initialGender = this.props.gender && this.props.gender.id;
-
 		return (
 			<div>
 				<div className="page-header"><h1>Register</h1></div>
@@ -143,6 +140,7 @@ class RegistrationForm extends React.Component {
 								<Form.Label className="col-lg-4 col-form-label">Gender</Form.Label>
 								<div className="col-lg-4">
 									<ReactSelect
+										isClearable
 										defaultValue={this.props.genders.filter((option) => option.id === initialGender)}
 										getOptionLabel={this.getOptionLabel}
 										instanceId="gender"
@@ -152,7 +150,6 @@ class RegistrationForm extends React.Component {
 									/>
 								</div>
 							</Form.Group>
-
 							<hr/>
 							{errorComponent}
 							<div className="text-center">

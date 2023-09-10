@@ -32,6 +32,7 @@ import EntityRelatedCollections from './related-collections';
 import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
+import WikipediaExtract from './wikipedia-extract';
 
 
 const {deletedEntityMessage, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
@@ -78,7 +79,7 @@ EditionGroupAttributes.propTypes = {
 };
 
 
-function EditionGroupDisplayPage({entity, identifierTypes, user}) {
+function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);
@@ -112,15 +113,6 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 
 	return (
 		<div>
-			<CBReviewModal
-				entityBBID={entity.bbid}
-				entityName={entity.defaultAlias.name}
-				entityType={entity.type}
-				handleModalToggle={handleModalToggle}
-				handleUpdateReviews={handleUpdateReviews}
-				showModal={showCBReviewModal}
-				userId={user?.id}
-			/>
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" lg={2}>
 					<EntityImage
@@ -140,6 +132,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 			</Row>
+			<WikipediaExtract articleExtract={wikipediaExtract} entity={entity}/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
@@ -174,6 +167,15 @@ function EditionGroupDisplayPage({entity, identifierTypes, user}) {
 				lastModified={entity.revision.revision.createdAt}
 				user={user}
 			/>
+			{!entity.deleted && <CBReviewModal
+				entityBBID={entity.bbid}
+				entityName={entity.defaultAlias.name}
+				entityType={entity.type}
+				handleModalToggle={handleModalToggle}
+				handleUpdateReviews={handleUpdateReviews}
+				showModal={showCBReviewModal}
+				userId={user?.id}
+			                    />}
 		</div>
 	);
 }
@@ -181,10 +183,12 @@ EditionGroupDisplayPage.displayName = 'EditionGroupDisplayPage';
 EditionGroupDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired
+	user: PropTypes.object.isRequired,
+	wikipediaExtract: PropTypes.object
 };
 EditionGroupDisplayPage.defaultProps = {
-	identifierTypes: []
+	identifierTypes: [],
+	wikipediaExtract: {}
 };
 
 export default EditionGroupDisplayPage;

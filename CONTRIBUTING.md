@@ -25,6 +25,10 @@ to BookBrainz:
  * Use [JSDoc](http://usejsdoc.org/) for commenting code
  * Use [TypeScript](https://www.typescriptlang.org/) everywhere - static type checking is useful
 
+## Pull requests
+
+Please read carefully the [MetaBrainz Github guidelines](https://github.com/metabrainz/guidelines/blob/master/GitHub.md)
+
 ## Commits
 
 We try to keep our commit messages readable and concise, this is especially important as they can't be rewritten—unlike
