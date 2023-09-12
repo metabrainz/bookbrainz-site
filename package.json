@@ -24,7 +24,7 @@
     "dupreport": "npx jsinspect src/ || true"
   },
   "engines": {
-    "node": ">= 16.16.0"
+    "node": ">= 18"
   },
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
