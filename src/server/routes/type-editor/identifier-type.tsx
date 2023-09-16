@@ -65,6 +65,7 @@ router.get('/:id/edit', auth.isAuthenticated, auth.isAuthorized(IDENTIFIER_TYPE_
 	middleware.loadParentIdentifierTypes, async (req, res, next) => {
 		const {IdentifierType} = req.app.locals.orm;
 		const {parentTypes} = res.locals;
+		res.locals.parentTypes = parentTypes.filter(type => type.id !== parseInt(req.params.id, 10));
 		try {
 			const identifierType = await new IdentifierType({id: req.params.id})
 				.fetch({require: true})
@@ -72,7 +73,7 @@ router.get('/:id/edit', auth.isAuthenticated, auth.isAuthorized(IDENTIFIER_TYPE_
 					throw new error.NotFoundError(`IdentifierType with id ${req.params.id} not found`, req);
 				});
 			const identifierTypeData = identifierType.toJSON();
-			const props = generateProps(req, res, {identifierTypeData, parentTypes});
+			const props = generateProps(req, res, {identifierTypeData});
 			const script = '/js/identifier-type-editor.js';
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...propHelpers.extractLayoutProps(props)}>
