@@ -71,8 +71,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 
 	// Function to handle child order input in ParentType modal
 	const handleChildOrderChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-		const value = parseInt(event.target.value, 10);
-		setChildOrder(isNaN(value) ? 0 : value);
+		setChildOrder(event.target.valueAsNumber || 0);
 	}, [formData, childOrder]);
 
 	// Function to handle parent removal
@@ -150,7 +149,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 	}
 
 	function isFormEdited() {
-		return Boolean(JSON.stringify(formData) !== JSON.stringify(identifierTypeData));
+		return JSON.stringify(formData) !== JSON.stringify(identifierTypeData);
 	}
 
 	const handleSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
@@ -179,24 +178,15 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 		}
 
 		try {
-			await request.post(submissionURL).send(formData)
-				.end((error, response) => {
-					if (error) {
-						if (response && response.body && response.body.error) {
-							const errorMessage = response.body.error;
-							setErrorMsg(errorMessage);
-							setTimeout(() => {
-								setErrorMsg('');
-							}, 3000);
-						}
-					}
-					else {
-						window.location.href = '/identifier-types';
-					}
-				});
+			await request.post(submissionURL).send(formData);
+			window.location.href = '/identifier-types';
 		}
 		catch (err) {
-			throw new Error(err);
+			const errorMessage = err.response.body.error;
+			setErrorMsg(errorMessage);
+			setTimeout(() => {
+				setErrorMsg('');
+			}, 3000);
 		}
 	}, [formData, isFormEdited, errorMsg]);
 
@@ -205,7 +195,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 	useEffect(() => {
 		if (formData.parentId) {
 			const parentType = parentTypes.find(type => type.id === formData.parentId);
-			if (formData.entityType && formData.entityType !== parentType.entityType) {
+			if (formData.entityType && formData.entityType !== parentType?.entityType) {
 				handleRemoveParent();
 			}
 		}
@@ -424,7 +414,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 								Close
 							</Button>
 							<Button variant="primary" onClick={handleModalSubmit}>
-								{formData.parentId ? 'Save Changes' : 'Submit'}
+								{formData.parentId ? 'Save Changes' : 'Add Parent'}
 							</Button>
 						</Modal.Footer>
 					</Modal>
