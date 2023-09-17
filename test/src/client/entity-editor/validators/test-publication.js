@@ -48,6 +48,18 @@ function describeValidateEditionGroupSectionType() {
 	testValidatePositiveIntegerFunc(validateEditionGroupSectionType, false);
 }
 
+const VALID_AUTHOR_CREDIT_EDITOR = {
+	n0: {
+		author: {
+			id: '204f580d-7763-4660-9668-9a21736b5f6c',
+			rowId: 'n0',
+			text: '',
+			type: 'Author'
+		},
+		name: 'author'
+	}
+};
+
 const VALID_EDITION_GROUP_SECTION = {
 	type: 1
 };
@@ -96,6 +108,7 @@ function describeValidateEditionGroupSection() {
 function describeValidateForm() {
 	const validForm = {
 		aliasEditor: VALID_ALIASES,
+		authorCreditEditor: VALID_AUTHOR_CREDIT_EDITOR,
 		editionGroupSection: VALID_EDITION_GROUP_SECTION,
 		identifierEditor: VALID_IDENTIFIERS,
 		nameSection: VALID_NAME_SECTION,

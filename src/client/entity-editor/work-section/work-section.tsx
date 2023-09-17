@@ -27,12 +27,12 @@ import {
 import {Col, Form, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 import type {List, Map} from 'immutable';
 import Select, {OptionProps, components} from 'react-select';
+import {faArrowTurnUp, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LanguageField from '../common/language-field';
 import {connect} from 'react-redux';
-import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import makeImmutable from '../common/make-immutable';
 
 
@@ -110,17 +110,17 @@ function workTypeSelectMenuOption(props: OptionProps<WorkType, false>) {
 		indentationClass = `margin-left-d${10 * depth}`;
 	}
 	return (
-		<OverlayTrigger
-			delay={200}
-			overlay={<Tooltip id={`tooltip-${id}`}>{description}</Tooltip>}
-			placement="bottom"
-		>
-			<components.Option {...props}>
+		<components.Option {...props}>
+			<OverlayTrigger
+				flip delay={100}
+				overlay={<Tooltip id={`tooltip-${id}`}>{description}</Tooltip>}
+				placement="bottom"
+			>
 				<div aria-label={label} className={indentationClass} key={id}>
 					{depth > 0 && <div className="hierarchy-arrow"/>}{label}
 				</div>
-			</components.Option>
-		</OverlayTrigger>
+			</OverlayTrigger>
+		</components.Option>
 	);
 }
 
@@ -154,7 +154,7 @@ function WorkSection({
 	const validWorkTypes = workTypes.filter(type => !type.deprecated);
 	const workTypesForDisplay = sortWorkTypes(validWorkTypes);
 
-	const selectedTypeOption:WorkType = workTypesForDisplay.filter((el) => el.id === typeValue);
+	const selectedTypeOption:WorkType = workTypesForDisplay.find((el) => el.id === typeValue);
 	const tooltip = (
 		<Tooltip id="work-type-tooltip">
 			Literary form or structure of the work
@@ -197,6 +197,7 @@ function WorkSection({
 						/>
 						{selectedTypeOption &&
 							<Form.Text className="text-muted">
+								<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faArrowTurnUp} rotation={90}/>
 								{selectedTypeOption.description}
 							</Form.Text>
 						}
