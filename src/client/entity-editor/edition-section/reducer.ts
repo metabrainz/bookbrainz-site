@@ -39,7 +39,7 @@ import {
 	UPDATE_WEIGHT,
 	UPDATE_WIDTH
 } from './actions';
-import {HIDE_AUTHOR_CREDIT_EDITOR, SHOW_AUTHOR_CREDIT_EDITOR} from '../author-credit-editor/actions';
+import {HIDE_AUTHOR_CREDIT_EDITOR, SHOW_AUTHOR_CREDIT_EDITOR, TOGGLE_AUTHOR_CREDIT} from '../author-credit-editor/actions';
 
 
 type State = Immutable.Map<string, any>;
@@ -47,6 +47,7 @@ type State = Immutable.Map<string, any>;
 function reducer(
 	state: State = Immutable.Map({
 		authorCreditEditorVisible: false,
+		authorCreditEnable: true,
 		format: null,
 		languages: Immutable.List([]),
 		matchingNameEditionGroups: [],
@@ -98,6 +99,8 @@ function reducer(
 				return state.set('matchingNameEditionGroups', []);
 			}
 			return state.set('matchingNameEditionGroups', payload);
+		case TOGGLE_AUTHOR_CREDIT:
+			return state.set('authorCreditEnable', !state.get('authorCreditEnable'));
 		// no default
 	}
 	return state;

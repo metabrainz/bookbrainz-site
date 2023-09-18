@@ -75,6 +75,7 @@ const initialState = Immutable.Map({
 	}),
 	editionSection: Immutable.Map({
 		authorCreditEditorVisible: false,
+		authorCreditEnable: true,
 		editionGroupVisible: true,
 		format: null,
 		languages: Immutable.List([]),

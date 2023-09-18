@@ -53,3 +53,4 @@ export function showIdentifierEditor(): Action {
 		type: SHOW_IDENTIFIER_EDITOR
 	};
 }
+

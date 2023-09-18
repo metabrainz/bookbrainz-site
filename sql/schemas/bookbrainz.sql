@@ -407,8 +407,13 @@ ALTER TABLE bookbrainz.publisher_revision ADD FOREIGN KEY (data_id) REFERENCES b
 
 CREATE TABLE bookbrainz.work_type (
 	id SERIAL PRIMARY KEY,
-	label TEXT NOT NULL UNIQUE CHECK (label <> '')
+	label TEXT NOT NULL UNIQUE CHECK (label <> ''),
+	description TEXT NOT NULL CHECK (description <> ''),
+	parent_id INT,
+	child_order INT NOT NULL DEFAULT 0,
+	deprecated BOOLEAN NOT NULL DEFAULT FALSE
 );
+ALTER TABLE bookbrainz.work_type ADD FOREIGN KEY (parent_id) REFERENCES bookbrainz.work_type (id);
 
 CREATE TABLE bookbrainz.work_data (
 	id SERIAL PRIMARY KEY,
