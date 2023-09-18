@@ -497,7 +497,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 								Close
 							</Button>
 							<Button variant="primary" onClick={handleModalSubmit}>
-								{formData.parentId ? 'Save Changes' : 'Submit'}
+								{formData.parentId ? 'Save Changes' : 'Add Parent'}
 							</Button>
 						</Modal.Footer>
 					</Modal>
