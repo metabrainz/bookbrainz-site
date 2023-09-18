@@ -16,9 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 import {Alert, Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
+import {IdentifierTypeDataT, IdentifierTypeEditorPropsT,
+	defaultIdentifierTypeData, entityTypeOptions, renderSelectedParentIdentifierType} from './typeUtils';
 import React, {ChangeEvent, FormEvent, useCallback, useEffect, useState} from 'react';
-import {RelationshipTypeDataT, RelationshipTypeEditorPropsT,
-	defaultRelationshipTypeData, entityTypeOptions, renderSelectedParentRelationshipType} from './typeUtils';
 import {faPencilAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ReactSelect from 'react-select';
@@ -26,67 +26,26 @@ import classNames from 'classnames';
 import request from 'superagent';
 
 
-function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTypes}: RelationshipTypeEditorPropsT) {
-	const [formData, setFormData] = useState<RelationshipTypeDataT>(relationshipTypeData);
+function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeEditorPropsT) {
+	const [formData, setFormData] = useState<IdentifierTypeDataT>(identifierTypeData);
 
 	// State for the ParentType modal
 	const [showModal, setShowModal] = useState<boolean>(false);
-	const [selectedParentType, setSelectedParentType] = useState<number | null>(formData.parentId);
+	const [selectedParentType, setSelectedParentType] = useState<number | null>(identifierTypeData.parentId);
 	const [childOrder, setChildOrder] = useState<number>(formData.childOrder);
 
-	const [isFormEdited, setIsFormEdited] = useState(false);
-
-	const [filteredParentTypes, setFilteredParentTypes] = useState<RelationshipTypeDataT[]>(parentTypes);
+	const [filteredParentTypes, setFilteredParentTypes] = useState<IdentifierTypeDataT[]>(parentTypes);
 	useEffect(() => {
-		if (formData.sourceEntityType && formData.targetEntityType) {
-			const filteredTypes = parentTypes.filter(
-				type =>
-					type.sourceEntityType === formData.sourceEntityType &&
-					type.targetEntityType === formData.targetEntityType
-			);
-			setFilteredParentTypes(filteredTypes);
-		}
-		else if (formData.sourceEntityType) {
-			const filteredTypes = parentTypes.filter(
-				type =>
-				  type.sourceEntityType === formData.sourceEntityType
-			);
-			setFilteredParentTypes(filteredTypes);
-		}
-		else if (formData.targetEntityType) {
-			const filteredTypes = parentTypes.filter(
-				type =>
-				  type.targetEntityType === formData.targetEntityType
-			);
+		if (formData.entityType) {
+			const filteredTypes = parentTypes.filter(type => type.entityType === formData.entityType);
 			setFilteredParentTypes(filteredTypes);
 		}
 		else {
 			setFilteredParentTypes(parentTypes);
 		}
-	}, [formData.targetEntityType, formData.sourceEntityType]);
+	}, [formData.entityType]);
 
-	// Check if the form data is different from the initial data
-	useEffect(() => {
-		const isEdited = JSON.stringify(formData) !== JSON.stringify(relationshipTypeData);
-		setIsFormEdited(isEdited);
-	  }, [formData, relationshipTypeData]);
-
-	// This flag is used to check if any field has been updated while editing a type
-	const [noChangesError, setNoChangesError] = useState<boolean>(false);
-
-	// This flag is used to check whether we have selected source and target entity types
-	const [showIncompleteFormError, setShowIncompleteFormError] = useState<boolean>(false);
-
-	const handleAttributeTypesChange = useCallback(
-		(selectedOptions) => {
-			const selectedHouseTypeIds = selectedOptions.map((option) => option.id);
-			setFormData((prevFormData) => ({
-				...prevFormData,
-				attributeTypes: selectedHouseTypeIds
-			}));
-		},
-		[formData.attributeTypes]
-	);
+	const [errorMsg, setErrorMsg] = useState<string>('');
 
 	// Callback function for opening the modal
 	const handleAddParent = useCallback(() => {
@@ -112,8 +71,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 
 	// Function to handle child order input in ParentType modal
 	const handleChildOrderChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-		const value = parseInt(event.target.value, 10);
-		setChildOrder(isNaN(value) ? 0 : value);
+		setChildOrder(event.target.valueAsNumber || 0);
 	}, [formData, childOrder]);
 
 	// Function to handle parent removal
@@ -157,102 +115,91 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 		}));
 	}, [formData]);
 
+	const errorAlertClass = classNames('text-center', 'margin-top-1', {'d-none': !errorMsg.length});
+
 	const getEntityTypeLabel = useCallback(option => option.name, []);
 
 	const getEntityTypeValue = useCallback(option => option.name, []);
 
 	const getParentTypeValue = useCallback(option => option.id, []);
 
-	const getAttributeTypeOptionValue = useCallback(option => option.id, []);
-	const getAttributeTypeOptionLabel = useCallback(option => option.name, []);
-
-	// Callback function to format the option label to include both forwardStatement and reverseStatement
+	// Callback function to format the option label
 	const formatParentTypeOptionLabel = useCallback(option => (
 		<div className="small">
-			<div>{option.sourceEntityType}&nbsp;{option.linkPhrase}&nbsp;{option.targetEntityType}</div>
-			<div>{option.targetEntityType}&nbsp;{option.reverseLinkPhrase}&nbsp;{option.sourceEntityType}</div>
+			<div>
+				<strong>Label:&nbsp;</strong>{option.label}
+			</div>
+			<div>
+				<strong>Description:&nbsp;</strong>{option.description}
+			</div>
 		</div>
 	), []);
 
-	const formatAttributeTypeOptionLabel = useCallback(option => <div>{option.name}</div>, []);
-
-	const handleSourceEntityTypeChange = useCallback((selectedOption) => {
+	const handleEntityTypeChange = useCallback((selectedOption) => {
 		if (selectedOption) {
-			setFormData({...formData, sourceEntityType: selectedOption.name});
-			if (formData.targetEntityType) {
-				setShowIncompleteFormError(false);
-			}
+			setFormData({...formData, entityType: selectedOption.name});
 		}
 		else {
-			setFormData({...formData, sourceEntityType: null});
+			setFormData({...formData, entityType: null});
 		}
 	}, [formData]);
-
-	const handleTargetEntityTypeChange = useCallback((selectedOption) => {
-		if (selectedOption) {
-			setFormData({...formData, targetEntityType: selectedOption.name});
-			if (formData.sourceEntityType) {
-				setShowIncompleteFormError(false);
-			}
-		}
-		else {
-			setFormData({...formData, targetEntityType: null});
-		}
-	}, [formData]);
-
-	const errorAlertClass = classNames('text-center', 'margin-top-1', {'d-none': !showIncompleteFormError});
 
 	function isValid() {
-		return Boolean(formData.sourceEntityType && formData.targetEntityType);
+		return Boolean(formData.entityType);
+	}
+
+	function isFormEdited() {
+		return JSON.stringify(formData) !== JSON.stringify(identifierTypeData);
 	}
 
 	const handleSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		if (!isValid()) {
-			setShowIncompleteFormError(true);
+			setErrorMsg('Error: Incomplete form! Select Entity Type.');
+			setTimeout(() => {
+				setErrorMsg('');
+			  }, 3000);
 			return;
 		}
-		if (!isFormEdited) {
-			// Display an error message if no changes were made
-			setNoChangesError(true);
-			// Hide the error message after 3 seconds
+		if (!isFormEdited()) {
+			setErrorMsg('No updated field!');
 			setTimeout(() => {
-			  setNoChangesError(false);
-			}, 3000);
+				setErrorMsg('');
+			  }, 3000);
 			return;
 		}
 
 		let submissionURL;
-		if (relationshipTypeData.id) {
-			submissionURL = `/relationship-type/${relationshipTypeData.id}/edit/handler`;
+		if (identifierTypeData.id) {
+			submissionURL = `/identifier-type/${identifierTypeData.id}/edit/handler`;
 		}
 		else {
-			submissionURL = '/relationship-type/create/handler';
+			submissionURL = '/identifier-type/create/handler';
 		}
 
 		try {
-			await request.post(submissionURL)
-				.send({oldAttributeTypes: relationshipTypeData.attributeTypes, ...formData});
-			window.location.href = '/relationship-types';
+			await request.post(submissionURL).send(formData);
+			window.location.href = '/identifier-types';
 		}
 		catch (err) {
-			throw new Error(err);
+			const errorMessage = err.response.body.error;
+			setErrorMsg(errorMessage);
+			setTimeout(() => {
+				setErrorMsg('');
+			}, 3000);
 		}
-	}, [formData, isFormEdited, showIncompleteFormError]);
+	}, [formData, isFormEdited, errorMsg]);
 
-	// When we change sourceEntityType or a parentEntityType, then we must check the validity of the parentType
+	// When we change EntityType, then we must check the validity of the parentType
 	// in case it is already selected
 	useEffect(() => {
 		if (formData.parentId) {
 			const parentType = parentTypes.find(type => type.id === formData.parentId);
-			if (formData.sourceEntityType && formData.sourceEntityType !== parentType.sourceEntityType) {
-				handleRemoveParent();
-			}
-			if (formData.targetEntityType && formData.targetEntityType !== parentType.targetEntityType) {
+			if (formData.entityType && formData.entityType !== parentType?.entityType) {
 				handleRemoveParent();
 			}
 		}
-	}, [formData.sourceEntityType, formData.targetEntityType]);
+	}, [formData.entityType]);
 
 	const lgCol = {offset: 3, span: 6};
 
@@ -260,7 +207,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 		<form onSubmit={handleSubmit}>
 			<Card>
 				<Card.Header as="h4">
-					Add Relationship Type
+					Add Identifier Type
 				</Card.Header>
 				<Card.Body>
 					<Row>
@@ -294,12 +241,12 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 					<Row>
 						<Col lg={lgCol}>
 							<Form.Group>
-								<Form.Label>Link Phrase</Form.Label>
+								<Form.Label>Detection RegEx</Form.Label>
 								<Form.Control
 									required
-									name="linkPhrase"
+									name="detectionRegex"
 									type="text"
-									value={formData.linkPhrase}
+									value={formData.detectionRegex}
 									onChange={handleInputChange}
 								/>
 							</Form.Group>
@@ -308,12 +255,12 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 					<Row>
 						<Col lg={lgCol}>
 							<Form.Group>
-								<Form.Label>Reverse Link Phrase</Form.Label>
+								<Form.Label>Validation RegEx</Form.Label>
 								<Form.Control
 									required
-									name="reverseLinkPhrase"
+									name="validationRegex"
 									type="text"
-									value={formData.reverseLinkPhrase}
+									value={formData.validationRegex}
 									onChange={handleInputChange}
 								/>
 							</Form.Group>
@@ -322,16 +269,13 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 					<Row>
 						<Col lg={lgCol}>
 							<Form.Group>
-								<Form.Label>Source Entity Type</Form.Label>
-								<ReactSelect
-									classNamePrefix="react-select"
-									defaultValue={entityTypeOptions.filter((option) => option.name === relationshipTypeData.sourceEntityType)}
-									getOptionLabel={getEntityTypeLabel}
-									getOptionValue={getEntityTypeValue}
-									instanceId="sourceEntityType"
-									options={entityTypeOptions}
-									placeholder="Select Source Entity Type"
-									onChange={handleSourceEntityTypeChange}
+								<Form.Label>Display Template</Form.Label>
+								<Form.Control
+									required
+									name="displayTemplate"
+									type="text"
+									value={formData.displayTemplate}
+									onChange={handleInputChange}
 								/>
 							</Form.Group>
 						</Col>
@@ -339,16 +283,16 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 					<Row>
 						<Col lg={lgCol}>
 							<Form.Group>
-								<Form.Label>Target Entity Type</Form.Label>
+								<Form.Label>Entity Type</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"
-									defaultValue={entityTypeOptions.filter((option) => option.name === relationshipTypeData.targetEntityType)}
+									defaultValue={entityTypeOptions.filter((option) => option.name === identifierTypeData.entityType)}
 									getOptionLabel={getEntityTypeLabel}
 									getOptionValue={getEntityTypeValue}
-									instanceId="targetEntityType"
+									instanceId="entityType"
 									options={entityTypeOptions}
-									placeholder="Select Target Entity Type"
-									onChange={handleTargetEntityTypeChange}
+									placeholder="Select Entity Type"
+									onChange={handleEntityTypeChange}
 								/>
 							</Form.Group>
 						</Col>
@@ -356,7 +300,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 					<Row>
 						<Col lg={lgCol}>
 							<Form.Group>
-								<Form.Label>Parent Relationship</Form.Label>
+								<Form.Label>Parent Identifier Type</Form.Label>
 								{!formData.parentId ? (
 									<Row className="margin-top-1">
 										<Col
@@ -367,7 +311,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 												onClick={handleAddParent}
 											>
 												<FontAwesomeIcon icon={faPlus}/>
-												<span>&nbsp;Add Parent Relationship</span>
+												<span>&nbsp;Add Parent Identifier Type</span>
 											</Button>
 										</Col>
 									</Row>
@@ -375,10 +319,9 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 									<Row className="margin-top-d5">
 										<Col className="text-center">
 											{formData.parentId &&
-											renderSelectedParentRelationshipType(formData.parentId, formData.childOrder, parentTypes)}
+											renderSelectedParentIdentifierType(formData.parentId, formData.childOrder, parentTypes)}
 											<div className="btn-group d-flex margin-top-1" role="group">
 												<Button
-													className="w-100"
 													href="#"
 													role="button"
 													variant="warning"
@@ -388,7 +331,6 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 													<span>&nbsp;Edit</span>
 												</Button>
 												<Button
-													className="w-100"
 													href="#"
 													role="button"
 													variant="danger"
@@ -424,36 +366,11 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
-								<Form.Label>Attribute Types</Form.Label>
-								<ReactSelect
-									closeMenuOnSelect
-									isMulti
-									formatOptionLabel={formatAttributeTypeOptionLabel}
-									getOptionLabel={getAttributeTypeOptionLabel}
-									getOptionValue={getAttributeTypeOptionValue}
-									options={attributeTypes}
-									value={attributeTypes.filter((attributeType) => formData.attributeTypes.includes(attributeType.id))}
-									onChange={handleAttributeTypesChange}
-								/>
-							</Form.Group>
-						</Col>
-					</Row>
-					<Row>
-						<Col lg={lgCol}>
 							{
-								showIncompleteFormError &&
+								Boolean(errorMsg.length) &&
 								<div className={errorAlertClass}>
-									<Alert variant="danger">Error: Incomplete form! Select Source and Target Parent Types.</Alert>
+									<Alert variant="danger">{errorMsg}</Alert>
 								</div>
-							}
-						</Col>
-					</Row>
-					<Row>
-						<Col lg={lgCol}>
-							{
-								noChangesError &&
-								<Alert variant="danger">Error: No updated field.</Alert>
 							}
 						</Col>
 					</Row>
@@ -507,8 +424,8 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 	);
 }
 
-RelationshipTypeEditor.defaultProps = {
-	relationshipTypeData: defaultRelationshipTypeData
+IdentifierTypeEditor.defaultProps = {
+	identifierTypeData: defaultIdentifierTypeData
 };
 
-export default RelationshipTypeEditor;
+export default IdentifierTypeEditor;

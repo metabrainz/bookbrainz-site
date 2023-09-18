@@ -23,8 +23,10 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {IdentifierTypeEditorIcon, RelationshipTypeEditorIcon} from '../helpers/utils';
 import {PrivilegeType, checkPrivilege} from '../../common/helpers/privileges-utils';
 import {
+	faBarcode,
 	faChartLine, faClipboardQuestion, faFileLines, faGripVertical, faLink, faListUl, faNewspaper, faPlus, faQuestionCircle,
 	faSearch, faShieldHalved, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle, faUserGear
 } from '@fortawesome/free-solid-svg-icons';
@@ -33,7 +35,7 @@ import Footer from './../components/footer';
 import MergeQueue from '../components/pages/parts/merge-queue';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {RelationshipTypeEditorIcon} from '../helpers/utils';
+import {faSearchengin} from '@fortawesome/free-brands-svg-icons';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 
 
@@ -109,16 +111,20 @@ class Layout extends React.Component {
 					onMouseDown={this.handleMouseDown}
 				>
 					<NavDropdown.Item href="/help">
-						<FontAwesomeIcon icon={faQuestionCircle}/>
+						<FontAwesomeIcon fixedWidth icon={faQuestionCircle}/>
 						{' Help '}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/faq">
-						<FontAwesomeIcon icon={faClipboardQuestion}/>
+						<FontAwesomeIcon fixedWidth icon={faClipboardQuestion}/>
 						{' FAQs '}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/relationship-types">
-						<FontAwesomeIcon icon={faLink}/>
+						<FontAwesomeIcon fixedWidth icon={faLink}/>
 						{' Relationship Types '}
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/identifier-types">
+						<FontAwesomeIcon fixedWidth icon={faBarcode}/>
+						{' Identifier Types '}
 					</NavDropdown.Item>
 				</NavDropdown>
 			</Nav>
@@ -170,11 +176,11 @@ class Layout extends React.Component {
 		const adminOptions = (
 			<>
 				<NavDropdown.Item href="/admin-panel">
-					<FontAwesomeIcon className="margin-right-0-3" icon={faUserGear}/>
+					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faUserGear}/>
 					Admin Panel
 				</NavDropdown.Item>
 				<NavDropdown.Item href="/admin-logs">
-					<FontAwesomeIcon className="margin-right-0-3" icon={faNewspaper}/>
+					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faNewspaper}/>
 					Admin Logs
 				</NavDropdown.Item>
 			</>
@@ -189,6 +195,24 @@ class Layout extends React.Component {
 			</>
 		);
 
+		const reindexSearchEngineOption = (
+			<>
+				<NavDropdown.Item href="/search/reindex">
+					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faSearchengin}/>
+					Reindex Search Server
+				</NavDropdown.Item>
+			</>
+		);
+
+		const identifierTypeEditorOptions = (
+			<>
+				<NavDropdown.Item href="/identifier-type/create">
+					{IdentifierTypeEditorIcon}
+					Add Identifier Type
+				</NavDropdown.Item>
+			</>
+		);
+
 		const privilegeDropDown = (
 			<NavDropdown
 				alignRight
@@ -198,6 +222,8 @@ class Layout extends React.Component {
 			>
 				{checkPrivilege(user.privs, PrivilegeType.ADMIN) && adminOptions}
 				{checkPrivilege(user.privs, PrivilegeType.RELATIONSHIP_TYPE_EDITOR) && relationshipTypeEditorOptions}
+				{checkPrivilege(user.privs, PrivilegeType.IDENTIFIER_TYPE_EDITOR) && identifierTypeEditorOptions}
+				{checkPrivilege(user.privs, PrivilegeType.REINDEX_SEARCH_SERVER) && reindexSearchEngineOption}
 			</NavDropdown>
 		);
 

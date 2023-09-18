@@ -73,6 +73,8 @@ export const loadRelationshipTypes =
 	makeLoader('RelationshipType', 'relationshipTypes', null, ['attributeTypes']);
 export const loadParentRelationshipTypes =
 	makeLoader('RelationshipType', 'parentTypes');
+export const loadParentIdentifierTypes =
+	makeLoader('IdentifierType', 'parentTypes');
 export const loadRelationshipAttributeTypes =
 	makeLoader('RelationshipAttributeType', 'attributeTypes');
 
@@ -244,10 +246,10 @@ export function checkValidRevisionId(req: $Request, res: $Response, next: NextFu
 	return next();
 }
 
-export function checkValidRelationshipTypeId(req: $Request, res: $Response, next: NextFunction, id: string) {
+export function checkValidTypeId(req: $Request, res: $Response, next: NextFunction, id: string) {
 	const idToNumber = _.toNumber(id);
 	if (!_.isInteger(idToNumber) || idToNumber <= 0) {
-		return next(new error.BadRequestError(`Invalid Relationship Type id: ${req.params.id}`, req));
+		return next(new error.BadRequestError(`Invalid Type id: ${req.params.id}`, req));
 	}
 	return next();
 }

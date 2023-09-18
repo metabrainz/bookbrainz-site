@@ -76,7 +76,7 @@ function RelationshipTypeTree({relationshipTypes, parentId, indentLevel}: Relati
 							</p>
 						</p>
 						{expandedRelationshipTypeIds.includes(relType.id) && (
-							<div className="relationship-type-details small">
+							<div className="type-details small">
 								<div><strong>Forward link phrase: </strong>{relType.linkPhrase}</div>
 								<div><strong>Reverse link phrase: </strong>{relType.reverseLinkPhrase}</div>
 								<div><strong>Source Entity Type: </strong>{relType.sourceEntityType}</div>

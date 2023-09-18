@@ -21,30 +21,30 @@ import * as error from '../../../common/helpers/error';
 import * as middleware from '../../helpers/middleware';
 import * as propHelpers from '../../../client/helpers/props';
 import {escapeProps, generateProps} from '../../helpers/props';
+import IdentifierTypeEditor from '../../../client/components/forms/type-editor/identifier-type';
 import Layout from '../../../client/containers/layout';
 import {PrivilegeType} from '../../../common/helpers/privileges-utils';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import RelationshipTypeEditor from '../../../client/components/forms/type-editor/relationship-type';
 import express from 'express';
-import {relationshipTypeCreateOrEditHandler} from '../../helpers/typeRouteUtils';
+import {identifierTypeCreateOrEditHandler} from '../../helpers/typeRouteUtils';
 import target from '../../templates/target';
 
 
 const router = express.Router();
 
-const {RELATIONSHIP_TYPE_EDITOR} = PrivilegeType;
+const {IDENTIFIER_TYPE_EDITOR} = PrivilegeType;
 
-router.get('/create', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYPE_EDITOR),
-	middleware.loadParentRelationshipTypes, middleware.loadRelationshipAttributeTypes, (req, res) => {
-		const {parentTypes, attributeTypes} = res.locals;
+router.get('/create', auth.isAuthenticated, auth.isAuthorized(IDENTIFIER_TYPE_EDITOR),
+	middleware.loadParentIdentifierTypes, (req, res) => {
+		const {parentTypes} = res.locals;
 		const props = generateProps(req, res, {
-			attributeTypes, parentTypes
+			parentTypes
 		});
-		const script = '/js/relationship-type-editor.js';
+		const script = '/js/identifier-type-editor.js';
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<RelationshipTypeEditor {...propHelpers.extractChildProps(props)}/>
+				<IdentifierTypeEditor {...propHelpers.extractChildProps(props)}/>
 			</Layout>
 		);
 		res.send(target({
@@ -54,36 +54,31 @@ router.get('/create', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYPE_
 		}));
 	});
 
-router.post('/create/handler', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYPE_EDITOR), relationshipTypeCreateOrEditHandler);
+router.post('/create/handler', auth.isAuthenticated, auth.isAuthorized(IDENTIFIER_TYPE_EDITOR), identifierTypeCreateOrEditHandler);
 
 router.param(
 	'id',
 	middleware.checkValidTypeId
 );
 
-router.get('/:id/edit', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYPE_EDITOR),
-	middleware.loadParentRelationshipTypes, middleware.loadRelationshipAttributeTypes, async (req, res, next) => {
-		const {RelationshipType} = req.app.locals.orm;
-		const {parentTypes, attributeTypes} = res.locals;
+router.get('/:id/edit', auth.isAuthenticated, auth.isAuthorized(IDENTIFIER_TYPE_EDITOR),
+	middleware.loadParentIdentifierTypes, async (req, res, next) => {
+		const {IdentifierType} = req.app.locals.orm;
+		const {parentTypes} = res.locals;
+		res.locals.parentTypes = parentTypes.filter(type => type.id !== parseInt(req.params.id, 10));
 		try {
-			const relationshipType = await new RelationshipType({id: req.params.id})
-				.fetch({require: true, withRelated: ['attributeTypes']})
-				.catch(RelationshipType.NotFoundError, () => {
-					throw new error.NotFoundError(`Relationship Type with id ${req.params.id} not found`, req);
+			const identifierType = await new IdentifierType({id: req.params.id})
+				.fetch({require: true})
+				.catch(IdentifierType.NotFoundError, () => {
+					throw new error.NotFoundError(`IdentifierType with id ${req.params.id} not found`, req);
 				});
-			const relationshipTypeData = relationshipType.toJSON();
-			const attributeTypesIds = relationshipTypeData.attributeTypes.map(attributeTypeData => attributeTypeData.id);
-
-			relationshipTypeData.attributeTypes = attributeTypesIds;
-
-			const props = generateProps(req, res, {
-				attributeTypes, parentTypes, relationshipTypeData
-			});
-			const script = '/js/relationship-type-editor.js';
+			const identifierTypeData = identifierType.toJSON();
+			const props = generateProps(req, res, {identifierTypeData});
+			const script = '/js/identifier-type-editor.js';
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...propHelpers.extractLayoutProps(props)}>
-					<RelationshipTypeEditor
-						relationshipTypeData={props.relationshipTypeData}
+					<IdentifierTypeEditor
+						identifierTypeData={props.identifierTypeData}
 						{...propHelpers.extractChildProps(props)}
 					/>
 				</Layout>
@@ -99,6 +94,6 @@ router.get('/:id/edit', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYP
 		}
 	});
 
-router.post('/:id/edit/handler', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYPE_EDITOR), relationshipTypeCreateOrEditHandler);
+router.post('/:id/edit/handler', auth.isAuthenticated, auth.isAuthorized(IDENTIFIER_TYPE_EDITOR), identifierTypeCreateOrEditHandler);
 
 export default router;

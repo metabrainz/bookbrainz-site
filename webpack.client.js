@@ -28,6 +28,7 @@ const clientConfig = {
 		preview: ['./controllers/preview.js'],
 		error: ['./controllers/error.js'],
 		externalService: ['./controllers/externalService.js'],
+		identifierTypes: ['./controllers/identifierTypes.tsx'],
 		index: ['./controllers/index.js'],
 		registrationDetails: ['./controllers/registrationDetails.js'],
 		relationshipTypes: ['./controllers/relationshipTypes.tsx'],
@@ -43,7 +44,8 @@ const clientConfig = {
 		'unified-form':['./unified-form/controller.js'],
 		'entity-merge': ['./entity-editor/entity-merge.tsx'],
 		style: './stylesheets/style.scss',
-		'relationship-type-editor': ['./controllers/type-editor/relationship-type.tsx']
+		'relationship-type-editor': ['./controllers/type-editor/relationship-type.tsx'],
+		'identifier-type-editor': ['./controllers/type-editor/identifier-type.tsx']
 	},
 	externals: {
 		moment: 'moment'
