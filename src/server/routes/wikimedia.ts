@@ -20,15 +20,10 @@ import {getWikipediaExtract, selectWikipediaPage} from '../helpers/wikimedia';
 import express from 'express';
 import {getAcceptedLanguageCodes} from '../helpers/i18n';
 import log from 'log';
-
-
-function parseQuery(url: string) {
-	return new URLSearchParams(url.replace(/^.+?\?/, ''));
-}
+import {parseQuery} from '../helpers/utils';
 
 
 const router = express.Router();
-
 
 router.get('/wikidata/:id/wikipedia-extract', async (req, res) => {
 	const browserLanguages = getAcceptedLanguageCodes(req);

@@ -219,7 +219,7 @@ class SearchResults extends React.Component {
 				}
 				{
 					!this.props.condensed &&
-					<h3 style={{color: '#754e37'}}>
+					<h3 className="search-results-heading">
 						Search Results
 					</h3>
 				}

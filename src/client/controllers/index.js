@@ -25,6 +25,7 @@ import AboutPage from '../../client/components/pages/about';
 import {AppContainer} from 'react-hot-loader';
 import ContributePage from '../../client/components/pages/contribute';
 import DevelopPage from '../../client/components/pages/develop';
+import FAQPage from '../components/pages/faq';
 import HelpPage from '../../client/components/pages/help';
 import Index from '../components/pages/index';
 import Layout from '../containers/layout';
@@ -44,6 +45,7 @@ const pageMap = {
 	About: AboutPage,
 	Contribute: ContributePage,
 	Develop: DevelopPage,
+	FAQs: FAQPage,
 	Help: HelpPage,
 	Index,
 	Licensing: LicensingPage,

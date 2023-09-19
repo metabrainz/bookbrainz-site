@@ -20,6 +20,7 @@
 import * as MusicBrainzOAuth from 'passport-musicbrainz-oauth2';
 import * as error from '../../common/helpers/error';
 
+import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import StrategyMock from './mock-passport-strategy';
 import _ from 'lodash';
 import config from '../../common/helpers/config';
@@ -27,6 +28,12 @@ import log from 'log';
 import passport from 'passport';
 import status from 'http-status';
 
+
+declare module 'express-serve-static-core' {
+	interface Request {
+		user: any;
+	}
+}
 
 async function _linkMBAccount(orm, bbUserJSON, mbUserJSON) {
 	const {Editor} = orm;
@@ -171,4 +178,24 @@ export function isAuthenticatedForCollectionView(req, res, next) {
 	throw new error.PermissionDeniedError(
 		'You do not have permission to view this collection', req
 	);
+}
+
+export function isAuthorized(priv: PrivilegeType) {
+	return async (req, res, next) => {
+		try {
+			const {Editor} = req.app.locals.orm;
+			const editor = await Editor.query({where: {id: req.user.id}})
+				.fetch({require: true});
+			/* eslint-disable no-bitwise */
+			if (editor.get('privs') & priv) {
+				return next();
+			}
+			throw new error.NotAuthorizedError(
+				'You do not have the privilege to access this route', req
+			);
+		}
+		catch (err) {
+			return next(err);
+		}
+	};
 }
