@@ -192,7 +192,12 @@ router.param(
 	'bbid',
 	middleware.makeEntityLoader(
 		'Author',
-		['authorType', 'gender', 'beginArea', 'endArea'],
+		['authorType', 'gender', 'beginArea', 'endArea',
+			'authorCredits.editions.defaultAlias',
+			'authorCredits.editions.disambiguation',
+			'authorCredits.editions.releaseEventSet.releaseEvents',
+			'authorCredits.editions.identifierSet.identifiers.type',
+			'authorCredits.editions.editionFormat'],
 		'Author not found'
 	)
 );

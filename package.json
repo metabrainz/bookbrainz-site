@@ -24,7 +24,7 @@
     "dupreport": "npx jsinspect src/ || true"
   },
   "engines": {
-    "node": ">= 16.16.0"
+    "node": ">= 18"
   },
   "browserslist": "> 0.25%, not dead",
   "dependencies": {
@@ -33,7 +33,7 @@
     "@elastic/elasticsearch": "^5.6.22",
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/free-brands-svg-icons": "^6.1.1",
-    "@fortawesome/free-solid-svg-icons": "^6.1.1",
+    "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.1.11",
     "array-move": "^3.0.1",
     "bookbrainz-data": "4.1.1",
@@ -85,7 +85,7 @@
     "serve-favicon": "^2.4.3",
     "serve-static": "^1.14.1",
     "superagent": "^8.0.8",
-    "swagger-jsdoc": "^6.2.5",
+    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.0",
     "validator": "^13.7.0"
   },
@@ -136,7 +136,7 @@
     "nodemon": "^2.0.2",
     "redux-mock-store": "^1.5.4",
     "resolve-url-loader": "^5.0.0",
-    "rewire": "^5.0.0",
+    "rewire": "^7.0.0",
     "sass": "^1.59.2",
     "sass-loader": "^13.2.0",
     "sinon": "^14.0.0",

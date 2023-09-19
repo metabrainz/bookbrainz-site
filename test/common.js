@@ -29,41 +29,52 @@ export function expectFalse() {
 	return (promise) => expect(promise).to.eventually.equal(false);
 }
 
+
 export function expectIds(prop, rev) {
-	return (promise) => Promise.all([
-		expect(promise).to.eventually.have
-			.property('editorId', testData.editorAttribs.id),
-		expect(promise).to.eventually.have
-			.property('achievementId', testData[`${prop}${rev}Attribs`].id)
-	]);
+	return async (promise) => {
+		const results = await Promise.all([
+			expect(promise).to.eventually.have
+				.property('editorId', testData.editorAttribs.id),
+			expect(promise).to.eventually.have
+				.property('achievementId', testData[`${prop}${rev}Attribs`].id)
+		]);
+		return results;
+	};
 }
 
+
 export function expectRevNamedIds(name, prop, rev) {
-	return (promise) => Promise.all([
-		expect(promise).to.eventually.have.nested
-			.property(`${name} ${rev}.editorId`,
-				testData.editorAttribs.id),
-		expect(promise).to.eventually.have.nested
-			.property(`${name} ${rev}.achievementId`,
-				testData[`${prop}${rev}Attribs`].id)
-	]);
+	return async (promise) => {
+		const results = await Promise.all([
+			expect(promise).to.eventually.have.nested
+				.property(`${name} ${rev}.editorId`,
+					testData.editorAttribs.id),
+			expect(promise).to.eventually.have.nested
+				.property(`${name} ${rev}.achievementId`,
+					testData[`${prop}${rev}Attribs`].id)
+		]);
+		return results;
+	};
 }
 
 export function expectAllNamedIds(name, prop, rev) {
-	return (promise) => Promise.all([
-		expect(promise).to.eventually.have.nested
-			.property(`${name} ${rev}.editorId`,
-				testData.editorAttribs.id),
-		expect(promise).to.eventually.have.nested
-			.property(`${name} ${rev}.achievementId`,
-				testData[`${prop}${rev}Attribs`].id),
-		expect(promise).to.eventually.have.nested
-			.property(`${name}.editorId`,
-				testData.editorAttribs.id),
-		expect(promise).to.eventually.have.nested
-			.property(`${name}.titleId`,
-				testData[`${prop}Attribs`].id)
-	]);
+	return async (promise) => {
+		const results = await Promise.all([
+			expect(promise).to.eventually.have.nested
+				.property(`${name} ${rev}.editorId`,
+					testData.editorAttribs.id),
+			expect(promise).to.eventually.have.nested
+				.property(`${name} ${rev}.achievementId`,
+					testData[`${prop}${rev}Attribs`].id),
+			expect(promise).to.eventually.have.nested
+				.property(`${name}.editorId`,
+					testData.editorAttribs.id),
+			expect(promise).to.eventually.have.nested
+				.property(`${name}.titleId`,
+					testData[`${prop}Attribs`].id)
+		]);
+		return results;
+	};
 }
 
 export function getAttrPromise(Achievement, orm, full) {

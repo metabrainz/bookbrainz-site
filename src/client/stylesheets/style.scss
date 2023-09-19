@@ -748,7 +748,7 @@ ul {
 
 	}
 	.tab-content{
-		padding: 1rem;	
+		padding: 1rem;
 	}
 }
 .uf-tab-header{
@@ -825,7 +825,7 @@ ul {
 	overflow:visible;
 }
 
-// Adding icon to accordion header 
+// Adding icon to accordion header
 .accordion > .icon-card{
 	display: flex;
 	overflow: visible;
@@ -875,4 +875,16 @@ div[class~=collapsing]+div[class=card-header] .accordion-arrow {
 	padding: 1em 2.5em;
 	border: 1px solid black;
 	border-width: 1px 0;
+}
+
+.hierarchy-arrow {
+	border-left: 1px solid $gray-400;
+    width: 1em;
+    height: 1em;
+    content: "";
+    display: inline-block;
+    border-bottom: 1px solid $gray-400;
+    position: relative;
+    bottom: 0.3em;
+	left: -0.5em;
 }

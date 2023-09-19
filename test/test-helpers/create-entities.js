@@ -335,7 +335,9 @@ export async function createWork(optionalBBID, optionalWorkAttribs = {}) {
 	}
 
 	if (!workType) {
-		workType = await new WorkType({label: `Work Type ${optionalWorkAttribs.typeId || random.number()}`, ...optionalWorkTypeAttribs})
+		workType = await new WorkType({description: 'A work type',
+			label: `Work Type ${optionalWorkAttribs.typeId || random.number()}`,
+			...optionalWorkTypeAttribs})
 			.save(null, {method: 'insert'});
 	}
 

@@ -11,6 +11,6 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 
 # The YAML spec explicitly forbids tabs; we use YAML for ESLint
-[{package.json,.eslintrc,.travis.yml}]
+[{package.json,.eslintrc}]
 indent_size = 2
 indent_style = space

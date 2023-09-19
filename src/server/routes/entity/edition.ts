@@ -57,6 +57,11 @@ const additionalEditionProps = [
 	'formatId', 'statusId'
 ];
 
+type PassportRequest = express.Request & {
+	user: any,
+	session: any
+};
+
 export function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
 		data.aliasEditor, data.nameSection
@@ -79,7 +84,10 @@ export function transformNewForm(data) {
 		data.editionSection.languages, (language) => language.value
 	);
 	let authorCredit = {};
-	if (!_.isNil(data.authorCredit)) {
+	if (!_.get(data, ['editionSection', 'authorCreditEnable'], true)) {
+		authorCredit = null;
+	}
+	else if (!_.isNil(data.authorCredit)) {
 		// When merging entities, we use a separate reducer "authorCredit"
 		authorCredit = data.authorCredit.names;
 	}
@@ -150,11 +158,16 @@ router.get(
 	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages, middleware.loadRelationshipTypes,
-	(req, res, next) => {
-		const {EditionGroup, Publisher, Work} = req.app.locals.orm;
+	(req:PassportRequest, res, next) => {
+		const {EditionGroup, Publisher, Work, Author} = req.app.locals.orm;
 		const propsPromise = generateEntityProps(
 			'edition', req, res, {}
 		);
+		if (req.query.author) {
+			propsPromise.author = Author.forge({bbid: req.query.author})
+				.fetch({require: false, withRelated: 'defaultAlias'})
+				.then((data) => data && utils.entityToOption(data.toJSON()));
+		}
 
 		// Access edition-group property: can't write req.query.edition-group as the dash makes it invalid Javascript
 		if (req.query['edition-group']) {
@@ -192,6 +205,21 @@ router.get(
 			let initialRelationshipIndex = 0;
 
 			initialState.editionSection = initialState.editionSection ?? {};
+			if (props.author) {
+				initialState.authorCreditEditor = {
+					a0: {
+					  author: {
+							id: props.author.id,
+							rowId: 'a0',
+							text: props.author.text,
+							type: 'Author'
+					  },
+					  automaticJoinPhrase: true,
+					  joinPhrase: '',
+					  name: props.author.text
+					}
+				  };
+			}
 
 			if (props.publisher) {
 				initialState.editionSection.publisher = props.publisher;
@@ -340,8 +368,7 @@ router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWorkTabl
 	middleware.loadWikipediaExtract, (req, res) => {
 		_setEditionTitle(res);
 		entityRoutes.displayEntity(req, res);
-	}
-);
+	});
 
 router.get('/:bbid/revisions', (req, res, next) => {
 	const {EditionRevision} = req.app.locals.orm;
@@ -449,6 +476,7 @@ export function editionToFormState(edition) {
 	const editionGroup = utils.entityToOption(edition.editionGroup);
 
 	const editionSection = {
+		authorCreditEnable: true,
 		depth: edition.depth,
 		editionGroup,
 		// Determines whether the EG can be left blank (an EG will be auto-created) for existing Editions

@@ -475,7 +475,7 @@ export function createSprinter() {
 		);
 }
 
-export function sprinterHelper(numRevisions) {
+export async function sprinterHelper(numRevisions) {
 	const promiseList = [];
 	for (let i = 0; i < numRevisions; i++) {
 		promiseList.push(
@@ -483,7 +483,8 @@ export function sprinterHelper(numRevisions) {
 				.save(null, {method: 'insert'})
 		);
 	}
-	return Promise.all(promiseList);
+	const result = await Promise.all(promiseList);
+	return result;
 }
 
 export function createFunRunner() {
