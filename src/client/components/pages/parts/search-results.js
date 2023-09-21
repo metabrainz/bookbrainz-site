@@ -19,7 +19,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 
-import {differenceBy as _differenceBy, kebabCase as _kebabCase, startCase as _startCase} from 'lodash';
+import {differenceBy as _differenceBy, kebabCase as _kebabCase, startCase as _startCase, toLower} from 'lodash';
 
 import AddToCollectionModal from './add-to-collection-modal';
 import PropTypes from 'prop-types';
@@ -185,6 +185,10 @@ class SearchResults extends React.Component {
 						<a href={link}>
 							{name} {disambiguation}
 						</a>
+						{
+							toLower(result.type) === 'work' && Boolean(result.authors?.length) &&
+							<span className='small text-muted'> — <i>{result.authors.join(', ')}</i></span>
+						}
 					</td>
 					{
 						!this.props.condensed &&

@@ -42,9 +42,12 @@ function Entity(
 			}
 			{nameComponent}
 			{
-				authors ? <span className="disambig margin-left-0-3"><small>({authors})</small></span> :
-					disambiguation &&
+				disambiguation &&
 				<span className="disambig margin-left-0-3"><small>({disambiguation})</small></span>
+			}
+			{
+				authors &&
+				<span className="small text-muted"> — <i>{authors}</i></span>
 			}
 			{
 				language &&

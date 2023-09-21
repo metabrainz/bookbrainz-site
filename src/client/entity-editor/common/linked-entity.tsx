@@ -102,10 +102,9 @@ class LinkedEntity extends React.Component<any, any> {
 						&nbsp;<small>({disambiguation})</small>
 					</span>
 				}
-				{authors &&
-					<span className="disambig">
-						&nbsp;—&nbsp;<small><i>{authors}</i></small>
-					</span>
+				{
+					authors &&
+					<span className="small text-muted"> — <i>{authors}</i></span>
 				}
 				{' '}
 				{externalLinkComponent}
