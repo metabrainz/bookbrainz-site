@@ -187,7 +187,7 @@ class SearchResults extends React.Component {
 						</a>
 						{
 							toLower(result.type) === 'work' && Boolean(result.authors?.length) &&
-							<span className='small text-muted'> — <i>{result.authors.join(', ')}</i></span>
+							<span className="small text-muted"> — <i>{result.authors.join(', ')}</i></span>
 						}
 					</td>
 					{
