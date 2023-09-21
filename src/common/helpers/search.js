@@ -549,6 +549,9 @@ export function searchByName(orm, name, type, size, from) {
 		index: _index,
 		type: sanitizeEntityType(type)
 	};
+	if (type === 'work') {
+		dslQuery.body.query.multi_match.fields.push('authors');
+	}
 
 	return _searchForEntities(orm, dslQuery);
 }
