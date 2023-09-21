@@ -16,16 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Col, Modal, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
-import {addAliasRow, hideAliasEditor, removeEmptyAliases} from './actions';
-import {faPlus, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
-
-import AliasRow from './alias-row';
+import {Button, Modal, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {hideAliasEditor, removeEmptyAliases} from './actions';
+import AliasModalBody from './alias-modal-body';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import classNames from 'classnames';
 import {connect} from 'react-redux';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 
 /**
@@ -38,8 +36,6 @@ import {connect} from 'react-redux';
  *        editor.
  * @param {Array} props.languageOptions - The list of possible languages for an
  *        alias.
- * @param {Function} props.onAddAlias - A function to be called when the button
- *        to add an alias is clicked.
  * @param {Function} props.onClose - A function to be called when the button to
  *        close the editor is clicked.
  * @param {boolean} props.show - Whether or not the editor modal should be
@@ -47,21 +43,10 @@ import {connect} from 'react-redux';
  * @returns {ReactElement} React element containing the rendered AliasEditor.
  */
 const AliasEditor = ({
-	aliases,
 	languageOptions,
-	onAddAlias,
 	onClose,
 	show
 }) => {
-	const languageOptionsForDisplay = languageOptions.map((language) => ({
-		frequency: language.frequency,
-		label: language.name,
-		value: language.id
-	}));
-
-	const noAliasesTextClass =
-		classNames('text-center', {'d-none': aliases.size});
-
 	const helpText = `Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc.
 		Refer to the help page for more details and examples.`;
 	const helpIconElement = (
@@ -86,29 +71,7 @@ const AliasEditor = ({
 			</Modal.Header>
 
 			<Modal.Body>
-				<div className={noAliasesTextClass}>
-					<p className="text-muted">This entity has no aliases</p>
-				</div>
-				<div>
-					{
-						aliases.map((alias, rowId) => (
-							<AliasRow
-								index={rowId}
-								// eslint-disable-next-line react/no-array-index-key
-								key={rowId}
-								languageOptions={languageOptionsForDisplay}
-							/>
-						)).toArray()
-					}
-				</div>
-				<Row>
-					<Col className="text-right" lg={{offset: 9, span: 3}}>
-						<Button variant="success" onClick={onAddAlias}>
-							<FontAwesomeIcon icon={faPlus}/>
-							<span>&nbsp;Add alias</span>
-						</Button>
-					</Col>
-				</Row>
+				<AliasModalBody languageOptions={languageOptions}/>
 			</Modal.Body>
 
 			<Modal.Footer>
@@ -119,9 +82,7 @@ const AliasEditor = ({
 };
 AliasEditor.displayName = 'AliasEditor';
 AliasEditor.propTypes = {
-	aliases: PropTypes.object.isRequired,
 	languageOptions: PropTypes.array.isRequired,
-	onAddAlias: PropTypes.func.isRequired,
 	onClose: PropTypes.func.isRequired,
 	show: PropTypes.bool
 };
@@ -131,7 +92,6 @@ AliasEditor.defaultProps = {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		onAddAlias: () => dispatch(addAliasRow()),
 		onClose: () => {
 			dispatch(hideAliasEditor());
 			dispatch(removeEmptyAliases());
@@ -139,10 +99,4 @@ function mapDispatchToProps(dispatch) {
 	};
 }
 
-function mapStateToProps(rootState) {
-	return {
-		aliases: rootState.get('aliasEditor')
-	};
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AliasEditor);
+export default connect(null, mapDispatchToProps)(AliasEditor);

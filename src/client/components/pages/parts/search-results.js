@@ -219,7 +219,7 @@ class SearchResults extends React.Component {
 				}
 				{
 					!this.props.condensed &&
-					<h3 style={{color: '#754e37'}}>
+					<h3 className="search-results-heading">
 						Search Results
 					</h3>
 				}
@@ -232,9 +232,9 @@ class SearchResults extends React.Component {
 						!this.props.condensed &&
 						<thead>
 							<tr>
-								<th className="col-md-3">Type</th>
-								<th className="col-md-5">Name</th>
-								<th className="col-md-4">Aliases</th>
+								<th width="25%">Type</th>
+								<th width="42%">Name</th>
+								<th width="33%">Aliases</th>
 							</tr>
 						</thead>
 					}

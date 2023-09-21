@@ -18,16 +18,20 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
+import React, {createRef, useCallback} from 'react';
 
+import AverageRating from './average-ratings';
+import CBReviewModal from './cbReviewModal';
 import EditionTable from './edition-table';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
 import EntityRelatedCollections from './related-collections';
+import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
-import React from 'react';
+import WikipediaExtract from './wikipedia-extract';
 
 
 const {deletedEntityMessage, getRelationshipSourceByTypeId, getLanguageAttribute, getTypeAttribute, getEntityUrl,
@@ -42,6 +46,8 @@ function WorkAttributes({work}) {
 	const type = getTypeAttribute(work.workType).data;
 	const languages = getLanguageAttribute(work).data;
 	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(work);
+	const averageRating = work.reviews?.reviews?.average_rating?.rating || 0;
+	const reviewsCount = work.reviews?.reviews?.average_rating?.count || 0;
 	return (
 		<div>
 			<Row>
@@ -63,6 +69,14 @@ function WorkAttributes({work}) {
 						<dd>{languages}</dd>
 					</dl>
 				</Col>
+				<Col lg={3}>
+					<dl>
+						<AverageRating
+							averageRatings={averageRating}
+							reviewsCount={reviewsCount}
+						/>
+					</dl>
+				</Col>
 			</Row>
 		</div>
 	);
@@ -73,7 +87,19 @@ WorkAttributes.propTypes = {
 };
 
 
-function WorkDisplayPage({entity, identifierTypes, user}) {
+function WorkDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
+	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
+	const handleModalToggle = useCallback(() => {
+		setShowCBReviewModal(!showCBReviewModal);
+	}, [showCBReviewModal]);
+
+	const reviewsRef = createRef();
+
+	const handleUpdateReviews = useCallback(() => {
+		reviewsRef.current.handleClick();
+	}, [reviewsRef]);
+
+
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const editionsContainWork = getRelationshipSourceByTypeId(entity, relationshipTypeId);
@@ -89,10 +115,16 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 					/>
 				</Col>
 				<Col lg={10}>
-					<EntityTitle entity={entity}/>
-					<WorkAttributes work={entity}/>
+					<EntityTitle
+						entity={entity}
+						handleModalToggle={handleModalToggle}
+					/>
+					<WorkAttributes
+						work={entity}
+					/>
 				</Col>
 			</Row>
+			<WikipediaExtract articleExtract={wikipediaExtract} entity={entity}/>
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
@@ -100,12 +132,25 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 					editions={editionsContainWork}
 					entity={entity}
 				/>
-				<EntityLinks
-					entity={entity}
-					identifierTypes={identifierTypes}
-					urlPrefix={urlPrefix}
-				/>
-				<EntityRelatedCollections collections={entity.collections}/>
+				<Row>
+					<Col lg={8}>
+						<EntityLinks
+							entity={entity}
+							identifierTypes={identifierTypes}
+							urlPrefix={urlPrefix}
+						/>
+						<EntityRelatedCollections collections={entity.collections}/>
+					</Col>
+					<Col lg={4}>
+						<EntityReviews
+							entityBBID={entity.bbid}
+							entityReviews={entity.reviews}
+							entityType={entity.type}
+							handleModalToggle={handleModalToggle}
+							ref={reviewsRef}
+						/>
+					</Col>
+				</Row>
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter
@@ -116,6 +161,15 @@ function WorkDisplayPage({entity, identifierTypes, user}) {
 				lastModified={entity.revision.revision.createdAt}
 				user={user}
 			/>
+			{!entity.deleted && <CBReviewModal
+				entityBBID={entity.bbid}
+				entityName={entity.defaultAlias.name}
+				entityType={entity.type}
+				handleModalToggle={handleModalToggle}
+				handleUpdateReviews={handleUpdateReviews}
+				showModal={showCBReviewModal}
+				userId={user?.id}
+			                    />}
 		</div>
 	);
 }
@@ -123,10 +177,12 @@ WorkDisplayPage.displayName = 'WorkDisplayPage';
 WorkDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
-	user: PropTypes.object.isRequired
+	user: PropTypes.object.isRequired,
+	wikipediaExtract: PropTypes.object
 };
 WorkDisplayPage.defaultProps = {
-	identifierTypes: []
+	identifierTypes: [],
+	wikipediaExtract: {}
 };
 
 export default WorkDisplayPage;

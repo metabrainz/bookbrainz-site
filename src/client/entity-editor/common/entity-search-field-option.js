@@ -74,7 +74,8 @@ class EntitySearchFieldOption extends React.Component {
 		const language = this.props.languageOptions.find(
 			(index) => index.value === languageId
 		);
-		return {
+		const entityOption = {
+			...entity,
 			authors: entity.authors?.join(', ') ?? null,
 			disambiguation: _.get(entity, ['disambiguation', 'comment']),
 			id,
@@ -82,6 +83,7 @@ class EntitySearchFieldOption extends React.Component {
 			text: _.get(entity, ['defaultAlias', 'name']),
 			type: entity.type
 		};
+		return entityOption;
 	}
 
 	async fetchOptions(query) {
@@ -168,8 +170,9 @@ class EntitySearchFieldOption extends React.Component {
 				/>
 			</OverlayTrigger>
 		);
+		const SelectWrapper = this.props.SelectWrapper ?? ImmutableAsyncSelect;
 		const wrappedSelect = (
-			<ImmutableAsyncSelect
+			<SelectWrapper
 				{...this.props}
 				blurInputOnSelect
 				isClearable
@@ -206,6 +209,7 @@ class EntitySearchFieldOption extends React.Component {
 
 EntitySearchFieldOption.displayName = 'EntitySearchFieldOption';
 EntitySearchFieldOption.propTypes = {
+	SelectWrapper: PropTypes.elementType,
 	bbid: PropTypes.string,
 	className: PropTypes.string,
 	customComponents: PropTypes.object,
@@ -213,7 +217,7 @@ EntitySearchFieldOption.propTypes = {
 	error: PropTypes.bool,
 	filters: PropTypes.array,
 	isMulti: PropTypes.bool,
-	label: PropTypes.string.isRequired,
+	label: PropTypes.string,
 	languageOptions: PropTypes.array,
 	onChange: PropTypes.func.isRequired,
 	tooltipText: PropTypes.string,
@@ -224,9 +228,10 @@ EntitySearchFieldOption.propTypes = {
 	value: PropTypes.oneOfType([
 		PropTypes.object,
 		PropTypes.arrayOf(PropTypes.object)
-	]).isRequired
+	])
 };
 EntitySearchFieldOption.defaultProps = {
+	SelectWrapper: null,
 	bbid: null,
 	className: '',
 	customComponents: {},
@@ -234,8 +239,10 @@ EntitySearchFieldOption.defaultProps = {
 	error: false,
 	filters: [],
 	isMulti: false,
+	label: '',
 	languageOptions: [],
-	tooltipText: null
+	tooltipText: null,
+	value: null
 };
 
 export default EntitySearchFieldOption;

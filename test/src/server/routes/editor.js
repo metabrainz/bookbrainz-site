@@ -1,14 +1,21 @@
 /* eslint-disable sort-keys */
 
 import {createEditor, truncateEntities} from '../../../test-helpers/create-entities';
+import app from '../../../../src/server/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import {getEditorActivity} from '../../../../src/server/routes/editor.js';
+import {getEditorActivity} from '../../../../src/server/routes/editor';
 import orm from '../../../bookbrainz-data';
 
 
 chai.use(chaiHttp);
 const {expect} = chai;
+const {Editor} = orm;
+
+const adminId = 123456;
+const targetUserId = 1;
+const oldPrivs = 1;
+const newPrivs = 3;
 
 
 describe('getEditorActivity', () => {
@@ -130,5 +137,66 @@ describe('getEditorActivity', () => {
 			const expectedError = new Error('Start date is greater than end date');
 			expect(err.message).to.equal(expectedError.message);
 		}
+	});
+});
+
+describe('Editor with Administrator priv', () => {
+	let agent;
+	beforeEach(async () => {
+		await createEditor(adminId, 16);
+		agent = await chai.request.agent(app);
+		await agent.get('/cb');
+	});
+	afterEach(truncateEntities);
+
+	it('should be able to edit privs of an editor', async () => {
+		await createEditor(targetUserId, oldPrivs);
+		const note = 'testing';
+		const data = {
+			adminId,
+			newPrivs,
+			note,
+			oldPrivs,
+			targetUserId
+		};
+
+		const res = await agent.post('/editor/privs/edit/handler').send(data);
+		const latestPrivsOfTargetUser = await Editor.query({where: {id: targetUserId}})
+			.fetch({require: true})
+			.then(editor => editor.get('privs'));
+		expect(res.ok).to.be.true;
+		expect(res).to.have.status(200);
+		expect(latestPrivsOfTargetUser).to.be.equal(newPrivs);
+	});
+});
+
+describe('Editor without Administrator priv', () => {
+	let agent;
+	beforeEach(async () => {
+		await createEditor(adminId, 15);
+		agent = await chai.request.agent(app);
+		await agent.get('/cb');
+	});
+	afterEach(truncateEntities);
+
+	it('should not be able to edit privs of an editor', async () => {
+		await createEditor(targetUserId, oldPrivs);
+		const note = 'testing';
+		const data = {
+			adminId,
+			newPrivs,
+			note,
+			oldPrivs,
+			targetUserId
+		};
+
+		const res = await agent.post('/editor/privs/edit/handler').send(data);
+		const latestPrivsOfTargetUser = await Editor.query({where: {id: targetUserId}})
+			.fetch({require: true})
+			.then(editor => editor.get('privs'));
+		expect(res.ok).to.be.false;
+		expect(res).to.have.status(403);
+		expect(res.res.statusMessage).to.equal('You do not have the privilege to access this route');
+		expect(latestPrivsOfTargetUser).to.be.equal(oldPrivs);
 	});
 });

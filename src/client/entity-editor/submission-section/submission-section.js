@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Alert, Button, Col, Form, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
+import {Alert, Button, Col, Form, OverlayTrigger, Row, Spinner, Tooltip} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -99,7 +99,15 @@ function SubmissionSection({
 					type="submit"
 					variant="success"
 				>
-					Submit
+					 {submitted &&
+					<Spinner
+						animation="border"
+						aria-hidden="true"
+						as="span"
+						role="status"
+						size="sm"
+					/>}
+					 {submitted ? ' Submit' : 'Submit'}
 				</Button>
 			</div>
 			<div className={errorAlertClass}>
@@ -117,11 +125,11 @@ SubmissionSection.propTypes = {
 	submitted: PropTypes.bool.isRequired
 };
 
-function mapStateToProps(rootState, {validate, identifierTypes, isMerge}) {
+function mapStateToProps(rootState, {validate, identifierTypes, isMerge, formValid = false}) {
 	const state = rootState.get('submissionSection');
 	return {
 		errorText: state.get('submitError'),
-		formValid: validate(rootState, identifierTypes, isMerge),
+		formValid: formValid || (validate && validate(rootState, identifierTypes, isMerge)),
 		note: state.get('note'),
 		submitted: state.get('submitted')
 	};

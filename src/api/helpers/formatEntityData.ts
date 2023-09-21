@@ -428,14 +428,16 @@ export function getEntityRelationships(entity: any) {
 		};
 }
 
-export function formatSearchResponse(searchResult: Record<string, unknown>[] | null | undefined) {
+export function formatSearchResponse(searchResult?: {results:any[], total:number}) {
+	const {results, total} = searchResult;
 	return _.isNil(searchResult) ? null :
 		{
-			resultCount: searchResult.length,
-			searchResult: searchResult.map((entity) => ({
+			resultCount: results.length,
+			searchResult: results.map((entity) => ({
 				bbid: _.get(entity, 'bbid', null),
 				defaultAlias: getDefaultAlias(entity),
 				entityType: _.get(entity, 'type', null)
-			}))
+			})),
+			totalCount: total
 		};
 }

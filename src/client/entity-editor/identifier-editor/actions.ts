@@ -22,6 +22,7 @@ export const UPDATE_IDENTIFIER_TYPE = 'UPDATE_IDENTIFIER_TYPE';
 export const UPDATE_IDENTIFIER_VALUE = 'UPDATE_IDENTIFIER_VALUE';
 export const HIDE_IDENTIFIER_EDITOR = 'HIDE_IDENTIFIER_EDITOR';
 export const REMOVE_EMPTY_IDENTIFIERS = 'REMOVE_EMPTY_IDENTIFIERS';
+export const ADD_OTHER_ISBN = 'ADD_OTHER_ISBN';
 
 export type Action = {
 	type: string,
@@ -133,5 +134,24 @@ export function updateIdentifierType(rowId: number, value: number): Action {
 export function removeEmptyIdentifiers(): Action {
 	return {
 		type: REMOVE_EMPTY_IDENTIFIERS
+	};
+}
+
+/**
+ * Produces an action indicating that the new ISBN should be added to the Identifiers.
+ *
+ * @param {number} type - The type Id correspond to this ISBN.
+ * @param {string} value - The value of this ISBN.
+ * @returns {Action} The resulting ADD_OTHER_ISBN action.
+ */
+
+export function addOtherISBN(type:number, value:string): Action {
+	return {
+		payload: {
+			rowId: `n${nextIdentifierRowId++}`,
+			type,
+			value
+		},
+		type: ADD_OTHER_ISBN
 	};
 }

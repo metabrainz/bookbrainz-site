@@ -60,12 +60,13 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: bookbrainz_test
+          POSTGRES_HOST: localhost
       
       - name: Set up node
         uses: actions/setup-node@v1
         with:
           # We could also test on multiple Node versions if needed: https://github.com/actions/setup-node#matrix-testing
-          node-version: '16'
+          node-version: '18'
           # Enables caching NPM dependencies (uses https://github.com/actions/cache under the hood)
           cache: 'yarn'
           

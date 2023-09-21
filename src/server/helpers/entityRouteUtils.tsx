@@ -19,25 +19,30 @@
 
 import * as Immutable from 'immutable';
 import * as React from 'react';
+import * as UnifiedFormHelpers from '../../client/unified-form/helpers';
 import * as entityEditorHelpers from '../../client/entity-editor/helpers';
 import * as entityRoutes from '../routes/entity/entity';
 import * as error from '../../common/helpers/error';
 import * as propHelpers from '../../client/helpers/props';
+import * as unifiedRoutes from '../routes/entity/process-unified-form';
 import * as utils from './utils';
 
 import type {Request as $Request, Response as $Response} from 'express';
+import {filterIdentifierTypesByEntityType, isValidBBID} from '../../common/helpers/utils';
 import EntityEditor from '../../client/entity-editor/entity-editor';
 import EntityMerge from '../../client/entity-editor/entity-merge';
 import Layout from '../../client/containers/layout';
 import {Provider} from 'react-redux';
 import ReactDOMServer from 'react-dom/server';
+import UnifiedForm from '../../client/unified-form/unified-form';
 import _ from 'lodash';
 import {createStore} from 'redux';
 import {generateProps} from './props';
 
 
+const {createRootReducer: ufCreateRootReducer} = UnifiedFormHelpers;
 const {createRootReducer, getEntitySection, getEntitySectionMerge, getValidator} = entityEditorHelpers;
-
+const validEntityTypes = ['author', 'edition', 'editionGroup', 'publisher', 'series', 'work'];
 type EntityAction = 'create' | 'edit';
 type PassportRequest = $Request & {user: any, session: any};
 
@@ -69,7 +74,7 @@ export function generateEntityProps(
 
 	const getFilteredIdentifierTypes = isEdit ?
 		_.partialRight(utils.filterIdentifierTypesByEntity, entity) :
-		_.partialRight(utils.filterIdentifierTypesByEntityType, entityName);
+		_.partialRight(filterIdentifierTypesByEntityType, entityName);
 	const filteredIdentifierTypes = getFilteredIdentifierTypes(
 		res.locals.identifierTypes
 	);
@@ -296,6 +301,7 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
 
 	const initialRelationship = {
 		attributes: [],
+		isAdded: true,
 		label: relationship.linkPhrase,
 		relationshipType: relationship,
 		rowID: rowId,
@@ -314,4 +320,108 @@ export function addInitialRelationship(props, relationshipTypeId, relationshipIn
 		{...props.initialState.relationshipSection.relationships, [rowId]: initialRelationship};
 
 	return props;
+}
+
+/**
+ * Return markup for the unified form.
+ * This also modifies the props value with a new initialState!
+ * @param {object} props - react props
+ * @returns {object} - Updated props and HTML string with markup
+ */
+
+export function unifiedFormMarkup(props) {
+	const {initialState, ...rest} = props;
+	const rootReducer = ufCreateRootReducer();
+	const store:any = createStore(rootReducer, Immutable.fromJS(initialState));
+	const markup = ReactDOMServer.renderToString(
+		<Layout {...propHelpers.extractLayoutProps(rest)}>
+			<Provider store={store}>
+				<UnifiedForm {...props}/>
+			</Provider>
+		</Layout>
+	);
+	return {
+		markup,
+		props: Object.assign({}, props, {initialState: store.getState()})
+	};
+}
+
+/**
+ * Returns a props object with reasonable defaults for unified form.
+ * @param {request} req - request object
+ * @param {response} res - response object
+ * @param {object} additionalProps - additional props
+ * @param {initialStateCallback} initialStateCallback - callback
+ * to get the initial state
+ * @returns {object} - props
+ */
+export function generateUnifiedProps(
+	req: PassportRequest, res: $Response,
+	additionalProps: any,
+	initialStateCallback: () => any = () => new Object()
+): any {
+	const submissionUrl = '/create/handler';
+	const props = Object.assign({
+		allIdentifierTypes: res.locals.identifierTypes,
+		entityType: 'edition',
+		initialState: initialStateCallback(),
+		isUnifiedForm: true,
+		languageOptions: res.locals.languages,
+		requiresJS: true,
+		submissionUrl
+	}, additionalProps);
+
+	return generateProps(req, res, props);
+}
+
+/**
+ * Validate Unified form
+ * @param {object} body - request body
+ * @returns {boolean}
+ */
+
+function validateUnifiedForm(body:Record<string, any>):boolean {
+	for (const entityKey in body) {
+		if (Object.prototype.hasOwnProperty.call(body, entityKey)) {
+			const entityForm = body[entityKey];
+			const entityType = _.camelCase(entityForm.type);
+			const isNew = _.get(entityForm, '__isNew__', true);
+			const bbid = _.get(entityForm, 'id', null);
+			// for existing entity, it must have id attribute set to its bbid
+			if (!isNew && (!bbid || !isValidBBID(bbid))) {
+				return false;
+			}
+			if (!entityType || !validEntityTypes.includes(entityType)) {
+				return false;
+			}
+			const validator = getValidator(entityType);
+			if (isNew && !validator(entityForm)) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+/**
+ * Middleware for handling unified form submission
+ * @param {object} req - Request object
+ * @param {object} res - Response object
+ */
+
+export async function createEntitiesHandler(
+	req:$Request,
+	res:$Response
+) {
+	const {orm} = req.app.locals;
+	// generate the state for current entity
+	 req.body = await unifiedRoutes.preprocessForm(req.body, orm);
+	// validating the uf state
+	if (!validateUnifiedForm(req.body)) {
+		const err = new error.FormSubmissionError();
+		return error.sendErrorAsJSON(res, err);
+	}
+	// transforming uf state into separate entity state
+	req.body = unifiedRoutes.transformForm(req.body);
+	return unifiedRoutes.handleCreateMultipleEntities(req as PassportRequest, res);
 }

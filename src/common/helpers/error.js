@@ -101,7 +101,7 @@ export class NotFoundError extends PathError {
 
 	static detailedMessage(req) {
 		return [
-			`No content exists at the path requested: ${req.path}`,
+			`No content exists at the path requested: ${req.originalUrl}`,
 			'Please make sure you have entered in the correct address!'
 		];
 	}
@@ -122,6 +122,24 @@ export class PermissionDeniedError extends PathError {
 			${req.path}`,
 			`Please make sure you have entered in the correct credentials and
 			address!`
+		];
+	}
+}
+
+export class NotAuthorizedError extends PathError {
+	static get defaultMessage() {
+		return 'You do not have permission to access this route';
+	}
+
+	static get status() {
+		return status.FORBIDDEN;
+	}
+
+	static detailedMessage(req) {
+		return [
+			`You do not have permission to access the following path:
+			${req.originalUrl}`,
+			'Please make sure you have the privileges to access the route!'
 		];
 	}
 }

@@ -46,6 +46,38 @@ export const seedInitialState = {
 	submissionSection: 'note'
 };
 
+export const baseState = {
+	aliasEditor: {},
+	annotationSection: {
+		content: ''
+	},
+	authorCreditEditor: {},
+	identifierEditor: {},
+	nameSection: {
+		disambiguation: '',
+		language: 42,
+		name: 'Entity name',
+		sortName: 'Entity sort name'
+	},
+	relationshipSection: {
+		relationships: {}
+	},
+	submissionSection: {
+		note: 'first entity',
+		submitError: '',
+		submitted: false
+	}
+};
+
+export const authorWorkRelationshipTypeData = {
+	description: 'test descryption',
+	label: 'test label',
+	linkPhrase: 'test phrase',
+	reverseLinkPhrase: 'test reverse link phrase',
+	sourceEntityType: 'Author',
+	targetEntityType: 'Work'
+};
+
 export const editorTypeAttribs = {
 	label: 'test_type'
 };
@@ -59,7 +91,7 @@ export const editorAttribs = {
 	typeId: 1
 };
 
-const languageAttribs = {
+export const languageAttribs = {
 	frequency: 1,
 	isoCode1: 'en',
 	isoCode2b: 'eng',
@@ -112,7 +144,7 @@ const entityAttribs = {
 	revisionId: 1
 };
 
-export function createEditor(editorId) {
+export function createEditor(editorId, privs = 1) {
 	return orm.bookshelf.knex.transaction(async (transacting) => {
 		const editorType = await new EditorType(editorTypeAttribs)
 			.save(null, {method: 'insert', transacting});
@@ -123,6 +155,7 @@ export function createEditor(editorId) {
 		editorAttribs.genderId = gender.id;
 		editorAttribs.typeId = editorType.id;
 		editorAttribs.name = internet.userName();
+		editorAttribs.privs = privs;
 		editorAttribs.metabrainzUserId = random.number();
 		editorAttribs.cachedMetabrainzName = editorAttribs.name;
 
@@ -130,6 +163,20 @@ export function createEditor(editorId) {
 			.save(null, {method: 'insert', transacting});
 		return editor;
 	});
+}
+
+export async function createRelationshipType() {
+	const relationshipType = await new RelationshipType(relationshipTypeData)
+		.save(null, {method: 'insert'});
+
+	return relationshipType.id;
+}
+
+export async function createIdentifierType() {
+	const identifierType = await new IdentifierType(identifierTypeData)
+		.save(null, {method: 'insert'});
+
+	return identifierType.id;
 }
 
 async function createAliasAndAliasSet() {
@@ -288,7 +335,9 @@ export async function createWork(optionalBBID, optionalWorkAttribs = {}) {
 	}
 
 	if (!workType) {
-		workType = await new WorkType({label: `Work Type ${optionalWorkAttribs.typeId || random.number()}`, ...optionalWorkTypeAttribs})
+		workType = await new WorkType({description: 'A work type',
+			label: `Work Type ${optionalWorkAttribs.typeId || random.number()}`,
+			...optionalWorkTypeAttribs})
 			.save(null, {method: 'insert'});
 	}
 

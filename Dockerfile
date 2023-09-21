@@ -1,4 +1,4 @@
-FROM metabrainz/node:16 as bookbrainz-base
+FROM metabrainz/node:18 as bookbrainz-base
 
 ARG DEPLOY_ENV
 ARG GIT_COMMIT_SHA
@@ -42,7 +42,7 @@ ARG BB_ROOT=/home/bookbrainz/bookbrainz-site
 WORKDIR $BB_ROOT
 RUN chown bookbrainz:bookbrainz $BB_ROOT
 
-RUN echo $GIT_COMMIT_SHA > .git-version
+ENV GIT_COMMIT_SHA=$GIT_COMMIT_SHA
 
 # Files necessary to complete the JavaScript build
 COPY --chown=bookbrainz scripts/ scripts/

@@ -58,8 +58,10 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LanguageField from '../common/language-field';
 import LinkedEntity from '../common/linked-entity';
 import NumericField from '../common/numeric-field';
+import SearchEntityCreate from '../../unified-form/common/search-entity-create-select';
 import Select from 'react-select';
 import _ from 'lodash';
+import {clearEditionGroups} from '../../unified-form/detail-tab/action';
 import {connect} from 'react-redux';
 import {entityToOption} from '../../helpers/entity';
 import makeImmutable from '../common/make-immutable';
@@ -89,6 +91,7 @@ type Publisher = {
 };
 
 type EditionGroup = {
+	__isNew__: boolean,
 	value: string,
 	id: number
 };
@@ -96,6 +99,7 @@ type EditionGroup = {
 type OwnProps = {
 	languageOptions: Array<LanguageOption>,
 	editionFormats: Array<EditionFormat>,
+	isUnifiedForm:boolean,
 	editionStatuses: Array<EditionStatus>
 };
 
@@ -127,7 +131,7 @@ type DispatchProps = {
 	onPagesChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
 	onPublisherChange: (arg: Publisher[]) => unknown,
 	onToggleShowEditionGroupSection: (showEGSection: boolean) => unknown,
-	onEditionGroupChange: (arg: EditionGroup) => unknown,
+	onEditionGroupChange: (arg: EditionGroup, action) => unknown,
 	onReleaseDateChange: (arg: string) => unknown,
 	onStatusChange: (obj: {value: number} | null | undefined) => unknown,
 	onWeightChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
@@ -182,11 +186,13 @@ function EditionSection({
 	editionGroupValue,
 	editionGroupVisible,
 	matchingNameEditionGroups,
+	isUnifiedForm,
 	publisherValue: publishers,
 	releaseDateValue,
 	statusValue,
 	weightValue,
-	widthValue
+	widthValue,
+	...rest
 }: Props) {
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		frequency: language.frequency,
@@ -215,25 +221,27 @@ function EditionSection({
 		!editionGroupRequired;
 
 	const showMatchingEditionGroups = Boolean(hasmatchingNameEditionGroups && !editionGroupValue);
-
+	const EntitySearchField = isUnifiedForm ? SearchEntityCreate : EntitySearchFieldOption;
 	const getEditionGroupSearchSelect = () => (
 		<React.Fragment>
-			<Col className="margin-bottom-2" lg={{offset: showMatchingEditionGroups ? 0 : 3, span: 6}}>
-				<EntitySearchFieldOption
-					clearable={false}
+			<Col className="margin-bottom-2" lg={{offset: isUnifiedForm || showMatchingEditionGroups ? 0 : 3, span: 6}}>
+				<EntitySearchField
 					error={!validateEditionSectionEditionGroup(editionGroupValue, true)}
 					help="Group with other Editions of the same book"
 					instanceId="edition-group"
+					isUnifiedForm={isUnifiedForm}
 					label="Edition Group"
+					languageOptions={languageOptions}
 					tooltipText={
 						<>
 						Group together different Editions of the same book.
 							<br/>For example paperback, hardcover and e-book editions.
 						</>
 					}
-					type="edition-group"
+					type="editionGroup"
 					value={editionGroupValue}
 					onChange={onEditionGroupChange}
+					{...rest}
 				/>
 				<Button
 					block
@@ -259,21 +267,32 @@ function EditionSection({
 			Has the work been published, or is it in a draft stage?
 		</Tooltip>
 	);
-
+	const headingTag = !isUnifiedForm && <h2>What else do you know about the Edition?</h2>;
+	const colSpan = {
+		offset: 3,
+		span: 6
+	};
+	const shortColSpan = {
+		offset: 3,
+		span: 3
+	};
+	if (isUnifiedForm) {
+		colSpan.offset = 0;
+		shortColSpan.offset = 0;
+	}
 	return (
 		<div>
-			<h2>
-				What else do you know about the Edition?
-			</h2>
-			<AuthorCreditSection/>
+			{headingTag}
+			{!isUnifiedForm && <AuthorCreditSection type="edition"/>}
 			<p className="text-muted">
 				Edition Group is required — this cannot be blank. You can search for and choose an existing Edition Group,
 				or choose to automatically create one instead.
 			</p>
+
 			<Row className="margin-bottom-3">
 				{
 					showAutoCreateEditionGroupMessage ?
-						<Col lg={{offset: showMatchingEditionGroups ? 0 : 3, span: 6}}>
+						<Col lg={{offset: isUnifiedForm || showMatchingEditionGroups ? 0 : 3, span: 6}}>
 							<Alert variant="success">
 								<p>A new Edition Group with the same name will be created automatically.</p>
 								<br/>
@@ -316,12 +335,15 @@ function EditionSection({
 					</Col>
 				}
 			</Row>
+
+
 			<p className="text-muted">
 				Below fields are optional — leave something blank if you
 				don&rsquo;t know it
 			</p>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				{!isUnifiedForm &&
+				<Col lg={colSpan}>
 					<EntitySearchFieldOption
 						isMulti
 						instanceId="publisher"
@@ -330,10 +352,10 @@ function EditionSection({
 						value={publisherValue}
 						onChange={onPublisherChange}
 					/>
-				</Col>
+				</Col>}
 			</Row>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={colSpan}>
 					<DateField
 						show
 						defaultValue={releaseDateValue}
@@ -349,10 +371,10 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col lg={{offset: 3, span: 6}}>
+				<Col lg={colSpan}>
 					<ImmutableLanguageField
 						empty
-						multi
+						isMulti
 						instanceId="language"
 						options={languageOptionsForDisplay}
 						tooltipText="Main language used for the content of the edition"
@@ -362,7 +384,7 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col lg={{offset: 3, span: 3}}>
+				<Col lg={shortColSpan}>
 					<Form.Group>
 						<Form.Label>
 							Format
@@ -376,6 +398,8 @@ function EditionSection({
 						<Select
 							classNamePrefix="react-select"
 							instanceId="editionFormat"
+							isClearable="true"
+							isSearchable={false}
 							options={editionFormatsForDisplay}
 							value={formatOption}
 							onChange={onFormatChange}
@@ -394,8 +418,10 @@ function EditionSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
+							isClearable
 							classNamePrefix="react-select"
 							instanceId="editionStatus"
+							isSearchable={false}
 							options={editionStatusesForDisplay}
 							value={statusOption}
 							onChange={onStatusChange}
@@ -404,7 +430,7 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col lg={{offset: 3, span: 3}}>
+				<Col lg={shortColSpan}>
 					<NumericField
 						addonAfter="pages"
 						defaultValue={pagesValue}
@@ -416,7 +442,7 @@ function EditionSection({
 				</Col>
 			</Row>
 			<Row>
-				<Col lg={{offset: 3, span: 3}}>
+				<Col lg={shortColSpan}>
 					<NumericField
 						addonAfter="mm"
 						defaultValue={widthValue}
@@ -489,7 +515,13 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onDepthChange: (event) => dispatch(debouncedUpdateDepth(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
-		onEditionGroupChange: (value) => dispatch(updateEditionGroup(value)),
+		onEditionGroupChange: (value, action) => {
+			// If the user selected a new edition group, we need to clear the old one
+			if (['clear', 'pop-value', 'select-option'].includes(action.action)) {
+				dispatch(clearEditionGroups());
+			}
+			dispatch(updateEditionGroup(value));
+		},
 		onFormatChange: (value: {value: number} | null) => {
 			dispatch(updateFormat(value && value.value));
 			if (value.value === 3) {

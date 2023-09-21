@@ -23,25 +23,23 @@ import * as auth from './helpers/auth';
 import * as error from '../common/helpers/error';
 import * as search from '../common/helpers/search';
 import * as serverErrorHelper from './helpers/error';
-import {existsSync, readFileSync} from 'fs';
+
+import {repositoryUrl, siteRevision, userAgent} from './info';
+
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
-import {get as _get} from 'lodash';
 import appCleanup from '../common/helpers/appCleanup';
 import compression from 'compression';
 import config from '../common/helpers/config';
-import {createClient} from 'redis';
-import {decodeUrlQueryParams} from './helpers/middleware';
 import express from 'express';
 import favicon from 'serve-favicon';
 import initInflux from './influx';
 import logNode from 'log-node';
 import logger from 'morgan';
 import path from 'path';
-import redis from 'connect-redis';
 import routes from './routes';
 import serveStatic from 'serve-static';
-import session from 'express-session';
+import session from '../common/helpers/session';
 
 
 // Initialize log-to-stdout  writer
@@ -67,7 +65,6 @@ app.use(express.urlencoded({
 	extended: false
 }));
 app.use(compression());
-app.use(decodeUrlQueryParams);
 
 // Set up serving of static assets
 if (process.env.NODE_ENV === 'development') {
@@ -89,28 +86,7 @@ else {
 }
 app.use(express.static(path.join(rootDir, 'static')));
 
-/* Set up sessions, using Redis in production and default in-memory for testing environment*/
-const sessionOptions = {
-	cookie: {
-		maxAge: _get(config, 'session.maxAge', 2592000000),
-		secure: _get(config, 'session.secure', false)
-	},
-	resave: false,
-	saveUninitialized: false,
-	secret: config.session.secret
-};
-if (process.env.NODE_ENV !== 'test') {
-	const redisClient = createClient({
-		host: _get(config, 'session.redis.host', 'localhost'),
-		port: _get(config, 'session.redis.port', 6379)
-	});
-
-	const RedisStore = redis(session);
-	sessionOptions.store = new RedisStore({
-		client: redisClient
-	});
-}
-app.use(session(sessionOptions));
+app.use(session(process.env.NODE_ENV));
 
 
 if (config.influx) {
@@ -125,19 +101,8 @@ const authInitiated = auth.init(app);
 search.init(app.locals.orm, Object.assign({}, config.search));
 
 // Set up constants that will remain valid for the life of the app
-let siteRevision = 'unknown';
-const gitRevisionFilePath = '.git-version';
-if (existsSync(gitRevisionFilePath)) {
-	try {
-		siteRevision = readFileSync(gitRevisionFilePath).toString();
-	}
-	catch (err) {
-		debug(err);
-	}
-}
 debug(`Git revision: ${siteRevision}`);
-
-const repositoryUrl = 'https://github.com/metabrainz/bookbrainz-site/';
+debug('User-Agent:', userAgent);
 
 app.use((req, res, next) => {
 	// Set up globally-used properties
@@ -145,6 +110,19 @@ app.use((req, res, next) => {
 	res.locals.repositoryUrl = repositoryUrl;
 	res.locals.alerts = [];
 	req.signUpDisabled = false;
+	if (process.env.DEPLOY_ENV === 'test' || process.env.DEPLOY_ENV === 'beta') {
+		let msg;
+		if (process.env.DEPLOY_ENV === 'beta') {
+			msg = 'You are on the beta website, which uses the main database but with a newer version of the code to test new features.';
+		}
+		else {
+			msg = 'You are on the test website; all changes made here are not synced with the main database and will be overwritten periodically.';
+		}
+		res.locals.alerts.push({
+			level: 'info',
+			message: `${msg}`
+		});
+	}
 
 	if (!req.session || !authInitiated) {
 		res.locals.alerts.push({

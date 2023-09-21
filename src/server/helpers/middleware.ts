@@ -1,7 +1,10 @@
 /*
  * Copyright (C) 2015       Ben Ockmore
  *               2015-2016  Sean Burke
- *				 2021       Akash Gupta
+ *               2021       Akash Gupta
+ *               2022       Ansh Goyal
+ *               2023       David Kellner
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -20,11 +23,15 @@
 import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
-
 import type {Response as $Response, NextFunction, Request} from 'express';
+import {ENTITY_TYPES, getRelationshipTargetBBIDByTypeId} from '../../client/helpers/entity';
+import {getWikipediaExtract, selectWikipediaPage} from './wikimedia';
 
 import _ from 'lodash';
-import {getRelationshipTargetBBIDByTypeId} from '../../client/helpers/entity';
+import {getAcceptedLanguageCodes} from './i18n';
+import {getReviewsFromCB} from './critiquebrainz';
+import {getWikidataId} from '../../common/helpers/wikimedia';
+import log from 'log';
 
 
 interface $Request extends Request {
@@ -32,23 +39,23 @@ interface $Request extends Request {
 }
 
 function makeLoader(modelName, propName, sortFunc?, relations = []) {
-	return function loaderFunc(req: $Request, res: $Response, next: NextFunction) {
-		const {orm}: any = req.app.locals;
-		const model = orm[modelName];
-		return model.fetchAll({withRelated: [...relations]})
-			.then((results) => {
-				const resultsSerial = results.toJSON();
-
-				res.locals[propName] =
-					sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
-
-				next();
-
-				return null;
-			})
-			.catch(next);
+	return async function loaderFunc(req: $Request, res: $Response, next: NextFunction) {
+		try {
+			const {orm}: any = req.app.locals;
+			const model = orm[modelName];
+			const results = await model.fetchAll({withRelated: [...relations]});
+			const resultsSerial = results.toJSON();
+			res.locals[propName] =
+				sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
+		}
+		catch (err) {
+			return next(err);
+		}
+		next();
+		return null;
 	};
 }
+
 
 export const loadAuthorTypes = makeLoader('AuthorType', 'authorTypes');
 export const loadEditionFormats = makeLoader('EditionFormat', 'editionFormats');
@@ -64,6 +71,12 @@ export const loadSeriesOrderingTypes =
 	makeLoader('SeriesOrderingType', 'seriesOrderingTypes');
 export const loadRelationshipTypes =
 	makeLoader('RelationshipType', 'relationshipTypes', null, ['attributeTypes']);
+export const loadParentRelationshipTypes =
+	makeLoader('RelationshipType', 'parentTypes');
+export const loadParentIdentifierTypes =
+	makeLoader('IdentifierType', 'parentTypes');
+export const loadRelationshipAttributeTypes =
+	makeLoader('RelationshipAttributeType', 'attributeTypes');
 
 export const loadGenders =
 	makeLoader('Gender', 'genders', (a, b) => a.id > b.id);
@@ -121,65 +134,134 @@ export async function loadWorkTableAuthors(req: $Request, res: $Response, next: 
 	return next();
 }
 
-export function loadEntityRelationships(req: $Request, res: $Response, next: NextFunction) {
+/**
+ * Add the relationships on entity object.
+ *
+ * @param {Object} entity - The entity to load the relationships for.
+ * @param {Object} relationshipSet - The RelationshipSet model.
+ * @param {Object} orm - The ORM instance.
+ * @returns
+ */
+
+export async function addRelationships(entity, relationshipSet, orm) {
+	async function getEntityWithAlias(relEntity) {
+		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
+		const model = commonUtils.getEntityModelByType(orm, relEntity.type);
+
+		return model.forge({bbid: redirectBbid})
+			.fetch({require: false, withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))});
+	}
+
+	entity.relationships = relationshipSet ?
+		relationshipSet.related('relationships').toJSON() : [];
+
+	utils.attachAttributes(entity.relationships);
+
+	/**
+	 * Source and target are generic Entity objects, so until we have
+	 * a good way of polymorphically fetching the right specific entity,
+	 * we need to fetch default alias in a somewhat sketchier way.
+	 */
+	const relationshipPromises = entity.relationships.map(async (relationship) => {
+		const [source, target] = await Promise.all([getEntityWithAlias(relationship.source), getEntityWithAlias(relationship.target)]);
+		relationship.source = source.toJSON();
+		relationship.target = target.toJSON();
+
+		return relationship;
+	});
+
+	const relationships = await Promise.all(relationshipPromises);
+	return relationships;
+}
+
+
+export async function loadEntityRelationships(req: $Request, res: $Response, next: NextFunction) {
 	const {orm}: any = req.app.locals;
 	const {RelationshipSet} = orm;
 	const {entity} = res.locals;
 
-	new Promise<void>((resolve) => {
+	try {
 		if (!entity) {
 			throw new error.SiteError('Failed to load entity');
 		}
 
-		resolve();
-	})
-		.then(
-			() => RelationshipSet.forge({id: entity.relationshipSetId})
-				.fetch({
-					require: false,
-					withRelated: [
-						'relationships.source',
-						'relationships.target',
-						'relationships.type.attributeTypes',
-						'relationships.attributeSet.relationshipAttributes.value',
-						'relationships.attributeSet.relationshipAttributes.type'
-					]
-				})
-		)
-		.then((relationshipSet) => {
-			entity.relationships = relationshipSet ?
-				relationshipSet.related('relationships').toJSON() : [];
+		const relationshipSet = await RelationshipSet.forge({id: entity.relationshipSetId})
+			.fetch({
+				require: false,
+				withRelated: [
+					'relationships.source',
+					'relationships.target',
+					'relationships.type.attributeTypes',
+					'relationships.attributeSet.relationshipAttributes.value',
+					'relationships.attributeSet.relationshipAttributes.type'
+				]
+			});
 
-			utils.attachAttributes(entity.relationships);
-
-			async function getEntityWithAlias(relEntity) {
-				const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
-				const model = commonUtils.getEntityModelByType(orm, relEntity.type);
-
-				return model.forge({bbid: redirectBbid})
-					.fetch({require: false, withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))});
-			}
-
-			/**
-			 * Source and target are generic Entity objects, so until we have
-			 * a good way of polymorphically fetching the right specific entity,
-			 * we need to fetch default alias in a somewhat sketchier way.
-			 */
-			return Promise.all(entity.relationships.map((relationship) =>
-				Promise.all([getEntityWithAlias(relationship.source), getEntityWithAlias(relationship.target)])
-					.then(([source, target]) => {
-						relationship.source = source.toJSON();
-						relationship.target = target.toJSON();
-
-						return relationship;
-					})));
-		})
-		.then(() => {
-			next();
-			return null;
-		})
-		.catch(next);
+		await addRelationships(entity, relationshipSet, orm);
+	}
+	catch (err) {
+		return next(err);
+	}
+	return next();
 }
+
+export async function loadWikipediaExtract(req: $Request, res: $Response, next: NextFunction) {
+	const {entity} = res.locals;
+	if (!entity) {
+		return next(new error.SiteError('Failed to load entity'));
+	}
+
+	const wikidataId = getWikidataId(entity);
+	if (!wikidataId) {
+		return next();
+	}
+
+	// try to use the user's browser languages, fallback to English and alias languages
+	const browserLanguages = getAcceptedLanguageCodes(req);
+	const aliasLanguages = commonUtils.getAliasLanguageCodes(entity);
+	const preferredLanguages = browserLanguages.concat('en', aliasLanguages);
+
+	try {
+		// only pre-load Wikipedia extracts which are already cached
+		const article = await selectWikipediaPage(wikidataId, {forceCache: true, preferredLanguages});
+		if (article) {
+			const extract = await getWikipediaExtract(article, {forceCache: true});
+			if (extract) {
+				res.locals.wikipediaExtract = {article, ...extract};
+			}
+		}
+	}
+	catch (err) {
+		log.warning(`Failed to pre-load Wikipedia extract for ${wikidataId}: ${err.message}`);
+	}
+
+	return next();
+}
+
+export function checkValidRevisionId(req: $Request, res: $Response, next: NextFunction, id: string) {
+	const idToNumber = _.toNumber(id);
+	if (!_.isInteger(idToNumber) || (_.isInteger(idToNumber) && idToNumber <= 0)) {
+		return next(new error.BadRequestError(`Invalid revision id: ${req.params.id}`, req));
+	}
+	return next();
+}
+
+export function checkValidTypeId(req: $Request, res: $Response, next: NextFunction, id: string) {
+	const idToNumber = _.toNumber(id);
+	if (!_.isInteger(idToNumber) || idToNumber <= 0) {
+		return next(new error.BadRequestError(`Invalid Type id: ${req.params.id}`, req));
+	}
+	return next();
+}
+
+export function checkValidEntityType(req: $Request, res: $Response, next: NextFunction, entityType: string) {
+	const entityTypes = ENTITY_TYPES.map(entity => _.snakeCase(entity));
+	if (!_.includes(entityTypes, entityType)) {
+		return next(new error.BadRequestError(`Invalid Entity Type: ${commonUtils.snakeCaseToSentenceCase(entityType)}`, req));
+	}
+	return next();
+}
+
 export async function redirectedBbid(req: $Request, res: $Response, next: NextFunction, bbid: string) {
 	if (!commonUtils.isValidBBID(bbid)) {
 		return next(new error.BadRequestError(`Invalid bbid: ${req.params.bbid}`, req));
@@ -226,6 +308,8 @@ export function makeEntityLoader(modelName: string, additionalRels: Array<string
 					entity.collections = entity.collections.filter(collection => collection.public === true ||
 					parseInt(collection.ownerId, 10) === parseInt(req.user?.id, 10));
 				}
+				const reviews = await getReviewsFromCB(bbid, entity.type);
+				entity.reviews = reviews;
 				res.locals.entity = entity;
 				return next();
 			}
@@ -366,10 +450,5 @@ export function validateCollaboratorIdsForCollectionRemove(req, res, next) {
 		}
 	}
 
-	return next();
-}
-
-export function decodeUrlQueryParams(req:$Request, res:$Response, next:NextFunction) {
-	req.query = _.mapValues(req.query, decodeURIComponent);
 	return next();
 }
