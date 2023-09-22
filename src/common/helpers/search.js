@@ -528,6 +528,7 @@ export async function checkIfExists(orm, name, type) {
 }
 
 export function searchByName(orm, name, type, size, from) {
+	const sanitizedEntityType = sanitizeEntityType(type);
 	const dslQuery = {
 		body: {
 			from,
@@ -547,9 +548,9 @@ export function searchByName(orm, name, type, size, from) {
 			size
 		},
 		index: _index,
-		type: sanitizeEntityType(type)
+		type: sanitizedEntityType
 	};
-	if (type === 'work') {
+	if (sanitizedEntityType === 'work' || (Array.isArray(sanitizedEntityType) && sanitizedEntityType.includes('work'))) {
 		dslQuery.body.query.multi_match.fields.push('authors');
 	}
 
