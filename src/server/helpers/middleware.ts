@@ -140,7 +140,6 @@ export async function loadWorkTableAuthors(req: $Request, res: $Response, next: 
  * @param {Object} entity - The entity to load the relationships for.
  * @param {Object} relationshipSet - The RelationshipSet model.
  * @param {Object} orm - The ORM instance.
- * @returns
  */
 
 export async function addRelationships(entity, relationshipSet, orm) {
