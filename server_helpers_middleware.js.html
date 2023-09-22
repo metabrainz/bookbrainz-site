@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>server/helpers/middleware.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-Achievement.html">Achievement</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#._awardAchievement">_awardAchievement</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#._awardUnlock">_awardUnlock</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~_awardTitle">_awardTitle</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~_processHotOffThePress">_processHotOffThePress</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~_processMarathoner">_processMarathoner</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~_processPageVisit">_processPageVisit</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~_processSprinter">_processSprinter</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~_testTiers">_testTiers</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~awardUnlock">awardUnlock</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~getEditionDateDifference">getEditionDateDifference</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~testTiers">testTiers</a></span></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_createAdminLog">_createAdminLog</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getAllEntities">_getAllEntities</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getAssociatedEntityRevisions">_getAssociatedEntityRevisions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getAvailableWikipediaArticles">_getAvailableWikipediaArticles</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getIdByField">_getIdByField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getLast30DaysEntities">_getLast30DaysEntities</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getOrderedCollectionsForEditorPage">_getOrderedCollectionsForEditorPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getOrderedPublicCollections">_getOrderedPublicCollections</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getOrderedRevisions">_getOrderedRevisions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_loadWorkTableAuthors">_loadWorkTableAuthors</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_parseLanguages">_parseLanguages</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_relationshipTypeCreateOrEditHandler">_relationshipTypeCreateOrEditHandler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_searchOption">_searchOption</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_selectWikipediaPage">_selectWikipediaPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AboutPage">AboutPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addAliasRow">addAliasRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addAuthor">addAuthor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addAuthorCreditRow">addAuthorCreditRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addAuthorsDataToWorks">addAuthorsDataToWorks</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addBulkSeriesItems">addBulkSeriesItems</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addEditionGroup">addEditionGroup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addIdentifierRow">addIdentifierRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addInitialRelationship">addInitialRelationship</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addLanguage">addLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addOtherISBN">addOtherISBN</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addPublisher">addPublisher</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addSeries">addSeries</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addSeriesItem">addSeriesItem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addWork">addWork</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#AdminPanelSearchResults">AdminPanelSearchResults</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AliasButton">AliasButton</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AliasEditor">AliasEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AliasEditorMerge">AliasEditorMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AliasRow">AliasRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AliasRowMerge">AliasRowMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AnnotationSection">AnnotationSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#areaToOption">areaToOption</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#assignIfNotSet">assignIfNotSet</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#attachAttribToRelForDisplay">attachAttribToRelForDisplay</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#attachAttributes">attachAttributes</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AuthorCreditEditor">AuthorCreditEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AuthorCreditRow">AuthorCreditRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AuthorSection">AuthorSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AuthorSectionMerge">AuthorSectionMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ButtonBar">ButtonBar</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#cacheMaxAge">cacheMaxAge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#calIsbn10Chk">calIsbn10Chk</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#calIsbn13Chk">calIsbn13Chk</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#CallToAction">CallToAction</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkIfNameExists">checkIfNameExists</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkPrivilege">checkPrivilege</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#cleanupOnExit">cleanupOnExit</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#clearAuthor">clearAuthor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#clearAuthorCredit">clearAuthorCredit</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#clearEditionGroups">clearEditionGroups</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#clearPublisher">clearPublisher</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#clearPublishers">clearPublishers</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#closeEntityModal">closeEntityModal</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#collapseWhiteSpaces">collapseWhiteSpaces</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#collectionCreateOrEditHandler">collectionCreateOrEditHandler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#constructAdminLogStatement">constructAdminLogStatement</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ContributePage">ContributePage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#createEntitiesHandler">createEntitiesHandler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#createEntityPageTitle">createEntityPageTitle</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#dateObjectToISOString">dateObjectToISOString</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateAliasName">debouncedUpdateAliasName</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateAliasSortName">debouncedUpdateAliasSortName</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateBeginDate">debouncedUpdateBeginDate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateDepth">debouncedUpdateDepth</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateDisambiguationField">debouncedUpdateDisambiguationField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateEndDate">debouncedUpdateEndDate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateHeight">debouncedUpdateHeight</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateIdentifierValue">debouncedUpdateIdentifierValue</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateISBNValue">debouncedUpdateISBNValue</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateNameField">debouncedUpdateNameField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdatePages">debouncedUpdatePages</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateReleaseDate">debouncedUpdateReleaseDate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateSortNameField">debouncedUpdateSortNameField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateWeight">debouncedUpdateWeight</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateWidth">debouncedUpdateWidth</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debounceUpdateAnnotation">debounceUpdateAnnotation</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debounceUpdateRevisionNote">debounceUpdateRevisionNote</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#DevelopPage">DevelopPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#disablePhysical">disablePhysical</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#DisambiguationField">DisambiguationField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#dispatch">dispatch</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#DragAndDropImage">DragAndDropImage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#dumpEdition">dumpEdition</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#duplicateWork">duplicateWork</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EditionGroupSection">EditionGroupSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EditionGroupSectionMerge">EditionGroupSectionMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EditionSection">EditionSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EditionSectionMerge">EditionSectionMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#EditorAchievementTab">EditorAchievementTab</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#editSeriesItem">editSeriesItem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#enablePhysical">enablePhysical</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#ended">ended</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EntityCountTable">EntityCountTable</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EntityEditor">EntityEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#entityEditorMarkup">entityEditorMarkup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EntityMerge">EntityMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#entityMergeMarkup">entityMergeMarkup</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#EntityRevisions">EntityRevisions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#entityToOption">entityToOption</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ErrorPage">ErrorPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filterOutRelationshipTypeById">filterOutRelationshipTypeById</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#generateEntityMergeProps">generateEntityMergeProps</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#generateEntityProps">generateEntityProps</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#generateUnifiedProps">generateUnifiedProps</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getAcceptedLanguageCodes">getAcceptedLanguageCodes</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getAdditionalRelations">getAdditionalRelations</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getAllEntities">getAllEntities</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getAssociatedEntityRevisions">getAssociatedEntityRevisions</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getAuthorEntityMergeSection">getAuthorEntityMergeSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getAvailableWikipediaArticles">getAvailableWikipediaArticles</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getDefaultAliasIndex">getDefaultAliasIndex</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getEditionEntityMergeSection">getEditionEntityMergeSection</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getEditionGroupEntityMergeSection">getEditionGroupEntityMergeSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEntityByBBID">getEntityByBBID</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEntityLink">getEntityLink</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEntityModelByType">getEntityModelByType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEntityModels">getEntityModels</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEntitySectionByType">getEntitySectionByType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEntityTable">getEntityTable</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getIdByField">getIdByField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getIdByLabel">getIdByLabel</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getInitAttribute">getInitAttribute</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getOrderedCollectionsForEditorPage">getOrderedCollectionsForEditorPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getPrivilegeBitsArray">getPrivilegeBitsArray</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getProgress">getProgress</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getPublisherEntityMergeSection">getPublisherEntityMergeSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getRelationshipSourceByTypeId">getRelationshipSourceByTypeId</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getRelationshipTargetBBIDByTypeId">getRelationshipTargetBBIDByTypeId</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getRelationshipTargetByTypeId">getRelationshipTargetByTypeId</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getSeriesEntityMergeSection">getSeriesEntityMergeSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getTodayDate">getTodayDate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getUfValidator">getUfValidator</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getWikipediaExtractForWikidata">getWikipediaExtractForWikidata</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getWorkEntityMergeSection">getWorkEntityMergeSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#HelpPage">HelpPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#hideAliasEditor">hideAliasEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#hideAuthorCreditEditor">hideAuthorCreditEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#hideIdentifierEditor">hideIdentifierEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#IdentifierButton">IdentifierButton</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#IdentifierEditor">IdentifierEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#IdentifierRow">IdentifierRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#incrementEditorEditCountById">incrementEditorEditCountById</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#indexAutoCreatedEditionGroup">indexAutoCreatedEditionGroup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#injectDefaultAliasName">injectDefaultAliasName</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#isArea">isArea</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#isbn10To13">isbn10To13</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#isbn13To10">isbn13To10</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#isCoverTabEmpty">isCoverTabEmpty</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#isDetailTabEmpty">isDetailTabEmpty</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#isNullDate">isNullDate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ISODateStringToObject">ISODateStringToObject</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#isValidBBID">isValidBBID</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#LanguageField">LanguageField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#loadEdition">loadEdition</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#makeEntityCreateOrEditHandler">makeEntityCreateOrEditHandler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#makePromiseFromObject">makePromiseFromObject</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#MergeField">MergeField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#NameField">NameField</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#NameSection">NameSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#NameSectionMerge">NameSectionMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#NumericField">NumericField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#openEntityModal">openEntityModal</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parseAcceptLanguage">parseAcceptLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parseLanguages">parseLanguages</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#PrivacyPage">PrivacyPage</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#PrivilegeTypes">PrivilegeTypes</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#PublisherSection">PublisherSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#PublisherSectionMerge">PublisherSectionMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#recursivelyGetMergedEntitiesBBIDs">recursivelyGetMergedEntitiesBBIDs</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#RegistrationAuth">RegistrationAuth</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#relationshipTypeCreateOrEditHandler">relationshipTypeCreateOrEditHandler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeAliasRow">removeAliasRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeAllSeriesItems">removeAllSeriesItems</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeAuthorCreditRow">removeAuthorCreditRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeEmptyAliases">removeEmptyAliases</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeEmptyCreditRows">removeEmptyCreditRows</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeEmptyIdentifiers">removeEmptyIdentifiers</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeIdentifierRow">removeIdentifierRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeSeries">removeSeries</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeSeriesItem">removeSeriesItem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeWork">removeWork</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#renderRelationship">renderRelationship</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#resetAuthorCredit">resetAuthorCredit</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#router">router</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sanitize">sanitize</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#searchName">searchName</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#SearchResults">SearchResults</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sendEmail">sendEmail</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#SeriesListItem">SeriesListItem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#SeriesSection">SeriesSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#SeriesSectionMerge">SeriesSectionMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#setAttribute">setAttribute</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#setSubmitError">setSubmitError</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#setSubmitted">setSubmitted</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#setupSessions">setupSessions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#showAliasEditor">showAliasEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#showAuthorCreditEditor">showAuthorCreditEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#showIdentifierEditor">showIdentifierEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#SortNameField">SortNameField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sortRelationshipOrdinal">sortRelationshipOrdinal</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sortSeriesItems">sortSeriesItems</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#StatisticsPage">StatisticsPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#StrategyMock">StrategyMock</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#stringToHTMLWithLinks">stringToHTMLWithLinks</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#stripDot">stripDot</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#SubmissionSection">SubmissionSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#submitSingleEntity">submitSingleEntity</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#template">template</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#toggleAuthorCredit">toggleAuthorCredit</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#toggleCheck">toggleCheck</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#toggleShowEditionGroup">toggleShowEditionGroup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#TopEditorsTable">TopEditorsTable</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#transformISODateForDisplay">transformISODateForDisplay</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#transformISODateForSelect">transformISODateForSelect</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#unflatten">unflatten</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#unifiedFormMarkup">unifiedFormMarkup</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#UPDATE_WARN_IF_EDITION_GROUP_EXISTS">UPDATE_WARN_IF_EDITION_GROUP_EXISTS</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateAliasLanguage">updateAliasLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateAliasPrimary">updateAliasPrimary</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateArea">updateArea</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateAuthorCredit">updateAuthorCredit</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateAutoISBN">updateAutoISBN</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateBeginArea">updateBeginArea</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateCreditAuthorValue">updateCreditAuthorValue</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateCreditDisplayValue">updateCreditDisplayValue</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateCreditJoinPhraseValue">updateCreditJoinPhraseValue</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateEditionGroup">updateEditionGroup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateEndArea">updateEndArea</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateEnded">updateEnded</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateFormat">updateFormat</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateGender">updateGender</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateIdentifierType">updateIdentifierType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateISBNType">updateISBNType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateLanguageField">updateLanguageField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateLanguages">updateLanguages</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateNameField">updateNameField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateOrderType">updateOrderType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updatePublisher">updatePublisher</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateSeriesType">updateSeriesType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateSortNameField">updateSortNameField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateType">updateType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateWork">updateWork</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#validateCoverTab">validateCoverTab</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#validateDetailTab">validateDetailTab</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#validateISBN">validateISBN</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#validateUnifiedForm">validateUnifiedForm</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ValidationLabel">ValidationLabel</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ValueField">ValueField</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#wikidataIdentifierTypeIds">wikidataIdentifierTypeIds</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#WorkSection">WorkSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#WorkSectionMerge">WorkSectionMerge</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">server/helpers/middleware.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+
+require("core-js/modules/es.object.keys.js");
+require("core-js/modules/es.symbol.js");
+require("core-js/modules/es.object.get-own-property-descriptor.js");
+require("core-js/modules/web.dom-collections.for-each.js");
+require("core-js/modules/es.object.get-own-property-descriptors.js");
+require("core-js/modules/es.weak-map.js");
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+var _typeof3 = require("@babel/runtime/helpers/typeof");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.addRelationships = addRelationships;
+exports.checkValidEntityType = checkValidEntityType;
+exports.checkValidRevisionId = checkValidRevisionId;
+exports.checkValidTypeId = checkValidTypeId;
+exports.loadEditionStatuses = exports.loadEditionGroupTypes = exports.loadEditionFormats = exports.loadAuthorTypes = void 0;
+exports.loadEntityRelationships = loadEntityRelationships;
+exports.loadRelationshipTypes = exports.loadRelationshipAttributeTypes = exports.loadPublisherTypes = exports.loadParentRelationshipTypes = exports.loadParentIdentifierTypes = exports.loadLanguages = exports.loadIdentifierTypes = exports.loadGenders = void 0;
+exports.loadSeriesItems = loadSeriesItems;
+exports.loadSeriesOrderingTypes = void 0;
+exports.loadWikipediaExtract = loadWikipediaExtract;
+exports.loadWorkTableAuthors = loadWorkTableAuthors;
+exports.loadWorkTypes = void 0;
+exports.makeCollectionLoader = makeCollectionLoader;
+exports.makeEntityLoader = makeEntityLoader;
+exports.redirectedBbid = redirectedBbid;
+exports.validateBBIDsForCollectionAdd = validateBBIDsForCollectionAdd;
+exports.validateBBIDsForCollectionRemove = validateBBIDsForCollectionRemove;
+exports.validateCollaboratorIdsForCollectionRemove = validateCollaboratorIdsForCollectionRemove;
+exports.validateCollectionParams = validateCollectionParams;
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+require("core-js/modules/es.date.to-json.js");
+require("core-js/modules/web.url.to-json.js");
+require("core-js/modules/es.array.sort.js");
+require("core-js/modules/es.function.name.js");
+require("core-js/modules/es.array.map.js");
+require("core-js/modules/es.array.concat.js");
+require("core-js/modules/es.array.filter.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.parse-int.js");
+require("core-js/modules/es.array.find.js");
+require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.promise.js");
+require("core-js/modules/es.string.iterator.js");
+require("core-js/modules/web.dom-collections.iterator.js");
+require("core-js/modules/es.regexp.exec.js");
+require("core-js/modules/es.string.replace.js");
+require("core-js/modules/es.array.includes.js");
+require("core-js/modules/es.string.includes.js");
+var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
+var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+var _lowerCase2 = _interopRequireDefault(require("lodash/lowerCase"));
+var _camelCase2 = _interopRequireDefault(require("lodash/camelCase"));
+var _upperFirst2 = _interopRequireDefault(require("lodash/upperFirst"));
+var _keys2 = _interopRequireDefault(require("lodash/keys"));
+var _trim2 = _interopRequireDefault(require("lodash/trim"));
+var _includes2 = _interopRequireDefault(require("lodash/includes"));
+var _snakeCase2 = _interopRequireDefault(require("lodash/snakeCase"));
+var _isInteger2 = _interopRequireDefault(require("lodash/isInteger"));
+var _toNumber2 = _interopRequireDefault(require("lodash/toNumber"));
+var _groupBy2 = _interopRequireDefault(require("lodash/groupBy"));
+var _remove2 = _interopRequireDefault(require("lodash/remove"));
+var commonUtils = _interopRequireWildcard(require("../../common/helpers/utils"));
+var error = _interopRequireWildcard(require("../../common/helpers/error"));
+var utils = _interopRequireWildcard(require("../helpers/utils"));
+var _entity = require("../../client/helpers/entity");
+var _wikimedia = require("./wikimedia");
+var _i18n = require("./i18n");
+var _critiquebrainz = require("./critiquebrainz");
+var _wikimedia2 = require("../../common/helpers/wikimedia");
+var _log = _interopRequireDefault(require("log"));
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop &amp;&amp; obj &amp;&amp; obj.__esModule) { return obj; } if (obj === null || _typeof3(obj) !== "object" &amp;&amp; typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache &amp;&amp; cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty &amp;&amp; Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" &amp;&amp; Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc &amp;&amp; (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly &amp;&amp; (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i &lt; arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function makeLoader(modelName, propName, sortFunc) {
+  var relations = arguments.length > 3 &amp;&amp; arguments[3] !== undefined ? arguments[3] : [];
+  return /*#__PURE__*/function () {
+    var _loaderFunc = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(req, res, next) {
+      var orm, model, results, resultsSerial;
+      return _regenerator.default.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.prev = 0;
+              orm = req.app.locals.orm;
+              model = orm[modelName];
+              _context.next = 5;
+              return model.fetchAll({
+                withRelated: (0, _toConsumableArray2.default)(relations)
+              });
+            case 5:
+              results = _context.sent;
+              resultsSerial = results.toJSON();
+              res.locals[propName] = sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
+              _context.next = 13;
+              break;
+            case 10:
+              _context.prev = 10;
+              _context.t0 = _context["catch"](0);
+              return _context.abrupt("return", next(_context.t0));
+            case 13:
+              next();
+              return _context.abrupt("return", null);
+            case 15:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee, null, [[0, 10]]);
+    }));
+    function loaderFunc(_x, _x2, _x3) {
+      return _loaderFunc.apply(this, arguments);
+    }
+    return loaderFunc;
+  }();
+}
+var loadAuthorTypes = makeLoader('AuthorType', 'authorTypes');
+exports.loadAuthorTypes = loadAuthorTypes;
+var loadEditionFormats = makeLoader('EditionFormat', 'editionFormats');
+exports.loadEditionFormats = loadEditionFormats;
+var loadEditionStatuses = makeLoader('EditionStatus', 'editionStatuses');
+exports.loadEditionStatuses = loadEditionStatuses;
+var loadIdentifierTypes = makeLoader('IdentifierType', 'identifierTypes');
+exports.loadIdentifierTypes = loadIdentifierTypes;
+var loadEditionGroupTypes = makeLoader('EditionGroupType', 'editionGroupTypes');
+exports.loadEditionGroupTypes = loadEditionGroupTypes;
+var loadPublisherTypes = makeLoader('PublisherType', 'publisherTypes');
+exports.loadPublisherTypes = loadPublisherTypes;
+var loadWorkTypes = makeLoader('WorkType', 'workTypes');
+exports.loadWorkTypes = loadWorkTypes;
+var loadSeriesOrderingTypes = makeLoader('SeriesOrderingType', 'seriesOrderingTypes');
+exports.loadSeriesOrderingTypes = loadSeriesOrderingTypes;
+var loadRelationshipTypes = makeLoader('RelationshipType', 'relationshipTypes', null, ['attributeTypes']);
+exports.loadRelationshipTypes = loadRelationshipTypes;
+var loadParentRelationshipTypes = makeLoader('RelationshipType', 'parentTypes');
+exports.loadParentRelationshipTypes = loadParentRelationshipTypes;
+var loadParentIdentifierTypes = makeLoader('IdentifierType', 'parentTypes');
+exports.loadParentIdentifierTypes = loadParentIdentifierTypes;
+var loadRelationshipAttributeTypes = makeLoader('RelationshipAttributeType', 'attributeTypes');
+exports.loadRelationshipAttributeTypes = loadRelationshipAttributeTypes;
+var loadGenders = makeLoader('Gender', 'genders', function (a, b) {
+  return a.id > b.id;
+});
+exports.loadGenders = loadGenders;
+var loadLanguages = makeLoader('Language', 'languages', function (a, b) {
+  if (a.frequency !== b.frequency) {
+    return b.frequency - a.frequency;
+  }
+  return a.name.localeCompare(b.name);
+});
+exports.loadLanguages = loadLanguages;
+function loadSeriesItems(req, res, next) {
+  try {
+    var entity = res.locals.entity;
+    if (entity.dataId) {
+      var relationships = entity.relationships;
+      // Extract the series items from relationships
+      var seriesItems = (0, _remove2.default)(relationships, function (relationship) {
+        return relationship.typeId > 69 &amp;&amp; relationship.typeId &lt; 75;
+      });
+      if (entity.seriesOrderingType.label === 'Manual') {
+        seriesItems.sort(commonUtils.sortRelationshipOrdinal('position'));
+      } else {
+        seriesItems.sort(commonUtils.sortRelationshipOrdinal('number'));
+      }
+      var formattedSeriesItems = seriesItems.map(function (item) {
+        return _objectSpread(_objectSpread({}, item.source), {}, {
+          displayNumber: true,
+          number: item.number,
+          position: item.position
+        });
+      });
+      res.locals.entity.seriesItems = formattedSeriesItems;
+    } else {
+      res.locals.entity.seriesItems = [];
+    }
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+}
+function loadWorkTableAuthors(_x4, _x5, _x6) {
+  return _loadWorkTableAuthors.apply(this, arguments);
+}
+/**
+ * Add the relationships on entity object.
+ *
+ * @param {Object} entity - The entity to load the relationships for.
+ * @param {Object} relationshipSet - The RelationshipSet model.
+ * @param {Object} orm - The ORM instance.
+ */
+function _loadWorkTableAuthors() {
+  _loadWorkTableAuthors = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4(req, res, next) {
+    var orm, entity, workBBIDs, authorsData, authorsDataGroupedByWorkBBID;
+    return _regenerator.default.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            orm = req.app.locals.orm;
+            entity = res.locals.entity;
+            _context4.prev = 2;
+            workBBIDs = (0, _entity.getRelationshipTargetBBIDByTypeId)(entity, 10);
+            _context4.next = 6;
+            return orm.func.work.loadAuthorNames(orm, workBBIDs);
+          case 6:
+            authorsData = _context4.sent;
+            authorsDataGroupedByWorkBBID = (0, _groupBy2.default)(authorsData, 'workbbid');
+            entity.authorsData = authorsDataGroupedByWorkBBID;
+            _context4.next = 14;
+            break;
+          case 11:
+            _context4.prev = 11;
+            _context4.t0 = _context4["catch"](2);
+            return _context4.abrupt("return", next(_context4.t0));
+          case 14:
+            return _context4.abrupt("return", next());
+          case 15:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4, null, [[2, 11]]);
+  }));
+  return _loadWorkTableAuthors.apply(this, arguments);
+}
+function addRelationships(_x7, _x8, _x9) {
+  return _addRelationships.apply(this, arguments);
+}
+function _addRelationships() {
+  _addRelationships = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee7(entity, relationshipSet, orm) {
+    var getEntityWithAlias, _getEntityWithAlias, relationshipPromises, relationships;
+    return _regenerator.default.wrap(function _callee7$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            _getEntityWithAlias = function _getEntityWithAlias3() {
+              _getEntityWithAlias = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6(relEntity) {
+                var redirectBbid, model;
+                return _regenerator.default.wrap(function _callee6$(_context6) {
+                  while (1) {
+                    switch (_context6.prev = _context6.next) {
+                      case 0:
+                        _context6.next = 2;
+                        return orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
+                      case 2:
+                        redirectBbid = _context6.sent;
+                        model = commonUtils.getEntityModelByType(orm, relEntity.type);
+                        return _context6.abrupt("return", model.forge({
+                          bbid: redirectBbid
+                        }).fetch({
+                          require: false,
+                          withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))
+                        }));
+                      case 5:
+                      case "end":
+                        return _context6.stop();
+                    }
+                  }
+                }, _callee6);
+              }));
+              return _getEntityWithAlias.apply(this, arguments);
+            };
+            getEntityWithAlias = function _getEntityWithAlias2(_x34) {
+              return _getEntityWithAlias.apply(this, arguments);
+            };
+            entity.relationships = relationshipSet ? relationshipSet.related('relationships').toJSON() : [];
+            utils.attachAttributes(entity.relationships);
+
+            /**
+             * Source and target are generic Entity objects, so until we have
+             * a good way of polymorphically fetching the right specific entity,
+             * we need to fetch default alias in a somewhat sketchier way.
+             */
+            relationshipPromises = entity.relationships.map( /*#__PURE__*/function () {
+              var _ref3 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5(relationship) {
+                var _yield$Promise$all, _yield$Promise$all2, source, target;
+                return _regenerator.default.wrap(function _callee5$(_context5) {
+                  while (1) {
+                    switch (_context5.prev = _context5.next) {
+                      case 0:
+                        _context5.next = 2;
+                        return Promise.all([getEntityWithAlias(relationship.source), getEntityWithAlias(relationship.target)]);
+                      case 2:
+                        _yield$Promise$all = _context5.sent;
+                        _yield$Promise$all2 = (0, _slicedToArray2.default)(_yield$Promise$all, 2);
+                        source = _yield$Promise$all2[0];
+                        target = _yield$Promise$all2[1];
+                        relationship.source = source.toJSON();
+                        relationship.target = target.toJSON();
+                        return _context5.abrupt("return", relationship);
+                      case 9:
+                      case "end":
+                        return _context5.stop();
+                    }
+                  }
+                }, _callee5);
+              }));
+              return function (_x35) {
+                return _ref3.apply(this, arguments);
+              };
+            }());
+            _context7.next = 7;
+            return Promise.all(relationshipPromises);
+          case 7:
+            relationships = _context7.sent;
+            return _context7.abrupt("return", relationships);
+          case 9:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7);
+  }));
+  return _addRelationships.apply(this, arguments);
+}
+function loadEntityRelationships(_x10, _x11, _x12) {
+  return _loadEntityRelationships.apply(this, arguments);
+}
+function _loadEntityRelationships() {
+  _loadEntityRelationships = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee8(req, res, next) {
+    var orm, RelationshipSet, entity, relationshipSet;
+    return _regenerator.default.wrap(function _callee8$(_context8) {
+      while (1) {
+        switch (_context8.prev = _context8.next) {
+          case 0:
+            orm = req.app.locals.orm;
+            RelationshipSet = orm.RelationshipSet;
+            entity = res.locals.entity;
+            _context8.prev = 3;
+            if (entity) {
+              _context8.next = 6;
+              break;
+            }
+            throw new error.SiteError('Failed to load entity');
+          case 6:
+            _context8.next = 8;
+            return RelationshipSet.forge({
+              id: entity.relationshipSetId
+            }).fetch({
+              require: false,
+              withRelated: ['relationships.source', 'relationships.target', 'relationships.type.attributeTypes', 'relationships.attributeSet.relationshipAttributes.value', 'relationships.attributeSet.relationshipAttributes.type']
+            });
+          case 8:
+            relationshipSet = _context8.sent;
+            _context8.next = 11;
+            return addRelationships(entity, relationshipSet, orm);
+          case 11:
+            _context8.next = 16;
+            break;
+          case 13:
+            _context8.prev = 13;
+            _context8.t0 = _context8["catch"](3);
+            return _context8.abrupt("return", next(_context8.t0));
+          case 16:
+            return _context8.abrupt("return", next());
+          case 17:
+          case "end":
+            return _context8.stop();
+        }
+      }
+    }, _callee8, null, [[3, 13]]);
+  }));
+  return _loadEntityRelationships.apply(this, arguments);
+}
+function loadWikipediaExtract(_x13, _x14, _x15) {
+  return _loadWikipediaExtract.apply(this, arguments);
+}
+function _loadWikipediaExtract() {
+  _loadWikipediaExtract = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee9(req, res, next) {
+    var entity, wikidataId, browserLanguages, aliasLanguages, preferredLanguages, article, extract;
+    return _regenerator.default.wrap(function _callee9$(_context9) {
+      while (1) {
+        switch (_context9.prev = _context9.next) {
+          case 0:
+            entity = res.locals.entity;
+            if (entity) {
+              _context9.next = 3;
+              break;
+            }
+            return _context9.abrupt("return", next(new error.SiteError('Failed to load entity')));
+          case 3:
+            wikidataId = (0, _wikimedia2.getWikidataId)(entity);
+            if (wikidataId) {
+              _context9.next = 6;
+              break;
+            }
+            return _context9.abrupt("return", next());
+          case 6:
+            // try to use the user's browser languages, fallback to English and alias languages
+            browserLanguages = (0, _i18n.getAcceptedLanguageCodes)(req);
+            aliasLanguages = commonUtils.getAliasLanguageCodes(entity);
+            preferredLanguages = browserLanguages.concat('en', aliasLanguages);
+            _context9.prev = 9;
+            _context9.next = 12;
+            return (0, _wikimedia.selectWikipediaPage)(wikidataId, {
+              forceCache: true,
+              preferredLanguages: preferredLanguages
+            });
+          case 12:
+            article = _context9.sent;
+            if (!article) {
+              _context9.next = 18;
+              break;
+            }
+            _context9.next = 16;
+            return (0, _wikimedia.getWikipediaExtract)(article, {
+              forceCache: true
+            });
+          case 16:
+            extract = _context9.sent;
+            if (extract) {
+              res.locals.wikipediaExtract = _objectSpread({
+                article: article
+              }, extract);
+            }
+          case 18:
+            _context9.next = 23;
+            break;
+          case 20:
+            _context9.prev = 20;
+            _context9.t0 = _context9["catch"](9);
+            _log.default.warning("Failed to pre-load Wikipedia extract for ".concat(wikidataId, ": ").concat(_context9.t0.message));
+          case 23:
+            return _context9.abrupt("return", next());
+          case 24:
+          case "end":
+            return _context9.stop();
+        }
+      }
+    }, _callee9, null, [[9, 20]]);
+  }));
+  return _loadWikipediaExtract.apply(this, arguments);
+}
+function checkValidRevisionId(req, res, next, id) {
+  var idToNumber = (0, _toNumber2.default)(id);
+  if (!(0, _isInteger2.default)(idToNumber) || (0, _isInteger2.default)(idToNumber) &amp;&amp; idToNumber &lt;= 0) {
+    return next(new error.BadRequestError("Invalid revision id: ".concat(req.params.id), req));
+  }
+  return next();
+}
+function checkValidTypeId(req, res, next, id) {
+  var idToNumber = (0, _toNumber2.default)(id);
+  if (!(0, _isInteger2.default)(idToNumber) || idToNumber &lt;= 0) {
+    return next(new error.BadRequestError("Invalid Type id: ".concat(req.params.id), req));
+  }
+  return next();
+}
+function checkValidEntityType(req, res, next, entityType) {
+  var entityTypes = _entity.ENTITY_TYPES.map(function (entity) {
+    return (0, _snakeCase2.default)(entity);
+  });
+  if (!(0, _includes2.default)(entityTypes, entityType)) {
+    return next(new error.BadRequestError("Invalid Entity Type: ".concat(commonUtils.snakeCaseToSentenceCase(entityType)), req));
+  }
+  return next();
+}
+function redirectedBbid(_x16, _x17, _x18, _x19) {
+  return _redirectedBbid.apply(this, arguments);
+}
+function _redirectedBbid() {
+  _redirectedBbid = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee10(req, res, next, bbid) {
+    var orm, redirectBbid;
+    return _regenerator.default.wrap(function _callee10$(_context10) {
+      while (1) {
+        switch (_context10.prev = _context10.next) {
+          case 0:
+            if (commonUtils.isValidBBID(bbid)) {
+              _context10.next = 2;
+              break;
+            }
+            return _context10.abrupt("return", next(new error.BadRequestError("Invalid bbid: ".concat(req.params.bbid), req)));
+          case 2:
+            orm = req.app.locals.orm;
+            _context10.prev = 3;
+            _context10.next = 6;
+            return orm.func.entity.recursivelyGetRedirectBBID(orm, bbid);
+          case 6:
+            redirectBbid = _context10.sent;
+            if (!(redirectBbid !== bbid)) {
+              _context10.next = 9;
+              break;
+            }
+            return _context10.abrupt("return", res.redirect(301, "".concat(req.baseUrl).concat(req.path.replace(bbid, redirectBbid))));
+          case 9:
+            _context10.next = 14;
+            break;
+          case 11:
+            _context10.prev = 11;
+            _context10.t0 = _context10["catch"](3);
+            return _context10.abrupt("return", next(_context10.t0));
+          case 14:
+            return _context10.abrupt("return", next());
+          case 15:
+          case "end":
+            return _context10.stop();
+        }
+      }
+    }, _callee10, null, [[3, 11]]);
+  }));
+  return _redirectedBbid.apply(this, arguments);
+}
+function makeEntityLoader(modelName, additionalRels, errMessage) {
+  var relations = ['aliasSet.aliases.language', 'annotation.lastRevision', 'defaultAlias', 'disambiguation', 'identifierSet.identifiers.type', 'relationshipSet.relationships.type', 'revision.revision', 'collections.owner'].concat(additionalRels);
+  return /*#__PURE__*/function () {
+    var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(req, res, next, bbid) {
+      var orm, entity, reviews;
+      return _regenerator.default.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              orm = req.app.locals.orm;
+              if (!commonUtils.isValidBBID(bbid)) {
+                _context2.next = 25;
+                break;
+              }
+              _context2.prev = 2;
+              _context2.next = 5;
+              return orm.func.entity.getEntity(orm, modelName, bbid, relations);
+            case 5:
+              entity = _context2.sent;
+              if (entity.dataId) {
+                _context2.next = 11;
+                break;
+              }
+              entity.deleted = true;
+              _context2.next = 10;
+              return orm.func.entity.getEntityParentAlias(orm, modelName, bbid);
+            case 10:
+              entity.parentAlias = _context2.sent;
+            case 11:
+              if (entity.collections) {
+                entity.collections = entity.collections.filter(function (collection) {
+                  var _req$user;
+                  return collection.public === true || parseInt(collection.ownerId, 10) === parseInt((_req$user = req.user) === null || _req$user === void 0 ? void 0 : _req$user.id, 10);
+                });
+              }
+              _context2.next = 14;
+              return (0, _critiquebrainz.getReviewsFromCB)(bbid, entity.type);
+            case 14:
+              reviews = _context2.sent;
+              entity.reviews = reviews;
+              res.locals.entity = entity;
+              return _context2.abrupt("return", next());
+            case 20:
+              _context2.prev = 20;
+              _context2.t0 = _context2["catch"](2);
+              return _context2.abrupt("return", next(new error.NotFoundError(errMessage, req)));
+            case 23:
+              _context2.next = 26;
+              break;
+            case 25:
+              return _context2.abrupt("return", next(new error.BadRequestError('Invalid BBID', req)));
+            case 26:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, null, [[2, 20]]);
+    }));
+    return function (_x20, _x21, _x22, _x23) {
+      return _ref.apply(this, arguments);
+    };
+  }();
+}
+function makeCollectionLoader() {
+  return /*#__PURE__*/function () {
+    var _ref2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(req, res, next, collectionId) {
+      var UserCollection, collection, collectionJSON;
+      return _regenerator.default.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              UserCollection = req.app.locals.orm.UserCollection;
+              if (!commonUtils.isValidBBID(collectionId)) {
+                _context3.next = 17;
+                break;
+              }
+              _context3.prev = 2;
+              _context3.next = 5;
+              return new UserCollection({
+                id: collectionId
+              }).fetch({
+                require: true,
+                withRelated: ['collaborators.collaborator', 'items', 'owner']
+              });
+            case 5:
+              collection = _context3.sent;
+              collectionJSON = collection.toJSON(); // reshaping collaborators such that it can be used in EntitySearchFieldOption
+              collectionJSON.collaborators = collectionJSON.collaborators.map(function (collaborator) {
+                return {
+                  id: collaborator.collaborator.id,
+                  text: collaborator.collaborator.name
+                };
+              });
+              res.locals.collection = collectionJSON;
+              return _context3.abrupt("return", next());
+            case 12:
+              _context3.prev = 12;
+              _context3.t0 = _context3["catch"](2);
+              return _context3.abrupt("return", next(new error.NotFoundError('Collection Not Found', req)));
+            case 15:
+              _context3.next = 18;
+              break;
+            case 17:
+              return _context3.abrupt("return", next(new error.BadRequestError('Invalid Collection ID', req)));
+            case 18:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3, null, [[2, 12]]);
+    }));
+    return function (_x24, _x25, _x26, _x27) {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+}
+function validateCollectionParams(_x28, _x29, _x30) {
+  return _validateCollectionParams.apply(this, arguments);
+}
+function _validateCollectionParams() {
+  _validateCollectionParams = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee11(req, res, next) {
+    var _req$body, _req$body$collaborato2, collaborators, name, entityType, orm, Editor, entityTypes, collaboratorIds, i, collaboratorId, editors, editorsJSON, _loop3, _i2, _ret3;
+    return _regenerator.default.wrap(function _callee11$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+            _req$body = req.body, _req$body$collaborato2 = _req$body.collaborators, collaborators = _req$body$collaborato2 === void 0 ? [] : _req$body$collaborato2, name = _req$body.name, entityType = _req$body.entityType;
+            orm = req.app.locals.orm;
+            Editor = orm.Editor;
+            if ((0, _trim2.default)(name).length) {
+              _context11.next = 5;
+              break;
+            }
+            return _context11.abrupt("return", next(new error.BadRequestError('Invalid collection name: Empty string not allowed', req)));
+          case 5:
+            entityTypes = (0, _keys2.default)(commonUtils.getEntityModels(orm));
+            if (entityTypes.includes((0, _upperFirst2.default)((0, _camelCase2.default)(entityType)))) {
+              _context11.next = 8;
+              break;
+            }
+            return _context11.abrupt("return", next(new error.BadRequestError("Invalid entity type: ".concat(entityType, " does not exist"), req)));
+          case 8:
+            collaboratorIds = collaborators.map(function (collaborator) {
+              return collaborator.id;
+            });
+            i = 0;
+          case 10:
+            if (!(i &lt; collaboratorIds.length)) {
+              _context11.next = 17;
+              break;
+            }
+            collaboratorId = collaboratorIds[i];
+            if (/^\d+$/.test(collaboratorId)) {
+              _context11.next = 14;
+              break;
+            }
+            return _context11.abrupt("return", next(new error.BadRequestError("Invalid collaborator id: ".concat(collaboratorId, " not valid"), req)));
+          case 14:
+            i++;
+            _context11.next = 10;
+            break;
+          case 17:
+            _context11.next = 19;
+            return new Editor().where('id', 'in', collaboratorIds).fetchAll({
+              require: false
+            });
+          case 19:
+            editors = _context11.sent;
+            editorsJSON = editors.toJSON();
+            _loop3 = function _loop3(_i2) {
+              var collaboratorId = collaboratorIds[_i2];
+              if (!editorsJSON.find(function (editor) {
+                return editor.id === collaboratorId;
+              })) {
+                return {
+                  v: next(new error.NotFoundError("Collaborator ".concat(collaboratorId, " does not exist"), req))
+                };
+              }
+            };
+            _i2 = 0;
+          case 23:
+            if (!(_i2 &lt; collaboratorIds.length)) {
+              _context11.next = 30;
+              break;
+            }
+            _ret3 = _loop3(_i2);
+            if (!((0, _typeof2.default)(_ret3) === "object")) {
+              _context11.next = 27;
+              break;
+            }
+            return _context11.abrupt("return", _ret3.v);
+          case 27:
+            _i2++;
+            _context11.next = 23;
+            break;
+          case 30:
+            return _context11.abrupt("return", next());
+          case 31:
+          case "end":
+            return _context11.stop();
+        }
+      }
+    }, _callee11);
+  }));
+  return _validateCollectionParams.apply(this, arguments);
+}
+function validateBBIDsForCollectionAdd(_x31, _x32, _x33) {
+  return _validateBBIDsForCollectionAdd.apply(this, arguments);
+}
+function _validateBBIDsForCollectionAdd() {
+  _validateBBIDsForCollectionAdd = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee12(req, res, next) {
+    var Entity, _req$body$bbids2, bbids, collection, collectionType, i, bbid, entities, entitiesJSON, _loop4, _i3, _ret4;
+    return _regenerator.default.wrap(function _callee12$(_context12) {
+      while (1) {
+        switch (_context12.prev = _context12.next) {
+          case 0:
+            Entity = req.app.locals.orm.Entity;
+            _req$body$bbids2 = req.body.bbids, bbids = _req$body$bbids2 === void 0 ? [] : _req$body$bbids2;
+            if (bbids.length) {
+              _context12.next = 4;
+              break;
+            }
+            return _context12.abrupt("return", next(new error.BadRequestError('BBIDs array is empty')));
+          case 4:
+            collection = res.locals.collection;
+            collectionType = collection.entityType;
+            i = 0;
+          case 7:
+            if (!(i &lt; bbids.length)) {
+              _context12.next = 14;
+              break;
+            }
+            bbid = bbids[i];
+            if (commonUtils.isValidBBID(bbid)) {
+              _context12.next = 11;
+              break;
+            }
+            return _context12.abrupt("return", next(new error.BadRequestError("Invalid BBID ".concat(bbid), req)));
+          case 11:
+            i++;
+            _context12.next = 7;
+            break;
+          case 14:
+            _context12.next = 16;
+            return new Entity().where('bbid', 'in', bbids).fetchAll({
+              require: false
+            });
+          case 16:
+            entities = _context12.sent;
+            entitiesJSON = entities.toJSON();
+            _loop4 = function _loop4(_i3) {
+              var bbid = bbids[_i3];
+              var entity = entitiesJSON.find(function (currEntity) {
+                return currEntity.bbid === bbid;
+              });
+              if (!entity) {
+                return {
+                  v: next(new error.NotFoundError("".concat(collectionType, " ").concat(bbid, " does not exist"), req))
+                };
+              }
+              if ((0, _lowerCase2.default)(entity.type) !== (0, _lowerCase2.default)(collectionType)) {
+                return {
+                  v: next(new error.BadRequestError("Cannot add an entity of type ".concat(entity.type, " to a collection of type ").concat(collectionType)))
+                };
+              }
+            };
+            _i3 = 0;
+          case 20:
+            if (!(_i3 &lt; bbids.length)) {
+              _context12.next = 27;
+              break;
+            }
+            _ret4 = _loop4(_i3);
+            if (!((0, _typeof2.default)(_ret4) === "object")) {
+              _context12.next = 24;
+              break;
+            }
+            return _context12.abrupt("return", _ret4.v);
+          case 24:
+            _i3++;
+            _context12.next = 20;
+            break;
+          case 27:
+            return _context12.abrupt("return", next());
+          case 28:
+          case "end":
+            return _context12.stop();
+        }
+      }
+    }, _callee12);
+  }));
+  return _validateBBIDsForCollectionAdd.apply(this, arguments);
+}
+function validateBBIDsForCollectionRemove(req, res, next) {
+  var _req$body$bbids = req.body.bbids,
+    bbids = _req$body$bbids === void 0 ? [] : _req$body$bbids;
+  if (!bbids.length) {
+    return next(new error.BadRequestError('BBIDs array is empty'));
+  }
+  var collection = res.locals.collection;
+  for (var i = 0; i &lt; bbids.length; i++) {
+    var bbid = bbids[i];
+    if (!commonUtils.isValidBBID(bbid)) {
+      return next(new error.BadRequestError("Invalid BBID ".concat(bbid), req));
+    }
+  }
+  var _loop = function _loop(_i) {
+    var bbid = bbids[_i];
+    var isBbidInCollection = collection.items.find(function (item) {
+      return item.bbid === bbid;
+    });
+    if (!isBbidInCollection) {
+      return {
+        v: next(new error.BadRequestError("Entity ".concat(bbid, " is not in collection ").concat(collection.id), req))
+      };
+    }
+  };
+  for (var _i = 0; _i &lt; bbids.length; _i++) {
+    var _ret = _loop(_i);
+    if ((0, _typeof2.default)(_ret) === "object") return _ret.v;
+  }
+  return next();
+}
+function validateCollaboratorIdsForCollectionRemove(req, res, next) {
+  var _req$body$collaborato = req.body.collaboratorIds,
+    collaboratorIds = _req$body$collaborato === void 0 ? [] : _req$body$collaborato;
+  if (!collaboratorIds.length) {
+    return next(new error.BadRequestError('CollaboratorIds array is empty'));
+  }
+  var collection = res.locals.collection;
+  var _loop2 = function _loop2(i) {
+    var collaboratorId = collaboratorIds[i];
+    var isCollaborator = collection.collaborators.find(function (collaborator) {
+      return collaborator.id === collaboratorId;
+    });
+    if (!isCollaborator) {
+      return {
+        v: next(new error.BadRequestError("User ".concat(collaboratorId, " is not a collaborator of collection ").concat(collection.id), req))
+      };
+    }
+  };
+  for (var i = 0; i &lt; collaboratorIds.length; i++) {
+    var _ret2 = _loop2(i);
+    if ((0, _typeof2.default)(_ret2) === "object") return _ret2.v;
+  }
+  return next();
+}
+//# sourceMappingURL=middleware.js.map</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Sep 22 2023 12:20:12 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

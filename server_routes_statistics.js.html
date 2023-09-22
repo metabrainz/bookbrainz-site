@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>server/routes/statistics.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <li class="nav-link nav-home-link"><a href="index.html">Home</a></li><li class="nav-heading">Modules</li><li class="nav-heading"><span class="nav-item-type type-module">M</span><span class="nav-item-name"><a href="module-Achievement.html">Achievement</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#._awardAchievement">_awardAchievement</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#._awardUnlock">_awardUnlock</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~_awardTitle">_awardTitle</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~_processHotOffThePress">_processHotOffThePress</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~_processMarathoner">_processMarathoner</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~_processPageVisit">_processPageVisit</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~_processSprinter">_processSprinter</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~_testTiers">_testTiers</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~awardUnlock">awardUnlock</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~getEditionDateDifference">getEditionDateDifference</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="module-Achievement.html#~testTiers">testTiers</a></span></li><li class="nav-heading"><a href="global.html">Globals</a></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_createAdminLog">_createAdminLog</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getAllEntities">_getAllEntities</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getAssociatedEntityRevisions">_getAssociatedEntityRevisions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getAvailableWikipediaArticles">_getAvailableWikipediaArticles</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getIdByField">_getIdByField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getLast30DaysEntities">_getLast30DaysEntities</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getOrderedCollectionsForEditorPage">_getOrderedCollectionsForEditorPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getOrderedPublicCollections">_getOrderedPublicCollections</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_getOrderedRevisions">_getOrderedRevisions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_loadWorkTableAuthors">_loadWorkTableAuthors</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_parseLanguages">_parseLanguages</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_relationshipTypeCreateOrEditHandler">_relationshipTypeCreateOrEditHandler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_searchOption">_searchOption</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#_selectWikipediaPage">_selectWikipediaPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AboutPage">AboutPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addAliasRow">addAliasRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addAuthor">addAuthor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addAuthorCreditRow">addAuthorCreditRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addAuthorsDataToWorks">addAuthorsDataToWorks</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addBulkSeriesItems">addBulkSeriesItems</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addEditionGroup">addEditionGroup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addIdentifierRow">addIdentifierRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addInitialRelationship">addInitialRelationship</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addLanguage">addLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addOtherISBN">addOtherISBN</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addPublisher">addPublisher</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addSeries">addSeries</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addSeriesItem">addSeriesItem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#addWork">addWork</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#AdminPanelSearchResults">AdminPanelSearchResults</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AliasButton">AliasButton</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AliasEditor">AliasEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AliasEditorMerge">AliasEditorMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AliasRow">AliasRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AliasRowMerge">AliasRowMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AnnotationSection">AnnotationSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#areaToOption">areaToOption</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#assignIfNotSet">assignIfNotSet</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#attachAttribToRelForDisplay">attachAttribToRelForDisplay</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#attachAttributes">attachAttributes</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AuthorCreditEditor">AuthorCreditEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AuthorCreditRow">AuthorCreditRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AuthorSection">AuthorSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#AuthorSectionMerge">AuthorSectionMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ButtonBar">ButtonBar</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#cacheMaxAge">cacheMaxAge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#calIsbn10Chk">calIsbn10Chk</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#calIsbn13Chk">calIsbn13Chk</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#CallToAction">CallToAction</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkIfNameExists">checkIfNameExists</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#checkPrivilege">checkPrivilege</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#cleanupOnExit">cleanupOnExit</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#clearAuthor">clearAuthor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#clearAuthorCredit">clearAuthorCredit</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#clearEditionGroups">clearEditionGroups</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#clearPublisher">clearPublisher</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#clearPublishers">clearPublishers</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#closeEntityModal">closeEntityModal</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#collapseWhiteSpaces">collapseWhiteSpaces</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#collectionCreateOrEditHandler">collectionCreateOrEditHandler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#constructAdminLogStatement">constructAdminLogStatement</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ContributePage">ContributePage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#createEntitiesHandler">createEntitiesHandler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#createEntityPageTitle">createEntityPageTitle</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#dateObjectToISOString">dateObjectToISOString</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateAliasName">debouncedUpdateAliasName</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateAliasSortName">debouncedUpdateAliasSortName</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateBeginDate">debouncedUpdateBeginDate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateDepth">debouncedUpdateDepth</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateDisambiguationField">debouncedUpdateDisambiguationField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateEndDate">debouncedUpdateEndDate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateHeight">debouncedUpdateHeight</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateIdentifierValue">debouncedUpdateIdentifierValue</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateISBNValue">debouncedUpdateISBNValue</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateNameField">debouncedUpdateNameField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdatePages">debouncedUpdatePages</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateReleaseDate">debouncedUpdateReleaseDate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateSortNameField">debouncedUpdateSortNameField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateWeight">debouncedUpdateWeight</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debouncedUpdateWidth">debouncedUpdateWidth</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debounceUpdateAnnotation">debounceUpdateAnnotation</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#debounceUpdateRevisionNote">debounceUpdateRevisionNote</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#DevelopPage">DevelopPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#disablePhysical">disablePhysical</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#DisambiguationField">DisambiguationField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#dispatch">dispatch</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#DragAndDropImage">DragAndDropImage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#dumpEdition">dumpEdition</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#duplicateWork">duplicateWork</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EditionGroupSection">EditionGroupSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EditionGroupSectionMerge">EditionGroupSectionMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EditionSection">EditionSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EditionSectionMerge">EditionSectionMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#EditorAchievementTab">EditorAchievementTab</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#editSeriesItem">editSeriesItem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#enablePhysical">enablePhysical</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#ended">ended</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EntityCountTable">EntityCountTable</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EntityEditor">EntityEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#entityEditorMarkup">entityEditorMarkup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#EntityMerge">EntityMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#entityMergeMarkup">entityMergeMarkup</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#EntityRevisions">EntityRevisions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#entityToOption">entityToOption</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ErrorPage">ErrorPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#filterOutRelationshipTypeById">filterOutRelationshipTypeById</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#generateEntityMergeProps">generateEntityMergeProps</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#generateEntityProps">generateEntityProps</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#generateUnifiedProps">generateUnifiedProps</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getAcceptedLanguageCodes">getAcceptedLanguageCodes</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getAdditionalRelations">getAdditionalRelations</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getAllEntities">getAllEntities</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getAssociatedEntityRevisions">getAssociatedEntityRevisions</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getAuthorEntityMergeSection">getAuthorEntityMergeSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getAvailableWikipediaArticles">getAvailableWikipediaArticles</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getDefaultAliasIndex">getDefaultAliasIndex</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getEditionEntityMergeSection">getEditionEntityMergeSection</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getEditionGroupEntityMergeSection">getEditionGroupEntityMergeSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEntityByBBID">getEntityByBBID</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEntityLink">getEntityLink</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEntityModelByType">getEntityModelByType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEntityModels">getEntityModels</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEntitySectionByType">getEntitySectionByType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getEntityTable">getEntityTable</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getIdByField">getIdByField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getIdByLabel">getIdByLabel</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getInitAttribute">getInitAttribute</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getOrderedCollectionsForEditorPage">getOrderedCollectionsForEditorPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getPrivilegeBitsArray">getPrivilegeBitsArray</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getProgress">getProgress</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getPublisherEntityMergeSection">getPublisherEntityMergeSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getRelationshipSourceByTypeId">getRelationshipSourceByTypeId</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getRelationshipTargetBBIDByTypeId">getRelationshipTargetBBIDByTypeId</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getRelationshipTargetByTypeId">getRelationshipTargetByTypeId</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getSeriesEntityMergeSection">getSeriesEntityMergeSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getTodayDate">getTodayDate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getUfValidator">getUfValidator</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#getWikipediaExtractForWikidata">getWikipediaExtractForWikidata</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#getWorkEntityMergeSection">getWorkEntityMergeSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#HelpPage">HelpPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#hideAliasEditor">hideAliasEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#hideAuthorCreditEditor">hideAuthorCreditEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#hideIdentifierEditor">hideIdentifierEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#IdentifierButton">IdentifierButton</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#IdentifierEditor">IdentifierEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#IdentifierRow">IdentifierRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#incrementEditorEditCountById">incrementEditorEditCountById</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#indexAutoCreatedEditionGroup">indexAutoCreatedEditionGroup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#injectDefaultAliasName">injectDefaultAliasName</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#isArea">isArea</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#isbn10To13">isbn10To13</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#isbn13To10">isbn13To10</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#isCoverTabEmpty">isCoverTabEmpty</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#isDetailTabEmpty">isDetailTabEmpty</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#isNullDate">isNullDate</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ISODateStringToObject">ISODateStringToObject</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#isValidBBID">isValidBBID</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#LanguageField">LanguageField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#loadEdition">loadEdition</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#makeEntityCreateOrEditHandler">makeEntityCreateOrEditHandler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#makePromiseFromObject">makePromiseFromObject</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#MergeField">MergeField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#NameField">NameField</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#NameSection">NameSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#NameSectionMerge">NameSectionMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#NumericField">NumericField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#openEntityModal">openEntityModal</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parseAcceptLanguage">parseAcceptLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#parseLanguages">parseLanguages</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#PrivacyPage">PrivacyPage</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#PrivilegeTypes">PrivilegeTypes</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#PublisherSection">PublisherSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#PublisherSectionMerge">PublisherSectionMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#recursivelyGetMergedEntitiesBBIDs">recursivelyGetMergedEntitiesBBIDs</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#RegistrationAuth">RegistrationAuth</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#relationshipTypeCreateOrEditHandler">relationshipTypeCreateOrEditHandler</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeAliasRow">removeAliasRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeAllSeriesItems">removeAllSeriesItems</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeAuthorCreditRow">removeAuthorCreditRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeEmptyAliases">removeEmptyAliases</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeEmptyCreditRows">removeEmptyCreditRows</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeEmptyIdentifiers">removeEmptyIdentifiers</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeIdentifierRow">removeIdentifierRow</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeSeries">removeSeries</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeSeriesItem">removeSeriesItem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#removeWork">removeWork</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#renderRelationship">renderRelationship</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#resetAuthorCredit">resetAuthorCredit</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#router">router</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sanitize">sanitize</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#searchName">searchName</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#SearchResults">SearchResults</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sendEmail">sendEmail</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#SeriesListItem">SeriesListItem</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#SeriesSection">SeriesSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#SeriesSectionMerge">SeriesSectionMerge</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#setAttribute">setAttribute</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#setSubmitError">setSubmitError</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#setSubmitted">setSubmitted</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#setupSessions">setupSessions</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#showAliasEditor">showAliasEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#showAuthorCreditEditor">showAuthorCreditEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#showIdentifierEditor">showIdentifierEditor</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#SortNameField">SortNameField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sortRelationshipOrdinal">sortRelationshipOrdinal</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#sortSeriesItems">sortSeriesItems</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#StatisticsPage">StatisticsPage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#StrategyMock">StrategyMock</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#stringToHTMLWithLinks">stringToHTMLWithLinks</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#stripDot">stripDot</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#SubmissionSection">SubmissionSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#submitSingleEntity">submitSingleEntity</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#template">template</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#toggleAuthorCredit">toggleAuthorCredit</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#toggleCheck">toggleCheck</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#toggleShowEditionGroup">toggleShowEditionGroup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#TopEditorsTable">TopEditorsTable</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#transformISODateForDisplay">transformISODateForDisplay</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#transformISODateForSelect">transformISODateForSelect</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#unflatten">unflatten</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#unifiedFormMarkup">unifiedFormMarkup</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#UPDATE_WARN_IF_EDITION_GROUP_EXISTS">UPDATE_WARN_IF_EDITION_GROUP_EXISTS</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateAliasLanguage">updateAliasLanguage</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateAliasPrimary">updateAliasPrimary</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateArea">updateArea</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateAuthorCredit">updateAuthorCredit</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateAutoISBN">updateAutoISBN</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateBeginArea">updateBeginArea</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateCreditAuthorValue">updateCreditAuthorValue</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateCreditDisplayValue">updateCreditDisplayValue</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateCreditJoinPhraseValue">updateCreditJoinPhraseValue</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateEditionGroup">updateEditionGroup</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateEndArea">updateEndArea</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateEnded">updateEnded</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateFormat">updateFormat</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateGender">updateGender</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateIdentifierType">updateIdentifierType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateISBNType">updateISBNType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateLanguageField">updateLanguageField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateLanguages">updateLanguages</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateNameField">updateNameField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateOrderType">updateOrderType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updatePublisher">updatePublisher</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateSeriesType">updateSeriesType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateSortNameField">updateSortNameField</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateType">updateType</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#updateWork">updateWork</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#validateCoverTab">validateCoverTab</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#validateDetailTab">validateDetailTab</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#validateISBN">validateISBN</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#validateUnifiedForm">validateUnifiedForm</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ValidationLabel">ValidationLabel</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#ValueField">ValueField</a></span></li><li class="nav-item"><span class="nav-item-type type-member">M</span><span class="nav-item-name"><a href="global.html#wikidataIdentifierTypeIds">wikidataIdentifierTypeIds</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#WorkSection">WorkSection</a></span></li><li class="nav-item"><span class="nav-item-type type-function">F</span><span class="nav-item-name"><a href="global.html#WorkSectionMerge">WorkSectionMerge</a></span></li>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">server/routes/statistics.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+
+require("core-js/modules/es.weak-map.js");
+require("core-js/modules/es.object.get-own-property-descriptor.js");
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+var _typeof = require("@babel/runtime/helpers/typeof");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.promise.js");
+require("core-js/modules/es.string.iterator.js");
+require("core-js/modules/web.dom-collections.iterator.js");
+require("core-js/modules/es.array.map.js");
+require("core-js/modules/es.object.entries.js");
+require("core-js/modules/es.array.sort.js");
+require("core-js/modules/es.object.keys.js");
+require("core-js/modules/web.dom-collections.for-each.js");
+var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+var _snakeCase2 = _interopRequireDefault(require("lodash/snakeCase"));
+var commonUtils = _interopRequireWildcard(require("../../common/helpers/utils"));
+var propHelpers = _interopRequireWildcard(require("../../client/helpers/props"));
+var utils = _interopRequireWildcard(require("../helpers/utils"));
+var _props2 = require("../helpers/props");
+var _layout = _interopRequireDefault(require("../../client/containers/layout"));
+var _react = _interopRequireDefault(require("react"));
+var _server = _interopRequireDefault(require("react-dom/server"));
+var _statistics = _interopRequireDefault(require("../../client/components/pages/statistics"));
+var _express = _interopRequireDefault(require("express"));
+var _target = _interopRequireDefault(require("../templates/target"));
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop &amp;&amp; obj &amp;&amp; obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" &amp;&amp; typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache &amp;&amp; cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty &amp;&amp; Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" &amp;&amp; Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc &amp;&amp; (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+/*
+ * Copyright (C) 2018 Akhilesh Kumar &lt;akhilesh5991@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
+var router = _express.default.Router();
+
+/**
+ * Retrieves the total count of all entities in the database and returns it as an array of objects,
+ * where each object contains the entity name and its count. The results are sorted by count in
+ * descending order.
+ *
+ * @param {Object} orm - An object representing the ORM.
+ * @returns {Array&lt;Object>} An array of objects, where each object contains the entity name and its count
+ * @throws {Error} If there is an error fetching entities lifetime total
+ */
+function getAllEntities(_x) {
+  return _getAllEntities.apply(this, arguments);
+}
+/**
+ * Retrieves the count of entities created in the last 30 days and returns it as an object, where
+ * each key is the entity name and its value is the count.
+ *
+ * @param {Object} orm - An object representing the ORM.
+ * @returns {Object} An object where each key is the entity name and its value is the count
+ * @throws {Error} If there is an error fetching entities total cound from last 30 days
+ */
+function _getAllEntities() {
+  _getAllEntities = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(orm) {
+    var entityModels, countPromises, allEntities;
+    return _regenerator.default.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.prev = 0;
+            entityModels = commonUtils.getEntityModels(orm);
+            countPromises = Object.entries(entityModels).map( /*#__PURE__*/function () {
+              var _ref3 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(_ref2) {
+                var _ref4, modelName, model, Count;
+                return _regenerator.default.wrap(function _callee2$(_context2) {
+                  while (1) {
+                    switch (_context2.prev = _context2.next) {
+                      case 0:
+                        _ref4 = (0, _slicedToArray2.default)(_ref2, 2), modelName = _ref4[0], model = _ref4[1];
+                        _context2.next = 3;
+                        return model.query(function (qb) {
+                          qb.leftJoin('bookbrainz.revision', "bookbrainz.".concat((0, _snakeCase2.default)(modelName), ".revision_id"), 'bookbrainz.revision.id').where('master', true);
+                        }).count();
+                      case 3:
+                        Count = _context2.sent;
+                        return _context2.abrupt("return", {
+                          Count: Count,
+                          modelName: modelName
+                        });
+                      case 5:
+                      case "end":
+                        return _context2.stop();
+                    }
+                  }
+                }, _callee2);
+              }));
+              return function (_x7) {
+                return _ref3.apply(this, arguments);
+              };
+            }());
+            _context3.next = 5;
+            return Promise.all(countPromises);
+          case 5:
+            allEntities = _context3.sent;
+            allEntities.sort(function (a, b) {
+              return b.Count - a.Count;
+            });
+            return _context3.abrupt("return", allEntities);
+          case 10:
+            _context3.prev = 10;
+            _context3.t0 = _context3["catch"](0);
+            throw new Error('Error fetching all entities total');
+          case 13:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, null, [[0, 10]]);
+  }));
+  return _getAllEntities.apply(this, arguments);
+}
+function getLast30DaysEntities(_x2) {
+  return _getLast30DaysEntities.apply(this, arguments);
+}
+/**
+ * Retrieves the top 10 editors with the most revisions and returns them as an array of objects,
+ * where each object contains the editor's information.
+ *
+ * @param {Object} orm - An object representing the ORM.
+ * @returns {Array&lt;Object>} An array of objects, where each object contains the editor's information.
+ * @throws {Error} If there is an error fetching the top 10 editors.
+ */
+function _getLast30DaysEntities() {
+  _getLast30DaysEntities = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5(orm) {
+    var entityModels, countPromises, last30DaysEntitiesHelper, last30DaysEntities;
+    return _regenerator.default.wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.prev = 0;
+            entityModels = commonUtils.getEntityModels(orm);
+            countPromises = Object.keys(entityModels).map( /*#__PURE__*/function () {
+              var _ref5 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4(modelName) {
+                var model, Count;
+                return _regenerator.default.wrap(function _callee4$(_context4) {
+                  while (1) {
+                    switch (_context4.prev = _context4.next) {
+                      case 0:
+                        model = entityModels[modelName];
+                        _context4.next = 3;
+                        return model.query(function (qb) {
+                          qb.leftJoin('bookbrainz.revision', "bookbrainz.".concat((0, _snakeCase2.default)(modelName), ".revision_id"), 'bookbrainz.revision.id').where('master', true).where('bookbrainz.revision.created_at', '>=', utils.getDateBeforeDays(30));
+                        }).count();
+                      case 3:
+                        Count = _context4.sent;
+                        return _context4.abrupt("return", {
+                          Count: Count,
+                          modelName: modelName
+                        });
+                      case 5:
+                      case "end":
+                        return _context4.stop();
+                    }
+                  }
+                }, _callee4);
+              }));
+              return function (_x8) {
+                return _ref5.apply(this, arguments);
+              };
+            }());
+            _context5.next = 5;
+            return Promise.all(countPromises);
+          case 5:
+            last30DaysEntitiesHelper = _context5.sent;
+            last30DaysEntities = {};
+            last30DaysEntitiesHelper.forEach(function (model) {
+              last30DaysEntities[model.modelName] = model.Count;
+            });
+            return _context5.abrupt("return", last30DaysEntities);
+          case 11:
+            _context5.prev = 11;
+            _context5.t0 = _context5["catch"](0);
+            throw new Error('Error fetching entities from last 30 days');
+          case 14:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5, null, [[0, 11]]);
+  }));
+  return _getLast30DaysEntities.apply(this, arguments);
+}
+function getTop10Editors(_x3) {
+  return _getTop10Editors.apply(this, arguments);
+}
+/* Get Statistics Page */
+function _getTop10Editors() {
+  _getTop10Editors = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6(orm) {
+    var Editor, topEditorsQuery, topEditors;
+    return _regenerator.default.wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.prev = 0;
+            Editor = orm.Editor;
+            _context6.next = 4;
+            return new Editor().query(function (q) {
+              return q.orderBy('total_revisions', 'desc').limit(10);
+            }).fetchAll();
+          case 4:
+            topEditorsQuery = _context6.sent;
+            topEditors = topEditorsQuery.models.map(function (model) {
+              return model.attributes;
+            });
+            return _context6.abrupt("return", topEditors);
+          case 9:
+            _context6.prev = 9;
+            _context6.t0 = _context6["catch"](0);
+            throw new Error('Error fetching top 10 editors');
+          case 12:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6, null, [[0, 9]]);
+  }));
+  return _getTop10Editors.apply(this, arguments);
+}
+router.get('/', /*#__PURE__*/function () {
+  var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(req, res, next) {
+    var orm, _yield$Promise$all, _yield$Promise$all2, allEntities, last30DaysEntities, topEditors, props, markup;
+    return _regenerator.default.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            orm = req.app.locals.orm;
+            _context.prev = 1;
+            _context.next = 4;
+            return Promise.all([getAllEntities(orm), getLast30DaysEntities(orm), getTop10Editors(orm)]);
+          case 4:
+            _yield$Promise$all = _context.sent;
+            _yield$Promise$all2 = (0, _slicedToArray2.default)(_yield$Promise$all, 3);
+            allEntities = _yield$Promise$all2[0];
+            last30DaysEntities = _yield$Promise$all2[1];
+            topEditors = _yield$Promise$all2[2];
+            props = (0, _props2.generateProps)(req, res, {
+              allEntities: allEntities,
+              last30DaysEntities: last30DaysEntities,
+              topEditors: topEditors
+            });
+            markup = _server.default.renderToString( /*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_statistics.default, {
+              allEntities: allEntities,
+              last30DaysEntities: last30DaysEntities,
+              topEditors: topEditors
+            })));
+            return _context.abrupt("return", res.send((0, _target.default)({
+              markup: markup,
+              props: (0, _props2.escapeProps)(props),
+              script: '/js/statistics.js',
+              title: 'Statistics'
+            })));
+          case 14:
+            _context.prev = 14;
+            _context.t0 = _context["catch"](1);
+            return _context.abrupt("return", next(_context.t0));
+          case 17:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, null, [[1, 14]]);
+  }));
+  return function (_x4, _x5, _x6) {
+    return _ref.apply(this, arguments);
+  };
+}());
+var _default = router;
+exports.default = _default;
+//# sourceMappingURL=statistics.js.map</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Sep 22 2023 12:20:12 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
