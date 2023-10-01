@@ -76,6 +76,7 @@ class EntitySearchFieldOption extends React.Component {
 		);
 		const entityOption = {
 			...entity,
+			authors: entity.authors?.join(', ') ?? null,
 			disambiguation: _.get(entity, ['disambiguation', 'comment']),
 			id,
 			language: language && language.label,

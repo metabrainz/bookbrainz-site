@@ -15,6 +15,5 @@ test/
 .gitignore
 .gitmodules
 .tern-project
-.travis-yml
 LICENSE
 README.md
