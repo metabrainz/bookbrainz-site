@@ -28,6 +28,7 @@ import {keys as _keys, snakeCase as _snakeCase, isNil} from 'lodash';
 import {escapeProps, generateProps} from '../helpers/props';
 
 import Layout from '../../client/containers/layout';
+import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import SearchPage from '../../client/components/pages/search';
@@ -36,6 +37,7 @@ import target from '../templates/target';
 
 
 const router = express.Router();
+const {REINDEX_SEARCH_SERVER} = PrivilegeType;
 
 /**
  * Generates React markup for the search page that is rendered by the user's
@@ -56,7 +58,7 @@ router.get('/', async (req, res, next) => {
 		if (query) {
 			// get 1 more results to check nextEnabled
 			const searchResponse = await search.searchByName(orm, query, _snakeCase(type), size + 1, from);
-			const {results: entities, total} = searchResponse;
+			const {results: entities} = searchResponse;
 			searchResults = {
 				initialResults: entities.filter(entity => !isNil(entity)),
 				query
@@ -142,23 +144,11 @@ router.get('/exists', (req, res) => {
  *
  * @throws {error.PermissionDeniedError} - Thrown if user is not admin.
  */
-router.get('/reindex', auth.isAuthenticated, (req, res) => {
+router.get('/reindex', auth.isAuthenticated, auth.isAuthorized(REINDEX_SEARCH_SERVER), async (req, res) => {
 	const {orm} = req.app.locals;
-	const indexPromise = new Promise((resolve) => {
-		// TODO: This is hacky, and we should replace it once we switch to SOLR.
-		const trustedUsers = ['Leftmost Cat', 'LordSputnik', 'Monkey', 'iliekcomputers'];
+	await search.generateIndex(orm);
 
-		const NO_MATCH = -1;
-		if (trustedUsers.indexOf(req.user.name) === NO_MATCH) {
-			throw new error.PermissionDeniedError(null, req);
-		}
-
-		resolve();
-	})
-		.then(() => search.generateIndex(orm))
-		.then(() => ({success: true}));
-
-	handler.sendPromiseResult(res, indexPromise);
+	handler.sendPromiseResult(res, {success: true});
 });
 
 router.get('/entity/:bbid', async (req, res) => {

@@ -111,6 +111,9 @@ async function _fetchEntityModelsForESResults(orm, results) {
 				return rel;
 			}));
 		}
+		if (entityStub.authors) {
+			entityJSON.authors = entityStub.authors;
+		}
 		return entityJSON;
 	})).catch(err => log.error(err));
 	return processedResults;
@@ -291,6 +294,10 @@ export async function generateIndex(orm) {
 						},
 						type: 'object'
 					},
+					authors: {
+						analyzer: 'trigrams',
+						type: 'text'
+					},
 					disambiguation: {
 						analyzer: 'trigrams',
 						type: 'text'
@@ -377,7 +384,7 @@ export async function generateIndex(orm) {
 		{model: EditionGroup, relations: []},
 		{model: Publisher, relations: ['area']},
 		{model: Series, relations: ['seriesOrderingType']},
-		{model: Work, relations: []}
+		{model: Work, relations: ['workType', 'relationshipSet.relationships.type']}
 	];
 
 	// Update the indexed entries for each entity type
@@ -392,8 +399,33 @@ export async function generateIndex(orm) {
 			})
 	);
 	const entityLists = await Promise.all(behaviorPromise);
-
+	/* eslint-disable @typescript-eslint/no-unused-vars */
+	const [authorsCollection,
+		editionCollection,
+		editionGroupCollection,
+		publisherCollection,
+		seriesCollection,
+		workCollection] = entityLists;
+	/* eslint-enable @typescript-eslint/no-unused-vars */
 	const listIndexes = [];
+
+	workCollection.forEach(workEntity => {
+		const relationshipSet = workEntity.related('relationshipSet');
+		if (relationshipSet) {
+			const authorWroteWorkRels = relationshipSet.related('relationships')?.filter(relationshipModel => relationshipModel.get('typeId') === 8);
+			const authorNames = authorWroteWorkRels.map(relationshipModel => {
+				// Search for the Author in the already fetched BookshelfJS Collection
+				const source = authorsCollection.get(relationshipModel.get('sourceBbid'));
+				if (!source) {
+					// This shouldn't happen, but just in case
+					return null;
+				}
+				return source.toJSON().defaultAlias.name;
+			});
+			workEntity.set('authors', authorNames);
+		}
+	});
+	// Index all the entities
 	for (const entityList of entityLists) {
 		const listArray = entityList.toJSON();
 		listIndexes.push(_processEntityListForBulk(listArray));
@@ -496,6 +528,7 @@ export async function checkIfExists(orm, name, type) {
 }
 
 export function searchByName(orm, name, type, size, from) {
+	const sanitizedEntityType = sanitizeEntityType(type);
 	const dslQuery = {
 		body: {
 			from,
@@ -515,8 +548,11 @@ export function searchByName(orm, name, type, size, from) {
 			size
 		},
 		index: _index,
-		type: sanitizeEntityType(type)
+		type: sanitizedEntityType
 	};
+	if (sanitizedEntityType === 'work' || (Array.isArray(sanitizedEntityType) && sanitizedEntityType.includes('work'))) {
+		dslQuery.body.query.multi_match.fields.push('authors');
+	}
 
 	return _searchForEntities(orm, dslQuery);
 }
@@ -534,7 +570,6 @@ export async function init(orm, options) {
 		if (mainIndexExists) {
 			return null;
 		}
-
 		return generateIndex(orm);
 	}
 	catch (error) {

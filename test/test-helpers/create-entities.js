@@ -144,7 +144,7 @@ const entityAttribs = {
 	revisionId: 1
 };
 
-export function createEditor(editorId) {
+export function createEditor(editorId, privs = 1) {
 	return orm.bookshelf.knex.transaction(async (transacting) => {
 		const editorType = await new EditorType(editorTypeAttribs)
 			.save(null, {method: 'insert', transacting});
@@ -155,6 +155,7 @@ export function createEditor(editorId) {
 		editorAttribs.genderId = gender.id;
 		editorAttribs.typeId = editorType.id;
 		editorAttribs.name = internet.userName();
+		editorAttribs.privs = privs;
 		editorAttribs.metabrainzUserId = random.number();
 		editorAttribs.cachedMetabrainzName = editorAttribs.name;
 
@@ -162,6 +163,20 @@ export function createEditor(editorId) {
 			.save(null, {method: 'insert', transacting});
 		return editor;
 	});
+}
+
+export async function createRelationshipType() {
+	const relationshipType = await new RelationshipType(relationshipTypeData)
+		.save(null, {method: 'insert'});
+
+	return relationshipType.id;
+}
+
+export async function createIdentifierType() {
+	const identifierType = await new IdentifierType(identifierTypeData)
+		.save(null, {method: 'insert'});
+
+	return identifierType.id;
 }
 
 async function createAliasAndAliasSet() {

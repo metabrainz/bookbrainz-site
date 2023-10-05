@@ -44,6 +44,10 @@ router.get('/cb', (req, res, next) => {
 			return res.redirect('/register/details');
 		}
 
+		const redirectTo =
+				req.session.redirectTo ? req.session.redirectTo : '/';
+		req.session.redirectTo = null;
+
 		return req.logIn(user, async (loginErr) => {
 			if (loginErr) {
 				return next(loginErr);
@@ -60,9 +64,6 @@ router.get('/cb', (req, res, next) => {
 				return next(error);
 			}
 
-			const redirectTo =
-				req.session.redirectTo ? req.session.redirectTo : '/';
-			req.session.redirectTo = null;
 			return res.redirect(redirectTo);
 		});
 	})(req, res, next);

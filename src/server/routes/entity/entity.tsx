@@ -1360,12 +1360,11 @@ type AuthorT = {
 	id: number
 };
 
-type AuthorCreditEditorT = {
+export type AuthorCreditEditorT = {
 	author: AuthorT,
 	joinPhrase: string,
 	name: string
 };
-
 
 export function constructAuthorCredit(
 	authorCreditEditor: Record<string, AuthorCreditEditorT>

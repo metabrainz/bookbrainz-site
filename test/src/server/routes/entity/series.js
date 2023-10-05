@@ -27,7 +27,7 @@ import chaiHttp from 'chai-http';
 chai.use(chaiHttp);
 const {expect} = chai;
 
-describe('Series routes', () => {
+describe('Series routes with entity editing priv', () => {
 	const aBBID = getRandomUUID();
 	const inValidBBID = 'have-you-seen-the-fnords';
 	let agent;
@@ -89,5 +89,47 @@ describe('Series routes', () => {
 			.get(`/series/${aBBID}`);
 		expect(res.ok).to.be.true;
 		expect(res).to.have.status(200);
+	});
+});
+
+describe('Series routes without entity editing priv', () => {
+	const aBBID = getRandomUUID();
+	let agent;
+	before(async () => {
+		await createSeries(aBBID);
+		await createEditor(123456, 0);
+		// Log in; use agent to use logged in session
+		agent = await chai.request.agent(app);
+		await agent.get('/cb');
+	});
+	after(truncateEntities);
+
+	it('should throw an error if trying to open series create page', async () => {
+		const res = await agent
+			.get('/series/create');
+		expect(res.ok).to.be.false;
+		expect(res).to.have.status(403);
+		expect(res.res.statusMessage).to.equal('You do not have the privilege to access this route');
+	});
+	it('should throw an error trying to edit an existing series', async () => {
+		const res = await agent
+			.get(`/series/${aBBID}/edit`);
+		expect(res.ok).to.be.false;
+		expect(res).to.have.status(403);
+		expect(res.res.statusMessage).to.equal('You do not have the privilege to access this route');
+	});
+	it('should throw an error when trying to delete an existing series', async () => {
+		const res = await agent
+			.get(`/series/${aBBID}/delete`);
+		expect(res.ok).to.be.false;
+		expect(res).to.have.status(403);
+		expect(res.res.statusMessage).to.equal('You do not have the privilege to access this route');
+	});
+	it('should throw not authorized error while seeding series', async () => {
+		const data = seedInitialState;
+		const res = await agent.post('/series/create').set('Origin', `http://127.0.0.1:${agent.app.address().port}`).send(data);
+		expect(res.ok).to.be.false;
+		expect(res).to.have.status(403);
+		expect(res.res.statusMessage).to.equal('You do not have the privilege to access this route');
 	});
 });

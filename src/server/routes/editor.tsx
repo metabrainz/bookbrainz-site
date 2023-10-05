@@ -23,9 +23,12 @@ import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
+import {AdminActionType, PrivilegeType} from '../../common/helpers/privileges-utils';
+import {AdminLogDataT, createAdminLog} from '../helpers/adminLogs';
 import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
 import {escapeProps, generateProps} from '../helpers/props';
 import {getConsecutiveDaysWithEdits, getEntityVisits, getTypeCreation} from '../helpers/achievement';
+import {getIntFromQueryParams, parseQuery} from '../helpers/utils';
 import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
 import CollectionsPage from '../../client/components/pages/collections';
 import EditorContainer from '../../client/containers/editor';
@@ -41,6 +44,8 @@ import {getOrderedCollectionsForEditorPage} from '../helpers/collections';
 import {getOrderedRevisionForEditorPage} from '../helpers/revisions';
 import target from '../templates/target';
 
+
+const {ADMIN} = PrivilegeType;
 
 const router = express.Router();
 
@@ -70,7 +75,7 @@ router.get('/edit', auth.isAuthenticated, async (req, res, next) => {
 	// Parallel fetch the three required models. Only "editorModelPromise" has
 	// "require: true", so only that can throw a NotFoundError, which is why the
 	// other two model fetch operations have no error handling.
-	const [editorModel, titleUnlockModel, genderModel] = await Promise.all([
+	const [editorModel, titleUnlockModel, genderModel]: any = await Promise.all([
 		editorModelPromise, titleUnlockModelPromise, gendersModelPromise
 	]).catch(next);
 
@@ -172,6 +177,44 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 	}
 
 	handler.sendPromiseResult(res, runAsync(), search.indexEntity);
+});
+
+router.post('/privs/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ADMIN), async (req, res, next) => {
+	const {Editor, AdminLog, bookshelf} = req.app.locals.orm;
+	const {adminId, newPrivs, note, oldPrivs, targetUserId} = req.body;
+	const actionType = AdminActionType.CHANGE_PRIV;
+	try {
+		const trx = await bookshelf.transaction();
+		const editor = await Editor
+			.forge({id: parseInt(targetUserId, 10)})
+			.fetch({require: true, transacting: trx})
+			.catch(Editor.NotFoundError, () => next(new error.NotFoundError('Editor not found', req)));
+		if (editor.get('privs') === newPrivs) {
+			return next(new error.FormSubmissionError(
+				'No change to Privileges', req
+			));
+		}
+		if (!note.length) {
+			return next(new error.FormSubmissionError(
+				'You must add a note to this action!', req
+			));
+		}
+		await editor.save({privs: newPrivs}, {transacting: trx});
+		const logData: AdminLogDataT = {
+			actionType,
+			adminId,
+			newPrivs,
+			note,
+			oldPrivs,
+			targetUserId
+		};
+		await createAdminLog(logData, AdminLog, trx);
+		await trx.commit();
+		return res.status(200).send();
+	}
+	catch (err) {
+		return next(err);
+	}
 });
 
 async function getEditorTitleJSON(editorJSON, TitleUnlock) {
@@ -317,11 +360,9 @@ router.get('/:id', async (req, res, next) => {
 router.get('/:id/revisions', async (req, res, next) => {
 	const DEFAULT_MAX_REVISIONS = 20;
 	const DEFAULT_REVISION_OFFSET = 0;
-
-	const size =
-		req.query.size ? parseInt(req.query.size, 10) : DEFAULT_MAX_REVISIONS;
-	const from =
-		req.query.from ? parseInt(req.query.from, 10) : DEFAULT_REVISION_OFFSET;
+	const query = parseQuery(req.url);
+	const size = getIntFromQueryParams(query, 'size', DEFAULT_MAX_REVISIONS);
+	const from = getIntFromQueryParams(query, 'from', DEFAULT_REVISION_OFFSET);
 
 	try {
 		// get 1 more result to check nextEnabled
@@ -376,10 +417,9 @@ router.get('/:id/revisions/revisions', async (req, res, next) => {
 	const DEFAULT_MAX_REVISIONS = 20;
 	const DEFAULT_REVISION_OFFSET = 0;
 
-	const size =
-		req.query.size ? parseInt(req.query.size, 10) : DEFAULT_MAX_REVISIONS;
-	const from =
-		req.query.from ? parseInt(req.query.from, 10) : DEFAULT_REVISION_OFFSET;
+	const query = parseQuery(req.url);
+	const size = getIntFromQueryParams(query, 'size', DEFAULT_MAX_REVISIONS);
+	const from = getIntFromQueryParams(query, 'from', DEFAULT_REVISION_OFFSET);
 
 	const orderedRevisions =
 		await getOrderedRevisionForEditorPage(from, size, req).catch(next);
@@ -585,12 +625,11 @@ router.get('/:id/collections', async (req, res, next) => {
 	const DEFAULT_MAX_COLLECTIONS = 20;
 	const DEFAULT_COLLECTION_OFFSET = 0;
 
-	const size =
-		req.query.size ? parseInt(req.query.size, 10) : DEFAULT_MAX_COLLECTIONS;
-	const from =
-		req.query.from ? parseInt(req.query.from, 10) : DEFAULT_COLLECTION_OFFSET;
+	const query = parseQuery(req.url);
+	const size = getIntFromQueryParams(query, 'size', DEFAULT_MAX_COLLECTIONS);
+	const from = getIntFromQueryParams(query, 'from', DEFAULT_COLLECTION_OFFSET);
 
-	const type = req.query.type ? req.query.type : null;
+	const type = query.get('type');
 
 	try {
 		const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
@@ -644,9 +683,10 @@ router.get('/:id/collections', async (req, res, next) => {
 // eslint-disable-next-line consistent-return
 router.get('/:id/collections/collections', async (req, res, next) => {
 	try {
-		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
-		const from = req.query.from ? parseInt(req.query.from, 10) : 0;
-		const type = req.query.type ? req.query.type : null;
+		const query = parseQuery(req.url);
+		const size = getIntFromQueryParams(query, 'size', 20);
+		const from = getIntFromQueryParams(query, 'from');
+		const type = query.get('type');
 		const entityTypes = _.keys(commonUtils.getEntityModels(req.app.locals.orm));
 		if (!entityTypes.includes(type) && type !== null) {
 			throw new error.BadRequestError(`Type ${type} do not exist`);

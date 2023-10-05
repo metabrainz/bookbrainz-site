@@ -6,6 +6,21 @@ import redisClient from './cache';
 import session from 'express-session';
 
 
+type Session = {
+	cookie: any,
+	mergeQueue?: any,
+	resave: boolean,
+	saveUninitialized: boolean,
+	secret: any,
+	store?: any
+};
+
+declare module 'express-serve-static-core' {
+	interface Request {
+		session: Session;
+	}
+}
+
 const debug = Debug('bbsite');
 
 /**
@@ -14,7 +29,7 @@ const debug = Debug('bbsite');
  * @returns {function} Express session request handler.
  */
 function setupSessions(environment) {
-	const sessionOptions = {
+	const sessionOptions: Session = {
 		cookie: {
 			maxAge: _get(config, 'session.maxAge', 2592000000),
 			secure: _get(config, 'session.secure', false)

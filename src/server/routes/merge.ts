@@ -30,7 +30,7 @@ import {
 	entityMergeMarkup,
 	generateEntityMergeProps
 } from '../helpers/entityRouteUtils';
-
+import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import _ from 'lodash';
 import {escapeProps} from '../helpers/props';
 import express from 'express';
@@ -38,10 +38,7 @@ import renderRelationship from '../helpers/render';
 import targetTemplate from '../templates/target';
 
 
-type PassportRequest = express.Request & {
-	user: any,
-	session: any
-};
+const {ENTITY_EDITOR} = PrivilegeType;
 
 const router = express.Router();
 
@@ -256,8 +253,8 @@ async function getEntityByBBID(orm, transacting, bbid) {
 }
 
 
-router.get('/add/:bbid', auth.isAuthenticated,
-	async (req: PassportRequest, res, next) => {
+router.get('/add/:bbid', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR),
+	async (req, res, next) => {
 		const {orm}: {orm?: any} = req.app.locals;
 		let {mergeQueue} = req.session;
 		if (_.isNil(req.params.bbid) ||
@@ -312,8 +309,8 @@ router.get('/add/:bbid', auth.isAuthenticated,
 		return res.redirect(req.headers.referer);
 	});
 
-router.get('/remove/:bbid', auth.isAuthenticated,
-	(req: PassportRequest, res) => {
+router.get('/remove/:bbid', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR),
+	(req, res) => {
 		const {mergeQueue} = req.session;
 		if (!mergeQueue || _.isNil(req.params.bbid)) {
 			res.redirect(req.headers.referer);
@@ -331,16 +328,16 @@ router.get('/remove/:bbid', auth.isAuthenticated,
 		res.redirect(req.headers.referer);
 	});
 
-router.get('/cancel', auth.isAuthenticated,
-	(req: PassportRequest, res) => {
+router.get('/cancel', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR),
+	(req, res) => {
 		req.session.mergeQueue = null;
 		res.redirect(req.headers.referer);
 	});
 
-router.get('/submit/:targetBBID?', auth.isAuthenticated,
+router.get('/submit/:targetBBID?', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR),
 	middleware.loadIdentifierTypes, middleware.loadLanguages,
 	middleware.loadRelationshipTypes,
-	async (req: PassportRequest, res, next) => {
+	async (req, res, next) => {
 		const {orm}: {orm?: any} = req.app.locals;
 		const {bookshelf} = orm;
 		const {mergeQueue} = req.session;

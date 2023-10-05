@@ -16,14 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 /* eslint-disable max-len */
-
-import * as bootstrap from 'react-bootstrap';
-
+import {Col, ListGroup, Row} from 'react-bootstrap';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
-
-const {ListGroup, Col, Row} = bootstrap;
 
 /**
  * Renders the document and displays the 'Help' page.
@@ -106,61 +102,8 @@ function HelpPage() {
 					<hr/>
 				</Col>
 			</Row>
-
 			<Row>
-				<Col lg={6}>
-					<h2>Frequently Asked Questions</h2>
-					<br/>
-					<h4>How do I add a book?</h4>
-					First and foremost, search for both the author and the title of the book to avoid creating duplicates.
-					<br/>If a Work and an Edition containing it exist, the questions below will help you decide whether to create a new Edition.
-					<br/>Otherwise, here is a step-by-step procedure:
-					<br/>
-					<br/>
-					<ol>
-						<li>Find or add a new {genEntityIconHTMLElement('Author')}Author</li>
-						<li>On the Author page, click on &#39;Add Work&#39; to create a {genEntityIconHTMLElement('Work')}Work with a relationship to the Author</li>
-						<li>On the Work page, click &#39;Add Edition&#39; to create an {genEntityIconHTMLElement('Edition')}Edition with a relationship to the Work.
-							<ul>
-								<li>A new {genEntityIconHTMLElement('EditionGroup')}Edition Group will be created automatically, but you can select an existing one</li>
-								<li>Create a new {genEntityIconHTMLElement('Publisher')}Publisher if you cannot find an existing one</li>
-							</ul>
-						</li>
-						<li>To enter another format of the same book (see explanations below), go to the Edition Group and click the &#x27;Add Edition&#x27; button. Repeat step 4.</li>
-					</ol>
-					<br/>
-					<h4>When should I create a new Edition of a Work?</h4>
-					<ul>
-						<li>When it is published in a different format (e.g. paperback and e-book)</li>
-						<li>When there are substantial content (textual or editorial) changes</li>
-						<li>Translations will both be a new Work and a new Edition for it.</li>
-						<li>Add a relationship between the original and the translated Works</li>
-						<li>New cover or changed credits/attribution on the cover</li>
-						<li>When there&#x27;s a new ISBN</li>
-					</ul>
-					<br/>
-					<h4>When should I <i>not</i> create a new Edition of a Work?</h4>
-					<ul>
-						<li>Minimal changes as in proofreading errors</li>
-						<li>Minimal changes on the cover</li>
-						<li>Reprints of the same Edition. You can mention “Reprint – [date]” in the annotations.</li>
-						<li>When the edition uses the same ISBN (with rare exceptions)</li>
-					</ul>
-					<br/>
-					<h4>When should two Editions be part of the same Edition Group?</h4>
-					Edition Groups exist to group together all the variations of an edition (an identifiable set of works) in a given language.
-					Here are examples of Editions that should be part of the same Edition Group:
-					<br/>
-					<ul>
-						<li>Different formats of the same edition (paperback, hardcover and e-book by the same publisher)</li>
-						<li>Revised and updated editions</li>
-						<li>Reprints</li>
-						<li>Editions with different forewords/intros</li>
-						<li>Co-editions (same book published in different countries by different publishers)</li>
-					</ul>
-				</Col>
-
-				<Col lg={6}>
+				<Col lg={12}>
 					<hr className="d-lg-none"/>
 					<h2>Glossary</h2>
 					<p>
@@ -213,7 +156,6 @@ function HelpPage() {
 							</ul>
 						</ListGroup.Item>
 					</ListGroup>
-
 				</Col>
 			</Row>
 		</div>

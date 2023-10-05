@@ -8,7 +8,7 @@ import chaiHttp from 'chai-http';
 chai.use(chaiHttp);
 const {expect} = chai;
 
-describe('Merge routes', () => {
+describe('Merge routes with entity editing priv', () => {
 	describe('/add route', () => {
 		const aBBID = getRandomUUID();
 		const bBBID = getRandomUUID();
@@ -169,6 +169,45 @@ describe('Merge routes', () => {
 							done();
 						});
 				});
+		});
+	});
+});
+
+describe('Merge routes without entity editing priv', () => {
+	describe('/add route', () => {
+		const aBBID = getRandomUUID();
+		const bBBID = getRandomUUID();
+		const nonExistingEntity = getRandomUUID();
+		const inValidBBID = 'have-you-seen-the-fnords';
+		let agent;
+		before(async () => {
+			await createAuthor(aBBID);
+			await createWork(bBBID);
+			await createEditor(123456, 0);
+			agent = await chai.request.agent(app);
+			await agent.get('/cb');
+		});
+		after(truncateEntities);
+
+		it('should throw a 403 error if adding an invalid BBID', async () => {
+			const res = await agent.get(`/merge/add/${inValidBBID}`);
+			expect(res).to.have.status(403);
+			expect(res.res.statusMessage).to.equal('You do not have the privilege to access this route');
+		});
+		it('should throw an 404 error if BBID is absent (invalid route)', async () => {
+			const res = await agent.get('/merge/add/');
+			expect(res).to.have.status(404);
+		});
+		it('should throw a 403 error if entity does not exist', async () => {
+			const res = await agent.get(`/merge/add/${nonExistingEntity}`);
+			expect(res).to.have.status(403);
+			expect(res.res.statusMessage).to.equal('You do not have the privilege to access this route');
+		});
+		it('should throw 403 error when trying to add an entity to the merge queue', async () => {
+			const res = await agent.get(`/merge/add/${aBBID}`)
+				.set('referer', `/author/${aBBID}`);
+			expect(res).to.have.status(403);
+			expect(res.res.statusMessage).to.equal('You do not have the privilege to access this route');
 		});
 	});
 });

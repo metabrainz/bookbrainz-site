@@ -5,6 +5,7 @@
  * 				 2016  Sean Burke
  * 				 2016  Ohm Patel
  * 				 2015  Leo Verto
+ * 				 2023  Shivam Awasthi
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +23,19 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {IdentifierTypeEditorIcon, RelationshipTypeEditorIcon} from '../helpers/utils';
+import {PrivilegeType, checkPrivilege} from '../../common/helpers/privileges-utils';
 import {
-	faChartLine, faGripVertical, faLink, faListUl, faPlus, faQuestionCircle,
-	faSearch, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle
+	faBarcode,
+	faChartLine, faClipboardQuestion, faFileLines, faGripVertical, faLink, faListUl, faNewspaper, faPlus, faQuestionCircle,
+	faSearch, faShieldHalved, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle, faUserGear
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Footer from './../components/footer';
 import MergeQueue from '../components/pages/parts/merge-queue';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {faSearchengin} from '@fortawesome/free-brands-svg-icons';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 
 
@@ -42,6 +47,7 @@ class Layout extends React.Component {
 		this.state = {keepMenuOpen: false, menuOpen: false};
 		this.renderNavContent = this.renderNavContent.bind(this);
 		this.renderNavHeader = this.renderNavHeader.bind(this);
+		this.renderDocsDropdown = this.renderDocsDropdown.bind(this);
 		this.handleDropdownToggle = this.handleDropdownToggle.bind(this);
 		this.handleDropdownClick = this.handleDropdownClick.bind(this);
 		this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -89,6 +95,42 @@ class Layout extends React.Component {
 		);
 	}
 
+	renderDocsDropdown() {
+		const docsDropdownTitle = (
+			<span>
+				<FontAwesomeIcon icon={faFileLines}/>
+				{'  Docs'}
+			</span>
+		);
+		return (
+			<Nav>
+				<NavDropdown
+					alignRight
+					id="docs-dropdown"
+					title={docsDropdownTitle}
+					onMouseDown={this.handleMouseDown}
+				>
+					<NavDropdown.Item href="/help">
+						<FontAwesomeIcon fixedWidth icon={faQuestionCircle}/>
+						{' Help '}
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/faq">
+						<FontAwesomeIcon fixedWidth icon={faClipboardQuestion}/>
+						{' FAQs '}
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/relationship-types">
+						<FontAwesomeIcon fixedWidth icon={faLink}/>
+						{' Relationship Types '}
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/identifier-types">
+						<FontAwesomeIcon fixedWidth icon={faBarcode}/>
+						{' Identifier Types '}
+					</NavDropdown.Item>
+				</NavDropdown>
+			</Nav>
+		);
+	}
+
 	renderGuestDropdown() {
 		const disableSignUp = this.props.disableSignUp ?
 			{disabled: true} :
@@ -123,12 +165,75 @@ class Layout extends React.Component {
 			</span>
 		);
 
+		const privilegesDropdownTitle = (
+			<span>
+				<FontAwesomeIcon className="margin-right-0-3" icon={faShieldHalved}/>
+				Privileges
+			</span>
+		);
+
+		const showPrivilegeDropdown = user.privs > 1;
+		const adminOptions = (
+			<>
+				<NavDropdown.Item href="/admin-panel">
+					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faUserGear}/>
+					Admin Panel
+				</NavDropdown.Item>
+				<NavDropdown.Item href="/admin-logs">
+					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faNewspaper}/>
+					Admin Logs
+				</NavDropdown.Item>
+			</>
+		);
+
+		const relationshipTypeEditorOptions = (
+			<>
+				<NavDropdown.Item href="/relationship-type/create">
+					{RelationshipTypeEditorIcon}
+					Add Relationship Type
+				</NavDropdown.Item>
+			</>
+		);
+
+		const reindexSearchEngineOption = (
+			<>
+				<NavDropdown.Item href="/search/reindex">
+					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faSearchengin}/>
+					Reindex Search Server
+				</NavDropdown.Item>
+			</>
+		);
+
+		const identifierTypeEditorOptions = (
+			<>
+				<NavDropdown.Item href="/identifier-type/create">
+					{IdentifierTypeEditorIcon}
+					Add Identifier Type
+				</NavDropdown.Item>
+			</>
+		);
+
+		const privilegeDropDown = (
+			<NavDropdown
+				alignRight
+				id="privs-dropdown"
+				title={privilegesDropdownTitle}
+				onMouseDown={this.handleMouseDown}
+			>
+				{checkPrivilege(user.privs, PrivilegeType.ADMIN) && adminOptions}
+				{checkPrivilege(user.privs, PrivilegeType.RELATIONSHIP_TYPE_EDITOR) && relationshipTypeEditorOptions}
+				{checkPrivilege(user.privs, PrivilegeType.IDENTIFIER_TYPE_EDITOR) && identifierTypeEditorOptions}
+				{checkPrivilege(user.privs, PrivilegeType.REINDEX_SEARCH_SERVER) && reindexSearchEngineOption}
+			</NavDropdown>
+		);
+
 		const disableSignUp = this.props.disableSignUp ?
 			{disabled: true} :
 			{};
 
 		return (
 			<Nav>
+				{showPrivilegeDropdown && privilegeDropDown}
 				<NavDropdown
 					alignRight
 					id="create-dropdown"
@@ -259,14 +364,7 @@ class Layout extends React.Component {
 						</Nav.Link>
 					</Nav.Item>
 				</Nav>
-				<Nav>
-					<Nav.Item>
-						<Nav.Link href="/help">
-							<FontAwesomeIcon icon={faQuestionCircle}/>
-							{' Help '}
-						</Nav.Link>
-					</Nav.Item>
-				</Nav>
+				{this.renderDocsDropdown()}
 				{
 					user && user.id ?
 						this.renderLoggedInDropdown() : this.renderGuestDropdown()

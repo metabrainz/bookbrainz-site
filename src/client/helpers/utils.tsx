@@ -16,10 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {faBarcode, faLink, faPlus} from '@fortawesome/free-solid-svg-icons';
 import AuthorTable from '../components/pages/entities/author-table';
 import DOMPurify from 'isomorphic-dompurify';
 import EditionGroupTable from '../components/pages/entities/editionGroup-table';
 import EditionTable from '../components/pages/entities/edition-table';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PublisherTable from '../components/pages/entities/publisher-table';
 import React from 'react';
 import SeriesTable from '../components/pages/entities/series-table';
@@ -178,12 +180,12 @@ export function dateObjectToISOString(value: DateObject) {
  */
 export function stringToHTMLWithLinks(content: string) {
 	// eslint-disable-next-line max-len, no-useless-escape
-	const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%~*@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
-	content = content.replace(
+	const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%~*@\.\w_]*)#?(?:[\.\!\/\\:\w]*))?)/g;
+	const replacedContent = content.replace(
 		urlRegex,
-		(url) => `<a href="${url.startsWith('www.') ? 'https://' + url : url}" target="_blank">${url}</a>`
+		(url) => `<a href="${url.startsWith('www.') ? `https://${url}` : url}" target="_blank">${url}</a>`
 	);
-	const sanitizedHtml = DOMPurify.sanitize(content, {ADD_ATTR: ['target']});
+	const sanitizedHtml = DOMPurify.sanitize(replacedContent, {ADD_ATTR: ['target']});
 	// eslint-disable-next-line react/no-danger
 	return <span dangerouslySetInnerHTML={{__html: sanitizedHtml}}/>;
 }
@@ -226,3 +228,17 @@ export function countWords(text: string) : number {
 	}
 	return words.length;
 }
+
+export const RelationshipTypeEditorIcon = (
+	<span className="fa-layers fa-fw margin-right-0-3">
+		<FontAwesomeIcon icon={faLink} transform="left-3"/>
+		<FontAwesomeIcon icon={faPlus} transform="shrink-8 right-5 down-5"/>
+	</span>
+);
+
+export const IdentifierTypeEditorIcon = (
+	<span className="fa-layers fa-fw margin-right-0-3">
+		<FontAwesomeIcon icon={faBarcode} transform="shrink-3 left-5"/>
+		<FontAwesomeIcon icon={faPlus} transform="shrink-8 right-5 down-2"/>
+	</span>
+);
