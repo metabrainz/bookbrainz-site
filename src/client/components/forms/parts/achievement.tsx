@@ -68,6 +68,25 @@ interface Props {
 	unlocked: boolean;
 };
 
+/**
+ * Achievement Component
+ *
+ * A React component that displays an achievement card with its details, including name,
+ * description, badge image, and progress if the achievement is locked.
+ *
+ * @component
+ *
+ * @param {Object} props - The props for the Achievement component.
+ * @param {Object} props.achievement - The achievement object containing details.
+ * @param {number} props.achievement.id - The unique ID of the achievement.
+ * @param {string} props.achievement.name - The name of the achievement.
+ * @param {string} props.achievement.description - The description of the achievement.
+ * @param {string} props.achievement.badgeUrl - The URL of the achievement badge image.
+ * @param {number} props.counter - The current progress or counter for the achievement.
+ * @param {boolean} props.unlocked - A boolean indicating whether the achievement is unlocked.
+ *
+ * @returns {JSX.Element} The rendered Achievement card component.
+ */
 function Achievement({achievement, counter, unlocked}: Props): React.JSX.Element {
 	const {id, name, description, badgeUrl} = achievement;
 	const imgElement = unlocked ? (
