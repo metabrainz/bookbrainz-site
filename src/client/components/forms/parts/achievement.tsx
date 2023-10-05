@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2016  Max Prettyjohns
+ * 				 2023  Meziyum
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +34,6 @@ const maxAchievementProgress = {
 	7: 1,
 	8: 10,
 	9: 100,
-	// eslint-disable-next-line sort-keys
 	10: 10,
 	11: 7,
 	12: 30,
@@ -57,8 +57,18 @@ const maxAchievementProgress = {
 	30: 100
 };
 
-function Achievement(props) {
-	const {achievement, counter, unlocked} = props;
+interface Props {
+	achievement: {
+		id: number;
+		name: string;
+		description: string;
+		badgeUrl: string;
+	},
+	counter: number;
+	unlocked: boolean;
+};
+
+function Achievement({achievement, counter, unlocked}: Props): React.JSX.Element {
 	const {id, name, description, badgeUrl} = achievement;
 	const imgElement = unlocked ? (
 		<DragAndDropImage
