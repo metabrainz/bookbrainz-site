@@ -23,7 +23,7 @@ import * as middleware from '../../helpers/middleware';
 import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
-import {BadRequestError, ConflictError, ConflictError} from '../../../common/helpers/error';
+import {BadRequestError, ConflictError} from '../../../common/helpers/error';
 import {
 	addInitialRelationship,
 	entityEditorMarkup,
