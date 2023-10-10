@@ -1,4 +1,3 @@
-import {Badge, ListGroup} from 'react-bootstrap';
 import {Entity, State, SummarySectionProps, SummarySectionStateProps} from '../interface/type';
 import Immutable from 'immutable';
 import React from 'react';

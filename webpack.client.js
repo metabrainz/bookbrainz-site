@@ -19,6 +19,8 @@ const cleanWebpackPluginOpts = {
 const clientConfig = {
 	context: path.resolve(__dirname, 'src', 'client'),
 	entry: {
+		adminLogs: ['./controllers/adminLogs'],
+		adminPanel: ['./controllers/admin-panel'],
 		collection: ['./controllers/collection/collection'],
 		'collection/create': ['./controllers/collection/userCollectionForm'],
 		collections: ['./controllers/collections'],
@@ -26,8 +28,10 @@ const clientConfig = {
 		preview: ['./controllers/preview.js'],
 		error: ['./controllers/error.js'],
 		externalService: ['./controllers/externalService.js'],
+		identifierTypes: ['./controllers/identifierTypes.tsx'],
 		index: ['./controllers/index.js'],
 		registrationDetails: ['./controllers/registrationDetails.js'],
+		relationshipTypes: ['./controllers/relationshipTypes.tsx'],
 		revision: ['./controllers/revision.js'],
 		revisions: ['./controllers/revisions.js'],
 		search: ['./controllers/search.js'],
@@ -39,7 +43,9 @@ const clientConfig = {
 		'entity-editor': ['./entity-editor/controller.js'],
 		'unified-form':['./unified-form/controller.js'],
 		'entity-merge': ['./entity-editor/entity-merge.tsx'],
-		style: './stylesheets/style.scss'
+		style: './stylesheets/style.scss',
+		'relationship-type-editor': ['./controllers/type-editor/relationship-type.tsx'],
+		'identifier-type-editor': ['./controllers/type-editor/identifier-type.tsx']
 	},
 	externals: {
 		moment: 'moment'

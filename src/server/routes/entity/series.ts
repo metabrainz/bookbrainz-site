@@ -23,13 +23,14 @@ import * as middleware from '../../helpers/middleware';
 import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
-import {BadRequestError, ConflictError} from '../../../common/helpers/error';
+import {BadRequestError, ConflictError, ConflictError} from '../../../common/helpers/error';
 import {
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
+import {PrivilegeType} from '../../../common/helpers/privileges-utils';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
@@ -40,6 +41,11 @@ import target from '../../templates/target';
 /** ****************************
 *********** Helpers ************
 *******************************/
+
+type OptionalSectionsT = {
+	annotationSection?: any
+};
+
 const additionalSeriesProps = [
 	'entityType', 'orderingTypeId'
 ];
@@ -80,6 +86,8 @@ const mergeHandler = makeEntityCreateOrEditHandler(
 	'series', transformNewForm, additionalSeriesProps, true
 );
 
+const {ENTITY_EDITOR} = PrivilegeType;
+
 /** ****************************
 *********** Routes ************
 *******************************/
@@ -88,7 +96,7 @@ const router = express.Router();
 
 // Creation
 router.get(
-	'/create', auth.isAuthenticated, middleware.loadIdentifierTypes,
+	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadLanguages,
 	middleware.loadRelationshipTypes, middleware.loadSeriesOrderingTypes,
 	async (req, res) => {
@@ -126,7 +134,7 @@ router.get(
 );
 
 router.post(
-	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
+	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadLanguages,
 	middleware.loadRelationshipTypes, middleware.loadSeriesOrderingTypes, async (req, res) => {
 		const entity = await utils.parseInitialState(req, 'series');
@@ -164,10 +172,10 @@ router.post(
 	}
 );
 
-router.post('/create/handler', auth.isAuthenticatedForHandler,
+router.post('/create/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	createOrEditHandler);
 
-router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler,
+router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	mergeHandler);
 
 /* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
@@ -223,7 +231,7 @@ router.get('/:bbid/revision/:revisionId', middleware.loadEntityRelationships, (r
 	entityRoutes.displayEntity(req, res);
 });
 
-router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
+router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req, res, next) => {
 	if (!res.locals.entity.dataId) {
 		return next(new ConflictError('This entity has already been deleted'));
 	}
@@ -232,7 +240,7 @@ router.get('/:bbid/delete', auth.isAuthenticated, (req, res, next) => {
 });
 
 router.post(
-	'/:bbid/delete/handler', auth.isAuthenticatedForHandler,
+	'/:bbid/delete/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	(req, res) => {
 		const {orm} = req.app.locals;
 		const {SeriesHeader, SeriesRevision} = orm;
@@ -322,7 +330,7 @@ export function seriesToFormState(series) {
 		}
 	});
 
-	const optionalSections = {};
+	const optionalSections: OptionalSectionsT = {};
 	if (series.annotation) {
 		optionalSections.annotationSection = series.annotation;
 	}
@@ -339,7 +347,7 @@ export function seriesToFormState(series) {
 }
 
 router.get(
-	'/:bbid/edit', auth.isAuthenticated, middleware.loadIdentifierTypes,
+	'/:bbid/edit', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadSeriesOrderingTypes, middleware.loadLanguages,
 	 middleware.loadEntityRelationships, middleware.loadRelationshipTypes,
 	(req, res) => {
@@ -356,7 +364,7 @@ router.get(
 	}
 );
 
-router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler,
+router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	createOrEditHandler);
 
 router.post('/:bbid/master', auth.isAuthenticatedForHandler, async (req, res, next) => {

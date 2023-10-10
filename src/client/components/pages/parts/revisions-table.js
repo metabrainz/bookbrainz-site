@@ -68,20 +68,20 @@ function RevisionsTable(props) {
 					>
 						<thead>
 							<tr>
-								<th className="col-md-2">Revision ID</th>
+								<th width="16%">Revision ID</th>
 								{
 									showEntities ?
-										<th className="col-md-5">Modified entities</th> : null
+										<th width="42%">Modified entities</th> : null
 								}
 								{
 									showRevisionEditor ?
-										<th className="col-md-3">User</th> : null
+										<th width="25%">User</th> : null
 								}
 								{
 									showRevisionNote ?
-										<th className="col-md-3">Note</th> : null
+										<th width="16%">Note</th> : null
 								}
-								<th className="col-md-2">Date</th>
+								<th width="16%">Date</th>
 								{showActions && <th className="col-md-2">Actions</th>}
 							</tr>
 						</thead>

@@ -79,7 +79,7 @@ function SeriesTable({series, showAddedAtColumn, showCheckboxes, selectedEntitie
 				<Table striped>
 					<thead>
 						<tr>
-							<th style={{width: '40%'}}>Name</th>
+							<th width="40%">Name</th>
 							<th>Series Type</th>
 							<th>Ordering Type</th>
 							{

@@ -31,7 +31,7 @@ function AuthorTableRow({author, showAddedAtColumn, showCheckboxes, selectedEnti
 	const disambiguation = getEntityDisambiguation(author);
 	const number = author.number || '?';
 	const authorType = author.authorType?.label || author.authorType || '?';
-	const gender = genderOptions.find((option) => option.id === author.genderId)?.name || '?';
+	const gender = author.gender?.name ?? genderOptions.find((option) => option.id === author.genderId)?.name ?? '?';
 	const beginDate = transformISODateForDisplay(extractAttribute(author.beginDate));
 	const endDate = transformISODateForDisplay(extractAttribute(author.endDate));
 	const addedAt = showAddedAtColumn ? utilHelper.formatDate(new Date(author.addedAt), true) : null;

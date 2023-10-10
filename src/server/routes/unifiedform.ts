@@ -1,18 +1,19 @@
 import * as middleware from '../helpers/middleware';
 import {createEntitiesHandler, generateUnifiedProps, unifiedFormMarkup} from '../helpers/entityRouteUtils';
-import {isAuthenticated, isAuthenticatedForHandler} from '../helpers/auth';
+import {isAuthenticated, isAuthenticatedForHandler, isAuthorized} from '../helpers/auth';
+import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import {escapeProps} from '../helpers/props';
 import express from 'express';
 import target from '../templates/target';
 
 
-type PassportRequest = express.Request & {user: any, session: any};
+const {ENTITY_EDITOR} = PrivilegeType;
 
 const router = express.Router();
-router.get('/create', isAuthenticated, middleware.loadIdentifierTypes,
+router.get('/create', isAuthenticated, isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats, middleware.loadEditionGroupTypes, middleware.loadSeriesOrderingTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes, middleware.loadGenders, middleware.loadPublisherTypes, middleware.loadAuthorTypes,
-	middleware.loadRelationshipTypes, (req:PassportRequest, res:express.Response) => {
+	middleware.loadRelationshipTypes, (req, res:express.Response) => {
 		const props = generateUnifiedProps(req, res, {
 			genderOptions: res.locals.genders
 		});
@@ -27,6 +28,6 @@ router.get('/create', isAuthenticated, middleware.loadIdentifierTypes,
 		}));
 	});
 
-router.post('/create/handler', isAuthenticatedForHandler, createEntitiesHandler);
+router.post('/create/handler', isAuthenticatedForHandler, isAuthorized(ENTITY_EDITOR), createEntitiesHandler);
 
 export default router;

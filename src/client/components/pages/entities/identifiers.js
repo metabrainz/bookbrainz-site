@@ -21,14 +21,15 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-function EntityIdentifiers({identifiers, identifierTypes}) {
+function EntityIdentifiers({entityUrl, identifiers, identifierTypes}) {
 	return (
 		<div>
 			<h2>Identifiers</h2>
 			{
-				identifiers &&
-				identifierTypes.sort((a, b) => a.label.localeCompare(b.label)).map((type) => {
-					const identifierValues =
+
+				identifiers?.length > 0 ?
+					identifierTypes.sort((a, b) => a.label.localeCompare(b.label)).map((type) => {
+						const identifierValues =
 						identifiers
 							.filter(
 								(identifier) => identifier.type.id === type.id || identifier.typeId === type.id
@@ -43,14 +44,21 @@ function EntityIdentifiers({identifiers, identifierTypes}) {
 									</dd>
 								)
 							);
-					if (!identifierValues.length) {
-						return null;
-					}
-					return [
-						<dt key={type.id}>{type.label}</dt>,
-						identifierValues
-					];
-				})
+						if (!identifierValues.length) {
+							return null;
+						}
+						return [
+							<dt key={type.id}>{type.label}</dt>,
+							identifierValues
+						];
+					}) :
+					<p className="text-muted">
+						<b>No identifiers.</b>
+						&nbsp;
+						<a href={`${entityUrl}/edit`}>
+							Click here to edit
+						</a> and add new identifiers (e.g. ISBN, Wikidata ID, etc.).
+					</p>
 			}
 		</div>
 	);
@@ -58,6 +66,7 @@ function EntityIdentifiers({identifiers, identifierTypes}) {
 
 EntityIdentifiers.displayName = 'EntityIdentifiers';
 EntityIdentifiers.propTypes = {
+	entityUrl: PropTypes.string.isRequired,
 	identifierTypes: PropTypes.array.isRequired,
 	identifiers: PropTypes.array
 };
