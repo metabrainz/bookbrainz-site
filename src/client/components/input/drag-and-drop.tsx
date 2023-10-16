@@ -36,6 +36,7 @@ type Achievement = {
 	src: string;
 	id: string;
 };
+
 /**
  * Props for DragAndDropImage component
  * @typedef {Object} Props
