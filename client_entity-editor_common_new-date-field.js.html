@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>client/components/pages/parts/admin-panel-search-results.js - Documentation</title>
+    <title>client/entity-editor/common/new-date-field.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">client/components/pages/parts/admin-panel-search-results.js</h1>
+    <h1 class="page-title">client/entity-editor/common/new-date-field.js</h1>
     
 
     
@@ -41,21 +41,17 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-require("core-js/modules/es.object.to-string.js");
 require("core-js/modules/es.reflect.construct.js");
-require("core-js/modules/es.array.iterator.js");
-require("core-js/modules/es.string.iterator.js");
-require("core-js/modules/es.weak-map.js");
-require("core-js/modules/web.dom-collections.iterator.js");
-require("core-js/modules/es.object.get-own-property-descriptor.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-require("core-js/modules/es.array.map.js");
-require("core-js/modules/es.function.name.js");
+require("core-js/modules/es.number.constructor.js");
+require("core-js/modules/es.math.sign.js");
+require("core-js/modules/es.array.concat.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.regexp.to-string.js");
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
@@ -63,139 +59,250 @@ var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits
 var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
-var bootstrap = _interopRequireWildcard(require("react-bootstrap"));
-var _privilegeBadges = _interopRequireDefault(require("./privilege-badges"));
-var _privsEditModal = _interopRequireDefault(require("./privs-edit-modal"));
+var _padStart2 = _interopRequireDefault(require("lodash/padStart"));
+var _reactBootstrap = require("react-bootstrap");
+var _utils = require("../../helpers/utils");
+var _dateFns = require("date-fns");
+var _reactDatepicker = _interopRequireDefault(require("react-datepicker"));
+var _reactFontawesome = require("@fortawesome/react-fontawesome");
 var _propTypes = _interopRequireDefault(require("prop-types"));
 var _react = _interopRequireDefault(require("react"));
-var _privilegesUtils = require("../../../../common/helpers/privileges-utils");
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop &amp;&amp; obj &amp;&amp; obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" &amp;&amp; typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache &amp;&amp; cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty &amp;&amp; Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" &amp;&amp; Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc &amp;&amp; (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+var _validationLabel = _interopRequireDefault(require("./validation-label"));
+var _classnames = _interopRequireDefault(require("classnames"));
+var _base = require("../validators/base");
+var _freeSolidSvgIcons = require("@fortawesome/free-solid-svg-icons");
+var _entity = require("../../helpers/entity");
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } } /*
-                                                                                                                                                                                                                                                                                                                                           * Copyright (C) 2023 Shivam Awasthi
-                                                                                                                                                                                                                                                                                                                                           *
-                                                                                                                                                                                                                                                                                                                                           * This program is free software; you can redistribute it and/or modify
-                                                                                                                                                                                                                                                                                                                                           * it under the terms of the GNU General Public License as published by
-                                                                                                                                                                                                                                                                                                                                           * the Free Software Foundation; either version 2 of the License, or
-                                                                                                                                                                                                                                                                                                                                           * (at your option) any later version.
-                                                                                                                                                                                                                                                                                                                                           *
-                                                                                                                                                                                                                                                                                                                                           * This program is distributed in the hope that it will be useful,
-                                                                                                                                                                                                                                                                                                                                           * but WITHOUT ANY WARRANTY; without even the implied warranty of
-                                                                                                                                                                                                                                                                                                                                           * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-                                                                                                                                                                                                                                                                                                                                           * GNU General Public License for more details.
-                                                                                                                                                                                                                                                                                                                                           *
-                                                                                                                                                                                                                                                                                                                                           * You should have received a copy of the GNU General Public License along
-                                                                                                                                                                                                                                                                                                                                           * with this program; if not, write to the Free Software Foundation, Inc.,
-                                                                                                                                                                                                                                                                                                                                           * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-                                                                                                                                                                                                                                                                                                                                           */
-var Button = bootstrap.Button,
-  Table = bootstrap.Table;
-/**
- * Renders the document and displays the 'AdminPanelSearchResults' page.
- * @returns {ReactElement} a HTML document which displays the AdminPanelSearchResults.
- * @param {object} props - Properties passed to the component.
- */
-var AdminPanelSearchResults = /*#__PURE__*/function (_React$Component) {
-  (0, _inherits2.default)(AdminPanelSearchResults, _React$Component);
-  var _super = _createSuper(AdminPanelSearchResults);
-  function AdminPanelSearchResults(props) {
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+var DateField = /*#__PURE__*/function (_React$Component) {
+  (0, _inherits2.default)(DateField, _React$Component);
+  var _super = _createSuper(DateField);
+  function DateField(props) {
     var _this;
-    (0, _classCallCheck2.default)(this, AdminPanelSearchResults);
+    (0, _classCallCheck2.default)(this, DateField);
     _this = _super.call(this, props);
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "updateDate", function (day, month, year) {
+      _this.props.onChangeDate((0, _utils.dateObjectToISOString)({
+        day: day,
+        month: month,
+        year: year
+      }));
+      _this.setState({
+        warn: (0, _base.dateIsBefore)((0, _utils.getTodayDate)(), {
+          day: day,
+          month: month,
+          year: year
+        })
+      });
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "setStateCallback", function () {
+      _this.updateDate(_this.state.day, _this.state.month, _this.state.year);
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "handleYearChange", function (event) {
+      var year = event.target.value;
+      _this.setState({
+        year: year
+      }, _this.setStateCallback);
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "handleMonthChange", function (event) {
+      var month = event.target.value;
+      _this.setState({
+        month: month
+      }, _this.setStateCallback);
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "handleDayChange", function (event) {
+      var day = event.target.value;
+      _this.setState({
+        day: day
+      }, _this.setStateCallback);
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "formatYearForDisplay", function (year) {
+      if (isNaN(Number(year)) || year === '') {
+        return year;
+      }
+      var isCommonEraDate = Math.sign(year) === 1;
+      var ISOyear = "".concat(isCommonEraDate ? '+' : '-').concat((0, _padStart2.default)(Math.abs(year), 6, 0));
+      return (0, _entity.transformISODateForDisplay)(ISOyear);
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "padMonthOrDay", function (num) {
+      // If month/day is a number, pad it, mostly to match the year padding mechanism
+      if (isNaN(Number(num)) || num === '') {
+        return num;
+      }
+      return (0, _padStart2.default)(num, 2, 0);
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "handleYearInputBlur", function (event) {
+      var year = event.target.value;
+      _this.setState({
+        year: _this.formatYearForDisplay(year)
+      });
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "handleMonthInputBlur", function (event) {
+      var month = event.target.value;
+      _this.setState({
+        month: _this.padMonthOrDay(month)
+      });
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "handleDayInputBlur", function (event) {
+      var day = event.target.value;
+      _this.setState({
+        day: _this.padMonthOrDay(day)
+      });
+    });
+    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "handleChangeOfDatePicker", function (value) {
+      var date = new Date(value);
+      var year = date.getFullYear().toString();
+      var month = (date.getMonth() + 1).toString();
+      var day = date.getDate().toString();
+      _this.setState({
+        day: _this.padMonthOrDay(day),
+        month: _this.padMonthOrDay(month),
+        year: _this.formatYearForDisplay(year)
+      }, _this.setStateCallback);
+    });
+    var _ISODateStringToObjec = (0, _utils.ISODateStringToObject)(_this.props.defaultValue),
+      _day = _ISODateStringToObjec.day,
+      _month = _ISODateStringToObjec.month,
+      _year = _ISODateStringToObjec.year;
     _this.state = {
-      selectedUser: null,
-      showModal: false
+      day: !_day ? '' : _this.padMonthOrDay(_day),
+      month: !_month ? '' : _this.padMonthOrDay(_month),
+      warn: (0, _base.dateIsBefore)((0, _utils.getTodayDate)(), {
+        day: _day,
+        month: _month,
+        year: _year
+      }),
+      year: !_year ? '' : _this.formatYearForDisplay(_year)
     };
-    _this.onCloseModal = _this.onCloseModal.bind((0, _assertThisInitialized2.default)(_this));
     return _this;
   }
-  (0, _createClass2.default)(AdminPanelSearchResults, [{
-    key: "onCloseModal",
-    value: function onCloseModal() {
-      this.setState({
-        showModal: false
-      });
-    }
-  }, {
-    key: "openPrivsEditModal",
-    value: function openPrivsEditModal(user) {
-      this.setState({
-        selectedUser: user,
-        showModal: true
-      });
-    }
-  }, {
+
+  /**
+   * If year is a number, pad it for clarity ('84' -> '0084' to clarify it isn't '1984')
+   * If it is too long (eg. extended ISO format ±YYYYYY), trim it
+   * @function formatYearForDisplay
+   * @param  {string|number} year - The year string or number to format
+   * @returns {string} a short ISO date string (YYYY-MM-DD)
+   */
+  (0, _createClass2.default)(DateField, [{
     key: "render",
     value: function render() {
-      var _this2 = this;
-      var noResults = !this.props.results || this.props.results.length === 0;
-      var results = this.props.results.map(function (result) {
-        if (!result) {
-          return null;
-        }
-        var name = result.defaultAlias ? result.defaultAlias.name : '(unnamed)';
-        var link = "/editor/".concat(result.bbid);
-
-        /* eslint-disable react/jsx-no-bind */
-        return /*#__PURE__*/_react.default.createElement("tr", {
-          key: result.bbid
-        }, /*#__PURE__*/_react.default.createElement("td", null, /*#__PURE__*/_react.default.createElement("a", {
-          href: link
-        }, /*#__PURE__*/_react.default.createElement("img", {
-          className: "margin-right-0-3",
-          height: "15",
-          src: (0, _privilegesUtils.getPrivilegeShieldIcon)(result.privs)
-        }), name)), /*#__PURE__*/_react.default.createElement("td", null, /*#__PURE__*/_react.default.createElement(_privilegeBadges.default, {
-          privs: result.privs
-        })), /*#__PURE__*/_react.default.createElement("td", null, /*#__PURE__*/_react.default.createElement(Button, {
-          className: "btn btn-sm",
-          variant: "outline-info",
-          onClick: function onClick() {
-            return _this2.openPrivsEditModal(result);
-          }
-        }, "Edit")));
+      var warnMessage = 'Are you sure? You entered a date in the future!';
+      var labelElement = /*#__PURE__*/_react.default.createElement(_validationLabel.default, {
+        empty: this.props.empty,
+        error: this.props.error,
+        errorMessage: this.props.errorMessage,
+        warn: this.state.warn,
+        warnMessage: warnMessage
+      }, this.props.label);
+      var dateString = (0, _utils.dateObjectToISOString)({
+        day: this.state.day,
+        month: this.state.month,
+        year: this.state.year
       });
-      var tableCssClasses = 'table table-striped';
-      if (noResults) {
-        return null;
-      }
-      return /*#__PURE__*/_react.default.createElement("div", null, this.state.showModal &amp;&amp; /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_privsEditModal.default, {
-        adminId: this.props.user.id,
-        handleCloseModal: this.onCloseModal,
-        show: this.state.showModal,
-        targetUser: this.state.selectedUser,
-        updateResultsOnPrivsChange: this.props.updateResultsOnPrivsChange
-      })), /*#__PURE__*/_react.default.createElement("h3", {
-        className: "search-results-heading"
-      }, "Search Results"), /*#__PURE__*/_react.default.createElement("hr", {
-        className: "thin"
-      }), /*#__PURE__*/_react.default.createElement(Table, {
-        responsive: true,
-        className: tableCssClasses
-      }, /*#__PURE__*/_react.default.createElement("thead", null, /*#__PURE__*/_react.default.createElement("tr", null, /*#__PURE__*/_react.default.createElement("th", {
-        width: "42%"
-      }, "Name"), /*#__PURE__*/_react.default.createElement("th", {
-        width: "42%"
-      }, "Privileges"), /*#__PURE__*/_react.default.createElement("th", {
-        width: "16%"
-      }))), /*#__PURE__*/_react.default.createElement("tbody", null, results)));
+      var selectedDate = (0, _dateFns.parseISO)(dateString);
+      var groupClassName = (0, _classnames.default)({
+        'd-none': !this.props.show
+      });
+      var isCommonEraDate = Math.sign(this.state.year) === 1 || Math.sign(this.state.year) === 0;
+      return /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Group, {
+        className: groupClassName
+      }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Form.Label, null, labelElement), /*#__PURE__*/_react.default.createElement(_reactBootstrap.InputGroup, {
+        className: "responsive-date-field"
+      }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.FormControl, {
+        className: "year-field",
+        maxLength: isCommonEraDate ? 4 : 5,
+        placeholder: "YYYY",
+        style: {
+          width: '4.5em'
+        },
+        type: "text",
+        value: this.state.year,
+        onBlur: this.handleYearInputBlur,
+        onChange: this.handleYearChange
+      }), /*#__PURE__*/_react.default.createElement(_reactBootstrap.InputGroup.Append, {
+        style: {
+          'margin-right': '-1px'
+        }
+      }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.InputGroup.Text, {
+        style: {
+          padding: '0 0.5em'
+        }
+      }, "-")), /*#__PURE__*/_react.default.createElement(_reactBootstrap.FormControl, {
+        className: "other-date-field",
+        maxLength: "2",
+        placeholder: "MM",
+        type: "text",
+        value: this.state.month,
+        onBlur: this.handleMonthInputBlur,
+        onChange: this.handleMonthChange
+      }), /*#__PURE__*/_react.default.createElement(_reactBootstrap.InputGroup.Append, {
+        style: {
+          'margin-right': '-1px'
+        }
+      }, /*#__PURE__*/_react.default.createElement(_reactBootstrap.InputGroup.Text, {
+        style: {
+          padding: '0 0.5em'
+        }
+      }, "-")), /*#__PURE__*/_react.default.createElement(_reactBootstrap.FormControl, {
+        className: "other-date-field",
+        maxLength: "2",
+        placeholder: "DD",
+        type: "text",
+        value: this.state.day,
+        onBlur: this.handleDayInputBlur,
+        onChange: this.handleDayChange
+      }), /*#__PURE__*/_react.default.createElement(_reactBootstrap.InputGroup.Append, {
+        style: {
+          fontSize: 'inherit'
+        }
+      }, /*#__PURE__*/_react.default.createElement(_reactDatepicker.default, {
+        peekNextMonth: true,
+        showMonthDropdown: true,
+        showYearDropdown: true,
+        customInput: /*#__PURE__*/_react.default.createElement(_reactBootstrap.Button, {
+          style: {
+            lineHeight: '1.75',
+            padding: '0.375em 0.938em'
+          },
+          title: "Date picker",
+          variant: "info"
+        }, /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
+          icon: _freeSolidSvgIcons.faCalendarAlt
+        })),
+        dateFormat: "uuuuuu-MM-dd",
+        disabled: !isCommonEraDate,
+        dropdownMode: "select",
+        popperModifiers: {
+          preventOverflow: {
+            enabled: true
+          }
+        },
+        popperPlacement: "top-end",
+        selected: (0, _dateFns.isValid)(selectedDate) ? selectedDate : null,
+        timeFormat: "false",
+        onChange: this.handleChangeOfDatePicker
+      })))));
     }
   }]);
-  return AdminPanelSearchResults;
+  return DateField;
 }(_react.default.Component);
-(0, _defineProperty2.default)(AdminPanelSearchResults, "displayName", 'AdminPanelSearchResults');
-(0, _defineProperty2.default)(AdminPanelSearchResults, "propTypes", {
-  results: _propTypes.default.array,
-  updateResultsOnPrivsChange: _propTypes.default.func.isRequired,
-  user: _propTypes.default.object.isRequired
-});
-(0, _defineProperty2.default)(AdminPanelSearchResults, "defaultProps", {
-  results: null
-});
-var _default = AdminPanelSearchResults;
+DateField.propTypes = {
+  defaultValue: _propTypes.default.string,
+  empty: _propTypes.default.bool.isRequired,
+  error: _propTypes.default.bool.isRequired,
+  errorMessage: _propTypes.default.string,
+  label: _propTypes.default.string.isRequired,
+  onChangeDate: _propTypes.default.func.isRequired,
+  show: _propTypes.default.bool.isRequired
+};
+DateField.defaultProps = {
+  defaultValue: '',
+  errorMessage: null
+};
+var _default = DateField;
 exports.default = _default;
-//# sourceMappingURL=admin-panel-search-results.js.map</code></pre>
+//# sourceMappingURL=new-date-field.js.map</code></pre>
         </article>
     </section>
 
