@@ -20,13 +20,13 @@ import {Col, Row} from 'react-bootstrap';
 import React, {useEffect, useState} from 'react';
 import {WikipediaArticleExtract, buildWikipediaUrl, getWikidataId} from '../../../../common/helpers/wikimedia';
 import DOMPurify from 'isomorphic-dompurify';
-import type {EntityT} from 'bookbrainz-data/lib/types/entity';
+import type {LazyLoadedEntityT} from 'bookbrainz-data/lib/types/entity';
 import {getAliasLanguageCodes} from '../../../../common/helpers/utils';
 import {uniq} from 'lodash';
 
 
 type Props = {
-	entity: EntityT,
+	entity: LazyLoadedEntityT,
 	articleExtract?: WikipediaArticleExtract,
 };
 

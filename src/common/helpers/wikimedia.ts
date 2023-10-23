@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import type {EntityT, EntityTypeString} from 'bookbrainz-data/lib/types/entity';
+import type {EntityTypeString, LazyLoadedEntityT} from 'bookbrainz-data/lib/types/entity';
 
 
 export type WikipediaArticle = {
@@ -56,7 +56,7 @@ const wikidataIdentifierTypeIds: Record<EntityTypeString, number> = {
 	Work: 21
 };
 
-export function getWikidataId(entity: EntityT) {
+export function getWikidataId(entity: LazyLoadedEntityT) {
 	const identifiers = entity.identifierSet?.identifiers;
 	const wikidataTypeId = wikidataIdentifierTypeIds[entity.type];
 	return identifiers?.find((identifier) => identifier.typeId === wikidataTypeId)?.value;
