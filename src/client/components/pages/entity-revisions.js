@@ -22,6 +22,8 @@ import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import React from 'react';
 import RevisionsTable from './parts/revisions-table';
+import {get} from 'lodash';
+import request from 'superagent';
 
 
 /**
@@ -43,6 +45,7 @@ class EntityRevisions extends React.Component {
 		// React does not autobind non-React class methods
 		this.renderHeader = this.renderHeader.bind(this);
 		this.searchResultsCallback = this.searchResultsCallback.bind(this);
+		this.onChangeMasterRevisionId = this.onChangeMasterRevisionId.bind(this);
 		this.paginationUrl = './revisions/revisions';
 	}
 
@@ -71,6 +74,16 @@ class EntityRevisions extends React.Component {
 		);
 	}
 
+	async onChangeMasterRevisionId(newMasterRevisionId) {
+		if (newMasterRevisionId === get(this.props.entity, 'revisionId', null)) { return; }
+		try {
+			await request.post('master').send({revisionId: newMasterRevisionId});
+			window.location.reload();
+		}
+		catch (err) {
+			// error handling
+		}
+	}
 
 	/**
 	 * Renders the EntityRevisions page, which is a list of all the revisions
@@ -79,10 +92,14 @@ class EntityRevisions extends React.Component {
 	 * @returns {ReactElement} a HTML document which displays the Revision page
 	 */
 	render() {
+		const revisionId = get(this.props.entity, 'revisionId', null);
 		return (
 			<div id="pageWithPagination">
 				<RevisionsTable
+					handleMasterChange={this.onChangeMasterRevisionId}
+					masterRevisionId={revisionId}
 					results={this.state.results}
+					showActions={this.props.showActions && this.props.user}
 					showEntities={this.props.showEntities}
 					showRevisionEditor={this.props.showRevisionEditor}
 					showRevisionNote={this.props.showRevisionNote}
@@ -110,17 +127,21 @@ EntityRevisions.propTypes = {
 	from: PropTypes.number,
 	nextEnabled: PropTypes.bool.isRequired,
 	revisions: PropTypes.array.isRequired,
+	showActions: PropTypes.bool,
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
 	showRevisionNote: PropTypes.bool,
-	size: PropTypes.number
+	size: PropTypes.number,
+	user: PropTypes.object
 };
 EntityRevisions.defaultProps = {
 	from: 0,
+	showActions: false,
 	showEntities: false,
 	showRevisionEditor: false,
 	showRevisionNote: false,
-	size: 20
+	size: 20,
+	user: null
 };
 
 export default EntityRevisions;

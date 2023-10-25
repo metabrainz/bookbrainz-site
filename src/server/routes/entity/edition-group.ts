@@ -23,18 +23,19 @@ import * as middleware from '../../helpers/middleware';
 import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
+import {BadRequestError, ConflictError} from '../../../common/helpers/error';
 import {
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
-import {ConflictError} from '../../../common/helpers/error';
 import {PrivilegeType} from '../../../common/helpers/privileges-utils';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import log from 'log';
+import {revertRevision} from '../../helpers/revisions';
 import target from '../../templates/target';
 
 
@@ -194,6 +195,23 @@ router.param(
 	)
 );
 
+router.param(
+	'revisionId',
+	middleware.makeRevisionLoader(
+		'EditionGroup',
+		[
+			'authorCredit.names.author.defaultAlias',
+			'editionGroupType',
+			'editions.defaultAlias',
+			'editions.disambiguation',
+			'editions.releaseEventSet.releaseEvents',
+			'editions.identifierSet.identifiers.type',
+			'editions.editionFormat'
+		],
+		'Edition Group Revision not found'
+	)
+);
+
 function _setEditionGroupTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
@@ -205,6 +223,11 @@ function _setEditionGroupTitle(res) {
 router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
 	_setEditionGroupTitle(res);
 	res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
+	entityRoutes.displayEntity(req, res);
+});
+
+router.get('/:bbid/revision/:revisionId', middleware.loadEntityRelationships, (req, res) => {
+	_setEditionGroupTitle(res);
 	entityRoutes.displayEntity(req, res);
 });
 
@@ -360,5 +383,29 @@ router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthor
 
 router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	mergeHandler);
+
+router.post('/:bbid/master', auth.isAuthenticatedForHandler, async (req, res, next) => {
+	const {orm} = req.app.locals;
+	const {bbid} = req.params;
+	const {revisionId} = req.body;
+	const {EditionGroupRevision} = orm;
+	const userID = req.user.id;
+	try {
+		// check if EditionGroup revision exist for this entity
+		const targetRevision = await new EditionGroupRevision({bbid, id: revisionId}).fetch({
+			require: true
+		});
+		if (targetRevision.get('isMerge')) {
+			return next(new BadRequestError('Cannot revert to a merged revision'));
+		}
+		await orm.bookshelf.transaction((transacting) => revertRevision(revisionId, bbid, userID, 'EditionGroup', orm, transacting));
+	}
+	catch (err) {
+		return next(new BadRequestError(err.message));
+	}
+	return res.status(200).send({
+		changed: true
+	});
+});
 
 export default router;

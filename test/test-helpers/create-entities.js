@@ -457,7 +457,10 @@ async function fetchOrCreatePublisherType(PublisherTypeModel, optionalPublisherA
 	const PublisherTypeAttribs = {
 		label: faker.commerce.productAdjective()
 	};
-	const publisherType = await new PublisherTypeModel({...PublisherTypeAttribs, ...optionalPublisherAttribs}).save(null, {method: 'insert'});
+	let publisherType = await new PublisherTypeModel({...PublisherTypeAttribs}).fetch({require: false});
+	if (!publisherType) {
+		publisherType = await new PublisherTypeModel({...PublisherTypeAttribs, ...optionalPublisherAttribs}).save(null, {method: 'insert'});
+	}
 	return publisherType;
 }
 

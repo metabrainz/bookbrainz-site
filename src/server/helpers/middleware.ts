@@ -30,6 +30,7 @@ import {getWikipediaExtract, selectWikipediaPage} from './wikimedia';
 import _ from 'lodash';
 import {getAcceptedLanguageCodes} from './i18n';
 import {getReviewsFromCB} from './critiquebrainz';
+import {recursivelyGetMergedEntitiesBBIDs} from './revisions';
 import {getWikidataId} from '../../common/helpers/wikimedia';
 import log from 'log';
 
@@ -271,7 +272,9 @@ export async function redirectedBbid(req: $Request, res: $Response, next: NextFu
 		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid);
 		if (redirectBbid !== bbid) {
 			// res.location(`${req.baseUrl}/${redirectBbid}`);
-			return res.redirect(301, `${req.baseUrl}${req.path.replace(bbid, redirectBbid)}`);
+			// Prevent redirecting to the same page even after revert
+			// For more info on Cache headers see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+			return res.set('Cache-control', 'no-cache').redirect(301, `${req.baseUrl}${req.path.replace(bbid, redirectBbid)}`);
 		}
 	}
 	catch (err) {
@@ -450,4 +453,52 @@ export function validateCollaboratorIdsForCollectionRemove(req, res, next) {
 	}
 
 	return next();
+}
+
+export function decodeUrlQueryParams(req:$Request, res:$Response, next:NextFunction) {
+	req.query = _.mapValues(req.query, decodeURIComponent);
+	return next();
+}
+
+export function makeRevisionLoader(modelName: string, additionalRels: Array<string>, errMessage: string) {
+	const relations = [
+		'aliasSet.aliases.language',
+		'annotation.lastRevision',
+		'defaultAlias',
+		'disambiguation',
+		'identifierSet.identifiers.type',
+		'relationshipSet.relationships.type',
+		'revision.revision'
+	].concat(additionalRels);
+	return async (req: $Request, res: $Response, next: NextFunction, revisionId: number) => {
+		const {orm}: any = req.app.locals;
+		const mainEntity:any = res.locals.entity;
+		const {bbid} = mainEntity;
+		const otherMergedBBIDs = await recursivelyGetMergedEntitiesBBIDs(orm, [bbid]);
+		try {
+			const Model = commonUtils.getEntityModelByType(orm, modelName);
+			const RevisionModel = orm[`${modelName}Revision`];
+			// check if it is valid revision or not
+			await new RevisionModel()
+				.query((qb) => {
+					qb.distinct(`${RevisionModel.prototype.tableName}.id`, 'revision.created_at');
+					qb.whereIn('bbid', [bbid, ...otherMergedBBIDs]);
+					qb.join('bookbrainz.revision', `${RevisionModel.prototype.tableName}.id`, '=', 'bookbrainz.revision.id');
+					qb.where('bookbrainz.revision.id', '=', revisionId);
+					qb.orderBy('revision.created_at', 'DESC');
+				}).fetch({debug: true, require: true});
+			const entity = await Model.forge({revisionId}).fetch({
+				require: true,
+				withRelated: relations
+			});
+			if (!entity.dataId) {
+				entity.deleted = true;
+			}
+			res.locals.entity = entity.toJSON();
+			return next();
+		}
+		catch (err) {
+			return next(new error.NotFoundError(errMessage, req));
+		}
+	};
 }

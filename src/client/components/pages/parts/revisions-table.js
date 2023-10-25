@@ -18,20 +18,43 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
+import {faCodeBranch, faEye, faUndo} from '@fortawesome/free-solid-svg-icons';
 import {genEntityIconHTMLElement, getEntityLabel, getEntityUrl} from '../../../helpers/entity';
+import ConfirmationModal from './confirmation-modal';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {faCodeBranch} from '@fortawesome/free-solid-svg-icons';
 
 
-const {Table} = bootstrap;
+const {Table, OverlayTrigger, Tooltip, Badge} = bootstrap;
 const {formatDate, stringToHTMLWithLinks} = utilsHelper;
 
 function RevisionsTable(props) {
-	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading} = props;
+	const {results, showEntities, showActions, showRevisionNote, showRevisionEditor, tableHeading, masterRevisionId, handleMasterChange} = props;
+	const [show, setShow] = React.useState(false);
+	const [revisionId, setRevisionId] = React.useState(null);
+	const showConfirmModal = React.useCallback((rid) => {
+		setRevisionId(rid);
+		setShow(true);
+	}, []);
+	const hideConfirmModal = React.useCallback(() => setShow(false), []);
+	const onConfirm = React.useCallback(() => {
+		handleMasterChange(revisionId);
+		hideConfirmModal();
+	}, [revisionId]);
+	function makeClickHandler(rid) {
+		return () => showConfirmModal(rid);
+	}
 	return (
 		<div>
+			<ConfirmationModal
+				message={`Are you sure you want to revert all the changes from #${revisionId} revision?`}
+				show={show}
+				title="Revert Revision"
+				onCancel={hideConfirmModal}
+				onConfirm={onConfirm}
+			/>
+
 			<div>
 				<h1 className="text-center">{tableHeading}</h1>
 			</div>
@@ -59,6 +82,7 @@ function RevisionsTable(props) {
 										<th width="16%">Note</th> : null
 								}
 								<th width="16%">Date</th>
+								{showActions && <th className="col-md-2">Actions</th>}
 							</tr>
 						</thead>
 
@@ -83,6 +107,10 @@ function RevisionsTable(props) {
 														/>
 													</span>
 												}
+												{showActions && revision.revisionId === masterRevisionId &&
+												<Badge className="ml-2 bg-success text-white">
+													Active
+												</Badge>}
 											</a>
 										</td>
 										{
@@ -127,6 +155,42 @@ function RevisionsTable(props) {
 												</td> : null
 										}
 										<td>{formatDate(new Date(revision.createdAt), true)}</td>
+										{showActions &&
+										<td>
+											<div className="d-flex align-items-center">
+												<OverlayTrigger
+													delay={50}
+													overlay={
+														<Tooltip>
+													View entity at this revision
+														</Tooltip>}
+													placement="right"
+												>
+													<a href={`revision/${revision.revisionId}`}>
+														<FontAwesomeIcon className="mr-2 text-secondary" icon={faEye}/>
+													</a>
+												</OverlayTrigger>
+												<OverlayTrigger
+													delay={50}
+													overlay={
+														<Tooltip>
+														Revert entity to this revision
+														</Tooltip>}
+													placement="right"
+												>
+													<FontAwesomeIcon
+														className={`ml-2 cursor-pointer
+													${revision.revisionId === masterRevisionId || revision.isMerge ||
+														 !revision.dataId ? 'text-muted' : 'text-danger'}`}
+														icon={faUndo}
+														onClick={revision.revisionId === masterRevisionId || revision.isMerge ||
+															 !revision.dataId ? null :
+															makeClickHandler(revision.revisionId)}
+													/>
+												</OverlayTrigger>
+											</div>
+										</td>
+										}
 									</tr>
 								))
 							}
@@ -144,13 +208,19 @@ function RevisionsTable(props) {
 }
 
 RevisionsTable.propTypes = {
+	handleMasterChange: PropTypes.func,
+	masterRevisionId: PropTypes.number,
 	results: PropTypes.array.isRequired,
+	showActions: PropTypes.bool,
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
 	showRevisionNote: PropTypes.bool,
 	tableHeading: PropTypes.node
 };
 RevisionsTable.defaultProps = {
+	handleMasterChange: null,
+	masterRevisionId: null,
+	showActions: false,
 	showEntities: false,
 	showRevisionEditor: false,
 	showRevisionNote: false,

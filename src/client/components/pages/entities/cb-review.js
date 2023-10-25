@@ -71,8 +71,8 @@ class EntityReviews extends React.Component {
 		super(props);
 		this.handleClick = this.handleClick.bind(this);
 		this.state = {
-			reviews: props.entityReviews.reviews,
-			successfullyFetched: props.entityReviews.successfullyFetched
+			reviews: props.entityReviews?.reviews,
+			successfullyFetched: props.entityReviews?.successfullyFetched
 		};
 		this.entityType = props.entityType;
 		this.entityBBID = props.entityBBID;
@@ -84,7 +84,7 @@ class EntityReviews extends React.Component {
 		const data = await request.get(`/${this.entityType}/${this.entityBBID}/reviews`);
 
 		this.setState({
-			reviews: data.body.reviews,
+			reviews: data?.body?.reviews,
 			successfullyFetched: data.body.successfullyFetched
 		});
 	}
@@ -99,7 +99,7 @@ class EntityReviews extends React.Component {
 		};
 		const cbEntityType = mapEntityType[this.entityType];
 		const entityLink = `https://critiquebrainz.org/${cbEntityType}/${this.entityBBID}`;
-		if (this.state.reviews.reviews?.length && !_.isEmpty(this.state.reviews)) {
+		if (this.state.reviews?.reviews?.length && !_.isEmpty(this.state.reviews)) {
 			const {reviews: reviewsData} = this.state.reviews;
 			reviewContent = (
 				<React.Fragment>

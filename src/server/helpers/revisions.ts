@@ -17,7 +17,9 @@
  */
 
 import * as error from '../../common/helpers/error';
-import {flatMap} from 'lodash';
+import {camelCase, flatMap, pick, upperFirst} from 'lodash';
+import {EntityType} from '../../client/entity-editor/relationship-editor/types';
+import diff from 'deep-diff';
 
 
 function getRevisionModels(orm) {
@@ -189,7 +191,7 @@ export async function getOrderedRevisionForEditorPage(from, size, req) {
  * In order to fetch the complete history tree containing all three entities, we need to recursively check
  * if a source_bbid appears as a target_bbid in other rows.
  */
-async function recursivelyGetMergedEntitiesBBIDs(orm: any, bbids: string[]) {
+export async function recursivelyGetMergedEntitiesBBIDs(orm: any, bbids: string[]) {
 	const returnValue: string[] = [];
 	await Promise.all(bbids.map(async (bbid) => {
 		let thisLevelBBIDs = await orm.bookshelf.knex
@@ -209,7 +211,7 @@ export async function getOrderedRevisionsForEntityPage(orm: any, from: number, s
 
 	const revisions = await new RevisionModel()
 		.query((qb) => {
-			qb.distinct(`${RevisionModel.prototype.tableName}.id`, 'revision.created_at');
+			qb.distinct(`${RevisionModel.prototype.tableName}.id`, 'revision.created_at', 'data_id');
 			qb.whereIn('bbid', [bbid, ...otherMergedBBIDs]);
 			qb.join('bookbrainz.revision', `${RevisionModel.prototype.tableName}.id`, '=', 'bookbrainz.revision.id');
 			qb.orderBy('revision.created_at', 'DESC');
@@ -232,10 +234,241 @@ export async function getOrderedRevisionsForEntityPage(orm: any, from: number, s
 		const {revision} = rev;
 		const editor = revision.author;
 		const revisionId = revision.id;
+		const {dataId} = rev;
 		delete revision.author;
 		delete revision.authorId;
 		delete revision.id;
-		return {editor, revisionId, ...revision};
+		return {dataId, editor, revisionId, ...revision};
 	});
 }
 
+const EntityTypes = [
+	'Author',
+	'Edition',
+	'EditionGroup',
+	'Publisher',
+	'Series',
+	'Work'
+];
+
+function getEntityRevisionModel(type:EntityType, orm) {
+	const entityType = upperFirst(camelCase(type));
+	if (!EntityTypes.includes(entityType)) { return null; }
+	return orm[`${entityType}Revision`];
+}
+function getEntityHeaderModel(type:EntityType, orm) {
+	const entityType = upperFirst(camelCase(type));
+	if (!EntityTypes.includes(entityType)) { return null; }
+	return orm[`${entityType}Header`];
+}
+function getEntityDataModel(type:EntityType, orm) {
+	if (!EntityTypes.includes(type)) { return null; }
+	return orm[`${upperFirst(camelCase(type))}Data`];
+}
+
+/**
+ * Fetches all related entity revisions for a particular revision
+ * @param {number} revisionId - The revision ID to get the associated entities for
+ * @param {Object} orm - The BookshelfJS ORM object
+ * @param {Object} transacting - The BookshelfJS transaction object
+ * @returns {Promise<Record<String,Array<Object>>>} - Returns a promise resolving to an object containing the associated entities for each type
+ */
+async function getAllRevisionEntity(revisionId:number, orm:any, transacting:any) {
+	const revisions = {};
+	const key = 'parents';
+	for (const type of EntityTypes) {
+		const entityRevisionModel = getEntityRevisionModel(type, orm);
+		// eslint-disable-next-line no-await-in-loop
+		const entityRevision = await entityRevisionModel.forge().where('id', revisionId).fetchAll({
+			merge: false,
+			remove: false,
+			require: false,
+			transacting
+		});
+		const RevisionModal = getEntityRevisionModel(type, orm);
+		const typeRevisions = [];
+		for (const entity of entityRevision.models) {
+			// fetch parent of a revision
+			const revisionParent = await entity.related('revision').fetch({require: false, transacting})
+				.then((revision) => revision.related(key).fetch({require: false, transacting}))
+				.then((entities) => entities.map((ety) => ety.get('id')))
+				.then((entitiesId) => {
+					if (entitiesId.length === 0) {
+						return null;
+					}
+					return new RevisionModal()
+						.where('bbid', entity.get('bbid'))
+						.query('whereIn', 'id', entitiesId)
+						.orderBy('id', 'DESC')
+						.fetch({require: false, transacting, withRelated: ['data']});
+				});
+			const entityJSON = entity.toJSON();
+			if (revisionParent) {
+				entityJSON.parentRevision = revisionParent;
+			}
+			typeRevisions.push(entityJSON);
+		}
+		revisions[type] = typeRevisions;
+	}
+	return revisions;
+}
+
+/**
+ * This is responsible for reverting revisions given start and end revision id.
+ *
+ * @param {number} fromRevisionID - The revision ID to start from
+ * @param {number} toRevisionID - The revision ID to end at
+ * @param {string} bbid - The BBID of the entity
+ * @param {Object} revisionMap - Keeps track of last known revision
+ * @param {Object} orm - The BookBrainz ORM
+ * @param {Object} transacting - Bookshelf transaction object (must be in
+ * progress)
+ * @returns
+ */
+
+export async function recursivelyDoRevision(fromRevisionID:number, toRevisionID:number, bbid:string,
+	revisionMap:Record<string, any>, orm:any, transacting:any) {
+	if (fromRevisionID === toRevisionID) {
+		return;
+	}
+	if (fromRevisionID < toRevisionID) {
+		throw new Error('fromRevisionID should be greater than toRevisionID');
+	}
+	const effectedEntities = await getAllRevisionEntity(fromRevisionID, orm, transacting);
+	let nextId:number;
+	for (const type of EntityTypes) {
+		const entityRevision = effectedEntities[type];
+		let mergeToBBID = null;
+		const mergeEffectedEntities = [];
+		revisionMap[type] = revisionMap[type] || {};
+		for (const revision of entityRevision) {
+			if (revision.parentRevision) {
+				revisionMap[type][revision.bbid] = revision.parentRevision;
+			}
+			if (revision.bbid === bbid) {
+				nextId = revision.parentRevision ? revision.parentRevision.get('id') : null;
+			}
+			// handle merged entities
+			if (revision.isMerge) {
+				if (revision.dataId !== null) {
+					 mergeToBBID = revision.bbid;
+				}
+				else {
+					mergeEffectedEntities.push(revision);
+				}
+			}
+		}
+		// if merged revision, then update redirect table
+		if (mergeToBBID !== null) {
+			for (const revision of mergeEffectedEntities) {
+				const sourceBbid = revision.bbid;
+				await orm.bookshelf.knex('bookbrainz.entity_redirect')
+					.transacting(transacting)
+					.where('source_bbid', sourceBbid).where('target_bbid', mergeToBBID).del();
+			}
+		}
+	}
+	if (nextId) {
+		await recursivelyDoRevision(nextId, toRevisionID, bbid, revisionMap, orm, transacting);
+	}
+}
+
+/**
+ *  This function is responsible diffing two revisions and returning the new id set
+ * @param {number} oldRelationshipSetId - The relationship set ID to start from
+ * @param {number} newRelationshipSetId - The relationship set ID to end at
+ * @param {string} excludeBBID - The BBID of the entity to be excluded
+ * @param {Object} orm - The BookBrainz ORM
+ * @param {Object} transacting - Bookshelf transaction object (must be in
+ * @returns {Promise<Object>} - Returns a promise resolving to an object containing the associated entities relationship set
+ */
+async function diffRelationships(oldRelationshipSetId, newRelationshipSetId, excludeBBID, orm, transacting) {
+	const {RelationshipSet} = orm;
+	const oldRelatonhips = !oldRelationshipSetId ? [] : (await new RelationshipSet({id: oldRelationshipSetId})
+		.fetch({transacting, withRelated: ['relationships']})).toJSON().relationships;
+	const newRelationships = !newRelationshipSetId ? [] : (await new RelationshipSet({id: newRelationshipSetId})
+		.fetch({transacting, withRelated: ['relationships']})).toJSON().relationships;
+	// diff relationships using deep diff
+	const appliedDiffRels = [];
+	// apply those diff to the old relationships
+	diff.observableDiff(oldRelatonhips, newRelationships, (differ) => {
+		// Apply all changes except to the name property...
+		// either deleted or added excluded bbid present in either sourceBbid or targetBbid
+		if (differ.kind === 'A') {
+			if ((differ.item.kind === 'N' && (differ.item.rhs.sourceBbid === excludeBBID || differ.item.rhs.targetBbid === excludeBBID)) ||
+			(differ.item.kind === 'D' && (differ.item.lhs.sourceBbid === excludeBBID || differ.item.lhs.targetBbid === excludeBBID))) {
+				if (differ.item.kind === 'N') {
+					const addedRelationship = differ.item.rhs;
+					addedRelationship.isRemoved = true;
+					appliedDiffRels.push(addedRelationship);
+				}
+				else {
+					const deletedRelationship = differ.item.lhs;
+					deletedRelationship.isAdded = true;
+					appliedDiffRels.push(deletedRelationship);
+				}
+			}
+		}
+	  });
+	  const cleanedRels = appliedDiffRels.map((rel) => pick(rel, ['typeId', 'sourceBbid', 'targetBbid', 'attributeSetId', 'isAdded', 'isRemoved']));
+	  const nextRelSet = await orm.func.relationship.updateRelationshipSets(orm, transacting, null, cleanedRels);
+	  return nextRelSet;
+}
+
+/**
+ * This function is responsible for reverting revisions(undo only) from master to given target revision.
+ * @param {number} targetRevisionId - The revision ID to end at
+ * @param {string} mainBBID - The BBID of the entity
+ * @param {number} authorId - The ID of the user who is reverting
+ * @param {string} type - The type of entity
+ * @param {Object} orm - The BookBrainz ORM
+ * @param {Object} transacting - Bookshelf transaction object (must be in
+ * @returns  {Promise<void>} - Returns a promise resolving to nothing
+ */
+export async function revertRevision(targetRevisionId:number, mainBBID:string, authorId:number, type:EntityType, orm, transacting) {
+	// find current revision id
+	const EntityHeader = getEntityHeaderModel(type, orm);
+	const {Revision} = orm;
+	const entityHeader = await new EntityHeader({bbid: mainBBID}).fetch({require: false, transacting});
+	if (!entityHeader) {
+		throw new Error('Entity not found');
+	}
+	const currentRevisionId = entityHeader.get('masterRevisionId');
+	const revisionMap = {};
+	await recursivelyDoRevision(currentRevisionId, targetRevisionId, mainBBID, revisionMap, orm, transacting);
+	const parentRevisionIDs = new Set();
+	// create a revision for reverting
+	const revision = await new Revision({authorId}).save(null, {method: 'insert', transacting});
+	for (const etype of EntityTypes) {
+		const revisions = revisionMap[etype];
+		const RevisionModal = getEntityRevisionModel(etype, orm);
+		const EntityDataModel = getEntityDataModel(etype, orm);
+		const TypeEntityHeader = getEntityHeaderModel(etype, orm);
+		for (const bbid in revisions) {
+			if (Object.prototype.hasOwnProperty.call(revisions, bbid)) {
+				const revisionJSON = revisions[bbid].toJSON();
+				let dataId = revisionJSON.data.id;
+				// get current revision id
+				const effectedHeader = await new TypeEntityHeader({bbid}).fetch({require: false, transacting});
+				const mid = effectedHeader.get('masterRevisionId');
+				parentRevisionIDs.add(mid);
+				const currentRevision = (await new RevisionModal({id: mid}).fetch({withRelated: ['data']})).toJSON();
+				const oldRelSetID = revisionJSON.data.relationshipSetId;
+				const newRelSetID = currentRevision?.data?.relationshipSetId;
+				// if present relationship set doesn't matches with previous revision's relationship set then update it by creating new relationship set along with entity data
+				if (newRelSetID !== oldRelSetID) {
+					const diffRel = await diffRelationships(oldRelSetID, newRelSetID, mainBBID, orm, transacting);
+					const newRelId = diffRel[bbid]?.get('id');
+					const data = {...revisionJSON.data, relationshipSetId: newRelId};
+					delete data.id;
+					const newEntityData = await EntityDataModel.forge(data).save(null, {method: 'insert', transacting});
+					dataId = newEntityData.get('id');
+				}
+				const revertRev = await new RevisionModal({bbid, dataId, id: revision.get('id')}).save(null, {method: 'insert', transacting});
+				await new TypeEntityHeader({bbid}).save({masterRevisionId: revertRev.get('id')}, {method: 'update', transacting});
+			}
+		}
+	}
+	const parents = await revision.related('parents').fetch({transacting});
+	await parents.attach([...parentRevisionIDs], {transacting});
+}

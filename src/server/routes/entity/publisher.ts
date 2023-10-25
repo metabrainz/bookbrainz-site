@@ -23,18 +23,19 @@ import * as middleware from '../../helpers/middleware';
 import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
+import {BadRequestError, ConflictError} from '../../../common/helpers/error';
 import {
 	entityEditorMarkup,
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
-import {ConflictError} from '../../../common/helpers/error';
 import {PrivilegeType} from '../../../common/helpers/privileges-utils';
 import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import log from 'log';
+import {revertRevision} from '../../helpers/revisions';
 import target from '../../templates/target';
 
 
@@ -187,6 +188,15 @@ router.param(
 	)
 );
 
+router.param(
+	'revisionId',
+	middleware.makeRevisionLoader(
+		'Publisher',
+		['publisherType', 'area'],
+		'Publisher Revision not found'
+	)
+);
+
 function _setPublisherTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
@@ -219,6 +229,11 @@ router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipedi
 			return entityRoutes.displayEntity(req, res);
 		})
 		.catch(next);
+});
+
+router.get('/:bbid/revision/:revisionId', middleware.loadEntityRelationships, (req, res) => {
+	_setPublisherTitle(res);
+	entityRoutes.displayEntity(req, res);
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req, res, next) => {
@@ -357,5 +372,30 @@ router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthor
 
 router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	mergeHandler);
+
+router.post('/:bbid/master', auth.isAuthenticatedForHandler, async (req, res, next) => {
+	const {orm} = req.app.locals;
+	const {bbid} = req.params;
+	const {revisionId} = req.body;
+	const {PublisherRevision} = orm;
+	const userID = req.user.id;
+	try {
+		// check if Publisher revision exist for this entity
+		const targetRevision = await new PublisherRevision({bbid, id: revisionId}).fetch({
+			require: true
+		});
+		if (targetRevision.get('isMerge')) {
+			return next(new BadRequestError('Cannot revert to a merged revision'));
+		}
+		await orm.bookshelf.transaction((transacting) => revertRevision(revisionId, bbid, userID, 'Publisher', orm, transacting));
+	}
+	catch (err) {
+		return next(new BadRequestError(err.message));
+	}
+	return res.status(200).send({
+		changed: true
+	});
+});
+
 
 export default router;

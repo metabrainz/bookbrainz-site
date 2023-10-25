@@ -207,6 +207,7 @@ export async function displayRevisions(
 			from,
 			nextEnabled,
 			revisions: newResultsArray,
+			showActions: true,
 			showRevisionEditor: true,
 			showRevisionNote: true,
 			size

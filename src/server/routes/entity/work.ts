@@ -23,6 +23,7 @@ import * as middleware from '../../helpers/middleware';
 import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
+import {BadRequestError, ConflictError} from '../../../common/helpers/error';
 import {
 	addInitialRelationship,
 	entityEditorMarkup,
@@ -30,7 +31,6 @@ import {
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
 
-import {ConflictError} from '../../../common/helpers/error';
 import {PrivilegeType} from '../../../common/helpers/privileges-utils';
 import {RelationshipTypes} from '../../../client/entity-editor/relationship-editor/types';
 import _ from 'lodash';
@@ -38,6 +38,7 @@ import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import log from 'log';
 import {makePromiseFromObject} from '../../../common/helpers/utils';
+import {revertRevision} from '../../helpers/revisions';
 import target from '../../templates/target';
 
 /** ****************************
@@ -220,7 +221,14 @@ router.param(
 		'Work not found'
 	)
 );
-
+router.param(
+	'revisionId',
+	middleware.makeRevisionLoader(
+		'Work',
+		['workType', 'languageSet.languages'],
+		'Work Revision not found'
+	)
+);
 function _setWorkTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
@@ -230,6 +238,11 @@ function _setWorkTitle(res) {
 }
 
 router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
+	_setWorkTitle(res);
+	entityRoutes.displayEntity(req, res);
+});
+
+router.get('/:bbid/revision/:revisionId', middleware.loadEntityRelationships, (req, res) => {
 	_setWorkTitle(res);
 	entityRoutes.displayEntity(req, res);
 });
@@ -368,5 +381,30 @@ router.post('/:bbid/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthor
 
 router.post('/:bbid/merge/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	mergeHandler);
+
+router.post('/:bbid/master', auth.isAuthenticatedForHandler, async (req, res, next) => {
+	const {orm} = req.app.locals;
+	const {bbid} = req.params;
+	const {revisionId} = req.body;
+	const {WorkRevision} = orm;
+	const userID = req.user.id;
+	try {
+		// check if Work revision exist for this entity
+		const targetRevision = await new WorkRevision({bbid, id: revisionId}).fetch({
+			require: true
+		});
+		if (targetRevision.get('isMerge')) {
+			return next(new BadRequestError('Cannot revert to a merged revision'));
+		}
+		await orm.bookshelf.transaction((transacting) => revertRevision(revisionId, bbid, userID, 'Work', orm, transacting));
+	}
+	catch (err) {
+		return next(new BadRequestError(err.message));
+	}
+	return res.status(200).send({
+		changed: true
+	});
+});
+
 
 export default router;
