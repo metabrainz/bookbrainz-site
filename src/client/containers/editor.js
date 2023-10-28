@@ -27,7 +27,7 @@ import React from 'react';
 const {Col, Nav, Row} = bootstrap;
 
 function EditorContainer(props) {
-	const {tabActive, editor, children} = props;
+	const {tabActive, editor, children, user} = props;
 
 	return (
 		<div>
@@ -85,14 +85,19 @@ function EditorContainer(props) {
 								Collections
 							</Nav.Link>
 						</Nav.Item>
-						<Nav.Item>
-							<Nav.Link
-								active={tabActive === 4}
-								href="/external-service"
-							>
-								External Services
-							</Nav.Link>
-						</Nav.Item>
+						{
+							user && user.id === editor.id ?
+								(
+									<Nav.Item>
+										<Nav.Link
+											active={tabActive === 4}
+											href="/external-service"
+										>
+										External Services
+										</Nav.Link>
+									</Nav.Item>
+								) : null
+						}
 					</Nav>
 				</Col>
 			</Row>
@@ -109,7 +114,11 @@ EditorContainer.propTypes = {
 		name: PropTypes.string,
 		title: PropTypes.object
 	}).isRequired,
-	tabActive: PropTypes.number.isRequired
+	tabActive: PropTypes.number.isRequired,
+	user: PropTypes.object
+};
+EditorContainer.defaultProps = {
+	user: null
 };
 
 export default EditorContainer;

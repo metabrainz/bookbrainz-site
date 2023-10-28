@@ -333,6 +333,7 @@ router.get('/:id', async (req, res, next) => {
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)} >
 				<EditorContainer
+					user={props.user}
 					{...propHelpers.extractEditorProps(props)}
 				>
 					<ProfileTab
@@ -390,6 +391,7 @@ router.get('/:id/revisions', async (req, res, next) => {
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
 				<EditorContainer
+					user={props.user}
 					{...propHelpers.extractEditorProps(props)}
 				>
 					<EditorRevisionPage
@@ -552,6 +554,7 @@ router.get('/:id/achievements', async (req, res, next) => {
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
 			<EditorContainer
+				user={props.user}
 				{...propHelpers.extractEditorProps(props)}
 			>
 				<AchievementsTab
@@ -658,6 +661,7 @@ router.get('/:id/collections', async (req, res, next) => {
 		const markup = ReactDOMServer.renderToString(
 			<Layout {...propHelpers.extractLayoutProps(props)}>
 				<EditorContainer
+					user={props.user}
 					{...propHelpers.extractEditorProps(props)}
 				>
 					<CollectionsPage

@@ -64,6 +64,7 @@ const markup = (
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)} >
 			<EditorContainer
+				user={props.user}
 				{...extractEditorProps(props)}
 			>
 				{tab}
