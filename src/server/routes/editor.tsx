@@ -531,6 +531,16 @@ router.get('/:id/achievements', async (req, res, next) => {
 		.where('editor_id', userId)
 		.fetchAll({require: false});
 
+	const achievementCol = await new AchievementUnlock()
+		.where('editor_id', userId)
+		.where('profile_rank', '<=', '3')
+		.query((qb) => qb.limit(3))
+		.orderBy('profile_rank', 'ASC')
+		.fetchAll({
+			require: false,
+			withRelated: ['achievement']
+		});
+
 	const achievementTypesPromise = new AchievementType()
 		.orderBy('id', 'ASC')
 		.fetchAll();
@@ -542,8 +552,11 @@ router.get('/:id/achievements', async (req, res, next) => {
 	const achievementJSON =
 		await setAchievementUnlockedField(achievementTypes, unlocks, userId, res.app.locals.orm);
 
+	const currAchievementJSON = achievementColToEditorGetJSON(achievementCol);
+
 	const props = generateProps(req, res, {
 		achievement: achievementJSON,
+		currAchievement: currAchievementJSON,
 		editor: editorJSON,
 		isOwner,
 		tabActive: 2
@@ -556,6 +569,7 @@ router.get('/:id/achievements', async (req, res, next) => {
 			>
 				<AchievementsTab
 					achievement={props.achievement}
+					currAchievement={props.currAchievement}
 					editor={props.editor}
 					isOwner={props.isOwner}
 				/>
