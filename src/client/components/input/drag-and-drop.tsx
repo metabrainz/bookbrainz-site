@@ -28,8 +28,8 @@ const {useState, useCallback} = React;
 * The Achievement interface, defining the properties of an achievement.
 * @typedef
 * @property {string} name - The name of the achievement.
-* @property {string} src - The source URL of the achievement's badge image.
-* @property {string} id - The ID of the achievement.
+* @property {string} badgeUrl - The source URL of the achievement's badge image.
+* @property {number} id - The ID of the achievement.
 */
 type Achievement = {
 	name: string;
@@ -41,6 +41,7 @@ type Achievement = {
  * Props for DragAndDropImage component
  * @typedef {Object} Props
  * @property {string} name - The name of the DragAndDrop component.
+ * @property {Achievement} initialAchievement - The initial achievement to display in the card.
  */
 type Props = {
   name: string;
