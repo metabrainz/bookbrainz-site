@@ -17,10 +17,12 @@
  */
 /* eslint-disable no-console */
 
-import {faker, internet, random} from '@faker-js/faker';
+import {faker} from '@faker-js/faker';
 import {isNil} from 'lodash';
 import orm from '../bookbrainz-data';
 
+
+const {internet, random, string} = faker;
 
 const {
 	bookshelf, util, Editor, EditorType, Revision, Relationship, RelationshipAttribute,
@@ -134,7 +136,7 @@ const entityAttribs = {
 	aliasSetId: 1,
 	annotationId: 1,
 	// bbid should normally be overwritten when calling create{Entity}
-	bbid: faker.string.uuid(),
+	bbid: string.uuid(),
 	disambiguationId: 1,
 	identifierSetId: 1,
 	relationshipSetId: 1,
@@ -221,8 +223,8 @@ async function createRelationshipAttributeSet() {
 }
 
 async function createRelationshipSet(sourceBbid, targetBbid, targetEntityType = 'Author', attributeSetId) {
-	const safeTargetBbid = targetBbid || faker.string.uuid();
-	const safeSourceBbid = sourceBbid || faker.string.uuid();
+	const safeTargetBbid = targetBbid || string.uuid();
+	const safeSourceBbid = sourceBbid || string.uuid();
 
 	/* Create the relationship target entity */
 	await new Entity({bbid: safeTargetBbid, type: targetEntityType})
@@ -271,7 +273,7 @@ async function createLanguageSet() {
 }
 
 export function getRandomUUID() {
-	return faker.string.uuid();
+	return string.uuid();
 }
 
 async function createEntityPrerequisites(entityBbid, entityType) {
@@ -301,7 +303,7 @@ async function createEntityPrerequisites(entityBbid, entityType) {
 }
 
 export async function createEdition(optionalBBID, optionalEditionAttribs = {}) {
-	const bbid = optionalBBID || faker.string.uuid();
+	const bbid = optionalBBID || string.uuid();
 	await new Entity({bbid, type: 'Edition'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'Edition');
@@ -312,7 +314,7 @@ export async function createEdition(optionalBBID, optionalEditionAttribs = {}) {
 }
 
 export async function createWork(optionalBBID, optionalWorkAttribs = {}) {
-	const bbid = optionalBBID || faker.string.uuid();
+	const bbid = optionalBBID || string.uuid();
 	await new Entity({bbid, type: 'Work'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'Work');
@@ -350,7 +352,7 @@ export async function createWork(optionalBBID, optionalWorkAttribs = {}) {
 }
 
 export async function createEditionGroup(optionalBBID, optionalEditionGroupAttrib = {}) {
-	const bbid = optionalBBID || faker.string.uuid();
+	const bbid = optionalBBID || string.uuid();
 	await new Entity({bbid, type: 'EditionGroup'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'EditionGroup');
@@ -374,12 +376,12 @@ export async function createEditionGroup(optionalBBID, optionalEditionGroupAttri
 }
 
 export async function createAuthor(optionalBBID, optionalAuthorAttribs = {}) {
-	const bbid = optionalBBID || faker.string.uuid();
+	const bbid = optionalBBID || string.uuid();
 	await new Entity({bbid, type: 'Author'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'Author');
 
-	const area = await new Area({gid: faker.string.uuid(), name: 'Rlyeh'})
+	const area = await new Area({gid: string.uuid(), name: 'Rlyeh'})
 		.save(null, {method: 'insert'});
 
 	// Front-end requires 'Person' and 'Group' types
@@ -419,7 +421,7 @@ export async function createAuthor(optionalBBID, optionalAuthorAttribs = {}) {
 }
 
 export async function createSeries(optionalBBID, optionalSeriesAttribs = {}) {
-	const bbid = optionalBBID || faker.string.uuid();
+	const bbid = optionalBBID || string.uuid();
 	await new Entity({bbid, type: 'Series'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'Work');
@@ -459,7 +461,7 @@ async function fetchOrCreatePublisherType(PublisherTypeModel, optionalPublisherA
 }
 
 export async function createPublisher(optionalBBID, optionalPublisherAttribs = {}, optionalPublisherTypeAttribs = {}) {
-	const bbid = optionalBBID || faker.string.uuid();
+	const bbid = optionalBBID || string.uuid();
 	await new Entity({bbid, type: 'Publisher'})
 		.save(null, {method: 'insert'});
 	await createEntityPrerequisites(bbid, 'Publisher');
@@ -472,7 +474,7 @@ export async function createPublisher(optionalBBID, optionalPublisherAttribs = {
 			.fetch({require: false});
 	}
 	if (!area) {
-		area = await new Area({gid: faker.string.uuid(), name: `Area ${optionalPublisherAttribs.areaId || random.number()}`, ...optionalAreaAttribs})
+		area = await new Area({gid: string.uuid(), name: `Area ${optionalPublisherAttribs.areaId || random.number()}`, ...optionalAreaAttribs})
 			.save(null, {method: 'insert'});
 	}
 
