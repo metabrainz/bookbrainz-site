@@ -19,7 +19,7 @@ import {
 } from '../../../../src/server/helpers/revisions';
 
 import chai from 'chai';
-import {date} from 'faker';
+import {date} from '@faker-js/faker';
 import isSorted from 'chai-sorted';
 import orm from '../../../bookbrainz-data';
 

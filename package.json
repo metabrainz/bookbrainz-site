@@ -127,7 +127,6 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-react": "^7.26.1",
     "eslint-webpack-plugin": "^2.4.1",
-    "faker": "^4.1.0",
     "file-loader": "^6.2.0",
     "jsdom": "22.1.0",
     "jsdom-global": "3.0.2",
