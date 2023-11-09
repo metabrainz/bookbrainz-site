@@ -1,12 +1,11 @@
 import {createAuthor, createEditor, truncateEntities} from '../../../test-helpers/create-entities';
 import {generateIndex, refreshIndex, searchByName} from '../../../../src/common/helpers/search';
-
 import app from '../../../../src/server/app';
 import assertArrays from 'chai-arrays';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
+import {faker} from '@faker-js/faker';
 import orm from '../../../bookbrainz-data';
-import {v4 as uuidv4} from 'uuid';
 
 
 chai.use(chaiHttp);
@@ -856,7 +855,7 @@ describe('POST /collection/:collectionID/add', () => {
 		};
 		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
 		const data = {
-			bbids: [uuidv4()]
+			bbids: [faker.string.uuid()]
 		};
 		const response = await agent.post(`/collection/${collection.get('id')}/add`).send(data);
 		const item = await new UserCollectionItem().where('collection_id', collection.get('id')).fetchAll({});
