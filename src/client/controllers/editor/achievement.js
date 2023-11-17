@@ -37,7 +37,6 @@ ReactDOM.hydrate(
 	<AppContainer>
 		<Layout {...extractLayoutProps(props)}>
 			<EditorContainer
-				user={props.user}
 				{...extractEditorProps(props)}
 			>
 				<AchievementsTab
