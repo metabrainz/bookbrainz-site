@@ -502,7 +502,9 @@ class CBReviewModal extends React.Component<
 	private accessToken = '';
 
 	componentDidMount = async () => {
-		this.accessToken = await this.getAccessToken();
+		if (typeof window !== "undefined") {
+			this.accessToken = await this.getAccessToken();
+		}
 	};
 
 	render() {
