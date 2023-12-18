@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Modal, OverlayTrigger, Tooltip} from 'react-bootstrap';
-import {hideAliasEditor, removeEmptyAliases} from './actions';
+import {Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import { removeEmptyAliases} from './actions';
 import AliasModalBody from './alias-modal-body';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -37,7 +37,7 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
  * @param {Array} props.languageOptions - The list of possible languages for an
  *        alias.
  * @param {Function} props.onClose - A function to be called when the button to
- *        close the editor is clicked.
+ *        add new alias is clicked.
  * @param {boolean} props.show - Whether or not the editor modal should be
  *        visible.
  * @returns {ReactElement} React element containing the rendered AliasEditor.
@@ -63,37 +63,37 @@ const AliasEditor = ({
 	);
 
 	return (
-		<Modal show={show} size="lg" onHide={onClose}>
-			<Modal.Header>
-				<Modal.Title>
-					Alias Editor {helpIconElement}
-				</Modal.Title>
-			</Modal.Header>
+		<div>
+			<div>
+			<div style={{display: 'flex'}}>
+					<h2>Add new indentifiers</h2> 
+					<div>
+						{helpIconElement}
+					</div>
+				</div>
+			</div>
 
-			<Modal.Body>
+			<div>
 				<AliasModalBody languageOptions={languageOptions}/>
-			</Modal.Body>
+			</div>
 
-			<Modal.Footer>
-				<Button variant="primary" onClick={onClose}>Close</Button>
-			</Modal.Footer>
-		</Modal>
+			<div>
+				<Button variant="primary" onClick={onClose}>Done</Button>
+			</div>
+		</div>
 	);
 };
 AliasEditor.displayName = 'AliasEditor';
 AliasEditor.propTypes = {
 	languageOptions: PropTypes.array.isRequired,
 	onClose: PropTypes.func.isRequired,
-	show: PropTypes.bool
-};
-AliasEditor.defaultProps = {
-	show: false
+
 };
 
 function mapDispatchToProps(dispatch) {
 	return {
 		onClose: () => {
-			dispatch(hideAliasEditor());
+			
 			dispatch(removeEmptyAliases());
 		}
 	};

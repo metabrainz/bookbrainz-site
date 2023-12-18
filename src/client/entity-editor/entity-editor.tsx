@@ -87,7 +87,6 @@ const EntityEditor = (props: Props) => {
 					{heading}
 				</Card.Header>
 				<Card.Body>
-					<AliasEditor show={aliasEditorVisible} {...props}/>
 					<NameSection {...props}/>
 					<ButtonBar {...props}/>
 					{
@@ -97,7 +96,8 @@ const EntityEditor = (props: Props) => {
 						)
 					}
 					<RelationshipSection {...props}/>
-					<IdentifierEditor show={identifierEditorVisible} {...props}/>
+					<IdentifierEditor {...props}/>
+					<AliasEditor {...props}/>
 					<AnnotationSection {...props}/>
 				</Card.Body>
 				<Card.Footer>

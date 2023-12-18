@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Modal, OverlayTrigger, Tooltip} from 'react-bootstrap';
-import {hideIdentifierEditor, removeEmptyIdentifiers} from './actions';
+import {Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import { removeEmptyIdentifiers} from './actions';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import IdentifierModalBody from './identifier-modal-body';
 import PropTypes from 'prop-types';
@@ -39,16 +39,13 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
  * @param {Function} props.onAddIdentifier - A function to be called when the
  *        button to add an identifier is clicked.
  * @param {Function} props.onClose - A function to be called when the button to
- *        close the editor is clicked.
- * @param {boolean} props.show - Whether or not the editor modal should be
- *        visible.
+ *        add the identifier is clicked.
  * @returns {ReactElement} React element containing the rendered
  *          IdentifierEditor.
  */
 const IdentifierEditor = ({
 	identifierTypes,
 	onClose,
-	show
 }) => {
 	const helpText = `identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc.
 	You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).`;
@@ -67,37 +64,34 @@ const IdentifierEditor = ({
 	);
 
 	return (
-		<Modal show={show} size="lg" onHide={onClose}>
-			<Modal.Header>
-				<Modal.Title>
-					Identifier Editor {helpIconElement}
-				</Modal.Title>
-			</Modal.Header>
+		<div>
+			<div>
+				<div style={{display: 'flex'}}>
+					<h2>Add new indentifiers</h2> 
+					<div>
+						{helpIconElement}
+					</div>
+				</div>
+			</div>
 
-			<Modal.Body>
+			<div>
 				<IdentifierModalBody identifierTypes={identifierTypes}/>
-			</Modal.Body>
+			</div>
 
-			<Modal.Footer>
-				<Button variant="primary" onClick={onClose}>Close</Button>
-			</Modal.Footer>
-		</Modal>
+			<div>
+				<Button variant="primary" onClick={onClose}>Done</Button>
+			</div>
+		</div>
 	);
 };
 IdentifierEditor.displayName = 'IdentifierEditor';
 IdentifierEditor.propTypes = {
 	identifierTypes: PropTypes.array.isRequired,
 	onClose: PropTypes.func.isRequired,
-	show: PropTypes.bool
 };
-IdentifierEditor.defaultProps = {
-	show: false
-};
-
 function mapDispatchToProps(dispatch) {
 	return {
 		onClose: () => {
-			dispatch(hideIdentifierEditor());
 			dispatch(removeEmptyIdentifiers());
 		}
 	};
