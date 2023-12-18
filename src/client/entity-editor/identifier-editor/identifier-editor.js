@@ -47,8 +47,8 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
  */
 const IdentifierEditor = ({
 	identifierTypes,
-	onClose,
-	show
+	 onClose,
+	// show
 }) => {
 	const helpText = `identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc.
 	You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).`;
@@ -67,37 +67,41 @@ const IdentifierEditor = ({
 	);
 
 	return (
-		<Modal show={show} size="lg" onHide={onClose}>
-			<Modal.Header>
-				<Modal.Title>
-					Identifier Editor {helpIconElement}
-				</Modal.Title>
-			</Modal.Header>
+		<div>
+			<div>
+				<div style={{display:'flex'}}>
+					<h2 style={{marginRight:"5px"}}>Add a Identifier</h2> 
+					<div style={{marginTop:"15px"}}>
+						{helpIconElement}
+					</div>
+				</div>
+			</div>
 
-			<Modal.Body>
+			<div>
 				<IdentifierModalBody identifierTypes={identifierTypes}/>
-			</Modal.Body>
+			</div>
+			<div>
+			<Button variant="primary" onClick={onClose}>Done</Button>
+			</div>
 
-			<Modal.Footer>
-				<Button variant="primary" onClick={onClose}>Close</Button>
-			</Modal.Footer>
-		</Modal>
+			
+		</div>
 	);
 };
 IdentifierEditor.displayName = 'IdentifierEditor';
 IdentifierEditor.propTypes = {
 	identifierTypes: PropTypes.array.isRequired,
 	onClose: PropTypes.func.isRequired,
-	show: PropTypes.bool
+	//show: PropTypes.bool
 };
-IdentifierEditor.defaultProps = {
-	show: false
-};
+// IdentifierEditor.defaultProps = {
+// 	show: false
+// };
 
 function mapDispatchToProps(dispatch) {
 	return {
 		onClose: () => {
-			dispatch(hideIdentifierEditor());
+			//dispatch(hideIdentifierEditor());
 			dispatch(removeEmptyIdentifiers());
 		}
 	};

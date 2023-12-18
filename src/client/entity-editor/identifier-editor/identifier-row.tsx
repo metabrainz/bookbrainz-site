@@ -119,7 +119,7 @@ function IdentifierRow({
 				<Col className="text-right" lg={{offset: 1, span: 3}}>
 					<Button
 						block
-						className="margin-top-d15"
+						className="margin-top-d22"
 						variant="danger"
 						onClick={onRemoveButtonClick}
 					>

@@ -44,8 +44,8 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
  */
 const AliasEditor = ({
 	languageOptions,
-	onClose,
-	show
+ 	onClose,
+	// show 
 }) => {
 	const helpText = `Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc.
 		Refer to the help page for more details and examples.`;
@@ -63,37 +63,40 @@ const AliasEditor = ({
 	);
 
 	return (
-		<Modal show={show} size="lg" onHide={onClose}>
-			<Modal.Header>
-				<Modal.Title>
-					Alias Editor {helpIconElement}
-				</Modal.Title>
-			</Modal.Header>
+		<div>
+			<div>
+			<div style={{display:'flex'}}>
+					<h2 style={{marginRight:"5px"}}>Add a Alias</h2> 
+					<div style={{marginTop:"15px"}}>
+						{helpIconElement}
+						</div>
+				</div>
+			</div>
 
-			<Modal.Body>
+			<div>
 				<AliasModalBody languageOptions={languageOptions}/>
-			</Modal.Body>
+			</div>
 
-			<Modal.Footer>
-				<Button variant="primary" onClick={onClose}>Close</Button>
-			</Modal.Footer>
-		</Modal>
+			<div>
+				<Button variant="primary" onClick={onClose}>Done</Button>
+			</div>
+		</div>
 	);
 };
 AliasEditor.displayName = 'AliasEditor';
 AliasEditor.propTypes = {
 	languageOptions: PropTypes.array.isRequired,
 	onClose: PropTypes.func.isRequired,
-	show: PropTypes.bool
+	//show: PropTypes.bool
 };
-AliasEditor.defaultProps = {
-	show: false
-};
+// AliasEditor.defaultProps = {
+// 	show: false
+// };
 
 function mapDispatchToProps(dispatch) {
 	return {
 		onClose: () => {
-			dispatch(hideAliasEditor());
+			//dispatch(hideAliasEditor());
 			dispatch(removeEmptyAliases());
 		}
 	};
