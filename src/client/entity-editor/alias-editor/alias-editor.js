@@ -65,7 +65,7 @@ const AliasEditor = ({
 		<div>
 			<div>
 			<div style={{display: 'flex'}}>
-					<h2>Add new indentifiers</h2> 
+					<h2>Add new alias</h2> 
 					<div>
 						{helpIconElement}
 					</div>
