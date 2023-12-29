@@ -17,7 +17,7 @@
  */
 
 import {Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
-import { removeEmptyAliases} from './actions';
+import {removeEmptyAliases} from './actions';
 import AliasModalBody from './alias-modal-body';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
