@@ -531,7 +531,7 @@ router.get('/:id/achievements', async (req, res, next) => {
 		.where('editor_id', userId)
 		.fetchAll({require: false});
 
-	const achievementCol = await new AchievementUnlock()
+	const achievementCol = new AchievementUnlock()
 		.where('editor_id', userId)
 		.where('profile_rank', '<=', '3')
 		.query((qb) => qb.limit(3))
@@ -546,7 +546,7 @@ router.get('/:id/achievements', async (req, res, next) => {
 		.fetchAll();
 
 	const [unlocks, editorJSON, achievementTypes] = await Promise.all([
-		unlocksPromise, editorJSONPromise, achievementTypesPromise
+		unlocksPromise, editorJSONPromise, achievementTypesPromise, achievementCol
 	]);
 
 	const achievementJSON =

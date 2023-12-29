@@ -33,7 +33,7 @@ const {useState, useCallback} = React;
 */
 type Achievement = {
 	name: string;
-	badgeUrl: string;
+	badgeUrl: string | null;
 	id: number;
 };
 
@@ -125,6 +125,7 @@ DragAndDrop.propTypes = {
 DragAndDrop.defaultProps = {
 	initialAchievement: {
 		badgeUrl: '/images/blankbadge.svg',
+		id: null,
 		name: 'drag badge to set'
 	}
 };
