@@ -16,14 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
-import { removeEmptyIdentifiers} from './actions';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { removeEmptyIdentifiers } from './actions';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IdentifierModalBody from './identifier-modal-body';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {connect} from 'react-redux';
-import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import { connect } from 'react-redux';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 
 /**
@@ -66,8 +66,8 @@ const IdentifierEditor = ({
 	return (
 		<div>
 			<div>
-				<div style={{display: 'flex'}}>
-					<h2>Add new indentifiers</h2> 
+				<div style={{ display: 'flex' }}>
+					<h2>Add new indentifiers</h2>
 					<div>
 						{helpIconElement}
 					</div>
@@ -75,7 +75,7 @@ const IdentifierEditor = ({
 			</div>
 
 			<div>
-				<IdentifierModalBody identifierTypes={identifierTypes}/>
+				<IdentifierModalBody identifierTypes={identifierTypes} />
 			</div>
 
 			<div>

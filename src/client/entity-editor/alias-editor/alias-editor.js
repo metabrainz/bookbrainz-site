@@ -16,14 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
-import { removeEmptyAliases} from './actions';
+import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { removeEmptyAliases } from './actions';
 import AliasModalBody from './alias-modal-body';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {connect} from 'react-redux';
-import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import { connect } from 'react-redux';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 
 /**
@@ -45,7 +45,6 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 const AliasEditor = ({
 	languageOptions,
 	onClose,
-	show
 }) => {
 	const helpText = `Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc.
 		Refer to the help page for more details and examples.`;
@@ -65,8 +64,8 @@ const AliasEditor = ({
 	return (
 		<div>
 			<div>
-			<div style={{display: 'flex'}}>
-					<h2>Add new indentifiers</h2> 
+				<div style={{ display: 'flex' }}>
+					<h2>Add new indentifiers</h2>
 					<div>
 						{helpIconElement}
 					</div>
@@ -74,7 +73,7 @@ const AliasEditor = ({
 			</div>
 
 			<div>
-				<AliasModalBody languageOptions={languageOptions}/>
+				<AliasModalBody languageOptions={languageOptions} />
 			</div>
 
 			<div>
@@ -93,7 +92,7 @@ AliasEditor.propTypes = {
 function mapDispatchToProps(dispatch) {
 	return {
 		onClose: () => {
-			
+
 			dispatch(removeEmptyAliases());
 		}
 	};
