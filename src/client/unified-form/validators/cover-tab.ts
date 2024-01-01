@@ -23,9 +23,9 @@ export function validateISBN(isbn) {
  * @param {Array} identifierTypes - the list of identifier types
  * @returns {boolean} - true if form state valid, false if invalid
  */
-export function validateCoverTab(data:any, identifierTypes:any[]) {
+export function validateCoverTab(data:any, identifierTypes:(any[]|null)) {
 	return validateNameSection(get(data, 'nameSection')) &&
-    validateIdentifiers(get(data, 'identifierEditor', {}), identifierTypes) &&
+    (identifierTypes ? validateIdentifiers(get(data, 'identifierEditor', {}), identifierTypes) : true) &&
     validateAuthorCreditSection(get(data, 'authorCreditEditor')) &&
     validateISBN(get(data, 'ISBN'));
 }
@@ -40,13 +40,11 @@ export function isCoverTabEmpty(data:any) {
 	const nameSection = get(data, 'nameSection', {});
 	const authorCreditEditor = get(data, 'authorCreditEditor', {});
 	const ISBN = get(data, 'ISBN', {});
-	const identifierEditor = get(data, 'identifierEditor', {});
 	return nameSection.name?.length === 0 &&
     nameSection.sortName?.length === 0 &&
     !nameSection.language &&
     nameSection.disambiguation?.length === 0 &&
     size(authorCreditEditor) === 1 &&
     !authorCreditEditor.n0?.author &&
-    size(identifierEditor) === 0 &&
     !ISBN.type;
 }
