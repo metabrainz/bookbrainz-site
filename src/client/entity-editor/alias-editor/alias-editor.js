@@ -19,11 +19,11 @@
 import {Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {removeEmptyAliases} from './actions';
 import AliasModalBody from './alias-modal-body';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from 'react-redux';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import {connect} from 'react-redux';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 
 /**
