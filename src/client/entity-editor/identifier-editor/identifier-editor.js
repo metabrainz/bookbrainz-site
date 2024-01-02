@@ -16,15 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { removeEmptyIdentifiers } from './actions';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import IdentifierModalBody from './identifier-modal-body';
-import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from 'react-redux';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-
+import PropTypes from 'prop-types';
+import {connect} from 'react-redux';
+import {Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import IdentifierModalBody from './identifier-modal-body';
+import {removeEmptyIdentifiers} from './actions';
 
 /**
  * Container component. The IdentifierEditor component contains a number of
@@ -45,7 +44,7 @@ import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
  */
 const IdentifierEditor = ({
 	identifierTypes,
-	onClose,
+	onClose
 }) => {
 	const helpText = `identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc.
 	You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).`;
@@ -66,7 +65,7 @@ const IdentifierEditor = ({
 	return (
 		<div>
 			<div>
-				<div style={{ display: 'flex' }}>
+				<div style={{display: 'flex'}}>
 					<h2>Add new indentifiers</h2>
 					<div>
 						{helpIconElement}
@@ -75,7 +74,7 @@ const IdentifierEditor = ({
 			</div>
 
 			<div>
-				<IdentifierModalBody identifierTypes={identifierTypes} />
+				<IdentifierModalBody identifierTypes={identifierTypes}/>
 			</div>
 
 			<div>
@@ -87,7 +86,7 @@ const IdentifierEditor = ({
 IdentifierEditor.displayName = 'IdentifierEditor';
 IdentifierEditor.propTypes = {
 	identifierTypes: PropTypes.array.isRequired,
-	onClose: PropTypes.func.isRequired,
+	onClose: PropTypes.func.isRequired
 };
 function mapDispatchToProps(dispatch) {
 	return {

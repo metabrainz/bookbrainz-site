@@ -15,16 +15,14 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
-import {Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
-import {removeEmptyAliases} from './actions';
-import AliasModalBody from './alias-modal-body';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
-
+import AliasModalBody from './alias-modal-body';
+import {removeEmptyAliases} from './actions';
 
 /**
  * Container component. The AliasEditor component contains a number of AliasRow
@@ -64,28 +62,26 @@ const AliasEditor = ({
 	return (
 		<div>
 			<div>
-			<div style={{display: 'flex'}}>
-					<h2>Add new alias</h2> 
-					<div>
+				<div style={{display: 'flex'}}>
+				  <h2>Add new alias</h2>
+				  <div>
 						{helpIconElement}
-					</div>
+				  </div>
 				</div>
 			</div>
-
 			<div>
-				<AliasModalBody languageOptions={languageOptions} />
+				<AliasModalBody languageOptions={languageOptions}/>
 			</div>
-
 			<div>
 				<Button variant="primary" onClick={onClose}>Done</Button>
 			</div>
 		</div>
-	);
+	  );
 };
 AliasEditor.displayName = 'AliasEditor';
 AliasEditor.propTypes = {
 	languageOptions: PropTypes.array.isRequired,
-	onClose: PropTypes.func.isRequired,
+	onClose: PropTypes.func.isRequired
 };
 
 function mapDispatchToProps(dispatch) {
