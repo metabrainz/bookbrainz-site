@@ -16,14 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {Button, Modal, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {hideIdentifierEditor, removeEmptyIdentifiers} from './actions';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import IdentifierModalBody from './identifier-modal-body';
-import {removeEmptyIdentifiers} from './actions';
+import PropTypes from 'prop-types';
+import React from 'react';
+import {connect} from 'react-redux';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Container component. The IdentifierEditor component contains a number of

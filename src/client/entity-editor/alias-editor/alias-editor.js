@@ -15,14 +15,14 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-import React from 'react';
-import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import {Button, Modal, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {hideAliasEditor, removeEmptyAliases} from './actions';
 import AliasModalBody from './alias-modal-body';
-import {removeEmptyAliases} from './actions';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import PropTypes from 'prop-types';
+import React from 'react';
+import {connect} from 'react-redux';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Container component. The AliasEditor component contains a number of AliasRow
