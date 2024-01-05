@@ -73,6 +73,7 @@ const EntityEditor = (props: Props) => {
 		entity
 	} = props;
 	const currentState = (useSelector((state) => state) as any).toJS();
+	let entityURL;
 	// eslint-disable-next-line consistent-return
 	const handleUrlChange = React.useCallback(() => {
 		if (!_.isEqual(currentState, props.intitialState) && !currentState.submissionSection.submitted) {
@@ -82,8 +83,11 @@ const EntityEditor = (props: Props) => {
 	React.useEffect(() => {
 		window.onbeforeunload = handleUrlChange;
 	}, [handleUrlChange]);
-	const entityURL = getEntityUrl(entity);
 
+	if(entity){
+	entityURL = getEntityUrl(entity);
+	}
+	
 	return (
 		<form onSubmit={onSubmit}>
 			<Card>
