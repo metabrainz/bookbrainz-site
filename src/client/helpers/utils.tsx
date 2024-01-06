@@ -180,7 +180,7 @@ export function dateObjectToISOString(value: DateObject) {
  */
 export function stringToHTMLWithLinks(content: string) {
 	// eslint-disable-next-line max-len, no-useless-escape
-	const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%~*@\.\w_]*)#?(?:[\.\!\/\\:\w]*))?)/g;
+	const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%~*@\.\w_]*)#?(?:[\.\!\/\\:\w]*)%?(?:[\/\-\+=&;%~*@\.\w_]*)#?(?:[\/\-\+=&;%~*@\.\w_]*))?)/g;
 	const replacedContent = content.replace(
 		urlRegex,
 		(url) => `<a href="${url.startsWith('www.') ? `https://${url}` : url}" target="_blank">${url}</a>`
