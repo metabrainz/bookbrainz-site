@@ -79,7 +79,7 @@ EditionGroupAttributes.propTypes = {
 };
 
 
-function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtract} , authorCreditEnable) {
+function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtract}, authorCreditEnable) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);

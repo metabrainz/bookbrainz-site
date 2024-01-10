@@ -21,11 +21,11 @@ import {Action,
 	addAuthorCreditRow,
 	clearAuthorCredit,
 	hideAuthorCreditEditor,
+	initAuthorCredit,
 	removeEmptyCreditRows,
 	resetAuthorCredit,
 	showAuthorCreditEditor,
 	toggleAuthorCredit,
-	initAuthorCredit,
 	updateCreditAuthorValue} from './actions';
 import {Button, Col, Form, FormLabel, InputGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 
@@ -75,7 +75,7 @@ type Props = OwnProps & StateProps & DispatchProps;
 
 function AuthorCreditSection({
 	authorCreditEditor: immutableAuthorCreditEditor, onEditAuthorCredit, onEditorClose,
-	showEditor, onAuthorChange, isEditable, authorCreditEnable, toggleAuthorCreditEnable,initCheckBoxState,
+	showEditor, onAuthorChange, isEditable, authorCreditEnable, toggleAuthorCreditEnable, initCheckBoxState,
 	onClearHandler, isUnifiedForm, isLeftAlign, ...rest
 }: Props) {
 	React.useEffect(() => {
@@ -237,6 +237,9 @@ function mapStateToProps(rootState, {type}): StateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
+		initCheckBoxState: () => {
+			dispatch(initAuthorCredit());
+		},
 		onAuthorChange: (value) => {
 			dispatch(updateCreditAuthorValue(-1, value));
 		},
@@ -251,9 +254,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onEditorClose: () => {
 			dispatch(removeEmptyCreditRows());
 			dispatch(hideAuthorCreditEditor());
-		},
-		initCheckBoxState: ()=>{
-			dispatch(initAuthorCredit());
 		},
 		toggleAuthorCreditEnable: (newValue) => {
 			if (newValue) {
