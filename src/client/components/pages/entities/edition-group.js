@@ -79,7 +79,7 @@ EditionGroupAttributes.propTypes = {
 };
 
 
-function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
+function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtract} , authorCreditEnable) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);
@@ -101,7 +101,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtrac
 			/>
 		);
 	}
-	else if (!entity.deleted) {
+	else if (!entity.deleted && !authorCreditEnable) {
 		authorCreditSection = (
 			<div className="alert alert-warning text-center">
 				Author Credit unset; please&nbsp;

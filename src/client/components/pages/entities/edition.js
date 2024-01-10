@@ -107,7 +107,7 @@ EditionAttributes.propTypes = {
 };
 
 
-function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
+function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}, authorCreditEnable) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
@@ -122,7 +122,7 @@ function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 			/>
 		);
 	}
-	else if (!entity.deleted) {
+	else if (!entity.deleted && !authorCreditEnable) {
 		authorCreditSection = (
 			<div className="alert alert-warning text-center">
 				Author Credit unset; please&nbsp;

@@ -21,7 +21,7 @@ import * as Immutable from 'immutable';
 import {
 	Action, UPDATE_TYPE
 } from './actions';
-import {HIDE_AUTHOR_CREDIT_EDITOR, SHOW_AUTHOR_CREDIT_EDITOR, TOGGLE_AUTHOR_CREDIT} from '../author-credit-editor/actions';
+import {HIDE_AUTHOR_CREDIT_EDITOR, INIT_AUTHOR_CREDIT, SHOW_AUTHOR_CREDIT_EDITOR, TOGGLE_AUTHOR_CREDIT} from '../author-credit-editor/actions';
 
 
 type State = Immutable.Map<string, any>;
@@ -43,6 +43,8 @@ function reducer(
 			return state.set('authorCreditEditorVisible', false);
 		case TOGGLE_AUTHOR_CREDIT:
 			return state.set('authorCreditEnable', !state.get('authorCreditEnable'));
+		case INIT_AUTHOR_CREDIT:
+			return state.set('authorCreditEnable', true);
 		// no default
 	}
 	return state;

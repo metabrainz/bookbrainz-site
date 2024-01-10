@@ -24,8 +24,9 @@ import {Action,
 	removeEmptyCreditRows,
 	resetAuthorCredit,
 	showAuthorCreditEditor,
-	toggleAuthorCredit
-	, updateCreditAuthorValue} from './actions';
+	toggleAuthorCredit,
+	initAuthorCredit,
+	updateCreditAuthorValue} from './actions';
 import {Button, Col, Form, FormLabel, InputGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 
 import {get as _get, map as _map, values as _values, camelCase} from 'lodash';
@@ -62,6 +63,7 @@ type StateProps = {
 };
 
 type DispatchProps = {
+	initCheckBoxState: ()=> unknown,
 	onAuthorChange: (Author) => unknown,
 	toggleAuthorCreditEnable: (newValue:boolean) => unknown,
 	onClearHandler:(arg) => unknown,
@@ -73,9 +75,12 @@ type Props = OwnProps & StateProps & DispatchProps;
 
 function AuthorCreditSection({
 	authorCreditEditor: immutableAuthorCreditEditor, onEditAuthorCredit, onEditorClose,
-	showEditor, onAuthorChange, isEditable, authorCreditEnable, toggleAuthorCreditEnable,
+	showEditor, onAuthorChange, isEditable, authorCreditEnable, toggleAuthorCreditEnable,initCheckBoxState,
 	onClearHandler, isUnifiedForm, isLeftAlign, ...rest
 }: Props) {
+	React.useEffect(() => {
+		initCheckBoxState();
+	  }, []);
 	const authorCreditEditor = convertMapToObject(immutableAuthorCreditEditor);
 	let editor;
 	if (showEditor) {
@@ -91,7 +96,7 @@ function AuthorCreditSection({
 	const authorCreditPreview = _map(authorCreditEditor, (credit) => `${credit.name}${credit.joinPhrase}`).join('');
 	const authorCreditRows = _values(authorCreditEditor);
 
-	const isValid = validateAuthorCreditSection(authorCreditRows, authorCreditEnable);
+	const isValid = validateAuthorCreditSection(authorCreditRows, authorCreditEnable) || !authorCreditEnable;
 
 	const editButton = (
 		// eslint-disable-next-line react/jsx-no-bind
@@ -246,6 +251,9 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onEditorClose: () => {
 			dispatch(removeEmptyCreditRows());
 			dispatch(hideAuthorCreditEditor());
+		},
+		initCheckBoxState: ()=>{
+			dispatch(initAuthorCredit());
 		},
 		toggleAuthorCreditEnable: (newValue) => {
 			if (newValue) {

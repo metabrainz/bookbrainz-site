@@ -30,6 +30,7 @@ export const UPDATE_AUTHOR_CREDIT = 'UPDATE_AUTHOR_CREDIT';
 export const CLEAR_AUTHOR_CREDIT = 'CLEAR_AUTHOR_CREDIT';
 export const RESET_AUTHOR_CREDIT = 'RESET_AUTHOR_CREDIT';
 export const TOGGLE_AUTHOR_CREDIT = 'TOGGLE_AUTHOR_CREDIT';
+export const INIT_AUTHOR_CREDIT = 'INIT_AUTHOR_CREDIT';
 
 export type Action = {
 	type: string,
@@ -222,5 +223,16 @@ export function resetAuthorCredit(): Action {
 export function toggleAuthorCredit(): Action {
 	return {
 		type: TOGGLE_AUTHOR_CREDIT
+	};
+}
+
+/**
+ *  Produces an action indicating that the AC checkbox should be initialized with true.
+ *
+ * @returns {Action} The resulting INIT_AUTHOR_CREDIT action.
+ */
+export function initAuthorCredit(): Action {
+	return {
+		type: INIT_AUTHOR_CREDIT
 	};
 }
