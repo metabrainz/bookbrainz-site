@@ -501,6 +501,7 @@ class CBReviewModal extends React.Component<
 
 	private accessToken = '';
 
+	/* executes getAccessToken() only in a browser to avoid unnecessary server-side calls during component mounting */
 	componentDidMount = async () => {
 		if (typeof window !== "undefined") {
 			this.accessToken = await this.getAccessToken();
