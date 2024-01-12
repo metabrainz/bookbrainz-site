@@ -66,7 +66,7 @@ const IdentifierEditor = ({
 		<div>
 			<div>
 				<div style={{display: 'flex'}}>
-					<h2>Add new indentifiers</h2>
+					<h2>Add identifiers</h2>
 					<div>
 						{helpIconElement}
 					</div>
