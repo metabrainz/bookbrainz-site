@@ -93,7 +93,7 @@ const EntityEditor = (props: Props) => {
 			<Card>
 				<Card.Header as="h4">
 					<div>
-					 <a href={entityURL}>{heading}</a>
+					 {entityURL ? <a href={entityURL}>{heading}</a> : heading}
 					</div>
 				</Card.Header>
 				<Card.Body>
