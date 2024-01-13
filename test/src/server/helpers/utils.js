@@ -1,6 +1,7 @@
 import {createPublisher, truncateEntities} from '../../../test-helpers/create-entities';
 import {generateIdenfierState, getIdByField, parseLanguages, searchOption} from '../../../../src/server/helpers/utils';
 import {getNextEnabledAndResultsArray, isbn10To13, isbn13To10} from '../../../../src/common/helpers/utils';
+import {stringToHTMLWithLinks} from '../../../../src/client/helpers/utils';
 
 import chai from 'chai';
 import orm from '../../../bookbrainz-data';
@@ -16,6 +17,44 @@ const languageAttribs = {
 	isoCode3: 'eng',
 	name: 'English'
 };
+
+describe('stringToHTMLWithLinks', () => {
+	it('should convert a string with a single http link to a clickable link', () => {
+		const inputString = 'http://example.com';
+		const expectedOutput = '<span><a href="http://example.com" target="_blank">http://example.com</a></span>';
+		const actualOutput = stringToHTMLWithLinks(inputString).outerHTML;
+		expect(actualOutput).to.equal(expectedOutput);
+	});
+
+	it('should convert a string with multiple http links to clickable links', () => {
+		const inputString = 'http://example.com http://example2.com';
+		const expectedOutput = '<span><a href="http://example.com" target="_blank">http://example.com</a><span> </span><a href="http://example2.com" target="_blank">http://example2.com</a></span>';
+		const actualOutput = stringToHTMLWithLinks(inputString).outerHTML;
+		expect(actualOutput).to.equal(expectedOutput);
+	});
+
+	it('should handle links enclosed within parentheses correctly', () => {
+		const inputString = '(http://example.com)';
+		const expectedOutput = '<span><span>(</span><a href="http://example.com" target="_blank">http://example.com</a><span>)</span></span>';
+		const actualOutput = stringToHTMLWithLinks(inputString).outerHTML;
+		expect(actualOutput).to.equal(expectedOutput);
+	});
+
+	it('should handle links with balanced parentheses correctly', () => {
+		const inputString = 'https://da.wikipedia.org/wiki/Christian_Christensen_(forfatter)';
+		const expectedOutput = '<span><a href="https://da.wikipedia.org/wiki/Christian_Christensen_(forfatter)" target="_blank">https://da.wikipedia.org/wiki/Christian_Christensen_(forfatter)</a></span>';
+		const actualOutput = stringToHTMLWithLinks(inputString).outerHTML;
+		expect(actualOutput).to.equal(expectedOutput);
+	});
+	
+	it('should handle links with balanced parentheses enclosed in a paranthesis correctly', () => {
+		const inputString = '(source: https://da.wikipedia.org/wiki/Christian_Christensen_(forfatter))';
+		const expectedOutput = '<span><span>(source: </span><a href="https://da.wikipedia.org/wiki/Christian_Christensen_(forfatter)" target="_blank">https://da.wikipedia.org/wiki/Christian_Christensen_(forfatter)</a><span>)</span></span>';
+		const actualOutput = stringToHTMLWithLinks(inputString).outerHTML;
+		expect(actualOutput).to.equal(expectedOutput);
+	});
+});
+
 describe('getNextEnabledAndResultsArray', () => {
 	it('should return an array of required length and nextEnabled:true when results.length > size', () => {
 		const array = Array(10).fill(0);
