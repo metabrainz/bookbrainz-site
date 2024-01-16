@@ -30,8 +30,8 @@ import NameField from '../common/name-field';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SortNameField from '../common/sort-name-field';
-import {faTrash} from '@fortawesome/free-solid-svg-icons';
 import {connect} from 'react-redux';
+import {faTrash} from '@fortawesome/free-solid-svg-icons';
 import {isAliasEmpty} from '../helpers';
 
 
