@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Col, Form, Row} from 'react-bootstrap';
+import {Col, Form, Row} from 'react-bootstrap';
 import {
 	debouncedUpdateAliasName, debouncedUpdateAliasSortName, removeAliasRow,
 	updateAliasLanguage, updateAliasPrimary
@@ -30,8 +30,8 @@ import NameField from '../common/name-field';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SortNameField from '../common/sort-name-field';
+import {faTrash} from '@fortawesome/free-solid-svg-icons';
 import {connect} from 'react-redux';
-import {faTimes} from '@fortawesome/free-solid-svg-icons';
 import {isAliasEmpty} from '../helpers';
 
 
@@ -75,25 +75,21 @@ const AliasRow = ({
 	onRemoveButtonClick,
 	onPrimaryClick
 }) => (
-	<div>
+	<div className="d-flex flex-column align-items-center">
 		<Row>
-			<Col lg={4}>
+			<Col lg={3}>
 				<NameField
 					autoFocus
 					defaultValue={nameValue}
-					empty={
-						isAliasEmpty(nameValue, sortNameValue, languageValue)
-					}
+					empty={isAliasEmpty(nameValue, sortNameValue, languageValue)}
 					error={!validateAliasName(nameValue)}
 					onChange={onNameChange}
 				/>
 			</Col>
-			<Col lg={4}>
+			<Col lg={5}>
 				<SortNameField
 					defaultValue={sortNameValue}
-					empty={
-						isAliasEmpty(nameValue, sortNameValue, languageValue)
-					}
+					empty={isAliasEmpty(nameValue, sortNameValue, languageValue)}
 					error={!validateAliasSortName(sortNameValue)}
 					storedNameValue={nameValue}
 					onChange={onSortNameChange}
@@ -101,9 +97,7 @@ const AliasRow = ({
 			</Col>
 			<Col lg={4}>
 				<LanguageField
-					empty={
-						isAliasEmpty(nameValue, sortNameValue, languageValue)
-					}
+					empty={isAliasEmpty(nameValue, sortNameValue, languageValue)}
 					error={!validateAliasLanguage(languageValue)}
 					instanceId="language"
 					options={languageOptions}
@@ -112,8 +106,15 @@ const AliasRow = ({
 				/>
 			</Col>
 		</Row>
-		<Row>
-			<Col lg={{offset: 5, span: 2}}>
+		<Row className="mb-2">
+			<Col className="align-items-center d-flex justify-content-center" lg={2}>
+				<FontAwesomeIcon
+					icon={faTrash}
+					onClick={onRemoveButtonClick}
+				/>
+				<span onClick={onRemoveButtonClick}>&nbsp;Remove</span>
+			</Col>
+			<Col lg={{offset: 3, span: 2}}>
 				<Form.Check
 					defaultChecked={primaryChecked}
 					label="Primary"
@@ -121,19 +122,7 @@ const AliasRow = ({
 					onChange={onPrimaryClick}
 				/>
 			</Col>
-			<Col className="text-right" lg={{offset: 2, span: 3}}>
-				<Button
-					block
-					className="margin-top-d5"
-					variant="danger"
-					onClick={onRemoveButtonClick}
-				>
-					<FontAwesomeIcon icon={faTimes}/>
-					<span>&nbsp;Remove</span>
-				</Button>
-			</Col>
 		</Row>
-		<hr/>
 	</div>
 );
 AliasRow.displayName = 'AliasEditor.AliasRow';

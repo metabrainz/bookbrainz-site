@@ -16,8 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Modal, OverlayTrigger, Tooltip} from 'react-bootstrap';
-import {hideIdentifierEditor, removeEmptyIdentifiers} from './actions';
+import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import IdentifierModalBody from './identifier-modal-body';
 import PropTypes from 'prop-types';
@@ -37,14 +36,11 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
  *        identifier.
  * @param {Function} props.onAddIdentifier - A function to be called when the
  *        button to add an identifier is clicked.
- * @param {Function} props.onClose - A function to be called when the button to
- *        add the identifier is clicked.
  * @returns {ReactElement} React element containing the rendered
  *          IdentifierEditor.
  */
 const IdentifierEditor = ({
-	identifierTypes,
-	onClose
+	identifierTypes
 }) => {
 	const helpText = `identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc.
 	You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).`;
@@ -72,28 +68,15 @@ const IdentifierEditor = ({
 					</div>
 				</div>
 			</div>
-
 			<div>
 				<IdentifierModalBody identifierTypes={identifierTypes}/>
-			</div>
-
-			<div>
-				<Button variant="primary" onClick={onClose}>Done</Button>
 			</div>
 		</div>
 	);
 };
 IdentifierEditor.displayName = 'IdentifierEditor';
 IdentifierEditor.propTypes = {
-	identifierTypes: PropTypes.array.isRequired,
-	onClose: PropTypes.func.isRequired
+	identifierTypes: PropTypes.array.isRequired
 };
-function mapDispatchToProps(dispatch) {
-	return {
-		onClose: () => {
-			dispatch(removeEmptyIdentifiers());
-		}
-	};
-}
 
-export default connect(null, mapDispatchToProps)(IdentifierEditor);
+export default connect(null, null)(IdentifierEditor);

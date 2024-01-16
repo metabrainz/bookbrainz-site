@@ -15,8 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-import {Button, Modal, OverlayTrigger, Tooltip} from 'react-bootstrap';
-import {hideAliasEditor, removeEmptyAliases} from './actions';
+import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import AliasModalBody from './alias-modal-body';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -34,15 +33,10 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
  *        editor.
  * @param {Array} props.languageOptions - The list of possible languages for an
  *        alias.
- * @param {Function} props.onClose - A function to be called when the button to
- *        add new alias is clicked.
- * @param {boolean} props.show - Whether or not the editor modal should be
- *        visible.
  * @returns {ReactElement} React element containing the rendered AliasEditor.
  */
 const AliasEditor = ({
-	languageOptions,
-	onClose
+	languageOptions
 }) => {
 	const helpText = `Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc.
 		Refer to the help page for more details and examples.`;
@@ -62,9 +56,9 @@ const AliasEditor = ({
 	return (
 		<div>
 			<div>
-				<div style={{display: 'flex'}}>
+				<div style={{alignItems: 'center', display: 'flex'}}>
 				  <h2>Add new alias</h2>
-				  <div>
+				  <div style={{marginLeft: 5}}>
 						{helpIconElement}
 				  </div>
 				</div>
@@ -72,24 +66,12 @@ const AliasEditor = ({
 			<div>
 				<AliasModalBody languageOptions={languageOptions}/>
 			</div>
-			<div>
-				<Button variant="primary" onClick={onClose}>Done</Button>
-			</div>
 		</div>
 	  );
 };
 AliasEditor.displayName = 'AliasEditor';
 AliasEditor.propTypes = {
-	languageOptions: PropTypes.array.isRequired,
-	onClose: PropTypes.func.isRequired
+	languageOptions: PropTypes.array.isRequired
 };
 
-function mapDispatchToProps(dispatch) {
-	return {
-		onClose: () => {
-			dispatch(removeEmptyAliases());
-		}
-	};
-}
-
-export default connect(null, mapDispatchToProps)(AliasEditor);
+export default connect(null, null)(AliasEditor);

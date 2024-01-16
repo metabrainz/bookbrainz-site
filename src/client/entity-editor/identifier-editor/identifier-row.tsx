@@ -24,7 +24,7 @@ import {
 	Action, debouncedUpdateIdentifierValue, removeIdentifierRow,
 	updateIdentifierType
 } from './actions';
-import {Button, Col, Form, Row} from 'react-bootstrap';
+import {Col, Form, Row} from 'react-bootstrap';
 import {
 	IdentifierType,
 	validateIdentifierValue
@@ -35,7 +35,7 @@ import Select from 'react-select';
 import ValueField from './value-field';
 import {collapseWhiteSpaces} from '../../../common/helpers/utils';
 import {connect} from 'react-redux';
-import {faTimes} from '@fortawesome/free-solid-svg-icons';
+import {faTrash} from '@fortawesome/free-solid-svg-icons';
 
 
 type OwnProps = {
@@ -92,9 +92,9 @@ function IdentifierRow({
 	}));
 	const identifierValue = identifierTypesForDisplay.filter((el) => el.value === typeValue);
 	return (
-		<div>
+		<div className="align-items-center d-flex flex-column">
 			<Row>
-				<Col lg={4}>
+				<Col lg={5}>
 					<ValueField
 						defaultValue={valueValue}
 						empty={!valueValue && typeValue === null}
@@ -104,7 +104,7 @@ function IdentifierRow({
 						onChange={onValueChange}
 					/>
 				</Col>
-				<Col lg={4}>
+				<Col lg={5}>
 					<Form.Group>
 						<Form.Label>Type</Form.Label>
 						<Select
@@ -116,19 +116,14 @@ function IdentifierRow({
 						/>
 					</Form.Group>
 				</Col>
-				<Col className="text-right" lg={{offset: 1, span: 3}}>
-					<Button
-						block
-						className="margin-top-d22"
-						variant="danger"
+				<Col className="align-items-center d-flex justify-content-center mt-2" lg={2}>
+					<FontAwesomeIcon
+						icon={faTrash}
 						onClick={onRemoveButtonClick}
-					>
-						<FontAwesomeIcon icon={faTimes}/>
-						<span>&nbsp;Remove</span>
-					</Button>
+					/>
+					<span onClick={onRemoveButtonClick}>&nbsp;Remove</span>
 				</Col>
 			</Row>
-			<hr/>
 		</div>
 	);
 }
