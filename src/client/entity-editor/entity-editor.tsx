@@ -37,8 +37,7 @@ type OwnProps = {
 };
 
 type StateProps = {
-	aliasEditorVisible: boolean,
-	identifierEditorVisible: boolean,
+
 };
 
 type DispatchProps = {
@@ -51,10 +50,6 @@ type Props = StateProps & DispatchProps & OwnProps;
  * Container component. Renders all of the sections of the entity editing form.
  *
  * @param {Object} props - The properties passed to the component.
- * @param {boolean} props.aliasEditorVisible - Whether the alias editor modal
- *        should be made visible.
- * @param {boolean} props.identifierEditorVisible - Whether the identifier
- *        editor modal should be made visible.
  * @param {React.Node} props.children - The child content to wrap with this
  *        entity editor form.
  * @param {Function} props.onSubmit - A function to be called when the
@@ -63,10 +58,8 @@ type Props = StateProps & DispatchProps & OwnProps;
  */
 const EntityEditor = (props: Props) => {
 	const {
-		aliasEditorVisible,
 		children,
 		heading,
-		identifierEditorVisible,
 		onSubmit
 	} = props;
 	const currentState = (useSelector((state) => state) as any).toJS();
@@ -87,9 +80,9 @@ const EntityEditor = (props: Props) => {
 					{heading}
 				</Card.Header>
 				<Card.Body>
-					<AliasEditor show={aliasEditorVisible} {...props}/>
 					<NameSection {...props}/>
 					<ButtonBar {...props}/>
+					<AliasEditor {...props}/>
 					{
 						React.cloneElement(
 							React.Children.only(children),
@@ -97,7 +90,7 @@ const EntityEditor = (props: Props) => {
 						)
 					}
 					<RelationshipSection {...props}/>
-					<IdentifierEditor show={identifierEditorVisible} {...props}/>
+					<IdentifierEditor {...props}/>
 					<AnnotationSection {...props}/>
 				</Card.Body>
 				<Card.Footer>
@@ -109,14 +102,6 @@ const EntityEditor = (props: Props) => {
 };
 EntityEditor.displayName = 'EntityEditor';
 
-function mapStateToProps(rootState): StateProps {
-	const state = rootState.get('buttonBar');
-	return {
-		aliasEditorVisible: state.get('aliasEditorVisible'),
-		identifierEditorVisible: state.get('identifierEditorVisible')
-	};
-}
-
 function mapDispatchToProps(dispatch, {submissionUrl}) {
 	return {
 		onSubmit: (event:React.FormEvent) => {
@@ -126,4 +111,4 @@ function mapDispatchToProps(dispatch, {submissionUrl}) {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EntityEditor);
+export default connect(null, mapDispatchToProps)(EntityEditor);
