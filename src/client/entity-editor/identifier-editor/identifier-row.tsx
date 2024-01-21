@@ -36,6 +36,7 @@ import ValueField from './value-field';
 import {collapseWhiteSpaces} from '../../../common/helpers/utils';
 import {connect} from 'react-redux';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
+import IdentifierLink from "../../components/pages/entities/identifiers-links.js"
 
 
 type OwnProps = {
@@ -128,6 +129,16 @@ function IdentifierRow({
 					</Button>
 				</Col>
 			</Row>
+			{typeValue && valueValue && (
+				<Row>
+				<Col lg={2}>
+					Preview Link:-
+				</Col>
+				<Col>
+				<IdentifierLink typeId={typeValue} value={valueValue}/>
+				</Col>
+			</Row>
+			)}
 			<hr/>
 		</div>
 	);
@@ -136,7 +147,6 @@ IdentifierRow.displayName = 'IdentifierEditor.Identifier';
 
 
 function handleValueChange(
-	dispatch: Dispatch<Action>,
 	event: React.ChangeEvent<HTMLInputElement>,
 	index: number,
 	types: Array<IdentifierType>
@@ -164,7 +174,8 @@ function handleValueChange(
 		// 	}
 		// }
 	}
-	return dispatch(debouncedUpdateIdentifierValue(index, value, guessedType));
+	const action = debouncedUpdateIdentifierValue(index, value, guessedType);
+	return { cleanedValue: value, action };
 }
 
 
@@ -185,8 +196,10 @@ function mapDispatchToProps(
 		onRemoveButtonClick: () => dispatch(removeIdentifierRow(index)),
 		onTypeChange: (value: {value: number}) =>
 			dispatch(updateIdentifierType(index, value && value.value)),
-		onValueChange: (event: React.ChangeEvent<HTMLInputElement>) =>
-			handleValueChange(dispatch, event, index, typeOptions)
+		onValueChange: (event: React.ChangeEvent<HTMLInputElement>) =>{
+			const { cleanedValue, action } = handleValueChange(event,index,typeOptions);
+      		dispatch(action);
+		}
 	};
 }
 
