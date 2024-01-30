@@ -67,7 +67,7 @@ const entityComponents = {
 	work: WorkPage
 };
 
-export function displayEntity(req: PassportRequest, res: $Response) {
+export async function displayEntity(req: PassportRequest, res: $Response, next: NextFunction) {
 	const {orm}: {orm?: any} = req.app.locals;
 	const {AchievementUnlock, EditorEntityVisits} = orm;
 	const {locals: resLocals}: {locals: any} = res;
@@ -84,67 +84,69 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 
 	let editorEntityVisitPromise;
 	if (resLocals.user) {
-		editorEntityVisitPromise = new EditorEntityVisits({
-			bbid: resLocals.entity.bbid,
-			editorId: resLocals.user.id
-		})
-			.save(null, {method: 'insert'})
-			.then(() => achievement.processPageVisit(orm, resLocals.user.id))
-			.catch(
-				// error caused by duplicates we do not want in database
-				() => new Promise(resolve => resolve(false))
-			);
+		try {
+			await new EditorEntityVisits({
+				bbid: resLocals.entity.bbid,
+				editorId: resLocals.user.id
+			})
+				.save(null, {method: 'insert'});
+
+			editorEntityVisitPromise = await achievement.processPageVisit(orm, resLocals.user.id);
+		}
+		catch {
+			// error caused by duplicates we do not want in database
+			return false;
+		}
 	}
 	else {
 		editorEntityVisitPromise = new Promise(resolve => resolve(false));
 	}
 
-	let alertPromise = editorEntityVisitPromise.then((visitAlert) => {
-		let alertIds = [];
-		if (visitAlert.alert) {
-			alertIds = alertIds.concat(visitAlert.alert.split(',').map(
-				(id) => parseInt(id, 10)
-			));
-		}
-		if (_.isString(req.query.alert)) {
-			// $FlowFixMe
-			alertIds = alertIds.concat(req.query.alert.split(',').map(
-				(id) =>	parseInt(id, 10)
-			));
-		}
-		if (alertIds.length > 0) {
-			const promiseList = alertIds.map(
-				(achievementAlert) =>
-					new AchievementUnlock(
-						{id: achievementAlert}
-					)
-						.fetch({
-							require: true,
-							withRelated: 'achievement'
-						})
-						.then((unlock) => unlock.toJSON())
-						.then((unlock) => {
-							let unlockName;
-							if (req.user.id === unlock.editorId) {
-								unlockName = {
-									name: unlock.achievement.name
-								};
-							}
-							return unlockName;
-						})
-						.catch((err) => {
-							log.debug(err);
-						})
-			);
-			alertPromise = Promise.all(promiseList);
-		}
-		else {
-			alertPromise = new Promise(resolve => resolve(false));
-		}
-		return alertPromise;
-	});
+	let alertPromise;
+	const visitAlert = await editorEntityVisitPromise;
+	let alertIds = [];
+	if (visitAlert.alert) {
+		alertIds = alertIds.concat(visitAlert.alert.split(',').map(
+			(id) => parseInt(id, 10)
+		));
+	}
+	if (_.isString(req.query.alert)) {
+		// $FlowFixMe
+		alertIds = alertIds.concat(req.query.alert.split(',').map(
+			(id) =>	parseInt(id, 10)
+		));
+	}
+	if (alertIds.length > 0) {
+		const promiseList = alertIds.map(async (achievementAlert) => {
+			try {
+				const unlock = await new AchievementUnlock({id: achievementAlert}).fetch({
+					require: true,
+					withRelated: 'achievement'
+				});
+				const unlockJSON = unlock.toJSON();
 
-	return alertPromise.then((alert) => {
+				let unlockName;
+				if (req.user.id === unlockJSON.editorId) {
+					unlockName = {
+						name: unlockJSON.achievement.name
+					};
+				}
+				return unlockName;
+			}
+			catch (err) {
+				log.debug(err);
+				return next(err);
+			}
+		});
+
+		alertPromise = Promise.all(promiseList);
+	}
+	else {
+		alertPromise = new Promise(resolve => resolve(false));
+	}
+
+	return (async () => {
+		const alert = await alertPromise;
 		const entityName = _.camelCase(entity.type);
 		const EntityComponent = entityComponents[entityName];
 		if (EntityComponent) {
@@ -173,7 +175,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 				`Component was not found for the following entity:${entityName}`
 			);
 		}
-	});
+	})();
 }
 
 export function displayDeleteEntity(req: PassportRequest, res: $Response) {
@@ -264,14 +266,15 @@ function _createNote(orm, content, editorID, revision, transacting) {
 	return null;
 }
 
-export function addNoteToRevision(req: PassportRequest, res: $Response) {
+export async function addNoteToRevision(req: PassportRequest, res: $Response) {
 	const {orm}: {orm?: any} = req.app.locals;
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const revision = Revision.forge({id: req.params.id});
 	const {body}: {body: any} = req;
-	const revisionNotePromise = bookshelf.transaction(
-		(transacting) => _createNote(
+
+	const revisionNotePromise = await bookshelf.transaction(
+		 (transacting) => _createNote(
 			orm, body.note, editorJSON.id, revision, transacting
 		)
 	);
@@ -1191,7 +1194,7 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 	}
 }
 
-export function handleCreateOrEditEntity(
+export async function handleCreateOrEditEntity(
 	req: PassportRequest,
 	res: $Response,
 	entityType: EntityTypeString,
@@ -1201,11 +1204,21 @@ export function handleCreateOrEditEntity(
 	const {orm}: {orm?: any} = req.app.locals;
 	const editorJSON = req.user;
 	const {bookshelf} = orm;
-	const entityEditPromise = bookshelf.transaction((transacting) =>
-		processSingleEntity(req.body, res.locals.entity, req.session, entityType, orm, editorJSON, derivedProps, isMergeOperation, transacting));
-	const achievementPromise = entityEditPromise.then(
-		(entityJSON) => processAchievement(orm, editorJSON.id, entityJSON)
-	);
+	const entityEditPromise = bookshelf.transaction((transacting) => {
+		processSingleEntity(
+			req.body,
+			res.locals.entity,
+			req.session,
+			entityType,
+			orm,
+			editorJSON,
+			derivedProps,
+			isMergeOperation,
+			transacting
+		);
+	});
+	const entityJSON = await entityEditPromise;
+	const achievementPromise = await processAchievement(orm, editorJSON.id, entityJSON);
 	return handler.sendPromiseResult(
 		res,
 		achievementPromise,

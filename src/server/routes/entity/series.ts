@@ -205,9 +205,9 @@ function _setSeriesTitle(res) {
 }
 
 router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadSeriesItems, middleware.loadGenders,
-	middleware.loadWikipediaExtract, (req, res) => {
+	middleware.loadWikipediaExtract, (req, res, next) => {
 		_setSeriesTitle(res);
-		entityRoutes.displayEntity(req, res);
+		entityRoutes.displayEntity(req, res, next);
 	});
 
 router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req, res, next) => {

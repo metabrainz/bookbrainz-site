@@ -99,26 +99,36 @@ router.get(
 	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes,
 	middleware.loadRelationshipTypes,
-	(req, res, next) => {
+	async (req, res, next) => {
 		const {Author, Edition} = req.app.locals.orm;
 		let relationshipTypeId;
 		let initialRelationshipIndex = 0;
-		const propsPromise = generateEntityProps(
+		const propsObject = generateEntityProps(
 			'work', req, res, {}
 		);
 
 		if (req.query.author) {
-			propsPromise.author =
-				Author.forge({bbid: req.query.author})
-					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && utils.entityToOption(data.toJSON()));
+			try {
+				const data = await Author.forge({bbid: req.query.author})
+					.fetch({require: false, withRelated: 'defaultAlias'});
+				propsObject.author = utils.entityToOption(data.toJSON());
+			}
+			catch (error) {
+				log.debug(error);
+				return next(error);
+			}
 		}
 
 		if (req.query.edition) {
-			propsPromise.edition =
-				Edition.forge({bbid: req.query.edition})
-					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && utils.entityToOption(data.toJSON()));
+			try {
+				const data = await Edition.forge({bbid: req.query.edition})
+					.fetch({require: false, withRelated: 'defaultAlias'});
+				propsObject.edition = utils.entityToOption(data.toJSON());
+			}
+			catch (error) {
+				log.debug(error);
+				return next(error);
+			}
 		}
 
 		async function render(props) {
@@ -162,9 +172,14 @@ router.get(
 				title: props.heading
 			}));
 		}
-		makePromiseFromObject(propsPromise)
-			.then(render)
-			.catch(next);
+		try {
+			const props = await makePromiseFromObject(propsObject);
+			return render(props);
+		}
+		catch (err) {
+			log.debug(err);
+			return next(err);
+		}
 	}
 );
 
@@ -181,7 +196,7 @@ router.post(
 		if (entity.workSection) {
 			entity.workSection = await utils.parseLanguages(entity.workSection, req.app.locals.orm);
 		}
-		const propsPromise = generateEntityProps(
+		const propsObject = generateEntityProps(
 			'work', req, res, {}, () => entity
 		);
 
@@ -197,9 +212,14 @@ router.post(
 				title: props.heading
 			}));
 		}
-		makePromiseFromObject(propsPromise)
-			.then(render)
-			.catch(next);
+		try {
+			const props = await makePromiseFromObject(propsObject);
+			return render(props);
+		}
+		catch (err) {
+			log.debug(err);
+			return next(err);
+		}
 	}
 );
 
@@ -229,9 +249,9 @@ function _setWorkTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res, next) => {
 	_setWorkTitle(res);
-	entityRoutes.displayEntity(req, res);
+	entityRoutes.displayEntity(req, res, next);
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req, res, next) => {

@@ -158,37 +158,33 @@ router.get(
 	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages, middleware.loadRelationshipTypes,
-	(req:PassportRequest, res, next) => {
+	async (req:PassportRequest, res, next) => {
 		const {EditionGroup, Publisher, Work, Author} = req.app.locals.orm;
-		const propsPromise = generateEntityProps(
+		const propsObject = generateEntityProps(
 			'edition', req, res, {}
 		);
+		async function fetchData(entity, key) {
+			try {
+				const data = await entity.forge({bbid: req.query[key]})
+					.fetch({require: false, withRelated: 'defaultAlias'});
+				return utils.entityToOption(data.toJSON());
+			}
+			catch (err) {
+				log.debug(err);
+				return next(err);
+			}
+		}
 		if (req.query.author) {
-			propsPromise.author = Author.forge({bbid: req.query.author})
-				.fetch({require: false, withRelated: 'defaultAlias'})
-				.then((data) => data && utils.entityToOption(data.toJSON()));
+			propsObject.author = await fetchData(Author, 'author');
 		}
-
-		// Access edition-group property: can't write req.query.edition-group as the dash makes it invalid Javascript
 		if (req.query['edition-group']) {
-			propsPromise.editionGroup =
-				EditionGroup.forge({bbid: req.query['edition-group']})
-					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && utils.entityToOption(data.toJSON()));
+			propsObject.editionGroup = await fetchData(EditionGroup, 'edition-group');
 		}
-
 		if (req.query.publisher) {
-			propsPromise.publisher =
-				Publisher.forge({bbid: req.query.publisher})
-					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && utils.entityToOption(data.toJSON()));
+			propsObject.publisher = await fetchData(Publisher, 'publisher');
 		}
-
 		if (req.query.work) {
-			propsPromise.work =
-				Work.forge({bbid: req.query.work})
-					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && utils.entityToOption(data.toJSON()));
+			propsObject.work = await fetchData(Work, 'work');
 		}
 
 		async function render(props) {
@@ -275,9 +271,14 @@ router.get(
 			}));
 		}
 
-		makePromiseFromObject(propsPromise)
-			.then(render)
-			.catch(next);
+		try {
+			const props = await makePromiseFromObject(propsObject);
+			return render(props);
+		}
+		catch (err) {
+			log.debug(err);
+			return next(err);
+		}
 	}
 );
 
@@ -310,7 +311,7 @@ router.post(
 				entity.editionSection.publisher = foundOption ? _.omit(foundOption, ['disambiguation']) : null;
 			}
 		}
-		const propsPromise = generateEntityProps(
+		const propsObject = generateEntityProps(
 			'edition', req, res, {}, () => entity
 		);
 		function render(props) {
@@ -325,9 +326,14 @@ router.post(
 			}));
 		}
 
-		makePromiseFromObject(propsPromise)
-			.then(render)
-			.catch(next);
+		try {
+			const props = await makePromiseFromObject(propsObject);
+			return render(props);
+		}
+		catch (err) {
+			log.debug(err);
+			return next(err);
+		}
 	}
 );
 
@@ -365,9 +371,9 @@ function _setEditionTitle(res) {
 }
 
 router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWorkTableAuthors,
-	middleware.loadWikipediaExtract, (req, res) => {
+	middleware.loadWikipediaExtract, (req, res, next) => {
 		_setEditionTitle(res);
-		entityRoutes.displayEntity(req, res);
+		entityRoutes.displayEntity(req, res, next);
 	});
 
 router.get('/:bbid/revisions', (req, res, next) => {
