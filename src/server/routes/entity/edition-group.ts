@@ -202,10 +202,10 @@ function _setEditionGroupTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res, next) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
 	_setEditionGroupTitle(res);
 	res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
-	entityRoutes.displayEntity(req, res, next);
+	entityRoutes.displayEntity(req, res);
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req, res, next) => {

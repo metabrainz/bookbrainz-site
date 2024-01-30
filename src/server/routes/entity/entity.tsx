@@ -67,7 +67,7 @@ const entityComponents = {
 	work: WorkPage
 };
 
-export async function displayEntity(req: PassportRequest, res: $Response, next: NextFunction) {
+export async function displayEntity(req: PassportRequest, res: $Response) {
 	const {orm}: {orm?: any} = req.app.locals;
 	const {AchievementUnlock, EditorEntityVisits} = orm;
 	const {locals: resLocals}: {locals: any} = res;
@@ -134,8 +134,7 @@ export async function displayEntity(req: PassportRequest, res: $Response, next: 
 				return unlockName;
 			}
 			catch (err) {
-				log.debug(err);
-				return next(err);
+				return log.debug(err);
 			}
 		});
 

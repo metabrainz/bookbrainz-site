@@ -210,9 +210,9 @@ function _setAuthorTitle(res) {
 	);
 }
 
-router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res, next) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res) => {
 	_setAuthorTitle(res);
-	entityRoutes.displayEntity(req, res, next);
+	entityRoutes.displayEntity(req, res);
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req, res, next) => {

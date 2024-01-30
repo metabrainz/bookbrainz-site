@@ -371,9 +371,9 @@ function _setEditionTitle(res) {
 }
 
 router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWorkTableAuthors,
-	middleware.loadWikipediaExtract, (req, res, next) => {
+	middleware.loadWikipediaExtract, (req, res) => {
 		_setEditionTitle(res);
-		entityRoutes.displayEntity(req, res, next);
+		entityRoutes.displayEntity(req, res);
 	});
 
 router.get('/:bbid/revisions', (req, res, next) => {
