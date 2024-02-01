@@ -21,7 +21,6 @@ import {Action,
 	addAuthorCreditRow,
 	clearAuthorCredit,
 	hideAuthorCreditEditor,
-	initAuthorCredit,
 	removeEmptyCreditRows,
 	resetAuthorCredit,
 	showAuthorCreditEditor,
@@ -63,7 +62,6 @@ type StateProps = {
 };
 
 type DispatchProps = {
-	initCheckBoxState: ()=> unknown,
 	onAuthorChange: (Author) => unknown,
 	toggleAuthorCreditEnable: (newValue:boolean) => unknown,
 	onClearHandler:(arg) => unknown,
@@ -75,12 +73,9 @@ type Props = OwnProps & StateProps & DispatchProps;
 
 function AuthorCreditSection({
 	authorCreditEditor: immutableAuthorCreditEditor, onEditAuthorCredit, onEditorClose,
-	showEditor, onAuthorChange, isEditable, authorCreditEnable, toggleAuthorCreditEnable, initCheckBoxState,
+	showEditor, onAuthorChange, isEditable, authorCreditEnable, toggleAuthorCreditEnable,
 	onClearHandler, isUnifiedForm, isLeftAlign, ...rest
 }: Props) {
-	React.useEffect(() => {
-		initCheckBoxState();
-	  }, []);
 	const authorCreditEditor = convertMapToObject(immutableAuthorCreditEditor);
 	let editor;
 	if (showEditor) {
@@ -96,7 +91,7 @@ function AuthorCreditSection({
 	const authorCreditPreview = _map(authorCreditEditor, (credit) => `${credit.name}${credit.joinPhrase}`).join('');
 	const authorCreditRows = _values(authorCreditEditor);
 
-	const isValid = validateAuthorCreditSection(authorCreditRows, authorCreditEnable) || !authorCreditEnable;
+	const isValid = validateAuthorCreditSection(authorCreditRows, authorCreditEnable);
 
 	const editButton = (
 		// eslint-disable-next-line react/jsx-no-bind
@@ -237,9 +232,6 @@ function mapStateToProps(rootState, {type}): StateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		initCheckBoxState: () => {
-			dispatch(initAuthorCredit());
-		},
 		onAuthorChange: (value) => {
 			dispatch(updateCreditAuthorValue(-1, value));
 		},

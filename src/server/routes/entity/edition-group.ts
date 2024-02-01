@@ -279,6 +279,7 @@ export function editionGroupToFormState(editionGroup) {
 	);
 
 	const editionGroupSection = {
+		authorCreditEnable: true,
 		type: editionGroup.editionGroupType && editionGroup.editionGroupType.id
 	};
 

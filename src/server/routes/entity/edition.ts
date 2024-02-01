@@ -204,7 +204,6 @@ router.get(
 			let relationshipTypeId;
 			let initialRelationshipIndex = 0;
 
-			initialState.editionSection = initialState.editionSection ?? {};
 			if (props.author) {
 				initialState.authorCreditEditor = {
 					a0: {
