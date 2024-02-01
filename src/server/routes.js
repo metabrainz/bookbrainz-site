@@ -17,6 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import adminLogsRouter from './routes/adminLogs';
+import adminPanelRouter from './routes/adminPanel';
 import authRouter from './routes/auth';
 import authorRouter from './routes/entity/author';
 import collectionRouter from './routes/collection';
@@ -25,10 +27,14 @@ import editionGroupRouter from './routes/entity/edition-group';
 import editionRouter from './routes/entity/edition';
 import editorRouter from './routes/editor';
 import externalServiceRouter from './routes/externalService';
+import identifierTypeRouter from './routes/type-editor/identifier-type';
+import identifierTypesRouter from './routes/identifier-types';
 import indexRouter from './routes/index';
 import mergeRouter from './routes/merge';
 import publisherRouter from './routes/entity/publisher';
 import registerRouter from './routes/register';
+import relationshipTypeRouter from './routes/type-editor/relationship-type';
+import relationshipTypesRouter from './routes/relationship-types';
 import reviewsRouter from './routes/reviews';
 import revisionRouter from './routes/revision';
 import revisionsRouter from './routes/revisions';
@@ -52,6 +58,12 @@ function initRootRoutes(app) {
 	app.use('/collections', collectionsRouter);
 	app.use('/statistics', statisticsRouter);
 	app.use('/external-service', externalServiceRouter);
+	app.use('/admin-panel', adminPanelRouter);
+	app.use('/admin-logs', adminLogsRouter);
+	app.use('/relationship-type', relationshipTypeRouter);
+	app.use('/relationship-types', relationshipTypesRouter);
+	app.use('/identifier-type', identifierTypeRouter);
+	app.use('/identifier-types', identifierTypesRouter);
 }
 
 function initEditionGroupRoutes(app) {

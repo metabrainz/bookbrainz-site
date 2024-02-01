@@ -19,8 +19,12 @@
 
 import * as auth from '../helpers/auth';
 import * as cbHelper from '../helpers/critiquebrainz';
+import {ExternalServiceTokenT} from 'bookbrainz-data/lib/func/types';
+import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import express from 'express';
 
+
+const {ENTITY_EDITOR} = PrivilegeType;
 
 const router = express.Router();
 
@@ -30,7 +34,7 @@ router.get('/:entityType/:bbid/reviews', async (req, res) => {
 	res.json(reviews);
 });
 
-router.post('/:entityType/:bbid/reviews', auth.isAuthenticated, async (req, res) => {
+router.post('/:entityType/:bbid/reviews', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), async (req, res) => {
 	const editorId = req.user.id;
 	const {orm} = req.app.locals;
 
@@ -42,7 +46,7 @@ router.post('/:entityType/:bbid/reviews', auth.isAuthenticated, async (req, res)
 		review
 	);
 
-	let newAccessToken = '';
+	let newAccessToken: ExternalServiceTokenT = {};
 	// If the token has expired, we try to refresh it and then submit the review again.
 	if (response?.error === 'invalid_token') {
 		try {

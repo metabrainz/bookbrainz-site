@@ -1,4 +1,4 @@
-FROM metabrainz/node:16 as bookbrainz-base
+FROM metabrainz/node:18 as bookbrainz-base
 
 ARG DEPLOY_ENV
 ARG GIT_COMMIT_SHA
