@@ -131,11 +131,9 @@ function IdentifierRow({
 			</Row>
 			{typeValue && valueValue && (
 				<Row>
-				<Col lg={2}>
-					Preview Link:-
-				</Col>
 				<Col>
-				<IdentifierLink typeId={typeValue} value={valueValue}/>
+					Preview Link:
+					<IdentifierLink typeId={typeValue} value={valueValue}/>
 				</Col>
 			</Row>
 			)}
