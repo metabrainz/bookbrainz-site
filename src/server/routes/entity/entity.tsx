@@ -1182,6 +1182,19 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 				}
 				return rel;
 			}));
+			// Attach a work's authors for search indexing
+			if (savedMainEntity.get('type') === 'Work') {
+				 const authorsOfWork = entityJSON.relationshipSet.relationships
+					.filter(
+						// "Author wrote Work" relationship
+						(relation) => relation.typeId === 8
+					)
+					.map((relation) => {
+						const {source} = relation;
+						return source.name;
+					});
+				entityJSON.authors = authorsOfWork;
+			}
 		}
 		return entityJSON;
 	}
