@@ -254,7 +254,7 @@ export function indexEntity(entity) {
 			id: entity.bbid,
 			index: _index,
 			type: snakeCase(entity.type)
-		});
+		}).catch(error => { log.error('error indexing entity for search:', error); });
 	}
 }
 
@@ -263,7 +263,7 @@ export function deleteEntity(entity) {
 		id: entity.bbid,
 		index: _index,
 		type: snakeCase(entity.type)
-	});
+	}).catch(error => { log.error('error deleting entity from index:', error); });
 }
 
 export function refreshIndex() {
