@@ -1156,32 +1156,40 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 			editorJSON.id, body.note
 		);
 
-		/* We need to load the aliases for search reindexing and refresh it*/
-		await savedMainEntity.load(['aliasSet.aliases', 'defaultAlias.language', 'relationshipSet.relationships.source',
-			'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation'], {transacting});
+		/* We need to load the aliases for search reindexing and refresh it (otherwise 'type' is missing for new entities)*/
+		await savedMainEntity.refresh({transacting, withRelated: ['aliasSet.aliases', 'defaultAlias.language',
+			'relationshipSet.relationships.source', 'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation']});
 
-		/* New entities will lack some attributes like 'type' required for search indexing */
-		if (isNew) {
-			await savedMainEntity.refresh({transacting});
-
+		if (isNew && savedMainEntity.get('type') === 'Edition') {
 			/* fetch and reindex EditionGroups that may have been created automatically by the ORM and not indexed */
-			if (savedMainEntity.get('type') === 'Edition') {
-				await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
-			}
+			await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
 		}
 
 		const entityJSON = savedMainEntity.toJSON();
 		if (entityJSON && entityJSON.relationshipSet) {
 			entityJSON.relationshipSet.relationships = await Promise.all(entityJSON.relationshipSet.relationships.map(async (rel) => {
 				try {
-					rel.source = await commonUtils.getEntityAlias(orm, rel.source.bbid, rel.source.type);
-					rel.target = await commonUtils.getEntityAlias(orm, rel.target.bbid, rel.target.type);
+					rel.source = await commonUtils.getEntity(orm, rel.source.bbid, rel.source.type, {require: false, transacting});
+					rel.target = await commonUtils.getEntity(orm, rel.target.bbid, rel.target.type, {require: false, transacting});
 				}
 				catch (err) {
 					log.error(err);
 				}
 				return rel;
 			}));
+			// Attach a work's authors for search indexing
+			if (savedMainEntity.get('type') === 'Work') {
+				 const authorsOfWork = entityJSON.relationshipSet.relationships
+					.filter(
+						// "Author wrote Work" relationship
+						(relation) => relation.typeId === 8
+					)
+					.map((relation) => {
+						const {source} = relation;
+						return source.name;
+					});
+				entityJSON.authors = authorsOfWork;
+			}
 		}
 		return entityJSON;
 	}

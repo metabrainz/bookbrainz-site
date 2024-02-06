@@ -25,7 +25,7 @@ import {
 } from '../../../../src/server/helpers/collections';
 import assertArrays from 'chai-arrays';
 import chai from 'chai';
-import {date} from 'faker';
+import {faker} from '@faker-js/faker';
 import isSorted from 'chai-sorted';
 import orm from '../../../bookbrainz-data';
 
@@ -50,8 +50,8 @@ describe('getOrderedPublicCollections', () => {
 		};
 		// create 5 public author collections
 		for (let i = 1; i <= 5; i++) {
-			collectionAttrib.lastModified = date.recent();
-			collectionAttrib.createdAt = date.recent();
+			collectionAttrib.lastModified = faker.date.recent();
+			collectionAttrib.createdAt = faker.date.recent();
 			promiseArray.push(
 				new UserCollection(collectionAttrib).save(null, {method: 'insert'})
 			);

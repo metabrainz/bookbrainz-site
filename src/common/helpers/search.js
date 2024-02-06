@@ -106,8 +106,8 @@ async function _fetchEntityModelsForESResults(orm, results) {
 		const entityJSON = entity?.toJSON();
 		if (entityJSON && entityJSON.relationshipSet) {
 			entityJSON.relationshipSet.relationships = await Promise.all(entityJSON.relationshipSet.relationships.map(async (rel) => {
-				rel.source = await commonUtils.getEntityAlias(orm, rel.source.bbid, rel.source.type);
-				rel.target = await commonUtils.getEntityAlias(orm, rel.target.bbid, rel.target.type);
+				rel.source = await commonUtils.getEntity(orm, rel.source.bbid, rel.source.type);
+				rel.target = await commonUtils.getEntity(orm, rel.target.bbid, rel.target.type);
 				return rel;
 			}));
 		}
