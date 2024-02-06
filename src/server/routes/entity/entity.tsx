@@ -1156,18 +1156,13 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 			editorJSON.id, body.note
 		);
 
-		/* We need to load the aliases for search reindexing and refresh it*/
-		await savedMainEntity.load(['aliasSet.aliases', 'defaultAlias.language', 'relationshipSet.relationships.source',
-			'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation'], {transacting});
+		/* We need to load the aliases for search reindexing and refresh it (otherwise 'type' is missing for new entities)*/
+		await savedMainEntity.refresh({transacting, withRelated: ['aliasSet.aliases', 'defaultAlias.language',
+			'relationshipSet.relationships.source', 'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation']});
 
-		/* New entities will lack some attributes like 'type' required for search indexing */
-		if (isNew) {
-			await savedMainEntity.refresh({transacting});
-
+		if (isNew && savedMainEntity.get('type') === 'Edition') {
 			/* fetch and reindex EditionGroups that may have been created automatically by the ORM and not indexed */
-			if (savedMainEntity.get('type') === 'Edition') {
-				await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
-			}
+			await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
 		}
 
 		const entityJSON = savedMainEntity.toJSON();
