@@ -310,12 +310,15 @@ export async function getEntityByBBID(orm, bbid:string, otherRelations:Array<str
 	return entityData;
 }
 
-export async function getEntityAlias(orm, bbid:string, type:EntityType):Promise<any> {
+export async function getEntity(orm, bbid:string, type:EntityType, fetchOptions?:Record<string, any>):Promise<any> {
 	if (!isValidBBID(bbid)) {
 		return null;
 	}
-	const entityData = await orm.func.entity.getEntity(orm, upperFirst(type), bbid, []);
-	return entityData;
+	const finalBBID = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid);
+	const Model = getEntityModelByType(orm, upperFirst(type));
+	const entity = await new Model({bbid: finalBBID})
+		.fetch({require: true, ...fetchOptions});
+	return entity && entity.toJSON();
 }
 
 export function getAliasLanguageCodes(entity: LazyLoadedEntityT) {
