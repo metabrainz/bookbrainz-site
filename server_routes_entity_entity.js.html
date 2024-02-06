@@ -1675,7 +1675,7 @@ function processSingleEntity(_x85, _x86, _x87, _x88, _x89, _x90, _x91, _x92, _x9
 }
 function _processSingleEntity() {
   _processSingleEntity = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee29(formBody, JSONEntity, reqSession, entityType, orm, editorJSON, derivedProps, isMergeOperation, transacting) {
-    var Entity, Revision, body, currentEntity, isNew, newEntity, newEntityBBID, newRevision, relationshipSets, changedProps, mainEntity, otherEntities, allEntities, savedMainEntity, entityJSON;
+    var Entity, Revision, body, currentEntity, isNew, newEntity, newEntityBBID, newRevision, relationshipSets, changedProps, mainEntity, otherEntities, allEntities, savedMainEntity, entityJSON, authorsOfWork;
     return _regenerator.default.wrap(function _callee29$(_context29) {
       while (1) {
         switch (_context29.prev = _context29.next) {
@@ -1776,32 +1776,24 @@ function _processSingleEntity() {
           case 41:
             savedMainEntity = _context29.sent;
             _context29.next = 44;
-            return savedMainEntity.load(['aliasSet.aliases', 'defaultAlias.language', 'relationshipSet.relationships.source', 'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation'], {
-              transacting: transacting
+            return savedMainEntity.refresh({
+              transacting: transacting,
+              withRelated: ['aliasSet.aliases', 'defaultAlias.language', 'relationshipSet.relationships.source', 'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation']
             });
           case 44:
-            if (!isNew) {
-              _context29.next = 50;
+            if (!(isNew &amp;&amp; savedMainEntity.get('type') === 'Edition')) {
+              _context29.next = 47;
               break;
             }
             _context29.next = 47;
-            return savedMainEntity.refresh({
-              transacting: transacting
-            });
-          case 47:
-            if (!(savedMainEntity.get('type') === 'Edition')) {
-              _context29.next = 50;
-              break;
-            }
-            _context29.next = 50;
             return indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
-          case 50:
+          case 47:
             entityJSON = savedMainEntity.toJSON();
             if (!(entityJSON &amp;&amp; entityJSON.relationshipSet)) {
-              _context29.next = 55;
+              _context29.next = 53;
               break;
             }
-            _context29.next = 54;
+            _context29.next = 51;
             return Promise.all(entityJSON.relationshipSet.relationships.map( /*#__PURE__*/function () {
               var _ref17 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee28(rel) {
                 return _regenerator.default.wrap(function _callee28$(_context28) {
@@ -1810,11 +1802,17 @@ function _processSingleEntity() {
                       case 0:
                         _context28.prev = 0;
                         _context28.next = 3;
-                        return commonUtils.getEntityAlias(orm, rel.source.bbid, rel.source.type);
+                        return commonUtils.getEntity(orm, rel.source.bbid, rel.source.type, {
+                          require: false,
+                          transacting: transacting
+                        });
                       case 3:
                         rel.source = _context28.sent;
                         _context28.next = 6;
-                        return commonUtils.getEntityAlias(orm, rel.target.bbid, rel.target.type);
+                        return commonUtils.getEntity(orm, rel.target.bbid, rel.target.type, {
+                          require: false,
+                          transacting: transacting
+                        });
                       case 6:
                         rel.target = _context28.sent;
                         _context28.next = 12;
@@ -1836,21 +1834,33 @@ function _processSingleEntity() {
                 return _ref17.apply(this, arguments);
               };
             }()));
-          case 54:
+          case 51:
             entityJSON.relationshipSet.relationships = _context29.sent;
-          case 55:
+            // Attach a work's authors for search indexing
+            if (savedMainEntity.get('type') === 'Work') {
+              authorsOfWork = entityJSON.relationshipSet.relationships.filter(
+              // "Author wrote Work" relationship
+              function (relation) {
+                return relation.typeId === 8;
+              }).map(function (relation) {
+                var source = relation.source;
+                return source.name;
+              });
+              entityJSON.authors = authorsOfWork;
+            }
+          case 53:
             return _context29.abrupt("return", entityJSON);
-          case 58:
-            _context29.prev = 58;
+          case 56:
+            _context29.prev = 56;
             _context29.t0 = _context29["catch"](3);
             _log.default.error(_context29.t0);
             throw _context29.t0;
-          case 62:
+          case 60:
           case "end":
             return _context29.stop();
         }
       }
-    }, _callee29, null, [[3, 58]]);
+    }, _callee29, null, [[3, 56]]);
   }));
   return _processSingleEntity.apply(this, arguments);
 }
@@ -2038,7 +2048,7 @@ function displayPreview(req, res, next) {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Feb 01 2024 12:09:40 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Feb 06 2024 15:26:56 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
