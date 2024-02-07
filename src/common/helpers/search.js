@@ -63,7 +63,6 @@ async function _fetchEntityModelsForESResults(orm, results) {
 			const area = await Area.forge({gid: entityStub.bbid})
 				.fetch({withRelated: ['areaType']});
 
-			const areaJSON = area.toJSON();
 			const areaJSON = area.toJSON({omitPivot: true});
 			const areaParents = await area.parents();
 			areaJSON.defaultAlias = {
@@ -161,14 +160,14 @@ export async function _bulkIndexEntities(entities) {
 		// eslint-disable-next-line no-await-in-loop
 		const response = await _client.bulk({
 			body: bulkOperations
-		});
+		}).catch(error => { log.error('error bulk indexing entities for search:', error); });
 
 		/*
 		 * In case of failed index operations, the promise won't be rejected;
 		 * instead, we have to inspect the response and respond to any failures
 		 * individually.
 		 */
-		if (response.errors === true) {
+		if (response?.errors === true) {
 			entitiesToIndex = response.items.reduce((accumulator, item) => {
 				// We currently only handle queue overrun
 				if (item.index.status === httpStatus.TOO_MANY_REQUESTS) {
@@ -268,7 +267,7 @@ export function deleteEntity(entity) {
 }
 
 export function refreshIndex() {
-	return _client.indices.refresh({index: _index});
+	return _client.indices.refresh({index: _index}).catch(error => { log.error('error refreshing search index:', error); });
 }
 
 export async function generateIndex(orm) {
@@ -414,14 +413,14 @@ export async function generateIndex(orm) {
 		const relationshipSet = workEntity.related('relationshipSet');
 		if (relationshipSet) {
 			const authorWroteWorkRels = relationshipSet.related('relationships')?.filter(relationshipModel => relationshipModel.get('typeId') === 8);
-			const authorNames = authorWroteWorkRels.map(relationshipModel => {
+			const authorNames = [];
+			authorWroteWorkRels.forEach(relationshipModel => {
 				// Search for the Author in the already fetched BookshelfJS Collection
 				const source = authorsCollection.get(relationshipModel.get('sourceBbid'));
-				if (!source) {
-					// This shouldn't happen, but just in case
-					return null;
+				const name = source?.related('defaultAlias')?.get('name');
+				if (name) {
+					authorNames.push(name);
 				}
-				return source.toJSON().defaultAlias.name;
 			});
 			workEntity.set('authors', authorNames);
 		}
