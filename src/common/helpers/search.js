@@ -64,6 +64,7 @@ async function _fetchEntityModelsForESResults(orm, results) {
 				.fetch({withRelated: ['areaType']});
 
 			const areaJSON = area.toJSON();
+			const areaJSON = area.toJSON({omitPivot: true});
 			const areaParents = await area.parents();
 			areaJSON.defaultAlias = {
 				name: areaJSON.name
@@ -78,7 +79,7 @@ async function _fetchEntityModelsForESResults(orm, results) {
 			const editor = await Editor.forge({id: entityStub.bbid})
 				.fetch();
 
-			const editorJSON = editor.toJSON();
+			const editorJSON = editor.toJSON({omitPivot: true});
 			editorJSON.defaultAlias = {
 				name: editorJSON.name
 			};
@@ -90,7 +91,7 @@ async function _fetchEntityModelsForESResults(orm, results) {
 			const collection = await UserCollection.forge({id: entityStub.bbid})
 				.fetch();
 
-			const collectionJSON = collection.toJSON();
+			const collectionJSON = collection.toJSON({omitPivot: true});
 			collectionJSON.defaultAlias = {
 				name: collectionJSON.name
 			};
@@ -103,7 +104,7 @@ async function _fetchEntityModelsForESResults(orm, results) {
 		const entity = await model.forge({bbid: entityStub.bbid})
 			.fetch({require: false, withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases', 'identifierSet.identifiers',
 				'relationshipSet.relationships.source', 'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation']});
-		const entityJSON = entity?.toJSON();
+		const entityJSON = entity?.toJSON({omitPivot: true});
 		if (entityJSON && entityJSON.relationshipSet) {
 			entityJSON.relationshipSet.relationships = await Promise.all(entityJSON.relationshipSet.relationships.map(async (rel) => {
 				rel.source = await commonUtils.getEntity(orm, rel.source.bbid, rel.source.type);
@@ -384,7 +385,7 @@ export async function generateIndex(orm) {
 		{model: EditionGroup, relations: []},
 		{model: Publisher, relations: ['area']},
 		{model: Series, relations: ['seriesOrderingType']},
-		{model: Work, relations: ['workType', 'relationshipSet.relationships.type']}
+		{model: Work, relations: ['relationshipSet.relationships.type']}
 	];
 
 	// Update the indexed entries for each entity type
@@ -427,7 +428,7 @@ export async function generateIndex(orm) {
 	});
 	// Index all the entities
 	for (const entityList of entityLists) {
-		const listArray = entityList.toJSON();
+		const listArray = entityList.toJSON({omitPivot: true});
 		listIndexes.push(_processEntityListForBulk(listArray));
 	}
 	await Promise.all(listIndexes);
@@ -435,7 +436,7 @@ export async function generateIndex(orm) {
 	const areaCollection = await Area.forge()
 		.fetchAll();
 
-	const areas = areaCollection.toJSON();
+	const areas = areaCollection.toJSON({omitPivot: true});
 
 	/** To index names, we use aliasSet.aliases.name and bbid, which Areas don't have.
 	 * We massage the area to return a similar format as BB entities
@@ -455,7 +456,7 @@ export async function generateIndex(orm) {
 		// no bots
 		.where('type_id', 1)
 		.fetchAll();
-	const editors = editorCollection.toJSON();
+	const editors = editorCollection.toJSON({omitPivot: true});
 
 	/** To index names, we use aliasSet.aliases.name and bbid, which Editors don't have.
 	 * We massage the editor to return a similar format as BB entities
@@ -473,7 +474,7 @@ export async function generateIndex(orm) {
 
 	const userCollections = await UserCollection.forge().where({public: true})
 		.fetchAll();
-	const userCollectionsJSON = userCollections.toJSON();
+	const userCollectionsJSON = userCollections.toJSON({omitPivot: true});
 
 	/** To index names, we use aliasSet.aliases.name and bbid, which UserCollections don't have.
 	 * We massage the editor to return a similar format as BB entities

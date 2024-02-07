@@ -478,7 +478,7 @@ export function handleDelete(
 				editorJSON.id,
 				body.note
 			);
-		return savedMainEntity.toJSON();
+		return savedMainEntity.toJSON({omitPivot: true});
 	});
 
 	return handler.sendPromiseResult(res, entityDeletePromise, search.deleteEntity);
@@ -1047,7 +1047,7 @@ export async function indexAutoCreatedEditionGroup(orm, newEdition, transacting)
 				transacting,
 				withRelated: 'aliasSet.aliases'
 			});
-		await search.indexEntity(editionGroup.toJSON());
+		await search.indexEntity(editionGroup.toJSON({omitPivot: true}));
 	}
 	catch (err) {
 		log.error('Could not reindex edition group after edition creation:', err);
@@ -1165,7 +1165,7 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 			await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
 		}
 
-		const entityJSON = savedMainEntity.toJSON();
+		const entityJSON = savedMainEntity.toJSON({omitPivot: true});
 		if (entityJSON && entityJSON.relationshipSet) {
 			entityJSON.relationshipSet.relationships = await Promise.all(entityJSON.relationshipSet.relationships.map(async (rel) => {
 				try {
