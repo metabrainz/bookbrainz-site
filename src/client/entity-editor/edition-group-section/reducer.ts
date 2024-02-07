@@ -29,6 +29,7 @@ type State = Immutable.Map<string, any>;
 function reducer(
 	state: State = Immutable.Map({
 		authorCreditEnable: true,
+		creditSection: true,
 		type: null
 	}),
 	action: Action
@@ -41,8 +42,10 @@ function reducer(
 			return state.set('authorCreditEditorVisible', true);
 		case HIDE_AUTHOR_CREDIT_EDITOR:
 			return state.set('authorCreditEditorVisible', false);
-		case TOGGLE_AUTHOR_CREDIT:
-			return state.set('authorCreditEnable', !state.get('authorCreditEnable'));
+			case TOGGLE_AUTHOR_CREDIT:
+				return state
+				.set('authorCreditEnable', !state.get('authorCreditEnable'))
+				.set('creditSection', !state.get('creditSection'));
 		// no default
 	}
 	return state;

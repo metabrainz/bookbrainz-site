@@ -79,6 +79,7 @@ export function transformNewForm(data) {
 		aliases,
 		annotation: data.annotationSection.content,
 		authorCredit,
+		creditSection: data.editionGroupSection.creditSection,
 		disambiguation: data.nameSection.disambiguation,
 		identifiers,
 		note: data.submissionSection.note,
@@ -88,7 +89,7 @@ export function transformNewForm(data) {
 }
 
 const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'editionGroup', transformNewForm, 'typeId'
+	'editionGroup', transformNewForm, ['typeId','creditSection']
 );
 
 const mergeHandler = makeEntityCreateOrEditHandler(

@@ -54,7 +54,7 @@ type AuthorCreditEditorT ={
 
 const additionalEditionProps = [
 	'editionGroupBbid', 'width', 'height', 'depth', 'weight', 'pages',
-	'formatId', 'statusId'
+	'formatId', 'statusId', 'creditSection'
 ];
 
 type PassportRequest = express.Request & {
@@ -99,6 +99,7 @@ export function transformNewForm(data) {
 		aliases,
 		annotation: data.annotationSection.content,
 		authorCredit,
+		creditSection: data.editionSection.creditSection,
 		depth: data.editionSection.depth &&
 			parseInt(data.editionSection.depth, 10),
 		disambiguation: data.nameSection.disambiguation,
