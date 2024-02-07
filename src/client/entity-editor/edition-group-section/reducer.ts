@@ -42,8 +42,8 @@ function reducer(
 			return state.set('authorCreditEditorVisible', true);
 		case HIDE_AUTHOR_CREDIT_EDITOR:
 			return state.set('authorCreditEditorVisible', false);
-			case TOGGLE_AUTHOR_CREDIT:
-				return state
+		case TOGGLE_AUTHOR_CREDIT:
+			return state
 				.set('authorCreditEnable', !state.get('authorCreditEnable'))
 				.set('creditSection', !state.get('creditSection'));
 		// no default

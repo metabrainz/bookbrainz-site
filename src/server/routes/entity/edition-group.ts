@@ -89,7 +89,7 @@ export function transformNewForm(data) {
 }
 
 const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'editionGroup', transformNewForm, ['typeId','creditSection']
+	'editionGroup', transformNewForm, ['typeId', 'creditSection']
 );
 
 const mergeHandler = makeEntityCreateOrEditHandler(

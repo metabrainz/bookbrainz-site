@@ -102,8 +102,8 @@ function reducer(
 			return state.set('matchingNameEditionGroups', payload);
 		case TOGGLE_AUTHOR_CREDIT:
 			return state
-			.set('authorCreditEnable', !state.get('authorCreditEnable'))
-			.set('creditSection', !state.get('creditSection'));
+				.set('authorCreditEnable', !state.get('authorCreditEnable'))
+				.set('creditSection', !state.get('creditSection'));
 		// no default
 	}
 	return state;
