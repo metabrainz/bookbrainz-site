@@ -392,6 +392,7 @@ export async function generateIndex(orm) {
 
 	const baseRelations = [
 		'annotation',
+		'defaultAlias',
 		'aliasSet.aliases',
 		'identifierSet.identifiers'
 	];
