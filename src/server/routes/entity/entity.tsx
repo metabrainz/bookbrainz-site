@@ -1165,33 +1165,28 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 			await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
 		}
 
-		const entityJSON = savedMainEntity.toJSON({omitPivot: true});
-		if (entityJSON && entityJSON.relationshipSet) {
-			entityJSON.relationshipSet.relationships = await Promise.all(entityJSON.relationshipSet.relationships.map(async (rel) => {
+		const entityRelationships = savedMainEntity.related('relationshipSet')?.related('relationships');
+		if (savedMainEntity.get('type') === 'Work' && entityRelationships?.length) {
+			const authorsOfWork = await Promise.all(entityRelationships.toJSON().filter(
+				// "Author wrote Work" relationship
+				(relation) => relation.typeId === 8
+			).map(async (relationshipJSON) => {
 				try {
-					rel.source = await commonUtils.getEntity(orm, rel.source.bbid, rel.source.type, {require: false, transacting});
-					rel.target = await commonUtils.getEntity(orm, rel.target.bbid, rel.target.type, {require: false, transacting});
+					const {source} = relationshipJSON;
+					const sourceEntity = await commonUtils.getEntity(
+						orm, source.bbid, source.type, {require: false, transacting}
+					);
+					return sourceEntity.name;
 				}
 				catch (err) {
 					log.error(err);
 				}
-				return rel;
+				return null;
 			}));
 			// Attach a work's authors for search indexing
-			if (savedMainEntity.get('type') === 'Work') {
-				 const authorsOfWork = entityJSON.relationshipSet.relationships
-					.filter(
-						// "Author wrote Work" relationship
-						(relation) => relation.typeId === 8
-					)
-					.map((relation) => {
-						const {source} = relation;
-						return source.name;
-					});
-				entityJSON.authors = authorsOfWork;
-			}
+			savedMainEntity.set('authors', authorsOfWork.filter(Boolean));
 		}
-		return entityJSON;
+		return savedMainEntity;
 	}
 	catch (err) {
 		log.error(err);

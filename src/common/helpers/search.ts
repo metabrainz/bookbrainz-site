@@ -373,7 +373,6 @@ export async function generateIndex(orm) {
 						type: 'ngram'
 					}
 				}
-			}
 			},
 			'index.mapping.ignore_malformed': true
 		}
@@ -473,8 +472,6 @@ export async function generateIndex(orm) {
 
 	const areas = areaCollection.toJSON({omitPivot: true});
 
-	/** To index names, we use aliasSet.aliases.name and bbid, which Areas don't have.
-	 * We massage the area to return a similar format as BB entities
 	/** To index names, we use aliases.name and bbid, which Areas don't have.
    * We massage the area to return a similar format as BB entities
    */
