@@ -17,7 +17,7 @@
  */
 /* eslint-disable camelcase */
 
-import * as commonUtils from '../../common/helpers/utils';
+import * as commonUtils from './utils';
 import {camelCase, isString, snakeCase, upperFirst} from 'lodash';
 
 import ElasticSearch from '@elastic/elasticsearch';
@@ -495,7 +495,7 @@ export async function generateIndex(orm) {
 
 export async function checkIfExists(orm, name, type) {
 	const {bookshelf} = orm;
-	const bbids = await new Promise((resolve, reject) => {
+	const bbids:string[] = await new Promise((resolve, reject) => {
 		bookshelf.transaction(async (transacting) => {
 			try {
 				const result = await orm.func.alias.getBBIDsWithMatchingAlias(
