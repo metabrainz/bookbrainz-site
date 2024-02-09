@@ -21,6 +21,7 @@ import * as commonUtils from './utils';
 import {camelCase, isString, snakeCase, upperFirst} from 'lodash';
 
 import ElasticSearch from '@elastic/elasticsearch';
+import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import httpStatus from 'http-status';
 import log from 'log';
 
@@ -46,6 +47,36 @@ function sanitizeEntityType(type) {
 	}
 
 	return snakeCase(type);
+}
+
+const commonProperties = ['bbid', 'name', 'type', 'disambiguation'];
+
+/* We don't currently want to index the entire Model in ElasticSearch,
+   which contains a lot of fields we don't use as well as some internal props (_pivot props)
+   This utility function prepares the Model into a minimal object that will be indexed
+*/
+export function getDocumentToIndex(entity:any, entityType:EntityTypeString) {
+	const additionalProperties = [];
+	switch (entityType) {
+		case 'Work':
+			additionalProperties.push('authors');
+			break;
+		default:
+			break;
+	}
+	let aliases = entity.related('aliasSet')?.related('aliases')?.toJSON({ignorePivot: true, visible: 'name'});
+	if (!aliases) {
+		// Some models don't have the same aliasSet structure, i.e. Collection, Editor, Area, …
+		const name = entity.get('name');
+		aliases = {name};
+	}
+	const identifiers = entity.related('identifierSet')?.related('identifiers')?.toJSON({ignorePivot: true, visible: 'value'});
+
+	return {
+		...entity.toJSON({ignorePivot: true, visible: commonProperties.concat(additionalProperties)}),
+		aliases,
+		identifiers
+	};
 }
 
 async function _fetchEntityModelsForESResults(orm, results) {
@@ -223,7 +254,7 @@ export async function autocomplete(orm, query, type, size = 42) {
 	else {
 		queryBody = {
 			match: {
-				'aliasSet.aliases.name.autocomplete': {
+				'aliases.name.autocomplete': {
 					minimum_should_match: '80%',
 					query
 				}
@@ -248,12 +279,14 @@ export async function autocomplete(orm, query, type, size = 42) {
 
 // eslint-disable-next-line consistent-return
 export function indexEntity(entity) {
+	const entityType = entity.get('type');
+	const document = getDocumentToIndex(entity, entityType);
 	if (entity) {
 		return _client.index({
-			body: entity,
-			id: entity.bbid,
+			body: document,
+			id: entity.get('bbid'),
 			index: _index,
-			type: snakeCase(entity.type)
+			type: snakeCase(entityType)
 		}).catch(error => { log.error('error indexing entity for search:', error); });
 	}
 }
@@ -276,7 +309,7 @@ export async function generateIndex(orm) {
 		mappings: {
 			_default_: {
 				properties: {
-					'aliasSet.aliases': {
+					aliases: {
 						properties: {
 							name: {
 								fields: {
@@ -291,8 +324,7 @@ export async function generateIndex(orm) {
 								},
 								type: 'text'
 							}
-						},
-						type: 'object'
+						}
 					},
 					authors: {
 						analyzer: 'trigrams',
@@ -342,6 +374,8 @@ export async function generateIndex(orm) {
 					}
 				}
 			}
+			},
+			'index.mapping.ignore_malformed': true
 		}
 	};
 
@@ -359,7 +393,6 @@ export async function generateIndex(orm) {
 
 	const baseRelations = [
 		'annotation',
-		'defaultAlias',
 		'aliasSet.aliases',
 		'identifierSet.identifiers'
 	];
@@ -400,6 +433,7 @@ export async function generateIndex(orm) {
 	);
 	const entityLists = await Promise.all(behaviorPromise);
 	/* eslint-disable @typescript-eslint/no-unused-vars */
+	const entityFetchOrder:EntityTypeString[] = ['Author', 'Edition', 'EditionGroup', 'Publisher', 'Series', 'Work'];
 	const [authorsCollection,
 		editionCollection,
 		editionGroupCollection,
@@ -426,10 +460,12 @@ export async function generateIndex(orm) {
 		}
 	});
 	// Index all the entities
-	for (const entityList of entityLists) {
-		const listArray = entityList.toJSON({omitPivot: true});
+	entityLists.forEach((entityList, idx) => {
+		const entityType:EntityTypeString = entityFetchOrder[idx];
+		const listArray = entityList.map(entity => getDocumentToIndex(entity, entityType));
 		listIndexes.push(_processEntityListForBulk(listArray));
-	}
+	});
+
 	await Promise.all(listIndexes);
 
 	const areaCollection = await Area.forge()
@@ -439,13 +475,13 @@ export async function generateIndex(orm) {
 
 	/** To index names, we use aliasSet.aliases.name and bbid, which Areas don't have.
 	 * We massage the area to return a similar format as BB entities
-	 */
+	/** To index names, we use aliases.name and bbid, which Areas don't have.
+   * We massage the area to return a similar format as BB entities
+   */
 	const processedAreas = areas.map((area) => new Object({
-		aliasSet: {
-			aliases: [
-				{name: area.name}
-			]
-		},
+		aliases: [
+			{name: area.name}
+		],
 		bbid: area.gid,
 		type: 'Area'
 	}));
@@ -457,15 +493,13 @@ export async function generateIndex(orm) {
 		.fetchAll();
 	const editors = editorCollection.toJSON({omitPivot: true});
 
-	/** To index names, we use aliasSet.aliases.name and bbid, which Editors don't have.
-	 * We massage the editor to return a similar format as BB entities
-	 */
+	/** To index names, we use aliases.name and bbid, which Editors don't have.
+   * We massage the editor to return a similar format as BB entities
+   */
 	const processedEditors = editors.map((editor) => new Object({
-		aliasSet: {
-			aliases: [
-				{name: editor.name}
-			]
-		},
+		aliases: [
+			{name: editor.name}
+		],
 		bbid: editor.id,
 		type: 'Editor'
 	}));
@@ -475,15 +509,13 @@ export async function generateIndex(orm) {
 		.fetchAll();
 	const userCollectionsJSON = userCollections.toJSON({omitPivot: true});
 
-	/** To index names, we use aliasSet.aliases.name and bbid, which UserCollections don't have.
-	 * We massage the editor to return a similar format as BB entities
-	 */
+	/** To index names, we use aliases.name and bbid, which UserCollections don't have.
+   * We massage the editor to return a similar format as BB entities
+   */
 	const processedCollections = userCollectionsJSON.map((collection) => new Object({
-		aliasSet: {
-			aliases: [
-				{name: collection.name}
-			]
-		},
+		aliases: [
+			{name: collection.name}
+		],
 		bbid: collection.id,
 		id: collection.id,
 		type: 'Collection'
@@ -535,10 +567,10 @@ export function searchByName(orm, name, type, size, from) {
 			query: {
 				multi_match: {
 					fields: [
-						'aliasSet.aliases.name^3',
-						'aliasSet.aliases.name.search',
+						'aliases.name^3',
+						'aliases.name.search',
 						'disambiguation',
-						'identifierSet.identifiers.value'
+						'identifiers.value'
 					],
 					minimum_should_match: '80%',
 					query: name,
