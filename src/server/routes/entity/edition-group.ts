@@ -280,7 +280,8 @@ export function editionGroupToFormState(editionGroup) {
 	);
 
 	const editionGroupSection = {
-		authorCreditEnable: true,
+		authorCreditEnable: editionGroup.creditSection,
+		creditSection: editionGroup.creditSection,
 		type: editionGroup.editionGroupType && editionGroup.editionGroupType.id
 	};
 
@@ -315,11 +316,14 @@ export function editionGroupToFormState(editionGroup) {
 		})
 	) : [];
 
-	const authorCreditEditor: AuthorCreditEditorT = {};
+	let authorCreditEditor: AuthorCreditEditorT = {};
 	for (const credit of credits) {
 		authorCreditEditor[credit.position] = credit;
 	}
-	if (_.isEmpty(authorCreditEditor)) {
+	if (!editionGroup.creditSection) {
+		authorCreditEditor = {};
+	}
+	if (_.isEmpty(authorCreditEditor) && editionGroup.creditSection) {
 		authorCreditEditor.n0 = {
 			author: null,
 			joinPhrase: '',

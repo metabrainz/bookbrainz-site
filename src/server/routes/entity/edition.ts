@@ -437,11 +437,14 @@ export function editionToFormState(edition) {
 		})
 	) : [];
 
-	const authorCreditEditor: AuthorCreditEditorT = {};
+	let authorCreditEditor: AuthorCreditEditorT = {};
 	for (const credit of credits) {
 		authorCreditEditor[credit.position] = credit;
 	}
-	if (_.isEmpty(authorCreditEditor)) {
+	if (!edition.creditSection) {
+		authorCreditEditor = {};
+	}
+	if (_.isEmpty(authorCreditEditor) && edition.creditSection) {
 		authorCreditEditor.n0 = {
 			author: null,
 			joinPhrase: '',
@@ -476,7 +479,8 @@ export function editionToFormState(edition) {
 	const editionGroup = utils.entityToOption(edition.editionGroup);
 
 	const editionSection = {
-		authorCreditEnable: true,
+		authorCreditEnable: edition.creditSection,
+		creditSection: edition.creditSection,
 		depth: edition.depth,
 		editionGroup,
 		// Determines whether the EG can be left blank (an EG will be auto-created) for existing Editions
