@@ -54,7 +54,8 @@ describe('GET /EditionGroup', () => {
 			'bbid',
 			'defaultAlias',
 			'disambiguation',
-			'editionGroupType'
+			'editionGroupType',
+			'creditSection'
 		);
 	 });
 

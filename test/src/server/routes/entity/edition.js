@@ -49,6 +49,7 @@ describe('Edition routes with entity editing priv', () => {
 	it('should not throw error while seeding edition', async () => {
 		const data = {
 			...seedInitialState,
+			'editionSection.creditSection': 'true',
 			'editionSection.depth': 'nan',
 			'editionSection.format': '',
 			'editionSection.height': '139',
