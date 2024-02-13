@@ -263,9 +263,9 @@ class AddToCollectionModal extends React.Component {
 								getOptionLabel={this.getOptionLabel}
 								getOptionValue={this.getOptionValue}
 								options={privacyOptions}
+								menuPosition="fixed"
 								placeholder="Select Privacy"
 								ref={(ref) => this.privacy = ref}
-
 							/>
 						</Form.Group>
 					</form>
