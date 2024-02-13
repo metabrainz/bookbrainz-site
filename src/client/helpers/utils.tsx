@@ -172,6 +172,28 @@ export function dateObjectToISOString(value: DateObject) {
 }
 
 /**
+ * Find the first index of an unbalanced paranthesis in a url string.
+ * @function firstIndexOfUnbalancedParanthesis
+ * @param {string} url - URL string.
+ * @returns {number} idx - index of the first unbalanced parathesis. If no unbalanced paranthesis found, returns -1
+ */
+function firstIndexOfUnbalancedParanthesis(url: string): number {
+	let cnt = 0;
+	for (let i = 0; i <= url.length; i++) {
+		if (url[i] === '(') {
+			cnt += 1;
+		}
+		else if (url[i] === ')') {
+			cnt -= 1;
+		}
+		if (cnt < 0) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+/**
  * Convert any string url that has a prefix http|https|ftp|ftps to a clickable link
  * and then rendered the HTML string as real HTML.
  * @function stringToHTMLWithLinks
@@ -180,10 +202,20 @@ export function dateObjectToISOString(value: DateObject) {
  */
 export function stringToHTMLWithLinks(content: string) {
 	// eslint-disable-next-line max-len, no-useless-escape
-	const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%~*@\.\w_]*)#?(?:[\.\!\/\\:\w]*))?)/g;
+	const urlRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/g;
 	const replacedContent = content.replace(
 		urlRegex,
-		(url) => `<a href="${url.startsWith('www.') ? `https://${url}` : url}" target="_blank">${url}</a>`
+		(url) => {
+			let cleanUrl: string = url;
+			let suffix = '';
+			const firstUnbalancedParanthesis = firstIndexOfUnbalancedParanthesis(url);
+			if (firstUnbalancedParanthesis !== -1) {
+				cleanUrl = url.substring(0, firstUnbalancedParanthesis);
+				suffix = url.substring(firstUnbalancedParanthesis);
+			}
+			let link = `<a href="${cleanUrl.startsWith('www.') ? `https://${cleanUrl}` : cleanUrl}" target="_blank">${cleanUrl}</a>`;
+			return link + suffix;
+		}
 	);
 	const sanitizedHtml = DOMPurify.sanitize(replacedContent, {ADD_ATTR: ['target']});
 	// eslint-disable-next-line react/no-danger
