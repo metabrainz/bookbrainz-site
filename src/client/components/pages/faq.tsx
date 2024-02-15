@@ -20,8 +20,11 @@ import {Card, ListGroup} from 'react-bootstrap';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
-
-function FAQPage() {
+/**
+ * Renders the page for the Frequently Asked Questions on Bookbrainz
+ * @returns {React.JSX.Element} a React JSX Element
+ */
+function FAQPage(): React.JSX.Element {
 	return (
 		<Card>
 			<Card.Header as="h2">
