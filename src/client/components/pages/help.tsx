@@ -23,9 +23,9 @@ import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 /**
  * Renders the document and displays the 'Help' page.
- * @returns {ReactElement} a HTML document to display the Develop page
+ * @returns {React.JSX.Element} a React JSX Element
  */
-function HelpPage() {
+function HelpPage(): React.JSX.Element {
 	const IRCLink = 'https://kiwiirc.com/nextclient/irc.libera.chat/?#bookbrainz';
 	const userGuideLink =
 		'https://bookbrainz-user-guide.readthedocs.io/';
