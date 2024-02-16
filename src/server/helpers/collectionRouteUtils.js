@@ -88,6 +88,8 @@ export async function collectionCreateOrEditHandler(req, res, next) {
 		// if it's new or the name is changed,
 		// we need to update this collection in ElasticSearch index
 		if (isNew || res.locals.collection.name !== newCollection.get('name')) {
+			// Type needed for indexing
+			newCollection.set('type', 'Collection');
 			await search.indexEntity(newCollection);
 		}
 		return res.status(200).send(newCollection.toJSON());

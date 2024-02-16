@@ -165,9 +165,13 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, async (req, res) =>
 
 		res.locals.user.name = req.body.name;
 
+		const editorJSON = modifiedEditor.toJSON();
+
+		// Type needed for indexing
+		modifiedEditor.set('type', 'Editor');
 		await search.indexEntity(modifiedEditor);
 
-		return res.status(200).send(modifiedEditor.toJSON());
+		return res.status(200).send(editorJSON);
 	}
 	catch (err) {
 	 return error.sendErrorAsJSON(res, err);

@@ -1194,7 +1194,7 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 	}
 }
 
-export function handleCreateOrEditEntity(
+export async function handleCreateOrEditEntity(
 	req: PassportRequest,
 	res: $Response,
 	entityType: EntityTypeString,
@@ -1204,16 +1204,15 @@ export function handleCreateOrEditEntity(
 	const {orm}: {orm?: any} = req.app.locals;
 	const editorJSON = req.user;
 	const {bookshelf} = orm;
-	const entityEditPromise = bookshelf.transaction((transacting) =>
+	const savedEntityModel = await bookshelf.transaction((transacting) =>
 		processSingleEntity(req.body, res.locals.entity, req.session, entityType, orm, editorJSON, derivedProps, isMergeOperation, transacting));
-	const achievementPromise = entityEditPromise.then(
-		(entityJSON) => processAchievement(orm, editorJSON.id, entityJSON)
-	);
-	return handler.sendPromiseResult(
-		res,
-		achievementPromise,
-		search.indexEntity
-	);
+	const entityJSON = savedEntityModel.toJSON();
+
+	await processAchievement(orm, editorJSON.id, entityJSON);
+
+	await search.indexEntity(savedEntityModel);
+
+	return res.status(200).send(entityJSON);
 }
 
 type AliasEditorT = {

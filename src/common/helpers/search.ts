@@ -49,13 +49,14 @@ function sanitizeEntityType(type) {
 	return snakeCase(type);
 }
 
-const commonProperties = ['bbid', 'name', 'type', 'disambiguation'];
+type IndexableEntities = EntityTypeString | 'Editor' | 'Collection' | 'Area';
+const commonProperties = ['bbid', 'id', 'name', 'type', 'disambiguation'];
 
 /* We don't currently want to index the entire Model in ElasticSearch,
    which contains a lot of fields we don't use as well as some internal props (_pivot props)
    This utility function prepares the Model into a minimal object that will be indexed
 */
-export function getDocumentToIndex(entity:any, entityType:EntityTypeString) {
+export function getDocumentToIndex(entity:any, entityType: IndexableEntities) {
 	const additionalProperties = [];
 	switch (entityType) {
 		case 'Work':
@@ -75,7 +76,7 @@ export function getDocumentToIndex(entity:any, entityType:EntityTypeString) {
 	return {
 		...entity.toJSON({ignorePivot: true, visible: commonProperties.concat(additionalProperties)}),
 		aliases,
-		identifiers
+		identifiers: identifiers ?? null
 	};
 }
 
@@ -91,7 +92,7 @@ async function _fetchEntityModelsForESResults(orm, results) {
 
 		// Special cases first
 		if (entityStub.type === 'Area') {
-			const area = await Area.forge({gid: entityStub.bbid})
+			const area = await Area.forge({gid: entityStub.id})
 				.fetch({withRelated: ['areaType']});
 
 			const areaJSON = area.toJSON({omitPivot: true});
@@ -106,7 +107,7 @@ async function _fetchEntityModelsForESResults(orm, results) {
 			return areaJSON;
 		}
 		if (entityStub.type === 'Editor') {
-			const editor = await Editor.forge({id: entityStub.bbid})
+			const editor = await Editor.forge({id: entityStub.id})
 				.fetch();
 
 			const editorJSON = editor.toJSON({omitPivot: true});
@@ -114,11 +115,11 @@ async function _fetchEntityModelsForESResults(orm, results) {
 				name: editorJSON.name
 			};
 			editorJSON.type = 'Editor';
-			editorJSON.bbid = entityStub.bbid;
+			editorJSON.id = entityStub.id;
 			return editorJSON;
 		}
 		if (entityStub.type === 'Collection') {
-			const collection = await UserCollection.forge({id: entityStub.bbid})
+			const collection = await UserCollection.forge({id: entityStub.id})
 				.fetch();
 
 			const collectionJSON = collection.toJSON({omitPivot: true});
@@ -126,7 +127,7 @@ async function _fetchEntityModelsForESResults(orm, results) {
 				name: collectionJSON.name
 			};
 			collectionJSON.type = 'Collection';
-			collectionJSON.bbid = entityStub.bbid;
+			collectionJSON.id = entityStub.id;
 			return collectionJSON;
 		}
 		// Regular entity
@@ -176,7 +177,7 @@ export async function _bulkIndexEntities(entities) {
 		const bulkOperations = entitiesToIndex.reduce((accumulator, entity) => {
 			accumulator.push({
 				index: {
-					_id: entity.bbid,
+					_id: entity.bbid ?? entity.id,
 					_index,
 					_type: snakeCase(entity.type)
 				}
@@ -203,7 +204,7 @@ export async function _bulkIndexEntities(entities) {
 				// We currently only handle queue overrun
 				if (item.index.status === httpStatus.TOO_MANY_REQUESTS) {
 					const failedEntity = entities.find(
-						(element) => element.bbid === item.index._id
+						(element) => (element.bbid ?? element.id) === item.index._id
 					);
 
 					accumulator.push(failedEntity);
@@ -284,7 +285,7 @@ export function indexEntity(entity) {
 	if (entity) {
 		return _client.index({
 			body: document,
-			id: entity.get('bbid'),
+			id: entity.get('bbid') || entity.get('id'),
 			index: _index,
 			type: snakeCase(entityType)
 		}).catch(error => { log.error('error indexing entity for search:', error); });
@@ -293,7 +294,7 @@ export function indexEntity(entity) {
 
 export function deleteEntity(entity) {
 	return _client.delete({
-		id: entity.bbid,
+		id: entity.bbid ?? entity.id,
 		index: _index,
 		type: snakeCase(entity.type)
 	}).catch(error => { log.error('error deleting entity from index:', error); });
@@ -473,14 +474,14 @@ export async function generateIndex(orm) {
 
 	const areas = areaCollection.toJSON({omitPivot: true});
 
-	/** To index names, we use aliases.name and bbid, which Areas don't have.
+	/** To index names, we use aliases.name and type, which Areas don't have.
    * We massage the area to return a similar format as BB entities
    */
-	const processedAreas = areas.map((area) => new Object({
+	const processedAreas = areas.map((area) => ({
 		aliases: [
 			{name: area.name}
 		],
-		bbid: area.gid,
+		id: area.gid,
 		type: 'Area'
 	}));
 	await _processEntityListForBulk(processedAreas);
@@ -491,14 +492,14 @@ export async function generateIndex(orm) {
 		.fetchAll();
 	const editors = editorCollection.toJSON({omitPivot: true});
 
-	/** To index names, we use aliases.name and bbid, which Editors don't have.
+	/** To index names, we use aliases.name and type, which Editors don't have.
    * We massage the editor to return a similar format as BB entities
    */
-	const processedEditors = editors.map((editor) => new Object({
+	const processedEditors = editors.map((editor) => ({
 		aliases: [
 			{name: editor.name}
 		],
-		bbid: editor.id,
+		id: editor.id,
 		type: 'Editor'
 	}));
 	await _processEntityListForBulk(processedEditors);
@@ -507,14 +508,13 @@ export async function generateIndex(orm) {
 		.fetchAll();
 	const userCollectionsJSON = userCollections.toJSON({omitPivot: true});
 
-	/** To index names, we use aliases.name and bbid, which UserCollections don't have.
+	/** To index names, we use aliases.name and type, which UserCollections don't have.
    * We massage the editor to return a similar format as BB entities
    */
-	const processedCollections = userCollectionsJSON.map((collection) => new Object({
+	const processedCollections = userCollectionsJSON.map((collection) => ({
 		aliases: [
 			{name: collection.name}
 		],
-		bbid: collection.id,
 		id: collection.id,
 		type: 'Collection'
 	}));

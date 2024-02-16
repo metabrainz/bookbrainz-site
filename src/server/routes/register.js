@@ -123,8 +123,13 @@ router.post('/handler', async (req, res) => {
 
 		req.session.mbProfile = null;
 
+		const editorJSON = editor.toJSON();
+
+		// Type needed for indexing
+		editor.set('type', 'Editor');
 		await search.indexEntity(editor);
-		return res.status(200).send(editor.toJSON());
+
+		return res.status(200).send(editorJSON);
 	}
 	catch (err) {
 		if (_.isMatch(err, {constraint: 'editor_name_key'})) {
