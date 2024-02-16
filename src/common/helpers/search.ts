@@ -17,10 +17,11 @@
  */
 /* eslint-disable camelcase */
 
-import * as commonUtils from '../../common/helpers/utils';
+import * as commonUtils from './utils';
 import {camelCase, isString, snakeCase, upperFirst} from 'lodash';
 
 import ElasticSearch from '@elastic/elasticsearch';
+import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import httpStatus from 'http-status';
 import log from 'log';
 
@@ -48,6 +49,37 @@ function sanitizeEntityType(type) {
 	return snakeCase(type);
 }
 
+type IndexableEntities = EntityTypeString | 'Editor' | 'Collection' | 'Area';
+const commonProperties = ['bbid', 'id', 'name', 'type', 'disambiguation'];
+
+/* We don't currently want to index the entire Model in ElasticSearch,
+   which contains a lot of fields we don't use as well as some internal props (_pivot props)
+   This utility function prepares the Model into a minimal object that will be indexed
+*/
+export function getDocumentToIndex(entity:any, entityType: IndexableEntities) {
+	const additionalProperties = [];
+	switch (entityType) {
+		case 'Work':
+			additionalProperties.push('authors');
+			break;
+		default:
+			break;
+	}
+	let aliases = entity.related('aliasSet')?.related('aliases')?.toJSON({ignorePivot: true, visible: 'name'});
+	if (!aliases) {
+		// Some models don't have the same aliasSet structure, i.e. Collection, Editor, Area, …
+		const name = entity.get('name');
+		aliases = {name};
+	}
+	const identifiers = entity.related('identifierSet')?.related('identifiers')?.toJSON({ignorePivot: true, visible: 'value'});
+
+	return {
+		...entity.toJSON({ignorePivot: true, visible: commonProperties.concat(additionalProperties)}),
+		aliases,
+		identifiers: identifiers ?? null
+	};
+}
+
 async function _fetchEntityModelsForESResults(orm, results) {
 	const {Area, Editor, UserCollection} = orm;
 
@@ -60,10 +92,10 @@ async function _fetchEntityModelsForESResults(orm, results) {
 
 		// Special cases first
 		if (entityStub.type === 'Area') {
-			const area = await Area.forge({gid: entityStub.bbid})
+			const area = await Area.forge({gid: entityStub.id})
 				.fetch({withRelated: ['areaType']});
 
-			const areaJSON = area.toJSON();
+			const areaJSON = area.toJSON({omitPivot: true});
 			const areaParents = await area.parents();
 			areaJSON.defaultAlias = {
 				name: areaJSON.name
@@ -75,27 +107,27 @@ async function _fetchEntityModelsForESResults(orm, results) {
 			return areaJSON;
 		}
 		if (entityStub.type === 'Editor') {
-			const editor = await Editor.forge({id: entityStub.bbid})
+			const editor = await Editor.forge({id: entityStub.id})
 				.fetch();
 
-			const editorJSON = editor.toJSON();
+			const editorJSON = editor.toJSON({omitPivot: true});
 			editorJSON.defaultAlias = {
 				name: editorJSON.name
 			};
 			editorJSON.type = 'Editor';
-			editorJSON.bbid = entityStub.bbid;
+			editorJSON.id = entityStub.id;
 			return editorJSON;
 		}
 		if (entityStub.type === 'Collection') {
-			const collection = await UserCollection.forge({id: entityStub.bbid})
+			const collection = await UserCollection.forge({id: entityStub.id})
 				.fetch();
 
-			const collectionJSON = collection.toJSON();
+			const collectionJSON = collection.toJSON({omitPivot: true});
 			collectionJSON.defaultAlias = {
 				name: collectionJSON.name
 			};
 			collectionJSON.type = 'Collection';
-			collectionJSON.bbid = entityStub.bbid;
+			collectionJSON.id = entityStub.id;
 			return collectionJSON;
 		}
 		// Regular entity
@@ -103,7 +135,7 @@ async function _fetchEntityModelsForESResults(orm, results) {
 		const entity = await model.forge({bbid: entityStub.bbid})
 			.fetch({require: false, withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases', 'identifierSet.identifiers',
 				'relationshipSet.relationships.source', 'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation']});
-		const entityJSON = entity?.toJSON();
+		const entityJSON = entity?.toJSON({omitPivot: true});
 		if (entityJSON && entityJSON.relationshipSet) {
 			entityJSON.relationshipSet.relationships = await Promise.all(entityJSON.relationshipSet.relationships.map(async (rel) => {
 				rel.source = await commonUtils.getEntity(orm, rel.source.bbid, rel.source.type);
@@ -145,7 +177,7 @@ export async function _bulkIndexEntities(entities) {
 		const bulkOperations = entitiesToIndex.reduce((accumulator, entity) => {
 			accumulator.push({
 				index: {
-					_id: entity.bbid,
+					_id: entity.bbid ?? entity.id,
 					_index,
 					_type: snakeCase(entity.type)
 				}
@@ -160,19 +192,19 @@ export async function _bulkIndexEntities(entities) {
 		// eslint-disable-next-line no-await-in-loop
 		const response = await _client.bulk({
 			body: bulkOperations
-		});
+		}).catch(error => { log.error('error bulk indexing entities for search:', error); });
 
 		/*
 		 * In case of failed index operations, the promise won't be rejected;
 		 * instead, we have to inspect the response and respond to any failures
 		 * individually.
 		 */
-		if (response.errors === true) {
+		if (response?.errors === true) {
 			entitiesToIndex = response.items.reduce((accumulator, item) => {
 				// We currently only handle queue overrun
 				if (item.index.status === httpStatus.TOO_MANY_REQUESTS) {
 					const failedEntity = entities.find(
-						(element) => element.bbid === item.index._id
+						(element) => (element.bbid ?? element.id) === item.index._id
 					);
 
 					accumulator.push(failedEntity);
@@ -223,7 +255,7 @@ export async function autocomplete(orm, query, type, size = 42) {
 	else {
 		queryBody = {
 			match: {
-				'aliasSet.aliases.name.autocomplete': {
+				'aliases.name.autocomplete': {
 					minimum_should_match: '80%',
 					query
 				}
@@ -248,26 +280,28 @@ export async function autocomplete(orm, query, type, size = 42) {
 
 // eslint-disable-next-line consistent-return
 export function indexEntity(entity) {
+	const entityType = entity.get('type');
+	const document = getDocumentToIndex(entity, entityType);
 	if (entity) {
 		return _client.index({
-			body: entity,
-			id: entity.bbid,
+			body: document,
+			id: entity.get('bbid') || entity.get('id'),
 			index: _index,
-			type: snakeCase(entity.type)
+			type: snakeCase(entityType)
 		}).catch(error => { log.error('error indexing entity for search:', error); });
 	}
 }
 
 export function deleteEntity(entity) {
 	return _client.delete({
-		id: entity.bbid,
+		id: entity.bbid ?? entity.id,
 		index: _index,
 		type: snakeCase(entity.type)
 	}).catch(error => { log.error('error deleting entity from index:', error); });
 }
 
 export function refreshIndex() {
-	return _client.indices.refresh({index: _index});
+	return _client.indices.refresh({index: _index}).catch(error => { log.error('error refreshing search index:', error); });
 }
 
 export async function generateIndex(orm) {
@@ -276,7 +310,7 @@ export async function generateIndex(orm) {
 		mappings: {
 			_default_: {
 				properties: {
-					'aliasSet.aliases': {
+					aliases: {
 						properties: {
 							name: {
 								fields: {
@@ -291,8 +325,7 @@ export async function generateIndex(orm) {
 								},
 								type: 'text'
 							}
-						},
-						type: 'object'
+						}
 					},
 					authors: {
 						analyzer: 'trigrams',
@@ -341,7 +374,8 @@ export async function generateIndex(orm) {
 						type: 'ngram'
 					}
 				}
-			}
+			},
+			'index.mapping.ignore_malformed': true
 		}
 	};
 
@@ -384,7 +418,7 @@ export async function generateIndex(orm) {
 		{model: EditionGroup, relations: []},
 		{model: Publisher, relations: ['area']},
 		{model: Series, relations: ['seriesOrderingType']},
-		{model: Work, relations: ['workType', 'relationshipSet.relationships.type']}
+		{model: Work, relations: ['relationshipSet.relationships.type']}
 	];
 
 	// Update the indexed entries for each entity type
@@ -400,6 +434,7 @@ export async function generateIndex(orm) {
 	);
 	const entityLists = await Promise.all(behaviorPromise);
 	/* eslint-disable @typescript-eslint/no-unused-vars */
+	const entityFetchOrder:EntityTypeString[] = ['Author', 'Edition', 'EditionGroup', 'Publisher', 'Series', 'Work'];
 	const [authorsCollection,
 		editionCollection,
 		editionGroupCollection,
@@ -413,40 +448,40 @@ export async function generateIndex(orm) {
 		const relationshipSet = workEntity.related('relationshipSet');
 		if (relationshipSet) {
 			const authorWroteWorkRels = relationshipSet.related('relationships')?.filter(relationshipModel => relationshipModel.get('typeId') === 8);
-			const authorNames = authorWroteWorkRels.map(relationshipModel => {
+			const authorNames = [];
+			authorWroteWorkRels.forEach(relationshipModel => {
 				// Search for the Author in the already fetched BookshelfJS Collection
 				const source = authorsCollection.get(relationshipModel.get('sourceBbid'));
-				if (!source) {
-					// This shouldn't happen, but just in case
-					return null;
+				const name = source?.related('defaultAlias')?.get('name');
+				if (name) {
+					authorNames.push(name);
 				}
-				return source.toJSON().defaultAlias.name;
 			});
 			workEntity.set('authors', authorNames);
 		}
 	});
 	// Index all the entities
-	for (const entityList of entityLists) {
-		const listArray = entityList.toJSON();
+	entityLists.forEach((entityList, idx) => {
+		const entityType:EntityTypeString = entityFetchOrder[idx];
+		const listArray = entityList.map(entity => getDocumentToIndex(entity, entityType));
 		listIndexes.push(_processEntityListForBulk(listArray));
-	}
+	});
+
 	await Promise.all(listIndexes);
 
 	const areaCollection = await Area.forge()
 		.fetchAll();
 
-	const areas = areaCollection.toJSON();
+	const areas = areaCollection.toJSON({omitPivot: true});
 
-	/** To index names, we use aliasSet.aliases.name and bbid, which Areas don't have.
-	 * We massage the area to return a similar format as BB entities
-	 */
-	const processedAreas = areas.map((area) => new Object({
-		aliasSet: {
-			aliases: [
-				{name: area.name}
-			]
-		},
-		bbid: area.gid,
+	/** To index names, we use aliases.name and type, which Areas don't have.
+   * We massage the area to return a similar format as BB entities
+   */
+	const processedAreas = areas.map((area) => ({
+		aliases: [
+			{name: area.name}
+		],
+		id: area.gid,
 		type: 'Area'
 	}));
 	await _processEntityListForBulk(processedAreas);
@@ -455,36 +490,31 @@ export async function generateIndex(orm) {
 		// no bots
 		.where('type_id', 1)
 		.fetchAll();
-	const editors = editorCollection.toJSON();
+	const editors = editorCollection.toJSON({omitPivot: true});
 
-	/** To index names, we use aliasSet.aliases.name and bbid, which Editors don't have.
-	 * We massage the editor to return a similar format as BB entities
-	 */
-	const processedEditors = editors.map((editor) => new Object({
-		aliasSet: {
-			aliases: [
-				{name: editor.name}
-			]
-		},
-		bbid: editor.id,
+	/** To index names, we use aliases.name and type, which Editors don't have.
+   * We massage the editor to return a similar format as BB entities
+   */
+	const processedEditors = editors.map((editor) => ({
+		aliases: [
+			{name: editor.name}
+		],
+		id: editor.id,
 		type: 'Editor'
 	}));
 	await _processEntityListForBulk(processedEditors);
 
 	const userCollections = await UserCollection.forge().where({public: true})
 		.fetchAll();
-	const userCollectionsJSON = userCollections.toJSON();
+	const userCollectionsJSON = userCollections.toJSON({omitPivot: true});
 
-	/** To index names, we use aliasSet.aliases.name and bbid, which UserCollections don't have.
-	 * We massage the editor to return a similar format as BB entities
-	 */
-	const processedCollections = userCollectionsJSON.map((collection) => new Object({
-		aliasSet: {
-			aliases: [
-				{name: collection.name}
-			]
-		},
-		bbid: collection.id,
+	/** To index names, we use aliases.name and type, which UserCollections don't have.
+   * We massage the editor to return a similar format as BB entities
+   */
+	const processedCollections = userCollectionsJSON.map((collection) => ({
+		aliases: [
+			{name: collection.name}
+		],
 		id: collection.id,
 		type: 'Collection'
 	}));
@@ -495,7 +525,7 @@ export async function generateIndex(orm) {
 
 export async function checkIfExists(orm, name, type) {
 	const {bookshelf} = orm;
-	const bbids = await new Promise((resolve, reject) => {
+	const bbids:string[] = await new Promise((resolve, reject) => {
 		bookshelf.transaction(async (transacting) => {
 			try {
 				const result = await orm.func.alias.getBBIDsWithMatchingAlias(
@@ -535,10 +565,10 @@ export function searchByName(orm, name, type, size, from) {
 			query: {
 				multi_match: {
 					fields: [
-						'aliasSet.aliases.name^3',
-						'aliasSet.aliases.name.search',
+						'aliases.name^3',
+						'aliases.name.search',
 						'disambiguation',
-						'identifierSet.identifiers.value'
+						'identifiers.value'
 					],
 					minimum_should_match: '80%',
 					query: name,

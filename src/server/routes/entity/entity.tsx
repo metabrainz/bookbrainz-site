@@ -478,7 +478,7 @@ export function handleDelete(
 				editorJSON.id,
 				body.note
 			);
-		return savedMainEntity.toJSON();
+		return savedMainEntity.toJSON({omitPivot: true});
 	});
 
 	return handler.sendPromiseResult(res, entityDeletePromise, search.deleteEntity);
@@ -1047,7 +1047,7 @@ export async function indexAutoCreatedEditionGroup(orm, newEdition, transacting)
 				transacting,
 				withRelated: 'aliasSet.aliases'
 			});
-		await search.indexEntity(editionGroup.toJSON());
+		await search.indexEntity(editionGroup.toJSON({omitPivot: true}));
 	}
 	catch (err) {
 		log.error('Could not reindex edition group after edition creation:', err);
@@ -1165,33 +1165,28 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 			await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
 		}
 
-		const entityJSON = savedMainEntity.toJSON();
-		if (entityJSON && entityJSON.relationshipSet) {
-			entityJSON.relationshipSet.relationships = await Promise.all(entityJSON.relationshipSet.relationships.map(async (rel) => {
+		const entityRelationships = savedMainEntity.related('relationshipSet')?.related('relationships');
+		if (savedMainEntity.get('type') === 'Work' && entityRelationships?.length) {
+			const authorsOfWork = await Promise.all(entityRelationships.toJSON().filter(
+				// "Author wrote Work" relationship
+				(relation) => relation.typeId === 8
+			).map(async (relationshipJSON) => {
 				try {
-					rel.source = await commonUtils.getEntity(orm, rel.source.bbid, rel.source.type, {require: false, transacting});
-					rel.target = await commonUtils.getEntity(orm, rel.target.bbid, rel.target.type, {require: false, transacting});
+					const {source} = relationshipJSON;
+					const sourceEntity = await commonUtils.getEntity(
+						orm, source.bbid, source.type, {require: false, transacting}
+					);
+					return sourceEntity.name;
 				}
 				catch (err) {
 					log.error(err);
 				}
-				return rel;
+				return null;
 			}));
 			// Attach a work's authors for search indexing
-			if (savedMainEntity.get('type') === 'Work') {
-				 const authorsOfWork = entityJSON.relationshipSet.relationships
-					.filter(
-						// "Author wrote Work" relationship
-						(relation) => relation.typeId === 8
-					)
-					.map((relation) => {
-						const {source} = relation;
-						return source.name;
-					});
-				entityJSON.authors = authorsOfWork;
-			}
+			savedMainEntity.set('authors', authorsOfWork.filter(Boolean));
 		}
-		return entityJSON;
+		return savedMainEntity;
 	}
 	catch (err) {
 		log.error(err);
@@ -1199,7 +1194,7 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 	}
 }
 
-export function handleCreateOrEditEntity(
+export async function handleCreateOrEditEntity(
 	req: PassportRequest,
 	res: $Response,
 	entityType: EntityTypeString,
@@ -1209,16 +1204,15 @@ export function handleCreateOrEditEntity(
 	const {orm}: {orm?: any} = req.app.locals;
 	const editorJSON = req.user;
 	const {bookshelf} = orm;
-	const entityEditPromise = bookshelf.transaction((transacting) =>
+	const savedEntityModel = await bookshelf.transaction((transacting) =>
 		processSingleEntity(req.body, res.locals.entity, req.session, entityType, orm, editorJSON, derivedProps, isMergeOperation, transacting));
-	const achievementPromise = entityEditPromise.then(
-		(entityJSON) => processAchievement(orm, editorJSON.id, entityJSON)
-	);
-	return handler.sendPromiseResult(
-		res,
-		achievementPromise,
-		search.indexEntity
-	);
+	const entityJSON = savedEntityModel.toJSON();
+
+	await processAchievement(orm, editorJSON.id, entityJSON);
+
+	await search.indexEntity(savedEntityModel);
+
+	return res.status(200).send(entityJSON);
 }
 
 type AliasEditorT = {
