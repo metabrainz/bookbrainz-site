@@ -19,10 +19,12 @@ import {
 } from '../../../../src/server/helpers/revisions';
 
 import chai from 'chai';
-import {date} from 'faker';
+import {faker} from '@faker-js/faker';
 import isSorted from 'chai-sorted';
 import orm from '../../../bookbrainz-data';
 
+
+const {date} = faker;
 
 const {expect} = chai;
 chai.use(isSorted);

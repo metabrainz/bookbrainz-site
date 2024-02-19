@@ -128,7 +128,7 @@ function HelpPage() {
 							Example:
 							<ul>
 								<li>The Alchemist (philosophical novel) by Paulo Coelho</li>
-								<li>The Alchemyst (Nicolas Flamel biography) by Michael Scott</li>
+								<li>The Alchemyst (YA novel featuring Nicolas Flamel) by Michael Scott</li>
 							</ul>
 						</ListGroup.Item>
 
