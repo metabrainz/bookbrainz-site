@@ -18,12 +18,13 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import type {Achievement} from '../../input/drag-and-drop';
 import DragAndDropImage from '../../input/drag-and-drop-image';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 
 const {Card, Col, Container, Row} = bootstrap;
+/* eslint-disable sort-keys */
 const maxAchievementProgress = {
 	1: 1,
 	2: 50,
@@ -56,17 +57,11 @@ const maxAchievementProgress = {
 	29: 10,
 	30: 100
 };
+/* eslint-enable sort-keys */
 
-interface Props {
-	achievement: {
-		id: number;
-		name: string;
-		description: string;
-		badgeUrl: string;
-	},
-	counter: number;
-	unlocked: boolean;
-};
+interface AchievementComponentProps {
+	achievement: Achievement
+}
 
 /**
  * Achievement Component
@@ -77,36 +72,26 @@ interface Props {
  * @component
  *
  * @param {Object} props - The props for the Achievement component.
- * @param {Object} props.achievement - The achievement object containing details.
- * @param {number} props.achievement.id - The unique ID of the achievement.
- * @param {string} props.achievement.name - The name of the achievement.
- * @param {string} props.achievement.description - The description of the achievement.
- * @param {string} props.achievement.badgeUrl - The URL of the achievement badge image.
+ * @param {Achievement} props.achievement - The achievement object containing details.
  * @param {number} props.counter - The current progress or counter for the achievement.
  * @param {boolean} props.unlocked - A boolean indicating whether the achievement is unlocked.
  *
  * @returns {JSX.Element} The rendered Achievement card component.
  */
-function Achievement({achievement, counter, unlocked}: Props): React.JSX.Element {
-	const {id, name, description, badgeUrl} = achievement;
+function AchievementComponent({achievement}: AchievementComponentProps): JSX.Element {
+	const {id, name, description, badgeUrl, counter, unlocked} = achievement;
 	const imgElement = unlocked ? (
 		<DragAndDropImage
 			achievementId={id}
 			achievementName={name}
 			height="100px"
 			src={badgeUrl}
-			style={{
-				zIndex: 2
-			}}
 		/>
 	) : (
 		<img
 			alt={name}
 			height="100px"
 			src={badgeUrl}
-			style={{
-				zIndex: 2
-			}}
 		/>
 	);
 
@@ -136,21 +121,6 @@ function Achievement({achievement, counter, unlocked}: Props): React.JSX.Element
 	);
 }
 
-Achievement.displayName = 'achievement';
+AchievementComponent.displayName = 'achievement';
 
-Achievement.propTypes = {
-	achievement: PropTypes.shape({
-		badgeUrl: PropTypes.string,
-		description: PropTypes.string,
-		id: PropTypes.number,
-		name: PropTypes.string
-	}).isRequired,
-	counter: PropTypes.number,
-	unlocked: PropTypes.bool
-};
-Achievement.defaultProps = {
-	counter: 0,
-	unlocked: false
-};
-
-export default Achievement;
+export default AchievementComponent;

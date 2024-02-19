@@ -59,9 +59,7 @@ class EditorAchievementTab extends React.Component {
 			const achievementHTML = (
 				<Achievement
 					achievement={achievement}
-					counter={achievement.counter}
 					key={`${this.state.editor.id}${achievement.id}`}
-					unlocked={achievement.unlocked}
 				/>
 			);
 			if (achievement.unlocked) {
