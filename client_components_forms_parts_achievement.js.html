@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>common/helpers/session.js - Documentation</title>
+    <title>client/components/forms/parts/achievement.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">common/helpers/session.js</h1>
+    <h1 class="page-title">client/components/forms/parts/achievement.js</h1>
     
 
     
@@ -41,51 +41,136 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
+require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.string.iterator.js");
+require("core-js/modules/es.weak-map.js");
+require("core-js/modules/web.dom-collections.iterator.js");
+require("core-js/modules/es.object.get-own-property-descriptor.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _get3 = _interopRequireDefault(require("lodash/get"));
-var _debug = _interopRequireDefault(require("debug"));
-var _connectRedis = _interopRequireDefault(require("connect-redis"));
-var _config = _interopRequireDefault(require("./config"));
-var _cache = _interopRequireDefault(require("./cache"));
-var _expressSession = _interopRequireDefault(require("express-session"));
-var debug = (0, _debug.default)('bbsite');
+require("core-js/modules/es.function.name.js");
+require("core-js/modules/es.symbol.js");
+require("core-js/modules/es.symbol.description.js");
+var bootstrap = _interopRequireWildcard(require("react-bootstrap"));
+var _dragAndDropImage = _interopRequireDefault(require("../../input/drag-and-drop-image"));
+var _react = _interopRequireDefault(require("react"));
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop &amp;&amp; obj &amp;&amp; obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" &amp;&amp; typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache &amp;&amp; cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty &amp;&amp; Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" &amp;&amp; Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc &amp;&amp; (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+/*
+ * Copyright (C) 2016  Max Prettyjohns
+ * 				 2023  Meziyum
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
+var Card = bootstrap.Card,
+  Col = bootstrap.Col,
+  Container = bootstrap.Container,
+  Row = bootstrap.Row;
+/* eslint-disable sort-keys */
+var maxAchievementProgress = {
+  1: 1,
+  2: 50,
+  3: 250,
+  4: 1,
+  5: 10,
+  6: 100,
+  7: 1,
+  8: 10,
+  9: 100,
+  10: 10,
+  11: 7,
+  12: 30,
+  13: 1,
+  14: 1,
+  15: 1,
+  16: 10,
+  17: 100,
+  18: 1,
+  19: 10,
+  20: 100,
+  21: 1,
+  22: 10,
+  23: 100,
+  24: 10,
+  25: 100,
+  26: 1000,
+  27: 1,
+  28: 1,
+  29: 10,
+  30: 100
+};
+/* eslint-enable sort-keys */
 
 /**
- * Set up sessions, using Redis in production and default to in-memory for testing environment.
- * @param {string} [environment] - Node.js environment.
- * @returns {function} Express session request handler.
+ * Achievement Component
+ *
+ * A React component that displays an achievement card with its details, including name,
+ * description, badge image, and progress if the achievement is locked.
+ *
+ * @component
+ *
+ * @param {Object} props - The props for the Achievement component.
+ * @param {Achievement} props.achievement - The achievement object containing details.
+ * @param {number} props.counter - The current progress or counter for the achievement.
+ * @param {boolean} props.unlocked - A boolean indicating whether the achievement is unlocked.
+ *
+ * @returns {JSX.Element} The rendered Achievement card component.
  */
-function setupSessions(environment) {
-  var sessionOptions = {
-    cookie: {
-      maxAge: (0, _get3.default)(_config.default, 'session.maxAge', 2592000000),
-      secure: (0, _get3.default)(_config.default, 'session.secure', false)
-    },
-    resave: false,
-    saveUninitialized: false,
-    secret: _config.default.session.secret
-  };
-  if (environment !== 'test') {
-    _cache.default.connect().catch(function (redisError) {
-      return debug('Redis error:', redisError);
-    });
-    _cache.default.on('error', function (redisError) {
-      return debug('Redis error:', redisError);
-    });
-    var redisStore = new _connectRedis.default({
-      client: _cache.default
-    });
-    sessionOptions.store = redisStore;
-  }
-  return (0, _expressSession.default)(sessionOptions);
+function AchievementComponent(_ref) {
+  var _maxAchievementProgre;
+  var achievement = _ref.achievement;
+  var id = achievement.id,
+    name = achievement.name,
+    description = achievement.description,
+    badgeUrl = achievement.badgeUrl,
+    counter = achievement.counter,
+    unlocked = achievement.unlocked;
+  var imgElement = unlocked ? /*#__PURE__*/_react.default.createElement(_dragAndDropImage.default, {
+    achievementId: id,
+    achievementName: name,
+    height: "100px",
+    src: badgeUrl
+  }) : /*#__PURE__*/_react.default.createElement("img", {
+    alt: name,
+    height: "100px",
+    src: badgeUrl
+  });
+  return /*#__PURE__*/_react.default.createElement(Card, {
+    bg: "light"
+  }, /*#__PURE__*/_react.default.createElement(Container, {
+    fluid: true
+  }, /*#__PURE__*/_react.default.createElement(Row, null, /*#__PURE__*/_react.default.createElement(Col, {
+    md: 2
+  }, imgElement), /*#__PURE__*/_react.default.createElement(Col, {
+    md: 8
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "h2"
+  }, name), /*#__PURE__*/_react.default.createElement("p", null, description)), !unlocked &amp;&amp; /*#__PURE__*/_react.default.createElement(Col, null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "h3"
+  }, counter, "/", (_maxAchievementProgre = maxAchievementProgress[achievement.id]) !== null &amp;&amp; _maxAchievementProgre !== void 0 ? _maxAchievementProgre : 0)))));
 }
-var _default = setupSessions;
+AchievementComponent.displayName = 'achievement';
+var _default = AchievementComponent;
 exports.default = _default;
-//# sourceMappingURL=session.js.map</code></pre>
+//# sourceMappingURL=achievement.js.map</code></pre>
         </article>
     </section>
 
