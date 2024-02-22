@@ -37,7 +37,6 @@ import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import log from 'log';
-import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
 /** ****************************
@@ -160,31 +159,33 @@ router.get(
 	middleware.loadLanguages, middleware.loadRelationshipTypes,
 	async (req:PassportRequest, res, next) => {
 		const {EditionGroup, Publisher, Work, Author} = req.app.locals.orm;
+		const {orm}: {orm?: any} = req.app.locals;
+
 		const propsObject = generateEntityProps(
 			'edition', req, res, {}
 		);
-		async function fetchData(entity, key) {
-			try {
-				const data = await entity.forge({bbid: req.query[key]})
-					.fetch({require: false, withRelated: 'defaultAlias'});
-				return utils.entityToOption(data.toJSON());
+
+		try {
+			if (req.query.author) {
+				const data = await orm.func.entity.getEntity(orm, Author, req.query.author, ['defaultAlias']);
+				propsObject.author = data && utils.entityToOption(data.toJSON());
 			}
-			catch (err) {
-				log.debug(err);
-				return next(err);
+			if (req.query['edition-group']) {
+				const data = await orm.func.entity.getEntity(orm, EditionGroup, req.query['edition-group'], ['defaultAlias']);
+				propsObject.editionGroup = data && utils.entityToOption(data.toJSON());
+			}
+			if (req.query.publisher) {
+				const data = await orm.func.entity.getEntity(orm, Publisher, req.query.publisher, ['defaultAlias']);
+				propsObject.publisher = data && utils.entityToOption(data.toJSON());
+			}
+			if (req.query.work) {
+				const data = await orm.func.entity.getEntity(orm, Work, req.query.work, ['defaultAlias']);
+				propsObject.work = data && utils.entityToOption(data.toJSON());
 			}
 		}
-		if (req.query.author) {
-			propsObject.author = await fetchData(Author, 'author');
-		}
-		if (req.query['edition-group']) {
-			propsObject.editionGroup = await fetchData(EditionGroup, 'edition-group');
-		}
-		if (req.query.publisher) {
-			propsObject.publisher = await fetchData(Publisher, 'publisher');
-		}
-		if (req.query.work) {
-			propsObject.work = await fetchData(Work, 'work');
+		catch (err) {
+			log.debug(err);
+			return next(err);
 		}
 
 		async function render(props) {
@@ -271,14 +272,7 @@ router.get(
 			}));
 		}
 
-		try {
-			const props = await makePromiseFromObject(propsObject);
-			return render(props);
-		}
-		catch (err) {
-			log.debug(err);
-			return next(err);
-		}
+		return render(propsObject);
 	}
 );
 
@@ -286,7 +280,7 @@ router.post(
 	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages, middleware.loadRelationshipTypes,
-	async (req, res, next) => {
+	async (req, res) => {
 		// parsing submitted data to correct format
 		const entity = await utils.parseInitialState(req, 'edition');
 		if (entity.editionSection) {
@@ -326,14 +320,7 @@ router.post(
 			}));
 		}
 
-		try {
-			const props = await makePromiseFromObject(propsObject);
-			return render(props);
-		}
-		catch (err) {
-			log.debug(err);
-			return next(err);
-		}
+		return render(propsObject);
 	}
 );
 

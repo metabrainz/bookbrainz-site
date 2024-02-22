@@ -21,7 +21,6 @@ import * as React from 'react';
 import * as achievement from '../../helpers/achievement';
 import * as commonUtils from '../../../common/helpers/utils';
 import * as error from '../../../common/helpers/error';
-import * as handler from '../../helpers/handler';
 import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
@@ -82,7 +81,7 @@ export async function displayEntity(req: PassportRequest, res: $Response) {
 		);
 	}
 
-	let editorEntityVisitPromise;
+	let editorEntityVisit;
 	if (resLocals.user) {
 		try {
 			await new EditorEntityVisits({
@@ -91,22 +90,21 @@ export async function displayEntity(req: PassportRequest, res: $Response) {
 			})
 				.save(null, {method: 'insert'});
 
-			editorEntityVisitPromise = await achievement.processPageVisit(orm, resLocals.user.id);
+			editorEntityVisit = await achievement.processPageVisit(orm, resLocals.user.id);
 		}
 		catch {
 			// error caused by duplicates we do not want in database
-			return false;
+			editorEntityVisit = false;
 		}
 	}
 	else {
-		editorEntityVisitPromise = new Promise(resolve => resolve(false));
+		editorEntityVisit = false;
 	}
 
-	let alertPromise;
-	const visitAlert = await editorEntityVisitPromise;
+	let alertPromises;
 	let alertIds = [];
-	if (visitAlert.alert) {
-		alertIds = alertIds.concat(visitAlert.alert.split(',').map(
+	if (editorEntityVisit.alert) {
+		alertIds = alertIds.concat(editorEntityVisit.alert.split(',').map(
 			(id) => parseInt(id, 10)
 		));
 	}
@@ -138,43 +136,41 @@ export async function displayEntity(req: PassportRequest, res: $Response) {
 			}
 		});
 
-		alertPromise = Promise.all(promiseList);
+		alertPromises = Promise.all(promiseList);
 	}
 	else {
-		alertPromise = new Promise(resolve => resolve(false));
+		alertPromises = new Promise(resolve => resolve(false));
 	}
 
-	return (async () => {
-		const alert = await alertPromise;
-		const entityName = _.camelCase(entity.type);
-		const EntityComponent = entityComponents[entityName];
-		if (EntityComponent) {
-			const props = generateProps(req, res, {
-				alert,
-				genderOptions: res.locals.genders,
-				identifierTypes
-			});
-			const markup = ReactDOMServer.renderToString(
-				<Layout {...propHelpers.extractLayoutProps(props)}>
-					<EntityComponent
-						{...propHelpers.extractEntityProps(props)}
-					/>
-				</Layout>
-			);
-			res.send(target({
-				markup,
-				page: entityName,
-				props: escapeProps(props),
-				script: '/js/entity/entity.js',
-				title: `${getEntityLabel(props.entity, false)} (${_.upperFirst(entityName)})`
-			}));
-		}
-		else {
-			throw new Error(
-				`Component was not found for the following entity:${entityName}`
-			);
-		}
-	})();
+	const alert = await alertPromises;
+	const entityName = _.camelCase(entity.type);
+	const EntityComponent = entityComponents[entityName];
+	if (EntityComponent) {
+		const props = generateProps(req, res, {
+			alert,
+			genderOptions: res.locals.genders,
+			identifierTypes
+		});
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EntityComponent
+					{...propHelpers.extractEntityProps(props)}
+				/>
+			</Layout>
+		);
+		res.send(target({
+			markup,
+			page: entityName,
+			props: escapeProps(props),
+			script: '/js/entity/entity.js',
+			title: `${getEntityLabel(props.entity, false)} (${_.upperFirst(entityName)})`
+		}));
+	}
+	else {
+		throw new Error(
+			`Component was not found for the following entity:${entityName}`
+		);
+	}
 }
 
 export function displayDeleteEntity(req: PassportRequest, res: $Response) {
@@ -272,12 +268,20 @@ export async function addNoteToRevision(req: PassportRequest, res: $Response) {
 	const revision = Revision.forge({id: req.params.id});
 	const {body}: {body: any} = req;
 
-	const revisionNotePromise = await bookshelf.transaction(
-		 (transacting) => _createNote(
-			orm, body.note, editorJSON.id, revision, transacting
-		)
-	);
-	return handler.sendPromiseResult(res, revisionNotePromise);
+
+	try {
+		const revisionNote = await bookshelf.transaction(
+			(transacting) => _createNote(
+			   orm, body.note, editorJSON.id, revision, transacting
+		   )
+	   );
+		res.send(revisionNote).status(200);
+		return revisionNote;
+	}
+	catch (err) {
+		log.error(err);
+		return error.sendErrorAsJSON(res, err);
+	}
 }
 
 export async function getEntityByBBID(orm: any, transacting: Transaction, bbid: string) {
@@ -432,7 +436,7 @@ export function handleDelete(
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const {body}: {body: any} = req;
-	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
+	const entityDelete = bookshelf.transaction(async (transacting) => {
 		if (!body.note || !body.note.length) {
 			throw new error.FormSubmissionError('A revision note is required when deleting an entity');
 		}
@@ -483,7 +487,15 @@ export function handleDelete(
 		return savedMainEntity.toJSON();
 	});
 
-	return handler.sendPromiseResult(res, entityDeletePromise, search.deleteEntity);
+	try {
+		res.send(entityDelete);
+		search.deleteEntity(entityDelete);
+		return entityDelete;
+	}
+	catch (err) {
+		log.error(err);
+		return error.sendErrorAsJSON(res, err);
+	}
 }
 
 export async function processMergeOperation(orm, transacting, session, mainEntity, allEntities, relationshipSets) {
@@ -739,47 +751,39 @@ async function processEditionSets(
 	transacting: Transaction
 ): Promise<ProcessEditionSetsResult> {
 	const languageSetID = _.get(currentEntity, ['languageSet', 'id']);
-
-	const oldLanguageSet = await (
-		languageSetID &&
-		orm.LanguageSet.forge({id: languageSetID})
-			.fetch({transacting, withRelated: ['languages']})
-	);
+	const oldLanguageSet = languageSetID &&
+	 await orm.LanguageSet.forge({id: languageSetID})
+	 .fetch({transacting, withRelated: ['languages']});
 
 	const languages = _.get(body, 'languages') || [];
-	const newLanguageSetIDPromise = orm.func.language.updateLanguageSet(
-		orm, transacting, oldLanguageSet,
+	const newLanguageSet = await orm.func.language.updateLanguageSet(
+		orm,
+		transacting,
+		oldLanguageSet,
 		languages.map((languageID) => ({id: languageID}))
-	)
-		.then((set) => set && set.get('id'));
+	);
+	const newLanguageSetID = newLanguageSet && newLanguageSet.get('id');
 
 	const publisherSetID = _.get(currentEntity, ['publisherSet', 'id']);
-
-	const oldPublisherSet = await (
-		publisherSetID &&
-		orm.PublisherSet.forge({id: publisherSetID})
-			.fetch({transacting, withRelated: ['publishers']})
-	);
+	const oldPublisherSet = publisherSetID &&
+	await orm.PublisherSet.forge({id: publisherSetID})
+		.fetch({transacting, withRelated: ['publishers']});
 
 	const publishers = _.get(body, 'publishers') || [];
-	const newPublisherSetIDPromise = orm.func.publisher.updatePublisherSet(
-		orm, transacting, oldPublisherSet,
+	const newPublisherSet = await orm.func.publisher.updatePublisherSet(
+		orm,
+		transacting,
+		oldPublisherSet,
 		publishers.map((publisherBBID) => ({bbid: publisherBBID}))
-	)
-		.then((set) => set && set.get('id'));
+	);
+	const newPublisherSetID = newPublisherSet && newPublisherSet.get('id');
 
 	const releaseEventSetID = _.get(currentEntity, ['releaseEventSet', 'id']);
-
-	const oldReleaseEventSet = await (
-		releaseEventSetID &&
-		orm.ReleaseEventSet.forge({id: releaseEventSetID})
-			.fetch({transacting, withRelated: ['releaseEvents']})
-	);
+	const oldReleaseEventSet = releaseEventSetID &&
+	await orm.ReleaseEventSet.forge({id: releaseEventSetID})
+		.fetch({transacting, withRelated: ['releaseEvents']});
 
 	const releaseEvents = _.get(body, 'releaseEvents') || [];
-
-	// if areaId is not present, set it to null.
-	// otherwise it shows error while comparing old and new releaseEvent;
 
 	if (releaseEvents[0]) {
 		if (_.isNil(releaseEvents[0].areaId)) {
@@ -790,20 +794,23 @@ async function processEditionSets(
 		}
 	}
 
-	const newReleaseEventSetIDPromise =
-		orm.func.releaseEvent.updateReleaseEventSet(
-			orm, transacting, oldReleaseEventSet, releaseEvents
-		)
-			.then((set) => set && set.get('id'));
+	const newReleaseEventSet = await orm.func.releaseEvent.updateReleaseEventSet(
+		orm,
+		transacting,
+		oldReleaseEventSet,
+		releaseEvents
+	);
+	const newReleaseEventSetID = newReleaseEventSet && newReleaseEventSet.get('id');
 
-	const authorCreditIDPromise = processAuthorCredit(orm, currentEntity, body, transacting).then(acResult => acResult.authorCreditId);
+	const authorCreditID = await processAuthorCredit(orm, currentEntity, body, transacting);
+	const authorCreditIDValue = authorCreditID.authorCreditId;
 
-	return commonUtils.makePromiseFromObject<ProcessEditionSetsResult>({
-		authorCreditId: authorCreditIDPromise,
-		languageSetId: newLanguageSetIDPromise,
-		publisherSetId: newPublisherSetIDPromise,
-		releaseEventSetId: newReleaseEventSetIDPromise
-	});
+	return {
+		authorCreditId: authorCreditIDValue,
+		languageSetId: newLanguageSetID,
+		publisherSetId: newPublisherSetID,
+		releaseEventSetId: newReleaseEventSetID
+	};
 }
 
 type ProcessWorkSetsResult = {languageSetId: number[]};
@@ -813,19 +820,20 @@ async function processWorkSets(
 ): Promise<ProcessWorkSetsResult> {
 	const id = _.get(currentEntity, ['languageSet', 'id']);
 
-	const oldSet = await (
-		id &&
-		orm.LanguageSet.forge({id})
-			.fetch({transacting, withRelated: ['languages']})
-	);
+	const oldSet = id && await orm.LanguageSet.forge({id}).fetch({transacting, withRelated: ['languages']});
 
 	const languages = _.get(body, 'languages') || [];
-	return commonUtils.makePromiseFromObject<ProcessWorkSetsResult>({
-		languageSetId: orm.func.language.updateLanguageSet(
-			orm, transacting, oldSet,
-			languages.map((languageID) => ({id: languageID}))
-		).then((set) => set && set.get('id'))
-	});
+
+	const languageSetId = await orm.func.language.updateLanguageSet(
+		orm,
+		transacting,
+		oldSet,
+		languages.map((languageID) => ({id: languageID}))
+	).then((set) => set && set.get('id'));
+
+	return {
+		languageSetId
+	};
 }
 
 async function processEntitySets(
@@ -1203,26 +1211,29 @@ export async function handleCreateOrEditEntity(
 	const {orm}: {orm?: any} = req.app.locals;
 	const editorJSON = req.user;
 	const {bookshelf} = orm;
-	const entityEditPromise = bookshelf.transaction((transacting) => {
-		processSingleEntity(
-			req.body,
-			res.locals.entity,
-			req.session,
-			entityType,
-			orm,
-			editorJSON,
-			derivedProps,
-			isMergeOperation,
-			transacting
-		);
-	});
-	const entityJSON = await entityEditPromise;
-	const achievementPromise = await processAchievement(orm, editorJSON.id, entityJSON);
-	return handler.sendPromiseResult(
-		res,
-		achievementPromise,
-		search.indexEntity
-	);
+
+	try {
+		const entityJSON = await bookshelf.transaction((transacting) =>
+			processSingleEntity(
+				req.body,
+				res.locals.entity,
+				req.session,
+				entityType,
+				orm,
+				editorJSON,
+				derivedProps,
+				isMergeOperation,
+				transacting
+			));
+		const processedAchievement = await processAchievement(orm, editorJSON.id, entityJSON);
+		res.send(processedAchievement).status(200);
+		search.indexEntity(processedAchievement);
+		return processedAchievement;
+	}
+	catch (err) {
+		log.error(err);
+		return error.sendErrorAsJSON(res, err);
+	}
 }
 
 type AliasEditorT = {

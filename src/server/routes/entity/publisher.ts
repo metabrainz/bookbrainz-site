@@ -196,7 +196,7 @@ function _setPublisherTitle(res) {
 }
 
 
-router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, async (req, res) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, async (req, res, next) => {
 	// Fetch editions
 	const {Publisher} = req.app.locals.orm;
 	const editionRelationsToFetch = [
@@ -212,8 +212,9 @@ router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipedi
 		const editions = await Publisher.forge({bbid: res.locals.entity.bbid})
 			.editions({withRelated: editionRelationsToFetch});
 		res.locals.entity.editions = editions.toJSON();
+		_setPublisherTitle(res);
 		res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
-		return await entityRoutes.displayEntity(req, res);
+		return entityRoutes.displayEntity(req, res);
 	}
 	catch (error) {
 		log.debug(error);

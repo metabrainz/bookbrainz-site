@@ -37,7 +37,6 @@ import _ from 'lodash';
 import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import log from 'log';
-import {makePromiseFromObject} from '../../../common/helpers/utils';
 import target from '../../templates/target';
 
 /** ****************************
@@ -101,6 +100,7 @@ router.get(
 	middleware.loadRelationshipTypes,
 	async (req, res, next) => {
 		const {Author, Edition} = req.app.locals.orm;
+		const {orm}: {orm?: any} = req.app.locals;
 		let relationshipTypeId;
 		let initialRelationshipIndex = 0;
 		const propsObject = generateEntityProps(
@@ -109,9 +109,8 @@ router.get(
 
 		if (req.query.author) {
 			try {
-				const data = await Author.forge({bbid: req.query.author})
-					.fetch({require: false, withRelated: 'defaultAlias'});
-				propsObject.author = utils.entityToOption(data.toJSON());
+				const data = await orm.func.entity.getEntity(orm, Author, req.query.author, ['defaultAlias']);
+				propsObject.author = data && utils.entityToOption(data.toJSON());
 			}
 			catch (error) {
 				log.debug(error);
@@ -121,9 +120,8 @@ router.get(
 
 		if (req.query.edition) {
 			try {
-				const data = await Edition.forge({bbid: req.query.edition})
-					.fetch({require: false, withRelated: 'defaultAlias'});
-				propsObject.edition = utils.entityToOption(data.toJSON());
+				const data = await orm.func.entity.getEntity(orm, Edition, req.query.edition, ['defaultAlias']);
+				propsObject.edition = data && utils.entityToOption(data.toJSON());
 			}
 			catch (error) {
 				log.debug(error);
@@ -172,14 +170,8 @@ router.get(
 				title: props.heading
 			}));
 		}
-		try {
-			const props = await makePromiseFromObject(propsObject);
-			return render(props);
-		}
-		catch (err) {
-			log.debug(err);
-			return next(err);
-		}
+
+		return render(propsObject);
 	}
 );
 
@@ -187,7 +179,7 @@ router.post(
 	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes,
 	middleware.loadRelationshipTypes,
-	async (req, res, next) => {
+	async (req, res) => {
 		const {WorkType} = req.app.locals.orm;
 		const entity = await utils.parseInitialState(req, 'work');
 		if (entity.workSection?.type) {
@@ -212,14 +204,8 @@ router.post(
 				title: props.heading
 			}));
 		}
-		try {
-			const props = await makePromiseFromObject(propsObject);
-			return render(props);
-		}
-		catch (err) {
-			log.debug(err);
-			return next(err);
-		}
+
+		return render(propsObject);
 	}
 );
 
