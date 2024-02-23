@@ -60,7 +60,7 @@
     "log-node": "^8.0.3",
     "mocha-chai-jest-snapshot": "^1.1.4",
     "morgan": "^1.10.0",
-    "nodemailer": "^6.5.0",
+    "nodemailer": "^6.9.9",
     "passport": "^0.6.0",
     "passport-musicbrainz-oauth2": "git+https://git@github.com/LordSputnik/passport-musicbrainz-oauth2.git",
     "prop-types": "^15.8.1",
