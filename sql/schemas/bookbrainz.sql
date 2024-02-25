@@ -1069,6 +1069,7 @@ CREATE VIEW bookbrainz.edition_group_import AS
 		edition_group_data.disambiguation_id,
 		alias_set.default_alias_id,
 		edition_group_data.type_id,
+		edition_group_data.credit_section,
 		edition_group_data.alias_set_id,
 		edition_group_data.identifier_set_id,
 		import.type
