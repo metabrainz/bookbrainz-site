@@ -111,7 +111,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtrac
 				You can copy the Author Credit from one of the Editions as well
 			</div>);
 	}
-	else if(!entity.deleted && hasAuthorCredits === false){
+	else if (!entity.deleted && hasAuthorCredits === false) {
 		authorCreditSection = (
 			<div className="alert alert-warning">
 				Author Credits : N/A

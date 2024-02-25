@@ -131,7 +131,7 @@ function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 				and add its Author(s) if you see this!
 			</div>);
 	}
-	else if(!entity.deleted && hasAuthorCredits === false){
+	else if (!entity.deleted && hasAuthorCredits === false) {
 		authorCreditSection = (
 			<div className="alert alert-warning">
 				Author Credits : N/A
