@@ -102,13 +102,19 @@ function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtrac
 			/>
 		);
 	}
-	else if (!entity.deleted && hasAuthorCredits === true) {
+	else if (!entity.deleted && (hasAuthorCredits === true || hasAuthorCredits === null)) {
 		authorCreditSection = (
 			<div className="alert alert-warning text-center">
 				Author Credit unset; please&nbsp;
 				<a href={`/edition-group/${entity.bbid}/edit`}>edit this Edition Group</a>&nbsp;
 				and add its Author(s) if you see this!
 				You can copy the Author Credit from one of the Editions as well
+			</div>);
+	}
+	else if(!entity.deleted && hasAuthorCredits === false){
+		authorCreditSection = (
+			<div className="alert alert-warning">
+				Author Credits : N/A
 			</div>);
 	}
 

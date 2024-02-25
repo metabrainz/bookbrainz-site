@@ -1023,6 +1023,7 @@ CREATE VIEW bookbrainz.edition_import AS
 		edition_data.depth,
 		edition_data.weight,
 		edition_data.pages,
+		edition_data.credit_section,
 		edition_data.format_id,
 		edition_data.status_id,
 		edition_data.alias_set_id,

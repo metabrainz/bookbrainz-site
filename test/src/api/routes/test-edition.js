@@ -63,8 +63,7 @@ describe('GET /Edition', () => {
 			'pages',
 			'status',
 			'releaseEventDates',
-			'weight',
-			'creditSection'
+			'weight'
 		);
 	 });
 

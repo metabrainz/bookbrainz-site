@@ -123,12 +123,18 @@ function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 			/>
 		);
 	}
-	else if (!entity.deleted && hasAuthorCredits === true) {
+	else if (!entity.deleted && (hasAuthorCredits === true || hasAuthorCredits === null)) {
 		authorCreditSection = (
 			<div className="alert alert-warning text-center">
 				Author Credit unset; please&nbsp;
 				<a href={`/edition/${entity.bbid}/edit`}>edit this Edition</a>&nbsp;
 				and add its Author(s) if you see this!
+			</div>);
+	}
+	else if(!entity.deleted && hasAuthorCredits === false){
+		authorCreditSection = (
+			<div className="alert alert-warning">
+				Author Credits : N/A
 			</div>);
 	}
 
