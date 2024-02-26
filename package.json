@@ -27,6 +27,11 @@
     "node": ">= 18"
   },
   "browserslist": "> 0.25%, not dead",
+  "overrides": {
+    "react-select-fast-filter-options":{
+      "react-select": "$react-select"
+    }
+  },
   "dependencies": {
     "@babel/runtime": "^7.17.7",
     "@cospired/i18n-iso-languages": "^4.0.0",
