@@ -58,7 +58,6 @@ type StateProps = {
 	authorCreditEditor: Record<string, AuthorCreditRow>,
 	authorCreditEnable: boolean,
 	showEditor: boolean,
-	isEditable:boolean,
 };
 
 type DispatchProps = {
@@ -73,7 +72,7 @@ type Props = OwnProps & StateProps & DispatchProps;
 
 function AuthorCreditSection({
 	authorCreditEditor: immutableAuthorCreditEditor, onEditAuthorCredit, onEditorClose,
-	showEditor, onAuthorChange, isEditable, authorCreditEnable, toggleAuthorCreditEnable,
+	showEditor, onAuthorChange, authorCreditEnable, toggleAuthorCreditEnable,
 	onClearHandler, isUnifiedForm, isLeftAlign, ...rest
 }: Props) {
 	const authorCreditEditor = convertMapToObject(immutableAuthorCreditEditor);
@@ -95,7 +94,7 @@ function AuthorCreditSection({
 
 	const editButton = (
 		// eslint-disable-next-line react/jsx-no-bind
-		<Button disabled={!isEditable} variant="success" onClick={function openEditor() { onEditAuthorCredit(authorCreditRows.length); }}>
+		<Button disabled={!authorCreditEnable} variant="success" onClick={function openEditor() { onEditAuthorCredit(authorCreditRows.length); }}>
 			<FontAwesomeIcon icon={faPencilAlt}/>
 			&nbsp;Edit
 		</Button>);
@@ -173,7 +172,7 @@ function AuthorCreditSection({
 								customComponents={{DropdownIndicator: null, SingleValue}}
 								instanceId="author0"
 								isClearable={false}
-								isDisabled={!isEditable}
+								isDisabled={!authorCreditEnable}
 								isUnifiedForm={isUnifiedForm}
 								placeholder="Type to search or paste a BBID"
 								rowId="n0"
@@ -202,7 +201,6 @@ function AuthorCreditSection({
 
 AuthorCreditSection.propTypes = {
 	authorCreditEditor: PropTypes.object.isRequired,
-	isEditable: PropTypes.bool.isRequired,
 	showEditor: PropTypes.bool.isRequired
 };
 
@@ -217,15 +215,10 @@ function mapStateToProps(rootState, {type}): StateProps {
 	const showEditor = rootState.getIn([entitySection, 'authorCreditEditorVisible']);
 
 	const authorCreditRow = authorCreditState.first();
-	const isEditable = Boolean(authorCreditEnable) &&
-	authorCreditState.size <= 1 &&
-	Boolean(authorCreditRow) &&
-	authorCreditRow.get('name') === authorCreditRow.getIn(['author', 'text'], '');
 
 	return {
 		authorCreditEditor: rootState.get('authorCreditEditor'),
 		authorCreditEnable,
-		isEditable,
 		showEditor
 	};
 }
