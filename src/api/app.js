@@ -67,7 +67,21 @@ mainRouter.use((req, res) => {
 // initialize elasticsearch
 // Clone object to prevent error if starting webserver and api
 // https://github.com/elastic/elasticsearch-js/issues/33
-search.init(app.locals.orm, Object.assign({}, config.search));
+
+const searchConfig = config.search || {};
+// Check if ElasticSearch configuration is provided
+if (searchConfig.node && searchConfig.auth) {
+	search.init(app.locals.orm, Object.assign({}, searchConfig));
+}
+else {
+	console.warn('ElasticSearch configuration not provided. Using default settings.');
+	const defaultConfig = {
+		node: 'http://localhost:9200',
+		auth: {username: 'elastic', password: 'changeme'},
+		requestTimeout: 60000
+	};
+	search.init(app.locals.orm, Object.assign({}, defaultConfig));
+}
 
 
 const DEFAULT_API_PORT = 9098;

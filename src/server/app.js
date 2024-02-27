@@ -98,7 +98,21 @@ const authInitiated = auth.init(app);
 
 // Clone search config to prevent error if starting webserver and api
 // https://github.com/elastic/elasticsearch-js/issues/33
-search.init(app.locals.orm, Object.assign({}, config.search));
+
+const searchConfig = config.search || {};
+// Check if ElasticSearch configuration is provided
+if (searchConfig.node && searchConfig.auth) {
+	search.init(app.locals.orm, Object.assign({}, searchConfig));
+}
+else {
+	console.warn('ElasticSearch configuration not provided. Using default settings.');
+	const defaultConfig = {
+		node: 'http://localhost:9200',
+		auth: {username: 'elastic', password: 'changeme'},
+		requestTimeout: 60000
+	};
+	search.init(app.locals.orm, Object.assign({}, defaultConfig));
+}
 
 // Set up constants that will remain valid for the life of the app
 debug(`Git revision: ${siteRevision}`);

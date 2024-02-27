@@ -33,6 +33,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import express from 'express';
 import {getOrderedRevisions} from '../helpers/revisions';
+import config from '../../common/helpers/config';
 import target from '../templates/target';
 
 
@@ -42,14 +43,18 @@ const router = express.Router();
 router.get('/', async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const numRevisionsOnHomepage = 9;
-
+	let searchConfig = true;
+	if (!config.search || config.search === {}) {
+		searchConfig = null;
+	}
 	function render(recent) {
 		const props = generateProps(req, res, {
 			disableSignUp: req.signUpDisabled,
 			homepage: true,
 			isLoggedIn: Boolean(req.user),
 			recent,
-			requireJS: Boolean(res.locals.user)
+			requireJS: Boolean(res.locals.user),
+			searchConfig
 		});
 
 		/*
