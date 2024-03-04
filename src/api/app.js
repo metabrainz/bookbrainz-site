@@ -27,6 +27,7 @@ import compression from 'compression';
 import config from '../common/helpers/config';
 import express from 'express';
 import initRoutes from './routes';
+import log from 'log';
 import logger from 'morgan';
 import session from '../common/helpers/session';
 
@@ -74,10 +75,10 @@ if (searchConfig.node && searchConfig.auth) {
 	search.init(app.locals.orm, Object.assign({}, searchConfig));
 }
 else {
-	console.warn('ElasticSearch configuration not provided. Using default settings.');
+	log.error('ElasticSearch configuration not provided. Using default settings.');
 	const defaultConfig = {
+		auth: {password: 'changeme', username: 'elastic'},
 		node: 'http://localhost:9200',
-		auth: {username: 'elastic', password: 'changeme'},
 		requestTimeout: 60000
 	};
 	search.init(app.locals.orm, Object.assign({}, defaultConfig));

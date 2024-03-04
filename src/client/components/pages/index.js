@@ -42,13 +42,6 @@ class IndexPage extends React.Component {
 	renderHeader() {
 		return (
 			<div>
-				<div>
-					{!this.props.searchConfig && (
-                	<Alert className="text-center" variant="warning">
-                	    The elastic search server is currently unavailable
-                	</Alert>
-            		)}
-				</div>
 				<Alert className="text-center" variant="warning">
 					Under development — adventurous users, please test and
 					add data! Give us feedback about bugs, glitches and
@@ -285,15 +278,13 @@ IndexPage.propTypes = {
 	isLoggedIn: PropTypes.bool.isRequired,
 	recent: PropTypes.array.isRequired,
 	showEntities: PropTypes.bool,
-	showRevisionEditor: PropTypes.bool,
-	searchConfig: PropTypes.bool
+	showRevisionEditor: PropTypes.bool
 
 };
 IndexPage.defaultProps = {
 	disableSignUp: false,
 	showEntities: true,
-	showRevisionEditor: true,
-	searchConfig: true
+	showRevisionEditor: true
 };
 
 export default IndexPage;

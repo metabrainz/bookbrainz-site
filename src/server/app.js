@@ -34,6 +34,7 @@ import config from '../common/helpers/config';
 import express from 'express';
 import favicon from 'serve-favicon';
 import initInflux from './influx';
+import log from 'log';
 import logNode from 'log-node';
 import logger from 'morgan';
 import path from 'path';
@@ -105,10 +106,10 @@ if (searchConfig.node && searchConfig.auth) {
 	search.init(app.locals.orm, Object.assign({}, searchConfig));
 }
 else {
-	console.warn('ElasticSearch configuration not provided. Using default settings.');
+	log.error('ElasticSearch configuration not provided. Using default settings.');
 	const defaultConfig = {
+		auth: {password: 'changeme', username: 'elastic'},
 		node: 'http://localhost:9200',
-		auth: {username: 'elastic', password: 'changeme'},
 		requestTimeout: 60000
 	};
 	search.init(app.locals.orm, Object.assign({}, defaultConfig));
@@ -137,6 +138,24 @@ app.use((req, res, next) => {
 			message: `${msg}`
 		});
 	}
+
+	if (!searchConfig.node || !searchConfig.auth) {
+		let msg;
+		if (process.env.DEPLOY_ENV === 'test') {
+			msg = 'Elastic search configs are not provided. Search server is not available on the test website';
+		}
+		else if (process.env.DEPLOY_ENV === 'beta') {
+			msg = 'Elastic search configs are not provided. Search server is not available on the beta website';
+		}
+		else {
+			msg = 'Elastic search configs are not provided. Search server is not available in your local environment';
+		}
+		res.locals.alerts.push({
+			level: 'danger',
+			message: `${msg}`
+		});
+	}
+
 
 	if (!req.session || !authInitiated) {
 		res.locals.alerts.push({
