@@ -15,11 +15,6 @@ ALTER TABLE bookbrainz.edition_group_data ADD COLUMN credit_section BOOLEAN DEFA
 UPDATE edition_data SET credit_section = true;
 UPDATE edition_group_data SET credit_section = true;
 
--- Drop the existing view if it exists
-DROP VIEW IF EXISTS 
-    bookbrainz.edition,
-    bookbrainz.edition_group;
-
 -- Recreate the view with the new definition
 -- Adding credit_section column in edition view and edition_group view
 CREATE VIEW bookbrainz.edition AS
