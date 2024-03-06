@@ -355,7 +355,7 @@ CREATE TABLE bookbrainz.edition_data (
 	status_id INT,
 	credit_section BOOLEAN DEFAULT TRUE
 );
-UPDATE edition_data SET credit_section = true;
+UPDATE bookbrainz.edition_data SET credit_section = true;
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (author_credit_id) REFERENCES bookbrainz.author_credit (id);
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (format_id) REFERENCES bookbrainz.edition_format (id);
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (edition_group_bbid) REFERENCES bookbrainz.edition_group_header (bbid);
@@ -381,7 +381,7 @@ CREATE TABLE bookbrainz.edition_group_data (
 	credit_section BOOLEAN DEFAULT TRUE
 );
 
-UPDATE edition_group_data SET credit_section = true;
+UPDATE bookbrainz.edition_group_data SET credit_section = true;
 ALTER TABLE bookbrainz.edition_group_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.edition_group_type (id);
 ALTER TABLE bookbrainz.edition_group_data ADD FOREIGN KEY (author_credit_id) REFERENCES bookbrainz.author_credit (id);
 ALTER TABLE bookbrainz.edition_group_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_group_data (id);
