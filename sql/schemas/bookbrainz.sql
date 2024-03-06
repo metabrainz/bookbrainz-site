@@ -906,7 +906,7 @@ SELECT e.bbid,
      LEFT JOIN bookbrainz.alias_set als ON edd.alias_set_id = als.id
      LEFT JOIN bookbrainz.alias al ON al.id = als.default_alias_id
      LEFT JOIN bookbrainz.disambiguation dis ON dis.id = edd.disambiguation_id
-  WHERE e.type = 'Edition'::entity_type;
+  WHERE e.type = 'Edition';
 
 CREATE VIEW bookbrainz.work AS
 	SELECT
@@ -966,7 +966,7 @@ SELECT e.bbid,
      LEFT JOIN bookbrainz.alias al ON al.id = als.default_alias_id
      LEFT JOIN bookbrainz.disambiguation dis ON dis.id = egd.disambiguation_id
      LEFT JOIN bookbrainz.edition_group_type egtype ON egtype.id = egd.type_id
-  WHERE e.type = 'EditionGroup'::entity_type;
+  WHERE e.type = 'EditionGroup';
 
 CREATE VIEW bookbrainz.series AS
 	SELECT
