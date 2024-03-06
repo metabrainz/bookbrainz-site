@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2016  Max Prettyjohns
+ * 				 2023  Meziyum
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,12 +18,13 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import type {Achievement} from '../../input/drag-and-drop';
 import DragAndDropImage from '../../input/drag-and-drop-image';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 
 const {Card, Col, Container, Row} = bootstrap;
+/* eslint-disable sort-keys */
 const maxAchievementProgress = {
 	1: 1,
 	2: 50,
@@ -33,7 +35,6 @@ const maxAchievementProgress = {
 	7: 1,
 	8: 10,
 	9: 100,
-	// eslint-disable-next-line sort-keys
 	10: 10,
 	11: 7,
 	12: 30,
@@ -56,28 +57,41 @@ const maxAchievementProgress = {
 	29: 10,
 	30: 100
 };
+/* eslint-enable sort-keys */
 
-function Achievement(props) {
-	const {achievement, counter, unlocked} = props;
-	const {id, name, description, badgeUrl} = achievement;
+interface AchievementComponentProps {
+	achievement: Achievement
+}
+
+/**
+ * Achievement Component
+ *
+ * A React component that displays an achievement card with its details, including name,
+ * description, badge image, and progress if the achievement is locked.
+ *
+ * @component
+ *
+ * @param {Object} props - The props for the Achievement component.
+ * @param {Achievement} props.achievement - The achievement object containing details.
+ * @param {number} props.counter - The current progress or counter for the achievement.
+ * @param {boolean} props.unlocked - A boolean indicating whether the achievement is unlocked.
+ *
+ * @returns {JSX.Element} The rendered Achievement card component.
+ */
+function AchievementComponent({achievement}: AchievementComponentProps): JSX.Element {
+	const {id, name, description, badgeUrl, counter, unlocked} = achievement;
 	const imgElement = unlocked ? (
 		<DragAndDropImage
 			achievementId={id}
 			achievementName={name}
 			height="100px"
 			src={badgeUrl}
-			style={{
-				zIndex: 2
-			}}
 		/>
 	) : (
 		<img
 			alt={name}
 			height="100px"
 			src={badgeUrl}
-			style={{
-				zIndex: 2
-			}}
 		/>
 	);
 
@@ -107,21 +121,6 @@ function Achievement(props) {
 	);
 }
 
-Achievement.displayName = 'achievement';
+AchievementComponent.displayName = 'achievement';
 
-Achievement.propTypes = {
-	achievement: PropTypes.shape({
-		badgeUrl: PropTypes.string,
-		description: PropTypes.string,
-		id: PropTypes.number,
-		name: PropTypes.string
-	}).isRequired,
-	counter: PropTypes.number,
-	unlocked: PropTypes.bool
-};
-Achievement.defaultProps = {
-	counter: 0,
-	unlocked: false
-};
-
-export default Achievement;
+export default AchievementComponent;
