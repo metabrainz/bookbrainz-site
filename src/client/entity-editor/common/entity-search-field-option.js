@@ -130,7 +130,7 @@ class EntitySearchFieldOption extends React.Component {
 		if (!buttonAfter) {
 			return (
 				<>
-					{React.cloneElement(wrappedSelect, props)}
+					{React.cloneElement(wrappedSelect, wrappedSelect.props)}
 					{help && <Form.Text muted>{help}</Form.Text>}
 				</>
 			);
@@ -138,7 +138,7 @@ class EntitySearchFieldOption extends React.Component {
 
 		return (
 			<InputGroup>
-				{React.cloneElement(wrappedSelect, props)}
+				{React.cloneElement(wrappedSelect, wrappedSelect.props)}
 				{help && <Form.Text muted>{help}</Form.Text>}
 				<InputGroup.Append>{buttonAfter}</InputGroup.Append>
 			</InputGroup>
@@ -182,7 +182,7 @@ class EntitySearchFieldOption extends React.Component {
 					Option: LinkedEntitySelect,
 					SingleValue: EntitySelect,
 					...this.props.customComponents &&
-						this.props.customComponents
+					this.props.customComponents
 				}}
 				filterOptions={false}
 				getOptionLabel={this.getOptionLabel}
