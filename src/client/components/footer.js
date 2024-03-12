@@ -31,9 +31,9 @@ function Footer(props) {
 
 	return (
 		<footer className="footer">
-			<Container fluid>
-				<Row>
-					<Col xs={4}>
+			<Container fluid style={{paddingTop: 21, paddingBottom: 21}}>
+				<Row className='first-row' style={{ justifyContent: "center", alignItems: "center"}}>
+					<Col md={4}>
 						<small>{'Tested with '}
 							<a
 								href="https://www.browserstack.com/"
@@ -48,7 +48,7 @@ function Footer(props) {
 							</a>
 						</small>
 					</Col>
-					<Col className="text-center" xs={4}>
+					<Col className="text-center" md={5}>
 						<small>Cover image by{' '}
 							<a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">
 								Stewart Butterfield
@@ -58,7 +58,7 @@ function Footer(props) {
 							</a>)
 						</small>
 					</Col>
-					<Col className="text-right" xs={4}>
+					<Col className="text-left" md={3}>
 						<div className="small">
 							<a href="/admin-logs">
 								Admin Logs
