@@ -63,12 +63,12 @@ $disabled-color: lighten($disabled-bg,15%);
 
 body {
 	padding-top: 64px;
-    padding-bottom: 64px;
+    padding-bottom: 110px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     body {
-        padding-bottom: 128px;
+        padding-bottom: 155px;
     }
 }
 
@@ -241,6 +241,11 @@ html {
 	background-color: #f5f5f5;
     bottom: 0;
 }
+
+.footer .row:first-child .text-center {
+	text-align: left !important;
+}
+
 .contact-text {
 	color: rgb(180, 180, 180);
 	flex-direction: column;
