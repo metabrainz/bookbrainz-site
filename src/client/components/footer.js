@@ -31,8 +31,8 @@ function Footer(props) {
 
 	return (
 		<footer className="footer">
-			<Container fluid style={{paddingTop: 21, paddingBottom: 21}}>
-				<Row style={{ justifyContent: "center", alignItems: "center"}}>
+			<Container fluid style={{paddingBottom: 21, paddingTop: 21}}>
+				<Row style={{alignItems: 'center', justifyContent: 'center'}}>
 					<Col md={4}>
 						<small>{'Tested with '}
 							<a
