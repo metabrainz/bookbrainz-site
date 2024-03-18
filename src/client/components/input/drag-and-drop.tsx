@@ -17,7 +17,6 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -31,10 +30,20 @@ const {useState, useCallback} = React;
 * @property {string} badgeUrl - The source URL of the achievement's badge image.
 * @property {number} id - The ID of the achievement.
 */
-type Achievement = {
-	name: string;
+export type Achievement = {
 	badgeUrl: string | null;
+	counter:number;
+	description: string;
 	id: number;
+	name: string;
+	unlocked: boolean;
+};
+type AchievementForDisplay = Pick<Achievement, 'badgeUrl' | 'id' | 'name'>;
+
+const blankBadge:AchievementForDisplay = {
+	badgeUrl: '/images/blankbadge.svg',
+	id: null,
+	name: 'drag badge to set'
 };
 
 /**
@@ -56,18 +65,14 @@ type Props = {
 * @returns {JSX.Element} A React component that displays a drag-and-drop card for an achievement.
 */
 function DragAndDrop({name, initialAchievement}: Props): JSX.Element {
-	const [achievement, setAchievement] = useState<Achievement>(initialAchievement);
+	const [achievement, setAchievement] = useState<AchievementForDisplay>(initialAchievement);
 	const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
 		event.preventDefault();
-		setAchievement({
-			badgeUrl: '/images/blankbadge.svg',
-			id: null,
-			name: 'drag badge to set'
-		});
-	});
+		setAchievement(blankBadge);
+	}, []);
 	const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
 		event.preventDefault();
-	});
+	}, []);
 	const handleDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
 		event.preventDefault();
 		let data;
@@ -83,7 +88,7 @@ function DragAndDrop({name, initialAchievement}: Props): JSX.Element {
 			id: data.id,
 			name: data.name
 		});
-	});
+	}, [setAchievement]);
 	return (
 		<Card
 			bg="light"
@@ -114,20 +119,9 @@ function DragAndDrop({name, initialAchievement}: Props): JSX.Element {
 }
 
 DragAndDrop.displayName = 'DragAndDrop';
-DragAndDrop.propTypes = {
-	initialAchievement: PropTypes.shape({
-		badgeUrl: PropTypes.string,
-		id: PropTypes.number,
-		name: PropTypes.string.isRequired
-	}),
-	name: PropTypes.string.isRequired
-};
+
 DragAndDrop.defaultProps = {
-	initialAchievement: {
-		badgeUrl: '/images/blankbadge.svg',
-		id: null,
-		name: 'drag badge to set'
-	}
+	initialAchievement: blankBadge
 };
 
 export default DragAndDrop;

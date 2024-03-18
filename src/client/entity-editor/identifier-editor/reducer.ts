@@ -58,7 +58,7 @@ function reducer(
 			return state.delete(payload);
 		case REMOVE_EMPTY_IDENTIFIERS:
 			return state.filterNot(identifier =>
-				identifier.get('value') === '' && identifier.get('type') === null);
+				identifier.get('value') === '');
 		case ADD_OTHER_ISBN: {
 			const {rowId, value, type: typeId} = payload;
 			// search if given identifier already exists
