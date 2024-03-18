@@ -70,7 +70,7 @@ function TopEditorsTable({editors}: TopEditorsTableProps) {
 								</td>
 								<td>{editor.totalRevisions}</td>
 								<td>
-									{formatDate(new Date(editor.createdAt), false)}
+									{formatDate(new Date(editor.createdAt))}
 								</td>
 							</tr>
 						))
