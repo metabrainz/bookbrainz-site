@@ -22,7 +22,7 @@ import * as utilsHelper from '../../helpers/utils';
 import React from 'react';
 import {startCase as _startCase} from 'lodash';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
-import { _EditorType } from '../../../types';
+import {_EditorType} from '../../../types';
 
 
 const {Table} = bootstrap;
@@ -92,7 +92,7 @@ TopEditorsTable.displayName = 'TopEditorsTable';
 
 interface EntityCountTableProps {
 	allEntities: Array<{
-		Count: string, 
+		Count: string,
 		modelName: string,
 		}>,
 	last30DaysEntities: { [key: string]: string },
@@ -145,7 +145,7 @@ function EntityCountTable({allEntities, last30DaysEntities}: EntityCountTablePro
 
 interface StatisticsPageProps{
 	allEntities: Array<{
-		Count: string, 
+		Count: string,
 		modelName: string,
 		}>,
 	last30DaysEntities: { [key: string]: string },
