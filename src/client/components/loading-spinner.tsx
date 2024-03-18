@@ -25,9 +25,9 @@ import {faCircleNotch} from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Renders a LoadingSpinner Component displaying a spinning loading icon.
- * @returns {React.JSX.Element}
+ * @returns {JSX.Element} The JSX content of the LoadingSpinner indicator
  */
-function LoadingSpinner(): React.JSX.Element {
+function LoadingSpinner(): JSX.Element {
 	return (
 		<div className="loading-background">
 			<FontAwesomeIcon
