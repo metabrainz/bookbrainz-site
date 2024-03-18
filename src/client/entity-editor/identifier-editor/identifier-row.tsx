@@ -145,6 +145,7 @@ IdentifierRow.displayName = 'IdentifierEditor.Identifier';
 
 
 function handleValueChange(
+	dispatch: Dispatch<Action>,
 	event: React.ChangeEvent<HTMLInputElement>,
 	index: number,
 	types: Array<IdentifierType>
@@ -172,8 +173,7 @@ function handleValueChange(
 		// 	}
 		// }
 	}
-	const action = debouncedUpdateIdentifierValue(index, value, guessedType);
-	return { cleanedValue: value, action };
+	return dispatch(debouncedUpdateIdentifierValue(index, value, guessedType));
 }
 
 
@@ -194,10 +194,8 @@ function mapDispatchToProps(
 		onRemoveButtonClick: () => dispatch(removeIdentifierRow(index)),
 		onTypeChange: (value: {value: number}) =>
 			dispatch(updateIdentifierType(index, value && value.value)),
-		onValueChange: (event: React.ChangeEvent<HTMLInputElement>) =>{
-			const { cleanedValue, action } = handleValueChange(event,index,typeOptions);
-      		dispatch(action);
-		}
+		onValueChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+			handleValueChange(dispatch, event, index, typeOptions)
 	};
 }
 
