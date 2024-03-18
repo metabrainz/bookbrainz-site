@@ -19,10 +19,11 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 
+import {_EditorType} from '../../../types';
 import React from 'react';
 import {startCase as _startCase} from 'lodash';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
-import {_EditorType} from '../../../types';
+
 
 
 const {Table} = bootstrap;
@@ -124,7 +125,7 @@ function EntityCountTable({allEntities, last30DaysEntities}: EntityCountTablePro
 								<td>{i + 1}</td>
 								<td>
 									{genEntityIconHTMLElement(entity.modelName)}
-					EntityCountTable.displayName = 'EntityCountTable';				{_startCase(entity.modelName)}
+									{_startCase(entity.modelName)}
 								</td>
 								<td>{entity.Count}</td>
 								<td>{last30DaysEntities[entity.modelName]}</td>
