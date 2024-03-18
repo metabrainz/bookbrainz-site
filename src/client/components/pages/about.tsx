@@ -25,10 +25,10 @@ import {faTwitter} from '@fortawesome/free-brands-svg-icons';
 
 /**
  * Renders the document and displays the 'About' page.
- * @returns {React.JSX.Element} a React JSX Element
+ * @returns {JSX.Element} a React JSX Element
  * page
  */
-function AboutPage(): React.JSX.Element {
+function AboutPage(): JSX.Element {
 	const NESLink =
 		'https://ocharles.org.uk/blog/posts/' +
 			'2012-07-10-nes-does-it-better-1.html';

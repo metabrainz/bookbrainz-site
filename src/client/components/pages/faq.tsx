@@ -22,9 +22,9 @@ import {genEntityIconHTMLElement} from '../../helpers/entity';
 
 /**
  * Renders the page for the Frequently Asked Questions on Bookbrainz
- * @returns {React.JSX.Element} a React JSX Element
+ * @returns {JSX.Element} a React JSX Element
  */
-function FAQPage(): React.JSX.Element {
+function FAQPage(): JSX.Element {
 	return (
 		<Card>
 			<Card.Header as="h2">

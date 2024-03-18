@@ -21,9 +21,9 @@ import React from 'react';
 
 /**
  * Renders the document and displays the 'Develop' page.
- * @returns {React.JSX.Element} a React JSX Element
+ * @returns {JSX.Element} a React JSX Element
  */
-function DevelopPage(): React.JSX.Element {
+function DevelopPage(): JSX.Element {
 	return (
 		<div>
 			<div className="page-header">

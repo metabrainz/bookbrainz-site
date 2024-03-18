@@ -21,9 +21,9 @@ import React from 'react';
 
 /**
  * Renders the the document and displays the 'Contribute' page.
- * @returns {React.JSX.Element} a React JSX Element
+ * @returns {JSX.Element} a React JSX Element
  */
-function ContributePage(): React.JSX.Element {
+function ContributePage(): JSX.Element {
 	const IRCLink = 'https://kiwiirc.com/nextclient/irc.libera.chat/?#bookbrainz';
 	const styleLink = 'https://bookbrainz-user-guide.readthedocs.io/';
 

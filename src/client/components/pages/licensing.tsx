@@ -25,9 +25,9 @@ const {Col, Row} = bootstrap;
 
 /**
  * Renders a page containing information about the licensing and copyrights for the content available on the Bookbrainz.
- * @returns {React.JSX.Element} a React JSX Component
+ * @returns {JSX.Element} a React JSX Component
  */
-function LicensingPage(): React.JSX.Element {
+function LicensingPage(): JSX.Element {
 	const CC0Link = 'http://creativecommons.org/publicdomain/zero/1.0/';
 	const CC0Image = 'http://i.creativecommons.org/p/zero/1.0/88x31.png';
 
