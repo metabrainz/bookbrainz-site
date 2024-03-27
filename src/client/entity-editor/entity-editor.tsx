@@ -84,10 +84,10 @@ const EntityEditor = (props: Props) => {
 		window.onbeforeunload = handleUrlChange;
 	}, [handleUrlChange]);
 
-	if(entity){
-	entityURL = getEntityUrl(entity);
+	if (entity) {
+		entityURL = getEntityUrl(entity);
 	}
-	
+
 	return (
 		<form onSubmit={onSubmit}>
 			<Card>
