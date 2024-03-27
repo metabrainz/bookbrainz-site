@@ -79,6 +79,7 @@ export function transformNewForm(data) {
 		aliases,
 		annotation: data.annotationSection.content,
 		authorCredit,
+		creditSection: data.editionGroupSection.creditSection,
 		disambiguation: data.nameSection.disambiguation,
 		identifiers,
 		note: data.submissionSection.note,
@@ -88,7 +89,7 @@ export function transformNewForm(data) {
 }
 
 const createOrEditHandler = makeEntityCreateOrEditHandler(
-	'editionGroup', transformNewForm, 'typeId'
+	'editionGroup', transformNewForm, ['typeId', 'creditSection']
 );
 
 const mergeHandler = makeEntityCreateOrEditHandler(
@@ -279,6 +280,8 @@ export function editionGroupToFormState(editionGroup) {
 	);
 
 	const editionGroupSection = {
+		authorCreditEnable: editionGroup.creditSection,
+		creditSection: editionGroup.creditSection,
 		type: editionGroup.editionGroupType && editionGroup.editionGroupType.id
 	};
 
@@ -313,11 +316,14 @@ export function editionGroupToFormState(editionGroup) {
 		})
 	) : [];
 
-	const authorCreditEditor: AuthorCreditEditorT = {};
+	let authorCreditEditor: AuthorCreditEditorT = {};
 	for (const credit of credits) {
 		authorCreditEditor[credit.position] = credit;
 	}
-	if (_.isEmpty(authorCreditEditor)) {
+	if (!editionGroup.creditSection) {
+		authorCreditEditor = {};
+	}
+	if (_.isEmpty(authorCreditEditor) && editionGroup.creditSection) {
 		authorCreditEditor.n0 = {
 			author: null,
 			joinPhrase: '',

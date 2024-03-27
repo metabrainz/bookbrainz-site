@@ -224,3 +224,4 @@ export function toggleAuthorCredit(): Action {
 		type: TOGGLE_AUTHOR_CREDIT
 	};
 }
+

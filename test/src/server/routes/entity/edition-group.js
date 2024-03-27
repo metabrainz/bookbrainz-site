@@ -53,6 +53,7 @@ describe('Edition Group routes with entity editing priv', () => {
 			'editionGroupSection.type': '',
 			'identifierEditor.t19': 'wikidataid'
 
+
 		  };
 		const res = await agent.post('/edition-group/create').set('Origin', `http://127.0.0.1:${agent.app.address().port}`).send(data);
 		expect(res.ok).to.be.true;
