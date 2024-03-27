@@ -36,6 +36,7 @@ import ValueField from './value-field';
 import {collapseWhiteSpaces} from '../../../common/helpers/utils';
 import {connect} from 'react-redux';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
+import IdentifierLink from "../../components/pages/entities/identifiers-links.js"
 
 
 type OwnProps = {
@@ -128,6 +129,14 @@ function IdentifierRow({
 					</Button>
 				</Col>
 			</Row>
+			{typeValue && valueValue && (
+				<Row>
+				<Col>
+					Preview Link:
+					<IdentifierLink typeId={typeValue} value={valueValue}/>
+				</Col>
+			</Row>
+			)}
 			<hr/>
 		</div>
 	);
