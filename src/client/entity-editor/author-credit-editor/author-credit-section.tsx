@@ -211,10 +211,7 @@ AuthorCreditSection.defaultProps = {
 function mapStateToProps(rootState, {type}): StateProps {
 	const entitySection = `${camelCase(type)}Section`;
 	const authorCreditEnable = rootState.getIn([entitySection, 'authorCreditEnable']) ?? true;
-	const authorCreditState = rootState.get('authorCreditEditor');
 	const showEditor = rootState.getIn([entitySection, 'authorCreditEditorVisible']);
-
-	const authorCreditRow = authorCreditState.first();
 
 	return {
 		authorCreditEditor: rootState.get('authorCreditEditor'),
