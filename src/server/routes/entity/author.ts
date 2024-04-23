@@ -53,11 +53,11 @@ const additionalAuthorProps = [
 
 export function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
-		data.aliasEditor, data.nameSection
+		data.aliasSection, data.nameSection
 	);
 
 	const identifiers = entityRoutes.constructIdentifiers(
-		data.identifierEditor
+		data.identifierSection
 	);
 
 	const relationships = entityRoutes.constructRelationships(
@@ -258,13 +258,8 @@ export function authorToFormState(author) {
 	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(author.aliasSet);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
-	const aliasEditor = {};
-	aliases.forEach((alias) => { aliasEditor[alias.id] = alias; });
-
-	const buttonBar = {
-		aliasEditorVisible: false,
-		identifierEditorVisible: false
-	};
+	const aliasSection = {};
+	aliases.forEach((alias) => { aliasSection[alias.id] = alias; });
 
 	const nameSection = _.isEmpty(defaultAliasList) ? {
 		language: null,
@@ -280,9 +275,9 @@ export function authorToFormState(author) {
 			...rest
 		})) : [];
 
-	const identifierEditor = {};
+	const identifierSection = {};
 	identifiers.forEach(
-		(identifier) => { identifierEditor[identifier.id] = identifier; }
+		(identifier) => { identifierSection[identifier.id] = identifier; }
 	);
 
 	const authorSection = {
@@ -320,10 +315,9 @@ export function authorToFormState(author) {
 	}
 
 	return {
-		aliasEditor,
+		aliasSection,
 		authorSection,
-		buttonBar,
-		identifierEditor,
+		identifierSection,
 		nameSection,
 		relationshipSection,
 		...optionalSections

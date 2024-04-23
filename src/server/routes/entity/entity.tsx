@@ -1229,10 +1229,10 @@ type NameSectionT = {
 };
 
 export function constructAliases(
-	aliasEditor: {[propName: string]: AliasEditorT}, nameSection: NameSectionT
+	aliasSection: {[propName: string]: AliasEditorT}, nameSection: NameSectionT
 ) {
 	const aliases = _.map(
-		aliasEditor,
+		aliasSection,
 		(
 			{language: languageId, name, primary, sortName}: AliasEditorT,
 			id
@@ -1256,17 +1256,17 @@ export function constructAliases(
 	}, ...aliases];
 }
 
-type IdentifierEditorT = {
+type IdentifierSectionT = {
 	type: number,
 	value: string
 };
 
 export function constructIdentifiers(
-	identifierEditor: {[propName: string]: IdentifierEditorT}
+	identifierSection: {[propName: string]: IdentifierSectionT}
 ) {
 	return _.map(
-		identifierEditor,
-		({type: typeId, value}: IdentifierEditorT, id: string) =>
+		identifierSection,
+		({type: typeId, value}: IdentifierSectionT, id: string) =>
 			({id, typeId, value})
 	);
 }

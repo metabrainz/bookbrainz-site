@@ -4,7 +4,7 @@ import {isbn10To13, isbn13To10} from '../../../common/helpers/utils';
 import {FormCheck} from 'react-bootstrap';
 import NameField from '../../entity-editor/common/name-field';
 import React from 'react';
-import {addOtherISBN} from '../../entity-editor/identifier-editor/actions';
+import {addOtherISBN} from '../../entity-editor/identifier-section/actions';
 import {connect} from 'react-redux';
 
 

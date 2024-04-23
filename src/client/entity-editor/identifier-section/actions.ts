@@ -16,13 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-export const ADD_IDENTIFIER_ROW = 'ADD_IDENTIFIER_ROW';
 export const REMOVE_IDENTIFIER_ROW = 'REMOVE_IDENTIFIER_ROW';
 export const UPDATE_IDENTIFIER_TYPE = 'UPDATE_IDENTIFIER_TYPE';
 export const UPDATE_IDENTIFIER_VALUE = 'UPDATE_IDENTIFIER_VALUE';
-export const HIDE_IDENTIFIER_EDITOR = 'HIDE_IDENTIFIER_EDITOR';
 export const REMOVE_EMPTY_IDENTIFIERS = 'REMOVE_EMPTY_IDENTIFIERS';
 export const ADD_OTHER_ISBN = 'ADD_OTHER_ISBN';
+export const ADD_IDENTIFIER = 'ADD_IDENTIFIER';
 
 export type Action = {
 	type: string,
@@ -31,20 +30,6 @@ export type Action = {
 		debounce?: string
 	}
 };
-
-/**
- * Produces an action indicating that the identifier editor should be hidden
- * from view.
- *
- * @see showIdentifierEditor
- *
- * @returns {Action} The resulting HIDE_IDENTIFIER_EDITOR action.
- */
-export function hideIdentifierEditor(): Action {
-	return {
-		type: HIDE_IDENTIFIER_EDITOR
-	};
-}
 
 let nextIdentifierRowId = 0;
 
@@ -55,14 +40,20 @@ let nextIdentifierRowId = 0;
  *
  * @returns {Action} The resulting ADD_IDENTIFIER_ROW action.
  */
-export function addIdentifierRow(): Action {
-	/*
-	 * Prepend 'n' here to indicate new identifier, and avoid conflicts with IDs
-	 * of existing identifiers.
-	 */
+
+export function addIdentifier(
+	value: string, type: {value: number, label: string}, suggestedType: number
+): Action {
 	return {
-		payload: `n${nextIdentifierRowId++}`,
-		type: ADD_IDENTIFIER_ROW
+		payload: {
+			data: {
+				type: type.value,
+				value
+			},
+			rowId: `n${nextIdentifierRowId++}`,
+			suggestedType
+		},
+		type: ADD_IDENTIFIER
 	};
 }
 

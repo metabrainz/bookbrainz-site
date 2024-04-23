@@ -69,7 +69,7 @@ describe('Series routes with entity editing priv', () => {
 	it('should not throw error while seeding series', async () => {
 		const data = {
 			...seedInitialState,
-			'identifierEditor.t30': 'wikidataid',
+			'identifierSection.t30': 'wikidataid',
 			orderType: '',
 			seriesType: ''
 

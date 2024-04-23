@@ -21,7 +21,7 @@ import * as React from 'react';
 
 import {Card, Col, Row} from 'react-bootstrap';
 
-import AliasEditorMerge from './alias-editor/alias-editor-merge';
+import AliasEditorMerge from './alias-section/alias-editor-merge';
 import AnnotationSection from './annotation-section/annotation-section';
 import Entity from './common/entity';
 import EntityIdentifiers from '../components/pages/entities/identifiers';
@@ -157,7 +157,7 @@ EntityMerge.displayName = 'EntityMerge';
 
 function mapStateToProps(rootState): StateProps {
 	return {
-		identifierSet: rootState.get('identifierEditor', {})
+		identifierSet: rootState.get('identifierSection', {})
 	};
 }
 function mapDispatchToProps(dispatch, {submissionUrl}) {

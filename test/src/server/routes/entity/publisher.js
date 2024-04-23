@@ -50,7 +50,7 @@ describe('Publisher routes with entity editing priv', () => {
 	it('should not throw error while seeding publisher', async () => {
 		const data = {
 			...seedInitialState,
-			'identifierEditor.t20': 'wikidataid',
+			'identifierSection.t20': 'wikidataid',
 			'publisherSection.area': '',
 			'publisherSection.beginDate': 'invalid',
 			'publisherSection.endDate': '',

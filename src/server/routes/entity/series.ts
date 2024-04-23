@@ -51,11 +51,11 @@ const additionalSeriesProps = [
 
 export function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
-		data.aliasEditor, data.nameSection
+		data.aliasSection, data.nameSection
 	);
 
 	const identifiers = entityRoutes.constructIdentifiers(
-		data.identifierEditor
+		data.identifierSection
 	);
 	const seriesItems = entityRoutes.constructRelationships(
 		data.seriesSection, 'seriesItems'
@@ -251,13 +251,8 @@ export function seriesToFormState(series) {
 	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(series.aliasSet);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
-	const aliasEditor = {};
-	aliases.forEach((alias) => { aliasEditor[alias.id] = alias; });
-
-	const buttonBar = {
-		aliasEditorVisible: false,
-		identifierEditorVisible: false
-	};
+	const aliasSection = {};
+	aliases.forEach((alias) => { aliasSection[alias.id] = alias; });
 
 	const nameSection = _.isEmpty(defaultAliasList) ? {
 		language: null,
@@ -273,9 +268,9 @@ export function seriesToFormState(series) {
 			...rest
 		})) : [];
 
-	const identifierEditor = {};
+	const identifierSection = {};
 	identifiers.forEach(
-		(identifier) => { identifierEditor[identifier.id] = identifier; }
+		(identifier) => { identifierSection[identifier.id] = identifier; }
 	);
 	const seriesSection = {
 		orderType: series.seriesOrderingType && series.seriesOrderingType.id,
@@ -315,9 +310,8 @@ export function seriesToFormState(series) {
 	}
 
 	return {
-		aliasEditor,
-		buttonBar,
-		identifierEditor,
+		aliasSection,
+		identifierSection,
 		nameSection,
 		relationshipSection,
 		seriesSection,

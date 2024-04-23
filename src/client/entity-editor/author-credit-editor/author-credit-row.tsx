@@ -60,7 +60,7 @@ type Props = StateProps & DispatchProps & OwnProps;
 /**
  * Container component. The IdentifierRow component renders a single Row
  * containing several input fields, allowing the user to set the value and type
- * for an identifier in the IdentifierEditor. A button is also included to
+ * for an identifier in the IdentifierSection. A button is also included to
  * remove the identifier from the editor.
  *
  * @param {Object} props - The properties passed to the component.

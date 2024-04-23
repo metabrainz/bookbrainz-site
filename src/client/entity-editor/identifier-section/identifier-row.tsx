@@ -24,23 +24,20 @@ import {
 	Action, debouncedUpdateIdentifierValue, removeIdentifierRow,
 	updateIdentifierType
 } from './actions';
-import {Col, Form, Row} from 'react-bootstrap';
-import {
-	IdentifierType,
-	validateIdentifierValue
-} from '../validators/common';
+import {Col, Row} from 'react-bootstrap';
+import {faPencilAlt, faTrash} from '@fortawesome/free-solid-svg-icons';
 import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import Select from 'react-select';
-import ValueField from './value-field';
+import IdentifierEditor from './identifier-editor';
+import {IdentifierType} from '../validators/common';
 import {collapseWhiteSpaces} from '../../../common/helpers/utils';
 import {connect} from 'react-redux';
-import {faTrash} from '@fortawesome/free-solid-svg-icons';
 
 
 type OwnProps = {
 	index: number,
-	typeOptions: Array<IdentifierType>
+	typeOptions: Array<IdentifierType>,
+	isUnifiedForm: boolean
 };
 
 type StateProps = {
@@ -54,14 +51,14 @@ type DispatchProps = {
 	onValueChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown
 };
 
-type Props = StateProps & DispatchProps & OwnProps;
+type Props = DispatchProps & OwnProps & StateProps;
 
 /**
- * Container component. The IdentifierRow component renders a single Row
- * containing several input fields, allowing the user to set the value and type
- * for an identifier in the IdentifierEditor. A button is also included to
- * remove the identifier from the editor.
- *
+ * Container component. The IdentifierRow component renders all the identifiers
+ * of the entity, displaying information about the identifier value and it's type
+ * with the edit and delete icon button besides each identifiers
+ * the edit icon button opens a model when the show property is set
+ * the delete icon button removes the identifier from the list when clicked
  * @param {Object} props - The properties passed to the component.
  * @param {number} props.index - The index of the row in the parent editor.
  * @param {Array} props.typeOptions - The list of possible types for an
@@ -72,7 +69,7 @@ type Props = StateProps & DispatchProps & OwnProps;
  * @param {Function} props.onTypeChange - A function to be called when a new
  *        identifier type is selected.
  * @param {Function} props.onRemoveButtonClick - A function to be called when
- *        the button to remove the identifier is clicked.
+ *        the trash icon to remove the identifier is clicked.
  * @param {Function} props.onValueChange - A function to be called when the
  *        value for the identifier is changed.
  * @returns {ReactElement} React element containing the rendered IdentifierRow.
@@ -84,50 +81,60 @@ function IdentifierRow({
 	typeValue,
 	onTypeChange,
 	onRemoveButtonClick,
-	onValueChange
+	onValueChange,
+	isUnifiedForm
 }: Props) {
 	const identifierTypesForDisplay = typeOptions.map((type) => ({
 		label: type.label,
 		value: type.id
 	}));
+	const [showEditor, setEditorVisibility] = React.useState(false);
 	const identifierValue = identifierTypesForDisplay.filter((el) => el.value === typeValue);
+
+	const handleEditButtonClick = React.useCallback(() => {
+		setEditorVisibility(true);
+	  }, []);
+
+	const lgCol = {offset: 4, span: 3};
+	if (isUnifiedForm) {
+		lgCol.offset = 0;
+	}
 	return (
-		<div className="align-items-center d-flex flex-column">
+		<div>
+			<IdentifierEditor
+				identifierTypesForDisplay={identifierTypesForDisplay}
+				// eslint-disable-next-line react/no-array-index-key
+				identifierValue={identifierValue}
+				index={index}
+				key={index}
+				setVisibility={setEditorVisibility}
+				show={showEditor}
+				typeOptions={typeOptions}
+				typeValue={typeValue}
+				valueValue={valueValue}
+				onTypeChange={onTypeChange}
+				onValueChange={onValueChange}
+			/>
 			<Row>
-				<Col lg={5}>
-					<ValueField
-						defaultValue={valueValue}
-						empty={!valueValue && typeValue === null}
-						error={!validateIdentifierValue(
-							valueValue, typeValue, typeOptions
-						)}
-						onChange={onValueChange}
-					/>
+				<Col lg={lgCol}>
+		        <strong>{identifierValue[0].label} : {valueValue}</strong>
 				</Col>
-				<Col lg={5}>
-					<Form.Group>
-						<Form.Label>Type</Form.Label>
-						<Select
-							classNamePrefix="react-select"
-							instanceId={`identifierType${index}`}
-							options={identifierTypesForDisplay}
-							value={identifierValue}
-							onChange={onTypeChange}
-						/>
-					</Form.Group>
-				</Col>
-				<Col className="align-items-center d-flex justify-content-center mt-2" lg={2}>
+		    <Col className="d-flex justify-content-end" lg={1}>
 					<FontAwesomeIcon
+						icon={faPencilAlt}
+						onClick={handleEditButtonClick}
+					/>
+					<FontAwesomeIcon
+						className="ml-4"
 						icon={faTrash}
 						onClick={onRemoveButtonClick}
 					/>
-					<span onClick={onRemoveButtonClick}>&nbsp;Remove</span>
-				</Col>
+		    </Col>
 			</Row>
 		</div>
 	);
 }
-IdentifierRow.displayName = 'IdentifierEditor.Identifier';
+IdentifierRow.displayName = 'IdentifierRow';
 
 
 function handleValueChange(
@@ -162,15 +169,13 @@ function handleValueChange(
 	return dispatch(debouncedUpdateIdentifierValue(index, value, guessedType));
 }
 
-
 function mapStateToProps(rootState, {index}: OwnProps): StateProps {
-	const state = rootState.get('identifierEditor');
+	const state = rootState.get('identifierSection');
 	return {
 		typeValue: state.getIn([index, 'type']),
 		valueValue: state.getIn([index, 'value'])
 	};
 }
-
 
 function mapDispatchToProps(
 	dispatch: Dispatch<Action>,

@@ -15,40 +15,32 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
 import {OverlayTrigger, Tooltip} from 'react-bootstrap';
+import AliasModalBody from './alias-section-body';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import IdentifierModalBody from './identifier-modal-body';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 /**
- * Container component. The IdentifierEditor component contains a number of
- * IdentifierRow elements, and renders these inside a modal, which appears when
- * the show property of the component is set.
+ * Container component. The AliasSection component contains alias section
+ * body, and renders it in alias section inside entity editor page.
  *
  * @param {Object} props - The properties passed to the component.
- * @param {Array} props.identifiers - The list of identifiers to be rendered in
- *        the editor.
- * @param {Array} props.identifierTypes - The list of possible types for an
- *        identifier.
- * @param {Function} props.onAddIdentifier - A function to be called when the
- *        button to add an identifier is clicked.
- * @returns {ReactElement} React element containing the rendered
- *          IdentifierEditor.
+ * @param {Array} props.languageOptions - The list of possible languages for an
+ *        alias.
+ * @returns {ReactElement} React element containing the rendered AliasEditor.
  */
-const IdentifierEditor = ({
-	identifierTypes
+const AliasSection = ({
+	languageOptions
 }) => {
-	const helpText = `identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc.
-	You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).`;
-
+	const helpText = `Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc.
+		Refer to the help page for more details and examples.`;
 	const helpIconElement = (
 		<OverlayTrigger
 			delay={50}
-			overlay={<Tooltip id="identifier-editor-tooltip">{helpText}</Tooltip>}
+			overlay={<Tooltip id="alias-editor-tooltip">{helpText}</Tooltip>}
 			placement="right"
 		>
 			<FontAwesomeIcon
@@ -61,22 +53,22 @@ const IdentifierEditor = ({
 	return (
 		<div>
 			<div>
-				<div style={{display: 'flex'}}>
-					<h2>Add identifiers</h2>
-					<div>
+				<div className="d-flex">
+				  <h2>Add new alias</h2>
+				  <div className="d-flex flex-column justify-content-center ml-2">
 						{helpIconElement}
-					</div>
+				  </div>
 				</div>
 			</div>
 			<div>
-				<IdentifierModalBody identifierTypes={identifierTypes}/>
+				<AliasModalBody languageOptions={languageOptions}/>
 			</div>
 		</div>
-	);
+	  );
 };
-IdentifierEditor.displayName = 'IdentifierEditor';
-IdentifierEditor.propTypes = {
-	identifierTypes: PropTypes.array.isRequired
+AliasSection.displayName = 'AliasSection';
+AliasSection.propTypes = {
+	languageOptions: PropTypes.array.isRequired
 };
 
-export default connect(null, null)(IdentifierEditor);
+export default connect(null, null)(AliasSection);

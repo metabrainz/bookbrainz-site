@@ -18,11 +18,10 @@
 
 import * as React from 'react';
 import {connect, useSelector} from 'react-redux';
-import AliasEditor from './alias-editor/alias-editor';
+import AliasSection from './alias-section/alias-section';
 import AnnotationSection from './annotation-section/annotation-section';
-import ButtonBar from './button-bar/button-bar';
 import {Card} from 'react-bootstrap';
-import IdentifierEditor from './identifier-editor/identifier-editor';
+import IdentifierSection from './identifier-section/identifier-section';
 import NameSection from './name-section/name-section';
 import RelationshipSection from './relationship-editor/relationship-section';
 import SubmissionSection from './submission-section/submission-section';
@@ -81,8 +80,7 @@ const EntityEditor = (props: Props) => {
 				</Card.Header>
 				<Card.Body>
 					<NameSection {...props}/>
-					<ButtonBar {...props}/>
-					<AliasEditor {...props}/>
+					<AliasSection {...props}/>
 					{
 						React.cloneElement(
 							React.Children.only(children),
@@ -90,7 +88,7 @@ const EntityEditor = (props: Props) => {
 						)
 					}
 					<RelationshipSection {...props}/>
-					<IdentifierEditor {...props}/>
+					<IdentifierSection {...props}/>
 					<AnnotationSection {...props}/>
 				</Card.Body>
 				<Card.Footer>

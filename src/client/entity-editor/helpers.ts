@@ -30,18 +30,17 @@ import SeriesSection from './series-section/series-section';
 import SeriesSectionMerge from './series-section/series-section-merge';
 import WorkSection from './work-section/work-section';
 import WorkSectionMerge from './work-section/work-section-merge';
-import aliasEditorReducer from './alias-editor/reducer';
+import aliasSectionReducer from './alias-section/reducer';
 import annotationSectionReducer from './annotation-section/reducer';
 import authorCreditEditorReducer from './author-credit-editor/reducer';
 import authorCreditMergeReducer from './author-credit-editor/merge-reducer';
 import authorSectionReducer from './author-section/reducer';
-import buttonBarReducer from './button-bar/reducer';
 import {camelCase} from 'lodash';
 import {combineReducers} from 'redux-immutable';
 import editionGroupSectionReducer from './edition-group-section/reducer';
 import editionSectionReducer from './edition-section/reducer';
 import {getAttributeName} from './relationship-editor/helper';
-import identifierEditorReducer from './identifier-editor/reducer';
+import identifierSectionReducer from './identifier-section/reducer';
 import nameSectionReducer from './name-section/reducer';
 import publisherSectionReducer from './publisher-section/reducer';
 import relationshipSectionReducer from './relationship-editor/reducer';
@@ -135,11 +134,10 @@ export function createRootReducer(entityType: string, isMerge = false) {
 	const entityReducer = getEntitySectionReducer(entityType);
 
 	const reducers = {
-		aliasEditor: aliasEditorReducer,
+		aliasSection: aliasSectionReducer,
 		annotationSection: annotationSectionReducer,
-		buttonBar: buttonBarReducer,
 		[entityReducerKey]: entityReducer,
-		identifierEditor: identifierEditorReducer,
+		identifierSection: identifierSectionReducer,
 		nameSection: nameSectionReducer,
 		relationshipSection: relationshipSectionReducer,
 		submissionSection: submissionSectionReducer

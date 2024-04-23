@@ -57,7 +57,7 @@ describe('Edition routes with entity editing priv', () => {
 			'editionSection.releaseDate': 'invalid',
 			'editionSection.weight': '453',
 			'editionSection.width': '',
-			'identifierEditor.t10': '0374533555'
+			'identifierSection.t10': '0374533555'
 		};
 		const res = await agent.post('/edition/create').set('Origin', `http://127.0.0.1:${agent.app.address().port}`).send(data);
 		expect(res.ok).to.be.true;

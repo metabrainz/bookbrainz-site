@@ -50,11 +50,11 @@ type OptionalSectionsT = {
 
 export function transformNewForm(data) {
 	const aliases = entityRoutes.constructAliases(
-		data.aliasEditor, data.nameSection
+		data.aliasSection, data.nameSection
 	);
 
 	const identifiers = entityRoutes.constructIdentifiers(
-		data.identifierEditor
+		data.identifierSection
 	);
 
 	const relationships = entityRoutes.constructRelationships(
@@ -276,13 +276,8 @@ export function workToFormState(work) {
 	const defaultAliasIndex = entityRoutes.getDefaultAliasIndex(work.aliasSet);
 	const defaultAliasList = aliases.splice(defaultAliasIndex, 1);
 
-	const aliasEditor = {};
-	aliases.forEach((alias) => { aliasEditor[alias.id] = alias; });
-
-	const buttonBar = {
-		aliasEditorVisible: false,
-		identifierEditorVisible: false
-	};
+	const aliasSection = {};
+	aliases.forEach((alias) => { aliasSection[alias.id] = alias; });
 
 	const nameSection = _.isEmpty(defaultAliasList) ? {
 		language: null,
@@ -298,9 +293,9 @@ export function workToFormState(work) {
 			...rest
 		})) : [];
 
-	const identifierEditor = {};
+	const identifierSection = {};
 	identifiers.forEach(
-		(identifier) => { identifierEditor[identifier.id] = identifier; }
+		(identifier) => { identifierSection[identifier.id] = identifier; }
 	);
 
 	const workSection = {
@@ -335,9 +330,8 @@ export function workToFormState(work) {
 	}
 
 	return {
-		aliasEditor,
-		buttonBar,
-		identifierEditor,
+		aliasSection,
+		identifierSection,
 		nameSection,
 		relationshipSection,
 		workSection,

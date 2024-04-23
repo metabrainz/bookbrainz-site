@@ -55,7 +55,7 @@ describe('Author routes with entity editing priv', () => {
 			'authorSection.endDate': '',
 			'authorSection.gender': '',
 			'authorSection.type': '',
-			'identifierEditor.t23': 'openlibid'
+			'identifierSection.t23': 'openlibid'
 		  };
 		const res = await agent.post('/author/create').set('Origin', `http://127.0.0.1:${agent.app.address().port}`).send(data);
 		expect(res.ok).to.be.true;

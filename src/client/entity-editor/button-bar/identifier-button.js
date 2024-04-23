@@ -26,14 +26,14 @@ import {faTimes} from '@fortawesome/free-solid-svg-icons';
 /**
  * Presentational component. The IdentifierButton component renders a button
  * component in the style of a link. The link text indicates the number of
- * identifiers currently set in the IdentifierEditor, and invites the user to
+ * identifiers currently set in the identifierSection, and invites the user to
  * add new or edit existing identifiers.
  *
  * @param {Object} props - The properties passed to the component.
  * @param {boolean} props.identifiersInvalid - Whether the inputs are valid
  *        identifiers.
  * @param {number} props.numIdentifiers - The number of identifiers present in
- *        the IdentifierEditor - used to determine the correct button label.
+ *        the identifierSection - used to determine the correct button label.
  * @returns {ReactElement} React element containing the rendered
  *          IdentifierButton.
  */
