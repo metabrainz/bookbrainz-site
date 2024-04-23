@@ -16,11 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as handler from '../helpers/handler';
 import * as search from '../../common/helpers/search';
 import {camelCase, differenceWith, isEqual, toLower, upperFirst} from 'lodash';
 import {BadRequestError} from '../../common/helpers/error';
-
+import log from 'log';
 
 /**
  * A handler for create or edit actions on collections.
@@ -89,22 +88,11 @@ export async function collectionCreateOrEditHandler(req, res, next) {
 		// if it's new or the name is changed,
 		// we need to update this collection in ElasticSearch index
 		if (isNew || res.locals.collection.name !== newCollection.get('name')) {
-			const collectionPromiseForES = new Promise((resolve) => {
-				const collectionForES = {
-					aliasSet: {
-						aliases: [
-							{name: newCollection.get('name')}
-						]
-					},
-					bbid: newCollection.get('id'),
-					id: newCollection.get('id'),
-					type: 'Collection'
-				};
-				resolve(collectionForES);
-			});
-			return handler.sendPromiseResult(res, collectionPromiseForES, search.indexEntity);
+			// Type needed for indexing
+			newCollection.set('type', 'Collection');
+			await search.indexEntity(newCollection);
 		}
-		return res.send(newCollection.toJSON());
+		return res.status(200).send(newCollection.toJSON());
 	}
 	catch (err) {
 		return next(err);

@@ -46,7 +46,7 @@ function reducer(
 			return state.delete(payload);
 		case REMOVE_EMPTY_ALIASES:
 			return state.filterNot(alias =>
-				alias.get('name') === '' && alias.get('language') === null && alias.get('sortName') === '');
+				alias.get('name') === '');
 		// no default
 	}
 	return state;
