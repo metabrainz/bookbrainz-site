@@ -83,9 +83,6 @@ const EntityEditor = (props: Props) => {
 					<div>
 					 {entityURL ? <a href={entityURL}>{heading}</a> : heading}
 					</div>
-					<div>
-					 {entityURL ? <a href={entityURL}>{heading}</a> : heading}
-					</div>
 				</Card.Header>
 				<Card.Body>
 					<NameSection {...props}/>
