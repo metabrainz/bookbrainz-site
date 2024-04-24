@@ -71,7 +71,7 @@ AliasEditorMerge.propTypes = {
 
 function mapStateToProps(rootState) {
 	const nameSection = rootState.get('nameSection');
-	const aliases = rootState.get('aliasEditor');
+	const aliases = rootState.get('aliasSection');
 
 	/** Dynamically filter out aliases that are different
 	 * from the attributes selected in the nameSection

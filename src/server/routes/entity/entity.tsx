@@ -1215,7 +1215,7 @@ export async function handleCreateOrEditEntity(
 	return res.status(200).send(entityJSON);
 }
 
-type AliasEditorT = {
+type aliasSectionT = {
 	language: number | null | undefined,
 	name: string,
 	primary: boolean,
@@ -1231,12 +1231,12 @@ type NameSectionT = {
 };
 
 export function constructAliases(
-	aliasSection: {[propName: string]: AliasEditorT}, nameSection: NameSectionT
+	aliasSection: {[propName: string]: aliasSectionT}, nameSection: NameSectionT
 ) {
 	const aliases = _.map(
 		aliasSection,
 		(
-			{language: languageId, name, primary, sortName}: AliasEditorT,
+			{language: languageId, name, primary, sortName}: aliasSectionT,
 			id
 		) => ({
 			default: false,
