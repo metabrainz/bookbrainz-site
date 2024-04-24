@@ -27,6 +27,7 @@ import RelationshipSection from './relationship-editor/relationship-section';
 import SubmissionSection from './submission-section/submission-section';
 import _ from 'lodash';
 import {getEntityUrl} from '../helpers/entity';
+import {getEntityUrl} from '../helpers/entity';
 import {submit} from './submission-section/actions';
 
 
@@ -35,12 +36,14 @@ type OwnProps = {
 	heading: string,
 	intitialState:Record<string, any>,
 	entity: any
+	entity: any
 };
 
 type DispatchProps = {
 	onSubmit: (event:React.FormEvent) => unknown
 };
 
+type Props = DispatchProps & OwnProps;
 type Props = DispatchProps & OwnProps;
 
 /**
@@ -59,8 +62,11 @@ const EntityEditor = (props: Props) => {
 		heading,
 		onSubmit,
 		entity
+		onSubmit,
+		entity
 	} = props;
 	const currentState = (useSelector((state) => state) as any).toJS();
+	let entityURL;
 	let entityURL;
 	// eslint-disable-next-line consistent-return
 	const handleUrlChange = React.useCallback(() => {
@@ -80,6 +86,9 @@ const EntityEditor = (props: Props) => {
 		<form onSubmit={onSubmit}>
 			<Card>
 				<Card.Header as="h4">
+					<div>
+					 {entityURL ? <a href={entityURL}>{heading}</a> : heading}
+					</div>
 					<div>
 					 {entityURL ? <a href={entityURL}>{heading}</a> : heading}
 					</div>
