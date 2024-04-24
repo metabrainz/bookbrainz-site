@@ -149,10 +149,10 @@ export type SearchEntityCreateProps = SearchEntityCreateDispatchProps & SearchEn
 export type EntityModalStateProps = {
 	isNameSectionValid:boolean,
 	isNameSectionEmpty:boolean,
-	isAliasEditorValid:boolean,
-	isIdentifierSeactionValid:boolean,
+	isAliasSectionValid:boolean,
+	isIdentifierSectionValid:boolean,
 	isEntitySectionValid:boolean,
-	isAliasEditorEmpty:boolean,
+	isAliasSectionEmpty:boolean,
 	isIdentifierSectionEmpty:boolean
 };
 
