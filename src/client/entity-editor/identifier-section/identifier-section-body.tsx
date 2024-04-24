@@ -22,7 +22,7 @@ export const IdentifierSectionBody = ({identifiers, identifierTypes, isUnifiedFo
 		textAlign = 'text-start';
 	}
 	const noIdentifiersTextClass =
-		classNames({textAlign}, {'d-none': identifiers.size});
+		classNames(textAlign, {'d-none': identifiers.size});
 	return (
 		<>
 			<div className={noIdentifiersTextClass}>

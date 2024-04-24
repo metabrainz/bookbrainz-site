@@ -59,9 +59,7 @@ class EditorAchievementTab extends React.Component {
 			const achievementHTML = (
 				<Achievement
 					achievement={achievement}
-					counter={achievement.counter}
 					key={`${this.state.editor.id}${achievement.id}`}
-					unlocked={achievement.unlocked}
 				/>
 			);
 			if (achievement.unlocked) {
@@ -93,15 +91,15 @@ class EditorAchievementTab extends React.Component {
 				>
 					<CardDeck className="mb-3">
 						<DragAndDrop
-							initialAchievement={this.currAchievement.model.fulfillmentValue[0]?.achievement}
+							initialAchievement={this.currAchievement.model.fulfillmentValue?.[0]?.achievement}
 							name="rank1"
 						/>
 						<DragAndDrop
-							initialAchievement={this.currAchievement.model.fulfillmentValue[1]?.achievement}
+							initialAchievement={this.currAchievement.model.fulfillmentValue?.[1]?.achievement}
 							name="rank2"
 						/>
 						<DragAndDrop
-							initialAchievement={this.currAchievement.model.fulfillmentValue[2]?.achievement}
+							initialAchievement={this.currAchievement.model.fulfillmentValue?.[2]?.achievement}
 							name="rank3"
 						/>
 					</CardDeck>

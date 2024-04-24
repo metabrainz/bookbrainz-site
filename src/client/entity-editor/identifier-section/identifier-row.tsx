@@ -117,7 +117,7 @@ function IdentifierRow({
 			/>
 			<Row>
 				<Col lg={lgCol}>
-		        <strong>{identifierValue[0].label} : {valueValue}</strong>
+		        <strong>{identifierValue[0]?.label} : {valueValue}</strong>
 				</Col>
 		    <Col className="d-flex justify-content-end" lg={1}>
 					<FontAwesomeIcon

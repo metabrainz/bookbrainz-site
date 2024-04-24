@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -71,11 +70,5 @@ function DragAndDropImage({achievementId, achievementName, height, src}: Props):
 }
 
 DragAndDropImage.displayName = 'DragAndDropImage';
-DragAndDropImage.propTypes = {
-	achievementId: PropTypes.number.isRequired,
-	achievementName: PropTypes.string.isRequired,
-	height: PropTypes.string.isRequired,
-	src: PropTypes.string.isRequired
-};
 
 export default DragAndDropImage;
