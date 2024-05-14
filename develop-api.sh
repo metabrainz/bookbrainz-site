@@ -5,5 +5,13 @@ if [[ ! -d "src" ]]; then
     exit -1
 fi
 
-docker-compose -f docker-compose.api.yml run --rm startup &&
-docker-compose -f docker-compose.api.yml up --build bookbrainz-api
+echo "Checking docker compose version"
+if docker compose version &> /dev/null; then
+    DOCKER_COMPOSE_CMD="docker compose"
+else
+    DOCKER_COMPOSE_CMD="docker-compose"
+fi
+
+
+$DOCKER_COMPOSE_CMD -f docker-compose.api.yml run --rm startup &&
+$DOCKER_COMPOSE_CMD -f docker-compose.api.yml up --build bookbrainz-api
