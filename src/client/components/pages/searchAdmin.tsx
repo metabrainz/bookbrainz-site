@@ -28,7 +28,7 @@ export default function SearchAdminPage() {
 			setSuccess(true);
 		}
 		catch (error) {
-			setErrorMessage(error);
+			setErrorMessage(error.toString());
 		}
 		setLoading(false);
 	}, []);

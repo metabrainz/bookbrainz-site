@@ -27,6 +27,7 @@ import * as search from '../../common/helpers/search';
 import {keys as _keys, snakeCase as _snakeCase, camelCase, isNil, isString, upperFirst} from 'lodash';
 import {escapeProps, generateProps} from '../helpers/props';
 
+import {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import Layout from '../../client/containers/layout';
 import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import React from 'react';
@@ -34,7 +35,6 @@ import ReactDOMServer from 'react-dom/server';
 import SearchPage from '../../client/components/pages/search';
 import express from 'express';
 import target from '../templates/target';
-import { EntityTypeString } from 'bookbrainz-data/lib/types/entity';
 
 
 const router = express.Router();
@@ -150,14 +150,14 @@ router.get('/exists', (req, res) => {
 router.get('/reindex', auth.isAuthenticated, auth.isAuthorized(REINDEX_SEARCH_SERVER), async (req, res) => {
 	req.socket.setTimeout(600000);
 	const {orm} = req.app.locals;
-	const type = isString(req.query.type) ? upperFirst(camelCase(req.query.type)) : "allEntities";
+	const type = isString(req.query.type) ? upperFirst(camelCase(req.query.type)) : 'allEntities';
 	try {
-		await search.generateIndex(orm, type as EntityTypeString );
+		await search.generateIndex(orm, type as search.IndexableEntities);
 		return handler.sendPromiseResult(res, {success: true});
-	} catch (err) {
-		return error.sendErrorAsJSON(res, new error.SiteError("Cannot index entites for search, something went wrong", req));
 	}
-
+	catch (err) {
+		return error.sendErrorAsJSON(res, new error.SiteError(`Cannot index entites for search, something went wrong: ${err.toString()}`, req));
+	}
 });
 
 router.get('/entity/:bbid', async (req, res) => {

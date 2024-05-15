@@ -38,6 +38,7 @@ import relationshipTypesRouter from './routes/relationship-types';
 import reviewsRouter from './routes/reviews';
 import revisionRouter from './routes/revision';
 import revisionsRouter from './routes/revisions';
+import searchAdminRouter from './routes/searchAdmin';
 import searchRouter from './routes/search';
 import seriesRouter from './routes/entity/series';
 import statisticsRouter from './routes/statistics';
@@ -59,6 +60,7 @@ function initRootRoutes(app) {
 	app.use('/statistics', statisticsRouter);
 	app.use('/external-service', externalServiceRouter);
 	app.use('/admin-panel', adminPanelRouter);
+	app.use('/search-admin', searchAdminRouter);
 	app.use('/admin-logs', adminLogsRouter);
 	app.use('/relationship-type', relationshipTypeRouter);
 	app.use('/relationship-types', relationshipTypesRouter);
