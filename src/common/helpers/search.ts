@@ -50,7 +50,7 @@ function sanitizeEntityType(type) {
 	return snakeCase(type);
 }
 
-type IndexableEntities = EntityTypeString | 'Editor' | 'Collection' | 'Area';
+export type IndexableEntities = EntityTypeString | 'Editor' | 'Collection' | 'Area';
 const commonProperties = ['bbid', 'id', 'name', 'type', 'disambiguation'];
 
 const indexMappings = {
@@ -130,8 +130,9 @@ const indexMappings = {
    which contains a lot of fields we don't use as well as some internal props (_pivot props)
    This utility function prepares the Model into a minimal object that will be indexed
 */
-export function getDocumentToIndex(entity:any, entityType: IndexableEntities) {
+export function getDocumentToIndex(entity:any) {
 	const additionalProperties = [];
+	const entityType:IndexableEntities = entity.get('type');
 	switch (entityType) {
 		case 'Work':
 			additionalProperties.push('authors');
@@ -368,7 +369,7 @@ export async function autocomplete(orm, query, type, size = 42) {
 // eslint-disable-next-line consistent-return
 export function indexEntity(entity) {
 	const entityType = entity.get('type');
-	const document = getDocumentToIndex(entity, entityType);
+	const document = getDocumentToIndex(entity);
 	if (entity) {
 		return _client
 			.index({
@@ -409,20 +410,20 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 		index: _index
 	})?.body;
 
-	const shouldRecreateIndex = mainIndexExists && (recreateIndex || allEntities);
+	const shouldRecreateIndex = !mainIndexExists || recreateIndex || allEntities;
 
 	if (shouldRecreateIndex) {
-		// Drop index and recreate
+		log.notice('Deleting search index');
 		await _client.indices.delete({index: _index});
-	}
-	if (!mainIndexExists || shouldRecreateIndex) {
-		// Create the index if missing or re-create it if we just deleted it
+		log.notice('Creating new search index');
 		await _client.indices.create({body: indexMappings, index: _index});
 	}
 
 	log.notice(`Starting indexing of ${entityType}`);
 
-	const entityBehaviors = [];
+	const entityBehaviors:Array<{model:any,
+			relations: string[],
+			type:string}> = [];
 	const baseRelations = [
 		'annotation',
 		'defaultAlias',
@@ -473,10 +474,10 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 			type: 'Work'
 		});
 	}
-
 	// Update the indexed entries for each entity type
-	const behaviorPromise = entityBehaviors.map(async (behavior) => ({
-		results: await behavior.model
+	const entityLists = await Promise.all(entityBehaviors.map((behavior) => {
+		log.info(`Fetching ${behavior.type} models from the database`);
+		return behavior.model
 			.forge()
 			.query((qb) => {
 				qb.where('master', true);
@@ -485,20 +486,20 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 			.fetchAll({
 				withRelated: baseRelations.concat(behavior.relations)
 			})
-			.catch(log.error),
-		type: behavior.type
+			// .catch((error) => {
+			// 	log.error(error);
+			// 	throw error;
+			// });
 	}));
-	log.info(`Finished fetching entities from database for type ${entityType}`);
-
-	const entityLists = await Promise.all(behaviorPromise);
+	log.info(`Finished fetching entities from database for types ${entityBehaviors.map(({type}) => type).join(', ')}`);
 
 	if (allEntities || entityType === 'Work') {
 		log.info('Attaching author names to Work entities');
 		const authorCollection = entityLists.find(
-			({type}) => type === 'Author'
+			(result) => result.model instanceof Author
 		);
-		const workCollection = entityLists.find(({type}) => type === 'Work');
-		workCollection?.results.forEach((workEntity) => {
+		const workCollection = entityLists.find((result) => result.model instanceof Work);
+		workCollection?.forEach((workEntity) => {
 			const relationshipSet = workEntity.related('relationshipSet');
 			if (relationshipSet) {
 				const authorWroteWorkRels = relationshipSet
@@ -526,8 +527,7 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 	const listIndexes = [];
 	// Index all the entities
 	entityLists.forEach((entityList) => {
-		const listArray = entityList.results.map((entity) =>
-			getDocumentToIndex(entity, entityList.type));
+		const listArray = entityList.map(getDocumentToIndex);
 		listIndexes.push(_processEntityListForBulk(listArray));
 	});
 
