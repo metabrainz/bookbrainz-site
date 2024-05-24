@@ -5,5 +5,13 @@ if [[ ! -d "src" ]]; then
     exit -1
 fi
 
-docker-compose run --rm startup &&
-docker-compose up --build bookbrainz-site
+echo "Checking docker compose version"
+if docker compose version &> /dev/null; then
+    DOCKER_COMPOSE_CMD="docker compose"
+else
+    DOCKER_COMPOSE_CMD="docker-compose"
+fi
+
+
+$DOCKER_COMPOSE_CMD run --rm startup &&
+$DOCKER_COMPOSE_CMD up --build bookbrainz-site
