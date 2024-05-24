@@ -21,6 +21,7 @@ import * as commonUtils from './utils';
 import {camelCase, isString, snakeCase, upperFirst} from 'lodash';
 
 import ElasticSearch from '@elastic/elasticsearch';
+import {type ORM} from 'bookbrainz-data';
 import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import httpStatus from 'http-status';
 import log from 'log';
@@ -587,22 +588,30 @@ export function searchByName(orm, name, type, size, from) {
 	return _searchForEntities(orm, dslQuery);
 }
 
-export async function init(orm, options) {
-	if (!isString(options.host)) {
-		options.host = 'localhost:9200';
+export async function init(orm: ORM, options) {
+
+	if (!isString(options.host) && !isString(options.node) && !isString(options.auth)) {
+		options = {
+			auth: {password: 'changeme', username: 'elastic'},
+			node: 'http://localhost:9200',
+			requestTimeout: 60000,
+			host: 'localhost:9200'
+		};
+		log.warning('ElasticSearch configuration not provided. Using default settings.');
 	}
 
 	_client = new ElasticSearch.Client(options);
 
-	// Automatically index on app startup if we haven't already
 	try {
-		const mainIndexExists = await _client.indices.exists({index: _index});
-		if (mainIndexExists) {
-			return null;
-		}
-		return generateIndex(orm);
+		await _client.ping();
 	}
 	catch (error) {
-		return null;
+		return false;
 	}
+	const mainIndexExists = await _client.indices.exists({index: _index});
+	if (!mainIndexExists) {
+		// Automatically index on app startup if we haven't already, but don't block app setup
+		generateIndex(orm).catch(log.error);
+	}
+	return true;
 }

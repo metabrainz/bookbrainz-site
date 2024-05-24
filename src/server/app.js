@@ -34,7 +34,6 @@ import config from '../common/helpers/config';
 import express from 'express';
 import favicon from 'serve-favicon';
 import initInflux from './influx';
-import log from 'log';
 import logNode from 'log-node';
 import logger from 'morgan';
 import path from 'path';
@@ -96,24 +95,13 @@ if (config.influx) {
 
 // Authentication code depends on session, so init session first
 const authInitiated = auth.init(app);
+let searchInitiated;
 
 // Clone search config to prevent error if starting webserver and api
 // https://github.com/elastic/elasticsearch-js/issues/33
-
-const searchConfig = config.search || {};
-// Check if ElasticSearch configuration is provided
-if (searchConfig.node && searchConfig.auth) {
-	search.init(app.locals.orm, Object.assign({}, searchConfig));
-}
-else {
-	log.warning('ElasticSearch configuration not provided. Using default settings.');
-	const defaultConfig = {
-		auth: {password: 'changeme', username: 'elastic'},
-		node: 'http://localhost:9200',
-		requestTimeout: 60000
-	};
-	search.init(app.locals.orm, Object.assign({}, defaultConfig));
-}
+(async function initializeSearch() {
+    searchInitiated = await search.init(app.locals.orm, Object.assign({}, config.search));
+})();
 
 // Set up constants that will remain valid for the life of the app
 debug(`Git revision: ${siteRevision}`);
@@ -139,23 +127,13 @@ app.use((req, res, next) => {
 		});
 	}
 
-	if (!searchConfig.node || !searchConfig.auth) {
-		let msg;
-		if (process.env.DEPLOY_ENV === 'test') {
-			msg = 'Elastic search configs are not provided. Search server is not available on the test website';
-		}
-		else if (process.env.DEPLOY_ENV === 'beta') {
-			msg = 'Elastic search configs are not provided. Search server is not available on the beta website';
-		}
-		else {
-			msg = 'Elastic search configs are not provided. Search server is not available in your local environment';
-		}
+	if (!searchInitiated) {
+		const msg = 'We could not connect to our search server, all search functionality is unavailable.';
 		res.locals.alerts.push({
 			level: 'danger',
 			message: `${msg}`
 		});
 	}
-
 
 	if (!req.session || !authInitiated) {
 		res.locals.alerts.push({
