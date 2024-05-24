@@ -106,7 +106,7 @@ if (searchConfig.node && searchConfig.auth) {
 	search.init(app.locals.orm, Object.assign({}, searchConfig));
 }
 else {
-	log.error('ElasticSearch configuration not provided. Using default settings.');
+	log.warning('ElasticSearch configuration not provided. Using default settings.');
 	const defaultConfig = {
 		auth: {password: 'changeme', username: 'elastic'},
 		node: 'http://localhost:9200',
