@@ -49,9 +49,9 @@ export function validateForm(
 	formData: any, identifierTypes?: Array<_IdentifierType> | null | undefined
 ): boolean {
 	const conditions = [
-		validateAliases(get(formData, 'aliasEditor', {})),
+		validateAliases(get(formData, 'aliasSection', {})),
 		validateIdentifiers(
-			get(formData, 'identifierEditor', {}), identifierTypes
+			get(formData, 'identifierSection', {}), identifierTypes
 		),
 		validateNameSection(get(formData, 'nameSection', {})),
 		validateWorkSection(get(formData, 'workSection', {})),

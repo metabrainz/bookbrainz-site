@@ -16,43 +16,32 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Modal, OverlayTrigger, Tooltip} from 'react-bootstrap';
-import {hideIdentifierEditor, removeEmptyIdentifiers} from './actions';
+import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import IdentifierModalBody from './identifier-modal-body';
+import IdentifierSectionBody from './identifier-section-body';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
-
 /**
- * Container component. The IdentifierEditor component contains a number of
- * IdentifierRow elements, and renders these inside a modal, which appears when
- * the show property of the component is set.
+ * Container component. The identifierSection component contains
+ * IdentifierSectionBody elements, and renders it in the entity editor page
  *
  * @param {Object} props - The properties passed to the component.
  * @param {Array} props.identifiers - The list of identifiers to be rendered in
  *        the editor.
  * @param {Array} props.identifierTypes - The list of possible types for an
  *        identifier.
- * @param {Function} props.onAddIdentifier - A function to be called when the
- *        button to add an identifier is clicked.
- * @param {Function} props.onClose - A function to be called when the button to
- *        close the editor is clicked.
- * @param {boolean} props.show - Whether or not the editor modal should be
- *        visible.
  * @returns {ReactElement} React element containing the rendered
- *          IdentifierEditor.
+ *          identifierSection.
  */
-const IdentifierEditor = ({
+const IdentifierSection = ({
 	identifierTypes,
-	onClose,
-	show
+	isUnifiedForm
 }) => {
 	const helpText = `identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc.
 	You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).`;
-
 	const helpIconElement = (
 		<OverlayTrigger
 			delay={50}
@@ -65,42 +54,32 @@ const IdentifierEditor = ({
 			/>
 		</OverlayTrigger>
 	);
-
 	return (
-		<Modal show={show} size="lg" onHide={onClose}>
-			<Modal.Header>
-				<Modal.Title>
-					Identifier Editor {helpIconElement}
-				</Modal.Title>
-			</Modal.Header>
-
-			<Modal.Body>
-				<IdentifierModalBody identifierTypes={identifierTypes}/>
-			</Modal.Body>
-
-			<Modal.Footer>
-				<Button variant="primary" onClick={onClose}>Close</Button>
-			</Modal.Footer>
-		</Modal>
+		<div>
+			<div>
+				<div className="d-flex">
+					<h2>Add identifiers</h2>
+					<div className="d-flex flex-column justify-content-center ml-2">
+						{helpIconElement}
+					</div>
+				</div>
+			</div>
+			<div>
+				<IdentifierSectionBody
+					identifierTypes={identifierTypes}
+					isUnifiedForm={isUnifiedForm}
+				/>
+			</div>
+		</div>
 	);
 };
-IdentifierEditor.displayName = 'IdentifierEditor';
-IdentifierEditor.propTypes = {
+IdentifierSection.displayName = 'IdentifierSection';
+IdentifierSection.propTypes = {
 	identifierTypes: PropTypes.array.isRequired,
-	onClose: PropTypes.func.isRequired,
-	show: PropTypes.bool
+	isUnifiedForm: PropTypes.bool
 };
-IdentifierEditor.defaultProps = {
-	show: false
+IdentifierSection.defaultProps = {
+	isUnifiedForm: false
 };
 
-function mapDispatchToProps(dispatch) {
-	return {
-		onClose: () => {
-			dispatch(hideIdentifierEditor());
-			dispatch(removeEmptyIdentifiers());
-		}
-	};
-}
-
-export default connect(null, mapDispatchToProps)(IdentifierEditor);
+export default connect(null, null)(IdentifierSection);

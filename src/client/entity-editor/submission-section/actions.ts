@@ -183,7 +183,7 @@ function transformFormData(data:Record<string, any>):Record<string, any> {
 	});
 	// add edition at last
 	if (data.ISBN.type) {
-		data.identifierEditor.m0 = data.ISBN;
+		data.identifierSection.m0 = data.ISBN;
 	}
 	data.relationshipSection.relationships = _.mapValues(data.Works, (work, key) => {
 		const relationship = {

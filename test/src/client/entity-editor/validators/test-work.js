@@ -146,8 +146,8 @@ function describeValidateWorkSection() {
 
 function describeValidateForm() {
 	const validForm = {
-		aliasEditor: VALID_ALIASES,
-		identifierEditor: VALID_IDENTIFIERS,
+		aliasSection: VALID_ALIASES,
+		identifierSection: VALID_IDENTIFIERS,
 		nameSection: VALID_NAME_SECTION,
 		submissionSection: VALID_SUBMISSION_SECTION,
 		workSection: VALID_WORK_SECTION
@@ -170,7 +170,7 @@ function describeValidateForm() {
 		const result = validateForm(
 			{
 				...validForm,
-				aliasEditor: INVALID_ALIASES
+				aliasSection: INVALID_ALIASES
 			},
 			IDENTIFIER_TYPES
 		);
@@ -181,7 +181,7 @@ function describeValidateForm() {
 		const result = validateForm(
 			{
 				...validForm,
-				identifierEditor: INVALID_IDENTIFIERS
+				identifierSection: INVALID_IDENTIFIERS
 			}, IDENTIFIER_TYPES
 		);
 		expect(result).to.be.false;

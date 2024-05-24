@@ -57,9 +57,9 @@ export function validateForm(
 		validAuthorCredit = validateAuthorCreditSection(get(formData, 'authorCreditEditor', {}), authorCreditEnable);
 	}
 	const conditions = [
-		validateAliases(get(formData, 'aliasEditor', {})),
+		validateAliases(get(formData, 'aliasSection', {})),
 		validateIdentifiers(
-			get(formData, 'identifierEditor', {}), identifierTypes
+			get(formData, 'identifierSection', {}), identifierTypes
 		),
 		validateNameSection(get(formData, 'nameSection', {})),
 		validateEditionGroupSection(get(formData, 'editionGroupSection', {})),

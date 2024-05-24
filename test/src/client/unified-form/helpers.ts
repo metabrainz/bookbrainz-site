@@ -12,7 +12,7 @@ export const emptyCoverTabState = {
 			author: null
 		}
 	},
-	identifierEditor: {},
+	identifierSection: {},
 	nameSection: {
 		disambiguation: '',
 		language: null,

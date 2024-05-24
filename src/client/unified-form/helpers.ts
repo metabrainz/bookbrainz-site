@@ -6,18 +6,17 @@ import {seriesReducer, worksReducer} from './content-tab/reducer';
 import {ADD_EDITION_GROUP} from './detail-tab/action';
 import {DUPLICATE_WORK} from './content-tab/action';
 import Immutable from 'immutable';
-import aliasEditorReducer from '../entity-editor/alias-editor/reducer';
+import aliasSectionReducer from '../entity-editor/alias-section/reducer';
 import annotationSectionReducer from '../entity-editor/annotation-section/reducer';
 import authorCreditEditorReducer from '../entity-editor/author-credit-editor/reducer';
 import authorSectionReducer from '../entity-editor/author-section/reducer';
-import buttonBarReducer from '../entity-editor/button-bar/reducer';
 import {camelCase} from 'lodash';
 import {combineReducers} from 'redux-immutable';
 import {convertMapToObject} from '../helpers/utils';
 import editionGroupSectionReducer from '../entity-editor/edition-group-section/reducer';
 import editionGroupsReducer from './detail-tab/reducer';
 import editionSectionReducer from '../entity-editor/edition-section/reducer';
-import identifierEditorReducer from '../entity-editor/identifier-editor/reducer';
+import identifierSectionReducer from '../entity-editor/identifier-section/reducer';
 import nameSectionReducer from '../entity-editor/name-section/reducer';
 import publisherSectionReducer from '../entity-editor/publisher-section/reducer';
 import relationshipSectionReducer from '../entity-editor/relationship-editor/reducer';
@@ -67,12 +66,8 @@ const initialACState = Immutable.fromJS(
 	}
 );
 const initialState = Immutable.Map({
-	aliasEditor: Immutable.Map({}),
+	aliasSection: Immutable.Map({}),
 	annotationSection: Immutable.Map({content: ''}),
-	buttonBar: Immutable.Map({
-		aliasEditorVisible: false,
-		identifierEditorVisible: false
-	}),
 	editionSection: Immutable.Map({
 		authorCreditEditorVisible: false,
 		authorCreditEnable: true,
@@ -85,7 +80,7 @@ const initialState = Immutable.Map({
 		releaseDate: '',
 		status: null
 	}),
-	identifierEditor: Immutable.OrderedMap(),
+	identifierSection: Immutable.OrderedMap(),
 	nameSection: Immutable.Map({
 		disambiguation: '',
 		exactMatches: [],
@@ -117,10 +112,9 @@ function crossSliceReducer(state:State, action:Action) {
 	const {type} = action;
 	let intermediateState = state;
 	const activeEntityState = {
-		aliasEditor: state.get('aliasEditor'),
+		aliasSection: state.get('aliasSection'),
 		annotationSection: state.get('annotationSection'),
-		buttonBar: state.get('buttonBar'),
-		identifierEditor: state.get('identifierEditor'),
+		identifierSection: state.get('identifierSection'),
 		nameSection: state.get('nameSection'),
 		relationshipSection: state.get('relationshipSection'),
 		submissionSection: state.get('submissionSection')
@@ -182,9 +176,9 @@ function crossSliceReducer(state:State, action:Action) {
 			const identifiers = fromWork.getIn(['identifierSet', 'identifiers'], null);
 			const other:any = {};
 			if (identifiers) {
-				const identifierEditor = identifiers.map((identifier) => Immutable.Map({type: identifier.get('typeId'),
+				const identifierSection = identifiers.map((identifier) => Immutable.Map({type: identifier.get('typeId'),
 					value: identifier.get('value')}));
-				other.identifierEditor = identifierEditor;
+				other.identifierSection = identifierSection;
 			}
 			if (relationships) {
 				const rels = relationships.map((rel, key) => {
@@ -260,16 +254,15 @@ export function createRootReducer() {
 			Publishers: publishersReducer,
 			Series: seriesReducer,
 			Works: worksReducer,
-			aliasEditor: aliasEditorReducer,
+			aliasSection: aliasSectionReducer,
 			annotationSection: annotationSectionReducer,
 			authorCreditEditor: authorCreditEditorReducer,
 			authorSection: authorSectionReducer,
 			autoISBN: autoISBNReducer,
-			buttonBar: buttonBarReducer,
 			editionGroupSection: editionGroupSectionReducer,
 			editionSection: editionSectionReducer,
 			entityModalIsOpen: entityModalIsOpenReducer,
-			identifierEditor: identifierEditorReducer,
+			identifierSection: identifierSectionReducer,
 			nameSection: nameSectionReducer,
 			publisherSection: publisherSectionReducer,
 			relationshipSection: relationshipSectionReducer,

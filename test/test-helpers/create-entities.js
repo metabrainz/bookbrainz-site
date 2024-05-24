@@ -37,7 +37,7 @@ const {updateLanguageSet} = orm.func.language;
 
 export const seedInitialState = {
 	annotationSection: 'annotation',
-	'identifierEditor.t0': '1234567',
+	'identifierSection.t0': '1234567',
 	'nameSection.disambiguation': 'disambiguation',
 	'nameSection.language': 'English',
 	'nameSection.name': 'name',
@@ -46,12 +46,12 @@ export const seedInitialState = {
 };
 
 export const baseState = {
-	aliasEditor: {},
+	aliasSection: {},
 	annotationSection: {
 		content: ''
 	},
 	authorCreditEditor: {},
-	identifierEditor: {},
+	identifierSection: {},
 	nameSection: {
 		disambiguation: '',
 		language: 42,

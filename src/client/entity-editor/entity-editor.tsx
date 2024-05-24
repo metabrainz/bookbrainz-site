@@ -18,11 +18,10 @@
 
 import * as React from 'react';
 import {connect, useSelector} from 'react-redux';
-import AliasEditor from './alias-editor/alias-editor';
+import AliasSection from './alias-section/alias-section';
 import AnnotationSection from './annotation-section/annotation-section';
-import ButtonBar from './button-bar/button-bar';
 import {Card} from 'react-bootstrap';
-import IdentifierEditor from './identifier-editor/identifier-editor';
+import IdentifierSection from './identifier-section/identifier-section';
 import NameSection from './name-section/name-section';
 import RelationshipSection from './relationship-editor/relationship-section';
 import SubmissionSection from './submission-section/submission-section';
@@ -38,25 +37,16 @@ type OwnProps = {
 	entity: any
 };
 
-type StateProps = {
-	aliasEditorVisible: boolean,
-	identifierEditorVisible: boolean,
-};
-
 type DispatchProps = {
 	onSubmit: (event:React.FormEvent) => unknown
 };
 
-type Props = StateProps & DispatchProps & OwnProps;
+type Props = DispatchProps & OwnProps;
 
 /**
  * Container component. Renders all of the sections of the entity editing form.
  *
  * @param {Object} props - The properties passed to the component.
- * @param {boolean} props.aliasEditorVisible - Whether the alias editor modal
- *        should be made visible.
- * @param {boolean} props.identifierEditorVisible - Whether the identifier
- *        editor modal should be made visible.
  * @param {React.Node} props.children - The child content to wrap with this
  *        entity editor form.
  * @param {Function} props.onSubmit - A function to be called when the
@@ -65,10 +55,8 @@ type Props = StateProps & DispatchProps & OwnProps;
  */
 const EntityEditor = (props: Props) => {
 	const {
-		aliasEditorVisible,
 		children,
 		heading,
-		identifierEditorVisible,
 		onSubmit,
 		entity
 	} = props;
@@ -84,10 +72,10 @@ const EntityEditor = (props: Props) => {
 		window.onbeforeunload = handleUrlChange;
 	}, [handleUrlChange]);
 
-	if(entity){
-	entityURL = getEntityUrl(entity);
+	if (entity) {
+		entityURL = getEntityUrl(entity);
 	}
-	
+
 	return (
 		<form onSubmit={onSubmit}>
 			<Card>
@@ -97,9 +85,8 @@ const EntityEditor = (props: Props) => {
 					</div>
 				</Card.Header>
 				<Card.Body>
-					<AliasEditor show={aliasEditorVisible} {...props}/>
 					<NameSection {...props}/>
-					<ButtonBar {...props}/>
+					<AliasSection {...props}/>
 					{
 						React.cloneElement(
 							React.Children.only(children),
@@ -107,7 +94,7 @@ const EntityEditor = (props: Props) => {
 						)
 					}
 					<RelationshipSection {...props}/>
-					<IdentifierEditor show={identifierEditorVisible} {...props}/>
+					<IdentifierSection {...props}/>
 					<AnnotationSection {...props}/>
 				</Card.Body>
 				<Card.Footer>
@@ -119,14 +106,6 @@ const EntityEditor = (props: Props) => {
 };
 EntityEditor.displayName = 'EntityEditor';
 
-function mapStateToProps(rootState): StateProps {
-	const state = rootState.get('buttonBar');
-	return {
-		aliasEditorVisible: state.get('aliasEditorVisible'),
-		identifierEditorVisible: state.get('identifierEditorVisible')
-	};
-}
-
 function mapDispatchToProps(dispatch, {submissionUrl}) {
 	return {
 		onSubmit: (event:React.FormEvent) => {
@@ -136,4 +115,4 @@ function mapDispatchToProps(dispatch, {submissionUrl}) {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EntityEditor);
+export default connect(null, mapDispatchToProps)(EntityEditor);

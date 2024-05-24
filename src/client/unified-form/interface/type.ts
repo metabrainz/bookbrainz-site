@@ -74,7 +74,6 @@ export type CoverOwnProps = {
 export type CoverStateProps = {
     publisherValue:any[],
 	modalIsOpen:boolean,
-    identifierEditorVisible:boolean
 };
 export type CoverDispatchProps = {
     onPublisherChange: (arg:any)=>unknown,
@@ -150,11 +149,11 @@ export type SearchEntityCreateProps = SearchEntityCreateDispatchProps & SearchEn
 export type EntityModalStateProps = {
 	isNameSectionValid:boolean,
 	isNameSectionEmpty:boolean,
-	isAliasEditorValid:boolean,
-	isIdentifierEditorValid:boolean,
+	isAliasSectionValid:boolean,
+	isIdentifierSectionValid:boolean,
 	isEntitySectionValid:boolean,
-	isAliasEditorEmpty:boolean,
-	isIdentifierEditorEmpty:boolean
+	isAliasSectionEmpty:boolean,
+	isIdentifierSectionEmpty:boolean
 };
 
 export type EntityModalBodyOwnProps = {

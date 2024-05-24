@@ -27,21 +27,20 @@ import AliasButton from './alias-button';
 import IdentifierButton from './identifier-button';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {addAliasRow} from '../alias-editor/actions';
-import {addIdentifierRow} from '../identifier-editor/actions';
+import {addAliasRow} from '../alias-section/actions';
 import {connect} from 'react-redux';
 
 /**
  * Container component. This component renders three buttons in a horizontal
  * row allowing the user to open the AliasEditor (AliasButton), add a
- * disambiguation to the entity and open the IdentifierEditor
+ * disambiguation to the entity and open the identifierSection
  * (IdentifierButton).
  *
  * @param {Object} props - The properties passed to the component.
  * @param {number} props.numAliases - The number of aliases present in
  *        the AliasEditor - passed to the AliasButton component.
  * @param {number} props.numIdentifiers - The number of identifiers present in
- *        the IdentifierEditor - passed to the IdentiferButton component.
+ *        the identifierSection - passed to the IdentiferButton component.
  * @param {Function} props.onAliasButtonClick - A function to be called when the
  *        AliasButton is clicked.
  * @param {Function} props.onIdentifierButtonClick - A function to be called
@@ -107,10 +106,10 @@ function mapStateToProps(rootState, {identifierTypes}) {
 	return {
 		aliasesInvalid: !validateAliases(rootState.get('aliasEditor')),
 		identifiersInvalid: !validateIdentifiers(
-			rootState.get('identifierEditor'), identifierTypes
+			rootState.get('identifierSection'), identifierTypes
 		),
 		numAliases: rootState.get('aliasEditor').size,
-		numIdentifiers: rootState.get('identifierEditor').size
+		numIdentifiers: rootState.get('identifierSection').size
 	};
 }
 
@@ -122,7 +121,6 @@ function mapDispatchToProps(dispatch) {
 		},
 		onIdentifierButtonClick: () => {
 			dispatch(showIdentifierEditor());
-			dispatch(addIdentifierRow());
 		}
 	};
 }

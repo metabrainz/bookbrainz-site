@@ -19,8 +19,7 @@
 import {
 	SHOW_ALIAS_EDITOR, SHOW_IDENTIFIER_EDITOR
 } from './actions';
-import {HIDE_ALIAS_EDITOR} from '../alias-editor/actions';
-import {HIDE_IDENTIFIER_EDITOR} from '../identifier-editor/actions';
+import {HIDE_ALIAS_EDITOR} from '../alias-section/actions';
 import Immutable from 'immutable';
 
 
@@ -38,8 +37,6 @@ function reducer(
 			return state.set('aliasEditorVisible', false);
 		case SHOW_IDENTIFIER_EDITOR:
 			return state.set('identifierEditorVisible', true);
-		case HIDE_IDENTIFIER_EDITOR:
-			return state.set('identifierEditorVisible', false);
 		// no default
 	}
 	return state;

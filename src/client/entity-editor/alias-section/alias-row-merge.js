@@ -75,7 +75,7 @@ function mapDispatchToProps(dispatch, {index}) {
 }
 
 function mapStateToProps(rootState, {index}) {
-	const state = rootState.get('aliasEditor');
+	const state = rootState.get('aliasSection');
 	return {
 		languageValue: state.getIn([index, 'language']),
 		nameValue: state.getIn([index, 'name']),

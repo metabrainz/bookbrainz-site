@@ -21,10 +21,9 @@ import * as React from 'react';
 import * as data from '../../helpers/data';
 
 import {
-	Action, debouncedUpdateIdentifierValue, removeIdentifierRow,
-	updateIdentifierType
+	Action, addIdentifier
 } from './actions';
-import {Button, Col, Form, Row} from 'react-bootstrap';
+import {Button, Col, Container, Form, Row} from 'react-bootstrap';
 import {
 	IdentifierType,
 	validateIdentifierValue
@@ -35,123 +34,113 @@ import Select from 'react-select';
 import ValueField from './value-field';
 import {collapseWhiteSpaces} from '../../../common/helpers/utils';
 import {connect} from 'react-redux';
-import {faTimes} from '@fortawesome/free-solid-svg-icons';
-import IdentifierLink from "../../components/pages/entities/identifiers-links.js"
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
 
 
 type OwnProps = {
 	index: number,
-	typeOptions: Array<IdentifierType>
-};
-
-type StateProps = {
-	valueValue: string,
-	typeValue: number
+	typeOptions: Array<IdentifierType>,
+	isUnifiedForm: boolean
 };
 
 type DispatchProps = {
-	onTypeChange: (obj: {value: number}) => unknown,
-	onRemoveButtonClick: () => unknown,
-	onValueChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown
+	onAddNewIdentifier: (value, type) => unknown
 };
 
-type Props = StateProps & DispatchProps & OwnProps;
+type Props = DispatchProps & OwnProps;
+
+type TypeObj = {
+	value: number,
+	label: string
+};
 
 /**
- * Container component. The IdentifierRow component renders a single Row
+ * The IdentifierFields component renders a single Row
  * containing several input fields, allowing the user to set the value and type
- * for an identifier in the IdentifierEditor. A button is also included to
+ * for an identifier in the identifierSection. A button is also included to
  * remove the identifier from the editor.
  *
  * @param {Object} props - The properties passed to the component.
  * @param {number} props.index - The index of the row in the parent editor.
  * @param {Array} props.typeOptions - The list of possible types for an
  *        identifier.
- * @param {number} props.typeValue - The ID of the type currently selected.
- * @param {string} props.valueValue - The value currently set for this
- *        identifier.
- * @param {Function} props.onTypeChange - A function to be called when a new
- *        identifier type is selected.
- * @param {Function} props.onRemoveButtonClick - A function to be called when
- *        the button to remove the identifier is clicked.
- * @param {Function} props.onValueChange - A function to be called when the
- *        value for the identifier is changed.
+ * @param {Function} props.onAddNewIdentifier - A function to be called when a new
+ *        identifier is added
  * @returns {ReactElement} React element containing the rendered IdentifierRow.
  */
-function IdentifierRow({
+function IdentifierFields({
 	index,
 	typeOptions,
-	valueValue,
-	typeValue,
-	onTypeChange,
-	onRemoveButtonClick,
-	onValueChange
+	onAddNewIdentifier,
+	isUnifiedForm
 }: Props) {
 	const identifierTypesForDisplay = typeOptions.map((type) => ({
 		label: type.label,
 		value: type.id
 	}));
-	const identifierValue = identifierTypesForDisplay.filter((el) => el.value === typeValue);
+
+	const [value, setValue] = React.useState<string>('');
+	const [type, setType] = React.useState<TypeObj | null>(null);
+
+	const lgCol = {offset: 3, span: 2};
+	if (isUnifiedForm) {
+		lgCol.offset = 0;
+	}
+
+	const handleIdentifierValueChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+		setValue(event.target.value);
+	  }, []);
+
+	const handleAddIdentifier = React.useCallback(() => {
+		onAddNewIdentifier(value, type);
+	}, [value, type]);
+
 	return (
-		<div>
+		// <Container className="d-flex justify-content-center mt-2">
+		<Container className="mt-2">
 			<Row>
-				<Col lg={4}>
+				<Col lg={lgCol}>
 					<ValueField
-						defaultValue={valueValue}
-						empty={!valueValue && typeValue === null}
-						error={!validateIdentifierValue(
-							valueValue, typeValue, typeOptions
+						defaultValue={value}
+						empty={!value && type === null}
+						error={type && !validateIdentifierValue(
+							value, type.value, typeOptions
 						)}
-						onChange={onValueChange}
+						onChange={handleIdentifierValueChange}
 					/>
 				</Col>
-				<Col lg={4}>
+				<Col lg={2}>
 					<Form.Group>
 						<Form.Label>Type</Form.Label>
 						<Select
 							classNamePrefix="react-select"
 							instanceId={`identifierType${index}`}
 							options={identifierTypesForDisplay}
-							value={identifierValue}
-							onChange={onTypeChange}
+							value={type}
+							onChange={setType}
 						/>
 					</Form.Group>
 				</Col>
-				<Col className="text-right" lg={{offset: 1, span: 3}}>
-					<Button
-						block
-						className="margin-top-d15"
-						variant="danger"
-						onClick={onRemoveButtonClick}
-					>
-						<FontAwesomeIcon icon={faTimes}/>
-						<span>&nbsp;Remove</span>
+				<Col className="d-flex align-items-center mt-2" lg={3}>
+					<Button variant="success" onClick={handleAddIdentifier}>
+						<FontAwesomeIcon icon={faPlus}/>
+						<span>&nbsp;Add</span>
 					</Button>
 				</Col>
 			</Row>
-			{typeValue && valueValue && (
-				<Row>
-				<Col>
-					Preview Link:
-					<IdentifierLink typeId={typeValue} value={valueValue}/>
-				</Col>
-			</Row>
-			)}
-			<hr/>
-		</div>
+		</Container>
 	);
 }
-IdentifierRow.displayName = 'IdentifierEditor.Identifier';
+IdentifierFields.displayName = 'IdentifierFields';
 
 
 function handleValueChange(
 	dispatch: Dispatch<Action>,
-	event: React.ChangeEvent<HTMLInputElement>,
-	index: number,
+	orignalValue: string,
+	type: TypeObj,
 	types: Array<IdentifierType>
 ) {
-	let {value} = event.target;
-	value = collapseWhiteSpaces(value);
+	let value = collapseWhiteSpaces(orignalValue);
 	const guessedType =
 		data.guessIdentifierType(value, types);
 	if (guessedType) {
@@ -173,30 +162,18 @@ function handleValueChange(
 		// 	}
 		// }
 	}
-	return dispatch(debouncedUpdateIdentifierValue(index, value, guessedType));
+	return dispatch(addIdentifier(value, type, guessedType));
 }
-
-
-function mapStateToProps(rootState, {index}: OwnProps): StateProps {
-	const state = rootState.get('identifierEditor');
-	return {
-		typeValue: state.getIn([index, 'type']),
-		valueValue: state.getIn([index, 'value'])
-	};
-}
-
 
 function mapDispatchToProps(
 	dispatch: Dispatch<Action>,
-	{index, typeOptions}: OwnProps
+	{typeOptions}: OwnProps
 ): DispatchProps {
 	return {
-		onRemoveButtonClick: () => dispatch(removeIdentifierRow(index)),
-		onTypeChange: (value: {value: number}) =>
-			dispatch(updateIdentifierType(index, value && value.value)),
-		onValueChange: (event: React.ChangeEvent<HTMLInputElement>) =>
-			handleValueChange(dispatch, event, index, typeOptions)
+		onAddNewIdentifier: (value, type) => {
+			handleValueChange(dispatch, value, type, typeOptions);
+		}
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(IdentifierRow);
+export default connect(null, mapDispatchToProps)(IdentifierFields);

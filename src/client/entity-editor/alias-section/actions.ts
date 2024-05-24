@@ -18,7 +18,7 @@
 
 export const UPDATE_ALIAS_NAME = 'UPDATE_ALIAS_NAME';
 export const UPDATE_ALIAS_SORT_NAME = 'UPDATE_ALIAS_SORT_NAME';
-export const ADD_ALIAS_ROW = 'ADD_ALIAS_ROW';
+export const ADD_ALIAS = 'ADD_ALIAS';
 export const UPDATE_ALIAS_LANGUAGE = 'UPDATE_ALIAS_LANGUAGE';
 export const UPDATE_ALIAS_PRIMARY = 'UPDATE_ALIAS_PRIMARY';
 export const REMOVE_ALIAS_ROW = 'REMOVE_ALIAS_ROW';
@@ -32,6 +32,26 @@ export type Action = {
 		debounce?: string
 	}
 };
+
+let nextAliasRowId = 0;
+
+export function addNewAlias(
+	nameValue: string, sortNameValue: string, LanguageValue: number | null | undefined,
+	primary: boolean
+): Action {
+	return {
+		payload: {
+			data: {
+				language: LanguageValue,
+				name: nameValue,
+				primary,
+				sortName: sortNameValue
+			},
+			rowId: `n${nextAliasRowId++}`
+		},
+		type: ADD_ALIAS
+	};
+}
 
 /**
  * Produces an action indicating that the name for a particular alias within
@@ -113,26 +133,6 @@ export function updateAliasPrimary(rowId: number, value: boolean): Action {
 	};
 }
 
-let nextAliasRowId = 0;
-
-/**
- * Produces an action indicating that a row for a new alias should be added
- * to the alias editor. The row is assigned an ID based on an incrementing
- * variable existing on the client.
- *
- * @returns {Action} The resulting ADD_ALIAS_ROW action.
- */
-export function addAliasRow(): Action {
-	/*
-	 * Prepend 'n' here to indicate new alias, and avoid conflicts with IDs of
-	 * existing aliases.
-	 */
-	return {
-		payload: `n${nextAliasRowId++}`,
-		type: ADD_ALIAS_ROW
-	};
-}
-
 /**
  * Produces an action indicating that the row with the provided ID should be
  * removed from the alias editor.
@@ -144,20 +144,6 @@ export function removeAliasRow(rowId: number): Action {
 	return {
 		payload: rowId,
 		type: REMOVE_ALIAS_ROW
-	};
-}
-
-/**
- * Produces an action indicating that the alias editor should be hidden from
- * view.
- *
- * @see showAliasEditor
- *
- * @returns {Action} The resulting HIDE_ALIAS_EDITOR action.
- */
-export function hideAliasEditor(): Action {
-	return {
-		type: HIDE_ALIAS_EDITOR
 	};
 }
 

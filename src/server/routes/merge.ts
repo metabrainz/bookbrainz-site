@@ -63,9 +63,9 @@ function entitiesToFormState(entities: any[]) {
 		defaultAliasIndex = entityRoutes.getDefaultAliasIndex(aliases);
 	}
 
-	const aliasEditor = {};
+	const aliasSection = {};
 	aliases.forEach((alias) => {
-		aliasEditor[alias.id] = alias;
+		aliasSection[alias.id] = alias;
 	});
 
 	const nameSection = aliases[defaultAliasIndex] ||
@@ -93,11 +93,11 @@ function entitiesToFormState(entities: any[]) {
 		return returnValue;
 	}, []);
 
-	const identifierEditor = {};
+	const identifierSection = {};
 	const uniqueIdentifiers = _.uniqWith(identifiers, (identifierA, identifierB) =>
 		identifierA.type === identifierB.type && identifierA.value === identifierB.value);
 	uniqueIdentifiers.forEach((identifier) => {
-		identifierEditor[identifier.id] = identifier;
+		identifierSection[identifier.id] = identifier;
 	});
 	const type = _.camelCase(targetEntity.type);
 
@@ -159,10 +159,10 @@ function entitiesToFormState(entities: any[]) {
 	const authorCredit = authorCredits.length ? authorCredits[0] : null;
 
 	const props = {
-		aliasEditor,
+		aliasSection,
 		annotationSection,
 		authorCredit,
-		identifierEditor,
+		identifierSection,
 		nameSection,
 		relationshipSection
 	};

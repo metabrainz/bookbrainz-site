@@ -223,7 +223,7 @@ export async function getIdByField(
  * Generate Identifier state from req body
  *
  * @param {object} sourceIdentifierState - source state in format of t{typeId}:value
- * @returns {object} - correctly formatted identifierEditor state
+ * @returns {object} - correctly formatted identifierSection state
  */
 export function generateIdenfierState(sourceIdentifierState:Record<string, string>):Record<string, any> {
 	let index = 0;
@@ -307,7 +307,7 @@ export async function searchOption(orm, type:string, query:string, idKey = 'id',
 }
 
 /**
- * Parse NameSection, IdentifierEditor, AnnotationSection state from request body
+ * Parse NameSection, IdentifierSection, AnnotationSection state from request body
  *
  * @param {object} req - Request object
  * @param {string} type - entity type
@@ -337,9 +337,9 @@ export async function parseInitialState(req, type):Promise<Record<string, any>> 
 	if (initialState.nameSection.language) {
 		initialState.nameSection.language = await getIdByField(Language, 'name', initialState.nameSection.language);
 	}
-	// IdentifierEditor State
-	if (initialState.identifierEditor) {
-		initialState.identifierEditor = generateIdenfierState(initialState.identifierEditor);
+	// IdentifierSection State
+	if (initialState.identifierSection) {
+		initialState.identifierSection = generateIdenfierState(initialState.identifierSection);
 	}
 	// AnnotationSection State
 	if (initialState.annotationSection) {

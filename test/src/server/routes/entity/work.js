@@ -51,7 +51,7 @@ describe('Work routes with entity editing priv', () => {
 	it('should not throw error while seeding work', async () => {
 		const data = {
 			...seedInitialState,
-			'identifierEditor.t8': 'wikidataid',
+			'identifierSection.t8': 'wikidataid',
 			'workSection.languages0': 'English',
 			'workSection.languages1': 'Japenglish',
 			'workSection.type': ''
