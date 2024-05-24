@@ -100,7 +100,7 @@ let searchInitiated;
 // Clone search config to prevent error if starting webserver and api
 // https://github.com/elastic/elasticsearch-js/issues/33
 (async function initializeSearch() {
-    searchInitiated = await search.init(app.locals.orm, Object.assign({}, config.search));
+	searchInitiated = await search.init(app.locals.orm, Object.assign({}, config.search));
 })();
 
 // Set up constants that will remain valid for the life of the app

@@ -19,10 +19,9 @@
 
 import * as commonUtils from './utils';
 import {camelCase, isString, snakeCase, upperFirst} from 'lodash';
-
 import ElasticSearch from '@elastic/elasticsearch';
-import {type ORM} from 'bookbrainz-data';
 import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
+import {type ORM} from 'bookbrainz-data';
 import httpStatus from 'http-status';
 import log from 'log';
 
@@ -589,18 +588,20 @@ export function searchByName(orm, name, type, size, from) {
 }
 
 export async function init(orm: ORM, options) {
-
 	if (!isString(options.host) && !isString(options.node) && !isString(options.auth)) {
-		options = {
+		const defaultOptions = {
 			auth: {password: 'changeme', username: 'elastic'},
+			host: 'localhost:9200',
 			node: 'http://localhost:9200',
-			requestTimeout: 60000,
-			host: 'localhost:9200'
+			requestTimeout: 60000
 		};
 		log.warning('ElasticSearch configuration not provided. Using default settings.');
+		_client = new ElasticSearch.Client(defaultOptions);
 	}
-
-	_client = new ElasticSearch.Client(options);
+	else if (!isString(options.host)) {
+		options.host = 'localhost:9200';
+		_client = new ElasticSearch.Client(options);
+	}
 
 	try {
 		await _client.ping();
