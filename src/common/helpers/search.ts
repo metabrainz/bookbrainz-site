@@ -593,6 +593,14 @@ export function searchByName(orm, name, type, size, from) {
 	return _searchForEntities(orm, dslQuery);
 }
 
+/**
+ * Search init
+ * @description Sets up the search server connection with defaults,
+ * and returns a connection status boolean
+ * @param {ORM} orm the BookBrainz ORM
+ * @param {ClientOptions} [options] Optional (but recommended) connection settings, will provide defaults if missing
+ * @returns {Promise<boolean>} A Promise which resolves to the connection status boolean
+ */
 export async function init(orm: ORM, options:ClientOptions) {
 	if (!isString(options.node)) {
 		const defaultOptions:ClientOptions = {
