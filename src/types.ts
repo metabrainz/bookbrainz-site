@@ -9,7 +9,7 @@ export type _AuthorType = {
 
 };
 
-export interface _EditorType {
+export type _Editor {
 	activeAt: string,
 	areaId: number,
 	bio: string,
