@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>client/components/pages/entity-revisions.js - Documentation</title>
+    <title>client/components/loading-spinner.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">client/components/pages/entity-revisions.js</h1>
+    <h1 class="page-title">client/components/loading-spinner.js</h1>
     
 
     
@@ -41,145 +41,52 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/es.reflect.construct.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
-var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
-var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
-var _entity = require("../../helpers/entity");
-var _pager = _interopRequireDefault(require("./parts/pager"));
-var _propTypes = _interopRequireDefault(require("prop-types"));
+var _reactFontawesome = require("@fortawesome/react-fontawesome");
 var _react = _interopRequireDefault(require("react"));
-var _revisionsTable = _interopRequireDefault(require("./parts/revisions-table"));
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } } /*
-                                                                                                                                                                                                                                                                                                                                           * Copyright (C) 2016  Daniel Hsing
-                                                                                                                                                                                                                                                                                                                                           * 				 2016  Ben Ockmore
-                                                                                                                                                                                                                                                                                                                                           *
-                                                                                                                                                                                                                                                                                                                                           * This program is free software; you can redistribute it and/or modify
-                                                                                                                                                                                                                                                                                                                                           * it under the terms of the GNU General Public License as published by
-                                                                                                                                                                                                                                                                                                                                           * the Free Software Foundation; either version 2 of the License, or
-                                                                                                                                                                                                                                                                                                                                           * (at your option) any later version.
-                                                                                                                                                                                                                                                                                                                                           *
-                                                                                                                                                                                                                                                                                                                                           * This program is distributed in the hope that it will be useful,
-                                                                                                                                                                                                                                                                                                                                           * but WITHOUT ANY WARRANTY; without even the implied warranty of
-                                                                                                                                                                                                                                                                                                                                           * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-                                                                                                                                                                                                                                                                                                                                           * GNU General Public License for more details.
-                                                                                                                                                                                                                                                                                                                                           *
-                                                                                                                                                                                                                                                                                                                                           * You should have received a copy of the GNU General Public License along
-                                                                                                                                                                                                                                                                                                                                           * with this program; if not, write to the Free Software Foundation, Inc.,
-                                                                                                                                                                                                                                                                                                                                           * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-                                                                                                                                                                                                                                                                                                                                           */
-/**
- * The class is derived from the React Component base class and
- * renders the 'Entity RevisionsPage' page.
+var _freeSolidSvgIcons = require("@fortawesome/free-solid-svg-icons");
+/*
+ * Copyright (C) 2015  Ben Ockmore
+ *               2015  Sean Burke
+ * 				 2024  Meziyum
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-var EntityRevisions = /*#__PURE__*/function (_React$Component) {
-  (0, _inherits2.default)(EntityRevisions, _React$Component);
-  var _super = _createSuper(EntityRevisions);
-  /**
-   * Binds the class methods to their respective data.
-   * @constructor
-   * @param {object} props - Properties passed to the component
-   */
-  function EntityRevisions(props) {
-    var _this;
-    (0, _classCallCheck2.default)(this, EntityRevisions);
-    _this = _super.call(this, props);
-    _this.state = {
-      results: _this.props.revisions
-    };
 
-    // React does not autobind non-React class methods
-    _this.renderHeader = _this.renderHeader.bind((0, _assertThisInitialized2.default)(_this));
-    _this.searchResultsCallback = _this.searchResultsCallback.bind((0, _assertThisInitialized2.default)(_this));
-    _this.paginationUrl = './revisions/revisions';
-    return _this;
-  }
-  (0, _createClass2.default)(EntityRevisions, [{
-    key: "searchResultsCallback",
-    value: function searchResultsCallback(newResults) {
-      this.setState({
-        results: newResults
-      });
-    }
-
-    /**
-     * Renders the Header of the page consisting of Entity name and
-     * disambiguation comment.
-     * @returns {ReactElement} a HTML document which is a part of Revision page
-     */
-  }, {
-    key: "renderHeader",
-    value: function renderHeader() {
-      var entity = this.props.entity;
-      return /*#__PURE__*/_react.default.createElement("div", null, "Revision History", /*#__PURE__*/_react.default.createElement("h3", null, "for\xA0", /*#__PURE__*/_react.default.createElement("a", {
-        href: (0, _entity.getEntityUrl)(entity)
-      }, (0, _entity.genEntityIconHTMLElement)(entity.type), (0, _entity.getEntityLabel)(entity))));
-    }
-
-    /**
-     * Renders the EntityRevisions page, which is a list of all the revisions
-     * made to an entity, along with information about the author and the
-     * first revision note for each revision.
-     * @returns {ReactElement} a HTML document which displays the Revision page
-     */
-  }, {
-    key: "render",
-    value: function render() {
-      return /*#__PURE__*/_react.default.createElement("div", {
-        id: "pageWithPagination"
-      }, /*#__PURE__*/_react.default.createElement(_revisionsTable.default, {
-        results: this.state.results,
-        showEntities: this.props.showEntities,
-        showRevisionEditor: this.props.showRevisionEditor,
-        showRevisionNote: this.props.showRevisionNote,
-        tableHeading: this.renderHeader()
-      }), /*#__PURE__*/_react.default.createElement(_pager.default, {
-        from: this.props.from,
-        nextEnabled: this.props.nextEnabled,
-        paginationUrl: this.paginationUrl,
-        results: this.state.results,
-        searchResultsCallback: this.searchResultsCallback,
-        size: this.props.size
-      }));
-    }
-  }]);
-  return EntityRevisions;
-}(_react.default.Component);
-EntityRevisions.displayName = 'EntityRevisions';
-EntityRevisions.propTypes = {
-  entity: _propTypes.default.shape({
-    defaultAlias: _propTypes.default.object,
-    disambiguation: _propTypes.default.object,
-    type: _propTypes.default.string
-  }).isRequired,
-  from: _propTypes.default.number,
-  nextEnabled: _propTypes.default.bool.isRequired,
-  revisions: _propTypes.default.array.isRequired,
-  showEntities: _propTypes.default.bool,
-  showRevisionEditor: _propTypes.default.bool,
-  showRevisionNote: _propTypes.default.bool,
-  size: _propTypes.default.number
-};
-EntityRevisions.defaultProps = {
-  from: 0,
-  showEntities: false,
-  showRevisionEditor: false,
-  showRevisionNote: false,
-  size: 20
-};
-var _default = EntityRevisions;
+/**
+ * Renders a LoadingSpinner Component displaying a spinning loading icon.
+ * @returns {JSX.Element} The JSX content of the LoadingSpinner indicator
+ */
+function LoadingSpinner() {
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "loading-background"
+  }, /*#__PURE__*/_react.default.createElement(_reactFontawesome.FontAwesomeIcon, {
+    spin: true,
+    className: "loading-spinner",
+    icon: _freeSolidSvgIcons.faCircleNotch,
+    size: "2x"
+  }));
+}
+LoadingSpinner.displayName = 'LoadingSpinner';
+var _default = LoadingSpinner;
 exports.default = _default;
-//# sourceMappingURL=entity-revisions.js.map</code></pre>
+//# sourceMappingURL=loading-spinner.js.map</code></pre>
         </article>
     </section>
 

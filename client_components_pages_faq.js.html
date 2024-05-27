@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>client/components/pages/entity-revisions.js - Documentation</title>
+    <title>client/components/pages/faq.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">client/components/pages/entity-revisions.js</h1>
+    <h1 class="page-title">client/components/pages/faq.js</h1>
     
 
     
@@ -41,145 +41,46 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/es.reflect.construct.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
-var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
-var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
-var _entity = require("../../helpers/entity");
-var _pager = _interopRequireDefault(require("./parts/pager"));
-var _propTypes = _interopRequireDefault(require("prop-types"));
+var _reactBootstrap = require("react-bootstrap");
 var _react = _interopRequireDefault(require("react"));
-var _revisionsTable = _interopRequireDefault(require("./parts/revisions-table"));
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } } /*
-                                                                                                                                                                                                                                                                                                                                           * Copyright (C) 2016  Daniel Hsing
-                                                                                                                                                                                                                                                                                                                                           * 				 2016  Ben Ockmore
-                                                                                                                                                                                                                                                                                                                                           *
-                                                                                                                                                                                                                                                                                                                                           * This program is free software; you can redistribute it and/or modify
-                                                                                                                                                                                                                                                                                                                                           * it under the terms of the GNU General Public License as published by
-                                                                                                                                                                                                                                                                                                                                           * the Free Software Foundation; either version 2 of the License, or
-                                                                                                                                                                                                                                                                                                                                           * (at your option) any later version.
-                                                                                                                                                                                                                                                                                                                                           *
-                                                                                                                                                                                                                                                                                                                                           * This program is distributed in the hope that it will be useful,
-                                                                                                                                                                                                                                                                                                                                           * but WITHOUT ANY WARRANTY; without even the implied warranty of
-                                                                                                                                                                                                                                                                                                                                           * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-                                                                                                                                                                                                                                                                                                                                           * GNU General Public License for more details.
-                                                                                                                                                                                                                                                                                                                                           *
-                                                                                                                                                                                                                                                                                                                                           * You should have received a copy of the GNU General Public License along
-                                                                                                                                                                                                                                                                                                                                           * with this program; if not, write to the Free Software Foundation, Inc.,
-                                                                                                                                                                                                                                                                                                                                           * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-                                                                                                                                                                                                                                                                                                                                           */
-/**
- * The class is derived from the React Component base class and
- * renders the 'Entity RevisionsPage' page.
+var _entity = require("../../helpers/entity");
+/*
+ * Copyright (C) 2023 Shivam Awasthi
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-var EntityRevisions = /*#__PURE__*/function (_React$Component) {
-  (0, _inherits2.default)(EntityRevisions, _React$Component);
-  var _super = _createSuper(EntityRevisions);
-  /**
-   * Binds the class methods to their respective data.
-   * @constructor
-   * @param {object} props - Properties passed to the component
-   */
-  function EntityRevisions(props) {
-    var _this;
-    (0, _classCallCheck2.default)(this, EntityRevisions);
-    _this = _super.call(this, props);
-    _this.state = {
-      results: _this.props.revisions
-    };
+/* eslint-disable max-len */
 
-    // React does not autobind non-React class methods
-    _this.renderHeader = _this.renderHeader.bind((0, _assertThisInitialized2.default)(_this));
-    _this.searchResultsCallback = _this.searchResultsCallback.bind((0, _assertThisInitialized2.default)(_this));
-    _this.paginationUrl = './revisions/revisions';
-    return _this;
-  }
-  (0, _createClass2.default)(EntityRevisions, [{
-    key: "searchResultsCallback",
-    value: function searchResultsCallback(newResults) {
-      this.setState({
-        results: newResults
-      });
-    }
-
-    /**
-     * Renders the Header of the page consisting of Entity name and
-     * disambiguation comment.
-     * @returns {ReactElement} a HTML document which is a part of Revision page
-     */
-  }, {
-    key: "renderHeader",
-    value: function renderHeader() {
-      var entity = this.props.entity;
-      return /*#__PURE__*/_react.default.createElement("div", null, "Revision History", /*#__PURE__*/_react.default.createElement("h3", null, "for\xA0", /*#__PURE__*/_react.default.createElement("a", {
-        href: (0, _entity.getEntityUrl)(entity)
-      }, (0, _entity.genEntityIconHTMLElement)(entity.type), (0, _entity.getEntityLabel)(entity))));
-    }
-
-    /**
-     * Renders the EntityRevisions page, which is a list of all the revisions
-     * made to an entity, along with information about the author and the
-     * first revision note for each revision.
-     * @returns {ReactElement} a HTML document which displays the Revision page
-     */
-  }, {
-    key: "render",
-    value: function render() {
-      return /*#__PURE__*/_react.default.createElement("div", {
-        id: "pageWithPagination"
-      }, /*#__PURE__*/_react.default.createElement(_revisionsTable.default, {
-        results: this.state.results,
-        showEntities: this.props.showEntities,
-        showRevisionEditor: this.props.showRevisionEditor,
-        showRevisionNote: this.props.showRevisionNote,
-        tableHeading: this.renderHeader()
-      }), /*#__PURE__*/_react.default.createElement(_pager.default, {
-        from: this.props.from,
-        nextEnabled: this.props.nextEnabled,
-        paginationUrl: this.paginationUrl,
-        results: this.state.results,
-        searchResultsCallback: this.searchResultsCallback,
-        size: this.props.size
-      }));
-    }
-  }]);
-  return EntityRevisions;
-}(_react.default.Component);
-EntityRevisions.displayName = 'EntityRevisions';
-EntityRevisions.propTypes = {
-  entity: _propTypes.default.shape({
-    defaultAlias: _propTypes.default.object,
-    disambiguation: _propTypes.default.object,
-    type: _propTypes.default.string
-  }).isRequired,
-  from: _propTypes.default.number,
-  nextEnabled: _propTypes.default.bool.isRequired,
-  revisions: _propTypes.default.array.isRequired,
-  showEntities: _propTypes.default.bool,
-  showRevisionEditor: _propTypes.default.bool,
-  showRevisionNote: _propTypes.default.bool,
-  size: _propTypes.default.number
-};
-EntityRevisions.defaultProps = {
-  from: 0,
-  showEntities: false,
-  showRevisionEditor: false,
-  showRevisionNote: false,
-  size: 20
-};
-var _default = EntityRevisions;
+/**
+ * Renders the page for the Frequently Asked Questions on Bookbrainz
+ * @returns {JSX.Element} a React JSX Element
+ */
+function FAQPage() {
+  return /*#__PURE__*/_react.default.createElement(_reactBootstrap.Card, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.Card.Header, {
+    as: "h2"
+  }, "Frequently Asked Questions"), /*#__PURE__*/_react.default.createElement(_reactBootstrap.Card.Body, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.ListGroup, null, /*#__PURE__*/_react.default.createElement(_reactBootstrap.ListGroup.Item, null, /*#__PURE__*/_react.default.createElement("h4", null, /*#__PURE__*/_react.default.createElement("b", null, "How do I add a book?")), "First and foremost, search for both the author and the title of the book to avoid creating duplicates.", /*#__PURE__*/_react.default.createElement("br", null), "If a Work and an Edition containing it exist, the questions below will help you decide whether to create a new Edition.", /*#__PURE__*/_react.default.createElement("br", null), "Otherwise, here is a step-by-step procedure:", /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement("ol", null, /*#__PURE__*/_react.default.createElement("li", null, "Find or add a new ", (0, _entity.genEntityIconHTMLElement)('Author'), "Author"), /*#__PURE__*/_react.default.createElement("li", null, "On the Author page, click on 'Add Work' to create a ", (0, _entity.genEntityIconHTMLElement)('Work'), "Work with a relationship to the Author"), /*#__PURE__*/_react.default.createElement("li", null, "On the Work page, click 'Add Edition' to create an ", (0, _entity.genEntityIconHTMLElement)('Edition'), "Edition with a relationship to the Work.", /*#__PURE__*/_react.default.createElement("ul", null, /*#__PURE__*/_react.default.createElement("li", null, "A new ", (0, _entity.genEntityIconHTMLElement)('EditionGroup'), "Edition Group will be created automatically, but you can select an existing one"), /*#__PURE__*/_react.default.createElement("li", null, "Create a new ", (0, _entity.genEntityIconHTMLElement)('Publisher'), "Publisher if you cannot find an existing one"))), /*#__PURE__*/_react.default.createElement("li", null, "To enter another format of the same book (see explanations below), go to the Edition Group and click the 'Add Edition' button. Repeat step 4."))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.ListGroup.Item, null, /*#__PURE__*/_react.default.createElement("h4", null, /*#__PURE__*/_react.default.createElement("b", null, "When should I create a new Edition of a Work?")), /*#__PURE__*/_react.default.createElement("ul", null, /*#__PURE__*/_react.default.createElement("li", null, "When it is published in a different format (e.g. paperback and e-book)"), /*#__PURE__*/_react.default.createElement("li", null, "When there are substantial content (textual or editorial) changes"), /*#__PURE__*/_react.default.createElement("li", null, "Translations will both be a new Work and a new Edition for it."), /*#__PURE__*/_react.default.createElement("li", null, "Add a relationship between the original and the translated Works"), /*#__PURE__*/_react.default.createElement("li", null, "New cover or changed credits/attribution on the cover"), /*#__PURE__*/_react.default.createElement("li", null, "When there's a new ISBN"))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.ListGroup.Item, null, /*#__PURE__*/_react.default.createElement("h4", null, /*#__PURE__*/_react.default.createElement("b", null, "When should I ", /*#__PURE__*/_react.default.createElement("i", null, "not"), " create a new Edition of a Work?")), /*#__PURE__*/_react.default.createElement("ul", null, /*#__PURE__*/_react.default.createElement("li", null, "Minimal changes as in proofreading errors"), /*#__PURE__*/_react.default.createElement("li", null, "Minimal changes on the cover"), /*#__PURE__*/_react.default.createElement("li", null, "Reprints of the same Edition. You can mention \u201CReprint \u2013 [date]\u201D in the annotations."), /*#__PURE__*/_react.default.createElement("li", null, "When the edition uses the same ISBN (with rare exceptions)"))), /*#__PURE__*/_react.default.createElement(_reactBootstrap.ListGroup.Item, null, /*#__PURE__*/_react.default.createElement("h4", null, /*#__PURE__*/_react.default.createElement("b", null, "When should two Editions be part of the same Edition Group?")), "Edition Groups exist to group together all the variations of an edition (an identifiable set of works) in a given language. Here are examples of Editions that should be part of the same Edition Group:", /*#__PURE__*/_react.default.createElement("br", null), /*#__PURE__*/_react.default.createElement("ul", null, /*#__PURE__*/_react.default.createElement("li", null, "Different formats of the same edition (paperback, hardcover and e-book by the same publisher)"), /*#__PURE__*/_react.default.createElement("li", null, "Revised and updated editions"), /*#__PURE__*/_react.default.createElement("li", null, "Reprints"), /*#__PURE__*/_react.default.createElement("li", null, "Editions with different forewords/intros"), /*#__PURE__*/_react.default.createElement("li", null, "Co-editions (same book published in different countries by different publishers)"))))));
+}
+FAQPage.displayName = 'FAQPage';
+var _default = FAQPage;
 exports.default = _default;
-//# sourceMappingURL=entity-revisions.js.map</code></pre>
+//# sourceMappingURL=faq.js.map</code></pre>
         </article>
     </section>
 
