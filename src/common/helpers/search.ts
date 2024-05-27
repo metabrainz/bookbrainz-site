@@ -19,7 +19,7 @@
 
 import * as commonUtils from './utils';
 import {camelCase, isString, snakeCase, upperFirst} from 'lodash';
-import ElasticSearch from '@elastic/elasticsearch';
+import ElasticSearch, {ApiResponse, type Client, type ClientOptions} from '@elastic/elasticsearch';
 import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import {type ORM} from 'bookbrainz-data';
 import httpStatus from 'http-status';
@@ -33,7 +33,7 @@ const _bulkIndexSize = 10000;
 const _retryDelay = 10;
 const _maxJitter = 75;
 
-let _client = null;
+let _client:Client = null;
 
 function sanitizeEntityType(type) {
 	if (!type) {
@@ -587,22 +587,18 @@ export function searchByName(orm, name, type, size, from) {
 	return _searchForEntities(orm, dslQuery);
 }
 
-export async function init(orm: ORM, options) {
-	if (!isString(options.host) && !isString(options.node) && !isString(options.auth)) {
-		const defaultOptions = {
-			auth: {password: 'changeme', username: 'elastic'},
-			host: 'localhost:9200',
+export async function init(orm: ORM, options:ClientOptions) {
+	if (!isString(options.node)) {
+		const defaultOptions:ClientOptions = {
 			node: 'http://localhost:9200',
 			requestTimeout: 60000
 		};
 		log.warning('ElasticSearch configuration not provided. Using default settings.');
 		_client = new ElasticSearch.Client(defaultOptions);
 	}
-	else if (!isString(options.host)) {
-		options.host = 'localhost:9200';
+	else {
 		_client = new ElasticSearch.Client(options);
 	}
-
 	try {
 		await _client.ping();
 	}
