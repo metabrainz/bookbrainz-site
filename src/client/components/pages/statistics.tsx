@@ -19,7 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 
-import {_EditorType} from '../../../types';
+import {type Editor} from '../../../types';
 import React from 'react';
 import {startCase as _startCase} from 'lodash';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
