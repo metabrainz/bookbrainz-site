@@ -39,6 +39,7 @@ class EditorAchievementTab extends React.Component {
 	 */
 	constructor(props) {
 		super(props);
+		this.currAchievement = props.currAchievement;
 		this.state = {
 			achievement: props.achievement,
 			editor: props.editor
@@ -58,9 +59,7 @@ class EditorAchievementTab extends React.Component {
 			const achievementHTML = (
 				<Achievement
 					achievement={achievement}
-					counter={achievement.counter}
 					key={`${this.state.editor.id}${achievement.id}`}
-					unlocked={achievement.unlocked}
 				/>
 			);
 			if (achievement.unlocked) {
@@ -91,9 +90,18 @@ class EditorAchievementTab extends React.Component {
 					method="post"
 				>
 					<CardDeck className="mb-3">
-						<DragAndDrop name="rank1"/>
-						<DragAndDrop name="rank2"/>
-						<DragAndDrop name="rank3"/>
+						<DragAndDrop
+							initialAchievement={this.currAchievement.model.fulfillmentValue?.[0]?.achievement}
+							name="rank1"
+						/>
+						<DragAndDrop
+							initialAchievement={this.currAchievement.model.fulfillmentValue?.[1]?.achievement}
+							name="rank2"
+						/>
+						<DragAndDrop
+							initialAchievement={this.currAchievement.model.fulfillmentValue?.[2]?.achievement}
+							name="rank3"
+						/>
 					</CardDeck>
 					<span className="margin-left-1">
 						<Button type="submit" variant="success">
@@ -149,6 +157,9 @@ class EditorAchievementTab extends React.Component {
 EditorAchievementTab.displayName = 'EditorAchievementTab';
 EditorAchievementTab.propTypes = {
 	achievement: PropTypes.shape({
+		model: PropTypes.array
+	}).isRequired,
+	currAchievement: PropTypes.shape({
 		model: PropTypes.array
 	}).isRequired,
 	editor: PropTypes.shape({

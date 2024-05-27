@@ -17,7 +17,6 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 
@@ -28,21 +27,34 @@ const {useState, useCallback} = React;
 * The Achievement interface, defining the properties of an achievement.
 * @typedef
 * @property {string} name - The name of the achievement.
-* @property {string} src - The source URL of the achievement's badge image.
-* @property {string} id - The ID of the achievement.
+* @property {string} badgeUrl - The source URL of the achievement's badge image.
+* @property {number} id - The ID of the achievement.
 */
-type Achievement = {
+export type Achievement = {
+	badgeUrl: string | null;
+	counter:number;
+	description: string;
+	id: number;
 	name: string;
-	src: string;
-	id: string;
+	unlocked: boolean;
 };
+type AchievementForDisplay = Pick<Achievement, 'badgeUrl' | 'id' | 'name'>;
+
+const blankBadge:AchievementForDisplay = {
+	badgeUrl: '/images/blankbadge.svg',
+	id: null,
+	name: 'drag badge to set'
+};
+
 /**
  * Props for DragAndDropImage component
  * @typedef {Object} Props
  * @property {string} name - The name of the DragAndDrop component.
+ * @property {Achievement} initialAchievement - The initial achievement to display in the card.
  */
 type Props = {
   name: string;
+  initialAchievement?: Achievement;
 };
 
 /**
@@ -52,21 +64,15 @@ type Props = {
 * @param {Props} props - The props object containing the following:
 * @returns {JSX.Element} A React component that displays a drag-and-drop card for an achievement.
 */
-function DragAndDrop({name}: Props): JSX.Element {
-	const [achievement, setAchievement] = useState<Achievement>({
-		name: 'drag badge to set',
-		src: '/images/blankbadge.svg'
-	});
+function DragAndDrop({name, initialAchievement}: Props): JSX.Element {
+	const [achievement, setAchievement] = useState<AchievementForDisplay>(initialAchievement);
 	const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
 		event.preventDefault();
-		setAchievement({
-			name: 'drag badge to set',
-			src: '/images/blankbadge.svg'
-		});
-	});
+		setAchievement(blankBadge);
+	}, []);
 	const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
 		event.preventDefault();
-	});
+	}, []);
 	const handleDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
 		event.preventDefault();
 		let data;
@@ -77,8 +83,12 @@ function DragAndDrop({name}: Props): JSX.Element {
 		catch (error) {
 			return;
 		}
-		setAchievement(data);
-	});
+		setAchievement({
+			badgeUrl: data.src,
+			id: data.id,
+			name: data.name
+		});
+	}, [setAchievement]);
 	return (
 		<Card
 			bg="light"
@@ -89,7 +99,7 @@ function DragAndDrop({name}: Props): JSX.Element {
 			<Card.Img
 				className="mt-4"
 				height={100}
-				src={achievement.src}
+				src={achievement.badgeUrl}
 				variant="top"
 			/>
 			<Card.Body className="text-center">
@@ -97,7 +107,7 @@ function DragAndDrop({name}: Props): JSX.Element {
 					<Form.Control
 						name={name}
 						type="hidden"
-						value={achievement.id}
+						value={achievement.id ? achievement.id.toString() : ''}
 					/>
 				</Form.Group>
 				<div className="h3">
@@ -109,8 +119,9 @@ function DragAndDrop({name}: Props): JSX.Element {
 }
 
 DragAndDrop.displayName = 'DragAndDrop';
-DragAndDrop.propTypes = {
-	name: PropTypes.string.isRequired
+
+DragAndDrop.defaultProps = {
+	initialAchievement: blankBadge
 };
 
 export default DragAndDrop;

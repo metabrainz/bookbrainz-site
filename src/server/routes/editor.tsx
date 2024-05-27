@@ -20,7 +20,6 @@
 import * as auth from '../helpers/auth';
 import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
-import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
 import {AdminActionType, PrivilegeType} from '../../common/helpers/privileges-utils';
@@ -42,6 +41,7 @@ import _ from 'lodash';
 import express from 'express';
 import {getOrderedCollectionsForEditorPage} from '../helpers/collections';
 import {getOrderedRevisionForEditorPage} from '../helpers/revisions';
+import log from 'log';
 import target from '../templates/target';
 
 
@@ -122,8 +122,8 @@ function isCurrentUser(reqUserID, sessionUser) {
 	return reqUserID === sessionUser.id;
 }
 
-router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
-	async function runAsync() {
+router.post('/edit/handler', auth.isAuthenticatedForHandler, async (req, res) => {
+	try {
 		const {Editor} = req.app.locals.orm;
 
 		if (!isCurrentUser(req.body.id, req.user)) {
@@ -140,10 +140,10 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 				throw new error.NotFoundError('Editor not found', req);
 			});
 		if (editor.get('areaId') === req.body.areaId &&
-			editor.get('bio') === req.body.bio &&
-			editor.get('name') === req.body.name &&
-			editor.get('titleUnlockId') === req.body.title &&
-			editor.get('genderId') === req.body.genderId
+				editor.get('bio') === req.body.bio &&
+				editor.get('name') === req.body.name &&
+				editor.get('titleUnlockId') === req.body.title &&
+				editor.get('genderId') === req.body.genderId
 		) {
 			throw new error.FormSubmissionError('No change to the profile');
 		}
@@ -164,19 +164,18 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, (req, res) => {
 			});
 
 		res.locals.user.name = req.body.name;
-		const editorJSON = modifiedEditor.toJSON();
-		return {
-			aliasSet: {
-				aliases: [
-					{name: editorJSON.name}
-				]
-			},
-			bbid: editorJSON.id,
-			type: 'Editor'
-		};
-	}
 
-	handler.sendPromiseResult(res, runAsync(), search.indexEntity);
+		const editorJSON = modifiedEditor.toJSON();
+
+		// Type needed for indexing
+		modifiedEditor.set('type', 'Editor');
+		await search.indexEntity(modifiedEditor);
+
+		return res.status(200).send(editorJSON);
+	}
+	catch (err) {
+	 return error.sendErrorAsJSON(res, err);
+	}
 });
 
 router.post('/privs/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ADMIN), async (req, res, next) => {
@@ -531,19 +530,32 @@ router.get('/:id/achievements', async (req, res, next) => {
 		.where('editor_id', userId)
 		.fetchAll({require: false});
 
+	const achievementColPromise = new AchievementUnlock()
+		.where('editor_id', userId)
+		.where('profile_rank', '<=', '3')
+		.query((qb) => qb.limit(3))
+		.orderBy('profile_rank', 'ASC')
+		.fetchAll({
+			require: false,
+			withRelated: ['achievement']
+		});
+
 	const achievementTypesPromise = new AchievementType()
 		.orderBy('id', 'ASC')
 		.fetchAll();
 
-	const [unlocks, editorJSON, achievementTypes] = await Promise.all([
-		unlocksPromise, editorJSONPromise, achievementTypesPromise
+	const [unlocks, editorJSON, achievementTypes, achievementCol] = await Promise.all([
+		unlocksPromise, editorJSONPromise, achievementTypesPromise, achievementColPromise
 	]);
 
 	const achievementJSON =
 		await setAchievementUnlockedField(achievementTypes, unlocks, userId, res.app.locals.orm);
 
+	const currAchievementJSON = achievementColToEditorGetJSON(achievementCol);
+
 	const props = generateProps(req, res, {
 		achievement: achievementJSON,
+		currAchievement: currAchievementJSON,
 		editor: editorJSON,
 		isOwner,
 		tabActive: 2
@@ -556,6 +568,7 @@ router.get('/:id/achievements', async (req, res, next) => {
 			>
 				<AchievementsTab
 					achievement={props.achievement}
+					currAchievement={props.currAchievement}
 					editor={props.editor}
 					isOwner={props.isOwner}
 				/>

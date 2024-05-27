@@ -1,8 +1,8 @@
 import {EntityType, Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
 
 import {isString, kebabCase, toString, upperFirst} from 'lodash';
-import type {EntityT} from 'bookbrainz-data/lib/types/entity';
 import {IdentifierType} from '../../client/unified-form/interface/type';
+import type {LazyLoadedEntityT} from 'bookbrainz-data/lib/types/entity';
 
 /**
  * Regular expression for valid BookBrainz UUIDs (bbid)
@@ -310,15 +310,18 @@ export async function getEntityByBBID(orm, bbid:string, otherRelations:Array<str
 	return entityData;
 }
 
-export async function getEntityAlias(orm, bbid:string, type:EntityType):Promise<any> {
+export async function getEntity(orm, bbid:string, type:EntityType, fetchOptions?:Record<string, any>):Promise<any> {
 	if (!isValidBBID(bbid)) {
 		return null;
 	}
-	const entityData = await orm.func.entity.getEntity(orm, upperFirst(type), bbid, []);
-	return entityData;
+	const finalBBID = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid);
+	const Model = getEntityModelByType(orm, upperFirst(type));
+	const entity = await new Model({bbid: finalBBID})
+		.fetch({require: true, ...fetchOptions});
+	return entity && entity.toJSON();
 }
 
-export function getAliasLanguageCodes(entity: EntityT) {
+export function getAliasLanguageCodes(entity: LazyLoadedEntityT) {
 	return entity.aliasSet?.aliases
 		.map((alias) => alias.language?.isoCode1)
 		// less common languages (and [Multiple languages]) do not have a two-letter ISO code, ignore them for now
