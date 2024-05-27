@@ -189,38 +189,44 @@ export async function _bulkIndexEntities(entities) {
 
 		operationSucceeded = true;
 
-		// eslint-disable-next-line no-await-in-loop
-		const response = await _client.bulk({
-			body: bulkOperations
-		}).catch(error => { log.error('error bulk indexing entities for search:', error); });
+		try {
+			// eslint-disable-next-line no-await-in-loop
+			const {body: bulkResponse} = await _client.bulk({
+				body: bulkOperations
+			});
 
-		/*
-		 * In case of failed index operations, the promise won't be rejected;
-		 * instead, we have to inspect the response and respond to any failures
-		 * individually.
-		 */
-		if (response?.errors === true) {
-			entitiesToIndex = response.items.reduce((accumulator, item) => {
-				// We currently only handle queue overrun
-				if (item.index.status === httpStatus.TOO_MANY_REQUESTS) {
-					const failedEntity = entities.find(
-						(element) => (element.bbid ?? element.id) === item.index._id
-					);
+			/*
+			 * In case of failed index operations, the promise won't be rejected;
+			 * instead, we have to inspect the response and respond to any failures
+			 * individually.
+			 */
+			if (bulkResponse?.errors === true) {
+				entitiesToIndex = bulkResponse.items.reduce((accumulator, item) => {
+					// We currently only handle queue overrun
+					if (item.index.status === httpStatus.TOO_MANY_REQUESTS) {
+						const failedEntity = entities.find(
+							(element) => (element.bbid ?? element.id) === item.index._id
+						);
 
-					accumulator.push(failedEntity);
+						accumulator.push(failedEntity);
+					}
+
+					return accumulator;
+				}, []);
+
+
+				if (entitiesToIndex.length) {
+					operationSucceeded = false;
+
+					const jitter = Math.random() * _maxJitter;
+					// eslint-disable-next-line no-await-in-loop
+					await new Promise(resolve => setTimeout(resolve, _retryDelay + jitter));
 				}
-
-				return accumulator;
-			}, []);
-
-
-			if (entitiesToIndex.length) {
-				operationSucceeded = false;
-
-				const jitter = Math.random() * _maxJitter;
-				// eslint-disable-next-line no-await-in-loop
-				await new Promise(resolve => setTimeout(resolve, _retryDelay + jitter));
 			}
+		}
+		catch (error) {
+			log.error('error bulk indexing entities for search:', error);
+			operationSucceeded = false;
 		}
 	}
 }
