@@ -20,7 +20,7 @@ import {faCircle, faCommentDots, faComments, faEnvelope} from '@fortawesome/free
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import React from 'react';
-import {faTwitter} from '@fortawesome/free-brands-svg-icons';
+import {faXTwitter} from '@fortawesome/free-brands-svg-icons';
 
 
 /**
@@ -111,13 +111,13 @@ function AboutPage(): JSX.Element {
 					className="margin-sides-1 contact-text"
 					icon={faCircle}
 				/>
-				<a className="contact-text" href="//twitter.com/intent/tweet?screen_name=BookBrainz">
+				<a className="contact-text" href="https://x.com/BookBrainz">
 					<FontAwesomeIcon
 						className="contact-text"
-						icon={faTwitter}
+						icon={faXTwitter}
 						size="2x"
 					/>
-					Twitter
+					X
 				</a>
 				<FontAwesomeIcon
 					className="margin-sides-1 contact-text"
