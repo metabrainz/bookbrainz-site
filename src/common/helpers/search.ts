@@ -607,6 +607,7 @@ export async function init(orm: ORM, options) {
 		await _client.ping();
 	}
 	catch (error) {
+		log.warning('Could not connect to ElasticSearch:', error.toString());
 		return false;
 	}
 	const mainIndexExists = await _client.indices.exists({index: _index});
