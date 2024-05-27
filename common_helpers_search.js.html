@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>client/components/pages/parts/editor-achievements.js - Documentation</title>
+    <title>common/helpers/search.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">client/components/pages/parts/editor-achievements.js</h1>
+    <h1 class="page-title">common/helpers/search.js</h1>
     
 
     
@@ -41,210 +41,978 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-require("core-js/modules/es.reflect.construct.js");
 require("core-js/modules/es.object.keys.js");
 require("core-js/modules/es.symbol.js");
-require("core-js/modules/es.array.filter.js");
 require("core-js/modules/es.object.get-own-property-descriptor.js");
 require("core-js/modules/es.object.get-own-property-descriptors.js");
-require("core-js/modules/es.array.iterator.js");
-require("core-js/modules/es.string.iterator.js");
+require("core-js/modules/es.array.slice.js");
+require("core-js/modules/es.array.from.js");
+require("core-js/modules/es.symbol.description.js");
+require("core-js/modules/es.symbol.iterator.js");
 require("core-js/modules/es.weak-map.js");
-require("core-js/modules/web.dom-collections.iterator.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/web.dom-collections.for-each.js");
+exports._bulkIndexEntities = _bulkIndexEntities;
+exports.autocomplete = autocomplete;
+exports.checkIfExists = checkIfExists;
+exports.deleteEntity = deleteEntity;
+exports.generateIndex = generateIndex;
+exports.getDocumentToIndex = getDocumentToIndex;
+exports.indexEntity = indexEntity;
+exports.init = init;
+exports.refreshIndex = refreshIndex;
+exports.searchByName = searchByName;
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+require("core-js/modules/es.array.map.js");
+require("core-js/modules/es.date.to-json.js");
+require("core-js/modules/web.url.to-json.js");
 require("core-js/modules/es.array.concat.js");
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+require("core-js/modules/es.array.includes.js");
+require("core-js/modules/es.string.includes.js");
+require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.promise.js");
+require("core-js/modules/es.string.iterator.js");
+require("core-js/modules/web.dom-collections.iterator.js");
+require("core-js/modules/es.function.name.js");
+require("core-js/modules/es.array.join.js");
+require("core-js/modules/es.regexp.exec.js");
+require("core-js/modules/es.string.search.js");
+require("core-js/modules/es.array.reduce.js");
+require("core-js/modules/es.array.find.js");
+require("core-js/modules/web.dom-collections.for-each.js");
+require("core-js/modules/es.array.filter.js");
+require("core-js/modules/es.regexp.to-string.js");
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
-var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
-var ReactSticky = _interopRequireWildcard(require("react-sticky"));
-var bootstrap = _interopRequireWildcard(require("react-bootstrap"));
-var _achievement = _interopRequireDefault(require("../../forms/parts/achievement"));
-var _dragAndDrop = _interopRequireDefault(require("../../input/drag-and-drop"));
-var _propTypes = _interopRequireDefault(require("prop-types"));
-var _react = _interopRequireDefault(require("react"));
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+var _upperFirst2 = _interopRequireDefault(require("lodash/upperFirst"));
+var _snakeCase2 = _interopRequireDefault(require("lodash/snakeCase"));
+var _isString2 = _interopRequireDefault(require("lodash/isString"));
+var _camelCase2 = _interopRequireDefault(require("lodash/camelCase"));
+var commonUtils = _interopRequireWildcard(require("./utils"));
+var _elasticsearch = _interopRequireDefault(require("@elastic/elasticsearch"));
+var _httpStatus = _interopRequireDefault(require("http-status"));
+var _log = _interopRequireDefault(require("log"));
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop &amp;&amp; obj &amp;&amp; obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" &amp;&amp; typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache &amp;&amp; cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty &amp;&amp; Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" &amp;&amp; Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc &amp;&amp; (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" &amp;&amp; o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike &amp;&amp; o &amp;&amp; typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion &amp;&amp; it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" &amp;&amp; o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i &lt; len; i++) { arr2[i] = arr[i]; } return arr2; }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly &amp;&amp; (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-function _objectSpread(target) { for (var i = 1; i &lt; arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } } /*
-                                                                                                                                                                                                                                                                                                                                           * Copyright (C) 2016  Daniel Hsing
-                                                                                                                                                                                                                                                                                                                                           * 				 2016  Max Prettyjohns
-                                                                                                                                                                                                                                                                                                                                           *
-                                                                                                                                                                                                                                                                                                                                           * This program is free software; you can redistribute it and/or modify
-                                                                                                                                                                                                                                                                                                                                           * it under the terms of the GNU General Public License as published by
-                                                                                                                                                                                                                                                                                                                                           * the Free Software Foundation; either version 2 of the License, or
-                                                                                                                                                                                                                                                                                                                                           * (at your option) any later version.
-                                                                                                                                                                                                                                                                                                                                           *
-                                                                                                                                                                                                                                                                                                                                           * This program is distributed in the hope that it will be useful,
-                                                                                                                                                                                                                                                                                                                                           * but WITHOUT ANY WARRANTY; without even the implied warranty of
-                                                                                                                                                                                                                                                                                                                                           * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-                                                                                                                                                                                                                                                                                                                                           * GNU General Public License for more details.
-                                                                                                                                                                                                                                                                                                                                           *
-                                                                                                                                                                                                                                                                                                                                           * You should have received a copy of the GNU General Public License along
-                                                                                                                                                                                                                                                                                                                                           * with this program; if not, write to the Free Software Foundation, Inc.,
-                                                                                                                                                                                                                                                                                                                                           * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-                                                                                                                                                                                                                                                                                                                                           */
-var Button = bootstrap.Button,
-  CardDeck = bootstrap.CardDeck,
-  Col = bootstrap.Col,
-  Form = bootstrap.Form,
-  Row = bootstrap.Row;
-var Sticky = ReactSticky.Sticky,
-  StickyContainer = ReactSticky.StickyContainer;
+function _objectSpread(target) { for (var i = 1; i &lt; arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; } /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * Copyright (C) 2016  Sean Burke
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * This program is free software; you can redistribute it and/or modify
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * it under the terms of the GNU General Public License as published by
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * the Free Software Foundation; either version 2 of the License, or
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * (at your option) any later version.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * This program is distributed in the hope that it will be useful,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * but WITHOUT ANY WARRANTY; without even the implied warranty of
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * GNU General Public License for more details.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * You should have received a copy of the GNU General Public License along
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * with this program; if not, write to the Free Software Foundation, Inc.,
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          */ /* eslint-disable camelcase */
+var _index = 'bookbrainz';
+var _bulkIndexSize = 10000;
+
+// In milliseconds
+var _retryDelay = 10;
+var _maxJitter = 75;
+var _client = null;
+function sanitizeEntityType(type) {
+  if (!type) {
+    return null;
+  }
+  if (Array.isArray(type)) {
+    return type.map(_snakeCase2.default);
+  }
+  if ((0, _snakeCase2.default)(type) === 'all_entities') {
+    return ['author', 'edition', 'edition_group', 'series', 'work', 'publisher'];
+  }
+  return (0, _snakeCase2.default)(type);
+}
+var commonProperties = ['bbid', 'id', 'name', 'type', 'disambiguation'];
+
+/* We don't currently want to index the entire Model in ElasticSearch,
+   which contains a lot of fields we don't use as well as some internal props (_pivot props)
+   This utility function prepares the Model into a minimal object that will be indexed
+*/
+function getDocumentToIndex(entity, entityType) {
+  var _entity$related, _entity$related$relat, _entity$related2, _entity$related2$rela;
+  var additionalProperties = [];
+  switch (entityType) {
+    case 'Work':
+      additionalProperties.push('authors');
+      break;
+    default:
+      break;
+  }
+  var aliases = (_entity$related = entity.related('aliasSet')) === null || _entity$related === void 0 ? void 0 : (_entity$related$relat = _entity$related.related('aliases')) === null || _entity$related$relat === void 0 ? void 0 : _entity$related$relat.toJSON({
+    ignorePivot: true,
+    visible: 'name'
+  });
+  if (!aliases) {
+    // Some models don't have the same aliasSet structure, i.e. Collection, Editor, Area, …
+    var name = entity.get('name');
+    aliases = {
+      name: name
+    };
+  }
+  var identifiers = (_entity$related2 = entity.related('identifierSet')) === null || _entity$related2 === void 0 ? void 0 : (_entity$related2$rela = _entity$related2.related('identifiers')) === null || _entity$related2$rela === void 0 ? void 0 : _entity$related2$rela.toJSON({
+    ignorePivot: true,
+    visible: 'value'
+  });
+  return _objectSpread(_objectSpread({}, entity.toJSON({
+    ignorePivot: true,
+    visible: commonProperties.concat(additionalProperties)
+  })), {}, {
+    aliases: aliases,
+    identifiers: identifiers !== null &amp;&amp; identifiers !== void 0 ? identifiers : null
+  });
+}
+function _fetchEntityModelsForESResults(_x, _x2) {
+  return _fetchEntityModelsForESResults2.apply(this, arguments);
+} // Returns the results of a search translated to entity objects
+function _fetchEntityModelsForESResults2() {
+  _fetchEntityModelsForESResults2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(orm, results) {
+    var Area, Editor, UserCollection, processedResults;
+    return _regenerator.default.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            Area = orm.Area, Editor = orm.Editor, UserCollection = orm.UserCollection;
+            if (results !== null &amp;&amp; results !== void 0 &amp;&amp; results.hits) {
+              _context3.next = 3;
+              break;
+            }
+            return _context3.abrupt("return", null);
+          case 3:
+            _context3.next = 5;
+            return Promise.all(results.hits.map( /*#__PURE__*/function () {
+              var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(hit) {
+                var entityStub, _areaJSON$areaType, area, areaJSON, areaParents, editor, editorJSON, collection, collectionJSON, model, entity, entityJSON;
+                return _regenerator.default.wrap(function _callee2$(_context2) {
+                  while (1) {
+                    switch (_context2.prev = _context2.next) {
+                      case 0:
+                        entityStub = hit._source; // Special cases first
+                        if (!(entityStub.type === 'Area')) {
+                          _context2.next = 13;
+                          break;
+                        }
+                        _context2.next = 4;
+                        return Area.forge({
+                          gid: entityStub.id
+                        }).fetch({
+                          withRelated: ['areaType']
+                        });
+                      case 4:
+                        area = _context2.sent;
+                        areaJSON = area.toJSON({
+                          omitPivot: true
+                        });
+                        _context2.next = 8;
+                        return area.parents();
+                      case 8:
+                        areaParents = _context2.sent;
+                        areaJSON.defaultAlias = {
+                          name: areaJSON.name
+                        };
+                        areaJSON.type = 'Area';
+                        areaJSON.disambiguation = {
+                          comment: "".concat((_areaJSON$areaType = areaJSON.areaType) === null || _areaJSON$areaType === void 0 ? void 0 : _areaJSON$areaType.name).concat(areaParents !== null &amp;&amp; areaParents !== void 0 &amp;&amp; areaParents.length ? ' - ' : '').concat(areaParents === null || areaParents === void 0 ? void 0 : areaParents.map(function (parent) {
+                            return parent.name;
+                          }).join(', '))
+                        };
+                        return _context2.abrupt("return", areaJSON);
+                      case 13:
+                        if (!(entityStub.type === 'Editor')) {
+                          _context2.next = 22;
+                          break;
+                        }
+                        _context2.next = 16;
+                        return Editor.forge({
+                          id: entityStub.id
+                        }).fetch();
+                      case 16:
+                        editor = _context2.sent;
+                        editorJSON = editor.toJSON({
+                          omitPivot: true
+                        });
+                        editorJSON.defaultAlias = {
+                          name: editorJSON.name
+                        };
+                        editorJSON.type = 'Editor';
+                        editorJSON.id = entityStub.id;
+                        return _context2.abrupt("return", editorJSON);
+                      case 22:
+                        if (!(entityStub.type === 'Collection')) {
+                          _context2.next = 31;
+                          break;
+                        }
+                        _context2.next = 25;
+                        return UserCollection.forge({
+                          id: entityStub.id
+                        }).fetch();
+                      case 25:
+                        collection = _context2.sent;
+                        collectionJSON = collection.toJSON({
+                          omitPivot: true
+                        });
+                        collectionJSON.defaultAlias = {
+                          name: collectionJSON.name
+                        };
+                        collectionJSON.type = 'Collection';
+                        collectionJSON.id = entityStub.id;
+                        return _context2.abrupt("return", collectionJSON);
+                      case 31:
+                        // Regular entity
+                        model = commonUtils.getEntityModelByType(orm, entityStub.type);
+                        _context2.next = 34;
+                        return model.forge({
+                          bbid: entityStub.bbid
+                        }).fetch({
+                          require: false,
+                          withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases', 'identifierSet.identifiers', 'relationshipSet.relationships.source', 'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation']
+                        });
+                      case 34:
+                        entity = _context2.sent;
+                        entityJSON = entity === null || entity === void 0 ? void 0 : entity.toJSON({
+                          omitPivot: true
+                        });
+                        if (!(entityJSON &amp;&amp; entityJSON.relationshipSet)) {
+                          _context2.next = 40;
+                          break;
+                        }
+                        _context2.next = 39;
+                        return Promise.all(entityJSON.relationshipSet.relationships.map( /*#__PURE__*/function () {
+                          var _ref2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(rel) {
+                            return _regenerator.default.wrap(function _callee$(_context) {
+                              while (1) {
+                                switch (_context.prev = _context.next) {
+                                  case 0:
+                                    _context.next = 2;
+                                    return commonUtils.getEntity(orm, rel.source.bbid, rel.source.type);
+                                  case 2:
+                                    rel.source = _context.sent;
+                                    _context.next = 5;
+                                    return commonUtils.getEntity(orm, rel.target.bbid, rel.target.type);
+                                  case 5:
+                                    rel.target = _context.sent;
+                                    return _context.abrupt("return", rel);
+                                  case 7:
+                                  case "end":
+                                    return _context.stop();
+                                }
+                              }
+                            }, _callee);
+                          }));
+                          return function (_x17) {
+                            return _ref2.apply(this, arguments);
+                          };
+                        }()));
+                      case 39:
+                        entityJSON.relationshipSet.relationships = _context2.sent;
+                      case 40:
+                        if (entityStub.authors) {
+                          entityJSON.authors = entityStub.authors;
+                        }
+                        return _context2.abrupt("return", entityJSON);
+                      case 42:
+                      case "end":
+                        return _context2.stop();
+                    }
+                  }
+                }, _callee2);
+              }));
+              return function (_x16) {
+                return _ref.apply(this, arguments);
+              };
+            }())).catch(function (err) {
+              return _log.default.error(err);
+            });
+          case 5:
+            processedResults = _context3.sent;
+            return _context3.abrupt("return", processedResults);
+          case 7:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3);
+  }));
+  return _fetchEntityModelsForESResults2.apply(this, arguments);
+}
+function _searchForEntities(_x3, _x4) {
+  return _searchForEntities2.apply(this, arguments);
+}
+function _searchForEntities2() {
+  _searchForEntities2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4(orm, dslQuery) {
+    var searchResponse, results;
+    return _regenerator.default.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            _context4.prev = 0;
+            _context4.next = 3;
+            return _client.search(dslQuery);
+          case 3:
+            searchResponse = _context4.sent;
+            _context4.next = 6;
+            return _fetchEntityModelsForESResults(orm, searchResponse.body.hits);
+          case 6:
+            results = _context4.sent;
+            return _context4.abrupt("return", {
+              results: results,
+              total: searchResponse.body.hits.total
+            });
+          case 10:
+            _context4.prev = 10;
+            _context4.t0 = _context4["catch"](0);
+            _log.default.error(_context4.t0);
+          case 13:
+            return _context4.abrupt("return", {
+              results: [],
+              total: 0
+            });
+          case 14:
+          case "end":
+            return _context4.stop();
+        }
+      }
+    }, _callee4, null, [[0, 10]]);
+  }));
+  return _searchForEntities2.apply(this, arguments);
+}
+function _bulkIndexEntities(_x5) {
+  return _bulkIndexEntities2.apply(this, arguments);
+}
+function _bulkIndexEntities2() {
+  _bulkIndexEntities2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6(entities) {
+    var entitiesToIndex, operationSucceeded, bulkOperations, _yield$_client$bulk, bulkResponse;
+    return _regenerator.default.wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            if (entities.length) {
+              _context6.next = 2;
+              break;
+            }
+            return _context6.abrupt("return");
+          case 2:
+            // Proxy the list of entities to index in case we need to retry
+            entitiesToIndex = entities;
+            operationSucceeded = false;
+          case 4:
+            if (operationSucceeded) {
+              _context6.next = 24;
+              break;
+            }
+            bulkOperations = entitiesToIndex.reduce(function (accumulator, entity) {
+              var _entity$bbid2;
+              accumulator.push({
+                index: {
+                  _id: (_entity$bbid2 = entity.bbid) !== null &amp;&amp; _entity$bbid2 !== void 0 ? _entity$bbid2 : entity.id,
+                  _index: _index,
+                  _type: (0, _snakeCase2.default)(entity.type)
+                }
+              });
+              accumulator.push(entity);
+              return accumulator;
+            }, []);
+            operationSucceeded = true;
+            _context6.prev = 7;
+            _context6.next = 10;
+            return _client.bulk({
+              body: bulkOperations
+            });
+          case 10:
+            _yield$_client$bulk = _context6.sent;
+            bulkResponse = _yield$_client$bulk.body;
+            if (!((bulkResponse === null || bulkResponse === void 0 ? void 0 : bulkResponse.errors) === true)) {
+              _context6.next = 16;
+              break;
+            }
+            entitiesToIndex = bulkResponse.items.reduce(function (accumulator, item) {
+              // We currently only handle queue overrun
+              if (item.index.status === _httpStatus.default.TOO_MANY_REQUESTS) {
+                var failedEntity = entities.find(function (element) {
+                  var _element$bbid;
+                  return ((_element$bbid = element.bbid) !== null &amp;&amp; _element$bbid !== void 0 ? _element$bbid : element.id) === item.index._id;
+                });
+                accumulator.push(failedEntity);
+              }
+              return accumulator;
+            }, []);
+            if (!entitiesToIndex.length) {
+              _context6.next = 16;
+              break;
+            }
+            return _context6.delegateYield( /*#__PURE__*/_regenerator.default.mark(function _callee5() {
+              var jitter;
+              return _regenerator.default.wrap(function _callee5$(_context5) {
+                while (1) {
+                  switch (_context5.prev = _context5.next) {
+                    case 0:
+                      operationSucceeded = false;
+                      jitter = Math.random() * _maxJitter; // eslint-disable-next-line no-await-in-loop
+                      _context5.next = 4;
+                      return new Promise(function (resolve) {
+                        return setTimeout(resolve, _retryDelay + jitter);
+                      });
+                    case 4:
+                    case "end":
+                      return _context5.stop();
+                  }
+                }
+              }, _callee5);
+            })(), "t0", 16);
+          case 16:
+            _context6.next = 22;
+            break;
+          case 18:
+            _context6.prev = 18;
+            _context6.t1 = _context6["catch"](7);
+            _log.default.error('error bulk indexing entities for search:', _context6.t1);
+            operationSucceeded = false;
+          case 22:
+            _context6.next = 4;
+            break;
+          case 24:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6, null, [[7, 18]]);
+  }));
+  return _bulkIndexEntities2.apply(this, arguments);
+}
+function _processEntityListForBulk(_x6) {
+  return _processEntityListForBulk2.apply(this, arguments);
+}
+function _processEntityListForBulk2() {
+  _processEntityListForBulk2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee7(entityList) {
+    var indexOperations, bulkQueue, _iterator, _step, entity;
+    return _regenerator.default.wrap(function _callee7$(_context7) {
+      while (1) {
+        switch (_context7.prev = _context7.next) {
+          case 0:
+            indexOperations = [];
+            bulkQueue = [];
+            _iterator = _createForOfIteratorHelper(entityList);
+            try {
+              for (_iterator.s(); !(_step = _iterator.n()).done;) {
+                entity = _step.value;
+                bulkQueue.push(entity);
+                if (bulkQueue.length >= _bulkIndexSize) {
+                  indexOperations.push(_bulkIndexEntities(bulkQueue));
+                  bulkQueue = [];
+                }
+              }
+            } catch (err) {
+              _iterator.e(err);
+            } finally {
+              _iterator.f();
+            }
+            indexOperations.push(_bulkIndexEntities(bulkQueue));
+            _context7.next = 7;
+            return Promise.all(indexOperations);
+          case 7:
+          case "end":
+            return _context7.stop();
+        }
+      }
+    }, _callee7);
+  }));
+  return _processEntityListForBulk2.apply(this, arguments);
+}
+function autocomplete(_x7, _x8, _x9) {
+  return _autocomplete.apply(this, arguments);
+} // eslint-disable-next-line consistent-return
+function _autocomplete() {
+  _autocomplete = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee8(orm, query, type) {
+    var size,
+      queryBody,
+      dslQuery,
+      searchResponse,
+      _args8 = arguments;
+    return _regenerator.default.wrap(function _callee8$(_context8) {
+      while (1) {
+        switch (_context8.prev = _context8.next) {
+          case 0:
+            size = _args8.length > 3 &amp;&amp; _args8[3] !== undefined ? _args8[3] : 42;
+            queryBody = null;
+            if (commonUtils.isValidBBID(query)) {
+              queryBody = {
+                ids: {
+                  values: [query]
+                }
+              };
+            } else {
+              queryBody = {
+                match: {
+                  'aliases.name.autocomplete': {
+                    minimum_should_match: '80%',
+                    query: query
+                  }
+                }
+              };
+            }
+            dslQuery = {
+              body: {
+                query: queryBody,
+                size: size
+              },
+              index: _index,
+              type: sanitizeEntityType(type)
+            };
+            _context8.next = 6;
+            return _searchForEntities(orm, dslQuery);
+          case 6:
+            searchResponse = _context8.sent;
+            return _context8.abrupt("return", searchResponse.results);
+          case 8:
+          case "end":
+            return _context8.stop();
+        }
+      }
+    }, _callee8);
+  }));
+  return _autocomplete.apply(this, arguments);
+}
+function indexEntity(entity) {
+  var entityType = entity.get('type');
+  var document = getDocumentToIndex(entity, entityType);
+  if (entity) {
+    return _client.index({
+      body: document,
+      id: entity.get('bbid') || entity.get('id'),
+      index: _index,
+      type: (0, _snakeCase2.default)(entityType)
+    }).catch(function (error) {
+      _log.default.error('error indexing entity for search:', error);
+    });
+  }
+}
+function deleteEntity(entity) {
+  var _entity$bbid;
+  return _client.delete({
+    id: (_entity$bbid = entity.bbid) !== null &amp;&amp; _entity$bbid !== void 0 ? _entity$bbid : entity.id,
+    index: _index,
+    type: (0, _snakeCase2.default)(entity.type)
+  }).catch(function (error) {
+    _log.default.error('error deleting entity from index:', error);
+  });
+}
+function refreshIndex() {
+  return _client.indices.refresh({
+    index: _index
+  }).catch(function (error) {
+    _log.default.error('error refreshing search index:', error);
+  });
+}
+function generateIndex(_x10) {
+  return _generateIndex.apply(this, arguments);
+}
+function _generateIndex() {
+  _generateIndex = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee9(orm) {
+    var Area, Author, Edition, EditionGroup, Editor, Publisher, Series, UserCollection, Work, indexMappings, mainIndexExistsRequest, mainIndexExists, baseRelations, entityBehaviors, behaviorPromise, entityLists, entityFetchOrder, _entityLists, authorsCollection, editionCollection, editionGroupCollection, publisherCollection, seriesCollection, workCollection, listIndexes, areaCollection, areas, processedAreas, editorCollection, editors, processedEditors, userCollections, userCollectionsJSON, processedCollections;
+    return _regenerator.default.wrap(function _callee9$(_context9) {
+      while (1) {
+        switch (_context9.prev = _context9.next) {
+          case 0:
+            Area = orm.Area, Author = orm.Author, Edition = orm.Edition, EditionGroup = orm.EditionGroup, Editor = orm.Editor, Publisher = orm.Publisher, Series = orm.Series, UserCollection = orm.UserCollection, Work = orm.Work;
+            indexMappings = {
+              mappings: {
+                _default_: {
+                  properties: {
+                    aliases: {
+                      properties: {
+                        name: {
+                          fields: {
+                            autocomplete: {
+                              analyzer: 'edge',
+                              type: 'text'
+                            },
+                            search: {
+                              analyzer: 'trigrams',
+                              type: 'text'
+                            }
+                          },
+                          type: 'text'
+                        }
+                      }
+                    },
+                    authors: {
+                      analyzer: 'trigrams',
+                      type: 'text'
+                    },
+                    disambiguation: {
+                      analyzer: 'trigrams',
+                      type: 'text'
+                    }
+                  }
+                }
+              },
+              settings: {
+                analysis: {
+                  analyzer: {
+                    edge: {
+                      filter: ['asciifolding', 'lowercase'],
+                      tokenizer: 'edge_ngram_tokenizer',
+                      type: 'custom'
+                    },
+                    trigrams: {
+                      filter: ['asciifolding', 'lowercase'],
+                      tokenizer: 'trigrams',
+                      type: 'custom'
+                    }
+                  },
+                  tokenizer: {
+                    edge_ngram_tokenizer: {
+                      max_gram: 10,
+                      min_gram: 2,
+                      token_chars: ['letter', 'digit'],
+                      type: 'edge_ngram'
+                    },
+                    trigrams: {
+                      max_gram: 3,
+                      min_gram: 1,
+                      type: 'ngram'
+                    }
+                  }
+                },
+                'index.mapping.ignore_malformed': true
+              }
+            }; // First, drop index and recreate
+            _context9.next = 4;
+            return _client.indices.exists({
+              index: _index
+            });
+          case 4:
+            mainIndexExistsRequest = _context9.sent;
+            mainIndexExists = mainIndexExistsRequest === null || mainIndexExistsRequest === void 0 ? void 0 : mainIndexExistsRequest.body;
+            if (!mainIndexExists) {
+              _context9.next = 9;
+              break;
+            }
+            _context9.next = 9;
+            return _client.indices.delete({
+              index: _index
+            });
+          case 9:
+            _context9.next = 11;
+            return _client.indices.create({
+              body: indexMappings,
+              index: _index
+            });
+          case 11:
+            baseRelations = ['annotation', 'defaultAlias', 'aliasSet.aliases', 'identifierSet.identifiers'];
+            entityBehaviors = [{
+              model: Author,
+              relations: ['gender', 'beginArea', 'endArea']
+            }, {
+              model: Edition,
+              relations: ['editionGroup', 'editionFormat', 'editionStatus']
+            }, {
+              model: EditionGroup,
+              relations: []
+            }, {
+              model: Publisher,
+              relations: ['area']
+            }, {
+              model: Series,
+              relations: ['seriesOrderingType']
+            }, {
+              model: Work,
+              relations: ['relationshipSet.relationships.type']
+            }]; // Update the indexed entries for each entity type
+            behaviorPromise = entityBehaviors.map(function (behavior) {
+              return behavior.model.forge().query(function (qb) {
+                qb.where('master', true);
+                qb.whereNotNull('data_id');
+              }).fetchAll({
+                withRelated: baseRelations.concat(behavior.relations)
+              });
+            });
+            _context9.next = 16;
+            return Promise.all(behaviorPromise);
+          case 16:
+            entityLists = _context9.sent;
+            /* eslint-disable @typescript-eslint/no-unused-vars */
+            entityFetchOrder = ['Author', 'Edition', 'EditionGroup', 'Publisher', 'Series', 'Work'];
+            _entityLists = (0, _slicedToArray2.default)(entityLists, 6), authorsCollection = _entityLists[0], editionCollection = _entityLists[1], editionGroupCollection = _entityLists[2], publisherCollection = _entityLists[3], seriesCollection = _entityLists[4], workCollection = _entityLists[5];
+            /* eslint-enable @typescript-eslint/no-unused-vars */
+            listIndexes = [];
+            workCollection.forEach(function (workEntity) {
+              var relationshipSet = workEntity.related('relationshipSet');
+              if (relationshipSet) {
+                var _relationshipSet$rela;
+                var authorWroteWorkRels = (_relationshipSet$rela = relationshipSet.related('relationships')) === null || _relationshipSet$rela === void 0 ? void 0 : _relationshipSet$rela.filter(function (relationshipModel) {
+                  return relationshipModel.get('typeId') === 8;
+                });
+                var authorNames = [];
+                authorWroteWorkRels.forEach(function (relationshipModel) {
+                  var _source$related;
+                  // Search for the Author in the already fetched BookshelfJS Collection
+                  var source = authorsCollection.get(relationshipModel.get('sourceBbid'));
+                  var name = source === null || source === void 0 ? void 0 : (_source$related = source.related('defaultAlias')) === null || _source$related === void 0 ? void 0 : _source$related.get('name');
+                  if (name) {
+                    authorNames.push(name);
+                  }
+                });
+                workEntity.set('authors', authorNames);
+              }
+            });
+            // Index all the entities
+            entityLists.forEach(function (entityList, idx) {
+              var entityType = entityFetchOrder[idx];
+              var listArray = entityList.map(function (entity) {
+                return getDocumentToIndex(entity, entityType);
+              });
+              listIndexes.push(_processEntityListForBulk(listArray));
+            });
+            _context9.next = 24;
+            return Promise.all(listIndexes);
+          case 24:
+            _context9.next = 26;
+            return Area.forge().fetchAll();
+          case 26:
+            areaCollection = _context9.sent;
+            areas = areaCollection.toJSON({
+              omitPivot: true
+            });
+            /** To index names, we use aliases.name and type, which Areas don't have.
+              * We massage the area to return a similar format as BB entities
+              */
+            processedAreas = areas.map(function (area) {
+              return {
+                aliases: [{
+                  name: area.name
+                }],
+                id: area.gid,
+                type: 'Area'
+              };
+            });
+            _context9.next = 31;
+            return _processEntityListForBulk(processedAreas);
+          case 31:
+            _context9.next = 33;
+            return Editor.forge()
+            // no bots
+            .where('type_id', 1).fetchAll();
+          case 33:
+            editorCollection = _context9.sent;
+            editors = editorCollection.toJSON({
+              omitPivot: true
+            });
+            /** To index names, we use aliases.name and type, which Editors don't have.
+              * We massage the editor to return a similar format as BB entities
+              */
+            processedEditors = editors.map(function (editor) {
+              return {
+                aliases: [{
+                  name: editor.name
+                }],
+                id: editor.id,
+                type: 'Editor'
+              };
+            });
+            _context9.next = 38;
+            return _processEntityListForBulk(processedEditors);
+          case 38:
+            _context9.next = 40;
+            return UserCollection.forge().where({
+              public: true
+            }).fetchAll();
+          case 40:
+            userCollections = _context9.sent;
+            userCollectionsJSON = userCollections.toJSON({
+              omitPivot: true
+            });
+            /** To index names, we use aliases.name and type, which UserCollections don't have.
+              * We massage the editor to return a similar format as BB entities
+              */
+            processedCollections = userCollectionsJSON.map(function (collection) {
+              return {
+                aliases: [{
+                  name: collection.name
+                }],
+                id: collection.id,
+                type: 'Collection'
+              };
+            });
+            _context9.next = 45;
+            return _processEntityListForBulk(processedCollections);
+          case 45:
+            _context9.next = 47;
+            return refreshIndex();
+          case 47:
+          case "end":
+            return _context9.stop();
+        }
+      }
+    }, _callee9);
+  }));
+  return _generateIndex.apply(this, arguments);
+}
+function checkIfExists(_x11, _x12, _x13) {
+  return _checkIfExists.apply(this, arguments);
+}
+function _checkIfExists() {
+  _checkIfExists = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee11(orm, name, type) {
+    var bookshelf, bbids, baseRelations, processedResults;
+    return _regenerator.default.wrap(function _callee11$(_context11) {
+      while (1) {
+        switch (_context11.prev = _context11.next) {
+          case 0:
+            bookshelf = orm.bookshelf;
+            _context11.next = 3;
+            return new Promise(function (resolve, reject) {
+              bookshelf.transaction( /*#__PURE__*/function () {
+                var _ref3 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee10(transacting) {
+                  var result;
+                  return _regenerator.default.wrap(function _callee10$(_context10) {
+                    while (1) {
+                      switch (_context10.prev = _context10.next) {
+                        case 0:
+                          _context10.prev = 0;
+                          _context10.next = 3;
+                          return orm.func.alias.getBBIDsWithMatchingAlias(transacting, (0, _snakeCase2.default)(type), name);
+                        case 3:
+                          result = _context10.sent;
+                          resolve(result);
+                          _context10.next = 10;
+                          break;
+                        case 7:
+                          _context10.prev = 7;
+                          _context10.t0 = _context10["catch"](0);
+                          reject(_context10.t0);
+                        case 10:
+                        case "end":
+                          return _context10.stop();
+                      }
+                    }
+                  }, _callee10, null, [[0, 7]]);
+                }));
+                return function (_x18) {
+                  return _ref3.apply(this, arguments);
+                };
+              }());
+            });
+          case 3:
+            bbids = _context11.sent;
+            // Follow-up: Fetch all entities in a single transaction from the postgres server
+            baseRelations = ['aliasSet.aliases.language', 'defaultAlias', 'disambiguation', 'identifierSet.identifiers.type', 'relationshipSet.relationships.type', 'revision.revision'];
+            _context11.next = 7;
+            return Promise.all(bbids.map(function (bbid) {
+              return orm.func.entity.getEntity(orm, (0, _upperFirst2.default)((0, _camelCase2.default)(type)), bbid, baseRelations);
+            }));
+          case 7:
+            processedResults = _context11.sent;
+            return _context11.abrupt("return", processedResults);
+          case 9:
+          case "end":
+            return _context11.stop();
+        }
+      }
+    }, _callee11);
+  }));
+  return _checkIfExists.apply(this, arguments);
+}
+function searchByName(orm, name, type, size, from) {
+  var sanitizedEntityType = sanitizeEntityType(type);
+  var dslQuery = {
+    body: {
+      from: from,
+      query: {
+        multi_match: {
+          fields: ['aliases.name^3', 'aliases.name.search', 'disambiguation', 'identifiers.value'],
+          minimum_should_match: '80%',
+          query: name,
+          type: 'cross_fields'
+        }
+      },
+      size: size
+    },
+    index: _index,
+    type: sanitizedEntityType
+  };
+  if (sanitizedEntityType === 'work' || Array.isArray(sanitizedEntityType) &amp;&amp; sanitizedEntityType.includes('work')) {
+    dslQuery.body.query.multi_match.fields.push('authors');
+  }
+  return _searchForEntities(orm, dslQuery);
+}
 
 /**
- * Renders the document and displays the 'Editor Achievements Tab'.
+ * Search init
+ * @description Sets up the search server connection with defaults,
+ * and returns a connection status boolean
+ * @param {ORM} orm the BookBrainz ORM
+ * @param {ClientOptions} [options] Optional (but recommended) connection settings, will provide defaults if missing
+ * @returns {Promise&lt;boolean>} A Promise which resolves to the connection status boolean
  */
-var EditorAchievementTab = /*#__PURE__*/function (_React$Component) {
-  (0, _inherits2.default)(EditorAchievementTab, _React$Component);
-  var _super = _createSuper(EditorAchievementTab);
-  /**
-   * Initializes the component state.
-   * @constructor
-   * @param {object} props - Properties passed to the component.
-   */
-  function EditorAchievementTab(props) {
-    var _this;
-    (0, _classCallCheck2.default)(this, EditorAchievementTab);
-    _this = _super.call(this, props);
-    _this.currAchievement = props.currAchievement;
-    _this.state = {
-      achievement: props.achievement,
-      editor: props.editor
-    };
-    return _this;
-  }
-
-  /**
-   * Renders the Editor Achievements list. Also splits the
-   * achievements into Unlocked and Locked achievements.
-   * @returns {Array} - An array containing rendered achievements
-   * list split into Unlocked and Locked.
-   */
-  (0, _createClass2.default)(EditorAchievementTab, [{
-    key: "renderAchievements",
-    value: function renderAchievements() {
-      var _this2 = this;
-      var achievements = [];
-      var locked = [];
-      this.state.achievement.model.forEach(function (achievement) {
-        var achievementHTML = /*#__PURE__*/_react.default.createElement(_achievement.default, {
-          achievement: achievement,
-          key: "".concat(_this2.state.editor.id).concat(achievement.id)
-        });
-        if (achievement.unlocked) {
-          achievements.push(achievementHTML);
-        } else {
-          locked.push(achievementHTML);
+function init(_x14, _x15) {
+  return _init.apply(this, arguments);
+}
+function _init() {
+  _init = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee12(orm, options) {
+    var defaultOptions, mainIndexExists;
+    return _regenerator.default.wrap(function _callee12$(_context12) {
+      while (1) {
+        switch (_context12.prev = _context12.next) {
+          case 0:
+            if (!(0, _isString2.default)(options.node)) {
+              defaultOptions = {
+                node: 'http://localhost:9200',
+                requestTimeout: 60000
+              };
+              _log.default.warning('ElasticSearch configuration not provided. Using default settings.');
+              _client = new _elasticsearch.default.Client(defaultOptions);
+            } else {
+              _client = new _elasticsearch.default.Client(options);
+            }
+            _context12.prev = 1;
+            _context12.next = 4;
+            return _client.ping();
+          case 4:
+            _context12.next = 10;
+            break;
+          case 6:
+            _context12.prev = 6;
+            _context12.t0 = _context12["catch"](1);
+            _log.default.warning('Could not connect to ElasticSearch:', _context12.t0.toString());
+            return _context12.abrupt("return", false);
+          case 10:
+            _context12.next = 12;
+            return _client.indices.exists({
+              index: _index
+            });
+          case 12:
+            mainIndexExists = _context12.sent;
+            if (!mainIndexExists) {
+              // Automatically index on app startup if we haven't already, but don't block app setup
+              generateIndex(orm).catch(_log.default.error);
+            }
+            return _context12.abrupt("return", true);
+          case 15:
+          case "end":
+            return _context12.stop();
         }
-      });
-      return [achievements, locked];
-    }
-
-    /**
-     * Renders the EditorAchievements page, which displays all the achievements
-     * (both unlocked and locked) of the editor, along with a RankUpdate form.
-     * @returns {ReactElement} a HTML document which displays the
-     * EditorAchievements page.
-     */
-  }, {
-    key: "render",
-    value: function render() {
-      var _this$renderAchieveme = this.renderAchievements(),
-        _this$renderAchieveme2 = (0, _slicedToArray2.default)(_this$renderAchieveme, 2),
-        achievements = _this$renderAchieveme2[0],
-        locked = _this$renderAchieveme2[1];
-      var rankUpdate;
-      if (this.props.isOwner) {
-        var _this$currAchievement, _this$currAchievement2, _this$currAchievement3, _this$currAchievement4, _this$currAchievement5, _this$currAchievement6;
-        rankUpdate = /*#__PURE__*/_react.default.createElement(Form, {
-          className: "padding-bottom-1",
-          id: "rankSelectForm",
-          method: "post"
-        }, /*#__PURE__*/_react.default.createElement(CardDeck, {
-          className: "mb-3"
-        }, /*#__PURE__*/_react.default.createElement(_dragAndDrop.default, {
-          initialAchievement: (_this$currAchievement = this.currAchievement.model.fulfillmentValue) === null || _this$currAchievement === void 0 ? void 0 : (_this$currAchievement2 = _this$currAchievement[0]) === null || _this$currAchievement2 === void 0 ? void 0 : _this$currAchievement2.achievement,
-          name: "rank1"
-        }), /*#__PURE__*/_react.default.createElement(_dragAndDrop.default, {
-          initialAchievement: (_this$currAchievement3 = this.currAchievement.model.fulfillmentValue) === null || _this$currAchievement3 === void 0 ? void 0 : (_this$currAchievement4 = _this$currAchievement3[1]) === null || _this$currAchievement4 === void 0 ? void 0 : _this$currAchievement4.achievement,
-          name: "rank2"
-        }), /*#__PURE__*/_react.default.createElement(_dragAndDrop.default, {
-          initialAchievement: (_this$currAchievement5 = this.currAchievement.model.fulfillmentValue) === null || _this$currAchievement5 === void 0 ? void 0 : (_this$currAchievement6 = _this$currAchievement5[2]) === null || _this$currAchievement6 === void 0 ? void 0 : _this$currAchievement6.achievement,
-          name: "rank3"
-        })), /*#__PURE__*/_react.default.createElement("span", {
-          className: "margin-left-1"
-        }, /*#__PURE__*/_react.default.createElement(Button, {
-          type: "submit",
-          variant: "success"
-        }, "Update"), /*#__PURE__*/_react.default.createElement("span", {
-          className: "margin-left-1"
-        }, "click badge to unset")));
       }
-      var STICKY_TOP_MARGIN = 64;
-      return /*#__PURE__*/_react.default.createElement(Row, null, /*#__PURE__*/_react.default.createElement(Col, {
-        lg: {
-          offset: 1,
-          span: 10
-        }
-      }, /*#__PURE__*/_react.default.createElement("div", {
-        id: "achievementsForm"
-      }, /*#__PURE__*/_react.default.createElement(StickyContainer, null, /*#__PURE__*/_react.default.createElement(Sticky, {
-        topOffset: -80
-      }, function (_ref) {
-        var style = _ref.style;
-        var updatedStyle = _objectSpread(_objectSpread({}, style), {}, {
-          background: 'white',
-          borderBottom: '1px solid #ebe2df',
-          flex: '1',
-          marginTop: STICKY_TOP_MARGIN,
-          zIndex: 10
-        });
-        return /*#__PURE__*/_react.default.createElement("div", {
-          style: updatedStyle
-        }, rankUpdate);
-      }), /*#__PURE__*/_react.default.createElement("div", {
-        style: {
-          zIndex: 1
-        }
-      }, /*#__PURE__*/_react.default.createElement("div", {
-        className: "h1"
-      }, "Unlocked Achievements"), achievements, /*#__PURE__*/_react.default.createElement("div", {
-        className: "h1"
-      }, "Locked Achievements"), locked)))));
-    }
-  }]);
-  return EditorAchievementTab;
-}(_react.default.Component);
-EditorAchievementTab.displayName = 'EditorAchievementTab';
-EditorAchievementTab.propTypes = {
-  achievement: _propTypes.default.shape({
-    model: _propTypes.default.array
-  }).isRequired,
-  currAchievement: _propTypes.default.shape({
-    model: _propTypes.default.array
-  }).isRequired,
-  editor: _propTypes.default.shape({
-    authenticated: _propTypes.default.bool,
-    id: _propTypes.default.number
-  }).isRequired,
-  isOwner: _propTypes.default.bool.isRequired
-};
-var _default = EditorAchievementTab;
-exports.default = _default;
-//# sourceMappingURL=editor-achievements.js.map</code></pre>
+    }, _callee12, null, [[1, 6]]);
+  }));
+  return _init.apply(this, arguments);
+}
+//# sourceMappingURL=search.js.map</code></pre>
         </article>
     </section>
 
