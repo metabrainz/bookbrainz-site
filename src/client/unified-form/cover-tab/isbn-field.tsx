@@ -1,10 +1,10 @@
 import {ISBNDispatchProps, ISBNProps, ISBNStateProps, RInputEvent, State, dispatchResultProps} from '../interface/type';
+import {addOtherISBN, removeIdentifierRow} from '../../entity-editor/identifier-editor/actions';
 import {debouncedUpdateISBNValue, updateAutoISBN, updateISBNType} from './action';
 import {isbn10To13, isbn13To10} from '../../../common/helpers/utils';
 import {FormCheck} from 'react-bootstrap';
 import NameField from '../../entity-editor/common/name-field';
 import React from 'react';
-import {addOtherISBN, removeIdentifierRow} from '../../entity-editor/identifier-editor/actions';
 import {connect} from 'react-redux';
 
 
