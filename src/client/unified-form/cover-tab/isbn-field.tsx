@@ -53,7 +53,7 @@ function mapStateToProps(rootState:State):ISBNStateProps {
 }
 
 function mapDispatchToProps(dispatch):ISBNDispatchProps {
-	let gett:dispatchResultProps|null;
+	let autoAddedISBN:dispatchResultProps|null;
 	function onChange(value:string, autoISBN = false) {
 		const isbn10rgx = new
 		RegExp('^(?:ISBN(?:-10)?:?●)?(?=[0-9X]{10}$|(?=(?:[0-9]+[-●]){3})[-●0-9X]{13}$)[0-9]{1,5}[-●]?[0-9]+[-●]?[0-9]+[-●]?[0-9X]$');
@@ -78,16 +78,16 @@ function mapDispatchToProps(dispatch):ISBNDispatchProps {
 		}
 		dispatch(updateISBNType(type));
 		if (autoISBN && otherISBN.type) {
-			 gett = dispatch(addOtherISBN(otherISBN.type, otherISBN.value));
+			 autoAddedISBN = dispatch(addOtherISBN(otherISBN.type, otherISBN.value));
 		}
 		dispatch(debouncedUpdateISBNValue(value));
 	}
 	return {
 		onAutoISBNChange: (checked:boolean) => {
 			dispatch(updateAutoISBN(checked));
-			if(gett){
-				dispatch(removeIdentifierRow(gett.payload.rowId));
-				gett=null;
+			if(autoAddedISBN){
+				dispatch(removeIdentifierRow(autoAddedISBN.payload.rowId));
+				autoAddedISBN=null;
 			}
 			return;
 		},
