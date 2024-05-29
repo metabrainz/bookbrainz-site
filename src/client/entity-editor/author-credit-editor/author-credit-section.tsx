@@ -95,7 +95,7 @@ function AuthorCreditSection({
 
 	const editButton = (
 		// eslint-disable-next-line react/jsx-no-bind
-		<Button disabled={!isEditable} variant="success" onClick={function openEditor() { onEditAuthorCredit(authorCreditRows.length); }}>
+		<Button variant="success" onClick={function openEditor() { onEditAuthorCredit(authorCreditRows.length); }}>
 			<FontAwesomeIcon icon={faPencilAlt}/>
 			&nbsp;Edit
 		</Button>);
