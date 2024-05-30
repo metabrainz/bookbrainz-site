@@ -19,8 +19,8 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 
-import PropTypes from 'prop-types';
 import React from 'react';
+import {type _Editor} from '../../../types';
 import {startCase as _startCase} from 'lodash';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
 
@@ -30,12 +30,16 @@ const {formatDate} = utilsHelper;
 
 /**
  * Renders the document and displays the topEditors table.
+ * @param {TopEditorsTableProps} props - The properties passed to the TopEditorsTableProps component.
  * @returns {ReactElement} a HTML document which displays the topEditors table
  * in the statistics page
  */
 
-function TopEditorsTable(props) {
-	const {editors} = props;
+interface TopEditorsTableProps {
+	editors: Array<_Editor>,
+}
+
+function TopEditorsTable({editors}: TopEditorsTableProps) {
 	return (
 		<div>
 			<div>
@@ -77,18 +81,24 @@ function TopEditorsTable(props) {
 	);
 }
 
-TopEditorsTable.propTypes = {
-	editors: PropTypes.array.isRequired
-};
+TopEditorsTable.displayName = 'TopEditorsTable';
 
 /**
  * Renders the document and displays the EntityCountTable table.
- * @returns {ReactElement} a HTML document which displays the
+ * @param {EntityCountTableProps} props - The properties passed to the EntityCountTable component.
+ * @returns {JSX.Element} a HTML document which displays the
  * EntityCountTable table in the statistics page
  */
 
-function EntityCountTable(props) {
-	const {allEntities, last30DaysEntities} = props;
+interface EntityCountTableProps {
+	allEntities: Array<{
+		Count: string,
+		modelName: string,
+		}>,
+	last30DaysEntities: { [key: string]: string },
+}
+
+function EntityCountTable({allEntities, last30DaysEntities}: EntityCountTableProps): JSX.Element {
 	return (
 		<div>
 			<div>
@@ -127,19 +137,22 @@ function EntityCountTable(props) {
 	);
 }
 
-EntityCountTable.propTypes = {
-	allEntities: PropTypes.array.isRequired,
-	last30DaysEntities: PropTypes.object.isRequired
-};
-
 /**
  * Renders the document and displays the 'Statistics' page.
- * @returns {ReactElement} a HTML document which displays the statistics
- * page
+ * @param {StatisticsPageProps} props - The properties passed to the StatisticsPage component.
+ * @returns {JSX.Element} A HTML document which displays the statistics page.
  */
 
-function StatisticsPage(props) {
-	const {allEntities, last30DaysEntities, topEditors} = props;
+interface StatisticsPageProps{
+	allEntities: Array<{
+		Count: string,
+		modelName: string,
+		}>,
+	last30DaysEntities: { [key: string]: string },
+	topEditors: Array<_Editor>,
+}
+
+function StatisticsPage({allEntities, last30DaysEntities, topEditors}: StatisticsPageProps): JSX.Element {
 	return (
 		<div>
 			<div className="page-header"><h1>Statistics of BookBrainz</h1></div>
@@ -153,10 +166,4 @@ function StatisticsPage(props) {
 }
 
 StatisticsPage.displayName = 'StatisticsPage';
-StatisticsPage.propTypes = {
-	allEntities: PropTypes.array.isRequired,
-	last30DaysEntities: PropTypes.object.isRequired,
-	topEditors: PropTypes.array.isRequired
-};
-
 export default StatisticsPage;
