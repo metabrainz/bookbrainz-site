@@ -19,11 +19,10 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 
-import {type Editor} from '../../../types';
 import React from 'react';
+import {type _Editor} from '../../../types';
 import {startCase as _startCase} from 'lodash';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
-
 
 
 const {Table} = bootstrap;
@@ -37,7 +36,7 @@ const {formatDate} = utilsHelper;
  */
 
 interface TopEditorsTableProps {
-	editors: Array<_EditorType>,
+	editors: Array<_Editor>,
 }
 
 function TopEditorsTable({editors}: TopEditorsTableProps) {
@@ -150,7 +149,7 @@ interface StatisticsPageProps{
 		modelName: string,
 		}>,
 	last30DaysEntities: { [key: string]: string },
-	topEditors: Array<_EditorType>,
+	topEditors: Array<_Editor>,
 }
 
 function StatisticsPage({allEntities, last30DaysEntities, topEditors}: StatisticsPageProps): JSX.Element {
