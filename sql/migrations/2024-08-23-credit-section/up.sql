@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
--- Rename entities Creator -> Author and Publication -> Edition Group --
+-- Adds a credit_section boolean column to edition_data and edition_group_data to make author credits optional --
 ------------------------------------------------------------------------
 
 
