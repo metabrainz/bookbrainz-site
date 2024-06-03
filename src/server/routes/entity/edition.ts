@@ -84,7 +84,9 @@ export function transformNewForm(data) {
 		data.editionSection.languages, (language) => language.value
 	);
 	let authorCredit = {};
-	if (!_.get(data, ['editionSection', 'authorCreditEnable'], true)) {
+	const authorCreditEnable = _.get(data, ['editionSection', 'authorCreditEnable'], true);
+	
+	if (authorCreditEnable) {
 		authorCredit = null;
 	}
 	else if (!_.isNil(data.authorCredit)) {
@@ -99,7 +101,7 @@ export function transformNewForm(data) {
 		aliases,
 		annotation: data.annotationSection.content,
 		authorCredit,
-		creditSection: data.editionSection.creditSection,
+		creditSection: authorCreditEnable,
 		depth: data.editionSection.depth &&
 			parseInt(data.editionSection.depth, 10),
 		disambiguation: data.nameSection.disambiguation,
@@ -480,7 +482,6 @@ export function editionToFormState(edition) {
 
 	const editionSection = {
 		authorCreditEnable: edition.creditSection,
-		creditSection: edition.creditSection,
 		depth: edition.depth,
 		editionGroup,
 		// Determines whether the EG can be left blank (an EG will be auto-created) for existing Editions

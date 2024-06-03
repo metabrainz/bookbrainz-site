@@ -48,7 +48,6 @@ function reducer(
 	state: State = Immutable.Map({
 		authorCreditEditorVisible: false,
 		authorCreditEnable: true,
-		creditSection: true,
 		format: null,
 		languages: Immutable.List([]),
 		matchingNameEditionGroups: [],
@@ -103,7 +102,6 @@ function reducer(
 		case TOGGLE_AUTHOR_CREDIT:
 			return state
 				.set('authorCreditEnable', !state.get('authorCreditEnable'))
-				.set('creditSection', !state.get('creditSection'));
 		// no default
 	}
 	return state;

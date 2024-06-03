@@ -699,6 +699,14 @@ async function processAuthorCredit(
 	body: ProcessAuthorCreditBody,
 	transacting: Transaction
 ): Promise<ProcessAuthorCreditResult> {
+
+	const authorCreditEnabled = _.get(currentEntity, ['creditSection']);
+	if (!authorCreditEnabled) {
+		return {
+			authorCreditId: null
+		};
+	}
+
 	const authorCreditID = _.get(currentEntity, ['authorCredit', 'id']);
 
 	const oldAuthorCredit = await (

@@ -92,7 +92,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtrac
 	}, [reviewsRef]);
 
 	const urlPrefix = getEntityUrl(entity);
-	const hasAuthorCredits = entity.creditSection;
+	const hasAuthorCredits = entity.authorCreditEnable;
 
 	let authorCreditSection;
 	if (entity.authorCredit) {
@@ -109,12 +109,6 @@ function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtrac
 				<a href={`/edition-group/${entity.bbid}/edit`}>edit this Edition Group</a>&nbsp;
 				and add its Author(s) if you see this!
 				You can copy the Author Credit from one of the Editions as well
-			</div>);
-	}
-	else if (!entity.deleted && hasAuthorCredits === false) {
-		authorCreditSection = (
-			<div className="alert alert-warning">
-				Author Credits : N/A
 			</div>);
 	}
 

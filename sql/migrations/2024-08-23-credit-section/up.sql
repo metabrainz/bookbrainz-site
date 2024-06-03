@@ -12,8 +12,10 @@ BEGIN TRANSACTION;
 -- Adding credit_section column in edition_data and edition_group_data table and intitalizing it with true
 ALTER TABLE bookbrainz.edition_data ADD COLUMN credit_section BOOLEAN DEFAULT TRUE;
 ALTER TABLE bookbrainz.edition_group_data ADD COLUMN credit_section BOOLEAN DEFAULT TRUE;
-UPDATE bookbrainz.edition_data SET credit_section = true;
-UPDATE bookbrainz.edition_group_data SET credit_section = true;
+
+DROP VIEW IF EXISTS 
+    bookbrainz.edition,
+    bookbrainz.edition_group;
 
 -- Recreate the view with the new definition
 -- Adding credit_section column in edition view and edition_group view

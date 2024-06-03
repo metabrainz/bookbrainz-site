@@ -113,7 +113,7 @@ function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
 	const worksContainedByEditionWithAuthors = addAuthorsDataToWorks(entity.authorsData, worksContainedByEdition);
 	const urlPrefix = getEntityUrl(entity);
-	const hasAuthorCredits = entity.creditSection;
+	const hasAuthorCredits = entity.authorCreditEnable;
 
 	let authorCreditSection;
 	if (entity.authorCredit) {
@@ -129,12 +129,6 @@ function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 				Author Credit unset; please&nbsp;
 				<a href={`/edition/${entity.bbid}/edit`}>edit this Edition</a>&nbsp;
 				and add its Author(s) if you see this!
-			</div>);
-	}
-	else if (!entity.deleted && hasAuthorCredits === false) {
-		authorCreditSection = (
-			<div className="alert alert-warning">
-				Author Credits : N/A
 			</div>);
 	}
 

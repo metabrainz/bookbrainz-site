@@ -62,9 +62,9 @@ export function transformNewForm(data) {
 	const relationships = entityRoutes.constructRelationships(
 		data.relationshipSection
 	);
-
+	const authorCreditEnable = _.get(data, ['editionGroupSection', 'authorCreditEnable'], true);
 	let authorCredit = {};
-	if (!_.get(data, ['editionGroupSection', 'authorCreditEnable'], true)) {
+	if (!authorCreditEnable) {
 		authorCredit = null;
 	}
 	else if (!_.isNil(data.authorCredit)) {
@@ -79,7 +79,7 @@ export function transformNewForm(data) {
 		aliases,
 		annotation: data.annotationSection.content,
 		authorCredit,
-		creditSection: data.editionGroupSection.creditSection,
+		creditSection: authorCreditEnable,
 		disambiguation: data.nameSection.disambiguation,
 		identifiers,
 		note: data.submissionSection.note,
@@ -279,9 +279,10 @@ export function editionGroupToFormState(editionGroup) {
 		(identifier) => { identifierEditor[identifier.id] = identifier; }
 	);
 
+
+
 	const editionGroupSection = {
 		authorCreditEnable: editionGroup.creditSection,
-		creditSection: editionGroup.creditSection,
 		type: editionGroup.editionGroupType && editionGroup.editionGroupType.id
 	};
 
