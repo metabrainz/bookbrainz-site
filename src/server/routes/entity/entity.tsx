@@ -700,12 +700,13 @@ async function processAuthorCredit(
 	transacting: Transaction
 ): Promise<ProcessAuthorCreditResult>{
 
-	const authorCreditEnabled = _.get(currentEntity, ['creditSection']);
-	if (!authorCreditEnabled) {
-		return {
-			authorCreditId: null
-		};
-	}
+	console.log("22 CURRENT ENTITY:", JSON.stringify(currentEntity,null,2));
+	// const authorCreditEnabled = _.get(currentEntity, ['creditSection']);
+	// if (!authorCreditEnabled) {
+	// 	return {
+	// 		authorCreditId: null
+	// 	};
+	// }
 
 	const authorCreditID = _.get(currentEntity, ['authorCredit', 'id']);
 
