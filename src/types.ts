@@ -21,11 +21,11 @@ export type _Editor = {
 	name: string,
 	reputation: number,
 	revisionsApplied: number,
-	revisionsReverted: Number,
+	revisionsReverted: number,
 	titleUnlockId: null,
 	totalRevisions: 65302,
 	typeId: 1,
-}
+};
 
 export type _Gender = {
 

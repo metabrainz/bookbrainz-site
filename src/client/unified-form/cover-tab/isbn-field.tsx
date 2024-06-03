@@ -12,9 +12,9 @@ export function ISBNField(props:ISBNProps) {
 	const {value, type, onChange, autoISBN, onAutoISBNChange} = props;
 	const onChangeHandler = React.useCallback((event:RInputEvent) => onChange(event.target.value, autoISBN), [onChange, autoISBN]);
 	const onAutoISBNChangeHandler = React.useCallback((event:RInputEvent) => {
-			onAutoISBNChange(event.target.checked);
-			onChange(value, event.target.checked);
-		}, [onAutoISBNChange, onChange, value]);
+		onAutoISBNChange(event.target.checked);
+		onChange(value, event.target.checked);
+	}, [onAutoISBNChange, onChange, value]);
 	let checkboxLabel = 'Automatically add ISBN';
 	if (type) {
 		checkboxLabel += type === 10 ? `13 (${isbn10To13(value)})` : `10 (${isbn13To10(value)})`;
@@ -85,11 +85,10 @@ function mapDispatchToProps(dispatch):ISBNDispatchProps {
 	return {
 		onAutoISBNChange: (checked:boolean) => {
 			dispatch(updateAutoISBN(checked));
-			if(autoAddedISBN){
+			if (autoAddedISBN) {
 				dispatch(removeIdentifierRow(autoAddedISBN.payload.rowId));
-				autoAddedISBN=null;
+				autoAddedISBN = null;
 			}
-			return;
 		},
 		onChange
 	};

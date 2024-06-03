@@ -18,8 +18,8 @@
 /* eslint-disable camelcase */
 
 import * as commonUtils from './utils';
+import ElasticSearch, {type Client, type ClientOptions} from '@elastic/elasticsearch';
 import {camelCase, isString, snakeCase, upperFirst} from 'lodash';
-import ElasticSearch, {ApiResponse, type Client, type ClientOptions} from '@elastic/elasticsearch';
 import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import {type ORM} from 'bookbrainz-data';
 import httpStatus from 'http-status';
