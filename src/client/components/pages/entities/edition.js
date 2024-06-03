@@ -113,7 +113,7 @@ function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
 	const worksContainedByEditionWithAuthors = addAuthorsDataToWorks(entity.authorsData, worksContainedByEdition);
 	const urlPrefix = getEntityUrl(entity);
-	const hasAuthorCredits = entity.authorCreditEnable;
+	const hasAuthorCredits = entity.creditSection;
 
 	let authorCreditSection;
 	if (entity.authorCredit) {

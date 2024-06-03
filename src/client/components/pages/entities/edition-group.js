@@ -92,7 +92,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtrac
 	}, [reviewsRef]);
 
 	const urlPrefix = getEntityUrl(entity);
-	const hasAuthorCredits = entity.authorCreditEnable;
+	const hasAuthorCredits = entity.creditSection;
 
 	let authorCreditSection;
 	if (entity.authorCredit) {
