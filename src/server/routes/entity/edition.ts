@@ -86,7 +86,7 @@ export function transformNewForm(data) {
 
 	let authorCredit = {};
 	const authorCreditEnable = _.get(data, ['editionSection', 'authorCreditEnable'], true);
-	
+
 	if (!authorCreditEnable) {
 		authorCredit = null;
 	}
