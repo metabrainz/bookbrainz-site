@@ -83,10 +83,11 @@ export function transformNewForm(data) {
 	const languages = _.map(
 		data.editionSection.languages, (language) => language.value
 	);
+
 	let authorCredit = {};
 	const authorCreditEnable = _.get(data, ['editionSection', 'authorCreditEnable'], true);
 	
-	if (authorCreditEnable) {
+	if (!authorCreditEnable) {
 		authorCredit = null;
 	}
 	else if (!_.isNil(data.authorCredit)) {
