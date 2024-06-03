@@ -279,8 +279,6 @@ export function editionGroupToFormState(editionGroup) {
 		(identifier) => { identifierEditor[identifier.id] = identifier; }
 	);
 
-
-
 	const editionGroupSection = {
 		authorCreditEnable: editionGroup.creditSection,
 		type: editionGroup.editionGroupType && editionGroup.editionGroupType.id

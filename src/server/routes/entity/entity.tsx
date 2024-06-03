@@ -698,7 +698,7 @@ async function processAuthorCredit(
 	currentEntity: Record<string, unknown> | null | undefined,
 	body: ProcessAuthorCreditBody,
 	transacting: Transaction
-): Promise<ProcessAuthorCreditResult> {
+): Promise<ProcessAuthorCreditResult>{
 
 	const authorCreditEnabled = _.get(currentEntity, ['creditSection']);
 	if (!authorCreditEnabled) {
