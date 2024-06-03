@@ -101,7 +101,7 @@ export type dispatchResultProps = {
 			value:string
 		},
 		type: string
-}
+};
 
 export type EntitySelect = {
 	text:string,
