@@ -479,21 +479,35 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 		});
 	}
 	// Update the indexed entries for each entity type
-	const entityLists = await Promise.all(entityBehaviors.map((behavior) => {
+	const entityLists = await Promise.all(entityBehaviors.map(async (behavior) => {
 		log.info(`Fetching ${behavior.type} models from the database`);
-		return behavior.model
-			.forge()
-			.query((qb) => {
-				qb.where('master', true);
-				qb.whereNotNull('data_id');
-			})
-			.fetchAll({
-				withRelated: baseRelations.concat(behavior.relations)
-			})
-			// .catch((error) => {
-			// 	log.error(error);
-			// 	throw error;
-			// });
+		const totalCount:number = await behavior.model.query((qb) => {
+			qb.where('master', true);
+			qb.whereNotNull('data_id');
+		}).count();
+		log.info(`${totalCount} ${behavior.type} models in total`);
+		const maxChunk = 50000;
+		const collections = [];
+		for (let i = 0; i < totalCount; i += maxChunk) {
+			log.info(`Fetching ${behavior.type} models with offset ${i}`);
+			// eslint-disable-next-line no-await-in-loop
+			const collection = await behavior.model
+				.forge()
+				.query((qb) => {
+					qb.where('master', true);
+					qb.whereNotNull('data_id');
+					qb.limit(maxChunk);
+					qb.offset(i);
+				})
+				.fetchAll({
+					withRelated: baseRelations.concat(behavior.relations)
+				}).catch(err => { log.error(err); throw err; });
+			collections.push(collection);
+		}
+		const [firstCollection, ...otherCollections] = collections;
+		const otherModels = otherCollections.map(col => col.models).flat();
+		firstCollection.push(otherModels);
+		return firstCollection;
 	}));
 	log.info(`Finished fetching entities from database for types ${entityBehaviors.map(({type}) => type).join(', ')}`);
 
