@@ -1047,7 +1047,7 @@ export async function indexAutoCreatedEditionGroup(orm, newEdition, transacting)
 				transacting,
 				withRelated: 'aliasSet.aliases'
 			});
-		await search.indexEntity(editionGroup.toJSON({omitPivot: true}));
+		await search.indexEntity(editionGroup);
 	}
 	catch (err) {
 		log.error('Could not reindex edition group after edition creation:', err);
