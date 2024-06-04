@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2015  Ben Ockmore
  *               2015  Sean Burke
+ * 				 2024  Meziyum
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +23,11 @@ import React from 'react';
 import {faCircleNotch} from '@fortawesome/free-solid-svg-icons';
 
 
-function LoadingSpinner() {
+/**
+ * Renders a LoadingSpinner Component displaying a spinning loading icon.
+ * @returns {JSX.Element} The JSX content of the LoadingSpinner indicator
+ */
+function LoadingSpinner(): JSX.Element {
 	return (
 		<div className="loading-background">
 			<FontAwesomeIcon

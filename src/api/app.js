@@ -69,7 +69,6 @@ mainRouter.use((req, res) => {
 // https://github.com/elastic/elasticsearch-js/issues/33
 search.init(app.locals.orm, Object.assign({}, config.search));
 
-
 const DEFAULT_API_PORT = 9098;
 app.set('port', process.env.PORT || DEFAULT_API_PORT);
 

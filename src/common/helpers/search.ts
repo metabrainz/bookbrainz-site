@@ -19,10 +19,10 @@
 /* eslint-disable camelcase */
 
 import * as commonUtils from './utils';
+import ElasticSearch, {type Client, type ClientOptions} from '@elastic/elasticsearch';
 import {camelCase, isString, snakeCase, upperFirst} from 'lodash';
-
-import ElasticSearch from '@elastic/elasticsearch';
 import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
+import {type ORM} from 'bookbrainz-data';
 import httpStatus from 'http-status';
 import log from 'log';
 
@@ -34,7 +34,7 @@ const _bulkIndexSize = 10000;
 const _retryDelay = 10;
 const _maxJitter = 75;
 
-let _client = null;
+let _client:Client = null;
 
 function sanitizeEntityType(type) {
 	if (!type) {
@@ -273,42 +273,46 @@ export async function _bulkIndexEntities(entities) {
 
 		operationSucceeded = true;
 
-		// eslint-disable-next-line no-await-in-loop
-		const response = await _client
-			.bulk({
+		try {
+			// eslint-disable-next-line no-await-in-loop
+			const {body: bulkResponse} = await _client.bulk({
 				body: bulkOperations
-			})
-			.catch((error) => {
+			}).catch((error) => {
 				log.error('error bulk indexing entities for search:', error);
 			});
 
-		/*
-		 * In case of failed index operations, the promise won't be rejected;
-		 * instead, we have to inspect the response and respond to any failures
-		 * individually.
-		 */
-		if (response?.errors === true) {
-			entitiesToIndex = response.items.reduce((accumulator, item) => {
-				// We currently only handle queue overrun
-				if (item.index.status === httpStatus.TOO_MANY_REQUESTS) {
-					const failedEntity = entities.find(
-						(element) => (element.bbid ?? element.id) === item.index._id
-					);
+			/*
+			 * In case of failed index operations, the promise won't be rejected;
+			 * instead, we have to inspect the response and respond to any failures
+			 * individually.
+			 */
+			if (bulkResponse?.errors === true) {
+				entitiesToIndex = bulkResponse.items.reduce((accumulator, item) => {
+					// We currently only handle queue overrun
+					if (item.index.status === httpStatus.TOO_MANY_REQUESTS) {
+						const failedEntity = entities.find(
+							(element) => (element.bbid ?? element.id) === item.index._id
+						);
 
-					accumulator.push(failedEntity);
+						accumulator.push(failedEntity);
+					}
+
+					return accumulator;
+				}, []);
+
+
+				if (entitiesToIndex.length) {
+					operationSucceeded = false;
+
+					const jitter = Math.random() * _maxJitter;
+					// eslint-disable-next-line no-await-in-loop
+					await new Promise(resolve => setTimeout(resolve, _retryDelay + jitter));
 				}
-
-				return accumulator;
-			}, []);
-
-
-			if (entitiesToIndex.length) {
-				operationSucceeded = false;
-
-				const jitter = Math.random() * _maxJitter;
-				// eslint-disable-next-line no-await-in-loop
-				await new Promise(resolve => setTimeout(resolve, _retryDelay + jitter));
 			}
+		}
+		catch (error) {
+			log.error('error bulk indexing entities for search:', error);
+			operationSucceeded = false;
 		}
 	}
 }
@@ -672,22 +676,37 @@ export function searchByName(orm, name, type, size, from) {
 	return _searchForEntities(orm, dslQuery);
 }
 
-export async function init(orm, options) {
-	if (!isString(options.host)) {
-		options.host = 'localhost:9200';
+/**
+ * Search init
+ * @description Sets up the search server connection with defaults,
+ * and returns a connection status boolean
+ * @param {ORM} orm the BookBrainz ORM
+ * @param {ClientOptions} [options] Optional (but recommended) connection settings, will provide defaults if missing
+ * @returns {Promise<boolean>} A Promise which resolves to the connection status boolean
+ */
+export async function init(orm: ORM, options:ClientOptions) {
+	if (!isString(options.node)) {
+		const defaultOptions:ClientOptions = {
+			node: 'http://localhost:9200',
+			requestTimeout: 60000
+		};
+		log.warning('ElasticSearch configuration not provided. Using default settings.');
+		_client = new ElasticSearch.Client(defaultOptions);
 	}
-
-	_client = new ElasticSearch.Client(options);
-
-	// Automatically index on app startup if we haven't already
+	else {
+		_client = new ElasticSearch.Client(options);
+	}
 	try {
-		const mainIndexExists = await _client.indices.exists({index: _index});
-		if (mainIndexExists) {
-			return null;
-		}
-		return generateIndex(orm);
+		await _client.ping();
 	}
 	catch (error) {
-		return null;
+		log.warning('Could not connect to ElasticSearch:', error.toString());
+		return false;
 	}
+	const mainIndexExists = await _client.indices.exists({index: _index});
+	if (!mainIndexExists) {
+		// Automatically index on app startup if we haven't already, but don't block app setup
+		generateIndex(orm).catch(log.error);
+	}
+	return true;
 }

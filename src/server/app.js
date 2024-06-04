@@ -43,7 +43,11 @@ import session from '../common/helpers/session';
 
 
 // Initialize log-to-stdout  writer
-logNode();
+logNode({
+	env: {
+		LOG_LEVEL: config.site.log
+	}
+});
 const debug = Debug('bbsite');
 
 // Initialize application
@@ -95,10 +99,13 @@ if (config.influx) {
 
 // Authentication code depends on session, so init session first
 const authInitiated = auth.init(app);
+let searchInitiated;
 
 // Clone search config to prevent error if starting webserver and api
 // https://github.com/elastic/elasticsearch-js/issues/33
-search.init(app.locals.orm, Object.assign({}, config.search));
+(async function initializeSearch() {
+	searchInitiated = await search.init(app.locals.orm, Object.assign({}, config.search));
+})();
 
 // Set up constants that will remain valid for the life of the app
 debug(`Git revision: ${siteRevision}`);
@@ -120,6 +127,14 @@ app.use((req, res, next) => {
 		}
 		res.locals.alerts.push({
 			level: 'info',
+			message: `${msg}`
+		});
+	}
+
+	if (!searchInitiated) {
+		const msg = 'We could not connect to our search server, all search functionality is unavailable.';
+		res.locals.alerts.push({
+			level: 'danger',
 			message: `${msg}`
 		});
 	}

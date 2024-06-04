@@ -54,10 +54,6 @@
 		{{if service "bookbrainz-elasticsearch-test"}}
 		{{with index (service "bookbrainz-elasticsearch-test") 0}}
 		"node": "http://{{.Address}}:{{.Port}}",
-		"auth": {
-			"username": "elastic",
-			"password": "changeme"
-		},
 		"requestTimeout": 30000
 		{{end}}
 		{{end}}
@@ -65,10 +61,6 @@
 		{{if service "bookbrainz-elasticsearch"}}
 		{{with index (service "bookbrainz-elasticsearch") 0}}
 		"node": "http://{{.Address}}:{{.Port}}",
-		"auth": {
-			"username": "elastic",
-			"password": "changeme"
-		},
 		"requestTimeout": 30000
 		{{end}}
 		{{end}}

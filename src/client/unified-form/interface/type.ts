@@ -94,6 +94,15 @@ export type ISBNDispatchProps = {
 };
 export type ISBNProps = ISBNStateProps & ISBNDispatchProps;
 
+export type dispatchResultProps = {
+	payload: {
+			rowId: number,
+			type:number,
+			value:string
+		},
+		type: string
+};
+
 export type EntitySelect = {
 	text:string,
 	id:string
