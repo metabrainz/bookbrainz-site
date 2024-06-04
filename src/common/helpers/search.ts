@@ -412,9 +412,9 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 	const allEntities = entityType === 'allEntities';
 	const mainIndexExists = await _client.indices.exists({
 		index: _index
-	})?.body;
+	});
 
-	const shouldRecreateIndex = !mainIndexExists || recreateIndex || allEntities;
+	const shouldRecreateIndex = !mainIndexExists.body || recreateIndex || allEntities;
 
 	if (shouldRecreateIndex) {
 		log.notice('Deleting search index');
