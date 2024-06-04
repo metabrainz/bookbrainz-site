@@ -488,6 +488,7 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 		log.info(`${totalCount} ${behavior.type} models in total`);
 		const maxChunk = 50000;
 		const collections = [];
+		// Fetch by chunks of 50.000 entities
 		for (let i = 0; i < totalCount; i += maxChunk) {
 			log.info(`Fetching ${behavior.type} models with offset ${i}`);
 			// eslint-disable-next-line no-await-in-loop
@@ -504,19 +505,18 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 				}).catch(err => { log.error(err); throw err; });
 			collections.push(collection);
 		}
-		const [firstCollection, ...otherCollections] = collections;
-		const otherModels = otherCollections.map(col => col.models).flat();
-		firstCollection.push(otherModels);
-		return firstCollection;
+		// Put all models back into a single collection
+		const allModels = collections.map(col => col.models).flat();
+		return {collection: behavior.model.collection(allModels), type: behavior.type};
 	}));
 	log.info(`Finished fetching entities from database for types ${entityBehaviors.map(({type}) => type).join(', ')}`);
 
 	if (allEntities || entityType === 'Work') {
 		log.info('Attaching author names to Work entities');
 		const authorCollection = entityLists.find(
-			(result) => result.model instanceof Author
-		);
-		const workCollection = entityLists.find((result) => result.model instanceof Work);
+			(result) => result.type === 'Author'
+		)?.collection;
+		const workCollection = entityLists.find((result) => result.type === 'Work')?.collection;
 		workCollection?.forEach((workEntity) => {
 			const relationshipSet = workEntity.related('relationshipSet');
 			if (relationshipSet) {
@@ -529,9 +529,8 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 				const authorNames = [];
 				authorWroteWorkRels.forEach((relationshipModel) => {
 					// Search for the Author in the already fetched BookshelfJS Collection
-					const source = authorCollection.get(
-						relationshipModel.get('sourceBbid')
-					);
+					const sourceBBID = relationshipModel.get('sourceBbid');
+					const source = authorCollection.get(sourceBBID);
 					const name = source?.related('defaultAlias')?.get('name');
 					if (name) {
 						authorNames.push(name);
@@ -545,7 +544,7 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 	const listIndexes = [];
 	// Index all the entities
 	entityLists.forEach((entityList) => {
-		const listArray = entityList.map(getDocumentToIndex);
+		const listArray = entityList.collection.map(getDocumentToIndex);
 		listIndexes.push(_processEntityListForBulk(listArray));
 	});
 
