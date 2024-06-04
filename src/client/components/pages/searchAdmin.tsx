@@ -48,67 +48,58 @@ export default function SearchAdminPage() {
 						}
 					}
 				>
-					<Button>
+					<Button onClick={() => { indexEntity('Author'); }}>
 						<FontAwesomeIcon
 							icon={ENTITY_TYPE_ICONS.Author}
 							size="2x"
-							onClick={() => { indexEntity('Author'); }}
 						/>
 					</Button>
 
-					<Button>
+					<Button onClick={() => { indexEntity('Work'); }}>
 						<FontAwesomeIcon
 							icon={ENTITY_TYPE_ICONS.Work}
 							size="2x"
-							onClick={() => { indexEntity('Work'); }}
 						/>
 					</Button>
-					<Button>
+					<Button onClick={() => { indexEntity('Edition'); }}>
 						<FontAwesomeIcon
 							icon={ENTITY_TYPE_ICONS.Edition}
 							size="2x"
-							onClick={() => { indexEntity('Edition'); }}
 						/>
 					</Button>
-					<Button>
+					<Button onClick={() => { indexEntity('EditionGroup'); }}>
 						<FontAwesomeIcon
 							icon={ENTITY_TYPE_ICONS.EditionGroup}
 							size="2x"
-							onClick={() => { indexEntity('EditionGroup'); }}
 						/>
 					</Button>
-					<Button>
+					<Button onClick={() => { indexEntity('Publisher'); }}>
 						<FontAwesomeIcon
 							icon={ENTITY_TYPE_ICONS.Publisher}
 							size="2x"
-							onClick={() => { indexEntity('Publisher'); }}
 						/>
 					</Button>
-					<Button>
+					<Button onClick={() => { indexEntity('Series'); }}>
 						<FontAwesomeIcon
 							icon={ENTITY_TYPE_ICONS.Series}
 							size="2x"
-							onClick={() => { indexEntity('Series'); }}
 						/>
 					</Button>
-					<Button>
+					<Button onClick={() => { indexEntity('Area'); }}>
 						<FontAwesomeIcon
 							icon={ENTITY_TYPE_ICONS.Area}
 							size="2x"
-							onClick={() => { indexEntity('Area'); }}
 						/>
 					</Button>
-					<Button>
+					<Button onClick={() => { indexEntity('Collection'); }}>
 						<FontAwesomeIcon
 							icon={ENTITY_TYPE_ICONS.Collection}
 							size="2x"
-							onClick={() => { indexEntity('Collection'); }}
 						/>
 					</Button>
-					<Button size="lg" variant="warning">
+					<Button size="lg" variant="warning" onClick={() => { indexEntity(); }}>
 						<FontAwesomeIcon
 							icon={faListCheck}
-							onClick={() => { indexEntity(); }}
 						/> All entities
 					</Button>
 				</div>
