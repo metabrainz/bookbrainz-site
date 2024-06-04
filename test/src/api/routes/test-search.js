@@ -45,7 +45,7 @@ describe('GET /search', () => {
 		aliasData.sortName = 'Fnord';
 		await createEditionGroup();
 		// reindex elasticSearch
-		await search.generateIndex(orm);
+		await search.generateIndex(orm, 'allEntities', true);
 	});
 	after(truncateEntities);
 
