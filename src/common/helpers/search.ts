@@ -487,24 +487,24 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 		}).count();
 		log.info(`${totalCount} ${behavior.type} models in total`);
 		const maxChunk = 50000;
-		const collections = [];
+		const collectionsPromises = [];
 		// Fetch by chunks of 50.000 entities
 		for (let i = 0; i < totalCount; i += maxChunk) {
-			log.info(`Fetching ${behavior.type} models with offset ${i}`);
-			// eslint-disable-next-line no-await-in-loop
-			const collection = await behavior.model
+			const collection = behavior.model
 				.forge()
 				.query((qb) => {
 					qb.where('master', true);
 					qb.whereNotNull('data_id');
 					qb.limit(maxChunk);
 					qb.offset(i);
+					log.info(`Fetching ${maxChunk} ${behavior.type} models with offset ${i}`);
 				})
 				.fetchAll({
 					withRelated: baseRelations.concat(behavior.relations)
 				}).catch(err => { log.error(err); throw err; });
-			collections.push(collection);
+			collectionsPromises.push(collection);
 		}
+		const collections = await Promise.all(collectionsPromises);
 		// Put all models back into a single collection
 		const allModels = collections.map(col => col.models).flat();
 		return {collection: behavior.model.collection(allModels), type: behavior.type};
