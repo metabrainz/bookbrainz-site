@@ -44,29 +44,31 @@ export default ({
 	page,
 	props,
 	script
-}) => `
-	<!DOCTYPE html>
+}) => {
+	const pageScript =
+		`<script id='page' type='application/json'>${page}</script>`;
+	return `
+	<!doctype html>
 	<html>
 		<head>
 			<title>${title ? `${title} – BookBrainz` :
 		'BookBrainz – The Open Book Database'}</title>
+			<link rel='stylesheet' href='/stylesheets/bundle.css' />
 			<link rel='stylesheet' href='/stylesheets/style.css' />
-			<link rel='stylesheet' href='/stylesheets/react-virtualized.css' />
-			<link rel='stylesheet'
-				href='/stylesheets/react-virtualized-select.css' />
+			<meta charset='utf-8'>
 			<meta name='viewport'
-				content='width=device-width, initial-scale=1' />
+				content='width=device-width, initial-scale=1, shrink-to-fit=no'>
 			${favicon}
 		</head>
 
 		<body>
 			<div id='target'>${markup}</div>
 			<script src='/js/bundle.js'></script>
-			${page &&
-				`<script id='page' type='application/json'>${page}</script>`}
-			${props && script &&
-				`<script id='props' type='application/json'> ${props}</script>
-				<script src='${script}'></script>`}
+			${page ? pageScript : ''}
+			${props && script ?
+		`<script id='props' type='application/json'> ${props}</script>
+				<script src='${script}'></script>` : ''}
 		</body>
 	  </html>
 	`;
+};

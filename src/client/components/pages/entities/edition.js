@@ -18,23 +18,31 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
-
+import AuthorCreditDisplay from '../../author-credit-display';
+import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
 import EntityImage from './image';
 import EntityLinks from './links';
+import EntityRelatedCollections from './related-collections';
 import EntityTitle from './title';
-import Icon from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import WikipediaExtract from './wikipedia-extract';
+import WorksTable from './work-table';
+import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons';
 
 
 const {
-	extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
-	getLanguageAttribute
+	deletedEntityMessage, extractAttribute, getEditionPublishers, getEditionReleaseDate, getEntityUrl,
+	getLanguageAttribute, getRelationshipTargetByTypeId, addAuthorsDataToWorks, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias
 } = entityHelper;
 const {Col, Row} = bootstrap;
 
 export function EditionAttributes({edition}) {
+	if (edition.deleted) {
+		return deletedEntityMessage;
+	}
 	const status = extractAttribute(edition.editionStatus, 'label');
 	const format = extractAttribute(edition.editionFormat, 'label');
 	const pageCount = extractAttribute(edition.pages);
@@ -43,45 +51,50 @@ export function EditionAttributes({edition}) {
 	const height = extractAttribute(edition.height);
 	const depth = extractAttribute(edition.depth);
 
+	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(edition);
 	const releaseDate = getEditionReleaseDate(edition);
 	const publishers = getEditionPublishers(edition);
 	const languages = getLanguageAttribute(edition).data;
 
 	return (
 		<div>
+
 			<Row>
-				<Col md={3}>
+				<Col lg={3}>
 					<dl>
+						<dt>Sort Name</dt>
+						<dd>{sortNameOfDefaultAlias}</dd>
 						<dt>Release Date</dt>
 						<dd>{releaseDate}</dd>
 						<dt>Format</dt>
 						<dd>{format}</dd>
+					</dl>
+				</Col>
+				<Col lg={3}>
+					<dl>
 						<dt>Status</dt>
 						<dd>{status}</dd>
-					</dl>
-				</Col>
-				<Col md={3}>
-					<dl>
-						<dt>Dimensions (WxHxD)</dt>
-						<dd>{width}&times;{height}&times;{depth} mm</dd>
-						<dt>Weight</dt>
-						<dd>{weight} g</dd>
-						<dt>Page Count</dt>
-						<dd>{pageCount}</dd>
-					</dl>
-				</Col>
-				<Col md={3}>
-					<dl>
 						<dt>Languages</dt>
 						<dd>{languages}</dd>
 					</dl>
 				</Col>
-				<Col md={3}>
+				<Col lg={3}>
+					<dl>
+						{format !== 'eBook' &&
+						<>
+							<dt>Dimensions (WxHxD)</dt>
+							<dd>{width}&times;{height}&times;{depth} mm</dd>
+							<dt>Weight</dt>
+							<dd>{weight} g</dd>
+						</>}
+						<dt>Page Count</dt>
+						<dd>{pageCount}</dd>
+					</dl>
+				</Col>
+				<Col lg={3}>
 					<dl>
 						<dt>Publishers</dt>
-						<dd>
-							{publishers}
-						</dd>
+						<dd>{publishers}</dd>
 					</dl>
 				</Col>
 			</Row>
@@ -94,34 +107,91 @@ EditionAttributes.propTypes = {
 };
 
 
-function EditionDisplayPage({entity, identifierTypes}) {
+function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
+	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
+	const relationshipTypeId = 10;
+	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
+	const worksContainedByEditionWithAuthors = addAuthorsDataToWorks(entity.authorsData, worksContainedByEdition);
 	const urlPrefix = getEntityUrl(entity);
+
+	let authorCreditSection;
+	if (entity.authorCredit) {
+		authorCreditSection = (
+			<AuthorCreditDisplay
+				names={entity.authorCredit.names}
+			/>
+		);
+	}
+	else if (!entity.deleted) {
+		authorCreditSection = (
+			<div className="alert alert-warning text-center">
+				Author Credit unset; please&nbsp;
+				<a href={`/edition/${entity.bbid}/edit`}>edit this Edition</a>&nbsp;
+				and add its Author(s) if you see this!
+			</div>);
+	}
+
+	let editionGroupSection;
+	if (entity.editionGroup) {
+		editionGroupSection = (
+			<div className="margin-bottom-d15">
+				<a href={`/edition-group/${entity.editionGroup.bbid}`}>
+					<FontAwesomeIcon icon={faExternalLinkAlt}/>
+					<span>&nbsp;See all similar editions</span>
+				</a>
+			</div>
+		);
+	}
+	else if (!entity.deleted) {
+		editionGroupSection = (
+			<div className="alert alert-warning text-center">
+				Edition Group unset - please&nbsp;
+				<a href={`/edition/${entity.bbid}/edit`}>edit this Edition</a>&nbsp;
+				and add one if you see this!
+			</div>
+		);
+	}
 	return (
 		<div>
 			<Row className="entity-display-background">
-				<Col className="entity-display-image-box text-center" md={2}>
-					<EntityImage backupIcon="book" imageUrl={entity.imageUrl}/>
+				<Col className="entity-display-image-box text-center" lg={2}>
+					<EntityImage
+						backupIcon={ENTITY_TYPE_ICONS.Edition}
+						deleted={entity.deleted}
+						imageUrl={entity.imageUrl}
+					/>
 				</Col>
-				<Col md={10}>
+				<Col lg={10}>
 					<EntityTitle entity={entity}/>
+					{authorCreditSection}
+					<hr/>
 					<EditionAttributes edition={entity}/>
-					<div className="margin-bottom-d15">
-						<a href={`/publication/${entity.publication.bbid}`}>
-							<Icon name="external-link"/>
-							<span>&nbsp;See all other editions</span>
-						</a>
-					</div>
+					{editionGroupSection}
 				</Col>
 			</Row>
-			<EntityLinks
-				entity={entity}
-				identifierTypes={identifierTypes}
-				urlPrefix={urlPrefix}
-			/>
+			<WikipediaExtract articleExtract={wikipediaExtract} entity={entity}/>
+			<EntityAnnotation entity={entity}/>
+			{!entity.deleted &&
+			<React.Fragment>
+				<WorksTable
+					entity={entity}
+					works={worksContainedByEditionWithAuthors}
+				/>
+				<EntityLinks
+					entity={entity}
+					identifierTypes={identifierTypes}
+					urlPrefix={urlPrefix}
+				/>
+				<EntityRelatedCollections collections={entity.collections}/>
+			</React.Fragment>}
 			<hr className="margin-top-d40"/>
 			<EntityFooter
+				bbid={entity.bbid}
+				deleted={entity.deleted}
+				entityType={entity.type}
 				entityUrl={urlPrefix}
 				lastModified={entity.revision.revision.createdAt}
+				user={user}
 			/>
 		</div>
 	);
@@ -129,10 +199,13 @@ function EditionDisplayPage({entity, identifierTypes}) {
 EditionDisplayPage.displayName = 'EditionDisplayPage';
 EditionDisplayPage.propTypes = {
 	entity: PropTypes.object.isRequired,
-	identifierTypes: PropTypes.array
+	identifierTypes: PropTypes.array,
+	user: PropTypes.object.isRequired,
+	wikipediaExtract: PropTypes.object
 };
 EditionDisplayPage.defaultProps = {
-	identifierTypes: []
+	identifierTypes: [],
+	wikipediaExtract: {}
 };
 
 export default EditionDisplayPage;

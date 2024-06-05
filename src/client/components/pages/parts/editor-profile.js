@@ -21,17 +21,23 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
-import FontAwesome from 'react-fontawesome';
+import {faExternalLinkAlt, faPencilAlt} from '@fortawesome/free-solid-svg-icons';
+import {keys, values} from 'lodash';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {Line} from 'react-chartjs-2';
 import PropTypes from 'prop-types';
 import React from 'react';
+/* eslint-disable-next-line import/no-unassigned-import,sort-imports -- import this after react-chartjs-2 */
+import 'chartjs-adapter-date-fns';
 
 
-const {Button, Col, Image, Row} = bootstrap;
+const {Button, Card, Col, Image, ListGroup, Row} = bootstrap;
 const {formatDate} = utilsHelper;
 
 class EditorProfileTab extends React.Component {
 	constructor(props) {
 		super(props);
+		this.renderActivityGraph = this.renderActivityGraph.bind(this);
 		this.renderBasicInfo = this.renderBasicInfo.bind(this);
 		this.renderStats = this.renderStats.bind(this);
 		this.renderBadges = this.renderBadges.bind(this);
@@ -43,19 +49,27 @@ class EditorProfileTab extends React.Component {
 			cachedMetabrainzName,
 			metabrainzUserId,
 			name,
-			gender,
-			birthDate
+			gender
 		} = editor;
 		const createdAtDate = formatDate(new Date(editor.createdAt), true);
 		const lastActiveDate = formatDate(new Date(editor.activeAt), true);
-		const birthday = formatDate(new Date(birthDate), true);
 
 		let musicbrainzAccount = 'No Linked MusicBrainz Account';
 		if (cachedMetabrainzName) {
 			musicbrainzAccount = (
-				<a href={`http://musicbrainz.org/user/${cachedMetabrainzName}`}>
-					{cachedMetabrainzName}
-				</a>
+				<span>
+					<a href={`http://musicbrainz.org/user/${cachedMetabrainzName}`}>
+						{cachedMetabrainzName}
+					</a>
+					&nbsp;(
+					<a
+						href={`http://musicbrainz.org/user/${cachedMetabrainzName}/contact`}
+						rel="noopener noreferrer"
+						target="_blank"
+					>
+					send email <FontAwesomeIcon icon={faExternalLinkAlt}/>
+					</a>)
+				</span>
 			);
 		}
 		else if (metabrainzUserId) {
@@ -71,41 +85,38 @@ class EditorProfileTab extends React.Component {
 				<h2>
 					Basic Info
 					{user && user.id === editor.id &&
-						<small className="pull-right">
+						<small className="float-right">
 							<Button
-								bsStyle="warning"
-								className="entity-action"
 								href="/editor/edit"
 								title="Edit basic editor info"
+								variant="warning"
 							>
-								<FontAwesome name="pencil"/>{' '}Edit Profile
+								<FontAwesomeIcon icon={faPencilAlt}/>{' '}Edit Profile
 							</Button>
 						</small>
 					}
 				</h2>
-				<dl className="dl-horizontal">
-					<dt>MusicBrainz Account</dt>
-					<dd>
+				<dl className="row editor-info">
+					<dt className="col-md-2">MusicBrainz Account</dt>
+					<dd className="col-md-10">
 						{musicbrainzAccount}
 					</dd>
-					<dt>Display Name</dt>
-					<dd>{name}</dd>
-					<dt>Birth Date</dt>
-					<dd>{birthday || '?'}</dd>
-					<dt>Area</dt>
-					<dd>{editor.area ? editor.area.name : '?'}</dd>
-					<dt>Gender</dt>
-					<dd>{gender ? gender.name : '?'}</dd>
-					<dt>Type</dt>
-					<dd>{editor.type.label}</dd>
-					<dt>Reputation</dt>
-					<dd>0</dd>
-					<dt>Joined</dt>
-					<dd>{createdAtDate}</dd>
-					<dt>Last Active</dt>
-					<dd>{lastActiveDate}</dd>
-					<dt>Bio</dt>
-					<dd>{editor.bio ? editor.bio : '-'}</dd>
+					<dt className="col-md-2">Display Name</dt>
+					<dd className="col-md-10">{name}</dd>
+					<dt className="col-md-2">Area</dt>
+					<dd className="col-md-10">{editor.area ? editor.area.name : '?'}</dd>
+					<dt className="col-md-2">Gender</dt>
+					<dd className="col-md-10">{gender ? gender.name : '?'}</dd>
+					<dt className="col-md-2">Type</dt>
+					<dd className="col-md-10">{editor.type.label}</dd>
+					<dt className="col-md-2">Reputation</dt>
+					<dd className="col-md-10">0</dd>
+					<dt className="col-md-2">Joined</dt>
+					<dd className="col-md-10">{createdAtDate}</dd>
+					<dt className="col-md-2">Last login</dt>
+					<dd className="col-md-10">{lastActiveDate}</dd>
+					<dt className="col-md-2">Bio</dt>
+					<dd className="col-md-10">{editor.bio ? editor.bio : '-'}</dd>
 				</dl>
 			</div>
 		);
@@ -117,13 +128,13 @@ class EditorProfileTab extends React.Component {
 		return (
 			<div>
 				<h2>Stats</h2>
-				<dl className="dl-horizontal">
-					<dt>Total Revisions</dt>
-					<dd>{editor.totalRevisions}</dd>
-					<dt>Revisions Applied</dt>
-					<dd>{editor.revisionsApplied}</dd>
-					<dt>Revisions Reverted</dt>
-					<dd>{editor.revisionsReverted}</dd>
+				<dl className="row editor-info">
+					<dt className="col-md-8">Total Revisions</dt>
+					<dd className="col-md-4">{editor.totalRevisions}</dd>
+					<dt className="col-md-8">Revisions Applied</dt>
+					<dd className="col-md-4">{editor.revisionsApplied}</dd>
+					<dt className="col-md-8">Revisions Reverted</dt>
+					<dd className="col-md-4">{editor.revisionsReverted}</dd>
 				</dl>
 			</div>
 		);
@@ -148,43 +159,42 @@ class EditorProfileTab extends React.Component {
 					padding="0"
 				>
 					{achievement.model.map((model) => (
-						<Col key={`achievementModel${model.id}`} sm={4}>
-							<div className="well">
-								<Image
-									className="center-block"
-									height="100px"
+						<Col key={`achievementModel${model.id}`} md={4}>
+							<Card bg="light">
+								<Card.Img
+									className="mt-3 mb-2"
+									height={100}
 									src={model.achievement.badgeUrl}
+									variant="top"
 								/>
-								<p className="text-center">
-									{model.achievement.name}
-								</p>
-								<p className="text=center">
-									{model.achievement.description}
-								</p>
-								<p className="text-center">
-									{`unlocked: ${formatDate(new Date(
-										model.unlockedAt
-									), true)}`}
-								</p>
-							</div>
+								<Card.Body className="text-center">
+									<ListGroup variant="flush">
+										<ListGroup.Item>{model.achievement.name}</ListGroup.Item>
+										<ListGroup.Item>{model.achievement.description}</ListGroup.Item>
+										<ListGroup.Item>
+											{`Unlocked: ${formatDate(new Date(
+												model.unlockedAt
+											), true)}`}
+										</ListGroup.Item>
+									</ListGroup>
+								</Card.Body>
+							</Card>
 						</Col>
 					))}
 					{achievement.length < 3 &&
-						<Col sm={achievementBsSize}>
-							<div
-								className="well"
-								height="100%"
-							>
+						<Col md={achievementBsSize}>
+							<Card bg="light" className="justify-content-center">
 								<Image
-									className="center-block"
+									className="ml-auto mr-auto"
 									height="160px"
 									src="/images/sadface.png"
+									width="160px"
 								/>
 								<p className="text-center">
 									No badge to show, use the achievement menu
 									to see available achievements
 								</p>
-							</div>
+							</Card>
 						</Col>
 					}
 				</Row>
@@ -192,12 +202,55 @@ class EditorProfileTab extends React.Component {
 		);
 	}
 
+	renderActivityGraph() {
+		const {activityData, totalRevisions} = this.props.editor;
+		const months = keys(activityData);
+		const numberOfRevisions = values(activityData);
+
+		if (!totalRevisions) {
+			return null;
+		}
+
+		const data = {
+			datasets: [
+				{
+					backgroundColor: 'rgba(235,116,59,0.2)',
+					borderColor: 'rgba(235,116,59,1)',
+					borderWidth: 1,
+					data: numberOfRevisions,
+					hoverBackgroundColor: 'rgba(235,116,59,0.4)',
+					hoverBorderColor: 'rgba(235,116,59,1)',
+					label: 'Revisions'
+				}
+			],
+			labels: months
+		};
+
+		return (
+			<div>
+				<Line
+					data={data}
+					options={{
+						responsive: true
+					}}
+				/>
+			</div>
+		);
+	}
+
 	render() {
 		return (
 			<Row>
-				<Col md={12}>
+				<Col lg={12}>
 					{this.renderBasicInfo()}
+				</Col>
+				<Col lg={3}>
 					{this.renderStats()}
+				</Col>
+				<Col lg={9}>
+					{this.renderActivityGraph()}
+				</Col>
+				<Col lg={12}>
 					{this.renderBadges()}
 				</Col>
 			</Row>

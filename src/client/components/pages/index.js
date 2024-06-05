@@ -18,30 +18,23 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint-disable max-len */
+
 import * as bootstrap from 'react-bootstrap';
-import * as utilsHelper from '../../helpers/utils';
-import FontAwesome from 'react-fontawesome';
+
+import {faCircle, faCommentDots, faComments, faEnvelope, faListUl, faSearch, faUser} from '@fortawesome/free-solid-svg-icons';
+
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import RevisionsTable from './parts/revisions-table';
+import {faXTwitter} from '@fortawesome/free-brands-svg-icons';
 
 
-const {Alert, Button, Col, Grid, ListGroup, ListGroupItem, Row} = bootstrap;
-const {formatDate} = utilsHelper;
-
-const PICTURE_CLASSES = {
-	Creator: 'user',
-	Edition: 'book',
-	Publication: 'th-list',
-	Publisher: 'university',
-	Work: 'file-text-o'
-};
-
+const {Alert, Button, Col, Container, Row} = bootstrap;
 
 class IndexPage extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {};
 		this.renderHeader = this.renderHeader.bind(this);
 		this.renderContent = this.renderContent.bind(this);
 	}
@@ -49,71 +42,71 @@ class IndexPage extends React.Component {
 	renderHeader() {
 		return (
 			<div>
-				<Alert bsStyle="warning" className="text-center">
-					<p>
-						Under development — adventurous users, please test and
-						add data! Give us feedback about bugs, glitches and
-						potential improvements at {' '}
-						<a href="//tickets.metabrainz.org/projects/BB">
-							MetaBrainz JIRA!
-						</a>
-					</p>
+				<Alert className="text-center" variant="warning">
+					Under development — adventurous users, please test and
+					add data! Give us feedback about bugs, glitches and
+					potential improvements at {' '}
+					<a href="//tickets.metabrainz.org/projects/BB">
+						MetaBrainz JIRA!
+					</a>
 				</Alert>
 				<div id="background-image">
 					<div className="text-center" id="background-overlay">
-						<Grid>
+						<Container>
 							<img
 								alt="BookBrainz logo"
-								className="img-responsive center-block"
+								className="img-fluid center-block"
 								src="/images/BookBrainz_text.svg"
 								title="BookBrainz"
 								width="500"
 							/>
 							<Row>
-								<Col md={8} mdOffset={2}>
-									<form action="/search" role="search">
-										<div className="input-group input-group-lg margin-top-5">
-											<input
-												autoFocus="autofocus"
-												className="form-control"
-												name="q"
-												placeholder="Search for..."
-												type="text"
-											/>
-											<span className="input-group-btn">
-												<Button
-													bsStyle="success"
-													type="submit"
-												>
-													<FontAwesome name="search"/>
-												</Button>
-											</span>
-										</div>
+								<Col lg={{offset: 2, span: 8}}>
+									<form action="/search" className="input-group input-group-lg margin-top-5" role="search">
+										<input
+											required
+											autoFocus="autofocus"
+											className="form-control"
+											name="q"
+											placeholder="Search for..."
+											type="text"
+										/>
+										<span className="input-group-append">
+											<Button
+												type="submit"
+												variant="success"
+											>
+												<FontAwesomeIcon icon={faSearch}/>
+											</Button>
+										</span>
 									</form>
 									<Row className="margin-top-4">
-										<Col sm={4}>
+										<Col md={4}>
 											<Button
 												block
-												bsSize="large"
 												href="/about"
+												size="lg"
+												variant="secondary"
 											>
 												About
 											</Button>
 										</Col>
-										<Col sm={4}>
+										<Col md={4}>
 											<Button
 												block
-												bsSize="large"
 												href="/contribute"
+												size="lg"
+												variant="secondary"
 											>
 												Contribute
 											</Button>
 										</Col>
-										<Col sm={4}>
+										<Col md={4}>
 											<Button
 												block
-												bsSize="large"
 												href="/develop"
+												size="lg"
+												variant="secondary"
 											>
 												Develop
 											</Button>
@@ -123,47 +116,69 @@ class IndexPage extends React.Component {
 										<h4 className="contact-text">
 											Contact Us
 										</h4>
-										<FontAwesome
-											className="margin-sides-1 contact-text"
-											name="circle"
-										/>
-										<a href="//webchat.freenode.net/?channels=#metabrainz">
-											<FontAwesome
-												className="contact-text"
-												name="comment"
-												size="2x"
+										<div style={{
+											alignItems: 'center',
+											display: 'flex',
+											justifyContent: 'center'
+										}}
+										>
+											<FontAwesomeIcon
+												className="margin-sides-1 contact-text"
+												icon={faCircle}
 											/>
-										</a>
-										<FontAwesome
-											className="margin-sides-1 contact-text"
-											name="circle"
-										/>
-										<a href="//twitter.com/intent/tweet?screen_name=BookBrainz">
-											<FontAwesome
-												className="contact-text"
-												name="twitter"
-												size="2x"
+											<a className="contact-text" href="//kiwiirc.com/nextclient/irc.libera.chat/?#bookbrainz">
+												<FontAwesomeIcon
+													className="contact-text"
+													icon={faCommentDots}
+													size="2x"
+												/>
+												IRC
+											</a>
+											<FontAwesomeIcon
+												className="margin-sides-1 contact-text"
+												icon={faCircle}
 											/>
-										</a>
-										<FontAwesome
-											className="margin-sides-1 contact-text"
-											name="circle"
-										/>
-										<a href="mailto:bookbrainz-users@groups.io">
-											<FontAwesome
-												className="contact-text"
-												name="envelope"
-												size="2x"
+											<a className="contact-text" href="//community.metabrainz.org/c/bookbrainz">
+												<FontAwesomeIcon
+													className="contact-text"
+													icon={faComments}
+													size="2x"
+												/>
+												Forums
+											</a>
+											<FontAwesomeIcon
+												className="margin-sides-1 contact-text"
+												icon={faCircle}
 											/>
-										</a>
-										<FontAwesome
-											className="margin-sides-1 contact-text"
-											name="circle"
-										/>
+											<a className="contact-text" href="https://x.com/BookBrainz">
+												<FontAwesomeIcon
+													className="contact-text"
+													icon={faXTwitter}
+													size="2x"
+												/>
+												X
+											</a>
+											<FontAwesomeIcon
+												className="margin-sides-1 contact-text"
+												icon={faCircle}
+											/>
+											<a className="contact-text" href="mailto:bookbrainz@metabrainz.org">
+												<FontAwesomeIcon
+													className="contact-text"
+													icon={faEnvelope}
+													size="2x"
+												/>
+												Email
+											</a>
+											<FontAwesomeIcon
+												className="margin-sides-1 contact-text"
+												icon={faCircle}
+											/>
+										</div>
 									</div>
 								</Col>
 							</Row>
-						</Grid>
+						</Container>
 					</div>
 				</div>
 			</div>
@@ -171,12 +186,10 @@ class IndexPage extends React.Component {
 	}
 
 	renderContent() {
-		const {recent} = this.props;
-
 		return (
-			<Grid>
+			<Container>
 				<Row>
-					<Col md={8} mdOffset={2}>
+					<Col lg={{offset: 2, span: 8}}>
 						<h1 className="text-center">The Open Book Database</h1>
 						<p className="lead text-justify">
 							BookBrainz is a project to create an online database
@@ -191,63 +204,61 @@ class IndexPage extends React.Component {
 					</Col>
 				</Row>
 				<hr/>
+				{!this.props.isLoggedIn && this.renderAboutUs()}
+				<div>
+					<RevisionsTable
+						results={this.props.recent}
+						showEntities={this.props.showEntities}
+						showRevisionEditor={this.props.showRevisionEditor}
+					/>
+					<div className="text-center">
+						<Button
+							href="/revisions"
+							variant="primary"
+						>
+							<FontAwesomeIcon className="margin-right-0-5" icon={faListUl}/>
+							See all revisions
+						</Button>
+					</div>
+				</div>
+			</Container>
+		);
+	}
+
+	renderAboutUs() {
+		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
+		return (
+			<React.Fragment>
 				<Row>
-					<Col className="text-center margin-top-4" md={2}>
-						<FontAwesome name="user" size="5x"/>
+					<Col className="text-center margin-top-4" lg={2}>
+						<FontAwesomeIcon icon={faUser} size="5x"/>
 					</Col>
-					<Col md={10}>
+					<Col lg={10}>
 						<h2>Join Us!</h2>
 						<p className="lead">
-							First off,{' '}
+					First off,{' '}
 							<a href="/about" target="blank">
-								read about us
+						read about us
 							</a>{' and '}
 							<a href="/contribute" target="blank">
-								how you can help
+						how you can help
 							</a>. Then, if you think you want
-							to stick around, hit the button below to sign up
-							for a free BookBrainz account!
+					to stick around, hit the button below to sign up
+					for a free BookBrainz account!
 						</p>
 					</Col>
 				</Row>
 				<div className="text-center margin-top-1 margin-bottom-3">
-					<Button bsSize="large" bsStyle="success" href="/register">
-						Register!
+					<Button
+						{...disableSignUp}
+						href="/register"
+						size="lg"
+						variant="success"
+					>
+				Register!
 					</Button>
 				</div>
-				{recent &&
-					<div>
-						<hr/>
-						<Row>
-							<Col md={12}>
-								<h2 className="text-center">Recent Activity</h2>
-								<ListGroup>
-									{recent.map((entity) => {
-										const name = entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)';
-										return (
-											<ListGroupItem
-												href={`/revision/${entity.revisionId}`}
-												key={entity.bbid}
-											>
-												<Row>
-													<Col md={2}>{`r${entity.revisionId}`}</Col>
-													<Col md={6}>
-														<FontAwesome name={PICTURE_CLASSES[entity.type]}/>
-														<span className="margin-left-1">{name}</span>
-													</Col>
-													<Col md={4}>
-														{formatDate(new Date(entity.revision.revision.createdAt))}
-													</Col>
-												</Row>
-											</ListGroupItem>
-										);
-									})}
-								</ListGroup>
-							</Col>
-						</Row>
-					</div>
-				}
-			</Grid>
+			</React.Fragment>
 		);
 	}
 
@@ -263,7 +274,17 @@ class IndexPage extends React.Component {
 
 IndexPage.displayName = 'IndexPage';
 IndexPage.propTypes = {
-	recent: PropTypes.array.isRequired
+	disableSignUp: PropTypes.bool,
+	isLoggedIn: PropTypes.bool.isRequired,
+	recent: PropTypes.array.isRequired,
+	showEntities: PropTypes.bool,
+	showRevisionEditor: PropTypes.bool
+
+};
+IndexPage.defaultProps = {
+	disableSignUp: false,
+	showEntities: true,
+	showRevisionEditor: true
 };
 
 export default IndexPage;

@@ -1,9 +1,11 @@
 /*
- * Copyright (C) 2016  Daniel Hsing
+ * Copyright (C) 2018  Theodore Fabian Rudy
+ * 				 2016  Daniel Hsing
  * 				 2016  Ben Ockmore
  * 				 2016  Sean Burke
  * 				 2016  Ohm Patel
- *				 2015  Leo Verto
+ * 				 2015  Leo Verto
+ * 				 2023  Shivam Awasthi
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,158 +21,357 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint max-len: "warn" */
+
 import * as bootstrap from 'react-bootstrap';
-import FontAwesome from 'react-fontawesome';
+import {IdentifierTypeEditorIcon, RelationshipTypeEditorIcon} from '../helpers/utils';
+import {PrivilegeType, checkPrivilege} from '../../common/helpers/privileges-utils';
+import {
+	faBarcode,
+	faChartLine, faClipboardQuestion, faFileLines, faGripVertical, faLink, faListUl, faNewspaper, faPlus, faQuestionCircle,
+	faSearch, faShieldHalved, faSignInAlt, faSignOutAlt, faTrophy, faUserCheck, faUserCircle, faUserGear
+} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Footer from './../components/footer';
+import MergeQueue from '../components/pages/parts/merge-queue';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {faSearchengin} from '@fortawesome/free-brands-svg-icons';
+import {genEntityIconHTMLElement} from '../helpers/entity';
 
 
-const {Alert, MenuItem, Nav, Navbar, NavItem, NavDropdown} = bootstrap;
+const {Alert, Button, Form, FormControl, InputGroup, Nav, Navbar, NavDropdown} = bootstrap;
 
 class Layout extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {};
+		this.state = {keepMenuOpen: false, menuOpen: false};
 		this.renderNavContent = this.renderNavContent.bind(this);
 		this.renderNavHeader = this.renderNavHeader.bind(this);
+		this.renderDocsDropdown = this.renderDocsDropdown.bind(this);
+		this.handleDropdownToggle = this.handleDropdownToggle.bind(this);
+		this.handleDropdownClick = this.handleDropdownClick.bind(this);
+		this.handleMouseDown = this.handleMouseDown.bind(this);
+	}
+
+	handleMouseDown(event) {
+		event.preventDefault();
+	}
+
+	handleDropdownToggle(newValue) {
+		if (this.state.keepMenuOpen) {
+			this.setState({keepMenuOpen: false, menuOpen: true});
+		}
+		else {
+			this.setState({menuOpen: newValue});
+		}
+	}
+
+	handleDropdownClick(eventKey, event) {
+		event.stopPropagation();
+		this.setState({keepMenuOpen: true}, this.handleDropdownToggle);
 	}
 
 	renderNavHeader() {
 		const {homepage} = this.props;
 
 		return (
-			<Navbar.Header>
-				<Navbar.Brand className="logo">
-					<a href="/">
-						{homepage ?
-							<img
-								alt="BookBrainz icon"
-								src="/images/BookBrainz_logo_icon.svg"
-								title="BookBrainz"
-							/> :
-							<img
-								alt="BookBrainz icon"
-								src="/images/BookBrainz_logo_mini.svg"
-								title="BookBrainz"
-							/>
-						}
-					</a>
-				</Navbar.Brand>
-				<Navbar.Toggle/>
-			</Navbar.Header>
+			<Navbar.Brand className="logo">
+				<a href="/">
+					{homepage ? (
+						<img
+							alt="BookBrainz icon"
+							src="/images/BookBrainz_logo_icon.svg"
+							title="BookBrainz"
+						/>
+					) : (
+						<img
+							alt="BookBrainz icon"
+							src="/images/BookBrainz_logo_mini.svg"
+							title="BookBrainz"
+						/>
+					)}
+				</a>
+			</Navbar.Brand>
 		);
 	}
 
-	renderNavContent() {
-		const {user, homepage, hideSearch} = this.props;
+	renderDocsDropdown() {
+		const docsDropdownTitle = (
+			<span>
+				<FontAwesomeIcon icon={faFileLines}/>
+				{'  Docs'}
+			</span>
+		);
+		return (
+			<Nav>
+				<NavDropdown
+					alignRight
+					id="docs-dropdown"
+					title={docsDropdownTitle}
+					onMouseDown={this.handleMouseDown}
+				>
+					<NavDropdown.Item href="/help">
+						<FontAwesomeIcon fixedWidth icon={faQuestionCircle}/>
+						{' Help '}
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/faq">
+						<FontAwesomeIcon fixedWidth icon={faClipboardQuestion}/>
+						{' FAQs '}
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/relationship-types">
+						<FontAwesomeIcon fixedWidth icon={faLink}/>
+						{' Relationship Types '}
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/identifier-types">
+						<FontAwesomeIcon fixedWidth icon={faBarcode}/>
+						{' Identifier Types '}
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/imports/recent">
+						<FontAwesome fixedWidth icon={faUserCheck}/>
+						{' Review recent imports '}
+					</NavDropdown.Item>
+				</NavDropdown>
+			</Nav>
+		);
+	}
 
-		/*
-		 * GOTCHA: Usage of react-bootstrap FormGroup component inside
-		 * Navbar.Form causes a DOM mutation
-		 */
+	renderGuestDropdown() {
+		const disableSignUp = this.props.disableSignUp ?
+			{disabled: true} :
+			{};
+
+		return (
+			<Nav>
+				<Nav.Item>
+					<Nav.Link {...disableSignUp} href="/auth">
+						<FontAwesomeIcon icon={faSignInAlt}/>
+						{' Sign In / Register'}
+					</Nav.Link>
+				</Nav.Item>
+			</Nav>
+		);
+	}
+
+	renderLoggedInDropdown() {
+		const {user} = this.props;
+
 		const createDropdownTitle = (
 			<span>
-				<FontAwesome name="plus"/>{'  Create'}
+				<FontAwesomeIcon icon={faPlus}/>
+				{'  Add'}
 			</span>
 		);
 
 		const userDropdownTitle = user && (
 			<span>
-				<FontAwesome name="user"/>
+				<FontAwesomeIcon icon={faUserCircle}/>
 				{`  ${user.name}`}
 			</span>
 		);
 
+		const privilegesDropdownTitle = (
+			<span>
+				<FontAwesomeIcon className="margin-right-0-3" icon={faShieldHalved}/>
+				Privileges
+			</span>
+		);
+
+		const showPrivilegeDropdown = user.privs > 1;
+		const adminOptions = (
+			<>
+				<NavDropdown.Item href="/admin-panel">
+					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faUserGear}/>
+					Admin Panel
+				</NavDropdown.Item>
+				<NavDropdown.Item href="/admin-logs">
+					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faNewspaper}/>
+					Admin Logs
+				</NavDropdown.Item>
+			</>
+		);
+
+		const relationshipTypeEditorOptions = (
+			<>
+				<NavDropdown.Item href="/relationship-type/create">
+					{RelationshipTypeEditorIcon}
+					Add Relationship Type
+				</NavDropdown.Item>
+			</>
+		);
+
+		const reindexSearchEngineOption = (
+			<>
+				<NavDropdown.Item href="/search/reindex">
+					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faSearchengin}/>
+					Reindex Search Server
+				</NavDropdown.Item>
+			</>
+		);
+
+		const identifierTypeEditorOptions = (
+			<>
+				<NavDropdown.Item href="/identifier-type/create">
+					{IdentifierTypeEditorIcon}
+					Add Identifier Type
+				</NavDropdown.Item>
+			</>
+		);
+
+		const privilegeDropDown = (
+			<NavDropdown
+				alignRight
+				id="privs-dropdown"
+				title={privilegesDropdownTitle}
+				onMouseDown={this.handleMouseDown}
+			>
+				{checkPrivilege(user.privs, PrivilegeType.ADMIN) && adminOptions}
+				{checkPrivilege(user.privs, PrivilegeType.RELATIONSHIP_TYPE_EDITOR) && relationshipTypeEditorOptions}
+				{checkPrivilege(user.privs, PrivilegeType.IDENTIFIER_TYPE_EDITOR) && identifierTypeEditorOptions}
+				{checkPrivilege(user.privs, PrivilegeType.REINDEX_SEARCH_SERVER) && reindexSearchEngineOption}
+			</NavDropdown>
+		);
+
+		const disableSignUp = this.props.disableSignUp ?
+			{disabled: true} :
+			{};
+
+		return (
+			<Nav>
+				{showPrivilegeDropdown && privilegeDropDown}
+				<NavDropdown
+					alignRight
+					id="create-dropdown"
+					open={this.state.menuOpen}
+					title={createDropdownTitle}
+					onMouseDown={this.handleMouseDown}
+					onSelect={this.handleDropdownClick}
+					onToggle={this.handleDropdownToggle}
+				>
+					<NavDropdown.Item href="/create">
+						{genEntityIconHTMLElement('Book')}
+						Book
+					</NavDropdown.Item>
+					<NavDropdown.Divider/>
+					<NavDropdown.Item href="/work/create">
+						{genEntityIconHTMLElement('Work')}
+						Work
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/edition/create">
+						{genEntityIconHTMLElement('Edition')}
+						Edition
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/edition-group/create">
+						{genEntityIconHTMLElement('EditionGroup')}
+						Edition Group
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/series/create">
+						{genEntityIconHTMLElement('Series')}
+						Series
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/author/create">
+						{genEntityIconHTMLElement('Author')}
+						Author
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/publisher/create">
+						{genEntityIconHTMLElement('Publisher')}
+						Publisher
+					</NavDropdown.Item>
+				</NavDropdown>
+				<NavDropdown
+					alignRight
+					id="user-dropdown"
+					title={userDropdownTitle}
+					onMouseDown={this.handleMouseDown}
+				>
+					<NavDropdown.Item href={`/editor/${user.id}`}>
+						<FontAwesomeIcon fixedWidth icon={faUserCircle}/>
+						{' Profile'}
+					</NavDropdown.Item>
+					<NavDropdown.Item href={`/editor/${user.id}/revisions`}>
+						<FontAwesomeIcon fixedWidth icon={faListUl}/>
+						{' Revisions'}
+					</NavDropdown.Item>
+					<NavDropdown.Item href={`/editor/${user.id}/achievements`}>
+						<FontAwesomeIcon fixedWidth icon={faTrophy}/>
+						{' Achievements'}
+					</NavDropdown.Item>
+					<NavDropdown.Item href={`/editor/${user.id}/collections`}>
+						<FontAwesomeIcon fixedWidth icon={faGripVertical}/>
+						{' Collections'}
+					</NavDropdown.Item>
+					<NavDropdown.Item href="/external-service/">
+						<FontAwesomeIcon fixedWidth icon={faLink}/>
+						{' External Services'}
+					</NavDropdown.Item>
+					<NavDropdown.Item {...disableSignUp} href="/logout">
+						<FontAwesomeIcon fixedWidth icon={faSignOutAlt}/>
+						{' Sign Out'}
+					</NavDropdown.Item>
+				</NavDropdown>
+			</Nav>
+		);
+	}
+
+	renderSearchForm() {
+		return (
+			<Form
+				inline
+				action="/search"
+				className="ml-auto mr-3"
+				role="search"
+			>
+				<InputGroup>
+					<FormControl required name="q" placeholder="Search for..." type="text"/>
+					<InputGroup.Append>
+						<Button type="submit" variant="success">
+							<FontAwesomeIcon icon={faSearch}/>
+						</Button>
+					</InputGroup.Append>
+				</InputGroup>
+			</Form>
+		);
+	}
+
+	renderNavContent() {
+		const {homepage, hideSearch, user} = this.props;
+
+		/*
+		 * GOTCHA: Usage of react-bootstrap FormGroup component inside
+		 * Navbar.Form causes a DOM mutation
+		 */
+		const revisionsClassName = homepage || hideSearch ? 'ml-auto' : null;
+
 		return (
 			<Navbar.Collapse id="bs-example-navbar-collapse-1">
-				{user && user.id ?
-					<Nav pullRight>
-						<NavDropdown
-							eventKey={1}
-							id="create-dropdown"
-							title={createDropdownTitle}
-						>
-							<MenuItem href="/publication/create">
-								Create Publication
-							</MenuItem>
-							<MenuItem href="/edition/create">
-								Create Edition
-							</MenuItem>
-							<MenuItem href="/work/create">
-								Create Work
-							</MenuItem>
-							<MenuItem divider/>
-							<MenuItem href="/creator/create">
-								Create Creator
-							</MenuItem>
-							<MenuItem href="/publisher/create">
-								Create Publisher
-							</MenuItem>
-						</NavDropdown>
-						<NavDropdown
-							eventKey={2}
-							id="user-dropdown"
-							title={userDropdownTitle}
-						>
-							<MenuItem href={`/editor/${user.id}`}>
-								<FontAwesome
-									fixedWidth
-									name="info"
-								/>{' Profile'}
-							</MenuItem>
-							<MenuItem href="/logout">
-								<FontAwesome
-									fixedWidth
-									name="sign-out"
-								/>{' Sign Out'}
-							</MenuItem>
-						</NavDropdown>
-					</Nav> :
-					<Nav pullRight>
-						<NavItem href="/auth">
-							<FontAwesome name="sign-in"/>{' Sign In / Register'}
-						</NavItem>
-					</Nav>
-				}
-				<Nav pullRight>
-					<NavItem href="/statistics">
-						<FontAwesome name="statistics"/>
-						{' Statistics '}
-					</NavItem>
+				{!(homepage || hideSearch) && this.renderSearchForm()}
+				<Nav className={revisionsClassName}>
+					<Nav.Item>
+						<Nav.Link href="/revisions">
+							<FontAwesomeIcon icon={faListUl}/>
+							{' Revisions '}
+						</Nav.Link>
+					</Nav.Item>
 				</Nav>
-				<Nav pullRight>
-					<NavItem href="/imports/recent">
-						<FontAwesome name="user-check"/>
-						{' Review recent imports '}
-					</NavItem>
+				<Nav>
+					<Nav.Item>
+						<Nav.Link href="/collections">
+							<FontAwesomeIcon icon={faGripVertical}/>
+							{' Collections '}
+						</Nav.Link>
+					</Nav.Item>
 				</Nav>
-				{!(homepage || hideSearch) &&
-				<form
-					action="/search"
-					className="navbar-form navbar-right"
-					role="search"
-				>
-					<div className="form-group">
-						<div className="input-group">
-							<input
-								className="form-control"
-								name="q"
-								placeholder="Search for..."
-								type="text"
-							/>
-							<span className="input-group-btn">
-								<button
-									className="btn btn-success"
-									type="submit"
-								>
-									<FontAwesome name="search"/>
-								</button>
-							</span>
-						</div>
-					</div>
-				</form>
+				<Nav>
+					<Nav.Item>
+						<Nav.Link href="/statistics">
+							<FontAwesomeIcon icon={faChartLine}/>
+							{' Statistics '}
+						</Nav.Link>
+					</Nav.Item>
+				</Nav>
+				{this.renderDocsDropdown()}
+				{
+					user && user.id ?
+						this.renderLoggedInDropdown() : this.renderGuestDropdown()
 				}
 			</Navbar.Collapse>
 		);
@@ -182,51 +383,50 @@ class Layout extends React.Component {
 			siteRevision,
 			repositoryUrl,
 			children,
+			mergeQueue,
 			requiresJS
 		} = this.props;
 
 		// Shallow merges parents props into child components
-		const childNode = homepage ? children : (
-			<div className="container" id="content">
-				{requiresJS &&
-					<div>
-						<noscript>
-							<div className="alert alert-danger" role="alert">
-								This page will not function correctly without
-								JavaScript! Please enable JavaScript to use
-								this page.
-							</div>
-						</noscript>
-					</div>
-				}
-				{children}
-			</div>
-		);
+		const childNode = homepage ?
+			children :
+			(
+				<div className="container" id="content">
+					{requiresJS && (
+						<div>
+							<noscript>
+								<div className="alert alert-danger" role="alert">
+									This page will not function correctly without
+									JavaScript! Please enable JavaScript to use this
+									page.
+								</div>
+							</noscript>
+						</div>
+					)}
+					{children}
+					{mergeQueue ?
+						<MergeQueue
+							mergeQueue={mergeQueue}
+						/> : null
+					}
+				</div>
+			);
 
-		const alerts = this.props.alerts.map(
-			(alert, idx) => (
-				<Alert
-					bsStyle={alert.level}
-					className="text-center"
-					key={idx}
-				>
-					<p>{alert.message}</p>
-				</Alert>
-			)
-		);
+		const alerts = this.props.alerts.map((alert, idx) => (
+			// eslint-disable-next-line react/no-array-index-key
+			<Alert className="text-center" key={idx} variant={alert.level}>
+				<p>{alert.message}</p>
+			</Alert>
+		));
 
 		return (
 			<div>
 				<a className="sr-only sr-only-focusable" href="#content">
 					Skip to main content
 				</a>
-				<Navbar
-					fixedTop
-					fluid
-					className="BookBrainz"
-					role="navigation"
-				>
+				<Navbar className="BookBrainz" expand="lg" fixed="top" role="navigation">
 					{this.renderNavHeader()}
+					<Navbar.Toggle/>
 					{this.renderNavContent()}
 				</Navbar>
 				{alerts}
@@ -244,16 +444,20 @@ Layout.displayName = 'Layout';
 Layout.propTypes = {
 	alerts: PropTypes.array.isRequired,
 	children: PropTypes.node.isRequired,
+	disableSignUp: PropTypes.bool,
 	hideSearch: PropTypes.bool,
 	homepage: PropTypes.bool,
+	mergeQueue: PropTypes.object,
 	repositoryUrl: PropTypes.string.isRequired,
 	requiresJS: PropTypes.bool,
 	siteRevision: PropTypes.string.isRequired,
 	user: PropTypes.object
 };
 Layout.defaultProps = {
+	disableSignUp: false,
 	hideSearch: false,
 	homepage: false,
+	mergeQueue: null,
 	requiresJS: false,
 	user: null
 };

@@ -18,25 +18,25 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as error from '../helpers/error';
+import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
+import * as search from '../../common/helpers/search';
 import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
-import Log from 'log';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import RegisterAuthPage from '../../client/components/pages/registration-auth';
 import RegisterDetailPage from
 	'../../client/components/forms/registration-details';
 import _ from 'lodash';
-import config from '../helpers/config';
 import express from 'express';
+import log from 'log';
+import target from '../templates/target';
 
 
 const router = express.Router();
-const log = new Log(config.site.log);
 
 router.get('/', (req, res) => {
 	// Check whether the user is logged in - if so, redirect to profile page
@@ -52,7 +52,7 @@ router.get('/', (req, res) => {
 		</Layout>
 	);
 
-	return res.render('target', {markup, title: 'Register'});
+	return res.send(target({markup, title: 'Register'}));
 });
 
 router.get('/details', middleware.loadGenders, (req, res) => {
@@ -62,7 +62,7 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 	}
 
 	if (!req.session.mbProfile) {
-		res.redirect('/auth');
+		return res.redirect('/auth');
 	}
 
 	const gender = _.find(res.locals.genders, {
@@ -85,63 +85,66 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 		</Layout>
 	);
 
-	return res.render('target', {
+	return res.send(target({
 		markup,
 		props: escapeProps(props),
 		script: '/js/registrationDetails.js',
 		title: 'Register'
-	});
+	}));
 });
 
-router.post('/handler', (req, res) => {
-	const {Editor, EditorType} = req.app.locals.orm;
+router.post('/handler', async (req, res) => {
+	try {
+		const {Editor, EditorType} = req.app.locals.orm;
 
-	// Check whether the user is logged in - if so, redirect to profile page
-	if (req.user) {
-		return res.redirect(`/editor/${req.user.id}`);
-	}
+		// Check whether the user is logged in - if so, redirect to profile page
+		if (req.user) {
+			return res.redirect(`/editor/${req.user.id}`);
+		}
 
-	if (!req.session.mbProfile) {
-		return res.redirect('/auth');
-	}
+		if (!req.session.mbProfile) {
+			return res.redirect('/auth');
+		}
 
-	// Fetch the default EditorType from the database
-	const registerPromise = EditorType.forge({label: 'Editor'})
-		.fetch({require: true})
-		.then(
-			// Create a new Editor and add to the database
-			(editorType) =>
-				new Editor({
-					birthDate: req.body.birthday,
-					cachedMetabrainzName: req.session.mbProfile.sub,
-					genderId: req.body.gender,
-					metabrainzUserId: req.session.mbProfile.metabrainz_user_id,
-					name: req.body.displayName,
-					typeId: editorType.id
-				})
-					.save()
-		)
-		.then((editor) => {
-			req.session.mbProfile = null;
-			return editor.toJSON();
+		// Fetch the default EditorType from the database
+		const editorType = await EditorType.forge({label: 'Editor'})
+			.fetch({require: true});
+
+		// Create a new Editor and add to the database
+
+		const editor = await new Editor({
+			cachedMetabrainzName: req.session.mbProfile.sub,
+			genderId: req.body.gender,
+			metabrainzUserId: req.session.mbProfile.metabrainz_user_id,
+			name: req.body.displayName,
+			typeId: editorType.id
 		})
-		.catch((err) => {
-			log.debug(err);
+			.save();
 
-			if (_.isMatch(err, {constraint: 'editor_name_key'})) {
-				throw new error.FormSubmissionError(
-					'That username already exists - please try using another,' +
-					' or contact us to have your existing BookBrainz account' +
-					' linked to a MusicBrainz account.'
-				);
-			}
+		req.session.mbProfile = null;
 
-			throw new error.FormSubmissionError(
-				'Something went wrong when registering, please try again!'
-			);
-		});
+		const editorJSON = editor.toJSON();
 
-	return handler.sendPromiseResult(res, registerPromise);
+		// Type needed for indexing
+		editor.set('type', 'Editor');
+		await search.indexEntity(editor);
+
+		return res.status(200).send(editorJSON);
+	}
+	catch (err) {
+		if (_.isMatch(err, {constraint: 'editor_name_key'})) {
+			return error.sendErrorAsJSON(res, new error.FormSubmissionError(
+				'That username already exists - please try using another,' +
+			' or contact us to have your existing BookBrainz account' +
+			' linked to a MusicBrainz account.'
+			));
+		}
+		log.error(err);
+
+		return error.sendErrorAsJSON(res, new error.FormSubmissionError(
+			'Something went wrong when registering, please try again!'
+		));
+	}
 });
 
 export default router;

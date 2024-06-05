@@ -76,7 +76,15 @@ export function formatEndedChange(change) {
 }
 
 export function formatTypeChange(change, label) {
-	return formatChange(change, label, (side) => side && [side.label]);
+	// eslint-disable-next-line consistent-return
+	return formatChange(change, label, (side) => {
+		if (typeof side === 'string') {
+			return [side];
+		}
+		else if (side) {
+			return [side.label];
+		}
+	});
 }
 
 export function formatScalarChange(change, label) {
@@ -87,7 +95,6 @@ export function formatAreaChange(change, label) {
 	return formatChange(
 		change,
 		label || 'Area',
-		// eslint-disable-next-line
-		(side) => typeof side === 'string' ? [side] : side && [side.name]
+		(side) => (typeof side === 'string' ? [side] : side && [side.name])
 	);
 }

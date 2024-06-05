@@ -23,6 +23,7 @@ const LAYOUT_PROPS = [
 	'alerts',
 	'hideSearch',
 	'homepage',
+	'mergeQueue',
 	'repositoryUrl',
 	'requiresJS',
 	'siteRevision',
@@ -31,7 +32,8 @@ const LAYOUT_PROPS = [
 
 const EDITOR_PROPS = [
 	'editor',
-	'tabActive'
+	'tabActive',
+	'user'
 ];
 
 export function extractLayoutProps(props) {
@@ -43,14 +45,28 @@ export function extractEditorProps(props) {
 }
 
 export function extractChildProps(props) {
-	return omit(props, LAYOUT_PROPS);
+	const finalProps = omit(props, LAYOUT_PROPS);
+	finalProps.user = props.user;
+	return finalProps;
 }
 
 export function extractEntityProps(props) {
 	return {
 		alert: props.alert,
 		entity: props.entity,
-		identifierTypes: props.identifierTypes
+		genderOptions: props.genderOptions,
+		identifierTypes: props.identifierTypes,
+		user: props.user,
+		wikipediaExtract: props.wikipediaExtract
+	};
+}
+
+export function extractPreviewProps(props) {
+	return {
+		baseUrl: props.baseUrl,
+		formBody: props.formBody,
+		originalUrl: props.originalUrl,
+		sourceUrl: props.sourceUrl
 	};
 }
 

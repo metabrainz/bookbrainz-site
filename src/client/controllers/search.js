@@ -16,20 +16,36 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {extractChildProps, extractLayoutProps} from '../helpers/props';
+import {AppContainer} from 'react-hot-loader';
 import Layout from '../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SearchPage from '../components/pages/search';
-import {extractLayoutProps} from '../helpers/props';
 
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
 const markup = (
-	<Layout {...extractLayoutProps(props)}>
-		<SearchPage initialResults={props.initialResults}/>
-	</Layout>
+	<AppContainer>
+		<Layout {...extractLayoutProps(props)}>
+			<SearchPage
+				user={props.user}
+				{...extractChildProps(props)}
+			/>
+		</Layout>
+	</AppContainer>
 );
 
 ReactDOM.hydrate(markup, document.getElementById('target'));
+
+/*
+ * As we are not exporting a component,
+ * we cannot use the react-hot-loader module wrapper,
+ * but instead directly use webpack Hot Module Replacement API
+ */
+
+if (module.hot) {
+	module.hot.accept();
+}

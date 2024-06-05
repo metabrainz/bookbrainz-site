@@ -16,23 +16,35 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {genEntityIconHTMLElement, getEntityLabel} from '../helpers/entity';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {kebabCase as _kebabCase} from 'lodash';
 
 
-function EntityLink(props) {
+function EntityLink({entity, inline}) {
+	let bbidElement = <div className="small">({entity.bbid})</div>;
+	if (inline) {
+		bbidElement = <span className="small">({entity.bbid})</span>;
+	}
 	return (
-		<a href={`/${props.type.toLowerCase()}/${props.bbid}`}>
-			{props.text}
-		</a>
+		<span>
+			<a href={`/${_kebabCase(entity.type)}/${entity.bbid}`}>
+				{genEntityIconHTMLElement(entity.type)}
+				{getEntityLabel(entity)}
+			</a>
+			{bbidElement}
+		</span>
 	);
 }
 
 EntityLink.displayName = 'EntityLink';
 EntityLink.propTypes = {
-	bbid: PropTypes.string.isRequired,
-	text: PropTypes.string.isRequired,
-	type: PropTypes.string.isRequired
+	entity: PropTypes.object.isRequired,
+	inline: PropTypes.bool
+};
+EntityLink.defaultProps = {
+	inline: false
 };
 
 export default EntityLink;

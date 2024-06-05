@@ -16,8 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
-import {Button, Checkbox, Col, Row} from 'react-bootstrap';
+import {Button, Col, Form, Row} from 'react-bootstrap';
 import {
 	debouncedUpdateAliasName, debouncedUpdateAliasSortName, removeAliasRow,
 	updateAliasLanguage, updateAliasPrimary
@@ -25,13 +24,16 @@ import {
 import {
 	validateAliasLanguage, validateAliasName, validateAliasSortName
 } from '../validators/common';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import PropTypes from 'prop-types';
 import React from 'react';
 import SortNameField from '../common/sort-name-field';
 import {connect} from 'react-redux';
+import {faTimes} from '@fortawesome/free-solid-svg-icons';
 import {isAliasEmpty} from '../helpers';
+
 
 /**
  * Container component. The AliasRow component renders a single Row containing
@@ -75,8 +77,9 @@ const AliasRow = ({
 }) => (
 	<div>
 		<Row>
-			<Col md={4}>
+			<Col lg={4}>
 				<NameField
+					autoFocus
 					defaultValue={nameValue}
 					empty={
 						isAliasEmpty(nameValue, sortNameValue, languageValue)
@@ -85,7 +88,7 @@ const AliasRow = ({
 					onChange={onNameChange}
 				/>
 			</Col>
-			<Col md={4}>
+			<Col lg={4}>
 				<SortNameField
 					defaultValue={sortNameValue}
 					empty={
@@ -96,7 +99,7 @@ const AliasRow = ({
 					onChange={onSortNameChange}
 				/>
 			</Col>
-			<Col md={4}>
+			<Col lg={4}>
 				<LanguageField
 					empty={
 						isAliasEmpty(nameValue, sortNameValue, languageValue)
@@ -104,28 +107,29 @@ const AliasRow = ({
 					error={!validateAliasLanguage(languageValue)}
 					instanceId="language"
 					options={languageOptions}
-					value={languageValue}
+					value={languageOptions.filter((el) => el.value === languageValue)}
 					onChange={onLanguageChange}
 				/>
 			</Col>
 		</Row>
 		<Row>
-			<Col md={2} mdOffset={5}>
-				<Checkbox
+			<Col lg={{offset: 5, span: 2}}>
+				<Form.Check
 					defaultChecked={primaryChecked}
+					label="Primary"
+					type="checkbox"
 					onChange={onPrimaryClick}
-				>
-					Primary
-				</Checkbox>
+				/>
 			</Col>
-			<Col className="text-right" md={3} mdOffset={2}>
+			<Col className="text-right" lg={{offset: 2, span: 3}}>
 				<Button
 					block
-					bsStyle="danger"
 					className="margin-top-d5"
+					variant="danger"
 					onClick={onRemoveButtonClick}
 				>
-					Remove
+					<FontAwesomeIcon icon={faTimes}/>
+					<span>&nbsp;Remove</span>
 				</Button>
 			</Col>
 		</Row>

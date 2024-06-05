@@ -1,0 +1,69 @@
+{{- define "KEY" -}}
+	{{ key (printf "docker-server-configs/BB/config.%s.json/%s" (env "DEPLOY_ENV") .) }}
+{{- end -}}
+
+{
+	"site": {
+		"proxyTrust": true,
+		"log": "error",
+		"forceExitAfterMs": 5000
+	},
+	"musicbrainz": {
+		"clientID": "{{template "KEY" "musicbrainz/client_id"}}",
+		"clientSecret": "{{template "KEY" "musicbrainz/client_secret"}}",
+		"callbackURL": "{{template "KEY" "musicbrainz/callback_url"}}"
+	},
+	"critiquebrainz": {
+		"clientID": "{{template "KEY" "critiquebrainz/client_id"}}",
+		"clientSecret": "{{template "KEY" "critiquebrainz/client_secret"}}",
+		"callbackURL": "{{template "KEY" "critiquebrainz/callback_url"}}"
+	},
+	"session": {
+		{{if service "bookbrainz-redis"}}
+		{{with index (service "bookbrainz-redis") 0}}
+		"redis": {
+			"host": "{{.Address}}",
+			"port": {{.Port}}
+		},
+		{{end}}
+		{{end}}
+		"maxAge": 2592000000,
+		"secret": "{{template "KEY" "session/secret_key"}}",
+		"domain": "{{template "KEY" "session/domain"}}",
+		"httpOnly": "{{template "KEY" "session/httpOnly"}}",
+		"name":"{{template "KEY" "session/name"}}",
+		"sameSite": "{{template "KEY" "session/sameSite"}}",
+		"secure": "{{template "KEY" "session/secure"}}"
+	},
+	"database": {
+		{{if service "pgbouncer-master"}}
+		{{with index (service "pgbouncer-master") 0}}
+		"connection": {
+			"host": "{{.Address}}",
+			"port": {{.Port}},
+			"database": "{{template "KEY" "database_name"}}",
+			"user": "bookbrainz",
+			"password": "bookbrainz"
+		},
+		{{end}}
+		{{end}}
+		"client": "pg"
+	},
+	"search": {
+	{{if eq (env "DEPLOY_ENV") "test"}}
+		{{if service "bookbrainz-elasticsearch-test"}}
+		{{with index (service "bookbrainz-elasticsearch-test") 0}}
+		"node": "http://{{.Address}}:{{.Port}}",
+		"requestTimeout": 30000
+		{{end}}
+		{{end}}
+	{{ else }}
+		{{if service "bookbrainz-elasticsearch"}}
+		{{with index (service "bookbrainz-elasticsearch") 0}}
+		"node": "http://{{.Address}}:{{.Port}}",
+		"requestTimeout": 30000
+		{{end}}
+		{{end}}
+	{{ end }}
+	}
+}

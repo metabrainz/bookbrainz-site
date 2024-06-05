@@ -1,0 +1,898 @@
+/*
+ * Copyright (C) 2014-2015, 2021-2022  Ben Ockmore
+ *               2015                  Leo Verto
+ *               2016                  Sean Burke
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
+@import "lobes4/scss/variables.scss";
+
+$navbar-light-color: $gray-400;
+$brand-secondary: $bookbrainz;
+$disabled-bg: lighten(desaturate($bookbrainz,10%),42%);
+$disabled-color: lighten($disabled-bg,15%);
+
+
+@import "lobes4/scss/bootstrap.scss";
+@import "react-datepicker/dist/react-datepicker.css";
+@import "./external-services.scss";
+
+.navbar.BookBrainz {
+	background: rgba(255, 255, 255, 1);
+	margin-bottom: 0px;
+	padding-right: 0px;
+	.navbar-nav {
+		// The following prevents menu items from wrapping to two lines (icon on top text on the bottom)
+		// in browsers sizes between collapsed menu and enough horizontal space for all menu items
+		white-space: nowrap;
+		
+		& > .disabled > a {
+			color: $disabled-color;
+			background: $disabled-bg;
+		}
+		.dropdown-menu a.dropdown-item:hover:visited {
+			color: #fff !important;
+		}
+	}
+}
+
+.navbar-collapse {
+	border: none !important;
+}
+
+.BookBrainz .navbar-toggler {
+	background-color: $bookbrainz;
+	margin-right: 1rem;
+	&:focus {
+		background-color: $bookbrainz;
+	}
+}
+
+body {
+	padding-top: 64px;
+    padding-bottom: 64px;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding-bottom: 128px;
+    }
+}
+
+
+// We use bootstrap badges in buttons, which makes them a smidge taller than buttons with just text
+.btn.btn-sm , .btn.btn-xs , .btn-group-xs > .btn, .btn-group-sm > .btn {
+	.badge{
+		padding: 2px 6px;
+	}
+}
+
+/* Site-wide styling */
+/* ================= */
+.whole-page-form {
+	margin-top: 3em;
+}
+.navbar .input-group-append > .btn {
+	padding: 6.5px 12px !important;
+}
+.navbar .input-group-prepend > .btn {
+	padding: 6.5px 12px !important;
+}
+.loading-background {
+	position: fixed;
+	display: inline-block;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 10;
+	background-color: rgba(0,0,0,0.6);
+}
+.loading-spinner {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -0.5em;
+	margin-top: -0.5em;
+}
+@mixin generate-margins($n, $initI: 0) {
+	@for $i from $initI through $n {
+		.margin-top-#{$i} {
+			margin-top: ($i * 1em) !important;
+		}
+		.margin-bottom-#{$i} {
+			margin-bottom: ($i * 1em) !important;
+		}
+		.margin-left-#{$i} {
+			margin-left: ($i * 1em) !important;
+		}
+		.margin-right-#{$i} {
+			margin-right: ($i * 1em) !important;
+		}
+		.margin-sides-#{$i} {
+			margin-left: ($i * 1em) !important;
+			margin-right: ($i * 1em) !important;
+		}
+
+		.padding-top-#{$i} {
+			padding-top: ($i * 1em) !important;
+		}
+		.padding-bottom-#{$i} {
+			padding-bottom: ($i * 1em) !important;
+		}
+		.padding-left-#{$i} {
+			padding-left: ($i * 1em) !important;
+		}
+		.padding-right-#{$i} {
+			padding-right: ($i * 1em) !important;
+		}
+		.padding-sides-#{$i} {
+			padding-left: ($i * 1em) !important;
+			padding-right: ($i * 1em) !important;
+		}
+	}
+}
+@include generate-margins(6);
+.margin-right-0-5 {margin-right: 0.5em !important};
+.margin-left-0-5 {margin-left: 0.5em !important};
+.margin-right-0-3 {margin-right: 0.3em !important};
+.margin-left-0-3 {margin-left: 0.3em !important};
+
+@mixin generate-margins-d($n, $initI: 0) {
+	@for $i from $initI through $n {
+		.margin-top-d#{$i} {
+			margin-top: ($i * 0.1em) !important;
+		}
+		.margin-bottom-d#{$i} {
+			margin-bottom: ($i * 0.1em) !important;
+		}
+		.margin-left-d#{$i} {
+			margin-left: ($i * 0.1em) !important;
+		}
+		.margin-right-d#{$i} {
+			margin-right: ($i * 0.1em) !important;
+		}
+		.margin-sides-d#{$i} {
+			margin-left: ($i * 0.1em) !important;
+			margin-right: ($i * 0.1em) !important;
+		}
+
+		.padding-top-d#{$i} {
+			padding-top: ($i * 0.1em) !important;
+		}
+		.padding-bottom-d#{$i} {
+			padding-bottom: ($i * 0.1em) !important;
+		}
+		.padding-left-d#{$i} {
+			padding-left: ($i * 0.1em) !important;
+		}
+		.padding-right-d#{$i} {
+			padding-right: ($i * 0.1em) !important;
+		}
+		.padding-sides-d#{$i} {
+			padding-left: ($i * 0.1em) !important;
+			padding-right: ($i * 0.1em) !important;
+		}
+	}
+}
+@include generate-margins-d(60);
+
+
+.deleted {
+	text-decoration: line-through;
+	color: $danger;
+}
+
+// Fix to put react-bootstrap tooltips in front of modals
+.tooltip {
+	z-index: 1050;
+}
+.tooltip-inner {
+	max-width: 300px;
+}
+
+/**
+ * Styling for FontAwesome icons, to fix random-sized
+ * icons appear while the page is loading (FOUC).
+ */
+.svg-inline--fa{
+	height: 1em;
+	vertical-align: -.125em;
+}
+.fa-layers {
+	display: inline-block;
+	height: 1em;
+	position: relative;
+	text-align: center;
+	vertical-align: -0.125em;
+	min-width: 1em;
+	svg.svg-inline--fa {
+		bottom: 0;
+		left: 0;
+		margin: auto;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+}
+
+/* Sticky footer styling */
+html {
+	position: relative;
+	min-height: 100%;
+}
+.footer {
+	position: absolute;
+	width: 100%;
+	word-break: break-word;
+	background-color: #f5f5f5;
+    bottom: 0;
+}
+.contact-text {
+	color: rgb(180, 180, 180);
+	flex-direction: column;
+    display: flex;
+    align-items: center;
+}
+a.contact-text:visited {
+	color: rgb(180, 180, 180);
+}
+
+/* index page */
+/* ========== */
+#background-image {
+	background:url(./Bookshelf.jpg);
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	width:100%;
+}
+
+#background-overlay {
+	background:rgba(0, 0, 0, 0.8);
+	width:100%;
+	height:100%;
+	padding-top:4em;
+	padding-bottom:4em;
+}
+
+/* Removes padding from fixed-width "About", "Contribute" and "Develop" buttons
+   on the front page to prevent text misalignment. */
+#background-overlay [class^="col-"] > .btn {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+
+/* react-select styling */
+.react-select__option {
+	color: #46433a !important;
+	background-color: white !important;
+	&:hover{
+		background-color: #deebff !important;
+		color: #333;
+	}
+}
+.react-select__menu {
+	z-index: 100 !important;
+}
+.react-select__control, .Select-control{
+	height: $input-line-height;
+	border-radius: $input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
+	@include transition("border-color ease-in-out .15s, box-shadow ease-in-out .15s");
+	@include form-control-focus();
+	border: 1px solid hsl(0, 0%, 70%) !important;
+	box-shadow: none  !important;
+	&:hover{
+		border: 1px solid hsl(0, 0%, 70%) !important;
+	}
+}
+
+.react-select__placeholder, .Select-placeholder{
+	color: $input-placeholder-color;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	pointer-events: none;
+}
+
+.react-select__input, .Select-input{
+	width: 100%;
+}
+
+.react-select__input, .Select-input input{
+	width: 100% !important;
+}
+
+/* react-datepicker styling */
+.form-group {
+	.responsive-date-field{
+		width: 18em;
+		.year-field{
+			width:4em;
+		}
+		.other-date-field{
+			width: 3.5em;
+		}
+	}
+	.react-datepicker-wrapper, .react-datepicker__input-container {
+		width: 100%;
+	}
+	.react-datepicker {
+		font-family: inherit;
+		font-size: inherit;
+		.react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
+			width: 2.3rem;
+			line-height: 2.3rem;
+			margin: 0.2rem;
+		}
+		.react-datepicker__current-month, .react-datepicker-time__header {
+			font-size: inherit;
+		}
+		.react-datepicker__header__dropdown.react-datepicker__header__dropdown--select {
+			font-size: 0.9rem;
+		}
+	}
+}
+
+/* entities/*.js */
+/* ============= */
+
+.entity-display-background {
+	background-color: #f1edeb;
+}
+
+.entity-display-image-box {
+	padding-right: 0px;
+}
+
+.entity-display-icon {
+	position: relative;
+	min-height: 5em;
+	line-height: initial;
+	margin-top: 5em;
+	margin-bottom: 5em;
+	width: 100%;
+	>:last-child:not(:only-child) {
+		color: $danger;
+	}
+}
+
+.VirtualizedSelectOption {
+	cursor: pointer;
+}
+
+.Select-menu-outer {
+	z-index: 5;
+}
+.progress {
+	height: 10px;
+}
+
+/* Style inline alias lists the same way as the previously used h4 elements */
+ul.inline-aliases {
+	@extend h4;
+	padding: 0;
+	li {
+		display: inline;
+	}
+	li:not(:last-child)::after {
+		content: " · ";
+		font-weight: bolder;
+	}
+}
+
+/* Text wrapping in list-group-items (for long revision notes, for example) */
+/* ============= */
+.list-group-item {
+	word-wrap: break-word;
+}
+
+/* Search Page */
+
+hr.thin {
+	margin-top: 10px;
+    margin-bottom: 10px;
+}
+hr.wide {
+	margin-top: 40px;
+    margin-bottom: 40px;
+}
+#pageWithPagination .pager .dropdown-menu {
+	li {
+	  display: initial;
+	  > a,
+	  > span {
+		display: block;
+		padding: 5px 14px;
+		background-color: $white;
+		border: none;
+		border-radius: 0;
+	  }
+
+	  > a:hover,
+	  > a:focus {
+		text-decoration: none;
+		background-color:$primary;
+	  }
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	#searchpage-button-group > * {
+		width: 100%;
+	}
+}
+
+.BookBrainz > .container-fluid > .navbar-header{
+	margin-left: 0px;
+	margin-right: 0px;
+	>.navbar-toggler{
+		margin-right: 0px;
+	}
+
+}
+.revision-note {
+	&:not(:last-child) {
+		border-bottom: 1px solid $disabled-color;
+		margin-bottom: 0.3em;
+		padding-bottom: 0.3em;
+	}
+	.note-content {
+		white-space: pre-wrap;
+	}
+	.note-author {
+		@extend .small;
+		font-style: italic;
+		white-space: nowrap;
+		margin-left: 0.2em;
+	}
+}
+
+.annotation-content {
+	white-space: pre-wrap;
+	word-break: break-word;
+	position: relative;
+	font-family: inherit;
+	font-size: inherit;
+	padding: initial;
+	background: initial;
+	color: inherit;
+    line-height: inherit;
+	border: none;
+	border-radius: initial;
+	z-index: 1;
+	min-height: 3em;
+	margin: 0;
+	&.collapse{
+		max-height: max-content;
+		&:not(.show){ //, &.collapsing {
+			max-height: 3em;
+			overflow: hidden;
+			display: block;
+			&:after {
+				display: block;
+				position: absolute;
+				bottom: 0;
+				width: 100%;
+				content: " ";
+				height: 20px;
+				background: -moz-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+				background: -webkit-gradient(linear,left top,left bottom,color-stop(0,rgba(255,255,255,0)),color-stop(100%,#fff));
+				background: -webkit-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+				background: -o-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+				background: -ms-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+				background: linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#ffffff', GradientType=0);
+			}
+		}
+}
+}
+
+.btn.wrap {
+	white-space: normal;
+}
+
+#mergePage {
+	.mergedEntities {
+		position: relative;
+		padding: 0.1em 1.5em 1em;
+		margin: 0 -1.5em;
+		background-color: rgba($disabled-bg,15%);
+		&:after,
+		&:before {
+			border: .15em solid $disabled-bg;
+			bottom: 0;
+			content: '';
+			position: absolute;
+			top: 0;
+			width: 4em;
+		}
+		&:after {
+			border-left: none;
+			right: 0;
+		}
+		&:before {
+			border-right: none;
+			left: 0;
+		}
+	}
+}
+
+.round-color-icon {
+	border-radius: 50%;
+    display: inline-block;
+	width: 1em;
+	position: relative;
+    margin-right: 0.5em;
+	vertical-align: middle;
+    background-color: $brand-secondary;
+	color: $white;
+	& > * {
+		position: absolute;
+		min-width: 110%;
+		height: 100%;
+	}
+	&:after {
+		content: "";
+		display: block;
+		padding-bottom: 100%;
+	}
+}
+.badge.new {
+	background-color: $green;
+}
+
+.badge.deletion {
+	background-color: $red;
+}
+
+.badge.merged {
+	background-color: $purple;
+}
+
+.label-checkbox {
+	padding: 0 .5em;
+	vertical-align: text-top;
+}
+
+.addToCollectionModal-body {
+	margin-right: 1em;
+	margin-left: 1em;
+	height: 18em;
+	overflow-y:scroll;
+}
+
+.checkboxes {
+	margin-right: 0.5em !important;;
+	vertical-align: text-top;
+}
+
+
+.footer-button {
+	max-width: 200px;
+	min-width: 175px;
+	margin-top: 8px;
+}
+
+.collection-page-buttons {
+    text-align: right;
+}
+
+@media only screen and (max-width: map-get($container-max-widths, "md")){
+    .collection-page-buttons {
+        text-align: center;
+    }
+}
+
+/* Replicate Boostrap 3 style conventions */
+th {
+	text-align: left;
+}
+
+.table thead th {
+	border-top-style: none;
+}
+
+.table-striped tbody tr:nth-of-type(odd){
+	background-color: #fafafa;
+}
+
+@media (min-width: map-get($container-max-widths, "md")) {
+	.editor-info dt {
+		text-align: right;
+	}
+}
+
+dl.row dd {
+	margin-bottom: 0;
+}
+
+.list-group ul {
+	margin-bottom: 0;
+}
+
+ul {
+	margin-bottom: 10px;
+}
+
+.badge {
+	vertical-align: middle;
+}
+
+// Vertical alignment of the caret symbol in dropdown buttons
+.dropdown-toggle::after{
+	vertical-align: middle;
+}
+
+/* Add padding to make this more like a well, and tidy up editor achievement display */
+.card.bg-light {
+	padding: 19px;
+
+	.list-group-item {
+		background-color: $gray-200;
+	}
+
+	.card-body {
+		// avoid padding here in addition to around card
+		padding-bottom: 0px;
+
+		.list-group {
+			margin-bottom: 0px;
+		}
+	}
+}
+
+/* Round button used in pager at the bottom of many table-style pages */
+.round-button {
+	border-radius: 20px;
+	font-weight: 700;
+}
+
+/* Fixes relationship editor "Other Entity" width */
+.input-group > .Select {
+	flex: 1 1 auto;
+}
+
+/* Restore the bootstrap4 default blue colour of primary buttons */
+.btn {
+	&.btn-primary {
+		background: #337ab7;
+
+		&:focus {
+			background: #448ccb;
+		}
+
+		&:hover {
+			background: #448ccb;
+		}
+
+		&:not(:disabled):not(.disabled):active {
+			background: #337ab7;
+		}
+
+		&:active:hover {
+			background-color: #204d74;
+			border-color: #183854;
+		}
+
+		&.dropdown-toggle {
+			background: #337ab7;
+		}
+	}
+
+	&.btn-outline-primary {
+		color: #337ab7;
+		border: 1px solid #ddd;
+
+		&:focus,&:hover {
+			background-color: #f9f6f5;
+		}
+
+		&:not(:disabled):not(.disabled):active {
+			color: #337ab7;
+			border: 1px solid #ddd;
+			background-color: #fff;
+			box-shadow: none;
+		}
+
+		&:disabled,&.disabled {
+			color: #dbccc6;
+			cursor: not-allowed;
+			background-color: #fff;
+		}
+	}
+}
+
+/* Match existing behaviour which shrinks lead paragraph size on smaller devices */
+@media (max-width: map-get($container-max-widths, "sm")) {
+    p.lead {
+        font-size: 1.0rem;
+    }
+}
+
+/* Restore BS3 padding on input group buttons */
+.input-group > .input-group-prepend > .btn {
+	padding: 6px 12px;
+}
+.input-group > .input-group-append > .btn {
+	padding: 6px 12px;
+}
+
+/* Unified  form */
+.uf-main{
+	padding: 0.6rem;
+}
+.uf-tab{
+	border: 1px #dfdfdf solid;
+	h4{
+		padding: 0.8rem;
+		margin-bottom: 0;
+		border-bottom: 0.125rem #ed8d60 solid;
+		background-color: #F7F7F7;
+
+	}
+	.tab-content{
+		padding: 1rem;
+	}
+}
+.uf-tab-header{
+	padding: 0.6rem 0 0 0.6rem;
+	margin-bottom: 1rem;
+	background-color: #F4E9E3;
+	a{
+		color: #754E37;
+	}
+	.nav-link.nav-item.active{
+		color: $orange;
+		border-color: $orange;
+		border-bottom: none;
+	}
+}
+.uf-navbtn-row {
+	margin: 0;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+	button{
+		width: max-content;
+	}
+	.col{
+		align-items: stretch;
+		flex-grow: 0;
+		margin-right: 0.3rem;
+		padding: 0;
+	}
+	.col:nth-child(1)
+	{
+		margin-right: 3rem;
+	}
+}
+.uf-dialog{
+	max-width: 700px;
+}
+.uf-dialog.modal-dialog{
+	margin: 1.75rem 2rem;
+}
+.ac-select {
+	flex-grow: 2;
+}
+.ac-select .form-group {
+	margin-bottom: 0;
+}
+.series-editor-select {
+	margin-top: 1.7em;
+}
+
+.cb-data-tip {
+    width: 300px;
+}
+
+.duplicate-result-scroll-window{
+	max-height: 17em;
+	overflow-y: scroll;
+	&:after {
+		display: block;
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		content: " ";
+		height: 20px;
+		background: -moz-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+		background: -webkit-gradient(linear,left top,left bottom,color-stop(0,rgba(255,255,255,0)),color-stop(100%,#fff));
+		background: -webkit-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+		background: -o-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+		background: -ms-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+		background: linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#ffffff', GradientType=0);
+	}
+}
+.uf-dialog .accordion > .card{
+	overflow:visible;
+}
+
+// Adding icon to accordion header
+.accordion > .icon-card{
+	display: flex;
+	overflow: visible;
+	flex-direction: column-reverse;
+}
+
+.accordion > .card > .card-header{
+	border: none;
+	cursor: pointer;
+	display: flex;
+	justify-content: space-between;
+}
+div[class='card-header'] .accordion-arrow {
+	transition: all 0.3s linear;
+	transform: rotate(0deg);
+}
+div[class~='show'] + div[class='card-header'] .accordion-arrow,
+div[class~=collapsing]+div[class=card-header] .accordion-arrow {
+	transform: rotate(90deg);
+}
+.work-item{
+		border-bottom: 1px solid #EAE7E5;
+		margin-bottom: 0.5rem;
+}
+
+.uf-modal-body .accordion > .card{
+	margin-bottom: 10px;
+}
+.review-section{
+	display: flex;
+}
+
+.series-item-dialog{
+	max-width: 600px;
+}
+
+.review-card{
+	margin: 10px;
+	max-width: 200px;
+}
+
+.search-results-heading{
+	color: #754e37;
+}
+
+.type-details{
+	padding: 1em 2.5em;
+	border: 1px solid black;
+	border-width: 1px 0;
+}
+
+.hierarchy-arrow {
+	border-left: 1px solid $gray-400;
+    width: 1em;
+    height: 1em;
+    content: "";
+    display: inline-block;
+    border-bottom: 1px solid $gray-400;
+    position: relative;
+    bottom: 0.3em;
+	left: -0.5em;
+}
+
+.color-red {
+	color: red;
+}
+
+.font-weight-bold {
+	font-weight: bold;
+}

@@ -1,57 +1,34 @@
 {
   "plugins": [
     "lodash",
-    "transform-es2015-modules-commonjs",
-    "transform-object-rest-spread",
-    "transform-class-properties",
-    "array-includes",
+    "@babel/plugin-proposal-object-rest-spread",
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-transform-classes",
+    "@babel/plugin-transform-runtime",
     [
-      "transform-runtime", {
-        "polyfill": false,
-        "regenerator": true
+      "babel-plugin-transform-require-ignore",
+      {
+        "extensions": [".scss", ".css"]
       }
     ]
   ],
   "presets": [
-    "flow",
-    "react",
-    ["env", {
+    "@babel/preset-typescript",
+    "@babel/preset-react",
+    ["@babel/preset-env", {
+      "corejs": 3,
       "targets": {
-        "node": "current"
-      }
-    }]
-  ],
-  "env": {
-    "browser": {
-      "plugins": [
-        "lodash",
-        "transform-es2015-modules-commonjs",
-        "transform-object-rest-spread",
-        "transform-class-properties",
-        "array-includes",
-        [
-          "transform-runtime", {
-            "polyfill": false,
-            "regenerator": true
-          }
+        "node": "current",
+        "browsers": [
+          "chrome >= 44",
+          "edge >= 14",
+          "firefox >= 40",
+          "ie >= 11",
+          "opera >= 43",
+          "safari >= 9"
         ]
-      ],
-      "presets": [
-        "flow",
-        "react",
-        ["env", {
-          "targets": {
-            "browsers": [
-              "chrome >= 44",
-              "edge >= 14",
-              "firefox >= 40",
-              "ie >= 11",
-              "opera >= 43",
-              "safari >= 9"
-            ]
-          }
-        }]
-      ]
-    }
-  }
+      },
+      "useBuiltIns": "usage"
+    }]
+  ]
 }

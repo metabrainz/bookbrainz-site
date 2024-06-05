@@ -15,14 +15,22 @@
 			"ttl": 3600
 		}
 	},
-        "database": {
-                "client": "pg",
-                "debug": false,
-                "connection": {
-                        "host": "127.0.0.1",
-                        "database": "bookbrainz_test",
-                        "user": "postgres",
-                        "password": ""
-                }
-        }
+	"database": {
+		"client": "pg",
+		"debug": false,
+		"connection": {
+			"host": "localhost",
+			"database": "bookbrainz_test",
+			"user": "postgres",
+			"password": "postgres"
+		}
+	},
+	"search": {
+		"node": "http://localhost:9200",
+		"auth": {
+			"username": "elastic",
+			"password": "changeme"
+		},
+		"requestTimeout": 30000
+	}
 }

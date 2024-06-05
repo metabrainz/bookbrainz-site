@@ -19,19 +19,20 @@
  */
 
 import * as propHelpers from '../../client/helpers/props';
-import * as utils from '../helpers/utils';
 import {escapeProps, generateProps} from '../helpers/props';
 import AboutPage from '../../client/components/pages/about';
 import ContributePage from '../../client/components/pages/contribute';
 import DevelopPage from '../../client/components/pages/develop';
+import FAQPage from '../../client/components/pages/faq';
+import HelpPage from '../../client/components/pages/help';
 import Index from '../../client/components/pages/index';
 import Layout from '../../client/containers/layout';
 import LicensingPage from '../../client/components/pages/licensing';
 import PrivacyPage from '../../client/components/pages/privacy';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import _ from 'lodash';
 import express from 'express';
+import {getOrderedRevisions} from '../helpers/revisions';
 import target from '../templates/target';
 
 
@@ -42,10 +43,12 @@ router.get('/', async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const numRevisionsOnHomepage = 9;
 
-	function render(entities) {
+	function render(recent) {
 		const props = generateProps(req, res, {
+			disableSignUp: req.signUpDisabled,
 			homepage: true,
-			recent: _.take(entities, numRevisionsOnHomepage),
+			isLoggedIn: Boolean(req.user),
+			recent,
 			requireJS: Boolean(res.locals.user)
 		});
 
@@ -55,10 +58,8 @@ router.get('/', async (req, res, next) => {
 		 * props
 		 */
 		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<Index
-					recent={props.recent}
-				/>
+			<Layout	{...propHelpers.extractLayoutProps(props)}>
+				<Index {...propHelpers.extractChildProps(props)}/>
 			</Layout>
 		);
 
@@ -70,44 +71,10 @@ router.get('/', async (req, res, next) => {
 		}));
 	}
 
-	const entityModels = utils.getEntityModels(orm);
 
 	try {
-		const queryPromises = [];
-
-		// eslint-disable-next-line guard-for-in
-		for (const modelName in entityModels) {
-			const model = entityModels[modelName];
-
-			queryPromises.push(
-				model.query((qb) => {
-					qb
-						.leftJoin(
-							'bookbrainz.revision',
-							`bookbrainz.${_.snakeCase(modelName)}.revision_id`,
-							'bookbrainz.revision.id'
-						)
-						.where('master', true)
-						.orderBy('bookbrainz.revision.created_at', 'desc')
-						.limit(numRevisionsOnHomepage);
-				})
-					.fetchAll({
-						withRelated: ['defaultAlias', 'revision.revision']
-					})
-			);
-		}
-
-		const entitiesCollections = await Promise.all(queryPromises);
-		const latestEntities = entitiesCollections.reduce(
-			(accumulator, value) => accumulator.concat(value.toJSON()),
-			[]
-		);
-
-		const orderedEntities = _.orderBy(
-			latestEntities, 'revision.revision.createdAt',
-			['desc']
-		);
-		return render(orderedEntities);
+		const orderedRevisions = await getOrderedRevisions(0, numRevisionsOnHomepage, orm);
+		return render(orderedRevisions);
 	}
 	catch (err) {
 		return next(err);
@@ -125,20 +92,22 @@ function _createStaticRoute(route, title, PageComponent) {
 			</Layout>
 		);
 
-		res.render('target', {
+		res.send(target({
 			markup,
 			page: title,
 			props: escapeProps(props),
 			script: '/js/index.js',
 			title
-		});
+		}));
 	});
 }
 
 _createStaticRoute('/about', 'About', AboutPage);
 _createStaticRoute('/contribute', 'Contribute', ContributePage);
 _createStaticRoute('/develop', 'Develop', DevelopPage);
+_createStaticRoute('/help', 'Help', HelpPage);
 _createStaticRoute('/licensing', 'Licensing', LicensingPage);
 _createStaticRoute('/privacy', 'Privacy', PrivacyPage);
+_createStaticRoute('/faq', 'FAQs', FAQPage);
 
 export default router;

@@ -23,104 +23,102 @@ import Achievement from '../../forms/parts/achievement';
 import DragAndDrop from '../../input/drag-and-drop';
 import PropTypes from 'prop-types';
 import React from 'react';
-import request from 'superagent-bluebird-promise';
 
 
-const {Row} = bootstrap;
+const {Button, CardDeck, Col, Form, Row} = bootstrap;
 const {Sticky, StickyContainer} = ReactSticky;
 
+/**
+ * Renders the document and displays the 'Editor Achievements Tab'.
+ */
 class EditorAchievementTab extends React.Component {
+	/**
+	 * Initializes the component state.
+	 * @constructor
+	 * @param {object} props - Properties passed to the component.
+	 */
 	constructor(props) {
 		super(props);
+		this.currAchievement = props.currAchievement;
 		this.state = {
 			achievement: props.achievement,
 			editor: props.editor
 		};
 	}
 
-	handleSubmit(event) {
-		event.preventDefault();
-
-		const data = {
-			id: this.state.editor.id,
-			rank1: this.rank1,
-			rank2: this.rank2,
-			rank3: this.rank3
-		};
-
-		request.post('/editor/:id/achievements/')
-			.send(data)
-			.then(() => {
-				window.location.href = `/editor/${this.state.editor.id}`;
-			})
-			.catch((res) => {
-				const {error} = res.body;
-				this.setState({
-					error,
-					waiting: false
-				});
-			});
-	}
-
-	renderAchievements(unlocked) {
-		return this.state.achievement.model.map((achievement) => {
-			let achievementHTML;
-			if (achievement.unlocked === unlocked) {
-				achievementHTML = (
-					<Achievement
-						achievement={achievement}
-						key={`${this.state.editor.id}${achievement.id}`}
-						unlocked={unlocked}
-					/>
-				);
+	/**
+	 * Renders the Editor Achievements list. Also splits the
+	 * achievements into Unlocked and Locked achievements.
+	 * @returns {Array} - An array containing rendered achievements
+	 * list split into Unlocked and Locked.
+	 */
+	renderAchievements() {
+		const achievements = [];
+		const locked = [];
+		this.state.achievement.model.forEach(achievement => {
+			const achievementHTML = (
+				<Achievement
+					achievement={achievement}
+					key={`${this.state.editor.id}${achievement.id}`}
+				/>
+			);
+			if (achievement.unlocked) {
+				achievements.push(achievementHTML);
 			}
-			return achievementHTML;
+			else {
+				locked.push(achievementHTML);
+			}
 		});
+		return [achievements, locked];
 	}
 
+	/**
+	 * Renders the EditorAchievements page, which displays all the achievements
+	 * (both unlocked and locked) of the editor, along with a RankUpdate form.
+	 * @returns {ReactElement} a HTML document which displays the
+	 * EditorAchievements page.
+	 */
 	render() {
-		const achievements = this.renderAchievements(true);
-		const locked = this.renderAchievements(false);
+		const [achievements, locked] = this.renderAchievements();
 
 		let rankUpdate;
-		if (this.state.editor.authenticated) {
+		if (this.props.isOwner) {
 			rankUpdate = (
-				<form
-					className="form-horizontal"
+				<Form
+					className="padding-bottom-1"
 					id="rankSelectForm"
 					method="post"
 				>
-					<div className="row dnd-container form-group">
-						<DragAndDrop name="rank1"/>
-						<DragAndDrop name="rank2"/>
-						<DragAndDrop name="rank3"/>
-					</div>
-					<div className="form-group">
-						<span>
-							<button
-								className="btn btn-default"
-								type="submit"
-							>
-								update
-							</button>
-							<p
-								style={{
-									display: 'inline-block',
-									marginLeft: '10px'
-								}}
-							>
-								click badge to unset
-							</p>
+					<CardDeck className="mb-3">
+						<DragAndDrop
+							initialAchievement={this.currAchievement.model.fulfillmentValue?.[0]?.achievement}
+							name="rank1"
+						/>
+						<DragAndDrop
+							initialAchievement={this.currAchievement.model.fulfillmentValue?.[1]?.achievement}
+							name="rank2"
+						/>
+						<DragAndDrop
+							initialAchievement={this.currAchievement.model.fulfillmentValue?.[2]?.achievement}
+							name="rank3"
+						/>
+					</CardDeck>
+					<span className="margin-left-1">
+						<Button type="submit" variant="success">
+							Update
+						</Button>
+						<span className="margin-left-1">
+							click badge to unset
 						</span>
-					</div>
-				</form>
+					</span>
+				</Form>
 			);
 		}
 
 		const STICKY_TOP_MARGIN = 64;
 		return (
 			<Row>
-				<div className="col-md-10-offset-1">
+				<Col lg={{offset: 1, span: 10}}>
 					<div id="achievementsForm">
 						<StickyContainer>
 							<Sticky topOffset={-80}>
@@ -129,6 +127,7 @@ class EditorAchievementTab extends React.Component {
 										const updatedStyle = {
 											...style,
 											background: 'white',
+											borderBottom: '1px solid #ebe2df',
 											flex: '1',
 											marginTop: STICKY_TOP_MARGIN,
 											zIndex: 10
@@ -149,7 +148,7 @@ class EditorAchievementTab extends React.Component {
 							</div>
 						</StickyContainer>
 					</div>
-				</div>
+				</Col>
 			</Row>
 		);
 	}
@@ -160,10 +159,14 @@ EditorAchievementTab.propTypes = {
 	achievement: PropTypes.shape({
 		model: PropTypes.array
 	}).isRequired,
+	currAchievement: PropTypes.shape({
+		model: PropTypes.array
+	}).isRequired,
 	editor: PropTypes.shape({
 		authenticated: PropTypes.bool,
 		id: PropTypes.number
-	}).isRequired
+	}).isRequired,
+	isOwner: PropTypes.bool.isRequired
 };
 
 export default EditorAchievementTab;

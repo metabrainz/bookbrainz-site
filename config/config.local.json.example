@@ -1,0 +1,39 @@
+{
+	"site": {
+		"proxyTrust": true,
+		"log": "debug",
+		"forceExitAfterMs": 5000
+	},
+	"musicbrainz": {
+		"clientID": null,
+		"clientSecret": null,
+		"callbackURL": "http://localhost:9099/cb"
+	},
+	"critiquebrainz": {
+		"clientID": null,
+		"clientSecret": null,
+		"callbackURL": "http://localhost:9099/external-service/critiquebrainz/callback"
+	},
+	"session": {
+		"maxAge": 2592000000,
+		"secret": "Something here!",
+		"secure": false,
+		"redis": {
+			"host": "localhost",
+			"port": 6379
+		}
+	},
+	"database": {
+		"client": "pg",
+		"connection": {
+			"host": "localhost",
+			"database": "bookbrainz",
+			"user": "bookbrainz",
+			"password": ""
+		}
+	},
+	"search": {
+		"node": "http://localhost:9200",
+		"requestTimeout": 60000
+	}
+}

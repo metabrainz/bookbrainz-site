@@ -17,11 +17,12 @@
  */
 
 import * as testData from '../data/test-data.js';
+
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import orm from './bookbrainz-data';
 import rewire from 'rewire';
-import testCreatorCreator from './test-creator-creator.js';
+import testAuthorCreator from './test-author-creator.js';
 import testExplorer from './test-explorer.js';
 import testFunRunner from './test-fun-runner.js';
 import testHotOffThePress from './test-hot-off-the-press.js';
@@ -30,6 +31,7 @@ import testMarathoner from './test-marathoner.js';
 import testPublisher from './test-publisher.js';
 import testPublisherCreator from './test-publisher-creator.js';
 import testRevisionist from './test-revisionist.js';
+import testSeriesCreator from './test-series-creator.js';
 import testSprinter from './test-sprinter.js';
 import testTimeTraveller from './test-time-traveller.js';
 import testWorkerBee from './test-worker-bee.js';
@@ -46,7 +48,7 @@ function tests() {
 	describe('awardAchievement', () => {
 		afterEach(testData.truncate);
 
-		it('should award achievements', () => {
+		it('should award achievements', async () => {
 			const unlockPromise = testData.createEditor()
 				.then(() => testData.createRevisionist())
 				.then(
@@ -57,7 +59,7 @@ function tests() {
 					)
 				);
 
-			return Promise.all([
+			const result = await Promise.all([
 				expect(unlockPromise).to.eventually.have.nested.property(
 					'Revisionist I.editorId',
 					testData.editorAttribs.id
@@ -67,17 +69,20 @@ function tests() {
 					testData.revisionistIAttribs.id
 				)
 			]);
+			return result;
 		});
 
 		// suppress warnings from rejections
-		Achievement.__set__('console', {
-			error() {
-				// empty
-			},
-			warn() {
-				// empty
-			}
-		});
+		// Somehow modifies the global console object in Nove v10+ and causes a failure in Mocha
+
+		// Achievement.__set__('console', {
+		// 	error() {
+		// 		// empty
+		// 	},
+		// 	warn() {
+		// 		// empty
+		// 	}
+		// });
 
 		it('should reject invalid editors', () => {
 			const unlockPromise = testData.createRevisionist()
@@ -108,7 +113,7 @@ function tests() {
 	describe('awardTitle', () => {
 		afterEach(testData.truncate);
 
-		it('should award titles', () => {
+		it('should award titles', async () => {
 			const unlockPromise = testData.createEditor()
 				.then(() => testData.createRevisionist())
 				.then(
@@ -119,7 +124,7 @@ function tests() {
 					)
 				);
 
-			return Promise.all([
+			const result = await Promise.all([
 				expect(unlockPromise).to.eventually.have.nested.property(
 					'Revisionist.editorId',
 					testData.editorAttribs.id
@@ -129,6 +134,7 @@ function tests() {
 					testData.revisionistAttribs.id
 				)
 			]);
+			return result;
 		});
 
 		it('should reject invalid editors', () => {
@@ -157,7 +163,7 @@ function tests() {
 			return expect(unlockPromise).to.eventually.be.rejected;
 		});
 	});
-	describe('Creator Creator Achievement', testCreatorCreator);
+	describe('Author Creator Achievement', testAuthorCreator);
 	describe('Explorer Achievement', testExplorer);
 	describe('Fun Runner Achievement', testFunRunner);
 	describe('Hot Off the Press Achievement', testHotOffThePress);
@@ -168,6 +174,7 @@ function tests() {
 	describe('Revisionist Achievement', testRevisionist);
 	describe('Sprinter Achievement', testSprinter);
 	describe('Time Traveller Achievement', testTimeTraveller);
+	describe('Series Creator Achievement', testSeriesCreator);
 	describe('Worker Bee Achievement', testWorkerBee);
 }
 

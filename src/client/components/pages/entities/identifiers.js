@@ -16,43 +16,62 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import IdentifierLink from './identifiers-links';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 
-function EntityIdentifiers({identifierSet, identifierTypes}) {
+function EntityIdentifiers({entityUrl, identifiers, identifierTypes}) {
 	return (
 		<div>
 			<h2>Identifiers</h2>
 			{
-				identifierSet && identifierSet.identifiers &&
-				identifierTypes.map((type) => {
-					const identifierValues =
-						identifierSet.identifiers
+
+				identifiers?.length > 0 ?
+					identifierTypes.sort((a, b) => a.label.localeCompare(b.label)).map((type) => {
+						const identifierValues =
+						identifiers
 							.filter(
-								(identifier) => identifier.type.id === type.id
+								(identifier) => identifier.type.id === type.id || identifier.typeId === type.id
 							)
 							.map(
 								(identifier) => (
 									<dd key={identifier.id}>
-										{identifier.value}
+										<IdentifierLink
+											typeId={type.id}
+											value={identifier.value}
+										/>
 									</dd>
 								)
 							);
-
-					return [
-						<dt key={type.id}>{type.label}</dt>,
-						identifierValues
-					];
-				})
+						if (!identifierValues.length) {
+							return null;
+						}
+						return [
+							<dt key={type.id}>{type.label}</dt>,
+							identifierValues
+						];
+					}) :
+					<p className="text-muted">
+						<b>No identifiers.</b>
+						&nbsp;
+						<a href={`${entityUrl}/edit`}>
+							Click here to edit
+						</a> and add new identifiers (e.g. ISBN, Wikidata ID, etc.).
+					</p>
 			}
 		</div>
 	);
 }
+
 EntityIdentifiers.displayName = 'EntityIdentifiers';
 EntityIdentifiers.propTypes = {
-	identifierSet: PropTypes.object.isRequired,
-	identifierTypes: PropTypes.array.isRequired
+	entityUrl: PropTypes.string.isRequired,
+	identifierTypes: PropTypes.array.isRequired,
+	identifiers: PropTypes.array
+};
+EntityIdentifiers.defaultProps = {
+	identifiers: []
 };
 
 export default EntityIdentifiers;

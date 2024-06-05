@@ -1,0 +1,25 @@
+# Only run the release drafter for our release branch ("stable")
+references:
+  - stable
+
+template: |
+  ## :books: Changes since last version
+
+  $CHANGES
+
+  ##### :clap: Many thanks to everyone who participated in this release :point_down:
+  $CONTRIBUTORS
+
+replacers:
+  - search: '/BB-(\d+)/g'
+    replace: 'https://tickets.metabrainz.org/browse/BB-$1'
+
+categories:
+  - title: '🚂 New features and bug fixes'
+  - title: ':wrench: Maintenance'
+    collapse-after: 3
+    labels:
+      - 'dependencies'
+
+exclude-contributors:
+  - 'dependabot'

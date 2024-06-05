@@ -17,24 +17,41 @@
  */
 
 import * as Immutable from 'immutable';
+
 import {
-	IDENTIFIER_TYPES, INVALID_ALIASES, INVALID_IDENTIFIERS,
-	INVALID_NAME_SECTION, INVALID_SUBMISSION_SECTION, VALID_ALIASES,
-	VALID_IDENTIFIERS, VALID_NAME_SECTION, VALID_SUBMISSION_SECTION
+	EMPTY_SUBMISSION_SECTION,
+	IDENTIFIER_TYPES,
+	INVALID_ALIASES,
+	INVALID_AUTHOR_CREDIT_EDITOR,
+	INVALID_IDENTIFIERS,
+	INVALID_NAME_SECTION,
+	VALID_ALIASES,
+	VALID_AUTHOR_CREDIT_EDITOR,
+	VALID_IDENTIFIERS,
+	VALID_NAME_SECTION,
+	VALID_SUBMISSION_SECTION
 } from './data';
 import {
 	testValidateDateFunc,
 	testValidatePositiveIntegerFunc
 } from './helpers';
 import {
-	validateEditionSection, validateEditionSectionDepth,
-	validateEditionSectionFormat, validateEditionSectionHeight,
-	validateEditionSectionLanguage, validateEditionSectionLanguages,
-	validateEditionSectionPages, validateEditionSectionPublication,
-	validateEditionSectionPublisher, validateEditionSectionReleaseDate,
-	validateEditionSectionStatus, validateEditionSectionWeight,
-	validateEditionSectionWidth, validateForm
+	validateEditionSection,
+	validateEditionSectionDepth,
+	validateEditionSectionEditionGroup,
+	validateEditionSectionFormat,
+	validateEditionSectionHeight,
+	validateEditionSectionLanguage,
+	validateEditionSectionLanguages,
+	validateEditionSectionPages,
+	validateEditionSectionPublisher,
+	validateEditionSectionReleaseDate,
+	validateEditionSectionStatus,
+	validateEditionSectionWeight,
+	validateEditionSectionWidth,
+	validateForm
 } from '../../../../../src/client/entity-editor/validators/edition';
+
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
@@ -151,7 +168,7 @@ function describeValidateEditionSectionLanguages() {
 		expect(result).to.be.false;
 	});
 
-	it('should reject an Immutable.List containing one invalid Immutable.Map', () => { // eslint-disable-line max-len
+	it('should reject an Immutable.List containing one invalid Immutable.Map', () => {
 		const result = validateEditionSectionLanguages(
 			Immutable.fromJS(INVALID_LANGUAGES)
 		);
@@ -169,68 +186,81 @@ function describeValidateEditionSectionLanguages() {
 	});
 }
 
+const VALID_PUBLISHERS = {0: {
+	id: '21675f5b-e9f8-4a6b-9aac-d3c965aa7d83'
+},
+1: {
+	id: '21675f5b-e9f8-4a6b-9aac-d3c965aa7d84'
+}};
+
+const INVALID_PUBLISHERS = {0: {
+	id: '21675f5b-e9f8-4a6b-9aac-d3c965aa7d83'
+},
+1: {
+	id: '2'
+}};
+
 const VALID_ENTITY = {
 	id: '21675f5b-e9f8-4a6b-9aac-d3c965aa7d83'
 };
-
 const INVALID_ENTITY = {
 	id: '2'
 };
 
-function describeValidateEditionSectionPublication() {
+function describevalidateEditionSectionEditionGroup() {
 	it('should pass a valid Object', () => {
-		const result = validateEditionSectionPublication(VALID_ENTITY);
+		const result = validateEditionSectionEditionGroup(VALID_ENTITY);
 		expect(result).to.be.true;
 	});
 
 	it('should pass a valid Immutable.Map', () => {
-		const result = validateEditionSectionPublication(
+		const result = validateEditionSectionEditionGroup(
 			Immutable.fromJS(VALID_ENTITY)
 		);
 		expect(result).to.be.true;
 	});
 
+	it('should pass a null value', () => {
+		const result = validateEditionSectionEditionGroup(null);
+		expect(result).to.be.true;
+	});
+
+	it('should pass any other non-null data type with no ID', () => {
+		const result = validateEditionSectionEditionGroup(1);
+		expect(result).to.be.true;
+	});
+
 	it('should reject an Object with an invalid ID', () => {
-		const result = validateEditionSectionPublication(
+		const result = validateEditionSectionEditionGroup(
 			{...VALID_ENTITY, id: '2'}
 		);
 		expect(result).to.be.false;
 	});
 
 	it('should reject an invalid Immutable.Map', () => {
-		const result = validateEditionSectionPublication(
+		const result = validateEditionSectionEditionGroup(
 			Immutable.fromJS(INVALID_ENTITY)
 		);
-		expect(result).to.be.false;
-	});
-
-	it('should reject any other non-null data type', () => {
-		const result = validateEditionSectionPublication(1);
-		expect(result).to.be.false;
-	});
-
-	it('should reject a null value', () => {
-		const result = validateEditionSectionPublication(null);
 		expect(result).to.be.false;
 	});
 }
 
 function describeValidateEditionSectionPublisher() {
 	it('should pass a valid Object', () => {
-		const result = validateEditionSectionPublisher(VALID_ENTITY);
+		const result = validateEditionSectionPublisher(VALID_PUBLISHERS);
 		expect(result).to.be.true;
 	});
 
 	it('should pass a valid Immutable.Map', () => {
 		const result = validateEditionSectionPublisher(
-			Immutable.fromJS(VALID_ENTITY)
+			Immutable.fromJS(VALID_PUBLISHERS)
 		);
 		expect(result).to.be.true;
 	});
 
 	it('should reject an Object with an invalid ID', () => {
 		const result = validateEditionSectionPublisher(
-			{...VALID_ENTITY, id: '2'}
+			{INVALID_PUBLISHERS}
 		);
 		expect(result).to.be.false;
 	});
@@ -255,13 +285,13 @@ function describeValidateEditionSectionPublisher() {
 
 const VALID_EDITION_SECTION = {
 	depth: 26,
+	editionGroup: VALID_ENTITY,
 	format: 2,
 	height: 24,
 	languages: VALID_LANGUAGES,
 	pages: 25,
-	publication: VALID_ENTITY,
-	publisher: VALID_ENTITY,
-	releaseDate: '2017',
+	publisher: VALID_PUBLISHERS,
+	releaseDate: {day: '22', month: '12', year: '2017'},
 	status: 2,
 	weight: 23,
 	width: 22
@@ -278,6 +308,16 @@ function describeValidateEditionSection() {
 		const result = validateEditionSection(
 			Immutable.fromJS(VALID_EDITION_SECTION)
 		);
+		expect(result).to.be.true;
+	});
+
+	it('should pass a null value', () => {
+		const result = validateEditionSection(null);
+		expect(result).to.be.true;
+	});
+
+	it('should ignore any other non-null data type', () => {
+		const result = validateEditionSection(1);
 		expect(result).to.be.true;
 	});
 
@@ -321,10 +361,10 @@ function describeValidateEditionSection() {
 		expect(result).to.be.false;
 	});
 
-	it('should reject an Object with an invalid publication', () => {
+	it('should reject an Object with an invalid edition group', () => {
 		const result = validateEditionSection({
 			...VALID_EDITION_SECTION,
-			publication: INVALID_ENTITY
+			editionGroup: INVALID_ENTITY
 		});
 		expect(result).to.be.false;
 	});
@@ -340,7 +380,7 @@ function describeValidateEditionSection() {
 	it('should reject an Object with an invalid release date', () => {
 		const result = validateEditionSection({
 			...VALID_EDITION_SECTION,
-			releaseDate: 'there'
+			releaseDate: {day: '', month: '', year: 'abcd'}
 		});
 		expect(result).to.be.false;
 	});
@@ -375,22 +415,13 @@ function describeValidateEditionSection() {
 		);
 		expect(result).to.be.false;
 	});
-
-	it('should reject any other non-null data type', () => {
-		const result = validateEditionSection(1);
-		expect(result).to.be.false;
-	});
-
-	it('should reject a null value', () => {
-		const result = validateEditionSection(null);
-		expect(result).to.be.false;
-	});
 }
 
 
 function describeValidateForm() {
 	const validForm = {
 		aliasEditor: VALID_ALIASES,
+		authorCreditEditor: VALID_AUTHOR_CREDIT_EDITOR,
 		editionSection: VALID_EDITION_SECTION,
 		identifierEditor: VALID_IDENTIFIERS,
 		nameSection: VALID_NAME_SECTION,
@@ -410,11 +441,63 @@ function describeValidateForm() {
 		expect(result).to.be.true;
 	});
 
+	it('should pass an Object with an empty author credit editor and AC disabled', () => {
+		const result = validateForm(
+			{
+				...validForm,
+				authorCreditEditor: {},
+				editionSection: {
+					...validForm.editionSection,
+					authorCreditEnable: false
+				}
+			},
+			IDENTIFIER_TYPES
+		);
+		expect(result).to.be.true;
+	});
+
 	it('should reject an Object with an invalid alias editor', () => {
 		const result = validateForm(
 			{
 				...validForm,
 				aliasEditor: INVALID_ALIASES
+			},
+			IDENTIFIER_TYPES
+		);
+		expect(result).to.be.false;
+	});
+
+	it('should reject an Object with an invalid author credit editor', () => {
+		const result = validateForm(
+			{
+				...validForm,
+				authorCreditEditor: INVALID_AUTHOR_CREDIT_EDITOR
+			},
+			IDENTIFIER_TYPES
+		);
+		expect(result).to.be.false;
+	});
+
+	it('should reject an Object with an empty author credit editor', () => {
+		const result = validateForm(
+			{
+				...validForm,
+				authorCreditEditor: {}
+			},
+			IDENTIFIER_TYPES
+		);
+		expect(result).to.be.false;
+	});
+
+	it('should reject an Object with a non empty author credit editor and AC disabled', () => {
+		const result = validateForm(
+			{
+				...validForm,
+				authorCreditEditor: VALID_AUTHOR_CREDIT_EDITOR,
+				editionSection: {
+					...validForm.editionSection,
+					authorCreditEnable: false
+				}
 			},
 			IDENTIFIER_TYPES
 		);
@@ -453,20 +536,20 @@ function describeValidateForm() {
 		expect(result).to.be.false;
 	});
 
-	it('should reject an Object with an invalid submission section', () => {
+	it('should pass an Object with an empty submission section', () => {
 		const result = validateForm(
 			{
 				...validForm,
-				submissionSection: INVALID_SUBMISSION_SECTION
+				submissionSection: EMPTY_SUBMISSION_SECTION
 			},
 			IDENTIFIER_TYPES
 		);
-		expect(result).to.be.false;
+		expect(result).to.be.true;
 	});
 
 	const invalidForm = {
 		...validForm,
-		submissionSection: INVALID_SUBMISSION_SECTION
+		nameSection: INVALID_NAME_SECTION
 	};
 
 	it('should reject an invalid Immutable.Map', () => {
@@ -530,8 +613,8 @@ function tests() {
 		describeValidateEditionSectionLanguages
 	);
 	describe(
-		'validateEditionSectionPublication',
-		describeValidateEditionSectionPublication
+		'validateEditionSectionEditionGroup',
+		describevalidateEditionSectionEditionGroup
 	);
 	describe(
 		'validateEditionSectionPublisher',

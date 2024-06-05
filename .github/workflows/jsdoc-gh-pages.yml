@@ -1,0 +1,34 @@
+name: JSDocs to GitHub pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+          
+      - name: NPM install
+        uses: bahmutov/npm-install@v1
+
+      - name: Build source
+        run: npm run build
+
+      - name: Build JSDoc
+        uses: andstor/jsdoc-action@v1
+        with:
+          recurse: true
+          source_dir: ./lib
+          output_dir: ./gh-pages
+          template: minami
+          front_page: README.md
+
+      - name: Deploy Docs to GH pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages

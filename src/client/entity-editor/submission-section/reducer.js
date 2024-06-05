@@ -17,7 +17,7 @@
  */
 
 import {
-	SET_SUBMIT_ERROR, UPDATE_REVISION_NOTE
+	SET_SUBMITTED, SET_SUBMIT_ERROR, UPDATE_REVISION_NOTE
 } from './actions';
 import Immutable from 'immutable';
 
@@ -25,7 +25,8 @@ import Immutable from 'immutable';
 function reducer(
 	state = Immutable.Map({
 		note: '',
-		submitError: ''
+		submitError: '',
+		submitted: false
 	}),
 	action
 ) {
@@ -34,6 +35,8 @@ function reducer(
 			return state.set('note', action.value);
 		case SET_SUBMIT_ERROR:
 			return state.set('submitError', action.error);
+		case SET_SUBMITTED:
+			return state.set('submitted', action.submitted);
 		// no default
 	}
 	return state;

@@ -17,40 +17,77 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import adminLogsRouter from './routes/adminLogs';
+import adminPanelRouter from './routes/adminPanel';
 import authRouter from './routes/auth';
-import creatorRouter from './routes/entity/creator';
+import authorRouter from './routes/entity/author';
+import collectionRouter from './routes/collection';
+import collectionsRouter from './routes/collections';
+import editionGroupRouter from './routes/entity/edition-group';
 import editionRouter from './routes/entity/edition';
 import editorRouter from './routes/editor';
 import importRouter from './routes/import-entity';
+import externalServiceRouter from './routes/externalService';
+import identifierTypeRouter from './routes/type-editor/identifier-type';
+import identifierTypesRouter from './routes/identifier-types';
 import indexRouter from './routes/index';
-import publicationRouter from './routes/entity/publication';
+import mergeRouter from './routes/merge';
 import publisherRouter from './routes/entity/publisher';
 import registerRouter from './routes/register';
+import relationshipTypeRouter from './routes/type-editor/relationship-type';
+import relationshipTypesRouter from './routes/relationship-types';
+import reviewsRouter from './routes/reviews';
 import revisionRouter from './routes/revision';
+import revisionsRouter from './routes/revisions';
 import searchRouter from './routes/search';
+import seriesRouter from './routes/entity/series';
 import statisticsRouter from './routes/statistics';
+import unifiedFormRouter from './routes/unifiedform';
+import wikimediaRouter from './routes/wikimedia';
 import workRouter from './routes/entity/work';
 
 
 function initRootRoutes(app) {
 	app.use('/', indexRouter);
 	app.use('/', authRouter);
+	app.use('/', unifiedFormRouter);
+	app.use('/', reviewsRouter);
+	app.use('/', wikimediaRouter);
 	app.use('/search', searchRouter);
 	app.use('/register', registerRouter);
+	app.use('/revisions', revisionsRouter);
+	app.use('/collections', collectionsRouter);
 	app.use('/statistics', statisticsRouter);
 	app.use('/imports', importRouter);
+	app.use('/external-service', externalServiceRouter);
+	app.use('/admin-panel', adminPanelRouter);
+	app.use('/admin-logs', adminLogsRouter);
+	app.use('/relationship-type', relationshipTypeRouter);
+	app.use('/relationship-types', relationshipTypesRouter);
+	app.use('/identifier-type', identifierTypeRouter);
+	app.use('/identifier-types', identifierTypesRouter);
 }
 
-function initPublicationRoutes(app) {
-	app.use('/publication', publicationRouter);
+function initEditionGroupRoutes(app) {
+	/* Retro-compatibility for /publication links */
+	app.use(['/edition-group', '/publication'], editionGroupRouter);
 }
 
-function initCreatorRoutes(app) {
-	app.use('/creator', creatorRouter);
+function initAuthorRoutes(app) {
+	/* Retro-compatibility for /creator links stored in MusicBrainz */
+	app.use(['/author', '/creator'], authorRouter);
 }
 
 function initEditionRoutes(app) {
 	app.use('/edition', editionRouter);
+}
+
+function initMergeRoutes(app) {
+	app.use('/merge', mergeRouter);
+}
+
+function initSeriesRoutes(app) {
+	app.use('/series', seriesRouter);
 }
 
 function initWorkRoutes(app) {
@@ -65,17 +102,26 @@ function initRevisionRoutes(app) {
 	app.use('/revision', revisionRouter);
 }
 
+function initEditorRoutes(app) {
+	app.use('/editor', editorRouter);
+}
+
+function initCollectionRoutes(app) {
+	app.use('/collection', collectionRouter);
+}
+
 function initRoutes(app) {
 	initRootRoutes(app);
-
-	initPublicationRoutes(app);
-	initCreatorRoutes(app);
+	initEditionGroupRoutes(app);
+	initAuthorRoutes(app);
+	initCollectionRoutes(app);
 	initEditionRoutes(app);
+	initMergeRoutes(app);
+	initSeriesRoutes(app);
 	initWorkRoutes(app);
 	initPublisherRoutes(app);
 	initRevisionRoutes(app);
-
-	app.use('/editor', editorRouter);
+	initEditorRoutes(app);
 }
 
 export default initRoutes;

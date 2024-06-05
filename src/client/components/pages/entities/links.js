@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2017  Eshan Singh
+ *               2022  Ansh Goyal
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +18,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import * as entityHelper from '../../../helpers/entity';
 
 import EntityIdentifiers from './identifiers';
 import EntityRelationships from './relationships';
@@ -24,24 +26,34 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Col, Row} = bootstrap;
+const {filterOutRelationshipTypeById} = entityHelper;
+const {Row, Col} = bootstrap;
 
 function EntityLinks({entity, identifierTypes, urlPrefix}) {
+	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
+	const relationshipTypeId = 10;
+	const relationships = filterOutRelationshipTypeById(entity, relationshipTypeId);
 	return (
-		<Row>
-			<Col md={8}>
-				<EntityRelationships
-					entityUrl={urlPrefix}
-					relationships={entity.relationships}
-				/>
-			</Col>
-			<Col md={4}>
-				<EntityIdentifiers
-					identifierSet={entity.identifierSet}
-					identifierTypes={identifierTypes}
-				/>
-			</Col>
-		</Row>
+		<React.Fragment>
+			<Row>
+				<Col>
+					<EntityRelationships
+						contextEntity={entity}
+						entityUrl={urlPrefix}
+						relationships={relationships}
+					/>
+				</Col>
+			</Row>
+			<Row>
+				<Col>
+					<EntityIdentifiers
+						entityUrl={urlPrefix}
+						identifierTypes={identifierTypes}
+						identifiers={entity.identifierSet && entity.identifierSet.identifiers}
+					/>
+				</Col>
+			</Row>
+		</React.Fragment>
 	);
 }
 EntityLinks.displayName = 'EntityLinks';

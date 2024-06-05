@@ -22,12 +22,14 @@ import {
 	extractEditorProps,
 	extractLayoutProps
 } from '../../helpers/props';
+import {AppContainer} from 'react-hot-loader';
+import CollectionsPage from '../../components/pages/collections';
 import EditorContainer from '../../containers/editor';
+import EditorRevisionPage from '../../components/pages/editor-revision';
 import Layout from '../../containers/layout';
 import ProfileTab from '../../components/pages/parts/editor-profile';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import RevisionsTab from '../../components/pages/parts/editor-revisions';
 
 
 const propsTarget = document.getElementById('props');
@@ -36,10 +38,18 @@ const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const pageTarget = document.getElementById('page');
 const page = pageTarget ? pageTarget.innerHTML : '';
 
-let tab = null;
-
+let tab;
 if (page === 'revisions') {
-	tab = <RevisionsTab editor={props.editor}/>;
+	tab = (
+		<EditorRevisionPage
+			{...extractChildProps(props)}
+		/>);
+}
+else if (page === 'collections') {
+	tab = (
+		<CollectionsPage
+			{...extractChildProps(props)}
+		/>);
 }
 else {
 	tab = (
@@ -51,13 +61,25 @@ else {
 }
 
 const markup = (
-	<Layout {...extractLayoutProps(props)} >
-		<EditorContainer
-			{...extractEditorProps(props)}
-		>
-			{tab}
-		</EditorContainer>
-	</Layout>
+	<AppContainer>
+		<Layout {...extractLayoutProps(props)} >
+			<EditorContainer
+				{...extractEditorProps(props)}
+			>
+				{tab}
+			</EditorContainer>
+		</Layout>
+	</AppContainer>
 );
 
 ReactDOM.hydrate(markup, document.getElementById('target'));
+
+/*
+ * As we are not exporting a component,
+ * we cannot use the react-hot-loader module wrapper,
+ * but instead directly use webpack Hot Module Replacement API
+ */
+
+if (module.hot) {
+	module.hot.accept();
+}

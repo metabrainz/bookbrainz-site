@@ -16,13 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Col, Modal, Row} from 'react-bootstrap';
-import {addIdentifierRow, hideIdentifierEditor} from './actions';
-import IdentifierRow from './identifier-row';
+import {Button, Modal, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {hideIdentifierEditor, removeEmptyIdentifiers} from './actions';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import IdentifierModalBody from './identifier-modal-body';
 import PropTypes from 'prop-types';
 import React from 'react';
-import classNames from 'classnames';
 import {connect} from 'react-redux';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 
 /**
@@ -45,48 +46,40 @@ import {connect} from 'react-redux';
  *          IdentifierEditor.
  */
 const IdentifierEditor = ({
-	identifiers,
 	identifierTypes,
-	onAddIdentifier,
 	onClose,
 	show
 }) => {
-	const noIdentifiersTextClass =
-		classNames('text-center', {hidden: identifiers.size});
+	const helpText = `identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc.
+	You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).`;
+
+	const helpIconElement = (
+		<OverlayTrigger
+			delay={50}
+			overlay={<Tooltip id="identifier-editor-tooltip">{helpText}</Tooltip>}
+			placement="right"
+		>
+			<FontAwesomeIcon
+				className="fa-sm"
+				icon={faQuestionCircle}
+			/>
+		</OverlayTrigger>
+	);
+
 	return (
-		<Modal bsSize="large" show={show} onHide={onClose}>
+		<Modal show={show} size="lg" onHide={onClose}>
 			<Modal.Header>
 				<Modal.Title>
-					Identifier Editor
+					Identifier Editor {helpIconElement}
 				</Modal.Title>
 			</Modal.Header>
 
 			<Modal.Body>
-				<div className={noIdentifiersTextClass}>
-					<p className="text-muted">This entity has no identifiers</p>
-				</div>
-				<div>
-					{
-						identifiers.map((identifier, rowId) => (
-							<IdentifierRow
-								index={rowId}
-								key={rowId}
-								typeOptions={identifierTypes}
-							/>
-						)).toArray()
-					}
-				</div>
-				<Row>
-					<Col className="text-right" md={3} mdOffset={9}>
-						<Button bsStyle="success" onClick={onAddIdentifier}>
-							Add identifier
-						</Button>
-					</Col>
-				</Row>
+				<IdentifierModalBody identifierTypes={identifierTypes}/>
 			</Modal.Body>
 
 			<Modal.Footer>
-				<Button bsStyle="primary" onClick={onClose}>Close</Button>
+				<Button variant="primary" onClick={onClose}>Close</Button>
 			</Modal.Footer>
 		</Modal>
 	);
@@ -94,8 +87,6 @@ const IdentifierEditor = ({
 IdentifierEditor.displayName = 'IdentifierEditor';
 IdentifierEditor.propTypes = {
 	identifierTypes: PropTypes.array.isRequired,
-	identifiers: PropTypes.object.isRequired,
-	onAddIdentifier: PropTypes.func.isRequired,
 	onClose: PropTypes.func.isRequired,
 	show: PropTypes.bool
 };
@@ -103,17 +94,13 @@ IdentifierEditor.defaultProps = {
 	show: false
 };
 
-function mapStateToProps(state) {
-	return {
-		identifiers: state.get('identifierEditor')
-	};
-}
-
 function mapDispatchToProps(dispatch) {
 	return {
-		onAddIdentifier: () => dispatch(addIdentifierRow()),
-		onClose: () => dispatch(hideIdentifierEditor())
+		onClose: () => {
+			dispatch(hideIdentifierEditor());
+			dispatch(removeEmptyIdentifiers());
+		}
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(IdentifierEditor);
+export default connect(null, mapDispatchToProps)(IdentifierEditor);

@@ -1,0 +1,8 @@
+# all text files follow Unix end-of-line convention
+* text eol=lf
+
+# avoid modifying binary files
+*.png binary
+*.jpg binary
+*.svg binary
+*.ico binary

@@ -17,9 +17,10 @@
  */
 
 import {Button} from 'react-bootstrap';
-import Icon from 'react-fontawesome';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
 
 /**
@@ -47,10 +48,10 @@ function AliasButton({
 	}
 
 	const iconElement = aliasesInvalid &&
-		<Icon className="margin-right-0-5 text-danger" name="times"/>;
+		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes}/>;
 
 	return (
-		<Button bsStyle="link" {...props}>
+		<Button variant="link" {...props}>
 			{iconElement}
 			{text}
 		</Button>

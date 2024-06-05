@@ -16,17 +16,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Col, Row} from 'react-bootstrap';
+import {Col, Row} from 'react-bootstrap';
 import {
-	showAliasEditor, showDisambiguation, showIdentifierEditor
+	showAliasEditor,
+	showIdentifierEditor
 } from './actions';
 import {validateAliases, validateIdentifiers} from '../validators/common';
+
 import AliasButton from './alias-button';
 import IdentifierButton from './identifier-button';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {addAliasRow} from '../alias-editor/actions';
+import {addIdentifierRow} from '../identifier-editor/actions';
 import {connect} from 'react-redux';
-
 
 /**
  * Container component. This component renders three buttons in a horizontal
@@ -35,80 +38,74 @@ import {connect} from 'react-redux';
  * (IdentifierButton).
  *
  * @param {Object} props - The properties passed to the component.
- * @param {boolean} props.disambiguationVisible - Whether or not the
- *        disambiguation is currently shown in the editor - used to disable the
- *       "Add disambiguation" button.
  * @param {number} props.numAliases - The number of aliases present in
  *        the AliasEditor - passed to the AliasButton component.
  * @param {number} props.numIdentifiers - The number of identifiers present in
  *        the IdentifierEditor - passed to the IdentiferButton component.
  * @param {Function} props.onAliasButtonClick - A function to be called when the
  *        AliasButton is clicked.
- * @param {Function} props.onDisambiguationButtonClick - A function to be
- *        called when the disambiguation button is clicked.
  * @param {Function} props.onIdentifierButtonClick - A function to be called
  *        when the IdentifierButton is clicked.
  * @returns {ReactElement} React element containing the rendered ButtonBar.
  */
 function ButtonBar({
 	aliasesInvalid,
-	disambiguationVisible,
 	identifiersInvalid,
 	numAliases,
 	numIdentifiers,
 	onAliasButtonClick,
-	onDisambiguationButtonClick,
+	isUnifiedForm,
 	onIdentifierButtonClick
 }) {
+	const className = isUnifiedForm ? 'text-right' : 'text-center';
+	function renderAliasButton() {
+		if (isUnifiedForm) {
+			return null;
+		}
+		return (
+			<Col className={className} lg={6}>
+				<AliasButton
+					aliasesInvalid={aliasesInvalid}
+					numAliases={numAliases}
+					onClick={onAliasButtonClick}
+				/>
+			</Col>);
+	}
+	const identifierEditorClass = `btn wrap${!isUnifiedForm ? '' : ' btn-success'}`;
 	return (
 		<div>
-			<form>
-				<Row className="margin-top-1">
-					<Col className="text-center" md={4}>
-						<AliasButton
-							aliasesInvalid={aliasesInvalid}
-							numAliases={numAliases}
-							onClick={onAliasButtonClick}
-						/>
-					</Col>
-					<Col className="text-center" md={4}>
-						<Button
-							bsStyle="link"
-							disabled={disambiguationVisible}
-							onClick={onDisambiguationButtonClick}
-						>
-							Add disambiguation…
-						</Button>
-					</Col>
-					<Col className="text-center" md={4}>
-						<IdentifierButton
-							identifiersInvalid={identifiersInvalid}
-							numIdentifiers={numIdentifiers}
-							onClick={onIdentifierButtonClick}
-						/>
-					</Col>
-				</Row>
-			</form>
+			<Row className="margin-top-1">
+				{renderAliasButton()}
+				<Col className={className} lg={6}>
+					<IdentifierButton
+						className={identifierEditorClass}
+						identifiersInvalid={identifiersInvalid}
+						isUnifiedForm={isUnifiedForm}
+						numIdentifiers={numIdentifiers}
+						onClick={onIdentifierButtonClick}
+					/>
+				</Col>
+			</Row>
 		</div>
 	);
 }
 ButtonBar.displayName = 'ButtonBar';
 ButtonBar.propTypes = {
 	aliasesInvalid: PropTypes.bool.isRequired,
-	disambiguationVisible: PropTypes.bool.isRequired,
 	identifiersInvalid: PropTypes.bool.isRequired,
+	isUnifiedForm: PropTypes.bool,
 	numAliases: PropTypes.number.isRequired,
 	numIdentifiers: PropTypes.number.isRequired,
 	onAliasButtonClick: PropTypes.func.isRequired,
-	onDisambiguationButtonClick: PropTypes.func.isRequired,
 	onIdentifierButtonClick: PropTypes.func.isRequired
+};
+ButtonBar.defaultProps = {
+	isUnifiedForm: false
 };
 
 function mapStateToProps(rootState, {identifierTypes}) {
-	const state = rootState.get('buttonBar');
 	return {
 		aliasesInvalid: !validateAliases(rootState.get('aliasEditor')),
-		disambiguationVisible: state.get('disambiguationVisible'),
 		identifiersInvalid: !validateIdentifiers(
 			rootState.get('identifierEditor'), identifierTypes
 		),
@@ -119,9 +116,14 @@ function mapStateToProps(rootState, {identifierTypes}) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		onAliasButtonClick: () => dispatch(showAliasEditor()),
-		onDisambiguationButtonClick: () => dispatch(showDisambiguation()),
-		onIdentifierButtonClick: () => dispatch(showIdentifierEditor())
+		onAliasButtonClick: () => {
+			dispatch(showAliasEditor());
+			dispatch(addAliasRow());
+		},
+		onIdentifierButtonClick: () => {
+			dispatch(showIdentifierEditor());
+			dispatch(addIdentifierRow());
+		}
 	};
 }
 

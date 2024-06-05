@@ -44,8 +44,8 @@ function expectAllNamedIds(rev) {
 }
 
 export default function tests() {
-	beforeEach(() => testData.createEditor()
-		.then(() => testData.createRevisionist())
+	beforeEach(
+		() => testData.createEditor().then(() => testData.createRevisionist())
 	);
 	afterEach(testData.truncate);
 

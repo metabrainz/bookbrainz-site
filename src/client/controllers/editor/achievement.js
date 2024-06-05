@@ -23,6 +23,7 @@ import {
 	extractLayoutProps
 } from '../../helpers/props';
 import AchievementsTab from '../../components/pages/parts/editor-achievements';
+import {AppContainer} from 'react-hot-loader';
 import EditorContainer from '../../containers/editor';
 import Layout from '../../containers/layout';
 import React from 'react';
@@ -33,15 +34,30 @@ const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
 ReactDOM.hydrate(
-	<Layout {...extractLayoutProps(props)}>
-		<EditorContainer
-			{...extractEditorProps(props)}
-		>
-			<AchievementsTab
-				achievement={props.achievement}
-				editor={props.editor}
-			/>
-		</EditorContainer>
-	</Layout>,
+	<AppContainer>
+		<Layout {...extractLayoutProps(props)}>
+			<EditorContainer
+				{...extractEditorProps(props)}
+			>
+				<AchievementsTab
+					achievement={props.achievement}
+					currAchievement={props.currAchievement}
+					editor={props.editor}
+					isOwner={props.isOwner}
+				/>
+			</EditorContainer>
+		</Layout>
+	</AppContainer>,
 	document.getElementById('target')
 );
+
+
+/*
+ * As we are not exporting a component,
+ * we cannot use the react-hot-loader module wrapper,
+ * but instead directly use webpack Hot Module Replacement API
+ */
+
+if (module.hot) {
+	module.hot.accept();
+}

@@ -16,13 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Alert, Button, Col, Row} from 'react-bootstrap';
-import {debounceUpdateRevisionNote, submit} from './actions';
-import CustomInput from '../../input';
+import {Alert, Button, Col, Form, OverlayTrigger, Row, Spinner, Tooltip} from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
+import {debounceUpdateRevisionNote} from './actions';
+import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 /**
  * Container component. The SubmissionSection component contains a button for
@@ -33,54 +34,84 @@ import {connect} from 'react-redux';
  * @param {Object} props - The properties passed to the component.
  * @param {string} props.errorText - A message to be displayed within the
  *        component in the case of an error.
+ * @param {boolean} props.formValid - Boolean indicating if the form has been
+ *        validated successfully or if it contains errors
  * @param {Function} props.onNoteChange - A function to be called when the
  *        revision note is changed.
- * @param {Function} props.onSubmitClick - A function to be called when the
- *        submit button is clicked.
+ * @param {boolean} props.submitted - Boolean indicating if the form has been submitted
+ *        (i.e. submit button clicked) to prevent submitting again
  * @returns {ReactElement} React element containing the rendered
  *          SubmissionSection.
  */
 function SubmissionSection({
 	errorText,
 	formValid,
+	note,
 	onNoteChange,
-	onSubmit
+	submitted
 }) {
 	const errorAlertClass =
-		classNames('text-center', 'margin-top-1', {hidden: !errorText});
+		classNames('text-center', 'margin-top-1', {'d-none': !errorText});
+
+	const editNoteLabel = (
+		<span>
+			Edit Note
+			<span className="text-muted"> (optional)</span>
+		</span>
+	);
+
+	const tooltip = (
+		<Tooltip>
+			Cite your sources or an explanation of your edit
+		</Tooltip>
+	);
 
 	return (
 		<div>
 			<h2>
-				Submit Your Revision
+				Submit Your Edit
 			</h2>
-			<p className="text-muted">
-				Enter a note describing what you&rsquo;ve done and what sources
-				you used, and hit the submit button to finish editing
-			</p>
-			<form>
-				<Row>
-					<Col md={6} mdOffset={3}>
-						<CustomInput
-							label="Revision Note"
-							rows="6"
-							type="textarea"
-							onChange={onNoteChange}
-						/>
-					</Col>
-				</Row>
-			</form>
+			<Row>
+				<Col lg={{offset: 3, span: 6}}>
+					<Form.Group>
+						<Form.Label>
+							{editNoteLabel}
+							<OverlayTrigger delay={50} overlay={tooltip}>
+								<FontAwesomeIcon
+									className="margin-left-0-5"
+									icon={faQuestionCircle}
+								/>
+							</OverlayTrigger>
+						</Form.Label>
+						<Form.Control as="textarea" defaultValue={note} rows="6" onChange={onNoteChange}/>
+					</Form.Group>
+					<p className="text-muted">
+						{`An edit note will make your entries more credible. Reply to one or more of these questions in the textarea below:
+						- Where did you get your info from? A link is worth a thousand words.
+						- What kind of information did you provide? If you made any changes, what are they and why?
+						- Do you have any questions concerning the editing process you want to ask?`}
+					</p>
+				</Col>
+			</Row>
 			<div className="text-center margin-top-1">
 				<Button
-					bsStyle="success"
-					disabled={!formValid}
-					onClick={onSubmit}
+					disabled={!formValid || submitted}
+					type="submit"
+					variant="success"
 				>
-					Submit
+					 {submitted &&
+					<Spinner
+						animation="border"
+						aria-hidden="true"
+						as="span"
+						role="status"
+						size="sm"
+					/>}
+					 {submitted ? ' Submit' : 'Submit'}
 				</Button>
 			</div>
 			<div className={errorAlertClass}>
-				<Alert bsStyle="danger">Submission Error: {errorText}</Alert>
+				<Alert variant="danger">Submission Error: {errorText}</Alert>
 			</div>
 		</div>
 	);
@@ -89,24 +120,26 @@ SubmissionSection.displayName = 'SubmissionSection';
 SubmissionSection.propTypes = {
 	errorText: PropTypes.node.isRequired,
 	formValid: PropTypes.bool.isRequired,
+	note: PropTypes.node.isRequired,
 	onNoteChange: PropTypes.func.isRequired,
-	onSubmit: PropTypes.func.isRequired
+	submitted: PropTypes.bool.isRequired
 };
 
-function mapStateToProps(rootState, {validate}) {
+function mapStateToProps(rootState, {validate, identifierTypes, isMerge, formValid = false}) {
 	const state = rootState.get('submissionSection');
 	return {
 		errorText: state.get('submitError'),
-		formValid: validate(rootState)
+		formValid: formValid || (validate && validate(rootState, identifierTypes, isMerge)),
+		note: state.get('note'),
+		submitted: state.get('submitted')
 	};
 }
 
 
-function mapDispatchToProps(dispatch, {submissionUrl}) {
+function mapDispatchToProps(dispatch) {
 	return {
 		onNoteChange: (event) =>
-			dispatch(debounceUpdateRevisionNote(event.target.value)),
-		onSubmit: () => dispatch(submit(submissionUrl))
+			dispatch(debounceUpdateRevisionNote(event.target.value))
 	};
 }
 

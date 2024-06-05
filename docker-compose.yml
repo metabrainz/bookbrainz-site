@@ -1,0 +1,72 @@
+services:
+
+  bookbrainz-site:
+    container_name: bookbrainz-site
+    command: yarn start
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: bookbrainz-dev
+    restart: unless-stopped
+    user: bookbrainz
+    ports:
+      - "9099:9099"
+    depends_on:
+      - elasticsearch
+      - redis
+      - postgres
+    volumes:
+      - "./config/config.json:/home/bookbrainz/bookbrainz-site/config/config.json:ro"
+
+  postgres:
+    container_name: postgres
+    restart: unless-stopped
+    image: postgres:12.3
+    user: postgres
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      - POSTGRES_DB=bookbrainz
+      - POSTGRES_USER=bookbrainz
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  elasticsearch:
+    container_name: elasticsearch
+    restart: unless-stopped
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.8
+    environment:
+      # Skip bootstrap checks (see https://github.com/docker-library/elasticsearch/issues/98)
+      - transport.host=127.0.0.1
+      - discovery.zen.minimum_master_nodes=1
+      - xpack.security.enabled=false
+    ports:
+      - "127.0.0.1:9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+
+  redis:
+    container_name: redis
+    restart: unless-stopped
+    image: redis:3.2-alpine
+    command: "redis-server --appendonly yes"
+    ports:
+      - "127.0.0.1:6379:6379"
+      - "127.0.0.1:3600:3600"
+
+  startup:
+    image: waisbrot/wait
+    container_name: startup
+    restart: "no"
+    environment:
+      - TARGETS=redis:6379,postgres:5432,elasticsearch:9200
+      - TIMEOUT=60
+    depends_on:
+      - elasticsearch
+      - redis
+      - postgres
+
+volumes:
+  postgres-data:
+  elasticsearch-data:

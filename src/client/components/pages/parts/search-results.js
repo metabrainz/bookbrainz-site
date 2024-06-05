@@ -19,80 +19,294 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+
+import {differenceBy as _differenceBy, kebabCase as _kebabCase, startCase as _startCase, toLower} from 'lodash';
+
+import AddToCollectionModal from './add-to-collection-modal';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {Label, Table} = bootstrap;
+const {Alert, Badge, Button, ButtonGroup, Label, Table} = bootstrap;
 
-function SearchResults(props) {
-	const noResults = !props.results || props.results.length === 0;
-	if (noResults) {
+// Main entities have a BBID but some other indexed types
+// have an ID field instead (collections, editors, areas)
+// and pending imports have an importId
+function getId(entity) {
+	return entity.bbid ?? entity.id ?? entity.importId;
+}
+
+/**
+ * Renders the document and displays the 'SearchResults' page.
+ * @returns {ReactElement} a HTML document which displays the SearchResults.
+ * @param {object} props - Properties passed to the component.
+ */
+class SearchResults extends React.Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			message: {
+				text: null,
+				type: null
+			},
+			selected: [],
+			showModal: false
+		};
+
+		this.handleAddToCollection = this.handleAddToCollection.bind(this);
+		this.toggleRow = this.toggleRow.bind(this);
+		this.onCloseModal = this.onCloseModal.bind(this);
+		this.handleShowModal = this.handleShowModal.bind(this);
+		this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
+		this.closeModalAndShowMessage = this.closeModalAndShowMessage.bind(this);
+		this.handleClearSelected = this.handleClearSelected.bind(this);
+	}
+
+	onCloseModal() {
+		this.setState({showModal: false});
+	}
+
+	handleShowModal() {
+		if (this.props.user) {
+			this.setState({showModal: true});
+		}
+		else {
+			this.setState({
+				message: {
+					text: 'You need to be logged in',
+					type: 'danger'
+				}
+			});
+		}
+	}
+
+	closeModalAndShowMessage(message) {
+		this.setState({
+			message,
+			showModal: false
+		});
+	}
+
+	handleAlertDismiss() {
+		this.setState({message: {}});
+	}
+
+	toggleRow(entity) {
+		// eslint-disable-next-line react/no-access-state-in-setstate
+		const oldSelected = this.state.selected;
+		let newSelected;
+		if (oldSelected.find(selected => getId(selected) === getId(entity))) {
+			newSelected = oldSelected.filter(selected => getId(selected) !== getId(entity));
+		}
+		else {
+			newSelected = [...oldSelected, entity];
+		}
+		this.setState({
+			selected: newSelected
+		});
+	}
+
+	handleClearSelected() {
+		this.setState({selected: []});
+	}
+
+	handleAddToCollection() {
+		const selectedEntities = this.state.selected;
+		if (selectedEntities.length) {
+			const areAllEntitiesOfSameType = selectedEntities.every(entity => entity.type === selectedEntities[0].type);
+			const entityTypes = ['Author', 'Edition', 'EditionGroup', 'Publisher', 'Series', 'Work'];
+			if (areAllEntitiesOfSameType) {
+				if (entityTypes.includes(selectedEntities[0].type)) {
+					this.setState({message: {}, showModal: true});
+				}
+				else {
+					this.setState({
+						message: {
+							text: `${selectedEntities[0].type} cannot be added to a collection`,
+							type: 'danger'
+						}
+					});
+				}
+			}
+			else {
+				this.setState({
+					message: {
+						text: 'Selected entities should be of same type',
+						type: 'danger'
+					}
+				});
+			}
+		}
+		else {
+			this.setState({
+				message: {
+					text: 'Nothing Selected',
+					type: 'danger'
+				}
+			});
+		}
+	}
+
+	render() {
+		const noResults = !this.props.results || this.props.results.length === 0;
+
+		const results = this.props.results.map((result) => {
+			if (!result) {
+				return null;
+			}
+			const id = getId(result);
+			const isImport = Boolean(result.importId);
+			const name = result.defaultAlias ? result.defaultAlias.name :
+				'(unnamed)';
+
+			const aliases = !this.props.condensed && result.aliasSet &&
+				Array.isArray(result.aliasSet.aliases) && result.aliasSet.aliases;
+
+			const secondaryAliases = !this.props.condensed && aliases &&
+				_differenceBy(aliases, [result.defaultAlias], 'id').map(alias => alias.name).join(', ');
+
+			const disambiguation = result.disambiguation ? <small>({result.disambiguation.comment})</small> : '';
+			// No redirect link for Area entity results
+			let link = result.type === 'Area' ?
+				`//musicbrainz.org/area/${id}` :
+				`/${_kebabCase(result.type)}/${id}`;
+			if (isImport) {
+				link = '/imports' + link;
+			}
+
+			/* eslint-disable react/jsx-no-bind */
+			return (
+				<tr key={id}>
+					{
+						!this.props.condensed &&
+						<td>
+							{
+								this.props.user ?
+									<input
+										checked={this.state.selected.find(selected => getId(selected) === id)}
+										className="checkboxes"
+										disabled={isImport}
+										type="checkbox"
+										onChange={() => this.toggleRow(result)}
+									/> : null
+							}
+							{genEntityIconHTMLElement(result.type)}{_startCase(result.type)}
+							{isImport && <Label>Imported</Label>}
+						</td>
+					}
+					<td>
+						<a href={link} className={isImport ? 'color-red' : undefined}>
+							{name} {disambiguation}
+						</a>
+						{
+							toLower(result.type) === 'work' && Boolean(result.authors?.length) &&
+							<span className="small text-muted"> — <i>{result.authors.join(', ')}</i></span>
+						}
+					</td>
+					{
+						!this.props.condensed &&
+						<td>
+							{secondaryAliases}
+						</td>
+					}
+				</tr>
+			);
+		});
+		let tableCssClasses = 'table table-striped';
+		if (this.props.condensed) {
+			tableCssClasses += ' table-condensed';
+		}
+		if (noResults) {
+			return null;
+		}
 		return (
-			<div className="col-md-6 col-md-offset-3">
-				{'No results found'}
+			<div>
+				{
+					this.props.user ?
+						<div>
+							<AddToCollectionModal
+								bbids={this.state.selected.map(getId)}
+								closeModalAndShowMessage={this.closeModalAndShowMessage}
+								entityType={this.state.selected[0]?.type}
+								handleCloseModal={this.onCloseModal}
+								show={this.state.showModal}
+								userId={this.props.user.id}
+							/>
+						</div> : null
+				}
+				{
+					!this.props.condensed &&
+					<h3 className="search-results-heading">
+						Search Results
+					</h3>
+				}
+				<hr className="thin"/>
+				<Table
+					responsive
+					className={tableCssClasses}
+				>
+					{
+						!this.props.condensed &&
+						<thead>
+							<tr>
+								<th width="25%">Type</th>
+								<th width="42%">Name</th>
+								<th width="33%">Aliases</th>
+							</tr>
+						</thead>
+					}
+					<tbody>
+						{results}
+					</tbody>
+				</Table>
+				{
+					this.state.message.text ?
+						<Alert
+							className="margin-top-1"
+							variant={this.state.message.type}
+							onDismiss={this.handleAlertDismiss}
+						>
+							{this.state.message.text}
+						</Alert> : null
+
+				}
+				{
+					this.props.user ?
+						<ButtonGroup>
+							<Button
+								disabled={!this.state.selected.length}
+								type="button"
+								variant="primary"
+								onClick={this.handleAddToCollection}
+							>
+								{genEntityIconHTMLElement('Collection')}
+									Add to Collection
+							</Button>
+							<Button
+								disabled={!this.state.selected.length}
+								type="button"
+								variant="warning"
+								onClick={this.handleClearSelected}
+							>
+								Clear <Badge pill variant="light">{this.state.selected.length}</Badge> selected
+							</Button>
+						</ButtonGroup> : null
+				}
 			</div>
 		);
 	}
-
-	const results = props.results.map((result) => {
-		// No redirect link for Area entity results
-		const name = result.defaultAlias ? result.defaultAlias.name :
-			'(unnamed)';
-
-		let link = null;
-		if (result.type === 'Area') {
-			link = `//musicbrainz.org/area/${result.bbid}`;
-		}
-		else if (result.bbid) {
-			link = `/${result.type.toLowerCase()}/${result.bbid}`;
-		}
-		else if (result.importId) {
-			link = `/imports/${result.type.toLowerCase()}/${result.importId}`;
-		}
-		result.id = result.bbid || result.importId;
-		const tag = result.importId ? <Label> Imported </Label> : null;
-
-		return (
-			<tr key={result.id}>
-				<td>
-					<a
-						className={result.importId ? 'color-red' : ''}
-						href={link}
-					>
-						{name}
-					</a>
-				</td>
-				<td>
-					{result.type}{' '}{tag}
-				</td>
-			</tr>
-		);
-	});
-
-	return (
-		<Table
-			responsive
-			className="table table-striped"
-		>
-			<thead>
-				<tr>
-					<th>Alias</th>
-					<th>Type</th>
-				</tr>
-			</thead>
-			<tbody>
-				{results}
-			</tbody>
-		</Table>
-	);
 }
 
 SearchResults.displayName = 'SearchResults';
 SearchResults.propTypes = {
-	results: PropTypes.array
+	condensed: PropTypes.bool,
+	results: PropTypes.array,
+	user: PropTypes.object.isRequired
 };
 SearchResults.defaultProps = {
+	condensed: false,
 	results: null
 };
 

@@ -20,17 +20,14 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as validators from '../../helpers/react-validators';
-import CustomInput from '../../input';
 import LoadingSpinner from '../loading-spinner';
-import PartialDate from '../input/partial-date';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
-import SelectWrapper from '../input/select-wrapper';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 
 
-const {Alert, Button, PageHeader} = bootstrap;
+const {Alert, Button, Col, Form, Row} = bootstrap;
 
 class RegistrationForm extends React.Component {
 	constructor(props) {
@@ -49,12 +46,10 @@ class RegistrationForm extends React.Component {
 	handleSubmit(event) {
 		event.preventDefault();
 
-		const gender = this.gender.getValue();
-		const birthday = this.birthday.getValue();
+		const genderId = this.gender?.select?.getValue()?.[0]?.id;
 		const data = {
-			birthday: birthday || null,
-			displayName: this.displayName.getValue(),
-			gender: gender ? parseInt(gender, 10) : null
+			displayName: this.displayName.value,
+			gender: genderId ? parseInt(genderId, 10) : null
 		};
 
 		this.setState({
@@ -77,11 +72,7 @@ class RegistrationForm extends React.Component {
 	}
 
 	isValid() {
-		const displayNameValid =
-			!this.displayName || this.displayName.getValue().length > 0;
-		const birthdayValid = !this.birthday || this.birthday.valid();
-
-		return displayNameValid && birthdayValid;
+		return !this.displayName || this.displayName.value.length > 0;
 	}
 
 	handleChange() {
@@ -90,31 +81,32 @@ class RegistrationForm extends React.Component {
 		});
 	}
 
+	getOptionLabel(option) {
+		return option.name;
+	}
+
 	render() {
 		let errorComponent = null;
 		if (this.state.error) {
 			errorComponent =
-				<Alert bsStyle="danger">{this.state.error}</Alert>;
+				<Alert variant="danger">{this.state.error}</Alert>;
 		}
-
 		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
-
 		const initialGender = this.props.gender && this.props.gender.id;
-
 		return (
 			<div>
-				<PageHeader>Register</PageHeader>
+				<div className="page-header"><h1>Register</h1></div>
 				<div>
 					Great! You successfully logged in to MusicBrainz and
 					are now just one step away from becoming a BookBrainz
 					editor. The following form allows you to specify
 					additional information that will let other users know
 					a little bit more about you. When you’re done, just
-					click the green button at the bottom of the page.
+					click the blue button at the bottom of the page.
 				</div>
-				<div className="row">
+				<Row>
 					{loadingComponent}
-					<div className="col-md-6 col-md-offset-3">
+					<Col lg={{offset: 3, span: 6}}>
 						<form
 							className="whole-page-form form-horizontal"
 							onSubmit={this.handleSubmit}
@@ -124,58 +116,55 @@ class RegistrationForm extends React.Component {
 								name is correct. This is the name that
 								other editors will get to know you by.
 							</p>
-							<CustomInput
-								className="form-control"
-								defaultValue={this.props.name}
-								label="Display Name"
-								labelClassName="col-md-4"
-								placeholder="Display Name"
-								ref={(ref) => this.displayName = ref}
-								type="text"
-								wrapperClassName="col-md-4"
-								onChange={this.handleChange}
-							/>
+							<Form.Group className="row">
+								<Form.Label className="col-lg-4 col-form-label">
+									Display Name
+								</Form.Label>
+								<div className="col-lg-4">
+									<Form.Control
+										defaultValue={this.props.name}
+										placeholder="Display Name"
+										/* eslint-disable-next-line react/jsx-no-bind */
+										ref={(ref) => this.displayName = ref}
+										type="text"
+										onChange={this.handleChange}
+									/>
+								</div>
+							</Form.Group>
 							<p>
-								And, optionally, set a gender and birthday
+								And, optionally, set a gender
 								that will be displayed on your profile
 								page.
 							</p>
-							<SelectWrapper
-								base={ReactSelect}
-								defaultValue={initialGender}
-								idAttribute="id"
-								instanceId="gender"
-								label="Gender"
-								labelAttribute="name"
-								labelClassName="col-md-4"
-								options={this.props.genders}
-								placeholder="Select gender…"
-								ref={(ref) => this.gender = ref}
-								wrapperClassName="col-md-4"
-							/>
-							<PartialDate
-								label="Birthday"
-								labelClassName="col-md-4"
-								placeholder="YYYY-MM-DD"
-								ref={(ref) => this.birthday = ref}
-								wrapperClassName="col-md-4"
-								onChange={this.handleChange}
-							/>
+							<Form.Group className="row">
+								<Form.Label className="col-lg-4 col-form-label">Gender</Form.Label>
+								<div className="col-lg-4">
+									<ReactSelect
+										isClearable
+										defaultValue={this.props.genders.filter((option) => option.id === initialGender)}
+										getOptionLabel={this.getOptionLabel}
+										instanceId="gender"
+										options={this.props.genders}
+										placeholder="Select gender…"
+										ref={(ref) => this.gender = ref}
+									/>
+								</div>
+							</Form.Group>
 							<hr/>
 							{errorComponent}
 							<div className="text-center">
 								<Button
-									bsSize="large"
-									bsStyle="primary"
 									disabled={!this.state.valid}
+									size="lg"
 									type="submit"
+									variant="primary"
 								>
 									Looks good, sign me up!
 								</Button>
 							</div>
 						</form>
-					</div>
-				</div>
+					</Col>
+				</Row>
 			</div>
 		);
 	}
@@ -183,7 +172,7 @@ class RegistrationForm extends React.Component {
 
 RegistrationForm.displayName = 'RegistrationForm';
 RegistrationForm.propTypes = {
-	gender: validators.namedProperty, // eslint-disable-line react/no-typos
+	gender: validators.namedProperty,
 	genders: PropTypes.arrayOf(validators.namedProperty).isRequired,
 	name: PropTypes.string
 };

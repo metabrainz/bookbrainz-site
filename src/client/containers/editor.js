@@ -24,15 +24,15 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Col, Nav, NavItem, Row} = bootstrap;
+const {Col, Nav, Row} = bootstrap;
 
 function EditorContainer(props) {
-	const {tabActive, editor, children} = props;
+	const {tabActive, editor, children, user} = props;
 
 	return (
 		<div>
 			<Row>
-				<Col md={12}>
+				<Col lg={12}>
 					{editor.title ?
 						<div>
 							<a
@@ -51,26 +51,53 @@ function EditorContainer(props) {
 				</Col>
 			</Row>
 			<Row>
-				<Col md={12}>
-					<Nav bsStyle="tabs">
-						<NavItem
-							active={tabActive === 0}
-							href={`/editor/${editor.id}`}
-						>
-							Profile
-						</NavItem>
-						<NavItem
-							active={tabActive === 1}
-							href={`/editor/${editor.id}/revisions`}
-						>
-							Revisions
-						</NavItem>
-						<NavItem
-							active={tabActive === 2}
-							href={`/editor/${editor.id}/achievements`}
-						>
-							Achievements
-						</NavItem>
+				<Col lg={12}>
+					<Nav variant="tabs">
+						<Nav.Item>
+							<Nav.Link
+								active={tabActive === 0}
+								href={`/editor/${editor.id}`}
+							>
+								Profile
+							</Nav.Link>
+						</Nav.Item>
+						<Nav.Item>
+							<Nav.Link
+								active={tabActive === 1}
+								href={`/editor/${editor.id}/revisions`}
+							>
+								Revisions
+							</Nav.Link>
+						</Nav.Item>
+						<Nav.Item>
+							<Nav.Link
+								active={tabActive === 2}
+								href={`/editor/${editor.id}/achievements`}
+							>
+								Achievements
+							</Nav.Link>
+						</Nav.Item>
+						<Nav.Item>
+							<Nav.Link
+								active={tabActive === 3}
+								href={`/editor/${editor.id}/collections`}
+							>
+								Collections
+							</Nav.Link>
+						</Nav.Item>
+						{
+							user && user.id === editor.id ?
+								(
+									<Nav.Item>
+										<Nav.Link
+											active={tabActive === 4}
+											href="/external-service"
+										>
+										External Services
+										</Nav.Link>
+									</Nav.Item>
+								) : null
+						}
 					</Nav>
 				</Col>
 			</Row>
@@ -87,7 +114,11 @@ EditorContainer.propTypes = {
 		name: PropTypes.string,
 		title: PropTypes.object
 	}).isRequired,
-	tabActive: PropTypes.number.isRequired
+	tabActive: PropTypes.number.isRequired,
+	user: PropTypes.object
+};
+EditorContainer.defaultProps = {
+	user: null
 };
 
 export default EditorContainer;

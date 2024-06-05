@@ -1,12 +1,13 @@
 <!--
 Before making a pull request, please:
-1. Read the guidelines for contributing
-1. Verify that your changes match our coding style
-1. Fill out the requested information
+1. Read the guidelines for contributing: https://github.com/metabrainz/guidelines/blob/master/GitHub.md
+2. Verify that your changes match our coding style
+3. Fill out the requested information
 -->
 
 ### Problem
-<!-- What are you trying to solve? -->
+<!-- What are you trying to solve?
+Add the JIRA ticket number if you are working on one -->
 
 
 ### Solution

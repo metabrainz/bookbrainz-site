@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {AppContainer} from 'react-hot-loader';
 import DeletionForm from '../components/forms/deletion';
 import Layout from '../containers/layout';
 import React from 'react';
@@ -27,9 +28,21 @@ const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
 const markup = (
-	<Layout {...extractLayoutProps(props)}>
-		<DeletionForm entity={props.entity}/>
-	</Layout>
+	<AppContainer>
+		<Layout {...extractLayoutProps(props)}>
+			<DeletionForm entity={props.entity}/>
+		</Layout>
+	</AppContainer>
 );
 
 ReactDOM.hydrate(markup, document.getElementById('target'));
+
+/*
+ * As we are not exporting a component,
+ * we cannot use the react-hot-loader module wrapper,
+ * but instead directly use webpack Hot Module Replacement API
+ */
+
+if (module.hot) {
+	module.hot.accept();
+}

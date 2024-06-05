@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as authorCreditFormatter from './authorCredit';
 import * as base from './base';
 import _ from 'lodash';
 
@@ -95,7 +96,7 @@ function formatAliasModified(change) {
 
 	const REQUIRED_DEPTH = 4;
 	const aliasLanguageChanged =
-		change.path.length > REQUIRED_DEPTH && change.path[3] === 'language' &&
+		change.path.length >= REQUIRED_DEPTH && change.path[3] === 'language' &&
 		change.path[4] === 'name';
 	if (aliasLanguageChanged) {
 		return [
@@ -107,7 +108,7 @@ function formatAliasModified(change) {
 		];
 	}
 
-	if (change.path.length > 3 && change.path[3] === 'primary') {
+	if (change.path.length >= 3 && change.path[3] === 'primary') {
 		return [
 			base.formatChange(
 				change,
@@ -127,6 +128,16 @@ function formatDefaultAliasModified(change) {
 		];
 	}
 
+	return [];
+}
+
+function formatRelationshipAttributeModified(change) {
+	if (change.path.length > 7 && change.path[7] === 'textValue') {
+		return [
+			base.formatChange(change,
+				`Relationship Attribute ${change.path[2]} -> Value`, (side) => side && [side])
+		];
+	}
 	return [];
 }
 
@@ -166,7 +177,7 @@ function formatNewIdentifierSet(change) {
 	if (rhs.identifiers && rhs.identifiers.length > 0) {
 		return [base.formatRow(
 			'N', 'Identifiers', null, rhs.identifiers.map(
-				(identifier) => `${identifier.type.label}: ${identifier.value}`
+				(identifier) => `${identifier.type && identifier.type.label}: ${identifier.value}`
 			)
 		)];
 	}
@@ -235,6 +246,16 @@ function formatIdentifier(change) {
 	return null;
 }
 
+function formatRelationshipAttributeAddOrDelete(relationshipAttributes) {
+	const attributes = [];
+	if (relationshipAttributes.length) {
+		relationshipAttributes.forEach((attribute) => {
+			attributes.push(`${attribute.type.name}: ${attribute.value.textValue}`);
+		});
+	}
+	return attributes;
+}
+
 function formatRelationshipAdd(entity, change) {
 	const changes = [];
 	const {rhs} = change.item;
@@ -242,38 +263,111 @@ function formatRelationshipAdd(entity, change) {
 	if (!rhs) {
 		return changes;
 	}
-
+	const key = rhs.type && rhs.type.label ? `Relationship : ${rhs.type.label}` : 'Relationship';
+	let attributes = [];
+	if (rhs.attributeSetId) {
+		attributes = formatRelationshipAttributeAddOrDelete(rhs.attributeSet?.relationshipAttributes);
+	}
 	if (rhs.sourceBbid === entity.get('bbid')) {
 		changes.push(
 			base.formatRow(
-				'N', 'Relationship Source Entity', null, [rhs.sourceBbid]
+				'N', key, null, [rhs.targetBbid, ...attributes]
 			)
 		);
 	}
 	else {
 		changes.push(
 			base.formatRow(
-				'N', 'Relationship Target Entity', null, [rhs.targetBbid]
+				'N', key, null, [rhs.sourceBbid, ...attributes]
 			)
 		);
 	}
-
-	if (rhs.type && rhs.type.label) {
-		changes.push(
-			base.formatRow('N', 'Relationship Type', null, [rhs.type.label])
-		);
-	}
-
 	return changes;
 }
 
+function formatAddOrDeleteRelationshipSet(entity, change) {
+	const changes = [];
+	let allRelationships;
+	if (change.kind === 'N') {
+		allRelationships = change.rhs.relationships;
+	}
+	if (change.kind === 'D') {
+		allRelationships = change.lhs.relationships;
+	}
+	if (!allRelationships) {
+		return changes;
+	}
+
+	allRelationships.forEach((relationship) => {
+		const key = relationship.type && relationship.type.label ? `Relationship: ${relationship.type.label}` : 'Relationship';
+		let attributes = [];
+		if (relationship.attributeSetId) {
+			attributes = formatRelationshipAttributeAddOrDelete(relationship.attributeSet?.relationshipAttributes);
+		}
+		if (relationship.sourceBbid === entity.get('bbid')) {
+			changes.push(
+				base.formatRow(
+					change.kind, key, [relationship.targetBbid, ...attributes], [relationship.targetBbid, ...attributes]
+				)
+			);
+		}
+		else {
+			changes.push(
+				base.formatRow(
+					change.kind, key, [relationship.sourceBbid, ...attributes], [relationship.sourceBbid, ...attributes]
+				)
+			);
+		}
+	});
+	return changes;
+}
+
+function formatRelationshipRemove(entity, change) {
+	const changes = [];
+	const {lhs} = change.item;
+
+	if (!lhs) {
+		return changes;
+	}
+	const key = lhs.type && lhs.type.label ? `Relationship : ${lhs.type.label}` : 'Relationship';
+	let attributes = [];
+	if (lhs.attributeSetId) {
+		attributes = formatRelationshipAttributeAddOrDelete(lhs.attributeSet?.relationshipAttributes);
+	}
+	if (lhs.sourceBbid === entity.get('bbid')) {
+		changes.push(
+			base.formatRow(
+				'D', key, [lhs.targetBbid, ...attributes], null
+			)
+		);
+	}
+	else {
+		changes.push(
+			base.formatRow(
+				'D', key, [lhs.sourceBbid, ...attributes], null
+			)
+		);
+	}
+	return changes;
+}
 function formatRelationship(entity, change) {
+	if (change.kind === 'N') {
+		return formatAddOrDeleteRelationshipSet(entity, change);
+	}
 	if (change.kind === 'A') {
 		if (change.item.kind === 'N') {
 			return formatRelationshipAdd(entity, change);
 		}
+		if (change.item.kind === 'D') {
+			return formatRelationshipRemove(entity, change);
+		}
 	}
-
+	if (change.kind === 'E') {
+		return formatRelationshipAttributeModified(change);
+	}
+	if (change.kind === 'D') {
+		return formatAddOrDeleteRelationshipSet(entity, change);
+	}
 	return null;
 }
 
@@ -294,7 +388,8 @@ function formatEntityChange(entity, change) {
 	}
 
 	const relationshipChanged =
-		_.isEqual(change.path, ['relationshipSet', 'relationships']);
+		_.isEqual(change.path, ['relationshipSet']) ||
+		_.isEqual(change.path.slice(0, 2), ['relationshipSet', 'relationships']);
 	if (relationshipChanged) {
 		return formatRelationship(entity, change);
 	}
@@ -315,6 +410,10 @@ function formatEntityChange(entity, change) {
 		return formatChangedDisambiguation(change);
 	}
 
+	if (authorCreditFormatter.changed(change)) {
+		return authorCreditFormatter.format(change);
+	}
+
 	return null;
 }
 
@@ -323,12 +422,35 @@ export function formatEntityDiffs(diffs, entityType, entityFormatter) {
 		return [];
 	}
 
-	return diffs.map((diff) => {
+	return _.flatten(diffs).map((diff) => {
 		const formattedDiff = {
-			entity: diff.entity.toJSON()
+			entity: diff.entity.toJSON(),
+			isDeletion: diff.isDeletion,
+			isNew: diff.isNew
 		};
 
 		formattedDiff.entity.type = entityType;
+		formattedDiff.entityRevision = diff.revision && diff.revision.toJSON();
+
+		if (diff.entityAlias) {
+			// In the revision route, we fetch an entity's data to show its alias; an ORM model is returned.
+			// For entities without data (deleted or merged), we use getEntityParentAlias instead which returns a JSON object
+			if (typeof diff.entityAlias.toJSON === 'function') {
+				const aliasJSON = diff.entityAlias.toJSON();
+				if (diff.isEntityDeleted) {
+					formattedDiff.entity.parentAlias = aliasJSON.aliasSet.defaultAlias;
+				}
+				else {
+					formattedDiff.entity.defaultAlias = aliasJSON.aliasSet.defaultAlias;
+				}
+			}
+			else if (diff.isEntityDeleted) {
+				formattedDiff.entity.parentAlias = diff.entityAlias;
+			}
+			else {
+				formattedDiff.entity.defaultAlias = diff.entityAlias;
+			}
+		}
 
 		if (!diff.changes) {
 			formattedDiff.changes = [];

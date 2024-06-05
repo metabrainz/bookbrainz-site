@@ -17,22 +17,23 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint max-len: "warn" */
+
 import * as bootstrap from 'react-bootstrap';
+
 import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Col, Grid, Row} = bootstrap;
+const {Col, Container, Row} = bootstrap;
 
 function Footer(props) {
 	const {repositoryUrl, siteRevision} = props;
 
 	return (
 		<footer className="footer">
-			<Grid fluid>
+			<Container fluid>
 				<Row>
-					<Col sm={4}>
+					<Col xs={4}>
 						<small>{'Tested with '}
 							<a
 								href="https://www.browserstack.com/"
@@ -47,27 +48,43 @@ function Footer(props) {
 							</a>
 						</small>
 					</Col>
-					<Col className="text-center" sm={4}>
+					<Col className="text-center" xs={4}>
 						<small>Cover image by{' '}
-							<a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">Stewart Butterfield</a>
-							{' ('}<a href="https://creativecommons.org/licenses/by/2.0/deed.en">CC-BY-2.0</a>)
+							<a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">
+								Stewart Butterfield
+							</a> (
+							<a href="https://creativecommons.org/licenses/by/2.0/deed.en">
+								CC-BY-2.0
+							</a>)
 						</small>
 					</Col>
-					<Col className="text-right" sm={4}>
-						<a href="/privacy">
-							<small>Privacy & Terms</small>
-						</a>
+					<Col className="text-right" xs={4}>
+						<div className="small">
+							<a href="/admin-logs">
+								Admin Logs
+							</a>
+						</div>
+						<div className="small">
+							<a href="/privacy">
+								Privacy & Terms
+							</a>
+						</div>
 					</Col>
 				</Row>
-				<Row className="text-center">
-					<small>
-						Alpha Software —{' '}
-						<a href={`${repositoryUrl}commit/${siteRevision}`}>
-							{siteRevision}
-						</a> — <a href="https://tickets.metabrainz.org/projects/BB/issues/">Report a Bug</a>
-					</small>
+				<Row>
+					<Col className="text-center" xs={12}>
+						<small>
+							Alpha Software —{' '}
+							<a href={`${repositoryUrl}tree/${siteRevision || 'master'}`}>
+								{siteRevision || 'unknown revision'}
+							</a> —&nbsp;
+							<a href="https://tickets.metabrainz.org/projects/BB/issues/">
+								Report a Bug
+							</a>
+						</small>
+					</Col>
 				</Row>
-			</Grid>
+			</Container>
 		</footer>
 	);
 }

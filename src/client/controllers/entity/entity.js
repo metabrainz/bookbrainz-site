@@ -17,53 +17,71 @@
  */
 
 import {
+	extractChildProps,
 	extractEntityProps,
 	extractLayoutProps
 } from '../../helpers/props';
-import CreatorPage from '../../components/pages/entities/creator';
+
+import {AppContainer} from 'react-hot-loader';
+import AuthorPage from '../../components/pages/entities/author';
+import EditionGroupPage from '../../components/pages/entities/edition-group';
 import EditionPage from '../../components/pages/entities/edition';
 import EntityRevisions from '../../components/pages/entity-revisions';
 import Layout from '../../containers/layout';
-import PublicationPage from '../../components/pages/entities/publication';
 import PublisherPage from '../../components/pages/entities/publisher';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import SeriesPage from '../../components/pages/entities/series';
 import WorkPage from '../../components/pages/entities/work';
 
 
 const entityComponents = {
-	creator: CreatorPage,
+	author: AuthorPage,
 	edition: EditionPage,
-	publication: PublicationPage,
+	editionGroup: EditionGroupPage,
 	publisher: PublisherPage,
+	series: SeriesPage,
 	work: WorkPage
 };
-
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
 const pageTarget = document.getElementById('page');
 const page = pageTarget ? pageTarget.innerHTML : '';
 
-const Child = entityComponents[page] || CreatorPage;
+const Child = entityComponents[page] || AuthorPage;
 
-let markup = null;
+let markup;
 if (page === 'revisions') {
 	markup = (
-		<Layout {...extractLayoutProps(props)}>
-			<EntityRevisions
-				entity={props.entity}
-				revisions={props.revisions}
-			/>
-		</Layout>
+		<AppContainer>
+			<Layout {...extractLayoutProps(props)}>
+				<EntityRevisions
+					entity={props.entity}
+					{...extractChildProps(props)}
+				/>
+			</Layout>
+		</AppContainer>
 	);
 }
 else {
 	markup = (
-		<Layout {...extractLayoutProps(props)}>
-			<Child {...extractEntityProps(props)}/>
-		</Layout>
+		<AppContainer>
+			<Layout {...extractLayoutProps(props)}>
+				<Child {...extractEntityProps(props)}/>
+			</Layout>
+		</AppContainer>
 	);
 }
 
 ReactDOM.hydrate(markup, document.getElementById('target'));
+
+/*
+ * As we are not exporting a component,
+ * we cannot use the react-hot-loader module wrapper,
+ * but instead directly use webpack Hot Module Replacement API
+ */
+
+if (module.hot) {
+	module.hot.accept();
+}

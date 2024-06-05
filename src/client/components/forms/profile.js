@@ -20,19 +20,17 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
 import * as validators from '../../helpers/react-validators';
-import CustomInput from '../../input';
 import LoadingSpinner from '../loading-spinner';
-import PartialDate from '../input/partial-date';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
-import SearchSelect from '../input/entity-search';
-import SelectWrapper from '../input/select-wrapper';
-import request from 'superagent-bluebird-promise';
+import SearchSelect from '../../entity-editor/common/entity-search-field-option';
+import ValidationLabel from '../../entity-editor/common/validation-label';
+import {entityToOption} from '../../helpers/entity';
 
 
-const {Button, Col, Grid, Row} = bootstrap;
-const {formatDate, injectDefaultAliasName} = utilsHelper;
+const {Alert, Button, Col, Card, Form, Row} = bootstrap;
+const {injectDefaultAliasName} = utilsHelper;
 
 class ProfileForm extends React.Component {
 	constructor(props) {
@@ -41,55 +39,109 @@ class ProfileForm extends React.Component {
 		this.state = {
 			area: props.editor.area ?
 				props.editor.area : null,
+			areaId: props.editor.area ?
+				props.editor.area.id : null,
 			bio: props.editor.bio,
-			birthDate: props.editor.birthDate ?
-				formatDate(new Date(props.editor.birthDate)) : null,
-			gender: props.editor.gender ?
-				props.editor.gender : null,
+			error: null,
+			genderId: props.editor.gender ?
+				props.editor.gender.id : null,
 			genders: props.genders,
 			name: props.editor.name,
-			title: toString(props.editor.titleUnlockId),
+			titleId: props.editor.titleUnlockId,
 			titles: props.titles,
 			waiting: false
 		};
-
-		// React does not autobind non-React class methods
-		this.handleSubmit = this.handleSubmit.bind(this);
-		this.valid = this.valid.bind(this);
 	}
 
-	handleSubmit(evt) {
+	handleSubmit = async (evt) => {
 		evt.preventDefault();
 		if (!this.valid()) {
 			return;
 		}
-		const area = this.area.getValue();
-		const gender = this.gender.getValue();
-		const title = this.title && this.title.getValue();
-		const name = this.name.getValue().trim();
-		const bio = this.bio.getValue().trim();
-		const birthDate = this.birthDate.getValue();
+		if (!this.hasChanged()) {
+			return;
+		}
+		const {name, bio, areaId, titleId, genderId} = this.state;
 
 		const data = {
-			areaId: area ? parseInt(area.id, 10) : null,
-			bio,
-			birthDate,
-			genderId: gender ? parseInt(gender, 10) : null,
+			areaId,
+			bio: bio.trim(),
+			genderId,
 			id: this.props.editor.id,
-			name,
-			title
+			name: name.trim(),
+			title: titleId
 		};
-
-		request.post('/editor/edit/handler')
-			.send(data)
-			.promise()
-			.then(() => {
-				window.location.href = `/editor/${this.props.editor.id}`;
+		this.setState({
+			waiting: true
+		});
+		try {
+			const response = await fetch('/editor/edit/handler', {
+				body: JSON.stringify(data),
+				headers: {
+					'Content-Type': 'application/json; charset=utf-8'
+				},
+				method: 'POST'
 			});
+			if (!response.ok) {
+				const {error} = await response.json();
+				throw new Error(error ?? response.statusText);
+			}
+
+			window.location.href = `/editor/${this.props.editor.id}`;
+		}
+		catch (err) {
+			this.setState({
+				error: err,
+				waiting: false
+			});
+		}
+	};
+
+	valid = () => {
+		const {name} = this.state;
+		return Boolean(name?.length);
+	};
+
+	hasChanged = () => {
+		const {name, bio, areaId, titleId, genderId} = this.state;
+
+		return this.props.editor?.area?.id !== areaId ||
+			this.props.editor?.bio !== bio ||
+			this.props.editor?.gender?.id !== genderId ||
+			this.props.editor?.name !== name ||
+			this.props.editor?.titleUnlockId !== titleId;
+	};
+
+	handleValueChange =(event) => {
+		this.setState({[event.target.name]: event.target.value});
+	};
+
+	handleGenderChange= (option) => {
+		this.setState({genderId: option.id});
+	};
+
+	handleTitleChange = (option) => {
+		this.setState({titleId: option.unlockId});
+	};
+
+	handleAreaChange = (option) => {
+		this.setState({areaId: option.id});
+	};
+
+	getTitleOptionLabel(option) {
+		return option.title;
 	}
 
-	valid() {
-		return this.birthDate.valid() && this.name.getValue();
+	getTitleOptionValue(option) {
+		return option.unlockId;
+	}
+
+	getGenderOptionLabel(option) {
+		return option.name;
+	}
+
+	getGenderOptionValue(option) {
+		return option.id;
 	}
 
 	render() {
@@ -104,93 +156,105 @@ class ProfileForm extends React.Component {
 			title.unlockId = unlock.id;
 			return title;
 		});
+		const {area, genderId, titleId, name, bio} = this.state;
 
-		const initialDisplayName = this.state.name;
-		const initialGender = this.state.gender ? this.state.gender.id : null;
-		const initialBio = this.state.bio;
-		const initialArea = injectDefaultAliasName(this.state.area);
-		const initialBirthDate = this.state.birthDate;
+		const transformedArea = injectDefaultAliasName(area);
+
+		let errorComponent = null;
+		if (this.state.error) {
+			errorComponent =
+				<Alert variant="danger">{this.state.error.message}</Alert>;
+		}
+
+		const hasChanged = this.hasChanged();
+
+		const nameLabel = (
+			<ValidationLabel error={!this.valid()}>
+				Display Name
+			</ValidationLabel>
+		);
 
 		return (
-			<Grid>
-				<h1>Edit Profile</h1>
-				<Row>
-					<Col md={12}>
-						<p className="lead">Edit your public profile.</p>
-					</Col>
-				</Row>
-				<Row>
-					<Col
-						id="profileForm"
-						md={6}
-						mdOffset={3}
-					>
-						<form
-							className="form-horizontal"
-							onSubmit={this.handleSubmit}
-						>
-							{loadingElement}
-							<CustomInput
-								defaultValue={initialDisplayName}
-								label="Display Name"
-								ref={(ref) => this.name = ref}
-								type="text"
-							/>
-							<CustomInput
-								defaultValue={initialBio}
-								label="Bio"
-								ref={(ref) => this.bio = ref}
-								type="textarea"
-							/>
-							{titleOptions.length > 0 &&
-								<SelectWrapper
-									base={ReactSelect}
-									idAttribute="unlockId"
-									instanceId="title"
-									label="Title"
-									labelAttribute="title"
-									options={titleOptions}
-									placeholder="Select title"
-									ref={(ref) => this.title = ref}
-								/>
-							}
-							<SearchSelect
-								collection="area"
-								defaultValue={initialArea}
-								label="Area"
-								placeholder="Select area..."
-								ref={(ref) => this.area = ref}
-							/>
-							<SelectWrapper
-								base={ReactSelect}
-								defaultValue={initialGender}
-								idAttribute="id"
-								instanceId="gender"
-								label="Gender"
-								labelAttribute="name"
-								options={genderOptions}
-								placeholder="Select Gender"
-								ref={(ref) => this.gender = ref}
-							/>
-							<PartialDate
-								defaultValue={initialBirthDate}
-								label="Birth Date"
-								placeholder="YYYY-MM-DD"
-								ref={(ref) => this.birthDate = ref}
-							/>
-							<div className="form-group text-center">
-								<Button
-									bsSize="large"
-									bsStyle="primary"
-									type="submit"
-								>
-									Update!
-								</Button>
-							</div>
+			<div>
+				<Row className="margin-top-2">
+					{loadingElement}
+					<Col lg={{offset: 2, span: 8}}>
+						<form onSubmit={this.handleSubmit}>
+							<Card>
+								<Card.Header as="h3">
+									Edit your public profile
+								</Card.Header>
+								<Card.Body>
+									<Form.Group>
+										<Form.Label>{nameLabel}</Form.Label>
+										<Form.Control
+											defaultValue={name}
+											name="name"
+											type="text"
+											onChange={this.handleValueChange}
+										/>
+										<Form.Text muted>required</Form.Text>
+									</Form.Group>
+									<Form.Group>
+										<Form.Label>Bio</Form.Label>
+										<Form.Control
+											as="textarea"
+											defaultValue={bio}
+											name="bio"
+											onChange={this.handleValueChange}
+										/>
+									</Form.Group>
+									{titleOptions.length > 0 &&
+										<Form.Group>
+											<Form.Label>title</Form.Label>
+											<ReactSelect
+												classNamePrefix="react-select"
+												getOptionLabel={this.getTitleOptionLabel}
+												getOptionValue={this.getTitleOptionValue}
+												instanceId="title"
+												options={titleOptions}
+												placeholder="Select title"
+												value={titleOptions.filter((option) => option.unlockId === titleId)}
+												onChange={this.handleTitleChange}
+											/>
+										</Form.Group>
+
+									}
+									<SearchSelect
+										defaultValue={entityToOption(transformedArea)}
+										label="Area"
+										placeholder="Select area..."
+										type="area"
+										onChange={this.handleAreaChange}
+									/>
+									<Form.Group>
+										<Form.Label>Gender</Form.Label>
+										<ReactSelect
+											classNamePrefix="react-select"
+											getOptionLabel={this.getGenderOptionLabel}
+											getOptionValue={this.getGenderOptionValue}
+											options={genderOptions}
+											placeholder="Select Gender"
+											value={genderOptions.filter((option) => option.id === genderId)}
+											onChange={this.handleGenderChange}
+										/>
+									</Form.Group>
+									{errorComponent}
+								</Card.Body>
+								<Card.Footer>
+									<Button
+										disabled={!hasChanged}
+										type="submit"
+										variant="success"
+									>
+										Save changes
+									</Button>
+								</Card.Footer>
+							</Card>
 						</form>
 					</Col>
 				</Row>
-			</Grid>
+			</div>
 		);
 	}
 }
@@ -200,7 +264,6 @@ ProfileForm.propTypes = {
 	editor: PropTypes.shape({
 		area: validators.labeledProperty,
 		bio: PropTypes.string,
-		birthDate: PropTypes.object,
 		gender: PropTypes.shape({
 			id: PropTypes.number
 		}),

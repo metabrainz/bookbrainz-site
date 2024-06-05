@@ -16,10 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button} from 'react-bootstrap';
-import Icon from 'react-fontawesome';
+import {Badge, Button} from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
 
 /**
@@ -29,6 +30,8 @@ import React from 'react';
  * add new or edit existing identifiers.
  *
  * @param {Object} props - The properties passed to the component.
+ * @param {boolean} props.identifiersInvalid - Whether the inputs are valid
+ *        identifiers.
  * @param {number} props.numIdentifiers - The number of identifiers present in
  *        the IdentifierEditor - used to determine the correct button label.
  * @returns {ReactElement} React element containing the rendered
@@ -37,30 +40,42 @@ import React from 'react';
 function IdentifierButton({
 	identifiersInvalid,
 	numIdentifiers,
+	isUnifiedForm,
 	...props
 }) {
-	let text = 'Add identifiers (eg. MBID, Wikidata ID)…';
-	if (numIdentifiers === 1) {
-		text = 'Edit 1 identifier (eg. MBID, Wikidata ID)…';
+	let textComponent = 'Add identifiers (eg. ISBN, Wikidata ID)…';
+	if (!isUnifiedForm) {
+		if (numIdentifiers === 1) {
+			textComponent = 'Edit 1 identifier (eg. ISBN, Wikidata ID)…';
+		}
+		else if (numIdentifiers > 1) {
+			textComponent = `Edit ${numIdentifiers} identifiers (eg. ISBN, Wikidata ID)…`;
+		}
 	}
-	else if (numIdentifiers > 1) {
-		text = `Edit ${numIdentifiers} identifiers (eg. MBID, Wikidata ID)…`;
+	else if (numIdentifiers > 0) {
+		textComponent = <span>Edit identifiers <Badge className="ml-1" variant="light">{numIdentifiers}</Badge></span>;
 	}
-
+	else {
+		textComponent = 'Add Identifiers';
+	}
 	const iconElement = identifiersInvalid &&
-		<Icon className="margin-right-0-5 text-danger" name="times"/>;
+		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes}/>;
 
 	return (
-		<Button bsStyle="link" {...props}>
+		<Button variant={!isUnifiedForm && 'link'} {...props}>
 			{iconElement}
-			{text}
+			{textComponent}
 		</Button>
 	);
 }
 IdentifierButton.displayName = 'IdentifierButton';
 IdentifierButton.propTypes = {
 	identifiersInvalid: PropTypes.bool.isRequired,
+	isUnifiedForm: PropTypes.bool,
 	numIdentifiers: PropTypes.number.isRequired
+};
+IdentifierButton.defaultProps = {
+	isUnifiedForm: false
 };
 
 export default IdentifierButton;

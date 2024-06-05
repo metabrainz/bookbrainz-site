@@ -17,6 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {AppContainer} from 'react-hot-loader';
 import Layout from '../../containers/layout';
 import ProfileForm from '../../components/forms/profile';
 import React from 'react';
@@ -28,12 +29,26 @@ const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
 ReactDOM.hydrate(
-	<Layout {...extractLayoutProps(props)}>
-		<ProfileForm
-			editor={props.editor}
-			genders={props.genders}
-			titles={props.titles}
-		/>
-	</Layout>,
+	<AppContainer>
+		<Layout {...extractLayoutProps(props)}>
+			<ProfileForm
+				editor={props.editor}
+				genders={props.genders}
+				titles={props.titles}
+			/>
+		</Layout>
+	</AppContainer>,
 	document.getElementById('target')
 );
+
+
+/*
+ * As we are not exporting a component,
+ * we cannot use the react-hot-loader module wrapper,
+ * but instead directly use webpack Hot Module Replacement API
+ */
+
+if (module.hot) {
+	module.hot.accept();
+}
+

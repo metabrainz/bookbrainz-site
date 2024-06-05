@@ -17,20 +17,35 @@
  */
 
 import * as Immutable from 'immutable';
+
 import {
-	IDENTIFIER_TYPES, INVALID_ALIASES, INVALID_IDENTIFIERS,
-	INVALID_NAME_SECTION, INVALID_SUBMISSION_SECTION, VALID_ALIASES,
-	VALID_IDENTIFIERS, VALID_NAME_SECTION, VALID_SUBMISSION_SECTION
+	EMPTY_SUBMISSION_SECTION,
+	IDENTIFIER_TYPES,
+	INVALID_ALIASES,
+	INVALID_IDENTIFIERS,
+	INVALID_NAME_SECTION,
+	VALID_ALIASES,
+	VALID_IDENTIFIERS,
+	VALID_NAME_SECTION,
+	VALID_SUBMISSION_SECTION
 } from './data';
 import {
-	testValidateAreaFunc, testValidateBooleanFunc, testValidateDateFunc,
+	testValidateAreaFunc,
+	testValidateBooleanFunc,
+	testValidateDateFunc,
+	testValidateEndDateFunc,
 	testValidatePositiveIntegerFunc
 } from './helpers';
 import {
-	validateForm, validatePublisherSection, validatePublisherSectionArea,
-	validatePublisherSectionBeginDate, validatePublisherSectionEndDate,
-	validatePublisherSectionEnded, validatePublisherSectionType
+	validateForm,
+	validatePublisherSection,
+	validatePublisherSectionArea,
+	validatePublisherSectionBeginDate,
+	validatePublisherSectionEndDate,
+	validatePublisherSectionEnded,
+	validatePublisherSectionType
 } from '../../../../../src/client/entity-editor/validators/publisher';
+
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
@@ -48,7 +63,7 @@ function describeValidatePublisherSectionBeginDate() {
 }
 
 function describeValidatePublisherSectionEndDate() {
-	testValidateDateFunc(validatePublisherSectionEndDate, false);
+	testValidateEndDateFunc(validatePublisherSectionEndDate, false);
 }
 
 function describeValidatePublisherSectionEnded() {
@@ -61,8 +76,8 @@ function describeValidatePublisherSectionType() {
 
 const VALID_PUBLISHER_SECTION = {
 	area: null,
-	beginDate: null,
-	endDate: null,
+	beginDate: '',
+	endDate: '',
 	ended: true,
 	type: 1
 };
@@ -92,7 +107,7 @@ function describeValidatePublisherSection() {
 	it('should reject an Object with an invalid begin date', () => {
 		const result = validatePublisherSection({
 			...VALID_PUBLISHER_SECTION,
-			beginDate: '201'
+			beginDate: {day: '', month: '19', year: '2019'}
 		});
 		expect(result).to.be.false;
 	});
@@ -100,7 +115,7 @@ function describeValidatePublisherSection() {
 	it('should reject an Object with an invalid end date', () => {
 		const result = validatePublisherSection({
 			...VALID_PUBLISHER_SECTION,
-			endDate: '201'
+			endDate: {day: '', month: '19', year: '2019'}
 		});
 		expect(result).to.be.false;
 	});
@@ -134,7 +149,7 @@ function describeValidatePublisherSection() {
 	});
 
 	it('should pass a null value', () => {
-		const result = validatePublisherSection(null);
+		const result = validatePublisherSection({});
 		expect(result).to.be.true;
 	});
 }
@@ -205,20 +220,20 @@ function describeValidateForm() {
 		expect(result).to.be.false;
 	});
 
-	it('should reject an Object with an invalid submission section', () => {
+	it('should pass an Object with an empty submission section', () => {
 		const result = validateForm(
 			{
 				...validForm,
-				submissionSection: INVALID_SUBMISSION_SECTION
+				submissionSection: EMPTY_SUBMISSION_SECTION
 			},
 			IDENTIFIER_TYPES
 		);
-		expect(result).to.be.false;
+		expect(result).to.be.true;
 	});
 
 	const invalidForm = {
 		...validForm,
-		submissionSection: INVALID_SUBMISSION_SECTION
+		nameSection: INVALID_NAME_SECTION
 	};
 
 	it('should reject an invalid Immutable.Map', () => {

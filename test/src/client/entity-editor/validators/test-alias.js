@@ -126,7 +126,7 @@ function describeValidateAliases() {
 		expect(result).to.be.false;
 	});
 
-	it('should reject an Immutable.Map containing one invalid Immutable.Map', () => { // eslint-disable-line max-len
+	it('should reject an Immutable.Map containing one invalid Immutable.Map', () => {
 		const result = validateAliases(Immutable.fromJS(INVALID_ALIASES));
 		expect(result).to.be.false;
 	});

@@ -21,14 +21,12 @@
  * @module Achievement
  */
 
-/* eslint prefer-spread: 1, prefer-reflect: 1, no-magic-numbers: 0 */
-import * as error from './error';
-import Log from 'log';
-import Promise from 'bluebird';
-import config from './config';
+import * as error from '../../common/helpers/error';
 
+import {differenceInCalendarDays, parseISO} from 'date-fns';
+import {flattenDeep, isNil} from 'lodash';
+import log from 'log';
 
-const log = new Log(config.site.log);
 
 /**
  * Awards an Unlock type with awardAttribs if not already awarded
@@ -36,22 +34,13 @@ const log = new Log(config.site.log);
  * @param {object} awardAttribs - Values that are supplied to Unlock constructor
  * @returns {object} - 'already unlocked' or JSON of new unlock
  */
-function awardUnlock(UnlockType, awardAttribs) {
-	return new UnlockType(awardAttribs)
-		.fetch()
-		.then((award) => {
-			let unlockPromise;
-			if (award === null) {
-				unlockPromise = new UnlockType(awardAttribs)
-					.save(null, {method: 'insert'})
-					.then((unlock) => unlock.toJSON());
-			}
-			else {
-				unlockPromise = Promise.resolve('already unlocked');
-			}
-			return unlockPromise;
-		})
-		.catch((err) => Promise.reject(err));
+async function awardUnlock(UnlockType, awardAttribs) {
+	const award = await new UnlockType(awardAttribs).fetch({require: false});
+	if (award === null || typeof award === 'undefined') {
+		const unlock = await new UnlockType(awardAttribs).save(null, {method: 'insert'});
+		return unlock.toJSON();
+	}
+	return 'Already unlocked';
 }
 
 /**
@@ -63,35 +52,26 @@ function awardUnlock(UnlockType, awardAttribs) {
  * from awardUnlock
  * @memberof module:Achievement
  */
-function awardAchievement(orm, editorId, achievementName) {
+async function awardAchievement(orm, editorId, achievementName) {
 	const {AchievementType, AchievementUnlock} = orm;
-	return new AchievementType({name: achievementName})
-		.fetch()
-		.then((achievementTier) => {
-			let awardPromise;
-			if (achievementTier === null) {
-				awardPromise = Promise.reject(new error.AwardNotUnlockedError(
-					`Achievement ${achievementName} not found in database`
-				));
-			}
-			else {
-				const achievementAttribs = {
-					achievementId: achievementTier.id,
-					editorId
-				};
-				awardPromise =
-					awardUnlock(AchievementUnlock, achievementAttribs)
-						.then((unlock) => {
-							const out = {};
-							out[achievementName] = unlock;
-							return out;
-						})
-						.catch((err) => Promise.reject(
-							new error.AwardNotUnlockedError(err.message)
-						));
-			}
-			return awardPromise;
-		});
+	const achievementTier = await new AchievementType({name: achievementName})
+		.fetch({require: false});
+	if (achievementTier === null) {
+		throw new error.AwardNotUnlockedError(`Achievement ${achievementName} not found in database`);
+	}
+	else {
+		try {
+			const achievementAttribs = {
+				achievementId: achievementTier.id,
+				editorId
+			};
+			const unlock = await awardUnlock(AchievementUnlock, achievementAttribs);
+			return {[achievementName]: unlock};
+		}
+		catch (err) {
+			throw new error.AwardNotUnlockedError(err.message);
+		}
+	}
 }
 
 /**
@@ -103,43 +83,31 @@ function awardAchievement(orm, editorId, achievementName) {
  * awardUnlock or false if the title is not in the tier
  * @memberof module:Achievement
  */
-function awardTitle(orm, editorId, tier) {
+async function awardTitle(orm, editorId, tier) {
 	const {TitleType, TitleUnlock} = orm;
-	let titlePromise;
 	if (tier.titleName) {
-		titlePromise = new TitleType({title: tier.titleName})
-			.fetch()
-			.then((title) => {
-				let awardPromise;
-				if (title === null) {
-					awardPromise = Promise.reject(
-						new error.AwardNotUnlockedError(
-							`Title ${tier.titleName} not found in database`
-						)
-					);
-				}
-				else {
-					const titleAttribs = {
-						editorId,
-						titleId: title.id
-					};
-					awardPromise = awardUnlock(TitleUnlock, titleAttribs)
-						.then((unlock) => {
-							const out = {};
-							out[tier.titleName] = unlock;
-							return out;
-						})
-						.catch((err) => Promise.reject(
-							new error.AwardNotUnlockedError(err.message)
-						));
-				}
-				return awardPromise;
-			});
+		const title = await new TitleType({title: tier.titleName})
+			.fetch({require: false});
+		if (title === null) {
+			throw new error.AwardNotUnlockedError(`Title ${tier.titleName} not found in database`);
+		}
+		else {
+			try {
+				const titleAttribs = {
+					editorId,
+					titleId: title.id
+				};
+				const unlock = await awardUnlock(TitleUnlock, titleAttribs);
+				return {[tier.titleName]: unlock};
+			}
+			catch (err) {
+				throw new error.AwardNotUnlockedError(err.message);
+			}
+		}
 	}
 	else {
-		titlePromise = Promise.resolve(false);
+		return false;
 	}
-	return titlePromise;
 }
 
 /**
@@ -155,13 +123,19 @@ function awardTitle(orm, editorId, tier) {
  */
 function awardListToAwardObject(awardList) {
 	const track = {};
-	awardList.forEach((awardSet) => {
-		awardSet.forEach((award) => {
-			Object.keys(award).forEach((key) => {
-				track[key] = award[key];
-			});
+	if (awardList) {
+		awardList.forEach((awardSet) => {
+			if (!isNil(awardSet)) {
+				awardSet.forEach((award) => {
+					if (!isNil(award)) {
+						Object.keys(award).forEach((key) => {
+							track[key] = award[key];
+						});
+					}
+				});
+			}
 		});
-	});
+	}
 	return track;
 }
 
@@ -181,23 +155,22 @@ function awardListToAwardObject(awardList) {
  * @returns {object} - Returns a track of achievements keyed by achievement
  * name/title containing their respective unlockJSON each tier
  */
-function testTiers(orm, signal, editorId, tiers) {
-	const tierPromise = tiers.map((tier) => {
-		let tierOut;
+async function testTiers(orm, signal, editorId, tiers) {
+	const tierPromise = tiers.map(async (tier) => {
 		if (signal >= tier.threshold) {
-			tierOut = Promise.join(
-				awardAchievement(orm, editorId, tier.name),
-				awardTitle(orm, editorId, tier),
-				(achievementUnlock, title) => {
-					const out = [];
-					if (title) {
-						out.push(title);
-					}
-					out.push(achievementUnlock);
-					return out;
+			try {
+				const achievementUnlock = await awardAchievement(orm, editorId, tier.name);
+				const title = await awardTitle(orm, editorId, tier);
+				const out = [];
+				if (title) {
+					out.push(title);
 				}
-			)
-				.catch((err) => log.debug(err));
+				out.push(achievementUnlock);
+				return out;
+			}
+			catch (err) {
+				return log.debug(err);
+			}
 		}
 		else {
 			const out = {};
@@ -205,12 +178,11 @@ function testTiers(orm, signal, editorId, tiers) {
 			if (tier.titleName) {
 				out[tier.titleName] = false;
 			}
-			tierOut = [out];
+			return [out];
 		}
-		return tierOut;
 	});
-	return Promise.all(tierPromise)
-		.then((awardList) => awardListToAwardObject(awardList));
+	const awardList = await Promise.all(tierPromise);
+	return awardListToAwardObject(awardList);
 }
 
 /**
@@ -221,8 +193,8 @@ function testTiers(orm, signal, editorId, tiers) {
  * @param {int} editor - Editor id being queried
  * @returns {int} - Number of revisions of type (type)
  */
-function getTypeCreation(revisionType, revisionString, editor) {
-	return revisionType
+export async function getTypeCreation(revisionType, revisionString, editor) {
+	const out = await revisionType
 		.query((qb) => {
 			qb.innerJoin('bookbrainz.revision',
 				'bookbrainz.revision.id',
@@ -236,218 +208,234 @@ function getTypeCreation(revisionType, revisionString, editor) {
 				`bookbrainz.${revisionString}.id`);
 			qb.whereNull('bookbrainz.revision_parent.parent_id');
 		})
-		.fetchAll()
-		.then((out) => out.length);
+		.fetchAll({require: false});
+	return out.length;
 }
 
-function processRevisionist(orm, editorId) {
+async function processRevisionist(orm, editorId) {
 	const {Editor} = orm;
-	return new Editor({id: editorId})
-		.fetch()
-		.then((editor) => {
-			const revisions = editor.get('revisionsApplied');
-			const tiers = [
-				{
-					name: 'Revisionist III',
-					threshold: 250,
-					titleName: 'Revisionist'
-				},
-				{
-					name: 'Revisionist II',
-					threshold: 50
-				},
-				{
-					name: 'Revisionist I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, revisions, editorId, tiers);
-		});
+	const editor = await new Editor({id: editorId})
+		.fetch({require: false});
+	const revisions = editor.get('revisionsApplied');
+	const tiers = [
+		{
+			name: 'Revisionist III',
+			threshold: 250,
+			titleName: 'Revisionist'
+		},
+		{
+			name: 'Revisionist II',
+			threshold: 50
+		},
+		{
+			name: 'Revisionist I',
+			threshold: 1
+		}
+	];
+	return testTiers(orm, revisions, editorId, tiers);
 }
 
-function processCreatorCreator(orm, editorId) {
-	const {CreatorRevision} = orm;
-	return getTypeCreation(new CreatorRevision(), 'creator_revision', editorId)
-		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Creator Creator III',
-					threshold: 100,
-					titleName: 'Creator Creator'
-				},
-				{
-					name: 'Creator Creator II',
-					threshold: 10
-				},
-				{
-					name: 'Creator Creator I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+async function processAuthorCreator(orm, editorId) {
+	const {AuthorRevision} = orm;
+	const rowCount = await getTypeCreation(new AuthorRevision(), 'author_revision', editorId);
+	const tiers = [
+		{
+			name: 'Author Creator III',
+			threshold: 100,
+			titleName: 'Author Creator'
+		},
+		{
+			name: 'Author Creator II',
+			threshold: 10
+		},
+		{
+			name: 'Author Creator I',
+			threshold: 1
+		}
+	];
+	return testTiers(orm, rowCount, editorId, tiers);
 }
 
-function processLimitedEdition(orm, editorId) {
+async function processLimitedEdition(orm, editorId) {
 	const {EditionRevision} = orm;
-	return getTypeCreation(new EditionRevision(), 'edition_revision', editorId)
-		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Limited Edition III',
-					threshold: 100,
-					titleName: 'Limited Edition'
-				},
-				{
-					name: 'Limited Edition II',
-					threshold: 10
-				},
-				{
-					name: 'Limited Edition I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+	const rowCount = await getTypeCreation(new EditionRevision(), 'edition_revision', editorId);
+	const tiers = [
+		{
+			name: 'Limited Edition III',
+			threshold: 100,
+			titleName: 'Limited Edition'
+		},
+		{
+			name: 'Limited Edition II',
+			threshold: 10
+		},
+		{
+			name: 'Limited Edition I',
+			threshold: 1
+		}
+	];
+	return testTiers(orm, rowCount, editorId, tiers);
 }
 
-function processPublisher(orm, editorId) {
-	const {PublicationRevision} = orm;
-	return getTypeCreation(new PublicationRevision(),
-		'publication_revision',
-		editorId)
-		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Publisher III',
-					threshold: 100,
-					titleName: 'Publisher'
-				},
-				{
-					name: 'Publisher II',
-					threshold: 10
-				},
-				{
-					name: 'Publisher I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+async function processPublisher(orm, editorId) {
+	const {EditionGroupRevision} = orm;
+	const rowCount = await getTypeCreation(new EditionGroupRevision(),
+		'edition_group_revision',
+		editorId);
+	const tiers = [
+		{
+			name: 'Publisher III',
+			threshold: 100,
+			titleName: 'Publisher'
+		},
+		{
+			name: 'Publisher II',
+			threshold: 10
+		},
+		{
+			name: 'Publisher I',
+			threshold: 1
+		}
+	];
+	return testTiers(orm, rowCount, editorId, tiers);
 }
 
-function processPublisherCreator(orm, editorId) {
+async function processPublisherCreator(orm, editorId) {
 	const {PublisherRevision} = orm;
-	return getTypeCreation(new PublisherRevision(),
+	const rowCount = await getTypeCreation(new PublisherRevision(),
 		'publisher_revision',
-		editorId)
-		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Publisher Creator III',
-					threshold: 100,
-					titleName: 'Publisher Creator'
-				},
-				{
-					name: 'Publisher Creator II',
-					threshold: 10
-				},
-				{
-					name: 'Publisher Creator I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+		editorId);
+	const tiers = [
+		{
+			name: 'Publisher Creator III',
+			threshold: 100,
+			titleName: 'Publisher Creator'
+		},
+		{
+			name: 'Publisher Creator II',
+			threshold: 10
+		},
+		{
+			name: 'Publisher Creator I',
+			threshold: 1
+		}
+	];
+	return testTiers(orm, rowCount, editorId, tiers);
 }
 
-function processWorkerBee(orm, editorId) {
+async function processWorkerBee(orm, editorId) {
 	const {WorkRevision} = orm;
-	return getTypeCreation(new WorkRevision(),
+	const rowCount = await getTypeCreation(new WorkRevision(),
 		'work_revision',
-		editorId)
-		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Worker Bee III',
-					threshold: 100,
-					titleName: 'Worker Bee'
-				},
-				{
-					name: 'Worker Bee II',
-					threshold: 10
-				},
-				{
-					name: 'Worker Bee I',
-					threshold: 1
-				}
-			];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+		editorId);
+	const tiers = [
+		{
+			name: 'Worker Bee III',
+			threshold: 100,
+			titleName: 'Worker Bee'
+		},
+		{
+			name: 'Worker Bee II',
+			threshold: 10
+		},
+		{
+			name: 'Worker Bee I',
+			threshold: 1
+		}
+	];
+	return testTiers(orm, rowCount, editorId, tiers);
 }
 
-function processSprinter(orm, editorId) {
+async function processSeriesCreator(orm, editorId) {
+	const {SeriesRevision} = orm;
+	const rowCount = await getTypeCreation(new SeriesRevision(),
+		'series_revision',
+		editorId);
+	const tiers = [
+		{
+			name: 'Series Creator III',
+			threshold: 100,
+			titleName: 'Series Creator'
+		},
+		{
+			name: 'Series Creator II',
+			threshold: 10
+		},
+		{
+			name: 'Series Creator I',
+			threshold: 1
+		}
+	];
+	return testTiers(orm, rowCount, editorId, tiers);
+}
+
+async function processSprinter(orm, editorId) {
 	const {bookshelf} = orm;
 	const rawSql =
 		`SELECT * from bookbrainz.revision WHERE author_id=${editorId} \
 		and created_at > (SELECT CURRENT_DATE - INTERVAL '1 hour');`;
 
-	return bookshelf.knex.raw(rawSql)
-		.then((out) => {
-			const tiers = [
-				{
-					name: 'Sprinter',
-					threshold: 10,
-					titleName: 'Sprinter'
-				}
-			];
-			return testTiers(orm, out.rowCount, editorId, tiers);
-		});
+	const out = await bookshelf.knex.raw(rawSql);
+	const tiers = [
+		{
+			name: 'Sprinter',
+			threshold: 10,
+			titleName: 'Sprinter'
+		}
+	];
+	return testTiers(orm, out.rowCount, editorId, tiers);
 }
 
 /**
- * Gets number of distinct days the editor created revisions within specified
+ * Gets number of consecutive days from today the editor created revisions upto a specified
  * time limit
  * @param {object} orm - the BookBrainz ORM, initialized during app setup
  * @param {int} editorId - Editor to query on
  * @param {int} days - Number of days before today to collect edits from
- * @returns {int} - Number of days edits were performed on
+ * @returns {int} - Number of consecutive days edits were performed on
  */
-function getEditsInDays(orm, editorId, days) {
+export async function getConsecutiveDaysWithEdits(orm, editorId, days) {
 	const {bookshelf} = orm;
 	const rawSql =
 		`SELECT DISTINCT created_at::date from bookbrainz.revision \
 		WHERE author_id=${editorId} \
 		and created_at > (SELECT CURRENT_DATE - INTERVAL '${days} days');`;
 
-	return bookshelf.knex.raw(rawSql)
-		.then((out) => out.rowCount);
+	const out = await bookshelf.knex.raw(rawSql);
+	const dateList = out.rows.map(row => parseISO(row.created_at));
+	let countDays = 0;
+	let lastDate = new Date();
+	// count number of consecutive days starting from today
+	for (let i = dateList.length - 1; i >= 0; i--) {
+		if (differenceInCalendarDays(lastDate, dateList[i]) > 1) {
+			break;
+		}
+		countDays++;
+		lastDate = dateList[i];
+	}
+	return countDays;
 }
 
-function processFunRunner(orm, editorId) {
-	return getEditsInDays(orm, editorId, 6)
-		.then((rowCount) => {
-			const tiers = [
-				{
-					name: 'Fun Runner',
-					threshold: 7,
-					titleName: 'Fun Runner'
-				}
-			];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+async function processFunRunner(orm, editorId) {
+	const rowCount = await getConsecutiveDaysWithEdits(orm, editorId, 6);
+	const tiers = [
+		{
+			name: 'Fun Runner',
+			threshold: 7,
+			titleName: 'Fun Runner'
+		}
+	];
+	return testTiers(orm, rowCount, editorId, tiers);
 }
 
-function processMarathoner(orm, editorId) {
-	return getEditsInDays(orm, editorId, 29)
-		.then((rowCount) => {
-			const tiers = [{
-				name: 'Marathoner',
-				threshold: 30,
-				titleName: 'Marathoner'
-			}];
-			return testTiers(orm, rowCount, editorId, tiers);
-		});
+async function processMarathoner(orm, editorId) {
+	const rowCount = await getConsecutiveDaysWithEdits(orm, editorId, 29);
+	const tiers = [{
+		name: 'Marathoner',
+		threshold: 30,
+		titleName: 'Marathoner'
+	}];
+	return testTiers(orm, rowCount, editorId, tiers);
 }
 
 /**
@@ -473,71 +461,63 @@ function achievementToUnlockId(achievementUnlock) {
  * @param {int} revisionId - Revision to get release date of
  * @returns {int} - Days since edition was released
  */
-function getEditionDateDifference(orm, revisionId) {
+async function getEditionDateDifference(orm, revisionId) {
 	const {EditionRevision} = orm;
-	return new EditionRevision({id: revisionId}).fetch()
-		.then((edition) => edition.related('data').fetch())
-		.then((data) => data.related('releaseEventSet').fetch())
-		.then(
-			(releaseEventSet) =>
-				releaseEventSet.related('releaseEvents').fetch()
-		)
-		.then((releaseEvents) => {
-			let differencePromise;
-			if (releaseEvents.length > 0) {
-				const msInOneDay = 86400000;
-				const attribs = releaseEvents.models[0].attributes;
-				const date = new Date(
-					attribs.year,
-					attribs.month - 1,
-					attribs.day
-				);
-				const now = new Date(Date.now());
-				differencePromise =
-					Math.round((date.getTime() - now.getTime()) / msInOneDay);
-			}
-			else {
-				differencePromise =
-					Promise.reject(new Error('no date attribute'));
-			}
-			return differencePromise;
-		})
-		.catch(() => Promise.reject(new Error('no date attribute')));
+	try {
+		const edition = await new EditionRevision({id: revisionId}).fetch({withRelated: 'data.releaseEventSet.releaseEvents'});
+		const editionJSON = edition.toJSON();
+		const {releaseEvents} = editionJSON.data.releaseEventSet;
+
+		if (releaseEvents.length > 0) {
+			const msInOneDay = 86400000;
+			const attribs = releaseEvents[0];
+			const date = new Date(
+				attribs.year,
+				attribs.month - 1,
+				attribs.day
+			);
+			const now = Date.now();
+			return Math.round((date.getTime() - now) / msInOneDay);
+		}
+
+		throw new Error('no date attribute');
+	}
+	catch (err) {
+		throw new Error('no date attribute');
+	}
+}
+async function processTimeTraveller(orm, editorId, revisionId) {
+	try {
+		const diff = await getEditionDateDifference(orm, revisionId);
+		const tiers = [{
+			name: 'Time Traveller',
+			threshold: 0,
+			titleName: 'Time Traveller'
+		}];
+		return testTiers(orm, diff, editorId, tiers);
+	}
+	catch (err) {
+		return {'Time Traveller': err};
+	}
 }
 
-function processTimeTraveller(orm, editorId, revisionId) {
-	return getEditionDateDifference(orm, revisionId)
-		.then((diff) => {
+async function processHotOffThePress(orm, editorId, revisionId) {
+	try {
+		const diff = await getEditionDateDifference(orm, revisionId);
+		if (diff < 0) {
 			const tiers = [{
-				name: 'Time Traveller',
-				threshold: 0,
-				titleName: 'Time Traveller'
+				name: 'Hot Off the Press',
+				threshold: -7,
+				titleName: 'Hot Off the Press'
 			}];
 			return testTiers(orm, diff, editorId, tiers);
-		})
-		.catch((err) => ({'Time Traveller': err}));
-}
+		}
 
-function processHotOffThePress(orm, editorId, revisionId) {
-	return getEditionDateDifference(orm, revisionId)
-		.then((diff) => {
-			let achievementPromise;
-			if (diff < 0) {
-				const tiers = [{
-					name: 'Hot Off the Press',
-					threshold: -7,
-					titleName: 'Hot Off the Press'
-				}];
-				achievementPromise = testTiers(orm, diff, editorId, tiers);
-			}
-			else {
-				achievementPromise = Promise.resolve(
-					{'Hot Off the Press': false}
-				);
-			}
-			return achievementPromise;
-		})
-		.catch((err) => ({'Hot Off the Press': err}));
+		return	{'Hot Off the Press': false};
+	}
+	catch (err) {
+		return {'Hot Off the Press': err};
+	}
 }
 
 /**
@@ -546,35 +526,43 @@ function processHotOffThePress(orm, editorId, revisionId) {
  * @param {int} editorId - Editor to get views for
  * @returns {int} - Number of views user has
  */
-function getEntityVisits(orm, editorId) {
+export async function getEntityVisits(orm, editorId) {
 	const {EditorEntityVisits} = orm;
-	return new EditorEntityVisits()
-		.where('editor_id', editorId)
-		.fetchAll({require: true})
-		.then((visits) => visits.length);
+	try {
+		const visits = await new EditorEntityVisits()
+			.where('editor_id', editorId)
+			.fetchAll({require: true});
+		return visits.length;
+	}
+	catch (err) {
+		return 0;
+	}
 }
 
-function processExplorer(orm, editorId) {
-	return getEntityVisits(editorId)
-		.then((visits) => {
-			const tiers = [
-				{
-					name: 'Explorer I',
-					threshold: 10
-				},
-				{
-					name: 'Explorer II',
-					threshold: 100
-				},
-				{
-					name: 'Explorer III',
-					threshold: 1000,
-					titleName: 'Explorer'
-				}
-			];
-			return testTiers(orm, visits, editorId, tiers);
-		})
-		.catch((err) => ({Explorer: err}));
+async function processExplorer(orm, editorId) {
+	try {
+		const visits = await getEntityVisits(orm, editorId);
+
+		const tiers = [
+			{
+				name: 'Explorer I',
+				threshold: 10
+			},
+			{
+				name: 'Explorer II',
+				threshold: 100
+			},
+			{
+				name: 'Explorer III',
+				threshold: 1000,
+				titleName: 'Explorer'
+			}
+		];
+		return testTiers(orm, visits, editorId, tiers);
+	}
+	catch (err) {
+		return {Explorer: err};
+	}
 }
 
 
@@ -599,66 +587,49 @@ export async function processPageVisit(orm, userId) {
  * @returns {object} - Output of each achievement test as well as an alert
  * containing id's for each unlocked achievement in .alert
  */
-export function processEdit(orm, userId, revisionId) {
-	return Promise.join(
-		processRevisionist(orm, userId),
-		processCreatorCreator(orm, userId),
-		processLimitedEdition(orm, userId),
-		processPublisher(orm, userId),
-		processPublisherCreator(orm, userId),
-		processWorkerBee(orm, userId),
-		processSprinter(orm, userId),
-		processFunRunner(orm, userId),
-		processMarathoner(orm, userId),
-		processTimeTraveller(orm, userId, revisionId),
-		processHotOffThePress(orm, userId, revisionId),
-		(
-			revisionist,
-			creatorCreator,
-			limitedEdition,
-			publisher,
-			publisherCreator,
-			workerBee,
-			sprinter,
-			funRunner,
-			marathoner,
-			timeTraveller,
-			hotOffThePress
-		) => {
-			let alert = [];
-			alert.push(
-				achievementToUnlockId(revisionist),
-				achievementToUnlockId(creatorCreator),
-				achievementToUnlockId(limitedEdition),
-				achievementToUnlockId(publisher),
-				achievementToUnlockId(publisherCreator),
-				achievementToUnlockId(workerBee),
-				achievementToUnlockId(sprinter),
-				achievementToUnlockId(funRunner),
-				achievementToUnlockId(marathoner),
-				achievementToUnlockId(timeTraveller),
-				achievementToUnlockId(hotOffThePress)
-			);
-			alert = [].concat.apply([], alert);
-			alert = alert.join(',');
-			return {
-				alert,
-				creatorCreator,
-				funRunner,
-				hotOffThePress,
-				limitedEdition,
-				marathoner,
-				publisher,
-				publisherCreator,
-				revisionist,
-				sprinter,
-				timeTraveller,
-				workerBee
-			};
-		}
+export async function processEdit(orm, userId, revisionId) {
+	const revisionist = await processRevisionist(orm, userId);
+	const authorCreator = await processAuthorCreator(orm, userId);
+	const limitedEdition = await processLimitedEdition(orm, userId);
+	const publisher = await processPublisher(orm, userId);
+	const publisherCreator = await processPublisherCreator(orm, userId);
+	const workerBee = await processWorkerBee(orm, userId);
+	const seriesCreator = await processSeriesCreator(orm, userId);
+	const sprinter = await processSprinter(orm, userId);
+	const funRunner = await processFunRunner(orm, userId);
+	const marathoner = await processMarathoner(orm, userId);
+	const timeTraveller = await processTimeTraveller(orm, userId, revisionId);
+	const hotOffThePress = await processHotOffThePress(orm, userId, revisionId);
+	let alert = [];
+	alert.push(
+		achievementToUnlockId(revisionist),
+		achievementToUnlockId(authorCreator),
+		achievementToUnlockId(limitedEdition),
+		achievementToUnlockId(publisher),
+		achievementToUnlockId(publisherCreator),
+		achievementToUnlockId(workerBee),
+		achievementToUnlockId(seriesCreator),
+		achievementToUnlockId(sprinter),
+		achievementToUnlockId(funRunner),
+		achievementToUnlockId(marathoner),
+		achievementToUnlockId(timeTraveller),
+		achievementToUnlockId(hotOffThePress)
 	);
-}
-
-export function processComment() {
-	// empty
+	alert = flattenDeep(alert);
+	alert = alert.join(',');
+	return {
+		alert,
+		authorCreator,
+		funRunner,
+		hotOffThePress,
+		limitedEdition,
+		marathoner,
+		publisher,
+		publisherCreator,
+		revisionist,
+		seriesCreator,
+		sprinter,
+		timeTraveller,
+		workerBee
+	};
 }

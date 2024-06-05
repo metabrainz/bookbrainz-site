@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"jsx": "preserve",
+		"lib": ["ESNext", "DOM"],
+		"module": "CommonJS",
+		"noEmit": true,
+		"skipLibCheck": true,
+		"strict": false,
+		"target": "ESNext"
+	}
+}

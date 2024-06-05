@@ -17,29 +17,47 @@
  */
 
 import * as entityHelper from '../../../helpers/entity';
-
+import {Button} from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
 
 
 const {
-	getEntityDisambiguation, getEntityLabel
+	getEntitySecondaryAliases, getEntityDisambiguation, getEntityLabel
 } = entityHelper;
 
-
-function EntityTitle({entity}) {
-	const label = getEntityLabel(entity);
+function EntityTitle({entity, handleModalToggle}) {
+	const aliases = getEntitySecondaryAliases(entity);
 	const disambiguation = getEntityDisambiguation(entity);
+	const label = getEntityLabel(entity);
 	return (
 		<div>
-			<h1>{label}{disambiguation}</h1>
-			<hr/>
+			<h1>
+				{label}{disambiguation}
+				{handleModalToggle &&
+					<Button
+						className="float-right"
+						variant="success"
+						onClick={handleModalToggle}
+					>
+						<FontAwesomeIcon icon={faPlus}/>
+						{'  Add a review'}
+					</Button>
+				}
+			</h1>
+			{aliases}
 		</div>
 	);
 }
 EntityTitle.displayName = 'EntityTitle';
 EntityTitle.propTypes = {
-	entity: PropTypes.object.isRequired
+	entity: PropTypes.object.isRequired,
+	handleModalToggle: PropTypes.func
+};
+EntityTitle.defaultProps = {
+	handleModalToggle: null
 };
 
 export default EntityTitle;

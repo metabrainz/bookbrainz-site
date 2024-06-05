@@ -4,11 +4,20 @@
 /lib
 /src/client/stylesheets/bootstrap
 /src/client/stylesheets/font-awesome
-/src/client/stylesheets/bootstrap
-/src/client/stylesheets/font-awesome
 /src/client/stylesheets/react-select
 /reports
 /config/config.json
+/config/config.local.json
+
+# Directory designated to store local compose overrides and related files
+/local/
+
+# react-hot-loader files
+/static/hot
+*.hot-update.js
+*.hot-update.json
+/static/**/*.jpg
+/static/**/*.svg
 
 ### Node ###
 # Logs
@@ -32,6 +41,9 @@ coverage
 
 # nyc test coverage
 .nyc_output
+
+# mocha CI test coverage
+test-results.json
 
 # Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
@@ -72,3 +84,12 @@ typings/
 
 # Tern analysis server config
 .tern-project
+
+# IntelliJ project files
+.idea/
+
+# Visual Studio Code config files
+.vscode
+
+# Git revision file used in the website
+.git-revision
