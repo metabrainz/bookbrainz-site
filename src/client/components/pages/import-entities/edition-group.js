@@ -19,6 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 import * as importHelper from '../../../helpers/import-entity';
 
+import {ENTITY_TYPE_ICONS} from '../../../helpers/entity';
 import {EditionGroupAttributes} from '../entities/edition-group';
 import EntityImage from '../entities/image';
 import EntityLinks from '../entities/links';
@@ -40,7 +41,7 @@ function ImportEditionGroupDisplayPage({importEntity, identifierTypes}) {
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" md={2}>
 					<EntityImage
-						backupIcon="th-list"
+						backupIcon={ENTITY_TYPE_ICONS.EditionGroup}
 						imageUrl={importEntity.imageUrl}
 					/>
 				</Col>

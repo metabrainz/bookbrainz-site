@@ -19,6 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 import * as importHelper from '../../../helpers/import-entity';
 
+import {ENTITY_TYPE_ICONS} from '../../../helpers/entity';
 import EntityImage from '../entities/image';
 import EntityLinks from '../entities/links';
 import ImportFooter from './footer';
@@ -41,7 +42,7 @@ function ImportPublisherDisplayPage({importEntity, identifierTypes}) {
 			<Row className="entity-display-background">
 				<Col className="entity-display-image-box text-center" md={2}>
 					<EntityImage
-						backupIcon="university"
+						backupIcon={ENTITY_TYPE_ICONS.Publisher}
 						imageUrl={importEntity.imageUrl}
 					/>
 				</Col>
