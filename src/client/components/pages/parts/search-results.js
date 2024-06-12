@@ -28,7 +28,7 @@ import React from 'react';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
-const {Alert, Badge, Button, ButtonGroup, Label, Table} = bootstrap;
+const {Alert, Badge, Button, ButtonGroup, Table} = bootstrap;
 
 // Main entities have a BBID but some other indexed types
 // have an ID field instead (collections, editors, areas)
@@ -193,7 +193,7 @@ class SearchResults extends React.Component {
 									/> : null
 							}
 							{genEntityIconHTMLElement(result.type)}{_startCase(result.type)}
-							{isImport && <Label>Imported</Label>}
+							{isImport && <Badge>Imported</Badge>}
 						</td>
 					}
 					<td>

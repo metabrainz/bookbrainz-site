@@ -26,7 +26,7 @@ import React from 'react';
 import request from 'superagent-bluebird-promise';
 
 
-const {Alert, Button, ButtonGroup, Col, Panel, Row} = bootstrap;
+const {Alert, Button, ButtonGroup, Card, Col, Row} = bootstrap;
 
 class DiscardImportEntity extends React.Component {
 	constructor(props) {
@@ -76,8 +76,6 @@ class DiscardImportEntity extends React.Component {
 
 		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
 
-		const headerComponent = <h3>Confirm Discard</h3>;
-
 		const entityName =
 			importEntity.defaultAlias ?
 				importEntity.defaultAlias.name : '(unnamed)';
@@ -89,22 +87,22 @@ class DiscardImportEntity extends React.Component {
 					{loadingComponent}
 					<Col md={6} mdOffset={3}>
 						{errorComponent}
-						<Panel
-							bsStyle="danger"
-							header={headerComponent}
-						>
-							We really appreciate your efforts in helping us
-							improve our database. The {importEntity.type}
-							<b className="color-red"> {entityName} </b>
-							has been automatically added to
-							our records and will be permanently deleted in
-							case multiple editors find it to be corrupt.
-							If you’re sure that the {importEntity.type}
-							<b className="color-red"> {entityName} </b>
-							should be discarded, please press the confirm
-							button below. Other wise click cancel to get back
-							to the imported entity page.
-						</Panel>
+						<Card bg="danger">
+							<Card.Header>Confirm Discard</Card.Header>
+							<Card.Body>
+								We really appreciate your efforts in helping us
+								improve our database. The {importEntity.type}
+								<b className="color-red"> {entityName} </b>
+								has been automatically added to
+								our records and will be permanently deleted in
+								case multiple editors find it to be corrupt.
+								If you’re sure that the {importEntity.type}
+								<b className="color-red"> {entityName} </b>
+								should be discarded, please press the confirm
+								button below. Other wise click cancel to get back
+								to the imported entity page.
+							</Card.Body>
+						</Card>
 						<ButtonGroup justified className="margin-top-2">
 							<Button
 								bsStyle="default"

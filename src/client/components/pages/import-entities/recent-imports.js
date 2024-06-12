@@ -24,7 +24,7 @@ import RecentImportsTable from '../parts/recent-import-results';
 import request from 'superagent-bluebird-promise';
 
 
-const {PageHeader, Pagination} = bootstrap;
+const {Pagination} = bootstrap;
 
 class RecentImports extends React.Component {
 	constructor(props) {
@@ -80,7 +80,7 @@ class RecentImports extends React.Component {
 		const {currentPage, limit, totalResults, paginationProps} = this.state;
 		return (
 			<div>
-				<PageHeader>Recent Imports</PageHeader>
+				<h1>Recent Imports</h1>
 				<h4> The following data has been imported recently. </h4>
 				<RecentImportsTable
 					offset={this.state.offset}
