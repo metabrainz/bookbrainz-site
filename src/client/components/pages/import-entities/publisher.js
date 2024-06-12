@@ -61,9 +61,8 @@ function ImportPublisherDisplayPage({importEntity, identifierTypes}) {
 					bsStyle="success"
 					className="text-center font-weight-bold"
 				>
-					{`This ${_.startCase(importEntity.type.toLowerCase())} `}
-					{'has been automatically added. Kindly approve/discard it '}
-					{'to help us improve our data.'}
+					This {_.startCase(importEntity.type.toLowerCase())} has been automatically added.{' '}
+					Kindly approve/discard it to help us improve our data.
 				</Alert>
 			</Row>
 			<ImportFooter

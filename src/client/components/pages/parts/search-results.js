@@ -173,7 +173,7 @@ class SearchResults extends React.Component {
 				`//musicbrainz.org/area/${id}` :
 				`/${_kebabCase(result.type)}/${id}`;
 			if (isImport) {
-				link = '/imports' + link;
+				link = `/imports${link}`;
 			}
 
 			/* eslint-disable react/jsx-no-bind */
@@ -197,7 +197,7 @@ class SearchResults extends React.Component {
 						</td>
 					}
 					<td>
-						<a href={link} className={isImport ? 'color-red' : undefined}>
+						<a className={isImport ? 'color-red' : ''} href={link}>
 							{name} {disambiguation}
 						</a>
 						{
