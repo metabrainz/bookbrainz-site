@@ -19,7 +19,8 @@
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../../helpers/utils';
 
-import Icon from '@fortawesome/react-fontawesome';
+import {faCheck, faPencil, faRemove} from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -46,14 +47,14 @@ function ImportFooter({importUrl, importedAt, source, hasVoted}) {
 							href={`${importUrl}/approve`}
 							title="Approve"
 						>
-							<Icon name="check"/>&nbsp;Approve
+							<FontAwesomeIcon icon={faCheck}/>&nbsp;Approve
 						</Button>
 						<Button
 							bsStyle="warning"
 							href={`${importUrl}/edit`}
 							title="Edit & Approve"
 						>
-							<Icon name="pencil"/>&nbsp;Edit & Approve
+							<FontAwesomeIcon icon={faPencil}/>&nbsp;Edit & Approve
 						</Button>
 						<Button
 							bsStyle="danger"
@@ -62,7 +63,7 @@ function ImportFooter({importUrl, importedAt, source, hasVoted}) {
 							overlay={hasVoted ? tooltip : null}
 							title="Discard"
 						>
-							<Icon name="remove"/>&nbsp;Discard
+							<FontAwesomeIcon icon={faRemove}/>&nbsp;Discard
 						</Button>
 					</ButtonGroup>
 				</Col>
