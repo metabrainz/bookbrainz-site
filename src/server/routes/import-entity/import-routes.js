@@ -35,7 +35,6 @@ import {getValidator} from '../../../client/entity-editor/helpers';
 import importEntityPages from
 	'../../../client/components/pages/import-entities';
 import {transformForm} from './transform-form';
-import uuid from 'uuid';
 
 
 export function displayImport(req, res) {
