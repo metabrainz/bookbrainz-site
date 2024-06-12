@@ -21,6 +21,7 @@ import * as achievement from '../../helpers/achievement';
 import * as error from '../../../common/helpers/error';
 import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../../common/helpers/search';
+import type {Request, Response} from 'express';
 import {escapeProps, generateProps} from '../../helpers/props';
 import Layout from '../../../client/containers/layout';
 import React from 'react';
@@ -34,10 +35,11 @@ import {getImportUrl} from '../../../client/helpers/import-entity';
 import {getValidator} from '../../../client/entity-editor/helpers';
 import importEntityPages from
 	'../../../client/components/pages/import-entities';
+import target from '../../templates/target';
 import {transformForm} from './transform-form';
 
 
-export function displayImport(req, res) {
+export function displayImport(req: Request, res: Response) {
 	const {importEntity} = res.locals;
 
 	// Get unique identifier types for display
@@ -59,11 +61,11 @@ export function displayImport(req, res) {
 			</Layout>
 		);
 
-		res.render('target', {
+		res.send(target({
 			markup,
 			props: escapeProps(props),
 			script: '/js/import-entity/import-entity.js'
-		});
+		}));
 	}
 	else {
 		throw new Error(
@@ -72,7 +74,7 @@ export function displayImport(req, res) {
 	}
 }
 
-export function displayDiscardImportEntity(req, res) {
+export function displayDiscardImportEntity(req: Request, res: Response) {
 	const {importEntity} = res.locals;
 	const importUrl = getImportUrl(importEntity);
 
@@ -90,14 +92,14 @@ export function displayDiscardImportEntity(req, res) {
 		</Layout>
 	);
 
-	res.render('target', {
+	res.send(target({
 		markup,
 		props: escapeProps(props),
 		script: '/js/import-entity/discard-import-entity.js'
-	});
+	}));
 }
 
-export function handleDiscardImportEntity(req, res) {
+export function handleDiscardImportEntity(req, res: Response) {
 	const {orm} = req.app.locals;
 	const editorId = req.session.passport.user.id;
 	const {importEntity} = res.locals;
@@ -115,7 +117,7 @@ export function handleDiscardImportEntity(req, res) {
 	});
 }
 
-export async function approveImportEntity(req, res) {
+export async function approveImportEntity(req, res: Response) {
 	const {orm} = res.app.locals;
 	const editorId = req.session.passport.user.id;
 	const {importEntity} = res.locals;
@@ -140,19 +142,19 @@ export async function approveImportEntity(req, res) {
 	res.redirect(entityUrl);
 }
 
-export function editImportEntity(req, res) {
+export function editImportEntity(req: Request, res: Response) {
 	const {importEntity} = res.locals;
 	const initialState = entityToFormState(importEntity);
 	const importEntityProps = generateImportEntityProps(
 		req, res, initialState, {}
 	);
 	const {markup, props} = entityEditorMarkup(importEntityProps);
-	return res.render('target', {
+	return res.send(target({
 		markup,
 		props: escapeProps(props),
 		script: '/js/entity-editor.js',
 		title: 'Edit Work Import'
-	});
+	}));
 }
 
 export async function approveImportPostEditing(req, res) {

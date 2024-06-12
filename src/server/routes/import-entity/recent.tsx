@@ -24,6 +24,7 @@ import ReactDOMServer from 'react-dom/server';
 import RecentImports from
 	'../../../client/components/pages/import-entities/recent-imports';
 import express from 'express';
+import target from '../../templates/target';
 
 
 // The limit for number of results fetched from database
@@ -62,7 +63,7 @@ function fetchRecentImportsData(orm, page) {
 }
 
 // This handles the router to send initial container to hold recentImports data
-function recentImportsRoute(req, res) {
+function recentImportsRoute(req, res: express.Response) {
 	const queryPage = parseInt(req.query.page, 10) || 1;
 	const props = generateProps(req, res, {
 		currentPage: queryPage, limit: LIMIT
@@ -76,12 +77,12 @@ function recentImportsRoute(req, res) {
 		</Layout>
 	);
 
-	res.render('target', {
+	res.send(target({
 		markup,
 		props: escapeProps(props),
 		script: '/js/import-entity/recent-imports.js',
 		title: 'Recent Imports'
-	});
+	}));
 }
 
 // This handles the data fetching route for recent imports, sends JSON as res

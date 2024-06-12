@@ -34,9 +34,9 @@ import {generateProps} from './props';
  * @returns {object} - props
  */
 export function generateImportEntityProps(
-	req: express.request, res: express.response, initialState: Object,
-	additionalProps: Object
-): Object {
+	req: express.Request, res: express.Response, initialState,
+	additionalProps
+) {
 	const {importEntity} = res.locals;
 	const {type: importEntityName} = importEntity;
 	const importEntityType = importEntityName.toLowerCase();
