@@ -18,9 +18,9 @@
  */
 
 import * as achievement from '../../helpers/achievement';
-import * as error from '../../helpers/error';
+import * as error from '../../../common/helpers/error';
 import * as propHelpers from '../../../client/helpers/props';
-import * as search from '../../helpers/search';
+import * as search from '../../../common/helpers/search';
 import {escapeProps, generateProps} from '../../helpers/props';
 import Layout from '../../../client/containers/layout';
 import React from 'react';

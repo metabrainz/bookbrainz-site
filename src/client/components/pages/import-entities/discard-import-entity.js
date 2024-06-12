@@ -23,7 +23,7 @@ import {
 import LoadingSpinner from '../../loading-spinner';
 import PropTypes from 'prop-types';
 import React from 'react';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 
 
 const {Alert, Button, ButtonGroup, Card, Col, Row} = bootstrap;

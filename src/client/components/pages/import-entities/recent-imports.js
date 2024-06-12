@@ -21,7 +21,7 @@ import PaginationProps from '../../../helpers/pagination-props';
 import PropTypes from 'prop-types';
 import React from 'react';
 import RecentImportsTable from '../parts/recent-import-results';
-import request from 'superagent-bluebird-promise';
+import request from 'superagent';
 
 
 const {Pagination} = bootstrap;

@@ -127,7 +127,7 @@ class Layout extends React.Component {
 						{' Identifier Types '}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/imports/recent">
-						<FontAwesome fixedWidth icon={faUserCheck}/>
+						<FontAwesomeIcon fixedWidth icon={faUserCheck}/>
 						{' Review recent imports '}
 					</NavDropdown.Item>
 				</NavDropdown>
