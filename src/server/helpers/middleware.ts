@@ -374,7 +374,7 @@ export function makeImportLoader(modelName, additionalRels, errMessage) {
 					moment(details.importedAt).format('YYYY-MM-DD');
 			}
 			catch (err) {
-				throw new error.NotFoundError(errMessage, req);
+				return next(new error.NotFoundError(errMessage, req));
 			}
 
 			return next();
