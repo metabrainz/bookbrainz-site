@@ -20,7 +20,7 @@
 
 import * as utils from './utils';
 import _ from 'lodash';
-import express from 'express';
+import type express from 'express';
 import {generateProps} from './props';
 
 
