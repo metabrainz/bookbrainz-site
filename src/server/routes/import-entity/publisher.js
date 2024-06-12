@@ -38,8 +38,8 @@ router.param(
 function _setPublisherTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
-		'Creator (Import)',
-		utils.template`Creator (Import) “${'name'}”`
+		'Publisher (Import)',
+		utils.template`Publisher (Import) “${'name'}”`
 	);
 }
 

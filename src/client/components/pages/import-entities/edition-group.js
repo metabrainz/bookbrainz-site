@@ -19,12 +19,12 @@
 import * as bootstrap from 'react-bootstrap';
 import * as importHelper from '../../../helpers/import-entity';
 
+import {EditionGroupAttributes} from '../entities/edition-group';
 import EntityImage from '../entities/image';
 import EntityLinks from '../entities/links';
 import ImportFooter from './footer';
 import ImportTitle from './title';
 import PropTypes from 'prop-types';
-import {PublicationAttributes} from '../entities/publication';
 import React from 'react';
 import _ from 'lodash';
 
@@ -33,7 +33,7 @@ const {getImportUrl} = importHelper;
 const {Alert, Col, Row} = bootstrap;
 
 
-function ImportPublicationDisplayPage({importEntity, identifierTypes}) {
+function ImportEditionGroupDisplayPage({importEntity, identifierTypes}) {
 	const urlPrefix = getImportUrl(importEntity);
 	return (
 		<div>
@@ -46,7 +46,7 @@ function ImportPublicationDisplayPage({importEntity, identifierTypes}) {
 				</Col>
 				<Col md={10}>
 					<ImportTitle importEntity={importEntity}/>
-					<PublicationAttributes publication={importEntity}/>
+					<EditionGroupAttributes editionGroup={importEntity}/>
 				</Col>
 			</Row>
 			<EntityLinks
@@ -73,13 +73,13 @@ function ImportPublicationDisplayPage({importEntity, identifierTypes}) {
 		</div>
 	);
 }
-ImportPublicationDisplayPage.displayName = 'ImportPublicationDisplayPage';
-ImportPublicationDisplayPage.propTypes = {
+ImportEditionGroupDisplayPage.displayName = 'ImportEditionGroupDisplayPage';
+ImportEditionGroupDisplayPage.propTypes = {
 	identifierTypes: PropTypes.array,
 	importEntity: PropTypes.object.isRequired
 };
-ImportPublicationDisplayPage.defaultProps = {
+ImportEditionGroupDisplayPage.defaultProps = {
 	identifierTypes: []
 };
 
-export default ImportPublicationDisplayPage;
+export default ImportEditionGroupDisplayPage;

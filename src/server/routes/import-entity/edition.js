@@ -31,7 +31,7 @@ router.param(
 	middleware.makeImportLoader(
 		'EditionImport',
 		[
-			'publication.defaultAlias',
+			'editionGroup.defaultAlias',
 			'languageSet.languages',
 			'editionFormat',
 			'editionStatus',

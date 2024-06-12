@@ -74,13 +74,13 @@ export function getEntityModelByType(orm: any, type: string): any {
  * @returns {object} - Object mapping model name to the import model
  */
 export function getImportModels(orm: any) {
-	const {CreatorImport, EditionImport, PublicationImport, PublisherImport,
+	const {AuthorImport, EditionImport, EditionGroupImport, PublisherImport,
 		WorkImport} = orm;
 
 	return {
-		CreatorImport,
+		AuthorImport,
+		EditionGroupImport,
 		EditionImport,
-		PublicationImport,
 		PublisherImport,
 		WorkImport
 	};

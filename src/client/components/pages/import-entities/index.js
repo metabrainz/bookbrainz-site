@@ -16,19 +16,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import Creator from './creator';
+import Author from './author';
 import DiscardImportEntityPage from './discard-import-entity';
 import Edition from './edition';
-import Publication from './publication';
+import EditionGroup from './edition-group';
 import Publisher from './publisher';
 import Work from './work';
 
 
 const importEntityPages = {
-	Creator,
+	Author,
 	DiscardImportEntityPage,
 	Edition,
-	Publication,
+	EditionGroup,
 	Publisher,
 	Work
 };

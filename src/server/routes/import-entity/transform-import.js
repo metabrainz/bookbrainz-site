@@ -103,15 +103,15 @@ function getIdentifierEditor(importEntity) {
 	return identifierEditor;
 }
 
-function getCreatorSection(creatorImport) {
+function getAuthorSection(authorImport) {
 	return {
-		beginArea: areaToOption(creatorImport.beginArea),
-		beginDate: creatorImport.beginDate,
-		endArea: areaToOption(creatorImport.endArea),
-		endDate: creatorImport.endDate,
-		ended: creatorImport.ended,
-		gender: creatorImport.gender && creatorImport.gender.id,
-		type: creatorImport.creatorType && creatorImport.creatorType.id
+		beginArea: areaToOption(authorImport.beginArea),
+		beginDate: authorImport.beginDate,
+		endArea: areaToOption(authorImport.endArea),
+		endDate: authorImport.endDate,
+		ended: authorImport.ended,
+		gender: authorImport.gender && authorImport.gender.id,
+		type: authorImport.authorType && authorImport.authorType.id
 	};
 }
 
@@ -145,10 +145,10 @@ function getEditionSection(editionImport) {
 	};
 }
 
-function getPublicationSection(publicationImport) {
-	const {publicationType} = publicationImport;
+function getEditionGroupSection(editionGroupImport) {
+	const {editionGroupType} = editionGroupImport;
 	return {
-		type: publicationType && publicationType.id
+		type: editionGroupType && editionGroupType.id
 	};
 }
 
@@ -173,9 +173,9 @@ function getWorkSection(workImport) {
 }
 
 export const entitySectionMap = {
-	Creator: getCreatorSection,
+	Author: getAuthorSection,
 	Edition: getEditionSection,
-	Publication: getPublicationSection,
+	EditionGroup: getEditionGroupSection,
 	Publisher: getPublisherSection,
 	Work: getWorkSection
 };

@@ -534,13 +534,13 @@ export async function generateIndex(orm) {
 	}));
 	await _processEntityListForBulk(processedCollections);
 
-	const {CreatorImport, EditionImport, PublicationImport, PublisherImport, WorkImport} = orm;
+	const {AuthorImport, EditionImport, EditionGroupImport, PublisherImport, WorkImport} = orm;
 	const importBehaviors = [
 		{
-			model: CreatorImport,
+			model: AuthorImport,
 			relations: [
 				'gender',
-				'creatorType',
+				'authorType',
 				'beginArea',
 				'endArea'
 			]
@@ -548,12 +548,12 @@ export async function generateIndex(orm) {
 		{
 			model: EditionImport,
 			relations: [
-				'publication',
+				'editionGroup',
 				'editionFormat',
 				'editionStatus'
 			]
 		},
-		{model: PublicationImport, relations: ['publicationType']},
+		{model: EditionGroupImport, relations: ['editionGroupType']},
 		{model: PublisherImport, relations: ['publisherType', 'area']},
 		{model: WorkImport, relations: ['workType']}
 	];

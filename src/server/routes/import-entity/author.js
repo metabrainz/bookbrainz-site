@@ -29,27 +29,27 @@ const router = express.Router();
 router.param(
 	'importId',
 	middleware.makeImportLoader(
-		'CreatorImport',
-		['creatorType', 'gender', 'beginArea', 'endArea'],
-		'Creator Import not found'
+		'AuthorImport',
+		['authorType', 'gender', 'beginArea', 'endArea'],
+		'Author Import not found'
 	)
 );
 
-function _setCreatorTitle(res) {
+function _setAuthorTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
-		'Creator (Import)',
-		utils.template`Creator (Import) “${'name'}”`
+		'Author (Import)',
+		utils.template`Author (Import) “${'name'}”`
 	);
 }
 
 router.get('/:importId', (req, res) => {
-	_setCreatorTitle(res);
+	_setAuthorTitle(res);
 	importRoutes.displayImport(req, res);
 });
 
 router.get('/:importId/discard', auth.isAuthenticated, (req, res) => {
-	_setCreatorTitle(res);
+	_setAuthorTitle(res);
 	importRoutes.displayDiscardImportEntity(req, res);
 });
 
@@ -68,7 +68,7 @@ router.get(
 router.get(
 	'/:importId/edit',
 	middleware.loadIdentifierTypes, middleware.loadGenders,
-	middleware.loadLanguages, middleware.loadCreatorTypes,
+	middleware.loadLanguages, middleware.loadAuthorTypes,
 	importRoutes.editImportEntity
 );
 
@@ -76,7 +76,7 @@ router.post(
 	'/:importId/edit/approve',
 	auth.isAuthenticatedForHandler, middleware.loadIdentifierTypes,
 	middleware.loadGenders,	middleware.loadLanguages,
-	middleware.loadCreatorTypes,
+	middleware.loadAuthorTypes,
 	importRoutes.approveImportPostEditing
 );
 

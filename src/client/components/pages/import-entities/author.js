@@ -19,7 +19,7 @@
 import * as bootstrap from 'react-bootstrap';
 import * as importHelper from '../../../helpers/import-entity';
 
-import {CreatorAttributes} from '../entities/creator';
+import {AuthorAttributes} from '../entities/author';
 import EntityImage from '../entities/image';
 import EntityLinks from '../entities/links';
 import ImportFooter from './footer';
@@ -33,7 +33,7 @@ const {getImportUrl} = importHelper;
 const {Alert, Col, Row} = bootstrap;
 
 
-function ImportCreatorDisplayPage({importEntity, identifierTypes}) {
+function ImportAuthorDisplayPage({importEntity, identifierTypes}) {
 	const urlPrefix = getImportUrl(importEntity);
 	return (
 		<div>
@@ -46,7 +46,7 @@ function ImportCreatorDisplayPage({importEntity, identifierTypes}) {
 				</Col>
 				<Col md={10}>
 					<ImportTitle importEntity={importEntity}/>
-					<CreatorAttributes creator={importEntity}/>
+					<AuthorAttributes author={importEntity}/>
 				</Col>
 			</Row>
 			<EntityLinks
@@ -73,13 +73,13 @@ function ImportCreatorDisplayPage({importEntity, identifierTypes}) {
 		</div>
 	);
 }
-ImportCreatorDisplayPage.displayName = 'ImportCreatorDisplayPage';
-ImportCreatorDisplayPage.propTypes = {
+ImportAuthorDisplayPage.displayName = 'ImportAuthorDisplayPage';
+ImportAuthorDisplayPage.propTypes = {
 	identifierTypes: PropTypes.array,
 	importEntity: PropTypes.object.isRequired
 };
-ImportCreatorDisplayPage.defaultProps = {
+ImportAuthorDisplayPage.defaultProps = {
 	identifierTypes: []
 };
 
-export default ImportCreatorDisplayPage;
+export default ImportAuthorDisplayPage;

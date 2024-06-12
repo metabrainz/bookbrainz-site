@@ -29,32 +29,32 @@ const router = express.Router();
 router.param(
 	'importId',
 	middleware.makeImportLoader(
-		'PublicationImport',
+		'EditionGroupImport',
 		[
-			'publicationType',
+			'editionGroupType',
 			'editions.defaultAlias',
 			'editions.disambiguation',
 			'editions.releaseEventSet.releaseEvents'
 		],
-		'Publication Import not found'
+		'Edition Group Import not found'
 	)
 );
 
-function _setPublicationTitle(res) {
+function _setEditionGroupTitle(res) {
 	res.locals.title = utils.createEntityPageTitle(
 		res.locals.entity,
-		'Publication (Import)',
-		utils.template`Publication (Import) “${'name'}”`
+		'Edition Group (Import)',
+		utils.template`Edition Group (Import) “${'name'}”`
 	);
 }
 
 router.get('/:importId', (req, res) => {
-	_setPublicationTitle(res);
+	_setEditionGroupTitle(res);
 	importRoutes.displayImport(req, res);
 });
 
 router.get('/:importId/discard', auth.isAuthenticated, (req, res) => {
-	_setPublicationTitle(res);
+	_setEditionGroupTitle(res);
 	importRoutes.displayDiscardImportEntity(req, res);
 });
 
@@ -73,14 +73,14 @@ router.get(
 router.get(
 	'/:importId/edit',
 	auth.isAuthenticated, middleware.loadIdentifierTypes,
-	middleware.loadPublicationTypes, middleware.loadLanguages,
+	middleware.loadEditionGroupTypes, middleware.loadLanguages,
 	importRoutes.editImportEntity
 );
 
 router.post(
 	'/:importId/edit/approve',
 	auth.isAuthenticated, middleware.loadIdentifierTypes,
-	middleware.loadPublicationTypes, middleware.loadLanguages,
+	middleware.loadEditionGroupTypes, middleware.loadLanguages,
 	importRoutes.approveImportPostEditing
 );
 

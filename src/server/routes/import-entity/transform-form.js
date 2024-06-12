@@ -21,25 +21,25 @@ import {constructAliases, constructIdentifiers} from '../entity/entity';
 import _ from 'lodash';
 
 
-export function formToCreatorState(data) {
+export function formToAuthorState(data) {
 	const aliases = constructAliases(data.aliasEditor, data.nameSection);
 	const identifiers = constructIdentifiers(data.identifierEditor);
 
 	return {
 		aliases,
-		beginAreaId: data.creatorSection.beginArea &&
-			data.creatorSection.beginArea.id,
-		beginDate: data.creatorSection.beginDate,
+		beginAreaId: data.authorSection.beginArea &&
+			data.authorSection.beginArea.id,
+		beginDate: data.authorSection.beginDate,
 		disambiguation: data.nameSection.disambiguation,
-		endAreaId: data.creatorSection.endArea &&
-			data.creatorSection.endArea.id,
-		endDate: data.creatorSection.ended ? data.creatorSection.endDate : '',
-		ended: data.creatorSection.ended,
-		genderId: data.creatorSection.gender,
+		endAreaId: data.authorSection.endArea &&
+			data.authorSection.endArea.id,
+		endDate: data.authorSection.ended ? data.authorSection.endDate : '',
+		ended: data.authorSection.ended,
+		genderId: data.authorSection.gender,
 		identifiers,
 		note: data.submissionSection.note,
-		type: 'Creator',
-		typeId: data.creatorSection.type
+		type: 'Author',
+		typeId: data.authorSection.type
 	};
 }
 
@@ -58,6 +58,8 @@ export function formToEditionState(data) {
 		depth: data.editionSection.depth &&
 			parseInt(data.editionSection.depth, 10),
 		disambiguation: data.nameSection.disambiguation,
+		editionGroupBbid: data.editionSection.editionGroup &&
+			data.editionSection.editionGroup.id,
 		formatId: data.editionSection.format &&
 			parseInt(data.editionSection.format, 10),
 		height: data.editionSection.height &&
@@ -67,8 +69,6 @@ export function formToEditionState(data) {
 		note: data.submissionSection.note,
 		pages: data.editionSection.pages &&
 			parseInt(data.editionSection.pages, 10),
-		publicationBbid: data.editionSection.publication &&
-			data.editionSection.publication.id,
 		publishers: data.editionSection.publisher &&
 			[data.editionSection.publisher.id],
 		releaseEvents,
@@ -82,7 +82,7 @@ export function formToEditionState(data) {
 	};
 }
 
-export function formToPublicationState(data) {
+export function formToEditionGroupState(data) {
 	const aliases = constructAliases(data.aliasEditor, data.nameSection);
 	const identifiers = constructIdentifiers(data.identifierEditor);
 
@@ -91,8 +91,8 @@ export function formToPublicationState(data) {
 		disambiguation: data.nameSection.disambiguation,
 		identifiers,
 		note: data.submissionSection.note,
-		type: 'Publication',
-		typeId: data.publicationSection.type
+		type: 'EditionGroup',
+		typeId: data.editionGroupSection.type
 	};
 }
 
@@ -132,9 +132,9 @@ export function formToWorkState(data) {
 }
 
 export const transformForm = {
-	Creator: formToCreatorState,
+	Author: formToAuthorState,
 	Edition: formToEditionState,
-	Publication: formToPublicationState,
+	EditionGroup: formToEditionGroupState,
 	Publisher: formToPublisherState,
 	Work: formToWorkState
 };

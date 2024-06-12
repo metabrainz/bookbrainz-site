@@ -16,9 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import ImportCreatorRouter from './creator';
+import ImportAuthorRouter from './author';
+import ImportEditionGroupRouter from './edition-group';
 import ImportEditionRouter from './edition';
-import ImportPublicationRouter from './publication';
 import ImportPublisherRouter from './publisher';
 import ImportRecentRouter from './recent';
 import ImportWorkRouter from './work';
@@ -27,10 +27,10 @@ import express from 'express';
 
 const importRouter = express.Router();
 
-importRouter.use('/creator', ImportCreatorRouter);
+importRouter.use('/author', ImportAuthorRouter);
 importRouter.use('/edition', ImportEditionRouter);
+importRouter.use('/edition-group', ImportEditionGroupRouter);
 importRouter.use('/publisher', ImportPublisherRouter);
-importRouter.use('/publication', ImportPublicationRouter);
 importRouter.use('/work', ImportWorkRouter);
 importRouter.use('/recent', ImportRecentRouter);
 
