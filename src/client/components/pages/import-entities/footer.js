@@ -43,25 +43,25 @@ function ImportFooter({importUrl, importedAt, source, hasVoted}) {
 				<Col md={6} mdOffset={3}>
 					<ButtonGroup justified>
 						<Button
-							bsStyle="success"
 							href={`${importUrl}/approve`}
 							title="Approve"
+							variant="success"
 						>
 							<FontAwesomeIcon icon={faCheck}/>&nbsp;Approve
 						</Button>
 						<Button
-							bsStyle="warning"
 							href={`${importUrl}/edit`}
 							title="Edit & Approve"
+							variant="warning"
 						>
 							<FontAwesomeIcon icon={faPencil}/>&nbsp;Edit & Approve
 						</Button>
 						<Button
-							bsStyle="danger"
 							disabled={hasVoted}
 							href={`${importUrl}/discard`}
 							overlay={hasVoted ? tooltip : null}
 							title="Discard"
+							variant="danger"
 						>
 							<FontAwesomeIcon icon={faRemove}/>&nbsp;Discard
 						</Button>

@@ -71,7 +71,7 @@ class DiscardImportEntity extends React.Component {
 		let errorComponent = null;
 		if (this.state.error) {
 			errorComponent =
-				<Alert bsStyle="danger">{this.state.error}</Alert>;
+				<Alert variant="danger">{this.state.error}</Alert>;
 		}
 
 		const loadingComponent = this.state.waiting ? <LoadingSpinner/> : null;
@@ -105,16 +105,16 @@ class DiscardImportEntity extends React.Component {
 						</Card>
 						<ButtonGroup justified className="margin-top-2">
 							<Button
-								bsStyle="default"
-								href={this.importUrl}
+								href={getImportUrl(importEntity)}
 								title="Edit"
+								variant="default"
 							>
 								Cancel
 							</Button>
 							<Button
-								bsStyle="danger"
 								href="#"
 								title="Discard"
+								variant="danger"
 								onClick={this.handleClick}
 							>
 								Discard

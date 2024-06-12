@@ -57,8 +57,8 @@ function ImportAuthorDisplayPage({importEntity, identifierTypes}) {
 			<hr className="margin-top-d40"/>
 			<Row>
 				<Alert
-					bsStyle="success"
 					className="text-center font-weight-bold"
+					variant="success"
 				>
 					This {_.startCase(importEntity.type.toLowerCase())} has been automatically added.{' '}
 					Kindly approve/discard it to help us improve our data.
