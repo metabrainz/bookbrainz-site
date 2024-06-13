@@ -82,7 +82,7 @@ ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (import_id) REFERENCES bookbr
 ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (origin_source_id) REFERENCES bookbrainz.origin_source (id);
 
 -- Imported entities views --
-CREATE VIEW bookbrainz.author_import AS
+CREATE OR REPLACE VIEW bookbrainz.author_import AS
     SELECT
         import.id AS import_id,
         author_data.id as data_id,
@@ -111,7 +111,7 @@ CREATE VIEW bookbrainz.author_import AS
     WHERE import.type = 'Author';
 
 
-CREATE VIEW bookbrainz.edition_import AS
+CREATE OR REPLACE VIEW bookbrainz.edition_import AS
     SELECT
         import.id AS import_id,
         edition_data.id as data_id,
@@ -135,7 +135,7 @@ CREATE VIEW bookbrainz.edition_import AS
     LEFT JOIN bookbrainz.alias_set alias_set ON edition_data.alias_set_id = alias_set.id
     WHERE import.type = 'Edition';
 
-CREATE VIEW bookbrainz.publisher_import AS
+CREATE OR REPLACE VIEW bookbrainz.publisher_import AS
     SELECT
         import.id AS import_id,
         publisher_data.id as data_id,
@@ -160,7 +160,7 @@ CREATE VIEW bookbrainz.publisher_import AS
         LEFT JOIN bookbrainz.alias_set alias_set ON publisher_data.alias_set_id = alias_set.id
         WHERE import.type = 'Publisher';
 
-CREATE VIEW bookbrainz.edition_group_import AS
+CREATE OR REPLACE VIEW bookbrainz.edition_group_import AS
     SELECT
         import.id AS import_id,
         edition_group_data.id as data_id,
@@ -176,7 +176,7 @@ CREATE VIEW bookbrainz.edition_group_import AS
     LEFT JOIN bookbrainz.alias_set alias_set ON edition_group_data.alias_set_id = alias_set.id
     WHERE import.type = 'EditionGroup';
 
-CREATE VIEW bookbrainz.work_import AS
+CREATE OR REPLACE VIEW bookbrainz.work_import AS
     SELECT
         import.id as import_id,
         work_data.id AS data_id,
