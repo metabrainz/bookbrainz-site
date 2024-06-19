@@ -24,13 +24,13 @@ import ImportEntityPages from '../../components/pages/import-entities';
 import Layout from '../../containers/layout';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import _ from 'lodash';
+import {get} from 'lodash';
 
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
-const entityType = _.get(props, 'importEntity.type');
+const entityType = get(props, 'importEntity.type');
 const Child = ImportEntityPages[entityType];
 
 if (!Child) {

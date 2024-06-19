@@ -28,7 +28,7 @@
 	the form layout as described in the `client/entity-editor`
 */
 
-import _ from 'lodash';
+import {isEmpty, isNull} from 'lodash';
 
 
 export function areaToOption(area) {
@@ -117,13 +117,13 @@ function getAuthorSection(authorImport) {
 
 function getEditionSection(editionImport) {
 	const physicalVisible = !(
-		_.isNull(editionImport.depth) && _.isNull(editionImport.height) &&
-		_.isNull(editionImport.pages) && _.isNull(editionImport.weight) &&
-		_.isNull(editionImport.width)
+		isNull(editionImport.depth) && isNull(editionImport.height) &&
+		isNull(editionImport.pages) && isNull(editionImport.weight) &&
+		isNull(editionImport.width)
 	);
 
 	const releaseDate = editionImport.releaseEventSet && (
-		_.isEmpty(editionImport.releaseEventSet.releaseEvents) ?
+		isEmpty(editionImport.releaseEventSet.releaseEvents) ?
 			null : editionImport.releaseEventSet.releaseEvents[0].date
 	);
 

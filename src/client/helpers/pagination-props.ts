@@ -18,7 +18,7 @@
 
 // @flow
 
-import _ from 'lodash';
+import {clamp, isNumber} from 'lodash';
 
 
 type getPaginationPropsGeneratorType = {
@@ -41,14 +41,14 @@ function validatePaginationArgs(
 	const totalPages: number = Math.ceil(totalResults / itemsPerPage);
 	const args = {currentPage, totalPages, totalResults};
 	if (!args.currentPage ||
-		!_.isNumber(args.currentPage) ||
+		!isNumber(args.currentPage) ||
 		args.currentPage < 1
 	) {
 		args.currentPage = 1;
 	}
 
 	if (!args.totalPages ||
-		!_.isNumber(args.totalPages) ||
+		!isNumber(args.totalPages) ||
 		args.totalPages < 1
 	) {
 		args.totalPages = 1;
@@ -107,10 +107,10 @@ export default function getPaginationPropsGenerator(
 		}
 
 		// First result on current page
-		const firstResultOnCurrentPage: number = _.clamp(
+		const firstResultOnCurrentPage: number = clamp(
 			displayedPagesRange * (currentPage - 1), 1, totalResults
 		);
-		const lastResultOnCurrentPage: number = _.clamp(
+		const lastResultOnCurrentPage: number = clamp(
 			displayedPagesRange * currentPage, 1, totalResults
 		);
 
@@ -128,12 +128,12 @@ export default function getPaginationPropsGenerator(
 			lastPage,
 			lastResultOnCurrentPage,
 			nextPage: currentPage + 1,
-			pagesRange: _.clamp(
+			pagesRange: clamp(
 				lastPage - firstPage + 1,
 				1, totalPages
 			),
 			previousPage: currentPage - 1,
-			resultsRange: _.clamp(
+			resultsRange: clamp(
 				lastResultOnCurrentPage - firstResultOnCurrentPage + 1,
 				1, totalResults
 			),

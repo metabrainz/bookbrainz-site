@@ -18,7 +18,7 @@
  */
 
 import {constructAliases, constructIdentifiers} from '../entity/entity';
-import _ from 'lodash';
+import {map} from 'lodash';
 
 
 export function formToAuthorState(data) {
@@ -46,7 +46,7 @@ export function formToAuthorState(data) {
 export function formToEditionState(data) {
 	const aliases = constructAliases(data.aliasEditor, data.nameSection);
 	const identifiers = constructIdentifiers(data.identifierEditor);
-	const languages = _.map(data.editionSection.languages, 'value');
+	const languages = map(data.editionSection.languages, 'value');
 
 	let releaseEvents = [];
 	if (data.editionSection.releaseDate) {
@@ -118,7 +118,7 @@ export function formToPublisherState(data) {
 export function formToWorkState(data) {
 	const aliases = constructAliases(data.aliasEditor, data.nameSection);
 	const identifiers = constructIdentifiers(data.identifierEditor);
-	const languages = _.map(data.workSection.languages, 'value');
+	const languages = map(data.workSection.languages, 'value');
 
 	return {
 		aliases,

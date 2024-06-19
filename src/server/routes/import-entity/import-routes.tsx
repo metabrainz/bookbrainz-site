@@ -23,10 +23,10 @@ import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../../common/helpers/search';
 import type {Request, Response} from 'express';
 import {escapeProps, generateProps} from '../../helpers/props';
+import {map, uniqBy} from 'lodash';
 import Layout from '../../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import _ from 'lodash';
 import {entityEditorMarkup} from '../../helpers/entityRouteUtils';
 import {entityToFormState} from './transform-import';
 import {generateImportEntityProps} from '../../helpers/importEntityRouteUtils';
@@ -44,8 +44,8 @@ export function displayImport(req: Request, res: Response) {
 
 	// Get unique identifier types for display
 	const identifierTypes = importEntity.identifierSet &&
-		_.uniqBy(
-			_.map(importEntity.identifierSet.identifiers, 'type'),
+		uniqBy(
+			map(importEntity.identifierSet.identifiers, 'type'),
 			(type) => type.id
 		);
 

@@ -27,7 +27,7 @@ import ImportTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {WorkAttributes} from '../entities/work';
-import _ from 'lodash';
+import {startCase} from 'lodash';
 
 
 const {getImportUrl} = importHelper;
@@ -61,7 +61,7 @@ function ImportWorkDisplayPage({importEntity, identifierTypes}) {
 					className="text-center font-weight-bold"
 					variant="success"
 				>
-					This {_.startCase(importEntity.type.toLowerCase())} has been automatically added.{' '}
+					This {startCase(importEntity.type.toLowerCase())} has been automatically added.{' '}
 					Kindly approve/discard it to help us improve our data.
 				</Alert>
 			</Row>

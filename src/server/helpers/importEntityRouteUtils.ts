@@ -19,9 +19,9 @@
 // @flow
 
 import * as utils from './utils';
-import _ from 'lodash';
 import type express from 'express';
 import {generateProps} from './props';
+import {partialRight} from 'lodash';
 
 
 /**
@@ -42,7 +42,7 @@ export function generateImportEntityProps(
 	const importEntityType = importEntityName.toLowerCase();
 
 	const getFilteredIdentifierTypes =
-		_.partialRight(utils.filterIdentifierTypesByEntity, importEntity);
+		partialRight(utils.filterIdentifierTypesByEntity, importEntity);
 	const filteredIdentifierTypes = getFilteredIdentifierTypes(
 		res.locals.identifierTypes
 	);
