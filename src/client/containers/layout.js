@@ -126,10 +126,6 @@ class Layout extends React.Component {
 						<FontAwesomeIcon fixedWidth icon={faBarcode}/>
 						{' Identifier Types '}
 					</NavDropdown.Item>
-					<NavDropdown.Item href="/imports/recent">
-						<FontAwesomeIcon fixedWidth icon={faUserCheck}/>
-						{' Review recent imports '}
-					</NavDropdown.Item>
 				</NavDropdown>
 			</Nav>
 		);
@@ -345,12 +341,23 @@ class Layout extends React.Component {
 			<Navbar.Collapse id="bs-example-navbar-collapse-1">
 				{!(homepage || hideSearch) && this.renderSearchForm()}
 				<Nav className={revisionsClassName}>
-					<Nav.Item>
-						<Nav.Link href="/revisions">
-							<FontAwesomeIcon icon={faListUl}/>
-							{' Revisions '}
-						</Nav.Link>
-					</Nav.Item>
+					<NavDropdown
+						title={
+							<span>
+								<FontAwesomeIcon icon={faListUl}/>
+								{' Revisions '}
+							</span>
+						}
+					>
+						<NavDropdown.Item href="/revisions">
+							<FontAwesomeIcon fixedWidth icon={faListUl}/>
+							{' Latest revisions '}
+						</NavDropdown.Item>
+						<NavDropdown.Item href="/imports/recent">
+							<FontAwesomeIcon fixedWidth icon={faUserCheck}/>
+							{' Review recent imports '}
+						</NavDropdown.Item>
+					</NavDropdown>
 				</Nav>
 				<Nav>
 					<Nav.Item>
