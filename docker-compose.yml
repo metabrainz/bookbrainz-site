@@ -24,7 +24,7 @@ services:
     image: postgres:12.3
     user: postgres
     ports:
-      - "127.0.0.1:5433:5432"
+      - "127.0.0.1:5432:5432"
     environment:
       - POSTGRES_DB=bookbrainz
       - POSTGRES_USER=bookbrainz
@@ -42,7 +42,7 @@ services:
       - discovery.zen.minimum_master_nodes=1
       - xpack.security.enabled=false
     ports:
-      - "127.0.0.1:9201:9200"
+      - "127.0.0.1:9200:9200"
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
 
@@ -52,8 +52,8 @@ services:
     image: redis:3.2-alpine
     command: "redis-server --appendonly yes"
     ports:
-      - "127.0.0.1:6380:6379"
-      - "127.0.0.1:3601:3600"
+      - "127.0.0.1:6379:6379"
+      - "127.0.0.1:3600:3600"
 
   startup:
     image: waisbrot/wait
