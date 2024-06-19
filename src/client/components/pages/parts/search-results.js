@@ -197,7 +197,7 @@ class SearchResults extends React.Component {
 						</td>
 					}
 					<td>
-						<a className={isImport ? 'color-red' : ''} href={link}>
+						<a className={isImport ? 'text-danger' : ''} href={link}>
 							{name} {disambiguation}
 						</a>
 						{
