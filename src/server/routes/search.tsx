@@ -47,7 +47,7 @@ const {REINDEX_SEARCH_SERVER} = PrivilegeType;
 router.get('/', async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q ?? '';
-	const type = String(req.query.type) || 'allEntities';
+	const type = req.query.type?.toString() || 'allEntities';
 	const size = req.query.size ? parseInt(String(req.query.size), 10) : 20;
 	const from = req.query.from ? parseInt(String(req.query.from), 10) : 0;
 	try {
@@ -121,7 +121,7 @@ router.get('/search', (req, res) => {
 router.get('/autocomplete', (req, res) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
-	const type = req.query.type || 'allEntities';
+	const type = req.query.type?.toString() || 'allEntities';
 	const size = Number(req.query.size) || 42;
 
 	const searchPromise = search.autocomplete(orm, query, type, size);
