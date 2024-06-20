@@ -7,37 +7,44 @@ CREATE TABLE IF NOT EXISTS bookbrainz.import (
 );
 
 -- Tables linking import and relevant data in entitytype_data tables
-CREATE TABLE IF NOT EXISTS bookbrainz.creator_import_header (
-	import_id INT PRIMARY KEY,
-	data_id INT NOT NULL
+CREATE TABLE IF NOT EXISTS bookbrainz.author_import_header (
+    import_id INT PRIMARY KEY,
+    data_id INT NOT NULL
 );
-ALTER TABLE bookbrainz.creator_import_header ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
-ALTER TABLE bookbrainz.creator_import_header ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.creator_data (id);
+ALTER TABLE bookbrainz.author_import_header ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
+ALTER TABLE bookbrainz.author_import_header ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.author_data (id);
 
 CREATE TABLE IF NOT EXISTS bookbrainz.edition_import_header (
-	import_id INT PRIMARY KEY,
-	data_id INT NOT NULL
+    import_id INT PRIMARY KEY,
+    data_id INT NOT NULL
 );
 ALTER TABLE bookbrainz.edition_import_header ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
 ALTER TABLE bookbrainz.edition_import_header ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_data (id);
 
-CREATE TABLE IF NOT EXISTS bookbrainz.publication_import_header (
-	import_id INT PRIMARY KEY,
-	data_id INT NOT NULL
+CREATE TABLE IF NOT EXISTS bookbrainz.edition_group_import_header (
+    import_id INT PRIMARY KEY,
+    data_id INT NOT NULL
 );
-ALTER TABLE bookbrainz.publication_import_header ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
-ALTER TABLE bookbrainz.publication_import_header ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.publication_data (id);
+ALTER TABLE bookbrainz.edition_group_import_header ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
+ALTER TABLE bookbrainz.edition_group_import_header ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_group_data (id);
 
 CREATE TABLE IF NOT EXISTS bookbrainz.publisher_import_header (
-	import_id INT PRIMARY KEY,
-	data_id INT NOT NULL
+    import_id INT PRIMARY KEY,
+    data_id INT NOT NULL
 );
 ALTER TABLE bookbrainz.publisher_import_header ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
 ALTER TABLE bookbrainz.publisher_import_header ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.publisher_data (id);
 
+CREATE TABLE IF NOT EXISTS bookbrainz.series_import_header (
+    import_id INT PRIMARY KEY,
+    data_id INT NOT NULL
+);
+ALTER TABLE bookbrainz.series_import_header ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
+ALTER TABLE bookbrainz.series_import_header ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.series_data (id);
+
 CREATE TABLE IF NOT EXISTS bookbrainz.work_import_header (
-	import_id INT PRIMARY KEY,
-	data_id INT NOT NULL
+    import_id INT PRIMARY KEY,
+    data_id INT NOT NULL
 );
 ALTER TABLE bookbrainz.work_import_header ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
 ALTER TABLE bookbrainz.work_import_header ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.work_data (id);
@@ -81,37 +88,37 @@ ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (entity_id) REFERENCES bookbr
 ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (import_id) REFERENCES bookbrainz.import (id);
 ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (origin_source_id) REFERENCES bookbrainz.origin_source (id);
 
--- view --
-CREATE VIEW bookbrainz.creator_import AS
+-- Imported entities views --
+CREATE OR REPLACE VIEW bookbrainz.author_import AS
     SELECT
         import.id AS import_id,
-        creator_data.id as data_id,
-        creator_data.annotation_id,
-        creator_data.disambiguation_id,
+        author_data.id as data_id,
+        author_data.annotation_id,
+        author_data.disambiguation_id,
         alias_set.default_alias_id,
-        creator_data.begin_year,
-        creator_data.begin_month,
-        creator_data.begin_day,
-        creator_data.end_year,
-        creator_data.end_month,
-        creator_data.end_day,
-        creator_data.begin_area_id,
-        creator_data.end_area_id,
-        creator_data.ended,
-        creator_data.area_id,
-        creator_data.gender_id,
-        creator_data.type_id,
-        creator_data.alias_set_id,
-        creator_data.identifier_set_id,
+        author_data.begin_year,
+        author_data.begin_month,
+        author_data.begin_day,
+        author_data.end_year,
+        author_data.end_month,
+        author_data.end_day,
+        author_data.begin_area_id,
+        author_data.end_area_id,
+        author_data.ended,
+        author_data.area_id,
+        author_data.gender_id,
+        author_data.type_id,
+        author_data.alias_set_id,
+        author_data.identifier_set_id,
         import.type
     FROM bookbrainz.import import
-    LEFT JOIN bookbrainz.creator_import_header creator_import_header ON import.id = creator_import_header.import_id
-    LEFT JOIN bookbrainz.creator_data creator_data ON creator_import_header.data_id = creator_data.id
-    LEFT JOIN bookbrainz.alias_set alias_set ON creator_data.alias_set_id = alias_set.id
-    WHERE import.type = 'Creator';
+    LEFT JOIN bookbrainz.author_import_header author_import_header ON import.id = author_import_header.import_id
+    LEFT JOIN bookbrainz.author_data author_data ON author_import_header.data_id = author_data.id
+    LEFT JOIN bookbrainz.alias_set alias_set ON author_data.alias_set_id = alias_set.id
+    WHERE import.type = 'Author';
 
 
-CREATE VIEW bookbrainz.edition_import AS
+CREATE OR REPLACE VIEW bookbrainz.edition_import AS
     SELECT
         import.id AS import_id,
         edition_data.id as data_id,
@@ -135,7 +142,7 @@ CREATE VIEW bookbrainz.edition_import AS
     LEFT JOIN bookbrainz.alias_set alias_set ON edition_data.alias_set_id = alias_set.id
     WHERE import.type = 'Edition';
 
-CREATE VIEW bookbrainz.publisher_import AS
+CREATE OR REPLACE VIEW bookbrainz.publisher_import AS
     SELECT
         import.id AS import_id,
         publisher_data.id as data_id,
@@ -160,23 +167,40 @@ CREATE VIEW bookbrainz.publisher_import AS
         LEFT JOIN bookbrainz.alias_set alias_set ON publisher_data.alias_set_id = alias_set.id
         WHERE import.type = 'Publisher';
 
-CREATE VIEW bookbrainz.publication_import AS
+CREATE OR REPLACE VIEW bookbrainz.edition_group_import AS
     SELECT
         import.id AS import_id,
-        publication_data.id as data_id,
-        publication_data.disambiguation_id,
+        edition_group_data.id as data_id,
+        edition_group_data.disambiguation_id,
         alias_set.default_alias_id,
-        publication_data.type_id,
-        publication_data.alias_set_id,
-        publication_data.identifier_set_id,
+        edition_group_data.type_id,
+        edition_group_data.alias_set_id,
+        edition_group_data.identifier_set_id,
         import.type
     FROM bookbrainz.import import
-    LEFT JOIN bookbrainz.publication_import_header publication_import_header ON import.id = publication_import_header.import_id
-    LEFT JOIN bookbrainz.publication_data publication_data ON publication_import_header.data_id = publication_data.id
-    LEFT JOIN bookbrainz.alias_set alias_set ON publication_data.alias_set_id = alias_set.id
-    WHERE import.type = 'Publication';
+    LEFT JOIN bookbrainz.edition_group_import_header edition_group_import_header ON import.id = edition_group_import_header.import_id
+    LEFT JOIN bookbrainz.edition_group_data edition_group_data ON edition_group_import_header.data_id = edition_group_data.id
+    LEFT JOIN bookbrainz.alias_set alias_set ON edition_group_data.alias_set_id = alias_set.id
+    WHERE import.type = 'EditionGroup';
 
-CREATE VIEW bookbrainz.work_import AS
+CREATE OR REPLACE VIEW bookbrainz.series_import AS
+    SELECT
+        import.id as import_id,
+        series_data.id AS data_id,
+        series_data.annotation_id,
+        series_data.disambiguation_id,
+        alias_set.default_alias_id,
+        series_data.ordering_type_id,
+        series_data.alias_set_id,
+        series_data.identifier_set_id,
+        import.type
+    FROM bookbrainz.import import
+    LEFT JOIN bookbrainz.series_import_header series_import_header ON import.id = series_import_header.import_id
+    LEFT JOIN bookbrainz.series_data series_data ON series_import_header.data_id = series_data.id
+    LEFT JOIN bookbrainz.alias_set alias_set ON series_data.alias_set_id = alias_set.id
+    WHERE import.type = 'Series';
+
+CREATE OR REPLACE VIEW bookbrainz.work_import AS
     SELECT
         import.id as import_id,
         work_data.id AS data_id,

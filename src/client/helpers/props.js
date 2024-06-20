@@ -69,3 +69,11 @@ export function extractPreviewProps(props) {
 		sourceUrl: props.sourceUrl
 	};
 }
+
+export function extractImportEntityProps(props) {
+	return {
+		alert: props.alert,
+		identifierTypes: props.identifierTypes,
+		importEntity: props.importEntity
+	};
+}

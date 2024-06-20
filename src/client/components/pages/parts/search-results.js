@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2015  Ohm Patel
  *               2016  Sean Burke
+ *               2017 Shivam Tripathi
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +32,9 @@ const {Alert, Badge, Button, ButtonGroup, Table} = bootstrap;
 
 // Main entities have a BBID but some other indexed types
 // have an ID field instead (collections, editors, areas)
+// and pending imports have an importId
 function getId(entity) {
-	return entity.bbid ?? entity.id;
+	return entity.bbid ?? entity.id ?? entity.importId;
 }
 
 /**
@@ -155,6 +157,7 @@ class SearchResults extends React.Component {
 				return null;
 			}
 			const id = getId(result);
+			const isImport = Boolean(result.importId);
 			const name = result.defaultAlias ? result.defaultAlias.name :
 				'(unnamed)';
 
@@ -166,9 +169,12 @@ class SearchResults extends React.Component {
 
 			const disambiguation = result.disambiguation ? <small>({result.disambiguation.comment})</small> : '';
 			// No redirect link for Area entity results
-			const link = result.type === 'Area' ?
+			let link = result.type === 'Area' ?
 				`//musicbrainz.org/area/${id}` :
 				`/${_kebabCase(result.type)}/${id}`;
+			if (isImport) {
+				link = `/imports${link}`;
+			}
 
 			/* eslint-disable react/jsx-no-bind */
 			return (
@@ -181,15 +187,17 @@ class SearchResults extends React.Component {
 									<input
 										checked={this.state.selected.find(selected => getId(selected) === id)}
 										className="checkboxes"
+										disabled={isImport}
 										type="checkbox"
 										onChange={() => this.toggleRow(result)}
 									/> : null
 							}
 							{genEntityIconHTMLElement(result.type)}{_startCase(result.type)}
+							{isImport && <Badge>Imported</Badge>}
 						</td>
 					}
 					<td>
-						<a href={link}>
+						<a className={isImport ? 'text-danger' : ''} href={link}>
 							{name} {disambiguation}
 						</a>
 						{

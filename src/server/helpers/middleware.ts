@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2015       Ben Ockmore
  *               2015-2016  Sean Burke
+ *               2018       Shivam Tripathi
  *               2021       Akash Gupta
  *               2022       Ansh Goyal
  *               2023       David Kellner
@@ -32,6 +33,7 @@ import {getAcceptedLanguageCodes} from './i18n';
 import {getReviewsFromCB} from './critiquebrainz';
 import {getWikidataId} from '../../common/helpers/wikimedia';
 import log from 'log';
+import moment from 'moment';
 
 
 interface $Request extends Request {
@@ -319,6 +321,66 @@ export function makeEntityLoader(modelName: string, additionalRels: Array<string
 		else {
 			return next(new error.BadRequestError('Invalid BBID', req));
 		}
+	};
+}
+
+// TODO: Part of this function should be moved into the ORM, similar to regular entities.
+export function makeImportLoader(modelName, additionalRels, errMessage) {
+	const relations = [
+		'aliasSet.aliases.language',
+		'defaultAlias',
+		'disambiguation',
+		'identifierSet.identifiers.type'
+	].concat(additionalRels);
+
+	return async (req, res, next, _importId) => {
+		const importId = parseInt(_importId, 10);
+
+		if (commonUtils.isValidImportId(importId)) {
+			const {orm} = req.app.locals;
+			const model = commonUtils.getImportModelByType(orm, modelName);
+			try {
+				const importEntityRecord = await model.forge({importId})
+					.fetch({
+						withRelated: relations
+					});
+				res.locals.importEntity = importEntityRecord.toJSON();
+
+				const [votes, details] = await orm.bookshelf.transaction(
+					(transacting) =>
+						Promise.all([
+							orm.func.imports.discardVotesCast(
+								transacting, importId
+							),
+							orm.func.imports.getImportDetails(
+								transacting, importId
+							)
+						])
+				);
+
+				if (_.get(req, 'session.passport.user.id')) {
+					const editorId = req.session.passport.user.id;
+					res.locals.importEntity.hasVoted =
+						votes.length > 0 && Boolean(votes.filter(
+							vote => vote.editorId === editorId
+						));
+				}
+				else {
+					res.locals.importEntity.hasVoted = false;
+				}
+
+				res.locals.importEntity.source = details.source;
+				res.locals.importEntity.importedAt =
+					moment(details.importedAt).format('YYYY-MM-DD');
+			}
+			catch (err) {
+				return next(new error.NotFoundError(errMessage, req));
+			}
+
+			return next();
+		}
+
+		return next('route');
 	};
 }
 

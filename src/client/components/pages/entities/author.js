@@ -42,7 +42,7 @@ const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
 	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias, transformISODateForDisplay} = entityHelper;
 const {Button, Col, Row} = bootstrap;
 
-function AuthorAttributes({author}) {
+export function AuthorAttributes({author}) {
 	if (author.deleted) {
 		return deletedEntityMessage;
 	}

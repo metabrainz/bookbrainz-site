@@ -98,13 +98,16 @@ function postSubmission(url: string, data: Map<string, any>): Promise<void> {
 	 * pass the entity type and generate both URLs from that.
 	 */
 
-	const [, submissionEntity] = url.split('/');
+	let [, submissionEntity, importSubmissionEntity] = url.split('/');
 	return request.post(url).send(Object.fromEntries(data as unknown as Iterable<any[]>))
 		.then((response: Response) => {
 			if (!response.body) {
 				window.location.replace('/login');
 			}
 
+			if (submissionEntity === 'imports') {
+				submissionEntity = importSubmissionEntity;
+			}
 			const redirectUrl = `/${submissionEntity}/${response.body.bbid}`;
 			if (response.body.alert) {
 				const alertParam = `?alert=${response.body.alert}`;

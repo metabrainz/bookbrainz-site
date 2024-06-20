@@ -43,6 +43,9 @@ const clientConfig = {
 		'entity-editor': ['./entity-editor/controller.js'],
 		'unified-form':['./unified-form/controller.js'],
 		'entity-merge': ['./entity-editor/entity-merge.tsx'],
+		'import-entity/import-entity': ['./controllers/import-entity/import-entity.js'],
+		'import-entity/discard-import-entity': ['./controllers/import-entity/discard-import-entity.js'],
+		'import-entity/recent-imports': ['./controllers/import-entity/recent-imports.js'],
 		style: './stylesheets/style.scss',
 		'relationship-type-editor': ['./controllers/type-editor/relationship-type.tsx'],
 		'identifier-type-editor': ['./controllers/type-editor/identifier-type.tsx']

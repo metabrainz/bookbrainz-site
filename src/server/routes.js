@@ -29,6 +29,7 @@ import editorRouter from './routes/editor';
 import externalServiceRouter from './routes/externalService';
 import identifierTypeRouter from './routes/type-editor/identifier-type';
 import identifierTypesRouter from './routes/identifier-types';
+import importRouter from './routes/import-entity';
 import indexRouter from './routes/index';
 import mergeRouter from './routes/merge';
 import publisherRouter from './routes/entity/publisher';
@@ -57,6 +58,7 @@ function initRootRoutes(app) {
 	app.use('/revisions', revisionsRouter);
 	app.use('/collections', collectionsRouter);
 	app.use('/statistics', statisticsRouter);
+	app.use('/imports', importRouter);
 	app.use('/external-service', externalServiceRouter);
 	app.use('/admin-panel', adminPanelRouter);
 	app.use('/admin-logs', adminLogsRouter);

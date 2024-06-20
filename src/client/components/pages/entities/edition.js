@@ -39,7 +39,7 @@ const {
 } = entityHelper;
 const {Col, Row} = bootstrap;
 
-function EditionAttributes({edition}) {
+export function EditionAttributes({edition}) {
 	if (edition.deleted) {
 		return deletedEntityMessage;
 	}

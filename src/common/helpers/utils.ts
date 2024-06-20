@@ -1,6 +1,6 @@
 import {EntityType, Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
 
-import {isString, kebabCase, toString, upperFirst} from 'lodash';
+import {isFinite, isString, kebabCase, toString, upperFirst} from 'lodash';
 import {IdentifierType} from '../../client/unified-form/interface/type';
 import type {LazyLoadedEntityT} from 'bookbrainz-data/lib/types/entity';
 
@@ -21,6 +21,13 @@ const _bbidRegex =
 export function isValidBBID(bbid: string): boolean {
 	return _bbidRegex.test(bbid);
 }
+
+export function isValidImportId(id: number): boolean {
+	return isFinite(id) && id > 0;
+}
+
+// TODO: The following functions are duplicates of ORM functions:
+// https://github.com/metabrainz/bookbrainz-data-js/blob/master/src/func/entity.ts
 
 /**
  * Returns all entity models defined in bookbrainz-data-js
@@ -58,6 +65,45 @@ export function getEntityModelByType(orm: any, type: string): any {
 	}
 
 	return entityModels[type];
+}
+
+/**
+ * Returns all import models defined in bookbrainz-data-js
+ *
+ * @param {object} orm - the BookBrainz ORM, initialized during app setup
+ * @returns {object} - Object mapping model name to the import model
+ */
+export function getImportModels(orm: any) {
+	const {AuthorImport, EditionImport, EditionGroupImport, PublisherImport,
+		WorkImport} = orm;
+
+	return {
+		AuthorImport,
+		EditionGroupImport,
+		EditionImport,
+		PublisherImport,
+		WorkImport
+	};
+}
+
+/**
+ * Retrieves the Bookshelf import model with the given the model name
+ *
+ * @param  {Object} orm - The BookBrainz ORM, initialized during app setup
+ * @param  {string} type - Name or type of model
+ * @throws {Error} Throws a custom error if the param 'type' does not
+ * map to a model
+ * @returns {object} - Bookshelf model object with the type specified in the
+ * single param
+ */
+export function getImportModelByType(orm: any, type: string): any {
+	const importModels = getImportModels(orm);
+
+	if (!importModels[type]) {
+		throw new Error('Unrecognized import type');
+	}
+
+	return importModels[type];
 }
 
 /**

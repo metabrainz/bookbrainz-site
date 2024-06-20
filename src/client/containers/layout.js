@@ -28,7 +28,7 @@ import {PrivilegeType, checkPrivilege} from '../../common/helpers/privileges-uti
 import {
 	faBarcode,
 	faChartLine, faClipboardQuestion, faFileLines, faGripVertical, faLink, faListUl, faNewspaper, faPlus, faQuestionCircle,
-	faSearch, faShieldHalved, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle, faUserGear
+	faSearch, faShieldHalved, faSignInAlt, faSignOutAlt, faTrophy, faUserCheck, faUserCircle, faUserGear
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Footer from './../components/footer';
@@ -341,12 +341,23 @@ class Layout extends React.Component {
 			<Navbar.Collapse id="bs-example-navbar-collapse-1">
 				{!(homepage || hideSearch) && this.renderSearchForm()}
 				<Nav className={revisionsClassName}>
-					<Nav.Item>
-						<Nav.Link href="/revisions">
-							<FontAwesomeIcon icon={faListUl}/>
-							{' Revisions '}
-						</Nav.Link>
-					</Nav.Item>
+					<NavDropdown
+						title={
+							<span>
+								<FontAwesomeIcon icon={faListUl}/>
+								{' Revisions '}
+							</span>
+						}
+					>
+						<NavDropdown.Item href="/revisions">
+							<FontAwesomeIcon fixedWidth icon={faListUl}/>
+							{' Latest revisions '}
+						</NavDropdown.Item>
+						<NavDropdown.Item href="/imports/recent">
+							<FontAwesomeIcon fixedWidth icon={faUserCheck}/>
+							{' Review recent imports '}
+						</NavDropdown.Item>
+					</NavDropdown>
 				</Nav>
 				<Nav>
 					<Nav.Item>

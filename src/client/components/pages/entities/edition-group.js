@@ -38,7 +38,7 @@ import WikipediaExtract from './wikipedia-extract';
 const {deletedEntityMessage, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
 
-function EditionGroupAttributes({editionGroup}) {
+export function EditionGroupAttributes({editionGroup}) {
 	if (editionGroup.deleted) {
 		return deletedEntityMessage;
 	}

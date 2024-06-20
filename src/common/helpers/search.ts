@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2016  Sean Burke
+ *               2018  Shivam Tripathi
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,6 +92,13 @@ async function _fetchEntityModelsForESResults(orm, results) {
 		const entityStub = hit._source;
 
 		// Special cases first
+		if (entityStub.importId) {
+			const modelType = `${entityStub.type}Import`;
+			const model = commonUtils.getImportModelByType(orm, modelType);
+			return model.forge({importId: entityStub.importId})
+				.fetch({withRelated: ['defaultAlias']})
+				.then((importObj) => importObj.toJSON());
+		}
 		if (entityStub.type === 'Area') {
 			const area = await Area.forge({gid: entityStub.id})
 				.fetch({withRelated: ['areaType']});
@@ -428,7 +436,7 @@ export async function generateIndex(orm) {
 	];
 
 	// Update the indexed entries for each entity type
-	const behaviorPromise = entityBehaviors.map(
+	const entityBehaviorPromise = entityBehaviors.map(
 		(behavior) => behavior.model.forge()
 			.query((qb) => {
 				qb.where('master', true);
@@ -438,7 +446,7 @@ export async function generateIndex(orm) {
 				withRelated: baseRelations.concat(behavior.relations)
 			})
 	);
-	const entityLists = await Promise.all(behaviorPromise);
+	const entityLists = await Promise.all(entityBehaviorPromise);
 	/* eslint-disable @typescript-eslint/no-unused-vars */
 	const entityFetchOrder:EntityTypeString[] = ['Author', 'Edition', 'EditionGroup', 'Publisher', 'Series', 'Work'];
 	const [authorsCollection,
@@ -525,6 +533,49 @@ export async function generateIndex(orm) {
 		type: 'Collection'
 	}));
 	await _processEntityListForBulk(processedCollections);
+
+	const {AuthorImport, EditionImport, EditionGroupImport, PublisherImport, WorkImport} = orm;
+	const importBehaviors = [
+		{
+			model: AuthorImport,
+			relations: [
+				'gender',
+				'authorType',
+				'beginArea',
+				'endArea'
+			]
+		},
+		{
+			model: EditionImport,
+			relations: [
+				'editionGroup',
+				'editionFormat',
+				'editionStatus'
+			]
+		},
+		{model: EditionGroupImport, relations: ['editionGroupType']},
+		{model: PublisherImport, relations: ['publisherType', 'area']},
+		{model: WorkImport, relations: ['workType']}
+	];
+
+	const importBehaviorPromise = importBehaviors.map(
+		(behavior) => behavior.model.forge()
+			.query((qb) => {
+				qb.whereNotNull('data_id');
+			})
+			.fetchAll({
+				withRelated: baseRelations.concat(behavior.relations)
+			})
+	);
+	const importLists = await Promise.all(importBehaviorPromise);
+
+	// Index all the pending imports
+	const importListIndexes = [];
+	importLists.forEach((importList) => {
+		const listArray = importList.toJSON();
+		importListIndexes.push(_processEntityListForBulk(listArray));
+	});
+	await Promise.all(importListIndexes);
 
 	await refreshIndex();
 }
