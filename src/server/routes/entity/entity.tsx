@@ -751,9 +751,11 @@ async function processEditionSets(
 	transacting: Transaction
 ): Promise<ProcessEditionSetsResult> {
 	const languageSetID = _.get(currentEntity, ['languageSet', 'id']);
-	const oldLanguageSet = languageSetID &&
-	 await orm.LanguageSet.forge({id: languageSetID})
-	 .fetch({transacting, withRelated: ['languages']});
+	const oldLanguageSet = await (
+		languageSetID &&
+		orm.LanguageSet.forge({id: languageSetID})
+			.fetch({transacting, withRelated: ['languages']})
+	);
 
 	const languages = _.get(body, 'languages') || [];
 	const newLanguageSet = await orm.func.language.updateLanguageSet(
@@ -779,9 +781,11 @@ async function processEditionSets(
 	const newPublisherSetID = newPublisherSet && newPublisherSet.get('id');
 
 	const releaseEventSetID = _.get(currentEntity, ['releaseEventSet', 'id']);
-	const oldReleaseEventSet = releaseEventSetID &&
-	await orm.ReleaseEventSet.forge({id: releaseEventSetID})
-		.fetch({transacting, withRelated: ['releaseEvents']});
+	const oldReleaseEventSet = await (
+		releaseEventSetID &&
+		orm.ReleaseEventSet.forge({id: releaseEventSetID})
+			.fetch({transacting, withRelated: ['releaseEvents']})
+	);
 
 	const releaseEvents = _.get(body, 'releaseEvents') || [];
 
@@ -802,11 +806,11 @@ async function processEditionSets(
 	);
 	const newReleaseEventSetID = newReleaseEventSet && newReleaseEventSet.get('id');
 
-	const authorCreditID = await processAuthorCredit(orm, currentEntity, body, transacting);
-	const authorCreditIDValue = authorCreditID.authorCreditId;
+	const newAuthorCredit = await processAuthorCredit(orm, currentEntity, body, transacting);
+	const newAuthorCreditID = newAuthorCredit.authorCreditId;
 
 	return {
-		authorCreditId: authorCreditIDValue,
+		authorCreditId: newAuthorCreditID,
 		languageSetId: newLanguageSetID,
 		publisherSetId: newPublisherSetID,
 		releaseEventSetId: newReleaseEventSetID
