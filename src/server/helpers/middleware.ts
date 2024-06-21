@@ -256,7 +256,7 @@ export function checkValidTypeId(req: $Request, res: $Response, next: NextFuncti
 export function checkValidEntityType(req: $Request, res: $Response, next: NextFunction, entityType: string) {
 	const entityTypes = ENTITY_TYPES.map(entity => _.snakeCase(entity));
 	if (!_.includes(entityTypes, entityType)) {
-		return next(new error.BadRequestError(`Invalid Entity Type: ${commonUtils.snakeCaseToSentenceCase(entityType)}`, req));
+		return next(new error.BadRequestError(`Invalid Entity Type: ${_.startCase(entityType)}`, req));
 	}
 	return next();
 }

@@ -2,6 +2,7 @@
 import * as achievement from '../../helpers/achievement';
 import type {Request as $Request, Response as $Response} from 'express';
 import {FormSubmissionError, sendErrorAsJSON} from '../../../common/helpers/error';
+import {_bulkIndexEntities, getDocumentToIndex} from '../../../common/helpers/search';
 import {authorToFormState, transformNewForm as authorTransform} from './author';
 import {editionGroupToFormState, transformNewForm as editionGroupTransform} from './edition-group';
 import {editionToFormState, transformNewForm as editionTransform} from './edition';
@@ -13,7 +14,6 @@ import type {
 	EntityTypeString
 } from 'bookbrainz-data/lib/types/entity';
 import _ from 'lodash';
-import {_bulkIndexEntities} from '../../../common/helpers/search';
 import log from 'log';
 import {processSingleEntity} from './entity';
 
@@ -206,7 +206,7 @@ export async function handleCreateMultipleEntities(
 	}
 	// log indexing error if any
 	try {
-		_bulkIndexEntities(processedAchievements);
+		_bulkIndexEntities(processedEntities.map(en => getDocumentToIndex(en, en.get('type'))));
 	}
 	catch (err) {
 		log.error(err);

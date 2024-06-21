@@ -29,6 +29,12 @@ import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 const {Alert, Badge, Button, ButtonGroup, Table} = bootstrap;
 
+// Main entities have a BBID but some other indexed types
+// have an ID field instead (collections, editors, areas)
+function getId(entity) {
+	return entity.bbid ?? entity.id;
+}
+
 /**
  * Renders the document and displays the 'SearchResults' page.
  * @returns {ReactElement} a HTML document which displays the SearchResults.
@@ -89,8 +95,8 @@ class SearchResults extends React.Component {
 		// eslint-disable-next-line react/no-access-state-in-setstate
 		const oldSelected = this.state.selected;
 		let newSelected;
-		if (oldSelected.find(selected => selected.bbid === entity.bbid)) {
-			newSelected = oldSelected.filter(selected => selected.bbid !== entity.bbid);
+		if (oldSelected.find(selected => getId(selected) === getId(entity))) {
+			newSelected = oldSelected.filter(selected => getId(selected) !== getId(entity));
 		}
 		else {
 			newSelected = [...oldSelected, entity];
@@ -148,6 +154,7 @@ class SearchResults extends React.Component {
 			if (!result) {
 				return null;
 			}
+			const id = getId(result);
 			const name = result.defaultAlias ? result.defaultAlias.name :
 				'(unnamed)';
 
@@ -160,19 +167,19 @@ class SearchResults extends React.Component {
 			const disambiguation = result.disambiguation ? <small>({result.disambiguation.comment})</small> : '';
 			// No redirect link for Area entity results
 			const link = result.type === 'Area' ?
-				`//musicbrainz.org/area/${result.bbid}` :
-				`/${_kebabCase(result.type)}/${result.bbid}`;
+				`//musicbrainz.org/area/${id}` :
+				`/${_kebabCase(result.type)}/${id}`;
 
 			/* eslint-disable react/jsx-no-bind */
 			return (
-				<tr key={result.bbid}>
+				<tr key={id}>
 					{
 						!this.props.condensed &&
 						<td>
 							{
 								this.props.user ?
 									<input
-										checked={this.state.selected.find(selected => selected.bbid === result.bbid)}
+										checked={this.state.selected.find(selected => getId(selected) === id)}
 										className="checkboxes"
 										type="checkbox"
 										onChange={() => this.toggleRow(result)}
@@ -212,7 +219,7 @@ class SearchResults extends React.Component {
 					this.props.user ?
 						<div>
 							<AddToCollectionModal
-								bbids={this.state.selected.map(selected => selected.bbid)}
+								bbids={this.state.selected.map(getId)}
 								closeModalAndShowMessage={this.closeModalAndShowMessage}
 								entityType={this.state.selected[0]?.type}
 								handleCloseModal={this.onCloseModal}

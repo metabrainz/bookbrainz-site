@@ -484,7 +484,7 @@ export function handleDelete(
 				editorJSON.id,
 				body.note
 			);
-		return savedMainEntity.toJSON();
+		return savedMainEntity.toJSON({omitPivot: true});
 	});
 
 	try {
@@ -1057,7 +1057,7 @@ export async function indexAutoCreatedEditionGroup(orm, newEdition, transacting)
 				transacting,
 				withRelated: 'aliasSet.aliases'
 			});
-		await search.indexEntity(editionGroup.toJSON());
+		await search.indexEntity(editionGroup);
 	}
 	catch (err) {
 		log.error('Could not reindex edition group after edition creation:', err);
@@ -1166,34 +1166,37 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 			editorJSON.id, body.note
 		);
 
-		/* We need to load the aliases for search reindexing and refresh it*/
-		await savedMainEntity.load(['aliasSet.aliases', 'defaultAlias.language', 'relationshipSet.relationships.source',
-			'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation'], {transacting});
+		/* We need to load the aliases for search reindexing and refresh it (otherwise 'type' is missing for new entities)*/
+		await savedMainEntity.refresh({transacting, withRelated: ['aliasSet.aliases', 'defaultAlias.language',
+			'relationshipSet.relationships.source', 'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation']});
 
-		/* New entities will lack some attributes like 'type' required for search indexing */
-		if (isNew) {
-			await savedMainEntity.refresh({transacting});
-
+		if (isNew && savedMainEntity.get('type') === 'Edition') {
 			/* fetch and reindex EditionGroups that may have been created automatically by the ORM and not indexed */
-			if (savedMainEntity.get('type') === 'Edition') {
-				await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
-			}
+			await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
 		}
 
-		const entityJSON = savedMainEntity.toJSON();
-		if (entityJSON && entityJSON.relationshipSet) {
-			entityJSON.relationshipSet.relationships = await Promise.all(entityJSON.relationshipSet.relationships.map(async (rel) => {
+		const entityRelationships = savedMainEntity.related('relationshipSet')?.related('relationships');
+		if (savedMainEntity.get('type') === 'Work' && entityRelationships?.length) {
+			const authorsOfWork = await Promise.all(entityRelationships.toJSON().filter(
+				// "Author wrote Work" relationship
+				(relation) => relation.typeId === 8
+			).map(async (relationshipJSON) => {
 				try {
-					rel.source = await commonUtils.getEntityAlias(orm, rel.source.bbid, rel.source.type);
-					rel.target = await commonUtils.getEntityAlias(orm, rel.target.bbid, rel.target.type);
+					const {source} = relationshipJSON;
+					const sourceEntity = await commonUtils.getEntity(
+						orm, source.bbid, source.type, {require: false, transacting}
+					);
+					return sourceEntity.name;
 				}
 				catch (err) {
 					log.error(err);
 				}
-				return rel;
+				return null;
 			}));
+			// Attach a work's authors for search indexing
+			savedMainEntity.set('authors', authorsOfWork.filter(Boolean));
 		}
-		return entityJSON;
+		return savedMainEntity;
 	}
 	catch (err) {
 		log.error(err);
@@ -1211,29 +1214,15 @@ export async function handleCreateOrEditEntity(
 	const {orm}: {orm?: any} = req.app.locals;
 	const editorJSON = req.user;
 	const {bookshelf} = orm;
+	const savedEntityModel = await bookshelf.transaction((transacting) =>
+		processSingleEntity(req.body, res.locals.entity, req.session, entityType, orm, editorJSON, derivedProps, isMergeOperation, transacting));
+	const entityJSON = savedEntityModel.toJSON();
 
-	try {
-		const entityJSON = await bookshelf.transaction((transacting) =>
-			processSingleEntity(
-				req.body,
-				res.locals.entity,
-				req.session,
-				entityType,
-				orm,
-				editorJSON,
-				derivedProps,
-				isMergeOperation,
-				transacting
-			));
-		const processedAchievement = await processAchievement(orm, editorJSON.id, entityJSON);
-		res.send(processedAchievement).status(200);
-		search.indexEntity(processedAchievement);
-		return processedAchievement;
-	}
-	catch (err) {
-		log.error(err);
-		return error.sendErrorAsJSON(res, err);
-	}
+	await processAchievement(orm, editorJSON.id, entityJSON);
+
+	await search.indexEntity(savedEntityModel);
+
+	return res.status(200).send(entityJSON);
 }
 
 type AliasEditorT = {

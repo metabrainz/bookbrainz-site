@@ -93,65 +93,58 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 	}));
 });
 
-router.post('/handler', (req, res) => {
-	const {Editor, EditorType} = req.app.locals.orm;
+router.post('/handler', async (req, res) => {
+	try {
+		const {Editor, EditorType} = req.app.locals.orm;
 
-	// Check whether the user is logged in - if so, redirect to profile page
-	if (req.user) {
-		return res.redirect(`/editor/${req.user.id}`);
-	}
+		// Check whether the user is logged in - if so, redirect to profile page
+		if (req.user) {
+			return res.redirect(`/editor/${req.user.id}`);
+		}
 
-	if (!req.session.mbProfile) {
-		return res.redirect('/auth');
-	}
+		if (!req.session.mbProfile) {
+			return res.redirect('/auth');
+		}
 
-	// Fetch the default EditorType from the database
-	const registerPromise = EditorType.forge({label: 'Editor'})
-		.fetch({require: true})
-		.then(
-			// Create a new Editor and add to the database
-			(editorType) =>
-				new Editor({
-					cachedMetabrainzName: req.session.mbProfile.sub,
-					genderId: req.body.gender,
-					metabrainzUserId: req.session.mbProfile.metabrainz_user_id,
-					name: req.body.displayName,
-					typeId: editorType.id
-				})
-					.save()
-		)
-		.then((editor) => {
-			req.session.mbProfile = null;
-			const editorJSON = editor.toJSON();
+		// Fetch the default EditorType from the database
+		const editorType = await EditorType.forge({label: 'Editor'})
+			.fetch({require: true});
 
-			// in ES index, we're storing the editor as entity
-			const editorForES = {};
-			editorForES.bbid = editorJSON.id;
-			editorForES.aliasSet = {
-				aliases: [
-					{name: editorJSON.name}
-				]
-			};
-			editorForES.type = 'Editor';
-			return editorForES;
+		// Create a new Editor and add to the database
+
+		const editor = await new Editor({
+			cachedMetabrainzName: req.session.mbProfile.sub,
+			genderId: req.body.gender,
+			metabrainzUserId: req.session.mbProfile.metabrainz_user_id,
+			name: req.body.displayName,
+			typeId: editorType.id
 		})
-		.catch((err) => {
-			log.debug(err);
+			.save();
 
-			if (_.isMatch(err, {constraint: 'editor_name_key'})) {
-				throw new error.FormSubmissionError(
-					'That username already exists - please try using another,' +
-					' or contact us to have your existing BookBrainz account' +
-					' linked to a MusicBrainz account.'
-				);
-			}
+		req.session.mbProfile = null;
 
-			throw new error.FormSubmissionError(
-				'Something went wrong when registering, please try again!'
-			);
-		});
+		const editorJSON = editor.toJSON();
 
-	return handler.sendPromiseResult(res, registerPromise, search.indexEntity);
+		// Type needed for indexing
+		editor.set('type', 'Editor');
+		await search.indexEntity(editor);
+
+		return res.status(200).send(editorJSON);
+	}
+	catch (err) {
+		if (_.isMatch(err, {constraint: 'editor_name_key'})) {
+			return error.sendErrorAsJSON(res, new error.FormSubmissionError(
+				'That username already exists - please try using another,' +
+			' or contact us to have your existing BookBrainz account' +
+			' linked to a MusicBrainz account.'
+			));
+		}
+		log.error(err);
+
+		return error.sendErrorAsJSON(res, new error.FormSubmissionError(
+			'Something went wrong when registering, please try again!'
+		));
+	}
 });
 
 export default router;

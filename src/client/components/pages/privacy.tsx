@@ -23,9 +23,9 @@ import React from 'react';
  * Renders a page containing a link to the current MusicBrainz privacy
  * policy, which will form the basis of a future privacy policy
  * for BookBrainz.
- * @returns {ReactElement} an element containing the rendered output
+ * @returns {JSX.Element} an element containing the rendered output
  */
-function PrivacyPage() {
+function PrivacyPage(): JSX.Element {
 	return (
 		<div>
 			<div className="page-header">

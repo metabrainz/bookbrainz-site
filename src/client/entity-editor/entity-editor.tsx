@@ -27,6 +27,7 @@ import NameSection from './name-section/name-section';
 import RelationshipSection from './relationship-editor/relationship-section';
 import SubmissionSection from './submission-section/submission-section';
 import _ from 'lodash';
+import {getEntityUrl} from '../helpers/entity';
 import {submit} from './submission-section/actions';
 
 
@@ -34,6 +35,7 @@ type OwnProps = {
 	children: React.ReactElement<any>,
 	heading: string,
 	intitialState:Record<string, any>,
+	entity: any
 };
 
 type StateProps = {
@@ -67,9 +69,11 @@ const EntityEditor = (props: Props) => {
 		children,
 		heading,
 		identifierEditorVisible,
-		onSubmit
+		onSubmit,
+		entity
 	} = props;
 	const currentState = (useSelector((state) => state) as any).toJS();
+	let entityURL;
 	// eslint-disable-next-line consistent-return
 	const handleUrlChange = React.useCallback(() => {
 		if (!_.isEqual(currentState, props.intitialState) && !currentState.submissionSection.submitted) {
@@ -80,11 +84,17 @@ const EntityEditor = (props: Props) => {
 		window.onbeforeunload = handleUrlChange;
 	}, [handleUrlChange]);
 
+	if (entity) {
+		entityURL = getEntityUrl(entity);
+	}
+
 	return (
 		<form onSubmit={onSubmit}>
 			<Card>
 				<Card.Header as="h4">
-					{heading}
+					<div>
+					 {entityURL ? <a href={entityURL}>{heading}</a> : heading}
+					</div>
 				</Card.Header>
 				<Card.Body>
 					<AliasEditor show={aliasEditorVisible} {...props}/>

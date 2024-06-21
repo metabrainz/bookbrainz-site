@@ -34,10 +34,6 @@
 	},
 	"search": {
 		"node": "http://localhost:9200",
-		"auth": {
-			"username": "elastic",
-			"password": "changeme"
-		},
 		"requestTimeout": 60000
 	}
 }
