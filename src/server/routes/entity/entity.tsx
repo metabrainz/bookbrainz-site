@@ -271,7 +271,7 @@ export async function addNoteToRevision(req: PassportRequest, res: $Response) {
 			   orm, body.note, editorJSON.id, revision, transacting
 		   )
 	   );
-		res.send(revisionNote).status(200);
+		res.send(revisionNote);
 		return revisionNote;
 	}
 	catch (err) {
