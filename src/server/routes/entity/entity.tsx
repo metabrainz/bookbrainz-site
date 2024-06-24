@@ -275,7 +275,7 @@ export async function addNoteToRevision(req: PassportRequest, res: $Response) {
 			   orm, body.note, editorJSON.id, revision, transacting
 		   )
 	   );
-		res.send(revisionNote).status(200);
+		res.send(revisionNote);
 		return revisionNote;
 	}
 	catch (err) {
@@ -436,7 +436,7 @@ export function handleDelete(
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const {body}: {body: any} = req;
-	const entityDelete = bookshelf.transaction(async (transacting) => {
+	const entityDelete = await bookshelf.transaction(async (transacting) => {
 		if (!body.note || !body.note.length) {
 			throw new error.FormSubmissionError('A revision note is required when deleting an entity');
 		}
