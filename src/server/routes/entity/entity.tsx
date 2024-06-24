@@ -81,7 +81,7 @@ export async function displayEntity(req: PassportRequest, res: $Response) {
 		);
 	}
 
-	let editorEntityVisit;
+	let editorEntityVisit = false;
 	if (resLocals.user) {
 		try {
 			await new EditorEntityVisits({
@@ -97,9 +97,6 @@ export async function displayEntity(req: PassportRequest, res: $Response) {
 			editorEntityVisit = false;
 		}
 	}
-	else {
-		editorEntityVisit = false;
-	}
 
 	let alertPromises;
 	let alertIds = [];
@@ -109,7 +106,6 @@ export async function displayEntity(req: PassportRequest, res: $Response) {
 		));
 	}
 	if (_.isString(req.query.alert)) {
-		// $FlowFixMe
 		alertIds = alertIds.concat(req.query.alert.split(',').map(
 			(id) =>	parseInt(id, 10)
 		));
@@ -425,7 +421,7 @@ export function fetchOrCreateMainEntity(
 	return entity.fetch({transacting});
 }
 
-export function handleDelete(
+export async function handleDelete(
 	orm: any, req: PassportRequest, res: $Response, HeaderModel: any,
 	RevisionModel: any
 ) {
@@ -436,7 +432,7 @@ export function handleDelete(
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const {body}: {body: any} = req;
-	const entityDelete = bookshelf.transaction(async (transacting) => {
+	const entityDelete = await bookshelf.transaction(async (transacting) => {
 		if (!body.note || !body.note.length) {
 			throw new error.FormSubmissionError('A revision note is required when deleting an entity');
 		}
@@ -789,6 +785,9 @@ async function processEditionSets(
 
 	const releaseEvents = _.get(body, 'releaseEvents') || [];
 
+	// if areaId is not present, set it to null.
+	// otherwise it shows error while comparing old and new releaseEvent;
+
 	if (releaseEvents[0]) {
 		if (_.isNil(releaseEvents[0].areaId)) {
 			releaseEvents[0].areaId = null;
@@ -824,17 +823,23 @@ async function processWorkSets(
 ): Promise<ProcessWorkSetsResult> {
 	const id = _.get(currentEntity, ['languageSet', 'id']);
 
-	const oldSet = id && await orm.LanguageSet.forge({id}).fetch({transacting, withRelated: ['languages']});
+	const oldSet = await (
+		id &&
+		orm.LanguageSet.forge({id})
+			.fetch({transacting, withRelated: ['languages']})
+	);
 
 	const languages = _.get(body, 'languages') || [];
 
-	const languageSetId = await orm.func.language.updateLanguageSet(
+	const set = await orm.func.language.updateLanguageSet(
 		orm,
 		transacting,
 		oldSet,
 		languages.map((languageID) => ({id: languageID}))
-	).then((set) => set && set.get('id'));
-
+	);
+	
+	const languageSetId = set ? set.get('id') : null;
+	
 	return {
 		languageSetId
 	};
