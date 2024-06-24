@@ -21,7 +21,6 @@ import * as React from 'react';
 import * as achievement from '../../helpers/achievement';
 import * as commonUtils from '../../../common/helpers/utils';
 import * as error from '../../../common/helpers/error';
-import * as handler from '../../helpers/handler';
 import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
@@ -67,7 +66,7 @@ const entityComponents = {
 	work: WorkPage
 };
 
-export function displayEntity(req: PassportRequest, res: $Response) {
+export async function displayEntity(req: PassportRequest, res: $Response) {
 	const {orm}: {orm?: any} = req.app.locals;
 	const {AchievementUnlock, EditorEntityVisits} = orm;
 	const {locals: resLocals}: {locals: any} = res;
@@ -82,98 +81,92 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 		);
 	}
 
-	let editorEntityVisitPromise;
+	let editorEntityVisit = false;
 	if (resLocals.user) {
-		editorEntityVisitPromise = new EditorEntityVisits({
-			bbid: resLocals.entity.bbid,
-			editorId: resLocals.user.id
-		})
-			.save(null, {method: 'insert'})
-			.then(() => achievement.processPageVisit(orm, resLocals.user.id))
-			.catch(
-				// error caused by duplicates we do not want in database
-				() => new Promise(resolve => resolve(false))
-			);
+		try {
+			await new EditorEntityVisits({
+				bbid: resLocals.entity.bbid,
+				editorId: resLocals.user.id
+			})
+				.save(null, {method: 'insert'});
+
+			editorEntityVisit = await achievement.processPageVisit(orm, resLocals.user.id);
+		}
+		catch {
+			// error caused by duplicates we do not want in database
+			editorEntityVisit = false;
+		}
+	}
+
+	let alertPromises;
+	let alertIds = [];
+	if (editorEntityVisit.alert) {
+		alertIds = alertIds.concat(editorEntityVisit.alert.split(',').map(
+			(id) => parseInt(id, 10)
+		));
+	}
+	if (_.isString(req.query.alert)) {
+		alertIds = alertIds.concat(req.query.alert.split(',').map(
+			(id) =>	parseInt(id, 10)
+		));
+	}
+	if (alertIds.length > 0) {
+		const promiseList = alertIds.map(async (achievementAlert) => {
+			try {
+				const unlock = await new AchievementUnlock({id: achievementAlert}).fetch({
+					require: true,
+					withRelated: 'achievement'
+				});
+				const unlockJSON = unlock.toJSON();
+
+				let unlockName;
+				if (req.user.id === unlockJSON.editorId) {
+					unlockName = {
+						name: unlockJSON.achievement.name
+					};
+				}
+				return unlockName;
+			}
+			catch (err) {
+				return log.debug(err);
+			}
+		});
+
+		alertPromises = Promise.all(promiseList);
 	}
 	else {
-		editorEntityVisitPromise = new Promise(resolve => resolve(false));
+		alertPromises = new Promise(resolve => resolve(false));
 	}
 
-	let alertPromise = editorEntityVisitPromise.then((visitAlert) => {
-		let alertIds = [];
-		if (visitAlert.alert) {
-			alertIds = alertIds.concat(visitAlert.alert.split(',').map(
-				(id) => parseInt(id, 10)
-			));
-		}
-		if (_.isString(req.query.alert)) {
-			// $FlowFixMe
-			alertIds = alertIds.concat(req.query.alert.split(',').map(
-				(id) =>	parseInt(id, 10)
-			));
-		}
-		if (alertIds.length > 0) {
-			const promiseList = alertIds.map(
-				(achievementAlert) =>
-					new AchievementUnlock(
-						{id: achievementAlert}
-					)
-						.fetch({
-							require: true,
-							withRelated: 'achievement'
-						})
-						.then((unlock) => unlock.toJSON())
-						.then((unlock) => {
-							let unlockName;
-							if (req.user.id === unlock.editorId) {
-								unlockName = {
-									name: unlock.achievement.name
-								};
-							}
-							return unlockName;
-						})
-						.catch((err) => {
-							log.debug(err);
-						})
-			);
-			alertPromise = Promise.all(promiseList);
-		}
-		else {
-			alertPromise = new Promise(resolve => resolve(false));
-		}
-		return alertPromise;
-	});
-
-	return alertPromise.then((alert) => {
-		const entityName = _.camelCase(entity.type);
-		const EntityComponent = entityComponents[entityName];
-		if (EntityComponent) {
-			const props = generateProps(req, res, {
-				alert,
-				genderOptions: res.locals.genders,
-				identifierTypes
-			});
-			const markup = ReactDOMServer.renderToString(
-				<Layout {...propHelpers.extractLayoutProps(props)}>
-					<EntityComponent
-						{...propHelpers.extractEntityProps(props)}
-					/>
-				</Layout>
-			);
-			res.send(target({
-				markup,
-				page: entityName,
-				props: escapeProps(props),
-				script: '/js/entity/entity.js',
-				title: `${getEntityLabel(props.entity, false)} (${_.upperFirst(entityName)})`
-			}));
-		}
-		else {
-			throw new Error(
-				`Component was not found for the following entity:${entityName}`
-			);
-		}
-	});
+	const alert = await alertPromises;
+	const entityName = _.camelCase(entity.type);
+	const EntityComponent = entityComponents[entityName];
+	if (EntityComponent) {
+		const props = generateProps(req, res, {
+			alert,
+			genderOptions: res.locals.genders,
+			identifierTypes
+		});
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EntityComponent
+					{...propHelpers.extractEntityProps(props)}
+				/>
+			</Layout>
+		);
+		res.send(target({
+			markup,
+			page: entityName,
+			props: escapeProps(props),
+			script: '/js/entity/entity.js',
+			title: `${getEntityLabel(props.entity, false)} (${_.upperFirst(entityName)})`
+		}));
+	}
+	else {
+		throw new Error(
+			`Component was not found for the following entity:${entityName}`
+		);
+	}
 }
 
 export function displayDeleteEntity(req: PassportRequest, res: $Response) {
@@ -264,18 +257,27 @@ function _createNote(orm, content, editorID, revision, transacting) {
 	return null;
 }
 
-export function addNoteToRevision(req: PassportRequest, res: $Response) {
+export async function addNoteToRevision(req: PassportRequest, res: $Response) {
 	const {orm}: {orm?: any} = req.app.locals;
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const revision = Revision.forge({id: req.params.id});
 	const {body}: {body: any} = req;
-	const revisionNotePromise = bookshelf.transaction(
-		(transacting) => _createNote(
-			orm, body.note, editorJSON.id, revision, transacting
-		)
-	);
-	return handler.sendPromiseResult(res, revisionNotePromise);
+
+
+	try {
+		const revisionNote = await bookshelf.transaction(
+			(transacting) => _createNote(
+			   orm, body.note, editorJSON.id, revision, transacting
+		   )
+	   );
+		res.send(revisionNote);
+		return revisionNote;
+	}
+	catch (err) {
+		log.error(err);
+		return error.sendErrorAsJSON(res, err);
+	}
 }
 
 export async function getEntityByBBID(orm: any, transacting: Transaction, bbid: string) {
@@ -419,7 +421,7 @@ export function fetchOrCreateMainEntity(
 	return entity.fetch({transacting});
 }
 
-export function handleDelete(
+export async function handleDelete(
 	orm: any, req: PassportRequest, res: $Response, HeaderModel: any,
 	RevisionModel: any
 ) {
@@ -430,7 +432,7 @@ export function handleDelete(
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const {body}: {body: any} = req;
-	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
+	const entityDelete = await bookshelf.transaction(async (transacting) => {
 		if (!body.note || !body.note.length) {
 			throw new error.FormSubmissionError('A revision note is required when deleting an entity');
 		}
@@ -481,7 +483,15 @@ export function handleDelete(
 		return savedMainEntity.toJSON({omitPivot: true});
 	});
 
-	return handler.sendPromiseResult(res, entityDeletePromise, search.deleteEntity);
+	try {
+		res.send(entityDelete);
+		search.deleteEntity(entityDelete);
+		return entityDelete;
+	}
+	catch (err) {
+		log.error(err);
+		return error.sendErrorAsJSON(res, err);
+	}
 }
 
 export async function processMergeOperation(orm, transacting, session, mainEntity, allEntities, relationshipSets) {
@@ -737,7 +747,6 @@ async function processEditionSets(
 	transacting: Transaction
 ): Promise<ProcessEditionSetsResult> {
 	const languageSetID = _.get(currentEntity, ['languageSet', 'id']);
-
 	const oldLanguageSet = await (
 		languageSetID &&
 		orm.LanguageSet.forge({id: languageSetID})
@@ -745,29 +754,29 @@ async function processEditionSets(
 	);
 
 	const languages = _.get(body, 'languages') || [];
-	const newLanguageSetIDPromise = orm.func.language.updateLanguageSet(
-		orm, transacting, oldLanguageSet,
+	const newLanguageSet = await orm.func.language.updateLanguageSet(
+		orm,
+		transacting,
+		oldLanguageSet,
 		languages.map((languageID) => ({id: languageID}))
-	)
-		.then((set) => set && set.get('id'));
+	);
+	const newLanguageSetID = newLanguageSet && newLanguageSet.get('id');
 
 	const publisherSetID = _.get(currentEntity, ['publisherSet', 'id']);
-
-	const oldPublisherSet = await (
-		publisherSetID &&
-		orm.PublisherSet.forge({id: publisherSetID})
-			.fetch({transacting, withRelated: ['publishers']})
-	);
+	const oldPublisherSet = publisherSetID &&
+	await orm.PublisherSet.forge({id: publisherSetID})
+		.fetch({transacting, withRelated: ['publishers']});
 
 	const publishers = _.get(body, 'publishers') || [];
-	const newPublisherSetIDPromise = orm.func.publisher.updatePublisherSet(
-		orm, transacting, oldPublisherSet,
+	const newPublisherSet = await orm.func.publisher.updatePublisherSet(
+		orm,
+		transacting,
+		oldPublisherSet,
 		publishers.map((publisherBBID) => ({bbid: publisherBBID}))
-	)
-		.then((set) => set && set.get('id'));
+	);
+	const newPublisherSetID = newPublisherSet && newPublisherSet.get('id');
 
 	const releaseEventSetID = _.get(currentEntity, ['releaseEventSet', 'id']);
-
 	const oldReleaseEventSet = await (
 		releaseEventSetID &&
 		orm.ReleaseEventSet.forge({id: releaseEventSetID})
@@ -788,20 +797,23 @@ async function processEditionSets(
 		}
 	}
 
-	const newReleaseEventSetIDPromise =
-		orm.func.releaseEvent.updateReleaseEventSet(
-			orm, transacting, oldReleaseEventSet, releaseEvents
-		)
-			.then((set) => set && set.get('id'));
+	const newReleaseEventSet = await orm.func.releaseEvent.updateReleaseEventSet(
+		orm,
+		transacting,
+		oldReleaseEventSet,
+		releaseEvents
+	);
+	const newReleaseEventSetID = newReleaseEventSet && newReleaseEventSet.get('id');
 
-	const authorCreditIDPromise = processAuthorCredit(orm, currentEntity, body, transacting).then(acResult => acResult.authorCreditId);
+	const newAuthorCredit = await processAuthorCredit(orm, currentEntity, body, transacting);
+	const newAuthorCreditID = newAuthorCredit.authorCreditId;
 
-	return commonUtils.makePromiseFromObject<ProcessEditionSetsResult>({
-		authorCreditId: authorCreditIDPromise,
-		languageSetId: newLanguageSetIDPromise,
-		publisherSetId: newPublisherSetIDPromise,
-		releaseEventSetId: newReleaseEventSetIDPromise
-	});
+	return {
+		authorCreditId: newAuthorCreditID,
+		languageSetId: newLanguageSetID,
+		publisherSetId: newPublisherSetID,
+		releaseEventSetId: newReleaseEventSetID
+	};
 }
 
 type ProcessWorkSetsResult = {languageSetId: number[]};
@@ -818,12 +830,19 @@ async function processWorkSets(
 	);
 
 	const languages = _.get(body, 'languages') || [];
-	return commonUtils.makePromiseFromObject<ProcessWorkSetsResult>({
-		languageSetId: orm.func.language.updateLanguageSet(
-			orm, transacting, oldSet,
-			languages.map((languageID) => ({id: languageID}))
-		).then((set) => set && set.get('id'))
-	});
+
+	const set = await orm.func.language.updateLanguageSet(
+		orm,
+		transacting,
+		oldSet,
+		languages.map((languageID) => ({id: languageID}))
+	);
+	
+	const languageSetId = set ? set.get('id') : null;
+	
+	return {
+		languageSetId
+	};
 }
 
 async function processEntitySets(
