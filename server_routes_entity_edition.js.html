@@ -131,7 +131,7 @@ function _objectSpread(target) { for (var i = 1; i &lt; arguments.length; i++) {
 *********** Helpers ************
 *******************************/
 
-var additionalEditionProps = ['editionGroupBbid', 'width', 'height', 'depth', 'weight', 'pages', 'formatId', 'statusId'];
+var additionalEditionProps = ['editionGroupBbid', 'width', 'height', 'depth', 'weight', 'pages', 'formatId', 'statusId', 'creditSection'];
 function transformNewForm(data) {
   var aliases = entityRoutes.constructAliases(data.aliasEditor, data.nameSection);
   var identifiers = entityRoutes.constructIdentifiers(data.identifierEditor);
@@ -146,7 +146,8 @@ function transformNewForm(data) {
     return language.value;
   });
   var authorCredit = {};
-  if (!(0, _get2.default)(data, ['editionSection', 'authorCreditEnable'], true)) {
+  var authorCreditEnable = (0, _get2.default)(data, ['editionSection', 'authorCreditEnable'], true);
+  if (!authorCreditEnable) {
     authorCredit = null;
   } else if (!(0, _isNil2.default)(data.authorCredit)) {
     // When merging entities, we use a separate reducer "authorCredit"
@@ -158,6 +159,7 @@ function transformNewForm(data) {
     aliases: aliases,
     annotation: data.annotationSection.content,
     authorCredit: authorCredit,
+    creditSection: authorCreditEnable,
     depth: data.editionSection.depth &amp;&amp; parseInt(data.editionSection.depth, 10),
     disambiguation: data.nameSection.disambiguation,
     editionGroupBbid: data.editionSection.editionGroup &amp;&amp; data.editionSection.editionGroup.id,
@@ -252,8 +254,8 @@ router.get('/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), mi
   }
   function _render() {
     _render = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(props) {
-      var _req$query$name, _req$query, _initialState$edition, _initialState$nameSec;
-      var initialState, relationshipTypeId, initialRelationshipIndex, name, _initialState$edition2, editorMarkup, markup, updatedProps;
+      var _req$query$name, _req$query, _initialState$nameSec;
+      var initialState, relationshipTypeId, initialRelationshipIndex, name, _initialState$edition, editorMarkup, markup, updatedProps;
       return _regenerator.default.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -268,7 +270,6 @@ router.get('/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), mi
                 sortName: ''
               };
               initialRelationshipIndex = 0;
-              initialState.editionSection = (_initialState$edition = initialState.editionSection) !== null &amp;&amp; _initialState$edition !== void 0 ? _initialState$edition : {};
               if (props.author) {
                 initialState.authorCreditEditor = {
                   a0: {
@@ -310,40 +311,40 @@ router.get('/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), mi
                 (0, _entityRouteUtils.addInitialRelationship)(props, relationshipTypeId, initialRelationshipIndex++, props.work);
               }
               if (!((_initialState$nameSec = initialState.nameSection) !== null &amp;&amp; _initialState$nameSec !== void 0 &amp;&amp; _initialState$nameSec.name)) {
-                _context.next = 30;
+                _context.next = 29;
                 break;
               }
               name = initialState.nameSection.name;
-              _context.prev = 10;
-              _context.next = 13;
+              _context.prev = 9;
+              _context.next = 12;
               return search.autocomplete(req.app.locals.orm, name, 'Edition');
-            case 13:
+            case 12:
               initialState.nameSection.searchResults = _context.sent;
-              _context.next = 16;
+              _context.next = 15;
               return search.checkIfExists(req.app.locals.orm, name, 'Edition');
-            case 16:
+            case 15:
               initialState.nameSection.exactMatches = _context.sent;
-              if (!((_initialState$edition2 = initialState.editionSection.editionGroup) !== null &amp;&amp; _initialState$edition2 !== void 0)) {
-                _context.next = 21;
+              if (!((_initialState$edition = initialState.editionSection.editionGroup) !== null &amp;&amp; _initialState$edition !== void 0)) {
+                _context.next = 20;
                 break;
               }
-              _context.t0 = _initialState$edition2;
-              _context.next = 24;
-              break;
-            case 21:
+              _context.t0 = _initialState$edition;
               _context.next = 23;
-              return search.autocomplete(req.app.locals.orm, name, 'EditionGroup');
-            case 23:
-              _context.t0 = _context.sent;
-            case 24:
-              initialState.editionSection.matchingNameEditionGroups = _context.t0;
-              _context.next = 30;
               break;
-            case 27:
-              _context.prev = 27;
-              _context.t1 = _context["catch"](10);
+            case 20:
+              _context.next = 22;
+              return search.autocomplete(req.app.locals.orm, name, 'EditionGroup');
+            case 22:
+              _context.t0 = _context.sent;
+            case 23:
+              initialState.editionSection.matchingNameEditionGroups = _context.t0;
+              _context.next = 29;
+              break;
+            case 26:
+              _context.prev = 26;
+              _context.t1 = _context["catch"](9);
               _log.default.debug(_context.t1);
-            case 30:
+            case 29:
               editorMarkup = (0, _entityRouteUtils.entityEditorMarkup)(props);
               markup = editorMarkup.markup;
               updatedProps = editorMarkup.props;
@@ -353,12 +354,12 @@ router.get('/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), mi
                 script: '/js/entity-editor.js',
                 title: props.heading
               })));
-            case 34:
+            case 33:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, null, [[10, 27]]);
+      }, _callee, null, [[9, 26]]);
     }));
     return _render.apply(this, arguments);
   }
@@ -521,7 +522,10 @@ function editionToFormState(edition) {
   } finally {
     _iterator.f();
   }
-  if ((0, _isEmpty2.default)(authorCreditEditor)) {
+  if (!edition.creditSection) {
+    authorCreditEditor = {};
+  }
+  if ((0, _isEmpty2.default)(authorCreditEditor) &amp;&amp; edition.creditSection) {
     authorCreditEditor.n0 = {
       author: null,
       joinPhrase: '',
@@ -546,7 +550,7 @@ function editionToFormState(edition) {
   })));
   var editionGroup = utils.entityToOption(edition.editionGroup);
   var editionSection = {
-    authorCreditEnable: true,
+    authorCreditEnable: edition.creditSection,
     depth: edition.depth,
     editionGroup: editionGroup,
     // Determines whether the EG can be left blank (an EG will be auto-created) for existing Editions
@@ -628,7 +632,7 @@ exports.default = _default;
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Wed Jun 19 2024 14:28:21 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Jun 25 2024 10:52:04 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

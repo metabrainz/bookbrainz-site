@@ -1099,24 +1099,33 @@ function processAuthorCredit(_x33, _x34, _x35, _x36) {
   return _processAuthorCredit.apply(this, arguments);
 }
 function _processAuthorCredit() {
-  _processAuthorCredit = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee15(orm, currentEntity, body, transacting) {
-    var authorCreditID, oldAuthorCredit, names, newAuthorCredit;
+  _processAuthorCredit = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee15(orm, currentEntity, newEntityBody, transacting) {
+    var authorCreditEnabled, existingAuthorCreditID, oldAuthorCredit, names, newAuthorCredit;
     return _regenerator.default.wrap(function _callee15$(_context15) {
       while (1) {
         switch (_context15.prev = _context15.next) {
           case 0:
-            authorCreditID = (0, _get2.default)(currentEntity, ['authorCredit', 'id']);
-            _context15.next = 3;
-            return authorCreditID &amp;&amp; orm.AuthorCredit.forge({
-              id: authorCreditID
+            authorCreditEnabled = newEntityBody.creditSection !== false;
+            if (authorCreditEnabled) {
+              _context15.next = 3;
+              break;
+            }
+            return _context15.abrupt("return", {
+              authorCreditId: null
+            });
+          case 3:
+            existingAuthorCreditID = (0, _get2.default)(currentEntity, ['authorCredit', 'id']);
+            _context15.next = 6;
+            return existingAuthorCreditID &amp;&amp; orm.AuthorCredit.forge({
+              id: existingAuthorCreditID
             }).fetch({
               transacting: transacting,
               withRelated: ['names']
             });
-          case 3:
+          case 6:
             oldAuthorCredit = _context15.sent;
-            names = (0, _get2.default)(body, 'authorCredit') || [];
-            _context15.next = 7;
+            names = (0, _get2.default)(newEntityBody, 'authorCredit') || [];
+            _context15.next = 10;
             return orm.func.authorCredit.updateAuthorCredit(orm, transacting, oldAuthorCredit, names.map(function (name) {
               return {
                 authorBBID: name.authorBBID,
@@ -1124,12 +1133,12 @@ function _processAuthorCredit() {
                 name: name.name
               };
             }));
-          case 7:
+          case 10:
             newAuthorCredit = _context15.sent;
             return _context15.abrupt("return", {
               authorCreditId: newAuthorCredit &amp;&amp; newAuthorCredit.get('id')
             });
-          case 9:
+          case 12:
           case "end":
             return _context15.stop();
         }
@@ -1143,7 +1152,7 @@ function processEditionSets(_x37, _x38, _x39, _x40) {
 }
 function _processEditionSets() {
   _processEditionSets = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee16(orm, currentEntity, body, transacting) {
-    var languageSetID, oldLanguageSet, languages, newLanguageSetIDPromise, publisherSetID, oldPublisherSet, publishers, newPublisherSetIDPromise, releaseEventSetID, oldReleaseEventSet, releaseEvents, newReleaseEventSetIDPromise, authorCreditIDPromise;
+    var languageSetID, oldLanguageSet, languages, newLanguageSet, newLanguageSetID, publisherSetID, oldPublisherSet, publishers, newPublisherSet, newPublisherSetID, releaseEventSetID, oldReleaseEventSet, releaseEvents, newReleaseEventSet, newReleaseEventSetID, newAuthorCredit, newAuthorCreditID;
     return _regenerator.default.wrap(function _callee16$(_context16) {
       while (1) {
         switch (_context16.prev = _context16.next) {
@@ -1159,40 +1168,44 @@ function _processEditionSets() {
           case 3:
             oldLanguageSet = _context16.sent;
             languages = (0, _get2.default)(body, 'languages') || [];
-            newLanguageSetIDPromise = orm.func.language.updateLanguageSet(orm, transacting, oldLanguageSet, languages.map(function (languageID) {
+            _context16.next = 7;
+            return orm.func.language.updateLanguageSet(orm, transacting, oldLanguageSet, languages.map(function (languageID) {
               return {
                 id: languageID
               };
-            })).then(function (set) {
-              return set &amp;&amp; set.get('id');
-            });
+            }));
+          case 7:
+            newLanguageSet = _context16.sent;
+            newLanguageSetID = newLanguageSet &amp;&amp; newLanguageSet.get('id');
             publisherSetID = (0, _get2.default)(currentEntity, ['publisherSet', 'id']);
-            _context16.next = 9;
+            _context16.next = 12;
             return publisherSetID &amp;&amp; orm.PublisherSet.forge({
               id: publisherSetID
             }).fetch({
               transacting: transacting,
               withRelated: ['publishers']
             });
-          case 9:
+          case 12:
             oldPublisherSet = _context16.sent;
             publishers = (0, _get2.default)(body, 'publishers') || [];
-            newPublisherSetIDPromise = orm.func.publisher.updatePublisherSet(orm, transacting, oldPublisherSet, publishers.map(function (publisherBBID) {
+            _context16.next = 16;
+            return orm.func.publisher.updatePublisherSet(orm, transacting, oldPublisherSet, publishers.map(function (publisherBBID) {
               return {
                 bbid: publisherBBID
               };
-            })).then(function (set) {
-              return set &amp;&amp; set.get('id');
-            });
+            }));
+          case 16:
+            newPublisherSet = _context16.sent;
+            newPublisherSetID = newPublisherSet &amp;&amp; newPublisherSet.get('id');
             releaseEventSetID = (0, _get2.default)(currentEntity, ['releaseEventSet', 'id']);
-            _context16.next = 15;
+            _context16.next = 21;
             return releaseEventSetID &amp;&amp; orm.ReleaseEventSet.forge({
               id: releaseEventSetID
             }).fetch({
               transacting: transacting,
               withRelated: ['releaseEvents']
             });
-          case 15:
+          case 21:
             oldReleaseEventSet = _context16.sent;
             releaseEvents = (0, _get2.default)(body, 'releaseEvents') || []; // if areaId is not present, set it to null.
             // otherwise it shows error while comparing old and new releaseEvent;
@@ -1204,19 +1217,23 @@ function _processEditionSets() {
                 releaseEvents[0].date = null;
               }
             }
-            newReleaseEventSetIDPromise = orm.func.releaseEvent.updateReleaseEventSet(orm, transacting, oldReleaseEventSet, releaseEvents).then(function (set) {
-              return set &amp;&amp; set.get('id');
+            _context16.next = 26;
+            return orm.func.releaseEvent.updateReleaseEventSet(orm, transacting, oldReleaseEventSet, releaseEvents);
+          case 26:
+            newReleaseEventSet = _context16.sent;
+            newReleaseEventSetID = newReleaseEventSet &amp;&amp; newReleaseEventSet.get('id');
+            _context16.next = 30;
+            return processAuthorCredit(orm, currentEntity, body, transacting);
+          case 30:
+            newAuthorCredit = _context16.sent;
+            newAuthorCreditID = newAuthorCredit.authorCreditId;
+            return _context16.abrupt("return", {
+              authorCreditId: newAuthorCreditID,
+              languageSetId: newLanguageSetID,
+              publisherSetId: newPublisherSetID,
+              releaseEventSetId: newReleaseEventSetID
             });
-            authorCreditIDPromise = processAuthorCredit(orm, currentEntity, body, transacting).then(function (acResult) {
-              return acResult.authorCreditId;
-            });
-            return _context16.abrupt("return", commonUtils.makePromiseFromObject({
-              authorCreditId: authorCreditIDPromise,
-              languageSetId: newLanguageSetIDPromise,
-              publisherSetId: newPublisherSetIDPromise,
-              releaseEventSetId: newReleaseEventSetIDPromise
-            }));
-          case 21:
+          case 33:
           case "end":
             return _context16.stop();
         }
@@ -2062,7 +2079,7 @@ function displayPreview(req, res, next) {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Wed Jun 19 2024 14:28:21 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Jun 25 2024 10:52:04 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
