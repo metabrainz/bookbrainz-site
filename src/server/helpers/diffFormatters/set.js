@@ -31,7 +31,7 @@ export function formatNewSet(change, label, itemProp, transformerFunc) {
 
 export function formatItemAddOrDelete(change, label, transformerFunc) {
 	return [
-		base.formatChange(change.item, label, transformerFunc)
+		base.formatChange(change, label, transformerFunc)
 	];
 }
 
@@ -55,11 +55,11 @@ export function format(
 		return newSetFormatter(change);
 	}
 
-	const itemAddDeleteModify =
-		change.path.length > 1 && change.path[0] === setProp &&
-			change.path[1] === itemProp;
+	const itemAddDeleteModify = (change.kind === 'D' && change.path[0] === setProp) ||
+		(change.path.length > 1 && change.path[0] === setProp &&
+			change.path[1] === itemProp);
 	if (itemAddDeleteModify) {
-		if (change.kind === 'A') {
+		if (change.kind === 'A' || change.kind === 'D') {
 			// Item added to or deleted from set
 			return addDeleteFormatter(change);
 		}
