@@ -105,7 +105,7 @@ router.get('/', async (req, res, next) => {
 router.get('/search', (req, res) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
-	const type = req.query.type?.toString() || 'allEntities';
+	const type = req.query.type as search.IndexableEntitiesOrAll ?? 'allEntities';
 
 	const {size, from} = req.query;
 
@@ -120,8 +120,8 @@ router.get('/search', (req, res) => {
  */
 router.get('/autocomplete', (req, res) => {
 	const {orm} = req.app.locals;
-	const query = req.query.q;
-	const type = req.query.type?.toString() || 'allEntities';
+	const query = req.query.q.toString();
+	const type = req.query.type as search.IndexableEntitiesOrAll ?? 'allEntities';
 	const size = Number(req.query.size) || 42;
 
 	const searchPromise = search.autocomplete(orm, query, type, size);

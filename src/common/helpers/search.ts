@@ -51,6 +51,7 @@ function sanitizeEntityType(type) {
 }
 
 export type IndexableEntities = EntityTypeString | 'Editor' | 'Collection' | 'Area';
+export type IndexableEntitiesOrAll = IndexableEntities | 'allEntities';
 const commonProperties = ['bbid', 'id', 'name', 'type', 'disambiguation'];
 
 const indexMappings = {
@@ -334,7 +335,7 @@ async function _processEntityListForBulk(entityList) {
 	await Promise.all(indexOperations);
 }
 
-export async function autocomplete(orm, query, type, size = 42) {
+export async function autocomplete(orm:ORM, query:string, type:IndexableEntitiesOrAll | IndexableEntities[], size = 42) {
 	let queryBody = null;
 
 	if (commonUtils.isValidBBID(query)) {
