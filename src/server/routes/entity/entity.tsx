@@ -432,64 +432,71 @@ export async function handleDelete(
 	const {Revision, bookshelf} = orm;
 	const editorJSON = req.session.passport.user;
 	const {body}: {body: any} = req;
-	const entityDelete = await bookshelf.transaction(async (transacting) => {
-		if (!body.note || !body.note.length) {
-			throw new error.FormSubmissionError('A revision note is required when deleting an entity');
-		}
-
-		const otherEntities = await deleteRelationships(orm, transacting, entity);
-
-		const newRevision = await new Revision({
-			authorId: editorJSON.id
-		}).save(null, {transacting});
-
-		/*
-		 * No trigger for deletions, so manually create the <Entity>Revision
-		 * and update the entity header
-		 */
-
-		const entityRevision = await new RevisionModel({
-			bbid: entity.bbid,
-			dataId: null,
-			id: newRevision.get('id')
-		}).save(null, {
-			method: 'insert',
-			transacting
-		});
-
-		// set parent revision
-		await setParentRevisions(transacting, newRevision, [entity.revisionId]);
-
-		await new HeaderModel({
-			bbid: entity.bbid,
-			masterRevisionId: entityRevision.get('id')
-		}).save(null, {transacting});
-
-		const mainEntity = await fetchOrCreateMainEntity(
-			orm, transacting, false, entity.bbid, entity.type
-		);
-
-		const savedMainEntity =
-			await saveEntitiesAndFinishRevision(
-				orm,
-				transacting,
-				false,
-				newRevision,
-				mainEntity,
-				otherEntities,
-				editorJSON.id,
-				body.note
-			);
-		return savedMainEntity.toJSON({omitPivot: true});
-	});
 
 	try {
+		const entityDelete = await bookshelf.transaction(async (transacting) => {
+			if (!body.note || !body.note.length) {
+				throw new error.FormSubmissionError('A revision note is required when deleting an entity');
+			}
+
+			const otherEntities = await deleteRelationships(orm, transacting, entity);
+
+			const newRevision = await new Revision({
+				authorId: editorJSON.id
+			}).save(null, {transacting});
+
+			/*
+				 * No trigger for deletions, so manually create the <Entity>Revision
+				 * and update the entity header
+				 */
+
+			const entityRevision = await new RevisionModel({
+				bbid: entity.bbid,
+				dataId: null,
+				id: newRevision.get('id')
+			}).save(null, {
+				method: 'insert',
+				transacting
+			});
+
+			// set parent revision
+			await setParentRevisions(transacting, newRevision, [entity.revisionId]);
+
+			await new HeaderModel({
+				bbid: entity.bbid,
+				masterRevisionId: entityRevision.get('id')
+			}).save(null, {transacting});
+
+			const mainEntity = await fetchOrCreateMainEntity(
+				orm, transacting, false, entity.bbid, entity.type
+			);
+
+			const savedMainEntity =
+					await saveEntitiesAndFinishRevision(
+						orm,
+						transacting,
+						false,
+						newRevision,
+						mainEntity,
+						otherEntities,
+						editorJSON.id,
+						body.note
+					);
+			return savedMainEntity.toJSON({omitPivot: true});
+		});
+
 		res.send(entityDelete);
-		search.deleteEntity(entityDelete);
+
+		try {
+			search.deleteEntity(entityDelete);
+		}
+		catch (err) {
+			log.error(err);
+		}
+
 		return entityDelete;
 	}
 	catch (err) {
-		log.error(err);
 		return error.sendErrorAsJSON(res, err);
 	}
 }
@@ -837,9 +844,9 @@ async function processWorkSets(
 		oldSet,
 		languages.map((languageID) => ({id: languageID}))
 	);
-	
+
 	const languageSetId = set ? set.get('id') : null;
-	
+
 	return {
 		languageSetId
 	};
