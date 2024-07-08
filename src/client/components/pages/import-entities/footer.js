@@ -23,14 +23,15 @@ import {faCheck, faPencil, faRemove} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {startCase} from 'lodash';
 
 
 const {formatDate} = utilsHelper;
 const {
-	Button, ButtonGroup, Col, Row, Tooltip
+	Alert, Button, ButtonGroup, Col, Row, Tooltip
 } = bootstrap;
 
-function ImportFooter({importUrl, importedAt, source, hasVoted}) {
+function ImportFooter({importUrl, importedAt, source, type, hasVoted}) {
 	const tooltip = (
 		<Tooltip id="tooltip">
 		  <strong>You can only vote once to discard an import.</strong>
@@ -39,6 +40,17 @@ function ImportFooter({importUrl, importedAt, source, hasVoted}) {
 
 	return (
 		<div>
+			<Row>
+				<Col>
+					<Alert
+						className="text-center font-weight-bold"
+						variant="success"
+					>
+						This {startCase(type.toLowerCase())} has been automatically added.{' '}
+						Kindly approve/discard it to help us improve our data.
+					</Alert>
+				</Col>
+			</Row>
 			<Row>
 				<Col className="text-center" md={{offset: 3, span: 6}}>
 					<ButtonGroup>
@@ -86,7 +98,8 @@ ImportFooter.propTypes = {
 	hasVoted: PropTypes.bool.isRequired,
 	importUrl: PropTypes.string.isRequired,
 	importedAt: PropTypes.string.isRequired,
-	source: PropTypes.string.isRequired
+	source: PropTypes.string.isRequired,
+	type: PropTypes.string.isRequired
 };
 
 export default ImportFooter;
