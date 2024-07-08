@@ -145,8 +145,12 @@ export async function approveImportEntity(req, res: Response) {
 export function editImportEntity(req: Request, res: Response) {
 	const {importEntity} = res.locals;
 	const initialState = entityToFormState(importEntity);
+	const additionalProps: Record<string, any> = {};
+	if (res.locals.genders) {
+		additionalProps.genderOptions = res.locals.genders;
+	}
 	const importEntityProps = generateImportEntityProps(
-		req, res, initialState, {}
+		req, res, initialState, additionalProps
 	);
 	const {markup, props} = entityEditorMarkup(importEntityProps);
 	return res.send(target({
