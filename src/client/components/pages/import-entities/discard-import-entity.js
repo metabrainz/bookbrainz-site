@@ -85,7 +85,7 @@ class DiscardImportEntity extends React.Component {
 				<h1> Discard Imported Entity </h1>
 				<Row className="margin-top-2">
 					{loadingComponent}
-					<Col md={6} mdOffset={3}>
+					<Col md={{offset: 3, span: 6}}>
 						{errorComponent}
 						<Card bg="danger">
 							<Card.Header>Confirm Discard</Card.Header>
@@ -103,11 +103,11 @@ class DiscardImportEntity extends React.Component {
 								to the imported entity page.
 							</Card.Body>
 						</Card>
-						<ButtonGroup justified className="margin-top-2">
+						<ButtonGroup className="d-flex margin-top-2">
 							<Button
 								href={getImportUrl(importEntity)}
-								title="Edit"
-								variant="default"
+								title="Cancel"
+								variant="secondary"
 							>
 								Cancel
 							</Button>

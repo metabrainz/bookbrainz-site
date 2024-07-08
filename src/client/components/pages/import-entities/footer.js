@@ -40,8 +40,8 @@ function ImportFooter({importUrl, importedAt, source, hasVoted}) {
 	return (
 		<div>
 			<Row>
-				<Col md={6} mdOffset={3}>
-					<ButtonGroup justified>
+				<Col className="text-center" md={{offset: 3, span: 6}}>
+					<ButtonGroup>
 						<Button
 							href={`${importUrl}/approve`}
 							title="Approve"
