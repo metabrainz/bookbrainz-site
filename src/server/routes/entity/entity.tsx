@@ -1066,6 +1066,7 @@ function sanitizeBody(body:any) {
 export async function processSingleEntity(formBody, JSONEntity, reqSession,
 	entityType, orm:any, editorJSON, derivedProps, isMergeOperation, transacting):Promise<any> {
 	const {Entity, Revision} = orm;
+	// Sanitize nameSection inputs
 	let body = sanitizeBody(formBody);
 	let currentEntity: {
 		aliasSet: {id: number} | null | undefined,
@@ -1079,8 +1080,6 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 	try {
 		// Determine if a new entity is being created
 		const isNew = !currentEntity;
-		// sanitize namesection inputs
-		body = sanitizeBody(body);
 		if (isNew) {
 			const newEntity = await new Entity({type: entityType})
 				.save(null, {transacting});
