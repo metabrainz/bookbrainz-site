@@ -1067,7 +1067,7 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 	entityType, orm:any, editorJSON, derivedProps, isMergeOperation, transacting):Promise<any> {
 	const {Entity, Revision} = orm;
 	// Sanitize nameSection inputs
-	let body = sanitizeBody(formBody);
+	const body = sanitizeBody(formBody);
 	let currentEntity: {
 		aliasSet: {id: number} | null | undefined,
 		annotation: {id: number} | null | undefined,
