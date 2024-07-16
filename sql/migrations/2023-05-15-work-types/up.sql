@@ -90,6 +90,7 @@ BEGIN TRANSACTION;
 		(28,'Ballad','Short narrative poem in rhythmic verse suitable for singing, often in quatrains and rhyming the second and fourth lines.',4,2),
 		(29,'Haiku','Originally, a traditional short Japanese poetic form with a 5-7-5 phonetic units pattern, now adapted in different ways in other languages.',4,3),
 		(30,'Villanelle','Poetic composition consisting of nineteen lines: five tercets followed by a quatrain, with the first and third lines of the first stanza repeating alternately in the following stanzas, forming refrains, and as the final two lines of the final quatrain.',4,4);
+		(61,'Lyrics','Lyrics encapsulate the soul of music, weaving stories and emotions into poetic lines.',4,5)
 
 COMMIT;
 
