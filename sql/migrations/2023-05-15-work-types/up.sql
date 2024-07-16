@@ -105,6 +105,7 @@ BEGIN TRANSACTION;
 		parent_id=14,
 		child_order=0
 	WHERE id=2;
+	
 	-- Novella
 	UPDATE bookbrainz.work_type
 	SET description='Prose narrative whose length is shorter and less complex than most novels, but longer and more complex than most short stories.',
