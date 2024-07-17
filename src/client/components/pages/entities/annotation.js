@@ -54,21 +54,47 @@ class EntityAnnotation extends React.Component {
 		if (!annotation || !annotation.content) {
 			return null;
 		}
-		const lastModifiedDate = new Date(annotation.lastRevision.createdAt);
+		const lastModifiedDate =
+			annotation.lastRevision?.createdAt &&
+			new Date(annotation.lastRevision.createdAt);
 		return (
 			<Row>
 				<Col lg={12}>
 					<h2>Annotation</h2>
 					<Collapse in={this.state.open}>
-						<pre className="annotation-content" ref={this.annotationContentRef} >{stringToHTMLWithLinks(annotation.content)}</pre>
+						<pre
+							className="annotation-content"
+							ref={this.annotationContentRef}
+						>
+							{stringToHTMLWithLinks(annotation.content)}
+						</pre>
 					</Collapse>
-					{this.state.showButton &&
-					<Button variant="link" onClick={this.handleToggleCollapse}>
-						Show {this.state.open ? 'less' : 'more…'}
-					</Button>}
-					<p className="text-muted">Last modified: <span title={formatDate(lastModifiedDate, true)}>{formatDate(lastModifiedDate)}</span>
-						<span className="small"> (revision <a href={`/revision/${annotation.lastRevisionId}`}>#{annotation.lastRevisionId}</a>)</span>
-					</p>
+					{this.state.showButton && (
+						<Button
+							variant="link"
+							onClick={this.handleToggleCollapse}
+						>
+							Show {this.state.open ? 'less' : 'more…'}
+						</Button>
+					)}
+					{lastModifiedDate && (
+						<p className="text-muted">
+							Last modified:{' '}
+							<span title={formatDate(lastModifiedDate, true)}>
+								{formatDate(lastModifiedDate)}
+							</span>
+							<span className="small">
+								{' '}
+								(revision{' '}
+								<a
+									href={`/revision/${annotation.lastRevisionId}`}
+								>
+									#{annotation.lastRevisionId}
+								</a>
+								)
+							</span>
+						</p>
+					)}
 				</Col>
 			</Row>
 		);
