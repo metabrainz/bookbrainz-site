@@ -32,7 +32,7 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
  *
  * @param {Object} props - The properties passed to the component.
  * @param {Object} props.annotation - The annotation object containing
- *        its content and lastRevision info
+ *        its content and lastRevision info. lastRevision can be undefined
  * @param {Function} props.onAnnotationChange - A function to be called when the
  *        annotation is changed.
  * @returns {ReactElement} React element containing the rendered
@@ -84,7 +84,7 @@ function AnnotationSection({
 						/>
 					</Form.Group>
 					{
-						annotation && annotation.lastRevision &&
+						annotation?.lastRevision?.createdAt &&
 						<p className="small text-muted">Last modified: {formatDate(new Date(annotation.lastRevision.createdAt))}</p>
 					}
 					<p className="text-muted">
