@@ -184,6 +184,7 @@ export function entityToFormState(importEntity) {
 	const entitySection = `${importEntity.type.toLowerCase()}Section`;
 	return {
 		aliasEditor: getAliasEditor(importEntity),
+		annotationSection: importEntity.annotation ?? {},
 		buttonBar: getButtonBar(importEntity),
 		[entitySection]: entitySectionMap[importEntity.type](importEntity),
 		identifierEditor: getIdentifierEditor(importEntity),
