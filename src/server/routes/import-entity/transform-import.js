@@ -46,9 +46,9 @@ export function areaToOption(area) {
 
 function getAliasEditor(importEntity) {
 	const aliases = importEntity.aliasSet ?
-		importEntity.aliasSet.aliases.map(({language, ...rest}) => ({
-			language: language.id,
-			...rest
+		importEntity.aliasSet.aliases.map(({languageId, ...rest}) => ({
+			...rest,
+			language: languageId
 		})) : [];
 
 	const {defaultAlias} = importEntity;

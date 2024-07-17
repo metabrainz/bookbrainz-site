@@ -39,8 +39,8 @@ function RecentImportsTable(props) {
 			<div> <h2 className="text-center">Click to review them!</h2> </div>
 			<Table
 				bordered
-				condensed
 				striped
+				size="sm"
 			>
 				<thead>
 					<tr>

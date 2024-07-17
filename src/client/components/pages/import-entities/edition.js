@@ -27,12 +27,11 @@ import ImportFooter from './footer';
 import ImportTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {startCase} from 'lodash';
 
 
 const {getImportUrl} = importHelper;
 
-const {Alert, Col, Row} = bootstrap;
+const {Col, Row} = bootstrap;
 
 
 function ImportEditionDisplayPage({importEntity, identifierTypes}) {
@@ -57,20 +56,12 @@ function ImportEditionDisplayPage({importEntity, identifierTypes}) {
 				urlPrefix={urlPrefix}
 			/>
 			<hr className="margin-top-d40"/>
-			<Row>
-				<Alert
-					className="text-center font-weight-bold"
-					variant="success"
-				>
-					This {startCase(importEntity.type.toLowerCase())} has been automatically added.{' '}
-					Kindly approve/discard it to help us improve our data.
-				</Alert>
-			</Row>
 			<ImportFooter
 				hasVoted={importEntity.hasVoted}
 				importUrl={urlPrefix}
 				importedAt={importEntity.importedAt}
 				source={importEntity.source}
+				type={importEntity.type}
 			/>
 		</div>
 	);

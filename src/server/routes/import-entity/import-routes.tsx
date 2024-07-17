@@ -121,22 +121,23 @@ export async function approveImportEntity(req, res: Response) {
 	const {orm} = res.app.locals;
 	const editorId = req.session.passport.user.id;
 	const {importEntity} = res.locals;
-	const entity = await orm.bookshelf.transaction((transacting) =>
+	const savedEntityModel = await orm.bookshelf.transaction((transacting) =>
 		orm.func.imports.approveImport(
 			{editorId, importEntity, orm, transacting}
 		));
-	const entityUrl = getEntityUrl(entity);
+	const entityJSON = savedEntityModel.toJSON();
+	const entityUrl = getEntityUrl(entityJSON);
 
 	/* Add code to remove import and add the newly created entity to the elastic
 		search index and remove delete import */
 
 	// Update editor achievement
-	entity.alert = (await achievement.processEdit(
-		orm, editorId, entity.revisionId
+	entityJSON.alert = (await achievement.processEdit(
+		orm, editorId, entityJSON.revisionId
 	)).alert;
 
 	// Cleanup search indexing
-	search.indexEntity(entity);
+	search.indexEntity(savedEntityModel);
 	// Todo: Add functionality to remove imports from ES index upon deletion
 
 	res.redirect(entityUrl);
@@ -145,15 +146,19 @@ export async function approveImportEntity(req, res: Response) {
 export function editImportEntity(req: Request, res: Response) {
 	const {importEntity} = res.locals;
 	const initialState = entityToFormState(importEntity);
+	const additionalProps: Record<string, any> = {};
+	if (res.locals.genders) {
+		additionalProps.genderOptions = res.locals.genders;
+	}
 	const importEntityProps = generateImportEntityProps(
-		req, res, initialState, {}
+		req, res, initialState, additionalProps
 	);
 	const {markup, props} = entityEditorMarkup(importEntityProps);
 	return res.send(target({
 		markup,
 		props: escapeProps(props),
 		script: '/js/entity-editor.js',
-		title: 'Edit Work Import'
+		title: 'Edit Import'
 	}));
 }
 
@@ -173,7 +178,7 @@ export async function approveImportPostEditing(req, res) {
 
 	const entityData = transformForm[type](formData);
 
-	const entity = await orm.bookshelf.transaction(async (transacting) => {
+	const savedEntityModel = await orm.bookshelf.transaction(async (transacting) => {
 		await orm.func.imports.deleteImport(
 			transacting, importId
 		);
@@ -181,15 +186,16 @@ export async function approveImportPostEditing(req, res) {
 			{editorId, entityData, orm, transacting}
 		);
 	});
+	const entityJSON = savedEntityModel.toJSON();
 
 	// Update editor achievement
-	entity.alert = (await achievement.processEdit(
-		orm, editorId, entity.revisionId
+	entityJSON.alert = (await achievement.processEdit(
+		orm, editorId, entityJSON.revisionId
 	)).alert;
 
 	// Cleanup search indexing
-	await search.indexEntity(entity);
+	await search.indexEntity(savedEntityModel);
 	// To-do: Add code to remove importEntity from the search index
 
-	res.send(entity);
+	res.send(entityJSON);
 }
