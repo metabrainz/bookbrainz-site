@@ -21,6 +21,7 @@ import * as importHelper from '../../../helpers/import-entity';
 
 import {AuthorAttributes} from '../entities/author';
 import {ENTITY_TYPE_ICONS} from '../../../helpers/entity';
+import EntityAnnotation from '../entities/annotation';
 import EntityImage from '../entities/image';
 import EntityLinks from '../entities/links';
 import ImportFooter from './footer';
@@ -49,6 +50,7 @@ function ImportAuthorDisplayPage({importEntity, identifierTypes}) {
 					<AuthorAttributes author={importEntity}/>
 				</Col>
 			</Row>
+			<EntityAnnotation entity={importEntity}/>
 			<EntityLinks
 				entity={importEntity}
 				identifierTypes={identifierTypes}
