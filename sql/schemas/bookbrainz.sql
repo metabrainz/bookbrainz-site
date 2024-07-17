@@ -453,7 +453,7 @@ ALTER TABLE bookbrainz.work_revision ADD FOREIGN KEY (data_id) REFERENCES bookbr
 CREATE TABLE bookbrainz.annotation (
 	id SERIAL PRIMARY KEY,
 	content TEXT NOT NULL,
-	last_revision_id INT NOT NULL
+	last_revision_id INT
 );
 ALTER TABLE bookbrainz.annotation ADD FOREIGN KEY (last_revision_id) REFERENCES bookbrainz.revision (id);
 ALTER TABLE bookbrainz.author_data ADD FOREIGN KEY (annotation_id) REFERENCES bookbrainz.annotation (id);
