@@ -23,7 +23,6 @@
 
 import * as error from '../../common/helpers/error';
 
-import {differenceInCalendarDays, parseISO} from 'date-fns';
 import {flattenDeep, isNil} from 'lodash';
 import log from 'log';
 
@@ -396,24 +395,20 @@ async function processSprinter(orm, editorId) {
  */
 export async function getConsecutiveDaysWithEdits(orm, editorId, days) {
 	const {bookshelf} = orm;
-	const rawSql =
-		`SELECT DISTINCT created_at::date from bookbrainz.revision \
-		WHERE author_id=${editorId} \
-		and created_at > (SELECT CURRENT_DATE - INTERVAL '${days} days');`;
+	const rawSql = `SELECT DATE_PART('day', CURRENT_DATE - (SELECT MAX(dt_valid) FROM \
+		( \
+		SELECT dt_valid, dt FROM \
+			generate_series(CURRENT_DATE - ${days}, CURRENT_DATE, '1 day') AS valid_dates(dt_valid) \
+		LEFT JOIN \
+			(SELECT DISTINCT created_at::date AS dt from bookbrainz.revision \
+			WHERE author_id=${editorId} \
+			and created_at > (SELECT CURRENT_DATE - INTERVAL '${days} days')) base_dates \
+		ON dt_valid::date = dt \
+        ) break_date \
+		WHERE dt isnull));`;
 
 	const out = await bookshelf.knex.raw(rawSql);
-	const dateList = out.rows.map(row => parseISO(row.created_at));
-	let countDays = 0;
-	let lastDate = new Date();
-	// count number of consecutive days starting from today
-	for (let i = dateList.length - 1; i >= 0; i--) {
-		if (differenceInCalendarDays(lastDate, dateList[i]) > 1) {
-			break;
-		}
-		countDays++;
-		lastDate = dateList[i];
-	}
-	return countDays;
+	return out.rowCount;
 }
 
 async function processFunRunner(orm, editorId) {
