@@ -162,6 +162,13 @@ function getPublisherSection(publisherImport) {
 	};
 }
 
+function getSeriesSection(seriesImport) {
+	return {
+		orderType: seriesImport.seriesOrderingType?.id,
+		seriesType: seriesImport.entityType,
+	};
+}
+
 function getWorkSection(workImport) {
 	return {
 		languages:
@@ -177,6 +184,7 @@ export const entitySectionMap = {
 	Edition: getEditionSection,
 	EditionGroup: getEditionGroupSection,
 	Publisher: getPublisherSection,
+	Series: getSeriesSection,
 	Work: getWorkSection
 };
 
