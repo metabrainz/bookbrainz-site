@@ -36,7 +36,7 @@ import WikipediaExtract from './wikipedia-extract';
 const {deletedEntityMessage, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
 const {Col, Row} = bootstrap;
 
-function SeriesAttributes({series}) {
+export function SeriesAttributes({series}) {
 	if (series.deleted) {
 		return deletedEntityMessage;
 	}
