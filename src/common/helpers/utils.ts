@@ -3,6 +3,7 @@ import {EntityType, Relationship, RelationshipForDisplay} from '../../client/ent
 import {isFinite, isString, kebabCase, toString, upperFirst} from 'lodash';
 import {IdentifierType} from '../../client/unified-form/interface/type';
 import type {LazyLoadedEntityT} from 'bookbrainz-data/lib/types/entity';
+import {type ORM} from 'bookbrainz-data';
 
 /**
  * Regular expression for valid BookBrainz UUIDs (bbid)
@@ -32,10 +33,10 @@ export function isValidImportId(id: number): boolean {
 /**
  * Returns all entity models defined in bookbrainz-data-js
  *
- * @param {object} orm - the BookBrainz ORM, initialized during app setup
+ * @param {ORM} orm - the BookBrainz ORM, initialized during app setup
  * @returns {object} - Object mapping model name to the entity model
  */
-export function getEntityModels(orm: any) {
+export function getEntityModels(orm: ORM) {
 	const {Author, Edition, EditionGroup, Publisher, Series, Work} = orm;
 	return {
 		Author,
@@ -50,14 +51,14 @@ export function getEntityModels(orm: any) {
 /**
  * Retrieves the Bookshelf entity model with the given the model name
  *
- * @param {object} orm - the BookBrainz ORM, initialized during app setup
+ * @param {ORM} orm - the BookBrainz ORM, initialized during app setup
  * @param {string} type - Name or type of model
  * @throws {Error} Throws a custom error if the param 'type' does not
  * map to a model
  * @returns {object} - Bookshelf model object with the type specified in the
  * single param
  */
-export function getEntityModelByType(orm: any, type: string): any {
+export function getEntityModelByType(orm: ORM, type: string): any {
 	const entityModels = getEntityModels(orm);
 
 	if (!entityModels[type]) {
@@ -70,10 +71,10 @@ export function getEntityModelByType(orm: any, type: string): any {
 /**
  * Returns all import models defined in bookbrainz-data-js
  *
- * @param {object} orm - the BookBrainz ORM, initialized during app setup
+ * @param {ORM} orm - the BookBrainz ORM, initialized during app setup
  * @returns {object} - Object mapping model name to the import model
  */
-export function getImportModels(orm: any) {
+export function getImportModels(orm: ORM) {
 	const {AuthorImport, EditionImport, EditionGroupImport, PublisherImport, SeriesImport, WorkImport} = orm;
 
 	return {
@@ -89,14 +90,14 @@ export function getImportModels(orm: any) {
 /**
  * Retrieves the Bookshelf import model with the given the model name
  *
- * @param  {Object} orm - The BookBrainz ORM, initialized during app setup
+ * @param  {ORM} orm - The BookBrainz ORM, initialized during app setup
  * @param  {string} type - Name or type of model
  * @throws {Error} Throws a custom error if the param 'type' does not
  * map to a model
  * @returns {object} - Bookshelf model object with the type specified in the
  * single param
  */
-export function getImportModelByType(orm: any, type: string): any {
+export function getImportModelByType(orm: ORM, type: string): any {
 	const importModels = getImportModels(orm);
 
 	if (!importModels[type]) {
