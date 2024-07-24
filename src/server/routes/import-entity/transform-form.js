@@ -119,6 +119,22 @@ export function formToPublisherState(data) {
 	};
 }
 
+export function formToSeriesState(data) {
+	const aliases = constructAliases(data.aliasEditor, data.nameSection);
+	const identifiers = constructIdentifiers(data.identifierEditor);
+
+	return {
+		aliases,
+		annotation: data.annotationSection.content,
+		disambiguation: data.nameSection.disambiguation,
+		entityType: data.seriesSection.seriesType,
+		identifiers,
+		note: data.submissionSection.note,
+		seriesOrderingTypeId: data.seriesSection.orderType,
+		type: 'Series',
+	};
+}
+
 export function formToWorkState(data) {
 	const aliases = constructAliases(data.aliasEditor, data.nameSection);
 	const identifiers = constructIdentifiers(data.identifierEditor);
@@ -141,5 +157,6 @@ export const transformForm = {
 	Edition: formToEditionState,
 	EditionGroup: formToEditionGroupState,
 	Publisher: formToPublisherState,
+	Series: formToSeriesState,
 	Work: formToWorkState
 };
