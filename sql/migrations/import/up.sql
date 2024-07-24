@@ -193,6 +193,7 @@ CREATE OR REPLACE VIEW bookbrainz.series_import AS
         series_data.annotation_id,
         series_data.disambiguation_id,
         alias_set.default_alias_id,
+		series_data.entity_type,
         series_data.ordering_type_id,
         series_data.alias_set_id,
         series_data.identifier_set_id,
