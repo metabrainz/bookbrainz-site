@@ -123,7 +123,7 @@ function SeriesSection({
 		disambiguation: _.get(entity, ['disambiguation', 'comment']),
 		type: _.upperFirst(entityType)
 	};
-	const seriesItemsObject = seriesItems.toJS();
+	const seriesItemsObject = seriesItems?.toJS() ?? {};
 
 	/* If one of the relationships is to a new entity (in creation),
 	update that new entity's name to replace "New Entity" */

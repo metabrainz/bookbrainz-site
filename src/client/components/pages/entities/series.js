@@ -67,7 +67,7 @@ export function SeriesAttributes({series}) {
 				<Col lg={2}>
 					<dl>
 						<dt>Total Items</dt>
-						<dd>{series.seriesItems.length}</dd>
+						<dd>{series.seriesItems?.length ?? 0}</dd>
 					</dl>
 				</Col>
 				<Col lg={3}>
