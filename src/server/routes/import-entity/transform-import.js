@@ -29,6 +29,7 @@
 */
 
 import {camelCase, isEmpty, isNull} from 'lodash';
+import {entityToOption} from '../../helpers/utils';
 
 
 export function areaToOption(area) {
@@ -129,6 +130,7 @@ function getEditionSection(editionImport) {
 
 	return {
 		depth: editionImport.depth,
+		editionGroup: entityToOption(editionImport.editionGroup),
 		format: editionImport.editionFormat && editionImport.editionFormat.id,
 		height: editionImport.height,
 		languages:
