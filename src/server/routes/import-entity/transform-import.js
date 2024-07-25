@@ -116,7 +116,7 @@ function getAuthorSection(authorImport) {
 }
 
 function getEditionSection(editionImport) {
-	const physicalVisible = !(
+	const physicalEnable = !(
 		isNull(editionImport.depth) && isNull(editionImport.height) &&
 		isNull(editionImport.pages) && isNull(editionImport.weight) &&
 		isNull(editionImport.width)
@@ -137,7 +137,7 @@ function getEditionSection(editionImport) {
 					({id, name}) => ({label: name, value: id})
 				) : [],
 		pages: editionImport.pages,
-		physicalVisible,
+		physicalEnable,
 		releaseDate,
 		status: editionImport.editionStatus && editionImport.editionStatus.id,
 		weight: editionImport.weight,
