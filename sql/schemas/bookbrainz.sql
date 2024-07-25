@@ -997,7 +997,8 @@ CREATE VIEW bookbrainz.edition_import AS
 		edition_data.identifier_set_id,
 		import.type,
 		edition_data.language_set_id,
-		edition_data.release_event_set_id
+		edition_data.release_event_set_id,
+		edition_data.edition_group_bbid
 	FROM bookbrainz.import import
 	LEFT JOIN bookbrainz.edition_import_header edition_import_header ON import.id = edition_import_header.import_id
 	LEFT JOIN bookbrainz.edition_data edition_data ON edition_import_header.data_id = edition_data.id
