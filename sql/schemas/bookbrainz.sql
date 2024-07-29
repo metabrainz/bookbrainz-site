@@ -80,7 +80,6 @@ CREATE TABLE bookbrainz.entity (
 	type bookbrainz.entity_type NOT NULL,
 	is_import BOOLEAN NOT NULL DEFAULT FALSE
 );
-ALTER TABLE bookbrainz.entity ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
 
 CREATE TABLE bookbrainz.entity_redirect (
 	source_bbid UUID,
