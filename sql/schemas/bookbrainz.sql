@@ -785,20 +785,20 @@ CREATE TABLE IF NOT EXISTS bookbrainz.external_source (
 );
 
 CREATE TABLE IF NOT EXISTS bookbrainz.import_metadata (
-	import_bbid UUID,
+	pending_entity_bbid UUID,
 	external_source_id INT NOT NULL,
 	external_identifier TEXT NOT NULL CHECK (external_identifier <> ''),
 	imported_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
 	last_edited TIMESTAMP WITHOUT TIME ZONE,
-	entity_bbid UUID DEFAULT NULL,
+	accepted_entity_bbid UUID DEFAULT NULL,
 	additional_data jsonb,
 	PRIMARY KEY (
 		external_source_id,
 		external_identifier
 	)
 );
-ALTER TABLE bookbrainz.import_metadata ADD FOREIGN KEY (entity_bbid) REFERENCES bookbrainz.entity (bbid);
-ALTER TABLE bookbrainz.import_metadata ADD FOREIGN KEY (import_bbid) REFERENCES bookbrainz.entity (bbid);
+ALTER TABLE bookbrainz.import_metadata ADD FOREIGN KEY (accepted_entity_bbid) REFERENCES bookbrainz.entity (bbid);
+ALTER TABLE bookbrainz.import_metadata ADD FOREIGN KEY (pending_entity_bbid) REFERENCES bookbrainz.entity (bbid);
 ALTER TABLE bookbrainz.import_metadata ADD FOREIGN KEY (external_source_id) REFERENCES bookbrainz.external_source (id);
 
 CREATE TABLE bookbrainz.user_collection (
