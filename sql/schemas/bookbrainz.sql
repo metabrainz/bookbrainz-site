@@ -780,27 +780,27 @@ CREATE TABLE IF NOT EXISTS bookbrainz.discard_votes (
 ALTER TABLE bookbrainz.discard_votes ADD FOREIGN KEY (import_bbid) REFERENCES bookbrainz.entity (bbid);
 ALTER TABLE bookbrainz.discard_votes ADD FOREIGN KEY (editor_id) REFERENCES bookbrainz.editor (id);
 
-CREATE TABLE IF NOT EXISTS bookbrainz.origin_source (
+CREATE TABLE IF NOT EXISTS bookbrainz.external_source (
 	id SERIAL PRIMARY KEY,
 	name TEXT NOT NULL CHECK (name <> '')
 );
 
-CREATE TABLE IF NOT EXISTS bookbrainz.link_import (
+CREATE TABLE IF NOT EXISTS bookbrainz.import_metadata (
 	import_bbid UUID,
-	origin_source_id INT NOT NULL,
-	origin_id TEXT NOT NULL CHECK (origin_id <> ''),
+	external_source_id INT NOT NULL,
+	external_identifier TEXT NOT NULL CHECK (external_identifier <> ''),
 	imported_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
 	last_edited TIMESTAMP WITHOUT TIME ZONE,
 	entity_bbid UUID DEFAULT NULL,
-	import_metadata jsonb,
+	additional_data jsonb,
 	PRIMARY KEY (
-		origin_source_id,
-		origin_id
+		external_source_id,
+		external_identifier
 	)
 );
-ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (entity_bbid) REFERENCES bookbrainz.entity (bbid);
-ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (import_bbid) REFERENCES bookbrainz.entity (bbid);
-ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (origin_source_id) REFERENCES bookbrainz.origin_source (id);
+ALTER TABLE bookbrainz.import_metadata ADD FOREIGN KEY (entity_bbid) REFERENCES bookbrainz.entity (bbid);
+ALTER TABLE bookbrainz.import_metadata ADD FOREIGN KEY (import_bbid) REFERENCES bookbrainz.entity (bbid);
+ALTER TABLE bookbrainz.import_metadata ADD FOREIGN KEY (external_source_id) REFERENCES bookbrainz.external_source (id);
 
 CREATE TABLE bookbrainz.user_collection (
 	id UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
