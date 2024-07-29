@@ -14,6 +14,12 @@ DROP TABLE IF EXISTS bookbrainz.publisher_import_header;
 DROP TABLE IF EXISTS bookbrainz.series_import_header;
 DROP TABLE IF EXISTS bookbrainz.work_import_header;
 DROP TABLE IF EXISTS bookbrainz.discard_votes;
+DROP TABLE IF EXISTS bookbrainz.import_metadata;
+DROP TABLE IF EXISTS bookbrainz.external_source;
+
+ALTER TABLE entity DROP COLUMN IF EXISTS is_import;
+
+-- Legacy tables from an earlier version of the import schema.
 DROP TABLE IF EXISTS bookbrainz.link_import;
 DROP TABLE IF EXISTS bookbrainz.origin_source;
 DROP TABLE IF EXISTS bookbrainz.import;
