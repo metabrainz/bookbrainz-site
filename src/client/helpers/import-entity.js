@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {get} from 'lodash';
+import {get, kebabCase} from 'lodash';
 
 
 export function getImportLabel(importEntity) {
@@ -24,13 +24,13 @@ export function getImportLabel(importEntity) {
 }
 
 export function getImportUrl(importEntity) {
-	const type = importEntity.type.toLowerCase();
+	const type = kebabCase(importEntity.type);
 	const id = importEntity.importId;
 	return `/imports/${type}/${id}`;
 }
 
 export function getImportDiscardUrl(importEntity) {
-	const type = importEntity.type.toLowerCase();
+	const type = kebabCase(importEntity.type);
 	const id = importEntity.importId;
 	return `/imports/${type}/${id}/discard/handler`;
 }

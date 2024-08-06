@@ -122,6 +122,7 @@ CREATE OR REPLACE VIEW bookbrainz.edition_import AS
     SELECT
         import.id AS import_id,
         edition_data.id as data_id,
+        edition_data.annotation_id,
         edition_data.disambiguation_id,
         alias_set.default_alias_id,
         edition_data.width,
@@ -146,6 +147,7 @@ CREATE OR REPLACE VIEW bookbrainz.publisher_import AS
     SELECT
         import.id AS import_id,
         publisher_data.id as data_id,
+        publisher_data.annotation_id,
         publisher_data.disambiguation_id,
         alias_set.default_alias_id,
         publisher_data.begin_year,
@@ -171,6 +173,7 @@ CREATE OR REPLACE VIEW bookbrainz.edition_group_import AS
     SELECT
         import.id AS import_id,
         edition_group_data.id as data_id,
+        edition_group_data.annotation_id,
         edition_group_data.disambiguation_id,
         alias_set.default_alias_id,
         edition_group_data.type_id,

@@ -19,9 +19,9 @@
 // @flow
 
 import * as utils from './utils';
+import {camelCase, kebabCase, partialRight} from 'lodash';
 import type express from 'express';
 import {generateProps} from './props';
-import {partialRight} from 'lodash';
 
 
 /**
@@ -39,7 +39,7 @@ export function generateImportEntityProps(
 ) {
 	const {importEntity} = res.locals;
 	const {type: importEntityName} = importEntity;
-	const importEntityType = importEntityName.toLowerCase();
+	const importEntityType = camelCase(importEntityName);
 
 	const getFilteredIdentifierTypes =
 		partialRight(utils.filterIdentifierTypesByEntity, importEntity);
@@ -48,7 +48,7 @@ export function generateImportEntityProps(
 	);
 
 	const submissionUrl =
-		`/imports/${importEntityType}/${importEntity.importId}/edit/approve`;
+		`/imports/${kebabCase(importEntityType)}/${importEntity.importId}/edit/approve`;
 
 	const props = Object.assign({
 		entityType: importEntityType,

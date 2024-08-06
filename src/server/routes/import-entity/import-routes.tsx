@@ -169,7 +169,7 @@ export async function approveImportPostEditing(req, res) {
 	const {importId, type} = importEntity;
 	const formData = req.body;
 
-	const validateForm = getValidator(type.toLowerCase());
+	const validateForm = getValidator(type);
 
 	if (!validateForm(formData)) {
 		const err = new error.FormSubmissionError();

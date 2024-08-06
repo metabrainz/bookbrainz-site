@@ -27,6 +27,7 @@ export function formToAuthorState(data) {
 
 	return {
 		aliases,
+		annotation: data.annotationSection.content,
 		beginAreaId: data.authorSection.beginArea &&
 			data.authorSection.beginArea.id,
 		beginDate: data.authorSection.beginDate,
@@ -55,6 +56,7 @@ export function formToEditionState(data) {
 
 	return {
 		aliases,
+		annotation: data.annotationSection.content,
 		depth: data.editionSection.depth &&
 			parseInt(data.editionSection.depth, 10),
 		disambiguation: data.nameSection.disambiguation,
@@ -88,6 +90,7 @@ export function formToEditionGroupState(data) {
 
 	return {
 		aliases,
+		annotation: data.annotationSection.content,
 		disambiguation: data.nameSection.disambiguation,
 		identifiers,
 		note: data.submissionSection.note,
@@ -102,6 +105,7 @@ export function formToPublisherState(data) {
 
 	return {
 		aliases,
+		annotation: data.annotationSection.content,
 		areaId: data.publisherSection.area && data.publisherSection.area.id,
 		beginDate: data.publisherSection.beginDate,
 		disambiguation: data.nameSection.disambiguation,
@@ -122,6 +126,7 @@ export function formToWorkState(data) {
 
 	return {
 		aliases,
+		annotation: data.annotationSection.content,
 		disambiguation: data.nameSection.disambiguation,
 		identifiers,
 		languages,

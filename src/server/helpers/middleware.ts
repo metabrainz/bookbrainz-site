@@ -328,6 +328,7 @@ export function makeEntityLoader(modelName: string, additionalRels: Array<string
 export function makeImportLoader(modelName, additionalRels, errMessage) {
 	const relations = [
 		'aliasSet.aliases.language',
+		'annotation',
 		'defaultAlias',
 		'disambiguation',
 		'identifierSet.identifiers.type'

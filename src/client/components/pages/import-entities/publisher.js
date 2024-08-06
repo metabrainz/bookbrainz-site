@@ -20,6 +20,7 @@ import * as bootstrap from 'react-bootstrap';
 import * as importHelper from '../../../helpers/import-entity';
 
 import {ENTITY_TYPE_ICONS} from '../../../helpers/entity';
+import EntityAnnotation from '../entities/annotation';
 import EntityImage from '../entities/image';
 import EntityLinks from '../entities/links';
 import ImportFooter from './footer';
@@ -50,6 +51,7 @@ function ImportPublisherDisplayPage({importEntity, identifierTypes}) {
 					<PublisherAttributes publisher={importEntity}/>
 				</Col>
 			</Row>
+			<EntityAnnotation entity={importEntity}/>
 			<EntityLinks
 				entity={importEntity}
 				identifierTypes={identifierTypes}

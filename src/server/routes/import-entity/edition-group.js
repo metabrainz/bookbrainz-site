@@ -32,9 +32,10 @@ router.param(
 		'EditionGroupImport',
 		[
 			'editionGroupType',
-			'editions.defaultAlias',
-			'editions.disambiguation',
-			'editions.releaseEventSet.releaseEvents'
+			// TODO: Reenable edition rels once imports have BBIDs
+			// 'editions.defaultAlias',
+			// 'editions.disambiguation',
+			// 'editions.releaseEventSet.releaseEvents'
 		],
 		'Edition Group Import not found'
 	)
