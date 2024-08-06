@@ -21,6 +21,7 @@ import DiscardImportEntityPage from './discard-import-entity';
 import Edition from './edition';
 import EditionGroup from './edition-group';
 import Publisher from './publisher';
+import Series from './series';
 import Work from './work';
 
 
@@ -30,6 +31,7 @@ const importEntityPages = {
 	Edition,
 	EditionGroup,
 	Publisher,
+	Series,
 	Work
 };
 

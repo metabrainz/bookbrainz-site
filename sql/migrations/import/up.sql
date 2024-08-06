@@ -136,7 +136,9 @@ CREATE OR REPLACE VIEW bookbrainz.edition_import AS
         edition_data.identifier_set_id,
         import.type,
         edition_data.language_set_id,
-        edition_data.release_event_set_id
+        edition_data.release_event_set_id,
+        edition_data.edition_group_bbid,
+        edition_data.author_credit_id
     FROM bookbrainz.import import
     LEFT JOIN bookbrainz.edition_import_header edition_import_header ON import.id = edition_import_header.import_id
     LEFT JOIN bookbrainz.edition_data edition_data ON edition_import_header.data_id = edition_data.id
@@ -179,7 +181,8 @@ CREATE OR REPLACE VIEW bookbrainz.edition_group_import AS
         edition_group_data.type_id,
         edition_group_data.alias_set_id,
         edition_group_data.identifier_set_id,
-        import.type
+        import.type,
+        edition_group_data.author_credit_id
     FROM bookbrainz.import import
     LEFT JOIN bookbrainz.edition_group_import_header edition_group_import_header ON import.id = edition_group_import_header.import_id
     LEFT JOIN bookbrainz.edition_group_data edition_group_data ON edition_group_import_header.data_id = edition_group_data.id
@@ -193,6 +196,7 @@ CREATE OR REPLACE VIEW bookbrainz.series_import AS
         series_data.annotation_id,
         series_data.disambiguation_id,
         alias_set.default_alias_id,
+		series_data.entity_type,
         series_data.ordering_type_id,
         series_data.alias_set_id,
         series_data.identifier_set_id,

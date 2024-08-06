@@ -29,6 +29,7 @@
 */
 
 import {camelCase, isEmpty, isNull} from 'lodash';
+import {entityToOption} from '../../helpers/utils';
 
 
 export function areaToOption(area) {
@@ -116,7 +117,7 @@ function getAuthorSection(authorImport) {
 }
 
 function getEditionSection(editionImport) {
-	const physicalVisible = !(
+	const physicalEnable = !(
 		isNull(editionImport.depth) && isNull(editionImport.height) &&
 		isNull(editionImport.pages) && isNull(editionImport.weight) &&
 		isNull(editionImport.width)
@@ -129,6 +130,7 @@ function getEditionSection(editionImport) {
 
 	return {
 		depth: editionImport.depth,
+		editionGroup: entityToOption(editionImport.editionGroup),
 		format: editionImport.editionFormat && editionImport.editionFormat.id,
 		height: editionImport.height,
 		languages:
@@ -137,7 +139,7 @@ function getEditionSection(editionImport) {
 					({id, name}) => ({label: name, value: id})
 				) : [],
 		pages: editionImport.pages,
-		physicalVisible,
+		physicalEnable,
 		releaseDate,
 		status: editionImport.editionStatus && editionImport.editionStatus.id,
 		weight: editionImport.weight,
@@ -162,6 +164,13 @@ function getPublisherSection(publisherImport) {
 	};
 }
 
+function getSeriesSection(seriesImport) {
+	return {
+		orderType: seriesImport.seriesOrderingType?.id,
+		seriesType: seriesImport.entityType,
+	};
+}
+
 function getWorkSection(workImport) {
 	return {
 		languages:
@@ -177,6 +186,7 @@ export const entitySectionMap = {
 	Edition: getEditionSection,
 	EditionGroup: getEditionGroupSection,
 	Publisher: getPublisherSection,
+	Series: getSeriesSection,
 	Work: getWorkSection
 };
 
