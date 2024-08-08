@@ -88,3 +88,4 @@ __[beta.bookbrainz.org](https://beta.bookbrainz.org)__ uses the main database bu
 __[test.bookbrainz.org](https://test.bookbrainz.org)__: all changes made to this subdomain are not in sync with the main database and vice versa.
 This domain is for you to tinker with all features of the website freely without having to verify the correctness of the data you enter. This comes in handy if that's all you need to do instead of having to set up BookBrainz locally.
 This subdomain is used for testing only and the data is not maintained or updated. It is not guaranteed that any of the data will be authentic.
+just learning
