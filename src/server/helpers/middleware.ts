@@ -28,6 +28,7 @@ import type {Response as $Response, NextFunction, Request} from 'express';
 import {ENTITY_TYPES, getRelationshipTargetBBIDByTypeId} from '../../client/helpers/entity';
 import {getWikipediaExtract, selectWikipediaPage} from './wikimedia';
 
+import {type ORM} from 'bookbrainz-data';
 import _ from 'lodash';
 import {getAcceptedLanguageCodes} from './i18n';
 import {getReviewsFromCB} from './critiquebrainz';
@@ -334,26 +335,24 @@ export function makeImportLoader(modelName, additionalRels, errMessage) {
 		'identifierSet.identifiers.type'
 	].concat(additionalRels);
 
-	return async (req, res, next, _importId) => {
-		const importId = parseInt(_importId, 10);
-
-		if (commonUtils.isValidImportId(importId)) {
-			const {orm} = req.app.locals;
+	return async (req, res: $Response, next: NextFunction, importId: string) => {
+		if (commonUtils.isValidBBID(importId)) {
+			const {orm}: {orm: ORM} = req.app.locals;
 			const model = commonUtils.getImportModelByType(orm, modelName);
 			try {
-				const importEntityRecord = await model.forge({importId})
+				const importEntityRecord = await model.forge({bbid: importId})
 					.fetch({
 						withRelated: relations
 					});
 				res.locals.importEntity = importEntityRecord.toJSON();
 
-				const [votes, details] = await orm.bookshelf.transaction(
+				const [votes, metadata] = await orm.bookshelf.transaction(
 					(transacting) =>
 						Promise.all([
 							orm.func.imports.discardVotesCast(
 								transacting, importId
 							),
-							orm.func.imports.getImportDetails(
+							orm.func.imports.getImportMetadata(
 								transacting, importId
 							)
 						])
@@ -370,9 +369,9 @@ export function makeImportLoader(modelName, additionalRels, errMessage) {
 					res.locals.importEntity.hasVoted = false;
 				}
 
-				res.locals.importEntity.source = details.source;
+				res.locals.importEntity.source = metadata.source;
 				res.locals.importEntity.importedAt =
-					moment(details.importedAt).format('YYYY-MM-DD');
+					moment(metadata.importedAt as any).format('YYYY-MM-DD');
 			}
 			catch (err) {
 				return next(new error.NotFoundError(errMessage, req));

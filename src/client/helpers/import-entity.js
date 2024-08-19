@@ -25,12 +25,12 @@ export function getImportLabel(importEntity) {
 
 export function getImportUrl(importEntity) {
 	const type = kebabCase(importEntity.type);
-	const id = importEntity.importId;
+	const id = importEntity.bbid;
 	return `/imports/${type}/${id}`;
 }
 
 export function getImportDiscardUrl(importEntity) {
 	const type = kebabCase(importEntity.type);
-	const id = importEntity.importId;
+	const id = importEntity.bbid;
 	return `/imports/${type}/${id}/discard/handler`;
 }

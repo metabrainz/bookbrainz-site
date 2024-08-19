@@ -48,7 +48,7 @@ export function generateImportEntityProps(
 	);
 
 	const submissionUrl =
-		`/imports/${kebabCase(importEntityType)}/${importEntity.importId}/edit/approve`;
+		`/imports/${kebabCase(importEntityType)}/${importEntity.bbid}/edit/approve`;
 
 	const props = Object.assign({
 		entityType: importEntityType,

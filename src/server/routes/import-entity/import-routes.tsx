@@ -25,6 +25,7 @@ import type {Request, Response} from 'express';
 import {escapeProps, generateProps} from '../../helpers/props';
 import {map, uniqBy} from 'lodash';
 import Layout from '../../../client/containers/layout';
+import {type ORM} from 'bookbrainz-data';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import {entityEditorMarkup} from '../../helpers/entityRouteUtils';
@@ -100,13 +101,13 @@ export function displayDiscardImportEntity(req: Request, res: Response) {
 }
 
 export function handleDiscardImportEntity(req, res: Response) {
-	const {orm} = req.app.locals;
+	const {orm}: {orm: ORM} = req.app.locals;
 	const editorId = req.session.passport.user.id;
 	const {importEntity} = res.locals;
 	orm.bookshelf.transaction(async (transacting) => {
 		try {
 			await orm.func.imports.castDiscardVote(
-				transacting, importEntity.importId, editorId
+				transacting, importEntity.bbid, editorId
 			);
 			// Todo: Add code to remove importEntity from the search index
 			res.status(200).send();
@@ -132,6 +133,7 @@ export async function approveImportEntity(req, res: Response) {
 		search index and remove delete import */
 
 	// Update editor achievement
+	// TODO: alert is never used?
 	entityJSON.alert = (await achievement.processEdit(
 		orm, editorId, entityJSON.revisionId
 	)).alert;
@@ -163,10 +165,10 @@ export function editImportEntity(req: Request, res: Response) {
 }
 
 export async function approveImportPostEditing(req, res) {
-	const {orm} = req.app.locals;
+	const {orm}: {orm: ORM} = req.app.locals;
 	const {importEntity} = res.locals;
 	const editorId = req.session.passport.user.id;
-	const {importId, type} = importEntity;
+	const {bbid: importBbid, type} = importEntity;
 	const formData = req.body;
 
 	const validateForm = getValidator(type);
@@ -180,7 +182,7 @@ export async function approveImportPostEditing(req, res) {
 
 	const savedEntityModel = await orm.bookshelf.transaction(async (transacting) => {
 		await orm.func.imports.deleteImport(
-			transacting, importId
+			transacting, importBbid
 		);
 		return orm.func.createEntity(
 			{editorId, entityData, orm, transacting}

@@ -54,9 +54,9 @@ function RecentImportsTable(props) {
 				<tbody>
 					{
 						recentImports.map((importEntity, i) => {
-							const {importId, importedAt} = importEntity;
+							const {bbid, importedAt} = importEntity;
 							return (
-								<tr key={importId}>
+								<tr key={bbid}>
 									<td>{i + 1 + offset}</td>
 									<td>
 										<a	href={getImportUrl(importEntity)}>
