@@ -17,7 +17,7 @@ CREATE TYPE bookbrainz.entity_type AS ENUM (
 );
 
 CREATE TYPE bookbrainz.external_service_oauth_type AS ENUM (
-    'critiquebrainz'
+	'critiquebrainz'
 );
 
 CREATE TYPE bookbrainz.admin_action_type AS ENUM (
@@ -62,14 +62,14 @@ CREATE TABLE bookbrainz.editor__language (
 );
 
 CREATE TABLE bookbrainz.admin_log (
-    id SERIAL PRIMARY KEY,
-    admin_id INT NOT NULL,
-    target_user_id INT NOT NULL,
-    old_privs INT,
-    new_privs INT,
-    action_type bookbrainz.admin_action_type NOT NULL,
-    time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
-    note VARCHAR NOT NULL
+	id SERIAL PRIMARY KEY,
+	admin_id INT NOT NULL,
+	target_user_id INT NOT NULL,
+	old_privs INT,
+	new_privs INT,
+	action_type bookbrainz.admin_action_type NOT NULL,
+	time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
+	note VARCHAR NOT NULL
 );
 
 ALTER TABLE bookbrainz.admin_log ADD FOREIGN KEY (admin_id) REFERENCES bookbrainz.editor (id);
@@ -625,10 +625,10 @@ CREATE TABLE bookbrainz.relationship_attribute_text_value (
 CREATE TABLE bookbrainz.relationship_attribute_set__relationship_attribute (
 	set_id INTEGER REFERENCES bookbrainz.relationship_attribute_set (id),
 	attribute_id INTEGER REFERENCES bookbrainz.relationship_attribute (id),
-  PRIMARY KEY (
-    set_id,
-    attribute_id
-  )
+	PRIMARY KEY (
+		set_id,
+		attribute_id
+	)
 );
 
 CREATE TABLE bookbrainz.language_set (
@@ -830,20 +830,20 @@ CREATE TABLE bookbrainz.user_collection_collaborator (
 	collaborator_id INT,
 	PRIMARY KEY (
 		collection_id,
-    	collaborator_id
+		collaborator_id
 	)
 );
 ALTER TABLE bookbrainz.user_collection_collaborator ADD FOREIGN KEY (collection_id) REFERENCES bookbrainz.user_collection (id) ON DELETE CASCADE;
 ALTER TABLE bookbrainz.user_collection_collaborator ADD FOREIGN KEY (collaborator_id) REFERENCES bookbrainz.editor (id);
 
 CREATE TABLE bookbrainz.external_service_oauth (
-    id SERIAL,
-    editor_id INTEGER NOT NULL,
-    service bookbrainz.external_service_oauth_type NOT NULL,
-    access_token TEXT NOT NULL,
-    refresh_token TEXT,
-    token_expires TIMESTAMP,
-    scopes TEXT[]
+	id SERIAL,
+	editor_id INTEGER NOT NULL,
+	service bookbrainz.external_service_oauth_type NOT NULL,
+	access_token TEXT NOT NULL,
+	refresh_token TEXT,
+	token_expires TIMESTAMP,
+	scopes TEXT[]
 );
 
 ALTER TABLE bookbrainz.external_service_oauth ADD CONSTRAINT external_service_oauth_editor_id_service UNIQUE (editor_id, service);
