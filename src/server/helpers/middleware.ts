@@ -283,6 +283,26 @@ export async function redirectedBbid(req: $Request, res: $Response, next: NextFu
 	return next();
 }
 
+async function loadImportInfo(orm: ORM, importId: string, userId?: number) {
+	const [votes, metadata] = await orm.bookshelf.transaction(
+		(transacting) =>
+			Promise.all([
+				orm.func.imports.discardVotesCast(
+					transacting, importId
+				),
+				orm.func.imports.getImportMetadata(
+					transacting, importId
+				)
+			])
+	);
+
+	return {
+		importedAt: moment(metadata.importedAt as any).format('YYYY-MM-DD'),
+		source: metadata.source,
+		userHasVoted: userId ? Boolean(votes.find(vote => vote.editorId === userId)) : false,
+	};
+}
+
 export function makeEntityLoader(modelName: string, additionalRels: Array<string>, errMessage: string) {
 	const relations = [
 		'aliasSet.aliases.language',
@@ -310,8 +330,15 @@ export function makeEntityLoader(modelName: string, additionalRels: Array<string
 					entity.collections = entity.collections.filter(collection => collection.public === true ||
 					parseInt(collection.ownerId, 10) === parseInt(req.user?.id, 10));
 				}
-				const reviews = await getReviewsFromCB(bbid, entity.type);
-				entity.reviews = reviews;
+				if (entity.revision) {
+					entity.reviews = await getReviewsFromCB(bbid, entity.type);
+				}
+				else {
+					// Entity is a pending import
+					const userId = _.get(req, 'session.passport.user.id');
+					entity.import = await loadImportInfo(orm, bbid, userId);
+					entity.reviews = {reviews: [], successfullyFetched: true};
+				}
 				res.locals.entity = entity;
 				return next();
 			}
