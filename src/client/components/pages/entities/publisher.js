@@ -25,6 +25,7 @@ import EntityImage from './image';
 import EntityLinks from './links';
 import EntityRelatedCollections from './related-collections';
 import EntityTitle from './title';
+import ImportFooter from '../import-entities/footer';
 import PropTypes from 'prop-types';
 import React from 'react';
 import WikipediaExtract from './wikipedia-extract';
@@ -113,14 +114,22 @@ function PublisherDisplayPage({entity, identifierTypes, user, wikipediaExtract})
 				<EntityRelatedCollections collections={entity.collections}/>
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
-			<EntityFooter
-				bbid={entity.bbid}
-				deleted={entity.deleted}
-				entityType={entity.type}
-				entityUrl={urlPrefix}
-				lastModified={entity.revision?.revision.createdAt}
-				user={user}
-			/>
+			{entity.import ?
+				<ImportFooter
+					hasVoted={entity.import.userHasVoted}
+					importUrl={urlPrefix}
+					importedAt={entity.import.importedAt}
+					source={entity.import.source}
+					type={entity.type}
+				/> :
+				<EntityFooter
+					bbid={entity.bbid}
+					deleted={entity.deleted}
+					entityType={entity.type}
+					entityUrl={urlPrefix}
+					lastModified={entity.revision.revision.createdAt}
+					user={user}
+				/>}
 		</div>
 	);
 }

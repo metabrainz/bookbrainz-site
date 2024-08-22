@@ -31,6 +31,7 @@ import EntityRelatedCollections from './related-collections';
 import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import ImportFooter from '../import-entities/footer';
 import PropTypes from 'prop-types';
 import WikipediaExtract from './wikipedia-extract';
 import {kebabCase as _kebabCase} from 'lodash';
@@ -192,15 +193,24 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 					</Row>
 				</React.Fragment>}
 			<hr className="margin-top-d40"/>
-			<EntityFooter
-				bbid={entity.bbid}
-				deleted={entity.deleted}
-				entityType={entity.type}
-				entityUrl={urlPrefix}
-				lastModified={entity.revision?.revision.createdAt}
-				user={user}
-			/>
-			{!entity.deleted && !isImport && <CBReviewModal
+			{entity.import ?
+				<ImportFooter
+					hasVoted={entity.import.userHasVoted}
+					importUrl={urlPrefix}
+					importedAt={entity.import.importedAt}
+					source={entity.import.source}
+					type={entity.type}
+				/> :
+				<EntityFooter
+					bbid={entity.bbid}
+					deleted={entity.deleted}
+					entityType={entity.type}
+					entityUrl={urlPrefix}
+					lastModified={entity.revision.revision.createdAt}
+					user={user}
+				/>}
+			{!entity.deleted && !isImport &&
+			<CBReviewModal
 				entityBBID={entity.bbid}
 				entityName={entity.defaultAlias.name}
 				entityType={entity.type}
@@ -208,7 +218,7 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 				handleUpdateReviews={handleUpdateReviews}
 				showModal={showCBReviewModal}
 				userId={user?.id}
-			                    />}
+			/>}
 		</div>
 	);
 }

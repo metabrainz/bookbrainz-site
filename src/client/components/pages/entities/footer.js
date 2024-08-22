@@ -155,7 +155,7 @@ class EntityFooter extends React.Component {
 				<div className="text-center margin-top-d10">
 					<dl>
 						<dt>Last Modified</dt>
-						<dd>{this.props.lastModified ? formatDate(new Date(this.props.lastModified)) : 'never'}</dd>
+						<dd>{formatDate(new Date(this.props.lastModified))}</dd>
 					</dl>
 				</div>
 			</div>
@@ -168,8 +168,7 @@ EntityFooter.propTypes = {
 	deleted: PropTypes.bool,
 	entityType: PropTypes.string.isRequired,
 	entityUrl: PropTypes.string.isRequired,
-	// TODO: Make this required again once we also load the date of pending imports.
-	lastModified: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
+	lastModified: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]).isRequired,
 	user: PropTypes.object.isRequired
 };
 EntityFooter.defaultProps = {
