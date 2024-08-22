@@ -108,6 +108,7 @@ EditionAttributes.propTypes = {
 
 
 function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
+	const isImport = !entity.revision;
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
@@ -175,6 +176,7 @@ function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 			<React.Fragment>
 				<WorksTable
 					entity={entity}
+					showAdd={!isImport}
 					works={worksContainedByEditionWithAuthors}
 				/>
 				<EntityLinks

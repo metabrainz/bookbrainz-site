@@ -130,6 +130,7 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 		reviewsRef.current.handleClick();
 	}, [reviewsRef]);
 
+	const isImport = !entity.revision;
 	const urlPrefix = getEntityUrl(entity);
 	const editions = [];
 	if (entity?.authorCredits) {
@@ -163,20 +164,21 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 				<React.Fragment>
 					<Row>
 						<Col lg={8}>
-							<EditionTable editions={editions} entity={entity}/>
+							<EditionTable editions={editions} entity={entity} showAdd={!isImport}/>
 							<EntityLinks
 								entity={entity}
 								identifierTypes={identifierTypes}
 								urlPrefix={urlPrefix}
 							/>
 							<EntityRelatedCollections collections={entity.collections}/>
-							<Button
-								className="margin-top-d15"
-								href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
-								variant="success"
-							>
-								<FontAwesomeIcon className="margin-right-0-5" icon={faPlus}/>Add Work
-							</Button>
+							{!isImport &&
+								<Button
+									className="margin-top-d15"
+									href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+									variant="success"
+								>
+									<FontAwesomeIcon className="margin-right-0-5" icon={faPlus}/>Add Work
+								</Button>}
 						</Col>
 						<Col lg={4}>
 							<EntityReviews
@@ -198,7 +200,7 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 				lastModified={entity.revision?.revision.createdAt}
 				user={user}
 			/>
-			{!entity.deleted && <CBReviewModal
+			{!entity.deleted && !isImport && <CBReviewModal
 				entityBBID={entity.bbid}
 				entityName={entity.defaultAlias.name}
 				entityType={entity.type}

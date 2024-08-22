@@ -91,6 +91,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtrac
 		reviewsRef.current.handleClick();
 	}, [reviewsRef]);
 
+	const isImport = !entity.revision;
 	const urlPrefix = getEntityUrl(entity);
 
 	let authorCreditSection;
@@ -136,7 +137,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtrac
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
-				<EditionTable editions={entity.editions} entity={entity}/>
+				<EditionTable editions={entity.editions} entity={entity} showAdd={!isImport}/>
 				<Row>
 					<Col lg={8}>
 						<EntityLinks
@@ -167,7 +168,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtrac
 				lastModified={entity.revision?.revision.createdAt}
 				user={user}
 			/>
-			{!entity.deleted && <CBReviewModal
+			{!entity.deleted && !isImport && <CBReviewModal
 				entityBBID={entity.bbid}
 				entityName={entity.defaultAlias.name}
 				entityType={entity.type}

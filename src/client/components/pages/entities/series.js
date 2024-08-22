@@ -101,6 +101,7 @@ function SeriesDisplayPage({entity, identifierTypes, user, genderOptions, wikipe
 	}, [reviewsRef]);
 
 
+	const isImport = !entity.revision;
 	const urlPrefix = getEntityUrl(entity);
 	const EntityTable = getEntityTable(entity.entityType);
 	const entityKey = getEntityKey(entity.entityType);
@@ -166,7 +167,7 @@ function SeriesDisplayPage({entity, identifierTypes, user, genderOptions, wikipe
 				lastModified={entity.revision?.revision.createdAt}
 				user={user}
 			/>
-			{!entity.deleted && <CBReviewModal
+			{!entity.deleted && !isImport && <CBReviewModal
 				entityBBID={entity.bbid}
 				entityName={entity.defaultAlias.name}
 				entityType={entity.type}

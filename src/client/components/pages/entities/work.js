@@ -100,6 +100,7 @@ function WorkDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	}, [reviewsRef]);
 
 
+	const isImport = !entity.revision;
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const editionsContainWork = getRelationshipSourceByTypeId(entity, relationshipTypeId);
@@ -131,6 +132,7 @@ function WorkDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 				<EditionTable
 					editions={editionsContainWork}
 					entity={entity}
+					showAdd={!isImport}
 				/>
 				<Row>
 					<Col lg={8}>
@@ -161,7 +163,7 @@ function WorkDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 				lastModified={entity.revision?.revision.createdAt}
 				user={user}
 			/>
-			{!entity.deleted && <CBReviewModal
+			{!entity.deleted && !isImport && <CBReviewModal
 				entityBBID={entity.bbid}
 				entityName={entity.defaultAlias.name}
 				entityType={entity.type}

@@ -83,6 +83,7 @@ PublisherAttributes.propTypes = {
 
 
 function PublisherDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
+	const isImport = !entity.revision;
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
@@ -103,7 +104,7 @@ function PublisherDisplayPage({entity, identifierTypes, user, wikipediaExtract})
 			<EntityAnnotation entity={entity}/>
 			{!entity.deleted &&
 			<React.Fragment>
-				<EditionTable showAuthorCreditsColumn editions={entity.editions} entity={entity}/>
+				<EditionTable showAuthorCreditsColumn editions={entity.editions} entity={entity} showAdd={!isImport}/>
 				<EntityLinks
 					entity={entity}
 					identifierTypes={identifierTypes}
