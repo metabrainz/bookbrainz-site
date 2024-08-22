@@ -164,7 +164,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtrac
 				deleted={entity.deleted}
 				entityType={entity.type}
 				entityUrl={urlPrefix}
-				lastModified={entity.revision.revision.createdAt}
+				lastModified={entity.revision?.revision.createdAt}
 				user={user}
 			/>
 			{!entity.deleted && <CBReviewModal
