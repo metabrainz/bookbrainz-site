@@ -1,7 +1,7 @@
 BEGIN;
 
 -- Distinguish pending imports from accepted entities.
-ALTER TABLE bookbrainz.entity ADD COLUMN is_import BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE bookbrainz.entity ADD COLUMN IF NOT EXISTS is_import BOOLEAN NOT NULL DEFAULT FALSE;
 
 -- Tables linking pending imports and relevant data in `*_data` tables.
 CREATE TABLE IF NOT EXISTS bookbrainz.author_import_header (
@@ -84,33 +84,45 @@ ALTER TABLE bookbrainz.import_metadata ADD FOREIGN KEY (accepted_entity_bbid) RE
 ALTER TABLE bookbrainz.import_metadata ADD FOREIGN KEY (pending_entity_bbid) REFERENCES bookbrainz.entity (bbid);
 ALTER TABLE bookbrainz.import_metadata ADD FOREIGN KEY (external_source_id) REFERENCES bookbrainz.external_source (id);
 
--- Imported entities views --
+-- Imported entity views (column-compatible with the regular entity views, order matters) --
+
 CREATE OR REPLACE VIEW bookbrainz.author_import AS
     SELECT
         entity.bbid,
         author_data.id as data_id,
+        NULL::INT AS revision_id, -- pending imports have no revision
+        TRUE AS master,
         author_data.annotation_id,
         author_data.disambiguation_id,
+        dis.comment disambiguation,
         alias_set.default_alias_id,
+        alias."name",
+        alias.sort_name,
         author_data.begin_year,
         author_data.begin_month,
         author_data.begin_day,
+        author_data.begin_area_id,
         author_data.end_year,
         author_data.end_month,
         author_data.end_day,
-        author_data.begin_area_id,
         author_data.end_area_id,
         author_data.ended,
         author_data.area_id,
         author_data.gender_id,
         author_data.type_id,
+        atype.label as author_type,
         author_data.alias_set_id,
         author_data.identifier_set_id,
+        author_data.relationship_set_id,
         entity.type
     FROM bookbrainz.entity entity
     LEFT JOIN bookbrainz.author_import_header author_import_header ON entity.bbid = author_import_header.bbid
     LEFT JOIN bookbrainz.author_data author_data ON author_import_header.data_id = author_data.id
     LEFT JOIN bookbrainz.alias_set alias_set ON author_data.alias_set_id = alias_set.id
+    -- TODO: Are the columns from the following joins ever used directly instead of being loaded by the ORM?
+    LEFT JOIN bookbrainz.alias alias ON alias.id = alias_set.default_alias_id
+    LEFT JOIN bookbrainz.disambiguation dis ON dis.id = author_data.disambiguation_id
+    LEFT JOIN bookbrainz.author_type atype ON atype.id = author_data.type_id
     WHERE entity.type = 'Author' AND entity.is_import;
 
 
@@ -118,9 +130,16 @@ CREATE OR REPLACE VIEW bookbrainz.edition_import AS
     SELECT
         entity.bbid,
         edition_data.id as data_id,
+        NULL::INT AS revision_id, -- pending imports have no revision
+        TRUE AS master,
         edition_data.annotation_id,
         edition_data.disambiguation_id,
+        dis.comment disambiguation,
         alias_set.default_alias_id,
+        alias."name",
+        alias.sort_name,
+        edition_data.edition_group_bbid,
+        edition_data.author_credit_id,
         edition_data.width,
         edition_data.height,
         edition_data.depth,
@@ -130,24 +149,32 @@ CREATE OR REPLACE VIEW bookbrainz.edition_import AS
         edition_data.status_id,
         edition_data.alias_set_id,
         edition_data.identifier_set_id,
-        entity.type,
+        edition_data.relationship_set_id,
         edition_data.language_set_id,
         edition_data.release_event_set_id,
-        edition_data.edition_group_bbid,
-        edition_data.author_credit_id
+        edition_data.publisher_set_id,
+        entity.type
     FROM bookbrainz.entity entity
     LEFT JOIN bookbrainz.edition_import_header edition_import_header ON entity.bbid = edition_import_header.bbid
     LEFT JOIN bookbrainz.edition_data edition_data ON edition_import_header.data_id = edition_data.id
     LEFT JOIN bookbrainz.alias_set alias_set ON edition_data.alias_set_id = alias_set.id
+    -- TODO: Are the columns from the following joins ever used directly instead of being loaded by the ORM?
+    LEFT JOIN bookbrainz.alias alias ON alias.id = alias_set.default_alias_id
+    LEFT JOIN bookbrainz.disambiguation dis ON dis.id = edition_data.disambiguation_id
     WHERE entity.type = 'Edition' AND entity.is_import;
 
 CREATE OR REPLACE VIEW bookbrainz.publisher_import AS
     SELECT
         entity.bbid,
         publisher_data.id as data_id,
+        NULL::INT AS revision_id, -- pending imports have no revision
+        TRUE AS master,
         publisher_data.annotation_id,
         publisher_data.disambiguation_id,
+        dis.comment disambiguation,
         alias_set.default_alias_id,
+        alias."name",
+        alias.sort_name,
         publisher_data.begin_year,
         publisher_data.begin_month,
         publisher_data.begin_day,
@@ -157,71 +184,107 @@ CREATE OR REPLACE VIEW bookbrainz.publisher_import AS
         publisher_data.ended,
         publisher_data.area_id,
         publisher_data.type_id,
+        pubtype.label as publisher_type,
         publisher_data.alias_set_id,
         publisher_data.identifier_set_id,
+        publisher_data.relationship_set_id,
         entity.type
-    FROM
-        bookbrainz.entity entity
-        LEFT JOIN bookbrainz.publisher_import_header publisher_import_header ON entity.bbid = publisher_import_header.bbid
-        LEFT JOIN bookbrainz.publisher_data publisher_data ON publisher_import_header.data_id = publisher_data.id
-        LEFT JOIN bookbrainz.alias_set alias_set ON publisher_data.alias_set_id = alias_set.id
+    FROM bookbrainz.entity entity
+    LEFT JOIN bookbrainz.publisher_import_header publisher_import_header ON entity.bbid = publisher_import_header.bbid
+    LEFT JOIN bookbrainz.publisher_data publisher_data ON publisher_import_header.data_id = publisher_data.id
+    LEFT JOIN bookbrainz.alias_set alias_set ON publisher_data.alias_set_id = alias_set.id
+    -- TODO: Are the columns from the following joins ever used directly instead of being loaded by the ORM?
+    LEFT JOIN bookbrainz.alias alias ON alias.id = alias_set.default_alias_id
+    LEFT JOIN bookbrainz.disambiguation dis ON dis.id = publisher_data.disambiguation_id
+    LEFT JOIN bookbrainz.publisher_type pubtype ON pubtype.id = publisher_data.type_id
         WHERE entity.type = 'Publisher' AND entity.is_import;
 
 CREATE OR REPLACE VIEW bookbrainz.edition_group_import AS
     SELECT
         entity.bbid,
         edition_group_data.id as data_id,
+        NULL::INT AS revision_id, -- pending imports have no revision
+        TRUE AS master,
         edition_group_data.annotation_id,
         edition_group_data.disambiguation_id,
+        dis.comment disambiguation,
         alias_set.default_alias_id,
+        alias."name",
+        alias.sort_name,
         edition_group_data.type_id,
+        egtype.label as edition_group_type,
+        edition_group_data.author_credit_id,
         edition_group_data.alias_set_id,
         edition_group_data.identifier_set_id,
-        entity.type,
-        edition_group_data.author_credit_id
+        edition_group_data.relationship_set_id,
+        entity.type
     FROM bookbrainz.entity entity
     LEFT JOIN bookbrainz.edition_group_import_header edition_group_import_header ON entity.bbid = edition_group_import_header.bbid
     LEFT JOIN bookbrainz.edition_group_data edition_group_data ON edition_group_import_header.data_id = edition_group_data.id
     LEFT JOIN bookbrainz.alias_set alias_set ON edition_group_data.alias_set_id = alias_set.id
+    -- TODO: Are the columns from the following joins ever used directly instead of being loaded by the ORM?
+    LEFT JOIN bookbrainz.alias alias ON alias.id = alias_set.default_alias_id
+    LEFT JOIN bookbrainz.disambiguation dis ON dis.id = edition_group_data.disambiguation_id
+    LEFT JOIN bookbrainz.edition_group_type egtype ON egtype.id = edition_group_data.type_id
     WHERE entity.type = 'EditionGroup' AND entity.is_import;
 
 CREATE OR REPLACE VIEW bookbrainz.series_import AS
     SELECT
         entity.bbid,
         series_data.id AS data_id,
+        NULL::INT AS revision_id, -- pending imports have no revision
+        TRUE AS master,
+        series_data.entity_type, -- TODO: rename to item_type
         series_data.annotation_id,
         series_data.disambiguation_id,
+        dis.comment disambiguation,
         alias_set.default_alias_id,
-        series_data.entity_type,
+        alias."name",
+        alias.sort_name,
         series_data.ordering_type_id,
         series_data.alias_set_id,
         series_data.identifier_set_id,
+        series_data.relationship_set_id,
         entity.type
     FROM bookbrainz.entity entity
     LEFT JOIN bookbrainz.series_import_header series_import_header ON entity.bbid = series_import_header.bbid
     LEFT JOIN bookbrainz.series_data series_data ON series_import_header.data_id = series_data.id
     LEFT JOIN bookbrainz.alias_set alias_set ON series_data.alias_set_id = alias_set.id
+    -- TODO: Are the columns from the following joins ever used directly instead of being loaded by the ORM?
+    LEFT JOIN bookbrainz.alias alias ON alias.id = alias_set.default_alias_id
+    LEFT JOIN bookbrainz.disambiguation dis ON dis.id = series_data.disambiguation_id
     WHERE entity.type = 'Series' AND entity.is_import;
 
 CREATE OR REPLACE VIEW bookbrainz.work_import AS
     SELECT
         entity.bbid,
         work_data.id AS data_id,
+        NULL::INT AS revision_id, -- pending imports have no revision
+        TRUE AS master,
         work_data.annotation_id,
         work_data.disambiguation_id,
+        dis.comment disambiguation,
         alias_set.default_alias_id,
+        alias."name",
+        alias.sort_name,
         work_data.type_id,
+        worktype.label as work_type,
         work_data.alias_set_id,
         work_data.identifier_set_id,
-        entity.type,
-        work_data.language_set_id
+        work_data.relationship_set_id,
+        work_data.language_set_id,
+        entity.type
     FROM bookbrainz.entity entity
     LEFT JOIN bookbrainz.work_import_header work_import_header ON entity.bbid = work_import_header.bbid
     LEFT JOIN bookbrainz.work_data work_data ON work_import_header.data_id = work_data.id
     LEFT JOIN bookbrainz.alias_set alias_set ON work_data.alias_set_id = alias_set.id
+    -- TODO: Are the columns from the following joins ever used directly instead of being loaded by the ORM?
+    LEFT JOIN bookbrainz.alias alias ON alias.id = alias_set.default_alias_id
+    LEFT JOIN bookbrainz.disambiguation dis ON dis.id = work_data.disambiguation_id
+    LEFT JOIN bookbrainz.work_type worktype ON worktype.id = work_data.type_id
     WHERE entity.type = 'Work' AND entity.is_import;
 
--- Recreate entity views with additional `NOT e.is_import` condition
+-- Recreate entity views (with additional `NOT e.is_import` condition) and combine them with imported entity views
 
 CREATE OR REPLACE VIEW bookbrainz.author AS
     SELECT
@@ -234,10 +297,13 @@ CREATE OR REPLACE VIEW bookbrainz.author AS
     LEFT JOIN bookbrainz.author_header ah ON ah.bbid = e.bbid
     LEFT JOIN bookbrainz.author_data ad ON ar.data_id = ad.id
     LEFT JOIN bookbrainz.alias_set als ON ad.alias_set_id = als.id
+    -- TODO: Are the columns from the following joins ever used directly instead of being loaded by the ORM?
     LEFT JOIN bookbrainz.alias al ON al.id = als.default_alias_id
     LEFT JOIN bookbrainz.disambiguation dis ON dis.id = ad.disambiguation_id
     LEFT JOIN bookbrainz.author_type atype ON atype.id = ad.type_id
-    WHERE e.type = 'Author' AND NOT e.is_import;
+    WHERE e.type = 'Author' AND NOT e.is_import
+UNION ALL
+    SELECT * FROM bookbrainz.author_import;
 
 CREATE OR REPLACE VIEW bookbrainz.edition AS
     SELECT
@@ -251,9 +317,12 @@ CREATE OR REPLACE VIEW bookbrainz.edition AS
     LEFT JOIN bookbrainz.edition_header edh ON edh.bbid = e.bbid
     LEFT JOIN bookbrainz.edition_data edd ON edr.data_id = edd.id
     LEFT JOIN bookbrainz.alias_set als ON edd.alias_set_id = als.id
+    -- TODO: Are the columns from the following joins ever used directly instead of being loaded by the ORM?
     LEFT JOIN bookbrainz.alias al ON al.id = als.default_alias_id
     LEFT JOIN bookbrainz.disambiguation dis ON dis.id = edd.disambiguation_id
-    WHERE e.type = 'Edition' AND NOT e.is_import;
+    WHERE e.type = 'Edition' AND NOT e.is_import
+UNION ALL
+    SELECT * FROM bookbrainz.edition_import;
 
 CREATE OR REPLACE VIEW bookbrainz.work AS
     SELECT
@@ -265,10 +334,13 @@ CREATE OR REPLACE VIEW bookbrainz.work AS
     LEFT JOIN bookbrainz.work_header wh ON wh.bbid = e.bbid
     LEFT JOIN bookbrainz.work_data wd ON wr.data_id = wd.id
     LEFT JOIN bookbrainz.alias_set als ON wd.alias_set_id = als.id
+    -- TODO: Are the columns from the following joins ever used directly instead of being loaded by the ORM?
     LEFT JOIN bookbrainz.alias al ON al.id = als.default_alias_id
     LEFT JOIN bookbrainz.disambiguation dis ON dis.id = wd.disambiguation_id
     LEFT JOIN bookbrainz.work_type worktype ON worktype.id = wd.type_id
-    WHERE e.type = 'Work' AND NOT e.is_import;
+    WHERE e.type = 'Work' AND NOT e.is_import
+UNION ALL
+    SELECT * FROM bookbrainz.work_import;
 
 CREATE OR REPLACE VIEW bookbrainz.publisher AS
     SELECT
@@ -281,10 +353,13 @@ CREATE OR REPLACE VIEW bookbrainz.publisher AS
     LEFT JOIN bookbrainz.publisher_header pubh ON pubh.bbid = e.bbid
     LEFT JOIN bookbrainz.publisher_data pubd ON psr.data_id = pubd.id
     LEFT JOIN bookbrainz.alias_set als ON pubd.alias_set_id = als.id
+    -- TODO: Are the columns from the following joins ever used directly instead of being loaded by the ORM?
     LEFT JOIN bookbrainz.alias al ON al.id = als.default_alias_id
     LEFT JOIN bookbrainz.disambiguation dis ON dis.id = pubd.disambiguation_id
     LEFT JOIN bookbrainz.publisher_type pubtype ON pubtype.id = pubd.type_id
-    WHERE e.type = 'Publisher' AND NOT e.is_import;
+    WHERE e.type = 'Publisher' AND NOT e.is_import
+UNION ALL
+    SELECT * FROM bookbrainz.publisher_import;
 
 CREATE OR REPLACE VIEW bookbrainz.edition_group AS
     SELECT
@@ -296,10 +371,13 @@ CREATE OR REPLACE VIEW bookbrainz.edition_group AS
     LEFT JOIN bookbrainz.edition_group_header egh ON egh.bbid = e.bbid
     LEFT JOIN bookbrainz.edition_group_data egd ON pcr.data_id = egd.id
     LEFT JOIN bookbrainz.alias_set als ON egd.alias_set_id = als.id
+    -- TODO: Are the columns from the following joins ever used directly instead of being loaded by the ORM?
     LEFT JOIN bookbrainz.alias al ON al.id = als.default_alias_id
     LEFT JOIN bookbrainz.disambiguation dis ON dis.id = egd.disambiguation_id
     LEFT JOIN bookbrainz.edition_group_type egtype ON egtype.id = egd.type_id
-    WHERE e.type = 'EditionGroup' AND NOT e.is_import;
+    WHERE e.type = 'EditionGroup' AND NOT e.is_import
+UNION ALL
+    SELECT * FROM bookbrainz.edition_group_import;
 
 CREATE OR REPLACE VIEW bookbrainz.series AS
     SELECT
@@ -311,8 +389,11 @@ CREATE OR REPLACE VIEW bookbrainz.series AS
     LEFT JOIN bookbrainz.series_header sh ON sh.bbid = e.bbid
     LEFT JOIN bookbrainz.series_data sd ON sr.data_id = sd.id
     LEFT JOIN bookbrainz.alias_set als ON sd.alias_set_id = als.id
+    -- TODO: Are the columns from the following joins ever used directly instead of being loaded by the ORM?
     LEFT JOIN bookbrainz.alias al ON al.id = als.default_alias_id
     LEFT JOIN bookbrainz.disambiguation dis ON dis.id = sd.disambiguation_id
-    WHERE e.type = 'Series' AND NOT e.is_import;
+    WHERE e.type = 'Series' AND NOT e.is_import
+UNION ALL
+    SELECT * FROM bookbrainz.series_import;
 
 COMMIT;
