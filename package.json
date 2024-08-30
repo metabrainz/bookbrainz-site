@@ -40,7 +40,6 @@
     "@fortawesome/free-brands-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.1.11",
-    "array-move": "^3.0.1",
     "bookbrainz-data": "5.1.1",
     "chart.js": "^2.9.4",
     "chartjs-adapter-date-fns": "^1.0.0",
