@@ -49,7 +49,7 @@
     "connect-redis": "^7.0.0",
     "core-js": "^3.20.3",
     "cross-env": "^7.0.3",
-    "date-fns": "^2.15.0",
+    "date-fns": "^3.6.0",
     "debug": "^4.3.2",
     "express": "^4.19.2",
     "express-session": "^1.17.3",
