@@ -121,10 +121,10 @@ export function handleDiscardImportEntity(req, res: Response) {
 export async function approveImportEntity(req, res: Response) {
 	const {orm} = res.app.locals;
 	const editorId = req.session.passport.user.id;
-	const {importEntity} = res.locals;
+	const {entity} = res.locals;
 	const savedEntityModel = await orm.bookshelf.transaction((transacting) =>
 		orm.func.imports.approveImport(
-			{editorId, importEntity, orm, transacting}
+			{editorId, importEntity: entity, orm, transacting}
 		));
 	const entityJSON = savedEntityModel.toJSON();
 	const entityUrl = getEntityUrl(entityJSON);
