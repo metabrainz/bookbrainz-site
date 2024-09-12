@@ -102,6 +102,7 @@ function SeriesDisplayPage({entity, identifierTypes, user, genderOptions, wikipe
 	}, [reviewsRef]);
 
 
+	const {importMetadata} = entity;
 	const isImport = !entity.revision;
 	const urlPrefix = getEntityUrl(entity);
 	const EntityTable = getEntityTable(entity.entityType);
@@ -160,12 +161,12 @@ function SeriesDisplayPage({entity, identifierTypes, user, genderOptions, wikipe
 				</Row>
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
-			{entity.import ?
+			{importMetadata ?
 				<ImportFooter
-					hasVoted={entity.import.userHasVoted}
+					hasVoted={importMetadata.userHasVoted}
 					importUrl={urlPrefix}
-					importedAt={entity.import.importedAt}
-					source={entity.import.source}
+					importedAt={importMetadata.importedAt}
+					source={importMetadata.source}
 					type={entity.type}
 				/> :
 				<EntityFooter

@@ -84,6 +84,7 @@ PublisherAttributes.propTypes = {
 
 
 function PublisherDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
+	const {importMetadata} = entity;
 	const isImport = !entity.revision;
 	const urlPrefix = getEntityUrl(entity);
 	return (
@@ -114,12 +115,12 @@ function PublisherDisplayPage({entity, identifierTypes, user, wikipediaExtract})
 				<EntityRelatedCollections collections={entity.collections}/>
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
-			{entity.import ?
+			{importMetadata ?
 				<ImportFooter
-					hasVoted={entity.import.userHasVoted}
+					hasVoted={importMetadata.userHasVoted}
 					importUrl={urlPrefix}
-					importedAt={entity.import.importedAt}
-					source={entity.import.source}
+					importedAt={importMetadata.importedAt}
+					source={importMetadata.source}
 					type={entity.type}
 				/> :
 				<EntityFooter

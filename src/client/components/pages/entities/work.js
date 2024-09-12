@@ -100,7 +100,7 @@ function WorkDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 		reviewsRef.current.handleClick();
 	}, [reviewsRef]);
 
-
+	const {importMetadata} = entity;
 	const isImport = !entity.revision;
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
@@ -156,12 +156,12 @@ function WorkDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 				</Row>
 			</React.Fragment>}
 			<hr className="margin-top-d40"/>
-			{entity.import ?
+			{importMetadata ?
 				<ImportFooter
-					hasVoted={entity.import.userHasVoted}
+					hasVoted={importMetadata.userHasVoted}
 					importUrl={urlPrefix}
-					importedAt={entity.import.importedAt}
-					source={entity.import.source}
+					importedAt={importMetadata.importedAt}
+					source={importMetadata.source}
 					type={entity.type}
 				/> :
 				<EntityFooter

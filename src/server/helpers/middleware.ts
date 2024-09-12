@@ -283,7 +283,7 @@ export async function redirectedBbid(req: $Request, res: $Response, next: NextFu
 	return next();
 }
 
-async function loadImportInfo(orm: ORM, importId: string, userId?: number) {
+async function loadImportMetadata(orm: ORM, importId: string, userId?: number) {
 	const [votes, metadata] = await orm.bookshelf.transaction(
 		(transacting) =>
 			Promise.all([
@@ -336,7 +336,7 @@ export function makeEntityLoader(modelName: string, additionalRels: Array<string
 				else {
 					// Entity is a pending import
 					const userId = _.get(req, 'session.passport.user.id');
-					entity.import = await loadImportInfo(orm, bbid, userId);
+					entity.importMetadata = await loadImportMetadata(orm, bbid, userId);
 					entity.reviews = {reviews: [], successfullyFetched: true};
 				}
 				res.locals.entity = entity;
