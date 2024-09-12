@@ -297,8 +297,8 @@ async function loadImportMetadata(orm: ORM, importId: string, userId?: number) {
 	);
 
 	return {
-		importedAt: moment(metadata.importedAt as any).format('YYYY-MM-DD'),
-		source: metadata.source,
+		...metadata,
+		importedAt: moment(metadata.importedAt).format('YYYY-MM-DD'),
 		userHasVoted: userId ? Boolean(votes.find(vote => vote.editorId === userId)) : false,
 	};
 }
