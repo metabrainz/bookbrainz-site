@@ -18,7 +18,6 @@
 /* eslint-disable no-inline-comments */
 
 import type {Attribute, Relationship, RelationshipForDisplay} from '../relationship-editor/types';
-import arrayMove from 'array-move';
 import {attachAttribToRelForDisplay} from '../helpers';
 import {sortRelationshipOrdinal} from '../../../common/helpers/utils';
 
@@ -119,7 +118,9 @@ export function sortSeriesItems(oldIndex, newIndex):any {
 			delete seriesItem.number;
 			delete seriesItem.position;
 		});
-		const sortedSeriesItems = arrayMove(seriesItemsArray, oldIndex, newIndex);
+		const sortedSeriesItems = [...seriesItemsArray];
+		const [itemToMove] = sortedSeriesItems.splice(oldIndex, 1);
+		sortedSeriesItems.splice(newIndex, 0, itemToMove);
 		sortedSeriesItems.forEach((seriesItem: RelationshipForDisplay, index: number) => {
 			seriesItem.attributes.forEach((attribute: Attribute) => {
 				if (attribute.attributeType === 1) { // Attribute type 1 for position
