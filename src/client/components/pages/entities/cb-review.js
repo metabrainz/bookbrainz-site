@@ -56,12 +56,12 @@ function ReviewCard(props) {
 					size={15}
 					stars={5}
 				/>
-				<small className="float-right">
+				<small className="float-end">
 					Review by: <b>{reviewData.user.display_name}</b> {publishedDate}
 				</small>
 			</div>
 			{reviewText}
-			<a className="float-right" href={reviewLink}>View &gt;</a>
+			<a className="float-end" href={reviewLink}>View &gt;</a>
 		</div>
 	);
 }

@@ -300,7 +300,7 @@ class RevisionPage extends React.Component {
 								/>
 							</Form.Group>
 							<Button
-								className="float-right margin-top-1"
+								className="float-end margin-top-1"
 								title="Submit revision note"
 								type="submit"
 								variant="primary"

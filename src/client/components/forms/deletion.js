@@ -97,7 +97,7 @@ class EntityDeletionForm extends React.Component {
 		const footerComponent = (
 			<span className="clearfix">
 				<Button
-					className="float-right"
+					className="float-end"
 					disabled={!hasNote}
 					type="submit"
 					variant="danger"
@@ -105,7 +105,7 @@ class EntityDeletionForm extends React.Component {
 					<FontAwesomeIcon icon={faTrashAlt}/> Delete
 				</Button>
 				<Button
-					className="float-right"
+					className="float-end"
 					href={this.entityUrl}
 					variant="secondary"
 				>
