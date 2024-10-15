@@ -18,7 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-@import "lobes4/scss/variables.scss";
+@import "~lobes5/scss/variables.scss";
 
 $navbar-light-color: $gray-400;
 $brand-secondary: $bookbrainz;
@@ -26,7 +26,7 @@ $disabled-bg: lighten(desaturate($bookbrainz,10%),42%);
 $disabled-color: lighten($disabled-bg,15%);
 
 
-@import "lobes4/scss/bootstrap.scss";
+@import "~lobes5/scss/bootstrap.scss";
 @import "react-datepicker/dist/react-datepicker.css";
 @import "./external-services.scss";
 
