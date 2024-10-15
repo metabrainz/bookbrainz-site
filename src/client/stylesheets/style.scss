@@ -1,3 +1,5 @@
+@use "sass:color";
+
 /*
  * Copyright (C) 2014-2015, 2021-2022  Ben Ockmore
  *               2015                  Leo Verto
@@ -22,8 +24,8 @@
 
 $navbar-light-color: $gray-400;
 $brand-secondary: $bookbrainz;
-$disabled-bg: lighten(desaturate($bookbrainz,10%),42%);
-$disabled-color: lighten($disabled-bg,15%);
+$disabled-bg: color.adjust(desaturate($bookbrainz,10%),$lightness: 42%, $space: hsl);
+$disabled-color: color.adjust($disabled-bg,$lightness: 15%, $space: hsl);
 
 
 @import "~lobes5/scss/bootstrap.scss";
