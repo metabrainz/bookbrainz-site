@@ -87,7 +87,7 @@
     "redux-immutable": "^4.0.0",
     "redux-thunk": "^2.2.0",
     "serve-favicon": "^2.4.3",
-    "serve-static": "^1.16.0",
+    "serve-static": "1.16.1",
     "superagent": "^8.0.8",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.0",
