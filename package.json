@@ -70,7 +70,7 @@
     "passport-musicbrainz-oauth2": "git+https://git@github.com/LordSputnik/passport-musicbrainz-oauth2.git",
     "prop-types": "^15.8.1",
     "react": "^16.13.1",
-    "react-bootstrap": "^1.6.4",
+    "react-bootstrap": "^2.10.5",
     "react-chartjs-2": "^2.11.2",
     "react-datepicker": "^4.7.0",
     "react-dom": "^16.13.1",
