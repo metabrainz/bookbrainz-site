@@ -336,7 +336,7 @@ class Layout extends React.Component {
 		const revisionsClassName = homepage || hideSearch ? 'ml-auto' : null;
 
 		return (
-			<Navbar.Collapse id="bs-example-navbar-collapse-1">
+			<Navbar.Collapse className="justify-content-end" id="navbar-menu">
 				{!(homepage || hideSearch) && this.renderSearchForm()}
 				<Nav className={revisionsClassName}>
 					<Nav.Item>
