@@ -185,10 +185,8 @@ function SortNameField({
 					onChange={onChange}
 					{...rest}
 				/>
-				<InputGroup.Append>
-					{guessButton}
-					{copyButton}
-				</InputGroup.Append>
+				{guessButton}
+				{copyButton}
 			</InputGroup>
 		</Form.Group>
 	);

@@ -174,10 +174,8 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 									value={this.state.query}
 									onChange={this.handleChange}
 								/>
-								<InputGroup.Append>
-									{entityTypeSelect}
-									{SearchButton}
-								</InputGroup.Append>
+								{entityTypeSelect}
+								{SearchButton}
 							</InputGroup>
 						</Form.Group>
 					</form>

@@ -183,7 +183,7 @@ function AuthorCreditSection({
 								type="author"
 							/>
 						</div>
-						<InputGroup.Append>{editButton}</InputGroup.Append>
+						{editButton}
 					</InputGroup>
 					<Form.Check
 						checked={!authorCreditEnable}

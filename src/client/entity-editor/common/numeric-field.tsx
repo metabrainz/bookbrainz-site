@@ -63,9 +63,7 @@ function NumericField({
 			<Form.Label>{labelElement}</Form.Label>
 			<InputGroup>
 				<Form.Control type="number" {...rest}/>
-				<InputGroup.Append>
-					<InputGroup.Text>{addonAfter}</InputGroup.Text>
-				</InputGroup.Append>
+				<InputGroup.Text>{addonAfter}</InputGroup.Text>
 			</InputGroup>
 		</Form.Group>
 	);

@@ -318,11 +318,9 @@ class Layout extends React.Component {
 			>
 				<InputGroup>
 					<FormControl required name="q" placeholder="Search for..." type="text"/>
-					<InputGroup.Append>
-						<Button type="submit" variant="success">
-							<FontAwesomeIcon icon={faSearch}/>
-						</Button>
-					</InputGroup.Append>
+					<Button type="submit" variant="success">
+						<FontAwesomeIcon icon={faSearch}/>
+					</Button>
 				</InputGroup>
 			</Form>
 		);

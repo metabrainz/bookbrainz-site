@@ -148,9 +148,7 @@ class DateField extends React.Component {
 							onBlur={this.handleYearInputBlur}
 							onChange={this.handleYearChange}
 						/>
-						<InputGroup.Append style={{'margin-right': '-1px'}}>
-							<InputGroup.Text style={{padding: '0 0.5em'}}>-</InputGroup.Text>
-						</InputGroup.Append>
+						<InputGroup.Text style={{'margin-right': '-1px', padding: '0 0.5em'}}>-</InputGroup.Text>
 						<FormControl
 							className="other-date-field"
 							maxLength="2"
@@ -160,9 +158,7 @@ class DateField extends React.Component {
 							onBlur={this.handleMonthInputBlur}
 							onChange={this.handleMonthChange}
 						/>
-						<InputGroup.Append style={{'margin-right': '-1px'}}>
-							<InputGroup.Text style={{padding: '0 0.5em'}}>-</InputGroup.Text>
-						</InputGroup.Append>
+						<InputGroup.Text style={{'margin-right': '-1px', padding: '0 0.5em'}}>-</InputGroup.Text>
 						<FormControl
 							className="other-date-field"
 							maxLength="2"
@@ -172,29 +168,28 @@ class DateField extends React.Component {
 							onBlur={this.handleDayInputBlur}
 							onChange={this.handleDayChange}
 						/>
-						<InputGroup.Append style={{fontSize: 'inherit'}}>
-							<DatePicker
-								peekNextMonth
-								showMonthDropdown
-								showYearDropdown
-								customInput={
-									<Button style={{lineHeight: '1.75', padding: '0.375em 0.938em'}} title="Date picker" variant="info">
-										<FontAwesomeIcon icon={faCalendarAlt}/>
-									</Button>
-								}
-								dateFormat="uuuuuu-MM-dd"
-								disabled={!isCommonEraDate}
-								dropdownMode="select"
-								popperModifiers={
-									{preventOverflow: {
-									  enabled: true
-									}}}
-								popperPlacement="top-end"
-								selected={isValid(selectedDate) ? selectedDate : null}
-								timeFormat="false"
-								onChange={this.handleChangeOfDatePicker}
-							/>
-						</InputGroup.Append>
+						<DatePicker
+							peekNextMonth
+							showMonthDropdown
+							showYearDropdown
+							customInput={
+								<Button style={{lineHeight: '1.75', padding: '0.375em 0.938em'}} title="Date picker" variant="info">
+									<FontAwesomeIcon icon={faCalendarAlt}/>
+								</Button>
+							}
+							dateFormat="uuuuuu-MM-dd"
+							disabled={!isCommonEraDate}
+							dropdownMode="select"
+							popperModifiers={
+								{preventOverflow: {
+									enabled: true
+								}}}
+							popperPlacement="top-end"
+							selected={isValid(selectedDate) ? selectedDate : null}
+							style={{fontSize: 'inherit'}}
+							timeFormat="false"
+							onChange={this.handleChangeOfDatePicker}
+						/>
 					</InputGroup>
 				</Form.Group>
 			</div>

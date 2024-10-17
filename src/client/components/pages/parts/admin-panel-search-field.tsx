@@ -114,9 +114,7 @@ class AdminPanelSearchField extends React.Component<AdminPanelSearchFieldProps, 
 									value={this.state.query}
 									onChange={this.handleChange}
 								/>
-								<InputGroup.Append>
-									{SearchButton}
-								</InputGroup.Append>
+								{SearchButton}
 							</InputGroup>
 						</Form.Group>
 					</form>
