@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-import {Alert, Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
+import {Alert, Button, Card, Col, Form, FormSelect, Modal, Row} from 'react-bootstrap';
 import {IdentifierTypeDataT, IdentifierTypeEditorPropsT,
 	defaultIdentifierTypeData, entityTypeOptions, renderSelectedParentIdentifierType} from './typeUtils';
 import React, {ChangeEvent, FormEvent, useCallback, useEffect, useState} from 'react';
@@ -107,7 +107,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 		  }));
 	}, [formData]);
 
-	const handleDeprecatedChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+	const handleDeprecatedChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
 		const {value} = event.target;
 		setFormData((prevFormData) => ({
 			...prevFormData,
@@ -351,16 +351,15 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 						<Col lg={lgCol}>
 							<Form.Group>
 								<Form.Label>Deprecated</Form.Label>
-								<Form.Control
+								<FormSelect
 									required
-									as="select"
 									name="deprecated"
 									value={formData.deprecated.toString()}
 									onChange={handleDeprecatedChange}
 								>
 									<option value="false">No</option>
 									<option value="true">Yes</option>
-								</Form.Control>
+								</FormSelect>
 							</Form.Group>
 						</Col>
 					</Row>

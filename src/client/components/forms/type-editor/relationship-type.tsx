@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-import {Alert, Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
+import {Alert, Button, Card, Col, Form, FormSelect, Modal, Row} from 'react-bootstrap';
 import React, {ChangeEvent, FormEvent, useCallback, useEffect, useState} from 'react';
 import {RelationshipTypeDataT, RelationshipTypeEditorPropsT,
 	defaultRelationshipTypeData, entityTypeOptions, renderSelectedParentRelationshipType} from './typeUtils';
@@ -149,7 +149,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 		  }));
 	}, [formData]);
 
-	const handleDeprecatedChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+	const handleDeprecatedChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
 		const {value} = event.target;
 		setFormData((prevFormData) => ({
 			...prevFormData,
@@ -409,16 +409,15 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 						<Col lg={lgCol}>
 							<Form.Group>
 								<Form.Label>Deprecated</Form.Label>
-								<Form.Control
+								<FormSelect
 									required
-									as="select"
 									name="deprecated"
 									value={formData.deprecated.toString()}
 									onChange={handleDeprecatedChange}
 								>
 									<option value="false">No</option>
 									<option value="true">Yes</option>
-								</Form.Control>
+								</FormSelect>
 							</Form.Group>
 						</Col>
 					</Row>
