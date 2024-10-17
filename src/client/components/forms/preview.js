@@ -36,8 +36,8 @@ class PreviewPage extends React.Component {
 				<Accordion>
 					<Card>
 						<Card.Header>
-							<Accordion.Toggle as={Button} eventKey="0" variant="link"> &#9654; Data submitted with this request
-							</Accordion.Toggle>
+							<Accordion.Button as={Button} eventKey="0" variant="link"> &#9654; Data submitted with this request
+							</Accordion.Button>
 						</Card.Header>
 						<Accordion.Collapse eventKey="0">
 							<Card.Body>{formInputs}</Card.Body>

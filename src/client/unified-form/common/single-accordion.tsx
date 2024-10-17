@@ -20,9 +20,9 @@ export default function SingleAccordion({children, defaultActive, heading, onTog
 						{children}
 					</Card.Body>
 				</Accordion.Collapse>
-				<Accordion.Toggle as={Card.Header} eventKey="0" onClick={onToggle}>{inputLabel}
+				<Accordion.Button as={Card.Header} eventKey="0" onClick={onToggle}>{inputLabel}
 					<FontAwesomeIcon className="accordion-arrow" icon={faChevronRight}/>
-				</Accordion.Toggle>
+				</Accordion.Button>
 			</Card>
 		</Accordion>
 	);
