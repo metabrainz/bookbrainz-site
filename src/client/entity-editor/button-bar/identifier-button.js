@@ -53,7 +53,7 @@ function IdentifierButton({
 		}
 	}
 	else if (numIdentifiers > 0) {
-		textComponent = <span>Edit identifiers <Badge className="ml-1" variant="light">{numIdentifiers}</Badge></span>;
+		textComponent = <span>Edit identifiers <Badge bg="light" className="ml-1">{numIdentifiers}</Badge></span>;
 	}
 	else {
 		textComponent = 'Add Identifiers';
