@@ -25,7 +25,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {Button, CardDeck, Col, Form, Row} = bootstrap;
+const {Button, CardGroup, Col, Form, Row} = bootstrap;
 const {Sticky, StickyContainer} = ReactSticky;
 
 /**
@@ -89,7 +89,7 @@ class EditorAchievementTab extends React.Component {
 					id="rankSelectForm"
 					method="post"
 				>
-					<CardDeck className="mb-3">
+					<CardGroup className="mb-3">
 						<DragAndDrop
 							initialAchievement={this.currAchievement.model.fulfillmentValue?.[0]?.achievement}
 							name="rank1"
@@ -102,7 +102,7 @@ class EditorAchievementTab extends React.Component {
 							initialAchievement={this.currAchievement.model.fulfillmentValue?.[2]?.achievement}
 							name="rank3"
 						/>
-					</CardDeck>
+					</CardGroup>
 					<span className="margin-left-1">
 						<Button type="submit" variant="success">
 							Update
