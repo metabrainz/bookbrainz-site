@@ -29,7 +29,6 @@ const {Button, Col, InputGroup, Form, Row} = bootstrap;
 
 const SearchButton = (
 	<Button
-		block
 		type="submit"
 		variant="success"
 	>
