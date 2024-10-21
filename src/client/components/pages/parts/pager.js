@@ -142,18 +142,16 @@ class PagerElement extends React.Component {
 			this.state.results && this.state.results.length ?
 				<div id="PagerElement">
 					<hr className="thin"/>
-					<Row className="pb-4">
-						<Col lg="auto">
-							<Button
-								className="round-button"
-								disabled={this.state.from <= 0}
-								variant="outline-primary"
-								onClick={this.handleClickPrevious}
-							>
-								&larr; Previous Page
-							</Button>
-						</Col>
-						<Col className="text-center" lg={6}>
+					<div className="d-flex flex-wrap justify-content-between pb-4">
+						<Button
+							className="round-button me-auto"
+							disabled={this.state.from <= 0}
+							variant="outline-primary"
+							onClick={this.handleClickPrevious}
+						>
+							&larr; Previous Page
+						</Button>
+						<div>
 							<ButtonGroup>
 								<Button disabled variant="secondary">Results {this.state.from + 1} —
 									{this.state.results.length < this.state.size ?
@@ -173,18 +171,16 @@ class PagerElement extends React.Component {
 									<Dropdown.Item eventKey="100">100 per page</Dropdown.Item>
 								</DropdownButton>
 							</ButtonGroup>
-						</Col>
-						<Col className="text-right" lg="auto">
-							<Button
-								className="round-button"
-								disabled={!this.state.nextEnabled}
-								variant="outline-primary"
-								onClick={this.handleClickNext}
-							>
-								Next Page &rarr;
-							</Button>
-						</Col>
-					</Row>
+						</div>
+						<Button
+							className="round-button ms-auto"
+							disabled={!this.state.nextEnabled}
+							variant="outline-primary"
+							onClick={this.handleClickNext}
+						>
+							Next Page &rarr;
+						</Button>
+					</div>
 				</div> :
 				null
 		);
