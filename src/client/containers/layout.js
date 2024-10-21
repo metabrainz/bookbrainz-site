@@ -103,31 +103,29 @@ class Layout extends React.Component {
 			</span>
 		);
 		return (
-			<Nav>
-				<NavDropdown
-					alignRight
-					id="docs-dropdown"
-					title={docsDropdownTitle}
-					onMouseDown={this.handleMouseDown}
-				>
-					<NavDropdown.Item href="/help">
-						<FontAwesomeIcon fixedWidth icon={faQuestionCircle}/>
-						{' Help '}
-					</NavDropdown.Item>
-					<NavDropdown.Item href="/faq">
-						<FontAwesomeIcon fixedWidth icon={faClipboardQuestion}/>
-						{' FAQs '}
-					</NavDropdown.Item>
-					<NavDropdown.Item href="/relationship-types">
-						<FontAwesomeIcon fixedWidth icon={faLink}/>
-						{' Relationship Types '}
-					</NavDropdown.Item>
-					<NavDropdown.Item href="/identifier-types">
-						<FontAwesomeIcon fixedWidth icon={faBarcode}/>
-						{' Identifier Types '}
-					</NavDropdown.Item>
-				</NavDropdown>
-			</Nav>
+			<NavDropdown
+				alignRight
+				id="docs-dropdown"
+				title={docsDropdownTitle}
+				onMouseDown={this.handleMouseDown}
+			>
+				<NavDropdown.Item href="/help">
+					<FontAwesomeIcon fixedWidth icon={faQuestionCircle}/>
+					{' Help '}
+				</NavDropdown.Item>
+				<NavDropdown.Item href="/faq">
+					<FontAwesomeIcon fixedWidth icon={faClipboardQuestion}/>
+					{' FAQs '}
+				</NavDropdown.Item>
+				<NavDropdown.Item href="/relationship-types">
+					<FontAwesomeIcon fixedWidth icon={faLink}/>
+					{' Relationship Types '}
+				</NavDropdown.Item>
+				<NavDropdown.Item href="/identifier-types">
+					<FontAwesomeIcon fixedWidth icon={faBarcode}/>
+					{' Identifier Types '}
+				</NavDropdown.Item>
+			</NavDropdown>
 		);
 	}
 
@@ -137,14 +135,12 @@ class Layout extends React.Component {
 			{};
 
 		return (
-			<Nav>
-				<Nav.Item>
-					<Nav.Link {...disableSignUp} href="/auth">
-						<FontAwesomeIcon icon={faSignInAlt}/>
-						{' Sign In / Register'}
-					</Nav.Link>
-				</Nav.Item>
-			</Nav>
+			<Nav.Item>
+				<Nav.Link {...disableSignUp} href="/auth">
+					<FontAwesomeIcon icon={faSignInAlt}/>
+					{' Sign In / Register'}
+				</Nav.Link>
+			</Nav.Item>
 		);
 	}
 
@@ -232,7 +228,7 @@ class Layout extends React.Component {
 			{};
 
 		return (
-			<Nav>
+			<>
 				{showPrivilegeDropdown && privilegeDropDown}
 				<NavDropdown
 					alignRight
@@ -304,7 +300,7 @@ class Layout extends React.Component {
 						{' Sign Out'}
 					</NavDropdown.Item>
 				</NavDropdown>
-			</Nav>
+			</>
 		);
 	}
 
@@ -329,44 +325,34 @@ class Layout extends React.Component {
 	renderNavContent() {
 		const {homepage, hideSearch, user} = this.props;
 
-		/*
-		 * GOTCHA: Usage of react-bootstrap FormGroup component inside
-		 * Navbar.Form causes a DOM mutation
-		 */
-		const revisionsClassName = homepage || hideSearch ? 'ml-auto' : null;
-
 		return (
 			<Navbar.Collapse className="justify-content-end" id="navbar-menu">
-				{!(homepage || hideSearch) && this.renderSearchForm()}
-				<Nav className={revisionsClassName}>
+				<Nav>
+					{!(homepage || hideSearch) && this.renderSearchForm()}
 					<Nav.Item>
 						<Nav.Link href="/revisions">
 							<FontAwesomeIcon icon={faListUl}/>
 							{' Revisions '}
 						</Nav.Link>
 					</Nav.Item>
-				</Nav>
-				<Nav>
 					<Nav.Item>
 						<Nav.Link href="/collections">
 							<FontAwesomeIcon icon={faGripVertical}/>
 							{' Collections '}
 						</Nav.Link>
 					</Nav.Item>
-				</Nav>
-				<Nav>
 					<Nav.Item>
 						<Nav.Link href="/statistics">
 							<FontAwesomeIcon icon={faChartLine}/>
 							{' Statistics '}
 						</Nav.Link>
 					</Nav.Item>
+					{this.renderDocsDropdown()}
+					{
+						user && user.id ?
+							this.renderLoggedInDropdown() : this.renderGuestDropdown()
+					}
 				</Nav>
-				{this.renderDocsDropdown()}
-				{
-					user && user.id ?
-						this.renderLoggedInDropdown() : this.renderGuestDropdown()
-				}
 			</Navbar.Collapse>
 		);
 	}
@@ -420,7 +406,7 @@ class Layout extends React.Component {
 				</a>
 				<Navbar className="BookBrainz" expand="lg" fixed="top" role="navigation">
 					{this.renderNavHeader()}
-					<Navbar.Toggle/>
+					<Navbar.Toggle variant="light"/>
 					{this.renderNavContent()}
 				</Navbar>
 				{alerts}

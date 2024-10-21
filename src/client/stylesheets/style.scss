@@ -23,6 +23,7 @@
 @import "~lobes5/scss/variables.scss";
 
 $navbar-light-color: $gray-400;
+$navbar-padding-x: 1rem;
 $brand-secondary: $bookbrainz;
 $disabled-bg: color.adjust(desaturate($bookbrainz,10%),$lightness: 42%, $space: hsl);
 $disabled-color: color.adjust($disabled-bg,$lightness: 15%, $space: hsl);
@@ -296,7 +297,6 @@ a.contact-text:visited {
 	height: $input-line-height;
 	border-radius: $input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
 	@include transition("border-color ease-in-out .15s, box-shadow ease-in-out .15s");
-	@include form-control-focus();
 	border: 1px solid hsl(0, 0%, 70%) !important;
 	box-shadow: none  !important;
 	&:hover{
