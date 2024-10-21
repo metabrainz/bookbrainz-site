@@ -143,7 +143,7 @@ class PagerElement extends React.Component {
 				<div id="PagerElement">
 					<hr className="thin"/>
 					<Row className="pb-4">
-						<Col lg={4}>
+						<Col lg="auto">
 							<Button
 								className="round-button"
 								disabled={this.state.from <= 0}
@@ -153,7 +153,7 @@ class PagerElement extends React.Component {
 								&larr; Previous Page
 							</Button>
 						</Col>
-						<Col className="text-center" lg={4}>
+						<Col className="text-center" lg={6}>
 							<ButtonGroup>
 								<Button disabled variant="secondary">Results {this.state.from + 1} —
 									{this.state.results.length < this.state.size ?
@@ -174,7 +174,7 @@ class PagerElement extends React.Component {
 								</DropdownButton>
 							</ButtonGroup>
 						</Col>
-						<Col className="text-right" lg={4}>
+						<Col className="text-right" lg="auto">
 							<Button
 								className="round-button"
 								disabled={!this.state.nextEnabled}

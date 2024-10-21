@@ -75,6 +75,18 @@ body {
     }
 }
 
+// mimicking BS4 style
+a {
+	text-decoration: none;
+}
+
+.text-right {
+	text-align: right !important;
+}
+.text-left {
+	text-align: left !important;
+}
+
 
 // We use bootstrap badges in buttons, which makes them a smidge taller than buttons with just text
 .btn.btn-sm , .btn.btn-xs , .btn-group-xs > .btn, .btn-group-sm > .btn {
