@@ -1,8 +1,11 @@
-const { FlatCompat } = require("@eslint/eslintrc");
-const pluginReact = require("eslint-plugin-react");
-const pluginImport = require("eslint-plugin-import");
-const pluginNode = require("eslint-plugin-node");
-const pluginTypeScript = require("@typescript-eslint/eslint-plugin");
+/* eslint-disable comma-dangle */
+/* eslint-disable quotes */
+import {FlatCompat} from '@eslint/eslintrc';
+import pluginImport from 'eslint-plugin-import';
+import pluginNode from 'eslint-plugin-node';
+import pluginReact from 'eslint-plugin-react';
+import pluginTypeScript from '@typescript-eslint/eslint-plugin';
+
 
 const compat = new FlatCompat({
 	baseDirectory: __dirname,
@@ -135,7 +138,7 @@ const nodeAndCommonJSRules = {
 	"node/handle-callback-err": ERROR,
 	"node/no-missing-import": [
 		ERROR,
-		{ tryExtensions: [".js", ".jsx", ".ts", ".tsx"] },
+		{tryExtensions: [".js", ".jsx", ".ts", ".tsx"]},
 	],
 	"node/no-mixed-requires": ERROR,
 	"node/no-new-require": ERROR,
@@ -152,9 +155,9 @@ const stylisticIssuesRules = {
 	"array-bracket-newline": [ERROR, "consistent"],
 	"array-bracket-spacing": ERROR,
 	"block-spacing": ERROR,
-	"brace-style": [ERROR, "stroustrup", { allowSingleLine: true }],
-	camelcase: [ERROR, { properties: "always" }],
-	"comma-dangle": ERROR,
+	"brace-style": [ERROR, "stroustrup", {allowSingleLine: true}],
+	camelcase: [ERROR, {properties: "always"}],
+	"comma-dangle": TRANSITION_WARNING,
 	"comma-spacing": ERROR,
 	"comma-style": ERROR,
 	"computed-property-spacing": ERROR,
@@ -165,26 +168,26 @@ const stylisticIssuesRules = {
 	"func-names": ERROR,
 	"func-style": [ERROR, "declaration"],
 	"function-paren-newline": [TRANSITION_WARNING, "consistent"],
-	"id-length": [ERROR, { exceptions: ["x", "i", "_", "$", "a", "b", "q"] }],
-	indent: [ERROR, "tab", { SwitchCase: 1, VariableDeclarator: 1 }],
-	"jsx-quotes": [ERROR, "prefer-double"],
+	"id-length": [ERROR, {exceptions: ["x", "i", "_", "$", "a", "b", "q"]}],
+	indent: [ERROR, "tab", {SwitchCase: 1, VariableDeclarator: 1}],
+	"jsx-quotes": [TRANSITION_WARNING, "prefer-double"],
 	"key-spacing": ERROR,
 	"keyword-spacing": ERROR,
 	"linebreak-style": ERROR,
 	"lines-around-comment": [
 		ERROR,
-		{ allowBlockStart: true, beforeBlockComment: true },
+		{allowBlockStart: true, beforeBlockComment: true},
 	],
 	"lines-between-class-members": ERROR,
 	"max-depth": [ERROR, 6],
 	"max-len": [
 		WARNING,
-		{ code: 150, ignoreComments: true, ignoreUrls: true, tabWidth: 4 },
+		{code: 150, ignoreComments: true, ignoreUrls: true, tabWidth: 4},
 	],
 	"max-nested-callbacks": [ERROR, 5],
 	"max-params": [TRANSITION_IGNORE, 4],
 	"max-statements": [TRANSITION_IGNORE, 15],
-	"new-cap": [ERROR, { capIsNew: false }],
+	"new-cap": [ERROR, {capIsNew: false}],
 	"new-parens": ERROR,
 	"no-array-constructor": ERROR,
 	"no-bitwise": ERROR,
@@ -205,13 +208,13 @@ const stylisticIssuesRules = {
 	"operator-linebreak": [ERROR, "after"],
 	"padded-blocks": [ERROR, "never"],
 	"quote-props": [ERROR, "as-needed"],
-	quotes: [ERROR, "single", "avoid-escape"],
+	quotes: [TRANSITION_WARNING, "prefer-double", "avoid-escape"],
 	"require-jsdoc": TRANSITION_IGNORE,
-	"semi-spacing": [ERROR, { after: true, before: false }],
+	"semi-spacing": [ERROR, {after: true, before: false}],
 	"sort-keys": ERROR,
 	"sort-vars": ERROR,
 	"space-before-blocks": ERROR,
-	"space-before-function-paren": [ERROR, { named: "never" }],
+	"space-before-function-paren": [ERROR, {named: "never"}],
 	"space-in-parens": ERROR,
 	"space-infix-ops": ERROR,
 	"space-unary-ops": ERROR,
@@ -223,7 +226,7 @@ const stylisticIssuesRules = {
 const ecmaScript6Rules = {
 	"arrow-body-style": ERROR,
 	"arrow-spacing": ERROR,
-	"generator-star-spacing": [ERROR, { after: true, before: false }],
+	"generator-star-spacing": [ERROR, {after: true, before: false}],
 	"no-confusing-arrow": ERROR,
 	"no-duplicate-imports": ERROR,
 	"no-useless-computed-key": ERROR,
@@ -233,7 +236,7 @@ const ecmaScript6Rules = {
 	"object-shorthand": ERROR,
 	"prefer-arrow-callback": ERROR,
 	"prefer-const": WARNING,
-	"prefer-destructuring": [ERROR, { array: false, object: true }],
+	"prefer-destructuring": [ERROR, {array: false, object: true}],
 	"prefer-numeric-literals": ERROR,
 	"prefer-template": ERROR,
 	"rest-spread-spacing": ERROR,
@@ -384,7 +387,7 @@ const es6ImportRules = {
 	"import/no-unassigned-import": ERROR,
 };
 
-module.exports = [
+export default [
 	{
 		ignores: [
 			"lib/**",
@@ -402,8 +405,8 @@ module.exports = [
 		languageOptions: {
 			parser: "@typescript-eslint/parser",
 			parserOptions: {
-				sourceType: "module",
 				ecmaVersion: "latest",
+				sourceType: "module",
 			},
 		},
 		plugins: {
@@ -418,16 +421,9 @@ module.exports = [
 			sourceType: "module",
 		},
 		plugins: {
-			react: pluginReact,
 			import: pluginImport,
 			node: pluginNode,
-		},
-		settings: {
-			"import/resolver": {
-				node: {
-					extensions: [".js", ".jsx", ".ts", ".tsx"],
-				},
-			},
+			react: pluginReact,
 		},
 		rules: {
 			...possibleErrorsRules,
@@ -439,6 +435,13 @@ module.exports = [
 			...ecmaScript6Rules,
 			...reactRules,
 			...es6ImportRules,
+		},
+		settings: {
+			"import/resolver": {
+				node: {
+					extensions: [".js", ".jsx", ".ts", ".tsx"],
+				},
+			},
 		},
 	},
 ];
