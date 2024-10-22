@@ -43,7 +43,11 @@ import session from '../common/helpers/session';
 
 
 // Initialize log-to-stdout  writer
-logNode();
+logNode({
+	env: {
+		LOG_LEVEL: config.site.log
+	}
+});
 const debug = Debug('bbsite');
 
 // Initialize application

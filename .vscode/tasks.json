@@ -20,7 +20,8 @@
                 "--out-dir",
                 "lib",
                 "--source-maps",
-                "--ignore", "src/api/"
+                "--ignore", "src/api/",
+                "--extensions", ".js,.jsx,.ts,.tsx"
             ],
             "isBackground": false
         },
@@ -38,7 +39,8 @@
                 "--ignore", "src/server","src/client",
                 "--source-maps",
                 "--out-dir",
-                "lib"
+                "lib",
+                "--extensions", ".js,.jsx,.ts,.tsx"
             ],
             "isBackground": false
         },

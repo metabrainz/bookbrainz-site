@@ -126,13 +126,14 @@ class IndexPage extends React.Component {
 												className="margin-sides-1 contact-text"
 												icon={faCircle}
 											/>
-											<a className="contact-text" href="//kiwiirc.com/nextclient/irc.libera.chat/?#bookbrainz">
+											<a className="contact-text" href="https://musicbrainz.org/doc/Communication/ChatBrainz">
 												<FontAwesomeIcon
 													className="contact-text"
 													icon={faCommentDots}
 													size="2x"
 												/>
-												IRC
+												Chat with us<br/>
+												<small>(Matrix, IRC, Discord)</small>
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"

@@ -24,8 +24,8 @@ import {Action,
 	removeEmptyCreditRows,
 	resetAuthorCredit,
 	showAuthorCreditEditor,
-	toggleAuthorCredit
-	, updateCreditAuthorValue} from './actions';
+	toggleAuthorCredit,
+	updateCreditAuthorValue} from './actions';
 import {Button, Col, Form, FormLabel, InputGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 
 import {get as _get, map as _map, values as _values, camelCase} from 'lodash';
@@ -95,7 +95,7 @@ function AuthorCreditSection({
 
 	const editButton = (
 		// eslint-disable-next-line react/jsx-no-bind
-		<Button disabled={!isEditable} variant="success" onClick={function openEditor() { onEditAuthorCredit(authorCreditRows.length); }}>
+		<Button disabled={!authorCreditEnable} variant="success" onClick={function openEditor() { onEditAuthorCredit(authorCreditRows.length); }}>
 			<FontAwesomeIcon icon={faPencilAlt}/>
 			&nbsp;Edit
 		</Button>);

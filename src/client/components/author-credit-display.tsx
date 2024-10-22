@@ -16,13 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import PropTypes from 'prop-types';
+import {map as _map, sortBy} from 'lodash';
+import {AuthorCreditRow} from '../entity-editor/author-credit-editor/actions';
 import React from 'react';
-import {map as _map} from 'lodash';
 
 
-function AuthorCreditDisplay({names}) {
-	const nameElements = _map(names, (name) => {
+function AuthorCreditDisplay({names}:{names:AuthorCreditRow[]}) {
+	const nameElements = _map(sortBy(names, 'position'), (name) => {
 		const authorBBID = name.authorBBID ?? name.author?.id;
 		return (
 			<span key={`author-credit-${authorBBID}`}>
@@ -42,11 +42,5 @@ function AuthorCreditDisplay({names}) {
 }
 
 AuthorCreditDisplay.displayName = 'AuthorCreditDisplay';
-AuthorCreditDisplay.propTypes = {
-	names: PropTypes.oneOfType([
-		PropTypes.array,
-		PropTypes.object
-	]).isRequired
-};
 
 export default AuthorCreditDisplay;

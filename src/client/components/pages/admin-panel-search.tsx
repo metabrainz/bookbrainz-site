@@ -145,6 +145,7 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 				</Card.Header>
 				<Card.Body>
 					<div id="pageWithPagination">
+						<h3>User search</h3>
 						<AdminPanelSearchField
 							query={query}
 							onSearch={this.handleSearch}

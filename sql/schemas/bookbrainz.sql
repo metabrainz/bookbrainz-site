@@ -352,7 +352,8 @@ CREATE TABLE bookbrainz.edition_data (
 	weight SMALLINT CHECK (weight >= 0),
 	pages SMALLINT CHECK (pages >= 0),
 	format_id INT,
-	status_id INT
+	status_id INT,
+	credit_section BOOLEAN DEFAULT TRUE
 );
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (author_credit_id) REFERENCES bookbrainz.author_credit (id);
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (format_id) REFERENCES bookbrainz.edition_format (id);
@@ -375,8 +376,10 @@ CREATE TABLE bookbrainz.edition_group_data (
 	annotation_id INT,
 	disambiguation_id INT,
 	author_credit_id INT,
-	type_id INT
+	type_id INT,
+	credit_section BOOLEAN DEFAULT TRUE
 );
+
 ALTER TABLE bookbrainz.edition_group_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.edition_group_type (id);
 ALTER TABLE bookbrainz.edition_group_data ADD FOREIGN KEY (author_credit_id) REFERENCES bookbrainz.author_credit (id);
 ALTER TABLE bookbrainz.edition_group_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_group_data (id);
@@ -867,20 +870,41 @@ CREATE VIEW bookbrainz.author AS
 	WHERE e.type = 'Author';
 
 CREATE VIEW bookbrainz.edition AS
-	SELECT
-		e.bbid, edd.id AS data_id, edr.id AS revision_id, (edr.id = edh.master_revision_id) AS master, edd.annotation_id, edd.disambiguation_id, dis.comment disambiguation,
-		als.default_alias_id, al."name", al.sort_name, edd.edition_group_bbid, edd.author_credit_id, edd.width, edd.height,
-		edd.depth, edd.weight, edd.pages, edd.format_id, edd.status_id,
-		edd.alias_set_id, edd.identifier_set_id, edd.relationship_set_id,
-		edd.language_set_id, edd.release_event_set_id, edd.publisher_set_id, e.type
-	FROM bookbrainz.edition_revision edr
-	LEFT JOIN bookbrainz.entity e ON e.bbid = edr.bbid
-	LEFT JOIN bookbrainz.edition_header edh ON edh.bbid = e.bbid
-	LEFT JOIN bookbrainz.edition_data edd ON edr.data_id = edd.id
-	LEFT JOIN bookbrainz.alias_set als ON edd.alias_set_id = als.id
-	LEFT JOIN bookbrainz.alias al ON al.id = als.default_alias_id
-	LEFT JOIN bookbrainz.disambiguation dis ON dis.id = edd.disambiguation_id
-	WHERE e.type = 'Edition';
+SELECT e.bbid,
+    edd.id AS data_id,
+    edr.id AS revision_id,
+    edr.id = edh.master_revision_id AS master,
+    edd.annotation_id,
+    edd.disambiguation_id,
+    dis.comment AS disambiguation,
+    als.default_alias_id,
+    al.name,
+    al.sort_name,
+    edd.edition_group_bbid,
+    edd.author_credit_id,
+    edd.width,
+    edd.height,
+    edd.depth,
+    edd.weight,
+    edd.pages,
+    edd.format_id,
+    edd.status_id,
+    edd.alias_set_id,
+    edd.identifier_set_id,
+    edd.relationship_set_id,
+    edd.language_set_id,
+    edd.release_event_set_id,
+    edd.publisher_set_id,
+    edd.credit_section,
+    e.type
+   FROM bookbrainz.edition_revision edr
+     LEFT JOIN bookbrainz.entity e ON e.bbid = edr.bbid
+     LEFT JOIN bookbrainz.edition_header edh ON edh.bbid = e.bbid
+     LEFT JOIN bookbrainz.edition_data edd ON edr.data_id = edd.id
+     LEFT JOIN bookbrainz.alias_set als ON edd.alias_set_id = als.id
+     LEFT JOIN bookbrainz.alias al ON al.id = als.default_alias_id
+     LEFT JOIN bookbrainz.disambiguation dis ON dis.id = edd.disambiguation_id
+  WHERE e.type = 'Edition';
 
 CREATE VIEW bookbrainz.work AS
 	SELECT
@@ -914,19 +938,33 @@ CREATE VIEW bookbrainz.publisher AS
 	WHERE e.type = 'Publisher';
 
 CREATE VIEW bookbrainz.edition_group AS
-	SELECT
-		e.bbid, egd.id AS data_id, pcr.id AS revision_id, (pcr.id = egh.master_revision_id) AS master, egd.annotation_id, egd.disambiguation_id, dis.comment disambiguation,
-		als.default_alias_id, al."name", al.sort_name, egd.type_id, egtype.label as edition_group_type, egd.author_credit_id, egd.alias_set_id, egd.identifier_set_id,
-		egd.relationship_set_id, e.type
-	FROM bookbrainz.edition_group_revision pcr
-	LEFT JOIN bookbrainz.entity e ON e.bbid = pcr.bbid
-	LEFT JOIN bookbrainz.edition_group_header egh ON egh.bbid = e.bbid
-	LEFT JOIN bookbrainz.edition_group_data egd ON pcr.data_id = egd.id
-	LEFT JOIN bookbrainz.alias_set als ON egd.alias_set_id = als.id
-	LEFT JOIN bookbrainz.alias al ON al.id = als.default_alias_id
-	LEFT JOIN bookbrainz.disambiguation dis ON dis.id = egd.disambiguation_id
-	LEFT JOIN bookbrainz.edition_group_type egtype ON egtype.id = egd.type_id
-	WHERE e.type = 'EditionGroup';
+SELECT e.bbid,
+    egd.id AS data_id,
+    pcr.id AS revision_id,
+    pcr.id = egh.master_revision_id AS master,
+    egd.annotation_id,
+    egd.disambiguation_id,
+    dis.comment AS disambiguation,
+    als.default_alias_id,
+    al.name,
+    al.sort_name,
+    egd.type_id,
+    egtype.label AS edition_group_type,
+    egd.author_credit_id,
+    egd.alias_set_id,
+    egd.identifier_set_id,
+    egd.relationship_set_id,
+    egd.credit_section,
+    e.type
+   FROM bookbrainz.edition_group_revision pcr
+     LEFT JOIN bookbrainz.entity e ON e.bbid = pcr.bbid
+     LEFT JOIN bookbrainz.edition_group_header egh ON egh.bbid = e.bbid
+     LEFT JOIN bookbrainz.edition_group_data egd ON pcr.data_id = egd.id
+     LEFT JOIN bookbrainz.alias_set als ON egd.alias_set_id = als.id
+     LEFT JOIN bookbrainz.alias al ON al.id = als.default_alias_id
+     LEFT JOIN bookbrainz.disambiguation dis ON dis.id = egd.disambiguation_id
+     LEFT JOIN bookbrainz.edition_group_type egtype ON egtype.id = egd.type_id
+  WHERE e.type = 'EditionGroup';
 
 CREATE VIEW bookbrainz.series AS
 	SELECT
@@ -983,6 +1021,7 @@ CREATE VIEW bookbrainz.edition_import AS
 		edition_data.depth,
 		edition_data.weight,
 		edition_data.pages,
+		edition_data.credit_section,
 		edition_data.format_id,
 		edition_data.status_id,
 		edition_data.alias_set_id,
@@ -1028,6 +1067,7 @@ CREATE VIEW bookbrainz.edition_group_import AS
 		edition_group_data.disambiguation_id,
 		alias_set.default_alias_id,
 		edition_group_data.type_id,
+		edition_group_data.credit_section,
 		edition_group_data.alias_set_id,
 		edition_group_data.identifier_set_id,
 		import.type
