@@ -1,22 +1,19 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable quotes */
-import {FlatCompat} from '@eslint/eslintrc';
 import pluginImport from 'eslint-plugin-import';
 import pluginNode from 'eslint-plugin-node';
 import pluginReact from 'eslint-plugin-react';
 import pluginTypeScript from '@typescript-eslint/eslint-plugin';
 
 
-const compat = new FlatCompat({
-	baseDirectory: __dirname,
-	resolvePluginsRelativeTo: __dirname,
-});
-
 // Generally, don't change TRANSITION_* severities unless you're LordSputnik ;)
 const ERROR = 2;
-const TRANSITION_WARNING = 1; // warnings that should be reviewed soon
-const WARNING = 1; // warnings that should stay warnings
-const TRANSITION_IGNORE = 0; // ignores that should be reviewed soon
+// warnings that should be reviewed soon
+const TRANSITION_WARNING = 1;
+// warnings that should stay warnings
+const WARNING = 1;
+// ignores that should be reviewed soon
+const TRANSITION_IGNORE = 0;
 const IGNORE = 0;
 
 // These should not be removed at all.
