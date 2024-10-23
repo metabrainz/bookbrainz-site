@@ -1,5 +1,6 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable quotes */
+import js from "@eslint/js";
 import pluginImport from 'eslint-plugin-import';
 import pluginNode from 'eslint-plugin-node';
 import pluginReact from 'eslint-plugin-react';
@@ -385,6 +386,7 @@ const es6ImportRules = {
 };
 
 export default [
+	js.configs.recommended,
 	{
 		ignores: [
 			"lib/**",
