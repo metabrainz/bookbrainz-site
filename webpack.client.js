@@ -1,9 +1,10 @@
 const path = require('path');
 const webpack = require('webpack');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
+const ESLintWebpackPlugin = require('eslint-webpack-plugin');
 
 const production = process.env.NODE_ENV === 'production';
 
@@ -42,7 +43,7 @@ const clientConfig = {
 		'editor/editor': ['./controllers/editor/editor.js'],
 		'entity/entity': ['./controllers/entity/entity.js'],
 		'entity-editor': ['./entity-editor/controller.js'],
-		'unified-form':['./unified-form/controller.js'],
+		'unified-form': ['./unified-form/controller.js'],
 		'entity-merge': ['./entity-editor/entity-merge.tsx'],
 		style: './stylesheets/style.scss',
 		'relationship-type-editor': ['./controllers/type-editor/relationship-type.tsx'],
@@ -123,7 +124,12 @@ const clientConfig = {
 		new MiniCssExtractPlugin({
 			filename: 'stylesheets/[name].css'
 		}),
-		new CleanWebpackPlugin(cleanWebpackPluginOpts)
+		new CleanWebpackPlugin(cleanWebpackPluginOpts),
+		new ESLintWebpackPlugin({
+			configType: "flat",
+			extensions: ['js', 'ts', 'jsx', 'tsx'],
+			fix: true
+		})
 	],
 	resolve: {
 		extensions: ['.js', '.jsx', '.ts', '.tsx']
@@ -148,7 +154,7 @@ if (!production) {
 	/* Add webpack HMR middleware to all entry files except for styles */
 	for (const entry in clientConfig.entry) {
 		if (Object.prototype.hasOwnProperty.call(clientConfig.entry, entry)) {
-			if(entry !== "style"){
+			if (entry !== "style") {
 				clientConfig.entry[entry].push('webpack-hot-middleware/client');
 			}
 		}
