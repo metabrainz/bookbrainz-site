@@ -19,7 +19,7 @@
 
 import * as React from 'react';
 
-// eslint-disable-next-line import/named
+
 import {FontAwesomeIconProps as FAProps, FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst} from 'lodash';
 import {

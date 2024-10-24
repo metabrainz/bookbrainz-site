@@ -373,8 +373,11 @@ export default tseslint.config(
 	pluginImport.flatConfigs.recommended,
 	pluginImport.flatConfigs.typescript,
 	pluginReact.configs.flat.recommended,
+	// typescript-eslint default recommendations results in 6000+ errors
+	// we need to refine the rules and clean up the codebase before activating
 	// ...tseslint.configs.recommended,
 	// ...tseslint.configs.recommendedTypeChecked,
+	// Same for eslint-plugin-jsdoc
 	// pluginJSDoc.configs['flat/recommended-typescript'],
 	// pluginNode.configs["flat/recommended-module"],
 	{

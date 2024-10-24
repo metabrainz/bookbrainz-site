@@ -124,7 +124,7 @@ class RegistrationForm extends React.Component {
 									<Form.Control
 										defaultValue={this.props.name}
 										placeholder="Display Name"
-										/* eslint-disable-next-line react/jsx-no-bind */
+
 										ref={(ref) => this.displayName = ref}
 										type="text"
 										onChange={this.handleChange}

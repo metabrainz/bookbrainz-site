@@ -1,4 +1,4 @@
-/* eslint-disable default-case */
+
 /*
  * Copyright (C) 2016  Ben Ockmore
  *

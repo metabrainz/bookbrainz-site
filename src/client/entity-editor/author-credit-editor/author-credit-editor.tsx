@@ -78,7 +78,7 @@ const AuthorCreditEditor = ({
 					_keys(authorCredit).map(rowId => (
 						<AuthorCreditRow
 							index={rowId}
-							// eslint-disable-next-line react/no-array-index-key
+
 							key={rowId}
 							{...rest}
 						/>

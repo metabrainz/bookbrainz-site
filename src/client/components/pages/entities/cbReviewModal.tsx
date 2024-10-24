@@ -1,4 +1,4 @@
-/* eslint-disable react/no-unused-state */
+
 /*
  * Copyright (C) 2022       Ansh Goyal
  *
@@ -22,7 +22,7 @@ import * as bootstrap from 'react-bootstrap';
 import * as eng from '@cospired/i18n-iso-languages/langs/en.json';
 import * as iso from '@cospired/i18n-iso-languages';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-// eslint-disable-next-line import/named
+
 import {IconProp} from '@fortawesome/fontawesome-svg-core';
 import {Rating} from 'react-simple-star-rating';
 import React from 'react';

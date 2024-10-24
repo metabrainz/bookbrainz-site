@@ -31,7 +31,7 @@ import {
 } from '../validators/common';
 import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import IdentifierLink from '../../components/pages/entities/identifiers-links.js';
+import IdentifierLink from '../../components/pages/entities/identifiers-links';
 import Select from 'react-select';
 import ValueField from './value-field';
 import {collapseWhiteSpaces} from '../../../common/helpers/utils';

@@ -112,11 +112,11 @@ class ProfileForm extends React.Component {
 			this.props.editor?.titleUnlockId !== titleId;
 	};
 
-	handleValueChange =(event) => {
+	handleValueChange = (event) => {
 		this.setState({[event.target.name]: event.target.value});
 	};
 
-	handleGenderChange= (option) => {
+	handleGenderChange = (option) => {
 		this.setState({genderId: option.id});
 	};
 

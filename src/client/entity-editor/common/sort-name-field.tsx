@@ -179,7 +179,7 @@ function SortNameField({
 			</Form.Label>
 			<InputGroup>
 				<Form.Control
-					/* eslint-disable-next-line react/jsx-no-bind */
+
 					ref={(node) => { input = node; }}
 					type="text"
 					onChange={onChange}

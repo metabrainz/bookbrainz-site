@@ -33,7 +33,7 @@ import {get as _get, map as _map, values as _values, camelCase} from 'lodash';
 import {faInfoCircle, faPencilAlt, faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 
 import AuthorCreditEditor from './author-credit-editor';
-import type {Dispatch} from 'redux'; // eslint-disable-line import/named
+import type {Dispatch} from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
