@@ -1,13 +1,13 @@
-/* eslint-disable comma-dangle */
-/* eslint-disable quotes */
 import js from "@eslint/js";
 import pluginImport from 'eslint-plugin-import';
-import pluginNode from 'eslint-plugin-node';
+import pluginNode from 'eslint-plugin-n';
 import pluginReact from 'eslint-plugin-react';
-import pluginTypeScript from '@typescript-eslint/eslint-plugin';
+import tseslint from 'typescript-eslint';
+import pluginJSDoc from 'eslint-plugin-jsdoc';
+import globals from "globals";
 
 
-// Generally, don't change TRANSITION_* severities unless you're LordSputnik ;)
+// Generally, don't change TRANSITION_* severities unless you're a developer  on the project ;)
 const ERROR = 2;
 // warnings that should be reviewed soon
 const TRANSITION_WARNING = 1;
@@ -22,15 +22,7 @@ const possibleErrorsRules = {
 	'no-await-in-loop': ERROR,
 	'no-console': ERROR,
 	'no-template-curly-in-string': ERROR,
-	'valid-jsdoc': [
-		ERROR,
-		{
-			prefer: {
-				return: 'returns'
-			},
-			requireReturn: false
-		}
-	]
+	'jsdoc/require-jsdoc': TRANSITION_IGNORE,
 };
 
 // These should probably not be removed at all.
@@ -39,7 +31,7 @@ const bestPracticesRules = {
 	'array-callback-return': ERROR,
 	'block-scoped-var': ERROR,
 	'class-methods-use-this': TRANSITION_IGNORE,
-	complexity: [ERROR, {max: 50}],
+	complexity: [ERROR, { max: 50 }],
 	'consistent-return': ERROR,
 	curly: ERROR,
 	'default-case': ERROR,
@@ -101,7 +93,8 @@ const bestPracticesRules = {
 	'no-sequences': ERROR,
 	'no-throw-literal': ERROR,
 	'no-unmodified-loop-condition': ERROR,
-	'no-unused-expressions': TRANSITION_WARNING,
+	'no-unused-expressions': WARNING,
+	"no-unused-vars": TRANSITION_IGNORE,
 	'no-useless-call': ERROR,
 	'no-useless-concat': ERROR,
 	'no-useless-return': ERROR,
@@ -128,6 +121,7 @@ const variablesRules = {
 	"no-label-var": ERROR,
 	"no-undef-init": ERROR,
 	"no-undefined": ERROR,
+
 };
 
 const nodeAndCommonJSRules = {
@@ -136,7 +130,7 @@ const nodeAndCommonJSRules = {
 	"node/handle-callback-err": ERROR,
 	"node/no-missing-import": [
 		ERROR,
-		{tryExtensions: [".js", ".jsx", ".ts", ".tsx"]},
+		{ tryExtensions: [".js", ".jsx", ".ts", ".tsx"] },
 	],
 	"node/no-mixed-requires": ERROR,
 	"node/no-new-require": ERROR,
@@ -153,8 +147,8 @@ const stylisticIssuesRules = {
 	"array-bracket-newline": [ERROR, "consistent"],
 	"array-bracket-spacing": ERROR,
 	"block-spacing": ERROR,
-	"brace-style": [ERROR, "stroustrup", {allowSingleLine: true}],
-	camelcase: [ERROR, {properties: "always"}],
+	"brace-style": [ERROR, "stroustrup", { allowSingleLine: true }],
+	camelcase: [ERROR, { properties: "always" }],
 	"comma-dangle": TRANSITION_WARNING,
 	"comma-spacing": ERROR,
 	"comma-style": ERROR,
@@ -164,28 +158,28 @@ const stylisticIssuesRules = {
 	"func-call-spacing": ERROR,
 	"func-name-matching": ERROR,
 	"func-names": ERROR,
-	"func-style": [ERROR, "declaration"],
+	"func-style": [ERROR, "declaration", { "allowArrowFunctions": true }],
 	"function-paren-newline": [TRANSITION_WARNING, "consistent"],
-	"id-length": [ERROR, {exceptions: ["x", "i", "_", "$", "a", "b", "q"]}],
-	indent: [ERROR, "tab", {SwitchCase: 1, VariableDeclarator: 1}],
-	"jsx-quotes": [TRANSITION_WARNING, "prefer-double"],
+	"id-length": [ERROR, { exceptions: ["x", "i", "_", "$", "a", "b", "q"] }],
+	indent: [ERROR, "tab", { SwitchCase: 1, VariableDeclarator: 1 }],
+	"jsx-quotes": TRANSITION_WARNING,
 	"key-spacing": ERROR,
 	"keyword-spacing": ERROR,
 	"linebreak-style": ERROR,
 	"lines-around-comment": [
 		ERROR,
-		{allowBlockStart: true, beforeBlockComment: true},
+		{ allowBlockStart: true, beforeBlockComment: true },
 	],
 	"lines-between-class-members": ERROR,
 	"max-depth": [ERROR, 6],
 	"max-len": [
 		WARNING,
-		{code: 150, ignoreComments: true, ignoreUrls: true, tabWidth: 4},
+		{ code: 150, ignoreComments: true, ignoreUrls: true, tabWidth: 4 },
 	],
 	"max-nested-callbacks": [ERROR, 5],
 	"max-params": [TRANSITION_IGNORE, 4],
 	"max-statements": [TRANSITION_IGNORE, 15],
-	"new-cap": [ERROR, {capIsNew: false}],
+	"new-cap": [ERROR, { capIsNew: false }],
 	"new-parens": ERROR,
 	"no-array-constructor": ERROR,
 	"no-bitwise": ERROR,
@@ -206,13 +200,13 @@ const stylisticIssuesRules = {
 	"operator-linebreak": [ERROR, "after"],
 	"padded-blocks": [ERROR, "never"],
 	"quote-props": [ERROR, "as-needed"],
-	quotes: [TRANSITION_WARNING, "prefer-double", "avoid-escape"],
+	"quotes": TRANSITION_IGNORE,
 	"require-jsdoc": TRANSITION_IGNORE,
-	"semi-spacing": [ERROR, {after: true, before: false}],
+	"semi-spacing": [ERROR, { after: true, before: false }],
 	"sort-keys": ERROR,
 	"sort-vars": ERROR,
 	"space-before-blocks": ERROR,
-	"space-before-function-paren": [ERROR, {named: "never"}],
+	"space-before-function-paren": [ERROR, { named: "never" }],
 	"space-in-parens": ERROR,
 	"space-infix-ops": ERROR,
 	"space-unary-ops": ERROR,
@@ -224,7 +218,7 @@ const stylisticIssuesRules = {
 const ecmaScript6Rules = {
 	"arrow-body-style": ERROR,
 	"arrow-spacing": ERROR,
-	"generator-star-spacing": [ERROR, {after: true, before: false}],
+	"generator-star-spacing": [ERROR, { after: true, before: false }],
 	"no-confusing-arrow": ERROR,
 	"no-duplicate-imports": ERROR,
 	"no-useless-computed-key": ERROR,
@@ -234,7 +228,7 @@ const ecmaScript6Rules = {
 	"object-shorthand": ERROR,
 	"prefer-arrow-callback": ERROR,
 	"prefer-const": WARNING,
-	"prefer-destructuring": [ERROR, {array: false, object: true}],
+	"prefer-destructuring": [ERROR, { array: false, object: true }],
 	"prefer-numeric-literals": ERROR,
 	"prefer-template": ERROR,
 	"rest-spread-spacing": ERROR,
@@ -244,24 +238,13 @@ const ecmaScript6Rules = {
 };
 
 const typescriptRules = {
-	"@typescript-eslint/ban-types": TRANSITION_WARNING,
 	"@typescript-eslint/explicit-module-boundary-types": TRANSITION_IGNORE,
 	"@typescript-eslint/no-explicit-any": TRANSITION_IGNORE,
-	"@typescript-eslint/no-extra-parens": [
-		ERROR,
-		"all",
-		{
-			enforceForArrowConditionals: false,
-			ignoreJSX: "multi-line",
-			nestedBinaryExpressions: false,
-			returnAssign: false,
-		},
-	],
 	"@typescript-eslint/no-invalid-this": ERROR,
 	"@typescript-eslint/no-shadow": ERROR,
 	"@typescript-eslint/no-unused-vars": TRANSITION_WARNING,
 	"@typescript-eslint/no-use-before-define": ERROR,
-	"@typescript-eslint/semi": ERROR,
+	"@typescript-eslint/no-unused-expressions": WARNING,
 };
 
 
@@ -379,14 +362,20 @@ const es6ImportRules = {
 		},
 	],
 	"import/no-mutable-exports": ERROR,
-	"import/no-named-as-default": ERROR,
+	"import/no-named-as-default": WARNING,
 	"import/no-named-as-default-member": ERROR,
 	"import/no-named-default": ERROR,
 	"import/no-unassigned-import": ERROR,
 };
 
-export default [
+export default tseslint.config(
 	js.configs.recommended,
+	pluginImport.flatConfigs.recommended,
+	pluginImport.flatConfigs.typescript,
+	// ...tseslint.configs.recommended,
+	// ...tseslint.configs.recommendedTypeChecked,
+	// pluginJSDoc.configs['flat/recommended-typescript'],
+	// pluginNode.configs["flat/recommended-module"],
 	{
 		ignores: [
 			"lib/**",
@@ -395,34 +384,51 @@ export default [
 			"nyc/**",
 			"coverage/**",
 			"out/**",
-			"!.eslintrc.js",
+			"eslint.config.mjs",
 			"webpack.client.js",
+
 		],
 	},
 	{
-		files: ["**/*.ts", "**/*.tsx"],
 		languageOptions: {
-			parser: "@typescript-eslint/parser",
+			globals: {
+				...globals.browser,
+				...globals.node,
+			},
+			parser: tseslint.parser,
 			parserOptions: {
+				projectService: true,
+				ecmaFeatures: {
+					jsx: true
+				},
 				ecmaVersion: "latest",
 				sourceType: "module",
 			},
 		},
-		plugins: {
-			"@typescript-eslint": pluginTypeScript,
-		},
-		rules: typescriptRules,
 	},
 	{
-		files: ["**/*.js", "**/*.jsx"],
-		languageOptions: {
-			ecmaVersion: "latest",
-			sourceType: "module",
+		settings: {
+			"import/resolver": {
+				typescript: true,
+				node: {
+					extensions: [".js", ".jsx", ".ts", ".tsx"],
+				},
+			},
+			react: {
+				"version": "detect",
+				"defaultVersion": "16.13",
+			}
 		},
+	},
+	{
+		files: ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
+		...pluginReact.configs.flat.recommended,
 		plugins: {
-			import: pluginImport,
 			node: pluginNode,
 			react: pluginReact,
+			// Disabled for the moment, needs tweaking as it introduces a lot of new rules
+			// pluginJSDoc,
+			'@typescript-eslint': tseslint.plugin,
 		},
 		rules: {
 			...possibleErrorsRules,
@@ -434,13 +440,39 @@ export default [
 			...ecmaScript6Rules,
 			...reactRules,
 			...es6ImportRules,
-		},
-		settings: {
-			"import/resolver": {
-				node: {
-					extensions: [".js", ".jsx", ".ts", ".tsx"],
-				},
-			},
+			...typescriptRules,
 		},
 	},
-];
+	{
+		// disable type-aware linting on JS files
+		files: ['**/*.js', '**/*.jsx'],
+		...tseslint.configs.disableTypeChecked,
+	},
+	{
+		files: ["src/client/**/*.{js,jsx,ts,tsx}"],
+		rules: {
+			'no-return-assign': IGNORE
+		}
+	},
+	{
+		files: ["src/client/entity-editor/**/*.{js,jsx,ts,tsx}"],
+		rules: {
+			'func-style': IGNORE
+		}
+	},
+	{
+		files: ["test/**/*.js", "test/**/*.ts", "test/**/*.jsx", "test/**/*.tsx"],
+		languageOptions: {
+			globals: {
+				...globals.chai,
+				...globals.jest,
+				...globals.mocha,
+			}
+		},
+		rules: {
+			'no-unused-expressions': IGNORE,
+			'@typescript-eslint/no-unused-expressions': IGNORE,
+			'@typescript-eslint/no-unused-vars': IGNORE,
+		}
+	}
+);
