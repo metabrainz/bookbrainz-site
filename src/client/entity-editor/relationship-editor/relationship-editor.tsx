@@ -234,8 +234,6 @@ function getInitState(
 	};
 }
 
-// Disable valid-jsdoc because eslint is looking for a "value" parameter
-/* eslint-disable valid-jsdoc */
 /**
  * This is a simple React component. No Redux connection. Renders a modal
  * containing a form with two fields (entity and relationship) and two buttons
@@ -258,7 +256,6 @@ function getInitState(
  * @param {Function} props.onAdd - A function to be called when the add button
  *        is clicked.
  */
-/* eslint-enable valid-jsdoc */
 class RelationshipModal
 	extends React.Component<RelationshipModalProps, RelationshipModalState> {
 	static defaultProps = {

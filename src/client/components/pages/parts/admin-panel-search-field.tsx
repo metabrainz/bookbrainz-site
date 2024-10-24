@@ -72,7 +72,6 @@ class AdminPanelSearchField extends React.Component<AdminPanelSearchFieldProps, 
 	// reflects those changes
 	componentDidUpdate(prevProps: AdminPanelSearchFieldProps) {
 		if (prevProps.query !== this.props.query) {
-			// eslint-disable-next-line react/no-did-update-set-state
 			this.setState({query: this.props.query});
 		}
 	}

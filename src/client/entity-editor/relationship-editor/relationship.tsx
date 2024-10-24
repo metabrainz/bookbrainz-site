@@ -43,8 +43,8 @@ function getEntityObjectForDisplay(entity: _Entity, makeLink: boolean) {
 }
 
 type Relationship = {
-	link: boolean, // eslint-disable-line react/require-default-props
-	contextEntity: _Entity | null | undefined, // eslint-disable-line react/require-default-props
+	link: boolean,
+	contextEntity: _Entity | null | undefined,
 	sourceEntity: _Entity,
 	targetEntity: _Entity,
 	attributes?: Array<Attribute>,
@@ -54,7 +54,7 @@ type Relationship = {
 export {Relationship as RelationshipType};
 type RelationshipProps = Relationship & {Parent?:React.FunctionComponent<any>};
 
-function Relationship({Parent, ...props}: RelationshipProps) {
+function RelationshipComponent({Parent, ...props}: RelationshipProps) {
 	const {contextEntity, link, relationshipType, sourceEntity, attributes, showAttributes, targetEntity, ...rest} = props;
 	const {depth, description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
 
@@ -94,11 +94,11 @@ function Relationship({Parent, ...props}: RelationshipProps) {
 		</OverlayTrigger>
 	);
 }
-Relationship.defaultProps =
+RelationshipComponent.defaultProps =
 {
 	Parent: React.Fragment,
 	attributes: [],
 	showAttributes: false
 };
-Relationship.displayName = 'Relationship';
-export default Relationship;
+RelationshipComponent.displayName = 'Relationship';
+export default RelationshipComponent;

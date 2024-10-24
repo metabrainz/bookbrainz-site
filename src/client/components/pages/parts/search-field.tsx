@@ -81,11 +81,9 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 	// reflects those changes
 	componentDidUpdate(prevProps: SearchFieldProps) {
 		if (prevProps.query !== this.props.query) {
-			// eslint-disable-next-line react/no-did-update-set-state
 			this.setState({query: this.props.query});
 		}
 		if (prevProps.type !== this.props.type) {
-			// eslint-disable-next-line react/no-did-update-set-state
 			this.setState({type: this.props.type});
 		}
 	}

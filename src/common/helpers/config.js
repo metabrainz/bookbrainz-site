@@ -1,3 +1,4 @@
+/* eslint-disable node/no-sync */
 /*
  * Copyright (C) 2015-2017  Sean Burke
  *

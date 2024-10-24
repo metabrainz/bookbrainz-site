@@ -336,4 +336,8 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	};
 }
 
+AuthorSection.defaultProps = {
+	isUnifiedForm: false
+};
+
 export default connect(mapStateToProps, mapDispatchToProps)(AuthorSection);

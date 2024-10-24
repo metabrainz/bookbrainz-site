@@ -92,7 +92,6 @@ class SearchResults extends React.Component {
 	}
 
 	toggleRow(entity) {
-		// eslint-disable-next-line react/no-access-state-in-setstate
 		const oldSelected = this.state.selected;
 		let newSelected;
 		if (oldSelected.find(selected => getId(selected) === getId(entity))) {
