@@ -109,6 +109,7 @@
     "@faker-js/faker": "^8.1.0",
     "@types/express": "^4.17.15",
     "@types/lodash": "^4.14.202",
+    "@types/react": "^18.3.12",
     "@types/react-select": "^4.0.18",
     "babel-loader": "^8.2.2",
     "babel-plugin-lodash": "^3.3.4",

@@ -372,6 +372,7 @@ export default tseslint.config(
 	js.configs.recommended,
 	pluginImport.flatConfigs.recommended,
 	pluginImport.flatConfigs.typescript,
+	pluginReact.configs.flat.recommended,
 	// ...tseslint.configs.recommended,
 	// ...tseslint.configs.recommendedTypeChecked,
 	// pluginJSDoc.configs['flat/recommended-typescript'],
@@ -421,8 +422,7 @@ export default tseslint.config(
 		},
 	},
 	{
-		files: ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
-		...pluginReact.configs.flat.recommended,
+		files: ["**/*.{js,jsx,ts,tsx}"],
 		plugins: {
 			node: pluginNode,
 			react: pluginReact,
@@ -447,6 +447,14 @@ export default tseslint.config(
 		// disable type-aware linting on JS files
 		files: ['**/*.js', '**/*.jsx'],
 		...tseslint.configs.disableTypeChecked,
+	},
+	{
+		files: ['**/*.ts', '**/*.tsx'],
+		rules: {
+			// Handled by typescript
+			// see https://eslint.org/docs/latest/rules/no-undef#handled_by_typescript
+			"no-undef": IGNORE,
+		}
 	},
 	{
 		files: ["src/client/**/*.{js,jsx,ts,tsx}"],
