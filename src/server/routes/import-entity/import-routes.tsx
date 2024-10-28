@@ -16,12 +16,13 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+// TODO: delete unused functions and move into `../entity`
 
 import * as achievement from '../../helpers/achievement';
 import * as error from '../../../common/helpers/error';
 import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../../common/helpers/search';
-import type {Request, Response} from 'express';
+import type {NextFunction, Request, Response} from 'express';
 import {escapeProps, generateProps} from '../../helpers/props';
 import {map, uniqBy} from 'lodash';
 import Layout from '../../../client/containers/layout';
@@ -40,6 +41,7 @@ import target from '../../templates/target';
 import {transformForm} from './transform-form';
 
 
+// TODO: will be unused
 export function displayImport(req: Request, res: Response) {
 	const {importEntity} = res.locals;
 
@@ -118,14 +120,23 @@ export function handleDiscardImportEntity(req, res: Response) {
 	});
 }
 
-export async function approveImportEntity(req, res: Response) {
-	const {orm} = res.app.locals;
+export async function approveImportEntity(req, res: Response, next: NextFunction) {
+	const orm: ORM = res.app.locals.orm;
 	const editorId = req.session.passport.user.id;
 	const {entity} = res.locals;
-	const savedEntityModel = await orm.bookshelf.transaction((transacting) =>
-		orm.func.imports.approveImport(
-			{editorId, importEntity: entity, orm, transacting}
-		));
+
+	try {
+		await orm.func.imports.approveImport({editorId, importEntity: entity, orm});
+	} catch (error) {
+		return next(error);
+	}
+
+	const Model = orm.func.entity.getEntityModelByType(orm, entity.type);
+	const savedEntityModel = await new Model({bbid: entity.bbid})
+		.fetch({
+			require: true,
+			withRelated: ['defaultAlias'],
+		});
 	const entityJSON = savedEntityModel.toJSON();
 	const entityUrl = getEntityUrl(entityJSON);
 
