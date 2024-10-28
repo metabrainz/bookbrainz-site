@@ -89,6 +89,7 @@ else {
 	app.use(serveStatic(path.join(rootDir, 'static/js')));
 }
 app.use(express.static(path.join(rootDir, 'static')));
+app.use('/.well-known', express.static(path.join(rootDir, '.well-known')));
 
 app.use(session(process.env.NODE_ENV));
 
