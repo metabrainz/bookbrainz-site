@@ -51,6 +51,7 @@ COPY --chown=bookbrainz .babelrc .eslintrc.js .eslintignore webpack.client.js pa
 RUN yarn install
 
 COPY --chown=bookbrainz static/ static/
+COPY --chown=bookbrainz .well-known/ .well-known/
 COPY --chown=bookbrainz config/ config/
 COPY --chown=bookbrainz sql/ sql/
 COPY --chown=bookbrainz src/ src/
