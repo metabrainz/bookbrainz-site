@@ -28,6 +28,7 @@ import type {Response as $Response, NextFunction, Request} from 'express';
 import {ENTITY_TYPES, getRelationshipTargetBBIDByTypeId} from '../../client/helpers/entity';
 import {getWikipediaExtract, selectWikipediaPage} from './wikimedia';
 
+import {ImportMetadataWithSourceT} from 'bookbrainz-data/lib/types/imports';
 import {type ORM} from 'bookbrainz-data';
 import _ from 'lodash';
 import {getAcceptedLanguageCodes} from './i18n';
@@ -283,7 +284,11 @@ export async function redirectedBbid(req: $Request, res: $Response, next: NextFu
 	return next();
 }
 
-async function loadImportMetadata(orm: ORM, importId: string, userId?: number) {
+export type ImportMetadataWithVote = ImportMetadataWithSourceT & {
+	userHasVoted: boolean;
+};
+
+async function loadImportMetadata(orm: ORM, importId: string, userId?: number): Promise<ImportMetadataWithVote> {
 	const [votes, metadata] = await orm.bookshelf.transaction(
 		(transacting) =>
 			Promise.all([

@@ -25,6 +25,7 @@ import * as search from '../../../common/helpers/search';
 import type {NextFunction, Request, Response} from 'express';
 import {escapeProps, generateProps} from '../../helpers/props';
 import {map, uniqBy} from 'lodash';
+import type {ImportMetadataWithVote} from '../../helpers/middleware';
 import Layout from '../../../client/containers/layout';
 import {type ORM} from 'bookbrainz-data';
 import React from 'react';
@@ -33,7 +34,6 @@ import {entityEditorMarkup} from '../../helpers/entityRouteUtils';
 import {entityToFormState} from './transform-import';
 import {generateImportEntityProps} from '../../helpers/importEntityRouteUtils';
 import {getEntityUrl} from '../../../client/helpers/entity';
-import {getImportUrl} from '../../../client/helpers/import-entity';
 import {getValidator} from '../../../client/entity-editor/helpers';
 import importEntityPages from
 	'../../../client/components/pages/import-entities';
@@ -77,12 +77,13 @@ export function displayImport(req: Request, res: Response) {
 	}
 }
 
-export function displayDiscardImportEntity(req: Request, res: Response) {
-	const {importEntity} = res.locals;
-	const importUrl = getImportUrl(importEntity);
+export function displayDiscardImportEntity(req: Request, res: Response, next: NextFunction) {
+	const {entity} = res.locals;
+	const importMetadata: ImportMetadataWithVote = entity?.importMetadata;
 
-	if (importEntity.hasVoted) {
-		res.redirect(importUrl);
+	if (importMetadata.userHasVoted) {
+		// User has already voted to discard the entity, just redirect them back without voting
+		res.redirect(getEntityUrl(entity));
 	}
 
 	const props = generateProps(req, res);
@@ -90,7 +91,7 @@ export function displayDiscardImportEntity(req: Request, res: Response) {
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
 			<DiscardImportEntityPage
-				importEntity={props.importEntity}
+				importEntity={props.entity}
 			/>
 		</Layout>
 	);
@@ -105,11 +106,11 @@ export function displayDiscardImportEntity(req: Request, res: Response) {
 export function handleDiscardImportEntity(req, res: Response) {
 	const {orm}: {orm: ORM} = req.app.locals;
 	const editorId = req.session.passport.user.id;
-	const {importEntity} = res.locals;
+	const {entity} = res.locals;
 	orm.bookshelf.transaction(async (transacting) => {
 		try {
 			await orm.func.imports.castDiscardVote(
-				transacting, importEntity.bbid, editorId
+				transacting, entity.bbid, editorId
 			);
 			// Todo: Add code to remove importEntity from the search index
 			res.status(200).send();

@@ -368,4 +368,15 @@ router.get(
 	importRoutes.approveImportEntity
 );
 
+router.get('/:bbid/discard', auth.isAuthenticated, (req, res, next) => {
+	_setAuthorTitle(res);
+	importRoutes.displayDiscardImportEntity(req, res, next);
+});
+
+router.post(
+	'/:bbid/discard/handler',
+	auth.isAuthenticatedForHandler,
+	importRoutes.handleDiscardImportEntity
+);
+
 export default router;
