@@ -81,6 +81,9 @@ export function displayDiscardImportEntity(req: Request, res: Response, next: Ne
 	const {entity} = res.locals;
 	const importMetadata: ImportMetadataWithVote = entity?.importMetadata;
 
+	if (!importMetadata) {
+		return next(new error.BadRequestError('Accepted entities can not be discarded'));
+	}
 	if (importMetadata.userHasVoted) {
 		// User has already voted to discard the entity, just redirect them back without voting
 		res.redirect(getEntityUrl(entity));
@@ -125,6 +128,10 @@ export async function approveImportEntity(req, res: Response, next: NextFunction
 	const orm: ORM = res.app.locals.orm;
 	const editorId = req.session.passport.user.id;
 	const {entity} = res.locals;
+
+	if (!entity.importMetadata) {
+		return next(new error.BadRequestError('Only pending imports can be approved'));
+	}
 
 	try {
 		await orm.func.imports.approveImport({editorId, importEntity: entity, orm});
