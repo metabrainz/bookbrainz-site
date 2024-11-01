@@ -86,7 +86,7 @@ export function displayDiscardImportEntity(req: Request, res: Response, next: Ne
 	}
 	if (importMetadata.userHasVoted) {
 		// User has already voted to discard the entity, just redirect them back without voting
-		res.redirect(getEntityUrl(entity));
+		return res.redirect(getEntityUrl(entity));
 	}
 
 	const props = generateProps(req, res);
@@ -99,7 +99,7 @@ export function displayDiscardImportEntity(req: Request, res: Response, next: Ne
 		</Layout>
 	);
 
-	res.send(target({
+	return res.send(target({
 		markup,
 		props: escapeProps(props),
 		script: '/js/import-entity/discard-import-entity.js'
@@ -125,6 +125,7 @@ export function handleDiscardImportEntity(req, res: Response) {
 }
 
 export async function approveImportEntity(req, res: Response, next: NextFunction) {
+	// eslint-disable-next-line prefer-destructuring -- clashes with TS
 	const orm: ORM = res.app.locals.orm;
 	const editorId = req.session.passport.user.id;
 	const {entity} = res.locals;
@@ -135,8 +136,9 @@ export async function approveImportEntity(req, res: Response, next: NextFunction
 
 	try {
 		await orm.func.imports.approveImport({editorId, importEntity: entity, orm});
-	} catch (error) {
-		return next(error);
+	}
+	catch (err) {
+		return next(err);
 	}
 
 	const Model = orm.func.entity.getEntityModelByType(orm, entity.type);
@@ -161,7 +163,7 @@ export async function approveImportEntity(req, res: Response, next: NextFunction
 	search.indexEntity(savedEntityModel);
 	// Todo: Add functionality to remove imports from ES index upon deletion
 
-	res.redirect(entityUrl);
+	return res.redirect(entityUrl);
 }
 
 export function editImportEntity(req: Request, res: Response) {
