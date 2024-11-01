@@ -43,6 +43,7 @@ import EditionPage from '../../../client/components/pages/entities/edition';
 import EntityRevisions from '../../../client/components/pages/entity-revisions';
 import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import Layout from '../../../client/containers/layout';
+import type {ORM} from 'bookbrainz-data';
 import PreviewPage from '../../../client/components/forms/preview';
 import PublisherPage from '../../../client/components/pages/entities/publisher';
 import ReactDOMServer from 'react-dom/server';
@@ -1064,7 +1065,7 @@ function sanitizeBody(body:any) {
 }
 
 export async function processSingleEntity(formBody, JSONEntity, reqSession,
-	entityType, orm:any, editorJSON, derivedProps, isMergeOperation, transacting):Promise<any> {
+	entityType, orm: ORM, editorJSON, derivedProps, isMergeOperation, transacting): Promise<any> {
 	const {Entity, Revision} = orm;
 	// Sanitize nameSection inputs
 	const body = sanitizeBody(formBody);
@@ -1074,6 +1075,7 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 		bbid: string,
 		disambiguation: {id: number} | null | undefined,
 		identifierSet: {id: number} | null | undefined,
+		revision: {id: number} | null | undefined,
 		type: EntityTypeString
 	} | null | undefined = JSONEntity;
 
@@ -1095,6 +1097,13 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 		currentEntity = newEntity.toJSON();
 	}
 
+	// Approve entity if it is still a pending import
+	const isImport = !currentEntity.revision;
+	if (isImport) {
+		await orm.func.imports.approveImport({editorId: editorJSON.id, importEntity: currentEntity, orm});
+		// No need to reload `currentEntity` here, we will not use its `revision` property
+	}
+
 	// Then, edit the entity
 	const newRevision = await new Revision({
 		authorId: editorJSON.id,
@@ -1112,6 +1121,14 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 
 	// If there are no differences, bail
 	if (_.isEmpty(changedProps) && _.isEmpty(relationshipSets) && !isMergeOperation) {
+		if (isImport) {
+			// Do not error as the pending import has been approved by this action.
+			// Load the approved entity, it still has to be reindexed.
+			const Model = orm.func.entity.getEntityModelByType(orm, currentEntity.type);
+			const mainEntity = await new Model({bbid: currentEntity.bbid})
+				.fetch({withRelated: ['defaultAlias', 'aliasSet.aliases']});
+			return mainEntity;
+		}
 		throw new error.FormSubmissionError('No Updated Field');
 	}
 
