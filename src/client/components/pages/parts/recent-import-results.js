@@ -16,16 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
-import * as importHelper from '../../../helpers/import-entity';
-import * as utilsHelper from '../../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {Table} from 'react-bootstrap';
+import {formatDate} from '../../../helpers/utils';
+import {getEntityUrl} from '../../../helpers/entity';
 
-
-const {formatDate} = utilsHelper;
-const {getImportUrl} = importHelper;
-const {Table} = bootstrap;
 
 /**
  * Renders the document and displays the recentImports table.
@@ -44,7 +40,7 @@ function RecentImportsTable(props) {
 			>
 				<thead>
 					<tr>
-						<th >#</th>
+						<th>#</th>
 						<th>Name</th>
 						<th>Type</th>
 						<th>Date Added</th>
@@ -59,7 +55,7 @@ function RecentImportsTable(props) {
 								<tr key={bbid}>
 									<td>{i + 1 + offset}</td>
 									<td>
-										<a	href={getImportUrl(importEntity)}>
+										<a	href={getEntityUrl(importEntity)}>
 											{importEntity.defaultAlias.name}
 										</a>
 									</td>
