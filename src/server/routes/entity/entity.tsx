@@ -1077,125 +1077,120 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 		type: EntityTypeString
 	} | null | undefined = JSONEntity;
 
-	try {
-		// Determine if a new entity is being created
-		const isNew = !currentEntity;
-		if (isNew) {
-			const newEntity = await new Entity({type: entityType})
-				.save(null, {transacting});
-			const newEntityBBID = newEntity.get('bbid');
-			body.relationships = _.map(
-				body.relationships,
-				({sourceBbid, targetBbid, ...others}) => ({
-					sourceBbid: sourceBbid || newEntityBBID,
-					targetBbid: targetBbid || newEntityBBID,
-					...others
-				})
+	// Determine if a new entity is being created
+	const isNew = !currentEntity;
+	if (isNew) {
+		const newEntity = await new Entity({type: entityType})
+			.save(null, {transacting});
+		const newEntityBBID = newEntity.get('bbid');
+		body.relationships = _.map(
+			body.relationships,
+			({sourceBbid, targetBbid, ...others}) => ({
+				sourceBbid: sourceBbid || newEntityBBID,
+				targetBbid: targetBbid || newEntityBBID,
+				...others
+			})
+		);
+
+		currentEntity = newEntity.toJSON();
+	}
+
+	// Then, edit the entity
+	const newRevision = await new Revision({
+		authorId: editorJSON.id,
+		isMerge: isMergeOperation
+	}).save(null, {transacting});
+
+	const relationshipSets = await getNextRelationshipSets(
+		orm, transacting, currentEntity, body
+	);
+
+	const changedProps = await getChangedProps(
+		orm, transacting, isNew, currentEntity, body, entityType,
+		newRevision, derivedProps
+	);
+
+	// If there are no differences, bail
+	if (_.isEmpty(changedProps) && _.isEmpty(relationshipSets) && !isMergeOperation) {
+		throw new error.FormSubmissionError('No Updated Field');
+	}
+
+	// Fetch or create main entity
+	const mainEntity = await fetchOrCreateMainEntity(
+		orm, transacting, isNew, currentEntity.bbid, entityType
+	);
+
+	// Fetch all entities that definitely exist
+	const otherEntities = await fetchEntitiesForRelationships(
+		orm, transacting, currentEntity, relationshipSets
+	);
+	otherEntities.forEach(entity => { entity.shouldInsert = false; });
+	mainEntity.shouldInsert = isNew;
+
+	_.forOwn(changedProps, (value, key) => mainEntity.set(key, value));
+
+	// Don't try to modify 'deleted' entities (those with no dataId)
+	let allEntities = [...otherEntities, mainEntity]
+		.filter(entity => entity.get('dataId') !== null);
+
+	if (isMergeOperation) {
+		allEntities = await processMergeOperation(orm, transacting, reqSession,
+			mainEntity, allEntities, relationshipSets);
+	}
+
+	_.forEach(allEntities, (entityModel) => {
+		const bbid: string = entityModel.get('bbid');
+		if (_.has(relationshipSets, bbid)) {
+			entityModel.set(
+				'relationshipSetId',
+				// Set to relationshipSet id or null if empty set
+				relationshipSets[bbid] && relationshipSets[bbid].get('id')
 			);
-
-			currentEntity = newEntity.toJSON();
 		}
+	});
 
-		// Then, edit the entity
-		const newRevision = await new Revision({
-			authorId: editorJSON.id,
-			isMerge: isMergeOperation
-		}).save(null, {transacting});
+	const savedMainEntity = await saveEntitiesAndFinishRevision(
+		orm, transacting, isNew, newRevision, mainEntity, allEntities,
+		editorJSON.id, body.note
+	);
 
-		const relationshipSets = await getNextRelationshipSets(
-			orm, transacting, currentEntity, body
-		);
+	/* We need to load the aliases for search reindexing and refresh it (otherwise 'type' is missing for new entities)*/
+	await savedMainEntity.refresh({transacting, withRelated: ['aliasSet.aliases', 'defaultAlias.language',
+		'relationshipSet.relationships.source', 'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation']});
 
-		const changedProps = await getChangedProps(
-			orm, transacting, isNew, currentEntity, body, entityType,
-			newRevision, derivedProps
-		);
+	if (isNew && savedMainEntity.get('type') === 'Edition') {
+		/* fetch and reindex EditionGroups that may have been created automatically by the ORM and not indexed */
+		await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
+	}
 
-		// If there are no differences, bail
-		if (_.isEmpty(changedProps) && _.isEmpty(relationshipSets) && !isMergeOperation) {
-			throw new error.FormSubmissionError('No Updated Field');
-		}
-
-		// Fetch or create main entity
-		const mainEntity = await fetchOrCreateMainEntity(
-			orm, transacting, isNew, currentEntity.bbid, entityType
-		);
-
-		// Fetch all entities that definitely exist
-		const otherEntities = await fetchEntitiesForRelationships(
-			orm, transacting, currentEntity, relationshipSets
-		);
-		otherEntities.forEach(entity => { entity.shouldInsert = false; });
-		mainEntity.shouldInsert = isNew;
-
-		_.forOwn(changedProps, (value, key) => mainEntity.set(key, value));
-
-		// Don't try to modify 'deleted' entities (those with no dataId)
-		let allEntities = [...otherEntities, mainEntity]
-			.filter(entity => entity.get('dataId') !== null);
-
-		if (isMergeOperation) {
-			allEntities = await processMergeOperation(orm, transacting, reqSession,
-				mainEntity, allEntities, relationshipSets);
-		}
-
-		_.forEach(allEntities, (entityModel) => {
-			const bbid: string = entityModel.get('bbid');
-			if (_.has(relationshipSets, bbid)) {
-				entityModel.set(
-					'relationshipSetId',
-					// Set to relationshipSet id or null if empty set
-					relationshipSets[bbid] && relationshipSets[bbid].get('id')
+	const entityRelationships = savedMainEntity.related('relationshipSet')?.related('relationships');
+	if (savedMainEntity.get('type') === 'Work' && entityRelationships?.length) {
+		const authorsOfWork = await Promise.all(entityRelationships.toJSON().filter(
+			// "Author wrote Work" relationship
+			(relation) => relation.typeId === 8
+		).map(async (relationshipJSON) => {
+			try {
+				const {source} = relationshipJSON;
+				const sourceEntity = await commonUtils.getEntity(
+					orm, source.bbid, source.type, {require: false, transacting}
 				);
+				return sourceEntity.name;
 			}
-		});
-
-		const savedMainEntity = await saveEntitiesAndFinishRevision(
-			orm, transacting, isNew, newRevision, mainEntity, allEntities,
-			editorJSON.id, body.note
-		);
-
-		/* We need to load the aliases for search reindexing and refresh it (otherwise 'type' is missing for new entities)*/
-		await savedMainEntity.refresh({transacting, withRelated: ['aliasSet.aliases', 'defaultAlias.language',
-			'relationshipSet.relationships.source', 'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation']});
-
-		if (isNew && savedMainEntity.get('type') === 'Edition') {
-			/* fetch and reindex EditionGroups that may have been created automatically by the ORM and not indexed */
-			await indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
-		}
-
-		const entityRelationships = savedMainEntity.related('relationshipSet')?.related('relationships');
-		if (savedMainEntity.get('type') === 'Work' && entityRelationships?.length) {
-			const authorsOfWork = await Promise.all(entityRelationships.toJSON().filter(
-				// "Author wrote Work" relationship
-				(relation) => relation.typeId === 8
-			).map(async (relationshipJSON) => {
-				try {
-					const {source} = relationshipJSON;
-					const sourceEntity = await commonUtils.getEntity(
-						orm, source.bbid, source.type, {require: false, transacting}
-					);
-					return sourceEntity.name;
-				}
-				catch (err) {
-					log.error(err);
-				}
-				return null;
-			}));
-			// Attach a work's authors for search indexing
-			savedMainEntity.set('authors', authorsOfWork.filter(Boolean));
-		}
-		return savedMainEntity;
+			catch (err) {
+				log.error(err);
+			}
+			return null;
+		}));
+		// Attach a work's authors for search indexing
+		savedMainEntity.set('authors', authorsOfWork.filter(Boolean));
 	}
-	catch (err) {
-		log.error(err);
-		throw err;
-	}
+	return savedMainEntity;
 }
 
 export async function handleCreateOrEditEntity(
 	req: PassportRequest,
 	res: $Response,
+	next: NextFunction,
 	entityType: EntityTypeString,
 	derivedProps: Record<string, unknown>,
 	isMergeOperation: boolean
@@ -1203,15 +1198,21 @@ export async function handleCreateOrEditEntity(
 	const {orm}: {orm?: any} = req.app.locals;
 	const editorJSON = req.user;
 	const {bookshelf} = orm;
-	const savedEntityModel = await bookshelf.transaction((transacting) =>
-		processSingleEntity(req.body, res.locals.entity, req.session, entityType, orm, editorJSON, derivedProps, isMergeOperation, transacting));
-	const entityJSON = savedEntityModel.toJSON();
 
-	await processAchievement(orm, editorJSON.id, entityJSON);
+	try {
+		const savedEntityModel = await bookshelf.transaction((transacting) =>
+			processSingleEntity(req.body, res.locals.entity, req.session, entityType, orm, editorJSON, derivedProps, isMergeOperation, transacting));
+		const entityJSON = savedEntityModel.toJSON();
 
-	await search.indexEntity(savedEntityModel);
+		await processAchievement(orm, editorJSON.id, entityJSON);
 
-	return res.status(200).send(entityJSON);
+		await search.indexEntity(savedEntityModel);
+
+		return res.status(200).send(entityJSON);
+	}
+	catch (err) {
+		return next(err);
+	}
 }
 
 type AliasEditorT = {
