@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016  Ben Ockmore
  *               2016  Sean Burke
- *				 2021  Akash Gupta
+ *               2021  Akash Gupta
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -69,12 +69,11 @@ const entityComponents = {
 };
 
 export function displayEntity(req: PassportRequest, res: $Response) {
-	const {orm}: {orm?: any} = req.app.locals;
+	const {orm}: {orm?: ORM} = req.app.locals;
 	const {AchievementUnlock, EditorEntityVisits} = orm;
 	const {locals: resLocals}: {locals: any} = res;
 	const {entity}: {entity: any} = resLocals;
 	// Get unique identifier types for display
-	// $FlowFixMe
 	let identifierTypes = [];
 	if (entity.identifierSet) {
 		identifierTypes = _.uniqBy(
@@ -121,7 +120,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 					)
 						.fetch({
 							require: true,
-							withRelated: 'achievement'
+							withRelated: ['achievement']
 						})
 						.then((unlock) => unlock.toJSON())
 						.then((unlock) => {
@@ -250,7 +249,7 @@ export async function updateDisplayedRevisions(
 	}
 }
 
-function _createNote(orm, content, editorID, revision, transacting) {
+function _createNote(orm: ORM, content: string, editorID: number, revision, transacting: Transaction) {
 	const {Note} = orm;
 	if (content) {
 		const revisionId = revision.get('id');
@@ -287,7 +286,7 @@ export async function getEntityByBBID(orm: any, transacting: Transaction, bbid: 
 	return model.forge({bbid: redirectBbid}).fetch({transacting});
 }
 
-async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
+async function setParentRevisions(transacting: Transaction, newRevision, parentRevisionIDs) {
 	if (_.isEmpty(parentRevisionIDs)) {
 		return new Promise(resolve => resolve(null));
 	}
@@ -302,7 +301,7 @@ async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
 
 
 export async function saveEntitiesAndFinishRevision(
-	orm, transacting, isNew: boolean, newRevision: any, mainEntity: any,
+	orm: ORM, transacting: Transaction, isNew: boolean, newRevision: any, mainEntity: any,
 	updatedEntities: any[], editorID: number, note: string
 ) {
 	const parentRevisionIDs = _.compact(_.uniq(updatedEntities.map(
@@ -342,7 +341,7 @@ export async function saveEntitiesAndFinishRevision(
 	return savedEntities.find(entityModel => entityModel.get('bbid') === mainEntity.get('bbid')) || mainEntity;
 }
 
-export async function deleteRelationships(orm: any, transacting: Transaction, mainEntity: any) {
+export async function deleteRelationships(orm: ORM, transacting: Transaction, mainEntity: any) {
 	const mainBBID = mainEntity.bbid;
 	const {relationshipSet} = mainEntity;
 	const otherBBIDs = [];
@@ -407,7 +406,7 @@ export async function deleteRelationships(orm: any, transacting: Transaction, ma
 }
 
 export function fetchOrCreateMainEntity(
-	orm, transacting, isNew, bbid, entityType
+	orm: ORM, transacting: Transaction, isNew: boolean, bbid: string, entityType: EntityTypeString
 ) {
 	const model = commonUtils.getEntityModelByType(orm, entityType);
 
@@ -421,7 +420,7 @@ export function fetchOrCreateMainEntity(
 }
 
 export function handleDelete(
-	orm: any, req: PassportRequest, res: $Response, HeaderModel: any,
+	orm: ORM, req: PassportRequest, res: $Response, HeaderModel: any,
 	RevisionModel: any
 ) {
 	const {entity}: {entity?: any} = res.locals;
@@ -485,7 +484,9 @@ export function handleDelete(
 	return handler.sendPromiseResult(res, entityDeletePromise, search.deleteEntity);
 }
 
-export async function processMergeOperation(orm, transacting, session, mainEntity, allEntities, relationshipSets) {
+export async function processMergeOperation(
+	orm, transacting: Transaction, session, mainEntity, allEntities, relationshipSets
+) {
 	const {Edition, bookshelf} = orm;
 	const {mergingEntities} = session.mergeQueue;
 	if (!mergingEntities) {
@@ -828,7 +829,7 @@ async function processWorkSets(
 }
 
 async function processEntitySets(
-	orm: any,
+	orm: ORM,
 	currentEntity: Record<string, unknown> | null | undefined,
 	entityType: EntityTypeString,
 	body: any,
@@ -853,7 +854,7 @@ async function processEntitySets(
 }
 
 
-async function getNextAliasSet(orm, transacting, currentEntity, body) {
+async function getNextAliasSet(orm: ORM, transacting: Transaction, currentEntity, body) {
 	const {AliasSet} = orm;
 
 	const id = _.get(currentEntity, ['aliasSet', 'id']);
@@ -870,7 +871,7 @@ async function getNextAliasSet(orm, transacting, currentEntity, body) {
 	);
 }
 
-async function getNextIdentifierSet(orm, transacting, currentEntity, body) {
+async function getNextIdentifierSet(orm: ORM, transacting: Transaction, currentEntity, body) {
 	const {IdentifierSet} = orm;
 
 	const id = _.get(currentEntity, ['identifierSet', 'id']);
@@ -887,7 +888,8 @@ async function getNextIdentifierSet(orm, transacting, currentEntity, body) {
 		orm, transacting, oldIdentifierSet, body.identifiers || []
 	);
 }
-export async function getNextRelationshipAttributeSets(orm, transacting, body) {
+
+export async function getNextRelationshipAttributeSets(orm: ORM, transacting: Transaction, body) {
 	const {RelationshipAttributeSet} = orm;
 	const relationships = await Promise.all(body.relationships.map(async (relationship) => {
 		if (!relationship.isAdded) {
@@ -914,7 +916,7 @@ export async function getNextRelationshipAttributeSets(orm, transacting, body) {
 }
 
 export async function getNextRelationshipSets(
-	orm, transacting, currentEntity, body
+	orm: ORM, transacting: Transaction, currentEntity, body
 ) {
 	const {RelationshipSet} = orm;
 	const relationships = await getNextRelationshipAttributeSets(orm, transacting, body);
@@ -949,7 +951,9 @@ async function getNextAnnotation(
 	) : Promise.resolve(null);
 }
 
-async function getNextDisambiguation(orm, transacting, currentEntity, body) {
+async function getNextDisambiguation(
+	orm: ORM, transacting: Transaction, currentEntity, body
+) {
 	const {Disambiguation} = orm;
 
 	const id = _.get(currentEntity, ['disambiguation', 'id']);
@@ -964,7 +968,7 @@ async function getNextDisambiguation(orm, transacting, currentEntity, body) {
 }
 
 export async function getChangedProps(
-	orm, transacting, isNew, currentEntity, body, entityType,
+	orm: ORM, transacting: Transaction, isNew: boolean, currentEntity, body, entityType: EntityTypeString,
 	derivedProps
 ) {
 	const aliasSetPromise =
@@ -1019,7 +1023,7 @@ export async function getChangedProps(
 
 
 export function fetchEntitiesForRelationships(
-	orm, transacting, currentEntity, relationshipSets
+	orm: ORM, transacting: Transaction, currentEntity, relationshipSets
 ) {
 	const bbidsToFetch = _.without(
 		_.keys(relationshipSets), _.get(currentEntity, 'bbid')
@@ -1038,7 +1042,7 @@ export function fetchEntitiesForRelationships(
  * @description Edition Groups will be created automatically by the ORM if no EditionGroup BBID is set on a new Edition.
  * This method fetches and indexes (search) those potential new EditionGroups that may have been created automatically.
  */
-export async function indexAutoCreatedEditionGroup(orm, newEdition, transacting) {
+export async function indexAutoCreatedEditionGroup(orm: ORM, newEdition, transacting: Transaction) {
 	const {EditionGroup} = orm;
 	const bbid = newEdition.get('editionGroupBbid');
 	try {
@@ -1046,7 +1050,7 @@ export async function indexAutoCreatedEditionGroup(orm, newEdition, transacting)
 			.fetch({
 				require: true,
 				transacting,
-				withRelated: 'aliasSet.aliases'
+				withRelated: ['aliasSet.aliases']
 			});
 		await search.indexEntity(editionGroup);
 	}
@@ -1064,8 +1068,10 @@ function sanitizeBody(body:any) {
 	return body;
 }
 
-export async function processSingleEntity(formBody, JSONEntity, reqSession,
-	entityType, orm: ORM, editorJSON, derivedProps, isMergeOperation, transacting: Transaction): Promise<any> {
+export async function processSingleEntity(
+	formBody, JSONEntity, reqSession, entityType: EntityTypeString, orm: ORM,
+	editorJSON, derivedProps, isMergeOperation: boolean, transacting: Transaction
+): Promise<any> {
 	const {Annotation, Entity, Revision} = orm;
 	// Sanitize nameSection inputs
 	const body = sanitizeBody(formBody);
@@ -1217,7 +1223,7 @@ export async function handleCreateOrEditEntity(
 	derivedProps: Record<string, unknown>,
 	isMergeOperation: boolean
 ) {
-	const {orm}: {orm?: any} = req.app.locals;
+	const {orm}: {orm?: ORM} = req.app.locals;
 	const editorJSON = req.user;
 	const {bookshelf} = orm;
 
@@ -1399,7 +1405,7 @@ export function constructAuthorCredit(
 			({authorBBID: author.id, joinPhrase, name})
 	);
 }
-export function displayPreview(req:PassportRequest, res:$Response, next) {
+export function displayPreview(req: PassportRequest, res: $Response, next: NextFunction) {
 	const baseUrl = `${req.protocol}://${req.get('host')}`;
 	const originalUrl = `${baseUrl}${req.originalUrl}`;
 	const sourceUrl = req.headers.origin !== 'null' ? req.headers.origin : '<Unknown Source>';
