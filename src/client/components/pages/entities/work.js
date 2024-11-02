@@ -40,7 +40,7 @@ const {deletedEntityMessage, getRelationshipSourceByTypeId, getLanguageAttribute
 const {Col, Row} = bootstrap;
 
 
-export function WorkAttributes({work}) {
+function WorkAttributes({work}) {
 	if (work.deleted) {
 		return deletedEntityMessage;
 	}

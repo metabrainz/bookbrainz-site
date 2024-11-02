@@ -16,7 +16,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-// TODO: delete unused functions and move into `../entity`
 
 import * as achievement from '../../helpers/achievement';
 import * as error from '../../../common/helpers/error';
@@ -24,58 +23,15 @@ import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../../common/helpers/search';
 import type {NextFunction, Request, Response} from 'express';
 import {escapeProps, generateProps} from '../../helpers/props';
-import {map, uniqBy} from 'lodash';
+import DiscardImportEntityPage from '../../../client/components/pages/import-entities/discard-import-entity';
 import type {ImportMetadataWithVote} from '../../helpers/middleware';
 import Layout from '../../../client/containers/layout';
 import {type ORM} from 'bookbrainz-data';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import {entityEditorMarkup} from '../../helpers/entityRouteUtils';
-import {entityToFormState} from './transform-import';
-import {generateImportEntityProps} from '../../helpers/importEntityRouteUtils';
 import {getEntityUrl} from '../../../client/helpers/entity';
-import {getValidator} from '../../../client/entity-editor/helpers';
-import importEntityPages from
-	'../../../client/components/pages/import-entities';
 import target from '../../templates/target';
-import {transformForm} from './transform-form';
 
-
-// TODO: will be unused
-export function displayImport(req: Request, res: Response) {
-	const {importEntity} = res.locals;
-
-	// Get unique identifier types for display
-	const identifierTypes = importEntity.identifierSet &&
-		uniqBy(
-			map(importEntity.identifierSet.identifiers, 'type'),
-			(type) => type.id
-		);
-
-	const {type} = importEntity;
-	const ImportEntityComponent = importEntityPages[type];
-	if (ImportEntityComponent) {
-		const props = generateProps(req, res, {identifierTypes});
-		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<ImportEntityComponent
-					{...propHelpers.extractImportEntityProps(props)}
-				/>
-			</Layout>
-		);
-
-		res.send(target({
-			markup,
-			props: escapeProps(props),
-			script: '/js/import-entity/import-entity.js'
-		}));
-	}
-	else {
-		throw new Error(
-			`Component was not found for the following import: ${type}`
-		);
-	}
-}
 
 export function displayDiscardImportEntity(req: Request, res: Response, next: NextFunction) {
 	const {entity} = res.locals;
@@ -90,7 +46,6 @@ export function displayDiscardImportEntity(req: Request, res: Response, next: Ne
 	}
 
 	const props = generateProps(req, res);
-	const {DiscardImportEntityPage} = importEntityPages;
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
 			<DiscardImportEntityPage
@@ -164,61 +119,4 @@ export async function approveImportEntity(req, res: Response, next: NextFunction
 	// Todo: Add functionality to remove imports from ES index upon deletion
 
 	return res.redirect(entityUrl);
-}
-
-export function editImportEntity(req: Request, res: Response) {
-	const {importEntity} = res.locals;
-	const initialState = entityToFormState(importEntity);
-	const additionalProps: Record<string, any> = {};
-	if (res.locals.genders) {
-		additionalProps.genderOptions = res.locals.genders;
-	}
-	const importEntityProps = generateImportEntityProps(
-		req, res, initialState, additionalProps
-	);
-	const {markup, props} = entityEditorMarkup(importEntityProps);
-	return res.send(target({
-		markup,
-		props: escapeProps(props),
-		script: '/js/entity-editor.js',
-		title: 'Edit Import'
-	}));
-}
-
-export async function approveImportPostEditing(req, res) {
-	const {orm}: {orm: ORM} = req.app.locals;
-	const {importEntity} = res.locals;
-	const editorId = req.session.passport.user.id;
-	const {bbid: importBbid, type} = importEntity;
-	const formData = req.body;
-
-	const validateForm = getValidator(type);
-
-	if (!validateForm(formData)) {
-		const err = new error.FormSubmissionError();
-		error.sendErrorAsJSON(res, err);
-	}
-
-	const entityData = transformForm[type](formData);
-
-	const savedEntityModel = await orm.bookshelf.transaction(async (transacting) => {
-		await orm.func.imports.deleteImport(
-			transacting, importBbid
-		);
-		return orm.func.createEntity(
-			{editorId, entityData, orm, transacting}
-		);
-	});
-	const entityJSON = savedEntityModel.toJSON();
-
-	// Update editor achievement
-	entityJSON.alert = (await achievement.processEdit(
-		orm, editorId, entityJSON.revisionId
-	)).alert;
-
-	// Cleanup search indexing
-	await search.indexEntity(savedEntityModel);
-	// To-do: Add code to remove importEntity from the search index
-
-	res.send(entityJSON);
 }

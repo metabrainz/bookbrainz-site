@@ -35,7 +35,7 @@ const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
 	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias, transformISODateForDisplay} = entityHelper;
 const {Col, Row} = bootstrap;
 
-export function PublisherAttributes({publisher}) {
+function PublisherAttributes({publisher}) {
 	if (publisher.deleted) {
 		return deletedEntityMessage;
 	}
