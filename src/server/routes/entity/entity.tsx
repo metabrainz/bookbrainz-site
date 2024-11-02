@@ -934,7 +934,7 @@ export async function getNextRelationshipSets(
 }
 
 async function getNextAnnotation(
-	orm, transacting, currentEntity, body, revision
+	orm: ORM, transacting: Transaction, currentEntity, body
 ) {
 	const {Annotation} = orm;
 
@@ -945,8 +945,8 @@ async function getNextAnnotation(
 	);
 
 	return body.annotation ? orm.func.annotation.updateAnnotation(
-		orm, transacting, oldAnnotation, body.annotation, revision
-	) : new Promise(resolve => resolve(null));
+		orm, transacting, oldAnnotation, body.annotation, null
+	) : Promise.resolve(null);
 }
 
 async function getNextDisambiguation(orm, transacting, currentEntity, body) {
@@ -965,7 +965,7 @@ async function getNextDisambiguation(orm, transacting, currentEntity, body) {
 
 export async function getChangedProps(
 	orm, transacting, isNew, currentEntity, body, entityType,
-	newRevision, derivedProps
+	derivedProps
 ) {
 	const aliasSetPromise =
 		getNextAliasSet(orm, transacting, currentEntity, body);
@@ -974,7 +974,7 @@ export async function getChangedProps(
 		getNextIdentifierSet(orm, transacting, currentEntity, body);
 
 	const annotationPromise = getNextAnnotation(
-		orm, transacting, currentEntity, body, newRevision
+		orm, transacting, currentEntity, body
 	);
 
 	const disambiguationPromise =
@@ -1065,8 +1065,8 @@ function sanitizeBody(body:any) {
 }
 
 export async function processSingleEntity(formBody, JSONEntity, reqSession,
-	entityType, orm: ORM, editorJSON, derivedProps, isMergeOperation, transacting): Promise<any> {
-	const {Entity, Revision} = orm;
+	entityType, orm: ORM, editorJSON, derivedProps, isMergeOperation, transacting: Transaction): Promise<any> {
+	const {Annotation, Entity, Revision} = orm;
 	// Sanitize nameSection inputs
 	const body = sanitizeBody(formBody);
 	let currentEntity: {
@@ -1105,18 +1105,11 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 	}
 
 	// Then, edit the entity
-	const newRevision = await new Revision({
-		authorId: editorJSON.id,
-		isMerge: isMergeOperation
-	}).save(null, {transacting});
-
 	const relationshipSets = await getNextRelationshipSets(
 		orm, transacting, currentEntity, body
 	);
-
 	const changedProps = await getChangedProps(
-		orm, transacting, isNew, currentEntity, body, entityType,
-		newRevision, derivedProps
+		orm, transacting, isNew, currentEntity, body, entityType, derivedProps
 	);
 
 	// If there are no differences, bail
@@ -1126,10 +1119,22 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 			// Load the approved entity, it still has to be reindexed.
 			const Model = orm.func.entity.getEntityModelByType(orm, currentEntity.type);
 			const mainEntity = await new Model({bbid: currentEntity.bbid})
-				.fetch({withRelated: ['defaultAlias', 'aliasSet.aliases']});
+				.fetch({transacting, withRelated: ['defaultAlias', 'aliasSet.aliases']});
 			return mainEntity;
 		}
 		throw new error.FormSubmissionError('No Updated Field');
+	}
+
+	// There are differences, create a new revision
+	const newRevision = await new Revision({
+		authorId: editorJSON.id,
+		isMerge: isMergeOperation
+	}).save(null, {transacting});
+
+	// Set revision of our new annotation if it has changed
+	if (changedProps.annotationId) {
+		await new Annotation({id: changedProps.annotationId})
+			.save({lastRevisionId: newRevision.get('id')}, {method: 'update', transacting});
 	}
 
 	// Fetch or create main entity
