@@ -83,6 +83,7 @@ function Relationship({Parent, ...props}: RelationshipProps) {
 		>
 			<Parent {...rest}>
 				<div aria-label={description} className={indentationClass}>
+					{depth > 0 && <div className="hierarchy-arrow"/>}
 					<Entity {...sourceObject}/>
 					{` ${usedLinkPhrase} `}
 					<Entity {...targetObject}/>

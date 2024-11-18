@@ -689,25 +689,33 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 }
 
 type ProcessAuthorCreditBody = {
-	authorCredit: Array<AuthorCreditRow>
+	authorCredit: Array<AuthorCreditRow>;
+	creditSection: boolean;
 };
 type ProcessAuthorCreditResult = {authorCreditId: number};
 
 async function processAuthorCredit(
 	orm: any,
 	currentEntity: Record<string, unknown> | null | undefined,
-	body: ProcessAuthorCreditBody,
+	newEntityBody: ProcessAuthorCreditBody,
 	transacting: Transaction
 ): Promise<ProcessAuthorCreditResult> {
-	const authorCreditID = _.get(currentEntity, ['authorCredit', 'id']);
+	const authorCreditEnabled = newEntityBody.creditSection !== false;
+	if (!authorCreditEnabled) {
+		return {
+			authorCreditId: null
+		};
+	}
+
+	const existingAuthorCreditID = _.get(currentEntity, ['authorCredit', 'id']);
 
 	const oldAuthorCredit = await (
-		authorCreditID &&
-		orm.AuthorCredit.forge({id: authorCreditID})
+		existingAuthorCreditID &&
+		orm.AuthorCredit.forge({id: existingAuthorCreditID})
 			.fetch({transacting, withRelated: ['names']})
 	);
 
-	const names = _.get(body, 'authorCredit') || [];
+	const names = _.get(newEntityBody, 'authorCredit') || [];
 	const newAuthorCredit = await orm.func.authorCredit.updateAuthorCredit(
 		orm, transacting, oldAuthorCredit,
 		names.map((name) => ({
@@ -745,14 +753,14 @@ async function processEditionSets(
 	);
 
 	const languages = _.get(body, 'languages') || [];
-	const newLanguageSetIDPromise = orm.func.language.updateLanguageSet(
+
+	const newLanguageSet = await orm.func.language.updateLanguageSet(
 		orm, transacting, oldLanguageSet,
 		languages.map((languageID) => ({id: languageID}))
-	)
-		.then((set) => set && set.get('id'));
+	);
+	const newLanguageSetID = newLanguageSet && newLanguageSet.get('id');
 
 	const publisherSetID = _.get(currentEntity, ['publisherSet', 'id']);
-
 	const oldPublisherSet = await (
 		publisherSetID &&
 		orm.PublisherSet.forge({id: publisherSetID})
@@ -760,12 +768,12 @@ async function processEditionSets(
 	);
 
 	const publishers = _.get(body, 'publishers') || [];
-	const newPublisherSetIDPromise = orm.func.publisher.updatePublisherSet(
+
+	const newPublisherSet = await orm.func.publisher.updatePublisherSet(
 		orm, transacting, oldPublisherSet,
 		publishers.map((publisherBBID) => ({bbid: publisherBBID}))
-	)
-		.then((set) => set && set.get('id'));
-
+	);
+	const newPublisherSetID = newPublisherSet && newPublisherSet.get('id');
 	const releaseEventSetID = _.get(currentEntity, ['releaseEventSet', 'id']);
 
 	const oldReleaseEventSet = await (
@@ -788,20 +796,20 @@ async function processEditionSets(
 		}
 	}
 
-	const newReleaseEventSetIDPromise =
-		orm.func.releaseEvent.updateReleaseEventSet(
+	const newReleaseEventSet =
+		await orm.func.releaseEvent.updateReleaseEventSet(
 			orm, transacting, oldReleaseEventSet, releaseEvents
-		)
-			.then((set) => set && set.get('id'));
+		);
+	const newReleaseEventSetID = newReleaseEventSet && newReleaseEventSet.get('id');
+	const newAuthorCredit = await processAuthorCredit(orm, currentEntity, body, transacting);
+	const newAuthorCreditID = newAuthorCredit.authorCreditId;
 
-	const authorCreditIDPromise = processAuthorCredit(orm, currentEntity, body, transacting).then(acResult => acResult.authorCreditId);
-
-	return commonUtils.makePromiseFromObject<ProcessEditionSetsResult>({
-		authorCreditId: authorCreditIDPromise,
-		languageSetId: newLanguageSetIDPromise,
-		publisherSetId: newPublisherSetIDPromise,
-		releaseEventSetId: newReleaseEventSetIDPromise
-	});
+	return {
+		authorCreditId: newAuthorCreditID,
+		languageSetId: newLanguageSetID,
+		publisherSetId: newPublisherSetID,
+		releaseEventSetId: newReleaseEventSetID
+	};
 }
 
 type ProcessWorkSetsResult = {languageSetId: number[]};

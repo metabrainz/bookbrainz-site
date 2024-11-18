@@ -197,9 +197,9 @@ class Layout extends React.Component {
 
 		const reindexSearchEngineOption = (
 			<>
-				<NavDropdown.Item href="/search/reindex">
+				<NavDropdown.Item href="/search-admin">
 					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faSearchengin}/>
-					Reindex Search Server
+					Search Admin
 				</NavDropdown.Item>
 			</>
 		);

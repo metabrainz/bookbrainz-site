@@ -21,6 +21,7 @@ const clientConfig = {
 	entry: {
 		adminLogs: ['./controllers/adminLogs'],
 		adminPanel: ['./controllers/admin-panel'],
+		searchAdmin: ['./controllers/admin/searchAdmin.tsx'],
 		collection: ['./controllers/collection/collection'],
 		'collection/create': ['./controllers/collection/userCollectionForm'],
 		collections: ['./controllers/collections'],
