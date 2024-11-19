@@ -95,6 +95,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtrac
 	const {importMetadata} = entity;
 	const isImport = !entity.revision;
 	const urlPrefix = getEntityUrl(entity);
+	const hasAuthorCredits = entity.creditSection;
 
 	let authorCreditSection;
 	if (entity.authorCredit) {
@@ -104,7 +105,7 @@ function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtrac
 			/>
 		);
 	}
-	else if (!entity.deleted) {
+	else if (!entity.deleted && (hasAuthorCredits === true || hasAuthorCredits === null)) {
 		authorCreditSection = (
 			<div className="alert alert-warning text-center">
 				Author Credit unset; please&nbsp;

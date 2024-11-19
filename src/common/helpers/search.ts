@@ -1,3 +1,4 @@
+/* eslint-disable no-undefined */
 /*
  * Copyright (C) 2016  Sean Burke
  *               2018  Shivam Tripathi
@@ -50,15 +51,90 @@ function sanitizeEntityType(type) {
 	return snakeCase(type);
 }
 
-type IndexableEntities = EntityTypeString | 'Editor' | 'Collection' | 'Area';
+export type IndexableEntities = EntityTypeString | 'Editor' | 'Collection' | 'Area';
+export type IndexableEntitiesOrAll = IndexableEntities | 'allEntities';
 const commonProperties = ['bbid', 'id', 'name', 'type', 'disambiguation'];
+
+const indexMappings = {
+	mappings: {
+		_default_: {
+			properties: {
+				aliases: {
+					properties: {
+						name: {
+							fields: {
+								autocomplete: {
+									analyzer: 'edge',
+									type: 'text'
+								},
+								search: {
+									analyzer: 'trigrams',
+									type: 'text'
+								}
+							},
+							type: 'text'
+						}
+					}
+				},
+				authors: {
+					analyzer: 'trigrams',
+					type: 'text'
+				},
+				disambiguation: {
+					analyzer: 'trigrams',
+					type: 'text'
+				}
+			}
+		}
+	},
+	settings: {
+		analysis: {
+			analyzer: {
+				edge: {
+					filter: [
+						'asciifolding',
+						'lowercase'
+					],
+					tokenizer: 'edge_ngram_tokenizer',
+					type: 'custom'
+				},
+				trigrams: {
+					filter: [
+						'asciifolding',
+						'lowercase'
+					],
+					tokenizer: 'trigrams',
+					type: 'custom'
+				}
+			},
+			tokenizer: {
+				edge_ngram_tokenizer: {
+					max_gram: 10,
+					min_gram: 2,
+					token_chars: [
+						'letter',
+						'digit'
+					],
+					type: 'edge_ngram'
+				},
+				trigrams: {
+					max_gram: 3,
+					min_gram: 1,
+					type: 'ngram'
+				}
+			}
+		},
+		'index.mapping.ignore_malformed': true
+	}
+};
 
 /* We don't currently want to index the entire Model in ElasticSearch,
    which contains a lot of fields we don't use as well as some internal props (_pivot props)
    This utility function prepares the Model into a minimal object that will be indexed
 */
-export function getDocumentToIndex(entity:any, entityType: IndexableEntities) {
+export function getDocumentToIndex(entity:any) {
 	const additionalProperties = [];
+	const entityType:IndexableEntities = entity.get('type');
 	switch (entityType) {
 		case 'Work':
 			additionalProperties.push('authors');
@@ -66,16 +142,25 @@ export function getDocumentToIndex(entity:any, entityType: IndexableEntities) {
 		default:
 			break;
 	}
-	let aliases = entity.related('aliasSet')?.related('aliases')?.toJSON({ignorePivot: true, visible: 'name'});
+	let aliases = entity
+		.related('aliasSet')
+		?.related('aliases')
+		?.toJSON({ignorePivot: true, visible: 'name'});
 	if (!aliases) {
 		// Some models don't have the same aliasSet structure, i.e. Collection, Editor, Area, …
 		const name = entity.get('name');
 		aliases = {name};
 	}
-	const identifiers = entity.related('identifierSet')?.related('identifiers')?.toJSON({ignorePivot: true, visible: 'value'});
+	const identifiers = entity
+		.related('identifierSet')
+		?.related('identifiers')
+		?.toJSON({ignorePivot: true, visible: 'value'});
 
 	return {
-		...entity.toJSON({ignorePivot: true, visible: commonProperties.concat(additionalProperties)}),
+		...entity.toJSON({
+			ignorePivot: true,
+			visible: commonProperties.concat(additionalProperties)
+		}),
 		aliases,
 		identifiers: identifiers ?? null
 	};
@@ -201,6 +286,8 @@ export async function _bulkIndexEntities(entities) {
 			// eslint-disable-next-line no-await-in-loop
 			const {body: bulkResponse} = await _client.bulk({
 				body: bulkOperations
+			}).catch((error) => {
+				log.error('error bulk indexing entities for search:', error);
 			});
 
 			/*
@@ -256,7 +343,7 @@ async function _processEntityListForBulk(entityList) {
 	await Promise.all(indexOperations);
 }
 
-export async function autocomplete(orm, query, type, size = 42) {
+export async function autocomplete(orm:ORM, query:string, type:IndexableEntitiesOrAll | IndexableEntities[], size = 42) {
 	let queryBody = null;
 
 	if (commonUtils.isValidBBID(query)) {
@@ -295,116 +382,63 @@ export async function autocomplete(orm, query, type, size = 42) {
 // eslint-disable-next-line consistent-return
 export function indexEntity(entity) {
 	const entityType = entity.get('type');
-	const document = getDocumentToIndex(entity, entityType);
+	const document = getDocumentToIndex(entity);
 	if (entity) {
-		return _client.index({
-			body: document,
-			id: entity.get('bbid') || entity.get('id'),
-			index: _index,
-			type: snakeCase(entityType)
-		}).catch(error => { log.error('error indexing entity for search:', error); });
+		return _client
+			.index({
+				body: document,
+				id: entity.get('bbid') || entity.get('id'),
+				index: _index,
+				type: snakeCase(entityType)
+			})
+			.catch((error) => {
+				log.error('error indexing entity for search:', error);
+			});
 	}
 }
 
 export function deleteEntity(entity) {
-	return _client.delete({
-		id: entity.bbid ?? entity.id,
-		index: _index,
-		type: snakeCase(entity.type)
-	}).catch(error => { log.error('error deleting entity from index:', error); });
+	return _client
+		.delete({
+			id: entity.bbid ?? entity.id,
+			index: _index,
+			type: snakeCase(entity.type)
+		})
+		.catch((error) => {
+			log.error('error deleting entity from index:', error);
+		});
 }
 
 export function refreshIndex() {
-	return _client.indices.refresh({index: _index}).catch(error => { log.error('error refreshing search index:', error); });
+	return _client.indices.refresh({index: _index}).catch((error) => {
+		log.error('Error refreshing search index:', error);
+	});
 }
 
-export async function generateIndex(orm) {
+export async function generateIndex(orm, entityType: IndexableEntities | 'allEntities' = 'allEntities', recreateIndex = false) {
 	const {Area, Author, Edition, EditionGroup, Editor, Publisher, Series, UserCollection, Work} = orm;
-	const indexMappings = {
-		mappings: {
-			_default_: {
-				properties: {
-					aliases: {
-						properties: {
-							name: {
-								fields: {
-									autocomplete: {
-										analyzer: 'edge',
-										type: 'text'
-									},
-									search: {
-										analyzer: 'trigrams',
-										type: 'text'
-									}
-								},
-								type: 'text'
-							}
-						}
-					},
-					authors: {
-						analyzer: 'trigrams',
-						type: 'text'
-					},
-					disambiguation: {
-						analyzer: 'trigrams',
-						type: 'text'
-					}
-				}
-			}
-		},
-		settings: {
-			analysis: {
-				analyzer: {
-					edge: {
-						filter: [
-							'asciifolding',
-							'lowercase'
-						],
-						tokenizer: 'edge_ngram_tokenizer',
-						type: 'custom'
-					},
-					trigrams: {
-						filter: [
-							'asciifolding',
-							'lowercase'
-						],
-						tokenizer: 'trigrams',
-						type: 'custom'
-					}
-				},
-				tokenizer: {
-					edge_ngram_tokenizer: {
-						max_gram: 10,
-						min_gram: 2,
-						token_chars: [
-							'letter',
-							'digit'
-						],
-						type: 'edge_ngram'
-					},
-					trigrams: {
-						max_gram: 3,
-						min_gram: 1,
-						type: 'ngram'
-					}
-				}
-			},
-			'index.mapping.ignore_malformed': true
+
+	const allEntities = entityType === 'allEntities';
+	const mainIndexExists = await _client.indices.exists({
+		index: _index
+	});
+
+	const shouldRecreateIndex = !mainIndexExists.body || recreateIndex || allEntities;
+
+	if (shouldRecreateIndex) {
+		if (mainIndexExists.body) {
+			log.notice('Deleting search index');
+			await _client.indices.delete({index: _index});
 		}
-	};
-
-	// First, drop index and recreate
-	const mainIndexExistsRequest = await _client.indices.exists({index: _index});
-	const mainIndexExists = mainIndexExistsRequest?.body;
-
-	if (mainIndexExists) {
-		await _client.indices.delete({index: _index});
+		log.notice('Creating new search index');
+		await _client.indices.create({body: indexMappings, index: _index});
 	}
 
-	await _client.indices.create(
-		{body: indexMappings, index: _index}
-	);
+	log.notice(`Starting indexing of ${entityType}`);
 
+	const entityBehaviors:Array<{model:any,
+			relations: string[],
+			type:string}> = [];
 	const baseRelations = [
 		'annotation',
 		'defaultAlias',
@@ -412,127 +446,181 @@ export async function generateIndex(orm) {
 		'identifierSet.identifiers'
 	];
 
-	const entityBehaviors = [
-		{
+	if (allEntities || entityType === 'Author' || entityType === 'Work') {
+		entityBehaviors.push({
 			model: Author,
-			relations: [
-				'gender',
-				'beginArea',
-				'endArea'
-			]
-		},
-		{
+			relations: ['gender', 'beginArea', 'endArea'],
+			type: 'Author'
+		});
+	}
+	if (allEntities || entityType === 'Edition') {
+		entityBehaviors.push({
 			model: Edition,
-			relations: [
-				'editionGroup',
-				'editionFormat',
-				'editionStatus'
-			]
-		},
-		{model: EditionGroup, relations: []},
-		{model: Publisher, relations: ['area']},
-		{model: Series, relations: ['seriesOrderingType']},
-		{model: Work, relations: ['relationshipSet.relationships.type']}
-	];
-
+			relations: ['editionGroup', 'editionFormat', 'editionStatus'],
+			type: 'Edition'
+		});
+	}
+	if (allEntities || entityType === 'EditionGroup') {
+		entityBehaviors.push({
+			model: EditionGroup,
+			relations: [],
+			type: 'EditionGroup'
+		});
+	}
+	if (allEntities || entityType === 'Publisher') {
+		entityBehaviors.push({
+			model: Publisher,
+			relations: ['area'],
+			type: 'Publisher'
+		});
+	}
+	if (allEntities || entityType === 'Series') {
+		entityBehaviors.push({
+			model: Series,
+			relations: ['seriesOrderingType'],
+			type: 'Series'
+		});
+	}
+	if (allEntities || entityType === 'Work') {
+		log.info('Also indexing Author entities');
+		entityBehaviors.push({
+			model: Work,
+			relations: ['relationshipSet.relationships.type'],
+			type: 'Work'
+		});
+	}
 	// Update the indexed entries for each entity type
-	const entityBehaviorPromise = entityBehaviors.map(
-		(behavior) => behavior.model.forge()
-			.query((qb) => {
-				qb.where('master', true);
-				qb.whereNotNull('data_id');
-			})
-			.fetchAll({
-				withRelated: baseRelations.concat(behavior.relations)
-			})
-	);
-	const entityLists = await Promise.all(entityBehaviorPromise);
-	/* eslint-disable @typescript-eslint/no-unused-vars */
-	const entityFetchOrder:EntityTypeString[] = ['Author', 'Edition', 'EditionGroup', 'Publisher', 'Series', 'Work'];
-	const [authorsCollection,
-		editionCollection,
-		editionGroupCollection,
-		publisherCollection,
-		seriesCollection,
-		workCollection] = entityLists;
-	/* eslint-enable @typescript-eslint/no-unused-vars */
-	const listIndexes = [];
-
-	workCollection.forEach(workEntity => {
-		const relationshipSet = workEntity.related('relationshipSet');
-		if (relationshipSet) {
-			const authorWroteWorkRels = relationshipSet.related('relationships')?.filter(relationshipModel => relationshipModel.get('typeId') === 8);
-			const authorNames = [];
-			authorWroteWorkRels.forEach(relationshipModel => {
-				// Search for the Author in the already fetched BookshelfJS Collection
-				const source = authorsCollection.get(relationshipModel.get('sourceBbid'));
-				const name = source?.related('defaultAlias')?.get('name');
-				if (name) {
-					authorNames.push(name);
-				}
-			});
-			workEntity.set('authors', authorNames);
+	const entityLists = await Promise.all(entityBehaviors.map(async (behavior) => {
+		log.info(`Fetching ${behavior.type} models from the database`);
+		const totalCount:number = await behavior.model.query((qb) => {
+			qb.where('master', true);
+			qb.whereNotNull('data_id');
+		}).count();
+		log.info(`${totalCount} ${behavior.type} models in total`);
+		const maxChunk = 50000;
+		const collectionsPromises = [];
+		// Fetch by chunks of 50.000 entities
+		for (let i = 0; i < totalCount; i += maxChunk) {
+			const collection = behavior.model
+				.forge()
+				.query((qb) => {
+					qb.where('master', true);
+					qb.whereNotNull('data_id');
+					qb.limit(maxChunk);
+					qb.offset(i);
+					log.info(`Fetching ${maxChunk} ${behavior.type} models with offset ${i}`);
+				})
+				.fetchAll({
+					withRelated: baseRelations.concat(behavior.relations)
+				}).catch(err => { log.error(err); throw err; });
+			collectionsPromises.push(collection);
 		}
-	});
+		const collections = await Promise.all(collectionsPromises);
+		// Put all models back into a single collection
+		const allModels = collections.map(col => col.models).flat();
+		return {collection: behavior.model.collection(allModels), type: behavior.type};
+	}));
+	log.info(`Finished fetching entities from database for types ${entityBehaviors.map(({type}) => type).join(', ')}`);
+
+	if (allEntities || entityType === 'Work') {
+		log.info('Attaching author names to Work entities');
+		const authorCollection = entityLists.find(
+			(result) => result.type === 'Author'
+		)?.collection;
+		const workCollection = entityLists.find((result) => result.type === 'Work')?.collection;
+		workCollection?.forEach((workEntity) => {
+			const relationshipSet = workEntity.related('relationshipSet');
+			if (relationshipSet) {
+				const authorWroteWorkRels = relationshipSet
+					.related('relationships')
+					?.filter(
+						(relationshipModel) =>
+							relationshipModel.get('typeId') === 8
+					);
+				const authorNames = [];
+				authorWroteWorkRels.forEach((relationshipModel) => {
+					// Search for the Author in the already fetched BookshelfJS Collection
+					const sourceBBID = relationshipModel.get('sourceBbid');
+					const source = authorCollection.get(sourceBBID);
+					const name = source?.related('defaultAlias')?.get('name');
+					if (name) {
+						authorNames.push(name);
+					}
+				});
+				workEntity.set('authors', authorNames);
+			}
+		});
+	}
+
+	const listIndexes = [];
 	// Index all the entities
-	entityLists.forEach((entityList, idx) => {
-		const entityType:EntityTypeString = entityFetchOrder[idx];
-		const listArray = entityList.map(entity => getDocumentToIndex(entity, entityType));
+	entityLists.forEach((entityList) => {
+		const listArray = entityList.collection.map(getDocumentToIndex);
 		listIndexes.push(_processEntityListForBulk(listArray));
 	});
 
-	await Promise.all(listIndexes);
+	if (listIndexes.length) {
+		log.info(`Indexing documents for entity type ${entityType}`);
+		await Promise.all(listIndexes);
+		log.info(`Finished indexing entity documents for entity type ${entityType}`);
+	}
 
-	const areaCollection = await Area.forge()
-		.fetchAll();
+	if (allEntities || entityType === 'Area') {
+		log.info('Indexing Areas');
 
-	const areas = areaCollection.toJSON({omitPivot: true});
+		const areaCollection = await Area.forge().fetchAll();
 
-	/** To index names, we use aliases.name and type, which Areas don't have.
-   * We massage the area to return a similar format as BB entities
-   */
-	const processedAreas = areas.map((area) => ({
-		aliases: [
-			{name: area.name}
-		],
-		id: area.gid,
-		type: 'Area'
-	}));
-	await _processEntityListForBulk(processedAreas);
+		const areas = areaCollection.toJSON({omitPivot: true});
 
-	const editorCollection = await Editor.forge()
-		// no bots
-		.where('type_id', 1)
-		.fetchAll();
-	const editors = editorCollection.toJSON({omitPivot: true});
+		/** To index names, we use aliases.name and type, which Areas don't have.
+		 * We massage the area to return a similar format as BB entities
+		 */
+		const processedAreas = areas.map((area) => ({
+			aliases: [{name: area.name}],
+			id: area.gid,
+			type: 'Area'
+		}));
+		await _processEntityListForBulk(processedAreas);
+		log.info('Finished indexing Areas');
+	}
+	if (allEntities || entityType === 'Editor') {
+		log.info('Indexing Editors');
+		const editorCollection = await Editor.forge()
+			// no bots
+			.where('type_id', 1)
+			.fetchAll();
+		const editors = editorCollection.toJSON({omitPivot: true});
 
-	/** To index names, we use aliases.name and type, which Editors don't have.
-   * We massage the editor to return a similar format as BB entities
-   */
-	const processedEditors = editors.map((editor) => ({
-		aliases: [
-			{name: editor.name}
-		],
-		id: editor.id,
-		type: 'Editor'
-	}));
-	await _processEntityListForBulk(processedEditors);
+		/** To index names, we use aliases.name and type, which Editors don't have.
+		 * We massage the editor to return a similar format as BB entities
+		 */
+		const processedEditors = editors.map((editor) => ({
+			aliases: [{name: editor.name}],
+			id: editor.id,
+			type: 'Editor'
+		}));
+		await _processEntityListForBulk(processedEditors);
+		log.info('Finished indexing Editors');
+	}
 
-	const userCollections = await UserCollection.forge().where({public: true})
-		.fetchAll();
-	const userCollectionsJSON = userCollections.toJSON({omitPivot: true});
+	if (allEntities || entityType === 'Collection') {
+		log.info('Indexing Collections');
+		const userCollections = await UserCollection.forge()
+			.where({public: true})
+			.fetchAll();
+		const userCollectionsJSON = userCollections.toJSON({omitPivot: true});
 
-	/** To index names, we use aliases.name and type, which UserCollections don't have.
-   * We massage the editor to return a similar format as BB entities
-   */
-	const processedCollections = userCollectionsJSON.map((collection) => ({
-		aliases: [
-			{name: collection.name}
-		],
-		id: collection.id,
-		type: 'Collection'
-	}));
-	await _processEntityListForBulk(processedCollections);
+		/** To index names, we use aliases.name and type, which UserCollections don't have.
+		 * We massage the editor to return a similar format as BB entities
+		 */
+		const processedCollections = userCollectionsJSON.map((collection) => ({
+			aliases: [{name: collection.name}],
+			id: collection.id,
+			type: 'Collection'
+		}));
+		await _processEntityListForBulk(processedCollections);
+		log.info('Finished indexing Collections');
+	}
 
 	const {AuthorImport, EditionImport, EditionGroupImport, PublisherImport, WorkImport} = orm;
 	const importBehaviors = [
@@ -576,8 +664,9 @@ export async function generateIndex(orm) {
 		importListIndexes.push(_processEntityListForBulk(listArray));
 	});
 	await Promise.all(importListIndexes);
-
+	log.info('Refreshing search index');
 	await refreshIndex();
+	log.notice('Search indexing finished succesfully');
 }
 
 export async function checkIfExists(orm, name, type) {
@@ -586,7 +675,9 @@ export async function checkIfExists(orm, name, type) {
 		bookshelf.transaction(async (transacting) => {
 			try {
 				const result = await orm.func.alias.getBBIDsWithMatchingAlias(
-					transacting, snakeCase(type), name
+					transacting,
+					snakeCase(type),
+					name
 				);
 				resolve(result);
 			}
@@ -606,9 +697,13 @@ export async function checkIfExists(orm, name, type) {
 		'revision.revision'
 	];
 	const processedResults = await Promise.all(
-		bbids.map(
-			bbid => orm.func.entity.getEntity(orm, upperFirst(camelCase(type)), bbid, baseRelations)
-		)
+		bbids.map((bbid) =>
+			orm.func.entity.getEntity(
+				orm,
+				upperFirst(camelCase(type)),
+				bbid,
+				baseRelations
+			))
 	);
 
 	return processedResults;
@@ -637,7 +732,11 @@ export function searchByName(orm, name, type, size, from) {
 		index: _index,
 		type: sanitizedEntityType
 	};
-	if (sanitizedEntityType === 'work' || (Array.isArray(sanitizedEntityType) && sanitizedEntityType.includes('work'))) {
+	if (
+		sanitizedEntityType === 'work' ||
+		(Array.isArray(sanitizedEntityType) &&
+			sanitizedEntityType.includes('work'))
+	) {
 		dslQuery.body.query.multi_match.fields.push('authors');
 	}
 

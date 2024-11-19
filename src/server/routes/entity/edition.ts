@@ -55,7 +55,7 @@ type AuthorCreditEditorT ={
 
 const additionalEditionProps = [
 	'editionGroupBbid', 'width', 'height', 'depth', 'weight', 'pages',
-	'formatId', 'statusId'
+	'formatId', 'statusId', 'creditSection'
 ];
 
 type PassportRequest = express.Request & {
@@ -84,8 +84,11 @@ export function transformNewForm(data) {
 	const languages = _.map(
 		data.editionSection.languages, (language) => language.value
 	);
+
 	let authorCredit = {};
-	if (!_.get(data, ['editionSection', 'authorCreditEnable'], true)) {
+	const authorCreditEnable = _.get(data, ['editionSection', 'authorCreditEnable'], true);
+
+	if (!authorCreditEnable) {
 		authorCredit = null;
 	}
 	else if (!_.isNil(data.authorCredit)) {
@@ -100,6 +103,7 @@ export function transformNewForm(data) {
 		aliases,
 		annotation: data.annotationSection.content,
 		authorCredit,
+		creditSection: authorCreditEnable,
 		depth: data.editionSection.depth &&
 			parseInt(data.editionSection.depth, 10),
 		disambiguation: data.nameSection.disambiguation,
@@ -205,7 +209,6 @@ router.get(
 			let relationshipTypeId;
 			let initialRelationshipIndex = 0;
 
-			initialState.editionSection = initialState.editionSection ?? {};
 			if (props.author) {
 				initialState.authorCreditEditor = {
 					a0: {
@@ -438,11 +441,14 @@ export function editionToFormState(edition) {
 		})
 	) : [];
 
-	const authorCreditEditor: AuthorCreditEditorT = {};
+	let authorCreditEditor: AuthorCreditEditorT = {};
 	for (const credit of credits) {
 		authorCreditEditor[credit.position] = credit;
 	}
-	if (_.isEmpty(authorCreditEditor)) {
+	if (!edition.creditSection) {
+		authorCreditEditor = {};
+	}
+	if (_.isEmpty(authorCreditEditor) && edition.creditSection) {
 		authorCreditEditor.n0 = {
 			author: null,
 			joinPhrase: '',
@@ -477,7 +483,7 @@ export function editionToFormState(edition) {
 	const editionGroup = utils.entityToOption(edition.editionGroup);
 
 	const editionSection = {
-		authorCreditEnable: true,
+		authorCreditEnable: edition.creditSection,
 		depth: edition.depth,
 		editionGroup,
 		// Determines whether the EG can be left blank (an EG will be auto-created) for existing Editions

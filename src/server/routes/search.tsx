@@ -24,9 +24,10 @@ import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
 
-import {keys as _keys, snakeCase as _snakeCase, isNil} from 'lodash';
+import {keys as _keys, snakeCase as _snakeCase, camelCase, isNil, isString, upperFirst} from 'lodash';
 import {escapeProps, generateProps} from '../helpers/props';
 
+import {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import Layout from '../../client/containers/layout';
 import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import React from 'react';
@@ -46,9 +47,9 @@ const {REINDEX_SEARCH_SERVER} = PrivilegeType;
 router.get('/', async (req, res, next) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q ?? '';
-	const type = req.query.type || 'allEntities';
-	const size = req.query.size ? parseInt(req.query.size, 10) : 20;
-	const from = req.query.from ? parseInt(req.query.from, 10) : 0;
+	const type = req.query.type?.toString() || 'allEntities';
+	const size = req.query.size ? parseInt(String(req.query.size), 10) : 20;
+	const from = req.query.from ? parseInt(String(req.query.from), 10) : 0;
 	try {
 		let searchResults = {
 			initialResults: [],
@@ -59,9 +60,11 @@ router.get('/', async (req, res, next) => {
 			// get 1 more results to check nextEnabled
 			const searchResponse = await search.searchByName(orm, query, _snakeCase(type), size + 1, from);
 			const {results: entities} = searchResponse;
+			const initialResults = entities.filter(entity => !isNil(entity));
 			searchResults = {
-				initialResults: entities.filter(entity => !isNil(entity)),
-				query
+				initialResults,
+				query,
+				total: initialResults.length
 			};
 		}
 
@@ -102,7 +105,7 @@ router.get('/', async (req, res, next) => {
 router.get('/search', (req, res) => {
 	const {orm} = req.app.locals;
 	const query = req.query.q;
-	const type = req.query.type || 'allEntities';
+	const type = req.query.type as search.IndexableEntitiesOrAll ?? 'allEntities';
 
 	const {size, from} = req.query;
 
@@ -117,9 +120,9 @@ router.get('/search', (req, res) => {
  */
 router.get('/autocomplete', (req, res) => {
 	const {orm} = req.app.locals;
-	const query = req.query.q;
-	const type = req.query.type || 'allEntities';
-	const size = req.query.size || 42;
+	const query = req.query.q.toString();
+	const type = req.query.type as search.IndexableEntitiesOrAll ?? 'allEntities';
+	const size = Number(req.query.size) || 42;
 
 	const searchPromise = search.autocomplete(orm, query, type, size);
 
@@ -134,7 +137,7 @@ router.get('/exists', (req, res) => {
 	const {orm} = req.app.locals;
 	const {q, type} = req.query;
 
-	const searchPromise = search.checkIfExists(orm, q, _snakeCase(type));
+	const searchPromise = search.checkIfExists(orm, q, _snakeCase(String(type)));
 
 	handler.sendPromiseResult(res, searchPromise);
 });
@@ -145,10 +148,16 @@ router.get('/exists', (req, res) => {
  * @throws {error.PermissionDeniedError} - Thrown if user is not admin.
  */
 router.get('/reindex', auth.isAuthenticated, auth.isAuthorized(REINDEX_SEARCH_SERVER), async (req, res) => {
+	req.socket.setTimeout(600000);
 	const {orm} = req.app.locals;
-	await search.generateIndex(orm);
-
-	handler.sendPromiseResult(res, {success: true});
+	const type = isString(req.query.type) ? upperFirst(camelCase(req.query.type)) : 'allEntities';
+	try {
+		await search.generateIndex(orm, type as search.IndexableEntities);
+		return handler.sendPromiseResult(res, {success: true});
+	}
+	catch (err) {
+		return error.sendErrorAsJSON(res, new error.SiteError(`Cannot index entites for search, something went wrong: ${err.toString()}`, req));
+	}
 });
 
 router.get('/entity/:bbid', async (req, res) => {

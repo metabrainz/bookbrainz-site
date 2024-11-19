@@ -352,7 +352,8 @@ CREATE TABLE bookbrainz.edition_data (
 	weight SMALLINT CHECK (weight >= 0),
 	pages SMALLINT CHECK (pages >= 0),
 	format_id INT,
-	status_id INT
+	status_id INT,
+	credit_section BOOLEAN DEFAULT TRUE
 );
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (author_credit_id) REFERENCES bookbrainz.author_credit (id);
 ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (format_id) REFERENCES bookbrainz.edition_format (id);
@@ -375,8 +376,10 @@ CREATE TABLE bookbrainz.edition_group_data (
 	annotation_id INT,
 	disambiguation_id INT,
 	author_credit_id INT,
-	type_id INT
+	type_id INT,
+	credit_section BOOLEAN DEFAULT TRUE
 );
+
 ALTER TABLE bookbrainz.edition_group_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.edition_group_type (id);
 ALTER TABLE bookbrainz.edition_group_data ADD FOREIGN KEY (author_credit_id) REFERENCES bookbrainz.author_credit (id);
 ALTER TABLE bookbrainz.edition_group_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.edition_group_data (id);
@@ -937,6 +940,7 @@ CREATE VIEW bookbrainz.edition_import AS
 		edition_data.language_set_id,
 		edition_data.release_event_set_id,
 		edition_data.publisher_set_id,
+		edition_data.credit_section,
 		entity.type
 	FROM bookbrainz.entity entity
 	LEFT JOIN bookbrainz.edition_import_header edition_import_header ON entity.bbid = edition_import_header.bbid
@@ -953,7 +957,7 @@ CREATE VIEW bookbrainz.edition AS
 		als.default_alias_id, al."name", al.sort_name, edd.edition_group_bbid, edd.author_credit_id, edd.width, edd.height,
 		edd.depth, edd.weight, edd.pages, edd.format_id, edd.status_id,
 		edd.alias_set_id, edd.identifier_set_id, edd.relationship_set_id,
-		edd.language_set_id, edd.release_event_set_id, edd.publisher_set_id, e.type
+		edd.language_set_id, edd.release_event_set_id, edd.publisher_set_id, edd.credit_section, e.type
 	FROM bookbrainz.edition_revision edr
 	LEFT JOIN bookbrainz.entity e ON e.bbid = edr.bbid
 	LEFT JOIN bookbrainz.edition_header edh ON edh.bbid = e.bbid
@@ -1086,6 +1090,7 @@ CREATE VIEW bookbrainz.edition_group_import AS
 		edition_group_data.alias_set_id,
 		edition_group_data.identifier_set_id,
 		edition_group_data.relationship_set_id,
+		edition_group_data.credit_section,
 		entity.type
 	FROM bookbrainz.entity entity
 	LEFT JOIN bookbrainz.edition_group_import_header edition_group_import_header ON entity.bbid = edition_group_import_header.bbid
@@ -1101,7 +1106,7 @@ CREATE VIEW bookbrainz.edition_group AS
 	SELECT
 		e.bbid, egd.id AS data_id, pcr.id AS revision_id, (pcr.id = egh.master_revision_id) AS master, egd.annotation_id, egd.disambiguation_id, dis.comment disambiguation,
 		als.default_alias_id, al."name", al.sort_name, egd.type_id, egtype.label as edition_group_type, egd.author_credit_id, egd.alias_set_id, egd.identifier_set_id,
-		egd.relationship_set_id, e.type
+		egd.relationship_set_id, egd.credit_section, e.type
 	FROM bookbrainz.edition_group_revision pcr
 	LEFT JOIN bookbrainz.entity e ON e.bbid = pcr.bbid
 	LEFT JOIN bookbrainz.edition_group_header egh ON egh.bbid = e.bbid
