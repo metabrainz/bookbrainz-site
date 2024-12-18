@@ -16,44 +16,40 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import { get as _get } from 'lodash';
-import { loadEntity } from './middleware';
+import {get as _get} from 'lodash';
+import {loadEntity} from './middleware';
 
 export const aliasesRelations = ['aliasSet.aliases.language'];
 export const identifiersRelations = ['identifierSet.identifiers.type'];
 export const relationshipsRelations = ['relationshipSet.relationships.type'];
 
 /**
- * Allows only GET method for the API
+ * allowOnlyGetMethod is a function to allow the API to send a response only for GET requests.
  *
- * @param {object} req - Request object
- * @param {object} res - Response object
- * @param {function} next - Callback function
- * @returns {object} Response object if method is not GET
+ * @param {object} req - Object containing information about the HTTP request.
+ * @param {object} res - Object to send back the desired HTTP response.
+ * @param {function} next - Callback function to proceed to the next middleware.
+ * @returns {object} - Returns to the endpoint if the request type is GET; otherwise, responds with an error and status code 405.
  */
 export function allowOnlyGetMethod(req, res, next) {
     if (req.method === 'GET') {
         return next();
     }
-
-    return res
-        .set('Allow', 'GET')
+    return res.set('Allow', 'GET')
         .status(405)
-        .send({
-            message: `${req.method} method for the "${req.path}" route is not supported. Only GET method is allowed.`,
-        });
+        .send({message: `${req.method} method for the "${req.path}" route is not supported. Only GET method is allowed.`});
 }
 
 /**
- * Fetch browsed relationships based on the entity type
+ * Fetch and filter browsed relationships based on the provided entity type and filtering methods.
  *
- * @param {object} orm - ORM instance
- * @param {object} locals - Local variables
- * @param {string} browsedEntityType - Entity type to browse
- * @param {function} getEntityInfoMethod - Method to get entity info
- * @param {boolean} fetchRelated - Flag to fetch related entities
- * @param {function} filterRelationshipMethod - Method to filter relationships
- * @returns {Array} Array of browsed relationships
+ * @param {object} orm - ORM instance for database operations.
+ * @param {object} locals - Local variables containing the entity and relationships.
+ * @param {string} browsedEntityType - The type of entity being browsed.
+ * @param {function} getEntityInfoMethod - Method to extract information from the entity.
+ * @param {Array<string>} fetchRelated - Relationships to fetch for the entity.
+ * @param {function} filterRelationshipMethod - Method to filter relationships based on custom criteria.
+ * @returns {Array<object>} - Returns an array of filtered relationships.
  */
 export async function getBrowsedRelationships(
     orm,
@@ -63,68 +59,73 @@ export async function getBrowsedRelationships(
     fetchRelated,
     filterRelationshipMethod
 ) {
-    const { entity, relationships } = locals;
+    const {entity, relationships} = locals;
 
     if (!relationships.length) {
         return [];
     }
 
-    const relationshipsResults = [];
+    try {
+        const fetchedRelationships = await Promise.all(
+            relationships.map(async (relationship) => {
+                let relEntity;
 
-    for (const relationship of relationships) {
-        let relEntity;
-
-        if (
-            entity.bbid === relationship.sourceBbid &&
-            relationship.target.type.toLowerCase() === browsedEntityType.toLowerCase()
-        ) {
-            relEntity = relationship.target;
-        } else if (
-            relationship.source.type.toLowerCase() === browsedEntityType.toLowerCase()
-        ) {
-            relEntity = relationship.source;
-        }
-
-        if (relEntity) {
-            try {
-                const loadedRelEntity = await loadEntity(orm, relEntity, fetchRelated);
-                const formattedRelEntity = getEntityInfoMethod(loadedRelEntity);
-
-                if (!filterRelationshipMethod(formattedRelEntity)) {
-                    continue;
+                if (
+                    entity.bbid === relationship.sourceBbid &&
+                    relationship.target.type.toLowerCase() === browsedEntityType.toLowerCase()
+                ) {
+                    relEntity = relationship.target;
+                } else if (
+                    relationship.source.type.toLowerCase() === browsedEntityType.toLowerCase()
+                ) {
+                    relEntity = relationship.source;
                 }
 
-                relationshipsResults.push({
-                    entity: formattedRelEntity,
-                    relationships: [
-                        {
-                            relationshipType: _get(relationship, 'type.label', null),
-                            relationshipTypeID: _get(relationship, 'type.id', null),
-                        },
-                    ],
-                });
-            } catch (err) {
-                console.error(
-                    `Error loading entity for relationship: ${err.message}`,
-                    err
-                );
-            }
-        }
-    }
+                if (relEntity) {
+                    try {
+                        const loadedRelEntity = await loadEntity(orm, relEntity, fetchRelated);
+                        const formattedRelEntity = getEntityInfoMethod(loadedRelEntity);
 
-    return relationshipsResults.reduce((accumulator, relationship) => {
-        const entityAlreadyExists = accumulator.find(
-            (rel) => rel.entity.bbid === relationship.entity.bbid
+                        if (!filterRelationshipMethod(formattedRelEntity)) {
+                            return null;
+                        }
+
+                        return {
+                            entity: formattedRelEntity,
+                            relationships: [
+                                {
+                                    relationshipType: _get(relationship, 'type.label', null),
+                                    relationshipTypeID: _get(relationship, 'type.id', null),
+                                },
+                            ],
+                        };
+                    } catch (err) {
+                        console.error('Error loading related entity:', err);
+                        return null;
+                    }
+                }
+                return null;
+            })
         );
 
-        if (entityAlreadyExists) {
-            entityAlreadyExists.relationships.push(...relationship.relationships);
-        } else {
-            accumulator.push(relationship);
-        }
+        // Remove falsy values (nulls returned above)
+        const filteredRelationships = fetchedRelationships.filter(Boolean);
 
-        return accumulator;
-    }, []);
+        return filteredRelationships.reduce((accumulator, relationship) => {
+            const entityAlreadyExists = accumulator.find(
+                (rel) => rel.entity.bbid === relationship.entity.bbid
+            );
+            if (entityAlreadyExists) {
+                entityAlreadyExists.relationships.push(...relationship.relationships);
+            } else {
+                accumulator.push(relationship);
+            }
+            return accumulator;
+        }, []);
+    } catch (error) {
+        console.error('Error fetching browsed relationships:', error);
+        throw new Error('Failed to fetch browsed relationships.');
+    }
 }
 
 
