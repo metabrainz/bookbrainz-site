@@ -16,16 +16,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {get as _get} from 'lodash';
-import {loadEntity} from './middleware';
-
+import { get as _get } from 'lodash';
+import { loadEntity } from './middleware';
 
 export const aliasesRelations = ['aliasSet.aliases.language'];
 export const identifiersRelations = ['identifierSet.identifiers.type'];
 export const relationshipsRelations = ['relationshipSet.relationships.type'];
 
 /**
- * allowOnlyGetMethod is function to allow api to send response only for get requests
+ * allowOnlyGetMethod is function to allow API to send response only for GET requests
  *
  * @param {object} req - req is an object containing information about the HTTP request
  * @param {object} res - res to send back the desired HTTP response
@@ -33,66 +32,91 @@ export const relationshipsRelations = ['relationshipSet.relationships.type'];
  * @returns {object} - return to endpoint if request type is GET otherwise respond error with status code 405
  * @example
  *
- *		allowOnlyGetMethod(req, res, next)
+ *      allowOnlyGetMethod(req, res, next)
  */
-
 export function allowOnlyGetMethod(req, res, next) {
-	if (req.method === 'GET') {
-		return next();
-	}
-	return res.set('Allow', 'GET')
-		.status(405)
-		.send({message: `${req.method} method for the "${req.path}" route is not supported. Only GET method is allowed`});
+    if (req.method === 'GET') {
+        return next();
+    }
+    return res.set('Allow', 'GET')
+        .status(405)
+        .send({
+            message: `${req.method} method for the "${req.path}" route is not supported. Only GET method is allowed`,
+        });
 }
 
+export async function getBrowsedRelationships(
+    orm,
+    locals,
+    browsedEntityType,
+    getEntityInfoMethod,
+    fetchRelated,
+    filterRelationshipMethod
+) {
+    const { entity, relationships } = locals;
 
-export async function getBrowsedRelationships(orm, locals, browsedEntityType,
-											  getEntityInfoMethod, fetchRelated, filterRelationshipMethod) {
-	const {entity, relationships} = locals;
+    if (!relationships.length) {
+        return [];
+    }
 
-	if (!relationships.length > 0) {
-		return [];
-	}
-	const relationshipsPromises = relationships
-		.map(async relationship => {
-			let relEntity;
-			if (entity.bbid === relationship.sourceBbid &&
-				relationship.target.type.toLowerCase() === browsedEntityType.toLowerCase()) {
-				relEntity = relationship.target;
-			}
-			else if (relationship.source.type.toLowerCase() === browsedEntityType.toLowerCase()) {
-				relEntity = relationship.source;
-			}
+    try {
+        const relationshipsResults = [];
+        
+        for (const relationship of relationships) {
+            let relEntity;
 
-			if (relEntity) {
-				const loadedRelEntity = await loadEntity(orm, relEntity, fetchRelated);
-				const formattedRelEntity = getEntityInfoMethod(loadedRelEntity);
-				if (!filterRelationshipMethod(formattedRelEntity)) {
-					return null;
-				}
-				return {
-					entity: formattedRelEntity,
-					relationship: [{
-						relationshipType: _get(relationship, 'type.label', null),
-						relationshipTypeID: _get(relationship, 'type.id', null)
-					}]
-				};
-			}
-			return null;
-		});
-	const fetchedRelationshipsPromises = await Promise.all(relationshipsPromises);
-	// Remove falsy values (nulls returned above)
-	const filteredRelationships = fetchedRelationshipsPromises.filter(Boolean);
+            if (
+                entity.bbid === relationship.sourceBbid &&
+                relationship.target.type.toLowerCase() === browsedEntityType.toLowerCase()
+            ) {
+                relEntity = relationship.target;
+            } else if (
+                relationship.source.type.toLowerCase() === browsedEntityType.toLowerCase()
+            ) {
+                relEntity = relationship.source;
+            }
 
-	return filteredRelationships
-		.reduce((accumulator, relationship) => {
-			const entityAlreadyExists = accumulator.find(rel => rel.entity.bbid === relationship.entity.bbid);
-			if (entityAlreadyExists) {
-				entityAlreadyExists.relationships.push(...relationship.relationships);
-			}
-			else {
-				accumulator.push(relationship);
-			}
-			return accumulator;
-		}, []);
+            if (relEntity) {
+                try {
+                    const loadedRelEntity = await loadEntity(orm, relEntity, fetchRelated);
+                    const formattedRelEntity = getEntityInfoMethod(loadedRelEntity);
+
+                    if (!filterRelationshipMethod(formattedRelEntity)) {
+                        continue;
+                    }
+
+                    relationshipsResults.push({
+                        entity: formattedRelEntity,
+                        relationships: [
+                            {
+                                relationshipType: _get(relationship, 'type.label', null),
+                                relationshipTypeID: _get(relationship, 'type.id', null),
+                            },
+                        ],
+                    });
+                } catch (err) {
+                    console.error(
+                        `Error loading entity for relationship: ${err.message}`,
+                        err
+                    );
+                }
+            }
+        }
+
+        return relationshipsResults.reduce((accumulator, relationship) => {
+            const entityAlreadyExists = accumulator.find(
+                (rel) => rel.entity.bbid === relationship.entity.bbid
+            );
+            if (entityAlreadyExists) {
+                entityAlreadyExists.relationships.push(...relationship.relationships);
+            } else {
+                accumulator.push(relationship);
+            }
+            return accumulator;
+        }, []);
+    } catch (err) {
+        console.error(`Error processing relationships: ${err.message}`, err);
+        throw new Error('Failed to fetch browsed relationships.');
+    }
 }
+
