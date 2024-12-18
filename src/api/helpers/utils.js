@@ -69,66 +69,62 @@ export async function getBrowsedRelationships(
         return [];
     }
 
-    try {
-        const relationshipsResults = [];
+    const relationshipsResults = [];
 
-        for (const relationship of relationships) {
-            let relEntity;
+    for (const relationship of relationships) {
+        let relEntity;
 
-            if (
-                entity.bbid === relationship.sourceBbid &&
-                relationship.target.type.toLowerCase() === browsedEntityType.toLowerCase()
-            ) {
-                relEntity = relationship.target;
-            } else if (
-                relationship.source.type.toLowerCase() === browsedEntityType.toLowerCase()
-            ) {
-                relEntity = relationship.source;
-            }
-
-            if (relEntity) {
-                try {
-                    const loadedRelEntity = await loadEntity(orm, relEntity, fetchRelated);
-                    const formattedRelEntity = getEntityInfoMethod(loadedRelEntity);
-
-                    if (!filterRelationshipMethod(formattedRelEntity)) {
-                        continue;
-                    }
-
-                    relationshipsResults.push({
-                        entity: formattedRelEntity,
-                        relationships: [
-                            {
-                                relationshipType: _get(relationship, 'type.label', null),
-                                relationshipTypeID: _get(relationship, 'type.id', null),
-                            },
-                        ],
-                    });
-                } catch (err) {
-                    console.error(
-                        `Error loading entity for relationship: ${err.message}`,
-                        err
-                    );
-                }
-            }
+        if (
+            entity.bbid === relationship.sourceBbid &&
+            relationship.target.type.toLowerCase() === browsedEntityType.toLowerCase()
+        ) {
+            relEntity = relationship.target;
+        } else if (
+            relationship.source.type.toLowerCase() === browsedEntityType.toLowerCase()
+        ) {
+            relEntity = relationship.source;
         }
 
-        return relationshipsResults.reduce((accumulator, relationship) => {
-            const entityAlreadyExists = accumulator.find(
-                (rel) => rel.entity.bbid === relationship.entity.bbid
-            );
+        if (relEntity) {
+            try {
+                const loadedRelEntity = await loadEntity(orm, relEntity, fetchRelated);
+                const formattedRelEntity = getEntityInfoMethod(loadedRelEntity);
 
-            if (entityAlreadyExists) {
-                entityAlreadyExists.relationships.push(...relationship.relationships);
-            } else {
-                accumulator.push(relationship);
+                if (!filterRelationshipMethod(formattedRelEntity)) {
+                    continue;
+                }
+
+                relationshipsResults.push({
+                    entity: formattedRelEntity,
+                    relationships: [
+                        {
+                            relationshipType: _get(relationship, 'type.label', null),
+                            relationshipTypeID: _get(relationship, 'type.id', null),
+                        },
+                    ],
+                });
+            } catch (err) {
+                console.error(
+                    `Error loading entity for relationship: ${err.message}`,
+                    err
+                );
             }
-
-            return accumulator;
-        }, []);
-    } catch (err) {
-        console.error(`Error processing relationships: ${err.message}`, err);
-        throw new Error('Failed to fetch browsed relationships.');
+        }
     }
+
+    return relationshipsResults.reduce((accumulator, relationship) => {
+        const entityAlreadyExists = accumulator.find(
+            (rel) => rel.entity.bbid === relationship.entity.bbid
+        );
+
+        if (entityAlreadyExists) {
+            entityAlreadyExists.relationships.push(...relationship.relationships);
+        } else {
+            accumulator.push(relationship);
+        }
+
+        return accumulator;
+    }, []);
 }
+
 
