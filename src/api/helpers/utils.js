@@ -24,27 +24,37 @@ export const identifiersRelations = ['identifierSet.identifiers.type'];
 export const relationshipsRelations = ['relationshipSet.relationships.type'];
 
 /**
- * allowOnlyGetMethod is function to allow API to send response only for GET requests
+ * Allows only GET method for the API
  *
- * @param {object} req - req is an object containing information about the HTTP request
- * @param {object} res - res to send back the desired HTTP response
- * @param {function} next - this is a callback
- * @returns {object} - return to endpoint if request type is GET otherwise respond error with status code 405
- * @example
- *
- *      allowOnlyGetMethod(req, res, next)
+ * @param {object} req - Request object
+ * @param {object} res - Response object
+ * @param {function} next - Callback function
+ * @returns {object} Response object if method is not GET
  */
 export function allowOnlyGetMethod(req, res, next) {
     if (req.method === 'GET') {
         return next();
     }
-    return res.set('Allow', 'GET')
+
+    return res
+        .set('Allow', 'GET')
         .status(405)
         .send({
-            message: `${req.method} method for the "${req.path}" route is not supported. Only GET method is allowed`,
+            message: `${req.method} method for the "${req.path}" route is not supported. Only GET method is allowed.`,
         });
 }
 
+/**
+ * Fetch browsed relationships based on the entity type
+ *
+ * @param {object} orm - ORM instance
+ * @param {object} locals - Local variables
+ * @param {string} browsedEntityType - Entity type to browse
+ * @param {function} getEntityInfoMethod - Method to get entity info
+ * @param {boolean} fetchRelated - Flag to fetch related entities
+ * @param {function} filterRelationshipMethod - Method to filter relationships
+ * @returns {Array} Array of browsed relationships
+ */
 export async function getBrowsedRelationships(
     orm,
     locals,
@@ -61,7 +71,7 @@ export async function getBrowsedRelationships(
 
     try {
         const relationshipsResults = [];
-        
+
         for (const relationship of relationships) {
             let relEntity;
 
@@ -107,11 +117,13 @@ export async function getBrowsedRelationships(
             const entityAlreadyExists = accumulator.find(
                 (rel) => rel.entity.bbid === relationship.entity.bbid
             );
+
             if (entityAlreadyExists) {
                 entityAlreadyExists.relationships.push(...relationship.relationships);
             } else {
                 accumulator.push(relationship);
             }
+
             return accumulator;
         }, []);
     } catch (err) {
