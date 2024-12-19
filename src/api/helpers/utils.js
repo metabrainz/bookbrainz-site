@@ -94,8 +94,7 @@ export async function getBrowsedRelationships(
 		}, []);
 	}
 	catch (error) {
-		console.error('Error processing relationships:', error);
-		throw new Error('Failed to fetch browsed relationships');
+		const errorMessage = 'Failed to fetch browsed relationships';
+		throw new Error(errorMessage);
 	}
 }
-
