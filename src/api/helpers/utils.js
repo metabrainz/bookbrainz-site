@@ -19,6 +19,7 @@
 import {get as _get} from 'lodash';
 import {loadEntity} from './middleware';
 
+
 export const aliasesRelations = ['aliasSet.aliases.language'];
 export const identifiersRelations = ['identifierSet.identifiers.type'];
 export const relationshipsRelations = ['relationshipSet.relationships.type'];
@@ -47,10 +48,8 @@ export async function getBrowsedRelationships(
 	}
 
 	try {
-		const processedRelationships = [];
-
-		for (const relationship of relationships) {
-			let relEntity;
+		const relationshipPromises = relationships.map(async (relationship) => {
+			let relEntity = null;
 
 			if (entity.bbid === relationship.sourceBbid &&
 				relationship.target.type.toLowerCase() === browsedEntityType.toLowerCase()) {
@@ -61,32 +60,29 @@ export async function getBrowsedRelationships(
 			}
 
 			if (!relEntity) {
-				continue;
+				return null;
 			}
 
-			try {
-				const loadedRelEntity = await loadEntity(orm, relEntity, fetchRelated);
-				const formattedRelEntity = getEntityInfoMethod(loadedRelEntity);
+			const loadedRelEntity = await loadEntity(orm, relEntity, fetchRelated);
+			const formattedRelEntity = getEntityInfoMethod(loadedRelEntity);
 
-				if (!filterRelationshipMethod(formattedRelEntity)) {
-					continue;
-				}
-
-				processedRelationships.push({
-					entity: formattedRelEntity,
-					relationships: [{
-						relationshipType: _get(relationship, 'type.label', null),
-						relationshipTypeID: _get(relationship, 'type.id', null)
-					}]
-				});
+			if (!filterRelationshipMethod(formattedRelEntity)) {
+				return null;
 			}
-			catch (err) {
-				console.error('Error processing relationship entity:', err);
-				continue;
-			}
-		}
 
-		return processedRelationships.reduce((accumulator, relationship) => {
+			return {
+				entity: formattedRelEntity,
+				relationships: [{
+					relationshipType: _get(relationship, 'type.label', null),
+					relationshipTypeID: _get(relationship, 'type.id', null)
+				}]
+			};
+		});
+
+		const results = await Promise.all(relationshipPromises);
+		const filteredResults = results.filter(Boolean);
+
+		return filteredResults.reduce((accumulator, relationship) => {
 			const existingEntity = accumulator.find(rel => rel.entity.bbid === relationship.entity.bbid);
 			if (existingEntity) {
 				existingEntity.relationships.push(...relationship.relationships);
@@ -97,10 +93,9 @@ export async function getBrowsedRelationships(
 			return accumulator;
 		}, []);
 	}
-	catch (err) {
-		console.error('Error processing relationships:', err);
+	catch (error) {
+		console.error('Error processing relationships:', error);
 		throw new Error('Failed to fetch browsed relationships');
 	}
 }
-
 
