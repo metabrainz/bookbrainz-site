@@ -2,23 +2,23 @@ version: '3.4'
 
 services:
 
-  bookbrainz-site:
-    container_name: bookbrainz-site
-    command: yarn start
-    build:
-      context: ./
-      dockerfile: Dockerfile
-      target: bookbrainz-dev
-    restart: unless-stopped
-    user: bookbrainz
-    ports:
-      - "9099:9099"
-    depends_on:
-      - elasticsearch
-      - redis
-      - postgres
-    volumes:
-      - "./config/config.json:/home/bookbrainz/bookbrainz-site/config/config.json:ro"
+  # bookbrainz-site:
+  #   container_name: bookbrainz-site
+  #   command: yarn start
+  #   build:
+  #     context: ./
+  #     dockerfile: Dockerfile
+  #     target: bookbrainz-dev
+  #   restart: unless-stopped
+  #   user: bookbrainz
+  #   ports:
+  #     - "9099:9099"
+  #   depends_on:
+  #     - elasticsearch
+  #     - redis
+  #     - postgres
+  #   volumes:
+  #     - "./config/config.json:/home/bookbrainz/bookbrainz-site/config/config.json:ro"
 
   postgres:
     container_name: postgres

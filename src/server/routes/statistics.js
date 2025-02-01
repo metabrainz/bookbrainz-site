@@ -119,11 +119,12 @@ async function getLast30DaysEntities(orm) {
  */
 async function getTop10Editors(orm) {
 	try {
-		const {Editor} = orm;
+		// const {Editor} = orm;
+		const Editor = orm.Editor;
 		const topEditorsQuery = await new Editor()
 			.query((q) =>
 				q.orderBy('total_revisions', 'desc')
-					.limit(10))
+					.limit(20))
 			.fetchAll();
 
 		const topEditors = topEditorsQuery.models.map((model) => model.attributes);
