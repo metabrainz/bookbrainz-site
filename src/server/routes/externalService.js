@@ -107,7 +107,7 @@ router.get('/critiquebrainz/callback', auth.isAuthenticated, async (req, res, ne
 });
 
 
-router.post('/critiquebrainz/refresh', auth.isAuthenticated, async (req, res, next) => {
+router.post('/critiquebrainz/refresh', auth.isAuthenticatedForHandler, async (req, res, next) => {
 	const editorId = req.user.id;
 	const {orm} = req.app.locals;
 	let token = await orm.func.externalServiceOauth.getOauthToken(
