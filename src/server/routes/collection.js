@@ -252,7 +252,7 @@ router.post('/:collectionId/delete/handler', auth.isAuthenticatedForHandler, aut
 
 router.post(
 	'/:collectionId/remove',
-	auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, middleware.validateBBIDsForCollectionRemove,
+	auth.isAuthenticatedForHandler, auth.isCollectionOwnerOrCollaborator, middleware.validateBBIDsForCollectionRemove,
 	async (req, res, next) => {
 		const {bbids = []} = req.body;
 		const {collection} = res.locals;

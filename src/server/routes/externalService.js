@@ -132,7 +132,7 @@ router.post('/critiquebrainz/refresh', auth.isAuthenticatedForHandler, async (re
 });
 
 
-router.post('/critiquebrainz/connect', auth.isAuthenticated, async (req, res) => {
+router.post('/critiquebrainz/connect', auth.isAuthenticatedForHandler, async (req, res) => {
 	const editorId = req.user.id;
 	const {orm} = req.app.locals;
 
@@ -157,7 +157,7 @@ router.post('/critiquebrainz/connect', auth.isAuthenticated, async (req, res) =>
 });
 
 
-router.post('/critiquebrainz/disconnect', auth.isAuthenticated, async (req, res) => {
+router.post('/critiquebrainz/disconnect', auth.isAuthenticatedForHandler, async (req, res) => {
 	const editorId = req.user.id;
 	const {orm} = req.app.locals;
 

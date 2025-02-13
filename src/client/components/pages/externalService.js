@@ -37,26 +37,45 @@ class ExternalServices extends React.Component {
 
 	handleClick = async (event) => {
 		if (event.target.value === 'review') {
-			const data = await request.post('/external-service/critiquebrainz/connect');
-			if (data.statusCode === 200) {
-				window.location.href = data.text;
+			try {
+				const data = await request.post('/external-service/critiquebrainz/connect');
+				if (data.statusCode === 200) {
+					window.location.href = data.text;
+				}
+				else {
+					this.setState({
+						alertDetails: 'Something went wrong. Please try again.',
+						alertType: 'danger'
+					});
+				}				
 			}
-			else {
+			catch (err){
 				this.setState({
-					alertDetails: 'Something went wrong. Please try again.',
-					alertType: 'danger'
+					alertDetails: "Something went wrong. Please try again.",
+					alertType: "danger",
 				});
 			}
+
 		}
 		else {
-			const data = await request.post('/external-service/critiquebrainz/disconnect');
-			this.setState({
-				alertDetails: data.body.alertDetails,
-				alertType: data.body.alertType
-			});
-			if (data.statusCode === 200) {
+			try {
+				const data = await request.post(
+					"/external-service/critiquebrainz/disconnect"
+				);
 				this.setState({
-					cbPermission: 'disable'
+					alertDetails: data.body.alertDetails,
+					alertType: data.body.alertType,
+				});
+				if (data.statusCode === 200) {
+					this.setState({
+						cbPermission: "disable",
+					});
+				}
+			}
+			catch(err) {
+				this.setState({
+					alertDetails: "Something went wrong. Please try again.",
+					alertType: "danger",
 				});
 			}
 		}
