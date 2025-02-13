@@ -47,35 +47,34 @@ class ExternalServices extends React.Component {
 						alertDetails: 'Something went wrong. Please try again.',
 						alertType: 'danger'
 					});
-				}				
+				}
 			}
-			catch (err){
+			catch (err) {
 				this.setState({
-					alertDetails: "Something went wrong. Please try again.",
-					alertType: "danger",
+					alertDetails: 'Something went wrong. Please try again.',
+					alertType: 'danger'
 				});
 			}
-
 		}
 		else {
 			try {
 				const data = await request.post(
-					"/external-service/critiquebrainz/disconnect"
+					'/external-service/critiquebrainz/disconnect'
 				);
 				this.setState({
 					alertDetails: data.body.alertDetails,
-					alertType: data.body.alertType,
+					alertType: data.body.alertType
 				});
 				if (data.statusCode === 200) {
 					this.setState({
-						cbPermission: "disable",
+						cbPermission: 'disable'
 					});
 				}
 			}
-			catch(err) {
+			catch (err) {
 				this.setState({
-					alertDetails: "Something went wrong. Please try again.",
-					alertType: "danger",
+					alertDetails: 'Something went wrong. Please try again.',
+					alertType: 'danger'
 				});
 			}
 		}
