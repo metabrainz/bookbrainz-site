@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import slowDown from 'express-slow-down';
+import {slowDown} from 'express-slow-down';
 
 
 const FIVE_MINUTES_IN_MS = 5 * 60 * 1000;
@@ -26,7 +26,7 @@ const FIVE_MINUTES_IN_MS = 5 * 60 * 1000;
    etc. */
 export const lookupAndBrowseRequestSlowDown = slowDown({
 	delayAfter: 100,
-	delayMs: 500,
+	delayMs(used) { return (used - this.delayAfter) * 500; },
 	windowMs: FIVE_MINUTES_IN_MS
 });
 
@@ -35,7 +35,7 @@ export const lookupAndBrowseRequestSlowDown = slowDown({
    etc. */
 export const searchRequestSlowDown = slowDown({
 	delayAfter: 100,
-	delayMs: 500,
+	delayMs(used) { return (used - this.delayAfter) * 500; },
 	windowMs: FIVE_MINUTES_IN_MS
 });
 
