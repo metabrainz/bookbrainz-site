@@ -19,10 +19,9 @@
 import {get as _get} from 'lodash';
 import {loadEntity} from './middleware';
 
-
 export const aliasesRelations = ['aliasSet.aliases.language'];
 export const identifiersRelations = ['identifierSet.identifiers.type'];
-export const relationshipsRelations = ['relationshipSet.relationships.type'];
+export const relationshipsRelations = ['relationshipSet.relationships.type']; // Fixed from 'relationship' to 'relationships'
 
 /**
  * allowOnlyGetMethod is function to allow api to send response only for get requests
