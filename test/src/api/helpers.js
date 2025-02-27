@@ -63,7 +63,7 @@ export function browseSeriesBasicTests(res) {
 	res.body.series.forEach((series) => {
 		expect(series).to.have.all.keys(
 			'entity',
-			'relationship'
+			'relationships'
 		);
 		expect(series.entity).to.have.all.keys(
 			'seriesOrderingType',
@@ -85,7 +85,7 @@ export function browseWorkBasicTests(res) {
 	res.body.works.forEach((work) => {
 		expect(work).to.have.all.keys(
 			'entity',
-			'relationship'
+			'relationships'
 		);
 		expect(work.entity).to.have.all.keys(
 			'bbid',
@@ -109,7 +109,7 @@ export function browseEditionBasicTests(res) {
 	res.body.editions.forEach((work) => {
 		expect(work).to.have.all.keys(
 			'entity',
-			'relationship'
+			'relationships'
 		);
 		expect(work.entity).to.have.all.keys(
 			'bbid',
@@ -138,7 +138,7 @@ export function browseEditionGroupBasicTests(res) {
 	res.body.editionGroups.forEach((work) => {
 		expect(work).to.have.all.keys(
 			'entity',
-			'relationship'
+			'relationships'
 		);
 		expect(work.entity).to.have.all.keys(
 			'bbid',
@@ -159,7 +159,7 @@ export function browsePublisherBasicTests(res) {
 	res.body.publishers.forEach((work) => {
 		expect(work).to.have.all.keys(
 			'entity',
-			'relationship'
+			'relationships'
 		);
 		expect(work.entity).to.have.all.keys(
 			'area',
