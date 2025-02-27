@@ -618,7 +618,7 @@ async function rankUpdate(orm, editorId, bodyRank, rank) {
 }
 
 
-router.post('/:id/achievements/', auth.isAuthenticated, async (req, res) => {
+router.post('/:id/achievements/', auth.isAuthenticatedForHandler, async (req, res) => {
 	const {orm} = req.app.locals;
 	const userId = parseInt(req.params.id, 10);
 	if (!isCurrentUser(userId, req.user)) {

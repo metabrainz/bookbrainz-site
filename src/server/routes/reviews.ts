@@ -34,7 +34,7 @@ router.get('/:entityType/:bbid/reviews', async (req, res) => {
 	res.json(reviews);
 });
 
-router.post('/:entityType/:bbid/reviews', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), async (req, res) => {
+router.post('/:entityType/:bbid/reviews', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), async (req, res) => {
 	const editorId = req.user.id;
 	const {orm} = req.app.locals;
 
