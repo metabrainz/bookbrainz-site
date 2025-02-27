@@ -317,7 +317,7 @@ router.get('/',
 			editionGroupArray
 				.filter(relationshipsFilterMethod)
 				.forEach((filteredEditionGroup) => {
-					editionGroupRelationshipList.push({entity: filteredEditionGroup, relationship: {}});
+					editionGroupRelationshipList.push({entity: filteredEditionGroup, relationships: []});
 				});
 		}
 		return res.status(200).send({
