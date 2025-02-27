@@ -19,6 +19,7 @@
 import {get as _get} from 'lodash';
 import {loadEntity} from './middleware';
 
+
 export const aliasesRelations = ['aliasSet.aliases.language'];
 export const identifiersRelations = ['identifierSet.identifiers.type'];
 export const relationshipsRelations = ['relationshipSet.relationships.type']; 
@@ -105,4 +106,3 @@ export async function getBrowsedRelationships(
 		throw new Error(errorMessage);
 	}
 }
-
