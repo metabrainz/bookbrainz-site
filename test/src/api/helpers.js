@@ -36,7 +36,7 @@ export function browseAuthorBasicTests(res) {
 	res.body.authors.forEach((author) => {
 		expect(author).to.have.all.keys(
 			'entity',
-			'relationship'
+			'relationships'
 		);
 		expect(author.entity).to.have.all.keys(
 			'authorType',
