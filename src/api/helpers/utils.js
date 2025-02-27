@@ -24,6 +24,14 @@ export const aliasesRelations = ['aliasSet.aliases.language'];
 export const identifiersRelations = ['identifierSet.identifiers.type'];
 export const relationshipsRelations = ['relationshipSet.relationships.type'];
 
+/**
+ * allowOnlyGetMethod is function to allow api to send response only for get requests
+ *
+ * @param {object} req - req is an object containing information about the HTTP request
+ * @param {object} res - res to send back the desired HTTP response
+ * @param {function} next - this is a callback
+ * @returns {object} - return to endpoint if request type is GET otherwise respond error with status code 405
+ */
 export function allowOnlyGetMethod(req, res, next) {
 	if (req.method === 'GET') {
 		return next();
