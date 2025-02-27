@@ -27,7 +27,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import RevisionsTable from './parts/revisions-table';
-import {faMastodon} from '@fortawesome/free-brands-svg-icons';
+import {faBluesky, faMastodon} from '@fortawesome/free-brands-svg-icons';
 
 
 const {Alert, Button, Col, Container, Row} = bootstrap;
@@ -158,6 +158,18 @@ class IndexPage extends React.Component {
 													size="2x"
 												/>
 												Mastodon
+											</a>
+											<FontAwesomeIcon
+												className="margin-sides-1 contact-text"
+												icon={faCircle}
+											/>
+											<a className="contact-text" href="https://bsky.app/profile/bookbrainz.org">
+												<FontAwesomeIcon
+													className="contact-text"
+													icon={faBluesky}
+													size="2x"
+												/>
+												Bluesky
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
