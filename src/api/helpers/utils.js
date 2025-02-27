@@ -21,7 +21,7 @@ import {loadEntity} from './middleware';
 
 export const aliasesRelations = ['aliasSet.aliases.language'];
 export const identifiersRelations = ['identifierSet.identifiers.type'];
-export const relationshipsRelations = ['relationshipSet.relationships.type']; // Fixed from 'relationship' to 'relationships'
+export const relationshipsRelations = ['relationshipSet.relationships.type']; 
 
 /**
  * allowOnlyGetMethod is function to allow api to send response only for get requests
@@ -105,3 +105,4 @@ export async function getBrowsedRelationships(
 		throw new Error(errorMessage);
 	}
 }
+
