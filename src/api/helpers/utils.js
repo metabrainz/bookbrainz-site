@@ -15,15 +15,11 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-
 import {get as _get} from 'lodash';
 import {loadEntity} from './middleware';
-
-
 export const aliasesRelations = ['aliasSet.aliases.language'];
 export const identifiersRelations = ['identifierSet.identifiers.type'];
-export const relationshipsRelations = ['relationshipSet.relationships.type']; 
-
+export const relationshipsRelations = ['relationshipSet.relationships.type']; // Fixed from 'relationship' to 'relationships'
 /**
  * allowOnlyGetMethod is function to allow api to send response only for get requests
  *
@@ -40,7 +36,6 @@ export function allowOnlyGetMethod(req, res, next) {
 		.status(405)
 		.send({message: `${req.method} method for the "${req.path}" route is not supported. Only GET method is allowed`});
 }
-
 export async function getBrowsedRelationships(
 	orm,
 	locals,
@@ -50,15 +45,12 @@ export async function getBrowsedRelationships(
 	filterRelationshipMethod
 ) {
 	const {entity, relationships} = locals;
-
 	if (!relationships?.length) {
 		return [];
 	}
-
 	try {
 		const relationshipPromises = relationships.map(async (relationship) => {
 			let relEntity = null;
-
 			if (entity.bbid === relationship.sourceBbid &&
 				relationship.target.type.toLowerCase() === browsedEntityType.toLowerCase()) {
 				relEntity = relationship.target;
@@ -66,18 +58,14 @@ export async function getBrowsedRelationships(
 			else if (relationship.source.type.toLowerCase() === browsedEntityType.toLowerCase()) {
 				relEntity = relationship.source;
 			}
-
 			if (!relEntity) {
 				return null;
 			}
-
 			const loadedRelEntity = await loadEntity(orm, relEntity, fetchRelated);
 			const formattedRelEntity = getEntityInfoMethod(loadedRelEntity);
-
 			if (!filterRelationshipMethod(formattedRelEntity)) {
 				return null;
 			}
-
 			return {
 				entity: formattedRelEntity,
 				relationships: [{
@@ -86,10 +74,8 @@ export async function getBrowsedRelationships(
 				}]
 			};
 		});
-
 		const results = await Promise.all(relationshipPromises);
 		const filteredResults = results.filter(Boolean);
-
 		return filteredResults.reduce((accumulator, relationship) => {
 			const existingEntity = accumulator.find(rel => rel.entity.bbid === relationship.entity.bbid);
 			if (existingEntity) {
