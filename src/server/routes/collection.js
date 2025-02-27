@@ -278,7 +278,7 @@ router.post(
 /* eslint-disable no-await-in-loop */
 router.post(
 	'/:collectionId/add',
-	auth.isAuthenticated, auth.isCollectionOwnerOrCollaborator, middleware.validateBBIDsForCollectionAdd,
+	auth.isAuthenticatedForHandler, auth.isCollectionOwnerOrCollaborator, middleware.validateBBIDsForCollectionAdd,
 	async (req, res, next) => {
 		const {bbids} = req.body;
 		const {collection} = res.locals;
@@ -314,7 +314,7 @@ router.post(
 
 router.post(
 	'/:collectionId/collaborator/remove',
-	auth.isAuthenticated, middleware.validateCollaboratorIdsForCollectionRemove,
+	auth.isAuthenticatedForHandler, middleware.validateCollaboratorIdsForCollectionRemove,
 	async (req, res, next) => {
 		try {
 			const {collection} = res.locals;
