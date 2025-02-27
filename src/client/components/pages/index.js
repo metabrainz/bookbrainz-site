@@ -21,13 +21,12 @@
 
 import * as bootstrap from 'react-bootstrap';
 
+import {faBluesky, faMastodon} from '@fortawesome/free-brands-svg-icons';
 import {faCircle, faCommentDots, faComments, faEnvelope, faListUl, faSearch, faUser} from '@fortawesome/free-solid-svg-icons';
-
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import RevisionsTable from './parts/revisions-table';
-import {faXTwitter} from '@fortawesome/free-brands-svg-icons';
 
 
 const {Alert, Button, Col, Container, Row} = bootstrap;
@@ -151,13 +150,25 @@ class IndexPage extends React.Component {
 												className="margin-sides-1 contact-text"
 												icon={faCircle}
 											/>
-											<a className="contact-text" href="https://x.com/BookBrainz">
+											<a className="contact-text" href="https://mastodon.social/@BookBrainz">
 												<FontAwesomeIcon
 													className="contact-text"
-													icon={faXTwitter}
+													icon={faMastodon}
 													size="2x"
 												/>
-												X
+												Mastodon
+											</a>
+											<FontAwesomeIcon
+												className="margin-sides-1 contact-text"
+												icon={faCircle}
+											/>
+											<a className="contact-text" href="https://bsky.app/profile/bookbrainz.org">
+												<FontAwesomeIcon
+													className="contact-text"
+													icon={faBluesky}
+													size="2x"
+												/>
+												Bluesky
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
