@@ -1095,6 +1095,8 @@ export async function processSingleEntity(
 
 	// Determine if a new entity is being created
 	const isNew = !currentEntity;
+	const isImport = !isNew && !currentEntity.revision && Boolean(currentEntity.bbid);
+
 	if (isNew) {
 		const newEntity = await new Entity({type: entityType})
 			.save(null, {transacting});
@@ -1112,7 +1114,6 @@ export async function processSingleEntity(
 	}
 
 	// Approve entity if it is still a pending import
-	const isImport = !currentEntity.revision;
 	if (isImport) {
 		await orm.func.imports.approveImport({editorId: editorJSON.id, importEntity: currentEntity, orm});
 		// No need to reload `currentEntity` here, we will not use its `revision` property
