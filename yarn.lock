@@ -2880,19 +2880,21 @@ body-parser@1.20.3:
     type-is "~1.6.18"
     unpipe "1.0.0"
 
-bookbrainz-data@5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/bookbrainz-data/-/bookbrainz-data-5.1.1.tgz#600158905b6f1f27ceba96311bf2c238c98fb45e"
-  integrity sha512-REP1BpCc93lAqrGRPO5+l27ggNkpLbyxf2m41znlbFeR63GtAkAv2udqxqSRqLKTmQSftWWGes9McT0hmDplXw==
+bookbrainz-data@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/bookbrainz-data/-/bookbrainz-data-5.3.0.tgz#b0bb922613783382df234574c6e52e341cbf8ff5"
+  integrity sha512-/UkFWFCx2K5yjlM3YEQDP2r89iSrF4N+QFfeWJ9jKvgDNkmLRzG17Sj7SNYOM9U3lkHYiScWKNo7ziJ/jNNVcw==
   dependencies:
     "@metabrainz/bookshelf" "^1.4.0"
     bookshelf-virtuals-plugin "^1.0.0"
     deep-diff "^1.0.2"
     immutable "^3.8.2"
     knex "^2.4.2"
+    kysely "^0.27.4"
     lodash "^4.17.21"
     moment "^2.29.1"
     pg "^8.6.0"
+    validator "^13.7.0"
 
 bookshelf-virtuals-plugin@^1.0.0:
   version "1.0.0"
@@ -6288,6 +6290,11 @@ knex@^2.4.2:
     resolve-from "^5.0.0"
     tarn "^3.0.2"
     tildify "2.0.0"
+
+kysely@^0.27.4:
+  version "0.27.5"
+  resolved "https://registry.yarnpkg.com/kysely/-/kysely-0.27.5.tgz#e4662be051dd023eda2f68ee3d7e2647c94b0ef7"
+  integrity sha512-s7hZHcQeSNKpzCkHRm8yA+0JPLjncSWnjb+2TIElwS2JAqYr+Kv3Ess+9KFfJS0C1xcQ1i9NkNHpWwCYpHMWsA==
 
 latest-version@^5.1.0:
   version "5.1.0"
