@@ -286,6 +286,15 @@ a.contact-text:visited {
 		background-color: #deebff !important;
 		color: #333;
 	}
+	&.react-select__option--is-focused {
+		background-color: #deebff !important;
+		color: #333 !important;
+	}
+
+	&.react-select__option--is-selected {
+		background-color: #0056b3 !important;
+		color: white !important;
+	}
 }
 .react-select__menu {
 	z-index: 100 !important;
