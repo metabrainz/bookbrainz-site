@@ -43,7 +43,7 @@ class RegistrationForm extends React.Component {
 		this.handleChange = this.handleChange.bind(this);
 	}
 
-	handleSubmit(event) {
+	async handleSubmit(event) {
 		event.preventDefault();
 
 		const genderId = this.gender?.select?.getValue()?.[0]?.id;
@@ -57,18 +57,16 @@ class RegistrationForm extends React.Component {
 			waiting: true
 		});
 
-		request.post('/register/handler')
-			.send(data)
-			.then(() => {
-				window.location.href = '/auth';
-			})
-			.catch((res) => {
-				const {error} = res.body;
-				this.setState({
-					error,
-					waiting: false
-				});
+		try {
+			await request.post('/register/handler').send(data);
+			window.location.href = '/auth';
+		} catch (res) {
+			const {error} = res.body || 'An unexpected error occurred.';
+			this.setState({
+				error,
+				waiting: false
 			});
+		}
 	}
 
 	isValid() {

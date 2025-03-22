@@ -55,7 +55,7 @@ class UserCollectionForm extends React.Component {
 		this.isValid = this.isValid.bind(this);
 	}
 
-	handleSubmit(evt) {
+	async handleSubmit(evt) {
 		evt.preventDefault();
 		if (!this.isValid()) {
 			this.setState({
@@ -84,15 +84,14 @@ class UserCollectionForm extends React.Component {
 		else {
 			submissionURL = '/collection/create/handler';
 		}
-		request.post(submissionURL)
-			.send(data)
-			.then((res) => {
-				window.location.href = `/collection/${res.body.id}`;
-			}, () => {
-				this.setState({
-					errorText: 'Internal Error'
-				});
+		try {
+			const res = await request.post(submissionURL).send(data);
+			window.location.href = `/collection/${res.body.id}`;
+		} catch (error) {
+			this.setState({
+				errorText: 'Internal Error'
 			});
+		}
 	}
 
 	isValid() {
