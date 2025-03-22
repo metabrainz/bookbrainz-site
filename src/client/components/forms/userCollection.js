@@ -87,7 +87,8 @@ class UserCollectionForm extends React.Component {
 		try {
 			const res = await request.post(submissionURL).send(data);
 			window.location.href = `/collection/${res.body.id}`;
-		} catch (error) {
+		}
+		catch (error) {
 			this.setState({
 				errorText: 'Internal Error'
 			});
