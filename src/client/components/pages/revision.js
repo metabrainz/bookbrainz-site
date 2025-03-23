@@ -163,21 +163,21 @@ class RevisionPage extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-	handleSubmit(event) {
+	async handleSubmit(event) {
 		event.preventDefault();
 		const data = {
 			note: this.noteInput.value
 		};
-		request.post(`/revision/${this.props.revision.id}/note`)
-			.send(data)
-			.then(() => {
-				location.reload();
-			})
-			.catch((res) => {
-				// TODO: Add proper error handling.
-				const {error} = res.body;
-				return error;
-			});
+		try {
+			await request.post(`/revision/${this.props.revision.id}/note`).send(data);
+			location.reload();
+		}
+		catch (res) {
+			// TODO: Add proper error handling.
+			const {error} = res.body;
+			// eslint-disable-next-line no-console -- no other logger available for browser
+			console.warn(error);
+		}
 	}
 
 	render() {

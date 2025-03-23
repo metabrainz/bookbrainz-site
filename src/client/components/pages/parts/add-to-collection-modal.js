@@ -125,7 +125,7 @@ class AddToCollectionModal extends React.Component {
 		this.setState({message: {}, showCollectionForm: false});
 	}
 
-	handleAddToNewCollection(evt) {
+	async handleAddToNewCollection(evt) {
 		evt.preventDefault();
 
 		if (!this.isValid()) {
@@ -150,26 +150,27 @@ class AddToCollectionModal extends React.Component {
 			privacy
 		};
 		const {bbids} = this.props;
-		request.post('/collection/create/handler')
-			.send(data)
-			.then((res) => {
-				request.post(`/collection/${res.body.id}/add`)
-					.send({bbids}).then(() => {
-						this.setState({selectedCollections: []}, () => {
-							this.props.closeModalAndShowMessage({
-								text: `Successfully added to your new collection: ${name}`,
-								type: 'success'
-							});
-						});
-					});
-			}, () => {
-				this.setState({
-					message: {
-						text: 'Something went wrong! Please try again later',
-						type: 'danger'
-					}
+		try {
+			const createResponse = await request.post('/collection/create/handler').send(data);
+			const collectionId = createResponse.body.id;
+
+			await request.post(`/collection/${collectionId}/add`).send({bbids});
+
+			this.setState({selectedCollections: []}, () => {
+				this.props.closeModalAndShowMessage({
+					text: `Successfully added to your new collection: ${name}`,
+					type: 'success'
 				});
 			});
+		}
+		catch (error) {
+			this.setState({
+				message: {
+					text: 'Something went wrong! Please try again later',
+					type: 'danger'
+				}
+			});
+		}
 	}
 
 	isValid() {
