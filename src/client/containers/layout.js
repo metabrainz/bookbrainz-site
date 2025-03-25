@@ -72,24 +72,14 @@ class Layout extends React.Component {
 	}
 
 	renderNavHeader() {
-		const {homepage} = this.props;
-
 		return (
 			<Navbar.Brand className="logo">
 				<a href="/">
-					{homepage ? (
-						<img
-							alt="BookBrainz icon"
-							src="/images/BookBrainz_logo_icon.svg"
-							title="BookBrainz"
-						/>
-					) : (
-						<img
-							alt="BookBrainz icon"
-							src="/images/BookBrainz_logo_mini.svg"
-							title="BookBrainz"
-						/>
-					)}
+					<img
+						alt="BookBrainz icon"
+						src="/images/BookBrainz_logo_mini.svg"
+						title="BookBrainz"
+					/>
 				</a>
 			</Navbar.Brand>
 		);
