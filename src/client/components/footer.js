@@ -18,81 +18,276 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as React from 'react';
 import * as bootstrap from 'react-bootstrap';
-
-import PropTypes from 'prop-types';
-import React from 'react';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faAnglesRight} from '@fortawesome/free-solid-svg-icons';
 
 
 const {Col, Container, Row} = bootstrap;
 
-function Footer(props) {
-	const {repositoryUrl, siteRevision} = props;
-
+function Footer() {
 	return (
 		<footer className="footer">
 			<Container fluid>
 				<Row>
-					<Col xs={4}>
-						<small>{'Tested with '}
+					<Col md={6} sm={12}>
+						<h3>
+							<img
+								alt="BookBrainz"
+								src="/images/BookBrainz_logo.svg"
+								width="190"
+							/>
+						</h3>
+						<br/>
+						<p className="color-gray">
+              BookBrainz is a project to create an online database of information about every single book, magazine, journal,
+              and other publication ever written. It is an online encyclopedia containing information about published literature.
+						</p>
+						<ul className="list-unstyled">
+							<li className="color-a">
+								<span className="color-gray">Chat with us: </span>{' '}
+								<a
+									href="https://musicbrainz.org/doc/Communication/ChatBrainz"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+                  Matrix, IRC, Discord
+								</a>
+							</li>
+							<li className="color-a">
+								<span className="color-gray">Email: </span>{' '}
+								<a href="mailto:support@metabrainz.org">
+                  support@metabrainz.org{' '}
+								</a>
+							</li>
+						</ul>
+					</Col>
+					<br/>
+					<Col md={3} sm={6} xs={12}>
+						<h3 className="w-title-a text-brand">Useful Links</h3>
+						<ul className="list-unstyled">
+							<li>
+								<FontAwesomeIcon icon={faAnglesRight} size="sm"/>{' '}
+								<a href="./donate/">Donate</a>
+							</li>
+							<li>
+								<FontAwesomeIcon icon={faAnglesRight} size="sm"/>{' '}
+								<a
+									href="https://wiki.musicbrainz.org/Main_Page"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+                  Wiki
+								</a>
+							</li>
+							<li>
+								<FontAwesomeIcon icon={faAnglesRight} size="sm"/>{' '}
+								<a
+									href="https://community.metabrainz.org/"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+                  Community
+								</a>
+							</li>
+							<li>
+								<FontAwesomeIcon icon={faAnglesRight} size="sm"/>{' '}
+								<a
+									href="https://blog.metabrainz.org/"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+                  Blog
+								</a>
+							</li>
+							<li>
+								<FontAwesomeIcon icon={faAnglesRight} size="sm"/>{' '}
+								<a
+									href="https://www.redbubble.com/people/metabrainz/shop"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+                  Shop
+								</a>
+							</li>
+							<li>
+								<FontAwesomeIcon icon={faAnglesRight} size="sm"/>{' '}
+								<a
+									href="https://metabrainz.org/"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+                  MetaBrainz
+								</a>
+							</li>
+							<li className="visible-xs">
+								<FontAwesomeIcon icon={faAnglesRight} size="sm"/>{' '}
+								<a
+									href="https://github.com/metabrainz/bookbrainz-site"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+                  Contribute Here
+								</a>
+							</li>
+							<li className="visible-xs">
+								<FontAwesomeIcon icon={faAnglesRight} size="sm"/>{' '}
+								<a
+									href="https://tickets.metabrainz.org/"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+                  Bug Tracker
+								</a>
+							</li>
+						</ul>
+					</Col>
+					<Col md={3} sm={6} xs={12}>
+						<h3 className="w-title-a text-brand">Fellow Projects</h3>
+						<ul className="list-unstyled">
+							<li>
+								<FontAwesomeIcon icon={faAnglesRight} size="sm"/>{' '}
+								<img
+									alt="MusicBrainz"
+									height="18"
+									src="/images/meb-icons/MusicBrainz.svg"
+									width="18"
+								/>{' '}
+								<a
+									href="https://musicbrainz.org/"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+                  MusicBrainz
+								</a>
+							</li>
+							<li>
+								<FontAwesomeIcon icon={faAnglesRight} size="sm"/>{' '}
+								<img
+									alt="CritiqueBrainz"
+									height="18"
+									src="/images/meb-icons/CritiqueBrainz.svg"
+									width="18"
+								/>{' '}
+								<a
+									href="https://critiquebrainz.org/"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+                  CritiqueBrainz
+								</a>
+							</li>
+							<li>
+								<FontAwesomeIcon icon={faAnglesRight} size="sm"/>{' '}
+								<img
+									alt="Picard"
+									height="18"
+									src="/images/meb-icons/Picard.svg"
+									width="18"
+								/>{' '}
+								<a
+									href="https://picard.musicbrainz.org/"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+                  Picard
+								</a>
+							</li>
+							<li>
+								<FontAwesomeIcon icon={faAnglesRight} size="sm"/>{' '}
+								<img
+									alt="ListenBrainz"
+									height="18"
+									src="/images/meb-icons/ListenBrainz.svg"
+									width="18"
+								/>{' '}
+								<a
+									href="https://listenbrainz.org/"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+                  ListenBrainz
+								</a>
+							</li>
+							<li>
+								<FontAwesomeIcon icon={faAnglesRight} size="sm"/>{' '}
+								<img
+									alt="AcousticBrainz"
+									height="18"
+									src="/images/meb-icons/AcousticBrainz.svg"
+									width="18"
+								/>{' '}
+								<a
+									href="https://acousticbrainz.org/"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+                  AcousticBrainz
+								</a>
+							</li>
+							<li>
+								<FontAwesomeIcon icon={faAnglesRight} size="sm"/>{' '}
+								<img
+									alt="CoverArtArchive"
+									height="18"
+									src="/images/meb-icons/CoverArtArchive.svg"
+									width="18"
+								/>{' '}
+								<a
+									href="https://coverartarchive.org"
+									rel="noopener noreferrer"
+									target="_blank"
+								>
+                  Cover Art Archive
+								</a>
+							</li>
+						</ul>
+					</Col>
+				</Row>
+				<Row className="center-p">
+					<Col className="d-none d-sm-block" md={3} sm={12}>
+						<p className="color-gray section-line">
+              OSS Geek?{' '}
 							<a
-								href="https://www.browserstack.com/"
+								href="https://github.com/metabrainz/bookbrainz-site"
 								rel="noopener noreferrer"
 								target="_blank"
 							>
-								<img
-									alt="BrowserStack Logo"
-									height="25"
-									src="/images/BrowserStack.png"
-								/>
+								{' '}
+								<span className="color-a"> Contribute Here </span>{' '}
 							</a>
-						</small>
+						</p>
 					</Col>
-					<Col className="text-center" xs={4}>
-						<small>Cover image by{' '}
-							<a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">
-								Stewart Butterfield
-							</a> (
-							<a href="https://creativecommons.org/licenses/by/2.0/deed.en">
-								CC-BY-2.0
-							</a>)
-						</small>
+					<Col md={6} sm={12}>
+						<p className="section-line">
+              Brought to you by{' '}
+							<img
+								alt="MetaBrainz"
+								height="30"
+								src="/images/meb-icons/MetaBrainz.svg"
+								width="30"
+							/>{' '}
+							<span className="color-a"> MetaBrainz Foundation </span>
+						</p>
 					</Col>
-					<Col className="text-right" xs={4}>
-						<div className="small">
-							<a href="/admin-logs">
-								Admin Logs
+					<Col className="d-none d-sm-block" md={3} sm={12}>
+						<p className="color-gray section-line">
+              Found an Issue?{' '}
+							<a
+								href="https://tickets.metabrainz.org/"
+								rel="noopener noreferrer"
+								target="_blank"
+							>
+								{' '}
+								<span className="color-a"> Report Here </span>
 							</a>
-						</div>
-						<div className="small">
-							<a href="/privacy">
-								Privacy & Terms
-							</a>
-						</div>
-					</Col>
-				</Row>
-				<Row>
-					<Col className="text-center" xs={12}>
-						<small>
-							Alpha Software —{' '}
-							<a href={`${repositoryUrl}tree/${siteRevision || 'master'}`}>
-								{siteRevision || 'unknown revision'}
-							</a> —&nbsp;
-							<a href="https://tickets.metabrainz.org/projects/BB/issues/">
-								Report a Bug
-							</a>
-						</small>
+						</p>
 					</Col>
 				</Row>
 			</Container>
 		</footer>
 	);
 }
-
-Footer.displayName = 'Footer';
-Footer.propTypes = {
-	repositoryUrl: PropTypes.string.isRequired,
-	siteRevision: PropTypes.string.isRequired
-};
 
 export default Footer;
