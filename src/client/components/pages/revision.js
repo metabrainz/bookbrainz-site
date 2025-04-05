@@ -172,11 +172,11 @@ class RevisionPage extends React.Component {
 			await request.post(`/revision/${this.props.revision.id}/note`).send(data);
 			location.reload();
 		}
-		catch (res) {
+		catch (err) {
 			// TODO: Add proper error handling.
-			const {error} = res.body;
+			const error = err?.response?.body?.error || err?.message || err;
 			// eslint-disable-next-line no-console -- no other logger available for browser
-			console.warn(error);
+			console.warn('Failed to submit note: ', error);
 		}
 	}
 
