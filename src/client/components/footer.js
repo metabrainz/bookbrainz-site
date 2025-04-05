@@ -21,12 +21,15 @@
 import * as React from 'react';
 import * as bootstrap from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import PropTypes from 'prop-types';
 import {faAnglesRight} from '@fortawesome/free-solid-svg-icons';
 
 
 const {Col, Container, Row} = bootstrap;
 
-function Footer() {
+function Footer(props) {
+	const {repositoryUrl, siteRevision} = props;
+
 	return (
 		<footer className="footer">
 			<Container fluid>
@@ -114,11 +117,11 @@ function Footer() {
 							<li>
 								<FontAwesomeIcon icon={faAnglesRight} size="sm"/>{' '}
 								<a
-									href="https://metabrainz.org/"
+									href="/privacy"
 									rel="noopener noreferrer"
 									target="_blank"
 								>
-                  MetaBrainz
+                  Privacy & Terms
 								</a>
 							</li>
 							<li className="visible-xs">
@@ -259,7 +262,7 @@ function Footer() {
 							</a>
 						</p>
 					</Col>
-					<Col md={6} sm={12}>
+					<Col md={5} sm={12}>
 						<p className="section-line">
               Brought to you by{' '}
 							<img
@@ -271,16 +274,14 @@ function Footer() {
 							<span className="color-a"> MetaBrainz Foundation </span>
 						</p>
 					</Col>
-					<Col className="d-none d-sm-block" md={3} sm={12}>
+					<Col className="d-none d-sm-block" md={4} sm={12}>
 						<p className="color-gray section-line">
-              Found an Issue?{' '}
-							<a
-								href="https://tickets.metabrainz.org/"
-								rel="noopener noreferrer"
-								target="_blank"
-							>
-								{' '}
-								<span className="color-a"> Report Here </span>
+              Alpha Software —{' '}
+							<a className="color-a" href={`${repositoryUrl}tree/${siteRevision || 'master'}`}>
+								{siteRevision || 'unknown revision'}
+							</a> —&nbsp;
+							<a className="color-a" href="https://tickets.metabrainz.org/projects/BB/issues/">
+								Report a Bug
 							</a>
 						</p>
 					</Col>
@@ -289,5 +290,11 @@ function Footer() {
 		</footer>
 	);
 }
+
+Footer.displayName = 'Footer';
+Footer.propTypes = {
+	repositoryUrl: PropTypes.string.isRequired,
+	siteRevision: PropTypes.string.isRequired
+};
 
 export default Footer;

@@ -309,6 +309,7 @@ a.contact-text:visited {
 /* ========== */
 #background-image {
 	background:url(./Bookshelf.jpg);
+	position: relative;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -331,6 +332,14 @@ a.contact-text:visited {
 	padding-right: 0 !important;
 }
 
+#cover-image-source {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+	color: rgba(255, 255, 255, 0.8);
+	font-size: 0.7rem;
+	z-index: 2;
+}
 
 /* react-select styling */
 .react-select__option {
