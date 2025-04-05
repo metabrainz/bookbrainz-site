@@ -140,28 +140,28 @@ class CollectionPage extends React.Component {
 		});
 	}
 
-	handleRemoveEntities() {
+	async handleRemoveEntities() {
 		if (this.state.selectedEntities.length) {
 			const bbids = this.state.selectedEntities;
 			const submissionUrl = `/collection/${this.props.collection.id}/remove`;
-			request.post(submissionUrl)
-				.send({bbids})
-				.then(() => {
-					this.setState({
-						message: {
-							text: `Removed ${bbids.length} ${_.kebabCase(this.props.collection.entityType)}${bbids.length > 1 ? 's' : ''}`,
-							type: 'success'
-						},
-						selectedEntities: []
-					}, this.pagerElementRef.triggerSearch);
-				}, () => {
-					this.setState({
-						message: {
-							text: 'Something went wrong! Please try again later',
-							type: 'danger'
-						}
-					});
+			try {
+				await request.post(submissionUrl).send({bbids});
+				this.setState({
+					message: {
+						text: `Removed ${bbids.length} ${_.kebabCase(this.props.collection.entityType)}${bbids.length > 1 ? 's' : ''}`,
+						type: 'success'
+					},
+					selectedEntities: []
+				}, this.pagerElementRef.triggerSearch);
+			}
+			catch (error) {
+				this.setState({
+					message: {
+						text: 'Something went wrong! Please try again later',
+						type: 'danger'
+					}
 				});
+			}
 		}
 		else {
 			this.setState({
