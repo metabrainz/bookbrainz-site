@@ -67,8 +67,8 @@ class EntityDeletionForm extends React.Component {
 			await request.post(this.deleteUrl).send({note});
 			window.location.href = this.entityUrl;
 		}
-		catch (res) {
-			const {error} = res.body || 'An unexpected error occurred.';
+		catch (err) {
+			const error = err?.response?.body?.error || err?.message || 'An unexpected error occurred.';
 			this.setState({
 				error,
 				waiting: false

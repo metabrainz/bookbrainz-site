@@ -61,8 +61,8 @@ class RegistrationForm extends React.Component {
 			await request.post('/register/handler').send(data);
 			window.location.href = '/auth';
 		}
-		catch (res) {
-			const {error} = res.body || 'An unexpected error occurred.';
+		catch (err) {
+			const error = err?.response?.body?.error || err?.message || 'An unexpected error occurred.';
 			this.setState({
 				error,
 				waiting: false
