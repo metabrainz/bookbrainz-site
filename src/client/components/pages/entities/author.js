@@ -139,49 +139,44 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	}
 	const tabs = [
 		{
-			id: "overview",
-			label: "Overview",
 			content: (
 				<WikipediaExtract
 					articleExtract={wikipediaExtract}
 					entity={entity}
 				/>
 			),
+			id: 'overview',
+			label: 'Overview'
 		},
 		{
-			id: "annotation",
-			label: "Annotation",
-			content: <EntityAnnotation entity={entity} />,
+			content: <EntityAnnotation entity={entity}/>,
+			id: 'annotation',
+			label: 'Annotation'
 		},
 		{
-			id: "editions",
-			label: "Editions",
-			content: !entity.deleted && (
-				<EditionTable editions={editions} entity={entity} />
-			),
+			content: !entity.deleted &&
+				<EditionTable editions={editions} entity={entity}/>,
+			id: 'editions',
+			label: 'Editions'
 		},
 		{
-			id: "entityLinks",
-			label: "Relationships",
-			content: !entity.deleted && (
+			content: !entity.deleted &&
 				<EntityLinks
 					entity={entity}
 					identifierTypes={identifierTypes}
 					urlPrefix={urlPrefix}
-				/>
-			),
+				/>,
+			id: 'entityLinks',
+			label: 'Relationships'
 		},
 		{
-			id: "entityRelatedCollections",
-			label: "Related Collections",
-			content: !entity.deleted && (
-				<EntityRelatedCollections collections={entity.collections} />
-			),
+			content: !entity.deleted &&
+				<EntityRelatedCollections collections={entity.collections}/>,
+			id: 'entityRelatedCollections',
+			label: 'Related Collections'
 		},
 		{
-			id: "addWork",
-			label: "Add Work",
-			content: !entity.deleted && (
+			content: !entity.deleted &&
 				<Button
 					className="margin-top-d15"
 					href={`/work/create?${_kebabCase(entity.type)}=${
@@ -194,12 +189,11 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 						icon={faPlus}
 					/>
 					Add Work
-				</Button>
-			),
+				</Button>,
+			id: 'addWork',
+			label: 'Add Work'
 		},
 		{
-			id: "addReview",
-			label: "Add Review",
 			content: !entity.deleted && (
 				<EntityReviews
 					entityBBID={entity.bbid}
@@ -209,9 +203,14 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 					ref={reviewsRef}
 				/>
 			),
-		},
+			id: 'addReview',
+			label: 'Add Review'
+		}
 	];
 	const [activeTab, setActiveTab] = React.useState(tabs[0].id);
+	const handleTabSelect = useCallback((tabId) => {
+		setActiveTab(tabId);
+	  }, []);
 	return (
 		<div>
 			<Row className="entity-display-background">
@@ -233,16 +232,16 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 				</Col>
 			</Row>
 			<Tabs
-				id="entity-tabs"
-				activeKey={activeTab}
-				onSelect={(tabId) => setActiveTab(tabId)}
-				className="mb-3 w-100"
 				fill
+				activeKey={activeTab}
+				className="mb-3 w-100"
+				id="entity-tabs"
+				onSelect={handleTabSelect}
 			>
 				{tabs.map((tab) => (
 					<Tab
-						key={tab.id}
 						eventKey={tab.id}
+						key={tab.id}
 						title={tab.label}
 					>
 						{tab.content}
