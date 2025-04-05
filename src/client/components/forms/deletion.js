@@ -47,7 +47,7 @@ class EntityDeletionForm extends React.Component {
 		this.setState({note: event.target.value});
 	}
 
-	handleSubmit(event) {
+	async handleSubmit(event) {
 		const {note} = this.state;
 		event.preventDefault();
 
@@ -63,19 +63,17 @@ class EntityDeletionForm extends React.Component {
 			error: null,
 			waiting: true
 		});
-		request.post(this.deleteUrl)
-			.send({note})
-			.then(() => {
-				window.location.href = this.entityUrl;
-			})
-			.catch((res) => {
-				const {error} = res.body;
-
-				this.setState({
-					error,
-					waiting: false
-				});
+		try {
+			await request.post(this.deleteUrl).send({note});
+			window.location.href = this.entityUrl;
+		}
+		catch (err) {
+			const error = err?.response?.body?.error || err?.message || 'An unexpected error occurred.';
+			this.setState({
+				error,
+				waiting: false
 			});
+		}
 	}
 
 	render() {
