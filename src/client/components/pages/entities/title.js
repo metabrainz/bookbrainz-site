@@ -34,17 +34,18 @@ function EntityTitle({entity, handleModalToggle}) {
 	const label = getEntityLabel(entity);
 	return (
 		<div>
-			<h1>
+			<h1 className="d-flex justify-content-between">
 				{label}{disambiguation}
 				{handleModalToggle &&
+				<div>
 					<Button
-						className="float-right"
 						variant="success"
 						onClick={handleModalToggle}
 					>
 						<FontAwesomeIcon icon={faPlus}/>
 						{'  Add a review'}
 					</Button>
+				</div>
 				}
 			</h1>
 			{aliases}
