@@ -25,22 +25,22 @@ import CBReviewModal from './cbReviewModal';
 import EditionTable from './edition-table';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
+import EntityIdentifiers from './identifiers';
 import EntityImage from './image';
 import EntityLinks from './links';
 import EntityRelatedCollections from './related-collections';
 import EntityReviews from './cb-review';
 import EntityTitle from './title';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import WikipediaExtract from './wikipedia-extract';
 import {kebabCase as _kebabCase} from 'lodash';
-import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {labelsForAuthor} from '../../../helpers/utils';
 
 
 const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
-	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias, transformISODateForDisplay} = entityHelper;
-const {Button, Col, Row, Tabs, Tab} = bootstrap;
+	ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias, transformISODateForDisplay,
+	addAuthorsDataToWorks, getRelationshipTargetByTypeId} = entityHelper;
+const {Col, Row, Tabs, Tab} = bootstrap;
 
 function AuthorAttributes({author}) {
 	if (author.deleted) {
@@ -140,18 +140,51 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	const tabs = [
 		{
 			content: (
-				<WikipediaExtract
-					articleExtract={wikipediaExtract}
-					entity={entity}
-				/>
+				<React.Fragment>
+					<WikipediaExtract
+						articleExtract={wikipediaExtract}
+						entity={entity}
+					/>
+					<EntityAnnotation entity={entity}/>
+					{!entity.deleted &&
+					<React.Fragment>
+						<Row>
+							<Col>
+								<EntityIdentifiers
+									entityUrl={urlPrefix}
+									identifierTypes={identifierTypes}
+									identifiers={entity.identifierSet && entity.identifierSet.identifiers}
+								/>
+							</Col>
+						</Row>
+					</React.Fragment>}
+				</React.Fragment>
 			),
 			id: 'overview',
 			label: 'Overview'
 		},
 		{
-			content: <EntityAnnotation entity={entity}/>,
-			id: 'annotation',
-			label: 'Annotation'
+			content: !entity.deleted &&
+				<EntityLinks
+					buttonHref={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+					entity={entity}
+					label="Work"
+					relationshipTypeIds={[8, 1, 31, 62, 34, 35, 37]}
+					urlPrefix={urlPrefix}
+				/>,
+			id: 'works',
+			label: 'Works'
+		},
+		{
+			content: !entity.deleted &&
+				<EntityLinks
+					entity={entity}
+					label="Translation"
+					relationshipTypeIds={[9]}
+					urlPrefix={urlPrefix}
+				/>,
+			id: 'translations',
+			label: 'Translations'
 		},
 		{
 			content: !entity.deleted &&
@@ -162,11 +195,13 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 		{
 			content: !entity.deleted &&
 				<EntityLinks
+					excludeTypeIds
 					entity={entity}
-					identifierTypes={identifierTypes}
+					label="Relationship"
+					relationshipTypeIds={[8, 9, 10, 1, 31, 62, 34, 35, 37]}
 					urlPrefix={urlPrefix}
 				/>,
-			id: 'entityLinks',
+			id: 'relationships',
 			label: 'Relationships'
 		},
 		{
@@ -174,24 +209,6 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 				<EntityRelatedCollections collections={entity.collections}/>,
 			id: 'entityRelatedCollections',
 			label: 'Related Collections'
-		},
-		{
-			content: !entity.deleted &&
-				<Button
-					className="margin-top-d15"
-					href={`/work/create?${_kebabCase(entity.type)}=${
-						entity.bbid
-					}`}
-					variant="success"
-				>
-					<FontAwesomeIcon
-						className="margin-right-0-5"
-						icon={faPlus}
-					/>
-					Add Work
-				</Button>,
-			id: 'addWork',
-			label: 'Add Work'
 		},
 		{
 			content: !entity.deleted && (
@@ -203,8 +220,8 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 					ref={reviewsRef}
 				/>
 			),
-			id: 'addReview',
-			label: 'Add Review'
+			id: 'review',
+			label: 'Reviews'
 		}
 	];
 	const [activeTab, setActiveTab] = React.useState(tabs[0].id);
