@@ -223,7 +223,7 @@ export function getEditionBasicInfo(edition: any) {
 			languages: getLanguages(edition),
 			pages: _.get(edition, 'pages', null),
 			publisherSet: filterPublisherSet(edition),
-			releaseEventDates: _.get(edition, 'releaseEventSet.releaseEvents', []).map((event) => event.date),
+			releaseEventDate: _.get(edition, 'releaseEventSet.releaseEvents[0].date', ''),
 			status: _.get(edition, 'editionStatus.label', null),
 			weight: _.get(edition, 'weight', null),
 			width: _.get(edition, 'width', null)
