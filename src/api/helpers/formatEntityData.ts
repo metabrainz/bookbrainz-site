@@ -100,6 +100,82 @@ export function getWorkBasicInfo(work: Record<string, unknown> | null | undefine
 }
 
 /**
+ * A function to extract structured author credit details from an Edition ORM entity.
+ * @function
+ * @param {object} edition - an edition ORM entity
+ * @returns {object|null} an object containing the author credit data, or null if not available.
+ *
+ * @example
+ * 		const edition = await orm.func.entity.getEntity(orm, 'Edition', bbid, relations);
+ *		filterAuthorCredit(edition);
+ *		/* => {
+ *			"authorCount": 1,
+ *			"id": 135,
+ *			"names": [
+ *				{
+ *					"authorBBID": "e5c4e68b-bfce-4c77-9ca2-0f0a2d4d09f0",
+ *					"authorCreditID": 135,
+ *					"name": "J. K. Rowling"
+ *				}
+ *			]
+ *		}
+ */
+
+export function filterAuthorCredit(edition: any) {
+	if (_.isNil(edition) || _.isNil(edition.authorCredit)) { return null; }
+
+	const credit = edition.authorCredit;
+	return {
+		authorCount: credit.authorCount || null,
+		id: credit.id || null,
+		names: (credit.names || []).map(({authorCreditID, authorBBID, name}) => ({
+			authorBBID,
+			authorCreditID,
+			name
+		}))
+	};
+}
+
+/**
+ * A function to extract basic publisher information from an Edition ORM entity.
+ * @function
+ * @param {object} edition - an edition ORM entity
+ * @returns {object|null} an object containing publisher set data, or null if not available.
+ *
+ * @example
+ * 		const edition = await orm.func.entity.getEntity(orm, 'Edition', bbid, relations);
+ *		filterPublisherSet(edition);
+ *		/* => {
+ *			"id": 2217,
+ *			"publishers": [
+ *				{
+ *					"bbid": "d30d7df9-eb6f-4bd5-a69f-a9a3362a6f4a",
+ *					"ended": false,
+ *					"name": "Bloomsbury",
+ *					"publisherType": "Publisher",
+ *					"sortName": "Bloomsbury"
+ *				}
+ *			]
+ *		}
+ */
+
+export function filterPublisherSet(edition: any) {
+	if (_.isNil(edition) || _.isNil(edition.authorCredit)) { return null; }
+
+	const {publisherSet} = edition;
+	return {
+		id: publisherSet.id || null,
+		publishers: (publisherSet.publishers || []).map(({bbid, name, sortName, ended, publisherType}) => ({
+			bbid,
+			ended,
+			name,
+			publisherType,
+			sortName
+		}))
+	};
+}
+
+/**
  * A function to extract the basic details of an Edition ORM entity
  * @function
  * @param {object} edition - an edition ORM entity
@@ -137,6 +213,7 @@ export function getWorkBasicInfo(work: Record<string, unknown> | null | undefine
 export function getEditionBasicInfo(edition: any) {
 	return _.isNil(edition) ? null :
 		{
+			authorCredit: filterAuthorCredit(edition),
 			bbid: _.get(edition, 'bbid', null),
 			defaultAlias: getDefaultAlias(edition),
 			depth: _.get(edition, 'depth', null),
@@ -145,6 +222,7 @@ export function getEditionBasicInfo(edition: any) {
 			height: _.get(edition, 'height', null),
 			languages: getLanguages(edition),
 			pages: _.get(edition, 'pages', null),
+			publisherSet: filterPublisherSet(edition),
 			releaseEventDates: _.get(edition, 'releaseEventSet.releaseEvents', []).map((event) => event.date),
 			status: _.get(edition, 'editionStatus.label', null),
 			weight: _.get(edition, 'weight', null),
