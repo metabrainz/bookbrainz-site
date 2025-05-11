@@ -64,7 +64,7 @@ describe('GET /Edition', () => {
 			'pages',
 			'publisherSet',
 			'status',
-			'releaseEventDates',
+			'releaseEventDate',
 			'weight'
 		);
 	 });
