@@ -107,7 +107,7 @@ export function getWorkBasicInfo(work: Record<string, unknown> | null | undefine
  *
  * @example
  * 		const edition = await orm.func.entity.getEntity(orm, 'Edition', bbid, relations);
- *		filterAuthorCredit(edition);
+ *		getAuthorCredits(edition);
  *		/* => {
  *			"authorCount": 1,
  *			"id": 135,
@@ -121,18 +121,15 @@ export function getWorkBasicInfo(work: Record<string, unknown> | null | undefine
  *		}
  */
 
-export function filterAuthorCredit(edition: any) {
-	if (_.isNil(edition) || _.isNil(edition.authorCredit)) { return null; }
+export function getAuthorCredits(edition: any) {
+	if (_.isNil(edition?.authorCredit)) { return null; }
 
-	const credit = edition.authorCredit;
+	const {authorCredit} = edition;
+	const {id, authorCount, names} = authorCredit;
 	return {
-		authorCount: credit.authorCount || null,
-		id: credit.id || null,
-		names: (credit.names || []).map(({authorCreditID, authorBBID, name}) => ({
-			authorBBID,
-			authorCreditID,
-			name
-		}))
+		authorCount: authorCount ?? null,
+		id: id ?? null,
+		names: names ?? []
 	};
 }
 
@@ -140,39 +137,26 @@ export function filterAuthorCredit(edition: any) {
  * A function to extract basic publisher information from an Edition ORM entity.
  * @function
  * @param {object} edition - an edition ORM entity
- * @returns {object|null} an object containing publisher set data, or null if not available.
+ * @returns {Array<object>} an array of objects containing publisher set data, or null if not available.
  *
  * @example
  * 		const edition = await orm.func.entity.getEntity(orm, 'Edition', bbid, relations);
- *		filterPublisherSet(edition);
- *		/* => {
- *			"id": 2217,
- *			"publishers": [
- *				{
- *					"bbid": "d30d7df9-eb6f-4bd5-a69f-a9a3362a6f4a",
- *					"ended": false,
- *					"name": "Bloomsbury",
- *					"publisherType": "Publisher",
- *					"sortName": "Bloomsbury"
- *				}
- *			]
- *		}
+ *		filterPublishers(edition);
+ *		/* => [
+ *    		{
+ *      	  "bbid": "d30d7df9-eb6f-4bd5-a69f-a9a3362a6f4a",
+ *      	  "name": "Bloomsbury",
+ *     	 	  "sortName": "Bloomsbury"
+ *    		}
+ * 		]
  */
 
-export function filterPublisherSet(edition: any) {
-	if (_.isNil(edition) || _.isNil(edition.authorCredit)) { return null; }
-
-	const {publisherSet} = edition;
-	return {
-		id: publisherSet.id || null,
-		publishers: (publisherSet.publishers || []).map(({bbid, name, sortName, ended, publisherType}) => ({
-			bbid,
-			ended,
-			name,
-			publisherType,
-			sortName
-		}))
-	};
+export function filterPublishers(edition: any) {
+	return _.isNil(edition?.publisherSet) ? null : (edition.publisherSet.publishers ?? []).map(({bbid, name, sortName}) => ({
+		bbid,
+		name,
+		sortName
+	}));
 }
 
 /**
@@ -186,34 +170,52 @@ export function filterPublisherSet(edition: any) {
  * 		const work = await orm.func.entity.getEntity(orm, 'Edition', bbid, relations);
  *		getEditionBasicInfo(work);
  *		/* => {
-			"bbid": "442ab642-985a-4957-9d61-8a1d9e82de1f",
+			"authorCredits": {
+				"authorCount": 1,
+				"id": 135,
+				"names": [
+				{
+					"authorCreditID": 135,
+					"position": 0,
+					"authorBBID": "e5c4e68b-bfce-4c77-9ca2-0f0a2d4d09f0",
+					"name": "J. K. Rowling",
+					"joinPhrase": ""
+				}
+				]
+			},
+			"bbid": "ceb76296-45a4-44fe-a1da-8ae6ff341f96",
 			"defaultAlias": {
 				"language": "eng",
-				"name": "A Monster Calls",
+				"name": "Harry Potter and the Deathly Hallows",
 				"primary": true,
-				"sortName": "Monster Calls, A"
+				"sortName": "Harry Potter and the Deathly Hallows"
 			},
-			"depth": null,
+			"depth": 45,
 			"disambiguation": null,
-			"editionFormat": "eBook",
-			"height": null,
+			"editionFormat": "Hardcover",
+			"height": 205,
 			"languages": [
 				"eng"
 			],
-			"pages": 214,
-			"releaseEventDates": [
-				"2011-01-01"
+			"pages": 607,
+			"publishers": [
+				{
+				"bbid": "d30d7df9-eb6f-4bd5-a69f-a9a3362a6f4a",
+				"name": "Bloomsbury",
+				"sortName": "Bloomsbury"
+				}
 			],
+			"releaseEventDate": "+002007-07-21",
 			"status": "Official",
 			"weight": null,
-			"width": null
+			"width": 135
 		}
  */
 
 export function getEditionBasicInfo(edition: any) {
 	return _.isNil(edition) ? null :
 		{
-			authorCredit: filterAuthorCredit(edition),
+			authorCredits: getAuthorCredits(edition),
 			bbid: _.get(edition, 'bbid', null),
 			defaultAlias: getDefaultAlias(edition),
 			depth: _.get(edition, 'depth', null),
@@ -222,7 +224,7 @@ export function getEditionBasicInfo(edition: any) {
 			height: _.get(edition, 'height', null),
 			languages: getLanguages(edition),
 			pages: _.get(edition, 'pages', null),
-			publisherSet: filterPublisherSet(edition),
+			publishers: filterPublishers(edition),
 			releaseEventDate: _.get(edition, 'releaseEventSet.releaseEvents[0].date', ''),
 			status: _.get(edition, 'editionStatus.label', null),
 			weight: _.get(edition, 'weight', null),

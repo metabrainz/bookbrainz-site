@@ -121,32 +121,20 @@ const editionError = 'Edition not found';
  *                   name:
  *                     type: string
  *                     example: 'J. K. Rowling'
- *        publisherSet:
- *          type: object
- *          properties:
- *            id:
- *              type: integer
- *              example: 2217
- *            publishers:
- *              type: array
- *              items:
- *                type: object
- *                properties:
- *                  bbid:
- *                    type: string
- *                    example: 'd30d7df9-eb6f-4bd5-a69f-a9a3362a6f4a'
- *                  name:
- *                    type: string
- *                    example: 'Bloomsbury'
- *                  sortName:
- *                    type: string
- *                    example: 'Bloomsbury'
- *                  ended:
- *                    type: boolean
- *                    example: false
- *                  publisherType:
- *                    type: string
- *                    example: 'Publisher'
+ *        publishers:
+ *          type: array
+ *          items:
+ * 			  type: object
+ *            properties:
+ *              bbid:
+ *               type: string
+ *               example: 'd30d7df9-eb6f-4bd5-a69f-a9a3362a6f4a'
+ *              name:
+ *               type: string
+ *               example: 'Bloomsbury'
+ *              sortName:
+ *               type: string
+ *               example: 'Bloomsbury'
  */
 
 
