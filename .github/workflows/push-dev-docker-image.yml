@@ -37,6 +37,7 @@ jobs:
           else
             echo "DOCKER_TARGET=bookbrainz-prod" >> $GITHUB_ENV
             echo "DOCKER_IMAGE=bookbrainz" >> $GITHUB_ENV
+          fi
 
       - uses: actions/checkout@v3
         # empty strings evaluate to 0
