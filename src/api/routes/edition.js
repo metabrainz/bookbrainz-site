@@ -390,7 +390,7 @@ router.get('/',
 				.filter(relationshipsFilterMethod)
 				.forEach((filteredEdition) => {
 					// added relationship to make the output consistent
-					editionRelationshipList.push({entity: filteredEdition, relationship: {}});
+					editionRelationshipList.push({entity: filteredEdition, relationships: []});
 				});
 		}
 
@@ -405,7 +405,7 @@ router.get('/',
 				.filter(relationshipsFilterMethod)
 				.forEach((filteredEdition) => {
 					// added relationship to make the output consistent
-					editionRelationshipList.push({entity: filteredEdition, relationship: {}});
+					editionRelationshipList.push({entity: filteredEdition, relationships: []});
 				});
 		}
 

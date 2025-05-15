@@ -365,7 +365,7 @@ router.get('/',
 				.filter(relationshipsFilterMethod)
 				.forEach((filteredEdition) => {
 					// added relationship to make the output consistent
-					publisherRelationshipList.push({entity: filteredEdition, relationship: {}});
+					publisherRelationshipList.push({entity: filteredEdition, relationships: []});
 				});
 		}
 		return res.status(200).send({
