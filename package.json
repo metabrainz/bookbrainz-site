@@ -56,7 +56,7 @@
     "http-status": "^1.6.2",
     "immutable": "^3.8.2",
     "influx": "^5.9.3",
-    "isomorphic-dompurify": "^0.13.0",
+    "isomorphic-dompurify": "^2.24.0",
     "jsesc": "^3.0.2",
     "lobes4": "4.0.1",
     "lodash": "^4.17.21",
@@ -88,7 +88,7 @@
     "redux-thunk": "^2.2.0",
     "serve-favicon": "^2.4.3",
     "serve-static": "1.16.1",
-    "superagent": "^8.0.8",
+    "superagent": "^10.2.1",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.0",
     "validator": "^13.7.0"

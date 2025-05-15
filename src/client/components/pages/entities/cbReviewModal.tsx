@@ -404,8 +404,8 @@ class CBReviewModal extends React.Component<
 					<Rating
 						transition
 						className="rating-stars"
-						value={rating}
 						size={20}
+						value={rating}
 						onClick={this.handleRatingsChange}
 					/>
 				</div>

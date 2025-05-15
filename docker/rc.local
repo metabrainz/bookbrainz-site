@@ -1,0 +1,30 @@
+#!/bin/bash
+
+function log() {
+   printf "%(%Y-%m-%d %H:%M:%S %Z)T rc.local: "
+   echo $@
+}
+
+log "Hello, this is BookBrainz rc.local. CONTAINER_NAME is $CONTAINER_NAME, and DEPLOY_ENV is $DEPLOY_ENV"
+
+
+# Webserver
+if [ "${CONTAINER_NAME}" = "bookbrainz-web-${DEPLOY_ENV}" ]
+then
+    log Enabling webservice
+    rm -f /etc/service/webserver/down
+fi
+
+# CRON (only for production environment)
+if [ "${CONTAINER_NAME}" = "bookbrainz-cron-prod" ]
+then
+    log Enabling CRON
+    rm -f /etc/service/cron/down
+fi
+
+# API
+if [ "${CONTAINER_NAME}" = "bookbrainz-webservice-${DEPLOY_ENV}" ]
+then
+    log Enabling API
+    rm -f /etc/service/webservice/down
+fi
