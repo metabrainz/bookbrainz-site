@@ -5,6 +5,14 @@ name: Push development Docker image
 on:
   workflow_dispatch:
     inputs:
+      target:
+        type: choice
+        description: Website or API?
+        options: 
+        - website
+        - API
+        required: true
+        default: 'website'
       pr:
         description: 'PR number (if deploying a PR)'
         required: false
@@ -21,6 +29,15 @@ jobs:
       runs-on: ubuntu-latest
 
       steps:
+      - name: Set Docker image and target env variables
+        run: |
+          if [ "${{ inputs.target }}" = "API" ]; then
+            echo "DOCKER_TARGET=bookbrainz-webservice" >> $GITHUB_ENV
+            echo "DOCKER_IMAGE=bookbrainz-webservice" >> $GITHUB_ENV
+          else
+            echo "DOCKER_TARGET=bookbrainz-prod" >> $GITHUB_ENV
+            echo "DOCKER_IMAGE=bookbrainz" >> $GITHUB_ENV
+
       - uses: actions/checkout@v3
         # empty strings evaluate to 0
         if: ${{ github.event.inputs.pr == 0}}
@@ -37,12 +54,12 @@ jobs:
         run: echo ${{ secrets.DOCKER_HUB_PASSWORD }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
         continue-on-error: true
 
-      - name: Build development image
+      - name: Build ${{ inputs.target}} development image ${{ inputs.tag }}
         run: |
           docker build \
-            --target bookbrainz-prod \
-            --tag metabrainz/bookbrainz:"${{ github.event.inputs.tag }}" \
-            --build-arg DEPLOY_ENV="${{ github.event.inputs.tag }}" \
+            --target $DOCKER_TARGET \
+            --tag metabrainz/$DOCKER_IMAGE:"${{ inputs.tag }}" \
             --build-arg GIT_COMMIT_SHA="${{ github.sha }}" .
-      - name: Push development image
-        run: docker push metabrainz/bookbrainz:"${{ github.event.inputs.tag }}"
+
+      - name: Push ${{ inputs.target}} development image ${{ inputs.tag }}
+        run: docker push metabrainz/$DOCKER_IMAGE:"${{ inputs.tag }}"
