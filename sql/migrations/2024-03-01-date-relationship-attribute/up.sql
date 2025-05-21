@@ -1,9 +1,9 @@
 BEGIN;
 
-INSERT INTO bookbrainz.relationship_attribute_type (id, parent, root, child_order, name, description)
+INSERT INTO bookbrainz.relationship_attribute_type (parent, root, child_order, name, description)
 VALUES
-	  (3, NULL, 1, 0, 'Begin date', 'This attribute indicates when the relationship begin.'),
-	  (4, NULL, 1, 0, 'End date', 'This attribute indicates when the relationship ended.');
+	  (NULL, 1, 0, 'Begin date', 'This attribute indicates when the relationship begin.'),
+	  (NULL, 1, 1, 'End date', 'This attribute indicates when the relationship ended.');
 
       
 
