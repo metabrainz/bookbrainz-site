@@ -36,7 +36,7 @@ export function browseAuthorBasicTests(res) {
 	res.body.authors.forEach((author) => {
 		expect(author).to.have.all.keys(
 			'entity',
-			'relationship'
+			'relationships'
 		);
 		expect(author.entity).to.have.all.keys(
 			'authorType',
@@ -63,7 +63,7 @@ export function browseSeriesBasicTests(res) {
 	res.body.series.forEach((series) => {
 		expect(series).to.have.all.keys(
 			'entity',
-			'relationship'
+			'relationships'
 		);
 		expect(series.entity).to.have.all.keys(
 			'seriesOrderingType',
@@ -85,7 +85,7 @@ export function browseWorkBasicTests(res) {
 	res.body.works.forEach((work) => {
 		expect(work).to.have.all.keys(
 			'entity',
-			'relationship'
+			'relationships'
 		);
 		expect(work.entity).to.have.all.keys(
 			'bbid',
@@ -106,12 +106,12 @@ export function browseEditionBasicTests(res) {
 		'bbid',
 		'editions'
 	);
-	res.body.editions.forEach((work) => {
-		expect(work).to.have.all.keys(
+	res.body.editions.forEach((edition) => {
+		expect(edition).to.have.all.keys(
 			'entity',
-			'relationship'
+			'relationships'
 		);
-		expect(work.entity).to.have.all.keys(
+		expect(edition.entity).to.have.all.keys(
 			'bbid',
 			'defaultAlias',
 			'depth',
@@ -135,12 +135,12 @@ export function browseEditionGroupBasicTests(res) {
 		'bbid',
 		'editionGroups'
 	);
-	res.body.editionGroups.forEach((work) => {
-		expect(work).to.have.all.keys(
+	res.body.editionGroups.forEach((editionGroup) => {
+		expect(editionGroup).to.have.all.keys(
 			'entity',
-			'relationship'
+			'relationships'
 		);
-		expect(work.entity).to.have.all.keys(
+		expect(editionGroup.entity).to.have.all.keys(
 			'bbid',
 			'defaultAlias',
 			'disambiguation',
@@ -156,12 +156,12 @@ export function browsePublisherBasicTests(res) {
 		'bbid',
 		'publishers'
 	);
-	res.body.publishers.forEach((work) => {
-		expect(work).to.have.all.keys(
+	res.body.publishers.forEach((publisher) => {
+		expect(publisher).to.have.all.keys(
 			'entity',
-			'relationship'
+			'relationships'
 		);
-		expect(work.entity).to.have.all.keys(
+		expect(publisher.entity).to.have.all.keys(
 			'area',
 			'bbid',
 			'beginDate',
