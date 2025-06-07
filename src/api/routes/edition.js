@@ -124,7 +124,7 @@ const editionError = 'Edition not found';
  *        publishers:
  *          type: array
  *          items:
- * 			  type: object
+ *            type: object
  *            properties:
  *              bbid:
  *               type: string
