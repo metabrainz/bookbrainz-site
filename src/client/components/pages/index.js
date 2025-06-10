@@ -192,6 +192,15 @@ class IndexPage extends React.Component {
 							</Row>
 						</Container>
 					</div>
+					<div id="cover-image-source">
+					Cover image by{' '}
+						<a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">
+								Stewart Butterfield
+						</a> (
+						<a href="https://creativecommons.org/licenses/by/2.0/deed.en">
+								CC-BY-2.0
+						</a>)
+					</div>
 				</div>
 			</div>
 		);
