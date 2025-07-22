@@ -112,6 +112,7 @@ export function browseEditionBasicTests(res) {
 			'relationship'
 		);
 		expect(work.entity).to.have.all.keys(
+			'authorCredits',
 			'bbid',
 			'defaultAlias',
 			'depth',
@@ -120,7 +121,8 @@ export function browseEditionBasicTests(res) {
 			'height',
 			'languages',
 			'pages',
-			'releaseEventDates',
+			'publishers',
+			'releaseEventDate',
 			'status',
 			'weight',
 			'width'
