@@ -48,24 +48,30 @@ function WikipediaExtract({entity, articleExtract}: Props) {
 	const [state, setState] = useState(articleExtract);
 
 	useEffect(() => {
-		if (!state.extract) {
-			const wikidataId = getWikidataId(entity);
-			if (!wikidataId) {
-				return;
-			}
-
-			const aliasLanguages = getAliasLanguageCodes(entity);
-			const preferredLanguages = uniq(['en', ...aliasLanguages]);
-
-			getWikipediaExtractForWikidata(wikidataId, preferredLanguages).then((result) => {
-				if (result.extract) {
-					setState(result);
+		async function fetchWikipediaExtract() {
+			if (!state.extract) {
+				const wikidataId = getWikidataId(entity);
+				if (!wikidataId) {
+					return;
 				}
-			}).catch((error) => {
-				// eslint-disable-next-line no-console -- no other logger available for browser
-				console.warn('Failed to load Wikipedia extract:', error);
-			});
+
+				const aliasLanguages = getAliasLanguageCodes(entity);
+				const preferredLanguages = uniq(['en', ...aliasLanguages]);
+
+				try {
+					const result = await getWikipediaExtractForWikidata(wikidataId, preferredLanguages);
+					if (result.extract) {
+						setState(result);
+					}
+				}
+				catch (error) {
+					// eslint-disable-next-line no-console -- no other logger available for browser
+					console.warn('Failed to load Wikipedia extract:', error);
+				}
+			}
 		}
+
+		fetchWikipediaExtract();
 	}, [entity]);
 
 	const {extract, article} = state;

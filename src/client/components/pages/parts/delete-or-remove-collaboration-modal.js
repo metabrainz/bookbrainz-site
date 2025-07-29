@@ -18,16 +18,16 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-	handleSubmit() {
-		request.post(this.postUrl)
-			.send(this.postData)
-			.then(() => {
-				window.location.href = `/editor/${this.props.userId}/collections`;
-			}, () => {
-				this.setState({
-					error: 'Something went wrong! Please try again later'
-				});
+	async handleSubmit() {
+		try {
+			await request.post(this.postUrl).send(this.postData);
+			window.location.href = `/editor/${this.props.userId}/collections`;
+		}
+		catch (error) {
+			this.setState({
+				error: 'Something went wrong! Please try again later'
 			});
+		}
 	}
 
 	render() {

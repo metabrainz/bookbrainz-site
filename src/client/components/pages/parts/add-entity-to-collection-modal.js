@@ -86,31 +86,33 @@ class AddEntityToCollectionModal extends React.Component {
 		this.setState({error: null});
 	}
 
-	handleSubmit() {
-		const cleanedEntities = this.getCleanedEntities();
-		const bbids = cleanedEntities.map(entity => entity.id);
-		if (bbids.length) {
-			request.post(`/collection/${this.props.collectionId}/add`)
-				.send({bbids})
-				.then(() => {
-					this.setState({
-						entities: [],
-						error: null
-					}, () => {
-						this.props.closeModalAndShowMessage({
-							text: `Added ${bbids.length} ${lowerCase(this.props.collectionType)}${bbids.length > 1 ? 's' : ''}`,
-							type: 'success'
-						});
-					});
+	async handleSubmit() {
+		try {
+			const cleanedEntities = this.getCleanedEntities();
+			const bbids = cleanedEntities.map(entity => entity.id);
+
+			if (bbids.length) {
+				await request.post(`/collection/${this.props.collectionId}/add`).send({bbids});
+
+				this.setState({
+					entities: [],
+					error: null
 				}, () => {
-					this.setState({
-						error: 'Something went wrong! Please try again later'
+					this.props.closeModalAndShowMessage({
+						text: `Added ${bbids.length} ${lowerCase(this.props.collectionType)}${bbids.length > 1 ? 's' : ''}`,
+						type: 'success'
 					});
 				});
+			}
+			else {
+				this.setState({
+					error: `No ${lowerCase(this.props.collectionType)} selected`
+				});
+			}
 		}
-		else {
+		catch (error) {
 			this.setState({
-				error: `No ${lowerCase(this.props.collectionType)} selected`
+				error: 'Something went wrong! Please try again later'
 			});
 		}
 	}
