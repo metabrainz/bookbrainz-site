@@ -78,6 +78,47 @@ Our contributing guidelines can be found [here](CONTRIBUTING.md).
 
 <br/>
 
+## Running BookBrainz with Docker
+
+You can run BookBrainz locally using Docker, without needing to install Node.js or PostgreSQL manually.  
+This is the recommended setup for quickly starting development or testing.
+
+### Prerequisites
+- [Docker](https://docs.docker.com/get-docker/) installed
+- [Docker Compose](https://docs.docker.com/compose/) installed
+
+### Steps
+
+All commands to run BookBrainz locally with Docker:
+
+```bash
+# Copy configuration files
+cp config/config.json.example config/config.json
+cp config/secrets.json.example config/secrets.json
+
+# Build and start the containers
+docker-compose up --build
+
+# Stopping the containers
+docker-compose down
+
+# (Optional) Rebuilding containers after code changes
+docker-compose up --build
+
+# View logs
+docker-compose logs -f
+```
+
+# Access the application
+   Once the containers are up, the site should be running at:http://localhost:9099
+
+
+### Notes
+- Make sure ports 9099 (BookBrainz) and 5432 (Postgres) are free on your machine.
+
+This Docker setup allows developers to quickly get a working BookBrainz instance without manual installation steps. 
+
+
 ## Beta and test subdomains
 
 We have two separate subdomains for the purpose of testing and rolling out beta features.
@@ -86,5 +127,5 @@ You can sign in with the same account as the one you use on the main website.
 __[beta.bookbrainz.org](https://beta.bookbrainz.org)__ uses the main database but with a newer version of the code that hasn't been released yet. It is used to test new features.
 
 __[test.bookbrainz.org](https://test.bookbrainz.org)__: all changes made to this subdomain are not in sync with the main database and vice versa.
-This domain is for you to tinker with all features of the website freely without having to verify the correctness of the data you enter. This comes in handy if that's all you need to do instead of having to set up BookBrainz locally.
+This domain is for you to tinker with all features of the website freely without having to verify the correctness of the data you enter. This comes in handy if that'a all you need to do instead of having to set up BookBrainz locally.
 This subdomain is used for testing only and the data is not maintained or updated. It is not guaranteed that any of the data will be authentic.
