@@ -56,7 +56,7 @@ function CallToAction(props) {
 				<br/><small>Not sure what to do? Visit the <a href="/help">help page</a> to get started.</small>
 			</p>
 			<div>
-				<ButtonGroup id="searchpage-button-group">
+				<ButtonGroup id="searchpage-button-group d-inline">
 					{entityTypes.map(renderEntityLink)}
 				</ButtonGroup>
 			</div>
