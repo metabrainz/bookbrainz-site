@@ -1,11 +1,7 @@
-FROM metabrainz/node:20 as bookbrainz-base
+FROM metabrainz/node:24 as bookbrainz-base
 
 ARG DEPLOY_ENV
 ARG GIT_COMMIT_SHA
-
-ARG BUILD_DEPS=" \
-    build-essential \
-    python-dev"
 
 ARG RUN_DEPS=" \
     bzip2 \
@@ -17,8 +13,7 @@ ARG RUN_DEPS=" \
 
 
 RUN apt-get update && \
-    apt-get install --no-install-suggests --no-install-recommends -y \
-        $BUILD_DEPS $RUN_DEPS \
+    apt-get install --no-install-suggests --no-install-recommends -y $RUN_DEPS \
 # remove expired let's encrypt certificate and install new ones (see ca-certificates in build deps too)
     && rm -rf /usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt \
     && update-ca-certificates \
