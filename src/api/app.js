@@ -53,15 +53,14 @@ app.use(session(process.env.NODE_ENV));
 const mainRouter = initRoutes();
 const API_VERSION = process.env.API_VERSION || '1';
 app.use(`/${API_VERSION}`, mainRouter);
-
-// Redirect all requests to /${API_VERSION}/...
-app.use('/*', (req, res) => {
-	res.redirect(308, `/${API_VERSION}${req.originalUrl}`);
-});
-
 // Catch 404 and forward to error handler
 mainRouter.use((req, res) => {
 	res.status(404).send({message: `Incorrect endpoint ${req.path}`});
+});
+
+// Root endpoint redirects to live docs page
+app.use('/', (req, res) => {
+	res.redirect(308, `/${API_VERSION}/docs`);
 });
 
 // initialize elasticsearch
