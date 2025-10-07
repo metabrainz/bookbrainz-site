@@ -57,10 +57,13 @@ app.use(`/${API_VERSION}`, mainRouter);
 mainRouter.use((req, res) => {
 	res.status(404).send({message: `Incorrect endpoint ${req.path}`});
 });
-
 // Root endpoint redirects to live docs page
-app.use('/', (req, res) => {
+app.get('/', (req, res) => {
 	res.redirect(308, `/${API_VERSION}/docs`);
+});
+// Redirect all other requests to /${API_VERSION}/...
+app.use('/*', (req, res) => {
+	res.redirect(308, `/${API_VERSION}${req.originalUrl}`);
 });
 
 // initialize elasticsearch
