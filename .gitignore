@@ -93,3 +93,4 @@ typings/
 
 # Git revision file used in the website
 .git-revision
+.git-version
