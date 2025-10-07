@@ -59,7 +59,7 @@
     "influx": "^5.9.3",
     "isomorphic-dompurify": "^0.13.0",
     "jsesc": "^3.0.2",
-    "lobes5": "git+https://git@github.com/metabrainz/lobes.git#bootstrap5",
+    "lobes5": "^5.0.0",
     "lodash": "^4.17.21",
     "log": "^6.0.0",
     "log-node": "^8.0.3",

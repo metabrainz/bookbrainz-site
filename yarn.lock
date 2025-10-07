@@ -6297,9 +6297,10 @@ loader-utils@^2.0.0:
     emojis-list "^3.0.0"
     json5 "^2.1.2"
 
-"lobes5@git+https://git@github.com/metabrainz/lobes.git#bootstrap5":
+lobes5@^5.0.0:
   version "5.0.0"
-  resolved "git+https://git@github.com/metabrainz/lobes.git#5153d0d065d2d727619aa4a935586f6dcffd9781"
+  resolved "https://registry.yarnpkg.com/lobes5/-/lobes5-5.0.0.tgz#98d24947deaf90665afe4b92d9a97f7eb3bfe445"
+  integrity sha512-fnokfvT3AeG8SNjjp1jzYCtngF7aB2w5ZF1Nqc5SQXduht5KqJxHszfqFaQmadHQCa+nSY93P2shmUNuADIonw==
 
 locate-path@^3.0.0:
   version "3.0.0"
