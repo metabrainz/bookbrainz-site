@@ -51,6 +51,10 @@ $table-striped-bg: #fafafa;
 			color: #fff !important;
 		}
 	}
+	.navbar-toggler-icon {
+	    background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2730%27 height=%2730%27 viewBox=%270 0 30 30%27%3e%3cpath stroke=%27%23D5D2CF%27 stroke-linecap=%27round%27 stroke-miterlimit=%2710%27 stroke-width=%272%27 d=%27M4 7h22M4 15h22M4 23h22%27/%3e%3c/svg%3e")
+	}
+
 }
 
 .navbar-collapse {

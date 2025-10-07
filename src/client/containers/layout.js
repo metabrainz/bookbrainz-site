@@ -311,6 +311,7 @@ class Layout extends React.Component {
 				action="/search"
 				className="ml-auto mr-3"
 				role="search"
+				style={{maxWidth: '350px'}}
 			>
 				<InputGroup>
 					<FormControl required name="q" placeholder="Search for..." type="text"/>
