@@ -54,7 +54,7 @@ router.get('/create', auth.isAuthenticated, auth.isAuthorized(IDENTIFIER_TYPE_ED
 		}));
 	});
 
-router.post('/create/handler', auth.isAuthenticated, auth.isAuthorized(IDENTIFIER_TYPE_EDITOR), identifierTypeCreateOrEditHandler);
+router.post('/create/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(IDENTIFIER_TYPE_EDITOR), identifierTypeCreateOrEditHandler);
 
 router.param(
 	'id',
@@ -94,6 +94,6 @@ router.get('/:id/edit', auth.isAuthenticated, auth.isAuthorized(IDENTIFIER_TYPE_
 		}
 	});
 
-router.post('/:id/edit/handler', auth.isAuthenticated, auth.isAuthorized(IDENTIFIER_TYPE_EDITOR), identifierTypeCreateOrEditHandler);
+router.post('/:id/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(IDENTIFIER_TYPE_EDITOR), identifierTypeCreateOrEditHandler);
 
 export default router;

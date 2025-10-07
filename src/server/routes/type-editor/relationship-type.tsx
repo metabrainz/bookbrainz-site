@@ -54,7 +54,7 @@ router.get('/create', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYPE_
 		}));
 	});
 
-router.post('/create/handler', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYPE_EDITOR), relationshipTypeCreateOrEditHandler);
+router.post('/create/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(RELATIONSHIP_TYPE_EDITOR), relationshipTypeCreateOrEditHandler);
 
 router.param(
 	'id',
@@ -99,6 +99,6 @@ router.get('/:id/edit', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYP
 		}
 	});
 
-router.post('/:id/edit/handler', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYPE_EDITOR), relationshipTypeCreateOrEditHandler);
+router.post('/:id/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(RELATIONSHIP_TYPE_EDITOR), relationshipTypeCreateOrEditHandler);
 
 export default router;
