@@ -34,35 +34,25 @@ import {faTimes} from '@fortawesome/free-solid-svg-icons';
  *        identifiers.
  * @param {number} props.numIdentifiers - The number of identifiers present in
  *        the IdentifierEditor - used to determine the correct button label.
+ * @param {string} props.buttonVariant - The Bootstrap button variant to use.
  * @returns {ReactElement} React element containing the rendered
  *          IdentifierButton.
  */
 function IdentifierButton({
 	identifiersInvalid,
 	numIdentifiers,
-	isUnifiedForm,
+	buttonVariant,
 	...props
 }) {
-	let textComponent = 'Add identifiers (eg. ISBN, Wikidata ID)…';
-	if (!isUnifiedForm) {
-		if (numIdentifiers === 1) {
-			textComponent = 'Edit 1 identifier (eg. ISBN, Wikidata ID)…';
-		}
-		else if (numIdentifiers > 1) {
-			textComponent = `Edit ${numIdentifiers} identifiers (eg. ISBN, Wikidata ID)…`;
-		}
-	}
-	else if (numIdentifiers > 0) {
-		textComponent = <span>Edit identifiers <Badge bg="light" className="ml-1">{numIdentifiers}</Badge></span>;
-	}
-	else {
-		textComponent = 'Add Identifiers';
+	let textComponent = 'Add Identifiers (ISBN, Wikidata ID, …)';
+	if (numIdentifiers > 0) {
+		textComponent = <span>Edit identifiers <Badge bg="info-subtle" className="ml-1" text="info">{numIdentifiers}</Badge></span>;
 	}
 	const iconElement = identifiersInvalid &&
 		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes}/>;
 
 	return (
-		<Button variant={!isUnifiedForm && 'link'} {...props}>
+		<Button variant={buttonVariant} {...props}>
 			{iconElement}
 			{textComponent}
 		</Button>
@@ -70,12 +60,12 @@ function IdentifierButton({
 }
 IdentifierButton.displayName = 'IdentifierButton';
 IdentifierButton.propTypes = {
+	buttonVariant: PropTypes.string,
 	identifiersInvalid: PropTypes.bool.isRequired,
-	isUnifiedForm: PropTypes.bool,
 	numIdentifiers: PropTypes.number.isRequired
 };
 IdentifierButton.defaultProps = {
-	isUnifiedForm: false
+	buttonVariant: 'outline-info'
 };
 
 export default IdentifierButton;
