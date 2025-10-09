@@ -121,10 +121,9 @@ const AliasRow = ({
 					onChange={onPrimaryClick}
 				/>
 			</Col>
-			<Col className="text-right" lg={{offset: 2, span: 3}}>
+			<Col className="d-flex" lg={{offset: 2, span: 3}}>
 				<Button
-					block
-					className="margin-top-d5"
+					className="margin-top-d5 flex-fill"
 					variant="danger"
 					onClick={onRemoveButtonClick}
 				>

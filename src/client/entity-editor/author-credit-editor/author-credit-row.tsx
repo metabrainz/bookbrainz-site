@@ -141,10 +141,9 @@ function AuthorCreditRow({
 
 					</Form.Group>
 				</Col>
-				<Col md={{span: 3}}>
+				<Col className="d-flex align-items-center" md={{span: 3}}>
 					<Button
-						block
-						className="margin-top-d18"
+						className="flex-fill flex-md-shrink-0 margin-top-d18"
 						variant="danger"
 						onClick={handleButtonClick}
 					>

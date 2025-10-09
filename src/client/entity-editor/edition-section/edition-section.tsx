@@ -243,15 +243,16 @@ function EditionSection({
 					onChange={onEditionGroupChange}
 					{...rest}
 				/>
-				<Button
-					block
-					className="wrap"
-					variant="primary"
-					// eslint-disable-next-line react/jsx-no-bind
-					onClick={onToggleShowEditionGroupSection.bind(this, false)}
-				>
-					<FontAwesomeIcon icon={faClone}/>&nbsp;Automatically create an Edition Group
-				</Button>
+				<div className="d-flex">
+					<Button
+						className="wrap flex-fill"
+						variant="primary"
+						// eslint-disable-next-line react/jsx-no-bind
+						onClick={onToggleShowEditionGroupSection.bind(this, false)}
+					>
+						<FontAwesomeIcon icon={faClone}/>&nbsp;Automatically create an Edition Group
+					</Button>
+				</div>
 			</Col>
 		</React.Fragment>
 	);
@@ -296,15 +297,16 @@ function EditionSection({
 							<Alert variant="success">
 								<p>A new Edition Group with the same name will be created automatically.</p>
 								<br/>
-								<Button
-									block
-									className="wrap"
-									variant="success"
-									// eslint-disable-next-line react/jsx-no-bind
-									onClick={onToggleShowEditionGroupSection.bind(this, true)}
-								>
-									<FontAwesomeIcon icon={faSearch}/>&nbsp;Search for an existing Edition Group
-								</Button>
+								<div className="d-flex">
+									<Button
+										className="wrap flex-fill"
+										variant="success"
+										// eslint-disable-next-line react/jsx-no-bind
+										onClick={onToggleShowEditionGroupSection.bind(this, true)}
+									>
+										<FontAwesomeIcon icon={faSearch}/>&nbsp;Search for an existing Edition Group
+									</Button>
+								</div>
 							</Alert>
 						</Col> :
 						getEditionGroupSearchSelect()
