@@ -131,11 +131,11 @@ class DateField extends React.Component {
 			year: this.state.year
 		});
 		const selectedDate = parseISO(dateString);
-		const groupClassName = classNames({'d-none': !this.props.show});
+		const groupClassName = classNames({'d-none': !this.props.show, 'mb-3': true});
 		const isCommonEraDate = Math.sign(this.state.year) === 1 || Math.sign(this.state.year) === 0;
 		return (
 			<div>
-				<Form.Group className={groupClassName}>
+				<Form.Group className={groupClassName} controlId="date-field">
 					<Form.Label>{labelElement}</Form.Label>
 					<InputGroup className="responsive-date-field">
 						<FormControl

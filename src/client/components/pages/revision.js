@@ -290,7 +290,7 @@ class RevisionPage extends React.Component {
 							className="margin-top-2"
 							onSubmit={this.handleSubmit}
 						>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="add-note">
 								<Form.Label>Add Note</Form.Label>
 								<Form.Control
 									as="textarea"

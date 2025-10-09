@@ -385,7 +385,7 @@ function EditionSection({
 			</Row>
 			<Row>
 				<Col lg={shortColSpan}>
-					<Form.Group>
+					<Form.Group className="mb-3" controlId="edition-format">
 						<Form.Label>
 							Format
 							<OverlayTrigger delay={50} overlay={formatTooltip}>
@@ -407,7 +407,7 @@ function EditionSection({
 					</Form.Group>
 				</Col>
 				<Col lg={3}>
-					<Form.Group>
+					<Form.Group className="mb-3" controlId="status">
 						<Form.Label>
 							Status
 							<OverlayTrigger delay={50} overlay={statusTooltip}>

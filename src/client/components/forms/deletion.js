@@ -179,7 +179,7 @@ class EntityDeletionForm extends React.Component {
 									&nbsp;to select it to be merged instead.
 									</p>
 									<hr/>
-									<Form.Group>
+									<Form.Group className="mb-3" controlId="deletion-note">
 										<Form.Label>
 											{noteLabel}
 											<OverlayTrigger

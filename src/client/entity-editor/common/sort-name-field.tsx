@@ -170,7 +170,7 @@ function SortNameField({
 	);
 
 	return (
-		<Form.Group>
+		<Form.Group className="mb-3" controlId="sort-name-input">
 			<Form.Label>
 				{label}
 				<OverlayTrigger delay={50} overlay={tooltip}>

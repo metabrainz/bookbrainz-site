@@ -143,7 +143,7 @@ function PublisherSection({
 			</p>
 			<Row>
 				<Col lg={lgCol}>
-					<Form.Group>
+					<Form.Group className="mb-3" controlId="type">
 						<Form.Label>Type</Form.Label>
 						<Select
 							isClearable

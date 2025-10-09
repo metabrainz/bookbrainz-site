@@ -123,7 +123,7 @@ function AuthorCreditRow({
 				</Col>
 				<Col md={{span: 3}}>
 
-					<Form.Group>
+					<Form.Group className="mb-3" controlId="author-credit-name">
 						<Form.Label>
 							<ValidationLabel empty={name.length === 0} error={!name.length}>
 								Author as credited
@@ -135,7 +135,7 @@ function AuthorCreditRow({
 					</Form.Group>
 				</Col>
 				<Col md={{span: 3}}>
-					<Form.Group>
+					<Form.Group className="mb-3" controlId="join-phrase">
 						<Form.Label>Join Phrase</Form.Label>
 						<Form.Control type="text" value={joinPhrase} onChange={onJoinPhraseChange}/>
 

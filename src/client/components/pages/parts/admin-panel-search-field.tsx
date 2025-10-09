@@ -105,7 +105,7 @@ class AdminPanelSearchField extends React.Component<AdminPanelSearchFieldProps, 
 						role="search"
 						onSubmit={this.handleSubmit}
 					>
-						<Form.Group>
+						<Form.Group className="mb-3" controlId="search-query">
 							<InputGroup>
 								<Form.Control
 									name="q"

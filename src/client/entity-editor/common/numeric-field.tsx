@@ -57,9 +57,9 @@ function NumericField({
 	const labelElement =
 		<ValidationLabel empty={empty} error={error}>{label}</ValidationLabel>;
 
-	const groupClassName = classNames({'d-none': !show});
+	const groupClassName = classNames({'d-none': !show, 'mb-3': true});
 	return (
-		<Form.Group className={groupClassName}>
+		<Form.Group className={groupClassName} controlId={label}>
 			<Form.Label>{labelElement}</Form.Label>
 			<InputGroup>
 				<Form.Control type="number" {...rest}/>

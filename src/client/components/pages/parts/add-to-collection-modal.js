@@ -242,21 +242,21 @@ class AddToCollectionModal extends React.Component {
 					<form
 						className="padding-sides-0 addToCollectionModal-body"
 					>
-						<Form.Group>
+						<Form.Group className="mb-3" controlId="name">
 							<Form.Label>Name</Form.Label>
 							<Form.Control
 								ref={(ref) => this.name = ref}
 								type="text"
 							/>
 						</Form.Group>
-						<Form.Group>
+						<Form.Group className="mb-3" controlId="description">
 							<Form.Label>Description</Form.Label>
 							<Form.Control
 								as="textarea"
 								ref={(ref) => this.description = ref}
 							/>
 						</Form.Group>
-						<Form.Group>
+						<Form.Group className="mb-3" controlId="privacy">
 							<Form.Label>Privacy</Form.Label>
 							<ReactSelect
 								classNamePrefix="react-select"

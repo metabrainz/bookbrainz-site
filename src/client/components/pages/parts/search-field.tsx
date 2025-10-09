@@ -165,7 +165,7 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 						role="search"
 						onSubmit={this.handleSubmit}
 					>
-						<Form.Group>
+						<Form.Group className="mb-3" controlId="search-query">
 							<InputGroup>
 								<Form.Control
 									name="q"

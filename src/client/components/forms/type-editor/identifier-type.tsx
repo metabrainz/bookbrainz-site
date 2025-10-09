@@ -212,7 +212,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 				<Card.Body>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="label">
 								<Form.Label>Label</Form.Label>
 								<Form.Control
 									required
@@ -226,7 +226,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="description">
 								<Form.Label>Description</Form.Label>
 								<Form.Control
 									required
@@ -240,7 +240,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="detectionRegex">
 								<Form.Label>Detection RegEx</Form.Label>
 								<Form.Control
 									required
@@ -254,7 +254,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="validationRegex">
 								<Form.Label>Validation RegEx</Form.Label>
 								<Form.Control
 									required
@@ -268,7 +268,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="displayTemplate">
 								<Form.Label>Display Template</Form.Label>
 								<Form.Control
 									required
@@ -282,7 +282,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="entityType">
 								<Form.Label>Entity Type</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"
@@ -299,7 +299,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="parentId">
 								<Form.Label>Parent Identifier Type</Form.Label>
 								{!formData.parentId ? (
 									<Row className="margin-top-1">
@@ -349,7 +349,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="deprecated">
 								<Form.Label>Deprecated</Form.Label>
 								<FormSelect
 									required
@@ -384,7 +384,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 							<Modal.Title>{formData.parentId ? 'Edit Parent' : 'Add a Parent'}</Modal.Title>
 						</Modal.Header>
 						<Modal.Body>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="parentType">
 								<Form.Label>Parent Type:</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"
@@ -396,7 +396,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 									onChange={handleParentTypeChange}
 								/>
 							</Form.Group>
-							<Form.Group >
+							<Form.Group className="mb-3" controlId="childOrder">
 								<Form.Label>Child Order</Form.Label>
 								<Form.Control
 									required

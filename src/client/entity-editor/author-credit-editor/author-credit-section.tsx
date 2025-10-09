@@ -154,10 +154,10 @@ function AuthorCreditSection({
 	}, [authorCreditEditor]);
 	const SelectWrapper = !isUnifiedForm ? EntitySearchFieldOption : SearchEntityCreate;
 	return (
-		<Row className="margin-bottom-2">
+		<Row>
 			{editor}
 			<Col {...resCol}>
-				<Form.Group>
+				<Form.Group className="mb-3" controlId="author-credit">
 					<Form.Label>
 						{label}
 						<OverlayTrigger delay={50} overlay={tooltip}>
@@ -171,7 +171,8 @@ function AuthorCreditSection({
 						<div className="ac-select">
 							<SelectWrapper
 								customComponents={{DropdownIndicator: null, SingleValue}}
-								instanceId="author0"
+								inputId="author-credit"
+								instanceId="author-credit"
 								isClearable={false}
 								isDisabled={!isEditable}
 								isUnifiedForm={isUnifiedForm}

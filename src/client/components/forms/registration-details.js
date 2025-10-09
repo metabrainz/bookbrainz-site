@@ -116,7 +116,7 @@ class RegistrationForm extends React.Component {
 								name is correct. This is the name that
 								other editors will get to know you by.
 							</p>
-							<Form.Group className="row">
+							<Form.Group className="row mb-3" controlId="display-name">
 								<Form.Label className="col-lg-4 col-form-label">
 									Display Name
 								</Form.Label>
@@ -136,7 +136,7 @@ class RegistrationForm extends React.Component {
 								that will be displayed on your profile
 								page.
 							</p>
-							<Form.Group className="row">
+							<Form.Group className="row mb-3" controlId="gender">
 								<Form.Label className="col-lg-4 col-form-label">Gender</Form.Label>
 								<div className="col-lg-4">
 									<ReactSelect

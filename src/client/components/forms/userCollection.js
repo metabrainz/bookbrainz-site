@@ -198,7 +198,7 @@ class UserCollectionForm extends React.Component {
 							className="padding-sides-0"
 							onSubmit={this.handleSubmit}
 						>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="name">
 								<Form.Label>Name</Form.Label>
 								<Form.Control
 									defaultValue={initialName}
@@ -206,7 +206,7 @@ class UserCollectionForm extends React.Component {
 									type="text"
 								/>
 							</Form.Group>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="description">
 								<Form.Label>Description</Form.Label>
 								<Form.Control
 									as="textarea"
@@ -214,7 +214,7 @@ class UserCollectionForm extends React.Component {
 									ref={(ref) => this.description = ref}
 								/>
 							</Form.Group>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="entityType">
 								<Form.Label>Entity Type</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"
@@ -228,7 +228,7 @@ class UserCollectionForm extends React.Component {
 									ref={(ref) => this.entityType = ref}
 								/>
 							</Form.Group>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="privacy">
 								<Form.Label>Privacy</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"

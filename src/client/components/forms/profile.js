@@ -185,7 +185,7 @@ class ProfileForm extends React.Component {
 									Edit your public profile
 								</Card.Header>
 								<Card.Body>
-									<Form.Group>
+									<Form.Group className="mb-3" controlId="name">
 										<Form.Label>{nameLabel}</Form.Label>
 										<Form.Control
 											defaultValue={name}
@@ -195,7 +195,7 @@ class ProfileForm extends React.Component {
 										/>
 										<Form.Text muted>required</Form.Text>
 									</Form.Group>
-									<Form.Group>
+									<Form.Group className="mb-3" controlId="bio">
 										<Form.Label>Bio</Form.Label>
 										<Form.Control
 											as="textarea"
@@ -205,7 +205,7 @@ class ProfileForm extends React.Component {
 										/>
 									</Form.Group>
 									{titleOptions.length > 0 &&
-										<Form.Group>
+										<Form.Group className="mb-3" controlId="title">
 											<Form.Label>title</Form.Label>
 											<ReactSelect
 												classNamePrefix="react-select"
@@ -227,7 +227,7 @@ class ProfileForm extends React.Component {
 										type="area"
 										onChange={this.handleAreaChange}
 									/>
-									<Form.Group>
+									<Form.Group className="mb-3" controlId="gender">
 										<Form.Label>Gender</Form.Label>
 										<ReactSelect
 											classNamePrefix="react-select"

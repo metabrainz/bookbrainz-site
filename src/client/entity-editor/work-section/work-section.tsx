@@ -175,7 +175,7 @@ function WorkSection({
 			</p>
 			<Row>
 				<Col lg={lgCol}>
-					<Form.Group>
+					<Form.Group	className="mb-3" controlId="work-type">
 						<Form.Label>
 							Type
 							<OverlayTrigger delay={50} overlay={tooltip}>

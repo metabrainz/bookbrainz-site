@@ -194,7 +194,7 @@ class EntitySearchFieldOption extends React.Component {
 		);
 
 		return (
-			<Form.Group>
+			<Form.Group className="mb-3" controlId={this.props.label ?? 'entity-search-field-option'}>
 				{this.props.label && (
 					<Form.Label>
 						{labelElement}
