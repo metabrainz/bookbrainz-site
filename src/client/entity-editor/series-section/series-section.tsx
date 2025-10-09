@@ -183,7 +183,7 @@ function SeriesSection({
 			</p>}
 			<Row>
 				<Col lg={lgCol}>
-					<Form.Group>
+					<Form.Group className="mb-3" controlId="series-ordering-type">
 						<Form.Label>
 							Ordering Type
 							<OverlayTrigger delay={50} overlay={orderingTooltip}>
@@ -204,7 +204,7 @@ function SeriesSection({
 						/>
 					</Form.Group>
 					{!isUnifiedForm &&
-					<Form.Group>
+					<Form.Group className="mb-3" controlId="series-type">
 						<Form.Label>
 							Series Type
 							<OverlayTrigger delay={50} overlay={seriesTypeTooltip}>

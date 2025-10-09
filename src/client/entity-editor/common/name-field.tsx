@@ -74,7 +74,7 @@ function NameField({
 	);
 
 	return (
-		<Form.Group>
+		<Form.Group className="mb-3" controlId="name-field">
 			<Form.Label>
 				{inputLabel}
 				{helpIconElement}

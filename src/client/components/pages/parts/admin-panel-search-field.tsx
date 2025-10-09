@@ -29,7 +29,6 @@ const {Button, Col, InputGroup, Form, Row} = bootstrap;
 
 const SearchButton = (
 	<Button
-		block
 		type="submit"
 		variant="success"
 	>
@@ -106,7 +105,7 @@ class AdminPanelSearchField extends React.Component<AdminPanelSearchFieldProps, 
 						role="search"
 						onSubmit={this.handleSubmit}
 					>
-						<Form.Group>
+						<Form.Group className="mb-3" controlId="search-query">
 							<InputGroup>
 								<Form.Control
 									name="q"
@@ -114,9 +113,7 @@ class AdminPanelSearchField extends React.Component<AdminPanelSearchFieldProps, 
 									value={this.state.query}
 									onChange={this.handleChange}
 								/>
-								<InputGroup.Append>
-									{SearchButton}
-								</InputGroup.Append>
+								{SearchButton}
 							</InputGroup>
 						</Form.Group>
 					</form>

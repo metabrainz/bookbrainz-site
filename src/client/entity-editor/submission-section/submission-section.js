@@ -73,7 +73,7 @@ function SubmissionSection({
 			</h2>
 			<Row>
 				<Col lg={{offset: 3, span: 6}}>
-					<Form.Group>
+					<Form.Group className="mb-3" controlId="edit-note">
 						<Form.Label>
 							{editNoteLabel}
 							<OverlayTrigger delay={50} overlay={tooltip}>

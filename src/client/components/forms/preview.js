@@ -17,7 +17,7 @@ class PreviewPage extends React.Component {
 			if (Object.hasOwnProperty.call(formBody, field)) {
 				const value = formBody[field];
 				formInputs.push(
-					<Form.Group controlId={field} key={field}>
+					<Form.Group className="mb-3" controlId={field} key={field}>
 						<Form.Label>{field}</Form.Label>
 						<Form.Control as={field.includes('submissionSection') ? 'textarea' : 'input'} defaultValue={value} name={field}/>
 					</Form.Group>
@@ -36,8 +36,8 @@ class PreviewPage extends React.Component {
 				<Accordion>
 					<Card>
 						<Card.Header>
-							<Accordion.Toggle as={Button} eventKey="0" variant="link"> &#9654; Data submitted with this request
-							</Accordion.Toggle>
+							<Accordion.Button as={Button} eventKey="0" variant="link"> &#9654; Data submitted with this request
+							</Accordion.Button>
 						</Card.Header>
 						<Accordion.Collapse eventKey="0">
 							<Card.Body>{formInputs}</Card.Body>

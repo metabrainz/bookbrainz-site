@@ -417,7 +417,7 @@ class RelationshipModal
 			attributes = attributeTypes.map(attribute => attribute.name);
 		}
 		return (
-			<Form.Group>
+			<Form.Group className="mb-3" controlId="relationshipType">
 				<Form.Label>Relationship</Form.Label>
 				<ReactSelect
 					classNamePrefix="react-select"

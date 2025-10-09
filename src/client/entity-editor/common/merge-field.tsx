@@ -72,7 +72,7 @@ function MergeField({
 	if (options.length <= 1) {
 		const value = _get(options, `[0][${valueProperty}]`, '');
 		return (
-			<Form.Group>
+			<Form.Group className="mb-3" controlId="merge-field">
 				<Form.Label>
 					{labelComponent}
 					{helpIconElement}
@@ -93,7 +93,7 @@ function MergeField({
 	};
 	const currentOption = options.filter((el) => isEqual(el.value, currentValue));
 	return (
-		<Form.Group>
+		<Form.Group className="mb-3" controlId="merge-field">
 			<Form.Label>
 				{labelComponent}
 				{helpIconElement}

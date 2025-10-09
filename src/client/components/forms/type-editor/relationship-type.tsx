@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-import {Alert, Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
+import {Alert, Button, Card, Col, Form, FormSelect, Modal, Row} from 'react-bootstrap';
 import React, {ChangeEvent, FormEvent, useCallback, useEffect, useState} from 'react';
 import {RelationshipTypeDataT, RelationshipTypeEditorPropsT,
 	defaultRelationshipTypeData, entityTypeOptions, renderSelectedParentRelationshipType} from './typeUtils';
@@ -149,7 +149,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 		  }));
 	}, [formData]);
 
-	const handleDeprecatedChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+	const handleDeprecatedChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
 		const {value} = event.target;
 		setFormData((prevFormData) => ({
 			...prevFormData,
@@ -265,7 +265,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 				<Card.Body>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="label">
 								<Form.Label>Label</Form.Label>
 								<Form.Control
 									required
@@ -279,7 +279,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="description">
 								<Form.Label>Description</Form.Label>
 								<Form.Control
 									required
@@ -293,7 +293,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="linkPhrase">
 								<Form.Label>Link Phrase</Form.Label>
 								<Form.Control
 									required
@@ -307,7 +307,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="reverseLinkPhrase">
 								<Form.Label>Reverse Link Phrase</Form.Label>
 								<Form.Control
 									required
@@ -321,7 +321,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="sourceEntityType">
 								<Form.Label>Source Entity Type</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"
@@ -338,7 +338,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="targetEntityType">
 								<Form.Label>Target Entity Type</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"
@@ -355,13 +355,11 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="parentRelationship">
 								<Form.Label>Parent Relationship</Form.Label>
 								{!formData.parentId ? (
 									<Row className="margin-top-1">
-										<Col
-											className="text-center"
-										>
+										<Col className="text-center">
 											<Button
 												variant="success"
 												onClick={handleAddParent}
@@ -404,27 +402,25 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 							</Form.Group>
 						</Col>
 					</Row>
-
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="deprecated">
 								<Form.Label>Deprecated</Form.Label>
-								<Form.Control
+								<FormSelect
 									required
-									as="select"
 									name="deprecated"
 									value={formData.deprecated.toString()}
 									onChange={handleDeprecatedChange}
 								>
 									<option value="false">No</option>
 									<option value="true">Yes</option>
-								</Form.Control>
+								</FormSelect>
 							</Form.Group>
 						</Col>
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="attributeTypes">
 								<Form.Label>Attribute Types</Form.Label>
 								<ReactSelect
 									closeMenuOnSelect
@@ -468,7 +464,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 							<Modal.Title>{formData.parentId ? 'Edit Parent' : 'Add a Parent'}</Modal.Title>
 						</Modal.Header>
 						<Modal.Body>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="modalParentType">
 								<Form.Label>Parent Type:</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"
@@ -480,7 +476,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 									onChange={handleParentTypeChange}
 								/>
 							</Form.Group>
-							<Form.Group >
+							<Form.Group className="mb-3" controlId="modalChildOrder">
 								<Form.Label>Child Order</Form.Label>
 								<Form.Control
 									required

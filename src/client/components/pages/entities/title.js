@@ -38,7 +38,7 @@ function EntityTitle({entity, handleModalToggle}) {
 				{label}{disambiguation}
 				{handleModalToggle &&
 					<Button
-						className="float-right"
+						className="float-end"
 						variant="success"
 						onClick={handleModalToggle}
 					>

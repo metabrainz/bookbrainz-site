@@ -1,3 +1,5 @@
+@use "sass:color";
+
 /*
  * Copyright (C) 2014-2015, 2021-2022  Ben Ockmore
  *               2015                  Leo Verto
@@ -18,15 +20,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-@import "lobes4/scss/variables.scss";
+@import "~lobes5/scss/variables.scss";
 
 $navbar-light-color: $gray-400;
+$navbar-padding-x: 1rem;
 $brand-secondary: $bookbrainz;
-$disabled-bg: lighten(desaturate($bookbrainz,10%),42%);
-$disabled-color: lighten($disabled-bg,15%);
+$disabled-bg: color.adjust(desaturate($bookbrainz,10%),$lightness: 42%, $space: hsl);
+$disabled-color: color.adjust($disabled-bg,$lightness: 15%, $space: hsl);
 
+$table-striped-bg: #fafafa;
 
-@import "lobes4/scss/bootstrap.scss";
+@import "~lobes5/scss/bootstrap.scss";
 @import "react-datepicker/dist/react-datepicker.css";
 @import "./external-services.scss";
 
@@ -47,6 +51,10 @@ $disabled-color: lighten($disabled-bg,15%);
 			color: #fff !important;
 		}
 	}
+	.navbar-toggler-icon {
+	    background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2730%27 height=%2730%27 viewBox=%270 0 30 30%27%3e%3cpath stroke=%27%23D5D2CF%27 stroke-linecap=%27round%27 stroke-miterlimit=%2710%27 stroke-width=%272%27 d=%27M4 7h22M4 15h22M4 23h22%27/%3e%3c/svg%3e")
+	}
+
 }
 
 .navbar-collapse {
@@ -70,6 +78,18 @@ body {
     body {
         padding-bottom: 128px;
     }
+}
+
+// mimicking BS4 style
+a {
+	text-decoration: none;
+}
+
+.text-right {
+	text-align: right !important;
+}
+.text-left {
+	text-align: left !important;
 }
 
 
@@ -303,7 +323,6 @@ a.contact-text:visited {
 	height: $input-line-height;
 	border-radius: $input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
 	@include transition("border-color ease-in-out .15s, box-shadow ease-in-out .15s");
-	@include form-control-focus();
 	border: 1px solid hsl(0, 0%, 70%) !important;
 	box-shadow: none  !important;
 	&:hover{
@@ -329,33 +348,34 @@ a.contact-text:visited {
 }
 
 /* react-datepicker styling */
-.form-group {
-	.responsive-date-field{
-		width: 18em;
-		.year-field{
-			width:4em;
-		}
-		.other-date-field{
-			width: 3.5em;
-		}
+.responsive-date-field{
+	width: 18em;
+	.year-field{
+		width:4em;
 	}
-	.react-datepicker-wrapper, .react-datepicker__input-container {
-		width: 100%;
+	.other-date-field{
+		width: 3.5em;
 	}
-	.react-datepicker {
-		font-family: inherit;
+	.date-picker {
+		width: auto;
+	}
+}
+.react-datepicker-wrapper, .react-datepicker__input-container {
+	width: 100%;
+}
+.react-datepicker {
+	font-family: inherit;
+	font-size: inherit;
+	.react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
+		width: 2.3rem;
+		line-height: 2.3rem;
+		margin: 0.2rem;
+	}
+	.react-datepicker__current-month, .react-datepicker-time__header {
 		font-size: inherit;
-		.react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
-			width: 2.3rem;
-			line-height: 2.3rem;
-			margin: 0.2rem;
-		}
-		.react-datepicker__current-month, .react-datepicker-time__header {
-			font-size: inherit;
-		}
-		.react-datepicker__header__dropdown.react-datepicker__header__dropdown--select {
-			font-size: 0.9rem;
-		}
+	}
+	.react-datepicker__header__dropdown.react-datepicker__header__dropdown--select {
+		font-size: 0.9rem;
 	}
 }
 
@@ -618,10 +638,6 @@ th {
 	border-top-style: none;
 }
 
-.table-striped tbody tr:nth-of-type(odd){
-	background-color: #fafafa;
-}
-
 @media (min-width: map-get($container-max-widths, "md")) {
 	.editor-info dt {
 		text-align: right;
@@ -726,6 +742,10 @@ ul {
 			background-color: #fff;
 		}
 	}
+}
+.btn-warning {
+	--bs-btn-color: #fff;
+	--bs-btn-hover-color: #fff;
 }
 
 /* Match existing behaviour which shrinks lead paragraph size on smaller devices */

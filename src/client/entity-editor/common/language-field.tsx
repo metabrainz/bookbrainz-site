@@ -95,7 +95,7 @@ function LanguageField({
 	}];
 	const fetchOptions = React.useCallback((input) => Promise.resolve(sortFilterOptions(options, input, value)), []);
 	return (
-		<Form.Group>
+		<Form.Group className="mb-3" controlId="language-field">
 			<Form.Label>
 				{label}
 				<OverlayTrigger delay={50} overlay={tooltip}>
@@ -111,7 +111,8 @@ function LanguageField({
 				className="Select"
 				classNamePrefix="react-select"
 				components={{Option: OptimizedOption}}
-				defaultOptions={defaultOptions} loadOptions={fetchOptions} placeholder="Search language" {...rest}
+				defaultOptions={defaultOptions}
+				id="language-field" loadOptions={fetchOptions} placeholder="Search language" {...rest}
 			/>
 		</Form.Group>
 	);

@@ -117,10 +117,9 @@ function IdentifierRow({
 						/>
 					</Form.Group>
 				</Col>
-				<Col className="text-right" lg={{offset: 1, span: 3}}>
+				<Col className="d-flex" lg={{offset: 1, span: 3}}>
 					<Button
-						block
-						className="margin-top-d15"
+						className="flex-fill margin-top-d15"
 						variant="danger"
 						onClick={onRemoveButtonClick}
 					>

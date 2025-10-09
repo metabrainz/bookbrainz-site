@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-import {Alert, Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
+import {Alert, Button, Card, Col, Form, FormSelect, Modal, Row} from 'react-bootstrap';
 import {IdentifierTypeDataT, IdentifierTypeEditorPropsT,
 	defaultIdentifierTypeData, entityTypeOptions, renderSelectedParentIdentifierType} from './typeUtils';
 import React, {ChangeEvent, FormEvent, useCallback, useEffect, useState} from 'react';
@@ -107,7 +107,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 		  }));
 	}, [formData]);
 
-	const handleDeprecatedChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+	const handleDeprecatedChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
 		const {value} = event.target;
 		setFormData((prevFormData) => ({
 			...prevFormData,
@@ -212,7 +212,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 				<Card.Body>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="label">
 								<Form.Label>Label</Form.Label>
 								<Form.Control
 									required
@@ -226,7 +226,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="description">
 								<Form.Label>Description</Form.Label>
 								<Form.Control
 									required
@@ -240,7 +240,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="detectionRegex">
 								<Form.Label>Detection RegEx</Form.Label>
 								<Form.Control
 									required
@@ -254,7 +254,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="validationRegex">
 								<Form.Label>Validation RegEx</Form.Label>
 								<Form.Control
 									required
@@ -268,7 +268,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="displayTemplate">
 								<Form.Label>Display Template</Form.Label>
 								<Form.Control
 									required
@@ -282,7 +282,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="entityType">
 								<Form.Label>Entity Type</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"
@@ -299,7 +299,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 					</Row>
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="parentId">
 								<Form.Label>Parent Identifier Type</Form.Label>
 								{!formData.parentId ? (
 									<Row className="margin-top-1">
@@ -349,18 +349,17 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 
 					<Row>
 						<Col lg={lgCol}>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="deprecated">
 								<Form.Label>Deprecated</Form.Label>
-								<Form.Control
+								<FormSelect
 									required
-									as="select"
 									name="deprecated"
 									value={formData.deprecated.toString()}
 									onChange={handleDeprecatedChange}
 								>
 									<option value="false">No</option>
 									<option value="true">Yes</option>
-								</Form.Control>
+								</FormSelect>
 							</Form.Group>
 						</Col>
 					</Row>
@@ -385,7 +384,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 							<Modal.Title>{formData.parentId ? 'Edit Parent' : 'Add a Parent'}</Modal.Title>
 						</Modal.Header>
 						<Modal.Body>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="parentType">
 								<Form.Label>Parent Type:</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"
@@ -397,7 +396,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 									onChange={handleParentTypeChange}
 								/>
 							</Form.Group>
-							<Form.Group >
+							<Form.Group className="mb-3" controlId="childOrder">
 								<Form.Label>Child Order</Form.Label>
 								<Form.Control
 									required

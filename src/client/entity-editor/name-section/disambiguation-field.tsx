@@ -65,8 +65,8 @@ function DisambiguationField({
 	return (
 
 
-		<Form.Group>
-			<Form.Label>
+		<Form.Group className="mb-3">
+			<Form.Label htmlFor="disambiguation-field">
 				{label}
 				<OverlayTrigger delay={50} overlay={tooltip}>
 					<FontAwesomeIcon
@@ -75,7 +75,7 @@ function DisambiguationField({
 					/>
 				</OverlayTrigger>
 			</Form.Label>
-			<Form.Control type="text" {...rest}/>
+			<Form.Control id="disambiguation-field" type="text" {...rest}/>
 		</Form.Group>
 	);
 }

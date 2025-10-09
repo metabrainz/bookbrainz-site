@@ -92,7 +92,7 @@ function EditionGroupSection({
 			</p>
 			<Row>
 				<Col lg={lgCol}>
-					<Form.Group>
+					<Form.Group className="mb-3" controlId="type-select">
 						<Form.Label>
 							Type
 							<OverlayTrigger delay={50} overlay={tooltip}>

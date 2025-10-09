@@ -31,7 +31,6 @@ const {Button, Col, Dropdown, DropdownButton, InputGroup, Form, Row} = bootstrap
 
 const SearchButton = (
 	<Button
-		block
 		type="submit"
 		variant="success"
 	>
@@ -116,7 +115,6 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 	render() {
 		const entityTypeSelect = Array.isArray(this.props.entityTypes) ? (
 			<DropdownButton
-				as={InputGroup.Append}
 				id="entity-type-select"
 				title={_.startCase(this.state.type) || 'All Entities'}
 				variant="secondary"
@@ -166,7 +164,7 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 						role="search"
 						onSubmit={this.handleSubmit}
 					>
-						<Form.Group>
+						<Form.Group className="mb-3" controlId="search-query">
 							<InputGroup>
 								<Form.Control
 									name="q"
@@ -174,10 +172,8 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 									value={this.state.query}
 									onChange={this.handleChange}
 								/>
-								<InputGroup.Append>
-									{entityTypeSelect}
-									{SearchButton}
-								</InputGroup.Append>
+								{entityTypeSelect}
+								{SearchButton}
 							</InputGroup>
 						</Form.Group>
 					</form>

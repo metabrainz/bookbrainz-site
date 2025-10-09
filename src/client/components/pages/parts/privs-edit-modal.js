@@ -126,7 +126,7 @@ class PrivsEditModal extends React.Component {
 		));
 
 		const noteField = (
-			<Form.Group>
+			<Form.Group className="mb-3" controlId="note">
 				<Form.Label>
 					Note/Reason:
 				</Form.Label>

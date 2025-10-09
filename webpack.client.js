@@ -75,7 +75,11 @@ const clientConfig = {
 					{
 						loader: 'sass-loader',
 						options: {
-							sourceMap: true
+							api: "modern",
+							sourceMap: true,
+							sassOptions:{
+								quietDeps:true,
+							}
 						}
 					}
 				]
