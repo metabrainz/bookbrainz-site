@@ -348,33 +348,34 @@ a.contact-text:visited {
 }
 
 /* react-datepicker styling */
-.form-group {
-	.responsive-date-field{
-		width: 18em;
-		.year-field{
-			width:4em;
-		}
-		.other-date-field{
-			width: 3.5em;
-		}
+.responsive-date-field{
+	width: 18em;
+	.year-field{
+		width:4em;
 	}
-	.react-datepicker-wrapper, .react-datepicker__input-container {
-		width: 100%;
+	.other-date-field{
+		width: 3.5em;
 	}
-	.react-datepicker {
-		font-family: inherit;
+	.date-picker {
+		width: auto;
+	}
+}
+.react-datepicker-wrapper, .react-datepicker__input-container {
+	width: 100%;
+}
+.react-datepicker {
+	font-family: inherit;
+	font-size: inherit;
+	.react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
+		width: 2.3rem;
+		line-height: 2.3rem;
+		margin: 0.2rem;
+	}
+	.react-datepicker__current-month, .react-datepicker-time__header {
 		font-size: inherit;
-		.react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
-			width: 2.3rem;
-			line-height: 2.3rem;
-			margin: 0.2rem;
-		}
-		.react-datepicker__current-month, .react-datepicker-time__header {
-			font-size: inherit;
-		}
-		.react-datepicker__header__dropdown.react-datepicker__header__dropdown--select {
-			font-size: 0.9rem;
-		}
+	}
+	.react-datepicker__header__dropdown.react-datepicker__header__dropdown--select {
+		font-size: 0.9rem;
 	}
 }
 
