@@ -115,7 +115,6 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 	render() {
 		const entityTypeSelect = Array.isArray(this.props.entityTypes) ? (
 			<DropdownButton
-				as={InputGroup.Append}
 				id="entity-type-select"
 				title={_.startCase(this.state.type) || 'All Entities'}
 				variant="secondary"

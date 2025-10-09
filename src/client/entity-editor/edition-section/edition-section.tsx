@@ -398,9 +398,9 @@ function EditionSection({
 							</OverlayTrigger>
 						</Form.Label>
 						<Select
+							isClearable
 							classNamePrefix="react-select"
 							instanceId="editionFormat"
-							isClearable="true"
 							isSearchable={false}
 							options={editionFormatsForDisplay}
 							value={formatOption}

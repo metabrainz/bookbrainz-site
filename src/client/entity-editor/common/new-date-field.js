@@ -141,6 +141,7 @@ class DateField extends React.Component {
 						<FormControl
 							className="year-field"
 							maxLength={isCommonEraDate ? 4 : 5}
+							name="year"
 							placeholder="YYYY"
 							style={{width: '4.5em'}}
 							type="text"
@@ -152,6 +153,7 @@ class DateField extends React.Component {
 						<FormControl
 							className="other-date-field"
 							maxLength="2"
+							name="month"
 							placeholder="MM"
 							type="text"
 							value={this.state.month}
@@ -162,6 +164,7 @@ class DateField extends React.Component {
 						<FormControl
 							className="other-date-field"
 							maxLength="2"
+							name="day"
 							placeholder="DD"
 							type="text"
 							value={this.state.day}
@@ -188,6 +191,7 @@ class DateField extends React.Component {
 							selected={isValid(selectedDate) ? selectedDate : null}
 							style={{fontSize: 'inherit'}}
 							timeFormat="false"
+							wrapperClassName="date-picker"
 							onChange={this.handleChangeOfDatePicker}
 						/>
 					</InputGroup>

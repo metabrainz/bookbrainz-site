@@ -205,9 +205,9 @@ function AuthorSection({
 					<Form.Group className={genderShow ? 'mb-3' : 'd-none'} controlId="gender">
 						<Form.Label>Gender</Form.Label>
 						<Select
+							isClearable
 							classNamePrefix="react-select"
 							instanceId="gender"
-							isClearable="true"
 							options={genderOptionsForDisplay}
 							value={genderOption}
 							onChange={onGenderChange}
