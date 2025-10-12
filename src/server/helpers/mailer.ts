@@ -36,37 +36,37 @@ const {mailConfig} = config;
  *
  * sendEmail("abc@gmail.com", "def@gmail.com", "Revision added to Entity", "some html string")
  * .then((response)=>{
- *  // the response object contains details of a successful response (see https://nodemailer.com/usage)
- * 	  console.log("Email has been sent successfully")
- * 	 })
+ * // the response object contains details of a successful response (see https://nodemailer.com/usage)
+ * console.log("Email has been sent successfully")
+ * })
  * .catch((error)=>{
- * 	  //handle error
- * 	})
+ * //handle error
+ * })
  *
  * Async/Await way :
  *
- *  try{
- * 		const response = await sendEmail("abc@gmail.com", "def@gmail.com", "Revision added to Entity", "some html string")
- * 		console.log("Email has been sent successfully")
- *   }
- * 	catch (error) {
- * 		//handle the error
- * 	}
+ * try{
+ * const response = await sendEmail("abc@gmail.com", "def@gmail.com", "Revision added to Entity", "some html string")
+ * console.log("Email has been sent successfully")
+ * }
+ * catch (error) {
+ * //handle the error
+ * }
  * @description
  * This helper function  sends E-mail with attributes collected from argument in given order.
  * It uses nodemailer's transporter to send the E-mail under the hood.
  * It returns a promise that should be handled using .then()/.catch() or async/await syntax wrapped in a try…catch block.
  */
 
-function sendEmail(
+async function sendEmail(
 	from: string,
 	to: string,
 	subject: string,
-	html: string | JSX.Element
+	html: string | JSX.Element,
 ) {
 	const transporter = nodemailer.createTransport(mailConfig);
-	// returns a promise
-	return transporter.sendMail({from, html, subject, to});
+	// returns a promise's resolved value or throws an error
+	return await transporter.sendMail({from, html, subject, to});
 }
 
 export default sendEmail;
