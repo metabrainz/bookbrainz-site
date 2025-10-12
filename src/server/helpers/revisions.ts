@@ -55,22 +55,30 @@ export async function getAssociatedEntityRevisions(revisions, orm) {
 	const {Entity} = orm;
 	for (let i = 0; i < RevisionModels.length; i++) {
 		const EntityRevision = RevisionModels[i];
-		const entityRevisions = await new EntityRevision()
-			.query((qb) => {
-				qb.whereIn('id', revisionIDs);
-			})
-			.fetchAll({
-				merge: false,
-				remove: false,
-				require: false,
-				withRelated: [
-					'data.aliasSet.defaultAlias'
-				]
-			})
-			.catch(EntityRevision.NotFoundError, (err) => {
+		let entityRevisions;
+		try {
+			entityRevisions = await new EntityRevision()
+				.query((qb) => {
+					qb.whereIn('id', revisionIDs);
+				})
+				.fetchAll({
+					merge: false,
+					remove: false,
+					require: false,
+					withRelated: [
+						'data.aliasSet.defaultAlias'
+					]
+				});
+		}
+		catch (err) {
+			if (err instanceof EntityRevision.NotFoundError) {
 				// eslint-disable-next-line no-console
 				console.log(err);
-			});
+			}
+			else {
+				throw err;
+			}
+		}
 		if (entityRevisions && entityRevisions.length) {
 			const entityRevisionsJSON = entityRevisions.toJSON();
 			for (let index = 0; index < entityRevisionsJSON.length; index++) {
@@ -144,11 +152,16 @@ export async function getOrderedRevisionForEditorPage(from, size, req) {
 	const {Editor, Revision} = req.app.locals.orm;
 
 	// If editor isn't present, throw an error
-	await new Editor({id: req.params.id})
-		.fetch()
-		.catch(Editor.NotFoundError, () => {
+	try {
+		await new Editor({id: req.params.id})
+			.fetch({require: true});
+	}
+	catch (err) {
+		if (err instanceof Editor.NotFoundError) {
 			throw new error.NotFoundError('Editor not found', req);
-		});
+		}
+		throw err;
+	}
 	const revisions = await new Revision()
 		.query('where', 'author_id', '=', parseInt(req.params.id, 10))
 		.orderBy('created_at', 'DESC')
@@ -189,9 +202,8 @@ export async function getOrderedRevisionForEditorPage(from, size, req) {
  * In order to fetch the complete history tree containing all three entities, we need to recursively check
  * if a source_bbid appears as a target_bbid in other rows.
  */
-async function recursivelyGetMergedEntitiesBBIDs(orm: any, bbids: string[]) {
-	const returnValue: string[] = [];
-	await Promise.all(bbids.map(async (bbid) => {
+async function recursivelyGetMergedEntitiesBBIDs(orm: any, bbids: string[]): Promise<string[]> {
+	const results = await Promise.all(bbids.map(async (bbid) => {
 		let thisLevelBBIDs = await orm.bookshelf.knex
 			.select('source_bbid')
 			.from('bookbrainz.entity_redirect')
@@ -199,9 +211,9 @@ async function recursivelyGetMergedEntitiesBBIDs(orm: any, bbids: string[]) {
 			// Flatten the returned array of objects
 		thisLevelBBIDs = flatMap(thisLevelBBIDs, 'source_bbid');
 		const nextLevelBBIDs = await recursivelyGetMergedEntitiesBBIDs(orm, thisLevelBBIDs);
-		returnValue.push(...thisLevelBBIDs, ...nextLevelBBIDs);
+		return [...thisLevelBBIDs, ...nextLevelBBIDs];
 	}));
-	return returnValue;
+	return flatMap(results);
 }
 
 export async function getOrderedRevisionsForEntityPage(orm: any, from: number, size: number, RevisionModel, bbid: string) {
@@ -238,4 +250,3 @@ export async function getOrderedRevisionsForEntityPage(orm: any, from: number, s
 		return {editor, revisionId, ...revision};
 	});
 }
-
