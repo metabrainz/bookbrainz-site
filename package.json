@@ -118,7 +118,7 @@
     "chai": "^4.3.6",
     "chai-arrays": "^2.2.0",
     "chai-as-promised": "^7.0.0",
-    "chai-http": "^4.3.0",
+    "chai-http": "^4.4.0",
     "chai-sorted": "^0.2.0",
     "clean-webpack-plugin": "^4.0.0",
     "compression-webpack-plugin": "^9.2.0",
