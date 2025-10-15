@@ -46,7 +46,7 @@ function IdentifierButton({
 }) {
 	let textComponent = 'Add Identifiers (ISBN, Wikidata ID, …)';
 	if (numIdentifiers > 0) {
-		textComponent = <span>Edit identifiers <Badge bg="info-subtle" className="ml-1" text="info">{numIdentifiers}</Badge></span>;
+		textComponent = <span>Edit identifiers <Badge bg="info-subtle" className="ms-1" text="info">{numIdentifiers}</Badge></span>;
 	}
 	const iconElement = identifiersInvalid &&
 		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes}/>;

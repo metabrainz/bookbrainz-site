@@ -26,7 +26,7 @@ function PrivilegeBadges({privs}) {
 	const privBits = getPrivilegeBitsArray(privs);
 	const privilegeListComp = privBits.map(bit => (
 		<span key={bit}>
-			<Badge bg={getBadgeVariantFromBit(bit)} pill>
+			<Badge pill bg={getBadgeVariantFromBit(bit)}>
 				{getPrivilegeTitleFromBit(bit)}
 			</Badge>
 			{' '}

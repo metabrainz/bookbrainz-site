@@ -282,7 +282,7 @@ class SearchResults extends React.Component {
 								variant="warning"
 								onClick={this.handleClearSelected}
 							>
-								Clear <Badge bg="light" pill>{this.state.selected.length}</Badge> selected
+								Clear <Badge pill bg="light">{this.state.selected.length}</Badge> selected
 							</Button>
 						</ButtonGroup> : null
 				}
