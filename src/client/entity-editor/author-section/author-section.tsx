@@ -242,6 +242,7 @@ function AuthorSection({
 			<div className={!isUnifiedForm && 'text-center'}>
 				<Form.Check
 					defaultChecked={endedChecked}
+					id="ended-checkbox"
 					label={endedLabel}
 					type="checkbox"
 					onChange={onEndedChange}

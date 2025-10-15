@@ -116,6 +116,7 @@ const AliasRow = ({
 			<Col lg={{offset: 5, span: 2}}>
 				<Form.Check
 					defaultChecked={primaryChecked}
+					id="primary-checkbox"
 					label="Primary"
 					type="checkbox"
 					onChange={onPrimaryClick}
