@@ -180,7 +180,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 					</Col>
 				</Row>
 				<FormCheck
-					className="ml-1"
+					className="ms-1"
 					defaultChecked={isChecked}
 					id="works-check"
 					label={checkLabel}
@@ -196,7 +196,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 					 Check the checkbox below to add the Works to a Series
 				</p>
 				<FormCheck
-					className="ml-1 mb-2"
+					className="ms-1 mb-2"
 					defaultChecked={copyToSeries}
 					id="works-copy-to-series"
 					label={seriesWorkLabel}

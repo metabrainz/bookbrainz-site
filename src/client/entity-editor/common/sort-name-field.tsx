@@ -159,7 +159,7 @@ function SortNameField({
 		<Button variant="primary" onClick={handleGuessClick}>Guess</Button>;
 
 	const copyButton =
-		<Button className="ml-1" variant="primary" onClick={handleCopyClick}>Copy</Button>;
+		<Button className="ms-1" variant="primary" onClick={handleCopyClick}>Copy</Button>;
 	/* eslint-enable react/jsx-no-bind */
 
 	const tooltip = (

@@ -45,7 +45,7 @@ class PreviewPage extends React.Component {
 					</Card>
 				</Accordion>
 				<ButtonGroup aria-label="submit" className="mb-3">
-					<Button className="mr-3" type="submit" variant="primary">Continue</Button>
+					<Button className="me-3" type="submit" variant="primary">Continue</Button>
 					<Button href={baseUrl} variant="danger">Cancel</Button>
 				</ButtonGroup>
 			</Form>);

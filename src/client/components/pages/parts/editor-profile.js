@@ -185,7 +185,7 @@ class EditorProfileTab extends React.Component {
 						<Col md={achievementBsSize}>
 							<Card bg="light" className="justify-content-center">
 								<Image
-									className="ml-auto mr-auto"
+									className="ms-auto me-auto"
 									height="160px"
 									src="/images/sadface.png"
 									width="160px"

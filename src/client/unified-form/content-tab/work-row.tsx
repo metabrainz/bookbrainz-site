@@ -57,7 +57,7 @@ function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, rowId, ...r
 				</Col>
 			</Row>
 			<FormCheck
-				className="ml-1 mb-2"
+				className="ms-1 mb-2"
 				defaultChecked={isChecked}
 				id={work.id}
 				label={checkLabel}
