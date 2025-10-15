@@ -24,6 +24,7 @@
 
 $navbar-light-color: $gray-400;
 $navbar-padding-x: 1rem;
+$navbar-nav-link-padding-x: 1rem;
 $brand-secondary: $bookbrainz;
 $disabled-bg: color.adjust(desaturate($bookbrainz,10%),$lightness: 42%, $space: hsl);
 $disabled-color: color.adjust($disabled-bg,$lightness: 15%, $space: hsl);

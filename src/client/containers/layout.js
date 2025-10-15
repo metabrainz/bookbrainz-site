@@ -22,7 +22,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
+import {Alert, Button, Form, FormControl, InputGroup, Nav, NavDropdown, Navbar} from 'react-bootstrap';
 import {IdentifierTypeEditorIcon, RelationshipTypeEditorIcon} from '../helpers/utils';
 import {PrivilegeType, checkPrivilege} from '../../common/helpers/privileges-utils';
 import {
@@ -31,15 +31,13 @@ import {
 	faSearch, faShieldHalved, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle, faUserGear
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import Footer from './../components/footer';
+import Footer from '../components/footer';
 import MergeQueue from '../components/pages/parts/merge-queue';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {faSearchengin} from '@fortawesome/free-brands-svg-icons';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 
-
-const {Alert, Button, Form, FormControl, InputGroup, Nav, Navbar, NavDropdown} = bootstrap;
 
 class Layout extends React.Component {
 	constructor(props) {
@@ -104,7 +102,7 @@ class Layout extends React.Component {
 		);
 		return (
 			<NavDropdown
-				alignRight
+				align="end"
 				id="docs-dropdown"
 				title={docsDropdownTitle}
 				onMouseDown={this.handleMouseDown}
@@ -211,7 +209,7 @@ class Layout extends React.Component {
 
 		const privilegeDropDown = (
 			<NavDropdown
-				alignRight
+				align="end"
 				id="privs-dropdown"
 				title={privilegesDropdownTitle}
 				onMouseDown={this.handleMouseDown}
@@ -231,7 +229,7 @@ class Layout extends React.Component {
 			<>
 				{showPrivilegeDropdown && privilegeDropDown}
 				<NavDropdown
-					alignRight
+					align="end"
 					id="create-dropdown"
 					open={this.state.menuOpen}
 					title={createDropdownTitle}
@@ -270,7 +268,7 @@ class Layout extends React.Component {
 					</NavDropdown.Item>
 				</NavDropdown>
 				<NavDropdown
-					alignRight
+					align="end"
 					id="user-dropdown"
 					title={userDropdownTitle}
 					onMouseDown={this.handleMouseDown}
@@ -309,11 +307,11 @@ class Layout extends React.Component {
 			<Form
 				inline
 				action="/search"
-				className="ml-auto mr-3"
+				className="me-3"
 				role="search"
 				style={{maxWidth: '350px'}}
 			>
-				<InputGroup>
+				<InputGroup className="align-items-stretch h-100">
 					<FormControl required name="q" placeholder="Search for..." type="text"/>
 					<Button type="submit" variant="success">
 						<FontAwesomeIcon icon={faSearch}/>
