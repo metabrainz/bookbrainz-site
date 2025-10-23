@@ -57,23 +57,57 @@ type Props = {
  *        component to indicate that the field is empty.
  * @returns {Object} A React component containing the rendered input.
  */
-function LanguageField({
+function LanguageField({ 
 	empty,
 	error,
 	tooltipText,
 	...rest
 }: Props) {
-	const label =
+	const label = (
 		<ValidationLabel empty={empty} error={error}>Language</ValidationLabel>
-	;
+	);
 	const MAX_DROPDOWN_OPTIONS = 20;
 	const MAX_F1_OPTIONS = 400;
 	const tooltip = <Tooltip id="language-tooltip">{tooltipText}</Tooltip>;
 	rest.options = convertMapToObject(rest.options);
 	const {value, options} = rest;
-	const filterOptions = freezeObjects.filterOptions ?? React.useMemo(() => createFilterOptions({options}), []);
+	const filterOptions = freezeObjects.filterOptions ?? React.useMemo(() => createFilterOptions({ options }), []);
+
+	const SPECIAL_LANGUAGE_LABELS = [
+		"[No linguistic content]",
+		"[Multiple languages]",
+	];
+
 	const sortFilterOptions = (opts, input, selectOptions) => {
-		const newOptions = filterOptions(opts, input, selectOptions).slice(0, MAX_DROPDOWN_OPTIONS);
+		const specialOptions = [];
+		const newOptions = [];
+
+		if (!input || input.trim() === "") {
+			opts.forEach((option) => {
+				if (SPECIAL_LANGUAGE_LABELS.includes(option.label)) {
+					specialOptions.push(option);
+				} else {
+					newOptions.push(option);
+				}
+			});
+		} else {
+			const filteredOptions = filterOptions(opts, input, selectOptions);
+			filteredOptions.forEach((option) => {
+				if (SPECIAL_LANGUAGE_LABELS.includes(option.label)) {
+					specialOptions.push(option);
+				} else {
+					newOptions.push(option);
+				}
+			});
+		}
+		
+		specialOptions.sort((a, b) => {
+			const indexA = SPECIAL_LANGUAGE_LABELS.indexOf(a.label);
+			const indexB = SPECIAL_LANGUAGE_LABELS.indexOf(b.label);
+			
+			return indexA - indexB;
+		});
+
 		const sortLang = (a, b) => {
 			if (isNumber(a.frequency) && isNumber(b.frequency) && a.frequency !== b.frequency) {
 				return b.frequency - a.frequency;
@@ -81,18 +115,27 @@ function LanguageField({
 			return a.label.localeCompare(b.label);
 		};
 		newOptions.sort(sortLang);
-		return newOptions;
+	
+		const combined = [...specialOptions, ...newOptions];
+
+		return combined.slice(0, MAX_DROPDOWN_OPTIONS);
 	};
-	const f2Languages = options.filter((lang) => lang.frequency === 2);
-	const f1Languages = options.filter((lang) => lang.frequency === 1).slice(0, MAX_F1_OPTIONS);
+
+	const f2Languages = options.filter((lang) => lang.frequency === 2 && !SPECIAL_LANGUAGE_LABELS.includes(lang.label));
+	const f1Languages = options.filter((lang) => lang.frequency === 1 && !SPECIAL_LANGUAGE_LABELS.includes(lang.label)).slice(0, MAX_F1_OPTIONS);
 	const defaultOptions = [{
-		label: 'Frequently Used',
-		options: f2Languages
-	},
-	{
-		label: 'Other',
-		options: f1Languages
-	}];
+			label: "Frequently Used",
+			options: [
+				...options.filter((lang) =>
+					SPECIAL_LANGUAGE_LABELS.includes(lang.label)
+				),
+				...f2Languages,
+			]
+		},
+		{
+			label: "Other",
+			options: f1Languages
+		}];
 	const fetchOptions = React.useCallback((input) => Promise.resolve(sortFilterOptions(options, input, value)), []);
 	return (
 		<Form.Group>
