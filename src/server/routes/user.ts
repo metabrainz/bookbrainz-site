@@ -24,7 +24,9 @@ const router = express.Router();
 
 router.get('/:username', async (req, res, next) => {
 	const {Editor} = req.app.locals.orm as ORM;
-	const {username} = req.params;
+	// Express automatically decodes URL-encoded parameters, but we decode again
+	// to ensure proper handling of special characters
+	const username = decodeURIComponent(req.params.username);
 
 	if (!username) {
 		return next(new BadRequestError('Username is required', req));
