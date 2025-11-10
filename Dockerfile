@@ -1,4 +1,4 @@
-FROM metabrainz/node:24 as bookbrainz-base
+FROM metabrainz/node:24 AS bookbrainz-base
 
 ARG DEPLOY_ENV
 ARG GIT_COMMIT_SHA
@@ -21,7 +21,7 @@ RUN apt-get update && \
 
 # PostgreSQL client
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-ENV PG_MAJOR 12
+ENV PG_MAJOR=16
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 RUN apt-get update \
     && apt-get install -y --no-install-recommends postgresql-client-$PG_MAJOR \
@@ -52,13 +52,13 @@ COPY --chown=bookbrainz src/ src/
 
 
 # Development target
-FROM bookbrainz-base as bookbrainz-dev
+FROM bookbrainz-base AS bookbrainz-dev
 ARG DEPLOY_ENV
 
 CMD ["yarn", "start"]
 
 # Production target
-FROM bookbrainz-base as bookbrainz-prod
+FROM bookbrainz-base AS bookbrainz-prod
 ARG DEPLOY_ENV
 
 COPY ./docker/rc.local /etc/rc.local
@@ -88,7 +88,7 @@ RUN ["yarn", "run", "build"]
 RUN ["yarn", "install", "--production", "--ignore-scripts", "--prefer-offline"]
 
 # API target
-FROM bookbrainz-base as bookbrainz-webservice
+FROM bookbrainz-base AS bookbrainz-webservice
 ARG DEPLOY_ENV
 
 COPY ./docker/rc.local /etc/rc.local

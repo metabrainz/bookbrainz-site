@@ -18,6 +18,7 @@ pg_dump\
 	-p $POSTGRES_PORT \
 	-U bookbrainz \
 	-T _editor_entity_visits\
+	-T user_collection*\
 	 --serializable-deferrable\
 	 bookbrainz > /tmp/$DUMP_FILE
 echo "Dump created!"
