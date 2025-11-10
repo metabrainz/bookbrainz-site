@@ -7,7 +7,6 @@ import orm from '../../../bookbrainz-data';
 
 chai.use(chaiHttp);
 const {expect} = chai;
-const {Editor, EditorType} = orm;
 
 describe('GET /user/:username', () => {
 	let editor;
