@@ -20,7 +20,7 @@ services:
   postgres:
     container_name: postgres
     restart: unless-stopped
-    image: postgres:12.3
+    image: postgres:16
     user: postgres
     ports:
       - "5432:5432"
