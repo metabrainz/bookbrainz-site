@@ -37,9 +37,12 @@ $card-border-color: #dce0e5;
 $table-striped-bg: #fafafa;
 $table-border-color: $gray-300;
 $hr-opacity: 0.2;
-$form-check-input-border: $border-width solid $gray-600;
 
 @import "~lobes5/scss/bootstrap.scss";
+
+// Some variables below require importing bootstrap variables first
+$form-check-input-border: $border-width solid $gray-600;
+
 @import "react-datepicker/dist/react-datepicker.css";
 @import "./external-services.scss";
 
