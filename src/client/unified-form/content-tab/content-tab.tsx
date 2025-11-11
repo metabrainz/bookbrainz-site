@@ -214,7 +214,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 						/>
 					</Col>
 				</Row>}
-				{copyToSeries && <SeriesSection {...seriesSectionProps}/>}
+				{copyToSeries && <SeriesSection {...seriesSectionProps} isUnifiedForm/>}
 			</div>
 		</>
 	);

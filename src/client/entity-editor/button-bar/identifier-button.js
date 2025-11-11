@@ -40,13 +40,25 @@ import {faTimes} from '@fortawesome/free-solid-svg-icons';
  */
 function IdentifierButton({
 	identifiersInvalid,
+	isUnifiedForm,
 	numIdentifiers,
 	buttonVariant,
 	...props
 }) {
-	let textComponent = 'Add Identifiers (ISBN, Wikidata ID, …)';
-	if (numIdentifiers > 0) {
+	let textComponent = 'Add identifiers (eg. ISBN, Wikidata ID)…';
+	if (!isUnifiedForm) {
+		if (numIdentifiers === 1) {
+			textComponent = 'Edit 1 identifier (eg. ISBN, Wikidata ID)…';
+		}
+		else if (numIdentifiers > 1) {
+			textComponent = `Edit ${numIdentifiers} identifiers (eg. ISBN, Wikidata ID)…`;
+		}
+	}
+	else if (numIdentifiers > 0) {
 		textComponent = <span>Edit identifiers <Badge bg="info-subtle" className="ms-1" text="info">{numIdentifiers}</Badge></span>;
+	}
+	else {
+		textComponent = 'Add Identifiers';
 	}
 	const iconElement = identifiersInvalid &&
 		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes}/>;
@@ -62,10 +74,12 @@ IdentifierButton.displayName = 'IdentifierButton';
 IdentifierButton.propTypes = {
 	buttonVariant: PropTypes.string,
 	identifiersInvalid: PropTypes.bool.isRequired,
+	isUnifiedForm: PropTypes.bool,
 	numIdentifiers: PropTypes.number.isRequired
 };
 IdentifierButton.defaultProps = {
-	buttonVariant: 'outline-info'
+	buttonVariant: 'outline-info',
+	isUnifiedForm: false
 };
 
 export default IdentifierButton;

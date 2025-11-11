@@ -69,6 +69,7 @@ function ButtonBar({
 				buttonVariant={isUnifiedForm ? 'success' : 'outline-info'}
 				className={identifierEditorClass}
 				identifiersInvalid={identifiersInvalid}
+				isUnifiedForm={isUnifiedForm}
 				numIdentifiers={numIdentifiers}
 				onClick={onIdentifierButtonClick}
 			/>
