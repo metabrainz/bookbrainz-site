@@ -70,14 +70,12 @@ class IndexPage extends React.Component {
 											placeholder="Search for..."
 											type="text"
 										/>
-										<span className="input-group-append">
-											<Button
-												type="submit"
-												variant="success"
-											>
-												<FontAwesomeIcon icon={faSearch}/>
-											</Button>
-										</span>
+										<Button
+											type="submit"
+											variant="success"
+										>
+											<FontAwesomeIcon icon={faSearch}/>
+										</Button>
 									</form>
 									<div className="margin-top-4 d-inline-flex gap-5 w-100">
 										<Button
