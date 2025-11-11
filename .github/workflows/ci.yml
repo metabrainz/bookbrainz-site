@@ -63,10 +63,10 @@ jobs:
           POSTGRES_HOST: localhost
       
       - name: Set up node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v6
         with:
           # We could also test on multiple Node versions if needed: https://github.com/actions/setup-node#matrix-testing
-          node-version: '18'
+          node-version: '24'
           # Enables caching NPM dependencies (uses https://github.com/actions/cache under the hood)
           cache: 'yarn'
           
