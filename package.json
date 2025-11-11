@@ -26,7 +26,6 @@
   "engines": {
     "node": ">= 24"
   },
-  "type": "commonjs",
   "browserslist": "> 0.25%, not dead",
   "overrides": {
     "react-select-fast-filter-options": {
