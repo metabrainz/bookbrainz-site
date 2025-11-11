@@ -26,10 +26,18 @@ $navbar-light-color: $gray-400;
 $navbar-padding-x: 1rem;
 $navbar-nav-link-padding-x: 1rem;
 $brand-secondary: $bookbrainz;
-$disabled-bg: color.adjust(desaturate($bookbrainz,10%),$lightness: 42%, $space: hsl);
-$disabled-color: color.adjust($disabled-bg,$lightness: 15%, $space: hsl);
-
+$disabled-bg: color.adjust(
+	desaturate($bookbrainz, 10%),
+	$lightness: 42%,
+	$space: hsl
+);
+$disabled-color: color.adjust($disabled-bg, $lightness: 15%, $space: hsl);
+$border-color: $gray-400;
+$card-border-color: #dce0e5;
 $table-striped-bg: #fafafa;
+$table-border-color: $gray-300;
+$hr-opacity: 0.2;
+$form-check-input-border: $border-width solid $gray-600;
 
 @import "~lobes5/scss/bootstrap.scss";
 @import "react-datepicker/dist/react-datepicker.css";
@@ -43,7 +51,6 @@ $table-striped-bg: #fafafa;
 		// The following prevents menu items from wrapping to two lines (icon on top text on the bottom)
 		// in browsers sizes between collapsed menu and enough horizontal space for all menu items
 		white-space: nowrap;
-		
 		& > .disabled > a {
 			color: $disabled-color;
 			background: $disabled-bg;
@@ -53,9 +60,8 @@ $table-striped-bg: #fafafa;
 		}
 	}
 	.navbar-toggler-icon {
-	    background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2730%27 height=%2730%27 viewBox=%270 0 30 30%27%3e%3cpath stroke=%27%23D5D2CF%27 stroke-linecap=%27round%27 stroke-miterlimit=%2710%27 stroke-width=%272%27 d=%27M4 7h22M4 15h22M4 23h22%27/%3e%3c/svg%3e")
+		background-image: url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2730%27 height=%2730%27 viewBox=%270 0 30 30%27%3e%3cpath stroke=%27%23D5D2CF%27 stroke-linecap=%27round%27 stroke-miterlimit=%2710%27 stroke-width=%272%27 d=%27M4 7h22M4 15h22M4 23h22%27/%3e%3c/svg%3e");
 	}
-
 }
 
 .navbar-collapse {
@@ -72,13 +78,13 @@ $table-striped-bg: #fafafa;
 
 body {
 	padding-top: 64px;
-    padding-bottom: 64px;
+	padding-bottom: 64px;
 }
 
 @media (max-width: 600px) {
-    body {
-        padding-bottom: 128px;
-    }
+	body {
+		padding-bottom: 128px;
+	}
 }
 
 // mimicking BS4 style
@@ -93,10 +99,12 @@ a {
 	text-align: left !important;
 }
 
-
 // We use bootstrap badges in buttons, which makes them a smidge taller than buttons with just text
-.btn.btn-sm , .btn.btn-xs , .btn-group-xs > .btn, .btn-group-sm > .btn {
-	.badge{
+.btn.btn-sm,
+.btn.btn-xs,
+.btn-group-xs > .btn,
+.btn-group-sm > .btn {
+	.badge {
 		padding: 2px 6px;
 	}
 }
@@ -120,7 +128,7 @@ a {
 	width: 100%;
 	height: 100%;
 	z-index: 10;
-	background-color: rgba(0,0,0,0.6);
+	background-color: rgba(0, 0, 0, 0.6);
 }
 .loading-spinner {
 	position: absolute;
@@ -167,10 +175,18 @@ a {
 	}
 }
 @include generate-margins(6);
-.margin-right-0-5 {margin-right: 0.5em !important};
-.margin-left-0-5 {margin-left: 0.5em !important};
-.margin-right-0-3 {margin-right: 0.3em !important};
-.margin-left-0-3 {margin-left: 0.3em !important};
+.margin-right-0-5 {
+	margin-right: 0.5em !important;
+}
+.margin-left-0-5 {
+	margin-left: 0.5em !important;
+}
+.margin-right-0-3 {
+	margin-right: 0.3em !important;
+}
+.margin-left-0-3 {
+	margin-left: 0.3em !important;
+}
 
 @mixin generate-margins-d($n, $initI: 0) {
 	@for $i from $initI through $n {
@@ -211,7 +227,6 @@ a {
 }
 @include generate-margins-d(60);
 
-
 .deleted {
 	text-decoration: line-through;
 	color: $danger;
@@ -229,9 +244,9 @@ a {
  * Styling for FontAwesome icons, to fix random-sized
  * icons appear while the page is loading (FOUC).
  */
-.svg-inline--fa{
+.svg-inline--fa {
 	height: 1em;
-	vertical-align: -.125em;
+	vertical-align: -0.125em;
 }
 .fa-layers {
 	display: inline-block;
@@ -260,13 +275,13 @@ html {
 	width: 100%;
 	word-break: break-word;
 	background-color: #f5f5f5;
-    bottom: 0;
+	bottom: 0;
 }
 .contact-text {
 	color: rgb(180, 180, 180);
 	flex-direction: column;
-    display: flex;
-    align-items: center;
+	display: flex;
+	align-items: center;
 }
 a.contact-text:visited {
 	color: rgb(180, 180, 180);
@@ -275,20 +290,20 @@ a.contact-text:visited {
 /* index page */
 /* ========== */
 #background-image {
-	background:url(./Bookshelf.jpg);
+	background: url(./Bookshelf.jpg);
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
 	background-size: cover;
-	width:100%;
+	width: 100%;
 }
 
 #background-overlay {
-	background:rgba(0, 0, 0, 0.8);
-	width:100%;
-	height:100%;
-	padding-top:4em;
-	padding-bottom:4em;
+	background: rgba(0, 0, 0, 0.8);
+	width: 100%;
+	height: 100%;
+	padding-top: 4em;
+	padding-bottom: 4em;
 }
 
 /* Removes padding from fixed-width "About", "Contribute" and "Develop" buttons
@@ -298,12 +313,11 @@ a.contact-text:visited {
 	padding-right: 0 !important;
 }
 
-
 /* react-select styling */
 .react-select__option {
 	color: #46433a !important;
 	background-color: white !important;
-	&:hover{
+	&:hover {
 		background-color: #deebff !important;
 		color: #333;
 	}
@@ -320,18 +334,22 @@ a.contact-text:visited {
 .react-select__menu {
 	z-index: 100 !important;
 }
-.react-select__control, .Select-control{
+.react-select__control,
+.Select-control {
 	height: $input-line-height;
 	border-radius: $input-border-radius; // Note: This has no effect on <select>s in some browsers, due to the limited stylability of <select>s in CSS.
-	@include transition("border-color ease-in-out .15s, box-shadow ease-in-out .15s");
+	@include transition(
+		"border-color ease-in-out .15s, box-shadow ease-in-out .15s"
+	);
 	border: 1px solid hsl(0, 0%, 70%) !important;
-	box-shadow: none  !important;
-	&:hover{
+	box-shadow: none !important;
+	&:hover {
 		border: 1px solid hsl(0, 0%, 70%) !important;
 	}
 }
 
-.react-select__placeholder, .Select-placeholder{
+.react-select__placeholder,
+.Select-placeholder {
 	color: $input-placeholder-color;
 	user-select: none;
 	-moz-user-select: none;
@@ -340,39 +358,45 @@ a.contact-text:visited {
 	pointer-events: none;
 }
 
-.react-select__input, .Select-input{
+.react-select__input,
+.Select-input {
 	width: 100%;
 }
 
-.react-select__input, .Select-input input{
+.react-select__input,
+.Select-input input {
 	width: 100% !important;
 }
 
 /* react-datepicker styling */
-.responsive-date-field{
+.responsive-date-field {
 	width: 18em;
-	.year-field{
-		width:4em;
+	.year-field {
+		width: 4em;
 	}
-	.other-date-field{
+	.other-date-field {
 		width: 3.5em;
 	}
 	.date-picker {
 		width: auto;
 	}
 }
-.react-datepicker-wrapper, .react-datepicker__input-container {
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
 	width: 100%;
 }
 .react-datepicker {
 	font-family: inherit;
 	font-size: inherit;
-	.react-datepicker__day-name, .react-datepicker__day, .react-datepicker__time-name {
+	.react-datepicker__day-name,
+	.react-datepicker__day,
+	.react-datepicker__time-name {
 		width: 2.3rem;
 		line-height: 2.3rem;
 		margin: 0.2rem;
 	}
-	.react-datepicker__current-month, .react-datepicker-time__header {
+	.react-datepicker__current-month,
+	.react-datepicker-time__header {
 		font-size: inherit;
 	}
 	.react-datepicker__header__dropdown.react-datepicker__header__dropdown--select {
@@ -398,7 +422,7 @@ a.contact-text:visited {
 	margin-top: 5em;
 	margin-bottom: 5em;
 	width: 100%;
-	>:last-child:not(:only-child) {
+	> :last-child:not(:only-child) {
 		color: $danger;
 	}
 }
@@ -437,29 +461,29 @@ ul.inline-aliases {
 
 hr.thin {
 	margin-top: 10px;
-    margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 hr.wide {
 	margin-top: 40px;
-    margin-bottom: 40px;
+	margin-bottom: 40px;
 }
 #pageWithPagination .pager .dropdown-menu {
 	li {
-	  display: initial;
-	  > a,
-	  > span {
-		display: block;
-		padding: 5px 14px;
-		background-color: $white;
-		border: none;
-		border-radius: 0;
-	  }
+		display: initial;
+		> a,
+		> span {
+			display: block;
+			padding: 5px 14px;
+			background-color: $white;
+			border: none;
+			border-radius: 0;
+		}
 
-	  > a:hover,
-	  > a:focus {
-		text-decoration: none;
-		background-color:$primary;
-	  }
+		> a:hover,
+		> a:focus {
+			text-decoration: none;
+			background-color: $primary;
+		}
 	}
 }
 
@@ -469,13 +493,12 @@ hr.wide {
 	}
 }
 
-.BookBrainz > .container-fluid > .navbar-header{
+.BookBrainz > .container-fluid > .navbar-header {
 	margin-left: 0px;
 	margin-right: 0px;
-	>.navbar-toggler{
+	> .navbar-toggler {
 		margin-right: 0px;
 	}
-
 }
 .revision-note {
 	&:not(:last-child) {
@@ -503,15 +526,16 @@ hr.wide {
 	padding: initial;
 	background: initial;
 	color: inherit;
-    line-height: inherit;
+	line-height: inherit;
 	border: none;
 	border-radius: initial;
 	z-index: 1;
 	min-height: 3em;
 	margin: 0;
-	&.collapse{
+	&.collapse {
 		max-height: max-content;
-		&:not(.show){ //, &.collapsing {
+		&:not(.show) {
+			//, &.collapsing {
 			max-height: 3em;
 			overflow: hidden;
 			display: block;
@@ -522,16 +546,42 @@ hr.wide {
 				width: 100%;
 				content: " ";
 				height: 20px;
-				background: -moz-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
-				background: -webkit-gradient(linear,left top,left bottom,color-stop(0,rgba(255,255,255,0)),color-stop(100%,#fff));
-				background: -webkit-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
-				background: -o-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
-				background: -ms-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
-				background: linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+				background: -moz-linear-gradient(
+					top,
+					rgba(255, 255, 255, 0) 0,
+					#fff 100%
+				);
+				background: -webkit-gradient(
+					linear,
+					left top,
+					left bottom,
+					color-stop(0, rgba(255, 255, 255, 0)),
+					color-stop(100%, #fff)
+				);
+				background: -webkit-linear-gradient(
+					top,
+					rgba(255, 255, 255, 0) 0,
+					#fff 100%
+				);
+				background: -o-linear-gradient(
+					top,
+					rgba(255, 255, 255, 0) 0,
+					#fff 100%
+				);
+				background: -ms-linear-gradient(
+					top,
+					rgba(255, 255, 255, 0) 0,
+					#fff 100%
+				);
+				background: linear-gradient(
+					top,
+					rgba(255, 255, 255, 0) 0,
+					#fff 100%
+				);
 				filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#ffffff', GradientType=0);
 			}
 		}
-}
+	}
 }
 
 .btn.wrap {
@@ -543,12 +593,12 @@ hr.wide {
 		position: relative;
 		padding: 0.1em 1.5em 1em;
 		margin: 0 -1.5em;
-		background-color: rgba($disabled-bg,15%);
+		background-color: rgba($disabled-bg, 15%);
 		&:after,
 		&:before {
-			border: .15em solid $disabled-bg;
+			border: 0.15em solid $disabled-bg;
 			bottom: 0;
-			content: '';
+			content: "";
 			position: absolute;
 			top: 0;
 			width: 4em;
@@ -566,12 +616,12 @@ hr.wide {
 
 .round-color-icon {
 	border-radius: 50%;
-    display: inline-block;
+	display: inline-block;
 	width: 1em;
 	position: relative;
-    margin-right: 0.5em;
+	margin-right: 0.5em;
 	vertical-align: middle;
-    background-color: $brand-secondary;
+	background-color: $brand-secondary;
 	color: $white;
 	& > * {
 		position: absolute;
@@ -597,7 +647,7 @@ hr.wide {
 }
 
 .label-checkbox {
-	padding: 0 .5em;
+	padding: 0 0.5em;
 	vertical-align: text-top;
 }
 
@@ -605,14 +655,13 @@ hr.wide {
 	margin-right: 1em;
 	margin-left: 1em;
 	height: 18em;
-	overflow-y:scroll;
+	overflow-y: scroll;
 }
 
 .checkboxes {
-	margin-right: 0.5em !important;;
+	margin-right: 0.5em !important;
 	vertical-align: text-top;
 }
-
 
 .footer-button {
 	max-width: 200px;
@@ -621,13 +670,13 @@ hr.wide {
 }
 
 .collection-page-buttons {
-    text-align: right;
+	text-align: right;
 }
 
-@media only screen and (max-width: map-get($container-max-widths, "md")){
-    .collection-page-buttons {
-        text-align: center;
-    }
+@media only screen and (max-width: map-get($container-max-widths, "md")) {
+	.collection-page-buttons {
+		text-align: center;
+	}
 }
 
 /* Replicate Boostrap 3 style conventions */
@@ -662,7 +711,7 @@ ul {
 }
 
 // Vertical alignment of the caret symbol in dropdown buttons
-.dropdown-toggle::after{
+.dropdown-toggle::after {
 	vertical-align: middle;
 }
 
@@ -726,7 +775,8 @@ ul {
 		color: #337ab7;
 		border: 1px solid #ddd;
 
-		&:focus,&:hover {
+		&:focus,
+		&:hover {
 			background-color: #f9f6f5;
 		}
 
@@ -737,7 +787,8 @@ ul {
 			box-shadow: none;
 		}
 
-		&:disabled,&.disabled {
+		&:disabled,
+		&.disabled {
 			color: #dbccc6;
 			cursor: not-allowed;
 			background-color: #fff;
@@ -751,9 +802,9 @@ ul {
 
 /* Match existing behaviour which shrinks lead paragraph size on smaller devices */
 @media (max-width: map-get($container-max-widths, "sm")) {
-    p.lead {
-        font-size: 1.0rem;
-    }
+	p.lead {
+		font-size: 1rem;
+	}
 }
 
 /* Restore BS3 padding on input group buttons */
@@ -765,30 +816,29 @@ ul {
 }
 
 /* Unified  form */
-.uf-main{
+.uf-main {
 	padding: 0.6rem;
 }
-.uf-tab{
+.uf-tab {
 	border: 1px #dfdfdf solid;
-	h4{
+	h4 {
 		padding: 0.8rem;
 		margin-bottom: 0;
 		border-bottom: 0.125rem #ed8d60 solid;
-		background-color: #F7F7F7;
-
+		background-color: #f7f7f7;
 	}
-	.tab-content{
+	.tab-content {
 		padding: 1rem;
 	}
 }
-.uf-tab-header{
+.uf-tab-header {
 	padding: 0.6rem 0 0 0.6rem;
 	margin-bottom: 1rem;
-	background-color: #F4E9E3;
-	a{
-		color: #754E37;
+	background-color: #f4e9e3;
+	a {
+		color: #754e37;
 	}
-	.nav-link.nav-item.active{
+	.nav-link.nav-item.active {
 		color: $orange;
 		border-color: $orange;
 		border-bottom: none;
@@ -798,24 +848,23 @@ ul {
 	margin: 0;
 	padding-top: 1rem;
 	padding-bottom: 1rem;
-	button{
+	button {
 		width: max-content;
 	}
-	.col{
+	.col {
 		align-items: stretch;
 		flex-grow: 0;
 		margin-right: 0.3rem;
 		padding: 0;
 	}
-	.col:nth-child(1)
-	{
+	.col:nth-child(1) {
 		margin-right: 3rem;
 	}
 }
-.uf-dialog{
+.uf-dialog {
 	max-width: 700px;
 }
-.uf-dialog.modal-dialog{
+.uf-dialog.modal-dialog {
 	margin: 1.75rem 2rem;
 }
 .ac-select {
@@ -829,10 +878,10 @@ ul {
 }
 
 .cb-data-tip {
-    width: 300px;
+	width: 300px;
 }
 
-.duplicate-result-scroll-window{
+.duplicate-result-scroll-window {
 	max-height: 17em;
 	overflow-y: scroll;
 	&:after {
@@ -842,66 +891,88 @@ ul {
 		width: 100%;
 		content: " ";
 		height: 20px;
-		background: -moz-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
-		background: -webkit-gradient(linear,left top,left bottom,color-stop(0,rgba(255,255,255,0)),color-stop(100%,#fff));
-		background: -webkit-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
-		background: -o-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
-		background: -ms-linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
-		background: linear-gradient(top,rgba(255,255,255,0) 0,#fff 100%);
+		background: -moz-linear-gradient(
+			top,
+			rgba(255, 255, 255, 0) 0,
+			#fff 100%
+		);
+		background: -webkit-gradient(
+			linear,
+			left top,
+			left bottom,
+			color-stop(0, rgba(255, 255, 255, 0)),
+			color-stop(100%, #fff)
+		);
+		background: -webkit-linear-gradient(
+			top,
+			rgba(255, 255, 255, 0) 0,
+			#fff 100%
+		);
+		background: -o-linear-gradient(
+			top,
+			rgba(255, 255, 255, 0) 0,
+			#fff 100%
+		);
+		background: -ms-linear-gradient(
+			top,
+			rgba(255, 255, 255, 0) 0,
+			#fff 100%
+		);
+		background: linear-gradient(top, rgba(255, 255, 255, 0) 0, #fff 100%);
 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#ffffff', GradientType=0);
 	}
 }
-.uf-dialog .accordion > .card{
-	overflow:visible;
+.uf-dialog .accordion > .card {
+	overflow: visible;
 }
 
 // Adding icon to accordion header
-.accordion > .icon-card{
+.accordion > .icon-card {
 	display: flex;
 	overflow: visible;
 	flex-direction: column-reverse;
 }
 
-.accordion > .card > .card-header{
+.accordion > .card > .card-header {
 	border: none;
 	cursor: pointer;
 	display: flex;
 	justify-content: space-between;
 }
-div[class='card-header'] .accordion-arrow {
+div[class="card-header"] .accordion-arrow {
 	transition: all 0.3s linear;
 	transform: rotate(0deg);
 }
-div[class~='show'] + div[class='card-header'] .accordion-arrow,
-div[class~=collapsing]+div[class=card-header] .accordion-arrow {
+div[class~="show"] + div[class="card-header"] .accordion-arrow,
+div[class~="collapsing"] + div[class="card-header"] .accordion-arrow {
 	transform: rotate(90deg);
 }
-.work-item{
-		border-bottom: 1px solid #EAE7E5;
-		margin-bottom: 0.5rem;
+.work-item {
+	border-bottom: 1px solid $gray-300;
+	margin-bottom: 0.5rem;
 }
 
-.uf-modal-body .accordion > .card{
+.uf-modal-body .accordion > .card {
 	margin-bottom: 10px;
 }
-.review-section{
+.review-section {
 	display: flex;
 }
 
-.series-item-dialog{
+.series-item-dialog {
 	max-width: 600px;
 }
 
-.review-card{
+.review-card {
 	margin: 10px;
 	max-width: 200px;
 }
 
-.search-results-heading{
+.search-results-heading {
 	color: #754e37;
 }
 
-.type-details{
+.type-details {
 	padding: 1em 2.5em;
 	border: 1px solid black;
 	border-width: 1px 0;
@@ -909,12 +980,12 @@ div[class~=collapsing]+div[class=card-header] .accordion-arrow {
 
 .hierarchy-arrow {
 	border-left: 1px solid $gray-400;
-    width: 1em;
-    height: 1em;
-    content: "";
-    display: inline-block;
-    border-bottom: 1px solid $gray-400;
-    position: relative;
-    bottom: 0.3em;
+	width: 1em;
+	height: 1em;
+	content: "";
+	display: inline-block;
+	border-bottom: 1px solid $gray-400;
+	position: relative;
+	bottom: 0.3em;
 	left: -0.5em;
 }
