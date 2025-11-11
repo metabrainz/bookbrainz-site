@@ -120,21 +120,19 @@ function AuthorCreditSection({
 	);
 	const checkboxLabel = (
 		<>
-			<FormLabel className="font-weight-normal">
 			This Edition doesn&apos;t have an Author
-				<OverlayTrigger
-					delay={50}
-					overlay={
-						<Tooltip id="ac-enabled">Select this checkbox if this Edition doesn&apos;t have an Author or
+			<OverlayTrigger
+				delay={50}
+				overlay={
+					<Tooltip id="ac-enabled">Select this checkbox if this Edition doesn&apos;t have an Author or
 					if you don&apos;t know the Author(s)
-						</Tooltip>}
-				>
-					<FontAwesomeIcon
-						className="margin-left-0-5"
-						icon={faInfoCircle}
-					/>
-				</OverlayTrigger>
-			</FormLabel>
+					</Tooltip>}
+			>
+				<FontAwesomeIcon
+					className="margin-left-0-5"
+					icon={faInfoCircle}
+				/>
+			</OverlayTrigger>
 		</>
 
 	);
@@ -154,10 +152,10 @@ function AuthorCreditSection({
 	}, [authorCreditEditor]);
 	const SelectWrapper = !isUnifiedForm ? EntitySearchFieldOption : SearchEntityCreate;
 	return (
-		<Row className="margin-bottom-2">
+		<Row>
 			{editor}
 			<Col {...resCol}>
-				<Form.Group>
+				<Form.Group className="mb-3" controlId="author-credit">
 					<Form.Label>
 						{label}
 						<OverlayTrigger delay={50} overlay={tooltip}>
@@ -171,7 +169,8 @@ function AuthorCreditSection({
 						<div className="ac-select">
 							<SelectWrapper
 								customComponents={{DropdownIndicator: null, SingleValue}}
-								instanceId="author0"
+								inputId="author-credit"
+								instanceId="author-credit"
 								isClearable={false}
 								isDisabled={!isEditable}
 								isUnifiedForm={isUnifiedForm}
@@ -183,7 +182,7 @@ function AuthorCreditSection({
 								type="author"
 							/>
 						</div>
-						<InputGroup.Append>{editButton}</InputGroup.Append>
+						{editButton}
 					</InputGroup>
 					<Form.Check
 						checked={!authorCreditEnable}

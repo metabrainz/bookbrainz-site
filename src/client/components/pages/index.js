@@ -70,57 +70,44 @@ class IndexPage extends React.Component {
 											placeholder="Search for..."
 											type="text"
 										/>
-										<span className="input-group-append">
-											<Button
-												type="submit"
-												variant="success"
-											>
-												<FontAwesomeIcon icon={faSearch}/>
-											</Button>
-										</span>
+										<Button
+											type="submit"
+											variant="success"
+										>
+											<FontAwesomeIcon icon={faSearch}/>
+										</Button>
 									</form>
-									<Row className="margin-top-4">
-										<Col md={4}>
-											<Button
-												block
-												href="/about"
-												size="lg"
-												variant="secondary"
-											>
-												About
-											</Button>
-										</Col>
-										<Col md={4}>
-											<Button
-												block
-												href="/contribute"
-												size="lg"
-												variant="secondary"
-											>
-												Contribute
-											</Button>
-										</Col>
-										<Col md={4}>
-											<Button
-												block
-												href="/develop"
-												size="lg"
-												variant="secondary"
-											>
-												Develop
-											</Button>
-										</Col>
-									</Row>
+									<div className="margin-top-4 d-inline-flex gap-5 w-100 flex-wrap">
+										<Button
+											className="flex-fill"
+											href="/about"
+											size="lg"
+											variant="secondary"
+										>
+											About
+										</Button>
+										<Button
+											className="flex-fill"
+											href="/contribute"
+											size="lg"
+											variant="secondary"
+										>
+											Contribute
+										</Button>
+										<Button
+											className="flex-fill"
+											href="/develop"
+											size="lg"
+											variant="secondary"
+										>
+											Develop
+										</Button>
+									</div>
 									<div className="margin-top-3">
 										<h4 className="contact-text">
 											Contact Us
 										</h4>
-										<div style={{
-											alignItems: 'center',
-											display: 'flex',
-											justifyContent: 'center'
-										}}
-										>
+										<div className="d-flex flex-wrap align-items-center justify-content-center">
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
 												icon={faCircle}

@@ -22,7 +22,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
+import {Alert, Button, Form, FormControl, InputGroup, Nav, NavDropdown, Navbar} from 'react-bootstrap';
 import {IdentifierTypeEditorIcon, RelationshipTypeEditorIcon} from '../helpers/utils';
 import {PrivilegeType, checkPrivilege} from '../../common/helpers/privileges-utils';
 import {
@@ -31,15 +31,13 @@ import {
 	faSearch, faShieldHalved, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle, faUserGear
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import Footer from './../components/footer';
+import Footer from '../components/footer';
 import MergeQueue from '../components/pages/parts/merge-queue';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {faSearchengin} from '@fortawesome/free-brands-svg-icons';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 
-
-const {Alert, Button, Form, FormControl, InputGroup, Nav, Navbar, NavDropdown} = bootstrap;
 
 class Layout extends React.Component {
 	constructor(props) {
@@ -103,31 +101,29 @@ class Layout extends React.Component {
 			</span>
 		);
 		return (
-			<Nav>
-				<NavDropdown
-					alignRight
-					id="docs-dropdown"
-					title={docsDropdownTitle}
-					onMouseDown={this.handleMouseDown}
-				>
-					<NavDropdown.Item href="/help">
-						<FontAwesomeIcon fixedWidth icon={faQuestionCircle}/>
-						{' Help '}
-					</NavDropdown.Item>
-					<NavDropdown.Item href="/faq">
-						<FontAwesomeIcon fixedWidth icon={faClipboardQuestion}/>
-						{' FAQs '}
-					</NavDropdown.Item>
-					<NavDropdown.Item href="/relationship-types">
-						<FontAwesomeIcon fixedWidth icon={faLink}/>
-						{' Relationship Types '}
-					</NavDropdown.Item>
-					<NavDropdown.Item href="/identifier-types">
-						<FontAwesomeIcon fixedWidth icon={faBarcode}/>
-						{' Identifier Types '}
-					</NavDropdown.Item>
-				</NavDropdown>
-			</Nav>
+			<NavDropdown
+				align="end"
+				id="docs-dropdown"
+				title={docsDropdownTitle}
+				onMouseDown={this.handleMouseDown}
+			>
+				<NavDropdown.Item href="/help">
+					<FontAwesomeIcon fixedWidth icon={faQuestionCircle}/>
+					{' Help '}
+				</NavDropdown.Item>
+				<NavDropdown.Item href="/faq">
+					<FontAwesomeIcon fixedWidth icon={faClipboardQuestion}/>
+					{' FAQs '}
+				</NavDropdown.Item>
+				<NavDropdown.Item href="/relationship-types">
+					<FontAwesomeIcon fixedWidth icon={faLink}/>
+					{' Relationship Types '}
+				</NavDropdown.Item>
+				<NavDropdown.Item href="/identifier-types">
+					<FontAwesomeIcon fixedWidth icon={faBarcode}/>
+					{' Identifier Types '}
+				</NavDropdown.Item>
+			</NavDropdown>
 		);
 	}
 
@@ -137,14 +133,12 @@ class Layout extends React.Component {
 			{};
 
 		return (
-			<Nav>
-				<Nav.Item>
-					<Nav.Link {...disableSignUp} href="/auth">
-						<FontAwesomeIcon icon={faSignInAlt}/>
-						{' Sign In / Register'}
-					</Nav.Link>
-				</Nav.Item>
-			</Nav>
+			<Nav.Item>
+				<Nav.Link {...disableSignUp} href="/auth">
+					<FontAwesomeIcon icon={faSignInAlt}/>
+					{' Sign In / Register'}
+				</Nav.Link>
+			</Nav.Item>
 		);
 	}
 
@@ -215,7 +209,7 @@ class Layout extends React.Component {
 
 		const privilegeDropDown = (
 			<NavDropdown
-				alignRight
+				align="end"
 				id="privs-dropdown"
 				title={privilegesDropdownTitle}
 				onMouseDown={this.handleMouseDown}
@@ -232,10 +226,10 @@ class Layout extends React.Component {
 			{};
 
 		return (
-			<Nav>
+			<>
 				{showPrivilegeDropdown && privilegeDropDown}
 				<NavDropdown
-					alignRight
+					align="end"
 					id="create-dropdown"
 					open={this.state.menuOpen}
 					title={createDropdownTitle}
@@ -274,7 +268,7 @@ class Layout extends React.Component {
 					</NavDropdown.Item>
 				</NavDropdown>
 				<NavDropdown
-					alignRight
+					align="end"
 					id="user-dropdown"
 					title={userDropdownTitle}
 					onMouseDown={this.handleMouseDown}
@@ -304,7 +298,7 @@ class Layout extends React.Component {
 						{' Sign Out'}
 					</NavDropdown.Item>
 				</NavDropdown>
-			</Nav>
+			</>
 		);
 	}
 
@@ -313,16 +307,15 @@ class Layout extends React.Component {
 			<Form
 				inline
 				action="/search"
-				className="ml-auto mr-3"
+				className="me-3"
 				role="search"
+				style={{maxWidth: '350px'}}
 			>
-				<InputGroup>
+				<InputGroup className="align-items-stretch h-100">
 					<FormControl required name="q" placeholder="Search for..." type="text"/>
-					<InputGroup.Append>
-						<Button type="submit" variant="success">
-							<FontAwesomeIcon icon={faSearch}/>
-						</Button>
-					</InputGroup.Append>
+					<Button type="submit" variant="success">
+						<FontAwesomeIcon icon={faSearch}/>
+					</Button>
 				</InputGroup>
 			</Form>
 		);
@@ -331,44 +324,34 @@ class Layout extends React.Component {
 	renderNavContent() {
 		const {homepage, hideSearch, user} = this.props;
 
-		/*
-		 * GOTCHA: Usage of react-bootstrap FormGroup component inside
-		 * Navbar.Form causes a DOM mutation
-		 */
-		const revisionsClassName = homepage || hideSearch ? 'ml-auto' : null;
-
 		return (
-			<Navbar.Collapse id="bs-example-navbar-collapse-1">
-				{!(homepage || hideSearch) && this.renderSearchForm()}
-				<Nav className={revisionsClassName}>
+			<Navbar.Collapse className="justify-content-end" id="navbar-menu">
+				<Nav>
+					{!(homepage || hideSearch) && this.renderSearchForm()}
 					<Nav.Item>
 						<Nav.Link href="/revisions">
 							<FontAwesomeIcon icon={faListUl}/>
 							{' Revisions '}
 						</Nav.Link>
 					</Nav.Item>
-				</Nav>
-				<Nav>
 					<Nav.Item>
 						<Nav.Link href="/collections">
 							<FontAwesomeIcon icon={faGripVertical}/>
 							{' Collections '}
 						</Nav.Link>
 					</Nav.Item>
-				</Nav>
-				<Nav>
 					<Nav.Item>
 						<Nav.Link href="/statistics">
 							<FontAwesomeIcon icon={faChartLine}/>
 							{' Statistics '}
 						</Nav.Link>
 					</Nav.Item>
+					{this.renderDocsDropdown()}
+					{
+						user && user.id ?
+							this.renderLoggedInDropdown() : this.renderGuestDropdown()
+					}
 				</Nav>
-				{this.renderDocsDropdown()}
-				{
-					user && user.id ?
-						this.renderLoggedInDropdown() : this.renderGuestDropdown()
-				}
 			</Navbar.Collapse>
 		);
 	}
@@ -422,7 +405,7 @@ class Layout extends React.Component {
 				</a>
 				<Navbar className="BookBrainz" expand="lg" fixed="top" role="navigation">
 					{this.renderNavHeader()}
-					<Navbar.Toggle/>
+					<Navbar.Toggle variant="light"/>
 					{this.renderNavContent()}
 				</Navbar>
 				{alerts}

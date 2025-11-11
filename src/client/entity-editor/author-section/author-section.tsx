@@ -187,7 +187,7 @@ function AuthorSection({
 			</p>
 			<Row>
 				<Col lg={lgCol}>
-					<Form.Group>
+					<Form.Group className="mb-3" controlId="type">
 						<Form.Label>Type</Form.Label>
 						<Select
 							isClearable
@@ -202,12 +202,12 @@ function AuthorSection({
 			</Row>
 			<Row>
 				<Col lg={lgCol}>
-					<Form.Group className={genderShow ? null : 'd-none'}>
+					<Form.Group className={genderShow ? 'mb-3' : 'd-none'} controlId="gender">
 						<Form.Label>Gender</Form.Label>
 						<Select
+							isClearable
 							classNamePrefix="react-select"
 							instanceId="gender"
-							isClearable="true"
 							options={genderOptionsForDisplay}
 							value={genderOption}
 							onChange={onGenderChange}
@@ -242,6 +242,7 @@ function AuthorSection({
 			<div className={!isUnifiedForm && 'text-center'}>
 				<Form.Check
 					defaultChecked={endedChecked}
+					id="ended-checkbox"
 					label={endedLabel}
 					type="checkbox"
 					onChange={onEndedChange}

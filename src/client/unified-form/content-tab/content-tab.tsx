@@ -128,34 +128,30 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 	};
 	const checkLabel = (
 		<>
-			<FormLabel className="font-weight-normal">
 			Copy Authors from Author Credit
-				<OverlayTrigger
-					delay={50}
-					overlay={checkToolTip}
-				>
-					<FontAwesomeIcon
-						className="margin-left-0-5"
-						icon={faInfoCircle}
-					/>
-				</OverlayTrigger>
-			</FormLabel>
+			<OverlayTrigger
+				delay={50}
+				overlay={checkToolTip}
+			>
+				<FontAwesomeIcon
+					className="margin-left-0-5"
+					icon={faInfoCircle}
+				/>
+			</OverlayTrigger>
 		</>);
 	const seriesWorkLabel = (
 
 		<>
-			<FormLabel className="font-weight-normal">
 			Add Works to Series
-				<OverlayTrigger
-					delay={50}
-					overlay={<Tooltip id="series-work">This will automatically add each new selected work to series items (if present)</Tooltip>}
-				>
-					<FontAwesomeIcon
-						className="margin-left-0-5"
-						icon={faInfoCircle}
-					/>
-				</OverlayTrigger>
-			</FormLabel>
+			<OverlayTrigger
+				delay={50}
+				overlay={<Tooltip id="series-work">This will automatically add each new selected work to series items (if present)</Tooltip>}
+			>
+				<FontAwesomeIcon
+					className="margin-left-0-5"
+					icon={faInfoCircle}
+				/>
+			</OverlayTrigger>
 		</>
 
 	);
@@ -168,7 +164,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 				{map(works, (_, rowId) => <WorkRow key={rowId} rowId={rowId} onCopyHandler={openModalHandler} {...rest}/>)}
 				<CreateEntityModal handleClose={closeModalHandler} handleSubmit={submitModalHandler} show={showModal} type="work" {...rest}/>
 				<Row>
-					<Col lg={{span: 6}}>
+					<Col className="mb-3" lg={{span: 6}}>
 						<SearchEntityCreate
 							isClearable={false}
 							type="work"
@@ -180,7 +176,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 					</Col>
 				</Row>
 				<FormCheck
-					className="ml-1"
+					className="ms-1"
 					defaultChecked={isChecked}
 					id="works-check"
 					label={checkLabel}
@@ -196,7 +192,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 					 Check the checkbox below to add the Works to a Series
 				</p>
 				<FormCheck
-					className="ml-1 mb-2"
+					className="ms-1 mb-2"
 					defaultChecked={copyToSeries}
 					id="works-copy-to-series"
 					label={seriesWorkLabel}
@@ -205,7 +201,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 				/>
 				{copyToSeries &&
 				<Row>
-					<Col lg={{span: 6}}>
+					<Col className="mb-3" lg={{span: 6}}>
 						<SearchEntityCreate
 							filters={filters}
 							isClearable={false}
@@ -218,7 +214,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 						/>
 					</Col>
 				</Row>}
-				{copyToSeries && <SeriesSection {...seriesSectionProps}/>}
+				{copyToSeries && <SeriesSection {...seriesSectionProps} isUnifiedForm/>}
 			</div>
 		</>
 	);

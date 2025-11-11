@@ -143,7 +143,7 @@ function PublisherSection({
 			</p>
 			<Row>
 				<Col lg={lgCol}>
-					<Form.Group>
+					<Form.Group className="mb-3" controlId="type">
 						<Form.Label>Type</Form.Label>
 						<Select
 							isClearable
@@ -185,6 +185,7 @@ function PublisherSection({
 			<div className={`${!isUnifiedForm && 'text-center'}`}>
 				<Form.Check
 					defaultChecked={endedChecked}
+					id="ended-checkbox"
 					label="Dissolved?"
 					type="checkbox"
 					onChange={onEndedChange}

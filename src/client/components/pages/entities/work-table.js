@@ -134,7 +134,7 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 	else if (showAdd) {
 		tableContent = (
 			<React.Fragment>
-				<span className="margin-right-2 float-left">
+				<span className="margin-right-2 float-start">
 					<Button
 						href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 						variant="success"

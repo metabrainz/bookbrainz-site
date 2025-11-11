@@ -349,6 +349,7 @@ class RelationshipModal
 		const link = targetEntity ? getEntityLink({bbid: targetEntity.id, type: targetEntity.type}) : '';
 		const openButton = (
 			<Button
+				className="align-content-center"
 				disabled={!targetEntity}
 				href={link}
 				rel="noreferrer noopener"
@@ -417,7 +418,7 @@ class RelationshipModal
 			attributes = attributeTypes.map(attribute => attribute.name);
 		}
 		return (
-			<Form.Group>
+			<Form.Group className="mb-3" controlId="relationshipType">
 				<Form.Label>Relationship</Form.Label>
 				<ReactSelect
 					classNamePrefix="react-select"

@@ -91,7 +91,7 @@ function WorkSectionMerge({
 				options={typeOptions}
 				onChange={onTypeChange}
 			/>
-			<Form.Group>
+			<Form.Group className="mb-3" controlId="languages">
 				<Form.Label>Languages</Form.Label>
 				<Select
 					isDisabled

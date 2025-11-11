@@ -290,7 +290,7 @@ function EditionSectionMerge({
 				options={weightOptions}
 				onChange={onWeightChange}
 			/>
-			<Form.Group>
+			<Form.Group className="mb-3" controlId="languages">
 				<Form.Label>Languages</Form.Label>
 				<Select
 					isDisabled

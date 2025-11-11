@@ -85,7 +85,7 @@ class EditorProfileTab extends React.Component {
 				<h2>
 					Basic Info
 					{user && user.id === editor.id &&
-						<small className="float-right">
+						<small className="float-end">
 							<Button
 								href="/editor/edit"
 								title="Edit basic editor info"
@@ -185,7 +185,7 @@ class EditorProfileTab extends React.Component {
 						<Col md={achievementBsSize}>
 							<Card bg="light" className="justify-content-center">
 								<Image
-									className="ml-auto mr-auto"
+									className="ms-auto me-auto"
 									height="160px"
 									src="/images/sadface.png"
 									width="160px"

@@ -131,16 +131,17 @@ class DateField extends React.Component {
 			year: this.state.year
 		});
 		const selectedDate = parseISO(dateString);
-		const groupClassName = classNames({'d-none': !this.props.show});
+		const groupClassName = classNames({'d-none': !this.props.show, 'mb-3': true});
 		const isCommonEraDate = Math.sign(this.state.year) === 1 || Math.sign(this.state.year) === 0;
 		return (
 			<div>
-				<Form.Group className={groupClassName}>
+				<Form.Group className={groupClassName} controlId="date-field">
 					<Form.Label>{labelElement}</Form.Label>
 					<InputGroup className="responsive-date-field">
 						<FormControl
 							className="year-field"
 							maxLength={isCommonEraDate ? 4 : 5}
+							name="year"
 							placeholder="YYYY"
 							style={{width: '4.5em'}}
 							type="text"
@@ -148,53 +149,51 @@ class DateField extends React.Component {
 							onBlur={this.handleYearInputBlur}
 							onChange={this.handleYearChange}
 						/>
-						<InputGroup.Append style={{'margin-right': '-1px'}}>
-							<InputGroup.Text style={{padding: '0 0.5em'}}>-</InputGroup.Text>
-						</InputGroup.Append>
+						<InputGroup.Text style={{'margin-right': '-1px', padding: '0 0.5em'}}>-</InputGroup.Text>
 						<FormControl
 							className="other-date-field"
 							maxLength="2"
+							name="month"
 							placeholder="MM"
 							type="text"
 							value={this.state.month}
 							onBlur={this.handleMonthInputBlur}
 							onChange={this.handleMonthChange}
 						/>
-						<InputGroup.Append style={{'margin-right': '-1px'}}>
-							<InputGroup.Text style={{padding: '0 0.5em'}}>-</InputGroup.Text>
-						</InputGroup.Append>
+						<InputGroup.Text style={{'margin-right': '-1px', padding: '0 0.5em'}}>-</InputGroup.Text>
 						<FormControl
 							className="other-date-field"
 							maxLength="2"
+							name="day"
 							placeholder="DD"
 							type="text"
 							value={this.state.day}
 							onBlur={this.handleDayInputBlur}
 							onChange={this.handleDayChange}
 						/>
-						<InputGroup.Append style={{fontSize: 'inherit'}}>
-							<DatePicker
-								peekNextMonth
-								showMonthDropdown
-								showYearDropdown
-								customInput={
-									<Button style={{lineHeight: '1.75', padding: '0.375em 0.938em'}} title="Date picker" variant="info">
-										<FontAwesomeIcon icon={faCalendarAlt}/>
-									</Button>
-								}
-								dateFormat="uuuuuu-MM-dd"
-								disabled={!isCommonEraDate}
-								dropdownMode="select"
-								popperModifiers={
-									{preventOverflow: {
-									  enabled: true
-									}}}
-								popperPlacement="top-end"
-								selected={isValid(selectedDate) ? selectedDate : null}
-								timeFormat="false"
-								onChange={this.handleChangeOfDatePicker}
-							/>
-						</InputGroup.Append>
+						<DatePicker
+							peekNextMonth
+							showMonthDropdown
+							showYearDropdown
+							customInput={
+								<Button style={{lineHeight: '1.75', padding: '0.375em 0.938em'}} title="Date picker" variant="info">
+									<FontAwesomeIcon icon={faCalendarAlt}/>
+								</Button>
+							}
+							dateFormat="uuuuuu-MM-dd"
+							disabled={!isCommonEraDate}
+							dropdownMode="select"
+							popperModifiers={
+								{preventOverflow: {
+									enabled: true
+								}}}
+							popperPlacement="top-end"
+							selected={isValid(selectedDate) ? selectedDate : null}
+							style={{fontSize: 'inherit'}}
+							timeFormat="false"
+							wrapperClassName="date-picker"
+							onChange={this.handleChangeOfDatePicker}
+						/>
 					</InputGroup>
 				</Form.Group>
 			</div>

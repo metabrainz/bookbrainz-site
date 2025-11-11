@@ -140,7 +140,7 @@ class EntitySearchFieldOption extends React.Component {
 			<InputGroup>
 				{React.cloneElement(wrappedSelect, wrappedSelect.props)}
 				{help && <Form.Text muted>{help}</Form.Text>}
-				<InputGroup.Append>{buttonAfter}</InputGroup.Append>
+				{buttonAfter}
 			</InputGroup>
 		);
 	}
@@ -194,7 +194,7 @@ class EntitySearchFieldOption extends React.Component {
 		);
 
 		return (
-			<Form.Group>
+			<Form.Group controlId={this.props.label ?? 'entity-search-field-option'}>
 				{this.props.label && (
 					<Form.Label>
 						{labelElement}

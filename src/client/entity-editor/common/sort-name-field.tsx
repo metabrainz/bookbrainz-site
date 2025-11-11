@@ -159,7 +159,7 @@ function SortNameField({
 		<Button variant="primary" onClick={handleGuessClick}>Guess</Button>;
 
 	const copyButton =
-		<Button className="ml-1" variant="primary" onClick={handleCopyClick}>Copy</Button>;
+		<Button className="ms-1" variant="primary" onClick={handleCopyClick}>Copy</Button>;
 	/* eslint-enable react/jsx-no-bind */
 
 	const tooltip = (
@@ -170,7 +170,7 @@ function SortNameField({
 	);
 
 	return (
-		<Form.Group>
+		<Form.Group className="mb-3" controlId="sort-name-input">
 			<Form.Label>
 				{label}
 				<OverlayTrigger delay={50} overlay={tooltip}>
@@ -185,10 +185,8 @@ function SortNameField({
 					onChange={onChange}
 					{...rest}
 				/>
-				<InputGroup.Append>
-					{guessButton}
-					{copyButton}
-				</InputGroup.Append>
+				{guessButton}
+				{copyButton}
 			</InputGroup>
 		</Form.Group>
 	);

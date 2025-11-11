@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Col, Row} from 'react-bootstrap';
 import {
 	showAliasEditor,
 	showIdentifierEditor
@@ -32,10 +31,9 @@ import {addIdentifierRow} from '../identifier-editor/actions';
 import {connect} from 'react-redux';
 
 /**
- * Container component. This component renders three buttons in a horizontal
- * row allowing the user to open the AliasEditor (AliasButton), add a
- * disambiguation to the entity and open the IdentifierEditor
- * (IdentifierButton).
+ * This component renders two buttons in a horizontal row: IdentifierButton
+ * for the IdentifierEditor, and when not on the unified form AliasButton
+ * for the AliasEditor.
  *
  * @param {Object} props - The properties passed to the component.
  * @param {number} props.numAliases - The number of aliases present in
@@ -57,35 +55,24 @@ function ButtonBar({
 	isUnifiedForm,
 	onIdentifierButtonClick
 }) {
-	const className = isUnifiedForm ? 'text-right' : 'text-center';
-	function renderAliasButton() {
-		if (isUnifiedForm) {
-			return null;
-		}
-		return (
-			<Col className={className} lg={6}>
+	const identifierEditorClass = `wrap${!isUnifiedForm ? '' : ' ms-auto'}`;
+	return (
+		<div className="d-flex flex-wrap justify-content-around gap-3 mt-3">
+			{!isUnifiedForm &&
 				<AliasButton
 					aliasesInvalid={aliasesInvalid}
 					numAliases={numAliases}
 					onClick={onAliasButtonClick}
 				/>
-			</Col>);
-	}
-	const identifierEditorClass = `btn wrap${!isUnifiedForm ? '' : ' btn-success'}`;
-	return (
-		<div>
-			<Row className="margin-top-1">
-				{renderAliasButton()}
-				<Col className={className} lg={6}>
-					<IdentifierButton
-						className={identifierEditorClass}
-						identifiersInvalid={identifiersInvalid}
-						isUnifiedForm={isUnifiedForm}
-						numIdentifiers={numIdentifiers}
-						onClick={onIdentifierButtonClick}
-					/>
-				</Col>
-			</Row>
+			}
+			<IdentifierButton
+				buttonVariant={isUnifiedForm ? 'success' : 'outline-info'}
+				className={identifierEditorClass}
+				identifiersInvalid={identifiersInvalid}
+				isUnifiedForm={isUnifiedForm}
+				numIdentifiers={numIdentifiers}
+				onClick={onIdentifierButtonClick}
+			/>
 		</div>
 	);
 }

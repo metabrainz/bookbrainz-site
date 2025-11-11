@@ -66,7 +66,7 @@ function AnnotationSection({
 			{!isUnifiedForm && heading}
 			<Row>
 				<Col lg={lgCol}>
-					<Form.Group>
+					<Form.Group className="mb-3" controlId="annotation">
 						<Form.Label>
 							{annotationLabel}
 							<OverlayTrigger delay={50} overlay={tooltip}>

@@ -110,6 +110,7 @@ function AuthorCreditRow({
 			<Row>
 				<Col md={{span: 3}}>
 					<SelectWrapper
+						className="mb-3"
 						instanceId={`author${index}`}
 						isUnifiedForm={isUnifiedForm}
 						label="Author"
@@ -123,7 +124,7 @@ function AuthorCreditRow({
 				</Col>
 				<Col md={{span: 3}}>
 
-					<Form.Group>
+					<Form.Group className="mb-3" controlId="author-credit-name">
 						<Form.Label>
 							<ValidationLabel empty={name.length === 0} error={!name.length}>
 								Author as credited
@@ -135,16 +136,15 @@ function AuthorCreditRow({
 					</Form.Group>
 				</Col>
 				<Col md={{span: 3}}>
-					<Form.Group>
+					<Form.Group className="mb-3" controlId="join-phrase">
 						<Form.Label>Join Phrase</Form.Label>
 						<Form.Control type="text" value={joinPhrase} onChange={onJoinPhraseChange}/>
 
 					</Form.Group>
 				</Col>
-				<Col md={{span: 3}}>
+				<Col className="d-flex align-items-center" md={{span: 3}}>
 					<Button
-						block
-						className="margin-top-d18"
+						className="flex-fill flex-md-shrink-0 margin-top-d18"
 						variant="danger"
 						onClick={handleButtonClick}
 					>

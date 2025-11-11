@@ -97,7 +97,7 @@ class EntityDeletionForm extends React.Component {
 		const footerComponent = (
 			<span className="clearfix">
 				<Button
-					className="float-right"
+					className="float-end"
 					disabled={!hasNote}
 					type="submit"
 					variant="danger"
@@ -105,7 +105,7 @@ class EntityDeletionForm extends React.Component {
 					<FontAwesomeIcon icon={faTrashAlt}/> Delete
 				</Button>
 				<Button
-					className="float-right"
+					className="float-end"
 					href={this.entityUrl}
 					variant="secondary"
 				>
@@ -179,7 +179,7 @@ class EntityDeletionForm extends React.Component {
 									&nbsp;to select it to be merged instead.
 									</p>
 									<hr/>
-									<Form.Group>
+									<Form.Group className="mb-3" controlId="deletion-note">
 										<Form.Label>
 											{noteLabel}
 											<OverlayTrigger

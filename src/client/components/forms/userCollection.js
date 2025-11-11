@@ -198,7 +198,7 @@ class UserCollectionForm extends React.Component {
 							className="padding-sides-0"
 							onSubmit={this.handleSubmit}
 						>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="name">
 								<Form.Label>Name</Form.Label>
 								<Form.Control
 									defaultValue={initialName}
@@ -206,7 +206,7 @@ class UserCollectionForm extends React.Component {
 									type="text"
 								/>
 							</Form.Group>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="description">
 								<Form.Label>Description</Form.Label>
 								<Form.Control
 									as="textarea"
@@ -214,7 +214,7 @@ class UserCollectionForm extends React.Component {
 									ref={(ref) => this.description = ref}
 								/>
 							</Form.Group>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="entityType">
 								<Form.Label>Entity Type</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"
@@ -224,11 +224,11 @@ class UserCollectionForm extends React.Component {
 									instanceId="title"
 									isDisabled={!canEditType}
 									options={entityTypeOptions}
-									placeholder="Select title"
+									placeholder="Select type"
 									ref={(ref) => this.entityType = ref}
 								/>
 							</Form.Group>
-							<Form.Group>
+							<Form.Group className="mb-3" controlId="privacy">
 								<Form.Label>Privacy</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"
@@ -242,24 +242,20 @@ class UserCollectionForm extends React.Component {
 								/>
 							</Form.Group>
 							<h3><b>Collaborators</b></h3>
-							<Row className="margin-bottom-2">
-								<Col className="margin-top-d5" md={6}>
-									<p className="text-muted">
-								Collaborators can add/remove entities from your collection
-									</p>
-								</Col>
-								<Col className="margin-top-d5" md={6}>
-									<Button
-										block
-										type="button"
-										variant="primary"
-										onClick={this.handleAddCollaborator}
-									>
-										<FontAwesomeIcon icon={faPlus}/>
-										&nbsp;Add another collaborator
-									</Button>
-								</Col>
-							</Row>
+							<div className="align-items-baseline d-flex flex-wrap gap-2 gap-5 margin-bottom-2">
+								<p className="text-muted">
+							Collaborators can add/remove entities from your collection
+								</p>
+								<Button
+									className="flex-fill"
+									type="button"
+									variant="primary"
+									onClick={this.handleAddCollaborator}
+								>
+									<FontAwesomeIcon icon={faPlus}/>
+									&nbsp;Add another collaborator
+								</Button>
+							</div>
 							{
 								this.state.collaborators.map((collaborator, index) => {
 									const buttonAfter = (
@@ -273,7 +269,7 @@ class UserCollectionForm extends React.Component {
 										</Button>
 									);
 									return (
-										<div key={collaborator.id}>
+										<div className="mb-3" key={collaborator.id}>
 											<EntitySearchFieldOption
 												buttonAfter={buttonAfter}
 												instanceId="collaboratorSearchField"
@@ -291,30 +287,27 @@ class UserCollectionForm extends React.Component {
 							<div className={errorAlertClass}>
 								<Alert variant="danger">Error: {errorText}</Alert>
 							</div>
-							<Row className="margin-bottom-2">
-								<Col className="margin-top-d5" md={6}>
-									<Button
-										block
-										type="submit"
-										variant="success"
-									>
-										<FontAwesomeIcon icon={faSave}/>&nbsp;{submitLabel}
-									</Button>
-								</Col>
+							<div className="d-flex flex-wrap gap-5 margin-bottom-2">
+								<Button
+									className="flex-fill"
+									type="submit"
+									variant="success"
+								>
+									<FontAwesomeIcon icon={faSave}/>&nbsp;{submitLabel}
+								</Button>
 								{
 									this.props.collection.id ?
-										<Col className="margin-top-d5" md={6}>
-											<Button
-												block
-												type="button"
-												variant="danger"
-												onClick={this.handleShowModal}
-											>
-												<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;Delete collection
-											</Button>
-										</Col> : null
+										<Button
+											className="flex-fill"
+											type="button"
+											variant="danger"
+											onClick={this.handleShowModal}
+										>
+											<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;Delete collection
+										</Button> :
+										 null
 								}
-							</Row>
+							</div>
 						</form>
 					</Col>
 				</div>
