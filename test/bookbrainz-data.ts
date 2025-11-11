@@ -18,6 +18,7 @@
 
 import BookBrainzData from 'bookbrainz-data';
 import config from '../config/test.json';
+// import config from '../config/test.json' assert { type: 'json' };
 
 
 const orm = BookBrainzData(config.database);

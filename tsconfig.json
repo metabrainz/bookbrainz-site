@@ -1,10 +1,13 @@
 {
 	"compilerOptions": {
+		"module": "ESNext",
 		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"resolveJsonModule": true,
+		"moduleResolution": "node",
 		"forceConsistentCasingInFileNames": true,
 		"jsx": "preserve",
 		"lib": ["ESNext", "DOM"],
-		"module": "CommonJS",
 		"noEmit": true,
 		"skipLibCheck": true,
 		"strict": false,
