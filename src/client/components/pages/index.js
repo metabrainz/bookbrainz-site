@@ -77,7 +77,7 @@ class IndexPage extends React.Component {
 											<FontAwesomeIcon icon={faSearch}/>
 										</Button>
 									</form>
-									<div className="margin-top-4 d-inline-flex gap-5 w-100">
+									<div className="margin-top-4 d-inline-flex gap-5 w-100 flex-wrap">
 										<Button
 											className="flex-fill"
 											href="/about"
@@ -107,12 +107,7 @@ class IndexPage extends React.Component {
 										<h4 className="contact-text">
 											Contact Us
 										</h4>
-										<div style={{
-											alignItems: 'center',
-											display: 'flex',
-											justifyContent: 'center'
-										}}
-										>
+										<div className="d-flex flex-wrap align-items-center justify-content-center">
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
 												icon={faCircle}
