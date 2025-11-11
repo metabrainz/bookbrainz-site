@@ -110,6 +110,7 @@ function AuthorCreditRow({
 			<Row>
 				<Col md={{span: 3}}>
 					<SelectWrapper
+						className="mb-3"
 						instanceId={`author${index}`}
 						isUnifiedForm={isUnifiedForm}
 						label="Author"

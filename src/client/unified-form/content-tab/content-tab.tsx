@@ -164,7 +164,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 				{map(works, (_, rowId) => <WorkRow key={rowId} rowId={rowId} onCopyHandler={openModalHandler} {...rest}/>)}
 				<CreateEntityModal handleClose={closeModalHandler} handleSubmit={submitModalHandler} show={showModal} type="work" {...rest}/>
 				<Row>
-					<Col lg={{span: 6}}>
+					<Col className="mb-3" lg={{span: 6}}>
 						<SearchEntityCreate
 							isClearable={false}
 							type="work"
@@ -201,7 +201,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 				/>
 				{copyToSeries &&
 				<Row>
-					<Col lg={{span: 6}}>
+					<Col className="mb-3" lg={{span: 6}}>
 						<SearchEntityCreate
 							filters={filters}
 							isClearable={false}

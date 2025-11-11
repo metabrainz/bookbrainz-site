@@ -269,7 +269,7 @@ class UserCollectionForm extends React.Component {
 										</Button>
 									);
 									return (
-										<div key={collaborator.id}>
+										<div className="mb-3" key={collaborator.id}>
 											<EntitySearchFieldOption
 												buttonAfter={buttonAfter}
 												instanceId="collaboratorSearchField"
