@@ -224,7 +224,7 @@ class UserCollectionForm extends React.Component {
 									instanceId="title"
 									isDisabled={!canEditType}
 									options={entityTypeOptions}
-									placeholder="Select title"
+									placeholder="Select type"
 									ref={(ref) => this.entityType = ref}
 								/>
 							</Form.Group>

@@ -349,6 +349,7 @@ class RelationshipModal
 		const link = targetEntity ? getEntityLink({bbid: targetEntity.id, type: targetEntity.type}) : '';
 		const openButton = (
 			<Button
+				className="align-content-center"
 				disabled={!targetEntity}
 				href={link}
 				rel="noreferrer noopener"
