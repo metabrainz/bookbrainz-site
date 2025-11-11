@@ -128,34 +128,30 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 	};
 	const checkLabel = (
 		<>
-			<FormLabel className="font-weight-normal">
 			Copy Authors from Author Credit
-				<OverlayTrigger
-					delay={50}
-					overlay={checkToolTip}
-				>
-					<FontAwesomeIcon
-						className="margin-left-0-5"
-						icon={faInfoCircle}
-					/>
-				</OverlayTrigger>
-			</FormLabel>
+			<OverlayTrigger
+				delay={50}
+				overlay={checkToolTip}
+			>
+				<FontAwesomeIcon
+					className="margin-left-0-5"
+					icon={faInfoCircle}
+				/>
+			</OverlayTrigger>
 		</>);
 	const seriesWorkLabel = (
 
 		<>
-			<FormLabel className="font-weight-normal">
 			Add Works to Series
-				<OverlayTrigger
-					delay={50}
-					overlay={<Tooltip id="series-work">This will automatically add each new selected work to series items (if present)</Tooltip>}
-				>
-					<FontAwesomeIcon
-						className="margin-left-0-5"
-						icon={faInfoCircle}
-					/>
-				</OverlayTrigger>
-			</FormLabel>
+			<OverlayTrigger
+				delay={50}
+				overlay={<Tooltip id="series-work">This will automatically add each new selected work to series items (if present)</Tooltip>}
+			>
+				<FontAwesomeIcon
+					className="margin-left-0-5"
+					icon={faInfoCircle}
+				/>
+			</OverlayTrigger>
 		</>
 
 	);

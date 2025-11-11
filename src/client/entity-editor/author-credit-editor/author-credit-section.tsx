@@ -120,21 +120,19 @@ function AuthorCreditSection({
 	);
 	const checkboxLabel = (
 		<>
-			<FormLabel className="font-weight-normal">
 			This Edition doesn&apos;t have an Author
-				<OverlayTrigger
-					delay={50}
-					overlay={
-						<Tooltip id="ac-enabled">Select this checkbox if this Edition doesn&apos;t have an Author or
+			<OverlayTrigger
+				delay={50}
+				overlay={
+					<Tooltip id="ac-enabled">Select this checkbox if this Edition doesn&apos;t have an Author or
 					if you don&apos;t know the Author(s)
-						</Tooltip>}
-				>
-					<FontAwesomeIcon
-						className="margin-left-0-5"
-						icon={faInfoCircle}
-					/>
-				</OverlayTrigger>
-			</FormLabel>
+					</Tooltip>}
+			>
+				<FontAwesomeIcon
+					className="margin-left-0-5"
+					icon={faInfoCircle}
+				/>
+			</OverlayTrigger>
 		</>
 
 	);
