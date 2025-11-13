@@ -11,7 +11,8 @@
 	"musicbrainz": {
 		"clientID": "{{template "KEY" "musicbrainz/client_id"}}",
 		"clientSecret": "{{template "KEY" "musicbrainz/client_secret"}}",
-		"callbackURL": "{{template "KEY" "musicbrainz/callback_url"}}"
+		"callbackURL": "{{template "KEY" "musicbrainz/callback_url"}}",
+        "oauthTokenURL": "https://metabrainz.org/oauth2/token"
 	},
 	"critiquebrainz": {
 		"clientID": "{{template "KEY" "critiquebrainz/client_id"}}",
