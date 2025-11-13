@@ -81,7 +81,7 @@ export async function sendMultipleNotifications(notifications: NotificationT[]):
  * @param {boolean} [sendEmail] - Whether to send email.
  * @param {boolean} [important] - Whether the notification is important.
  * @param {number} [expireAge] - Expiration age in days.
- * @returns {Promise<void>} Resolves when the notifications has been sent.
+ * @returns {Promise<void>} Resolves when the notification has been sent.
  */
 export async function sendNotification(
 	musicbrainzRowId: number,
