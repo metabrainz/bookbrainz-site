@@ -275,7 +275,7 @@ class CollectionPage extends React.Component {
 								onClick={this.handleRemoveEntities}
 							>
 								<FontAwesomeIcon icon={faTimesCircle}/>
-								&nbsp;Remove <Badge pill>{this.state.selectedEntities.length}</Badge> selected&nbsp;
+								&nbsp;Remove <Badge pill bg="white" text="danger">{this.state.selectedEntities.length}</Badge> selected&nbsp;
 								{_.kebabCase(this.props.collection.entityType)}{this.state.selectedEntities.length > 1 ? 's' : null}
 							</Button> : null
 					}

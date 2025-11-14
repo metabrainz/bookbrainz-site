@@ -108,6 +108,7 @@ const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemov
 		</Col>
 		<Col lg={2}>
 			<Button
+				className="align-items-center d-inline-flex"
 				role="button"
 				variant="danger"
 				onClick={onRemove.bind(this, value.rowID)}
