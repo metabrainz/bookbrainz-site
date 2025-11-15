@@ -29,6 +29,7 @@ import createFilterOptions from 'react-select-fast-filter-options';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {freezeObjects} from '../../unified-form/common/freezed-objects';
 import {isNumber} from 'lodash';
+import {RecentlyUsed} from '../../unified-form/common/recently-used';
 
 
 function OptimizedOption(props: OptionProps<any, any>) {
@@ -61,6 +62,7 @@ function LanguageField({
 	empty,
 	error,
 	tooltipText,
+	onChange,
 	...rest
 }: Props) {
 	const label =
@@ -85,7 +87,13 @@ function LanguageField({
 	};
 	const f2Languages = options.filter((lang) => lang.frequency === 2);
 	const f1Languages = options.filter((lang) => lang.frequency === 1).slice(0, MAX_F1_OPTIONS);
-	const defaultOptions = [{
+	const recentItems = RecentlyUsed.getItems('languages');	
+	const defaultOptions = [
+	{
+		label: 'Recently Used',
+		options: recentItems.map(item => ({value: item.id, label: item.name}))
+	},
+	{
 		label: 'Frequently Used',
 		options: f2Languages
 	},
@@ -94,6 +102,19 @@ function LanguageField({
 		options: f1Languages
 	}];
 	const fetchOptions = React.useCallback((input) => Promise.resolve(sortFilterOptions(options, input, value)), []);
+	const handleChange = (selectedOption) => {
+		if (selectedOption) {
+			const optionsArray = Array.isArray(selectedOption) ? selectedOption : [selectedOption];
+			optionsArray.forEach(option => {
+				if (option && option.value && option.label) {
+					RecentlyUsed.addItem('languages', {id: option.value, name: option.label});
+				}
+			});
+		}
+		if (onChange) {
+			onChange(selectedOption);
+		}
+	};
 	return (
 		<Form.Group>
 			<Form.Label>
@@ -111,7 +132,7 @@ function LanguageField({
 				className="Select"
 				classNamePrefix="react-select"
 				components={{Option: OptimizedOption}}
-				defaultOptions={defaultOptions} loadOptions={fetchOptions} placeholder="Search language" {...rest}
+				defaultOptions={defaultOptions} loadOptions={fetchOptions} placeholder="Search language" {...rest} onChange={handleChange}
 			/>
 		</Form.Group>
 	);
