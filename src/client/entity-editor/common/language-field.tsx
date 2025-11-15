@@ -62,6 +62,7 @@ function LanguageField({
 	empty,
 	error,
 	tooltipText,
+	onChange,
 	...rest
 }: Props) {
 	const label =
@@ -110,8 +111,8 @@ function LanguageField({
 				}
 			});
 		}
-		if (rest.onChange) {
-			rest.onChange(selectedOption);
+		if (onChange) {
+			onChange(selectedOption);
 		}
 	};
 	return (
