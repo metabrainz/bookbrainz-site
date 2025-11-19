@@ -7,8 +7,14 @@
 	"musicbrainz": {
 		"clientID": null,
 		"clientSecret": null,
-		"callbackURL": "http://localhost:9099/cb"
+		"callbackURL": "http://localhost:9099/cb",
 	},
+    "oauth": {
+        "clientID": "",
+		"clientSecret": "",
+		"tokenURL": "",
+		"notificationURL": "https://metabrainz.org/notification"
+    },
 	"critiquebrainz": {
 		"clientID": null,
 		"clientSecret": null,
