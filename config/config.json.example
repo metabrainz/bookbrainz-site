@@ -8,8 +8,13 @@
 		"clientID": null,
 		"clientSecret": null,
 		"callbackURL": "http://localhost:9099/cb",
-        "oauthTokenURL": "https://metabrainz.org/oauth2/token"
 	},
+    "oauth": {
+        "clientID": "",
+		"clientSecret": "",
+		"tokenURL": "",
+		"notificationURL": "https://metabrainz.org/notification"
+    },
 	"critiquebrainz": {
 		"clientID": null,
 		"clientSecret": null,

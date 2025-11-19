@@ -12,8 +12,13 @@
 		"clientID": "{{template "KEY" "musicbrainz/client_id"}}",
 		"clientSecret": "{{template "KEY" "musicbrainz/client_secret"}}",
 		"callbackURL": "{{template "KEY" "musicbrainz/callback_url"}}",
-        "oauthTokenURL": "https://metabrainz.org/oauth2/token"
 	},
+    "oauth": {
+        "clientID": "{{template "KEY" "oauth/client_id"}}",
+		"clientSecret": "{{template "KEY" "oauth/client_secret"}}",
+		"tokenURL": "{{template "KEY" "oauth/token_url"}}",
+		"notificationURL": "{{template "KEY" "oauth/notification_url"}}"
+    },
 	"critiquebrainz": {
 		"clientID": "{{template "KEY" "critiquebrainz/client_id"}}",
 		"clientSecret": "{{template "KEY" "critiquebrainz/client_secret"}}",

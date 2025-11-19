@@ -6,26 +6,25 @@ import log from 'log';
 import request from 'superagent';
 
 
-const METABRAINZ_NOTIFICATIONS_URL = 'http://metabrainz.org/notification';
 const notificationScopes = ['notification'];
 const TOKEN_CACHE_KEY = 'notification_access_token';
 
 /**
- * Fetches a valid OAuth2 access token for the MetaBrainz notification API.
+ * Fetches a valid OAuth2 access token with the notification scope for the MetaBrainz notification API.
  * If a cached token exists in Redis, it’s used, else a new one is requested.
  * @returns {Promise<string|null>} OAuth2 access token or null if failed
  */
-async function fetchToken(): Promise<string | null> {
+async function getMetaBrainzNotificationToken(): Promise<string | null> {
 	const cachedToken = await getCachedJSON<string>(TOKEN_CACHE_KEY);
 	if (cachedToken) {
 		return cachedToken;
 	}
 
-	const {clientID, clientSecret, oauthTokenURL} = config.musicbrainz;
+	const {clientID, clientSecret, tokenURL, notificationURL} = config.oauth;
 
 	try {
 		const response = await request
-			.post(oauthTokenURL)
+			.post(tokenURL)
 			.type('form')
 			.send({
 				client_id: clientID,
@@ -50,8 +49,8 @@ async function fetchToken(): Promise<string | null> {
  * @returns {Promise<void>} Resolves when the notifications has been sent.
  */
 export async function sendMultipleNotifications(notifications: NotificationT[]): Promise<void> {
-	const token = await fetchToken();
-	const url = `${METABRAINZ_NOTIFICATIONS_URL}/send`;
+	const token = await getMetaBrainzNotificationToken();
+	const url = `${notificationURL}/send`;
 
 	try {
 		await request
