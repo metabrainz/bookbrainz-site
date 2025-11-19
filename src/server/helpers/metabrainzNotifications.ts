@@ -20,7 +20,7 @@ async function getMetaBrainzNotificationToken(): Promise<string | null> {
 		return cachedToken;
 	}
 
-	const {clientID, clientSecret, tokenURL, notificationURL} = config.oauth;
+	const { clientID, clientSecret, tokenURL } = config.oauth;
 
 	try {
 		const response = await request
@@ -49,12 +49,13 @@ async function getMetaBrainzNotificationToken(): Promise<string | null> {
  * @returns {Promise<void>} Resolves when the notifications has been sent.
  */
 export async function sendMultipleNotifications(notifications: NotificationT[]): Promise<void> {
-	const token = await getMetaBrainzNotificationToken();
-	const url = `${notificationURL}/send`;
-
+    
+    const { notificationURL } = config.oauth;
+	const send_notification_endpoint = `${notificationURL}/send`;
+    const token = await getMetaBrainzNotificationToken();
 	try {
 		await request
-			.post(url)
+			.post(send_notification_endpoint)
 			.set('Authorization', `Bearer ${token}`)
 			.set('Content-Type', 'application/json')
 			.send(notifications);
