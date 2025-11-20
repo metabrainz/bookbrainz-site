@@ -205,6 +205,7 @@ router.get(
 				searchResults: null,
 				sortName: ''
 			};
+			initialState.editionSection = {};
 			let relationshipTypeId;
 			let initialRelationshipIndex = 0;
 
