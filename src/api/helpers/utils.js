@@ -45,6 +45,39 @@ export function allowOnlyGetMethod(req, res, next) {
 		.send({message: `${req.method} method for the "${req.path}" route is not supported. Only GET method is allowed`});
 }
 
+/**
+ * getBrowsedRelationships is a function to fetch and format relationships between entities
+ * based on a specific entity type being browsed
+ *
+ * @param {object} orm -   BookBrainz ORM instance
+ * @param {object} locals - response locals containing entity and relationships data
+ * @param {string} browsedEntityType - The type of entity being browsed (e.g.,'author','edition','work')
+ * @param {Function} getEntityInfoMethod - function to format entity data (e.g., getAuthorBasicInfo)
+ * @param {string[]} fetchRelated - array of relations to fetch for the entity
+ * @param {Function} filterRelationshipMethod - function to filter relationships based on query parameters
+ * @returns {Promise<Array>} -list of objects,each with:
+ * entity: the formatted related entity
+ * relationships: an array of relationship descriptors :
+ *  { relationshipType:string|null,relationshipTypeId: number|null}
+ * returns an empty array if no relationships match with filter.
+ *
+ * @example
+ *		const authorRelationships = await getBrowsedRelationships(
+ *			orm ,
+ *			res.locals,
+ *			'Author',
+ *			getAuthorBasicInfo,
+ *			authorBasicRelations,
+ *			(entity) => entity.authorType === 'Person'
+ *		);
+ *		// => [
+ *		//   {
+ *		//     entity: { bbid: '...', defaultAlias: {...}, ... },
+ *		//     relationships: [{ relationshipType: 'Author', relationshipTypeID: 8 }]
+ *		//   }
+ *		// ]
+ */
+
 
 export async function getBrowsedRelationships(orm, locals, browsedEntityType,
 											  getEntityInfoMethod, fetchRelated, filterRelationshipMethod) {
@@ -95,4 +128,4 @@ export async function getBrowsedRelationships(orm, locals, browsedEntityType,
 			}
 			return accumulator;
 		}, []);
-}
+} 
