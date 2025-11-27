@@ -128,4 +128,4 @@ export async function getBrowsedRelationships(orm, locals, browsedEntityType,
 			}
 			return accumulator;
 		}, []);
-} 
+}
