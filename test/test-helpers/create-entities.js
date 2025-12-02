@@ -143,7 +143,7 @@ const entityAttribs = {
 	revisionId: 1
 };
 
-export function createEditor(editorId, privs = 1) {
+export function createEditor(editorId, privs = 1, metabrainzName = '') {
 	return orm.bookshelf.knex.transaction(async (transacting) => {
 		const editorType = await new EditorType(editorTypeAttribs)
 			.save(null, {method: 'insert', transacting});
@@ -156,7 +156,7 @@ export function createEditor(editorId, privs = 1) {
 		editorAttribs.name = internet.userName();
 		editorAttribs.privs = privs;
 		editorAttribs.metabrainzUserId = string.numeric(5);
-		editorAttribs.cachedMetabrainzName = editorAttribs.name;
+		editorAttribs.cachedMetabrainzName = metabrainzName || editorAttribs.name;
 
 		const editor = await new Editor(editorAttribs)
 			.save(null, {method: 'insert', transacting});

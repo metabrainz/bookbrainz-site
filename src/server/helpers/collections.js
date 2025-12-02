@@ -34,12 +34,18 @@ import * as error from '../../common/helpers/error';
  */
 export async function getOrderedCollectionsForEditorPage(from, size, entityType, req) {
 	const {Editor, UserCollection} = req.app.locals.orm;
+
 	// If editor isn't present, throw an error
-	await new Editor({id: req.params.id})
-		.fetch()
-		.catch(Editor.NotFoundError, () => {
+	try {
+		await new Editor({id: req.params.id}).fetch();
+	}
+	catch (err) {
+		if (err instanceof Editor.NotFoundError) {
 			throw new error.NotFoundError('Editor not found', req);
-		});
+		}
+		// If it's a different error, re-throw it
+		throw err;
+	}
 
 	const isThisCurrentUser = req.user && parseInt(req.params.id, 10) === parseInt(req.user.id, 10);
 
