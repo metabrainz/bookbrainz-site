@@ -39,6 +39,7 @@ import type {Map} from 'immutable';
 import Select from 'react-select';
 import {connect} from 'react-redux';
 import {isNullDate} from '../../helpers/utils';
+import { RecentlyUsed } from '../../unified-form/common/recently-used';
 
 
 type PublisherType = {
@@ -164,6 +165,7 @@ function PublisherSection({
 						tooltipText="Country or place the publisher is registered in"
 						type="area"
 						value={areaValue}
+						recentlyUsedEntityType="areas"
 						onChange={onAreaChange}
 					/>
 				</Col>
@@ -230,7 +232,12 @@ function mapStateToProps(rootState): StateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		onAreaChange: (value) => dispatch(updateArea(value)),
+		onAreaChange: (value) => {
+			if(value && value.id && value.text){
+				RecentlyUsed.addItem('areas', {id: value.id, name: value.text});
+			}
+			return  dispatch(updateArea(value));
+		},
 		onBeginDateChange: (beginDate) => {
 			dispatch(debouncedUpdateBeginDate(beginDate));
 		},

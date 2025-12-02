@@ -14,6 +14,7 @@ import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 import {submitSingleEntity} from '../../entity-editor/submission-section/actions';
+import {RecentlyUsed} from '../common/recently-used';
 
 
 const {Row, Col, FormCheck, OverlayTrigger, FormLabel, Tooltip} = Bootstrap;
@@ -51,6 +52,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 	 onAddSeriesItem, onSubmitWork, resetSeries, bulkAddSeriesItems, ...rest}:ContentTabProps) {
 	const [isChecked, setIsChecked] = React.useState(true);
 	const [copyToSeries, setCopyToSeries] = React.useState(false);
+	const [onChangeRefresh, setOnChangeRefresh] = React.useState(0);
 	const toggleCheck = React.useCallback(() => {
 		setIsChecked(!isChecked);
 	}, [isChecked]);
@@ -108,11 +110,16 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 		onModalClose();
 	}, []);
 	const onChangeHandler = React.useCallback((work:any) => {
+		if(!work){
+			onChange(work);
+			return;
+		}
 		work.checked = isChecked;
 		if (copyToSeries) {
 			addWorkItem(work);
 		}
 		onChange(work);
+		setOnChangeRefresh(prev => prev + 1);
 	}, [isChecked, onChange, copyToSeries, series]);
 	const checkToolTip = (
 		<Tooltip id="work-check">This will set the book&apos;s Author Credits from the &lsquo;Cover&lsquo; tab as this Work&apos;s
@@ -173,8 +180,10 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							isClearable={false}
 							type="work"
 							value={null}
+							recentlyUsedEntityType="works"
 							onAddCallback={addNewWorkCallback}
 							onChange={onChangeHandler}
+							key={`work-dropdown-${onChangeRefresh}`}
 							{...rest}
 						/>
 					</Col>
@@ -211,6 +220,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							isClearable={false}
 							type="series"
 							value={series}
+							recentlyUsedEntityType="series"
 							onAddCallback={addNewSeriesCallback}
 							onChange={seriesChangeHandler}
 							onOpenCallback={resetSeries}
@@ -237,7 +247,12 @@ function mapDispatchToProps(dispatch, {submissionUrl}):ContentTabDispatchProps {
 	return {
 		bulkAddSeriesItems: (data) => dispatch(addBulkSeriesItems(data)),
 		onAddSeriesItem: (data) => dispatch(addSeriesItem(data, data.rowID)),
-		onChange: (value:any) => dispatch(addWork(value)),
+		onChange: (value:any) => {
+			if (value && value.id && value.text) {
+				RecentlyUsed.addItem('works', {id: value.id, name: value.text});
+			}
+			dispatch(addWork(value));
+		},
 		onModalClose: () => dispatch(loadEdition()) && dispatch(closeEntityModal()),
 		onModalOpen: (id) => {
 			dispatch(dumpEdition(type));
@@ -245,6 +260,9 @@ function mapDispatchToProps(dispatch, {submissionUrl}):ContentTabDispatchProps {
 			dispatch(openEntityModal());
 		},
 		onSeriesChange: (value:any) => {
+			if(value && value.id && value.text){
+				RecentlyUsed.addItem('series', {id: value.id, name: value.text});
+			}
 			dispatch(addSeries(value));
 			dispatch(removeAllSeriesItems());
 			if (value?.orderingTypeId) {

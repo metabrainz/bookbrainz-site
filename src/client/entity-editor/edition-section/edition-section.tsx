@@ -65,6 +65,7 @@ import {clearEditionGroups} from '../../unified-form/detail-tab/action';
 import {connect} from 'react-redux';
 import {entityToOption} from '../../helpers/entity';
 import makeImmutable from '../common/make-immutable';
+import {RecentlyUsed} from '../../unified-form/common/recently-used';
 
 
 const ImmutableLanguageField = makeImmutable(LanguageField);
@@ -240,6 +241,7 @@ function EditionSection({
 					}
 					type="editionGroup"
 					value={editionGroupValue}
+					recentlyUsedEntityType="edition_groups"
 					onChange={onEditionGroupChange}
 					{...rest}
 				/>
@@ -350,6 +352,7 @@ function EditionSection({
 						label="Publisher"
 						type="publisher"
 						value={publisherValue}
+						recentlyUsedEntityType="publishers"
 						onChange={onPublisherChange}
 					/>
 				</Col>}
@@ -516,6 +519,12 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
 		onEditionGroupChange: (value, action) => {
+			if(value && value.id && value.text){
+				RecentlyUsed.addItem('edition_groups', {
+					id: value.id,
+					name: value.text
+				});
+			}
 			// If the user selected a new edition group, we need to clear the old one
 			if (['clear', 'pop-value', 'select-option'].includes(action.action)) {
 				dispatch(clearEditionGroups());
@@ -539,7 +548,19 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		onPagesChange: (event) => dispatch(debouncedUpdatePages(
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
-		onPublisherChange: (value) => dispatch(updatePublisher(Object.fromEntries(value.map((pub, index) => [index, pub])))),
+		onPublisherChange: (value) => {
+			if(value && Array.isArray(value)){
+				value.forEach(publisher => {
+					if(publisher && publisher.id && publisher.text){
+						RecentlyUsed.addItem('publishers',	{
+							id: publisher.id,
+							name: publisher.text
+						});
+					}
+				});
+			}
+			dispatch(updatePublisher(Object.fromEntries(value.map((pub, index) => [index, pub]))));
+		},
 		onReleaseDateChange: (releaseDate) =>
 			dispatch(debouncedUpdateReleaseDate(releaseDate)),
 		onStatusChange: (value: {value: number} | null) =>
