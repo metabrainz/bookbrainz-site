@@ -40,6 +40,7 @@ class EntitySearchFieldOption extends React.Component {
 		//Saving
 		'Author': 'authors',
 		'Edition': 'editions',
+		'EditionGroup': 'edition_groups',
 		'Publisher': 'publishers',
 		'Series': 'series',
 		'Work': 'works',
@@ -47,6 +48,7 @@ class EntitySearchFieldOption extends React.Component {
 		//Loading		
 		'authors': 'Author',
 		'editions': 'Edition',
+		'edition_groups' : 'EditionGroup',	
 		'publishers': 'Publisher',
 		'series': 'Series',
 		'works': 'Work',

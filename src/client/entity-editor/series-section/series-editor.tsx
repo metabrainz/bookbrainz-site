@@ -149,10 +149,11 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 
 	const handleEntityChange = (value: EntitySearchResult) => {
 		if(value && value.id && value.text){
-			RecentlyUsed.addItem(`${seriesType.toLowerCase()}s`, {
+			const storageKey = EntitySearchFieldOption.entityTypeMappings[seriesType] || `${seriesType.toLowerCase().replace(/s$/, '')}s`;
+			RecentlyUsed.addItem(storageKey, {
 				id: value.id,
 				name: value.text
-			});
+			});	
 		}
 		setTargetEntity(value);
 		// Convert "value" of type EntitySearchResult to type Entity
@@ -247,7 +248,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 						name="entity"
 						type={[seriesType]}
 						value={targetEntity}
-						recentlyUsedEntityType={`${seriesType.toLowerCase()}s`}
+						recentlyUsedEntityType={EntitySearchFieldOption.entityTypeMappings[seriesType] || `${seriesType.toLowerCase().replace(/s$/, '')}s`}						
 						onChange={handleEntityChange}
 					/>
 				</Col>
