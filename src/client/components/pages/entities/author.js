@@ -137,94 +137,7 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 			editions.push(...authorCredit.editions);
 		});
 	}
-	const tabs = [
-		{
-			content: (
-				<React.Fragment>
-					<WikipediaExtract
-						articleExtract={wikipediaExtract}
-						entity={entity}
-					/>
-					<EntityAnnotation entity={entity}/>
-					{!entity.deleted &&
-					<React.Fragment>
-						<Row>
-							<Col>
-								<EntityIdentifiers
-									entityUrl={urlPrefix}
-									identifierTypes={identifierTypes}
-									identifiers={entity.identifierSet && entity.identifierSet.identifiers}
-								/>
-							</Col>
-						</Row>
-					</React.Fragment>}
-				</React.Fragment>
-			),
-			id: 'overview',
-			label: 'Overview'
-		},
-		{
-			content: !entity.deleted &&
-				<EntityLinks
-					buttonHref={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
-					entity={entity}
-					label="Work"
-					relationshipTypeIds={[8, 1, 31, 62, 34, 35, 37]}
-					urlPrefix={urlPrefix}
-				/>,
-			id: 'works',
-			label: 'Works'
-		},
-		{
-			content: !entity.deleted &&
-				<EntityLinks
-					entity={entity}
-					label="Translation"
-					relationshipTypeIds={[9]}
-					urlPrefix={urlPrefix}
-				/>,
-			id: 'translations',
-			label: 'Translations'
-		},
-		{
-			content: !entity.deleted &&
-				<EditionTable editions={editions} entity={entity}/>,
-			id: 'editions',
-			label: 'Editions'
-		},
-		{
-			content: !entity.deleted &&
-				<EntityLinks
-					excludeTypeIds
-					entity={entity}
-					label="Relationship"
-					relationshipTypeIds={[8, 9, 10, 1, 31, 62, 34, 35, 37]}
-					urlPrefix={urlPrefix}
-				/>,
-			id: 'relationships',
-			label: 'Relationships'
-		},
-		{
-			content: !entity.deleted &&
-				<EntityRelatedCollections collections={entity.collections}/>,
-			id: 'entityRelatedCollections',
-			label: 'Related Collections'
-		},
-		{
-			content: !entity.deleted && (
-				<EntityReviews
-					entityBBID={entity.bbid}
-					entityReviews={entity.reviews}
-					entityType={entity.type}
-					handleModalToggle={handleModalToggle}
-					ref={reviewsRef}
-				/>
-			),
-			id: 'review',
-			label: 'Reviews'
-		}
-	];
-	const [activeTab, setActiveTab] = React.useState(tabs[0].id);
+	const [activeTab, setActiveTab] = React.useState('overview');
 	const handleTabSelect = useCallback((tabId) => {
 		setActiveTab(tabId);
 	  }, []);
@@ -248,23 +161,94 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 					/>
 				</Col>
 			</Row>
-			<Tabs
-				fill
-				activeKey={activeTab}
-				className="mb-3 w-100"
-				id="entity-tabs"
-				onSelect={handleTabSelect}
-			>
-				{tabs.map((tab) => (
+			{!entity.deleted && (
+				<Tabs
+					fill
+					activeKey={activeTab}
+					className="mb-3 w-100"
+					id="entity-tabs"
+					onSelect={handleTabSelect}
+				>
 					<Tab
-						eventKey={tab.id}
-						key={tab.id}
-						title={tab.label}
+						eventKey="overview"
+						title="Overview"
 					>
-						{tab.content}
+						<WikipediaExtract
+							articleExtract={wikipediaExtract}
+							entity={entity}
+						/>
+						<EntityAnnotation entity={entity} />
+						<Row>
+							<Col>
+								<EntityIdentifiers
+									entityUrl={urlPrefix}
+									identifierTypes={identifierTypes}
+									identifiers={entity.identifierSet && entity.identifierSet.identifiers}
+								/>
+							</Col>
+						</Row>
 					</Tab>
-				))}
-			</Tabs>
+					<Tab
+						eventKey="works"
+						title="Works"
+					>
+						<EntityLinks
+							buttonHref={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+							entity={entity}
+							label="Work"
+							relationshipTypeIds={[8, 1, 31, 62, 34, 35, 37]}
+							urlPrefix={urlPrefix}
+						/>
+					</Tab>
+					<Tab
+						eventKey="translations"
+						title="Translations"
+					>
+						<EntityLinks
+							entity={entity}
+							label="Translation"
+							relationshipTypeIds={[9]}
+							urlPrefix={urlPrefix}
+						/>
+					</Tab>
+					<Tab
+						eventKey="editions"
+						title="Editions"
+					>
+						<EditionTable editions={editions} entity={entity} />
+					</Tab>
+					<Tab
+						eventKey="relationships"
+						title="Relationships"
+					>
+						<EntityLinks
+							excludeTypeIds
+							entity={entity}
+							label="Relationship"
+							relationshipTypeIds={[8, 9, 10, 1, 31, 62, 34, 35, 37]}
+							urlPrefix={urlPrefix}
+						/>
+					</Tab>
+					<Tab
+						eventKey="entityRelatedCollections"
+						title="Related Collections"
+					>
+						<EntityRelatedCollections collections={entity.collections} />
+					</Tab>
+					<Tab
+						eventKey="review"
+						title="Reviews"
+					>
+						<EntityReviews
+							entityBBID={entity.bbid}
+							entityReviews={entity.reviews}
+							entityType={entity.type}
+							handleModalToggle={handleModalToggle}
+							ref={reviewsRef}
+						/>
+					</Tab>
+				</Tabs>
+			)}
 			<hr className="margin-top-d40"/>
 			<EntityFooter
 				bbid={entity.bbid}
