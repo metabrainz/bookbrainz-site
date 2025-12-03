@@ -23,6 +23,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LinkedEntitySelect from './linked-entity-select';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import SelectAsync from 'react-select/async';
 import ValidationLabel from '../common/validation-label';
 import _ from 'lodash';
@@ -30,31 +31,10 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {isValidBBID} from '../../../common/helpers/utils';
 import makeImmutable from './make-immutable';
 import request from 'superagent';
-import {RecentlyUsed} from '../../unified-form/common/recently-used';
-
 
 const ImmutableAsyncSelect = makeImmutable(SelectAsync);
 
 class EntitySearchFieldOption extends React.Component {
-	static entityTypeMappings = {
-		//Saving
-		'Author': 'authors',
-		'Edition': 'editions',
-		'EditionGroup': 'edition_groups',
-		'Publisher': 'publishers',
-		'Series': 'series',
-		'Work': 'works',
-		'Area': 'areas',
-		//Loading		
-		'authors': 'Author',
-		'editions': 'Edition',
-		'edition_groups' : 'EditionGroup',	
-		'publishers': 'Publisher',
-		'series': 'Series',
-		'works': 'Work',
-		'areas': 'Area'
-	};
-
 	constructor(props) {
 		super(props);
 		this.selectRef = React.createRef();
@@ -63,6 +43,25 @@ class EntitySearchFieldOption extends React.Component {
 		this.isArea = this.isArea.bind(this);
 		this.entityToOption = this.entityToOption.bind(this);
 	}
+
+	static entityTypeMappings = {
+		// Saving
+		Area: 'areas',
+		Author: 'authors',
+		Edition: 'editions',
+		EditionGroup: 'editiongroups',
+		Publisher: 'publishers',
+		Series: 'series',
+		Work: 'works',
+		// Loading
+		areas: 'Area',
+		authors: 'Author',
+		editiongroups: 'EditionGroup',
+		editions: 'Edition',
+		publishers: 'Publisher',
+		series: 'Series',
+		works: 'Work'
+	};
 
 	/**
 	 * Determines whether an entity provided to the EntitySearch component is an
@@ -106,16 +105,15 @@ class EntitySearchFieldOption extends React.Component {
 		return entityOption;
 	}
 
-	getRecentlyUsedOptions(){
-		if(!this.props.recentlyUsedEntityType){
+	getRecentlyUsedOptions() {
+		if (!this.props.recentlyUsedEntityType) {
 			return [];
 		}
-		const entityTypes = Array.isArray(this.props.recentlyUsedEntityType)
-			? this.props.recentlyUsedEntityType : [this.props.recentlyUsedEntityType];
-		const validEntityTypes = entityTypes.filter(type => 
-			type && typeof type === 'string' && type.trim().length > 0
-		);
-		if(validEntityTypes.length === 0){
+		const entityTypes = Array.isArray(this.props.recentlyUsedEntityType) ?
+			this.props.recentlyUsedEntityType : [this.props.recentlyUsedEntityType];
+		const validEntityTypes = entityTypes.filter(type =>
+			type && typeof type === 'string' && type.trim().length > 0);
+		if (validEntityTypes.length === 0) {
 			return [];
 		}
 		const allRecentlyUsedItems = [];
@@ -130,7 +128,7 @@ class EntitySearchFieldOption extends React.Component {
 				});
 			}
 		});
-		if(allRecentlyUsedItems.length === 0){
+		if (allRecentlyUsedItems.length === 0) {
 			return [];
 		}
 		const uniqueItems = _.uniqBy(allRecentlyUsedItems, 'id').slice(0, 10);
@@ -138,16 +136,16 @@ class EntitySearchFieldOption extends React.Component {
 			const singularType = EntitySearchFieldOption.entityTypeMappings[item._sourceType] || item._sourceType.replace(/s$/, '');
 			return {
 				id: item.id,
-				text: item.name,
 				isRecentlyUsed: true,
+				text: item.name,
 				type: singularType
 			};
 		});
 	}
 
-	getDefaultOptions(){
+	getDefaultOptions() {
 		const recentOptions = this.getRecentlyUsedOptions();
-		if(recentOptions.length === 0){
+		if (recentOptions.length === 0) {
 			return true;
 		}
 		return [{
@@ -158,12 +156,11 @@ class EntitySearchFieldOption extends React.Component {
 
 	async fetchOptions(query) {
 		const recentOptions = this.getRecentlyUsedOptions();
-		const uniqueRecentOptions = _.uniqBy(recentOptions, 'id').slice(0, 10);	
+		const uniqueRecentOptions = _.uniqBy(recentOptions, 'id').slice(0, 10);
 		if (!query) {
 			if (uniqueRecentOptions.length === 0) {
 				return [];
 			}
-			
 			return [{
 				label: 'Recently Used',
 				options: uniqueRecentOptions
@@ -181,9 +178,8 @@ class EntitySearchFieldOption extends React.Component {
 			if (entity && typeof this.props.onChange === 'function' && (_.snakeCase(entity.type) === this.props.type ||
 				 (_.isArray(this.props.type) && this.props.type.includes(entity.type)))) {
 				const entityOption = this.entityToOption(entity);
-				if(entityOption.id && entityOption.text && entityOption.type){
+				if (entityOption.id && entityOption.text && entityOption.type) {
 					const storageKey = EntitySearchFieldOption.entityTypeMappings[entityOption.type] || `${entityOption.type.toLowerCase()}s`;
-					
 					RecentlyUsed.addItem(storageKey, {
 						id: entityOption.id,
 						name: entityOption.text
@@ -209,8 +205,8 @@ class EntitySearchFieldOption extends React.Component {
 		);
 		const filteredOptions = response.body.filter(combinedFilters);
 		const searchResults = filteredOptions.map(this.entityToOption);
-		if(uniqueRecentOptions.length > 0){
-			return[
+		if (uniqueRecentOptions.length > 0) {
+			return [
 				{
 					label: 'Recently Used',
 					options: uniqueRecentOptions
@@ -272,8 +268,8 @@ class EntitySearchFieldOption extends React.Component {
 		const wrappedSelect = (
 			<SelectWrapper
 				{...this.props}
-				cacheOptions
 				blurInputOnSelect
+				cacheOptions
 				isClearable
 				className={`Select${this.props.className ? ` ${this.props.className}` : ''}`}
 				classNamePrefix="react-select"
@@ -319,11 +315,11 @@ EntitySearchFieldOption.propTypes = {
 	isMulti: PropTypes.bool,
 	label: PropTypes.string,
 	languageOptions: PropTypes.array,
+	onChange: PropTypes.func.isRequired,
 	recentlyUsedEntityType: PropTypes.oneOfType([
 		PropTypes.string,
 		PropTypes.arrayOf(PropTypes.string)
 	]),
-	onChange: PropTypes.func.isRequired,
 	tooltipText: PropTypes.string,
 	type: PropTypes.oneOfType([
 		PropTypes.string,

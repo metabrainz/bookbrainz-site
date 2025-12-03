@@ -241,7 +241,7 @@ function EditionSection({
 					}
 					type="editionGroup"
 					value={editionGroupValue}
-					recentlyUsedEntityType="edition_groups"
+					recentlyUsedEntityType="editiongroups"
 					onChange={onEditionGroupChange}
 					{...rest}
 				/>
@@ -520,7 +520,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		)),
 		onEditionGroupChange: (value, action) => {
 			if(value && value.id && value.text){
-				RecentlyUsed.addItem('edition_groups', {
+				RecentlyUsed.addItem('editiongroups', {
 					id: value.id,
 					name: value.text
 				});
