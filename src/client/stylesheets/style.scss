@@ -29,6 +29,7 @@ $disabled-color: lighten($disabled-bg,15%);
 @import "lobes4/scss/bootstrap.scss";
 @import "react-datepicker/dist/react-datepicker.css";
 @import "./external-services.scss";
+@import "./edition-cover.scss";
 
 .navbar.BookBrainz {
 	background: rgba(255, 255, 255, 1);
@@ -379,84 +380,6 @@ a.contact-text:visited {
 	width: 100%;
 	>:last-child:not(:only-child) {
 		color: $danger;
-	}
-}
-
-.edition-cover-container {
-	position: relative;
-	max-width: 100%;
-	width: 100%;
-	margin-top: 1em;
-	margin-bottom: 1em;
-	text-align: center;
-
-	.edition-cover-wrapper {
-		position: relative;
-		width: 100%;
-		min-height: 200px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.edition-cover-image {
-		max-width: 100%;
-		max-height: 400px;
-		height: auto;
-		display: block;
-		margin: 0 auto;
-		border-radius: 4px;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-		transition: opacity 0.3s ease-in-out;
-
-		&.loading {
-			opacity: 0;
-		}
-
-		&:not(.loading) {
-			opacity: 1;
-		}
-	}
-
-	.edition-cover-loading {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		color: $gray-400;
-		opacity: 0.5;
-	}
-
-	.edition-cover-attribution {
-		display: block;
-		margin-top: 0.5em;
-		font-size: 0.75em;
-		text-align: center;
-
-		a {
-			color: $gray-600;
-			text-decoration: none;
-
-			&:hover {
-				text-decoration: underline;
-				color: $bookbrainz;
-			}
-		}
-	}
-
-	// Responsive adjustments for smaller screens
-	@media (max-width: 768px) {
-		margin-top: 0.5em;
-		margin-bottom: 0.5em;
-
-		.edition-cover-wrapper {
-			min-height: 150px;
-		}
-
-		.edition-cover-image {
-			max-width: 80%;
-			max-height: 300px;
-		}
 	}
 }
 

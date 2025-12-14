@@ -155,15 +155,15 @@ function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	return (
 		<div>
 			<Row className="entity-display-background">
-				<Col className="entity-display-image-box text-center" lg={2}>
+				<Col className="entity-display-image-box text-center" lg={3}>
 					<EditionCover
 						backupIcon={ENTITY_TYPE_ICONS.Edition}
 						deleted={entity.deleted}
 						editionName={entity.defaultAlias?.name || entity.name}
-						identifiers={entity.identifierSet?.identifiers || []}
+						identifiers={entity.identifierSet?.identifiers}
 					/>
 				</Col>
-				<Col lg={10}>
+				<Col lg={9}>
 					<EntityTitle entity={entity}/>
 					{authorCreditSection}
 					<hr/>

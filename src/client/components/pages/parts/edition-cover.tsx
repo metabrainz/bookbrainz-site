@@ -19,7 +19,7 @@
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSlash} from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {getOpenLibraryCoverUrl} from '../../../../common/helpers/cover-image';
 
 
@@ -27,7 +27,18 @@ function EditionCover({backupIcon, deleted, editionName, identifiers}) {
 	const [imageError, setImageError] = useState(false);
 	const [imageLoading, setImageLoading] = useState(true);
 
-	const coverUrl = getOpenLibraryCoverUrl(identifiers);
+	const coverData = getOpenLibraryCoverUrl(identifiers);
+	const coverUrl = coverData?.[0];
+	const sourcePageUrl = coverData?.[1];
+
+	const handleImageError = useCallback(() => {
+		setImageError(true);
+		setImageLoading(false);
+	}, []);
+
+	const handleImageLoad = useCallback(() => {
+		setImageLoading(false);
+	}, []);
 
 	useEffect(() => {
 		setImageError(false);
@@ -40,54 +51,19 @@ function EditionCover({backupIcon, deleted, editionName, identifiers}) {
 		}
 
 		const img = new Image();
-		const handleLoad = () => {
-			if (img.naturalWidth < 50 || img.naturalHeight < 50) {
-				setImageError(true);
-				setImageLoading(false);
-				return;
-			}
-			setImageLoading(false);
-		};
-
-		const handleError = () => {
-			setImageError(true);
-			setImageLoading(false);
-		};
-
-		img.onload = handleLoad;
-		img.onerror = handleError;
+		img.onload = handleImageLoad;
+		img.onerror = handleImageError;
 		img.src = coverUrl;
 
 		if (img.complete && img.naturalHeight !== 0) {
-			if (img.naturalWidth < 50 || img.naturalHeight < 50) {
-				setImageError(true);
-				setImageLoading(false);
-			}
-			else {
-				setImageLoading(false);
-			}
+			setImageLoading(false);
 		}
 
 		return () => {
 			img.onload = null;
 			img.onerror = null;
 		};
-	}, [coverUrl]);
-
-	const handleImageError = () => {
-		setImageError(true);
-		setImageLoading(false);
-	};
-
-	const handleImageLoad = (event) => {
-		const img = event.target;
-		if (img.naturalWidth < 50 || img.naturalHeight < 50) {
-			setImageError(true);
-			setImageLoading(false);
-			return;
-		}
-		setImageLoading(false);
-	};
+	}, [coverUrl, handleImageLoad, handleImageError]);
 
 	if (deleted) {
 		return (
@@ -127,21 +103,21 @@ function EditionCover({backupIcon, deleted, editionName, identifiers}) {
 						onLoad={handleImageLoad}
 						src={coverUrl}
 					/>
-				</div>
-				{!imageLoading && (
-					<small className="edition-cover-attribution text-muted">
-						Cover from{' '}
-						<a
-							href="https://openlibrary.org"
-							rel="noopener noreferrer"
-							target="_blank"
-						>
-							OpenLibrary
-						</a>
-					</small>
-				)}
 			</div>
-		);
+			{!imageLoading && (
+				<small className="edition-cover-attribution text-muted">
+					Cover from{' '}
+					<a
+						href={sourcePageUrl}
+						rel="noopener noreferrer"
+						target="_blank"
+					>
+						OpenLibrary
+					</a>
+				</small>
+			)}
+		</div>
+	);
 	}
 
 	return (
@@ -168,4 +144,3 @@ EditionCover.defaultProps = {
 };
 
 export default EditionCover;
-

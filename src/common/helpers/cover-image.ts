@@ -17,13 +17,14 @@
  */
 
 /**
- * Gets the OpenLibrary cover image URL for an Edition based on available identifiers.
+ * Gets the OpenLibrary cover image URL and source page URL for an Edition.
  * Priority: OLID > ISBN-13 > ISBN-10 > OCLC > LCCN
+ * returns [coverUrl, sourcePageUrl] or null if no identifier found
  */
 export function getOpenLibraryCoverUrl(
 	identifiers: Array<{type: {label: string, id?: number}, value: string}> | null | undefined,
-	size: 'S' | 'M' | 'L' = 'L'
-): string | null {
+	size: 'S' | 'M' | 'L' = 'M'
+): [string, string] | null {
 	if (!identifiers || !Array.isArray(identifiers) || identifiers.length === 0) {
 		return null;
 	}
@@ -38,7 +39,10 @@ export function getOpenLibraryCoverUrl(
 
 	if (olidIdentifier && olidIdentifier.value) {
 		const olidValue = olidIdentifier.value.trim();
-		return `https://covers.openlibrary.org/b/olid/${olidValue}-${size}.jpg`;
+		return [
+			`https://covers.openlibrary.org/b/olid/${olidValue}-${size}.jpg?default=false`,
+			`https://openlibrary.org/books/${olidValue}`
+		];
 	}
 
 	const isbn13Identifier = identifiers.find((identifier) => {
@@ -50,7 +54,10 @@ export function getOpenLibraryCoverUrl(
 	if (isbn13Identifier && isbn13Identifier.value) {
 		const cleanISBN = isbn13Identifier.value.replace(/-/g, '').trim();
 		if (cleanISBN.length === 13) {
-			return `https://covers.openlibrary.org/b/isbn/${cleanISBN}-${size}.jpg`;
+			return [
+				`https://covers.openlibrary.org/b/isbn/${cleanISBN}-${size}.jpg?default=false`,
+				`https://openlibrary.org/isbn/${cleanISBN}`
+			];
 		}
 	}
 
@@ -63,7 +70,10 @@ export function getOpenLibraryCoverUrl(
 	if (isbn10Identifier && isbn10Identifier.value) {
 		const cleanISBN = isbn10Identifier.value.replace(/-/g, '').trim();
 		if (cleanISBN.length === 10) {
-			return `https://covers.openlibrary.org/b/isbn/${cleanISBN}-${size}.jpg`;
+			return [
+				`https://covers.openlibrary.org/b/isbn/${cleanISBN}-${size}.jpg?default=false`,
+				`https://openlibrary.org/isbn/${cleanISBN}`
+			];
 		}
 	}
 
@@ -79,7 +89,10 @@ export function getOpenLibraryCoverUrl(
 	if (oclcIdentifier && oclcIdentifier.value) {
 		const oclcValue = oclcIdentifier.value.trim();
 		if (/^\d+$/.test(oclcValue)) {
-			return `https://covers.openlibrary.org/b/oclc/${oclcValue}-${size}.jpg`;
+			return [
+				`https://covers.openlibrary.org/b/oclc/${oclcValue}-${size}.jpg?default=false`,
+				`https://openlibrary.org/oclc/${oclcValue}`
+			];
 		}
 	}
 
@@ -92,10 +105,12 @@ export function getOpenLibraryCoverUrl(
 	if (lccnIdentifier && lccnIdentifier.value) {
 		const lccnValue = lccnIdentifier.value.trim();
 		if (/^[a-zA-Z]{0,3}\d{6,10}$/.test(lccnValue)) {
-			return `https://covers.openlibrary.org/b/lccn/${lccnValue}-${size}.jpg`;
+			return [
+				`https://covers.openlibrary.org/b/lccn/${lccnValue}-${size}.jpg?default=false`,
+				`https://openlibrary.org/lccn/${lccnValue}`
+			];
 		}
 	}
 
 	return null;
 }
-
