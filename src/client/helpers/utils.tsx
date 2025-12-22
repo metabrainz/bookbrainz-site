@@ -274,3 +274,23 @@ export const IdentifierTypeEditorIcon = (
 		<FontAwesomeIcon icon={faPlus} transform="shrink-8 right-5 down-2"/>
 	</span>
 );
+
+/**
+ * Sanitizes input strings by:
+ * 1. Replacing fullwidth spaces (\u3000) with normal spaces.
+ * 2. Normalizing multiple spaces into a single space.
+ * 3. Trimming whitespace from the start and end.
+ *
+ * @param {string} text - The input text to sanitize.
+ * @returns {string} The sanitized text.
+ */
+export function sanitizeInput(text: string): string {
+    if (!text || typeof text !== 'string') {
+        return '';
+    }
+
+    return text
+        .replace(/\u3000/g, ' ') // Convert fullwidth space to normal space
+        .replace(/\s+/g, ' ')    // Merge double/multiple spaces into one
+        .trim();                 // Remove start/end spaces
+}
