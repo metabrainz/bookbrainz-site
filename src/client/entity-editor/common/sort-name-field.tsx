@@ -62,7 +62,8 @@ function makeSortName(name: string): string {
 	const firstWordIsArticle = articles.includes(firstWord.toLowerCase());
 	if (firstWordIsArticle) {
 		// The Collection of Stories --> Collection of Stories, The
-		return `${words.slice(1).join(' ')}, ${firstWord}`;
+		const wordsWithCommas = trimmedName.split(' ');
+		return `${wordsWithCommas.slice(1).join(' ')}, ${firstWord}`;
 	}
 
 	/*
