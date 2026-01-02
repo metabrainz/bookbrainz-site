@@ -19,9 +19,8 @@
 
 import * as Immutable from 'immutable';
 import {
-	Action, UPDATE_LANGUAGES, UPDATE_TYPE
+	Action, UPDATE_LANGUAGES, UPDATE_TYPE, ADD_WORK_LANGUAGE
 } from './actions';
-
 
 type State = Immutable.Map<string, any>;
 
@@ -38,6 +37,13 @@ function reducer(
 			return state.set('languages', Immutable.fromJS(payload));
 		case UPDATE_TYPE:
 			return state.set('type', payload);
+		case ADD_WORK_LANGUAGE: {
+			if (!payload) {
+				return state;
+			}
+			const currentLanguages = state.get('languages') || Immutable.List([]);
+			return state.set('languages', currentLanguages.push(Immutable.fromJS(payload)));
+		}
 		// no default
 	}
 	return state;

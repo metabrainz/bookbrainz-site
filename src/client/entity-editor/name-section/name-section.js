@@ -16,14 +16,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Alert, Col, ListGroup, Row} from 'react-bootstrap';
-import {UPDATE_WARN_IF_EDITION_GROUP_EXISTS, addLanguage} from '../edition-section/actions';
+import {Alert, Col, Form, ListGroup, Row} from 'react-bootstrap';
+import {UPDATE_WARN_IF_EDITION_GROUP_EXISTS} from '../edition-section/actions';
 import {
 	checkIfNameExists,
 	debouncedUpdateDisambiguationField,
 	debouncedUpdateNameField,
 	debouncedUpdateSortNameField,
 	searchName,
+	toggleCopyLanguageToContent,
+	updateCopyLanguageToContent,
+	updateLanguageAndSync,
 	updateLanguageField
 } from './actions';
 import {isAliasEmpty, isRequiredDisambiguationEmpty} from '../helpers';
@@ -98,6 +101,9 @@ class NameSection extends React.Component {
 		if (this.props.action !== 'edit' && !_.isNil(this.nameInputRef)) {
 			this.handleNameChange({target: {value: this.nameInputRef.value}});
 		}
+		if (this.props.copyLanguages && this.props.onInitCopyLanguage) {
+			this.props.onInitCopyLanguage(true);
+		}
 	}
 
 	componentDidUpdate(prevProps) {
@@ -169,6 +175,8 @@ class NameSection extends React.Component {
 
 	render() {
 		const {
+			copyLanguageCheckbox,
+			copyLanguageToContent,
 			disambiguationDefaultValue,
 			entityType,
 			exactMatches: immutableExactMatches,
@@ -176,6 +184,7 @@ class NameSection extends React.Component {
 			languageValue,
 			nameValue,
 			sortNameValue,
+			onCopyLanguageToContentChange,
 			onLanguageChange,
 			onSortNameChange,
 			onDisambiguationChange,
@@ -261,6 +270,15 @@ class NameSection extends React.Component {
 							value={languageOption}
 							onChange={onLanguageChange}
 						/>
+						{copyLanguageCheckbox &&
+							<Form.Check
+								checked={copyLanguageToContent}
+								className="margin-bottom-1"
+								id="copy-language-checkbox"
+								label="Also set as language of contents"
+								onChange={onCopyLanguageToContentChange}
+							/>
+						}
 					</Col>
 				</Row>
 				<Row>
@@ -290,6 +308,9 @@ class NameSection extends React.Component {
 NameSection.displayName = 'NameSection';
 NameSection.propTypes = {
 	action: PropTypes.string,
+	copyLanguageCheckbox: PropTypes.bool,
+	copyLanguageToContent: PropTypes.bool,
+	onCopyLanguageToContentChange: PropTypes.func,
 	disambiguationDefaultValue: PropTypes.string,
 	entityType: entityTypeProperty.isRequired,
 	exactMatches: PropTypes.object,
@@ -321,7 +342,7 @@ NameSection.defaultProps = {
 };
 
 
-function mapStateToProps(rootState, {isUnifiedForm, setDefault}) {
+function mapStateToProps(rootState, {isUnifiedForm, setDefault, entityType}) {
 	const state = rootState.get('nameSection');
 	const editionSectionState = rootState.get('editionSection');
 	const searchForExistingEditionGroup = Boolean(editionSectionState) &&
@@ -341,6 +362,8 @@ function mapStateToProps(rootState, {isUnifiedForm, setDefault}) {
 		};
 	}
 	return {
+		copyLanguageToContent: state.get('copyLanguageToContent'),
+		copyLanguageCheckbox: ['work', 'edition'].includes(_.toLower(entityType)),
 		disambiguationDefaultValue: state.get('disambiguation'),
 		exactMatches: state.get('exactMatches'),
 		languageValue: state.get('language'),
@@ -351,13 +374,17 @@ function mapStateToProps(rootState, {isUnifiedForm, setDefault}) {
 	};
 }
 
-function mapDispatchToProps(dispatch, {entity, entityType, copyLanguages}) {
+function mapDispatchToProps(dispatch, {entity, entityType, copyLanguages, languageOptions}) {
 	const entityBBID = entity && entity.bbid;
 	return {
+		onCopyLanguageToContentChange: (event) =>
+			dispatch(toggleCopyLanguageToContent(event.target.checked, entityType, languageOptions)),
 		onDisambiguationChange: (event) =>
 			dispatch(debouncedUpdateDisambiguationField(event.target.value)),
+		onInitCopyLanguage: (checked) =>
+			dispatch(updateCopyLanguageToContent(checked)),
 		onLanguageChange: (value) =>
-			dispatch(updateLanguageField(value && value.value)) && copyLanguages && dispatch(addLanguage(value)),
+			dispatch(updateLanguageAndSync(value, entityType, copyLanguages)),
 		onNameChange: (value) =>
 			dispatch(debouncedUpdateNameField(value)),
 		onNameChangeCheckIfEditionGroupExists: _.debounce((value) => {
