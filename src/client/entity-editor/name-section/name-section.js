@@ -17,7 +17,6 @@
  */
 
 import {Alert, Col, Form, ListGroup, Row} from 'react-bootstrap';
-import {UPDATE_WARN_IF_EDITION_GROUP_EXISTS} from '../edition-section/actions';
 import {
 	checkIfNameExists,
 	debouncedUpdateDisambiguationField,
@@ -26,8 +25,7 @@ import {
 	searchName,
 	toggleCopyLanguageToContent,
 	updateCopyLanguageToContent,
-	updateLanguageAndSync,
-	updateLanguageField
+	updateLanguageAndSync
 } from './actions';
 import {isAliasEmpty, isRequiredDisambiguationEmpty} from '../helpers';
 import {
@@ -36,7 +34,6 @@ import {
 	validateNameSectionName,
 	validateNameSectionSortName
 } from '../validators/common';
-
 import DisambiguationField from './disambiguation-field';
 import Immutable from 'immutable';
 import LanguageField from '../common/language-field';
@@ -45,6 +42,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import SearchResults from '../../components/pages/parts/search-results';
 import SortNameField from '../common/sort-name-field';
+import {UPDATE_WARN_IF_EDITION_GROUP_EXISTS} from '../edition-section/actions';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
@@ -310,7 +308,7 @@ NameSection.propTypes = {
 	action: PropTypes.string,
 	copyLanguageCheckbox: PropTypes.bool,
 	copyLanguageToContent: PropTypes.bool,
-	onCopyLanguageToContentChange: PropTypes.func,
+	copyLanguages: PropTypes.bool,
 	disambiguationDefaultValue: PropTypes.string,
 	entityType: entityTypeProperty.isRequired,
 	exactMatches: PropTypes.object,
@@ -319,7 +317,9 @@ NameSection.propTypes = {
 	languageOptions: PropTypes.array.isRequired,
 	languageValue: PropTypes.number,
 	nameValue: PropTypes.string.isRequired,
+	onCopyLanguageToContentChange: PropTypes.func,
 	onDisambiguationChange: PropTypes.func.isRequired,
+	onInitCopyLanguage: PropTypes.func,
 	onLanguageChange: PropTypes.func.isRequired,
 	onNameChange: PropTypes.func.isRequired,
 	onNameChangeCheckIfEditionGroupExists: PropTypes.func.isRequired,
@@ -332,11 +332,16 @@ NameSection.propTypes = {
 };
 NameSection.defaultProps = {
 	action: 'create',
+	copyLanguageCheckbox: false,
+	copyLanguageToContent: false,
+	copyLanguages: false,
 	disambiguationDefaultValue: null,
 	exactMatches: [],
 	isModal: false,
 	isUnifiedForm: false,
 	languageValue: null,
+	onCopyLanguageToContentChange: null,
+	onInitCopyLanguage: null,
 	searchForExistingEditionGroup: true,
 	searchResults: []
 };
@@ -346,10 +351,10 @@ function mapStateToProps(rootState, {isUnifiedForm, setDefault, entityType}) {
 	const state = rootState.get('nameSection');
 	const editionSectionState = rootState.get('editionSection');
 	const searchForExistingEditionGroup = Boolean(editionSectionState) &&
-	(
-		!editionSectionState.get('editionGroup') ||
-		editionSectionState.get('editionGroupRequired')
-	);
+		(
+			!editionSectionState.get('editionGroup') ||
+			editionSectionState.get('editionGroupRequired')
+		);
 	// to prevent double double state updates on action caused by modal
 	if (isUnifiedForm && setDefault) {
 		return {
@@ -362,8 +367,8 @@ function mapStateToProps(rootState, {isUnifiedForm, setDefault, entityType}) {
 		};
 	}
 	return {
-		copyLanguageToContent: state.get('copyLanguageToContent'),
 		copyLanguageCheckbox: ['work', 'edition'].includes(_.toLower(entityType)),
+		copyLanguageToContent: state.get('copyLanguageToContent'),
 		disambiguationDefaultValue: state.get('disambiguation'),
 		exactMatches: state.get('exactMatches'),
 		languageValue: state.get('language'),
