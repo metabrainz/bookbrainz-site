@@ -344,7 +344,7 @@ export async function saveEntitiesAndFinishRevision(
 export async function deleteRelationships(orm: any, transacting: Transaction, mainEntity: any) {
 	const mainBBID = mainEntity.bbid;
 	const {relationshipSet} = mainEntity;
-	const otherBBIDs = [];
+	const otherBBIDs = new Set<string>();
 	const otherEntities = [];
 
 	if (relationshipSet) {
@@ -354,52 +354,49 @@ export async function deleteRelationships(orm: any, transacting: Transaction, ma
 		}
 		relationshipSet.relationships.forEach((relationship) => {
 			if (relationship.sourceBbid === mainBBID) {
-				otherBBIDs.push(relationship.targetBbid);
+				otherBBIDs.add(relationship.targetBbid);
 			}
 			else if (relationship.targetBbid === mainBBID) {
-				otherBBIDs.push(relationship.sourceBbid);
+				otherBBIDs.add(relationship.sourceBbid);
 			}
 		});
-
 		// Loop over the BBID's of other entites related to deleted entity
-		if (otherBBIDs.length) {
-			if (otherBBIDs.length === 0) {
-				return [];
-			}
-			await Promise.all(otherBBIDs.map(async (entityBbid) => {
-				const otherEntity = await getEntityByBBID(orm, transacting, entityBbid);
-
-				const otherEntityRelationshipSet = await otherEntity.relationshipSet()
-					.fetch({require: false, transacting, withRelated: 'relationships'});
-
-				if (_.isNil(otherEntityRelationshipSet)) {
-					return;
-				}
-
-				// Fetch other entity relationships to remove relation with the deleted entity
-				let otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
-
-				// Mark entites related to deleted entity as removed
-				otherEntityRelationships = otherEntityRelationships.map((rel) => {
-					if (mainBBID !== rel.sourceBbid && mainBBID !== rel.targetBbid) {
-						return rel;
-					}
-					_.set(rel, 'isRemoved', true);
-					return rel;
-				});
-
-				const newRelationshipSet = await orm.func.relationship.updateRelationshipSets(
-					orm, transacting, otherEntityRelationshipSet, otherEntityRelationships
-				);
-
-				otherEntity.set(
-					'relationshipSetId',
-					newRelationshipSet[entityBbid] ? newRelationshipSet[entityBbid].get('id') : null
-				);
-
-				otherEntities.push(otherEntity);
-			}));
+		if (!otherBBIDs.size) {
+			return [];
 		}
+		await Promise.all(otherBBIDs.values().toArray().map(async (entityBbid) => {
+			const otherEntity = await getEntityByBBID(orm, transacting, entityBbid);
+
+			const otherEntityRelationshipSet = await otherEntity.relationshipSet()
+				.fetch({require: false, transacting, withRelated: 'relationships'});
+
+			if (_.isNil(otherEntityRelationshipSet)) {
+				return;
+			}
+
+			// Fetch other entity relationships to remove relation with the deleted entity
+			let otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
+
+			// Mark entites related to deleted entity as removed
+			otherEntityRelationships = otherEntityRelationships.map((rel) => {
+				if (mainBBID !== rel.sourceBbid && mainBBID !== rel.targetBbid) {
+					return rel;
+				}
+				_.set(rel, 'isRemoved', true);
+				return rel;
+			});
+
+			const newRelationshipSet = await orm.func.relationship.updateRelationshipSets(
+				orm, transacting, otherEntityRelationshipSet, otherEntityRelationships
+			);
+
+			otherEntity.set(
+				'relationshipSetId',
+				newRelationshipSet[entityBbid] ? newRelationshipSet[entityBbid].get('id') : null
+			);
+
+			otherEntities.push(otherEntity);
+		}));
 	}
 
 	return otherEntities;
@@ -454,9 +451,6 @@ export function handleDelete(
 			method: 'insert',
 			transacting
 		});
-
-		// set parent revision
-		await setParentRevisions(transacting, newRevision, [entity.revisionId]);
 
 		await new HeaderModel({
 			bbid: entity.bbid,
