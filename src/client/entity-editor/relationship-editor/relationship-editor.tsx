@@ -46,6 +46,7 @@ import ReactSelect from 'react-select';
 import RelationshipSelect from './relationship-select';
 import _ from 'lodash';
 import {getEntityLink} from '../../../common/helpers/utils';
+import {RecentlyUsed} from '../../unified-form/common/recently-used';
 
 
 function isValidRelationship(relationship: _Relationship) {
@@ -274,6 +275,13 @@ class RelationshipModal
 	}
 
 	handleEntityChange = (value: EntitySearchResult) => {
+		if(value && value.id && value.text && value.type){
+			const storageKey = EntitySearchFieldOption.entityTypeMappings[value.type] || `${value.type.toLowerCase()}s`;
+			RecentlyUsed.addItem(storageKey, {
+				id: value.id,
+				name: value.text
+			});
+		}
 		this.setState({
 			relationship: null,
 			relationshipType: null,
@@ -282,6 +290,7 @@ class RelationshipModal
 	};
 
 	handleRelationshipTypeChange = (value: _Relationship) => {
+		
 		this.setState({
 			relationship: value,
 			relationshipType: value.relationshipType
@@ -378,6 +387,7 @@ class RelationshipModal
 				name="entity"
 				type={types}
 				value={this.state.targetEntity}
+				recentlyUsedEntityType={['works', 'authors', 'editions', 'publishers', 'series']}
 				onChange={this.handleEntityChange}
 			/>
 		);

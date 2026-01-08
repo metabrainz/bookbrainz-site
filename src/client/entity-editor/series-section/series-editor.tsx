@@ -32,6 +32,7 @@ import PropTypes from 'prop-types';
 import Relationship from '../relationship-editor/relationship';
 import _ from 'lodash';
 import {generateRelationshipSelection} from '../relationship-editor/relationship-editor';
+import {RecentlyUsed} from '../../unified-form/common/recently-used';
 
 
 type EntitySearchResult = {
@@ -147,6 +148,13 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 	const [targetEntity, setTargetEntity] = useState(null);
 
 	const handleEntityChange = (value: EntitySearchResult) => {
+		if(value && value.id && value.text){
+			const storageKey = EntitySearchFieldOption.entityTypeMappings[seriesType] || `${seriesType.toLowerCase().replace(/s$/, '')}s`;
+			RecentlyUsed.addItem(storageKey, {
+				id: value.id,
+				name: value.text
+			});	
+		}
 		setTargetEntity(value);
 		// Convert "value" of type EntitySearchResult to type Entity
 		const otherEntity = {
@@ -240,6 +248,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 						name="entity"
 						type={[seriesType]}
 						value={targetEntity}
+						recentlyUsedEntityType={EntitySearchFieldOption.entityTypeMappings[seriesType] || `${seriesType.toLowerCase().replace(/s$/, '')}s`}						
 						onChange={handleEntityChange}
 					/>
 				</Col>

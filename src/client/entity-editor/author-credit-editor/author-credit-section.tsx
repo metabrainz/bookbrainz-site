@@ -46,6 +46,7 @@ import {components} from 'react-select';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {validateAuthorCreditSection} from '../validators/common';
+import {RecentlyUsed} from '../../unified-form/common/recently-used';
 
 
 type OwnProps = {
@@ -181,6 +182,7 @@ function AuthorCreditSection({
 								onChange={onChangeHandler}
 								{...rest}
 								type="author"
+								recentlyUsedEntityType="authors"
 							/>
 						</div>
 						<InputGroup.Append>{editButton}</InputGroup.Append>
@@ -233,6 +235,9 @@ function mapStateToProps(rootState, {type}): StateProps {
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onAuthorChange: (value) => {
+			if(value && value.id && value.text){
+				RecentlyUsed.addItem('authors', {id: value.id, name: value.text});
+			}
 			dispatch(updateCreditAuthorValue(-1, value));
 		},
 		onClearHandler: (aid) => dispatch(clearAuthor(aid)),

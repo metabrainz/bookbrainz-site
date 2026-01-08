@@ -11,6 +11,7 @@ import SearchEntityCreate from '../common/search-entity-create-select';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {updatePublisher} from '../../entity-editor/edition-section/actions';
+import {RecentlyUsed} from '../common/recently-used';
 
 
 export function CoverTab(props:CoverProps) {
@@ -39,6 +40,7 @@ export function CoverTab(props:CoverProps) {
 						label="Publisher"
 						type="publisher"
 						value={publisherValue}
+						recentlyUsedEntityType="publishers"
 						onChange={onChangeHandler}
 						{...rest}
 					/>
@@ -70,7 +72,19 @@ function mapDispatchToProps(dispatch):CoverDispatchProps {
 	return {
 		handleClearPublishers: () => dispatch(clearPublishers()),
 		onClearPublisher: (arg) => dispatch(clearPublisher(arg)),
-		onPublisherChange: (value) => dispatch(updatePublisher(Object.fromEntries(value.map((pub, index) => [index, pub]))))
+		onPublisherChange: (value) => {
+			if(value && Array.isArray(value)){
+				value.forEach(publisher => {
+					if(publisher && publisher.id && publisher.text){
+						RecentlyUsed.addItem('publishers', {
+							id: publisher.id,
+							name: publisher.text
+						});
+					}
+				});
+			}
+			dispatch(updatePublisher(Object.fromEntries(value.map((pub, index) => [index, pub]))));
+		}
 	};
 }
 
