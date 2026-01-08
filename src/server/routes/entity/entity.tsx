@@ -344,7 +344,7 @@ export async function saveEntitiesAndFinishRevision(
 export async function deleteRelationships(orm: any, transacting: Transaction, mainEntity: any) {
 	const mainBBID = mainEntity.bbid;
 	const {relationshipSet} = mainEntity;
-	const otherBBIDs = new Set<string>();
+	const otherBBIDs:string[] = [];
 	const otherEntities = [];
 
 	if (relationshipSet) {
@@ -354,17 +354,17 @@ export async function deleteRelationships(orm: any, transacting: Transaction, ma
 		}
 		relationshipSet.relationships.forEach((relationship) => {
 			if (relationship.sourceBbid === mainBBID) {
-				otherBBIDs.add(relationship.targetBbid);
+				otherBBIDs.push(relationship.targetBbid);
 			}
 			else if (relationship.targetBbid === mainBBID) {
-				otherBBIDs.add(relationship.sourceBbid);
+				otherBBIDs.push(relationship.sourceBbid);
 			}
 		});
-		// Loop over the BBID's of other entites related to deleted entity
-		if (!otherBBIDs.size) {
+		if (!otherBBIDs.length) {
 			return [];
 		}
-		await Promise.all(otherBBIDs.values().toArray().map(async (entityBbid) => {
+		// Loop over the BBID's of other entites related to deleted entity
+		await Promise.all(_.uniq(otherBBIDs).map(async (entityBbid) => {
 			const otherEntity = await getEntityByBBID(orm, transacting, entityBbid);
 
 			const otherEntityRelationshipSet = await otherEntity.relationshipSet()
