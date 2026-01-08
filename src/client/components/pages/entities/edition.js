@@ -19,9 +19,9 @@
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import AuthorCreditDisplay from '../../author-credit-display';
+import EditionCover from '../parts/edition-cover';
 import EntityAnnotation from './annotation';
 import EntityFooter from './footer';
-import EntityImage from './image';
 import EntityLinks from './links';
 import EntityRelatedCollections from './related-collections';
 import EntityTitle from './title';
@@ -155,14 +155,15 @@ function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	return (
 		<div>
 			<Row className="entity-display-background">
-				<Col className="entity-display-image-box text-center" lg={2}>
-					<EntityImage
+				<Col className="entity-display-image-box text-center" lg={3}>
+					<EditionCover
 						backupIcon={ENTITY_TYPE_ICONS.Edition}
 						deleted={entity.deleted}
-						imageUrl={entity.imageUrl}
+						editionName={entity.defaultAlias?.name || entity.name}
+						identifiers={entity.identifierSet?.identifiers}
 					/>
 				</Col>
-				<Col lg={10}>
+				<Col lg={9}>
 					<EntityTitle entity={entity}/>
 					{authorCreditSection}
 					<hr/>
