@@ -62,7 +62,7 @@ app.get('/', (req, res) => {
 	res.redirect(308, `/${API_VERSION}/docs`);
 });
 // Redirect all other requests to /${API_VERSION}/...
-app.use('/*', (req, res) => {
+app.use('/{*splat}', (req, res) => {
 	res.redirect(308, `/${API_VERSION}${req.originalUrl}`);
 });
 
@@ -74,7 +74,11 @@ search.init(app.locals.orm, Object.assign({}, config.search));
 const DEFAULT_API_PORT = 9098;
 app.set('port', process.env.PORT || DEFAULT_API_PORT);
 
-const server = app.listen(app.get('port'), () => {
+const server = app.listen(app.get('port'), (err) => {
+	if (err) {
+		debug('Error starting Express server: ', err);
+		throw err;
+	}
 	debug(`Express server listening on port ${server.address().port}`);
 });
 

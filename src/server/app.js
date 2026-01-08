@@ -172,7 +172,11 @@ app.use((err, req, res, next) => {
 const DEFAULT_PORT = 9099;
 app.set('port', process.env.PORT || DEFAULT_PORT); // eslint-disable-line no-process-env
 
-const server = app.listen(app.get('port'), () => {
+const server = app.listen(app.get('port'), (err) => {
+	if (err) {
+		debug('Error starting Express server: ', err);
+		throw err;
+	}
 	debug(`Express server listening on port ${server.address().port}`);
 });
 
