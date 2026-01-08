@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>client/entity-editor/name-section/actions.js - Documentation</title>
+    <title>common/helpers/cover-image.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">client/entity-editor/name-section/actions.js</h1>
+    <h1 class="page-title">common/helpers/cover-image.js</h1>
     
 
     
@@ -41,28 +41,20 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.UPDATE_WARN_IF_EXISTS = exports.UPDATE_SORT_NAME_FIELD = exports.UPDATE_SEARCH_RESULTS = exports.UPDATE_NAME_FIELD = exports.UPDATE_LANGUAGE_FIELD = exports.UPDATE_DISAMBIGUATION_FIELD = void 0;
-exports.checkIfNameExists = checkIfNameExists;
-exports.debouncedUpdateDisambiguationField = debouncedUpdateDisambiguationField;
-exports.debouncedUpdateNameField = debouncedUpdateNameField;
-exports.debouncedUpdateSortNameField = debouncedUpdateSortNameField;
-exports.searchName = searchName;
-exports.updateLanguageField = updateLanguageField;
-exports.updateNameField = updateNameField;
-exports.updateSortNameField = updateSortNameField;
-var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
-var _uniqBy2 = _interopRequireDefault(require("lodash/uniqBy"));
-var _remove2 = _interopRequireDefault(require("lodash/remove"));
-var _isString2 = _interopRequireDefault(require("lodash/isString"));
-var _snakeCase3 = _interopRequireDefault(require("lodash/snakeCase"));
-var _superagent = _interopRequireDefault(require("superagent"));
+exports.getOpenLibraryCoverUrl = getOpenLibraryCoverUrl;
+require("core-js/modules/es.array.find.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.array.includes.js");
+require("core-js/modules/es.string.includes.js");
+require("core-js/modules/es.string.trim.js");
+require("core-js/modules/es.array.concat.js");
+require("core-js/modules/es.regexp.exec.js");
+require("core-js/modules/es.string.replace.js");
 /*
- * Copyright (C) 2016  Ben Ockmore
+ * Copyright (C) 2024  BookBrainz Contributors
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,228 +71,77 @@ var _superagent = _interopRequireDefault(require("superagent"));
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-var UPDATE_DISAMBIGUATION_FIELD = exports.UPDATE_DISAMBIGUATION_FIELD = 'UPDATE_DISAMBIGUATION_FIELD';
-var UPDATE_LANGUAGE_FIELD = exports.UPDATE_LANGUAGE_FIELD = 'UPDATE_LANGUAGE_FIELD';
-var UPDATE_NAME_FIELD = exports.UPDATE_NAME_FIELD = 'UPDATE_NAME_FIELD';
-var UPDATE_SORT_NAME_FIELD = exports.UPDATE_SORT_NAME_FIELD = 'UPDATE_SORT_NAME_FIELD';
-var UPDATE_WARN_IF_EXISTS = exports.UPDATE_WARN_IF_EXISTS = 'UPDATE_WARN_IF_EXISTS';
-var UPDATE_SEARCH_RESULTS = exports.UPDATE_SEARCH_RESULTS = 'UPDATE_SEARCH_RESULTS';
 /**
- * Produces an action indicating that the name for the entity being edited
- * should be updated with the provided value.
- *
- * @param {string} newName - The new value to be used for the name.
- * @returns {Action} The resulting UPDATE_NAME_FIELD action.
+ * Gets the OpenLibrary cover image URL and source page URL for an Edition.
+ * Priority: OLID > ISBN-13 > ISBN-10 > OCLC > LCCN
+ * returns [coverUrl, sourcePageUrl] or null if no identifier found
  */
-function updateNameField(newName) {
-  return {
-    payload: newName,
-    type: UPDATE_NAME_FIELD
-  };
-}
-
-/**
- * Produces an action indicating that the sort name for the entity being edited
- * should be updated with the provided value.
- *
- * @param {string} newSortName - The new value to be used for the sort name.
- * @returns {Action} The resulting UPDATE_SORT_NAME_FIELD action.
- */
-function updateSortNameField(newSortName) {
-  return {
-    payload: newSortName,
-    type: UPDATE_SORT_NAME_FIELD
-  };
-}
-
-/**
- * Produces an action indicating that the name for the entity being edited
- * should be updated with the provided value. The action is marked to be
- * debounced by the keystroke debouncer defined for redux-debounce.
- *
- * @param {string} newName - The new value to be used for the name.
- * @returns {Action} The resulting UPDATE_NAME_FIELD action.
- */
-function debouncedUpdateNameField(newName) {
-  return {
-    meta: {
-      debounce: 'keystroke'
-    },
-    payload: newName,
-    type: UPDATE_NAME_FIELD
-  };
-}
-
-/**
- * Produces an action indicating that the sort name for the entity being edited
- * should be updated with the provided value. The action is marked to be
- * debounced by the keystroke debouncer defined for redux-debounce.
- *
- * @param {string} newSortName - The new value to be used for the sort name.
- * @returns {Action} The resulting UPDATE_SORT_NAME_FIELD action.
- */
-function debouncedUpdateSortNameField(newSortName) {
-  return {
-    meta: {
-      debounce: 'keystroke'
-    },
-    payload: newSortName,
-    type: UPDATE_SORT_NAME_FIELD
-  };
-}
-
-/**
- * Produces an action indicating that the language of the name for the entity
- * being edited should be updated with the provided value.
- *
- * @param {string} newLanguageId - The new value to be used for the language ID.
- * @returns {Action} The resulting UPDATE_LANGUAGE_FIELD action.
- */
-function updateLanguageField(newLanguageId) {
-  return {
-    payload: newLanguageId,
-    type: UPDATE_LANGUAGE_FIELD
-  };
-}
-
-/**
- * Produces an action indicating that the disambiguation for the entity being
- * edited should be updated with the provided value. The action is marked to be
- * debounced by the keystroke debouncer defined for redux-debounce.
- *
- * @param {string} newDisambiguation - The new value to be used for the
- *        disambiguation.
- * @returns {Action} The resulting UPDATE_SORT_NAME_FIELD action.
- */
-function debouncedUpdateDisambiguationField(newDisambiguation) {
-  return {
-    meta: {
-      debounce: 'keystroke'
-    },
-    payload: newDisambiguation,
-    type: UPDATE_DISAMBIGUATION_FIELD
-  };
-}
-
-/**
- * Produces an action containing boolean value indicating if the name of the
- * entity already exists. This is done by asynchronously checking if the name
- * of the entity already exists in the database.
- *
- * @param  {string} name - The value to be checked if it already exists.
- * @param  {string} entityBBID - The BBID of the current entity, if it already exists
- * @param  {string} entityType - The entity type of the value to be checked.
- * @param  {string} action - An optional redux action to dispatch. Defaults to UPDATE_WARN_IF_EXISTS
- * @returns {checkIfNameExists~dispatch} The returned function.
- */
-function checkIfNameExists(name, entityBBID, entityType, action) {
-  /**
-   * @function dispatch
-   * @param  {function} dispatch - The redux dispatch function.
-   */
-  return /*#__PURE__*/function () {
-    var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(dispatch) {
-      var res, payload;
-      return _regenerator.default.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              if (!(!name || (0, _snakeCase3.default)(entityType) === 'edition' || (0, _snakeCase3.default)(entityType) === 'edition_group' &amp;&amp; action === UPDATE_WARN_IF_EXISTS)) {
-                _context.next = 3;
-                break;
-              }
-              dispatch({
-                payload: null,
-                type: action || UPDATE_WARN_IF_EXISTS
-              });
-              return _context.abrupt("return");
-            case 3:
-              _context.prev = 3;
-              _context.next = 6;
-              return _superagent.default.get('/search/exists').query({
-                q: name,
-                type: (0, _snakeCase3.default)(entityType)
-              });
-            case 6:
-              res = _context.sent;
-              payload = JSON.parse(res.text) || null;
-              if (Array.isArray(payload)) {
-                payload = (0, _uniqBy2.default)(payload, 'bbid');
-                // Filter out the current entity (if any)
-                if ((0, _isString2.default)(entityBBID)) {
-                  (0, _remove2.default)(payload, function (_ref2) {
-                    var bbid = _ref2.bbid;
-                    return entityBBID === bbid;
-                  });
-                }
-              }
-              dispatch({
-                payload: payload,
-                type: action || UPDATE_WARN_IF_EXISTS
-              });
-              _context.next = 15;
-              break;
-            case 12:
-              _context.prev = 12;
-              _context.t0 = _context["catch"](3);
-              // eslint-disable-next-line no-console
-              console.error(_context.t0);
-            case 15:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee, null, [[3, 12]]);
-    }));
-    return function (_x) {
-      return _ref.apply(this, arguments);
-    };
-  }();
-}
-
-/**
- * Produces an action containing search results of the name entered by the user.
- *  This is done by asynchronously calling the route /search/autocomplete.
- *
- * @param  {string} name - The value to be checked if it already exists.
- * @param  {string} entityBBID - The BBID of the current entity, if it already exists
- * @param  {string} type - Entity type of the name.
- * @returns {searchName~dispatch} The returned function.
- */
-function searchName(name, entityBBID, type) {
-  /**
-   * @function dispatch
-   * @param  {function} dispatch - The redux dispatch function.
-   */
-  return function (dispatch) {
-    if (!name) {
-      dispatch({
-        payload: null,
-        type: UPDATE_SEARCH_RESULTS
-      });
-      return;
+function getOpenLibraryCoverUrl(identifiers) {
+  var size = arguments.length > 1 &amp;&amp; arguments[1] !== undefined ? arguments[1] : 'M';
+  if (!identifiers || !Array.isArray(identifiers) || identifiers.length === 0) {
+    return null;
+  }
+  var olidIdentifier = identifiers.find(function (identifier) {
+    var _identifier$type, _identifier$type$labe, _identifier$type2;
+    var typeLabel = ((_identifier$type = identifier.type) === null || _identifier$type === void 0 ? void 0 : (_identifier$type$labe = _identifier$type.label) === null || _identifier$type$labe === void 0 ? void 0 : _identifier$type$labe.toLowerCase()) || '';
+    var typeId = (_identifier$type2 = identifier.type) === null || _identifier$type2 === void 0 ? void 0 : _identifier$type2.id;
+    return typeId === 6 || typeLabel.includes('openlibrary') || typeLabel.includes('olid') || typeLabel.includes('ol id');
+  });
+  if (olidIdentifier &amp;&amp; olidIdentifier.value) {
+    var olidValue = olidIdentifier.value.trim();
+    return ["https://covers.openlibrary.org/b/olid/".concat(olidValue, "-").concat(size, ".jpg?default=false"), "https://openlibrary.org/books/".concat(olidValue)];
+  }
+  var isbn13Identifier = identifiers.find(function (identifier) {
+    var _identifier$type3, _identifier$type3$lab, _identifier$type4;
+    var typeLabel = ((_identifier$type3 = identifier.type) === null || _identifier$type3 === void 0 ? void 0 : (_identifier$type3$lab = _identifier$type3.label) === null || _identifier$type3$lab === void 0 ? void 0 : _identifier$type3$lab.toLowerCase()) || '';
+    var typeId = (_identifier$type4 = identifier.type) === null || _identifier$type4 === void 0 ? void 0 : _identifier$type4.id;
+    return typeId === 9 || typeLabel === 'isbn-13';
+  });
+  if (isbn13Identifier &amp;&amp; isbn13Identifier.value) {
+    var cleanISBN = isbn13Identifier.value.replace(/-/g, '').trim();
+    if (cleanISBN.length === 13) {
+      return ["https://covers.openlibrary.org/b/isbn/".concat(cleanISBN, "-").concat(size, ".jpg?default=false"), "https://openlibrary.org/isbn/".concat(cleanISBN)];
     }
-    _superagent.default.get('/search/autocomplete').query({
-      q: name,
-      size: 3,
-      type: type
-    }).then(function (res) {
-      var searchResults = JSON.parse(res.text);
-      // Filter out the current entity (if any)
-      if ((0, _isString2.default)(entityBBID)) {
-        (0, _remove2.default)(searchResults, function (_ref3) {
-          var bbid = _ref3.bbid;
-          return entityBBID === bbid;
-        });
-      }
-      dispatch({
-        payload: searchResults,
-        type: UPDATE_SEARCH_RESULTS
-      });
-    });
-  };
+  }
+  var isbn10Identifier = identifiers.find(function (identifier) {
+    var _identifier$type5, _identifier$type5$lab, _identifier$type6;
+    var typeLabel = ((_identifier$type5 = identifier.type) === null || _identifier$type5 === void 0 ? void 0 : (_identifier$type5$lab = _identifier$type5.label) === null || _identifier$type5$lab === void 0 ? void 0 : _identifier$type5$lab.toLowerCase()) || '';
+    var typeId = (_identifier$type6 = identifier.type) === null || _identifier$type6 === void 0 ? void 0 : _identifier$type6.id;
+    return typeId === 10 || typeLabel === 'isbn-10';
+  });
+  if (isbn10Identifier &amp;&amp; isbn10Identifier.value) {
+    var _cleanISBN = isbn10Identifier.value.replace(/-/g, '').trim();
+    if (_cleanISBN.length === 10) {
+      return ["https://covers.openlibrary.org/b/isbn/".concat(_cleanISBN, "-").concat(size, ".jpg?default=false"), "https://openlibrary.org/isbn/".concat(_cleanISBN)];
+    }
+  }
+  var oclcIdentifier = identifiers.find(function (identifier) {
+    var _identifier$type7, _identifier$type7$lab, _identifier$type8;
+    var typeLabel = ((_identifier$type7 = identifier.type) === null || _identifier$type7 === void 0 ? void 0 : (_identifier$type7$lab = _identifier$type7.label) === null || _identifier$type7$lab === void 0 ? void 0 : _identifier$type7$lab.toLowerCase()) || '';
+    var typeId = (_identifier$type8 = identifier.type) === null || _identifier$type8 === void 0 ? void 0 : _identifier$type8.id;
+    return typeId === 26 || typeLabel.includes('oclc') || typeLabel.includes('ocn') || typeLabel.includes('worldcat');
+  });
+  if (oclcIdentifier &amp;&amp; oclcIdentifier.value) {
+    var oclcValue = oclcIdentifier.value.trim();
+    if (/^\d+$/.test(oclcValue)) {
+      return ["https://covers.openlibrary.org/b/oclc/".concat(oclcValue, "-").concat(size, ".jpg?default=false"), "https://openlibrary.org/oclc/".concat(oclcValue)];
+    }
+  }
+  var lccnIdentifier = identifiers.find(function (identifier) {
+    var _identifier$type9, _identifier$type9$lab, _identifier$type10;
+    var typeLabel = ((_identifier$type9 = identifier.type) === null || _identifier$type9 === void 0 ? void 0 : (_identifier$type9$lab = _identifier$type9.label) === null || _identifier$type9$lab === void 0 ? void 0 : _identifier$type9$lab.toLowerCase()) || '';
+    var typeId = (_identifier$type10 = identifier.type) === null || _identifier$type10 === void 0 ? void 0 : _identifier$type10.id;
+    return typeId === 24 || typeLabel === 'lccn';
+  });
+  if (lccnIdentifier &amp;&amp; lccnIdentifier.value) {
+    var lccnValue = lccnIdentifier.value.trim();
+    if (/^[a-zA-Z]{0,3}\d{6,10}$/.test(lccnValue)) {
+      return ["https://covers.openlibrary.org/b/lccn/".concat(lccnValue, "-").concat(size, ".jpg?default=false"), "https://openlibrary.org/lccn/".concat(lccnValue)];
+    }
+  }
+  return null;
 }
-//# sourceMappingURL=actions.js.map</code></pre>
+//# sourceMappingURL=cover-image.js.map</code></pre>
         </article>
     </section>
 
