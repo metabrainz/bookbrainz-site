@@ -26,7 +26,7 @@ describe('POST /collection/create', () => {
 		}
 		// The `agent` now has the sessionid cookie saved, and will send it
 		// back to the server in the next request:
-		await generateIndex(orm);
+		await generateIndex(orm, 'Collection', true);
 		agent = await chai.request.agent(app);
 		await agent.get('/cb');
 	});
@@ -206,7 +206,7 @@ describe('POST collection/edit', () => {
 		const res = await agent.post('/collection/create/handler').send(data);
 		const collection = await new UserCollection({id: res.body.id}).fetch({withRelated: ['collaborators']});
 		collectionJSON = collection.toJSON();
-		await generateIndex(orm);
+		await generateIndex(orm, 'Collection', true);
 	});
 	after((done) => {
 		// Clear DB tables then close superagent server
@@ -463,7 +463,7 @@ describe('POST /collection/collectionID/delete', () => {
 		// The `agent` now has the sessionid cookie saved, and will send it
 		// back to the server in the next request:
 		agent = await chai.request.agent(app);
-		await generateIndex(orm);
+		await generateIndex(orm, 'Collection', true);
 		await agent.get('/cb');
 	});
 	after((done) => {
@@ -482,7 +482,7 @@ describe('POST /collection/collectionID/delete', () => {
 			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
-		await generateIndex(orm);
+		await generateIndex(orm, 'Collection');
 		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
 		const collections = await new UserCollection().where('id', collection.get('id')).fetchAll({require: false});
 		const collectionsJSON = collections.toJSON();
@@ -500,7 +500,7 @@ describe('POST /collection/collectionID/delete', () => {
 			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
-		await generateIndex(orm);
+		await generateIndex(orm, 'Collection');
 		const author1 = await createAuthor();
 		const author2 = await createAuthor();
 		await new UserCollectionItem({
@@ -534,7 +534,7 @@ describe('POST /collection/collectionID/delete', () => {
 		const collaborator1 = await createEditor();
 		const collaborator2 = await createEditor();
 		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
-		await generateIndex(orm);
+		await generateIndex(orm, 'Collection');
 		await new UserCollectionCollaborator({
 			collaboratorId: collaborator1.get('id'),
 			collectionId: collection.get('id')
@@ -566,7 +566,7 @@ describe('POST /collection/collectionID/delete', () => {
 		};
 
 		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
-		await generateIndex(orm);
+		await generateIndex(orm, 'Collection');
 		// here loggedInUser is neither owner nor collaborator
 		const response = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
 		const collections = await new UserCollection().where('id', collection.get('id')).fetchAll({require: false});
@@ -587,7 +587,7 @@ describe('POST /collection/collectionID/delete', () => {
 			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
-		await generateIndex(orm);
+		await generateIndex(orm, 'Collection');
 		await new UserCollectionCollaborator({
 			collaboratorId: loggedInUser.get('id'),
 			collectionId: collection.get('id')
@@ -611,7 +611,7 @@ describe('POST /collection/collectionID/delete', () => {
 			public: true
 		};
 		const collection = await new UserCollection(collectionData).save(null, {method: 'insert'});
-		await generateIndex(orm);
+		await generateIndex(orm, 'Collection');
 		const oldResult = await searchByName(orm, collectionData.name, 'Collection', 10, 0);
 		const res = await agent.post(`/collection/${collection.get('id')}/delete/handler`).send();
 		await new Promise(resolve => setTimeout(resolve, 500));
@@ -1189,7 +1189,7 @@ describe('POST /collection/collectionID/collaborator/remove', () => {
 		// The `agent` now has the sessionid cookie saved, and will send it
 		// back to the server in the next request:
 		agent = await chai.request.agent(app);
-		await generateIndex(orm);
+		await generateIndex(orm, 'Collection', true);
 		await agent.get('/cb');
 	});
 	after((done) => {

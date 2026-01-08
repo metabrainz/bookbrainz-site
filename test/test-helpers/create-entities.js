@@ -22,7 +22,7 @@ import {isNil} from 'lodash';
 import orm from '../bookbrainz-data';
 
 
-const {internet, random, string} = faker;
+const {internet, string} = faker;
 
 const {
 	bookshelf, util, Editor, EditorType, Revision, Relationship, RelationshipAttribute,
@@ -143,20 +143,20 @@ const entityAttribs = {
 	revisionId: 1
 };
 
-export function createEditor(editorId, privs = 1) {
+export function createEditor(editorId, privs = 1, metabrainzName = '') {
 	return orm.bookshelf.knex.transaction(async (transacting) => {
 		const editorType = await new EditorType(editorTypeAttribs)
 			.save(null, {method: 'insert', transacting});
 		const gender = await new Gender({name: 'test'})
 			.save(null, {method: 'insert', transacting});
 
-		editorAttribs.id = editorId || random.numeric(5);
+		editorAttribs.id = editorId || string.numeric(5);
 		editorAttribs.genderId = gender.id;
 		editorAttribs.typeId = editorType.id;
 		editorAttribs.name = internet.userName();
 		editorAttribs.privs = privs;
-		editorAttribs.metabrainzUserId = random.numeric(5);
-		editorAttribs.cachedMetabrainzName = editorAttribs.name;
+		editorAttribs.metabrainzUserId = string.numeric(5);
+		editorAttribs.cachedMetabrainzName = metabrainzName || editorAttribs.name;
 
 		const editor = await new Editor(editorAttribs)
 			.save(null, {method: 'insert', transacting});
@@ -335,7 +335,7 @@ export async function createWork(optionalBBID, optionalWorkAttribs = {}) {
 
 	if (!workType) {
 		workType = await new WorkType({description: 'A work type',
-			label: `Work Type ${optionalWorkAttribs.typeId || random.numeric(5)}`,
+			label: `Work Type ${optionalWorkAttribs.typeId || string.numeric(5)}`,
 			...optionalWorkTypeAttribs})
 			.save(null, {method: 'insert'});
 	}
@@ -361,7 +361,7 @@ export async function createEditionGroup(optionalBBID, optionalEditionGroupAttri
 		optionalEditionGroupTypeAttrib.id = optionalEditionGroupAttrib.typeId;
 	}
 	const editionGroupType = await new EditionGroupType(
-		{label: `Edition Group Type ${optionalEditionGroupAttrib.typeId || random.numeric(5)}`, ...optionalEditionGroupTypeAttrib}
+		{label: `Edition Group Type ${optionalEditionGroupAttrib.typeId || string.numeric(5)}`, ...optionalEditionGroupTypeAttrib}
 	)
 		.save(null, {method: 'insert'});
 
@@ -474,7 +474,7 @@ export async function createPublisher(optionalBBID, optionalPublisherAttribs = {
 			.fetch({require: false});
 	}
 	if (!area) {
-		area = await new Area({gid: string.uuid(), name: `Area ${optionalPublisherAttribs.areaId || random.numeric(5)}`, ...optionalAreaAttribs})
+		area = await new Area({gid: string.uuid(), name: `Area ${optionalPublisherAttribs.areaId || string.numeric(5)}`, ...optionalAreaAttribs})
 			.save(null, {method: 'insert'});
 	}
 

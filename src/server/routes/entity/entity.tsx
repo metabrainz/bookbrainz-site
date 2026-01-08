@@ -344,7 +344,7 @@ export async function saveEntitiesAndFinishRevision(
 export async function deleteRelationships(orm: any, transacting: Transaction, mainEntity: any) {
 	const mainBBID = mainEntity.bbid;
 	const {relationshipSet} = mainEntity;
-	const otherBBIDs = [];
+	const otherBBIDs:string[] = [];
 	const otherEntities = [];
 
 	if (relationshipSet) {
@@ -360,46 +360,43 @@ export async function deleteRelationships(orm: any, transacting: Transaction, ma
 				otherBBIDs.push(relationship.sourceBbid);
 			}
 		});
-
-		// Loop over the BBID's of other entites related to deleted entity
-		if (otherBBIDs.length) {
-			if (otherBBIDs.length === 0) {
-				return [];
-			}
-			await Promise.all(otherBBIDs.map(async (entityBbid) => {
-				const otherEntity = await getEntityByBBID(orm, transacting, entityBbid);
-
-				const otherEntityRelationshipSet = await otherEntity.relationshipSet()
-					.fetch({require: false, transacting, withRelated: 'relationships'});
-
-				if (_.isNil(otherEntityRelationshipSet)) {
-					return;
-				}
-
-				// Fetch other entity relationships to remove relation with the deleted entity
-				let otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
-
-				// Mark entites related to deleted entity as removed
-				otherEntityRelationships = otherEntityRelationships.map((rel) => {
-					if (mainBBID !== rel.sourceBbid && mainBBID !== rel.targetBbid) {
-						return rel;
-					}
-					_.set(rel, 'isRemoved', true);
-					return rel;
-				});
-
-				const newRelationshipSet = await orm.func.relationship.updateRelationshipSets(
-					orm, transacting, otherEntityRelationshipSet, otherEntityRelationships
-				);
-
-				otherEntity.set(
-					'relationshipSetId',
-					newRelationshipSet[entityBbid] ? newRelationshipSet[entityBbid].get('id') : null
-				);
-
-				otherEntities.push(otherEntity);
-			}));
+		if (!otherBBIDs.length) {
+			return [];
 		}
+		// Loop over the BBID's of other entites related to deleted entity
+		await Promise.all(_.uniq(otherBBIDs).map(async (entityBbid) => {
+			const otherEntity = await getEntityByBBID(orm, transacting, entityBbid);
+
+			const otherEntityRelationshipSet = await otherEntity.relationshipSet()
+				.fetch({require: false, transacting, withRelated: 'relationships'});
+
+			if (_.isNil(otherEntityRelationshipSet)) {
+				return;
+			}
+
+			// Fetch other entity relationships to remove relation with the deleted entity
+			let otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
+
+			// Mark entites related to deleted entity as removed
+			otherEntityRelationships = otherEntityRelationships.map((rel) => {
+				if (mainBBID !== rel.sourceBbid && mainBBID !== rel.targetBbid) {
+					return rel;
+				}
+				_.set(rel, 'isRemoved', true);
+				return rel;
+			});
+
+			const newRelationshipSet = await orm.func.relationship.updateRelationshipSets(
+				orm, transacting, otherEntityRelationshipSet, otherEntityRelationships
+			);
+
+			otherEntity.set(
+				'relationshipSetId',
+				newRelationshipSet[entityBbid] ? newRelationshipSet[entityBbid].get('id') : null
+			);
+
+			otherEntities.push(otherEntity);
+		}));
 	}
 
 	return otherEntities;
@@ -454,9 +451,6 @@ export function handleDelete(
 			method: 'insert',
 			transacting
 		});
-
-		// set parent revision
-		await setParentRevisions(transacting, newRevision, [entity.revisionId]);
 
 		await new HeaderModel({
 			bbid: entity.bbid,
@@ -689,25 +683,33 @@ export async function processMergeOperation(orm, transacting, session, mainEntit
 }
 
 type ProcessAuthorCreditBody = {
-	authorCredit: Array<AuthorCreditRow>
+	authorCredit: Array<AuthorCreditRow>;
+	creditSection: boolean;
 };
 type ProcessAuthorCreditResult = {authorCreditId: number};
 
 async function processAuthorCredit(
 	orm: any,
 	currentEntity: Record<string, unknown> | null | undefined,
-	body: ProcessAuthorCreditBody,
+	newEntityBody: ProcessAuthorCreditBody,
 	transacting: Transaction
 ): Promise<ProcessAuthorCreditResult> {
-	const authorCreditID = _.get(currentEntity, ['authorCredit', 'id']);
+	const authorCreditEnabled = newEntityBody.creditSection !== false;
+	if (!authorCreditEnabled) {
+		return {
+			authorCreditId: null
+		};
+	}
+
+	const existingAuthorCreditID = _.get(currentEntity, ['authorCredit', 'id']);
 
 	const oldAuthorCredit = await (
-		authorCreditID &&
-		orm.AuthorCredit.forge({id: authorCreditID})
+		existingAuthorCreditID &&
+		orm.AuthorCredit.forge({id: existingAuthorCreditID})
 			.fetch({transacting, withRelated: ['names']})
 	);
 
-	const names = _.get(body, 'authorCredit') || [];
+	const names = _.get(newEntityBody, 'authorCredit') || [];
 	const newAuthorCredit = await orm.func.authorCredit.updateAuthorCredit(
 		orm, transacting, oldAuthorCredit,
 		names.map((name) => ({
@@ -745,14 +747,14 @@ async function processEditionSets(
 	);
 
 	const languages = _.get(body, 'languages') || [];
-	const newLanguageSetIDPromise = orm.func.language.updateLanguageSet(
+
+	const newLanguageSet = await orm.func.language.updateLanguageSet(
 		orm, transacting, oldLanguageSet,
 		languages.map((languageID) => ({id: languageID}))
-	)
-		.then((set) => set && set.get('id'));
+	);
+	const newLanguageSetID = newLanguageSet && newLanguageSet.get('id');
 
 	const publisherSetID = _.get(currentEntity, ['publisherSet', 'id']);
-
 	const oldPublisherSet = await (
 		publisherSetID &&
 		orm.PublisherSet.forge({id: publisherSetID})
@@ -760,12 +762,12 @@ async function processEditionSets(
 	);
 
 	const publishers = _.get(body, 'publishers') || [];
-	const newPublisherSetIDPromise = orm.func.publisher.updatePublisherSet(
+
+	const newPublisherSet = await orm.func.publisher.updatePublisherSet(
 		orm, transacting, oldPublisherSet,
 		publishers.map((publisherBBID) => ({bbid: publisherBBID}))
-	)
-		.then((set) => set && set.get('id'));
-
+	);
+	const newPublisherSetID = newPublisherSet && newPublisherSet.get('id');
 	const releaseEventSetID = _.get(currentEntity, ['releaseEventSet', 'id']);
 
 	const oldReleaseEventSet = await (
@@ -788,20 +790,20 @@ async function processEditionSets(
 		}
 	}
 
-	const newReleaseEventSetIDPromise =
-		orm.func.releaseEvent.updateReleaseEventSet(
+	const newReleaseEventSet =
+		await orm.func.releaseEvent.updateReleaseEventSet(
 			orm, transacting, oldReleaseEventSet, releaseEvents
-		)
-			.then((set) => set && set.get('id'));
+		);
+	const newReleaseEventSetID = newReleaseEventSet && newReleaseEventSet.get('id');
+	const newAuthorCredit = await processAuthorCredit(orm, currentEntity, body, transacting);
+	const newAuthorCreditID = newAuthorCredit.authorCreditId;
 
-	const authorCreditIDPromise = processAuthorCredit(orm, currentEntity, body, transacting).then(acResult => acResult.authorCreditId);
-
-	return commonUtils.makePromiseFromObject<ProcessEditionSetsResult>({
-		authorCreditId: authorCreditIDPromise,
-		languageSetId: newLanguageSetIDPromise,
-		publisherSetId: newPublisherSetIDPromise,
-		releaseEventSetId: newReleaseEventSetIDPromise
-	});
+	return {
+		authorCreditId: newAuthorCreditID,
+		languageSetId: newLanguageSetID,
+		publisherSetId: newPublisherSetID,
+		releaseEventSetId: newReleaseEventSetID
+	};
 }
 
 type ProcessWorkSetsResult = {languageSetId: number[]};
@@ -1047,7 +1049,7 @@ export async function indexAutoCreatedEditionGroup(orm, newEdition, transacting)
 				transacting,
 				withRelated: 'aliasSet.aliases'
 			});
-		await search.indexEntity(editionGroup.toJSON({omitPivot: true}));
+		await search.indexEntity(editionGroup);
 	}
 	catch (err) {
 		log.error('Could not reindex edition group after edition creation:', err);

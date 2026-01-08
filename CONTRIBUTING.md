@@ -22,7 +22,7 @@ to BookBrainz:
  * Use tabs for indenting, and spaces for aligning (http://lea.verou.me/2012/01/why-tabs-are-clearly-superior/).
  * Variable names should be camelCase
  * Use ES6/ES7 features - they make life easier and result in cleaner code
- * Use [JSDoc](http://usejsdoc.org/) for commenting code
+ * Use [JSDoc](https://jsdoc.app/) for commenting code
  * Use [TypeScript](https://www.typescriptlang.org/) everywhere - static type checking is useful
 
 ## Pull requests

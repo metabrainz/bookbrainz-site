@@ -47,7 +47,7 @@ export type AuthorCreditRow = {
 	author: Author,
 	authorBBID: string,
 	position: number,
-	authohrCreditID: number
+	authorCreditID: number
 };
 export type AuthorCredit = {
 	authorCount: number,
@@ -224,3 +224,4 @@ export function toggleAuthorCredit(): Action {
 		type: TOGGLE_AUTHOR_CREDIT
 	};
 }
+

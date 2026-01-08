@@ -29,6 +29,7 @@ $disabled-color: lighten($disabled-bg,15%);
 @import "lobes4/scss/bootstrap.scss";
 @import "react-datepicker/dist/react-datepicker.css";
 @import "./external-services.scss";
+@import "./edition-cover.scss";
 
 .navbar.BookBrainz {
 	background: rgba(255, 255, 255, 1);
@@ -285,6 +286,15 @@ a.contact-text:visited {
 	&:hover{
 		background-color: #deebff !important;
 		color: #333;
+	}
+	&.react-select__option--is-focused {
+		background-color: #deebff !important;
+		color: #333 !important;
+	}
+
+	&.react-select__option--is-selected {
+		background-color: #0056b3 !important;
+		color: white !important;
 	}
 }
 .react-select__menu {

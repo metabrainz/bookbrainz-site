@@ -14,7 +14,7 @@ jobs:
       # Label used to access the service container
       postgres:
         # Docker Hub image
-        image: postgres:12.3
+        image: postgres:16
         # Provide the password for postgres
         env:
           POSTGRES_USER: postgres
@@ -79,7 +79,7 @@ jobs:
         run: yarn run test-ci                    # run tests (configured to use mocha's json reporter)
       
       - name: Export test results
-        uses: actions/upload-artifact@v2  # upload test results
+        uses: actions/upload-artifact@v4  # upload test results
         if: success() || failure()        # run this step even if previous step failed
         with:
           name: test-results

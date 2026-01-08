@@ -1,11 +1,7 @@
-FROM metabrainz/node:18 as bookbrainz-base
+FROM metabrainz/node:24 AS bookbrainz-base
 
 ARG DEPLOY_ENV
 ARG GIT_COMMIT_SHA
-
-ARG BUILD_DEPS=" \
-    build-essential \
-    python-dev"
 
 ARG RUN_DEPS=" \
     bzip2 \
@@ -17,8 +13,7 @@ ARG RUN_DEPS=" \
 
 
 RUN apt-get update && \
-    apt-get install --no-install-suggests --no-install-recommends -y \
-        $BUILD_DEPS $RUN_DEPS \
+    apt-get install --no-install-suggests --no-install-recommends -y $RUN_DEPS \
 # remove expired let's encrypt certificate and install new ones (see ca-certificates in build deps too)
     && rm -rf /usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt \
     && update-ca-certificates \
@@ -26,7 +21,7 @@ RUN apt-get update && \
 
 # PostgreSQL client
 RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-ENV PG_MAJOR 12
+ENV PG_MAJOR=16
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 RUN apt-get update \
     && apt-get install -y --no-install-recommends postgresql-client-$PG_MAJOR \
@@ -57,33 +52,34 @@ COPY --chown=bookbrainz src/ src/
 
 
 # Development target
-FROM bookbrainz-base as bookbrainz-dev
+FROM bookbrainz-base AS bookbrainz-dev
 ARG DEPLOY_ENV
 
 CMD ["yarn", "start"]
 
 # Production target
-FROM bookbrainz-base as bookbrainz-prod
+FROM bookbrainz-base AS bookbrainz-prod
 ARG DEPLOY_ENV
 
-COPY ./docker/$DEPLOY_ENV/rc.local /etc/rc.local
+COPY ./docker/rc.local /etc/rc.local
 RUN chmod 755 /etc/rc.local
 
-COPY ./docker/consul-template-webserver.conf /etc/consul-template-webserver.conf
-COPY ./docker/$DEPLOY_ENV/webserver.command /etc/service/webserver/exec-command
+COPY ./docker/services/webserver/consul-template-webserver.conf /etc/consul-template-webserver.conf
+COPY ./docker/services/webserver/webserver.command /etc/service/webserver/exec-command
+COPY ./docker/services/webserver/webserver.service /etc/service/webserver/run
 RUN chmod +x /etc/service/webserver/exec-command
-COPY ./docker/$DEPLOY_ENV/webserver.service /etc/service/webserver/run
 RUN chmod 755 /etc/service/webserver/run
 RUN touch /etc/service/webserver/down
 
 # Set up cron jobs and DB dumps
 RUN mkdir -p /home/bookbrainz/data/dumps
 
-COPY ./docker/consul-template-cron.conf /etc/consul-template-cron.conf
-COPY ./docker/cron.service /etc/service/cron/run
+# cron
+COPY ./docker/services/cron/consul-template-cron.conf /etc/consul-template-cron.conf
+COPY ./docker/services/cron/cron.service /etc/service/cron/run
 RUN touch /etc/service/cron/down
 
-ADD ./docker/crontab /etc/cron.d/bookbrainz
+ADD ./docker/services/cron/crontab /etc/cron.d/bookbrainz
 RUN chmod 0644 /etc/cron.d/bookbrainz && crontab -u bookbrainz /etc/cron.d/bookbrainz
 
 # Build JS project and assets
@@ -92,18 +88,18 @@ RUN ["yarn", "run", "build"]
 RUN ["yarn", "install", "--production", "--ignore-scripts", "--prefer-offline"]
 
 # API target
-FROM bookbrainz-base as bookbrainz-webservice
+FROM bookbrainz-base AS bookbrainz-webservice
 ARG DEPLOY_ENV
 
-COPY ./docker/$DEPLOY_ENV/rc.local /etc/rc.local
+COPY ./docker/rc.local /etc/rc.local
 RUN chmod 755 /etc/rc.local
 
-COPY ./docker/consul-template-webserver.conf /etc/consul-template-webserver.conf
-COPY ./docker/$DEPLOY_ENV/webserver.command /etc/service/webserver/exec-command
-RUN chmod +x /etc/service/webserver/exec-command
-COPY ./docker/$DEPLOY_ENV/webserver.service /etc/service/webserver/run
-RUN chmod 755 /etc/service/webserver/run
-RUN touch /etc/service/webserver/down
+COPY ./docker/services/webservice/consul-template-webservice.conf /etc/consul-template-webservice.conf
+COPY ./docker/services/webservice/webservice.command /etc/service/webservice/exec-command
+COPY ./docker/services/webservice/webservice.service /etc/service/webservice/run
+RUN chmod +x /etc/service/webservice/exec-command
+RUN chmod 755 /etc/service/webservice/run
+RUN touch /etc/service/webservice/down
 
 # Build API JS
 RUN ["yarn", "run", "build-api-js"]

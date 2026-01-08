@@ -1,19 +1,20 @@
-import {ISBNDispatchProps, ISBNProps, ISBNStateProps, RInputEvent, State} from '../interface/type';
+import {ISBNDispatchProps, ISBNProps, ISBNStateProps, RInputEvent, State, dispatchResultProps} from '../interface/type';
+import {addOtherISBN, removeIdentifierRow} from '../../entity-editor/identifier-editor/actions';
 import {debouncedUpdateISBNValue, updateAutoISBN, updateISBNType} from './action';
 import {isbn10To13, isbn13To10} from '../../../common/helpers/utils';
 import {FormCheck} from 'react-bootstrap';
 import NameField from '../../entity-editor/common/name-field';
 import React from 'react';
-import {addOtherISBN} from '../../entity-editor/identifier-editor/actions';
 import {connect} from 'react-redux';
 
 
 export function ISBNField(props:ISBNProps) {
 	const {value, type, onChange, autoISBN, onAutoISBNChange} = props;
 	const onChangeHandler = React.useCallback((event:RInputEvent) => onChange(event.target.value, autoISBN), [onChange, autoISBN]);
-	const onAutoISBNChangeHandler = React.useCallback(
-		(event:RInputEvent) => onAutoISBNChange(event.target.checked) && onChange(value, event.target.checked), [onAutoISBNChange, onChange, value]
-	);
+	const onAutoISBNChangeHandler = React.useCallback((event:RInputEvent) => {
+		onAutoISBNChange(event.target.checked);
+		onChange(value, event.target.checked);
+	}, [onAutoISBNChange, onChange, value]);
 	let checkboxLabel = 'Automatically add ISBN';
 	if (type) {
 		checkboxLabel += type === 10 ? `13 (${isbn10To13(value)})` : `10 (${isbn13To10(value)})`;
@@ -52,6 +53,7 @@ function mapStateToProps(rootState:State):ISBNStateProps {
 }
 
 function mapDispatchToProps(dispatch):ISBNDispatchProps {
+	let autoAddedISBN:dispatchResultProps|null;
 	function onChange(value:string, autoISBN = false) {
 		const isbn10rgx = new
 		RegExp('^(?:ISBN(?:-10)?:?●)?(?=[0-9X]{10}$|(?=(?:[0-9]+[-●]){3})[-●0-9X]{13}$)[0-9]{1,5}[-●]?[0-9]+[-●]?[0-9]+[-●]?[0-9X]$');
@@ -76,12 +78,18 @@ function mapDispatchToProps(dispatch):ISBNDispatchProps {
 		}
 		dispatch(updateISBNType(type));
 		if (autoISBN && otherISBN.type) {
-			dispatch(addOtherISBN(otherISBN.type, otherISBN.value));
+			 autoAddedISBN = dispatch(addOtherISBN(otherISBN.type, otherISBN.value));
 		}
 		dispatch(debouncedUpdateISBNValue(value));
 	}
 	return {
-		onAutoISBNChange: (checked:boolean) => dispatch(updateAutoISBN(checked)),
+		onAutoISBNChange: (checked:boolean) => {
+			dispatch(updateAutoISBN(checked));
+			if (autoAddedISBN) {
+				dispatch(removeIdentifierRow(autoAddedISBN.payload.rowId));
+				autoAddedISBN = null;
+			}
+		},
 		onChange
 	};
 }

@@ -34,9 +34,9 @@ const additionalEntityProps = {
 	],
 	edition: [
 		'editionGroupBbid', 'width', 'height', 'depth', 'weight', 'pages',
-		'formatId', 'statusId'
+		'formatId', 'statusId', 'creditSection'
 	],
-	editionGroup: 'typeid',
+	editionGroup: ['typeid', 'creditSection'],
 	publisher: ['typeId', 'areaId', 'beginDate', 'endDate', 'ended'],
 	series: ['entityType', 'orderingTypeId'],
 	work: 'typeId'

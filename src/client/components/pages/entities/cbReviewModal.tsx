@@ -404,8 +404,8 @@ class CBReviewModal extends React.Component<
 					<Rating
 						transition
 						className="rating-stars"
-						ratingValue={rating}
 						size={20}
+						value={rating}
 						onClick={this.handleRatingsChange}
 					/>
 				</div>
@@ -503,7 +503,7 @@ class CBReviewModal extends React.Component<
 
 	/* executes getAccessToken() only in a browser to avoid unnecessary server-side calls during component mounting */
 	componentDidMount = async () => {
-		if (typeof window !== "undefined") {
+		if (typeof window !== 'undefined') {
 			this.accessToken = await this.getAccessToken();
 		}
 	};

@@ -55,7 +55,7 @@ export function injectDefaultAliasName(instance: Record<string, any>) {
 	return instance;
 }
 
-export function formatDate(date, includeTime) {
+export function formatDate(date: Date, includeTime?: boolean) {
 	if (!date) {
 		return null;
 	}
@@ -213,7 +213,7 @@ export function stringToHTMLWithLinks(content: string) {
 				cleanUrl = url.substring(0, firstUnbalancedParanthesis);
 				suffix = url.substring(firstUnbalancedParanthesis);
 			}
-			let link = `<a href="${cleanUrl.startsWith('www.') ? `https://${cleanUrl}` : cleanUrl}" target="_blank">${cleanUrl}</a>`;
+			const link = `<a href="${cleanUrl.startsWith('www.') ? `https://${cleanUrl}` : cleanUrl}" target="_blank">${cleanUrl}</a>`;
 			return link + suffix;
 		}
 	);

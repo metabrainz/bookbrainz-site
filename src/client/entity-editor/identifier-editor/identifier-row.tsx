@@ -31,6 +31,7 @@ import {
 } from '../validators/common';
 import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import IdentifierLink from '../../components/pages/entities/identifiers-links.js';
 import Select from 'react-select';
 import ValueField from './value-field';
 import {collapseWhiteSpaces} from '../../../common/helpers/utils';
@@ -128,6 +129,14 @@ function IdentifierRow({
 					</Button>
 				</Col>
 			</Row>
+			{typeValue && valueValue && (
+				<Row>
+					<Col>
+					Preview Link:
+						<IdentifierLink typeId={typeValue} value={valueValue}/>
+					</Col>
+				</Row>
+			)}
 			<hr/>
 		</div>
 	);

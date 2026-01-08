@@ -30,3 +30,13 @@ fi
 
 # Clean up the dump file if it imported correctly.
 rm -f $DUMP_FILE
+
+# Dumps do not include user_collection_* tables, so we need to run the migration script to create them.
+echo "Running user_collection tables script"
+psql -h $DB_HOSTNAME -p $DB_PORT -U $DB_USER -d $DB_NAME -f sql/migrations/user-collection/up.sql
+if [ $? -ne 0 ]
+then
+    echo "Failed to run sql/migrations/user-collection/up.sql"
+    exit $?
+fi
+

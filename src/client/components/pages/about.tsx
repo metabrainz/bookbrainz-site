@@ -20,15 +20,15 @@ import {faCircle, faCommentDots, faComments, faEnvelope} from '@fortawesome/free
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import React from 'react';
-import {faTwitter} from '@fortawesome/free-brands-svg-icons';
+import {faXTwitter} from '@fortawesome/free-brands-svg-icons';
 
 
 /**
  * Renders the document and displays the 'About' page.
- * @returns {ReactElement} a HTML document which displays the About
+ * @returns {JSX.Element} a React JSX Element
  * page
  */
-function AboutPage() {
+function AboutPage(): JSX.Element {
 	const NESLink =
 		'https://ocharles.org.uk/blog/posts/' +
 			'2012-07-10-nes-does-it-better-1.html';
@@ -87,13 +87,14 @@ function AboutPage() {
 					className="margin-sides-1 contact-text"
 					icon={faCircle}
 				/>
-				<a className="contact-text" href="//kiwiirc.com/nextclient/irc.libera.chat/?#bookbrainz">
+				<a className="contact-text" href="https://musicbrainz.org/doc/Communication/ChatBrainz">
 					<FontAwesomeIcon
 						className="contact-text"
 						icon={faCommentDots}
 						size="2x"
 					/>
-					IRC
+					Chat with us<br/>
+					<small>(Matrix, IRC, Discord)</small>
 				</a>
 				<FontAwesomeIcon
 					className="margin-sides-1 contact-text"
@@ -111,13 +112,13 @@ function AboutPage() {
 					className="margin-sides-1 contact-text"
 					icon={faCircle}
 				/>
-				<a className="contact-text" href="//twitter.com/intent/tweet?screen_name=BookBrainz">
+				<a className="contact-text" href="https://x.com/BookBrainz">
 					<FontAwesomeIcon
 						className="contact-text"
-						icon={faTwitter}
+						icon={faXTwitter}
 						size="2x"
 					/>
-					Twitter
+					X
 				</a>
 				<FontAwesomeIcon
 					className="margin-sides-1 contact-text"

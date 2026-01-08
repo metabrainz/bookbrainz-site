@@ -34,10 +34,6 @@
 	},
 	"search": {
 		"node": "http://elasticsearch:9200",
-		"auth": {
-			"username": "elastic",
-			"password": "changeme"
-		},
 		"requestTimeout": 30000
 	},
 	"mailConfig" :{

@@ -41,7 +41,9 @@ const editionBasicRelations = [
 	'disambiguation',
 	'editionFormat',
 	'editionStatus',
-	'releaseEventSet.releaseEvents'
+	'releaseEventSet.releaseEvents',
+	'authorCredit.names',
+	'publisherSet.publishers'
 ];
 
 const editionError = 'Edition not found';
@@ -96,32 +98,43 @@ const editionError = 'Edition not found';
  *          type: integer
  *          description: 'width in mm'
  *          example: 80
- *    BrowsedEditions:
- *      type: object
- *      properties:
- *        bbid:
- *          type: string
- *          format: uuid
- *          example: 'f94d74ce-c748-4130-8d59-38b290af8af3'
- *        editions:
+ *        authorCredit:
+ *          type: object
+ *          properties:
+ *             authorCount:
+ *               type: integer
+ *               example: 1
+ *             id:
+ *               type: integer
+ *               example: 135
+ *             names:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   authorBBID:
+ *                     type: string
+ *                     example: 'e5c4e68b-bfce-4c77-9ca2-0f0a2d4d09f0'
+ *                   authorCreditID:
+ *                     type: integer
+ *                     example: 135
+ *                   name:
+ *                     type: string
+ *                     example: 'J. K. Rowling'
+ *        publishers:
  *          type: array
  *          items:
  *            type: object
  *            properties:
- *              entity:
- *                $ref: '#/components/schemas/EditionDetail'
- *              relationships:
- *                type: array
- *                items:
- *                  type: object
- *                  properties:
- *                     relationshipTypeID:
- *                       type: number
- *                       example: 4
- *                     relationshipType:
- *                       type: string
- *                       example: 'Publisher'
- *
+ *              bbid:
+ *               type: string
+ *               example: 'd30d7df9-eb6f-4bd5-a69f-a9a3362a6f4a'
+ *              name:
+ *               type: string
+ *               example: 'Bloomsbury'
+ *              sortName:
+ *               type: string
+ *               example: 'Bloomsbury'
  */
 
 

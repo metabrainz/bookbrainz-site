@@ -53,22 +53,23 @@ app.use(session(process.env.NODE_ENV));
 const mainRouter = initRoutes();
 const API_VERSION = process.env.API_VERSION || '1';
 app.use(`/${API_VERSION}`, mainRouter);
-
-// Redirect all requests to /${API_VERSION}/...
-app.use('/*', (req, res) => {
-	res.redirect(308, `/${API_VERSION}${req.originalUrl}`);
-});
-
 // Catch 404 and forward to error handler
 mainRouter.use((req, res) => {
 	res.status(404).send({message: `Incorrect endpoint ${req.path}`});
+});
+// Root endpoint redirects to live docs page
+app.get('/', (req, res) => {
+	res.redirect(308, `/${API_VERSION}/docs`);
+});
+// Redirect all other requests to /${API_VERSION}/...
+app.use('/*', (req, res) => {
+	res.redirect(308, `/${API_VERSION}${req.originalUrl}`);
 });
 
 // initialize elasticsearch
 // Clone object to prevent error if starting webserver and api
 // https://github.com/elastic/elasticsearch-js/issues/33
 search.init(app.locals.orm, Object.assign({}, config.search));
-
 
 const DEFAULT_API_PORT = 9098;
 app.set('port', process.env.PORT || DEFAULT_API_PORT);
