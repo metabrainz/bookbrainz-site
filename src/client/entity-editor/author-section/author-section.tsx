@@ -236,7 +236,7 @@ function AuthorSection({
 						label={beginAreaLabel}
 						type="area"
 						value={beginAreaValue}
-						recentlyUsedEntityType="areas"
+						recentlyUsedEntityType="Area"
 						onChange={onBeginAreaChange}
 					/>
 				</Col>
@@ -271,7 +271,7 @@ function AuthorSection({
 								label={endAreaLabel}
 								type="area"
 								value={endAreaValue}
-								recentlyUsedEntityType="areas"
+								recentlyUsedEntityType="Area"
 								onChange={onEndAreaChange}
 							/>
 						</Col>
@@ -326,7 +326,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onBeginAreaChange: (value) => {
 			if(value && value.id && value.text){
-				RecentlyUsed.addItem('areas', {id: value.id, name: value.text});
+				RecentlyUsed.addItem('Area', {id: value.id, name: value.text});
 			}
 			return dispatch(updateBeginArea(value));
 		},
@@ -334,7 +334,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			dispatch(debouncedUpdateBeginDate(beginDate)),
 		onEndAreaChange: (value) => {
 			if(value && value.id && value.text){
-				RecentlyUsed.addItem('areas', {id: value.id, name: value.text});
+				RecentlyUsed.addItem('Area', {id: value.id, name: value.text});
 			}
 			return dispatch(updateEndArea(value));
 		},

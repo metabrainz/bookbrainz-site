@@ -165,7 +165,7 @@ function PublisherSection({
 						tooltipText="Country or place the publisher is registered in"
 						type="area"
 						value={areaValue}
-						recentlyUsedEntityType="areas"
+						recentlyUsedEntityType="Area"
 						onChange={onAreaChange}
 					/>
 				</Col>
@@ -234,7 +234,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onAreaChange: (value) => {
 			if(value && value.id && value.text){
-				RecentlyUsed.addItem('areas', {id: value.id, name: value.text});
+				RecentlyUsed.addItem('Area', {id: value.id, name: value.text});
 			}
 			return  dispatch(updateArea(value));
 		},

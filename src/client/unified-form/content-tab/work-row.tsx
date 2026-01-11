@@ -45,7 +45,7 @@ function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, rowId, ...r
 						isClearable={false}
 						type="work"
 						value={work}
-						recentlyUsedEntityType="works"
+						recentlyUsedEntityType="Work"
 						onChange={onChangeHandler}
 						{...rest}
 					/>

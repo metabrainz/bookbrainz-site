@@ -180,7 +180,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							isClearable={false}
 							type="work"
 							value={null}
-							recentlyUsedEntityType="works"
+							recentlyUsedEntityType="Work"
 							onAddCallback={addNewWorkCallback}
 							onChange={onChangeHandler}
 							key={`work-dropdown-${onChangeRefresh}`}
@@ -220,7 +220,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 							isClearable={false}
 							type="series"
 							value={series}
-							recentlyUsedEntityType="series"
+							recentlyUsedEntityType="Series"
 							onAddCallback={addNewSeriesCallback}
 							onChange={seriesChangeHandler}
 							onOpenCallback={resetSeries}
@@ -248,9 +248,7 @@ function mapDispatchToProps(dispatch, {submissionUrl}):ContentTabDispatchProps {
 		bulkAddSeriesItems: (data) => dispatch(addBulkSeriesItems(data)),
 		onAddSeriesItem: (data) => dispatch(addSeriesItem(data, data.rowID)),
 		onChange: (value:any) => {
-			if (value && value.id && value.text) {
-				RecentlyUsed.addItem('works', {id: value.id, name: value.text});
-			}
+			RecentlyUsed.addItemToRecentlyUsed(value);
 			dispatch(addWork(value));
 		},
 		onModalClose: () => dispatch(loadEdition()) && dispatch(closeEntityModal()),
@@ -260,9 +258,7 @@ function mapDispatchToProps(dispatch, {submissionUrl}):ContentTabDispatchProps {
 			dispatch(openEntityModal());
 		},
 		onSeriesChange: (value:any) => {
-			if(value && value.id && value.text){
-				RecentlyUsed.addItem('series', {id: value.id, name: value.text});
-			}
+			RecentlyUsed.addItemToRecentlyUsed(value);
 			dispatch(addSeries(value));
 			dispatch(removeAllSeriesItems());
 			if (value?.orderingTypeId) {

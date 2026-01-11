@@ -241,7 +241,7 @@ function EditionSection({
 					}
 					type="editionGroup"
 					value={editionGroupValue}
-					recentlyUsedEntityType="editiongroups"
+					recentlyUsedEntityType="EditionGroup"
 					onChange={onEditionGroupChange}
 					{...rest}
 				/>
@@ -352,7 +352,7 @@ function EditionSection({
 						label="Publisher"
 						type="publisher"
 						value={publisherValue}
-						recentlyUsedEntityType="publishers"
+						recentlyUsedEntityType="Publisher"
 						onChange={onPublisherChange}
 					/>
 				</Col>}
@@ -520,7 +520,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 		)),
 		onEditionGroupChange: (value, action) => {
 			if(value && value.id && value.text){
-				RecentlyUsed.addItem('editiongroups', {
+				RecentlyUsed.addItem('EditionGroup', {
 					id: value.id,
 					name: value.text
 				});
@@ -552,7 +552,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			if(value && Array.isArray(value)){
 				value.forEach(publisher => {
 					if(publisher && publisher.id && publisher.text){
-						RecentlyUsed.addItem('publishers',	{
+						RecentlyUsed.addItem('Publisher',	{
 							id: publisher.id,
 							name: publisher.text
 						});

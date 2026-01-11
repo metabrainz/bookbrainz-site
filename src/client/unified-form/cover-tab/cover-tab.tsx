@@ -40,7 +40,7 @@ export function CoverTab(props:CoverProps) {
 						label="Publisher"
 						type="publisher"
 						value={publisherValue}
-						recentlyUsedEntityType="publishers"
+						recentlyUsedEntityType="Publisher"
 						onChange={onChangeHandler}
 						{...rest}
 					/>
@@ -76,7 +76,7 @@ function mapDispatchToProps(dispatch):CoverDispatchProps {
 			if(value && Array.isArray(value)){
 				value.forEach(publisher => {
 					if(publisher && publisher.id && publisher.text){
-						RecentlyUsed.addItem('publishers', {
+						RecentlyUsed.addItem('Publisher', {
 							id: publisher.id,
 							name: publisher.text
 						});

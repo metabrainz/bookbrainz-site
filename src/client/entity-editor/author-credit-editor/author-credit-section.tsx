@@ -182,7 +182,7 @@ function AuthorCreditSection({
 								onChange={onChangeHandler}
 								{...rest}
 								type="author"
-								recentlyUsedEntityType="authors"
+								recentlyUsedEntityType="Author"
 							/>
 						</div>
 						<InputGroup.Append>{editButton}</InputGroup.Append>
@@ -236,7 +236,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onAuthorChange: (value) => {
 			if(value && value.id && value.text){
-				RecentlyUsed.addItem('authors', {id: value.id, name: value.text});
+				RecentlyUsed.addItem('Author', {id: value.id, name: value.text});
 			}
 			dispatch(updateCreditAuthorValue(-1, value));
 		},

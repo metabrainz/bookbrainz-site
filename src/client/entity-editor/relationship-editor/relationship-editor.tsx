@@ -275,13 +275,7 @@ class RelationshipModal
 	}
 
 	handleEntityChange = (value: EntitySearchResult) => {
-		if(value && value.id && value.text && value.type){
-			const storageKey = EntitySearchFieldOption.entityTypeMappings[value.type] || `${value.type.toLowerCase()}s`;
-			RecentlyUsed.addItem(storageKey, {
-				id: value.id,
-				name: value.text
-			});
-		}
+		RecentlyUsed.addItemToRecentlyUsed(value);
 		this.setState({
 			relationship: null,
 			relationshipType: null,
@@ -387,7 +381,7 @@ class RelationshipModal
 				name="entity"
 				type={types}
 				value={this.state.targetEntity}
-				recentlyUsedEntityType={['works', 'authors', 'editions', 'publishers', 'series']}
+				recentlyUsedEntityType={types}
 				onChange={this.handleEntityChange}
 			/>
 		);

@@ -2,6 +2,13 @@ export interface RecentlyUsedItem{
     id: number | string;
     name: string;
 }
+
+export interface EntityWithType {
+    type?: string;
+    id?: number | string;
+    text?: string;
+}
+
 export const RecentlyUsed = {
     getItems: (entityType: string): RecentlyUsedItem[] => {
         if (typeof window === 'undefined') return [];
@@ -28,5 +35,13 @@ export const RecentlyUsed = {
     clearItems: (entityType: string): void => {
         if (typeof window === 'undefined') return;
         localStorage.removeItem(`recently_used_${entityType}`);
+    },
+    addItemToRecentlyUsed: (entity: EntityWithType): void => {
+        if (entity && entity.type && entity.id && entity.text) {
+            RecentlyUsed.addItem(entity.type, {
+                id: entity.id,
+                name: entity.text
+            });
+        }
     }
 };

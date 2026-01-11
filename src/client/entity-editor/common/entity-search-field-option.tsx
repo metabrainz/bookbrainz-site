@@ -18,14 +18,14 @@
  */
 
 import {Form, InputGroup, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {ENTITY_TYPES} from 'bookbrainz-data/lib/types/entity';
 import EntitySelect from './entity-select';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LinkedEntitySelect from './linked-entity-select';
-import PropTypes from 'prop-types';
 import React from 'react';
 import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import SelectAsync from 'react-select/async';
-import ValidationLabel from '../common/validation-label';
+import ValidationLabel from './validation-label';
 import _ from 'lodash';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {isValidBBID} from '../../../common/helpers/utils';
@@ -34,8 +34,30 @@ import request from 'superagent';
 
 const ImmutableAsyncSelect = makeImmutable(SelectAsync);
 
-class EntitySearchFieldOption extends React.Component {
-	constructor(props) {
+const entityTypeStrings = [...ENTITY_TYPES, 'Area'] as const;
+type SearchEntityTypes = typeof entityTypeStrings[number];
+
+type Props = {
+	SelectWrapper?: React.ElementType | null,
+	bbid?: string | null,
+	className?: string,
+	customComponents?: object,
+	empty?: boolean,
+	error?: boolean,
+	filters?: any[],
+	isMulti?: boolean,
+	label?: string,
+	languageOptions?: Array<{value: number, label: string}>,
+	onChange: (value: object | object[] | null) => void,
+	recentlyUsedEntityType?: SearchEntityTypes | SearchEntityTypes[] | null,
+	tooltipText?: string | null,
+	type: string | string[],
+	value?: object | object[] | null,
+	[propName: string]: any
+};
+
+class EntitySearchFieldOption extends React.Component<Props> {
+	constructor(props: Props) {
 		super(props);
 		this.selectRef = React.createRef();
 		// React does not autobind non-React class methods
@@ -44,24 +66,7 @@ class EntitySearchFieldOption extends React.Component {
 		this.entityToOption = this.entityToOption.bind(this);
 	}
 
-	static entityTypeMappings = {
-		// Saving
-		Area: 'areas',
-		Author: 'authors',
-		Edition: 'editions',
-		EditionGroup: 'editiongroups',
-		Publisher: 'publishers',
-		Series: 'series',
-		Work: 'works',
-		// Loading
-		areas: 'Area',
-		authors: 'Author',
-		editiongroups: 'EditionGroup',
-		editions: 'Edition',
-		publishers: 'Publisher',
-		series: 'Series',
-		works: 'Work'
-	};
+
 
 	/**
 	 * Determines whether an entity provided to the EntitySearch component is an
@@ -132,15 +137,12 @@ class EntitySearchFieldOption extends React.Component {
 			return [];
 		}
 		const uniqueItems = _.uniqBy(allRecentlyUsedItems, 'id').slice(0, 10);
-		return uniqueItems.map(item => {
-			const singularType = EntitySearchFieldOption.entityTypeMappings[item._sourceType] || item._sourceType.replace(/s$/, '');
-			return {
-				id: item.id,
-				isRecentlyUsed: true,
-				text: item.name,
-				type: singularType
-			};
-		});
+		return uniqueItems.map(item => ({
+			id: item.id,
+			isRecentlyUsed: true,
+			text: item.name,
+			type: item._sourceType
+		}));
 	}
 
 	getDefaultOptions() {
@@ -156,14 +158,13 @@ class EntitySearchFieldOption extends React.Component {
 
 	async fetchOptions(query) {
 		const recentOptions = this.getRecentlyUsedOptions();
-		const uniqueRecentOptions = _.uniqBy(recentOptions, 'id').slice(0, 10);
 		if (!query) {
-			if (uniqueRecentOptions.length === 0) {
+			if (recentOptions.length === 0) {
 				return [];
 			}
 			return [{
 				label: 'Recently Used',
-				options: uniqueRecentOptions
+				options: recentOptions
 			}];
 		}
 		let manipulatedQuery = query;
@@ -176,15 +177,9 @@ class EntitySearchFieldOption extends React.Component {
 		if (isValidBBID(manipulatedQuery)) {
 			const entity = await request.get(`/search/entity/${manipulatedQuery}`).then((res) => res.body).catch(() => null);
 			if (entity && typeof this.props.onChange === 'function' && (_.snakeCase(entity.type) === this.props.type ||
-				 (_.isArray(this.props.type) && this.props.type.includes(entity.type)))) {
+				(_.isArray(this.props.type) && this.props.type.includes(entity.type)))) {
 				const entityOption = this.entityToOption(entity);
-				if (entityOption.id && entityOption.text && entityOption.type) {
-					const storageKey = EntitySearchFieldOption.entityTypeMappings[entityOption.type] || `${entityOption.type.toLowerCase()}s`;
-					RecentlyUsed.addItem(storageKey, {
-						id: entityOption.id,
-						name: entityOption.text
-					});
-				}
+				RecentlyUsed.addItemToRecentlyUsed(entityOption);
 				const newValue = this.props.isMulti ? [...this.props.value, entityOption] : entityOption;
 				this.props.onChange(newValue);
 				this.selectRef.current.blur();
@@ -205,11 +200,11 @@ class EntitySearchFieldOption extends React.Component {
 		);
 		const filteredOptions = response.body.filter(combinedFilters);
 		const searchResults = filteredOptions.map(this.entityToOption);
-		if (uniqueRecentOptions.length > 0) {
+		if (recentOptions.length > 0) {
 			return [
 				{
 					label: 'Recently Used',
-					options: uniqueRecentOptions
+					options: recentOptions
 				},
 				{
 					label: 'Search Results',
@@ -304,32 +299,6 @@ class EntitySearchFieldOption extends React.Component {
 }
 
 EntitySearchFieldOption.displayName = 'EntitySearchFieldOption';
-EntitySearchFieldOption.propTypes = {
-	SelectWrapper: PropTypes.elementType,
-	bbid: PropTypes.string,
-	className: PropTypes.string,
-	customComponents: PropTypes.object,
-	empty: PropTypes.bool,
-	error: PropTypes.bool,
-	filters: PropTypes.array,
-	isMulti: PropTypes.bool,
-	label: PropTypes.string,
-	languageOptions: PropTypes.array,
-	onChange: PropTypes.func.isRequired,
-	recentlyUsedEntityType: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.arrayOf(PropTypes.string)
-	]),
-	tooltipText: PropTypes.string,
-	type: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.arrayOf(PropTypes.string)
-	]).isRequired,
-	value: PropTypes.oneOfType([
-		PropTypes.object,
-		PropTypes.arrayOf(PropTypes.object)
-	])
-};
 EntitySearchFieldOption.defaultProps = {
 	SelectWrapper: null,
 	bbid: null,
