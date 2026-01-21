@@ -19,7 +19,9 @@
 /**
  * Gets the OpenLibrary cover image URL and source page URL for an Edition.
  * Priority: OLID > ISBN-13 > ISBN-10 > OCLC > LCCN
- * returns [coverUrl, sourcePageUrl] or null if no identifier found
+ * @param {(Array | null | undefined)} identifiers - Array of identifier objects with type and value
+ * @param {('S' | 'M' | 'L')} size - Cover image size (S for small, M for medium, L for large)
+ * @returns {(string[] | null)} [coverUrl, sourcePageUrl] or null if no identifier found
  */
 export function getOpenLibraryCoverUrl(
 	identifiers: Array<{type: {label: string, id?: number}, value: string}> | null | undefined,
@@ -88,7 +90,7 @@ export function getOpenLibraryCoverUrl(
 
 	if (oclcIdentifier && oclcIdentifier.value) {
 		const oclcValue = oclcIdentifier.value.trim();
-		if (/^\d+$/.test(oclcValue)) {
+		if ((/^\d+$/).test(oclcValue)) {
 			return [
 				`https://covers.openlibrary.org/b/oclc/${oclcValue}-${size}.jpg?default=false`,
 				`https://openlibrary.org/oclc/${oclcValue}`
@@ -104,7 +106,7 @@ export function getOpenLibraryCoverUrl(
 
 	if (lccnIdentifier && lccnIdentifier.value) {
 		const lccnValue = lccnIdentifier.value.trim();
-		if (/^[a-zA-Z]{0,3}\d{6,10}$/.test(lccnValue)) {
+		if ((/^[a-zA-Z]{0,3}\d{6,10}$/).test(lccnValue)) {
 			return [
 				`https://covers.openlibrary.org/b/lccn/${lccnValue}-${size}.jpg?default=false`,
 				`https://openlibrary.org/lccn/${lccnValue}`

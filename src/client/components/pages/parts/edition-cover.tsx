@@ -16,10 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import React, {useCallback, useEffect, useState} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faSlash} from '@fortawesome/free-solid-svg-icons';
 import PropTypes from 'prop-types';
-import React, {useState, useEffect, useCallback} from 'react';
+import {faSlash} from '@fortawesome/free-solid-svg-icons';
 import {getOpenLibraryCoverUrl} from '../../../../common/helpers/cover-image';
 
 
@@ -47,7 +47,7 @@ function EditionCover({backupIcon, deleted, editionName, identifiers}) {
 
 	useEffect(() => {
 		if (!coverUrl) {
-			return;
+			return null;
 		}
 
 		const img = new Image();
@@ -72,13 +72,11 @@ function EditionCover({backupIcon, deleted, editionName, identifiers}) {
 					icon={backupIcon}
 					key="entityIcon"
 					size="5x"
-					stack="1x"
 				/>
 				<FontAwesomeIcon
 					icon={faSlash}
 					key="deletedIcon"
 					size="5x"
-					stack="1x"
 				/>
 			</div>
 		);
@@ -99,25 +97,25 @@ function EditionCover({backupIcon, deleted, editionName, identifiers}) {
 					<img
 						alt={editionName ? `Cover of ${editionName}` : 'Book cover'}
 						className={`edition-cover-image ${imageLoading ? 'loading' : ''}`}
+						src={coverUrl}
 						onError={handleImageError}
 						onLoad={handleImageLoad}
-						src={coverUrl}
 					/>
-			</div>
-			{!imageLoading && (
-				<small className="edition-cover-attribution text-muted">
+				</div>
+				{!imageLoading && (
+					<small className="edition-cover-attribution text-muted">
 					Cover from{' '}
-					<a
-						href={sourcePageUrl}
-						rel="noopener noreferrer"
-						target="_blank"
-					>
+						<a
+							href={sourcePageUrl}
+							rel="noopener noreferrer"
+							target="_blank"
+						>
 						OpenLibrary
-					</a>
-				</small>
-			)}
-		</div>
-	);
+						</a>
+					</small>
+				)}
+			</div>
+		);
 	}
 
 	return (

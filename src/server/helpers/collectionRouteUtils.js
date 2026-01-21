@@ -19,7 +19,6 @@
 import * as search from '../../common/helpers/search';
 import {camelCase, differenceWith, isEqual, toLower, upperFirst} from 'lodash';
 import {BadRequestError} from '../../common/helpers/error';
-import log from 'log';
 
 /**
  * A handler for create or edit actions on collections.
