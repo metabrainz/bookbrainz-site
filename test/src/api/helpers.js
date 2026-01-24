@@ -21,7 +21,8 @@ export function searchBasicTests(res) {
 		expect(result).to.have.all.keys(
 			'bbid',
 			'defaultAlias',
-			'entityType'
+			'entityType',
+			'authors'
 		);
 	});
 }
