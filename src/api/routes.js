@@ -139,7 +139,7 @@ import workRouter from './routes/work';
  *               example: true
  *         authors:
  *           type: array
- *           items: 
+ *           items:
  *             type: string
  *           example: ['J.K. Rowling','Mary GrandPré']
  *     SearchResultModel:
