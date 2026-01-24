@@ -137,6 +137,11 @@ import workRouter from './routes/work';
  *             primary:
  *               type: boolean
  *               example: true
+ *         authors:
+ *           type: array
+ *           items: 
+ *             type: string
+ *           example: ['J.K. Rowling','Mary GrandPré']
  *     SearchResultModel:
  *       type: object
  *       properties:

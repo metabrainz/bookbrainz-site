@@ -516,6 +516,7 @@ export function formatSearchResponse(searchResult?: {results:any[], total:number
 			searchResult: results.map((entity) => ({
 				bbid: _.get(entity, 'bbid', null),
 				defaultAlias: getDefaultAlias(entity),
+				authors: _.get(entity, 'authors', []),
 				entityType: _.get(entity, 'type', null)
 			})),
 			totalCount: total
