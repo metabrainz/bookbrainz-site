@@ -16,19 +16,26 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {isString} from 'lodash';
 import log from 'log';
 import status from 'http-status';
 
 
 export class SiteError extends Error {
-	constructor(message) {
+	constructor(error) {
 		super();
 
 		/*
 		 * We can't access the subclass's default message before calling super,
 		 * so we set it manually here
 		 */
-		this.message = message || this.constructor.defaultMessage;
+		this.message = this.constructor.defaultMessage;
+		if (isString(error)) {
+			this.detailedMessage = error;
+		}
+		else if (error instanceof Error) {
+			this.detailedMessage = error.message;
+		}
 
 		this.name = this.constructor.name;
 		this.status = this.constructor.status;
