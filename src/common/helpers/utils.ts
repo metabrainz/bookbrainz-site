@@ -173,9 +173,9 @@ export function getEntityLink(entity: {type: string, bbid: string}): string {
 
 /**
  * Utility to truncate an array to a specific size and determine if there are more results.
- * @param array - The initial results array.
- * @param size - The desired number of items.
- * @returns The truncated array and a boolean indicating if more results exist.
+ * @param {Array} array - The initial results array.
+ * @param {number} size - The desired number of items.
+ * @returns {Object} - The truncated array and a boolean indicating if more results exist.
  */
 export function getNextEnabledAndResultsArray(array, size) {
 	const limit = Math.max(0, size);
@@ -183,7 +183,7 @@ export function getNextEnabledAndResultsArray(array, size) {
 
 	return {
 		newResultsArray: array.slice(0, limit),
-		nextEnabled,
+		nextEnabled
 	};
 }
 
