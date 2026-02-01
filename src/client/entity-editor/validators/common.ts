@@ -28,6 +28,7 @@ import {
 import {AuthorCredit} from '../author-credit-editor/actions';
 import {Iterable} from 'immutable';
 import _ from 'lodash';
+import {normalizeIdentifier} from '../../../common/helpers/utils';
 
 
 export function validateMultiple(
@@ -100,7 +101,8 @@ export function validateIdentifierValue(
 	const selectedType = _.find(types, (type) => type.id === typeId);
 
 	if (selectedType) {
-		return new RegExp(selectedType.validationRegex).test(value);
+		const normalizedValue = normalizeIdentifier(value);
+		return new RegExp(selectedType.validationRegex).test(normalizedValue);
 	}
 
 	return false;
@@ -127,6 +129,11 @@ export function validateIdentifier(
 ): boolean {
 	const value = get(identifier, 'value');
 	const type = get(identifier, 'type');
+	const confirmed = get(identifier, 'confirmed');
+
+	if (confirmed) {
+		return validateIdentifierType(type, types);
+	}
 
 	return (
 		validateIdentifierValue(value, type, types) &&
