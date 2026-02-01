@@ -21,20 +21,19 @@ import * as React from 'react';
 import * as data from '../../helpers/data';
 
 import {
-	Action, debouncedUpdateIdentifierValue, removeIdentifierRow,
-	updateIdentifierType
+	Action, debouncedUpdateIdentifierValue, removeIdentifierRow, updateIdentifierConfirmed, updateIdentifierType
 } from './actions';
-import {Button, Col, Form, Row} from 'react-bootstrap';
+import {Button, Col, Form, FormCheck, Row} from 'react-bootstrap';
 import {
 	IdentifierType,
 	validateIdentifierValue
 } from '../validators/common';
+import {collapseWhiteSpaces, detectIdentifierType} from '../../../common/helpers/utils';
 import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import IdentifierLink from '../../components/pages/entities/identifiers-links.js';
 import Select from 'react-select';
 import ValueField from './value-field';
-import {collapseWhiteSpaces} from '../../../common/helpers/utils';
 import {connect} from 'react-redux';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 
@@ -46,13 +45,15 @@ type OwnProps = {
 
 type StateProps = {
 	valueValue: string,
-	typeValue: number
+	typeValue: number,
+	confirmed: boolean
 };
 
 type DispatchProps = {
 	onTypeChange: (obj: {value: number}) => unknown,
 	onRemoveButtonClick: () => unknown,
-	onValueChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown
+	onValueChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown,
+	onConfirmedChange: (arg: React.ChangeEvent<HTMLInputElement>) => unknown
 };
 
 type Props = StateProps & DispatchProps & OwnProps;
@@ -83,15 +84,18 @@ function IdentifierRow({
 	typeOptions,
 	valueValue,
 	typeValue,
+	confirmed,
 	onTypeChange,
 	onRemoveButtonClick,
-	onValueChange
+	onValueChange,
+	onConfirmedChange
 }: Props) {
 	const identifierTypesForDisplay = typeOptions.map((type) => ({
 		label: type.label,
 		value: type.id
 	}));
 	const identifierValue = identifierTypesForDisplay.filter((el) => el.value === typeValue);
+	const selectedIdentifierType = typeOptions.find(type => type.id === typeValue)?.label || 'identifier';
 	return (
 		<div>
 			<Row>
@@ -99,7 +103,7 @@ function IdentifierRow({
 					<ValueField
 						defaultValue={valueValue}
 						empty={!valueValue && typeValue === null}
-						error={!validateIdentifierValue(
+						error={!confirmed && !validateIdentifierValue(
 							valueValue, typeValue, typeOptions
 						)}
 						onChange={onValueChange}
@@ -137,6 +141,19 @@ function IdentifierRow({
 					</Col>
 				</Row>
 			)}
+			{valueValue && typeValue && !validateIdentifierValue(valueValue, typeValue, typeOptions) && (
+				<Row>
+					<Col>
+						<FormCheck
+							checked={confirmed}
+							id={`identifier-confirm-${index}`}
+							label={`This doesn't look like a valid ${selectedIdentifierType}. Are you sure this is correct?`}
+							type="checkbox"
+							onChange={onConfirmedChange}
+						/>
+					</Col>
+				</Row>
+			)}
 			<hr/>
 		</div>
 	);
@@ -150,13 +167,26 @@ function handleValueChange(
 	index: number,
 	types: Array<IdentifierType>
 ) {
-	let {value} = event.target;
-	value = collapseWhiteSpaces(value);
-	const guessedType =
-		data.guessIdentifierType(value, types);
-	if (guessedType) {
-		const result = new RegExp(guessedType.detectionRegex).exec(value);
-		value = result[1];
+	let value = collapseWhiteSpaces(event.target.value);
+	const detectedType = detectIdentifierType(value);
+	let guessedType = null;
+	if (detectedType === 'ISBN-10') {
+		guessedType = types.find((type) => type.id === 10);
+	}
+	else if (detectedType === 'ISBN-13') {
+		guessedType = types.find((type) => type.id === 9);
+	}
+	else if (detectedType === 'Barcode') {
+		guessedType = types.find((type) => type.id === 11);
+	}
+	else {
+		guessedType = data.guessIdentifierType(value, types);
+		if (guessedType) {
+			const result = new RegExp(guessedType.detectionRegex).exec(value);
+			if (result && result[1]) {
+				value = result[1];
+			}
+		}
 		// 	disabling "add isbn row" feature temporary
 		// if (guessedType.id === 9) {
 		// 	const isbn10Type:any = types.find((el) => el.id === 10);
@@ -180,6 +210,7 @@ function handleValueChange(
 function mapStateToProps(rootState, {index}: OwnProps): StateProps {
 	const state = rootState.get('identifierEditor');
 	return {
+		confirmed: state.getIn([index, 'confirmed']),
 		typeValue: state.getIn([index, 'type']),
 		valueValue: state.getIn([index, 'value'])
 	};
@@ -191,6 +222,7 @@ function mapDispatchToProps(
 	{index, typeOptions}: OwnProps
 ): DispatchProps {
 	return {
+		onConfirmedChange: (event: React.ChangeEvent<HTMLInputElement>) => dispatch(updateIdentifierConfirmed(index, event.target.checked)),
 		onRemoveButtonClick: () => dispatch(removeIdentifierRow(index)),
 		onTypeChange: (value: {value: number}) =>
 			dispatch(updateIdentifierType(index, value && value.value)),
