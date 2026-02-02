@@ -121,7 +121,7 @@
     "chai-http": "^4.4.0",
     "chai-sorted": "^0.2.0",
     "clean-webpack-plugin": "^4.0.0",
-    "compression-webpack-plugin": "^9.2.0",
+    "compression-webpack-plugin": "^11.1.0",
     "css-loader": "^6.9.1",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
