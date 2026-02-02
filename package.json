@@ -59,7 +59,7 @@
     "isomorphic-dompurify": "^2.24.0",
     "jsesc": "^3.0.2",
     "lobes4": "4.0.1",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "log": "^6.0.0",
     "log-node": "^8.0.3",
     "mocha-chai-jest-snapshot": "^1.1.4",
