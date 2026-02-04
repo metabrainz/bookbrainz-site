@@ -187,12 +187,14 @@ class NameSection extends React.Component {
 		const searchResults = convertMapToObject(immutableSearchResults);
 		const languageOptionsForDisplay = languageOptions.map((language) => ({
 			frequency: language.frequency,
+			isoCode1: language.isoCode1,
 			label: language.name,
 			value: language.id
 		}));
 
 		const warnIfExists = !_.isEmpty(exactMatches);
 		const languageOption = languageOptionsForDisplay.filter((el) => el.value === languageValue);
+		const languageIsoCode = languageOption.length > 0 ? languageOption[0].isoCode1 : null;
 		const lgCol = {offset: 3, span: 6};
 		if (isUnifiedForm) {
 			lgCol.offset = 0;
@@ -237,19 +239,6 @@ class NameSection extends React.Component {
 				}
 				<Row>
 					<Col lg={lgCol}>
-						<SortNameField
-							defaultValue={sortNameValue}
-							empty={isAliasEmpty(
-								nameValue, sortNameValue, languageValue
-							)}
-							error={!validateNameSectionSortName(sortNameValue)}
-							storedNameValue={nameValue}
-							onChange={onSortNameChange}
-						/>
-					</Col>
-				</Row>
-				<Row>
-					<Col lg={lgCol}>
 						<ImmutableLanguageField
 							empty={isAliasEmpty(
 								nameValue, sortNameValue, languageValue
@@ -260,6 +249,20 @@ class NameSection extends React.Component {
 							tooltipText="Language used for the above name"
 							value={languageOption}
 							onChange={onLanguageChange}
+						/>
+					</Col>
+				</Row>
+				<Row>
+					<Col lg={lgCol}>
+						<SortNameField
+							defaultValue={sortNameValue}
+							empty={isAliasEmpty(
+								nameValue, sortNameValue, languageValue
+							)}
+							error={!validateNameSectionSortName(sortNameValue)}
+							languageCode={languageIsoCode}
+							storedNameValue={nameValue}
+							onChange={onSortNameChange}
 						/>
 					</Col>
 				</Row>
