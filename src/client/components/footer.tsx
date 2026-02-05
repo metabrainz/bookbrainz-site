@@ -24,7 +24,7 @@ import React from 'react';
 
 const {Col, Container, Row} = bootstrap;
 
-type Props = {
+type FooterProps = {
     repositoryUrl: string;
     siteRevision: string;
 };
