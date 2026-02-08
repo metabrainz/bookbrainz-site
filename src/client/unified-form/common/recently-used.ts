@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 export interface RecentlyUsedItem{
-    id: number;
+    id: number | string;
     name: string;
 }
 export const RecentlyUsed = {
