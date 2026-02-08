@@ -185,7 +185,7 @@ function initRoutes() {
 	const router = Router();
 
 	// Allow only get requests for now and throw error for any other type of requests
-	router.all('/*', allowOnlyGetMethod);
+	router.all('/*splat', allowOnlyGetMethod);
 
 	initWorkRoute(router);
 	initEditionRoute(router);
