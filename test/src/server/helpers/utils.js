@@ -61,6 +61,15 @@ describe('getNextEnabledAndResultsArray', () => {
 		expect(newResultsArray.length).to.equal(10);
 		expect(nextEnabled).to.equal(true);
 	});
+
+	it('should treat negative size as 0 and return an empty array and nextEnabled:true when results.length > 0', () => {
+		const array = Array(5).fill(0);
+		const size = -1;
+		const {newResultsArray, nextEnabled} = getNextEnabledAndResultsArray(array, size);
+
+		expect(newResultsArray.length).to.equal(0);
+		expect(nextEnabled).to.equal(true);
+	});
 });
 
 describe('Convert ISBNs', () => {
