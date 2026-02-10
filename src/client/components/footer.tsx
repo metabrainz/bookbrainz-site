@@ -89,7 +89,4 @@ function Footer({repositoryUrl, siteRevision}: Props) {
 	);
 }
 
-Footer.displayName = 'Footer';
-
-
 export default Footer;
