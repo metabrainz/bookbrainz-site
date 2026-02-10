@@ -74,7 +74,8 @@ function LanguageField({
 	const tooltip = <Tooltip id="language-tooltip">{tooltipText}</Tooltip>;
 	rest.options = convertMapToObject(rest.options);
 	const {value, options} = rest;
-	const filterOptions = freezeObjects.filterOptions ?? React.useMemo(() => createFilterOptions({options}), []);
+	const filteredSearchOptions = options.filter((lang) => lang.label !== '[Multiple languages]');
+	const filterOptions = freezeObjects.filterOptions ?? React.useMemo(() => createFilterOptions({options: filteredSearchOptions}), []);
 	const sortFilterOptions = (opts, input, selectOptions) => {
 		const newOptions = filterOptions(opts, input, selectOptions).slice(0, MAX_DROPDOWN_OPTIONS);
 		const sortLang = (a, b) => {
@@ -86,9 +87,10 @@ function LanguageField({
 		newOptions.sort(sortLang);
 		return newOptions;
 	};
-	const f2Languages = options.filter((lang) => lang.frequency === 2);
-	const f1Languages = options.filter((lang) => lang.frequency === 1).slice(0, MAX_F1_OPTIONS);
-	const recentItems = RecentlyUsed.getItems('languages');
+
+	const f2Languages = filteredSearchOptions.filter((lang) => lang.frequency === 2);
+	const f1Languages = filteredSearchOptions.filter((lang) => lang.frequency === 1).slice(0, MAX_F1_OPTIONS);
+	const recentItems = RecentlyUsed.getItems('languages').filter(item => item.name !== '[Multiple languages]');
 	const defaultOptions = [
 		{
 			label: 'Recently Used',
@@ -103,7 +105,7 @@ function LanguageField({
 			options: f1Languages
 		}
 	];
-	const fetchOptions = React.useCallback((input) => Promise.resolve(sortFilterOptions(options, input, value)), []);
+	const fetchOptions = React.useCallback((input) => Promise.resolve(sortFilterOptions(filteredSearchOptions, input, value)), []);
 	const handleChange = (selectedOption) => {
 		if (selectedOption) {
 			const optionsArray = Array.isArray(selectedOption) ? selectedOption : [selectedOption];
