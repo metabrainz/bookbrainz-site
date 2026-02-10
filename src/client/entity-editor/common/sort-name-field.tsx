@@ -50,7 +50,7 @@ function makeSortName(name: string): string {
 		return '';
 	}
 
-	const words = trimmedName.replace(/,/g, '').split(' ');
+	const words = trimmedName.split(' ');
 
 	// If there's only one word, simply copy the name as the sort name
 	if (words.length === 1) {
@@ -62,31 +62,31 @@ function makeSortName(name: string): string {
 	const firstWordIsArticle = articles.includes(firstWord.toLowerCase());
 	if (firstWordIsArticle) {
 		// The Collection of Stories --> Collection of Stories, The
-		const wordsWithCommas = trimmedName.split(' ');
-		return `${wordsWithCommas.slice(1).join(' ')}, ${firstWord}`;
+		return `${words.slice(1).join(' ')}, ${firstWord}`;
 	}
 
 	/*
 	 * From here on, it is assumed that the sort name is for a person
 	 * Split suffixes
 	 */
+	const strippedWords = words.map((word) => word.replace(/,/g, ''));
 	const isWordSuffix =
-		words.map((word) => suffixes.includes(stripDot(word).toLowerCase()));
+		strippedWords.map((word) => suffixes.includes(stripDot(word).toLowerCase()));
 	const lastSuffix = isWordSuffix.lastIndexOf(false) + 1;
 
 	// Test this to check that splice will not have a 0 deleteCount
 	const suffixWords =
-		lastSuffix < words.length ? words.splice(lastSuffix) : [];
+		lastSuffix < strippedWords.length ? strippedWords.splice(lastSuffix) : [];
 
 	// Rearrange names to (last name, other names)
 	const INDEX_BEFORE_END = -1;
 
-	let [lastName] = words.splice(INDEX_BEFORE_END);
+	let [lastName] = strippedWords.splice(INDEX_BEFORE_END);
 	if (suffixWords.length > 0) {
 		lastName += ` ${suffixWords.join(' ')}`;
 	}
 
-	return `${lastName}, ${words.join(' ')}`;
+	return `${lastName}, ${strippedWords.join(' ')}`;
 }
 
 type onChangeParamType = {
