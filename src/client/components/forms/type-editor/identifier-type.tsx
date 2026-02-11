@@ -171,7 +171,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 
 		try {
 			await request.post(submissionURL).send(formData);
-			window.location.href = '/identifier-types';
+			window.location.href = document.referrer;
 		}
 		catch (err) {
 			const errorMessage = err.response.body.error;

@@ -224,7 +224,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 		try {
 			await request.post(submissionURL)
 				.send({oldAttributeTypes: relationshipTypeData.attributeTypes, ...formData});
-			window.location.href = '/relationship-types';
+			window.location.href = document.referrer;
 		}
 		catch (err) {
 			throw new Error(err);
