@@ -30,9 +30,9 @@ interface CallToActionProps {
 
 /**
  * Renders the document and displays 'CallToAction' component.
- * @returns {ReactElement} a HTML document which displays
  * @param {object} props - Properties passed to the component.
- * the 'CallToAction' component.
+ * @param {string|null} props.query - search query string to seed entity creation forms
+ * @returns {ReactElement} a HTML document which displays the 'CallToAction' component.
  */
 function CallToAction({query = null}: CallToActionProps):JSX.Element {
 	const seedingParameters = new URLSearchParams({name: query ?? ''});
