@@ -21,7 +21,7 @@ function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, rowId, ...r
 			}
 			onChange(null);
 			return;
-		} 
+		}
 		value.checked = isChecked;
 		onChange(value);
 	}, [isChecked, onChange, onRemove]);
@@ -85,7 +85,7 @@ function mapStateToProps(state, {rowId}) {
 function mapDispatchToProps(dispatch, {rowId}) {
 	return {
 		onChange: (value:any) => {
-			if (value == null) {
+			if (value === null) {
 				dispatch(removeWork(rowId));
 				return;
 			}

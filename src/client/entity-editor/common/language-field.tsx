@@ -22,6 +22,7 @@ import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import AsyncSelect from 'react-select/async';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {OptionProps} from 'react-select/src/components/Option';
+import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import ValidationLabel from './validation-label';
 import {components} from 'react-select';
 import {convertMapToObject} from '../../helpers/utils';
@@ -29,7 +30,6 @@ import createFilterOptions from 'react-select-fast-filter-options';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {freezeObjects} from '../../unified-form/common/freezed-objects';
 import {isNumber} from 'lodash';
-import {RecentlyUsed} from '../../unified-form/common/recently-used';
 
 
 function OptimizedOption(props: OptionProps<any, any>) {
@@ -42,6 +42,7 @@ type Props = {
 	empty?: boolean,
 	error?: boolean,
 	tooltipText?: string,
+	onChange?: (selectedOption: any) => void
 	[propName: string]: any
 };
 
@@ -73,7 +74,8 @@ function LanguageField({
 	const tooltip = <Tooltip id="language-tooltip">{tooltipText}</Tooltip>;
 	rest.options = convertMapToObject(rest.options);
 	const {value, options} = rest;
-	const filterOptions = freezeObjects.filterOptions ?? React.useMemo(() => createFilterOptions({options}), []);
+	const filteredSearchOptions = options.filter((lang) => lang.label !== '[Multiple languages]');
+	const filterOptions = freezeObjects.filterOptions ?? React.useMemo(() => createFilterOptions({options: filteredSearchOptions}), []);
 	const sortFilterOptions = (opts, input, selectOptions) => {
 		const newOptions = filterOptions(opts, input, selectOptions).slice(0, MAX_DROPDOWN_OPTIONS);
 		const sortLang = (a, b) => {
@@ -85,23 +87,25 @@ function LanguageField({
 		newOptions.sort(sortLang);
 		return newOptions;
 	};
-	const f2Languages = options.filter((lang) => lang.frequency === 2);
-	const f1Languages = options.filter((lang) => lang.frequency === 1).slice(0, MAX_F1_OPTIONS);
-	const recentItems = RecentlyUsed.getItems('languages');	
+
+	const f2Languages = filteredSearchOptions.filter((lang) => lang.frequency === 2);
+	const f1Languages = filteredSearchOptions.filter((lang) => lang.frequency === 1).slice(0, MAX_F1_OPTIONS);
+	const recentItems = RecentlyUsed.getItems('languages').filter(item => item.name !== '[Multiple languages]');
 	const defaultOptions = [
-	{
-		label: 'Recently Used',
-		options: recentItems.map(item => ({value: item.id, label: item.name}))
-	},
-	{
-		label: 'Frequently Used',
-		options: f2Languages
-	},
-	{
-		label: 'Other',
-		options: f1Languages
-	}];
-	const fetchOptions = React.useCallback((input) => Promise.resolve(sortFilterOptions(options, input, value)), []);
+		{
+			label: 'Recently Used',
+			options: recentItems.map(item => ({label: item.name, value: item.id}))
+		},
+		{
+			label: 'Frequently Used',
+			options: f2Languages
+		},
+		{
+			label: 'Other',
+			options: f1Languages
+		}
+	];
+	const fetchOptions = React.useCallback((input) => Promise.resolve(sortFilterOptions(filteredSearchOptions, input, value)), []);
 	const handleChange = (selectedOption) => {
 		if (selectedOption) {
 			const optionsArray = Array.isArray(selectedOption) ? selectedOption : [selectedOption];
@@ -132,6 +136,7 @@ function LanguageField({
 				className="Select"
 				classNamePrefix="react-select"
 				components={{Option: OptimizedOption}}
+				// eslint-disable-next-line react/jsx-no-bind
 				defaultOptions={defaultOptions} loadOptions={fetchOptions} placeholder="Search language" {...rest} onChange={handleChange}
 			/>
 		</Form.Group>
@@ -141,6 +146,7 @@ LanguageField.displayName = 'LanguageField';
 LanguageField.defaultProps = {
 	empty: false,
 	error: false,
+	onChange: null,
 	tooltipText: null
 };
 
