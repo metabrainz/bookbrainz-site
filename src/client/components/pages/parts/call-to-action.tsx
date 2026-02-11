@@ -24,9 +24,9 @@ import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
 const {Button, ButtonGroup} = bootstrap;
-interface CallToActionProps {
+type CallToActionProps = {
 	query: string | null;
-}
+};
 
 /**
  * Renders the document and displays 'CallToAction' component.
