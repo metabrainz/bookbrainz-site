@@ -2,7 +2,6 @@ import {createEditor, truncateEntities} from '../../../test-helpers/create-entit
 import app from '../../../../src/server/app';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
-import orm from '../../../bookbrainz-data';
 
 
 chai.use(chaiHttp);

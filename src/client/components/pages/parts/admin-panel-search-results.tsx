@@ -82,9 +82,8 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 			if (!result) {
 				return null;
 			}
-			const name = result.defaultAlias ? result.defaultAlias.name :
-				'(unnamed)';
-			const link = `/editor/${result.bbid}`;
+			const name = result.name ?? result.defaultAlias?.name;
+			const link = name ? `/user/${name}` : `/editor/${result.id}`;
 
 			/* eslint-disable react/jsx-no-bind */
 			return (
@@ -92,7 +91,7 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 					<td>
 						<a href={link}>
 							<img className="margin-right-0-3" height="15" src={getPrivilegeShieldIcon(result.privs)}/>
-							{name}
+							{name ?? '(unnamed)'}
 						</a>
 					</td>
 					<td>
