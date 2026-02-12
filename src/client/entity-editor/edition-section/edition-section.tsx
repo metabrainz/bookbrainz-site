@@ -58,6 +58,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LanguageField from '../common/language-field';
 import LinkedEntity from '../common/linked-entity';
 import NumericField from '../common/numeric-field';
+import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import SearchEntityCreate from '../../unified-form/common/search-entity-create-select';
 import Select from 'react-select';
 import _ from 'lodash';
@@ -65,7 +66,6 @@ import {clearEditionGroups} from '../../unified-form/detail-tab/action';
 import {connect} from 'react-redux';
 import {entityToOption} from '../../helpers/entity';
 import makeImmutable from '../common/make-immutable';
-import {RecentlyUsed} from '../../unified-form/common/recently-used';
 
 
 const ImmutableLanguageField = makeImmutable(LanguageField);
@@ -233,6 +233,7 @@ function EditionSection({
 					isUnifiedForm={isUnifiedForm}
 					label="Edition Group"
 					languageOptions={languageOptions}
+					recentlyUsedEntityType="EditionGroup"
 					tooltipText={
 						<>
 						Group together different Editions of the same book.
@@ -241,7 +242,6 @@ function EditionSection({
 					}
 					type="editionGroup"
 					value={editionGroupValue}
-					recentlyUsedEntityType="EditionGroup"
 					onChange={onEditionGroupChange}
 					{...rest}
 				/>
@@ -350,9 +350,9 @@ function EditionSection({
 						isMulti
 						instanceId="publisher"
 						label="Publisher"
+						recentlyUsedEntityType="Publisher"
 						type="publisher"
 						value={publisherValue}
-						recentlyUsedEntityType="Publisher"
 						onChange={onPublisherChange}
 					/>
 				</Col>}
@@ -519,7 +519,7 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
 		onEditionGroupChange: (value, action) => {
-			if(value && value.id && value.text){
+			if (value && value.id && value.text) {
 				RecentlyUsed.addItem('EditionGroup', {
 					id: value.id,
 					name: value.text
@@ -549,9 +549,9 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 			event.target.value ? parseInt(event.target.value, 10) : null
 		)),
 		onPublisherChange: (value) => {
-			if(value && Array.isArray(value)){
+			if (value && Array.isArray(value)) {
 				value.forEach(publisher => {
-					if(publisher && publisher.id && publisher.text){
+					if (publisher && publisher.id && publisher.text) {
 						RecentlyUsed.addItem('Publisher',	{
 							id: publisher.id,
 							name: publisher.text

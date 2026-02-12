@@ -32,6 +32,7 @@ import {isValidBBID} from '../../../common/helpers/utils';
 import makeImmutable from './make-immutable';
 import request from 'superagent';
 
+
 const ImmutableAsyncSelect = makeImmutable(SelectAsync);
 
 const entityTypeStrings = [...ENTITY_TYPES, 'Area'] as const;
@@ -41,18 +42,18 @@ type Props = {
 	SelectWrapper?: React.ElementType | null,
 	bbid?: string | null,
 	className?: string,
-	customComponents?: object,
+	customComponents?: Record<string, unknown>,
 	empty?: boolean,
 	error?: boolean,
 	filters?: any[],
 	isMulti?: boolean,
 	label?: string,
 	languageOptions?: Array<{value: number, label: string}>,
-	onChange: (value: object | object[] | null) => void,
+	onChange: (value: Record<string, unknown> | Record<string, unknown>[] | null) => void,
 	recentlyUsedEntityType?: SearchEntityTypes | SearchEntityTypes[] | null,
 	tooltipText?: string | null,
 	type: string | string[],
-	value?: object | object[] | null,
+	value?: Record<string, unknown> | Record<string, unknown>[] | null,
 	[propName: string]: any
 };
 
@@ -65,8 +66,6 @@ class EntitySearchFieldOption extends React.Component<Props> {
 		this.isArea = this.isArea.bind(this);
 		this.entityToOption = this.entityToOption.bind(this);
 	}
-
-
 
 	/**
 	 * Determines whether an entity provided to the EntitySearch component is an

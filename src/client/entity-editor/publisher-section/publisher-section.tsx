@@ -36,10 +36,10 @@ import DateField from '../common/new-date-field';
 import type {Dispatch} from 'redux';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import type {Map} from 'immutable';
+import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import Select from 'react-select';
 import {connect} from 'react-redux';
 import {isNullDate} from '../../helpers/utils';
-import { RecentlyUsed } from '../../unified-form/common/recently-used';
 
 
 type PublisherType = {
@@ -162,10 +162,10 @@ function PublisherSection({
 					<EntitySearchFieldOption
 						instanceId="area"
 						label="Area"
+						recentlyUsedEntityType="Area"
 						tooltipText="Country or place the publisher is registered in"
 						type="area"
 						value={areaValue}
-						recentlyUsedEntityType="Area"
 						onChange={onAreaChange}
 					/>
 				</Col>
@@ -233,10 +233,10 @@ function mapStateToProps(rootState): StateProps {
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onAreaChange: (value) => {
-			if(value && value.id && value.text){
+			if (value && value.id && value.text) {
 				RecentlyUsed.addItem('Area', {id: value.id, name: value.text});
 			}
-			return  dispatch(updateArea(value));
+			return dispatch(updateArea(value));
 		},
 		onBeginDateChange: (beginDate) => {
 			dispatch(debouncedUpdateBeginDate(beginDate));

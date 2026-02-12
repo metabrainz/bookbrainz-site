@@ -43,10 +43,10 @@ import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {NumberAttribute} from './attributes';
 import ReactSelect from 'react-select';
+import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import RelationshipSelect from './relationship-select';
 import _ from 'lodash';
 import {getEntityLink} from '../../../common/helpers/utils';
-import {RecentlyUsed} from '../../unified-form/common/recently-used';
 
 
 function isValidRelationship(relationship: _Relationship) {
@@ -284,7 +284,6 @@ class RelationshipModal
 	};
 
 	handleRelationshipTypeChange = (value: _Relationship) => {
-		
 		this.setState({
 			relationship: value,
 			relationshipType: value.relationshipType
@@ -379,9 +378,9 @@ class RelationshipModal
 				label={label}
 				languageOptions={this.props.languageOptions}
 				name="entity"
+				recentlyUsedEntityType={types}
 				type={types}
 				value={this.state.targetEntity}
-				recentlyUsedEntityType={types}
 				onChange={this.handleEntityChange}
 			/>
 		);

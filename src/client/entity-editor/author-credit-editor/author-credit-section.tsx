@@ -38,6 +38,7 @@ import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import SearchEntityCreate from '../../unified-form/common/search-entity-create-select';
 import {SingleValueProps} from 'react-select/src/components/SingleValue';
 import ValidationLabel from '../common/validation-label';
@@ -46,7 +47,6 @@ import {components} from 'react-select';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {validateAuthorCreditSection} from '../validators/common';
-import {RecentlyUsed} from '../../unified-form/common/recently-used';
 
 
 type OwnProps = {
@@ -177,12 +177,12 @@ function AuthorCreditSection({
 								isDisabled={!isEditable}
 								isUnifiedForm={isUnifiedForm}
 								placeholder="Type to search or paste a BBID"
+								recentlyUsedEntityType="Author"
 								rowId="n0"
+								type="author"
 								value={optionValue}
 								onChange={onChangeHandler}
 								{...rest}
-								type="author"
-								recentlyUsedEntityType="Author"
 							/>
 						</div>
 						<InputGroup.Append>{editButton}</InputGroup.Append>
@@ -235,7 +235,7 @@ function mapStateToProps(rootState, {type}): StateProps {
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onAuthorChange: (value) => {
-			if(value && value.id && value.text){
+			if (value && value.id && value.text) {
 				RecentlyUsed.addItem('Author', {id: value.id, name: value.text});
 			}
 			dispatch(updateCreditAuthorValue(-1, value));

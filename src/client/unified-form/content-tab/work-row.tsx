@@ -43,9 +43,9 @@ function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, rowId, ...r
 				<Col lg={{span: 6}}>
 					<SearchEntityCreate
 						isClearable={false}
+						recentlyUsedEntityType="Work"
 						type="work"
 						value={work}
-						recentlyUsedEntityType="Work"
 						onChange={onChangeHandler}
 						{...rest}
 					/>

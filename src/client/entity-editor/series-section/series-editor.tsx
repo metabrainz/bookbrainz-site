@@ -29,10 +29,10 @@ import {faBars, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
+import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import Relationship from '../relationship-editor/relationship';
 import _ from 'lodash';
 import {generateRelationshipSelection} from '../relationship-editor/relationship-editor';
-import {RecentlyUsed} from '../../unified-form/common/recently-used';
 
 
 type EntitySearchResult = {
@@ -148,11 +148,11 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 	const [targetEntity, setTargetEntity] = useState(null);
 
 	const handleEntityChange = (value: EntitySearchResult) => {
-		if(value && value.id && value.text){
+		if (value && value.id && value.text) {
 			RecentlyUsed.addItem(seriesType, {
 				id: value.id,
 				name: value.text
-			});	
+			});
 		}
 		setTargetEntity(value);
 		// Convert "value" of type EntitySearchResult to type Entity
@@ -245,9 +245,9 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 						className="series-editor-select"
 						instanceId="entitySearchField"
 						name="entity"
+						recentlyUsedEntityType={seriesType}
 						type={[seriesType]}
 						value={targetEntity}
-						recentlyUsedEntityType={seriesType}						
 						onChange={handleEntityChange}
 					/>
 				</Col>

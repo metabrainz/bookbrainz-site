@@ -7,6 +7,7 @@ import {forEach, get, map, size, toLower} from 'lodash';
 import CreateEntityModal from '../common/create-entity-modal';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
+import {RecentlyUsed} from '../common/recently-used';
 import SearchEntityCreate from '../common/search-entity-create-select';
 import SeriesSection from '../../entity-editor/series-section/series-section';
 import WorkRow from './work-row';
@@ -14,7 +15,6 @@ import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 import {submitSingleEntity} from '../../entity-editor/submission-section/actions';
-import {RecentlyUsed} from '../common/recently-used';
 
 
 const {Row, Col, FormCheck, OverlayTrigger, FormLabel, Tooltip} = Bootstrap;
@@ -110,7 +110,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 		onModalClose();
 	}, []);
 	const onChangeHandler = React.useCallback((work:any) => {
-		if(!work){
+		if (!work) {
 			onChange(work);
 			return;
 		}
@@ -178,12 +178,12 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 					<Col lg={{span: 6}}>
 						<SearchEntityCreate
 							isClearable={false}
+							key={`work-dropdown-${onChangeRefresh}`}
+							recentlyUsedEntityType="Work"
 							type="work"
 							value={null}
-							recentlyUsedEntityType="Work"
 							onAddCallback={addNewWorkCallback}
 							onChange={onChangeHandler}
-							key={`work-dropdown-${onChangeRefresh}`}
 							{...rest}
 						/>
 					</Col>
@@ -218,9 +218,9 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 						<SearchEntityCreate
 							filters={filters}
 							isClearable={false}
+							recentlyUsedEntityType="Series"
 							type="series"
 							value={series}
-							recentlyUsedEntityType="Series"
 							onAddCallback={addNewSeriesCallback}
 							onChange={seriesChangeHandler}
 							onOpenCallback={resetSeries}
