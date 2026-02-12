@@ -179,10 +179,10 @@ function AuthorCreditSection({
 								placeholder="Type to search or paste a BBID"
 								recentlyUsedEntityType="Author"
 								rowId="n0"
-								type="author"
 								value={optionValue}
 								onChange={onChangeHandler}
 								{...rest}
+								type="author"
 							/>
 						</div>
 						<InputGroup.Append>{editButton}</InputGroup.Append>

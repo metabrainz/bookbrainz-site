@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 export interface RecentlyUsedItem{
     id: number | string;
     name: string;
@@ -19,7 +20,6 @@ export const RecentlyUsed = {
 			localStorage.setItem(`recently_used_${entityType}`, JSON.stringify(updatedList));
 		}
 		catch (error) {
-			// eslint-disable-next-line no-console
 			console.error('Error writing to localStorage:', error);
 		}
 	},
@@ -36,14 +36,11 @@ export const RecentlyUsed = {
 		localStorage.removeItem(`recently_used_${entityType}`);
 	},
 	getItems: (entityType: string): RecentlyUsedItem[] => {
-		if (typeof window === 'undefined') {
-			return [];
-		}
+		if (typeof window === 'undefined') { return []; }
 		try {
 			return JSON.parse(localStorage.getItem(`recently_used_${entityType}`)) || [];
 		}
 		catch (error) {
-			// eslint-disable-next-line no-console
 			console.error('Error reading from localStorage:', error);
 			return [];
 		}

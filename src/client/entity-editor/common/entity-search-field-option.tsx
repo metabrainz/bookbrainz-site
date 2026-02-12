@@ -214,6 +214,7 @@ class EntitySearchFieldOption extends React.Component<Props> {
 		return searchResults;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	renderInputGroup({buttonAfter, help, wrappedSelect, ...props}) {
 		if (!buttonAfter) {
 			return (

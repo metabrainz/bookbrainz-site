@@ -62,7 +62,7 @@ async function sendEmail(
 	from: string,
 	to: string,
 	subject: string,
-	html: string | JSX.Element,
+	html: string | JSX.Element
 ) {
 	const transporter = nodemailer.createTransport(mailConfig);
 	// returns a promise's resolved value or throws an error

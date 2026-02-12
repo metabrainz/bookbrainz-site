@@ -27,7 +27,6 @@ import * as search from '../../common/helpers/search';
 import {keys as _keys, snakeCase as _snakeCase, camelCase, isNil, isString, upperFirst} from 'lodash';
 import {escapeProps, generateProps} from '../helpers/props';
 
-import {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import Layout from '../../client/containers/layout';
 import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import React from 'react';
