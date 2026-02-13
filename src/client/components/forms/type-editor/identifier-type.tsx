@@ -222,8 +222,9 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 								<Form.Label>Description</Form.Label>
 								<Form.Control
 									required
+									as="textarea"
 									name="description"
-									type="text"
+									rows={3}
 									value={formData.description}
 									onChange={handleInputChange}
 								/>
