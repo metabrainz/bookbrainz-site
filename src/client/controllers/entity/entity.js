@@ -23,17 +23,18 @@ import {
 } from '../../helpers/props';
 
 import {AppContainer} from 'react-hot-loader';
-import AuthorPage from '../../components/pages/entities/author';
-import EditionGroupPage from '../../components/pages/entities/edition-group';
-import EditionPage from '../../components/pages/entities/edition';
 import EntityRevisions from '../../components/pages/entity-revisions';
 import Layout from '../../containers/layout';
-import PublisherPage from '../../components/pages/entities/publisher';
-import React from 'react';
+import React, {Suspense, lazy} from 'react';
 import ReactDOM from 'react-dom';
-import SeriesPage from '../../components/pages/entities/series';
-import WorkPage from '../../components/pages/entities/work';
 
+// Lazy load entity components
+const AuthorPage = lazy(() => import('../../components/pages/entities/author'));
+const EditionPage = lazy(() => import('../../components/pages/entities/edition'));
+const EditionGroupPage = lazy(() => import('../../components/pages/entities/edition-group'));
+const PublisherPage = lazy(() => import('../../components/pages/entities/publisher'));
+const SeriesPage = lazy(() => import('../../components/pages/entities/series'));
+const WorkPage = lazy(() => import('../../components/pages/entities/work'));
 
 const entityComponents = {
 	author: AuthorPage,
@@ -43,6 +44,17 @@ const entityComponents = {
 	series: SeriesPage,
 	work: WorkPage
 };
+
+// Loading fallback component
+const EntityLoadingFallback = () => (
+	<div className="text-center p-4">
+		<div className="spinner-border text-primary" role="status">
+			<span className="sr-only">Loading entity...</span>
+		</div>
+		<p className="mt-2">Loading entity component...</p>
+	</div>
+);
+
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
@@ -68,7 +80,9 @@ else {
 	markup = (
 		<AppContainer>
 			<Layout {...extractLayoutProps(props)}>
-				<Child {...extractEntityProps(props)}/>
+				<Suspense fallback={<EntityLoadingFallback />}>
+					<Child {...extractEntityProps(props)}/>
+				</Suspense>
 			</Layout>
 		</AppContainer>
 	);

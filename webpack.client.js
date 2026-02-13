@@ -116,7 +116,21 @@ const clientConfig = {
 	optimization: {
 		splitChunks: {
 			chunks: 'all',
-			name: 'bundle'
+			cacheGroups: {
+				vendor: {
+					test: /[\\/]node_modules[\\/]/,
+					name: 'vendors',
+					chunks: 'all',
+					priority: 10
+				},
+				common: {
+					name: 'common',
+					minChunks: 2,
+					chunks: 'all',
+					priority: 1,
+					enforce: true
+				}
+			}
 		}
 	},
 	plugins: [
@@ -154,6 +168,9 @@ if (!production) {
 		}
 	}
 	clientConfig.devtool = 'inline-source-map';
+	
+	// Enable chunk loading in development for better debugging
+	clientConfig.output.chunkFilename = 'js/[name].chunk.js';
 }
 
 
