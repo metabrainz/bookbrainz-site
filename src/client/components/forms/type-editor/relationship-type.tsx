@@ -36,6 +36,8 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 	const [isFormEdited, setIsFormEdited] = useState(false);
 
 	const [filteredParentTypes, setFilteredParentTypes] = useState<RelationshipTypeDataT[]>(parentTypes);
+	const isNewRelationshipType = !relationshipTypeData.id;
+
 	useEffect(() => {
 		if (formData.sourceEntityType && formData.targetEntityType) {
 			const filteredTypes = parentTypes.filter(
@@ -321,6 +323,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 									getOptionLabel={getEntityTypeLabel}
 									getOptionValue={getEntityTypeValue}
 									instanceId="sourceEntityType"
+									isDisabled={!isNewRelationshipType}
 									options={entityTypeOptions}
 									placeholder="Select Source Entity Type"
 									onChange={handleSourceEntityTypeChange}
@@ -338,6 +341,7 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 									getOptionLabel={getEntityTypeLabel}
 									getOptionValue={getEntityTypeValue}
 									instanceId="targetEntityType"
+									isDisabled={!isNewRelationshipType}
 									options={entityTypeOptions}
 									placeholder="Select Target Entity Type"
 									onChange={handleTargetEntityTypeChange}
