@@ -20,6 +20,7 @@
 
 import * as commonUtils from './utils';
 import ElasticSearch, {type Client, type ClientOptions} from '@elastic/elasticsearch';
+import type {IndicesIndexSettings, MappingTypeMapping} from '@elastic/elasticsearch/lib/api/types';
 import {camelCase, isString, snakeCase, upperFirst} from 'lodash';
 import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import {type ORM} from 'bookbrainz-data';
@@ -54,35 +55,33 @@ export type IndexableEntities = EntityTypeString | 'Editor' | 'Collection' | 'Ar
 export type IndexableEntitiesOrAll = IndexableEntities | 'allEntities';
 const commonProperties = ['bbid', 'id', 'name', 'type', 'disambiguation'];
 
-const indexMappings = {
+const indexMappings:{mappings:MappingTypeMapping, settings: IndicesIndexSettings} = {
 	mappings: {
-		_default_: {
-			properties: {
-				aliases: {
-					properties: {
-						name: {
-							fields: {
-								autocomplete: {
-									analyzer: 'edge',
-									type: 'text'
-								},
-								search: {
-									analyzer: 'trigrams',
-									type: 'text'
-								}
+		properties: {
+			aliases: {
+				properties: {
+					name: {
+						fields: {
+							autocomplete: {
+								analyzer: 'edge',
+								type: 'text'
 							},
-							type: 'text'
-						}
+							search: {
+								analyzer: 'trigrams',
+								type: 'text'
+							}
+						},
+						type: 'text'
 					}
-				},
-				authors: {
-					analyzer: 'trigrams',
-					type: 'text'
-				},
-				disambiguation: {
-					analyzer: 'trigrams',
-					type: 'text'
 				}
+			},
+			authors: {
+				analyzer: 'trigrams',
+				type: 'text'
+			},
+			disambiguation: {
+				analyzer: 'trigrams',
+				type: 'text'
 			}
 		}
 	},
@@ -108,7 +107,7 @@ const indexMappings = {
 			},
 			tokenizer: {
 				edge_ngram_tokenizer: {
-					max_gram: 10,
+					// max_gram: 3,
 					min_gram: 2,
 					token_chars: [
 						'letter',
@@ -117,8 +116,8 @@ const indexMappings = {
 					type: 'edge_ngram'
 				},
 				trigrams: {
-					max_gram: 3,
-					min_gram: 1,
+					// max_gram: 3,
+					min_gram: 2,
 					type: 'ngram'
 				}
 			}
@@ -126,6 +125,36 @@ const indexMappings = {
 		'index.mapping.ignore_malformed': true
 	}
 };
+
+// Helper to normalize indices.exists response across client versions
+async function _indexExists(indexName:string) {
+	const res:any = await _client.indices.exists({index: indexName});
+	// newer client versions may return a boolean directly, older ones an object with `body`
+	if (typeof res === 'boolean') {
+		return res;
+	}
+	return res?.body ?? false;
+}
+
+// Helper to add a `type` filter into a dslQuery body, since ES 7+ removed document types
+function _applyTypeFilterToDSL(dslQuery:any, type:any) {
+	const sanitizedType = sanitizeEntityType(type);
+	if (!sanitizedType) {
+		return;
+	}
+	dslQuery.body = dslQuery.body || {};
+	const existingQuery = dslQuery.body.query || null;
+
+	const typeFilter = Array.isArray(sanitizedType) ? {terms: {type: sanitizedType}} : {term: {type: sanitizedType}};
+
+	// Wrap existing query into a bool.must and add our filter
+	dslQuery.body.query = {
+		bool: {
+			filter: typeFilter,
+			must: existingQuery ? [existingQuery] : []
+		}
+	};
+}
 
 /* We don't currently want to index the entire Model in ElasticSearch,
    which contains a lot of fields we don't use as well as some internal props (_pivot props)
@@ -240,8 +269,10 @@ async function _fetchEntityModelsForESResults(orm, results) {
 async function _searchForEntities(orm, dslQuery) {
 	try {
 		const searchResponse = await _client.search(dslQuery);
-		const results = await _fetchEntityModelsForESResults(orm, searchResponse.body.hits);
-		return {results, total: searchResponse.body.hits.total};
+		const {hits} = searchResponse;
+		const results = await _fetchEntityModelsForESResults(orm, hits);
+		const total = typeof hits.total === 'number' ? hits.total : hits.total?.value ?? 0;
+		return {results, total};
 	}
 	catch (error) {
 		log.error(error);
@@ -263,8 +294,7 @@ export async function _bulkIndexEntities(entities) {
 			accumulator.push({
 				index: {
 					_id: entity.bbid ?? entity.id,
-					_index,
-					_type: snakeCase(entity.type)
+					_index
 				}
 			});
 			accumulator.push(entity);
@@ -276,11 +306,14 @@ export async function _bulkIndexEntities(entities) {
 
 		try {
 			// eslint-disable-next-line no-await-in-loop
-			const {body: bulkResponse} = await _client.bulk({
+			const bulkResponse = await _client.bulk({
 				body: bulkOperations
 			}).catch((error) => {
 				log.error('error bulk indexing entities for search:', error);
 			});
+			if (!bulkResponse) {
+				throw new Error('No response from bulk indexing operation');
+			}
 
 			/*
 			 * In case of failed index operations, the promise won't be rejected;
@@ -361,10 +394,11 @@ export async function autocomplete(orm:ORM, query:string, type:IndexableEntities
 			query: queryBody,
 			size
 		},
-		index: _index,
-		type: sanitizeEntityType(type)
+		index: _index
 	};
 
+	// Apply a `type` filter inside the query body (ES 7+ removed mapping types)
+	_applyTypeFilterToDSL(dslQuery, type);
 
 	const searchResponse = await _searchForEntities(orm, dslQuery);
 	// Only return the results array, we're not interested in the total number of hits for this endpoint
@@ -373,15 +407,14 @@ export async function autocomplete(orm:ORM, query:string, type:IndexableEntities
 
 // eslint-disable-next-line consistent-return
 export function indexEntity(entity) {
-	const entityType = entity.get('type');
 	const document = getDocumentToIndex(entity);
 	if (entity) {
 		return _client
 			.index({
 				body: document,
 				id: entity.get('bbid') || entity.get('id'),
-				index: _index,
-				type: snakeCase(entityType)
+				index: _index
+				// Document `type` is stored inside the document itself; no ES mapping types in 7+
 			})
 			.catch((error) => {
 				log.error('error indexing entity for search:', error);
@@ -393,8 +426,8 @@ export function deleteEntity(entity) {
 	return _client
 		.delete({
 			id: entity.bbid ?? entity.id,
-			index: _index,
-			type: snakeCase(entity.type)
+			index: _index
+			// No document types in ES 7+
 		})
 		.catch((error) => {
 			log.error('error deleting entity from index:', error);
@@ -411,19 +444,17 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 	const {Area, Author, Edition, EditionGroup, Editor, Publisher, Series, UserCollection, Work} = orm;
 
 	const allEntities = entityType === 'allEntities';
-	const mainIndexExists = await _client.indices.exists({
-		index: _index
-	});
+	const mainIndexExists = await _indexExists(_index);
 
-	const shouldRecreateIndex = !mainIndexExists.body || recreateIndex || allEntities;
+	const shouldRecreateIndex = !mainIndexExists || recreateIndex || allEntities;
 
 	if (shouldRecreateIndex) {
-		if (mainIndexExists.body) {
+		if (mainIndexExists) {
 			log.notice('Deleting search index');
 			await _client.indices.delete({index: _index});
 		}
 		log.notice('Creating new search index');
-		await _client.indices.create({body: indexMappings, index: _index});
+		await _client.indices.create({index: _index, mappings: indexMappings.mappings, settings: indexMappings.settings});
 	}
 
 	log.notice(`Starting indexing of ${entityType}`);
@@ -678,16 +709,19 @@ export function searchByName(orm, name, type, size, from) {
 			},
 			size
 		},
-		index: _index,
-		type: sanitizedEntityType
+		index: _index
 	};
+
+	// If this is a work search, include authors field in scoring
 	if (
 		sanitizedEntityType === 'work' ||
-		(Array.isArray(sanitizedEntityType) &&
-			sanitizedEntityType.includes('work'))
+		(Array.isArray(sanitizedEntityType) && sanitizedEntityType.includes('work'))
 	) {
 		dslQuery.body.query.multi_match.fields.push('authors');
 	}
+
+	// Apply a `type` filter inside the query body (ES 7+ removed mapping types)
+	_applyTypeFilterToDSL(dslQuery, type);
 
 	return _searchForEntities(orm, dslQuery);
 }
@@ -719,7 +753,7 @@ export async function init(orm: ORM, options:ClientOptions) {
 		log.warning('Could not connect to ElasticSearch:', error.toString());
 		return false;
 	}
-	const mainIndexExists = await _client.indices.exists({index: _index});
+	const mainIndexExists = await _indexExists(_index);
 	if (!mainIndexExists) {
 		// Automatically index on app startup if we haven't already, but don't block app setup
 		generateIndex(orm).catch(log.error);
