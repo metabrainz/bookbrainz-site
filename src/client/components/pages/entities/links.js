@@ -20,36 +20,29 @@
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 
-import EntityIdentifiers from './identifiers';
 import EntityRelationships from './relationships';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const {filterOutRelationshipTypeById} = entityHelper;
+const {filterOutRelationshipTypeById, getRelationshipsByTypeId} = entityHelper;
 const {Row, Col} = bootstrap;
 
-function EntityLinks({entity, identifierTypes, urlPrefix}) {
-	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
-	const relationshipTypeId = 10;
-	const relationships = filterOutRelationshipTypeById(entity, relationshipTypeId);
+function EntityLinks({excludeTypeIds, entity, urlPrefix, label, relationshipTypeIds, buttonHref}) {
+	const relationships = excludeTypeIds ?
+		filterOutRelationshipTypeById(entity, relationshipTypeIds) :
+		getRelationshipsByTypeId(entity, relationshipTypeIds);
+
 	return (
 		<React.Fragment>
 			<Row>
 				<Col>
 					<EntityRelationships
+						buttonHref={buttonHref}
 						contextEntity={entity}
 						entityUrl={urlPrefix}
+						label={label}
 						relationships={relationships}
-					/>
-				</Col>
-			</Row>
-			<Row>
-				<Col>
-					<EntityIdentifiers
-						entityUrl={urlPrefix}
-						identifierTypes={identifierTypes}
-						identifiers={entity.identifierSet && entity.identifierSet.identifiers}
 					/>
 				</Col>
 			</Row>
@@ -58,12 +51,18 @@ function EntityLinks({entity, identifierTypes, urlPrefix}) {
 }
 EntityLinks.displayName = 'EntityLinks';
 EntityLinks.propTypes = {
+	buttonHref: PropTypes.string,
 	entity: PropTypes.object.isRequired,
-	identifierTypes: PropTypes.array,
+	excludeTypeIds: PropTypes.bool,
+	label: PropTypes.string,
+	relationshipTypeIds: PropTypes.array.isRequired,
 	urlPrefix: PropTypes.string.isRequired
 };
+
 EntityLinks.defaultProps = {
-	identifierTypes: []
+	buttonHref: null,
+	excludeTypeIds: false,
+	label: ''
 };
 
 export default EntityLinks;
