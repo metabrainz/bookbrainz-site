@@ -48,7 +48,7 @@ jobs:
       - name: Runs Elasticsearch
         uses: elastic/elastic-github-actions/elasticsearch@master
         with:
-          stack-version: 5.6.8
+          stack-version: 6.8.23
 
       - name: Checkout code
         uses: actions/checkout@v2
