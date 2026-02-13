@@ -270,6 +270,27 @@ export function isbn13To10(isbn13:string):string | null {
 
 	return digits.join('');
 }
+
+export function normalizeIdentifier(value: string): string {
+	return value.replace(/[\s-]/g, '');
+}
+
+export function detectIdentifierType(value: string): 'ISBN-10' | 'ISBN-13' | 'Barcode' | null {
+	const normalized = normalizeIdentifier(value);
+
+	if (normalized.length === 10 && (/^\d{9}[\dXx]$/).test(normalized)) {
+		return 'ISBN-10';
+	}
+	if (normalized.length === 13 && (/^97[89]\d{10}$/).test(normalized)) {
+		return 'ISBN-13';
+	}
+	if ((/^\d{8,13}$/).test(normalized)) {
+		return 'Barcode';
+	}
+
+	return null;
+}
+
 export function filterIdentifierTypesByEntityType(
 	identifierTypes: Array<{id: number, entityType: string}>,
 	entityType: string

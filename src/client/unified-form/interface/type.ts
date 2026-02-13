@@ -86,11 +86,13 @@ export type CoverProps = CoverOwnProps & CoverStateProps & CoverDispatchProps;
 export type ISBNStateProps = {
 	autoISBN: boolean,
 	type:number,
-	value:string
+	value:string,
+	confirmed: boolean
 };
 export type ISBNDispatchProps = {
     onChange: (...arg)=>unknown,
 	onAutoISBNChange: (arg:boolean)=>unknown,
+	onConfirmedChange: (arg: React.ChangeEvent<HTMLInputElement>)=>unknown
 };
 export type ISBNProps = ISBNStateProps & ISBNDispatchProps;
 
