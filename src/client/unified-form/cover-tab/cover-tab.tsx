@@ -7,6 +7,7 @@ import ISBNField from './isbn-field';
 import IdentifierEditor from '../../entity-editor/identifier-editor/identifier-editor';
 import NameSection from '../../entity-editor/name-section/name-section';
 import React from 'react';
+import {RecentlyUsed} from '../common/recently-used';
 import SearchEntityCreate from '../common/search-entity-create-select';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
@@ -37,6 +38,7 @@ export function CoverTab(props:CoverProps) {
 					<SearchEntityCreate
 						isMulti
 						label="Publisher"
+						recentlyUsedEntityType="Publisher"
 						type="publisher"
 						value={publisherValue}
 						onChange={onChangeHandler}
@@ -70,7 +72,19 @@ function mapDispatchToProps(dispatch):CoverDispatchProps {
 	return {
 		handleClearPublishers: () => dispatch(clearPublishers()),
 		onClearPublisher: (arg) => dispatch(clearPublisher(arg)),
-		onPublisherChange: (value) => dispatch(updatePublisher(Object.fromEntries(value.map((pub, index) => [index, pub]))))
+		onPublisherChange: (value) => {
+			if (value && Array.isArray(value)) {
+				value.forEach(publisher => {
+					if (publisher && publisher.id && publisher.text) {
+						RecentlyUsed.addItem('Publisher', {
+							id: publisher.id,
+							name: publisher.text
+						});
+					}
+				});
+			}
+			dispatch(updatePublisher(Object.fromEntries(value.map((pub, index) => [index, pub]))));
+		}
 	};
 }
 

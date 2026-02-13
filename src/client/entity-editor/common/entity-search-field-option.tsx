@@ -18,13 +18,14 @@
  */
 
 import {Form, InputGroup, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {ENTITY_TYPES} from 'bookbrainz-data/lib/types/entity';
 import EntitySelect from './entity-select';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LinkedEntitySelect from './linked-entity-select';
-import PropTypes from 'prop-types';
 import React from 'react';
+import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import SelectAsync from 'react-select/async';
-import ValidationLabel from '../common/validation-label';
+import ValidationLabel from './validation-label';
 import _ from 'lodash';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {isValidBBID} from '../../../common/helpers/utils';
@@ -34,8 +35,30 @@ import request from 'superagent';
 
 const ImmutableAsyncSelect = makeImmutable(SelectAsync);
 
-class EntitySearchFieldOption extends React.Component {
-	constructor(props) {
+const entityTypeStrings = [...ENTITY_TYPES, 'Area'] as const;
+type SearchEntityTypes = typeof entityTypeStrings[number];
+
+type Props = {
+	SelectWrapper?: React.ElementType | null,
+	bbid?: string | null,
+	className?: string,
+	customComponents?: Record<string, unknown>,
+	empty?: boolean,
+	error?: boolean,
+	filters?: any[],
+	isMulti?: boolean,
+	label?: string,
+	languageOptions?: Array<{value: number, label: string}>,
+	onChange: (value: Record<string, unknown> | Record<string, unknown>[] | null) => void,
+	recentlyUsedEntityType?: SearchEntityTypes | SearchEntityTypes[] | null,
+	tooltipText?: string | null,
+	type: string | string[],
+	value?: Record<string, unknown> | Record<string, unknown>[] | null,
+	[propName: string]: any
+};
+
+class EntitySearchFieldOption extends React.Component<Props> {
+	constructor(props: Props) {
 		super(props);
 		this.selectRef = React.createRef();
 		// React does not autobind non-React class methods
@@ -86,11 +109,62 @@ class EntitySearchFieldOption extends React.Component {
 		return entityOption;
 	}
 
+	getRecentlyUsedOptions() {
+		if (!this.props.recentlyUsedEntityType) {
+			return [];
+		}
+		const entityTypes = Array.isArray(this.props.recentlyUsedEntityType) ?
+			this.props.recentlyUsedEntityType : [this.props.recentlyUsedEntityType];
+		const validEntityTypes = entityTypes.filter(type =>
+			type && typeof type === 'string' && type.trim().length > 0);
+		if (validEntityTypes.length === 0) {
+			return [];
+		}
+		const allRecentlyUsedItems = [];
+		validEntityTypes.forEach(entityType => {
+			const items = RecentlyUsed.getItems(entityType);
+			if (Array.isArray(items)) {
+				items.forEach(item => {
+					allRecentlyUsedItems.push({
+						...item,
+						_sourceType: entityType
+					});
+				});
+			}
+		});
+		if (allRecentlyUsedItems.length === 0) {
+			return [];
+		}
+		const uniqueItems = _.uniqBy(allRecentlyUsedItems, 'id').slice(0, 10);
+		return uniqueItems.map(item => ({
+			id: item.id,
+			isRecentlyUsed: true,
+			text: item.name,
+			type: item._sourceType
+		}));
+	}
+
+	getDefaultOptions() {
+		const recentOptions = this.getRecentlyUsedOptions();
+		if (recentOptions.length === 0) {
+			return true;
+		}
+		return [{
+			label: 'Recently Used',
+			options: recentOptions
+		}];
+	}
+
 	async fetchOptions(query) {
+		const recentOptions = this.getRecentlyUsedOptions();
 		if (!query) {
-			return {
-				options: []
-			};
+			if (recentOptions.length === 0) {
+				return [];
+			}
+			return [{
+				label: 'Recently Used',
+				options: recentOptions
+			}];
 		}
 		let manipulatedQuery = query;
 		const bookbrainzURLRegex =
@@ -102,8 +176,9 @@ class EntitySearchFieldOption extends React.Component {
 		if (isValidBBID(manipulatedQuery)) {
 			const entity = await request.get(`/search/entity/${manipulatedQuery}`).then((res) => res.body).catch(() => null);
 			if (entity && typeof this.props.onChange === 'function' && (_.snakeCase(entity.type) === this.props.type ||
-				 (_.isArray(this.props.type) && this.props.type.includes(entity.type)))) {
+				(_.isArray(this.props.type) && this.props.type.includes(entity.type)))) {
 				const entityOption = this.entityToOption(entity);
+				RecentlyUsed.addItemToRecentlyUsed(entityOption);
 				const newValue = this.props.isMulti ? [...this.props.value, entityOption] : entityOption;
 				this.props.onChange(newValue);
 				this.selectRef.current.blur();
@@ -123,7 +198,20 @@ class EntitySearchFieldOption extends React.Component {
 			...this.props.filters
 		);
 		const filteredOptions = response.body.filter(combinedFilters);
-		return filteredOptions.map(this.entityToOption);
+		const searchResults = filteredOptions.map(this.entityToOption);
+		if (recentOptions.length > 0) {
+			return [
+				{
+					label: 'Recently Used',
+					options: recentOptions
+				},
+				{
+					label: 'Search Results',
+					options: searchResults
+				}
+			];
+		}
+		return searchResults;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -176,6 +264,7 @@ class EntitySearchFieldOption extends React.Component {
 			<SelectWrapper
 				{...this.props}
 				blurInputOnSelect
+				cacheOptions
 				isClearable
 				className={`Select${this.props.className ? ` ${this.props.className}` : ''}`}
 				classNamePrefix="react-select"
@@ -185,6 +274,7 @@ class EntitySearchFieldOption extends React.Component {
 					...this.props.customComponents &&
 					this.props.customComponents
 				}}
+				defaultOptions={this.props.recentlyUsedEntityType ? this.getDefaultOptions() : true}
 				filterOptions={false}
 				getOptionLabel={this.getOptionLabel}
 				getOptionValue={this.getOptionValue}
@@ -209,28 +299,6 @@ class EntitySearchFieldOption extends React.Component {
 }
 
 EntitySearchFieldOption.displayName = 'EntitySearchFieldOption';
-EntitySearchFieldOption.propTypes = {
-	SelectWrapper: PropTypes.elementType,
-	bbid: PropTypes.string,
-	className: PropTypes.string,
-	customComponents: PropTypes.object,
-	empty: PropTypes.bool,
-	error: PropTypes.bool,
-	filters: PropTypes.array,
-	isMulti: PropTypes.bool,
-	label: PropTypes.string,
-	languageOptions: PropTypes.array,
-	onChange: PropTypes.func.isRequired,
-	tooltipText: PropTypes.string,
-	type: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.arrayOf(PropTypes.string)
-	]).isRequired,
-	value: PropTypes.oneOfType([
-		PropTypes.object,
-		PropTypes.arrayOf(PropTypes.object)
-	])
-};
 EntitySearchFieldOption.defaultProps = {
 	SelectWrapper: null,
 	bbid: null,
@@ -242,6 +310,7 @@ EntitySearchFieldOption.defaultProps = {
 	isMulti: false,
 	label: '',
 	languageOptions: [],
+	recentlyUsedEntityType: null,
 	tooltipText: null,
 	value: null
 };

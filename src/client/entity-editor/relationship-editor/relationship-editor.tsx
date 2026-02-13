@@ -43,6 +43,7 @@ import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {NumberAttribute} from './attributes';
 import ReactSelect from 'react-select';
+import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import RelationshipSelect from './relationship-select';
 import _ from 'lodash';
 import {getEntityLink} from '../../../common/helpers/utils';
@@ -274,6 +275,7 @@ class RelationshipModal
 	}
 
 	handleEntityChange = (value: EntitySearchResult) => {
+		RecentlyUsed.addItemToRecentlyUsed(value);
 		this.setState({
 			relationship: null,
 			relationshipType: null,
@@ -375,6 +377,7 @@ class RelationshipModal
 				label={label}
 				languageOptions={this.props.languageOptions}
 				name="entity"
+				recentlyUsedEntityType={types}
 				type={types}
 				value={this.state.targetEntity}
 				onChange={this.handleEntityChange}
