@@ -19,6 +19,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import isbn3 from 'isbn3';
 
 
 function IdentifierLink({typeId, value}) {
@@ -47,11 +48,19 @@ function IdentifierLink({typeId, value}) {
 			link = `https://openlibrary.org/works/${value}`;
 			break;
 		case 9: // @ISBN-13: The ISBN-13 for a BookBrainz Edition.
-			link = `https://isbnsearch.org/isbn/${value}`;
-			break;
+			link = `https://isbnsearch.org/isbn/${value.replace(/[\s-]/g, '')}`;
+			return (
+				<a href={link} rel="noopener noreferrer" target="_blank">
+					{isbn3.hyphenate(value) || value}
+				</a>
+			);
 		case 10: // @ISBN-10: The ISBN-10 for a BookBrainz Edition.
-			link = `https://isbnsearch.org/isbn/${value}`;
-			break;
+			link = `https://isbnsearch.org/isbn/${value.replace(/[\s-]/g, '')}`;
+			return (
+				<a href={link} rel="noopener noreferrer" target="_blank">
+					{isbn3.hyphenate(value) || value}
+				</a>
+			);
 		case 11: // @Barcode: The barcode for a BookBrainz Edition.
 			link = `https://www.barcodelookup.com/${value}`;
 			break;

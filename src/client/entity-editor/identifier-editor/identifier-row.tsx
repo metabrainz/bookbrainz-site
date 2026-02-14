@@ -28,7 +28,7 @@ import {
 	IdentifierType,
 	validateIdentifierValue
 } from '../validators/common';
-import {collapseWhiteSpaces, detectIdentifierType} from '../../../common/helpers/utils';
+import {collapseWhiteSpaces} from '../../../common/helpers/utils';
 import type {Dispatch} from 'redux';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import IdentifierLink from '../../components/pages/entities/identifiers-links.js';
@@ -141,13 +141,16 @@ function IdentifierRow({
 					</Col>
 				</Row>
 			)}
-			{valueValue && typeValue && !validateIdentifierValue(valueValue, typeValue, typeOptions) && (
+			{valueValue && typeValue && [9, 10, 11].includes(typeValue) && !validateIdentifierValue(valueValue, typeValue, typeOptions) && (
 				<Row>
 					<Col>
+						<Form.Text className="text-secondary">
+							This isn't a valid {selectedIdentifierType}. Are you sure this is correct?
+						</Form.Text>
 						<FormCheck
 							checked={confirmed}
 							id={`identifier-confirm-${index}`}
-							label={`This doesn't look like a valid ${selectedIdentifierType}. Are you sure this is correct?`}
+							label={`Confirm invalid ${selectedIdentifierType}`}
 							type="checkbox"
 							onChange={onConfirmedChange}
 						/>
@@ -168,41 +171,30 @@ function handleValueChange(
 	types: Array<IdentifierType>
 ) {
 	let value = collapseWhiteSpaces(event.target.value);
-	const detectedType = detectIdentifierType(value);
-	let guessedType = null;
-	if (detectedType === 'ISBN-10') {
-		guessedType = types.find((type) => type.id === 10);
-	}
-	else if (detectedType === 'ISBN-13') {
-		guessedType = types.find((type) => type.id === 9);
-	}
-	else if (detectedType === 'Barcode') {
-		guessedType = types.find((type) => type.id === 11);
-	}
-	else {
-		guessedType = data.guessIdentifierType(value, types);
-		if (guessedType) {
-			const result = new RegExp(guessedType.detectionRegex).exec(value);
-			if (result && result[1]) {
-				value = result[1];
-			}
+	let guessedType = data.guessIdentifierType(value, types);
+	
+	if (guessedType) {
+		const result = new RegExp(guessedType.detectionRegex).exec(value);
+		if (result && result[1]) {
+			value = result[1];
 		}
-		// 	disabling "add isbn row" feature temporary
-		// if (guessedType.id === 9) {
-		// 	const isbn10Type:any = types.find((el) => el.id === 10);
-		// 	const isbn10 = isbn13To10(value);
-		// 	if (isbn10) {
-		// 		dispatch(debouncedUpdateIdentifierValue(index + 1, isbn10, isbn10Type, false));
-		// 	}
-		// }
-		// if (guessedType.id === 10) {
-		// 	const isbn13Type:any = types.find((el) => el.id === 9);
-		// 	const isbn13 = isbn10To13(value);
-		// 	if (isbn13) {
-		// 		dispatch(debouncedUpdateIdentifierValue(index + 1, isbn10To13(value), isbn13Type, false));
-		// 	}
-		// }
 	}
+	// 	disabling "add isbn row" feature temporary
+	// if (guessedType.id === 9) {
+	// 	const isbn10Type:any = types.find((el) => el.id === 10);
+	// 	const isbn10 = isbn13To10(value);
+	// 	if (isbn10) {
+	// 		dispatch(debouncedUpdateIdentifierValue(index + 1, isbn10, isbn10Type, false));
+	// 	}
+	// }
+	// if (guessedType.id === 10) {
+	// 	const isbn13Type:any = types.find((el) => el.id === 9);
+	// 	const isbn13 = isbn10To13(value);
+	// 	if (isbn13) {
+	// 		dispatch(debouncedUpdateIdentifierValue(index + 1, isbn10To13(value), isbn13Type, false));
+	// 	}
+	// }
+	
 	return dispatch(debouncedUpdateIdentifierValue(index, value, guessedType));
 }
 

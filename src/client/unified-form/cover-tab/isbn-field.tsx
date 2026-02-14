@@ -1,8 +1,8 @@
 import {ISBNDispatchProps, ISBNProps, ISBNStateProps, RInputEvent, State, dispatchResultProps} from '../interface/type';
 import {addOtherISBN, removeIdentifierRow} from '../../entity-editor/identifier-editor/actions';
 import {debouncedUpdateISBNValue, updateAutoISBN, updateISBNConfirmed, updateISBNType} from './action';
-import {detectIdentifierType, isbn10To13, isbn13To10, normalizeIdentifier} from '../../../common/helpers/utils';
-import {FormCheck} from 'react-bootstrap';
+import {isbn10To13, isbn13To10, normalizeIdentifier} from '../../../common/helpers/utils';
+import {Form, FormCheck} from 'react-bootstrap';
 import NameField from '../../entity-editor/common/name-field';
 import React from 'react';
 import {connect} from 'react-redux';
@@ -42,13 +42,18 @@ export function ISBNField(props:ISBNProps) {
 				onChange={onAutoISBNChangeHandler}
 			/>
 			{value && !type && (
-				<FormCheck
-					checked={confirmed}
-					id="isbn-confirm-check"
-					label="This doesn't look like a valid ISBN. Are you sure this is correct?"
-					type="checkbox"
-					onChange={onConfirmedChange}
-				/>
+				<>
+					<Form.Text className="text-secondary">
+						This doesn't look like a valid ISBN. Are you sure this is correct?
+					</Form.Text>
+					<FormCheck
+						checked={confirmed}
+						id="isbn-confirm-check"
+						label="Confirm invalid ISBN"
+						type="checkbox"
+						onChange={onConfirmedChange}
+						/>
+					</>
 			)}
 		</div>);
 }
@@ -67,17 +72,18 @@ function mapDispatchToProps(dispatch):ISBNDispatchProps {
 	function onChange(value:string, autoISBN = false) {
 		const otherISBN = {type: null, value: ''};
 		const normalizedValue = normalizeIdentifier(value);
-		const detectedType = detectIdentifierType(value);
-		// typeID for ISBN10: 10, ISBN13: 9
+		const isbn10rgx = /^(?:ISBN(?:-?10)?:?\s*)?(?:\d[\s-]*){9}[\dXx]$/;
+		const isbn13rgx = /^(?:ISBN(?:-?13)?:?\s*)?(?:97[89])(?:[\s-]*\d){10}$/;
+
 		let type = null;
-		if (detectedType === 'ISBN-10') {
+		if (isbn10rgx.test(value)) {
 			type = 10;
 			if (autoISBN) {
 				otherISBN.type = 9;
 				otherISBN.value = isbn10To13(normalizedValue);
 			}
 		}
-		else if (detectedType === 'ISBN-13') {
+		else if (isbn13rgx.test(value)) {
 			type = 9;
 			if (autoISBN) {
 				otherISBN.type = 10;
