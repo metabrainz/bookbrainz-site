@@ -351,7 +351,6 @@ class RelationshipModal
 			<Button
 				disabled={!targetEntity}
 				href={link}
-				rel="noreferrer noopener"
 				target="_blank"
 				title="Open in a new tab"
 				variant="info"
