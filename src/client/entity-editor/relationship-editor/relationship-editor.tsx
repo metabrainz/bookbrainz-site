@@ -363,10 +363,10 @@ class RelationshipModal
 		// This ensures we don't add an entity of type X to a Series of entityType Y.
 		// For Example, a Work cannot be added to an Author Series.
 		const filterDifferentTypeSeries = (entity) => {
-			if (entity.type === 'Series' && baseEntity.type === 'Series') {
-				return true;
+			if (entity.type === 'Series') {
+				return baseEntity.type === entity.entityType || baseEntity.type === 'Series';
 			}
-			return entity.type === 'Series' ? baseEntity.type === entity.entityType : true;
+			return true;
 		};
 		const additionalFilters = [filterDifferentTypeSeries];
 		return (

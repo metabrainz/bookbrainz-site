@@ -1,7 +1,6 @@
 BEGIN;
 
 INSERT INTO bookbrainz.relationship_type (
-    id,
     label,
     description,
     link_phrase,
@@ -13,7 +12,6 @@ INSERT INTO bookbrainz.relationship_type (
     deprecated
 ) VALUES
 (
-    124,
     'Series Subseries',
     'Indicates that one series is a subseries or story arc of another series',
     'is a subseries of',
@@ -25,7 +23,6 @@ INSERT INTO bookbrainz.relationship_type (
     false
 ),
 (
-    125,
     'Series Translation',
     'Indicates that one series is a translation of another series',
     'is a translation of',
@@ -37,7 +34,6 @@ INSERT INTO bookbrainz.relationship_type (
     false
 ),
 (
-    126,
     'Series Followed By',
     'Indicates that one series is followed by another series temporally or sequentially',
     'is followed by',

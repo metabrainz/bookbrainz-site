@@ -1,6 +1,8 @@
 BEGIN;
 
 DELETE FROM bookbrainz.relationship_type
-WHERE id IN (124, 125, 126);
+WHERE label IN ('Series Subseries', 'Series Translation', 'Series Followed By')
+AND source_entity_type = 'Series'
+AND target_entity_type = 'Series';
 
 COMMIT;
