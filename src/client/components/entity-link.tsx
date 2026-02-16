@@ -17,13 +17,24 @@
  */
 
 import {genEntityIconHTMLElement, getEntityLabel} from '../helpers/entity';
-import PropTypes from 'prop-types';
 import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 
+type Entity = {
+	bbid: string;
+	type: string;
+	defaultAlias?: {
+		name: string;
+	};
+	disambiguation?: string;
+};
+type EntityLinkProps = {
+	entity: Entity;
+	inline?: boolean;
+}
 
-function EntityLink({entity, inline}) {
-	let bbidElement = <div className="small">({entity.bbid})</div>;
+function EntityLink({entity, inline = false}: EntityLinkProps) {
+	let bbidElement: JSX.Element = <div className="small">({entity.bbid})</div>;
 	if (inline) {
 		bbidElement = <span className="small">({entity.bbid})</span>;
 	}
@@ -38,13 +49,6 @@ function EntityLink({entity, inline}) {
 	);
 }
 
-EntityLink.displayName = 'EntityLink';
-EntityLink.propTypes = {
-	entity: PropTypes.object.isRequired,
-	inline: PropTypes.bool
-};
-EntityLink.defaultProps = {
-	inline: false
-};
+
 
 export default EntityLink;
