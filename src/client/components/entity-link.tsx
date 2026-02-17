@@ -17,17 +17,10 @@
  */
 
 import {genEntityIconHTMLElement, getEntityLabel} from '../helpers/entity';
+import {Entity} from '../entity-editor/relationship-editor/types';
 import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 
-type Entity = {
-	bbid: string;
-	type: string;
-	defaultAlias?: {
-		name: string;
-	};
-	disambiguation?: string;
-};
 type EntityLinkProps = {
 	entity: Entity;
 	inline?: boolean;
