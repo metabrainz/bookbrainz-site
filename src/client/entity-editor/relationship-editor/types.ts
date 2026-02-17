@@ -23,6 +23,9 @@ export type Entity = {
 	defaultAlias?: {
 		name: string
 	},
+	disambiguation?:{
+		comment: string
+	},
 	type: EntityType
 };
 
