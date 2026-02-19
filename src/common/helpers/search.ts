@@ -733,7 +733,8 @@ export function searchByName(orm:ORM, name:string, type:IndexableEntitiesOrAll |
 						multi_match: {
 							query,
 							fields: ['aliases.name.trigrams^2'],
-							type: 'most_fields'
+							type: 'most_fields',
+							minimum_should_match: '75%'
 						}
 					},
 					{
