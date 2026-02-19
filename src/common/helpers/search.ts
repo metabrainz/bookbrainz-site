@@ -130,6 +130,10 @@ const indexSettings:IndicesCreateRequest = {
 					trigrams: {type: 'text', analyzer: 'trigrams_analyzer'}
 				}
 			},
+			disambiguation: {
+				type: 'text',
+				analyzer: 'custom_standard'
+			},
 			identifiers: {
 				properties: {
 					value: {
@@ -721,7 +725,7 @@ export function searchByName(orm:ORM, name:string, type:IndexableEntitiesOrAll |
 					{
 						multi_match: {
 							query,
-							fields: ['aliases.name^10'],
+							fields: ['aliases.name^15', 'disambiguation'],
 							type: 'best_fields'
 						}
 					},
