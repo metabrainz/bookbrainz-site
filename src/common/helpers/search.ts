@@ -720,16 +720,14 @@ export function searchByName(orm:ORM, name:string, type:IndexableEntitiesOrAll |
 					{
 						multi_match: {
 							query,
-							fields: ['aliases.name^5'],
-							// fields: ['aliases.name^10', 'authors^5'],
+							fields: ['aliases.name^10'],
 							type: 'best_fields'
 						}
 					},
 					{
 						multi_match: {
 							query,
-							fields: ['aliases.name.trigrams'],
-							// fields: ['aliases.name.trigrams^5', 'authors.trigrams'],
+							fields: ['aliases.name.trigrams^2'],
 							type: 'most_fields'
 						}
 					},
@@ -750,7 +748,7 @@ export function searchByName(orm:ORM, name:string, type:IndexableEntitiesOrAll |
 		if (
 			isWorkTypeOnly || containsWorkType
 		) {
-			const authorBoost = isWorkTypeOnly ? 5 : 2;
+			const authorBoost = isWorkTypeOnly ? 5 : 1;
 			queryBody.bool.should[0].multi_match.fields.push(`authors^${authorBoost}`);
 			queryBody.bool.should[1].multi_match.fields.push(`authors.trigrams^${authorBoost}`);
 		}
