@@ -21,7 +21,7 @@ import * as commonUtils from './utils';
 import ElasticSearch, {type Client, type ClientOptions} from '@elastic/elasticsearch';
 import type {IndicesCreateRequest, QueryDslBoolQuery,
 	QueryDslQueryContainer, SearchHitsMetadata, SearchRequest} from '@elastic/elasticsearch/lib/api/types';
-import {isString, snakeCase} from 'lodash';
+import {camelCase, isString, snakeCase, upperFirst} from 'lodash';
 import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import {type ORM} from 'bookbrainz-data';
 import httpStatus from 'http-status';
@@ -626,12 +626,13 @@ export async function generateIndex(orm:ORM, entityType: IndexableEntities | 'al
 
 export async function checkIfExists(orm:ORM, name:string, type:EntityTypeString) {
 	const {bookshelf} = orm;
+	const formattedType = upperFirst(camelCase(type)) as EntityTypeString;
 	const bbids:string[] = await new Promise((resolve, reject) => {
 		bookshelf.transaction(async (transacting) => {
 			try {
 				const result = await orm.func.alias.getBBIDsWithMatchingAlias(
 					transacting,
-					type,
+					formattedType,
 					name
 				);
 				resolve(result);
@@ -655,7 +656,7 @@ export async function checkIfExists(orm:ORM, name:string, type:EntityTypeString)
 		bbids.map((bbid) =>
 			orm.func.entity.getEntity(
 				orm,
-				type,
+				formattedType,
 				bbid,
 				baseRelations
 			))
