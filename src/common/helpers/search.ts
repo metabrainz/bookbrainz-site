@@ -1,4 +1,4 @@
-/* eslint-disable no-undefined */
+/* eslint-disable sort-keys, camelcase */
 /*
  * Copyright (C) 2016  Sean Burke
  *
@@ -16,12 +16,12 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint-disable camelcase */
 
 import * as commonUtils from './utils';
 import ElasticSearch, {type Client, type ClientOptions} from '@elastic/elasticsearch';
-import type {IndicesIndexSettings, MappingTypeMapping} from '@elastic/elasticsearch/lib/api/types';
-import {camelCase, isString, snakeCase, upperFirst} from 'lodash';
+import type {IndicesCreateRequest, QueryDslBoolQuery,
+	QueryDslQueryContainer, SearchHitsMetadata, SearchRequest} from '@elastic/elasticsearch/lib/api/types';
+import {isString, snakeCase} from 'lodash';
 import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import {type ORM} from 'bookbrainz-data';
 import httpStatus from 'http-status';
@@ -37,7 +37,7 @@ const _maxJitter = 75;
 
 let _client:Client = null;
 
-function sanitizeEntityType(type) {
+function sanitizeEntityType(type:IndexableEntitiesOrAll | IndexableEntities[]) {
 	if (!type) {
 		return null;
 	}
@@ -55,105 +55,116 @@ export type IndexableEntities = EntityTypeString | 'Editor' | 'Collection' | 'Ar
 export type IndexableEntitiesOrAll = IndexableEntities | 'allEntities';
 const commonProperties = ['bbid', 'id', 'name', 'type', 'disambiguation'];
 
-const indexMappings:{mappings:MappingTypeMapping, settings: IndicesIndexSettings} = {
+
+const indexSettings:IndicesCreateRequest = {
+	index: _index,
+	settings: {
+		index: {
+			max_ngram_diff: 4,
+			'mapping.ignore_malformed': true
+		},
+		analysis: {
+			char_filter: {
+				identifier_cleaner: {
+					type: 'pattern_replace',
+					pattern: '[^a-zA-Z0-9]',
+					replacement: ''
+				}
+			},
+			filter: {
+				custom_stop_words_filter: {
+					type: 'stop',
+					ignore_case: true,
+					stopwords: [
+						'_english_', '_french_', '_german_', '_spanish_', '_italian_',
+						'_portuguese_', '_russian_', '_arabic_', '_chinese_', '_japanese_',
+						'_norwegian_', '_hindi_'
+					]
+				}
+			},
+			analyzer: {
+				custom_standard: {
+					type: 'custom',
+					tokenizer: 'standard',
+					filter: ['asciifolding', 'lowercase', 'custom_stop_words_filter']
+				},
+				trigrams_analyzer: {
+					type: 'custom',
+					tokenizer: 'ngram_tokenizer',
+					filter: ['asciifolding', 'lowercase', 'custom_stop_words_filter']
+				},
+				identifier_analyzer: {
+					type: 'custom',
+					char_filter: ['identifier_cleaner'],
+					tokenizer: 'keyword',
+					filter: ['lowercase']
+				}
+			},
+			tokenizer: {
+				ngram_tokenizer: {
+					type: 'ngram',
+					min_gram: 2,
+					max_gram: 6
+				}
+			}
+		}
+	},
 	mappings: {
 		properties: {
 			aliases: {
 				properties: {
 					name: {
+						type: 'text',
+						analyzer: 'custom_standard',
 						fields: {
-							autocomplete: {
-								analyzer: 'edge',
-								type: 'text'
-							},
-							search: {
-								analyzer: 'trigrams',
-								type: 'text'
-							}
-						},
-						type: 'text'
+							trigrams: {type: 'text', analyzer: 'trigrams_analyzer'},
+							suggest: {type: 'search_as_you_type'}
+						}
 					}
 				}
 			},
 			authors: {
-				analyzer: 'trigrams',
-				type: 'text'
+				type: 'text',
+				analyzer: 'custom_standard',
+				fields: {
+					trigrams: {type: 'text', analyzer: 'trigrams_analyzer'}
+				}
 			},
-			disambiguation: {
-				analyzer: 'trigrams',
-				type: 'text'
+			identifiers: {
+				properties: {
+					value: {
+						type: 'text',
+						analyzer: 'identifier_analyzer',
+						fields: {
+							keyword: {type: 'keyword'}
+						}
+					}
+				}
 			}
 		}
-	},
-	settings: {
-		analysis: {
-			analyzer: {
-				edge: {
-					filter: [
-						'asciifolding',
-						'lowercase'
-					],
-					tokenizer: 'edge_ngram_tokenizer',
-					type: 'custom'
-				},
-				trigrams: {
-					filter: [
-						'asciifolding',
-						'lowercase'
-					],
-					tokenizer: 'trigrams',
-					type: 'custom'
-				}
-			},
-			tokenizer: {
-				edge_ngram_tokenizer: {
-					// max_gram: 3,
-					min_gram: 2,
-					token_chars: [
-						'letter',
-						'digit'
-					],
-					type: 'edge_ngram'
-				},
-				trigrams: {
-					// max_gram: 3,
-					min_gram: 2,
-					type: 'ngram'
-				}
-			}
-		},
-		'index.mapping.ignore_malformed': true
 	}
+
 };
 
 // Helper to normalize indices.exists response across client versions
 async function _indexExists(indexName:string) {
-	const res:any = await _client.indices.exists({index: indexName});
-	// newer client versions may return a boolean directly, older ones an object with `body`
-	if (typeof res === 'boolean') {
-		return res;
-	}
-	return res?.body ?? false;
+	return await _client.indices.exists({index: indexName});
 }
 
 // Helper to add a `type` filter into a dslQuery body, since ES 7+ removed document types
-function _applyTypeFilterToDSL(dslQuery:any, type:any) {
+function _applyTypeFilterToDSL(dslQuery:SearchRequest, type:IndexableEntitiesOrAll | IndexableEntities[]) {
 	const sanitizedType = sanitizeEntityType(type);
 	if (!sanitizedType) {
 		return;
 	}
-	dslQuery.body = dslQuery.body || {};
-	const existingQuery = dslQuery.body.query || null;
+	const typeFilter = Array.isArray(sanitizedType) ? {terms: {type: sanitizedType}} : {terms: {type: [sanitizedType]}};
 
-	const typeFilter = Array.isArray(sanitizedType) ? {terms: {type: sanitizedType}} : {term: {type: sanitizedType}};
-
-	// Wrap existing query into a bool.must and add our filter
-	dslQuery.body.query = {
-		bool: {
-			filter: typeFilter,
-			must: existingQuery ? [existingQuery] : []
-		}
+	const existingQuery = dslQuery.query;
+	const newQuery:QueryDslBoolQuery = {
+		filter: typeFilter,
+		must: existingQuery
 	};
+	dslQuery.query = {bool: newQuery};
 }
 
 /* We don't currently want to index the entire Model in ElasticSearch,
@@ -194,7 +205,7 @@ export function getDocumentToIndex(entity:any) {
 	};
 }
 
-async function _fetchEntityModelsForESResults(orm, results) {
+async function _fetchEntityModelsForESResults(orm:ORM, results:SearchHitsMetadata<any>) {
 	const {Area, Editor, UserCollection} = orm;
 
 	if (!results?.hits) {
@@ -206,7 +217,7 @@ async function _fetchEntityModelsForESResults(orm, results) {
 
 		// Special cases first
 		if (entityStub.type === 'Area') {
-			const area = await Area.forge({gid: entityStub.id})
+			const area = await new Area({gid: entityStub.id})
 				.fetch({withRelated: ['areaType']});
 
 			const areaJSON = area.toJSON({omitPivot: true});
@@ -221,7 +232,7 @@ async function _fetchEntityModelsForESResults(orm, results) {
 			return areaJSON;
 		}
 		if (entityStub.type === 'Editor') {
-			const editor = await Editor.forge({id: entityStub.id})
+			const editor = await new Editor({id: entityStub.id})
 				.fetch();
 
 			const editorJSON = editor.toJSON({omitPivot: true});
@@ -233,7 +244,7 @@ async function _fetchEntityModelsForESResults(orm, results) {
 			return editorJSON;
 		}
 		if (entityStub.type === 'Collection') {
-			const collection = await UserCollection.forge({id: entityStub.id})
+			const collection = await new UserCollection({id: entityStub.id})
 				.fetch();
 
 			const collectionJSON = collection.toJSON({omitPivot: true});
@@ -245,8 +256,8 @@ async function _fetchEntityModelsForESResults(orm, results) {
 			return collectionJSON;
 		}
 		// Regular entity
-		const model = commonUtils.getEntityModelByType(orm, entityStub.type);
-		const entity = await model.forge({bbid: entityStub.bbid})
+		const Model = commonUtils.getEntityModelByType(orm, entityStub.type);
+		const entity = await new Model({bbid: entityStub.bbid})
 			.fetch({require: false, withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases', 'identifierSet.identifiers',
 				'relationshipSet.relationships.source', 'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation']});
 		const entityJSON = entity?.toJSON({omitPivot: true});
@@ -266,7 +277,7 @@ async function _fetchEntityModelsForESResults(orm, results) {
 }
 
 // Returns the results of a search translated to entity objects
-async function _searchForEntities(orm, dslQuery) {
+async function _searchForEntities(orm:ORM, dslQuery:SearchRequest) {
 	try {
 		const searchResponse = await _client.search(dslQuery);
 		const {hits} = searchResponse;
@@ -368,42 +379,6 @@ async function _processEntityListForBulk(entityList) {
 	await Promise.all(indexOperations);
 }
 
-export async function autocomplete(orm:ORM, query:string, type:IndexableEntitiesOrAll | IndexableEntities[], size = 42) {
-	let queryBody = null;
-
-	if (commonUtils.isValidBBID(query)) {
-		queryBody = {
-			ids: {
-				values: [query]
-			}
-		};
-	}
-	else {
-		queryBody = {
-			match: {
-				'aliases.name.autocomplete': {
-					minimum_should_match: '80%',
-					query
-				}
-			}
-		};
-	}
-
-	const dslQuery = {
-		body: {
-			query: queryBody,
-			size
-		},
-		index: _index
-	};
-
-	// Apply a `type` filter inside the query body (ES 7+ removed mapping types)
-	_applyTypeFilterToDSL(dslQuery, type);
-
-	const searchResponse = await _searchForEntities(orm, dslQuery);
-	// Only return the results array, we're not interested in the total number of hits for this endpoint
-	return searchResponse.results;
-}
 
 // eslint-disable-next-line consistent-return
 export function indexEntity(entity) {
@@ -440,7 +415,7 @@ export function refreshIndex() {
 	});
 }
 
-export async function generateIndex(orm, entityType: IndexableEntities | 'allEntities' = 'allEntities', recreateIndex = false) {
+export async function generateIndex(orm:ORM, entityType: IndexableEntities | 'allEntities' = 'allEntities', recreateIndex = false) {
 	const {Area, Author, Edition, EditionGroup, Editor, Publisher, Series, UserCollection, Work} = orm;
 
 	const allEntities = entityType === 'allEntities';
@@ -454,7 +429,7 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 			await _client.indices.delete({index: _index});
 		}
 		log.notice('Creating new search index');
-		await _client.indices.create({index: _index, mappings: indexMappings.mappings, settings: indexMappings.settings});
+		await _client.indices.create(indexSettings);
 	}
 
 	log.notice(`Starting indexing of ${entityType}`);
@@ -591,7 +566,7 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 	if (allEntities || entityType === 'Area') {
 		log.info('Indexing Areas');
 
-		const areaCollection = await Area.forge().fetchAll();
+		const areaCollection = await new Area().fetchAll();
 
 		const areas = areaCollection.toJSON({omitPivot: true});
 
@@ -608,7 +583,7 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 	}
 	if (allEntities || entityType === 'Editor') {
 		log.info('Indexing Editors');
-		const editorCollection = await Editor.forge()
+		const editorCollection = await new Editor()
 			// no bots
 			.where('type_id', 1)
 			.fetchAll();
@@ -628,7 +603,7 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 
 	if (allEntities || entityType === 'Collection') {
 		log.info('Indexing Collections');
-		const userCollections = await UserCollection.forge()
+		const userCollections = await new UserCollection()
 			.where({public: true})
 			.fetchAll();
 		const userCollectionsJSON = userCollections.toJSON({omitPivot: true});
@@ -649,14 +624,14 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 	log.notice('Search indexing finished succesfully');
 }
 
-export async function checkIfExists(orm, name, type) {
+export async function checkIfExists(orm:ORM, name:string, type:EntityTypeString) {
 	const {bookshelf} = orm;
 	const bbids:string[] = await new Promise((resolve, reject) => {
 		bookshelf.transaction(async (transacting) => {
 			try {
 				const result = await orm.func.alias.getBBIDsWithMatchingAlias(
 					transacting,
-					snakeCase(type),
+					type,
 					name
 				);
 				resolve(result);
@@ -680,7 +655,7 @@ export async function checkIfExists(orm, name, type) {
 		bbids.map((bbid) =>
 			orm.func.entity.getEntity(
 				orm,
-				upperFirst(camelCase(type)),
+				type,
 				bbid,
 				baseRelations
 			))
@@ -689,38 +664,105 @@ export async function checkIfExists(orm, name, type) {
 	return processedResults;
 }
 
-export function searchByName(orm, name, type, size, from) {
-	const sanitizedEntityType = sanitizeEntityType(type);
-	const dslQuery = {
-		body: {
-			from,
-			query: {
-				multi_match: {
-					fields: [
-						'aliases.name^3',
-						'aliases.name.search',
-						'disambiguation',
-						'identifiers.value'
-					],
-					minimum_should_match: '80%',
-					query: name,
-					type: 'cross_fields'
-				}
-			},
-			size
-		},
+export async function autocomplete(orm:ORM, query:string, type:IndexableEntitiesOrAll | IndexableEntities[], size = 42) {
+	let queryBody:QueryDslQueryContainer;
+
+	if (commonUtils.isValidBBID(query)) {
+		queryBody = {
+			ids: {
+				values: [query]
+			}
+		};
+	}
+	else {
+		queryBody = {
+			multi_match: {
+				query: query.toLowerCase(),
+				type: 'bool_prefix',
+				fields: [
+					'aliases.name.suggest',
+					'aliases.name.suggest._2gram',
+					'aliases.name.suggest._3gram'
+				]
+			}
+		};
+	}
+
+	const dslQuery:SearchRequest = {
+		size,
+		query: queryBody,
 		index: _index
 	};
 
-	// If this is a work search, include authors field in scoring
-	if (
-		sanitizedEntityType === 'work' ||
-		(Array.isArray(sanitizedEntityType) && sanitizedEntityType.includes('work'))
-	) {
-		dslQuery.body.query.multi_match.fields.push('authors');
-	}
+	_applyTypeFilterToDSL(dslQuery, type);
 
-	// Apply a `type` filter inside the query body (ES 7+ removed mapping types)
+	const searchResponse = await _searchForEntities(orm, dslQuery);
+	// Only return the results array, we're not interested in the total number of hits for this endpoint
+	return searchResponse.results;
+}
+
+export function searchByName(orm:ORM, name:string, type:IndexableEntitiesOrAll | IndexableEntities[], size = 20, from = 0) {
+	const sanitizedEntityType = sanitizeEntityType(type);
+	let queryBody:QueryDslQueryContainer;
+	const query = name.toLowerCase();
+
+	if (commonUtils.isValidBBID(name)) {
+		queryBody = {
+			ids: {
+				values: [query]
+			}
+		};
+	}
+	else {
+	 queryBody = {
+			bool: {
+				should: [
+					{
+						multi_match: {
+							query,
+							fields: ['aliases.name^5'],
+							// fields: ['aliases.name^10', 'authors^5'],
+							type: 'best_fields'
+						}
+					},
+					{
+						multi_match: {
+							query,
+							fields: ['aliases.name.trigrams'],
+							// fields: ['aliases.name.trigrams^5', 'authors.trigrams'],
+							type: 'most_fields'
+						}
+					},
+					{
+						term: {
+							'identifiers.value': {
+								value: query.replace(/[^a-zA-Z0-9]/g, ''),
+								boost: 30
+							}
+						}
+					}
+				]
+			}
+		};
+		const isWorkTypeOnly = sanitizedEntityType === 'work';
+		const containsWorkType = Array.isArray(sanitizedEntityType) && sanitizedEntityType.includes('work');
+		// If this is a work search, include authors field in scoring
+		if (
+			isWorkTypeOnly || containsWorkType
+		) {
+			const authorBoost = isWorkTypeOnly ? 5 : 2;
+			queryBody.bool.should[0].multi_match.fields.push(`authors^${authorBoost}`);
+			queryBody.bool.should[1].multi_match.fields.push(`authors.trigrams^${authorBoost}`);
+		}
+	}
+	const dslQuery = {
+		from,
+		size,
+		query: queryBody,
+		index: _index
+	};
+
+
 	_applyTypeFilterToDSL(dslQuery, type);
 
 	return _searchForEntities(orm, dslQuery);
@@ -757,6 +799,9 @@ export async function init(orm: ORM, options:ClientOptions) {
 	if (!mainIndexExists) {
 		// Automatically index on app startup if we haven't already, but don't block app setup
 		generateIndex(orm).catch(log.error);
+	}
+	else {
+		log.notice('Search index already exists, skipping generation');
 	}
 	return true;
 }
