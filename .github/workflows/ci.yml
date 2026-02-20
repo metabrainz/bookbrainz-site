@@ -1,88 +1,88 @@
 name: CI
 on:
-    push:
-        branches: [master]
-    # Triggers the workflow on pull request events in the context of the fork
-    # trying to sidestep limitations here: https://github.com/wearerequired/lint-action/issues/13
-    pull_request:
+  push:
+    branches: [master]
+  # Triggers the workflow on pull request events in the context of the fork
+  # trying to sidestep limitations here: https://github.com/wearerequired/lint-action/issues/13
+  pull_request:
 
 jobs:
-    build-test:
-        runs-on: ubuntu-latest
+  build-test:
+    runs-on: ubuntu-latest
 
-        services:
-            # Label used to access the service container
-            postgres:
-                # Docker Hub image
-                image: postgres:16
-                # Provide the password for postgres
-                env:
-                    POSTGRES_USER: postgres
-                    POSTGRES_PASSWORD: postgres
-                    POSTGRES_DB: bookbrainz_test
-                # Since we run npm tests on the host machine (not in a docker container)
-                # we need to bind the Postgres port from Docker container to host machine
-                ports:
-                    - 5432:5432
-                # Set health checks to wait until postgres has started
-                options: >-
-                    --health-cmd pg_isready
-                    --health-interval 10s
-                    --health-timeout 5s
-                    --health-retries 5
-            # Using elastic search as a service container
-            elasticsearch:
-                image: docker.elastic.co/elasticsearch/elasticsearch:5.6.8
-                env:
-                    discovery.type: single-node
-                    xpack.security.enabled: false
-                    ES_JAVA_OPTS: -Xms512m -Xmx512m
-                ports:
-                    - 9200:9200
-                    - 9300:9300
-                options: >-
-                    --health-cmd "curl -f http://localhost:9200/_cluster/health || exit 1"
-                    --health-interval 10s
-                    --health-timeout 5s
-                    --health-retries 10
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres:16
+        # Provide the password for postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: bookbrainz_test
+        # Since we run npm tests on the host machine (not in a docker container)
+        # we need to bind the Postgres port from Docker container to host machine
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      # Using elastic search as a service container
+      elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:5.6.8
+        env:
+          discovery.type: single-node
+          xpack.security.enabled: false
+          ES_JAVA_OPTS: -Xms512m -Xmx512m
+        ports:
+          - 9200:9200
+          - 9300:9300
+        options: >-
+          --health-cmd "curl -f http://localhost:9200/_cluster/health || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
 
-        steps:
-            - name: Install PostgreSQL client
-              run: |
-                  sudo apt-get update
-                  sudo apt-get install --yes postgresql-client
+    steps:
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes postgresql-client
 
-            - name: Checkout code
-              uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-            # Set up the test dabatase
-            - name: Set up test database in PostgreSQL
-              run: ./scripts/create-test-db.sh
-              env:
-                  POSTGRES_USER: postgres
-                  POSTGRES_PASSWORD: postgres
-                  POSTGRES_DB: bookbrainz_test
-                  POSTGRES_HOST: localhost
+      # Set up the test dabatase
+      - name: Set up test database in PostgreSQL
+        run: ./scripts/create-test-db.sh
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: bookbrainz_test
+          POSTGRES_HOST: localhost
 
-            - name: Set up node
-              uses: actions/setup-node@v1
-              with:
-                  # We could also test on multiple Node versions if needed: https://github.com/actions/setup-node#matrix-testing
-                  node-version: "18"
-                  # Enables caching NPM dependencies (uses https://github.com/actions/cache under the hood)
-                  cache: "yarn"
+      - name: Set up node
+        uses: actions/setup-node@v1
+        with:
+          # We could also test on multiple Node versions if needed: https://github.com/actions/setup-node#matrix-testing
+          node-version: "18"
+          # Enables caching NPM dependencies (uses https://github.com/actions/cache under the hood)
+          cache: "yarn"
 
-            # Performs a clean installation of all dependencies in the `package.json` file
-            # For more information, see https://docs.npmjs.com/cli/ci.html
-            - name: Install dependencies
-              run: yarn install --frozen-lockfile
+      # Performs a clean installation of all dependencies in the `package.json` file
+      # For more information, see https://docs.npmjs.com/cli/ci.html
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
 
-            - name: Run tests
-              run: yarn run test-ci # run tests (configured to use mocha's json reporter)
+      - name: Run tests
+        run: yarn run test-ci # run tests (configured to use mocha's json reporter)
 
-            - name: Export test results
-              uses: actions/upload-artifact@v4 # upload test results
-              if: success() || failure() # run this step even if previous step failed
-              with:
-                  name: test-results
-                  path: test-results.json
+      - name: Export test results
+        uses: actions/upload-artifact@v4 # upload test results
+        if: success() || failure() # run this step even if previous step failed
+        with:
+          name: test-results
+          path: test-results.json
