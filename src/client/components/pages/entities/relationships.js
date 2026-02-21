@@ -49,12 +49,12 @@ function EntityRelationships({contextEntity, relationships, entityUrl}) {
 							))}
 						</ul>
 					</div>
-				))
-			: (
-				<p className="text-muted">
-					<b>No relationships.</b> <a href={`${entityUrl}/edit`}>Click here to edit</a> and create new relationships.
-				</p>
-			)}
+				)) :
+				(
+					<p className="text-muted">
+						<b>No relationships.</b> <a href={`${entityUrl}/edit`}>Click here to edit</a> and create new relationships.
+					</p>
+				)}
 		</div>
 	);
 }
