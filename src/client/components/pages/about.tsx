@@ -73,7 +73,7 @@ function AboutPage(): JSX.Element {
 			</p>
 			<p>
 				We also have a webservice (or API) under development with
-				<a href="https://api.test.bookbrainz.org/1/docs/"> live documentation</a>.
+				<a href="https://api.bookbrainz.org/1/docs/"> live documentation</a>.
 			</p>
 
 			<h2>Contact Us</h2>
