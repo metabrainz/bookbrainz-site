@@ -16,10 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {groupBy as _groupBy, sortBy as _sortBy} from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Relationship from '../../../entity-editor/relationship-editor/relationship';
-import {groupBy as _groupBy, sortBy as _sortBy} from 'lodash';
 
 
 function EntityRelationships({contextEntity, relationships, entityUrl}) {
@@ -29,7 +29,7 @@ function EntityRelationships({contextEntity, relationships, entityUrl}) {
 	return (
 		<div>
 			<h2>Relationships</h2>
-			{relationships?.length > 0 ? (
+			{relationships?.length > 0 ?
 				sortedGroupLabels.map((groupLabel) => (
 					<div key={groupLabel}>
 						<h4>{groupLabel}</h4>
@@ -50,7 +50,7 @@ function EntityRelationships({contextEntity, relationships, entityUrl}) {
 						</ul>
 					</div>
 				))
-			) : (
+			: (
 				<p className="text-muted">
 					<b>No relationships.</b> <a href={`${entityUrl}/edit`}>Click here to edit</a> and create new relationships.
 				</p>
