@@ -175,9 +175,8 @@ class EntitySearchFieldOption extends React.Component {
 		const wrappedSelect = (
 			<SelectWrapper
 				{...this.props}
-				blurInputOnSelect
 				isClearable
-				className={`Select${this.props.className ? ` ${this.props.className}` : ''}`}
+				className={`Select text-field-menu${this.props.className ? ` ${this.props.className}` : ''}`}
 				classNamePrefix="react-select"
 				components={{
 					Option: LinkedEntitySelect,

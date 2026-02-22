@@ -898,3 +898,19 @@ div[class~=collapsing]+div[class=card-header] .accordion-arrow {
     bottom: 0.3em;
 	left: -0.5em;
 }
+
+.text-field-menu .react-select__value-container {
+	display: flex !important;
+}
+
+.text-field-menu .react-select__value-container > div:last-child {
+	flex: 1 1 auto !important;
+	min-width: 40px !important;
+}
+
+.text-field-menu .react-select__value-container > div:last-child .react-select__input,
+.text-field-menu .react-select__value-container > div:last-child input {
+	width: 100% !important;
+	opacity: 1 !important;
+	cursor: text !important;
+}
