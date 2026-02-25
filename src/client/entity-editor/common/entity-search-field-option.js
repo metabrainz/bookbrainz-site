@@ -126,6 +126,7 @@ class EntitySearchFieldOption extends React.Component {
 		return filteredOptions.map(this.entityToOption);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	renderInputGroup({buttonAfter, help, wrappedSelect, ...props}) {
 		if (!buttonAfter) {
 			return (

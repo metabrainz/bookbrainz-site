@@ -41,7 +41,6 @@ import _ from 'lodash';
 import express from 'express';
 import {getOrderedCollectionsForEditorPage} from '../helpers/collections';
 import {getOrderedRevisionForEditorPage} from '../helpers/revisions';
-import log from 'log';
 import target from '../templates/target';
 
 

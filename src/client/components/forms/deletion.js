@@ -68,11 +68,11 @@ class EntityDeletionForm extends React.Component {
 			.then(() => {
 				window.location.href = this.entityUrl;
 			})
-			.catch((res) => {
-				const {error} = res.body;
-
+			.catch((err) => {
+				const {error: erroMessage} = err?.response?.body;
+				const statusText = err?.message ?? `Error ${err?.status}`;
 				this.setState({
-					error,
+					error: `${statusText}: ${erroMessage}`,
 					waiting: false
 				});
 			});
