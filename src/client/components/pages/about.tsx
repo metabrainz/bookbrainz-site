@@ -72,7 +72,7 @@ function AboutPage(): JSX.Element {
 				<a href="http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2"> at this address.</a>
 			</p>
 			<p>
-				We also have a webservice (or API) under development with
+				We also have a webservice (or API) with
 				<a href="https://api.bookbrainz.org/1/docs/"> live documentation</a>.
 			</p>
 
