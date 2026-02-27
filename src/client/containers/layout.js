@@ -22,29 +22,57 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as bootstrap from 'react-bootstrap';
-import {IdentifierTypeEditorIcon, RelationshipTypeEditorIcon} from '../helpers/utils';
-import {PrivilegeType, checkPrivilege} from '../../common/helpers/privileges-utils';
+import * as bootstrap from "react-bootstrap";
+import {
+	IdentifierTypeEditorIcon,
+	RelationshipTypeEditorIcon,
+} from "../helpers/utils";
+import {
+	PrivilegeType,
+	checkPrivilege,
+} from "../../common/helpers/privileges-utils";
 import {
 	faBarcode,
-	faChartLine, faClipboardQuestion, faFileLines, faGripVertical, faLink, faListUl, faNewspaper, faPlus, faQuestionCircle,
-	faSearch, faShieldHalved, faSignInAlt, faSignOutAlt, faTrophy, faUserCircle, faUserGear
-} from '@fortawesome/free-solid-svg-icons';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import Footer from './../components/footer';
-import MergeQueue from '../components/pages/parts/merge-queue';
-import PropTypes from 'prop-types';
-import React from 'react';
-import {faSearchengin} from '@fortawesome/free-brands-svg-icons';
-import {genEntityIconHTMLElement} from '../helpers/entity';
+	faChartLine,
+	faClipboardQuestion,
+	faFileLines,
+	faGripVertical,
+	faLink,
+	faListUl,
+	faNewspaper,
+	faPlus,
+	faQuestionCircle,
+	faSearch,
+	faShieldHalved,
+	faSignInAlt,
+	faSignOutAlt,
+	faTrophy,
+	faUserCircle,
+	faUserGear,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Footer from "./../components/footer";
+import MergeQueue from "../components/pages/parts/merge-queue";
+import PropTypes from "prop-types";
+import React from "react";
+import { faSearchengin } from "@fortawesome/free-brands-svg-icons";
+import { genEntityIconHTMLElement } from "../helpers/entity";
 
-
-const {Alert, Button, Form, FormControl, InputGroup, Nav, Navbar, NavDropdown} = bootstrap;
+const {
+	Alert,
+	Button,
+	Form,
+	FormControl,
+	InputGroup,
+	Nav,
+	Navbar,
+	NavDropdown,
+} = bootstrap;
 
 class Layout extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {keepMenuOpen: false, menuOpen: false};
+		this.state = { keepMenuOpen: false, menuOpen: false };
 		this.renderNavContent = this.renderNavContent.bind(this);
 		this.renderNavHeader = this.renderNavHeader.bind(this);
 		this.renderDocsDropdown = this.renderDocsDropdown.bind(this);
@@ -59,20 +87,19 @@ class Layout extends React.Component {
 
 	handleDropdownToggle(newValue) {
 		if (this.state.keepMenuOpen) {
-			this.setState({keepMenuOpen: false, menuOpen: true});
-		}
-		else {
-			this.setState({menuOpen: newValue});
+			this.setState({ keepMenuOpen: false, menuOpen: true });
+		} else {
+			this.setState({ menuOpen: newValue });
 		}
 	}
 
 	handleDropdownClick(eventKey, event) {
 		event.stopPropagation();
-		this.setState({keepMenuOpen: true}, this.handleDropdownToggle);
+		this.setState({ keepMenuOpen: true }, this.handleDropdownToggle);
 	}
 
 	renderNavHeader() {
-		const {homepage} = this.props;
+		const { homepage } = this.props;
 
 		return (
 			<Navbar.Brand className="logo">
@@ -98,8 +125,8 @@ class Layout extends React.Component {
 	renderDocsDropdown() {
 		const docsDropdownTitle = (
 			<span>
-				<FontAwesomeIcon icon={faFileLines}/>
-				{'  Docs'}
+				<FontAwesomeIcon icon={faFileLines} />
+				{"  Docs"}
 			</span>
 		);
 		return (
@@ -111,20 +138,23 @@ class Layout extends React.Component {
 					onMouseDown={this.handleMouseDown}
 				>
 					<NavDropdown.Item href="/help">
-						<FontAwesomeIcon fixedWidth icon={faQuestionCircle}/>
-						{' Help '}
+						<FontAwesomeIcon fixedWidth icon={faQuestionCircle} />
+						{" Help "}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/faq">
-						<FontAwesomeIcon fixedWidth icon={faClipboardQuestion}/>
-						{' FAQs '}
+						<FontAwesomeIcon
+							fixedWidth
+							icon={faClipboardQuestion}
+						/>
+						{" FAQs "}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/relationship-types">
-						<FontAwesomeIcon fixedWidth icon={faLink}/>
-						{' Relationship Types '}
+						<FontAwesomeIcon fixedWidth icon={faLink} />
+						{" Relationship Types "}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/identifier-types">
-						<FontAwesomeIcon fixedWidth icon={faBarcode}/>
-						{' Identifier Types '}
+						<FontAwesomeIcon fixedWidth icon={faBarcode} />
+						{" Identifier Types "}
 					</NavDropdown.Item>
 				</NavDropdown>
 			</Nav>
@@ -132,16 +162,16 @@ class Layout extends React.Component {
 	}
 
 	renderGuestDropdown() {
-		const disableSignUp = this.props.disableSignUp ?
-			{disabled: true} :
-			{};
+		const disableSignUp = this.props.disableSignUp
+			? { disabled: true }
+			: {};
 
 		return (
 			<Nav>
 				<Nav.Item>
 					<Nav.Link {...disableSignUp} href="/auth">
-						<FontAwesomeIcon icon={faSignInAlt}/>
-						{' Sign In / Register'}
+						<FontAwesomeIcon icon={faSignInAlt} />
+						{" Sign In / Register"}
 					</Nav.Link>
 				</Nav.Item>
 			</Nav>
@@ -149,25 +179,28 @@ class Layout extends React.Component {
 	}
 
 	renderLoggedInDropdown() {
-		const {user} = this.props;
+		const { user } = this.props;
 
 		const createDropdownTitle = (
 			<span>
-				<FontAwesomeIcon icon={faPlus}/>
-				{'  Add'}
+				<FontAwesomeIcon icon={faPlus} />
+				{"  Add"}
 			</span>
 		);
 
 		const userDropdownTitle = user && (
 			<span>
-				<FontAwesomeIcon icon={faUserCircle}/>
+				<FontAwesomeIcon icon={faUserCircle} />
 				{`  ${user.name}`}
 			</span>
 		);
 
 		const privilegesDropdownTitle = (
 			<span>
-				<FontAwesomeIcon className="margin-right-0-3" icon={faShieldHalved}/>
+				<FontAwesomeIcon
+					className="margin-right-0-3"
+					icon={faShieldHalved}
+				/>
 				Privileges
 			</span>
 		);
@@ -176,11 +209,19 @@ class Layout extends React.Component {
 		const adminOptions = (
 			<>
 				<NavDropdown.Item href="/admin-panel">
-					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faUserGear}/>
+					<FontAwesomeIcon
+						fixedWidth
+						className="margin-right-0-3"
+						icon={faUserGear}
+					/>
 					Admin Panel
 				</NavDropdown.Item>
 				<NavDropdown.Item href="/admin-logs">
-					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faNewspaper}/>
+					<FontAwesomeIcon
+						fixedWidth
+						className="margin-right-0-3"
+						icon={faNewspaper}
+					/>
 					Admin Logs
 				</NavDropdown.Item>
 			</>
@@ -198,8 +239,12 @@ class Layout extends React.Component {
 		const reindexSearchEngineOption = (
 			<>
 				<NavDropdown.Item href="/search-admin">
-					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faSearchengin}/>
-					Search Admin
+					<FontAwesomeIcon
+						fixedWidth
+						className="margin-right-0-3"
+						icon={faSearchengin}
+					/>
+					Reindex Search Server
 				</NavDropdown.Item>
 			</>
 		);
@@ -220,16 +265,26 @@ class Layout extends React.Component {
 				title={privilegesDropdownTitle}
 				onMouseDown={this.handleMouseDown}
 			>
-				{checkPrivilege(user.privs, PrivilegeType.ADMIN) && adminOptions}
-				{checkPrivilege(user.privs, PrivilegeType.RELATIONSHIP_TYPE_EDITOR) && relationshipTypeEditorOptions}
-				{checkPrivilege(user.privs, PrivilegeType.IDENTIFIER_TYPE_EDITOR) && identifierTypeEditorOptions}
-				{checkPrivilege(user.privs, PrivilegeType.REINDEX_SEARCH_SERVER) && reindexSearchEngineOption}
+				{checkPrivilege(user.privs, PrivilegeType.ADMIN) &&
+					adminOptions}
+				{checkPrivilege(
+					user.privs,
+					PrivilegeType.RELATIONSHIP_TYPE_EDITOR,
+				) && relationshipTypeEditorOptions}
+				{checkPrivilege(
+					user.privs,
+					PrivilegeType.IDENTIFIER_TYPE_EDITOR,
+				) && identifierTypeEditorOptions}
+				{checkPrivilege(
+					user.privs,
+					PrivilegeType.REINDEX_SEARCH_SERVER,
+				) && reindexSearchEngineOption}
 			</NavDropdown>
 		);
 
-		const disableSignUp = this.props.disableSignUp ?
-			{disabled: true} :
-			{};
+		const disableSignUp = this.props.disableSignUp
+			? { disabled: true }
+			: {};
 
 		return (
 			<Nav>
@@ -244,32 +299,32 @@ class Layout extends React.Component {
 					onToggle={this.handleDropdownToggle}
 				>
 					<NavDropdown.Item href="/create">
-						{genEntityIconHTMLElement('Book')}
+						{genEntityIconHTMLElement("Book")}
 						Book
 					</NavDropdown.Item>
-					<NavDropdown.Divider/>
+					<NavDropdown.Divider />
 					<NavDropdown.Item href="/work/create">
-						{genEntityIconHTMLElement('Work')}
+						{genEntityIconHTMLElement("Work")}
 						Work
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/edition/create">
-						{genEntityIconHTMLElement('Edition')}
+						{genEntityIconHTMLElement("Edition")}
 						Edition
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/edition-group/create">
-						{genEntityIconHTMLElement('EditionGroup')}
+						{genEntityIconHTMLElement("EditionGroup")}
 						Edition Group
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/series/create">
-						{genEntityIconHTMLElement('Series')}
+						{genEntityIconHTMLElement("Series")}
 						Series
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/author/create">
-						{genEntityIconHTMLElement('Author')}
+						{genEntityIconHTMLElement("Author")}
 						Author
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/publisher/create">
-						{genEntityIconHTMLElement('Publisher')}
+						{genEntityIconHTMLElement("Publisher")}
 						Publisher
 					</NavDropdown.Item>
 				</NavDropdown>
@@ -280,28 +335,28 @@ class Layout extends React.Component {
 					onMouseDown={this.handleMouseDown}
 				>
 					<NavDropdown.Item href={`/editor/${user.id}`}>
-						<FontAwesomeIcon fixedWidth icon={faUserCircle}/>
-						{' Profile'}
+						<FontAwesomeIcon fixedWidth icon={faUserCircle} />
+						{" Profile"}
 					</NavDropdown.Item>
 					<NavDropdown.Item href={`/editor/${user.id}/revisions`}>
-						<FontAwesomeIcon fixedWidth icon={faListUl}/>
-						{' Revisions'}
+						<FontAwesomeIcon fixedWidth icon={faListUl} />
+						{" Revisions"}
 					</NavDropdown.Item>
 					<NavDropdown.Item href={`/editor/${user.id}/achievements`}>
-						<FontAwesomeIcon fixedWidth icon={faTrophy}/>
-						{' Achievements'}
+						<FontAwesomeIcon fixedWidth icon={faTrophy} />
+						{" Achievements"}
 					</NavDropdown.Item>
 					<NavDropdown.Item href={`/editor/${user.id}/collections`}>
-						<FontAwesomeIcon fixedWidth icon={faGripVertical}/>
-						{' Collections'}
+						<FontAwesomeIcon fixedWidth icon={faGripVertical} />
+						{" Collections"}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/external-service/">
-						<FontAwesomeIcon fixedWidth icon={faLink}/>
-						{' External Services'}
+						<FontAwesomeIcon fixedWidth icon={faLink} />
+						{" External Services"}
 					</NavDropdown.Item>
 					<NavDropdown.Item {...disableSignUp} href="/logout">
-						<FontAwesomeIcon fixedWidth icon={faSignOutAlt}/>
-						{' Sign Out'}
+						<FontAwesomeIcon fixedWidth icon={faSignOutAlt} />
+						{" Sign Out"}
 					</NavDropdown.Item>
 				</NavDropdown>
 			</Nav>
@@ -317,10 +372,15 @@ class Layout extends React.Component {
 				role="search"
 			>
 				<InputGroup>
-					<FormControl required name="q" placeholder="Search for..." type="text"/>
+					<FormControl
+						required
+						name="q"
+						placeholder="Search for..."
+						type="text"
+					/>
 					<InputGroup.Append>
 						<Button type="submit" variant="success">
-							<FontAwesomeIcon icon={faSearch}/>
+							<FontAwesomeIcon icon={faSearch} />
 						</Button>
 					</InputGroup.Append>
 				</InputGroup>
@@ -329,13 +389,13 @@ class Layout extends React.Component {
 	}
 
 	renderNavContent() {
-		const {homepage, hideSearch, user} = this.props;
+		const { homepage, hideSearch, user } = this.props;
 
 		/*
 		 * GOTCHA: Usage of react-bootstrap FormGroup component inside
 		 * Navbar.Form causes a DOM mutation
 		 */
-		const revisionsClassName = homepage || hideSearch ? 'ml-auto' : null;
+		const revisionsClassName = homepage || hideSearch ? "ml-auto" : null;
 
 		return (
 			<Navbar.Collapse id="bs-example-navbar-collapse-1">
@@ -343,32 +403,31 @@ class Layout extends React.Component {
 				<Nav className={revisionsClassName}>
 					<Nav.Item>
 						<Nav.Link href="/revisions">
-							<FontAwesomeIcon icon={faListUl}/>
-							{' Revisions '}
+							<FontAwesomeIcon icon={faListUl} />
+							{" Revisions "}
 						</Nav.Link>
 					</Nav.Item>
 				</Nav>
 				<Nav>
 					<Nav.Item>
 						<Nav.Link href="/collections">
-							<FontAwesomeIcon icon={faGripVertical}/>
-							{' Collections '}
+							<FontAwesomeIcon icon={faGripVertical} />
+							{" Collections "}
 						</Nav.Link>
 					</Nav.Item>
 				</Nav>
 				<Nav>
 					<Nav.Item>
 						<Nav.Link href="/statistics">
-							<FontAwesomeIcon icon={faChartLine}/>
-							{' Statistics '}
+							<FontAwesomeIcon icon={faChartLine} />
+							{" Statistics "}
 						</Nav.Link>
 					</Nav.Item>
 				</Nav>
 				{this.renderDocsDropdown()}
-				{
-					user && user.id ?
-						this.renderLoggedInDropdown() : this.renderGuestDropdown()
-				}
+				{user && user.id
+					? this.renderLoggedInDropdown()
+					: this.renderGuestDropdown()}
 			</Navbar.Collapse>
 		);
 	}
@@ -380,33 +439,29 @@ class Layout extends React.Component {
 			repositoryUrl,
 			children,
 			mergeQueue,
-			requiresJS
+			requiresJS,
 		} = this.props;
 
 		// Shallow merges parents props into child components
-		const childNode = homepage ?
-			children :
-			(
-				<div className="container" id="content">
-					{requiresJS && (
-						<div>
-							<noscript>
-								<div className="alert alert-danger" role="alert">
-									This page will not function correctly without
-									JavaScript! Please enable JavaScript to use this
-									page.
-								</div>
-							</noscript>
-						</div>
-					)}
-					{children}
-					{mergeQueue ?
-						<MergeQueue
-							mergeQueue={mergeQueue}
-						/> : null
-					}
-				</div>
-			);
+		const childNode = homepage ? (
+			children
+		) : (
+			<div className="container" id="content">
+				{requiresJS && (
+					<div>
+						<noscript>
+							<div className="alert alert-danger" role="alert">
+								This page will not function correctly without
+								JavaScript! Please enable JavaScript to use this
+								page.
+							</div>
+						</noscript>
+					</div>
+				)}
+				{children}
+				{mergeQueue ? <MergeQueue mergeQueue={mergeQueue} /> : null}
+			</div>
+		);
 
 		const alerts = this.props.alerts.map((alert, idx) => (
 			// eslint-disable-next-line react/no-array-index-key
@@ -420,9 +475,14 @@ class Layout extends React.Component {
 				<a className="sr-only sr-only-focusable" href="#content">
 					Skip to main content
 				</a>
-				<Navbar className="BookBrainz" expand="lg" fixed="top" role="navigation">
+				<Navbar
+					className="BookBrainz"
+					expand="lg"
+					fixed="top"
+					role="navigation"
+				>
 					{this.renderNavHeader()}
-					<Navbar.Toggle/>
+					<Navbar.Toggle />
 					{this.renderNavContent()}
 				</Navbar>
 				{alerts}
@@ -436,7 +496,7 @@ class Layout extends React.Component {
 	}
 }
 
-Layout.displayName = 'Layout';
+Layout.displayName = "Layout";
 Layout.propTypes = {
 	alerts: PropTypes.array.isRequired,
 	children: PropTypes.node.isRequired,
@@ -447,7 +507,7 @@ Layout.propTypes = {
 	repositoryUrl: PropTypes.string.isRequired,
 	requiresJS: PropTypes.bool,
 	siteRevision: PropTypes.string.isRequired,
-	user: PropTypes.object
+	user: PropTypes.object,
 };
 Layout.defaultProps = {
 	disableSignUp: false,
@@ -455,7 +515,7 @@ Layout.defaultProps = {
 	homepage: false,
 	mergeQueue: null,
 	requiresJS: false,
-	user: null
+	user: null,
 };
 
 export default Layout;
