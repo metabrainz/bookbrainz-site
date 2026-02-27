@@ -199,7 +199,7 @@ class Layout extends React.Component {
 			<>
 				<NavDropdown.Item href="/search-admin">
 					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faSearchengin}/>
-					Search Admin
+					Reindex Search Server
 				</NavDropdown.Item>
 			</>
 		);
