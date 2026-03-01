@@ -32,6 +32,9 @@
       "react-select": "$react-select"
     }
   },
+  "resolutions": {
+    "glob": "^10.5.0"
+  },
   "dependencies": {
     "@babel/runtime": "^7.26.10",
     "@cospired/i18n-iso-languages": "^4.0.0",
