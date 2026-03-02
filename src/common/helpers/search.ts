@@ -141,6 +141,10 @@ export function getDocumentToIndex(entity:any) {
 		case 'Edition':
 			additionalProperties.push('authors');
 			break;
+		case 'EditionGroup':
+			additionalProperties.push('authors');
+			break;
+
 		default:
 			break;
 	}
@@ -441,7 +445,7 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 		'identifierSet.identifiers'
 	];
 
-	if (allEntities || entityType === 'Author' || entityType === 'Work' || entityType === 'Edition') {
+	if (allEntities || entityType === 'Author' || entityType === 'Work' || entityType === 'Edition' || entityType === 'EditionGroup') {
 		entityBehaviors.push({
 			model: Author,
 			relations: ['gender', 'beginArea', 'endArea'],
@@ -458,7 +462,7 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 	if (allEntities || entityType === 'EditionGroup') {
 		entityBehaviors.push({
 			model: EditionGroup,
-			relations: [],
+			relations: ['authorCredit.names'],
 			type: 'EditionGroup'
 		});
 	}
@@ -521,6 +525,30 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 		log.info('Attaching author names to Edition entities');
 
 		const editionCollection = entityLists.find((result) => result.type === 'Edition')?.collection;
+
+		editionCollection?.forEach((editionEntity) => {
+			const authorCredit = editionEntity.related('authorCredit');
+
+			const authorNames = [];
+
+			if (authorCredit) {
+				const names = authorCredit.related('names');
+				if (names) {
+					names.forEach(nameModel => {
+						const nameStr = nameModel.get('name');
+						if (nameStr) { authorNames.push(nameStr); }
+					});
+				}
+			}
+
+			editionEntity.set('authors', authorNames);
+		});
+	}
+
+	if (allEntities || entityType === 'EditionGroup') {
+		log.info('Attaching author names to EditionGroup entities');
+
+		const editionCollection = entityLists.find((result) => result.type === 'EditionGroup')?.collection;
 
 		editionCollection?.forEach((editionEntity) => {
 			const authorCredit = editionEntity.related('authorCredit');

@@ -522,7 +522,7 @@ export function formatSearchResponse(searchResult?: {results:any[], total:number
 					entityType
 				};
 
-				if (entityType === 'Edition' || entityType === 'Edition-Group') {
+				if (entityType === 'Edition' || entityType === 'EditionGroup') {
 					formattedEntity.authors = _.get(entity, 'authors', []);
 				}
 				return formattedEntity;
