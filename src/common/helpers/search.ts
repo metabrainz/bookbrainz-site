@@ -138,6 +138,13 @@ export function getDocumentToIndex(entity:any) {
 		case 'Work':
 			additionalProperties.push('authors');
 			break;
+		case 'Edition':
+			additionalProperties.push('authors');
+			break;
+		case 'EditionGroup':
+			additionalProperties.push('authors');
+			break;
+
 		default:
 			break;
 	}
@@ -438,7 +445,7 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 		'identifierSet.identifiers'
 	];
 
-	if (allEntities || entityType === 'Author' || entityType === 'Work') {
+	if (allEntities || entityType === 'Author' || entityType === 'Work' || entityType === 'Edition' || entityType === 'EditionGroup') {
 		entityBehaviors.push({
 			model: Author,
 			relations: ['gender', 'beginArea', 'endArea'],
@@ -448,14 +455,14 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 	if (allEntities || entityType === 'Edition') {
 		entityBehaviors.push({
 			model: Edition,
-			relations: ['editionGroup', 'editionFormat', 'editionStatus'],
+			relations: ['editionGroup', 'editionFormat', 'editionStatus', 'authorCredit.names'],
 			type: 'Edition'
 		});
 	}
 	if (allEntities || entityType === 'EditionGroup') {
 		entityBehaviors.push({
 			model: EditionGroup,
-			relations: [],
+			relations: ['authorCredit.names'],
 			type: 'EditionGroup'
 		});
 	}
@@ -514,6 +521,53 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 	}));
 	log.info(`Finished fetching entities from database for types ${entityBehaviors.map(({type}) => type).join(', ')}`);
 
+	if (allEntities || entityType === 'Edition') {
+		log.info('Attaching author names to Edition entities');
+
+		const editionCollection = entityLists.find((result) => result.type === 'Edition')?.collection;
+
+		editionCollection?.forEach((editionEntity) => {
+			const authorCredit = editionEntity.related('authorCredit');
+
+			const authorNames = [];
+
+			if (authorCredit) {
+				const names = authorCredit.related('names');
+				if (names) {
+					names.forEach(nameModel => {
+						const nameStr = nameModel.get('name');
+						if (nameStr) { authorNames.push(nameStr); }
+					});
+				}
+			}
+
+			editionEntity.set('authors', authorNames);
+		});
+	}
+
+	if (allEntities || entityType === 'EditionGroup') {
+		log.info('Attaching author names to EditionGroup entities');
+
+		const editionCollection = entityLists.find((result) => result.type === 'EditionGroup')?.collection;
+
+		editionCollection?.forEach((editionEntity) => {
+			const authorCredit = editionEntity.related('authorCredit');
+
+			const authorNames = [];
+
+			if (authorCredit) {
+				const names = authorCredit.related('names');
+				if (names) {
+					names.forEach(nameModel => {
+						const nameStr = nameModel.get('name');
+						if (nameStr) { authorNames.push(nameStr); }
+					});
+				}
+			}
+
+			editionEntity.set('authors', authorNames);
+		});
+	}
 	if (allEntities || entityType === 'Work') {
 		log.info('Attaching author names to Work entities');
 		const authorCollection = entityLists.find(
