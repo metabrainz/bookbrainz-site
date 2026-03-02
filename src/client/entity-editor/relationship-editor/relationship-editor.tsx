@@ -436,6 +436,7 @@ class RelationshipModal
 				{
 					attributes.includes('number') ?
 						<NumberAttribute
+							id="relationship-number-attribute"
 							value={this.state.attributeNumber?.value?.textValue}
 							onHandleChange={this.handleNumberAttributeChange}
 						/> :
