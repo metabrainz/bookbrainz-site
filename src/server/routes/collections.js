@@ -32,7 +32,6 @@ import target from '../templates/target';
 const router = express.Router();
 
 /* GET collections page. */
-// eslint-disable-next-line consistent-return
 router.get('/', async (req, res, next) => {
 	try {
 		const {orm} = req.app.locals;
@@ -41,7 +40,7 @@ router.get('/', async (req, res, next) => {
 		const type = req.query.type ? req.query.type : null;
 		const entityTypes = _.keys(commonUtils.getEntityModels(orm));
 		if (!entityTypes.includes(type) && type !== null) {
-			throw new error.BadRequestError(`Type ${type} do not exist`);
+			return next(new error.BadRequestError(`Type ${type} do not exist`));
 		}
 		const {user} = req;
 		// fetch 1 more collections than required to check nextEnabled
@@ -72,7 +71,7 @@ router.get('/', async (req, res, next) => {
 			</Layout>
 		);
 
-		res.send(target({
+		return res.send(target({
 			markup,
 			props: escapeProps(props),
 			script: '/js/collections.js',
@@ -85,8 +84,7 @@ router.get('/', async (req, res, next) => {
 });
 
 
-// eslint-disable-next-line consistent-return
-router.get('/collections', async (req, res, next) => {
+router.get('/collections', async (req, res) => {
 	try {
 		const {orm} = req.app.locals;
 		const size = req.query.size ? parseInt(req.query.size, 10) : 20;
@@ -98,10 +96,10 @@ router.get('/collections', async (req, res, next) => {
 		}
 
 		const orderedRevisions = await getOrderedPublicCollections(from, size, type, orm);
-		res.send(orderedRevisions);
+		return res.send(orderedRevisions);
 	}
 	catch (err) {
-		return next(err);
+		return error.sendErrorAsJSON(res, err);
 	}
 });
 
