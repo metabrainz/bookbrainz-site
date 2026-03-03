@@ -1,4 +1,4 @@
-/* eslint-disable sort-keys, camelcase */
+/* eslint-disable lines-around-comment, sort-keys, camelcase */
 /*
  * Copyright (C) 2016  Sean Burke
  *
@@ -55,7 +55,12 @@ export type IndexableEntities = EntityTypeString | 'Editor' | 'Collection' | 'Ar
 export type IndexableEntitiesOrAll = IndexableEntities | 'allEntities';
 const commonProperties = ['bbid', 'id', 'name', 'type', 'disambiguation'];
 
-
+/*
+Index settings and mappings for ElasticSearch. We use a single index for all entity types, and differentiate them by a `type` field on the documents.
+Customizing this is a painful process of trial and error, but you can find some great hints here:
+https://web.archive.org/web/20251015115752/https://developer.ibm.com/articles/elasticsearch-ultimate-guide/
+https://web.archive.org/web/20260303170636/https://oneuptime.com/blog/post/2026-01-25-elasticsearch-mappings/view
+*/
 const indexSettings:IndicesCreateRequest = {
 	index: _index,
 	settings: {
@@ -64,6 +69,7 @@ const indexSettings:IndicesCreateRequest = {
 			'mapping.ignore_malformed': true
 		},
 		analysis: {
+			/* This filter is used to sanitize identifiers and other 'keyword' field types. Removes non-alphanumeric characters */
 			char_filter: {
 				identifier_cleaner: {
 					type: 'pattern_replace',
@@ -71,6 +77,10 @@ const indexSettings:IndicesCreateRequest = {
 					replacement: ''
 				}
 			},
+			/*
+				Filter out/deprioritize stop words for most popular languages.
+				TODO: check whether we can surface the alias language to make this more precise
+			*/
 			filter: {
 				custom_stop_words_filter: {
 					type: 'stop',
@@ -82,17 +92,30 @@ const indexSettings:IndicesCreateRequest = {
 					]
 				}
 			},
+			/*
+				Analysers are used for text fields both at indexing and at search time to break up and clean up the text.
+				We don't use differente analysers for indexing vs. searching.
+			*/
 			analyzer: {
+				/*
+					Customize the built-in standard tokenizer (grammar based tokenization), see https://www.elastic.co/docs/reference/text-analysis/analysis-standard-analyzer
+					Also deburs accents, lowercases and filters stop words for more languages.
+					This is the main analyser used for most text fields such as name and disambiguation.
+				*/
 				custom_standard: {
 					type: 'custom',
 					tokenizer: 'standard',
 					filter: ['asciifolding', 'lowercase', 'custom_stop_words_filter']
 				},
-				trigrams_analyzer: {
+				/* Deburs accents, lowercases, filter stop words and uses an n-gram tokenizer to allow parital matches within the words
+				Ref: https://www.elastic.co/docs/reference/text-analysis/analysis-ngram-tokenizer
+				*/
+				ngrams_analyzer: {
 					type: 'custom',
 					tokenizer: 'ngram_tokenizer',
 					filter: ['asciifolding', 'lowercase', 'custom_stop_words_filter']
 				},
+				/* Cleans up keyword fields (removes non-alphanumeric tokens) such as identifiers and lowercases it */
 				identifier_analyzer: {
 					type: 'custom',
 					char_filter: ['identifier_cleaner'],
@@ -101,16 +124,18 @@ const indexSettings:IndicesCreateRequest = {
 				}
 			},
 			normalizer: {
+				/* Used only for keyword type when filtering by entity type, keywords types require a 'normalizer', not an 'analyser' */
 				keyword_normalizer: {
 					type: 'custom',
 					char_filter: ['identifier_cleaner'],
 					filter: ['lowercase']
 				}
 			},
+			/* Allows for partial matches within the text. Values modified by trial and error, can be reviewed  */
 			tokenizer: {
 				ngram_tokenizer: {
 					type: 'ngram',
-					min_gram: 2,
+					min_gram: 3,
 					max_gram: 6
 				}
 			}
@@ -118,33 +143,42 @@ const indexSettings:IndicesCreateRequest = {
 	},
 	mappings: {
 		properties: {
+			/*
+				Main search field for entity names. Analyse with trigrams to allow for typos, and using the built-in search-as-you-type for the autocomplete endpoint.
+				Use the customized standard analyser first, then also analyse with n-grams for typos/partial matches and autocompletion
+				Ref: https://www.elastic.co/docs/reference/elasticsearch/mapping-reference/search-as-you-type
+			*/
 			aliases: {
 				properties: {
 					name: {
 						type: 'text',
 						analyzer: 'custom_standard',
 						fields: {
-							trigrams: {type: 'text', analyzer: 'trigrams_analyzer'},
+							trigrams: {type: 'text', analyzer: 'ngrams_analyzer'},
 							suggest: {type: 'search_as_you_type'}
 						}
 					}
 				}
 			},
+			/* Search works by author name; author names are attached to the document at indexing time*/
 			authors: {
 				type: 'text',
 				analyzer: 'custom_standard',
 				fields: {
-					trigrams: {type: 'text', analyzer: 'trigrams_analyzer'}
+					trigrams: {type: 'text', analyzer: 'ngrams_analyzer'}
 				}
 			},
+			/* Used only for filtering by entity type; uses a keyword 'type' field on the documents */
 			type: {
 				type: 'keyword',
 				normalizer: 'keyword_normalizer'
 			},
+			/* Disambiguation comments are searchable too, but are ranked much lower */
 			disambiguation: {
 				type: 'text',
 				analyzer: 'custom_standard'
 			},
+			/* Used to search by identifier such as ISBNs */
 			identifiers: {
 				properties: {
 					value: {
@@ -692,6 +726,7 @@ export async function autocomplete(orm:ORM, query:string, type:IndexableEntities
 	if (commonUtils.isValidBBID(query)) {
 		queryBody = {
 			ids: {
+				/*  Find by BBID directly instead of performing a text search */
 				values: [query]
 			}
 		};
@@ -701,6 +736,8 @@ export async function autocomplete(orm:ORM, query:string, type:IndexableEntities
 			multi_match: {
 				query: query.toLowerCase(),
 				type: 'bool_prefix',
+				/* Uses the built-in search_as_you_type mapping
+				 https://www.elastic.co/docs/reference/elasticsearch/mapping-reference/search-as-you-type*/
 				fields: [
 					'aliases.name.suggest',
 					'aliases.name.suggest._2gram',
@@ -740,6 +777,8 @@ export function searchByName(orm:ORM, name:string, type:IndexableEntitiesOrAll |
 			bool: {
 				should: [
 					{
+						/* We match both the name and the disambguation text but rank the latter much much lower.
+						Values chosen semi-randomly by trial and error, can be tweaked if needed */
 						multi_match: {
 							query,
 							fields: ['aliases.name^15', 'disambiguation'],
@@ -747,6 +786,8 @@ export function searchByName(orm:ORM, name:string, type:IndexableEntitiesOrAll |
 						}
 					},
 					{
+						/* Alternatively, do partial matches within text fields, rank higher than disambiguation but lower than name
+						Reauires a minimum threshold of 75% of the terms to be matched to remove too laxe matches*/
 						multi_match: {
 							query,
 							fields: ['aliases.name.trigrams^2'],
@@ -755,6 +796,7 @@ export function searchByName(orm:ORM, name:string, type:IndexableEntitiesOrAll |
 						}
 					},
 					{
+						/*  Finally, allow searching by identifier (for example ISBN), with a very high boost since hits should be exact matches of identifiers */
 						term: {
 							'identifiers.value': {
 								value: query.replace(/[^a-zA-Z0-9]/g, ''),
@@ -767,10 +809,14 @@ export function searchByName(orm:ORM, name:string, type:IndexableEntitiesOrAll |
 		};
 		const isWorkTypeOnly = sanitizedEntityType === 'work';
 		const containsWorkType = Array.isArray(sanitizedEntityType) && sanitizedEntityType.includes('work');
-		// If this is a work search, include authors field in scoring
 		if (
 			isWorkTypeOnly || containsWorkType
 		) {
+			/*
+				If this is a work search or for all entities, also search by author name.
+				If it's a work-only search, give matches more boost since they are more likely to be relevant (search for work by author name).
+				Otherwise use a regular boost value as it is less relevant.
+				*/
 			const authorBoost = isWorkTypeOnly ? 5 : 1;
 			queryBody.bool.should[0].multi_match.fields.push(`authors^${authorBoost}`);
 			queryBody.bool.should[1].multi_match.fields.push(`authors.trigrams^${authorBoost}`);
