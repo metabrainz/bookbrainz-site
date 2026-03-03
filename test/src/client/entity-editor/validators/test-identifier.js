@@ -41,14 +41,14 @@ function describeValidateIdentifierValueNoIdentifierTypes() {
 }
 
 function describeValidateIdentifierValueWithIdentifierTypes() {
-	it('should pass a valid newer-format ASIN (B0CQKH14BB)', () => {
+	it('should pass a valid newer-format ASIN', () => {
 		const result = validateIdentifierValue(
 			'B0CQKH14BB', 1, IDENTIFIER_TYPES
 		);
 		expect(result).to.be.true;
 	});
 
-	it('should pass a valid older-format ASIN (B076KQRJV1)', () => {
+	it('should pass a valid older-format ASIN', () => {
 		const result = validateIdentifierValue(
 			'B076KQRJV1', 1, IDENTIFIER_TYPES
 		);
