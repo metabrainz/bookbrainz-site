@@ -898,3 +898,16 @@ div[class~=collapsing]+div[class=card-header] .accordion-arrow {
     bottom: 0.3em;
 	left: -0.5em;
 }
+
+.card-header .create-works-tab-link {
+	color: inherit;
+	font-weight: 300;
+	text-decoration: none;
+	&:hover,
+	&:visited {
+		color: inherit !important;
+	}
+	&.inactive {
+		opacity: 0.6;
+	}
+}
