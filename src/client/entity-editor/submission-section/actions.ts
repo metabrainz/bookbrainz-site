@@ -234,6 +234,24 @@ export function submit(
 ): SubmitResult {
 	return (dispatch, getState) => {
 		const rootState = getState();
+		
+		// Client-side validation to catch potential issues from page refresh
+		const stateJS = rootState.toJS ? rootState.toJS() : rootState;
+		
+		// Check if nameSection exists and has required fields
+		if (!stateJS.nameSection || !stateJS.nameSection.name || !stateJS.nameSection.sortName) {
+			const errorMessage = 'Name and sort name are required. If you refreshed the page after filling the form, please fill it out again.';
+			dispatch(setSubmitError(errorMessage));
+			return Promise.resolve();
+		}
+		
+		// Check if aliasEditor exists (it should be an object, even if empty)
+		if (!stateJS.aliasEditor || typeof stateJS.aliasEditor !== 'object') {
+			const errorMessage = 'Form data appears to be incomplete. If you refreshed the page, please fill out the form again.';
+			dispatch(setSubmitError(errorMessage));
+			return Promise.resolve();
+		}
+		
 		dispatch(setSubmitted(true));
 		if (isUnifiedForm) {
 			return postUFSubmission(submissionUrl, rootState)
