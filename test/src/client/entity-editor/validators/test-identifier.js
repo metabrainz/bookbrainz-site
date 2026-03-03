@@ -41,6 +41,26 @@ function describeValidateIdentifierValueNoIdentifierTypes() {
 }
 
 function describeValidateIdentifierValueWithIdentifierTypes() {
+	it('should pass a valid newer-format ASIN (B0CQKH14BB)', () => {
+		const result = validateIdentifierValue(
+			'B0CQKH14BB', 1, IDENTIFIER_TYPES
+		);
+		expect(result).to.be.true;
+	});
+
+	it('should pass a valid older-format ASIN (B076KQRJV1)', () => {
+		const result = validateIdentifierValue(
+			'B076KQRJV1', 1, IDENTIFIER_TYPES
+		);
+		expect(result).to.be.true;
+	});
+
+	it('should reject an ASIN that does not start with B0', () => {
+		const result = validateIdentifierValue(
+			'C0CQKH14BB', 1, IDENTIFIER_TYPES
+		);
+		expect(result).to.be.false;
+	});
 	it('should pass a non-empty string value that matches the validation regular expression', () => {
 		const result = validateIdentifierValue(
 			'B076KQRJV1', 1, IDENTIFIER_TYPES
