@@ -100,6 +100,13 @@ const indexSettings:IndicesCreateRequest = {
 					filter: ['lowercase']
 				}
 			},
+			normalizer: {
+				keyword_normalizer: {
+					type: 'custom',
+					char_filter: ['identifier_cleaner'],
+					filter: ['lowercase']
+				}
+			},
 			tokenizer: {
 				ngram_tokenizer: {
 					type: 'ngram',
@@ -129,6 +136,10 @@ const indexSettings:IndicesCreateRequest = {
 				fields: {
 					trigrams: {type: 'text', analyzer: 'trigrams_analyzer'}
 				}
+			},
+			type: {
+				type: 'keyword',
+				normalizer: 'keyword_normalizer'
 			},
 			disambiguation: {
 				type: 'text',
@@ -161,7 +172,14 @@ function _applyTypeFilterToDSL(dslQuery:SearchRequest, type:IndexableEntitiesOrA
 	if (!sanitizedType) {
 		return;
 	}
-	const typeFilter = Array.isArray(sanitizedType) ? {terms: {type: sanitizedType}} : {terms: {type: [sanitizedType]}};
+
+	/*
+		Filtering by type is done using the 'type' attribute on documents, which is indexed as a keyword (lowercased and dashes removed),
+		and using a terms query to match the sanitized type(s) against it.
+		We can filter by multiple entity types in the same query, so we normalize to an array of terms for simplicity
+	*/
+	const sanitizedTypes = Array.isArray(sanitizedType) ? sanitizedType : [sanitizedType];
+	const typeFilter = {terms: {type: sanitizedTypes}};
 
 	const existingQuery = dslQuery.query;
 	const newQuery:QueryDslBoolQuery = {
