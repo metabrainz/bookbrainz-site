@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import {Button, Col, Collapse, Row} from 'react-bootstrap';
+import {Col, Collapse, Row} from 'react-bootstrap';
 import {formatDate, stringToHTMLWithLinks} from '../../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -63,9 +63,13 @@ class EntityAnnotation extends React.Component {
 						<pre className="annotation-content" ref={this.annotationContentRef} >{stringToHTMLWithLinks(annotation.content)}</pre>
 					</Collapse>
 					{this.state.showButton &&
-					<Button variant="link" onClick={this.handleToggleCollapse}>
+					<a
+						href="#annotation-content"
+						role="button"
+						onClick={(e) => { e.preventDefault(); this.handleToggleCollapse(); }}
+					>
 						Show {this.state.open ? 'less' : 'more…'}
-					</Button>}
+					</a>}
 					<p className="text-muted">Last modified: <span title={formatDate(lastModifiedDate, true)}>{formatDate(lastModifiedDate)}</span>
 						<span className="small"> (revision <a href={`/revision/${annotation.lastRevisionId}`}>#{annotation.lastRevisionId}</a>)</span>
 					</p>
