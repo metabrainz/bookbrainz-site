@@ -1,6 +1,7 @@
-import express from "express";
-import { getFormattedCollection } from "../helpers/formatCollectionData";
-import { makeCollectionLoader } from "../helpers/collectionLoader";
+import express from 'express';
+import {getFormattedCollection} from '../helpers/formatCollectionData';
+import {makeCollectionLoader} from '../helpers/collectionLoader';
+
 
 const router = express.Router();
 
@@ -63,7 +64,7 @@ const router = express.Router();
  *            type: string
  *      responses:
  *        200:
- *          description: Basic information of a Collection 
+ *          description: Basic information of a Collection
  *          content:
  *            application/json:
  *              schema:
@@ -71,10 +72,10 @@ const router = express.Router();
  *        404:
  *          description: Collection not found
  *        400:
- *          description: Invalid collectionId 
+ *          description: Invalid collectionId
  */
 
-router.get("/:collectionId", makeCollectionLoader(), async (req, res) => {
+router.get('/:collectionId', makeCollectionLoader(), async (req, res) => {
 	const collectionInfo = await getFormattedCollection(res.locals.collection);
 	return res.status(200).send(collectionInfo);
 });
