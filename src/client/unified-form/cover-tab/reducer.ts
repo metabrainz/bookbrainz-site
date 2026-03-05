@@ -1,8 +1,10 @@
-import {ADD_AUTHOR, ADD_PUBLISHER, AUTO_ISBN, CLEAR_AUTHOR, CLEAR_PUBLISHER, CLEAR_PUBLISHERS, UPDATE_ISBN_TYPE, UPDATE_ISBN_VALUE} from './action';
+import {ADD_AUTHOR, ADD_PUBLISHER, AUTO_ISBN, CLEAR_AUTHOR,
+	 CLEAR_PUBLISHER, CLEAR_PUBLISHERS, UPDATE_ISBN_CONFIRMED, UPDATE_ISBN_TYPE, UPDATE_ISBN_VALUE} from './action';
 import Immutable from 'immutable';
 
 
 export function ISBNReducer(state = Immutable.Map({
+	confirmed: false,
 	type: null,
 	value: ''
 }), action) {
@@ -12,6 +14,8 @@ export function ISBNReducer(state = Immutable.Map({
 			return state.set('type', payload);
 		case UPDATE_ISBN_VALUE:
 			return state.set('value', payload);
+		case UPDATE_ISBN_CONFIRMED:
+			return state.set('confirmed', payload);
 		default:
 			return state;
 	}

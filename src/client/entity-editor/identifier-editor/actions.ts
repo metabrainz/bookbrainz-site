@@ -23,6 +23,7 @@ export const UPDATE_IDENTIFIER_VALUE = 'UPDATE_IDENTIFIER_VALUE';
 export const HIDE_IDENTIFIER_EDITOR = 'HIDE_IDENTIFIER_EDITOR';
 export const REMOVE_EMPTY_IDENTIFIERS = 'REMOVE_EMPTY_IDENTIFIERS';
 export const ADD_OTHER_ISBN = 'ADD_OTHER_ISBN';
+export const UPDATE_IDENTIFIER_CONFIRMED = 'UPDATE_IDENTIFIER_CONFIRMED';
 
 export type Action = {
 	type: string,
@@ -123,6 +124,13 @@ export function updateIdentifierType(rowId: number, value: number): Action {
 			value
 		},
 		type: UPDATE_IDENTIFIER_TYPE
+	};
+}
+
+export function updateIdentifierConfirmed(rowId: number, confirmed: boolean): Action {
+	return {
+		payload: {confirmed, rowId},
+		type: UPDATE_IDENTIFIER_CONFIRMED
 	};
 }
 
