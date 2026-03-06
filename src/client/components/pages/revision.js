@@ -41,7 +41,7 @@ class RevisionPage extends React.Component {
 		}
 		return list.map(
 			(val, idx) => {
-				const formattedValue = isChangeADate ? transformISODateForDisplay(val) : val.toString();
+				const formattedValue = isChangeADate ? transformISODateForDisplay(val) : val?.toString();
 				// eslint-disable-next-line react/no-array-index-key
 				return <div key={`${idx}${val}`}>{formattedValue}</div>;
 			}

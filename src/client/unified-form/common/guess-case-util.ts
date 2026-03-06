@@ -78,7 +78,7 @@ export function parseNorwegianName(words: string[]): string | null {
 
 export function parseSpanishName(words: string[], particles: string[]): string | null {
 	if (words.length < 2) return null;
-	
+
 	const yIndex = words.findIndex(w => w.toLowerCase() === 'y');
 	if (yIndex > 0 && yIndex < words.length - 1) {
 		const lastName = words.slice(yIndex - 1).join(' ');

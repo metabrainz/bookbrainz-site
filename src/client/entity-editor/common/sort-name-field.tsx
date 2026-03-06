@@ -23,6 +23,7 @@ import ValidationLabel from '../common/validation-label';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {makeSortName} from '../../unified-form/common/guess-case-util';
 
+
 type onChangeParamType = {
 	target: {
 		value: string
@@ -137,7 +138,9 @@ function SortNameField({
 SortNameField.displayName = 'SortNameField';
 SortNameField.defaultProps = {
 	empty: false,
+	entityType: null,
 	error: false,
+	languageCode: null,
 	onChange: null
 };
 

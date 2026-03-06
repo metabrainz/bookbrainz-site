@@ -140,6 +140,7 @@ const AliasRow = ({
 );
 AliasRow.displayName = 'AliasEditor.AliasRow';
 AliasRow.propTypes = {
+	entityType: PropTypes.string,
 	languageOptions: PropTypes.array.isRequired,
 	languageValue: PropTypes.number,
 	nameValue: PropTypes.string.isRequired,
@@ -152,6 +153,7 @@ AliasRow.propTypes = {
 	sortNameValue: PropTypes.string.isRequired
 };
 AliasRow.defaultProps = {
+	entityType: null,
 	languageValue: null
 };
 
