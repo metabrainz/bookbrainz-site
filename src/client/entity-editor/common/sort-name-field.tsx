@@ -31,6 +31,7 @@ type onChangeParamType = {
 
 type Props = {
 	empty?: boolean,
+	entityType?: string,
 	error?: boolean,
 	languageCode?: string,
 	onChange?: (value: onChangeParamType) => unknown,
@@ -58,6 +59,7 @@ type Props = {
  */
 function SortNameField({
 	empty,
+	entityType,
 	error,
 	languageCode,
 	onChange,
@@ -67,7 +69,7 @@ function SortNameField({
 	let input;
 
 	function handleGuessClick() {
-		const generatedSortName = makeSortName(storedNameValue, languageCode);
+		const generatedSortName = makeSortName(storedNameValue, languageCode, entityType);
 		if (input) {
 			input.value = generatedSortName;
 		}

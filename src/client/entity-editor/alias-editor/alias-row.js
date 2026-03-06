@@ -64,6 +64,7 @@ import {isAliasEmpty} from '../helpers';
  * @returns {ReactElement} React element containing the rendered AliasRow.
  */
 const AliasRow = ({
+	entityType,
 	languageOptions,
 	languageValue,
 	nameValue,
@@ -94,6 +95,7 @@ const AliasRow = ({
 					empty={
 						isAliasEmpty(nameValue, sortNameValue, languageValue)
 					}
+					entityType={entityType}
 					error={!validateAliasSortName(sortNameValue)}
 					storedNameValue={nameValue}
 					onChange={onSortNameChange}

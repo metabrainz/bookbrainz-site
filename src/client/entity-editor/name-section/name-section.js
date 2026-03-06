@@ -259,6 +259,7 @@ class NameSection extends React.Component {
 							empty={isAliasEmpty(
 								nameValue, sortNameValue, languageValue
 							)}
+							entityType={entityType}
 							error={!validateNameSectionSortName(sortNameValue)}
 							languageCode={languageIsoCode}
 							storedNameValue={nameValue}

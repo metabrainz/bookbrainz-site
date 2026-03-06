@@ -86,6 +86,15 @@ export function parseSpanishName(words: string[], particles: string[]): string |
 		return `${lastName}, ${firstName}`;
 	}
 	
+    if (words.length >= 4) {
+		const twoParticle = `${words[words.length - 3]} ${words[words.length - 2]}`.toLowerCase();
+		if (particles.includes(twoParticle)) {
+			const lastName = words.slice(-3).join(' ');
+			const firstName = words.slice(0, -3).join(' ');
+			return `${lastName}, ${firstName}`;
+		}
+	}
+
 	if (words.length >= 3) {
 		const lastName = words.slice(-2).join(' ');
 		const firstName = words.slice(0, -2).join(' ');
@@ -98,6 +107,14 @@ export function parseSpanishName(words: string[], particles: string[]): string |
 export function parseFrenchName(words: string[], particles: string[]): string | null {
 	if (words.length < 3) return null;
 
+    if (words.length >= 4) {
+        const twoParticle = `${words[words.length - 3]} ${words[words.length - 2]}`.toLowerCase();
+		if (particles.includes(twoParticle)) {
+			const lastName = words.slice(-3).join(' ');
+			const firstName = words.slice(0, -3).join(' ');
+			return `${lastName}, ${firstName}`;
+		}
+    }
 	const particle = words[words.length - 2].toLowerCase();
 	if (particles.includes(particle)) {
 		const lastName = words.slice(-2).join(' ');
@@ -169,7 +186,8 @@ export function parseRussianName(words: string[]): string | null {
 	return null;
 }
 
-export function makeSortName(name: string, language?: string): string {
+export function makeSortName(name: string, language?: string, entityType?:string): string {
+    
     const lang = language || 'en';
     /*
      * Remove leading and trailing spaces, and return a blank sort name if
@@ -188,11 +206,17 @@ export function makeSortName(name: string, language?: string): string {
     }
     
     // First, check if sort name is for collective, by detecting article
-    const firstWord = stripDot(words[0]);
-    const article = articles[lang] || articles.en;
-    if (article.length > 0 && article.includes(firstWord.toLowerCase())) {
-        // The Collection of Stories --> Collection of Stories, The
-        return `${words.slice(1).join(' ')}, ${firstWord}`;
+    if (!entityType || entityType !== 'author') {
+        const firstWord = stripDot(words[0]);
+        const article = articles[lang] || articles.en;
+        if (article.length > 0 && article.includes(firstWord.toLowerCase())) {
+            // The Collection of Stories --> Collection of Stories, The
+            return `${words.slice(1).join(' ')}, ${firstWord}`;
+        }
+
+        if (entityType) {
+            return trimmedName;
+        }
     }
 
     /*
