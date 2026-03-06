@@ -49,7 +49,7 @@ router.get('/', async (req, res, next) => {
 			homepage: true,
 			isLoggedIn: Boolean(req.user),
 			recent,
-			requiresJS: Boolean(res.locals.user)
+			requireJS: Boolean(res.locals.user)
 		});
 
 		/*
