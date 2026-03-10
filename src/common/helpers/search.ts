@@ -249,6 +249,8 @@ async function _searchForEntities(orm, dslQuery) {
 	return {results: [], total: 0};
 }
 
+const _maxRetries = 10;
+
 export async function _bulkIndexEntities(entities) {
 	if (!entities.length) {
 		return;
@@ -258,7 +260,8 @@ export async function _bulkIndexEntities(entities) {
 	let entitiesToIndex = entities;
 
 	let operationSucceeded = false;
-	while (!operationSucceeded) {
+	let retryCount = 0;
+	while (!operationSucceeded && retryCount < _maxRetries) {
 		const bulkOperations = entitiesToIndex.reduce((accumulator, entity) => {
 			accumulator.push({
 				index: {
@@ -304,6 +307,7 @@ export async function _bulkIndexEntities(entities) {
 
 				if (entitiesToIndex.length) {
 					operationSucceeded = false;
+					retryCount++;
 
 					const jitter = Math.random() * _maxJitter;
 					// eslint-disable-next-line no-await-in-loop
@@ -314,7 +318,11 @@ export async function _bulkIndexEntities(entities) {
 		catch (error) {
 			log.error('error bulk indexing entities for search:', error);
 			operationSucceeded = false;
+			retryCount++;
 		}
+	}
+	if (retryCount >= _maxRetries) {
+		log.error(`_bulkIndexEntities: exceeded max retries (${_maxRetries}), giving up on ${entitiesToIndex.length} entities`);
 	}
 }
 
@@ -371,22 +379,19 @@ export async function autocomplete(orm:ORM, query:string, type:IndexableEntities
 	return searchResponse.results;
 }
 
-// eslint-disable-next-line consistent-return
 export function indexEntity(entity) {
 	const entityType = entity.get('type');
 	const document = getDocumentToIndex(entity);
-	if (entity) {
-		return _client
-			.index({
-				body: document,
-				id: entity.get('bbid') || entity.get('id'),
-				index: _index,
-				type: snakeCase(entityType)
-			})
-			.catch((error) => {
-				log.error('error indexing entity for search:', error);
-			});
-	}
+	return _client
+		.index({
+			body: document,
+			id: entity.get('bbid') || entity.get('id'),
+			index: _index,
+			type: snakeCase(entityType)
+		})
+		.catch((error) => {
+			log.error('error indexing entity for search:', error);
+		});
 }
 
 export function deleteEntity(entity) {
@@ -615,7 +620,7 @@ export async function generateIndex(orm, entityType: IndexableEntities | 'allEnt
 	}
 	log.info('Refreshing search index');
 	await refreshIndex();
-	log.notice('Search indexing finished succesfully');
+	log.notice('Search indexing finished successfully');
 }
 
 export async function checkIfExists(orm, name, type) {
@@ -720,7 +725,7 @@ export async function init(orm: ORM, options:ClientOptions) {
 		return false;
 	}
 	const mainIndexExists = await _client.indices.exists({index: _index});
-	if (!mainIndexExists) {
+	if (!mainIndexExists.body) {
 		// Automatically index on app startup if we haven't already, but don't block app setup
 		generateIndex(orm).catch(log.error);
 	}
