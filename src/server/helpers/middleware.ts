@@ -375,7 +375,7 @@ export async function validateCollectionParams(req, res, next) {
 	const editorsJSON = editors.toJSON();
 	for (let i = 0; i < collaboratorIds.length; i++) {
 		const collaboratorId = collaboratorIds[i];
-		if (!editorsJSON.find(editor => editor.id === collaboratorId)) {
+		if (!editorsJSON.find(editor => editor.id === parseInt(collaboratorId, 10))) {
 			return next(new error.NotFoundError(`Collaborator ${collaboratorId} does not exist`, req));
 		}
 	}
