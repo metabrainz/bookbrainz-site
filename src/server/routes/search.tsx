@@ -58,12 +58,12 @@ router.get('/', async (req, res, next) => {
 		if (query) {
 			// get 1 more results to check nextEnabled
 			const searchResponse = await search.searchByName(orm, query, _snakeCase(type), size + 1, from);
-			const {results: entities} = searchResponse;
+			const {results: entities, total} = searchResponse;
 			const initialResults = entities.filter(entity => !isNil(entity));
 			searchResults = {
 				initialResults,
 				query,
-				total: initialResults.length
+				total: total ?? initialResults.length
 			};
 		}
 
@@ -106,7 +106,8 @@ router.get('/search', (req, res) => {
 	const query = req.query.q;
 	const type = req.query.type as search.IndexableEntitiesOrAll ?? 'allEntities';
 
-	const {size, from} = req.query;
+	const size = req.query.size ? parseInt(String(req.query.size), 10) : 20;
+	const from = req.query.from ? parseInt(String(req.query.from), 10) : 0;
 
 	const searchPromise = search.searchByName(orm, query, _snakeCase(type), size, from);
 
@@ -119,9 +120,13 @@ router.get('/search', (req, res) => {
  */
 router.get('/autocomplete', (req, res) => {
 	const {orm} = req.app.locals;
-	const query = req.query.q.toString();
+	const query = req.query.q?.toString() ?? '';
 	const type = req.query.type as search.IndexableEntitiesOrAll ?? 'allEntities';
 	const size = Number(req.query.size) || 42;
+
+	if (!query) {
+		return handler.sendPromiseResult(res, Promise.resolve([]));
+	}
 
 	const searchPromise = search.autocomplete(orm, query, type, size);
 
@@ -155,7 +160,7 @@ router.get('/reindex', auth.isAuthenticated, auth.isAuthorized(REINDEX_SEARCH_SE
 		return handler.sendPromiseResult(res, {success: true});
 	}
 	catch (err) {
-		return error.sendErrorAsJSON(res, new error.SiteError(`Cannot index entites for search, something went wrong: ${err.toString()}`, req));
+		return error.sendErrorAsJSON(res, new error.SiteError(`Cannot index entities for search, something went wrong: ${err.toString()}`, req));
 	}
 });
 
