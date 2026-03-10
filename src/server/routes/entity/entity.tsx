@@ -363,7 +363,7 @@ export async function deleteRelationships(orm: any, transacting: Transaction, ma
 		if (!otherBBIDs.length) {
 			return [];
 		}
-		// Loop over the BBID's of other entites related to deleted entity
+		// Loop over the BBID's of other entities related to deleted entity
 		await Promise.all(_.uniq(otherBBIDs).map(async (entityBbid) => {
 			const otherEntity = await getEntityByBBID(orm, transacting, entityBbid);
 
@@ -377,7 +377,7 @@ export async function deleteRelationships(orm: any, transacting: Transaction, ma
 			// Fetch other entity relationships to remove relation with the deleted entity
 			let otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
 
-			// Mark entites related to deleted entity as removed
+			// Mark entities related to deleted entity as removed
 			otherEntityRelationships = otherEntityRelationships.map((rel) => {
 				if (mainBBID !== rel.sourceBbid && mainBBID !== rel.targetBbid) {
 					return rel;
