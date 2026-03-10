@@ -294,9 +294,9 @@ export async function searchOption(orm, type:string, query:string, idKey = 'id',
 	if (results.length) {
 		const firstMatch = results[0];
 		const option = {
-			disambiguation: idKey === 'id' ? firstMatch.disambiguation.comment : null,
+			disambiguation: idKey === 'id' ? (firstMatch.disambiguation?.comment ?? null) : null,
 			id: firstMatch[idKey],
-			text: firstMatch.defaultAlias.name,
+			text: firstMatch.defaultAlias?.name ?? '(unnamed)',
 			type: firstMatch.type
 
 		};
