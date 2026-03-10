@@ -174,7 +174,6 @@ class RevisionPage extends React.Component {
 				location.reload();
 			})
 			.catch((res) => {
-				// TODO: Add proper error handling.
 				const {error} = res.body;
 				return error;
 			});
