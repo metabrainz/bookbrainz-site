@@ -399,7 +399,7 @@ export default tseslint.config(
 				...globals.browser,
 				...globals.node,
 			},
-			parser: tseslint.parser,
+			parser: '@typescript-eslint/parser',
 			parserOptions: {
 				projectService: true,
 				ecmaFeatures: {
