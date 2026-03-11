@@ -17,10 +17,19 @@
  */
 
 import BookBrainzData from 'bookbrainz-data';
-import config from '../config/test.json';
+/* Having some issues with import assertions, so importing js file instead
+Node >=20 requires the "with { type: 'json' }* assertion  but Babel parsing
+is throwing an error (maybe typescript-eslint issue?) that needs investigation.
+*/
+// import config from '../config/test.json' with { type: 'json' };
+import _ from 'lodash';
+import config from '../config/test.js';
 
-
-const orm = BookBrainzData(config.database);
+/* Unsure why, but this file is imported in two different ways when running tests
+This causes the default export of the ORM package to be recognized different, hence 
+the following check to identify the default export (init function) */
+const initFunc = _.isFunction(BookBrainzData) ? BookBrainzData : BookBrainzData.default;
+const orm = initFunc(config.database);
 
 // opens up database connection for later use in tests
 export default orm;
