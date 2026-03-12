@@ -145,17 +145,15 @@ class EntityReviews extends React.Component {
 			);
 		}
 		return (
-			<Row className="flex-column">
+			<React.Fragment>
 				<h2>
                     Reviews
-					<span className="small text-muted">
-					    {this.reviewsCount ?
-						    ` ${this.reviewsCount} review${this.reviewsCount > 1 ? 's' : ''}` : ' No reviews'
-						}
+					<span className="small px-1 text-muted">
+					    {this.reviewsCount > 0 && ` (${this.reviewsCount})`}
 					</span>
 				</h2>
 				{reviewContent}
-			</Row>
+			</React.Fragment>
 		);
 	}
 }
