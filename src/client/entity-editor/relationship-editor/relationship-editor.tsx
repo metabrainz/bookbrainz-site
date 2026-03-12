@@ -362,7 +362,12 @@ class RelationshipModal
 		// Filter out Series of a different entityType than the current entity.
 		// This ensures we don't add an entity of type X to a Series of entityType Y.
 		// For Example, a Work cannot be added to an Author Series.
-		const filterDifferentTypeSeries = (entity) => (entity.type === 'Series' ? baseEntity.type === entity.entityType : true);
+		const filterDifferentTypeSeries = (entity) => {
+			if (entity.type === 'Series') {
+				return baseEntity.type === entity.entityType || baseEntity.type === 'Series';
+			}
+			return true;
+		};
 		const additionalFilters = [filterDifferentTypeSeries];
 		return (
 			<EntitySearchFieldOption
