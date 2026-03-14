@@ -22,13 +22,14 @@ import React from 'react';
 
 
 export function NumberAttribute({
-	onHandleChange, value
+	id, onHandleChange, value
 }) {
 	return (
 	    <>
-			<Form.Label>Number</Form.Label>
+			<Form.Label htmlFor={id}>Number</Form.Label>
 			<input
 				className="form-control"
+				id={id}
 				placeholder="Enter a value"
 				type="text"
 				value={value || ''}
@@ -40,6 +41,7 @@ export function NumberAttribute({
 
 
 NumberAttribute.propTypes = {
+	id: PropTypes.string.isRequired,
 	onHandleChange: PropTypes.func.isRequired,
 	value: PropTypes.string
 };
