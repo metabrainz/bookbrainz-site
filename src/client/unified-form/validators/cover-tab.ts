@@ -12,7 +12,8 @@ export function validateISBN(isbn) {
 	return !(
 		Boolean(isbn) &&
         !get(isbn, 'type', null) &&
-        get(isbn, 'value', '').length > 0
+        get(isbn, 'value', '').length > 0 &&
+        !get(isbn, 'confirmed', false)
 	);
 }
 

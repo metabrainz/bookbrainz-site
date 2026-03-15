@@ -19,11 +19,12 @@
 import * as Immutable from 'immutable';
 import {
 	ADD_IDENTIFIER_ROW, ADD_OTHER_ISBN, REMOVE_EMPTY_IDENTIFIERS, REMOVE_IDENTIFIER_ROW,
-	UPDATE_IDENTIFIER_TYPE, UPDATE_IDENTIFIER_VALUE
+	 UPDATE_IDENTIFIER_CONFIRMED, UPDATE_IDENTIFIER_TYPE, UPDATE_IDENTIFIER_VALUE
 } from './actions';
 
 
 const EMPTY_IDENTIFIER = Immutable.Map({
+	confirmed: false,
 	type: null,
 	value: ''
 });
@@ -40,9 +41,7 @@ function reducer(
 			return state.set(payload, EMPTY_IDENTIFIER);
 		case UPDATE_IDENTIFIER_VALUE:
 		{
-			const updatedValue = state.setIn(
-				[payload.rowId, 'value'], payload.value
-			);
+			const updatedValue = state.setIn([payload.rowId, 'value'], payload.value);
 			// don't switch type if user already selected it
 			if (payload.suggestedType && !state.getIn([payload.rowId, 'type'])) {
 				return updatedValue.setIn(
@@ -54,6 +53,8 @@ function reducer(
 		}
 		case UPDATE_IDENTIFIER_TYPE:
 			return state.setIn([payload.rowId, 'type'], payload.value);
+		case UPDATE_IDENTIFIER_CONFIRMED:
+			return state.setIn([payload.rowId, 'confirmed'], payload.confirmed);
 		case REMOVE_IDENTIFIER_ROW:
 			return state.delete(payload);
 		case REMOVE_EMPTY_IDENTIFIERS:

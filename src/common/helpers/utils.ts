@@ -270,6 +270,11 @@ export function isbn13To10(isbn13:string):string | null {
 
 	return digits.join('');
 }
+
+export function normalizeIdentifier(value: string): string {
+	return value.replace(/[\s-]/g, '');
+}
+
 export function filterIdentifierTypesByEntityType(
 	identifierTypes: Array<{id: number, entityType: string}>,
 	entityType: string
