@@ -658,8 +658,16 @@ export async function checkIfExists(orm, name, type) {
 	return processedResults;
 }
 
+function normalizeForSearch(str) {
+	if (!isString(str) || str.length === 0) {
+		return str;
+	}
+	return str.normalize('NFD').replace(/\p{M}/gu, '');
+}
+
 export function searchByName(orm, name, type, size, from) {
 	const sanitizedEntityType = sanitizeEntityType(type);
+	const normalizedName = normalizeForSearch(name);
 	const dslQuery = {
 		body: {
 			from,
@@ -672,7 +680,7 @@ export function searchByName(orm, name, type, size, from) {
 						'identifiers.value'
 					],
 					minimum_should_match: '80%',
-					query: name,
+					query: normalizedName,
 					type: 'cross_fields'
 				}
 			},
