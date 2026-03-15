@@ -7,6 +7,7 @@ import {forEach, get, map, size, toLower} from 'lodash';
 import CreateEntityModal from '../common/create-entity-modal';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
+import {RecentlyUsed} from '../common/recently-used';
 import SearchEntityCreate from '../common/search-entity-create-select';
 import SeriesSection from '../../entity-editor/series-section/series-section';
 import WorkRow from './work-row';
@@ -51,6 +52,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 	 onAddSeriesItem, onSubmitWork, resetSeries, bulkAddSeriesItems, ...rest}:ContentTabProps) {
 	const [isChecked, setIsChecked] = React.useState(true);
 	const [copyToSeries, setCopyToSeries] = React.useState(false);
+	const [onChangeRefresh, setOnChangeRefresh] = React.useState(0);
 	const toggleCheck = React.useCallback(() => {
 		setIsChecked(!isChecked);
 	}, [isChecked]);
@@ -108,11 +110,16 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 		onModalClose();
 	}, []);
 	const onChangeHandler = React.useCallback((work:any) => {
+		if (!work) {
+			onChange(work);
+			return;
+		}
 		work.checked = isChecked;
 		if (copyToSeries) {
 			addWorkItem(work);
 		}
 		onChange(work);
+		setOnChangeRefresh(prev => prev + 1);
 	}, [isChecked, onChange, copyToSeries, series]);
 	const checkToolTip = (
 		<Tooltip id="work-check">This will set the book&apos;s Author Credits from the &lsquo;Cover&lsquo; tab as this Work&apos;s
@@ -171,6 +178,8 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 					<Col lg={{span: 6}}>
 						<SearchEntityCreate
 							isClearable={false}
+							key={`work-dropdown-${onChangeRefresh}`}
+							recentlyUsedEntityType="Work"
 							type="work"
 							value={null}
 							onAddCallback={addNewWorkCallback}
@@ -209,6 +218,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 						<SearchEntityCreate
 							filters={filters}
 							isClearable={false}
+							recentlyUsedEntityType="Series"
 							type="series"
 							value={series}
 							onAddCallback={addNewSeriesCallback}
@@ -237,7 +247,10 @@ function mapDispatchToProps(dispatch, {submissionUrl}):ContentTabDispatchProps {
 	return {
 		bulkAddSeriesItems: (data) => dispatch(addBulkSeriesItems(data)),
 		onAddSeriesItem: (data) => dispatch(addSeriesItem(data, data.rowID)),
-		onChange: (value:any) => dispatch(addWork(value)),
+		onChange: (value:any) => {
+			RecentlyUsed.addItemToRecentlyUsed(value);
+			dispatch(addWork(value));
+		},
 		onModalClose: () => dispatch(loadEdition()) && dispatch(closeEntityModal()),
 		onModalOpen: (id) => {
 			dispatch(dumpEdition(type));
@@ -245,6 +258,7 @@ function mapDispatchToProps(dispatch, {submissionUrl}):ContentTabDispatchProps {
 			dispatch(openEntityModal());
 		},
 		onSeriesChange: (value:any) => {
+			RecentlyUsed.addItemToRecentlyUsed(value);
 			dispatch(addSeries(value));
 			dispatch(removeAllSeriesItems());
 			if (value?.orderingTypeId) {
