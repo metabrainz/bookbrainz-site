@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema name="bookbrainz" version="1.6">
+
+  <!-- Basic types -->
+  <fieldType name="string" class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
+  <fieldType name="long" class="solr.LongPointField" docValues="true"/>
+  <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
+  <fieldType name="int" class="solr.IntPointField" docValues="true"/>
+  
+  <!-- trigram-ish analyzer (note: 1-3 grams can overmatch if used in qf) -->
+  <fieldType name="text_trigram" class="solr.TextField" positionIncrementGap="100">
+    <analyzer>
+      <!-- normalize punctuation/spaces before tokenizing -->
+      <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-chars.txt"/>
+      
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.ASCIIFoldingFilterFactory" preserveOriginal="false"/>
+      
+      <!-- ICU folding for multi-language case/diacritic-ish normalization -->
+      <filter class="solr.ICUFoldingFilterFactory"/>
+      
+      <filter class="solr.NGramFilterFactory" minGramSize="1" maxGramSize="3"/>
+    </analyzer>
+  </fieldType>
+  
+  <!-- edge ngrams for autocomplete -->
+  <fieldType name="text_autocomplete" class="solr.TextField" positionIncrementGap="100">
+    <analyzer type="index">
+      <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-chars.txt"/>
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.ASCIIFoldingFilterFactory"/>
+      <filter class="solr.EdgeNGramFilterFactory" minGramSize="2" maxGramSize="10"/>
+    </analyzer>
+    <analyzer type="query">
+      <!-- don't edge-ngram the query -->
+      <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-chars.txt"/>
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.ASCIIFoldingFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  
+  <!-- general text field used for _text_ -->
+  <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
+    <analyzer>
+      <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-chars.txt"/>
+      <tokenizer class="solr.StandardTokenizerFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+      <filter class="solr.ASCIIFoldingFilterFactory"/>
+      
+      <filter class="solr.ICUFoldingFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  
+  <!-- optional fieldType if we later want per-field ICU tokenization -->
+  <fieldType name="text_multilang" class="solr.TextField" positionIncrementGap="100">
+    <analyzer>
+      <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-chars.txt"/>
+      <tokenizer class="solr.ICUTokenizerFactory"/>
+      
+      <filter class="solr.ICUTransformFilterFactory" id="Katakana-Hiragana"/>
+      
+      <filter class="solr.ICUTransformFilterFactory" id="Traditional-Simplified"/>
+      
+      <filter class="solr.ICUFoldingFilterFactory"/>
+      <filter class="solr.LowerCaseFilterFactory"/>
+    </analyzer>
+  </fieldType>
+  
+  <!-- fields -->
+  <field name="bbid" type="string" indexed="true" stored="true" required="true"/>
+  <field name="id" type="string" indexed="true" stored="true"/>
+  <field name="type" type="string" indexed="true" stored="true" required="true"/>
+  <field name="name" type="text_general" indexed="true" stored="true"/>
+  <field name="name_autocomplete" type="text_autocomplete" indexed="true" stored="false"/>
+  <field name="name_trigram" type="text_trigram" indexed="true" stored="false"/>
+  
+  <!-- multi-valued aliases -->
+  <field name="alias" type="text_general" indexed="true" stored="true" multiValued="true"/>
+  <field name="alias_autocomplete" type="text_autocomplete" indexed="true" stored="false" multiValued="true"/>
+  <field name="alias_trigram" type="text_trigram" indexed="true" stored="false" multiValued="true"/>
+  
+  <!-- small boost field -->
+  <field name="disambiguation" type="text_trigram" indexed="true" stored="true"/>
+  
+  <!-- identifiers kept exact -->
+  <field name="identifier" type="string" indexed="true" stored="true" multiValued="true"/>
+  
+  <!-- denormalized work author names -->
+  <field name="author" type="text_trigram" indexed="true" stored="true" multiValued="true"/>
+  <field name="author_exact" type="string" indexed="true" stored="false" multiValued="true"/>
+  
+  <!-- Copy author to author_exact for exact matching -->
+  <copyField source="author" dest="author_exact"/>
+  
+  <!-- Catch-all field for general search (optional but useful) -->
+  <field name="_text_" type="text_general" indexed="true" stored="false" multiValued="true"/>
+  
+  <!-- Required by Solr for versioning -->
+  <field name="_version_" type="long" indexed="true" stored="true"/>
+  
+  <!-- 
+    Store complete JSON for response (like ES _source)
+    This stores the full entity document for retrieval
+  -->
+  <field name="_store" type="string" indexed="false" stored="true"/>
+  
+  <!-- copy fields -->
+  <!-- name to autocomplete and trigram variants -->
+  <copyField source="name" dest="name_autocomplete"/>
+  <copyField source="name" dest="name_trigram"/>
+  <copyField source="name" dest="_text_"/>
+  
+  <!-- Copy aliases to their variants -->
+  <copyField source="alias" dest="alias_autocomplete"/>
+  <copyField source="alias" dest="alias_trigram"/>
+  <copyField source="alias" dest="_text_"/>
+  
+  <!-- Copy other searchable fields to catch-all -->
+  <copyField source="disambiguation" dest="_text_"/>
+  <copyField source="author" dest="_text_"/>
+  <copyField source="identifier" dest="_text_"/>
+  
+  <!-- Unique key is BBID for BookBrainz entities -->
+  <uniqueKey>bbid</uniqueKey>
+  
+</schema>

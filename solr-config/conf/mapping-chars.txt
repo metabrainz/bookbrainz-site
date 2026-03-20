@@ -1,0 +1,91 @@
+# Character mappings for BookBrainz Solr
+# Based on MusicBrainz mapping-MBCharEquivToChar.txt
+# Using explicit Unicode escapes to avoid display ambiguity
+
+# Spaces
+"\u3000" => " "
+"\u00A0" => " "
+
+# Apostrophe - only ONE mapping
+"\u2019" => "'"
+
+# Hyphens
+"\u2010" => "-"
+"\u2012" => "-"
+"\u2014" => "-"
+"\u2015" => "-"
+"\u2212" => "-"
+"_" => "-"
+
+# Quotation marks - using explicit Unicode to avoid duplicates
+"\u201C" => "\""
+"\u201D" => "\""
+"\u201E" => "\""
+"\u201F" => "\""
+"\u00AB" => "\""
+"\u00BB" => "\""
+
+# Hebrew punctuation
+"\u05F3" => "'"
+"\u05BE" => "-"
+"\u05F4" => "\""
+
+# Arabic punctuation
+"\u06D4" => "."
+"\u060C" => ","
+
+# Phonetic Extensions
+"\u1D00" => "A"
+"\u1D01" => "AE"
+"\u1D02" => "ae"
+"\u1D03" => "B"
+"\u1D04" => "C"
+"\u1D05" => "D"
+"\u1D06" => "D"
+"\u1D07" => "E"
+"\u1D09" => "i"
+"\u1D0A" => "J"
+"\u1D0B" => "K"
+"\u1D0C" => "L"
+"\u1D0D" => "M"
+"\u1D0E" => "N"
+"\u1D0F" => "O"
+"\u1D10" => "O"
+"\u1D15" => "ou"
+"\u1D18" => "P"
+"\u1D19" => "R"
+"\u1D1A" => "R"
+"\u1D1B" => "T"
+"\u1D1C" => "U"
+"\u1D20" => "V"
+"\u1D21" => "W"
+"\u1D22" => "Z"
+"\u0131" => "i"
+
+# Ligatures
+"\uFB00" => "ff"
+"\uFB01" => "fi"
+"\uFB02" => "fl"
+"\uFB03" => "ffi"
+"\uFB04" => "ffl"
+"\uFB05" => "st"
+"\uFB06" => "st"
+"\u00C6" => "AE"
+"\u00E6" => "ae"
+"\u0152" => "OE"
+"\u0153" => "oe"
+
+# Fullwidth characters
+"\uFF06" => "&"
+"\u2044" => "/"
+"\uFF0F" => "/"
+
+# Ellipsis
+"\u2026" => "..."
+
+# Tildes
+"\u223C" => "~"
+"\uFF5E" => "~"
+
+# Accented letters
+"\u00C0" => "A"

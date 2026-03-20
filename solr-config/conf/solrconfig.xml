@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- bookbrainz demo solrconfig -->
+<config>
+  
+  <!-- Lucene version compatibility -->
+  <luceneMatchVersion>9.6</luceneMatchVersion>
+  
+  <!-- Data directory -->
+  <dataDir>${solr.data.dir:}</dataDir>
+  
+  <!-- Directory Factory -->
+  <directoryFactory name="DirectoryFactory" class="${solr.directoryFactory:solr.NRTCachingDirectoryFactory}"/>
+  
+  <!-- Codec Factory -->
+  <codecFactory class="solr.SchemaCodecFactory"/>
+  
+  <!-- Index Config -->
+  <indexConfig>
+    <lockType>${solr.lock.type:native}</lockType>
+    <ramBufferSizeMB>100</ramBufferSizeMB>
+    <maxBufferedDocs>1000</maxBufferedDocs>
+  </indexConfig>
+  
+  <!-- Update Handler -->
+  <updateHandler class="solr.DirectUpdateHandler2">
+    <updateLog>
+      <str name="dir">${solr.ulog.dir:}</str>
+      <int name="numVersionBuckets">${solr.ulog.numVersionBuckets:65536}</int>
+    </updateLog>
+    
+    <!-- AutoCommit settings -->
+    <autoCommit>
+      <maxTime>${solr.autoCommit.maxTime:15000}</maxTime>
+      <openSearcher>false</openSearcher>
+    </autoCommit>
+    
+    <autoSoftCommit>
+      <maxTime>${solr.autoSoftCommit.maxTime:1000}</maxTime>
+    </autoSoftCommit>
+  </updateHandler>
+  
+  <!-- Query Settings -->
+  <query>
+    <maxBooleanClauses>${solr.max.booleanClauses:1024}</maxBooleanClauses>
+    <filterCache class="solr.CaffeineCache" size="512" initialSize="512" autowarmCount="0"/>
+    <queryResultCache class="solr.CaffeineCache" size="512" initialSize="512" autowarmCount="0"/>
+    <documentCache class="solr.CaffeineCache" size="512" initialSize="512" autowarmCount="0"/>
+    <enableLazyFieldLoading>true</enableLazyFieldLoading>
+  </query>
+  
+  <!-- Request Dispatcher -->
+  <requestDispatcher>
+    <requestParsers enableRemoteStreaming="true" multipartUploadLimitInKB="2048000" formdataUploadLimitInKB="2048" addHttpRequestToContext="false"/>
+    <httpCaching never304="true"/>
+  </requestDispatcher>
+  
+  <!-- Standard request handler -->
+  <requestHandler name="/select" class="solr.SearchHandler">
+    <lst name="defaults">
+      <str name="echoParams">explicit</str>
+      <int name="rows">10</int>
+      <str name="df">_text_</str>
+    </lst>
+  </requestHandler>
+  
+  <!-- Query handler for multi-entity search -->
+  <requestHandler name="/query" class="solr.SearchHandler">
+    <lst name="defaults">
+      <str name="echoParams">explicit</str>
+      <str name="wt">json</str>
+      <str name="indent">true</str>
+      <str name="df">_text_</str>
+      <str name="defType">edismax</str>
+      <str name="qf">
+        name^3 alias^3 name_trigram^2 alias_trigram^2 disambiguation identifier
+      </str>
+      <str name="mm">80%</str>
+    </lst>
+  </requestHandler>
+  
+  <!-- Autocomplete handler -->
+  <requestHandler name="/autocomplete" class="solr.SearchHandler">
+    <lst name="defaults">
+      <str name="echoParams">explicit</str>
+      <str name="wt">json</str>
+      <str name="indent">true</str>
+      <str name="defType">edismax</str>
+      <str name="qf">name_autocomplete^3 alias_autocomplete^3</str>
+      <str name="mm">80%</str>
+      <int name="rows">42</int>
+    </lst>
+  </requestHandler>
+  
+  <!-- Update request handler -->
+  <requestHandler name="/update" class="solr.UpdateRequestHandler">
+    <lst name="defaults">
+      <str name="update.chain">dedupe</str>
+    </lst>
+  </requestHandler>
+  
+  <!-- Admin handlers -->
+  <requestHandler name="/admin/ping" class="solr.PingRequestHandler">
+    <lst name="invariants">
+      <str name="q">solrpingquery</str>
+    </lst>
+    <lst name="defaults">
+      <str name="echoParams">all</str>
+    </lst>
+  </requestHandler>
+  
+  <!-- Deduplication processor -->
+  <updateRequestProcessorChain name="dedupe">
+    <processor class="solr.processor.SignatureUpdateProcessorFactory">
+      <bool name="enabled">true</bool>
+      <str name="signatureField">bbid</str>
+      <bool name="overwriteDupes">true</bool>
+      <str name="fields">bbid</str>
+      <str name="signatureClass">solr.processor.Lookup3Signature</str>
+    </processor>
+    <processor class="solr.LogUpdateProcessorFactory"/>
+    <processor class="solr.RunUpdateProcessorFactory"/>
+  </updateRequestProcessorChain>
+  
+</config>

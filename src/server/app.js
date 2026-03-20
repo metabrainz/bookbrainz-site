@@ -21,7 +21,8 @@
 
 import * as auth from './helpers/auth';
 import * as error from '../common/helpers/error';
-import * as search from '../common/helpers/search';
+// DEMO: Using search-switch to toggle between ES and Solr
+import * as search from '../common/helpers/search-switch';
 import * as serverErrorHelper from './helpers/error';
 
 import {repositoryUrl, siteRevision, userAgent} from './info';
