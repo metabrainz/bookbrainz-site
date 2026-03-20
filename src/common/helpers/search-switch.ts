@@ -18,4 +18,7 @@ export const generateIndex = searchImpl.generateIndex;
 export const init = searchImpl.init;
 export const _bulkIndexEntities = searchImpl._bulkIndexEntities;
 
+// also export the types used by the website routes.
+export type {IndexableEntities, IndexableEntitiesOrAll} from './search-solr';
+
 console.log(`Search Implementation: ${USE_SOLR ? 'SOLR' : 'ElasticSearch'}`);
