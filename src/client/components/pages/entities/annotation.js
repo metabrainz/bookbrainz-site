@@ -45,7 +45,8 @@ class EntityAnnotation extends React.Component {
 		}
 	}
 
-	handleToggleCollapse = () => {
+	handleToggleCollapse = (event) => {
+		event.preventDefault();
 		this.setState(prevState => ({open: !prevState.open}));
 	};
 
@@ -63,11 +64,10 @@ class EntityAnnotation extends React.Component {
 						<pre className="annotation-content" ref={this.annotationContentRef} >{stringToHTMLWithLinks(annotation.content)}</pre>
 					</Collapse>
 					{this.state.showButton &&
-					<a
-						href="#annotation-content"
-						role="button"
-						onClick={(e) => { e.preventDefault(); this.handleToggleCollapse(); }}
-					>
+					<a 
+						href="#annotation-content" 
+						role="button" 
+						onClick={this.handleToggleCollapse}>
 						Show {this.state.open ? 'less' : 'more…'}
 					</a>}
 					<p className="text-muted">Last modified: <span title={formatDate(lastModifiedDate, true)}>{formatDate(lastModifiedDate)}</span>
