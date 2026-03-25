@@ -139,6 +139,7 @@ export async function identifierTypeCreateOrEditHandler(req, res) {
 			entityType,
 			label,
 			parentId,
+			validationFunction,
 			validationRegex
 		} = req.body;
 
@@ -151,6 +152,7 @@ export async function identifierTypeCreateOrEditHandler(req, res) {
 		newIdentifierType.set('parentId', parentId);
 		newIdentifierType.set('entityType', entityType);
 		newIdentifierType.set('validationRegex', validationRegex);
+		newIdentifierType.set('validationFunction', validationFunction || null);
 
 		const identifierType = await newIdentifierType.save(null, {method});
 

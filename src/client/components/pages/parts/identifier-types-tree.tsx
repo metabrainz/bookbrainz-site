@@ -75,6 +75,9 @@ function IdentifierTypeTree({identifierTypes, parentId, indentLevel}: Identifier
 							<div className="type-details small">
 								<div><strong>Detection RegEx: </strong>{idenType.detectionRegex}</div>
 								<div><strong>Validation RegEx: </strong>{idenType.validationRegex}</div>
+								{idenType.validationFunction && (
+									<div><strong>Validation Function: </strong>{idenType.validationFunction}</div>
+								)}
 								<div><strong>Display Template: </strong>{idenType.displayTemplate}</div>
 								<div><strong>Description: </strong>{idenType.description}</div>
 								<div><strong>Child Order: </strong>{idenType.childOrder}</div>
