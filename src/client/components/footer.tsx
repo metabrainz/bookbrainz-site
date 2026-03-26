@@ -19,16 +19,16 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
-
-import PropTypes from 'prop-types';
 import React from 'react';
 
 
 const {Col, Container, Row} = bootstrap;
 
-function Footer(props) {
-	const {repositoryUrl, siteRevision} = props;
-
+type FooterProps = {
+    repositoryUrl: string;
+    siteRevision: string;
+};
+function Footer({repositoryUrl, siteRevision}: Props) {
 	return (
 		<footer className="footer">
 			<Container fluid>
@@ -88,11 +88,5 @@ function Footer(props) {
 		</footer>
 	);
 }
-
-Footer.displayName = 'Footer';
-Footer.propTypes = {
-	repositoryUrl: PropTypes.string.isRequired,
-	siteRevision: PropTypes.string.isRequired
-};
 
 export default Footer;

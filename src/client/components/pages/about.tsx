@@ -92,7 +92,7 @@ function AboutPage(): JSX.Element {
 			<p>
 				<Trans
 					i18nKey="about.accessingData.api"
-					components={[<a href="/docs" ></a>]}
+					components={[<a href="https://api.bookbrainz.org/1/docs/" ></a>]}
 				/>
 			</p>
 
