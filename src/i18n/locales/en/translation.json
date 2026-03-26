@@ -1,0 +1,42 @@
+{
+  "about": {
+        "title": "About BookBrainz",
+        "intro": "BookBrainz is an online encyclopaedia which contains information about published literature. Our aim is to collect and store data about every book, magazine, journal or other publication ever written.",
+        "commitment": "We are committed to making BookBrainz the definitive source of publication metadata. We hope to attract many contributors, who will be able to use their knowledge of literature to expand the database through our website. If you think you can help,",
+        "becomeEditor": "become a BookBrainz editor!",
+        "contributors": "BookBrainz relies on contributions from editors to expand the knowledge contained in the database. Editors can add new data to the site, fix any errors in the existing information, and create 0s between pieces of information.",
+
+    "accessingData": {
+        "title": "Accessing the data",
+        "description": "The BookBrainz data is freely available to everyone, for any use. Please see our <0>licensing page</0> for more details",
+        "dumps": "Regular database dumps (Postgres) can be found <0>at this address</0>.",
+        "api": "We also have a webservice (or API) under development with <0>live documentation</0>."
+        },
+    
+    "contact": {
+        "title": "Contact Us",
+        "chat": "Chat with us",
+        "platforms": "(Matrix, IRC, Discord)",
+        "forum": "Forums",
+        "X": "X",
+        "email": "Email"
+        },
+
+    "story": {
+        "title": "Our Story",
+        "p1": "BookBrainz was conceived in 2011, during a discussion in the MusicBrainz IRC channel. It was initially championed by <0>{{name}}</0>, who was a core MusicBrainz developer at the time, and the code was written in Haskell. While a number of people contributed to this early version of BookBrainz, it lost momentum after a couple of years.",
+        
+        "p2": "Another MusicBrainz community member, <0>{{name}}</0>, who had been involved with BookBrainz from the beginning, rekindled the project in May 2014, starting from scratch using the node.js framework. Although there was an initial burst of activity and good progress made on the site design, after a month or so, Sean didn’t have time to maintain the initial level of activity.",
+
+       "p3": "Around the time of the annual MusicBrainz summit in 2014, a third MusicBrainz community member, <0>{{name}}</0>, started to take an interest in the project.  New discussions were held in the BookBrainz IRC channel, and progress was made on a new node.js site and webservice. After a couple of months, the decision was made to switch from node.js to Python for the webservice, and progress has continued steadily since then. Recently, in order to reduce duplication of code, it was decided to once again use node.js for all code, and work is ongoing to achieve this.",
+        
+        "p4": "In September 2018, a full-time position was opened for BookBrainz to become an official project of MetaBrainz, and, <0>{{name}}</0> became the project lead.",
+
+        "p5": "From the beginning, BookBrainz was closely tied with the <0>New Edit System (NES)</0> for MusicBrainz, which was designed by Oliver to introduce a Git-style framework for managing contributions to MusicBrainz. Both projects were initially written in Haskell, and BookBrainz used an adapted version of NES as its edit system. The NES has also been the basis for the edit system in the current iteration of BookBrainz."
+
+        }
+    
+    
+    }
+
+}
