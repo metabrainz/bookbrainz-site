@@ -335,7 +335,7 @@ router.get('/cancel', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR),
 	});
 
 router.get('/submit/:targetBBID?', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR),
-	middleware.loadIdentifierTypes, middleware.loadLanguages,
+	middleware.loadIdentifierTypes, middleware.loadLanguages, middleware.loadScripts,
 	middleware.loadRelationshipTypes,
 	async (req, res, next) => {
 		const {orm}: {orm?: any} = req.app.locals;

@@ -12,7 +12,8 @@ const {ENTITY_EDITOR} = PrivilegeType;
 const router = express.Router();
 router.get('/create', isAuthenticated, isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats, middleware.loadEditionGroupTypes, middleware.loadSeriesOrderingTypes,
-	middleware.loadLanguages, middleware.loadWorkTypes, middleware.loadGenders, middleware.loadPublisherTypes, middleware.loadAuthorTypes,
+	middleware.loadLanguages, middleware.loadScripts, middleware.loadWorkTypes,
+	middleware.loadGenders, middleware.loadPublisherTypes, middleware.loadAuthorTypes,
 	middleware.loadRelationshipTypes, (req, res:express.Response) => {
 		const props = generateUnifiedProps(req, res, {
 			genderOptions: res.locals.genders
