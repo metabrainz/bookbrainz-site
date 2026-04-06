@@ -371,11 +371,10 @@ async function processSeriesCreator(orm, editorId) {
 
 async function processSprinter(orm, editorId) {
 	const {bookshelf} = orm;
-	const rawSql =
-		`SELECT * from bookbrainz.revision WHERE author_id=${editorId} \
-		and created_at > (SELECT CURRENT_DATE - INTERVAL '1 hour');`;
-
-	const out = await bookshelf.knex.raw(rawSql);
+	const out = await bookshelf.knex.raw(
+		'SELECT * FROM bookbrainz.revision WHERE author_id = ? AND created_at > (CURRENT_DATE - INTERVAL \'1 hour\')',
+		[editorId]
+	);
 	const tiers = [
 		{
 			name: 'Sprinter',
@@ -396,12 +395,11 @@ async function processSprinter(orm, editorId) {
  */
 export async function getConsecutiveDaysWithEdits(orm, editorId, days) {
 	const {bookshelf} = orm;
-	const rawSql =
-		`SELECT DISTINCT created_at::date from bookbrainz.revision \
-		WHERE author_id=${editorId} \
-		and created_at > (SELECT CURRENT_DATE - INTERVAL '${days} days');`;
-
-	const out = await bookshelf.knex.raw(rawSql);
+	const safeDays = parseInt(days, 10);
+	const out = await bookshelf.knex.raw(
+		'SELECT DISTINCT created_at::date FROM bookbrainz.revision WHERE author_id = ? AND created_at > (CURRENT_DATE - (? * INTERVAL \'1 day\'))',
+		[editorId, safeDays]
+	);
 	const dateList = out.rows.map(row => parseISO(row.created_at));
 	let countDays = 0;
 	let lastDate = new Date();
