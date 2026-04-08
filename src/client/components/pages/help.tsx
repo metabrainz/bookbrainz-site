@@ -95,7 +95,7 @@ function HelpPage(): JSX.Element {
 					<p>
 						The following examples should help you understand the different entities and how they relate to each other:
 						<br/>
-						The relationship between <a href="/author/ac59097e-7f86-436d-9308-f6e63871ceff">H.P Lovecraft</a> , his short story <a href="/work/97eafaf5-377a-4703-a12e-d66a30fcfda1">At the Mountains of Madness</a> and an Edition <a href="/edition/b3ed75ea-9f74-44fa-833e-fa2c895c6b12">The Classic Horror Stories</a> which contain it and several more works.
+						The relationship between <a href="/author/e66704df-2386-4af9-9b02-a3440a1bc828">Ursula K. Le Guin</a>, her novel <a href="/work/11f0af2a-7034-4e7d-baa2-7cf0cb7bcbea">A Wizard of Earthsea</a> and an Edition <a href="/edition/731ccc5f-35c3-4056-a6e3-00996bb79380">Earthsea: The First Four Books</a> which contain it and several more works.
 						<br/>
 						<a href="/edition/54331325-d11b-47f4-bb74-0485e582c52e">Paperback</a> and <a href="/edition/3fa9fdcd-098d-4ec1-82e4-f5fdfb92c41f">E-book</a> editions of the novel Ancillary Mercy by the publisher <a href="publisher/b065b24d-136f-45e3-badc-48aea4728c73">Orbit Books</a>  making them part of the same <a href="/edition-group/540e9c4a-f9fa-427b-a41f-bb12c48f902b">Edition Group</a>
 					</p>
