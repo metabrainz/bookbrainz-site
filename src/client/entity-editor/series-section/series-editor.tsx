@@ -18,7 +18,7 @@
 /* eslint-disable react/jsx-no-bind, @typescript-eslint/no-invalid-this */
 
 
-import {Button, Col, Row} from 'react-bootstrap';
+import {Button, Col, Form, Row} from 'react-bootstrap';
 import type {
 	Entity, EntityType, RelationshipForDisplay,
 	RelationshipType
@@ -89,8 +89,12 @@ const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemov
 			{dragHandler ? <><FontAwesomeIcon icon={faBars}/> &nbsp;&nbsp;</> : null}
 		</Col>}
 		<Col lg={2}>
+			<Form.Label htmlFor={`series-item-number-${value.rowID}`} className="sr-only">
+				Number
+			</Form.Label>
 			<input
 				className="form-control"
+				id={`series-item-number-${value.rowID}`}
 				placeholder="Enter value..."
 				type="text"
 				value={_.find(value.attributes, {attributeType: 2})?.value.textValue || ''}
