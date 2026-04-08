@@ -194,6 +194,29 @@ function EditionSection({
 	widthValue,
 	...rest
 }: Props) {
+	const [dimensionUnit, setDimensionUnit] = React.useState<string>('mm');
+	const [weightUnit, setWeightUnit] = React.useState<string>('g');
+
+	const handleDimensionUnitChange = React.useCallback(
+		(event: React.ChangeEvent<HTMLSelectElement>) => {
+			const newUnit = event.target.value;
+			const isMetric = newUnit === 'mm' || newUnit === 'cm';
+			setDimensionUnit(newUnit);
+			setWeightUnit(isMetric ? 'g' : 'lb');
+		},
+		[]
+	);
+
+	const handleWeightUnitChange = React.useCallback(
+		(event: React.ChangeEvent<HTMLSelectElement>) => {
+			const newUnit = event.target.value;
+			const isMetric = newUnit === 'g' || newUnit === 'kg';
+			setWeightUnit(newUnit);
+			setDimensionUnit(isMetric ? 'mm' : 'in');
+		},
+		[]
+	);
+
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		frequency: language.frequency,
 		label: language.name,
@@ -444,7 +467,25 @@ function EditionSection({
 			<Row>
 				<Col lg={shortColSpan}>
 					<NumericField
-						addonAfter="mm"
+						addonAfter={
+							<select
+								style={{
+									background: 'transparent',
+									border: 'none',
+									cursor: 'pointer',
+									fontSize: 'inherit',
+									outline: 'none',
+									padding: 0
+								}}
+								value={dimensionUnit}
+								onChange={handleDimensionUnitChange}
+							>
+								<option value="mm">mm</option>
+								<option value="cm">cm</option>
+								<option value="in">in</option>
+								<option value="ft">ft</option>
+							</select>
+						}
 						defaultValue={widthValue}
 						disabled={!physicalEnable}
 						empty={_.isNil(widthValue)}
@@ -453,7 +494,25 @@ function EditionSection({
 						onChange={onWidthChange}
 					/>
 					<NumericField
-						addonAfter="mm"
+						addonAfter={
+							<select
+								style={{
+									background: 'transparent',
+									border: 'none',
+									cursor: 'pointer',
+									fontSize: 'inherit',
+									outline: 'none',
+									padding: 0
+								}}
+								value={dimensionUnit}
+								onChange={handleDimensionUnitChange}
+							>
+								<option value="mm">mm</option>
+								<option value="cm">cm</option>
+								<option value="in">in</option>
+								<option value="ft">ft</option>
+							</select>
+						}
 						defaultValue={heightValue}
 						disabled={!physicalEnable}
 						empty={_.isNil(heightValue)}
@@ -464,7 +523,25 @@ function EditionSection({
 				</Col>
 				<Col lg={3}>
 					<NumericField
-						addonAfter="g"
+						addonAfter={
+							<select
+								style={{
+									background: 'transparent',
+									border: 'none',
+									cursor: 'pointer',
+									fontSize: 'inherit',
+									outline: 'none',
+									padding: 0
+								}}
+								value={weightUnit}
+								onChange={handleWeightUnitChange}
+							>
+								<option value="g">g</option>
+								<option value="kg">kg</option>
+								<option value="oz">oz</option>
+								<option value="lb">lb</option>
+							</select>
+						}
 						defaultValue={weightValue}
 						disabled={!physicalEnable}
 						empty={_.isNil(weightValue)}
@@ -473,7 +550,25 @@ function EditionSection({
 						onChange={onWeightChange}
 					/>
 					<NumericField
-						addonAfter="mm"
+						addonAfter={
+							<select
+								style={{
+									background: 'transparent',
+									border: 'none',
+									cursor: 'pointer',
+									fontSize: 'inherit',
+									outline: 'none',
+									padding: 0
+								}}
+								value={dimensionUnit}
+								onChange={handleDimensionUnitChange}
+							>
+								<option value="mm">mm</option>
+								<option value="cm">cm</option>
+								<option value="in">in</option>
+								<option value="ft">ft</option>
+							</select>
+						}
 						defaultValue={depthValue}
 						disabled={!physicalEnable}
 						empty={_.isNil(depthValue)}
