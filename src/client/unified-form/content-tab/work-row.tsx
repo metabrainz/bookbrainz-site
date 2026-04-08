@@ -14,10 +14,17 @@ const {Row, Col, Button, FormCheck, ButtonGroup, Tooltip, OverlayTrigger, FormLa
 function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, rowId, ...rest}:WorkRowProps) {
 	const isChecked = work?.checked;
 	const handleCopy = React.useCallback(() => onCopyHandler(rowId), [onCopyHandler, work]);
-	const onChangeHandler = React.useCallback((value:any) => {
+	const onChangeHandler = React.useCallback((value:any, action:any) => {
+		if (['clear', 'remove-value', 'pop-value'].includes(action?.action)) {
+			if (action.removedValue?.__isNew__) {
+				onRemove();
+			}
+			onChange(null);
+			return;
+		}
 		value.checked = isChecked;
 		onChange(value);
-	}, [isChecked, onChange]);
+	}, [isChecked, onChange, onRemove]);
 	const checkToolTip = (
 		<Tooltip id="work-check">This will set the book&apos;s Author Credits from the &lsquo;Cover&lsquo; tab as this Work&apos;s
 	 Author
@@ -77,7 +84,13 @@ function mapStateToProps(state, {rowId}) {
 
 function mapDispatchToProps(dispatch, {rowId}) {
 	return {
-		onChange: (value:any) => dispatch(updateWork(rowId, value)),
+		onChange: (value:any) => {
+			if (value === null) {
+				dispatch(removeWork(rowId));
+				return;
+			}
+			dispatch(updateWork(rowId, value));
+		},
 		onRemove: () => dispatch(removeWork(rowId)),
 		onToggle: () => dispatch(toggleCheck(rowId))
 	};
