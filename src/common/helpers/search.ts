@@ -338,7 +338,14 @@ async function _searchForEntities(orm:ORM, dslQuery:SearchRequest) {
 		const searchResponse = await _client.search(dslQuery);
 		const {hits} = searchResponse;
 		const results = await _fetchEntityModelsForESResults(orm, hits);
-		return {results, total: hits.total ?? 0};
+		let total;
+		if (typeof hits.total === 'number') {
+			({total} = hits);
+		}
+		else {
+			total = hits.total?.value ?? 0;
+		}
+		return {results, total: total || 0};
 	}
 	catch (error) {
 		log.error(error);
