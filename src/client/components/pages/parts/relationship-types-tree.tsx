@@ -20,6 +20,7 @@ import {Button} from 'react-bootstrap';
 import {RelationshipTypeDataT} from '../../forms/type-editor/typeUtils';
 import {orderBy as _orderBy} from 'lodash';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
+import {sanitize} from 'isomorphic-dompurify';
 
 
 type RelationshipTypeTreePropsT = {
@@ -57,6 +58,8 @@ function RelationshipTypeTree({relationshipTypes, parentId, indentLevel}: Relati
 				}
 				const sourceIconElement = genEntityIconHTMLElement(relType.sourceEntityType);
 				const targetIconElement = genEntityIconHTMLElement(relType.targetEntityType);
+				/* eslint-disable react/no-danger */
+				// We are disabling this rule because we are already sanitizing the html here
 				return (
 					<li className={relOuterClass} key={relType.id}>
 						<p>
@@ -81,7 +84,7 @@ function RelationshipTypeTree({relationshipTypes, parentId, indentLevel}: Relati
 								<div><strong>Reverse link phrase: </strong>{relType.reverseLinkPhrase}</div>
 								<div><strong>Source Entity Type: </strong>{relType.sourceEntityType}</div>
 								<div><strong>Target Entity Type: </strong>{relType.targetEntityType}</div>
-								<div><strong>Description: </strong>{relType.description}</div>
+								<div><strong>Description: </strong><span dangerouslySetInnerHTML={{__html: sanitize(relType.description)}}/></div>
 								<div><strong>Child Order: </strong>{relType.childOrder}</div>
 								<div><strong>Deprecated: </strong>{relType.deprecated ? 'Yes' : 'No'}</div>
 								<div>
