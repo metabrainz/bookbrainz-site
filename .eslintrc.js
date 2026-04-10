@@ -118,7 +118,7 @@ const bestPracticesRules = {
 	'no-param-reassign': ERROR,
 	'no-proto': ERROR,
 	'no-return-assign': ERROR,
-	'no-return-await': ERROR,
+	'no-return-await': TRANSITION_IGNORE,
 	'no-script-url': ERROR,
 	'no-self-compare': ERROR,
 	'no-sequences': ERROR,
