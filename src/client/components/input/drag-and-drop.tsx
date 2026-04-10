@@ -21,7 +21,7 @@ import React from 'react';
 
 
 const {Card, Form} = bootstrap;
-const {useState, useCallback} = React;
+const {useCallback} = React;
 
 /**
 * The Achievement interface, defining the properties of an achievement.
@@ -38,44 +38,60 @@ export type Achievement = {
 	name: string;
 	unlocked: boolean;
 };
-type AchievementForDisplay = Pick<Achievement, 'badgeUrl' | 'id' | 'name'>;
+export type AchievementForDisplay = Pick<Achievement, 'badgeUrl' | 'id' | 'name'>;
 
-const blankBadge:AchievementForDisplay = {
+export const blankBadge: AchievementForDisplay = {
 	badgeUrl: '/images/blankbadge.svg',
 	id: null,
-	name: 'drag badge to set'
+	name: 'Drop a badge here'
+};
+
+export type DroppedAchievementData = {
+	id: number;
+	name: string;
+	src: string;
 };
 
 /**
- * Props for DragAndDropImage component
+ * Props for DragAndDrop component
  * @typedef {Object} Props
- * @property {string} name - The name of the DragAndDrop component.
- * @property {Achievement} initialAchievement - The initial achievement to display in the card.
+ * @property {string} name - The name of the DragAndDrop component (used as the hidden input name).
+ * @property {AchievementForDisplay} achievement - The currently displayed achievement.
+ * @property {function} onDrop - Callback when a badge is dropped onto this slot.
+ * @property {function} onClear - Callback when this slot is clicked to remove the badge.
  */
 type Props = {
   name: string;
-  initialAchievement?: Achievement;
+  achievement: AchievementForDisplay;
+  onDrop: (data: DroppedAchievementData) => void;
+  onClear: () => void;
 };
 
 /**
-* A component for a drag-and-drop card that displays an achievement.
-* The card displays an image of the achievement and allows the user to drag and drop a different achievement onto it.
-* When a new achievement is dropped onto the card, it is displayed instead of the original achievement.
-* @param {Props} props - The props object containing the following:
-* @returns {JSX.Element} A React component that displays a drag-and-drop card for an achievement.
+* A controlled drag-and-drop card that displays an achievement badge slot.
+* The parent component manages which achievement is shown via the `achievement`
+* prop. When a badge is dropped in, `onDrop` is called; clicking removes it
+* via `onClear`.
+* @param {Props} props - Component props including name, achievement, onDrop, and onClear handlers.
+* @returns {JSX.Element} The rendered DragAndDrop badge card.
 */
-function DragAndDrop({name, initialAchievement}: Props): JSX.Element {
-	const [achievement, setAchievement] = useState<AchievementForDisplay>(initialAchievement);
+function DragAndDrop({name, achievement, onDrop, onClear}: Props): JSX.Element {
+	const hasAchievement = Boolean(achievement?.id);
+
 	const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
 		event.preventDefault();
-		setAchievement(blankBadge);
-	}, []);
+		if (hasAchievement) {
+			onClear();
+		}
+	}, [hasAchievement, onClear]);
+
 	const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
 		event.preventDefault();
 	}, []);
+
 	const handleDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
 		event.preventDefault();
-		let data;
+		let data: DroppedAchievementData;
 
 		try {
 			data = JSON.parse(event.dataTransfer.getData('text'));
@@ -83,15 +99,15 @@ function DragAndDrop({name, initialAchievement}: Props): JSX.Element {
 		catch (error) {
 			return;
 		}
-		setAchievement({
-			badgeUrl: data.src,
-			id: data.id,
-			name: data.name
-		});
-	}, [setAchievement]);
+		onDrop(data);
+	}, [onDrop]);
+
+	const displayed = achievement ?? blankBadge;
+
 	return (
 		<Card
 			bg="light"
+			style={{cursor: hasAchievement ? 'pointer' : 'default'}}
 			onClick={handleClick}
 			onDragOver={handleDragOver}
 			onDrop={handleDrop}
@@ -99,7 +115,7 @@ function DragAndDrop({name, initialAchievement}: Props): JSX.Element {
 			<Card.Img
 				className="mt-4"
 				height={100}
-				src={achievement.badgeUrl}
+				src={displayed.badgeUrl}
 				variant="top"
 			/>
 			<Card.Body className="text-center">
@@ -107,21 +123,20 @@ function DragAndDrop({name, initialAchievement}: Props): JSX.Element {
 					<Form.Control
 						name={name}
 						type="hidden"
-						value={achievement.id ? achievement.id.toString() : ''}
+						value={displayed.id ? displayed.id.toString() : ''}
 					/>
 				</Form.Group>
 				<div className="h3">
-					{achievement.name}
+					{displayed.name}
 				</div>
+				{hasAchievement &&
+					<small className="text-muted">Click to remove</small>
+				}
 			</Card.Body>
 		</Card>
 	);
 }
 
 DragAndDrop.displayName = 'DragAndDrop';
-
-DragAndDrop.defaultProps = {
-	initialAchievement: blankBadge
-};
 
 export default DragAndDrop;
