@@ -20,6 +20,7 @@ import {BadRequestError, NotFoundError} from '../../common/helpers/error';
 import type {ORM} from 'bookbrainz-data';
 import express from 'express';
 
+
 const router = express.Router();
 
 router.get('/:username', async (req, res, next) => {
