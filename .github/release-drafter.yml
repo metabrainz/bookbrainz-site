@@ -1,6 +1,6 @@
-# Only run the release drafter for our release branch ("stable")
+# Run the release drafter for the beta branch to keep track of differeneces with stable branch
 references:
-  - stable
+  - beta
 
 template: |
   ## :books: Changes since last version
@@ -12,7 +12,7 @@ template: |
 
 replacers:
   - search: '/BB-(\d+)/g'
-    replace: 'https://tickets.metabrainz.org/browse/BB-$1'
+    replace: '[BB-$1](https://tickets.metabrainz.org/browse/BB-$1)'
 
 categories:
   - title: '🚂 New features and bug fixes'
