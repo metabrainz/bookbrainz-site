@@ -28,12 +28,11 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=postgres
       - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "psql -U $$POSTGRES_USER -c 'SELECT 1'"]
+      test: ["CMD-SHELL", "pg_isready -U bookbrainz -d bookbrainz"]
       interval: 5s
       timeout: 3s
       retries: 20
