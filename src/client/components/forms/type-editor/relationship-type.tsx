@@ -274,8 +274,9 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 								<Form.Label>Description</Form.Label>
 								<Form.Control
 									required
+									as="textarea"
 									name="description"
-									type="text"
+									rows={3}
 									value={formData.description}
 									onChange={handleInputChange}
 								/>
