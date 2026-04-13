@@ -49,7 +49,7 @@ export default ({
 		`<script id='page' type='application/json'>${page}</script>`;
 	return `
 	<!doctype html>
-	<html>
+	<html lang="en">
 		<head>
 			<title>${title ? `${title} – BookBrainz` :
 		'BookBrainz – The Open Book Database'}</title>

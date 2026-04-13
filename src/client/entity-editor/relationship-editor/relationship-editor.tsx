@@ -43,6 +43,7 @@ import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {NumberAttribute} from './attributes';
 import ReactSelect from 'react-select';
+import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import RelationshipSelect from './relationship-select';
 import _ from 'lodash';
 import {getEntityLink} from '../../../common/helpers/utils';
@@ -89,31 +90,33 @@ export function generateRelationshipSelection(
 	if (!validRels.length) {
 		return validRels;
 	}
-	// Sort by parentId childOrder then group by parentId
-	const groupBy = _.groupBy(
-		_.sortBy(validRels, [
-			'relationshipType.parentId',
-			'relationshipType.childOrder',
-			'relationshipType.id'
-		]),
-		'relationshipType.parentId'
-	);
+	// Sort by childOrder then group by parentId
+	const sortedRelationships = _.sortBy(validRels, [
+		'relationshipType.childOrder',
+		'relationshipType.id'
+	]);
+	// Build a lookup map of relationships by parentId for faster recursion
+	const childrenLookup = _.groupBy(sortedRelationships, 'relationshipType.parentId');
 
-	// Make level 0 (parentId = null) the base of a new sortedArray
-	const sortedRelationships = _.get(groupBy, 'null');
-	sortedRelationships.forEach(rootRel => rootRel.relationshipType.depth = 0);
-	delete groupBy.null;
+	const relationshipSelection: Array<RelationshipWithLabel> = [];
 
-	// Iterate over the remaining elements to place after their parent and set their depth accordingly
-	_.forEach(groupBy, (group, parentId) => {
-		// Find the parent root in the sortedArray and insert its children after it
-		const parentIndex = _.findIndex(sortedRelationships, ['relationshipType.id', Number(parentId)]);
-		group.forEach(rel => rel.relationshipType.depth = sortedRelationships[parentIndex].relationshipType.depth + 1);
-		// Insert the group after its parent
-		sortedRelationships.splice(parentIndex + 1, 0, ...group);
-	});
+	// recursively build relationship tree using depth prop
+	const buildLevel = (parentId: number | null, depth: number) => {
+		const children = childrenLookup[String(parentId)] || [];
 
-	return sortedRelationships;
+		children.forEach(rel => {
+			rel.relationshipType.depth = depth;
+			relationshipSelection.push(rel);
+
+			// Recurse down one level
+			buildLevel(rel.relationshipType.id, depth + 1);
+		});
+	};
+
+	// Start building the tree with root rels (parentId = null)
+	buildLevel(null, 0);
+
+	return relationshipSelection;
 }
 
 function getValidOtherEntityTypes(
@@ -274,6 +277,7 @@ class RelationshipModal
 	}
 
 	handleEntityChange = (value: EntitySearchResult) => {
+		RecentlyUsed.addItemToRecentlyUsed(value);
 		this.setState({
 			relationship: null,
 			relationshipType: null,
@@ -375,6 +379,7 @@ class RelationshipModal
 				label={label}
 				languageOptions={this.props.languageOptions}
 				name="entity"
+				recentlyUsedEntityType={types}
 				type={types}
 				value={this.state.targetEntity}
 				onChange={this.handleEntityChange}
