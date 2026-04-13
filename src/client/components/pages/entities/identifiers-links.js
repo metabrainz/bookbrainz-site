@@ -96,7 +96,7 @@ function IdentifierLink({typeId, value}) {
 			link = `https://www.orcid.org/${value}`;
 			break;
 		case 26:
-			link = `https://www.worldcat.org/oclc/${value}`;
+			link = `https://search.worldcat.org/title/${value}`;
 			break;
 		case 27:
 			link = `https://www.goodreads.com/author/show/${value}`;
