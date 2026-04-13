@@ -3,9 +3,10 @@ import {Action, State} from '../interface/type';
 import Immutable from 'immutable';
 
 
-const initialState = Immutable.Map({});
+const initialState = Immutable.OrderedMap<string, any>();
 
-export function worksReducer(state = initialState, {type, payload}:Action):State {
+export function worksReducer(inputState = initialState, {type, payload}:Action):State {
+	const state = Immutable.OrderedMap.isOrderedMap(inputState) ? inputState : inputState.toOrderedMap();
 	switch (type) {
 		case ADD_WORK:
 			return state.set(payload.id, Immutable.fromJS(payload.value));
