@@ -477,11 +477,10 @@ async function getProgress(achievementId, editorId, orm) {
 	// Sprinter
 	if (achievementId === 10) {
 		const {bookshelf} = orm;
-		const rawSql =
-		`SELECT * from bookbrainz.revision WHERE author_id=${editorId} \
-		and created_at > (SELECT CURRENT_DATE - INTERVAL '1 hour');`;
-
-		const out = await bookshelf.knex.raw(rawSql);
+		const out = await bookshelf.knex.raw(
+			'SELECT * FROM bookbrainz.revision WHERE author_id = ? AND created_at > (CURRENT_DATE - INTERVAL \'1 hour\')',
+			[editorId]
+		);
 		return out.rowCount;
 	}
 	// Fun Runner
