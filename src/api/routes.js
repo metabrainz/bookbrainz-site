@@ -20,6 +20,7 @@ import {lookupAndBrowseRequestSlowDown, searchRequestSlowDown} from './helpers/r
 import {Router} from 'express';
 import {allowOnlyGetMethod} from './helpers/utils';
 import authorRouter from './routes/author';
+import collectionRouter from './routes/collection';
 import editionGroupRouter from './routes/edition-group';
 import editionRouter from './routes/edition';
 import publisherRouter from './routes/publisher';
@@ -173,6 +174,10 @@ function initPublisherRoute(app) {
 	app.use('/publisher', lookupAndBrowseRequestSlowDown, publisherRouter);
 }
 
+function initCollectionRoute(app) {
+	app.use('/collection', lookupAndBrowseRequestSlowDown, collectionRouter);
+}
+
 function initSearchRouter(app) {
 	app.use('/search', searchRequestSlowDown, searchRouter);
 }
@@ -194,6 +199,7 @@ function initRoutes() {
 	initSeriesRoute(router);
 	initPublisherRoute(router);
 	initSearchRouter(router);
+	initCollectionRoute(router);
 	initDocsRoute(router);
 
 	return router;
