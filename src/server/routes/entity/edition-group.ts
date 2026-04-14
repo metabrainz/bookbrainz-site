@@ -107,7 +107,7 @@ const router = express.Router();
 // Creation
 router.get(
 	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadLanguages, middleware.loadEditionGroupTypes,
+	middleware.loadLanguages, middleware.loadScripts, middleware.loadEditionGroupTypes,
 	middleware.loadRelationshipTypes,
 	 async (req, res) => {
 		const markupProps = generateEntityProps(
@@ -146,7 +146,7 @@ router.get(
 
 router.post(
 	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadLanguages, middleware.loadEditionGroupTypes,
+	middleware.loadLanguages, middleware.loadScripts, middleware.loadEditionGroupTypes,
 	middleware.loadRelationshipTypes, async (req, res) => {
 		const entity = await utils.parseInitialState(req, 'editionGroup');
 		const {orm} = req.app.locals;
@@ -344,7 +344,7 @@ export function editionGroupToFormState(editionGroup) {
 
 router.get(
 	'/:bbid/edit', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadEditionGroupTypes, middleware.loadLanguages,
+	middleware.loadEditionGroupTypes, middleware.loadLanguages, middleware.loadScripts,
 	 middleware.loadEntityRelationships, middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(

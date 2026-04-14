@@ -18,16 +18,22 @@ type AliasModalBodyDispatchProps = {
 
 type AliasModalBodyOwnProps = {
     languageOptions?:any[],
+	scriptOptions?:any[],
 };
 type AliasModalBodyProps = AliasModalBodyStateProps & AliasModalBodyDispatchProps & AliasModalBodyOwnProps;
 
-export const AliasModalBody = ({aliases, onAddAlias, languageOptions}:AliasModalBodyProps) => {
+export const AliasModalBody = ({aliases, onAddAlias, languageOptions, scriptOptions}:AliasModalBodyProps) => {
 	const noAliasesTextClass =
 		classNames('text-center', {'d-none': aliases.size});
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		frequency: language.frequency,
 		label: language.name,
 		value: language.id
+	}));
+	const scriptOptionsForDisplay = scriptOptions.map((script) => ({
+		frequency: script.frequency,
+		label: script.name,
+		value: script.id
 	}));
 	return (
 		<>
@@ -42,6 +48,7 @@ export const AliasModalBody = ({aliases, onAddAlias, languageOptions}:AliasModal
 							// eslint-disable-next-line react/no-array-index-key
 							key={`alias-row-${rowId}`}
 							languageOptions={languageOptionsForDisplay}
+							scriptOptions={scriptOptionsForDisplay}
 						/>
 					)).toArray()
 				}
@@ -58,7 +65,8 @@ export const AliasModalBody = ({aliases, onAddAlias, languageOptions}:AliasModal
 };
 
 AliasModalBody.defaultProps = {
-	languageOptions: []
+	languageOptions: [],
+	scriptOptions: []
 };
 
 function mapDispatchToProps(dispatch) {
