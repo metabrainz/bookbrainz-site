@@ -199,11 +199,14 @@ class EntitySearchFieldOption extends React.Component<Props> {
 		);
 		const filteredOptions = response.body.filter(combinedFilters);
 		const searchResults = filteredOptions.map(this.entityToOption);
-		if (recentOptions.length > 0) {
+		const filteredRecent = recentOptions.filter(
+			option => option.text.toLowerCase().includes(query.toLowerCase())
+		);
+		if (filteredRecent.length > 0) {
 			return [
 				{
 					label: 'Recently Used',
-					options: recentOptions
+					options: filteredRecent
 				},
 				{
 					label: 'Search Results',
@@ -264,7 +267,6 @@ class EntitySearchFieldOption extends React.Component<Props> {
 			<SelectWrapper
 				{...this.props}
 				blurInputOnSelect
-				cacheOptions
 				isClearable
 				className={`Select${this.props.className ? ` ${this.props.className}` : ''}`}
 				classNamePrefix="react-select"
