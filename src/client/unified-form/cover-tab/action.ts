@@ -9,6 +9,7 @@ export const CLEAR_PUBLISHER = 'CLEAR_PUBLISHER';
 export const CLEAR_PUBLISHERS = 'CLEAR_PUBLISHERS';
 export const CLEAR_AUTHOR = 'CLEAR_AUTHOR';
 export const AUTO_ISBN = 'AUTO_ISBN';
+export const UPDATE_ISBN_CONFIRMED = 'UPDATE_ISBN_CONFIRMED';
 
 let nextPublisherId = 0;
 let nextAuthorId = 0;
@@ -117,5 +118,12 @@ export function updateAutoISBN(value:boolean):Action {
 	return {
 		payload: value,
 		type: AUTO_ISBN
+	};
+}
+
+export function updateISBNConfirmed(confirmed: boolean): Action {
+	return {
+		payload: confirmed,
+		type: UPDATE_ISBN_CONFIRMED
 	};
 }
