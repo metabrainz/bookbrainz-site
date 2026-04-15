@@ -451,3 +451,32 @@ export function validateCollaboratorIdsForCollectionRemove(req, res, next) {
 
 	return next();
 }
+export function betaMiddleware() {
+	const BETA_HOST = process.env.BETA_REDIRECT_HOSTNAME || 'beta.bookbrainz.org';
+
+	return (req, res, next) => {
+		const isBeta = process.env.DEPLOY_ENV === 'beta';
+		const unsetBeta = req.query.unset_beta === '1' && !isBeta;
+		const betaCookie = req.cookies?.beta;
+
+		if (unsetBeta) {
+			res.cookie('beta', '', {
+				path: '/',
+				expires: new Date(Date.now() - 86400000),
+				...(req.secure && { sameSite: 'None', secure: true })
+			});
+		}
+
+		const shouldRedirectToBeta =
+			!isBeta &&
+			betaCookie === 'on' &&
+			!req.originalUrl.includes('/set-beta-preference');
+
+		if (shouldRedirectToBeta) {
+			const newUrl = `${req.protocol}://${BETA_HOST}${req.originalUrl}`;
+			return res.redirect(307, newUrl);
+		}
+
+		next();
+	};
+}
