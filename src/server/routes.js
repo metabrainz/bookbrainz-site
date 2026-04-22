@@ -21,6 +21,7 @@ import adminLogsRouter from './routes/adminLogs';
 import adminPanelRouter from './routes/adminPanel';
 import authRouter from './routes/auth';
 import authorRouter from './routes/entity/author';
+import betaRouter from './routes/beta';
 import collectionRouter from './routes/collection';
 import collectionsRouter from './routes/collections';
 import editionGroupRouter from './routes/entity/edition-group';
@@ -68,6 +69,7 @@ function initRootRoutes(app) {
 	app.use('/relationship-types', relationshipTypesRouter);
 	app.use('/identifier-type', identifierTypeRouter);
 	app.use('/identifier-types', identifierTypesRouter);
+	app.use('/', betaRouter);
 }
 
 function initEditionGroupRoutes(app) {
