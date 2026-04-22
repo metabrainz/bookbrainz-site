@@ -20,6 +20,7 @@ import {Button} from 'react-bootstrap';
 import {RelationshipTypeDataT} from '../../forms/type-editor/typeUtils';
 import {orderBy as _orderBy} from 'lodash';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
+import {sanitize} from 'isomorphic-dompurify';
 
 
 type RelationshipTypeTreePropsT = {
@@ -47,7 +48,6 @@ function RelationshipTypeTree({relationshipTypes, parentId, indentLevel}: Relati
 
 	let filteredRelationshipTypes = relationshipTypes.filter((relType) => relType.parentId === parentId);
 	filteredRelationshipTypes = _orderBy(filteredRelationshipTypes, ['childOrder', 'id']);
-
 	return (
 		<ul>
 			{filteredRelationshipTypes.map(relType => {
@@ -57,6 +57,9 @@ function RelationshipTypeTree({relationshipTypes, parentId, indentLevel}: Relati
 				}
 				const sourceIconElement = genEntityIconHTMLElement(relType.sourceEntityType);
 				const targetIconElement = genEntityIconHTMLElement(relType.targetEntityType);
+				/* eslint-disable react/no-danger */
+				// We are disabling this rule because we are already sanitizing the html here
+				const sanitizedDescription = sanitize(relType.description);
 				return (
 					<li className={relOuterClass} key={relType.id}>
 						<p>
@@ -72,7 +75,7 @@ function RelationshipTypeTree({relationshipTypes, parentId, indentLevel}: Relati
 								{expandedRelationshipTypeIds.includes(relType.id) ? '(Less)' : '(More)'}
 							</Button>
 							<p>
-								<small>{relType.description}</small>
+								<small><span dangerouslySetInnerHTML={{__html: sanitizedDescription}}/></small>
 							</p>
 						</p>
 						{expandedRelationshipTypeIds.includes(relType.id) && (
@@ -81,7 +84,7 @@ function RelationshipTypeTree({relationshipTypes, parentId, indentLevel}: Relati
 								<div><strong>Reverse link phrase: </strong>{relType.reverseLinkPhrase}</div>
 								<div><strong>Source Entity Type: </strong>{relType.sourceEntityType}</div>
 								<div><strong>Target Entity Type: </strong>{relType.targetEntityType}</div>
-								<div><strong>Description: </strong>{relType.description}</div>
+								<div><strong>Description: </strong><span dangerouslySetInnerHTML={{__html: sanitizedDescription}}/></div>
 								<div><strong>Child Order: </strong>{relType.childOrder}</div>
 								<div><strong>Deprecated: </strong>{relType.deprecated ? 'Yes' : 'No'}</div>
 								<div>
