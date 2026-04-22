@@ -46,7 +46,7 @@ import ReactSelect from 'react-select';
 import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import RelationshipSelect from './relationship-select';
 import _ from 'lodash';
-import {getEntityLink} from '../../../common/helpers/utils';
+import {getEntityLink, sanitize} from '../../../common/helpers/utils';
 
 
 function isValidRelationship(relationship: _Relationship) {
@@ -420,6 +420,8 @@ class RelationshipModal
 			// Name of the attribute type belonging to the relationship type. EX: ['position', 'number]
 			attributes = attributeTypes.map(attribute => attribute.name);
 		}
+		/* eslint-disable react/no-danger */
+		// We are disabling this rule because we are already sanitizing the html here
 		return (
 			<Form.Group>
 				<Form.Label>Relationship</Form.Label>
@@ -435,7 +437,7 @@ class RelationshipModal
 				/>
 				{this.state.relationshipType &&
 					<Form.Text muted>
-						{this.state.relationshipType.description}
+						<span dangerouslySetInnerHTML={{__html: sanitize(this.state.relationshipType.description)}}/>
 					</Form.Text>
 				}
 				{

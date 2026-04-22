@@ -117,7 +117,7 @@ function HelpPage(): JSX.Element {
 							Example:
 							<ul>
 								<li>Name: 村上 春樹 – Alias (english): Haruki Murakami</li>
-								<li>Name: J.K. Rowling – Alias (full name): Joanne Kathleen Rowling – Alias (pseudonym): Robert Galbraith</li>
+								<li>Name: bell hooks - Alias (full name): Gloria Jean Watkins</li>
 							</ul>
 						</ListGroup.Item>
 
