@@ -30,27 +30,25 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-      # Using elastic search as a service container
-      elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:5.6.8
-        env:
-          discovery.type: single-node
-          xpack.security.enabled: false
-          ES_JAVA_OPTS: -Xms512m -Xmx512m
-        ports:
-          - 9200:9200
-          - 9300:9300
-        options: >-
-          --health-cmd "curl -f http://localhost:9200/_cluster/health || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
 
     steps:
       - name: Install PostgreSQL client
         run: |
           sudo apt-get update
           sudo apt-get install --yes postgresql-client
+
+      - name: Configure sysctl limits for ElasticSearch
+        run: |
+          sudo swapoff -a
+          sudo sysctl -w vm.swappiness=1
+          sudo sysctl -w fs.file-max=262144
+          sudo sysctl -w vm.max_map_count=262144
+
+      - name: Runs Elasticsearch
+        uses: elastic/elastic-github-actions/elasticsearch@master
+        with:
+          stack-version: 9.3.0
+          security-enabled: false
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -68,7 +66,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           # We could also test on multiple Node versions if needed: https://github.com/actions/setup-node#matrix-testing
-          node-version: "18"
+          node-version: "20"
           # Enables caching NPM dependencies (uses https://github.com/actions/cache under the hood)
           cache: "yarn"
 
