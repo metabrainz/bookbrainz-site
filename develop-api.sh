@@ -12,6 +12,4 @@ else
     DOCKER_COMPOSE_CMD="docker-compose"
 fi
 
-
-$DOCKER_COMPOSE_CMD -f docker-compose.api.yml run --rm startup &&
 $DOCKER_COMPOSE_CMD -f docker-compose.api.yml up --build bookbrainz-api
