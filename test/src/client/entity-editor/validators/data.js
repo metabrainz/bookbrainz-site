@@ -48,6 +48,14 @@ export const VALID_IDENTIFIERS = {
 export const IDENTIFIER_TYPES = [{
 	id: 1,
 	validationRegex: /^(?:B\d{2}\w{7}|\d{9}[X\d])$/
+}, {
+	id: 2,
+	validationFunction: 'isbn13',
+	validationRegex: /^\d{13}$/
+}, {
+	id: 3,
+	validationFunction: 'isbn10',
+	validationRegex: /^\d{9}[\dX]$/i
 }];
 
 export const INVALID_IDENTIFIER = {...VALID_IDENTIFIERS, value: 'B076QRJV1'};

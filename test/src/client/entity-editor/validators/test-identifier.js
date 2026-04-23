@@ -67,6 +67,24 @@ function describeValidateIdentifierValueWithIdentifierTypes() {
 		const result = validateIdentifierValue(null, 1, IDENTIFIER_TYPES);
 		expect(result).to.be.false;
 	});
+
+	it('should base validity on ISBN-13 checksum when validationFunction is isbn13', () => {
+		expect(
+			validateIdentifierValue('9780306406157', 2, IDENTIFIER_TYPES)
+		).to.be.true;
+		expect(
+			validateIdentifierValue('9780306406150', 2, IDENTIFIER_TYPES)
+		).to.be.false; // Invalid checksum
+	});
+
+	it('should base validity on ISBN-10 checksum when validationFunction is isbn10', () => {
+		expect(
+			validateIdentifierValue('0306406152', 3, IDENTIFIER_TYPES)
+		).to.be.true;
+		expect(
+			validateIdentifierValue('0306406153', 3, IDENTIFIER_TYPES)
+		).to.be.false; // Invalid checksum
+	});
 }
 
 function describeValidateIdentifierTypeNoIdentifierTypes() {

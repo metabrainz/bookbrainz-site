@@ -487,6 +487,7 @@ CREATE TABLE bookbrainz.identifier_type (
 	description TEXT NOT NULL CHECK (description <> ''),
 	detection_regex TEXT,
 	validation_regex TEXT NOT NULL,
+	validation_function TEXT DEFAULT NULL,
 	display_template TEXT NOT NULL CHECK (display_template <> ''),
 	entity_type bookbrainz.entity_type NOT NULL,
 	parent_id INT,
