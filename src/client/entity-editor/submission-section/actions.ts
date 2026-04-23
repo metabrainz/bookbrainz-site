@@ -22,6 +22,7 @@ import type {Map} from 'immutable';
 import _ from 'lodash';
 import {filterObject} from '../../../common/helpers/utils';
 import request from 'superagent';
+import {sanitizeInput} from '../../helpers/utils';
 
 
 export const SET_SUBMIT_ERROR = 'SET_SUBMIT_ERROR';
@@ -29,14 +30,14 @@ export const UPDATE_REVISION_NOTE = 'UPDATE_REVISION_NOTE';
 export const SET_SUBMITTED = 'SET_SUBMITTED';
 
 export type Action = {
-	type: string,
-	payload?: unknown,
-	meta?: {
-		debounce?: string
-	},
-	error?: string,
-	submitted?: boolean,
-	value?: string
+    type: string,
+    payload?: unknown,
+    meta?: {
+        debounce?: string
+    },
+    error?: string,
+    submitted?: boolean,
+    value?: string
 };
 
 /**
@@ -48,10 +49,10 @@ export type Action = {
  * @returns {Action} The resulting SET_SUBMIT_ERROR action.
  */
 export function setSubmitError(error: string): Action {
-	return {
-		error,
-		type: SET_SUBMIT_ERROR
-	};
+    return {
+        error,
+        type: SET_SUBMIT_ERROR
+    };
 }
 
 /**
@@ -62,10 +63,10 @@ export function setSubmitError(error: string): Action {
  * @returns {Action} The resulting SET_SUBMITTED action.
  */
 export function setSubmitted(submitted: boolean): Action {
-	return {
-		submitted,
-		type: SET_SUBMITTED
-	};
+    return {
+        submitted,
+        type: SET_SUBMITTED
+    };
 }
 
 /**
@@ -77,192 +78,220 @@ export function setSubmitted(submitted: boolean): Action {
  * @returns {Action} The resulting UPDATE_REVISION_NOTE action.
  */
 export function debounceUpdateRevisionNote(value: string): Action {
-	return {
-		meta: {debounce: 'keystroke'},
-		type: UPDATE_REVISION_NOTE,
-		value
-	};
+    return {
+        meta: {debounce: 'keystroke'},
+        type: UPDATE_REVISION_NOTE,
+        value
+    };
+}
+
+/**
+ * Recursively sanitizes data object strings.
+ * Skips 'annotation' field to preserve formatting.
+ */
+function sanitizePayload(data: any): any {
+    if (typeof data === 'string') {
+        return sanitizeInput(data);
+    }
+    if (Array.isArray(data)) {
+        return data.map(sanitizePayload);
+    }
+    if (_.isPlainObject(data)) {
+        return _.mapValues(data, (value, key) => {
+            if (key === 'annotation') { return value; }
+            return sanitizePayload(value);
+        });
+    }
+    return data;
 }
 
 type Response = {
-	body: {
-		bbid: string,
-		alert?: string
-	}
+    body: {
+        bbid: string,
+        alert?: string
+    }
 };
 
 function postSubmission(url: string, data: Map<string, any>): Promise<void> {
-	/*
-	 * TODO: Not the best way to do this, but once we unify the
-	 * /<entity>/create/handler and /<entity>/edit/handler URLs, we can simply
-	 * pass the entity type and generate both URLs from that.
-	 */
+    /*
+     * TODO: Not the best way to do this, but once we unify the
+     * /<entity>/create/handler and /<entity>/edit/handler URLs, we can simply
+     * pass the entity type and generate both URLs from that.
+     */
 
-	const [, submissionEntity] = url.split('/');
-	return request.post(url).send(Object.fromEntries(data as unknown as Iterable<any[]>))
-		.then((response: Response) => {
-			if (!response.body) {
-				window.location.replace('/login');
-			}
+    const [, submissionEntity] = url.split('/');
 
-			const redirectUrl = `/${submissionEntity}/${response.body.bbid}`;
-			if (response.body.alert) {
-				const alertParam = `?alert=${response.body.alert}`;
-				window.location.href = `${redirectUrl}${alertParam}`;
-			}
-			else {
-				window.location.href = redirectUrl;
-			}
-		});
+    // Convert and sanitize data
+    const rawData = Object.fromEntries(data as unknown as Iterable<any[]>);
+    const cleanData = sanitizePayload(rawData);
+
+    return request.post(url).send(cleanData)
+        .then((response: Response) => {
+            if (!response.body) {
+                window.location.replace('/login');
+            }
+
+            const redirectUrl = `/${submissionEntity}/${response.body.bbid}`;
+            if (response.body.alert) {
+                const alertParam = `?alert=${response.body.alert}`;
+                window.location.href = `${redirectUrl}${alertParam}`;
+            }
+            else {
+                window.location.href = redirectUrl;
+            }
+        });
 }
 function transformFormData(data:Record<string, any>):Record<string, any> {
-	const newData = {};
-	const nextId = 0;
-	// add new series
-	_.forEach(data.Series, (series, sid) => {
-		// sync local series section with global series section
-		series.seriesSection = data.seriesSection;
-		// might be possible for series items to not have target id
-		_.forEach(series.seriesSection.seriesItems, (item) => {
-			_.set(item, 'targetEntity.bbid', series.id);
-		});
-		series.seriesSection.seriesItems = filterObject(series.seriesSection.seriesItems, (rel) => !rel.attributeSetId);
-		// if new items have been added to series, then add series to the post data
-		if (_.size(series.seriesSection.seriesItems) > 0) {
-			series.__isNew__ = false;
-			series.submissionSection = {
-				note: 'added more series items'
-			};
-			newData[sid] = series;
-		}
-	});
-	// add new works
-	const authorWorkRelationshipTypeId = 8;
-	_.forEach(data.Works, (work, wid) => {
-		// if authors have been added to the work, then add work to the post data
-		if (!work.checked) { return; }
-		let relationshipCount = 0;
-		// hashset in order to avoid duplicate relationships
-		const authorBBIDSet = new Set();
-		if (work.relationshipSet) {
-			_.forEach(work.relationshipSet.relationships, (rel) => {
-				if (rel.typeId === authorWorkRelationshipTypeId) {
-					authorBBIDSet.add(rel.sourceBbid);
-				}
-			});
-		}
-		let flag = false;
-		_.forEach(data.authorCreditEditor, (authorCredit) => {
-			if (authorBBIDSet.has(authorCredit.author.bbid)) { return; }
-			const relationship = {
-				attributeSetId: null,
-				attributes: [],
-				isAdded: true,
-				relationshipType: {
-					id: authorWorkRelationshipTypeId
-				},
-				rowId: `a${relationshipCount}`,
-				sourceEntity: {
-					  bbid: authorCredit.author.id
-				},
-				targetEntity: {
-					bbid: work.id
-				  }
-			};
-			_.set(work, ['relationshipSection', 'relationships', `a${relationshipCount}`], relationship);
-			relationshipCount++;
-			flag = true;
-		});
-		if (flag) {
-			work.submissionSection = {
-				note: 'added authors from parent edition'
-			};
-			work.__isNew__ = false;
-			newData[wid] = work;
-		}
-	});
-	// add edition at last
-	if (data.ISBN.type) {
-		data.identifierEditor.m0 = data.ISBN;
-	}
-	data.relationshipSection.relationships = _.mapValues(data.Works, (work, key) => {
-		const relationship = {
-			attributeSetId: null,
-			attributes: [],
-			isAdded: true,
-			relationshipType: {
-				id: 10
-			},
-			rowID: key,
-			sourceEntity: {
-			},
-			targetEntity: {
-				bbid: work.id
-			}
-		};
-		return relationship;
-	});
-	newData[`e${nextId}`] = {...data, type: 'Edition'};
-	return newData;
+    const newData = {};
+    const nextId = 0;
+    // add new series
+    _.forEach(data.Series, (series, sid) => {
+        // sync local series section with global series section
+        series.seriesSection = data.seriesSection;
+        // might be possible for series items to not have target id
+        _.forEach(series.seriesSection.seriesItems, (item) => {
+            _.set(item, 'targetEntity.bbid', series.id);
+        });
+        series.seriesSection.seriesItems = filterObject(series.seriesSection.seriesItems, (rel) => !rel.attributeSetId);
+        // if new items have been added to series, then add series to the post data
+        if (_.size(series.seriesSection.seriesItems) > 0) {
+            series.__isNew__ = false;
+            series.submissionSection = {
+                note: 'added more series items'
+            };
+            newData[sid] = series;
+        }
+    });
+    // add new works
+    const authorWorkRelationshipTypeId = 8;
+    _.forEach(data.Works, (work, wid) => {
+        // if authors have been added to the work, then add work to the post data
+        if (!work.checked) { return; }
+        let relationshipCount = 0;
+        // hashset in order to avoid duplicate relationships
+        const authorBBIDSet = new Set();
+        if (work.relationshipSet) {
+            _.forEach(work.relationshipSet.relationships, (rel) => {
+                if (rel.typeId === authorWorkRelationshipTypeId) {
+                    authorBBIDSet.add(rel.sourceBbid);
+                }
+            });
+        }
+        let flag = false;
+        _.forEach(data.authorCreditEditor, (authorCredit) => {
+            if (authorBBIDSet.has(authorCredit.author.bbid)) { return; }
+            const relationship = {
+                attributeSetId: null,
+                attributes: [],
+                isAdded: true,
+                relationshipType: {
+                    id: authorWorkRelationshipTypeId
+                },
+                rowId: `a${relationshipCount}`,
+                sourceEntity: {
+                      bbid: authorCredit.author.id
+                },
+                targetEntity: {
+                    bbid: work.id
+                  }
+            };
+            _.set(work, ['relationshipSection', 'relationships', `a${relationshipCount}`], relationship);
+            relationshipCount++;
+            flag = true;
+        });
+        if (flag) {
+            work.submissionSection = {
+                note: 'added authors from parent edition'
+            };
+            work.__isNew__ = false;
+            newData[wid] = work;
+        }
+    });
+    // add edition at last
+    if (data.ISBN.type) {
+        data.identifierEditor.m0 = data.ISBN;
+    }
+    data.relationshipSection.relationships = _.mapValues(data.Works, (work, key) => {
+        const relationship = {
+            attributeSetId: null,
+            attributes: [],
+            isAdded: true,
+            relationshipType: {
+                id: 10
+            },
+            rowID: key,
+            sourceEntity: {
+            },
+            targetEntity: {
+                bbid: work.id
+            }
+        };
+        return relationship;
+    });
+    newData[`e${nextId}`] = {...data, type: 'Edition'};
+    return newData;
 }
 
 function postUFSubmission(url: string, data: Map<string, any>): Promise<void> {
-	// transform data
-	const jsonData = data.toJS();
-	const postData = transformFormData(jsonData);
-	return request.post(url).send(postData)
-		.then((response) => {
-			if (!response.body) {
-				window.location.replace('/login');
-			}
-			const editionEntity = response.body.find((entity) => entity.type === 'Edition');
-			const redirectUrl = `/edition/${editionEntity.bbid}`;
-			if (response.body.alert) {
-				const alertParam = `?alert=${response.body.alert}`;
-				window.location.href = `${redirectUrl}${alertParam}`;
-			}
-			else {
-				window.location.href = redirectUrl;
-			}
-		});
+    // transform data
+    const jsonData = data.toJS();
+    // Sanitize before transforming
+    const cleanData = sanitizePayload(jsonData);
+
+    const postData = transformFormData(cleanData);
+    return request.post(url).send(postData)
+        .then((response) => {
+            if (!response.body) {
+                window.location.replace('/login');
+            }
+            const editionEntity = response.body.find((entity) => entity.type === 'Edition');
+            const redirectUrl = `/edition/${editionEntity.bbid}`;
+            if (response.body.alert) {
+                const alertParam = `?alert=${response.body.alert}`;
+                window.location.href = `${redirectUrl}${alertParam}`;
+            }
+            else {
+                window.location.href = redirectUrl;
+            }
+        });
 }
 
 type SubmitResult = (arg1: (Action) => unknown, arg2: () => Map<string, any>) => unknown;
 export function submit(
-	submissionUrl: string,
-	isUnifiedForm = false
+    submissionUrl: string,
+    isUnifiedForm = false
 ): SubmitResult {
-	return (dispatch, getState) => {
-		const rootState = getState();
-		dispatch(setSubmitted(true));
-		if (isUnifiedForm) {
-			return postUFSubmission(submissionUrl, rootState)
-				.catch(
-					(error: {message: string}) => {
-						const message =
-						_.get(error, ['response', 'body', 'error'], null) ||
-						error.message;
-						dispatch(setSubmitted(false));
-						return dispatch(setSubmitError(message));
-					}
-				);
-		}
-		return postSubmission(submissionUrl, rootState)
-			.catch(
-				(error: {message: string}) => {
-					/*
-					 * Use server-set message first, otherwise internal
-					 * superagent message
-					 */
-					const message =
-						_.get(error, ['response', 'body', 'error'], null) ||
-						error.message;
-					// If there was an error submitting the form, make the submit button clickable again
-					dispatch(setSubmitted(false));
-					return dispatch(setSubmitError(message));
-				}
-			);
-	};
+    return (dispatch, getState) => {
+        const rootState = getState();
+        dispatch(setSubmitted(true));
+        if (isUnifiedForm) {
+            return postUFSubmission(submissionUrl, rootState)
+                .catch(
+                    (error: {message: string}) => {
+                        const message =
+                        _.get(error, ['response', 'body', 'error'], null) ||
+                        error.message;
+                        dispatch(setSubmitted(false));
+                        return dispatch(setSubmitError(message));
+                    }
+                );
+        }
+        return postSubmission(submissionUrl, rootState)
+            .catch(
+                (error: {message: string}) => {
+                    /*
+                     * Use server-set message first, otherwise internal
+                     * superagent message
+                     */
+                    const message =
+                        _.get(error, ['response', 'body', 'error'], null) ||
+                        error.message;
+                    // If there was an error submitting the form, make the submit button clickable again
+                    dispatch(setSubmitted(false));
+                    return dispatch(setSubmitError(message));
+                }
+            );
+    };
 }
 
 /**
@@ -274,30 +303,34 @@ export function submit(
  * @returns {function} - A thunk that posts the submission to the server
  */
 export function submitSingleEntity(submissionUrl:string, entityType:EntityTypeString, callback:(newEntity)=>void, initialState = {}):SubmitResult {
-	return async (dispatch, getState) => {
-		const rootState = getState();
-		dispatch(setSubmitted(true));
-		const JSONState = rootState.toJS();
-		const entity = {...JSONState, type: entityType};
-		const postData = {
-			0: entity
-		};
-		try {
-			const response = await request.post(submissionUrl).send(postData);
-			const mainEntity = response.body[0];
-			const entityObject = {...initialState,
-				__isNew__: true,
-				id: mainEntity.bbid,
-				text: mainEntity.name,
-				...mainEntity};
-			return dispatch(callback(entityObject)) && dispatch(setSubmitted(false));
-		}
-		catch (error) {
-			const message =
-						_.get(error, ['response', 'body', 'error'], null) ||
-						error.message;
-			dispatch(setSubmitted(false));
-			return dispatch(setSubmitError(message));
-		}
-	};
+    return async (dispatch, getState) => {
+        const rootState = getState();
+        dispatch(setSubmitted(true));
+        const JSONState = rootState.toJS();
+        
+        // Sanitize the state
+        const cleanState = sanitizePayload(JSONState);
+
+        const entity = {...cleanState, type: entityType};
+        const postData = {
+            0: entity
+        };
+        try {
+            const response = await request.post(submissionUrl).send(postData);
+            const mainEntity = response.body[0];
+            const entityObject = {...initialState,
+                __isNew__: true,
+                id: mainEntity.bbid,
+                text: mainEntity.name,
+                ...mainEntity};
+            return dispatch(callback(entityObject)) && dispatch(setSubmitted(false));
+        }
+        catch (error) {
+            const message =
+                        _.get(error, ['response', 'body', 'error'], null) ||
+                        error.message;
+            dispatch(setSubmitted(false));
+            return dispatch(setSubmitError(message));
+        }
+    };
 }
