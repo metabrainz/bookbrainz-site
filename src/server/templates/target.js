@@ -53,7 +53,7 @@ export default ({
 		<head>
 			<title>${title ? `${title} – BookBrainz` :
 		'BookBrainz – The Open Book Database'}</title>
-			<link rel='stylesheet' href='/stylesheets/bundle.css' />
+			<link rel='stylesheet' href='/stylesheets/vendors.css' />
 			<link rel='stylesheet' href='/stylesheets/style.css' />
 			<meta charset='utf-8'>
 			<meta name='viewport'
@@ -63,7 +63,8 @@ export default ({
 
 		<body>
 			<div id='target'>${markup}</div>
-			<script src='/js/bundle.js'></script>
+		<script src='/js/vendors.js'></script>
+		<script src='/js/common.js'></script>
 			${page ? pageScript : ''}
 			${props && script ?
 		`<script id='props' type='application/json'> ${props}</script>
