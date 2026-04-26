@@ -17,6 +17,10 @@ services:
       - postgres
     volumes:
       - "./config/config.json:/home/bookbrainz/bookbrainz-site/config/config.json:ro"
+    networks:
+      - bookbrainz-net
+    environment:
+      - USE_SOLR=true
 
   postgres:
     container_name: postgres
@@ -31,6 +35,8 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - bookbrainz-net
 
   elasticsearch:
     container_name: elasticsearch
@@ -46,6 +52,8 @@ services:
       - "127.0.0.1:9200:9200"
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - bookbrainz-net
 
   redis:
     container_name: redis
@@ -55,6 +63,8 @@ services:
     ports:
       - "127.0.0.1:6379:6379"
       - "127.0.0.1:3600:3600"
+    networks:
+      - bookbrainz-net
 
   startup:
     image: waisbrot/wait
@@ -67,7 +77,14 @@ services:
       - elasticsearch
       - redis
       - postgres
+    networks:
+      - bookbrainz-net
 
 volumes:
   postgres-data:
   elasticsearch-data:
+
+networks:
+  bookbrainz-net:
+    driver: bridge
+    name: bookbrainz-site_bookbrainz-net

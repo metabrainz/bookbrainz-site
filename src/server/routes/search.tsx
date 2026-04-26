@@ -22,7 +22,8 @@ import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
 import * as propHelpers from '../../client/helpers/props';
-import * as search from '../../common/helpers/search';
+// DEMO: Using search-switch to toggle between ES and Solr
+import * as search from '../../common/helpers/search-switch';
 
 import {keys as _keys, snakeCase as _snakeCase, camelCase, isNil, isString, upperFirst} from 'lodash';
 import {escapeProps, generateProps} from '../helpers/props';

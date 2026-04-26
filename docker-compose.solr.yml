@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  solr-demo:
+    image: solr:9.6
+    container_name: bookbrainz-solr-mvp
+    ports:
+      - "8983:8983"
+    volumes:
+      - ./solr-config/conf:/opt/solr/server/solr/configsets/bookbrainz/conf
+      - solr-data:/var/solr
+    environment:
+      - SOLR_HEAP=512m
+      # enable ICU analysis module
+      - SOLR_MODULES=analysis-extras
+    command:
+      - bash
+      - -c
+      - |
+        echo "starting solr with ICU support..."
+        echo "icu module enabled via SOLR_MODULES=analysis-extras"
+        
+        # quick check for icu jars in the module
+        echo "checking for ICU jars in analysis-extras module:"
+        ls -lh /opt/solr/modules/analysis-extras/lib/*icu* 2>/dev/null && echo "icu jars found" || echo "no ICU jars found"
+        
+        # create the core with our configset
+        echo "creating bookbrainz core with ICU-enabled schema..."
+        exec solr-precreate bookbrainz /opt/solr/server/solr/configsets/bookbrainz
+    networks:
+      - bookbrainz-net
+
+volumes:
+  solr-data:
+
+networks:
+  bookbrainz-net:
+    external: true
+    name: bookbrainz-site_bookbrainz-net
