@@ -19,7 +19,7 @@
 import {Button, Col, Form, Row} from 'react-bootstrap';
 import {
 	debouncedUpdateAliasName, debouncedUpdateAliasSortName, removeAliasRow,
-	updateAliasLanguage, updateAliasPrimary
+	updateAliasLanguage, updateAliasPrimary, updateAliasScript
 } from './actions';
 import {
 	validateAliasLanguage, validateAliasName, validateAliasSortName
@@ -29,6 +29,7 @@ import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import PropTypes from 'prop-types';
 import React from 'react';
+import ScriptField from '../common/script-field';
 import SortNameField from '../common/sort-name-field';
 import {connect} from 'react-redux';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
@@ -67,10 +68,13 @@ const AliasRow = ({
 	languageOptions,
 	languageValue,
 	nameValue,
+	scriptOptions,
+	scriptValue,
 	sortNameValue,
 	primaryChecked,
 	onLanguageChange,
 	onNameChange,
+	onScriptChange,
 	onSortNameChange,
 	onRemoveButtonClick,
 	onPrimaryClick
@@ -110,6 +114,13 @@ const AliasRow = ({
 					value={languageOptions.filter((el) => el.value === languageValue)}
 					onChange={onLanguageChange}
 				/>
+				<ScriptField
+					empty={isAliasEmpty(nameValue, sortNameValue, languageValue)}
+					instanceId="script"
+					options={scriptOptions}
+					value={scriptOptions.filter((el) => el.value === scriptValue)}
+					onChange={onScriptChange}
+				/>
 			</Col>
 		</Row>
 		<Row>
@@ -145,12 +156,16 @@ AliasRow.propTypes = {
 	onNameChange: PropTypes.func.isRequired,
 	onPrimaryClick: PropTypes.func.isRequired,
 	onRemoveButtonClick: PropTypes.func.isRequired,
+	onScriptChange: PropTypes.func.isRequired,
 	onSortNameChange: PropTypes.func.isRequired,
 	primaryChecked: PropTypes.bool.isRequired,
+	scriptOptions: PropTypes.array.isRequired,
+	scriptValue: PropTypes.number,
 	sortNameValue: PropTypes.string.isRequired
 };
 AliasRow.defaultProps = {
-	languageValue: null
+	languageValue: null,
+	scriptValue: null
 };
 
 function mapDispatchToProps(dispatch, {index}) {
@@ -163,6 +178,8 @@ function mapDispatchToProps(dispatch, {index}) {
 			dispatch(updateAliasPrimary(index, event.target.checked)),
 		onRemoveButtonClick: () =>
 			dispatch(removeAliasRow(index)),
+		onScriptChange: (value) =>
+			dispatch(updateAliasScript(index, value && value.value)),
 		onSortNameChange: (event) =>
 			dispatch(debouncedUpdateAliasSortName(index, event.target.value))
 	};
@@ -174,6 +191,7 @@ function mapStateToProps(rootState, {index}) {
 		languageValue: state.getIn([index, 'language']),
 		nameValue: state.getIn([index, 'name']),
 		primaryChecked: state.getIn([index, 'primary']),
+		scriptValue: state.getIn([index, 'script']),
 		sortNameValue: state.getIn([index, 'sortName'])
 	};
 }

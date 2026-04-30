@@ -18,7 +18,7 @@
 
 import {
 	ADD_ALIAS_ROW, REMOVE_ALIAS_ROW, REMOVE_EMPTY_ALIASES, UPDATE_ALIAS_LANGUAGE,
-	UPDATE_ALIAS_NAME, UPDATE_ALIAS_PRIMARY, UPDATE_ALIAS_SORT_NAME
+	UPDATE_ALIAS_NAME, UPDATE_ALIAS_PRIMARY, UPDATE_ALIAS_SCRIPT, UPDATE_ALIAS_SORT_NAME
 } from './actions';
 import Immutable from 'immutable';
 
@@ -27,6 +27,7 @@ const EMPTY_ALIAS = Immutable.Map({
 	language: null,
 	name: '',
 	primary: false,
+	script: null,
 	sortName: ''
 });
 
@@ -44,6 +45,8 @@ function reducer(
 			return state.setIn([payload.rowId, 'sortName'], payload.value);
 		case UPDATE_ALIAS_LANGUAGE:
 			return state.setIn([payload.rowId, 'language'], payload.value);
+		case UPDATE_ALIAS_SCRIPT:
+			return state.setIn([payload.rowId, 'script'], payload.value);
 		case UPDATE_ALIAS_PRIMARY:
 			return state.setIn([payload.rowId, 'primary'], payload.value);
 		case REMOVE_ALIAS_ROW:
