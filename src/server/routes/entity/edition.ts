@@ -162,37 +162,34 @@ router.get(
 	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
 	middleware.loadLanguages, middleware.loadRelationshipTypes,
-	(req:PassportRequest, res, next) => {
+	async (req:PassportRequest, res, next) => {
 		const {EditionGroup, Publisher, Work, Author} = req.app.locals.orm;
 		const propsPromise = generateEntityProps(
 			'edition', req, res, {}
 		);
 		if (req.query.author) {
-			propsPromise.author = Author.forge({bbid: req.query.author})
-				.fetch({require: false, withRelated: 'defaultAlias'})
-				.then((data) => data && utils.entityToOption(data.toJSON()));
+			const data = await Author.forge({bbid: req.query.author})
+				.fetch({require: false, withRelated: 'defaultAlias'});
+			propsPromise.author = data && utils.entityToOption(data.toJSON());
 		}
 
 		// Access edition-group property: can't write req.query.edition-group as the dash makes it invalid Javascript
 		if (req.query['edition-group']) {
-			propsPromise.editionGroup =
-				EditionGroup.forge({bbid: req.query['edition-group']})
-					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && utils.entityToOption(data.toJSON()));
+			const data = await EditionGroup.forge({bbid: req.query['edition-group']})
+				.fetch({require: false, withRelated: 'defaultAlias'});
+			propsPromise.editionGroup = data && utils.entityToOption(data.toJSON());
 		}
 
 		if (req.query.publisher) {
-			propsPromise.publisher =
-				Publisher.forge({bbid: req.query.publisher})
-					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && utils.entityToOption(data.toJSON()));
+			const data = await Publisher.forge({bbid: req.query.publisher})
+				.fetch({require: false, withRelated: 'defaultAlias'});
+			propsPromise.publisher = data && utils.entityToOption(data.toJSON());
 		}
 
 		if (req.query.work) {
-			propsPromise.work =
-				Work.forge({bbid: req.query.work})
-					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && utils.entityToOption(data.toJSON()));
+			const data = await Work.forge({bbid: req.query.work})
+				.fetch({require: false, withRelated: 'defaultAlias'});
+			propsPromise.work = data && utils.entityToOption(data.toJSON());
 		}
 
 		async function render(props) {
@@ -279,9 +276,13 @@ router.get(
 			}));
 		}
 
-		makePromiseFromObject(propsPromise)
-			.then(render)
-			.catch(next);
+		try {
+			const props = await makePromiseFromObject(propsPromise);
+			await render(props);
+		}
+		catch (err) {
+			next(err);
+		}
 	}
 );
 
@@ -329,9 +330,13 @@ router.post(
 			}));
 		}
 
-		makePromiseFromObject(propsPromise)
-			.then(render)
-			.catch(next);
+		try {
+			const props = await makePromiseFromObject(propsPromise);
+			render(props);
+		}
+		catch (err) {
+			next(err);
+		}
 	}
 );
 
