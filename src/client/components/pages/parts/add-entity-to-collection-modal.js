@@ -86,27 +86,30 @@ class AddEntityToCollectionModal extends React.Component {
 		this.setState({error: null});
 	}
 
-	handleSubmit() {
+	async handleSubmit() {
 		const cleanedEntities = this.getCleanedEntities();
 		const bbids = cleanedEntities.map(entity => entity.id);
 		if (bbids.length) {
-			request.post(`/collection/${this.props.collectionId}/add`)
-				.send({bbids})
-				.then(() => {
-					this.setState({
-						entities: [],
-						error: null
-					}, () => {
-						this.props.closeModalAndShowMessage({
-							text: `Added ${bbids.length} ${lowerCase(this.props.collectionType)}${bbids.length > 1 ? 's' : ''}`,
-							type: 'success'
-						});
-					});
+			try {
+				await request.post(`/collection/${this.props.collectionId}/add`).send({bbids});
+				this.setState({
+					entities: [],
+					error: null
 				}, () => {
-					this.setState({
-						error: 'Something went wrong! Please try again later'
+					this.props.closeModalAndShowMessage({
+						text: `Added ${bbids.length} ${lowerCase(this.props.collectionType)}${bbids.length > 1 ? 's' : ''}`,
+						type: 'success'
 					});
 				});
+			}
+			catch (err) {
+				const error = err?.response?.body?.error || err?.message || err;
+				// eslint-disable-next-line no-console
+				console.error('Failed to add entities to collection:', error);
+				this.setState({
+					error: 'Something went wrong! Please try again later'
+				});
+			}
 		}
 		else {
 			this.setState({
