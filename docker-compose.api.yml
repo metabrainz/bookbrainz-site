@@ -26,9 +26,11 @@ services:
     image: postgres:16
     user: postgres
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     environment:
-      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=bookbrainz
+      - POSTGRES_USER=bookbrainz
+      - POSTGRES_PASSWORD=bookbrainz
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
