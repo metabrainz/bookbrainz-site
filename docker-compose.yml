@@ -24,7 +24,7 @@ services:
   postgres:
     container_name: postgres
     restart: unless-stopped
-    image: postgres:16
+    image: postgres:18
     user: postgres
     ports:
       - "127.0.0.1:5432:5432"
@@ -33,7 +33,7 @@ services:
       - POSTGRES_USER=bookbrainz
       - POSTGRES_PASSWORD=bookbrainz
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U bookbrainz -d bookbrainz"]
       interval: 5s
