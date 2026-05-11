@@ -7,5 +7,4 @@ else
     DOCKER_COMPOSE_CMD="docker-compose"
 fi
 
-$DOCKER_COMPOSE_CMD build &&
-$DOCKER_COMPOSE_CMD run --rm bookbrainz-site scripts/wait-for-postgres.sh scripts/download-import-dump.sh
+$DOCKER_COMPOSE_CMD run --rm bookbrainz-site scripts/download-import-dump.sh

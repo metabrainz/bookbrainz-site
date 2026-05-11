@@ -12,6 +12,4 @@ else
     DOCKER_COMPOSE_CMD="docker-compose"
 fi
 
-
-$DOCKER_COMPOSE_CMD run --rm startup &&
 $DOCKER_COMPOSE_CMD up --build bookbrainz-site
