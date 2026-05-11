@@ -129,9 +129,9 @@ export async function getCollectionItems(collectionId, from, size, orm) {
 						SELECT bookbrainz.user_collection_item.bbid,
 						bookbrainz.user_collection_item.added_at
 						FROM bookbrainz.user_collection_item
-						WHERE collection_id='${collectionId}'
+						WHERE collection_id = ?
 						ORDER BY user_collection_item.added_at ASC
-						LIMIT ${size}
-						OFFSET ${from}`);
+						LIMIT ?
+						OFFSET ?`, [collectionId, size, from]);
 	return result.rows;
 }
