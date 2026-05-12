@@ -96,8 +96,9 @@ function formatAliasModified(change) {
 
 	const REQUIRED_DEPTH = 4;
 	const aliasLanguageChanged =
-		change.path.length >= REQUIRED_DEPTH && change.path[3] === 'language' &&
-		change.path[4] === 'name';
+		(change.path.length >= REQUIRED_DEPTH && change.path[3] === 'language' &&
+		change.path[4] === 'name') ||
+		(change.path.length > 3 && change.path[3] === 'languageId');
 	if (aliasLanguageChanged) {
 		return [
 			base.formatChange(
@@ -125,6 +126,13 @@ function formatDefaultAliasModified(change) {
 	if (change.path.length > 2 && change.path[2] === 'name') {
 		return [
 			base.formatChange(change, 'Default Alias', (side) => side && [side])
+		];
+	}
+
+	if ((change.path.length > 3 && change.path[2] === 'language' && change.path[3] === 'name') ||
+		(change.path.length > 2 && change.path[2] === 'languageId')) {
+		return [
+			base.formatChange(change, 'Default Alias -> Language', (side) => side && [side])
 		];
 	}
 
