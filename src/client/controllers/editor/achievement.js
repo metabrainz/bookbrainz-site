@@ -44,6 +44,7 @@ ReactDOM.hydrate(
 					currAchievement={props.currAchievement}
 					editor={props.editor}
 					isOwner={props.isOwner}
+					showSuccess={props.showSuccess}
 				/>
 			</EditorContainer>
 		</Layout>
