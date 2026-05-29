@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
+export const ADD_WORK_LANGUAGE = 'ADD_WORK_LANGUAGE';
 export const UPDATE_LANGUAGES = 'UPDATE_LANGUAGES';
 export const UPDATE_TYPE = 'UPDATE_TYPE';
 
@@ -57,5 +57,19 @@ export function updateLanguages(newLanguages: Array<LanguageOption>): Action {
 	return {
 		payload: newLanguages,
 		type: UPDATE_LANGUAGES
+	};
+}
+
+/** 
+ * Produces an action indicating that a new language should be added to the
+ * work's content languages.
+ *
+ * @param {LanguageOption} newLanguage - The new language to be added.
+ * @returns {Action} The resulting ADD_WORK_LANGUAGE action.
+*/
+export function addLanguage(newLanguages: LanguageOption): Action {
+	return {
+		payload: newLanguages,
+		type: ADD_WORK_LANGUAGE
 	};
 }
