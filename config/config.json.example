@@ -7,7 +7,9 @@
 	"musicbrainz": {
 		"clientID": null,
 		"clientSecret": null,
-		"callbackURL": "http://localhost:9099/cb"
+		"callbackURL": "http://localhost:9099/cb",
+		"authorizationURL": "https://musicbrainz.org/new-oauth2/authorize",
+		"tokenURL": "https://musicbrainz.org/new-oauth2/token"
 	},
 	"critiquebrainz": {
 		"clientID": null,

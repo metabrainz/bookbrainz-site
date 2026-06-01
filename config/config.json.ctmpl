@@ -11,7 +11,9 @@
 	"musicbrainz": {
 		"clientID": "{{template "KEY" "musicbrainz/client_id"}}",
 		"clientSecret": "{{template "KEY" "musicbrainz/client_secret"}}",
-		"callbackURL": "{{template "KEY" "musicbrainz/callback_url"}}"
+		"callbackURL": "{{template "KEY" "musicbrainz/callback_url"}}",
+		"authorizationURL": "{{default "https://musicbrainz.org/new-oauth2/authorize" (template "KEY" "musicbrainz/authorization_url")}}",
+		"tokenURL": "{{default "https://musicbrainz.org/new-oauth2/token" (template "KEY" "musicbrainz/token_url")}}",
 	},
 	"critiquebrainz": {
 		"clientID": "{{template "KEY" "critiquebrainz/client_id"}}",

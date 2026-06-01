@@ -24,7 +24,7 @@ import status from 'http-status';
 const router = express.Router();
 
 // eslint-disable-next-line node/no-process-env
-const authenticationStrategy = process.env.NODE_ENV === 'test' ? 'mock' : 'musicbrainz-oauth2';
+const authenticationStrategy = process.env.NODE_ENV === 'test' ? 'mock' : 'oauth2';
 
 router.get('/auth', passport.authenticate(authenticationStrategy));
 

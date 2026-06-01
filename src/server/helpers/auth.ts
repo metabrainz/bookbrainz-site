@@ -17,9 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as MusicBrainzOAuth from 'passport-musicbrainz-oauth2';
 import * as error from '../../common/helpers/error';
 
+import OAuth2Strategy from 'passport-oauth2';
 import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import StrategyMock from './mock-passport-strategy';
 import _ from 'lodash';
@@ -77,14 +77,14 @@ export function init(app) {
 				});
 		}
 		else {
-			strategy = new MusicBrainzOAuth.Strategy(
-				_.assign(
-					{
-						passReqToCallback: true,
-						scope: 'profile'
-					}, config.musicbrainz
-				),
-				async (req, accessToken, refreshToken, profile, done) => {
+			const options:OAuth2Strategy.StrategyOptionsWithRequest = {
+				passReqToCallback: true,
+				scope: 'profile',
+				...config.musicbrainz
+			};
+			strategy = new OAuth2Strategy(
+				options,
+				async (req: any, accessToken:string, refreshToken:string, profile, done:OAuth2Strategy.VerifyCallback) => {
 					try {
 						if (req.user) {
 							const linkedUser =
@@ -102,7 +102,7 @@ export function init(app) {
 						return done(null, fetchedUser.toJSON());
 					}
 					catch (err) {
-						return done(null, false, profile);
+						return done(err, false, profile);
 					}
 				}
 			);
