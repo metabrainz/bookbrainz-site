@@ -69,27 +69,24 @@ class MetaBrainzOAuth2Strategy extends OAuth2Strategy {
 	}
 }
 
-async function _linkMBAccount(orm:ORM, bbUserJSON, mbUserJSON) {
+async function _updateMetaBrainzUser(orm:ORM, bbUserJSON, mbUserJSON, accessToken, refreshToken) {
 	const {Editor} = orm;
-	const fetchedEditor = await new Editor({id: bbUserJSON.id})
-		.fetch({require: true});
-
+	const bbUserId = _.get(bbUserJSON, 'id');
+	let fetchedEditor;
+	if (bbUserId) {
+		fetchedEditor = await new Editor({id: bbUserJSON.id})
+			.fetch({require: true});
+	}
+	else {
+		fetchedEditor = await new Editor({metabrainzUserId: mbUserJSON.metabrainz_user_id})
+			.fetch({require: true});
+	}
 	return fetchedEditor.save({
 		cachedMetabrainzName: mbUserJSON.sub,
+		metabrainzOauthAccessToken: accessToken,
+		metabrainzOauthRefreshToken: refreshToken,
 		metabrainzUserId: mbUserJSON.metabrainz_user_id
-	});
-}
-
-function _getAccountByMBUserId(orm:ORM, mbUserJSON) {
-	const {Editor} = orm;
-	return new Editor({metabrainzUserId: mbUserJSON.metabrainz_user_id})
-		.fetch({require: true});
-}
-
-function _updateMetaBrainzUser(bbUserModel, mbUserJSON) {
-	return bbUserModel.save({
-		cachedMetabrainzName: mbUserJSON.sub,
-	});
+	}, {patch: true});
 }
 
 export function init(app) {
@@ -129,18 +126,8 @@ export function init(app) {
 				options,
 				async (req: any, accessToken:string, refreshToken:string, profile, done:OAuth2Strategy.VerifyCallback) => {
 					try {
-						if (req.user) {
-							const linkedUser =
-								await _linkMBAccount(orm, req.user, profile);
-
-							// Logged in, associate
-							return done(null, linkedUser.toJSON());
-						}
-
-						// Not logged in, authenticate
-						const fetchedUser = await _getAccountByMBUserId(orm, profile);
-						const updated = await _updateMetaBrainzUser(fetchedUser, profile);
-						return done(null, fetchedUser.toJSON());
+						const updatedUser = await _updateMetaBrainzUser(orm, req.user, profile, accessToken, refreshToken);
+						return done(null, updatedUser.toJSON());
 					}
 					catch (err) {
 						return done(err, false, profile);
