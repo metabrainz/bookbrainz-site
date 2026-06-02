@@ -20,12 +20,14 @@
 import * as error from '../../common/helpers/error';
 
 import OAuth2Strategy from 'passport-oauth2';
+import type {ORM} from 'bookbrainz-data';
 import {PrivilegeType} from '../../common/helpers/privileges-utils';
 import StrategyMock from './mock-passport-strategy';
 import _ from 'lodash';
 import config from '../../common/helpers/config';
 import log from 'log';
 import passport from 'passport';
+import request from 'superagent';
 import status from 'http-status';
 
 
@@ -35,7 +37,39 @@ declare module 'express-serve-static-core' {
 	}
 }
 
-async function _linkMBAccount(orm, bbUserJSON, mbUserJSON) {
+class MetaBrainzOAuth2Strategy extends OAuth2Strategy {
+	userProfile(accessToken:string, done:OAuth2Strategy.VerifyCallback) {
+		const {oAuthBaseURL} = config.musicbrainz;
+		const introspectUrl = `${oAuthBaseURL}/introspect`;
+
+		request
+			.post(introspectUrl.toString())
+			.type('form')
+			.send({
+				/* eslint-disable camelcase */
+				client_id: config.musicbrainz.clientID,
+				client_secret: config.musicbrainz.clientSecret,
+				token: accessToken,
+				token_type_hint: 'access_token'
+				/* eslint-enable camelcase */
+			})
+			.then((response) => {
+				if (!response?.body?.active) {
+					return done(new Error('Access token is not active'));
+				}
+				return done(null, response.body);
+			})
+			.catch((err) => {
+				if (err.status) {
+					return done(new Error(`Introspection request failed with status ${err.status}`));
+				}
+
+				return done(err);
+			});
+	}
+}
+
+async function _linkMBAccount(orm:ORM, bbUserJSON, mbUserJSON) {
 	const {Editor} = orm;
 	const fetchedEditor = await new Editor({id: bbUserJSON.id})
 		.fetch({require: true});
@@ -46,18 +80,20 @@ async function _linkMBAccount(orm, bbUserJSON, mbUserJSON) {
 	});
 }
 
-function _getAccountByMBUserId(orm, mbUserJSON) {
+function _getAccountByMBUserId(orm:ORM, mbUserJSON) {
 	const {Editor} = orm;
 	return new Editor({metabrainzUserId: mbUserJSON.metabrainz_user_id})
 		.fetch({require: true});
 }
 
-function _updateCachedMBName(bbUserModel, mbUserJSON) {
-	return bbUserModel.save({cachedMetabrainzName: mbUserJSON.sub});
+function _updateMetaBrainzUser(bbUserModel, mbUserJSON) {
+	return bbUserModel.save({
+		cachedMetabrainzName: mbUserJSON.sub,
+	});
 }
 
 export function init(app) {
-	const {orm} = app.locals;
+	const {orm} = app.locals as {orm: ORM};
 	try {
 		let strategy;
 		// eslint-disable-next-line node/no-process-env
@@ -77,12 +113,19 @@ export function init(app) {
 				});
 		}
 		else {
+			const {oAuthBaseURL} = config.musicbrainz;
+			const {clientID, clientSecret, callbackURL} = config.musicbrainz;
+
 			const options:OAuth2Strategy.StrategyOptionsWithRequest = {
+				authorizationURL: `${oAuthBaseURL}/authorize`,
+				callbackURL,
+				clientID,
+				clientSecret,
 				passReqToCallback: true,
 				scope: 'profile',
-				...config.musicbrainz
+				tokenURL: `${oAuthBaseURL}/token`
 			};
-			strategy = new OAuth2Strategy(
+			strategy = new MetaBrainzOAuth2Strategy(
 				options,
 				async (req: any, accessToken:string, refreshToken:string, profile, done:OAuth2Strategy.VerifyCallback) => {
 					try {
@@ -96,9 +139,7 @@ export function init(app) {
 
 						// Not logged in, authenticate
 						const fetchedUser = await _getAccountByMBUserId(orm, profile);
-
-						await _updateCachedMBName(fetchedUser, profile);
-
+						const updated = await _updateMetaBrainzUser(fetchedUser, profile);
 						return done(null, fetchedUser.toJSON());
 					}
 					catch (err) {
