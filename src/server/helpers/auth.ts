@@ -79,7 +79,10 @@ async function _updateMetaBrainzUser(orm:ORM, bbUserJSON, mbUserJSON, accessToke
 	}
 	else {
 		fetchedEditor = await new Editor({metabrainzUserId: mbUserJSON.metabrainz_user_id})
-			.fetch({require: true});
+			.fetch({require: false});
+		if (!fetchedEditor) {
+			return null;
+		}
 	}
 	return fetchedEditor.save({
 		cachedMetabrainzName: mbUserJSON.sub,
