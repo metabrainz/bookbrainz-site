@@ -39,7 +39,7 @@ export function createI18n(locale = 'en', resources?) {
 
 	instance.init({
 		fallbackLng: 'en',
-		initImmediate: false,
+		initAsync: false,
 		lng: locale,
 		ns: ['common', 'entityEditor', 'pages', 'entities', 'errors'],
 		...hasResources ? {resources} : {backend: {loadPath: '/locales/{{lng}}/{{ns}}.json'}}

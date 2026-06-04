@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2026  Garv Thakre
+ * Copyright (C) 2026  MetaBrainz Foundation
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 
 import chai from 'chai';
 import {createI18n} from '../../../src/common/i18n/i18n';
+import {createInstance} from 'i18next';
 
 
 const {expect} = chai;
@@ -47,10 +48,39 @@ describe('createI18n', () => {
 	});
 
 	it('should initialize synchronously for SSR compatibility', () => {
+		const mockBackend = {
+			init: () => {
+				// No-op (needed by i18next backend interface)
+			},
+			read: (lng, ns, callback) => {
+				callback(null, {'sync.test': 'Works'});
+			},
+			type: 'backend'
+		};
+
+		// When initAsync is true (default), translations load asynchronously
+		// (deferred via setTimeout) and are not immediately available, returning the raw key
+		const asyncInstance = createInstance();
+		asyncInstance.use(mockBackend);
+		asyncInstance.init({
+			initAsync: true,
+			lng: 'en',
+			ns: ['common']
+		});
+		expect(asyncInstance.t('sync.test', {ns: 'common'})).to.equal('sync.test');
+
+		// When initAsync is false, translations load synchronously and are immediately available
+		const syncInstance = createInstance();
+		syncInstance.use(mockBackend);
+		syncInstance.init({
+			initAsync: false,
+			lng: 'en',
+			ns: ['common']
+		});
+		expect(syncInstance.t('sync.test', {ns: 'common'})).to.equal('Works');
+
+		// Verify our createI18n behaves synchronously
 		const i18n = createI18n('en', {en: {common: {'sync.test': 'Works'}}});
-		// If initImmediate were true (default), translations would load
-		// asynchronously and t() would return the raw key 'sync.test'
-		// because renderToString() is synchronous and cannot await
 		expect(i18n.t('sync.test', {ns: 'common'})).to.equal('Works');
 	});
 });
