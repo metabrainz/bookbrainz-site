@@ -69,7 +69,7 @@ class MetaBrainzOAuth2Strategy extends OAuth2Strategy {
 	}
 }
 
-async function _updateMetaBrainzUser(orm:ORM, bbUserJSON, mbUserJSON, accessToken, refreshToken) {
+async function _updateMetaBrainzUser(orm:ORM, bbUserJSON, mbUserJSON) {
 	const {Editor} = orm;
 	const bbUserId = _.get(bbUserJSON, 'id');
 	let fetchedEditor;
@@ -86,8 +86,8 @@ async function _updateMetaBrainzUser(orm:ORM, bbUserJSON, mbUserJSON, accessToke
 	}
 	return fetchedEditor.save({
 		cachedMetabrainzName: mbUserJSON.sub,
-		metabrainzOauthAccessToken: accessToken,
-		metabrainzOauthRefreshToken: refreshToken,
+		metabrainzOauthAccessToken: mbUserJSON.metabrainzOauthAccessToken,
+		metabrainzOauthRefreshToken: mbUserJSON.metabrainzOauthRefreshToken,
 		metabrainzUserId: mbUserJSON.metabrainz_user_id
 	}, {patch: true});
 }
@@ -128,12 +128,20 @@ export function init(app) {
 			strategy = new MetaBrainzOAuth2Strategy(
 				options,
 				async (req: any, accessToken:string, refreshToken:string, profile, done:OAuth2Strategy.VerifyCallback) => {
+					const mbProfile = {
+						...profile,
+						metabrainzOauthAccessToken: accessToken,
+						metabrainzOauthRefreshToken: refreshToken
+					};
 					try {
-						const updatedUser = await _updateMetaBrainzUser(orm, req.user, profile, accessToken, refreshToken);
+						const updatedUser = await _updateMetaBrainzUser(orm, req.user, mbProfile);
+						if (!updatedUser) {
+							return done(null, false, mbProfile);
+						}
 						return done(null, updatedUser.toJSON());
 					}
 					catch (err) {
-						return done(err, false, profile);
+						return done(err, false, mbProfile);
 					}
 				}
 			);
