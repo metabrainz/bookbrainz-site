@@ -33,6 +33,7 @@ import compression from 'compression';
 import config from '../common/helpers/config';
 import express from 'express';
 import favicon from 'serve-favicon';
+import {i18nMiddleware} from './helpers/middleware';
 import initInflux from './influx';
 import logNode from 'log-node';
 import logger from 'morgan';
@@ -91,7 +92,7 @@ else {
 app.use(express.static(path.join(rootDir, 'static')));
 
 app.use(session(process.env.NODE_ENV));
-
+app.use(i18nMiddleware);
 
 if (config.influx) {
 	initInflux(app, config);
