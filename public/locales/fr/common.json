@@ -1,0 +1,10 @@
+{
+	"about.title": "À propos de BookBrainz",
+	"about.lead": "BookBrainz est une encyclopédie en ligne qui contient des informations sur la littérature publiée. Notre objectif est de collecter et stocker des données sur chaque livre, magazine, journal ou autre publication jamais écrit.",
+	"about.contactUs": "Contactez-nous",
+	"about.ourStory": "Notre histoire",
+	"about.accessingData": "Accéder aux données",
+	"button.close": "Fermer",
+	"pagination.previous": "← Page précédente",
+	"pagination.results": "Résultats {{from}} — {{to}}"
+}
