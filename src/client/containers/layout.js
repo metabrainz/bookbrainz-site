@@ -32,9 +32,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Footer from './../components/footer';
+import {I18nextProvider} from 'react-i18next';
 import MergeQueue from '../components/pages/parts/merge-queue';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {createI18n} from '../../common/i18n/i18n';
 import {faSearchengin} from '@fortawesome/free-brands-svg-icons';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 
@@ -51,6 +53,8 @@ class Layout extends React.Component {
 		this.handleDropdownToggle = this.handleDropdownToggle.bind(this);
 		this.handleDropdownClick = this.handleDropdownClick.bind(this);
 		this.handleMouseDown = this.handleMouseDown.bind(this);
+		const i18nConfig = props.i18n || {locale: 'en', resources: {}};
+		this.i18n = createI18n(i18nConfig.locale, i18nConfig.resources);
 	}
 
 	handleMouseDown(event) {
@@ -416,22 +420,24 @@ class Layout extends React.Component {
 		));
 
 		return (
-			<div>
-				<a className="sr-only sr-only-focusable" href="#content">
-					Skip to main content
-				</a>
-				<Navbar className="BookBrainz" expand="lg" fixed="top" role="navigation">
-					{this.renderNavHeader()}
-					<Navbar.Toggle/>
-					{this.renderNavContent()}
-				</Navbar>
-				{alerts}
-				{childNode}
-				<Footer
-					repositoryUrl={repositoryUrl}
-					siteRevision={siteRevision}
-				/>
-			</div>
+			<I18nextProvider i18n={this.i18n}>
+				<div>
+					<a className="sr-only sr-only-focusable" href="#content">
+						Skip to main content
+					</a>
+					<Navbar className="BookBrainz" expand="lg" fixed="top" role="navigation">
+						{this.renderNavHeader()}
+						<Navbar.Toggle/>
+						{this.renderNavContent()}
+					</Navbar>
+					{alerts}
+					{childNode}
+					<Footer
+						repositoryUrl={repositoryUrl}
+						siteRevision={siteRevision}
+					/>
+				</div>
+			</I18nextProvider>
 		);
 	}
 }
@@ -443,6 +449,7 @@ Layout.propTypes = {
 	disableSignUp: PropTypes.bool,
 	hideSearch: PropTypes.bool,
 	homepage: PropTypes.bool,
+	i18n: PropTypes.object,
 	mergeQueue: PropTypes.object,
 	repositoryUrl: PropTypes.string.isRequired,
 	requiresJS: PropTypes.bool,
@@ -453,6 +460,7 @@ Layout.defaultProps = {
 	disableSignUp: false,
 	hideSearch: false,
 	homepage: false,
+	i18n: null,
 	mergeQueue: null,
 	requiresJS: false,
 	user: null
