@@ -18,11 +18,14 @@ export function searchBasicTests(res) {
 	expect(res.body.searchResult).to.be.an('array');
 	res.body.searchResult.forEach((result) => {
 		expect(result).to.be.an('object');
-		expect(result).to.have.all.keys(
+		expect(result).to.include.keys(
 			'bbid',
 			'defaultAlias',
 			'entityType'
 		);
+		if (result.authors) {
+			expect(result.authors).to.be.an('array');
+		}
 	});
 }
 
