@@ -30,11 +30,13 @@ export function UnifiedForm(props:UnifiedFormProps) {
 	React.useMemo(() => {
 		// without this check, it would cause undefined behaviour
 		if (!freezeObjects.filterOptions) {
-			const options = languageOptions.map((language) => ({
-				frequency: language.frequency,
-				label: language.name,
-				value: language.id
-			}));
+			const options = languageOptions
+				.filter((language) => language.name !== '[Multiple languages]')
+				.map((language) => ({
+					frequency: language.frequency,
+					label: language.name,
+					value: language.id
+				}));
 			freezeObjects.filterOptions = createFilterOptions({options});
 			Object.freeze(freezeObjects);
 		}

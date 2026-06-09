@@ -41,6 +41,7 @@ import type {Dispatch} from 'redux';
 
 import EntitySearchFieldOption from '../common/entity-search-field-option';
 import type {Map} from 'immutable';
+import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import Select from 'react-select';
 import {connect} from 'react-redux';
 
@@ -233,6 +234,7 @@ function AuthorSection({
 					<EntitySearchFieldOption
 						instanceId="beginArea"
 						label={beginAreaLabel}
+						recentlyUsedEntityType="Area"
 						type="area"
 						value={beginAreaValue}
 						onChange={onBeginAreaChange}
@@ -267,6 +269,7 @@ function AuthorSection({
 							<EntitySearchFieldOption
 								instanceId="endArea"
 								label={endAreaLabel}
+								recentlyUsedEntityType="Area"
 								type="area"
 								value={endAreaValue}
 								onChange={onEndAreaChange}
@@ -321,10 +324,20 @@ function mapStateToProps(rootState, {authorTypes}: OwnProps): StateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
-		onBeginAreaChange: (value) => dispatch(updateBeginArea(value)),
+		onBeginAreaChange: (value) => {
+			if (value && value.id && value.text) {
+				RecentlyUsed.addItem('Area', {id: value.id, name: value.text});
+			}
+			return dispatch(updateBeginArea(value));
+		},
 		onBeginDateChange: (beginDate) =>
 			dispatch(debouncedUpdateBeginDate(beginDate)),
-		onEndAreaChange: (value) => dispatch(updateEndArea(value)),
+		onEndAreaChange: (value) => {
+			if (value && value.id && value.text) {
+				RecentlyUsed.addItem('Area', {id: value.id, name: value.text});
+			}
+			return dispatch(updateEndArea(value));
+		},
 		onEndDateChange: (endDate) =>
 			dispatch(debouncedUpdateEndDate(endDate)),
 		onEndedChange: (event) =>

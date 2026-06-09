@@ -32,7 +32,6 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 	// State for the ParentType modal
 	const [showModal, setShowModal] = useState<boolean>(false);
 	const [selectedParentType, setSelectedParentType] = useState<number | null>(identifierTypeData.parentId);
-	const [childOrder, setChildOrder] = useState<number>(formData.childOrder);
 
 	const [filteredParentTypes, setFilteredParentTypes] = useState<IdentifierTypeDataT[]>(parentTypes);
 	useEffect(() => {
@@ -55,7 +54,6 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 	// Callback function for closing the modal, the state of the modal should alse be reset
 	const handleModalClose = useCallback(() => {
 		setSelectedParentType(null);
-		setChildOrder(0);
 		setShowModal(false);
 	}, []);
 
@@ -69,18 +67,12 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 		}
 	}, [selectedParentType]);
 
-	// Function to handle child order input in ParentType modal
-	const handleChildOrderChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-		setChildOrder(event.target.valueAsNumber || 0);
-	}, [formData, childOrder]);
-
 	// Function to handle parent removal
 	const handleRemoveParent = useCallback(() => {
 		setFormData((prevFormData) => ({
 			...prevFormData,
 			childOrder: 0, parentId: null
 		}));
-		setChildOrder(0);
 		setSelectedParentType(null);
 	}, [formData]);
 
@@ -93,11 +85,11 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 		if (selectedParentType !== null) {
 			setFormData((prevFormData) => ({
 				...prevFormData,
-				childOrder, parentId: selectedParentType
+				parentId: selectedParentType
 			}));
 			setShowModal(false);
 		}
-	}, [formData, childOrder, selectedParentType]);
+	}, [formData, selectedParentType]);
 
 	const handleInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
 		  const {name, value} = event.target;
@@ -179,7 +171,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 
 		try {
 			await request.post(submissionURL).send(formData);
-			window.location.href = '/identifier-types';
+			window.location.href = document.referrer;
 		}
 		catch (err) {
 			const errorMessage = err.response.body.error;
@@ -346,6 +338,22 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 							</Form.Group>
 						</Col>
 					</Row>
+					<Row>
+						<Col lg={lgCol}>
+							<Form.Group >
+								<Form.Label>Child Order</Form.Label>
+								<Form.Control
+									required
+									defaultValue={0}
+									min={0}
+									name="childOrder"
+									type="number"
+									value={formData.childOrder}
+									onChange={handleInputChange}
+								/>
+							</Form.Group>
+						</Col>
+					</Row>
 
 					<Row>
 						<Col lg={lgCol}>
@@ -395,17 +403,6 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 									options={filteredParentTypes}
 									value={filteredParentTypes.find((option) => option.id === selectedParentType)}
 									onChange={handleParentTypeChange}
-								/>
-							</Form.Group>
-							<Form.Group >
-								<Form.Label>Child Order</Form.Label>
-								<Form.Control
-									required
-									min={0}
-									name="childOrder"
-									type="number"
-									value={childOrder}
-									onChange={handleChildOrderChange}
 								/>
 							</Form.Group>
 						</Modal.Body>

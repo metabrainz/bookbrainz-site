@@ -201,9 +201,10 @@ function firstIndexOfUnbalancedParanthesis(url: string): number {
  * @returns {JSX} returns a JSX Element
  */
 export function stringToHTMLWithLinks(content: string) {
+	const escapedContent = _.escape(content);
 	// eslint-disable-next-line max-len, no-useless-escape
 	const urlRegex = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/g;
-	const replacedContent = content.replace(
+	const replacedContent = escapedContent.replace(
 		urlRegex,
 		(url) => {
 			let cleanUrl: string = url;

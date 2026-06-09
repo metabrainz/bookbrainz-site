@@ -17,7 +17,7 @@
  */
 
 import BookBrainzData from 'bookbrainz-data';
-import config from '../config/test.json';
+import config from '../src/common/helpers/config';
 
 
 const orm = BookBrainzData(config.database);

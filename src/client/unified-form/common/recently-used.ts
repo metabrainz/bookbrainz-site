@@ -1,8 +1,15 @@
 /* eslint-disable no-console */
 export interface RecentlyUsedItem{
-    id: number;
+    id: number | string;
     name: string;
 }
+
+export interface EntityWithType {
+    type?: string;
+    id?: number | string;
+    text?: string;
+}
+
 export const RecentlyUsed = {
 	addItem: (entityType: string, item: RecentlyUsedItem): void => {
 		if (typeof window === 'undefined') { return; }
@@ -14,6 +21,14 @@ export const RecentlyUsed = {
 		}
 		catch (error) {
 			console.error('Error writing to localStorage:', error);
+		}
+	},
+	addItemToRecentlyUsed: (entity: EntityWithType): void => {
+		if (entity && entity.type && entity.id && entity.text) {
+			RecentlyUsed.addItem(entity.type, {
+				id: entity.id,
+				name: entity.text
+			});
 		}
 	},
 	clearItems: (entityType: string): void => {

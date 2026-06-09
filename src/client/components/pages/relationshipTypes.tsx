@@ -15,10 +15,12 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-import {Card} from 'react-bootstrap';
+import {Button, Card} from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
 import {RelationshipTypeDataT} from '../forms/type-editor/typeUtils';
 import RelationshipTypeTree from './parts/relationship-types-tree';
+import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 
 
 type Props = {
@@ -31,6 +33,9 @@ function RelationshipTypesPage({heading, relationshipTypes}: Props) {
 		<Card>
 			<Card.Header as="h2">
 				{heading}
+				<Button className="float-right" href="/relationship-types" variant="link">
+					<FontAwesomeIcon icon={faArrowLeft}/> All relationships
+				</Button>
 			</Card.Header>
 			<Card.Body>
 				{

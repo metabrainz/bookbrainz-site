@@ -38,6 +38,7 @@ import EntitySearchFieldOption from '../common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import SearchEntityCreate from '../../unified-form/common/search-entity-create-select';
 import {SingleValueProps} from 'react-select/src/components/SingleValue';
 import ValidationLabel from '../common/validation-label';
@@ -176,6 +177,7 @@ function AuthorCreditSection({
 								isDisabled={!isEditable}
 								isUnifiedForm={isUnifiedForm}
 								placeholder="Type to search or paste a BBID"
+								recentlyUsedEntityType="Author"
 								rowId="n0"
 								value={optionValue}
 								onChange={onChangeHandler}
@@ -233,6 +235,9 @@ function mapStateToProps(rootState, {type}): StateProps {
 function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	return {
 		onAuthorChange: (value) => {
+			if (value && value.id && value.text) {
+				RecentlyUsed.addItem('Author', {id: value.id, name: value.text});
+			}
 			dispatch(updateCreditAuthorValue(-1, value));
 		},
 		onClearHandler: (aid) => dispatch(clearAuthor(aid)),
