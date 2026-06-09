@@ -351,6 +351,12 @@ function getDocumentToIndex(entity) {
     case 'Work':
       additionalProperties.push('authors');
       break;
+    case 'Edition':
+      additionalProperties.push('authors');
+      break;
+    case 'EditionGroup':
+      additionalProperties.push('authors');
+      break;
     default:
       break;
   }
@@ -798,7 +804,11 @@ function _generateIndex() {
       baseRelations,
       entityLists,
       _entityLists$find,
+      editionCollection,
       _entityLists$find2,
+      _editionCollection,
+      _entityLists$find3,
+      _entityLists$find4,
       authorCollection,
       workCollection,
       listIndexes,
@@ -846,7 +856,7 @@ function _generateIndex() {
             _log.default.notice("Starting indexing of ".concat(entityType));
             entityBehaviors = [];
             baseRelations = ['annotation', 'defaultAlias', 'aliasSet.aliases', 'identifierSet.identifiers'];
-            if (allEntities || entityType === 'Author' || entityType === 'Work') {
+            if (allEntities || entityType === 'Author' || entityType === 'Work' || entityType === 'Edition' || entityType === 'EditionGroup') {
               entityBehaviors.push({
                 model: Author,
                 relations: ['gender', 'beginArea', 'endArea'],
@@ -856,14 +866,14 @@ function _generateIndex() {
             if (allEntities || entityType === 'Edition') {
               entityBehaviors.push({
                 model: Edition,
-                relations: ['editionGroup', 'editionFormat', 'editionStatus'],
+                relations: ['editionGroup', 'editionFormat', 'editionStatus', 'authorCredit.names'],
                 type: 'Edition'
               });
             }
             if (allEntities || entityType === 'EditionGroup') {
               entityBehaviors.push({
                 model: EditionGroup,
-                relations: [],
+                relations: ['authorCredit.names'],
                 type: 'EditionGroup'
               });
             }
@@ -956,14 +966,58 @@ function _generateIndex() {
               var type = _ref4.type;
               return type;
             }).join(', ')));
+            if (allEntities || entityType === 'Edition') {
+              _log.default.info('Attaching author names to Edition entities');
+              editionCollection = (_entityLists$find = entityLists.find(function (result) {
+                return result.type === 'Edition';
+              })) === null || _entityLists$find === void 0 ? void 0 : _entityLists$find.collection;
+              editionCollection === null || editionCollection === void 0 ? void 0 : editionCollection.forEach(function (editionEntity) {
+                var authorCredit = editionEntity.related('authorCredit');
+                var authorNames = [];
+                if (authorCredit) {
+                  var names = authorCredit.related('names');
+                  if (names) {
+                    names.forEach(function (nameModel) {
+                      var nameStr = nameModel.get('name');
+                      if (nameStr) {
+                        authorNames.push(nameStr);
+                      }
+                    });
+                  }
+                }
+                editionEntity.set('authors', authorNames);
+              });
+            }
+            if (allEntities || entityType === 'EditionGroup') {
+              _log.default.info('Attaching author names to EditionGroup entities');
+              _editionCollection = (_entityLists$find2 = entityLists.find(function (result) {
+                return result.type === 'EditionGroup';
+              })) === null || _entityLists$find2 === void 0 ? void 0 : _entityLists$find2.collection;
+              _editionCollection === null || _editionCollection === void 0 ? void 0 : _editionCollection.forEach(function (editionEntity) {
+                var authorCredit = editionEntity.related('authorCredit');
+                var authorNames = [];
+                if (authorCredit) {
+                  var names = authorCredit.related('names');
+                  if (names) {
+                    names.forEach(function (nameModel) {
+                      var nameStr = nameModel.get('name');
+                      if (nameStr) {
+                        authorNames.push(nameStr);
+                      }
+                    });
+                  }
+                }
+                editionEntity.set('authors', authorNames);
+              });
+            }
             if (allEntities || entityType === 'Work') {
               _log.default.info('Attaching author names to Work entities');
-              authorCollection = (_entityLists$find = entityLists.find(function (result) {
+              authorCollection = (_entityLists$find3 = entityLists.find(function (result) {
                 return result.type === 'Author';
-              })) === null || _entityLists$find === void 0 ? void 0 : _entityLists$find.collection;
-              workCollection = (_entityLists$find2 = entityLists.find(function (result) {
+              })) === null || _entityLists$find3 === void 0 ? void 0 : _entityLists$find3.collection;
+              workCollection = (_entityLists$find4 = entityLists.find(function (result) {
                 return result.type === 'Work';
-              })) === null || _entityLists$find2 === void 0 ? void 0 : _entityLists$find2.collection;
+              })) === null || _entityLists$find4 === void 0 ? void 0 : _entityLists$find4.collection;
               workCollection === null || workCollection === void 0 ? void 0 : workCollection.forEach(function (workEntity) {
                 var relationshipSet = workEntity.related('relationshipSet');
                 if (relationshipSet) {
@@ -992,23 +1046,23 @@ function _generateIndex() {
               listIndexes.push(_processEntityListForBulk(listArray));
             });
             if (!listIndexes.length) {
-              _context10.next = 37;
+              _context10.next = 39;
               break;
             }
             _log.default.info("Indexing documents for entity type ".concat(entityType));
-            _context10.next = 36;
+            _context10.next = 38;
             return Promise.all(listIndexes);
-          case 36:
+          case 38:
             _log.default.info("Finished indexing entity documents for entity type ".concat(entityType));
-          case 37:
+          case 39:
             if (!(allEntities || entityType === 'Area')) {
-              _context10.next = 47;
+              _context10.next = 49;
               break;
             }
             _log.default.info('Indexing Areas');
-            _context10.next = 41;
+            _context10.next = 43;
             return new Area().fetchAll();
-          case 41:
+          case 43:
             areaCollection = _context10.sent;
             areas = areaCollection.toJSON({
               omitPivot: true
@@ -1025,21 +1079,21 @@ function _generateIndex() {
                 type: 'Area'
               };
             });
-            _context10.next = 46;
+            _context10.next = 48;
             return _processEntityListForBulk(processedAreas);
-          case 46:
+          case 48:
             _log.default.info('Finished indexing Areas');
-          case 47:
+          case 49:
             if (!(allEntities || entityType === 'Editor')) {
-              _context10.next = 57;
+              _context10.next = 59;
               break;
             }
             _log.default.info('Indexing Editors');
-            _context10.next = 51;
+            _context10.next = 53;
             return new Editor()
             // no bots
             .where('type_id', 1).fetchAll();
-          case 51:
+          case 53:
             editorCollection = _context10.sent;
             editors = editorCollection.toJSON({
               omitPivot: true
@@ -1056,21 +1110,21 @@ function _generateIndex() {
                 type: 'Editor'
               };
             });
-            _context10.next = 56;
+            _context10.next = 58;
             return _processEntityListForBulk(processedEditors);
-          case 56:
+          case 58:
             _log.default.info('Finished indexing Editors');
-          case 57:
+          case 59:
             if (!(allEntities || entityType === 'Collection')) {
-              _context10.next = 67;
+              _context10.next = 69;
               break;
             }
             _log.default.info('Indexing Collections');
-            _context10.next = 61;
+            _context10.next = 63;
             return new UserCollection().where({
               public: true
             }).fetchAll();
-          case 61:
+          case 63:
             userCollections = _context10.sent;
             userCollectionsJSON = userCollections.toJSON({
               omitPivot: true
@@ -1087,17 +1141,17 @@ function _generateIndex() {
                 type: 'Collection'
               };
             });
-            _context10.next = 66;
+            _context10.next = 68;
             return _processEntityListForBulk(processedCollections);
-          case 66:
+          case 68:
             _log.default.info('Finished indexing Collections');
-          case 67:
+          case 69:
             _log.default.info('Refreshing search index');
-            _context10.next = 70;
+            _context10.next = 72;
             return refreshIndex();
-          case 70:
+          case 72:
             _log.default.notice('Search indexing finished succesfully');
-          case 71:
+          case 73:
           case "end":
             return _context10.stop();
         }
@@ -1362,7 +1416,7 @@ function _init() {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Jun 04 2026 14:47:49 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Tue Jun 09 2026 16:29:21 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
