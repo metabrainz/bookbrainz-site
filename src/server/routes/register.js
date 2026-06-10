@@ -114,6 +114,8 @@ router.post('/handler', async (req, res) => {
 		const editor = await new Editor({
 			cachedMetabrainzName: req.session.mbProfile.sub,
 			genderId: req.body.gender,
+			metabrainzOauthAccessToken: req.session.mbProfile.metabrainzOauthAccessToken,
+			metabrainzOauthRefreshToken: req.session.mbProfile.metabrainzOauthRefreshToken,
 			metabrainzUserId: req.session.mbProfile.metabrainz_user_id,
 			name: req.body.displayName,
 			typeId: editorType.id

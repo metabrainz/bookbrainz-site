@@ -37,6 +37,7 @@ import type {
 	Relationship as _Relationship
 } from './types';
 import {faExternalLinkAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
+import {getEntityLink, sanitize} from '../../../common/helpers/utils';
 import {getInitAttribute, setAttribute} from './helper';
 
 import EntitySearchFieldOption from '../common/entity-search-field-option';
@@ -46,7 +47,6 @@ import ReactSelect from 'react-select';
 import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import RelationshipSelect from './relationship-select';
 import _ from 'lodash';
-import {getEntityLink, sanitize} from '../../../common/helpers/utils';
 
 
 function isValidRelationship(relationship: _Relationship) {
