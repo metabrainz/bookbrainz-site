@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "clean": "./scripts/clean.sh",
+    "parse-i18n": "npx i18next-parser",
     "prepare": "npm run clean",
     "build-server-js": "babel src --out-dir lib --source-maps --ignore src/api --extensions .js,.jsx,.ts,.tsx",
     "build-api-js": "babel src --out-dir lib --ignore 'src/server','src/client' --extensions .js,.jsx,.ts,.tsx",

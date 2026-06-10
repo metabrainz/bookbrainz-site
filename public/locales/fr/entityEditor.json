@@ -1,1 +1,4 @@
-{}
+{
+  "aliasEditor.helpText": "Noms variantes pour une entité tels qu'une orthographe alternative, une écriture différente, une représentation stylistique, des acronymes, etc. Consultez la page d'aide pour plus de détails et d'exemples.",
+  "aliasEditor.title": "Éditeur d'alias"
+}

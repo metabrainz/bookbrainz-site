@@ -24,6 +24,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 
 /**
@@ -47,8 +48,8 @@ const AliasEditor = ({
 	onClose,
 	show
 }) => {
-	const helpText = `Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc.
-		Refer to the help page for more details and examples.`;
+	const {t: translate} = useTranslation('entityEditor');
+	const helpText = translate('aliasEditor.helpText');
 	const helpIconElement = (
 		<OverlayTrigger
 			delay={50}
@@ -66,7 +67,7 @@ const AliasEditor = ({
 		<Modal show={show} size="lg" onHide={onClose}>
 			<Modal.Header>
 				<Modal.Title>
-					Alias Editor {helpIconElement}
+					{translate('aliasEditor.title')} {helpIconElement}
 				</Modal.Title>
 			</Modal.Header>
 
@@ -75,7 +76,7 @@ const AliasEditor = ({
 			</Modal.Body>
 
 			<Modal.Footer>
-				<Button variant="primary" onClick={onClose}>Close</Button>
+				<Button variant="primary" onClick={onClose}>{translate('button.close', {ns: 'common'})}</Button>
 			</Modal.Footer>
 		</Modal>
 	);
