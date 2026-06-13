@@ -30,6 +30,7 @@ import createFilterOptions from 'react-select-fast-filter-options';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {freezeObjects} from '../../unified-form/common/freezed-objects';
 import {isNumber} from 'lodash';
+import {useTranslation} from 'react-i18next';
 
 
 function OptimizedOption(props: OptionProps<any, any>) {
@@ -66,8 +67,9 @@ function LanguageField({
 	onChange,
 	...rest
 }: Props) {
+	const {t: translate} = useTranslation('entityEditor');
 	const label =
-		<ValidationLabel empty={empty} error={error}>Language</ValidationLabel>
+		<ValidationLabel empty={empty} error={error}>{translate('languageField.label')}</ValidationLabel>
 	;
 	const MAX_DROPDOWN_OPTIONS = 20;
 	const MAX_F1_OPTIONS = 400;
@@ -93,20 +95,20 @@ function LanguageField({
 	const recentItems = RecentlyUsed.getItems('languages').filter(item => item.name !== '[Multiple languages]');
 	const defaultOptions = [
 		{
-			label: 'Recently Used',
+			label: translate('languageField.recentlyUsed'),
 			options: recentItems.map(item => ({label: item.name, value: item.id}))
 		},
 		{
-			label: 'Frequently Used',
+			label: translate('languageField.frequentlyUsed'),
 			options: f2Languages
 		},
 		{
-			label: 'Other',
+			label: translate('languageField.other'),
 			options: f1Languages
 		}
 	];
 	const fetchOptions = React.useCallback((input) => Promise.resolve(sortFilterOptions(filteredSearchOptions, input, value)), []);
-	const handleChange = (selectedOption) => {
+	const handleChange = React.useCallback((selectedOption) => {
 		if (selectedOption) {
 			const optionsArray = Array.isArray(selectedOption) ? selectedOption : [selectedOption];
 			optionsArray.forEach(option => {
@@ -118,7 +120,7 @@ function LanguageField({
 		if (onChange) {
 			onChange(selectedOption);
 		}
-	};
+	}, [onChange]);
 	return (
 		<Form.Group>
 			<Form.Label>
@@ -136,8 +138,11 @@ function LanguageField({
 				className="Select"
 				classNamePrefix="react-select"
 				components={{Option: OptimizedOption}}
-				// eslint-disable-next-line react/jsx-no-bind
-				defaultOptions={defaultOptions} loadOptions={fetchOptions} placeholder="Search language" {...rest} onChange={handleChange}
+				defaultOptions={defaultOptions}
+				loadOptions={fetchOptions}
+				placeholder={translate('languageField.placeholder')}
+				{...rest}
+				onChange={handleChange}
 			/>
 		</Form.Group>
 	);

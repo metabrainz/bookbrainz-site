@@ -475,10 +475,10 @@ export async function i18nMiddleware(req: $Request, res: $Response, next: NextFu
 	const preferred = cookieLang ?? headerLang;
 	const locale = availableLocales.includes(preferred) ? preferred : 'en';
 
-	async function load(ns: string) {
+	async function load(loc: string, ns: string) {
 		try {
 			return JSON.parse(await fs.promises.readFile(
-				path.join(process.cwd(), 'public', 'locales', locale, `${ns}.json`), 'utf8'
+				path.join(process.cwd(), 'public', 'locales', loc, `${ns}.json`), 'utf8'
 			));
 		}
 		catch {
@@ -486,7 +486,23 @@ export async function i18nMiddleware(req: $Request, res: $Response, next: NextFu
 		}
 	}
 
-	const resources = {[locale]: {common: await load('common'), entityEditor: await load('entityEditor')}};
+	async function loadAllNamespaces(loc: string) {
+		return {
+			common: await load(loc, 'common'),
+			entities: await load(loc, 'entities'),
+			entityEditor: await load(loc, 'entityEditor'),
+			errors: await load(loc, 'errors'),
+			pages: await load(loc, 'pages')
+		};
+	}
+
+	const resources: Record<string, any> = {
+		[locale]: await loadAllNamespaces(locale)
+	};
+
+	if (locale !== 'en') {
+		resources.en = await loadAllNamespaces('en');
+	}
 
 	res.locals.locale = locale;
 	res.locals.currentLocale = locale;
