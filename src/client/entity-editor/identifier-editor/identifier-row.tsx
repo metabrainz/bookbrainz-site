@@ -37,6 +37,7 @@ import ValueField from './value-field';
 import {collapseWhiteSpaces} from '../../../common/helpers/utils';
 import {connect} from 'react-redux';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 
 type OwnProps = {
@@ -87,6 +88,7 @@ function IdentifierRow({
 	onRemoveButtonClick,
 	onValueChange
 }: Props) {
+	const {t: translate} = useTranslation('entityEditor');
 	const identifierTypesForDisplay = typeOptions.map((type) => ({
 		label: type.label,
 		value: type.id
@@ -107,7 +109,7 @@ function IdentifierRow({
 				</Col>
 				<Col lg={4}>
 					<Form.Group>
-						<Form.Label>Type</Form.Label>
+						<Form.Label>{translate('identifierRow.typeLabel')}</Form.Label>
 						<Select
 							classNamePrefix="react-select"
 							instanceId={`identifierType${index}`}
@@ -125,14 +127,14 @@ function IdentifierRow({
 						onClick={onRemoveButtonClick}
 					>
 						<FontAwesomeIcon icon={faTimes}/>
-						<span>&nbsp;Remove</span>
+						<span>&nbsp;{translate('identifierRow.removeButton')}</span>
 					</Button>
 				</Col>
 			</Row>
 			{typeValue && valueValue && (
 				<Row>
 					<Col>
-					Preview Link:
+						{translate('identifierRow.previewLink')}
 						<IdentifierLink typeId={typeValue} value={valueValue}/>
 					</Col>
 				</Row>
