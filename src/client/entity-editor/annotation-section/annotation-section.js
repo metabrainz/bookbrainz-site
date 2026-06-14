@@ -25,6 +25,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {debounceUpdateAnnotation} from './actions';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Container component. The AnnotationSection component contains a
@@ -43,24 +44,25 @@ function AnnotationSection({
 	onAnnotationChange,
 	isUnifiedForm
 }) {
+	const {t: translate} = useTranslation('entityEditor');
 	const annotation = convertMapToObject(immutableAnnotation);
 	const annotationLabel = (
 		<span>
-			Annotation
-			<span className="text-muted"> (optional)</span>
+			{translate('annotationSection.label')}
+			<span className="text-muted"> {translate('annotationSection.optional')}</span>
 		</span>
 	);
 
 	const tooltip = (
 		<Tooltip>
-			Additional freeform data that does not fit in the above form
+			{translate('annotationSection.tooltip')}
 		</Tooltip>
 	);
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
 	}
-	const heading = <h2> Annotation</h2>;
+	const heading = <h2> {translate('annotationSection.heading')}</h2>;
 	return (
 		<div>
 			{!isUnifiedForm && heading}
@@ -85,11 +87,21 @@ function AnnotationSection({
 					</Form.Group>
 					{
 						annotation && annotation.lastRevision &&
-						<p className="small text-muted">Last modified: {formatDate(new Date(annotation.lastRevision.createdAt))}</p>
+						<p className="small text-muted">
+							{translate('annotationSection.lastModified', {
+								date: formatDate(new Date(annotation.lastRevision.createdAt))
+							})}
+						</p>
 					}
 					<p className="text-muted">
-						Annotations allow you to enter freeform data that does not otherwise fit in the above form.
-						<b> Do not submit any copyrighted text here.</b> The contents will be made available to the public under <a href="https://musicbrainz.org/doc/About/Data_License">open licenses</a>.
+						{translate('annotationSection.helpText')}
+						<b> {translate('annotationSection.copyrightWarning')}</b>
+						{' '}
+						{translate('annotationSection.openLicenseNoticePre')}
+						<a href="https://musicbrainz.org/doc/About/Data_License">
+							{translate('annotationSection.openLicenseNoticeLink')}
+						</a>
+						{translate('annotationSection.openLicenseNoticePost')}
 					</p>
 				</Col>
 			</Row>
