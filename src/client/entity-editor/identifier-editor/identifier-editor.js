@@ -24,6 +24,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 
 /**
@@ -50,8 +51,8 @@ const IdentifierEditor = ({
 	onClose,
 	show
 }) => {
-	const helpText = `identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc.
-	You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).`;
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const helpText = translate('identifierEditor.helpText');
 
 	const helpIconElement = (
 		<OverlayTrigger
@@ -70,7 +71,7 @@ const IdentifierEditor = ({
 		<Modal show={show} size="lg" onHide={onClose}>
 			<Modal.Header>
 				<Modal.Title>
-					Identifier Editor {helpIconElement}
+					{translate('identifierEditor.title')} {helpIconElement}
 				</Modal.Title>
 			</Modal.Header>
 
@@ -79,7 +80,7 @@ const IdentifierEditor = ({
 			</Modal.Body>
 
 			<Modal.Footer>
-				<Button variant="primary" onClick={onClose}>Close</Button>
+				<Button variant="primary" onClick={onClose}>{translate('button.close', {ns: 'common'})}</Button>
 			</Modal.Footer>
 		</Modal>
 	);

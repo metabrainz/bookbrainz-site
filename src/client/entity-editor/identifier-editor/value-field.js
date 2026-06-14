@@ -21,6 +21,7 @@ import {Form} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
+import {useTranslation} from 'react-i18next';
 
 
 /**
@@ -40,9 +41,10 @@ function ValueField({
 	empty,
 	...rest
 }) {
+	const {t: translate} = useTranslation('entityEditor');
 	const label = (
 		<ValidationLabel empty={empty} error={error}>
-			Value
+			{translate('valueField.label')}
 		</ValidationLabel>
 	);
 
