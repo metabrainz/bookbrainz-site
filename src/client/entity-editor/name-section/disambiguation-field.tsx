@@ -22,6 +22,7 @@ import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ValidationLabel from '../common/validation-label';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 
 type Props = {
@@ -46,19 +47,19 @@ function DisambiguationField({
 	required,
 	...rest
 }: Props) {
+	const {t: translate} = useTranslation('entityEditor');
 	const label = (
 		<ValidationLabel empty={empty} error={error}>
-			Disambiguation
+			{translate('disambiguationField.label')}
 			{required || null ? null :
-				<span className="text-muted"> (optional)</span>
+				<span className="text-muted"> {translate('disambiguationField.optional')}</span>
 			}
 		</ValidationLabel>
 	);
 
 	const tooltip = (
 		<Tooltip>
-			If a different entity with the same name already exists or if there is a
-			need for clarification
+			{translate('disambiguationField.tooltip')}
 		</Tooltip>
 	);
 
