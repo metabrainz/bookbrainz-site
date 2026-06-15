@@ -21,6 +21,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 
 /**
@@ -39,13 +40,16 @@ function AliasButton({
 	numAliases,
 	...props
 }) {
-	let text = 'Add aliases…';
-	if (numAliases === 1) {
-		text = 'Edit 1 alias…';
-	}
-	else if (numAliases > 1) {
-		text = `Edit ${numAliases} aliases…`;
-	}
+	const {t: translate} = useTranslation('entityEditor');
+	const text = (() => {
+		if (numAliases === 1) {
+			return translate('aliasButton.editOneAlias');
+		}
+		if (numAliases > 1) {
+			return translate('aliasButton.editAliases', {count: numAliases});
+		}
+		return translate('aliasButton.addAliases');
+	})();
 
 	const iconElement = aliasesInvalid &&
 		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes}/>;
