@@ -21,6 +21,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 
 /**
@@ -43,21 +44,29 @@ function IdentifierButton({
 	isUnifiedForm,
 	...props
 }) {
-	let textComponent = 'Add identifiers (eg. ISBN, Wikidata ID)…';
-	if (!isUnifiedForm) {
-		if (numIdentifiers === 1) {
-			textComponent = 'Edit 1 identifier (eg. ISBN, Wikidata ID)…';
+	const {t: translate} = useTranslation('entityEditor');
+	const textComponent = (() => {
+		if (!isUnifiedForm) {
+			if (numIdentifiers === 1) {
+				return translate('identifierButton.editOneIdentifier');
+			}
+			if (numIdentifiers > 1) {
+				return translate('identifierButton.editIdentifiers', {count: numIdentifiers});
+			}
+			return translate('identifierButton.addIdentifiers');
 		}
-		else if (numIdentifiers > 1) {
-			textComponent = `Edit ${numIdentifiers} identifiers (eg. ISBN, Wikidata ID)…`;
+
+		if (numIdentifiers > 0) {
+			return (
+				<span>
+					{translate('identifierButton.editIdentifiersUnified')}{' '}
+					<Badge className="ml-1" variant="light">{numIdentifiers}</Badge>
+				</span>
+			);
 		}
-	}
-	else if (numIdentifiers > 0) {
-		textComponent = <span>Edit identifiers <Badge className="ml-1" variant="light">{numIdentifiers}</Badge></span>;
-	}
-	else {
-		textComponent = 'Add Identifiers';
-	}
+
+		return translate('identifierButton.addIdentifiersUnified');
+	})();
 	const iconElement = identifiersInvalid &&
 		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes}/>;
 
