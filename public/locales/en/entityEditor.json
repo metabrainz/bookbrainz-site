@@ -1,6 +1,8 @@
 {
   "aliasButton.addAliases": "Add aliases…",
   "aliasButton.editAliases": "Edit {{count}} aliases…",
+  "aliasButton.editAliases_one": "Edit 1 alias…",
+  "aliasButton.editAliases_other": "Edit {{count}} aliases…",
   "aliasButton.editOneAlias": "Edit 1 alias…",
   "aliasEditor.helpText": "Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc. Refer to the help page for more details and examples.",
   "aliasEditor.title": "Alias Editor",
@@ -20,6 +22,8 @@
   "identifierButton.addIdentifiers": "Add identifiers (eg. ISBN, Wikidata ID)…",
   "identifierButton.addIdentifiersUnified": "Add Identifiers",
   "identifierButton.editIdentifiers": "Edit {{count}} identifiers (eg. ISBN, Wikidata ID)…",
+  "identifierButton.editIdentifiers_one": "Edit 1 identifier (eg. ISBN, Wikidata ID)…",
+  "identifierButton.editIdentifiers_other": "Edit {{count}} identifiers (eg. ISBN, Wikidata ID)…",
   "identifierButton.editIdentifiersUnified": "Edit identifiers",
   "identifierButton.editOneIdentifier": "Edit 1 identifier (eg. ISBN, Wikidata ID)…",
   "identifierEditor.helpText": "identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc. You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).",
@@ -57,4 +61,3 @@
   "submissionSection.submitButton": "Submit",
   "valueField.label": "Value"
 }
-
