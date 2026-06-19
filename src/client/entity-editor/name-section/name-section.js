@@ -143,8 +143,7 @@ class NameSection extends React.Component {
 					disambiguationDefaultValue
 				) ?
 					<Alert variant="warning">
-						{translate('nameSection.duplicateWarning')}&nbsp;
-						{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} {translate('nameSection.duplicateWithSameName')}
+						{translate('nameSection.duplicateWarning', {count: exactMatches.length, entityType: _.startCase(entityType)})}
 						<br/><small className="text-muted">{translate('nameSection.clickToOpen')}</small>
 						<ListGroup activeKey={null} className="margin-top-1 margin-bottom-1">
 							{exactMatches.map((match) =>
