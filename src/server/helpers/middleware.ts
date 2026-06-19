@@ -28,10 +28,12 @@ import {ENTITY_TYPES, getRelationshipTargetBBIDByTypeId} from '../../client/help
 import {getWikipediaExtract, selectWikipediaPage} from './wikimedia';
 
 import _ from 'lodash';
+import fs from 'fs';
 import {getAcceptedLanguageCodes} from './i18n';
 import {getReviewsFromCB} from './critiquebrainz';
 import {getWikidataId} from '../../common/helpers/wikimedia';
 import log from 'log';
+import path from 'path';
 
 
 interface $Request extends Request {
@@ -450,4 +452,45 @@ export function validateCollaboratorIdsForCollectionRemove(req, res, next) {
 	}
 
 	return next();
+}
+
+export async function i18nMiddleware(req: $Request, res: $Response, next: NextFunction) {
+	let availableLocales: string[] = ['en'];
+	try {
+		const localesDir = path.join(process.cwd(), 'public', 'locales');
+		const entries = await fs.promises.readdir(localesDir, {withFileTypes: true});
+		availableLocales = entries
+			.filter((entry) => entry.isDirectory())
+			.map((entry) => entry.name);
+	}
+	catch (err) {
+		log.debug('Could not read public/locales, defaulting to en: %s', err.message);
+	}
+
+	const rawCookies = req.headers.cookie ?? '';
+	const cookieLang = rawCookies.split('; ')
+		.find(lang => lang.startsWith('bb_lang='))
+		?.split('=')[1];
+	const [headerLang = 'en'] = getAcceptedLanguageCodes(req);
+	const preferred = cookieLang ?? headerLang;
+	const locale = availableLocales.includes(preferred) ? preferred : 'en';
+
+	async function load(ns: string) {
+		try {
+			return JSON.parse(await fs.promises.readFile(
+				path.join(process.cwd(), 'public', 'locales', locale, `${ns}.json`), 'utf8'
+			));
+		}
+		catch {
+			return {};
+		}
+	}
+
+	const resources = {[locale]: {common: await load('common'), entityEditor: await load('entityEditor')}};
+
+	res.locals.locale = locale;
+	res.locals.currentLocale = locale;
+	res.locals.i18nResources = resources;
+	res.locals.availableLocales = availableLocales;
+	next();
 }
