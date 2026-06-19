@@ -5,6 +5,8 @@
   "about.ourStory": "Our Story",
   "about.title": "About BookBrainz",
   "button.close": "Close",
+  "no": "no",
   "pagination.previous": "← Previous Page",
-  "pagination.results": "Results {{from}} — {{to}}"
+  "pagination.results": "Results {{from}} — {{to}}",
+  "yes": "yes"
 }
