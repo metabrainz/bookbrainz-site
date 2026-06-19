@@ -37,6 +37,7 @@ import LinkedEntitySelect from '../common/linked-entity-select';
 import MergeField from '../common/merge-field';
 import _ from 'lodash';
 import {connect} from 'react-redux';
+import {withTranslation} from 'react-i18next';
 
 
 type Area = {
@@ -75,7 +76,9 @@ type DispatchProps = {
 
 
 type OwnProps = {
-	mergingEntities: any[]
+	mergingEntities: any[],
+	// eslint-disable-next-line id-length
+	t: any
 };
 
 export type Props = StateProps & DispatchProps & OwnProps;
@@ -146,7 +149,8 @@ function AuthorSectionMerge({
 	onEndDateChange,
 	onEndedChange,
 	onGenderChange,
-	onTypeChange
+	onTypeChange,
+	t: translate
 }: Props) {
 	const beginAreaOptions = [];
 	const beginDateOptions = [];
@@ -174,7 +178,12 @@ function AuthorSectionMerge({
 			beginAreaOptions.push(beginArea);
 		}
 
-		const ended = !_.isNil(entity.ended) && {label: entity.ended ? 'Yes' : 'No', value: entity.ended};
+		const ended = !_.isNil(entity.ended) && {
+			label: entity.ended ?
+				translate('common:yes') :
+				translate('common:no'),
+			value: entity.ended
+		};
 		if (ended && !_.find(endedOptions, ['value', ended.value])) {
 			endedOptions.push(ended);
 		}
@@ -195,13 +204,13 @@ function AuthorSectionMerge({
 		<div>
 			<MergeField
 				currentValue={typeValue}
-				label="Type"
+				label={translate('entityEditor:authorSection.Merge.typeLabel')}
 				options={typeOptions}
 				onChange={onTypeChange}
 			/>
 			<MergeField
 				currentValue={genderValue}
-				label="Gender"
+				label={translate('entityEditor:authorSection.Merge.genderLabel')}
 				options={genderOptions}
 				onChange={onGenderChange}
 			/>
@@ -246,7 +255,7 @@ function AuthorSectionMerge({
 }
 AuthorSectionMerge.displayName = 'AuthorSectionMerge';
 
-export function mapStateToProps(rootState, {mergingEntities}: OwnProps): StateProps {
+export function mapStateToProps(rootState, {mergingEntities, t: translate}: OwnProps): StateProps {
 	const state = rootState.get('authorSection');
 
 	const typeValue = state.get('type');
@@ -261,7 +270,7 @@ export function mapStateToProps(rootState, {mergingEntities}: OwnProps): StatePr
 		endedLabel,
 		endDateLabel,
 		endAreaLabel
-	} = labelsForAuthor(Boolean(isGroup));
+	} = labelsForAuthor(Boolean(isGroup), translate);
 
 	return {
 		beginAreaLabel,
@@ -296,4 +305,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AuthorSectionMerge);
+export default withTranslation('entityEditor')(
+	connect(mapStateToProps, mapDispatchToProps)(AuthorSectionMerge)
+);

@@ -66,7 +66,26 @@ export function formatDate(date: Date, includeTime?: boolean) {
 	return format(date, 'yyyy-MM-dd');
 }
 
-export function labelsForAuthor(isGroup) {
+export function labelsForAuthor(isGroup: boolean, translate?: any) {
+	if (translate) {
+		return {
+			beginAreaLabel: isGroup ?
+				translate('entityEditor:authorSection.beginAreaLabel.group') :
+				translate('entityEditor:authorSection.beginAreaLabel.person'),
+			beginDateLabel: isGroup ?
+				translate('entityEditor:authorSection.beginDateLabel.group') :
+				translate('entityEditor:authorSection.beginDateLabel.person'),
+			endAreaLabel: isGroup ?
+				translate('entityEditor:authorSection.endAreaLabel.group') :
+				translate('entityEditor:authorSection.endAreaLabel.person'),
+			endDateLabel: isGroup ?
+				translate('entityEditor:authorSection.endDateLabel.group') :
+				translate('entityEditor:authorSection.endDateLabel.person'),
+			endedLabel: isGroup ?
+				translate('entityEditor:authorSection.endedLabel.group') :
+				translate('entityEditor:authorSection.endedLabel.person')
+		};
+	}
 	return {
 		beginAreaLabel: isGroup ? 'Place founded' : 'Place of birth',
 		beginDateLabel: isGroup ? 'Date founded' : 'Date of birth',
