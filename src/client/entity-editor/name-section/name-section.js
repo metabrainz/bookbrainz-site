@@ -48,6 +48,7 @@ import {convertMapToObject} from '../../helpers/utils';
 import {entityTypeProperty} from '../../helpers/react-validators';
 import {getEntityDisambiguation} from '../../helpers/entity';
 import makeImmutable from '../common/make-immutable';
+import {withTranslation} from 'react-i18next';
 
 
 const ImmutableLanguageField = makeImmutable(LanguageField);
@@ -134,6 +135,7 @@ class NameSection extends React.Component {
 	}
 
 	renderDuplicateAlert(warnIfExists, disambiguationDefaultValue, exactMatches, entityType, lgCol) {
+		const translate = this.props.t;
 		return (
 			<Col lg={lgCol}>
 				{isRequiredDisambiguationEmpty(
@@ -141,10 +143,8 @@ class NameSection extends React.Component {
 					disambiguationDefaultValue
 				) ?
 					<Alert variant="warning">
-					We found the following&nbsp;
-						{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} with
-					exactly the same name or alias:
-						<br/><small className="text-muted">Click on a name to open it (Ctrl/Cmd + click to open in a new tab)</small>
+						{translate('nameSection.duplicateWarning', {count: exactMatches.length, entityType: _.startCase(entityType)})}
+						<br/><small className="text-muted">{translate('nameSection.clickToOpen')}</small>
 						<ListGroup activeKey={null} className="margin-top-1 margin-bottom-1">
 							{exactMatches.map((match) =>
 								(
@@ -159,8 +159,7 @@ class NameSection extends React.Component {
 									</ListGroup.Item>
 								))}
 						</ListGroup>
-					If you are sure your entry is different, please fill the
-					disambiguation field below to help us differentiate between them.
+						{translate('nameSection.fillDisambiguation')}
 					</Alert> : null
 				}
 			</Col>
@@ -183,6 +182,7 @@ class NameSection extends React.Component {
 			isUnifiedForm,
 			isModal
 		} = this.props;
+		const translate = this.props.t;
 		const exactMatches = convertMapToObject(immutableExactMatches);
 		const searchResults = convertMapToObject(immutableSearchResults);
 		const languageOptionsForDisplay = languageOptions.map((language) => ({
@@ -201,14 +201,14 @@ class NameSection extends React.Component {
 		!_.isEmpty(searchResults) &&
 		<Row>
 			<Col lg={lgCol}>
-				If the {_.startCase(entityType)} you want to add appears in the results
-				below, click on it to inspect it before adding a possible duplicate.<br/>
-				<small>Ctrl/Cmd + click to open in a new tab</small>
+				{translate('nameSection.duplicateSuggestion', {entityType: _.startCase(entityType)})}
+				<br/>
+				<small>{translate('nameSection.ctrlClick')}</small>
 				<SearchResults condensed results={searchResults}/>
 			</Col>
 		</Row>;
 		const duplicateAlert = this.renderDuplicateAlert(warnIfExists, disambiguationDefaultValue, exactMatches, entityType, lgCol);
-		const heading = <h2>{`What is the ${_.startCase(entityType)} called?`}</h2>;
+		const heading = <h2>{translate('nameSection.heading', {entityType: _.startCase(entityType)})}</h2>;
 		return (
 			<div>
 				{!isUnifiedForm && heading}
@@ -221,8 +221,7 @@ class NameSection extends React.Component {
 							)}
 							error={!validateNameSectionName(nameValue)}
 							inputRef={this.updateNameFieldInputRef}
-							tooltipText={`Official name of the ${_.startCase(entityType)} in its original language.
-								Names in other languages should be added as aliases.`}
+							tooltipText={translate('nameSection.nameTooltip', {entityType: _.startCase(entityType)})}
 							warn={(isRequiredDisambiguationEmpty(
 								warnIfExists,
 								disambiguationDefaultValue
@@ -257,7 +256,7 @@ class NameSection extends React.Component {
 							error={!validateNameSectionLanguage(languageValue)}
 							instanceId="language"
 							options={languageOptionsForDisplay}
-							tooltipText="Language used for the above name"
+							tooltipText={translate('nameSection.languageTooltip')}
 							value={languageOption}
 							onChange={onLanguageChange}
 						/>
@@ -307,7 +306,9 @@ NameSection.propTypes = {
 	onSortNameChange: PropTypes.func.isRequired,
 	searchForExistingEditionGroup: PropTypes.bool,
 	searchResults: PropTypes.object,
-	sortNameValue: PropTypes.string.isRequired
+	sortNameValue: PropTypes.string.isRequired,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired
 };
 NameSection.defaultProps = {
 	action: 'create',
@@ -374,4 +375,4 @@ function mapDispatchToProps(dispatch, {entity, entityType, copyLanguages}) {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NameSection);
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslation('entityEditor')(NameSection));

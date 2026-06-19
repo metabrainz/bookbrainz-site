@@ -1,4 +1,26 @@
 {
   "aliasEditor.helpText": "Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc. Refer to the help page for more details and examples.",
-  "aliasEditor.title": "Alias Editor"
+  "aliasEditor.title": "Alias Editor",
+  "disambiguationField.label": "Disambiguation",
+  "disambiguationField.optional": "(optional)",
+  "disambiguationField.tooltip": "If a different entity with the same name already exists or if there is a need for clarification",
+  "languageField.frequentlyUsed": "Frequently Used",
+  "languageField.label": "Language",
+  "languageField.other": "Other",
+  "languageField.placeholder": "Search language",
+  "languageField.recentlyUsed": "Recently Used",
+  "nameField.label": "Name",
+  "nameSection.clickToOpen": "Click on a name to open it (Ctrl/Cmd + click to open in a new tab)",
+  "nameSection.ctrlClick": "Ctrl/Cmd + click to open in a new tab",
+  "nameSection.duplicateSuggestion": "If the {{entityType}} you want to add appears in the results below, click on it to inspect it before adding a possible duplicate.",
+  "nameSection.duplicateWarning_one": "We found the following {{entityType}} with exactly the same name or alias:",
+  "nameSection.duplicateWarning_other": "We found the following {{entityType}}s with exactly the same name or alias:",
+  "nameSection.fillDisambiguation": "If you are sure your entry is different, please fill the disambiguation field below to help us differentiate between them.",
+  "nameSection.heading": "What is the {{entityType}} called?",
+  "nameSection.languageTooltip": "Language used for the above name",
+  "nameSection.nameTooltip": "Official name of the {{entityType}} in its original language. Names in other languages should be added as aliases.",
+  "sortNameField.copyButton": "Copy",
+  "sortNameField.guessButton": "Guess",
+  "sortNameField.label": "Sort Name",
+  "sortNameField.tooltip": "Alphabetical sorting name. Examples: 'Dickens, Charles', 'Christmas Carol, A'. You can try to fill it automatically with the guess button"
 }
