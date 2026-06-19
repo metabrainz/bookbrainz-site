@@ -100,6 +100,7 @@ describe('i18nMiddleware', () => {
 
 		expect(res.locals.i18nResources).to.be.an('object');
 		expect(res.locals.i18nResources).to.not.be.null;
+		expect(nextCalled).to.be.true;
 	});
 
 	it('should set availableLocales array', async () => {
@@ -115,5 +116,6 @@ describe('i18nMiddleware', () => {
 
 		expect(res.locals.availableLocales).to.be.an('array');
 		expect(res.locals.availableLocales).to.include('en');
+		expect(nextCalled).to.be.true;
 	});
 });
