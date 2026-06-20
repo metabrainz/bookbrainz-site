@@ -18,7 +18,7 @@
 
 import {
 	UPDATE_DISAMBIGUATION_FIELD, UPDATE_LANGUAGE_FIELD, UPDATE_NAME_FIELD,
-	UPDATE_SEARCH_RESULTS, UPDATE_SORT_NAME_FIELD, UPDATE_WARN_IF_EXISTS
+	UPDATE_SCRIPT_FIELD, UPDATE_SEARCH_RESULTS, UPDATE_SORT_NAME_FIELD, UPDATE_WARN_IF_EXISTS
 } from './actions';
 import Immutable from 'immutable';
 
@@ -29,6 +29,7 @@ function reducer(
 		exactMatches: [],
 		language: null,
 		name: '',
+		script: null,
 		searchResults: [],
 		sortName: ''
 	}),
@@ -42,6 +43,8 @@ function reducer(
 			return state.set('sortName', payload);
 		case UPDATE_LANGUAGE_FIELD:
 			return state.set('language', payload);
+		case UPDATE_SCRIPT_FIELD:
+			return state.set('script', payload);
 		case UPDATE_DISAMBIGUATION_FIELD:
 			return state.set('disambiguation', payload);
 		case UPDATE_SEARCH_RESULTS:

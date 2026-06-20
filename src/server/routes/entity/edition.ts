@@ -161,7 +161,7 @@ const router = express.Router();
 router.get(
 	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
-	middleware.loadLanguages, middleware.loadRelationshipTypes,
+	middleware.loadLanguages, middleware.loadScripts, middleware.loadRelationshipTypes,
 	(req:PassportRequest, res, next) => {
 		const {EditionGroup, Publisher, Work, Author} = req.app.locals.orm;
 		const propsPromise = generateEntityProps(
@@ -288,7 +288,7 @@ router.get(
 router.post(
 	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
-	middleware.loadLanguages, middleware.loadRelationshipTypes,
+	middleware.loadLanguages, middleware.loadScripts, middleware.loadRelationshipTypes,
 	async (req, res, next) => {
 		// parsing submitted data to correct format
 		const entity = await utils.parseInitialState(req, 'edition');
@@ -542,7 +542,7 @@ export function editionToFormState(edition) {
 router.get(
 	'/:bbid/edit', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadEditionStatuses, middleware.loadEditionFormats,
-	middleware.loadLanguages, middleware.loadEntityRelationships,
+	middleware.loadLanguages, middleware.loadScripts, middleware.loadEntityRelationships,
 	middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(

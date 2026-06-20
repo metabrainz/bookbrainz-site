@@ -21,6 +21,7 @@ export const UPDATE_ALIAS_SORT_NAME = 'UPDATE_ALIAS_SORT_NAME';
 export const ADD_ALIAS_ROW = 'ADD_ALIAS_ROW';
 export const UPDATE_ALIAS_LANGUAGE = 'UPDATE_ALIAS_LANGUAGE';
 export const UPDATE_ALIAS_PRIMARY = 'UPDATE_ALIAS_PRIMARY';
+export const UPDATE_ALIAS_SCRIPT = 'UPDATE_ALIAS_SCRIPT';
 export const REMOVE_ALIAS_ROW = 'REMOVE_ALIAS_ROW';
 export const HIDE_ALIAS_EDITOR = 'HIDE_ALIAS_EDITOR';
 export const REMOVE_EMPTY_ALIASES = 'REMOVE_EMPTY_ALIASES';
@@ -92,6 +93,16 @@ export function updateAliasLanguage(rowId: number, value: number | null | undefi
 			value
 		},
 		type: UPDATE_ALIAS_LANGUAGE
+	};
+}
+
+export function updateAliasScript(rowId: number, value: number | null | undefined): Action {
+	return {
+		payload: {
+			rowId,
+			value
+		},
+		type: UPDATE_ALIAS_SCRIPT
 	};
 }
 

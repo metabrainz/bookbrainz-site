@@ -96,6 +96,7 @@ export function generateEntityProps(
 		isMerge: false,
 		languageOptions: res.locals.languages,
 		requiresJS: true,
+		scriptOptions: res.locals.scripts,
 		subheading: isEdit ?
 			`Edit an existing ${entityName} on BookBrainz` :
 			`Add a new ${entityName} to BookBrainz`,
@@ -144,6 +145,7 @@ export function generateEntityMergeProps(
 		isMerge: true,
 		languageOptions: res.locals.languages,
 		requiresJS: true,
+		scriptOptions: res.locals.scripts,
 		subheading: `You are merging ${mergingEntities.length} existing ${entityName}s:`,
 		submissionUrl
 	}, additionalProps);
@@ -368,6 +370,7 @@ export function generateUnifiedProps(
 		isUnifiedForm: true,
 		languageOptions: res.locals.languages,
 		requiresJS: true,
+		scriptOptions: res.locals.scripts,
 		submissionUrl
 	}, additionalProps);
 

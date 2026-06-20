@@ -44,6 +44,7 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
  */
 const AliasEditor = ({
 	languageOptions,
+	scriptOptions,
 	onClose,
 	show
 }) => {
@@ -71,7 +72,7 @@ const AliasEditor = ({
 			</Modal.Header>
 
 			<Modal.Body>
-				<AliasModalBody languageOptions={languageOptions}/>
+				<AliasModalBody languageOptions={languageOptions} scriptOptions={scriptOptions}/>
 			</Modal.Body>
 
 			<Modal.Footer>
@@ -84,6 +85,7 @@ AliasEditor.displayName = 'AliasEditor';
 AliasEditor.propTypes = {
 	languageOptions: PropTypes.array.isRequired,
 	onClose: PropTypes.func.isRequired,
+	scriptOptions: PropTypes.array.isRequired,
 	show: PropTypes.bool
 };
 AliasEditor.defaultProps = {

@@ -96,7 +96,7 @@ const router = express.Router();
 // Creation
 router.get(
 	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadLanguages,
+	middleware.loadLanguages, middleware.loadScripts,
 	middleware.loadRelationshipTypes, middleware.loadSeriesOrderingTypes,
 	async (req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
@@ -134,7 +134,7 @@ router.get(
 
 router.post(
 	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadLanguages,
+	middleware.loadLanguages, middleware.loadScripts,
 	middleware.loadRelationshipTypes, middleware.loadSeriesOrderingTypes, async (req, res) => {
 		const entity = await utils.parseInitialState(req, 'series');
 		if (entity.seriesSection) {
@@ -327,7 +327,7 @@ export function seriesToFormState(series) {
 
 router.get(
 	'/:bbid/edit', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadSeriesOrderingTypes, middleware.loadLanguages,
+	middleware.loadSeriesOrderingTypes, middleware.loadLanguages, middleware.loadScripts,
 	 middleware.loadEntityRelationships, middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(
