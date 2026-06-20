@@ -78,7 +78,7 @@ type Props = StateProps & DispatchProps & OwnProps;
  *        value for the identifier is changed.
  * @returns {ReactElement} React element containing the rendered IdentifierRow.
  */
-function IdentifierRow({
+export function IdentifierRow({
 	index,
 	typeOptions,
 	valueValue,
