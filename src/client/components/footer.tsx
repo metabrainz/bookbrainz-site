@@ -28,7 +28,21 @@ type FooterProps = {
     repositoryUrl: string;
     siteRevision: string;
 };
-function Footer({repositoryUrl, siteRevision}: Props) {
+function Footer({repositoryUrl, siteRevision}: FooterProps) {
+
+    const isBrowser = typeof window !== 'undefined';
+
+    let betaHref = '/set-beta-preference?returnto=/';
+    let betaText = 'Use beta site';
+
+    if (isBrowser) {
+        const currentPath = window.location.pathname + window.location.search;
+        betaHref = `/set-beta-preference?returnto=${encodeURIComponent(currentPath)}`;
+        betaText = window.location.hostname === 'beta.bookbrainz.org' 
+            ? 'Stop using beta site' 
+            : 'Use beta site';
+    }
+
 	return (
 		<footer className="footer">
 			<Container fluid>
@@ -80,7 +94,11 @@ function Footer({repositoryUrl, siteRevision}: Props) {
 							</a> —&nbsp;
 							<a href="https://tickets.metabrainz.org/projects/BB/issues/">
 								Report a Bug
-							</a>
+							</a>         
+                            {' '}—&nbsp;
+                            <a href={betaHref}>
+                                {betaText}
+                            </a>
 						</small>
 					</Col>
 				</Row>
