@@ -28,9 +28,9 @@ const {Alert, Button} = bootstrap;
 /**
  * Renders a page allowing the user to sign in to MusicBrainz to
  * continue the BookBrainz registration process.
- * @returns {ReactElement} an element containing the rendered output.
+ * @returns {JSX.Element} an element containing the rendered output.
  */
-function RegistrationAuth() {
+function RegistrationAuth(): JSX.Element {
 	return (
 		<div>
 			<div className="page-header"><h1>Register</h1></div>
@@ -64,7 +64,7 @@ function RegistrationAuth() {
 	);
 }
 
-RegistrationAuth.displayName = 'RegistrationForm';
+ 
 
 // Export as hot module (see https://github.com/gaearon/react-hot-loader)
 export default hot(module)(RegistrationAuth);
