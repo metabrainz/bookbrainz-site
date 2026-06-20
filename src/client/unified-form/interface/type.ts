@@ -127,7 +127,8 @@ export type NavButtonsProps = {
     onNext:()=>unknown,
     onBack:()=>unknown,
     disableBack:boolean,
-    disableNext:boolean
+    disableNext:boolean,
+    errorMessage?:string
 };
 export type SearchEntityCreateDispatchProps = {
 	onModalOpen:(arg:string)=>unknown,

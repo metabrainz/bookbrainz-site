@@ -45,6 +45,24 @@ export function UnifiedForm(props:UnifiedFormProps) {
 	const editionIdentifierTypes = React.useMemo(() => filterIdentifierTypesByEntityType(allIdentifierTypes, 'Edition'), []);
 	const editionValidator = validator && getUfValidator(validator);
 	const tabKeys = ['cover', 'detail', 'content', 'submit'];
+	const currentTabHasErrors = (tabKey === 'cover' && !coverTabValid && !coverTabEmpty) || (tabKey === 'detail' &&
+		!detailTabValid && !detailTabEmpty);
+	let errorMessage = '';
+	if (currentTabHasErrors) {
+		const tabNames = {cover: 'Cover', detail: 'Details'};
+		errorMessage = `Fix errors in "${tabNames[tabKey]}" to continue`;
+	}
+	else if (tabKey === 'content' && !formValid) {
+		errorMessage = 'Please fill out required fields in the Cover and Details tabs to submit.';
+	}
+	const tabSelectHandler = React.useCallback((nextTabKey) => {
+		const nextIndex = tabKeys.indexOf(nextTabKey);
+		const currentIndex = tabKeys.indexOf(tabKey);
+		if (currentTabHasErrors && nextIndex > currentIndex) {
+			return;
+		}
+		setTabKey(nextTabKey);
+	}, [tabKey, currentTabHasErrors]);
 	const onNextHandler = React.useCallback(() => {
 		const index = tabKeys.indexOf(tabKey);
 		if (index >= 0 && index < tabKeys.length - 1) {
@@ -58,13 +76,13 @@ export function UnifiedForm(props:UnifiedFormProps) {
 		}
 	}, [tabKey]);
 	const tabIndex = tabKeys.indexOf(tabKey);
-	const disableNext = tabIndex === tabKeys.length - 1 || ((tabIndex === tabKeys.length - 2) && !formValid);
+	const disableNext = tabIndex === tabKeys.length - 1 || currentTabHasErrors || ((tabIndex === tabKeys.length - 2) && !formValid);
 	const disableBack = tabIndex === 0;
 	return (
 		<form className="uf-main" onSubmit={onSubmit}>
 			<div className="uf-tab">
 				<h4>Add Book</h4>
-				<Tabs activeKey={tabKey} className="uf-tab-header" id="controlled-tab" onSelect={setTabKey}>
+				<Tabs activeKey={tabKey} className="uf-tab-header" id="controlled-tab" onSelect={tabSelectHandler}>
 					<Tab eventKey="cover" title={<ValidationLabel hideIcon empty={coverTabEmpty} error={!coverTabValid}>Cover</ValidationLabel>}>
 						<CoverTab {...rest} identifierTypes={editionIdentifierTypes as IdentifierType[]}/>
 					</Tab>
@@ -83,6 +101,7 @@ export function UnifiedForm(props:UnifiedFormProps) {
 			</div>
 			<NavButtons
 				disableBack={disableBack} disableNext={disableNext}
+				errorMessage={errorMessage}
 				onBack={onBackHandler} onNext={onNextHandler}
 			/>
 		</form>
