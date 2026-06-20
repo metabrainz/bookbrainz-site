@@ -21,73 +21,8 @@ import {Button, Form, InputGroup, OverlayTrigger, Tooltip} from 'react-bootstrap
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ValidationLabel from '../common/validation-label';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import {makeSortName} from '../../unified-form/common/guess-case-util';
 
-/**
- * Removes all period characters (dots) from the input string, returning a new
- * string.
- *
- * @param {String} name the input string to strip
- * @returns {String} the string with dots removed
- */
-function stripDot(name: string): string {
-	return name.replace(/\./g, '');
-}
-
-function makeSortName(name: string): string {
-	const articles = ['a', 'an', 'the', 'los', 'las', 'el', 'la'];
-	const suffixes = [
-		'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi',
-		'xii', 'xiii', 'xiv', 'xv', 'jr', 'junior', 'sr', 'senior', 'phd', 'md',
-		'dmd', 'dds', 'esq'
-	];
-
-	/*
-	 * Remove leading and trailing spaces, and return a blank sort name if
-	 * the string is empty
-	 */
-	const trimmedName = name.trim();
-	if (trimmedName.length === 0) {
-		return '';
-	}
-
-	const words = trimmedName.split(' ');
-
-	// If there's only one word, simply copy the name as the sort name
-	if (words.length === 1) {
-		return trimmedName;
-	}
-
-	// First, check if sort name is for collective, by detecting article
-	const firstWord = stripDot(words[0]);
-	const firstWordIsArticle = articles.includes(firstWord.toLowerCase());
-	if (firstWordIsArticle) {
-		// The Collection of Stories --> Collection of Stories, The
-		return `${words.slice(1).join(' ')}, ${firstWord}`;
-	}
-
-	/*
-	 * From here on, it is assumed that the sort name is for a person
-	 * Split suffixes
-	 */
-	const strippedWords = words.map((word) => word.replace(/,/g, ''));
-	const isWordSuffix =
-		strippedWords.map((word) => suffixes.includes(stripDot(word).toLowerCase()));
-	const lastSuffix = isWordSuffix.lastIndexOf(false) + 1;
-
-	// Test this to check that splice will not have a 0 deleteCount
-	const suffixWords =
-		lastSuffix < strippedWords.length ? strippedWords.splice(lastSuffix) : [];
-
-	// Rearrange names to (last name, other names)
-	const INDEX_BEFORE_END = -1;
-
-	let [lastName] = strippedWords.splice(INDEX_BEFORE_END);
-	if (suffixWords.length > 0) {
-		lastName += ` ${suffixWords.join(' ')}`;
-	}
-
-	return `${lastName}, ${strippedWords.join(' ')}`;
-}
 
 type onChangeParamType = {
 	target: {
@@ -97,7 +32,9 @@ type onChangeParamType = {
 
 type Props = {
 	empty?: boolean,
+	entityType?: string,
 	error?: boolean,
+	languageCode?: string,
 	onChange?: (value: onChangeParamType) => unknown,
 	storedNameValue: string
 };
@@ -117,11 +54,15 @@ type Props = {
  *        the wrapped input changes.
  * @param {string} props.storedNameValue - The name value to be used to
  *        generate the sort name when the 'Guess Sort Name' button is clicked.
+ * @param {string} props.languageCode - Optional ISO language code (e.g., 'en', 'de', 'fr')
+ *        used to apply language-specific sort name rules.
  * @returns {Object} a React component containing the rendered input
  */
 function SortNameField({
 	empty,
+	entityType,
 	error,
+	languageCode,
 	onChange,
 	storedNameValue,
 	...rest
@@ -129,7 +70,7 @@ function SortNameField({
 	let input;
 
 	function handleGuessClick() {
-		const generatedSortName = makeSortName(storedNameValue);
+		const generatedSortName = makeSortName(storedNameValue, languageCode, entityType);
 		if (input) {
 			input.value = generatedSortName;
 		}
@@ -197,7 +138,9 @@ function SortNameField({
 SortNameField.displayName = 'SortNameField';
 SortNameField.defaultProps = {
 	empty: false,
+	entityType: null,
 	error: false,
+	languageCode: null,
 	onChange: null
 };
 
