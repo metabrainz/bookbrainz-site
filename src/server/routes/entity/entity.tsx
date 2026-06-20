@@ -67,7 +67,7 @@ const entityComponents = {
 	work: WorkPage
 };
 
-export function displayEntity(req: PassportRequest, res: $Response) {
+export async function displayEntity(req: PassportRequest, res: $Response) {
 	const {orm}: {orm?: any} = req.app.locals;
 	const {AchievementUnlock, EditorEntityVisits} = orm;
 	const {locals: resLocals}: {locals: any} = res;
@@ -82,98 +82,84 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 		);
 	}
 
-	let editorEntityVisitPromise;
+	let editorEntityVisitPromise: any = false;
 	if (resLocals.user) {
-		editorEntityVisitPromise = new EditorEntityVisits({
-			bbid: resLocals.entity.bbid,
-			editorId: resLocals.user.id
-		})
-			.save(null, {method: 'insert'})
-			.then(() => achievement.processPageVisit(orm, resLocals.user.id))
-			.catch(
-				// error caused by duplicates we do not want in database
-				() => new Promise(resolve => resolve(false))
-			);
+		try {
+			await new EditorEntityVisits({
+				bbid: resLocals.entity.bbid,
+				editorId: resLocals.user.id
+			}).save(null, {method: 'insert'});
+			editorEntityVisitPromise = await achievement.processPageVisit(orm, resLocals.user.id);
+		}
+		catch {
+			// error caused by duplicates we do not want in database
+			editorEntityVisitPromise = false;
+		}
+	}
+
+	let alertIds: number[] = [];
+	if (editorEntityVisitPromise && editorEntityVisitPromise.alert) {
+		alertIds = alertIds.concat(editorEntityVisitPromise.alert.split(',').map(
+			(id) => parseInt(id, 10)
+		));
+	}
+	if (_.isString(req.query.alert)) {
+		// $FlowFixMe
+		alertIds = alertIds.concat(req.query.alert.split(',').map(
+			(id) => parseInt(id, 10)
+		));
+	}
+
+	let alert: any = false;
+	if (alertIds.length > 0) {
+		const promiseList = alertIds.map(
+			async (achievementAlert) => {
+				try {
+					const unlock = await new AchievementUnlock({id: achievementAlert})
+						.fetch({require: true, withRelated: 'achievement'})
+						.then((u) => u.toJSON());
+					if (req.user.id === unlock.editorId) {
+						return {name: unlock.achievement.name};
+					}
+					return undefined;
+				}
+				catch(err) {
+					log.debug(err);
+					return undefined;
+		}
+			}
+		);
+		alert = await Promise.all(promiseList);
+	}
+
+	const entityName = _.camelCase(entity.type);
+	const EntityComponent = entityComponents[entityName];
+	if (EntityComponent) {
+		const props = generateProps(req, res, {
+			alert,
+			genderOptions: res.locals.genders,
+			identifierTypes
+		});
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EntityComponent
+					{...propHelpers.extractEntityProps(props)}
+				/>
+			</Layout>
+		);
+		res.send(target({
+			markup,
+			page: entityName,
+			props: escapeProps(props),
+			script: '/js/entity/entity.js',
+			title: `${getEntityLabel(props.entity, false)} (${_.upperFirst(entityName)})`
+		}));
 	}
 	else {
-		editorEntityVisitPromise = new Promise(resolve => resolve(false));
+		throw new Error(
+			`Component was not found for the following entity:${entityName}`
+		);
 	}
-
-	let alertPromise = editorEntityVisitPromise.then((visitAlert) => {
-		let alertIds = [];
-		if (visitAlert.alert) {
-			alertIds = alertIds.concat(visitAlert.alert.split(',').map(
-				(id) => parseInt(id, 10)
-			));
-		}
-		if (_.isString(req.query.alert)) {
-			// $FlowFixMe
-			alertIds = alertIds.concat(req.query.alert.split(',').map(
-				(id) =>	parseInt(id, 10)
-			));
-		}
-		if (alertIds.length > 0) {
-			const promiseList = alertIds.map(
-				(achievementAlert) =>
-					new AchievementUnlock(
-						{id: achievementAlert}
-					)
-						.fetch({
-							require: true,
-							withRelated: 'achievement'
-						})
-						.then((unlock) => unlock.toJSON())
-						.then((unlock) => {
-							let unlockName;
-							if (req.user.id === unlock.editorId) {
-								unlockName = {
-									name: unlock.achievement.name
-								};
-							}
-							return unlockName;
-						})
-						.catch((err) => {
-							log.debug(err);
-						})
-			);
-			alertPromise = Promise.all(promiseList);
-		}
-		else {
-			alertPromise = new Promise(resolve => resolve(false));
-		}
-		return alertPromise;
-	});
-
-	return alertPromise.then((alert) => {
-		const entityName = _.camelCase(entity.type);
-		const EntityComponent = entityComponents[entityName];
-		if (EntityComponent) {
-			const props = generateProps(req, res, {
-				alert,
-				genderOptions: res.locals.genders,
-				identifierTypes
-			});
-			const markup = ReactDOMServer.renderToString(
-				<Layout {...propHelpers.extractLayoutProps(props)}>
-					<EntityComponent
-						{...propHelpers.extractEntityProps(props)}
-					/>
-				</Layout>
-			);
-			res.send(target({
-				markup,
-				page: entityName,
-				props: escapeProps(props),
-				script: '/js/entity/entity.js',
-				title: `${getEntityLabel(props.entity, false)} (${_.upperFirst(entityName)})`
-			}));
-		}
-		else {
-			throw new Error(
-				`Component was not found for the following entity:${entityName}`
-			);
-		}
-	});
 }
 
 export function displayDeleteEntity(req: PassportRequest, res: $Response) {
@@ -288,7 +274,7 @@ export async function getEntityByBBID(orm: any, transacting: Transaction, bbid: 
 
 async function setParentRevisions(transacting, newRevision, parentRevisionIDs) {
 	if (_.isEmpty(parentRevisionIDs)) {
-		return new Promise(resolve => resolve(null));
+		return null;
 	}
 
 	// Get the parents of the new revision
@@ -410,7 +396,7 @@ export function fetchOrCreateMainEntity(
 	const entity = model.forge({bbid});
 
 	if (isNew) {
-		return new Promise(resolve => resolve(entity));
+		return entity;
 	}
 
 	return entity.fetch({transacting});

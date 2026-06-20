@@ -119,19 +119,20 @@ export function createEntityPageTitle(
  * progress)
  * @returns {Promise} - Resolves to the updated editor model
  */
-export function incrementEditorEditCountById(
+export async function incrementEditorEditCountById(
 	orm: any,
 	id: number,
 	transacting: any
 ): Promise<Record<string, unknown>> {
 	const {Editor} = orm;
-	return new Editor({id})
-		.fetch({require: true, transacting})
-		.then((editor) => {
-			editor.incrementEditCount();
-			return editor.save(null, {transacting});
-		})
-		.catch(Editor.NotFoundError, err => new Promise((resolve, reject) => reject(err)));
+	try {
+		const editor = await new Editor({id}).fetch({require: true, transacting});
+		editor.incrementEditCount();
+		return editor.save(null, {transacting});
+	}
+	catch (err) {
+		throw err;
+	}
 }
 
 /**
