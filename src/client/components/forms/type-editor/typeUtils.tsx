@@ -44,6 +44,7 @@ export interface IdentifierTypeDataT {
 	id?: number;
 	label: string;
 	parentId: number | null;
+	validationFunction: string | null;
 	validationRegex: string;
 }
 
@@ -92,6 +93,7 @@ export const defaultIdentifierTypeData: IdentifierTypeDataT = {
 	entityType: null,
 	label: '',
 	parentId: null,
+	validationFunction: null,
 	validationRegex: ''
 };
 
