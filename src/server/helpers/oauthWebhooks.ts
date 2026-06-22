@@ -31,11 +31,11 @@ type UserCreatedPayload = {
 type UserUpdatedPayload = {
 	new?: {
 		email?: string,
-		username?: string
+		name?: string
 	},
 	old?: {
 		email?: string,
-		username?: string
+		name?: string
 	},
 	user_id: number
 };
@@ -89,7 +89,7 @@ export async function handleUserUpdated(
 	payload: UserUpdatedPayload,
 	deliveryId: string
 ): Promise<void> {
-	const newUsername = payload.new?.username;
+	const newUsername = payload.new?.name;
 	if (!newUsername) {
 		log.debug(
 			`No username update in user.updated OAuth webhook delivery ${deliveryId} for metabrainz_user_id=${payload.user_id}`
