@@ -112,7 +112,7 @@ export async function handleUserUpdated(
 		return;
 	}
 
-	await editor.save({cachedMetabrainzName: newUsername}, {patch: true});
+	await editor.save({cachedMetabrainzName: newUsername, name: newUsername}, {patch: true});
 }
 
 export async function handleUserDeleted(
