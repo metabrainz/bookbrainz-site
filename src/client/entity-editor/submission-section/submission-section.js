@@ -67,7 +67,7 @@ function SubmissionSection({
 			{translate('submissionSection.editNoteTooltip')}
 		</Tooltip>
 	);
-	const dummyTranslation = translate('dummyKeyForTestingCI');
+
 	return (
 		<div>
 			<h2>
