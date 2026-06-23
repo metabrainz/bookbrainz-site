@@ -24,6 +24,7 @@ import classNames from 'classnames';
 import {connect} from 'react-redux';
 import {debounceUpdateRevisionNote} from './actions';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Container component. The SubmissionSection component contains a button for
@@ -50,26 +51,27 @@ function SubmissionSection({
 	onNoteChange,
 	submitted
 }) {
+	const {t: translate} = useTranslation('entityEditor');
 	const errorAlertClass =
 		classNames('text-center', 'margin-top-1', {'d-none': !errorText});
 
 	const editNoteLabel = (
 		<span>
-			Edit Note
-			<span className="text-muted"> (optional)</span>
+			{translate('submissionSection.editNoteLabel')}
+			<span className="text-muted"> {translate('submissionSection.optional')}</span>
 		</span>
 	);
 
 	const tooltip = (
 		<Tooltip>
-			Cite your sources or an explanation of your edit
+			{translate('submissionSection.editNoteTooltip')}
 		</Tooltip>
 	);
 
 	return (
 		<div>
 			<h2>
-				Submit Your Edit
+				{translate('submissionSection.heading')}
 			</h2>
 			<Row>
 				<Col lg={{offset: 3, span: 6}}>
@@ -86,10 +88,7 @@ function SubmissionSection({
 						<Form.Control as="textarea" defaultValue={note} rows="6" onChange={onNoteChange}/>
 					</Form.Group>
 					<p className="text-muted">
-						{`An edit note will make your entries more credible. Reply to one or more of these questions in the textarea below:
-						- Where did you get your info from? A link is worth a thousand words.
-						- What kind of information did you provide? If you made any changes, what are they and why?
-						- Do you have any questions concerning the editing process you want to ask?`}
+						{translate('submissionSection.editNoteHelp')}
 					</p>
 				</Col>
 			</Row>
@@ -107,11 +106,11 @@ function SubmissionSection({
 						role="status"
 						size="sm"
 					/>}
-					 {submitted ? ' Submit' : 'Submit'}
+					 {submitted ? ` ${translate('submissionSection.submitButton')}` : translate('submissionSection.submitButton')}
 				</Button>
 			</div>
 			<div className={errorAlertClass}>
-				<Alert variant="danger">Submission Error: {errorText}</Alert>
+				<Alert variant="danger">{translate('submissionSection.submissionError', {errorText})}</Alert>
 			</div>
 		</div>
 	);
