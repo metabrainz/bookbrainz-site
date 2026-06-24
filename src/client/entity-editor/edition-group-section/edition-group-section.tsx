@@ -26,6 +26,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
 import {connect} from 'react-redux';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 
 type EditionGroupType = {
@@ -71,13 +72,15 @@ function EditionGroupSection({
 	isLeftAlign,
 	onTypeChange
 }: Props) {
+	const {t: translate} = useTranslation('entityEditor');
+
 	const editionGroupTypesForDisplay = editionGroupTypes.map((type) => ({
 		label: type.label,
 		value: type.id
 	}));
 	const typeOption = editionGroupTypesForDisplay.filter((el) => el.value === typeValue);
-	const tooltip = <Tooltip>Physical format of the Edition Group</Tooltip>;
-	const heading = <h2>What else do you know about the Edition Group?</h2>;
+	const tooltip = <Tooltip>{translate('editionGroupSection.typeTooltip')}</Tooltip>;
+	const heading = <h2>{translate('editionGroupSection.heading')}</h2>;
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
@@ -87,14 +90,13 @@ function EditionGroupSection({
 			{!isUnifiedForm && heading}
 			<AuthorCreditSection isLeftAlign={isLeftAlign} type="editionGroup"/>
 			<p className="text-muted">
-				All fields optional — leave something blank if you don&rsquo;t
-				know it
+				{translate('editionGroupSection.allFieldsOptional')}
 			</p>
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>
-							Type
+							{translate('editionGroupSection.typeLabel')}
 							<OverlayTrigger delay={50} overlay={tooltip}>
 								<FontAwesomeIcon
 									className="margin-left-0-5"

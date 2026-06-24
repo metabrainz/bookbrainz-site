@@ -24,6 +24,7 @@ import type {Map} from 'immutable';
 import MergeField from '../common/merge-field';
 import {find as _find} from 'lodash';
 import {connect} from 'react-redux';
+import {useTranslation} from 'react-i18next';
 
 
 type StateProps = {
@@ -67,6 +68,7 @@ function SeriesSectionMerge({
 	onOrderTypeChange,
 	onSeriesTypeChange
 }: Props) {
+	const {t: translate} = useTranslation('entityEditor');
 	const seriesOrderingTypeOptions = [];
 	const seriesTypeOptions = [];
 	const relationships = [];
@@ -106,13 +108,13 @@ function SeriesSectionMerge({
 		<div>
 			<MergeField
 				currentValue={orderTypeValue}
-				label="Ordering Type"
+				label={translate('seriesSection.orderingTypeLabel')}
 				options={seriesOrderingTypeOptions}
 				onChange={onOrderTypeChange}
 			/>
 			<MergeField
 				currentValue={seriesTypeValue}
-				label="Series Type"
+				label={translate('seriesSection.seriesTypeLabel')}
 				options={seriesTypeOptions}
 				onChange={onSeriesTypeChange}
 			/>
