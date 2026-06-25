@@ -100,7 +100,7 @@ export async function getAvailableWikipediaArticles(wikidataId: string, {
 			// drop project suffix
 			language: page.site.replace(/wiki$/, ''),
 			title: page.title
-		} as wikipedia));
+		} as WikipediaArticle));
 
 	cacheJSON(cacheKey, articles, {expireTime: cacheMaxAge.articles});
 
