@@ -1,0 +1,41 @@
+# Run i18next key extraction check on push to master/i18n branches and pull requests
+
+name: i18n key extraction check
+
+on:
+  push:
+    branches: [master, i18n]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'push' && github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-extraction:
+    name: Check key extraction
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "24"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run key extraction
+        run: yarn run parse-i18n
+
+      - name: Verify translations are up to date
+        run: |
+          if ! git diff --exit-code public/locales/; then
+            echo "Translation files are out of sync with components!"
+            echo "Please run 'yarn run parse-i18n' locally and commit the modified translation files."
+            exit 1
+          fi
