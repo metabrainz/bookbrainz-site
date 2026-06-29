@@ -161,14 +161,14 @@ function PublisherSectionMerge({
 		<div>
 			<MergeField
 				currentValue={typeValue}
-				label={translate('publisherSection.typeLabel')}
+				label={translate('common:type')}
 				options={typeOptions}
 				onChange={onTypeChange}
 			/>
 			<MergeField
 				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				currentValue={areaValue}
-				label={translate('publisherSection.areaLabel')}
+				label={translate('common:area')}
 				options={areaOptions}
 				onChange={onAreaChange}
 			/>
@@ -182,7 +182,7 @@ function PublisherSectionMerge({
 			/>
 			<MergeField
 				currentValue={endedChecked}
-				label={translate('publisherSection.dissolved')}
+				label={translate('dissolvedLabel')}
 				options={endedOptions}
 				onChange={onEndedChange}
 			/>
