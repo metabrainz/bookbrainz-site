@@ -31,6 +31,7 @@ import Select from 'react-select';
 import {find as _find} from 'lodash';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
+import {useTranslation} from 'react-i18next';
 
 
 type LanguageOption = {
@@ -74,6 +75,7 @@ function WorkSectionMerge({
 	typeValue,
 	onTypeChange
 }: Props) {
+	const {t: translate} = useTranslation('entityEditor');
 	const typeOptions = [];
 
 	mergingEntities.forEach(entity => {
@@ -87,12 +89,12 @@ function WorkSectionMerge({
 		<div>
 			<MergeField
 				currentValue={typeValue}
-				label="Type"
+				label={translate('common:type')}
 				options={typeOptions}
 				onChange={onTypeChange}
 			/>
 			<Form.Group>
-				<Form.Label>Languages</Form.Label>
+				<Form.Label>{translate('entityEditor:workSectionMerge.languagesLabel')}</Form.Label>
 				<Select
 					isDisabled
 					isMulti
