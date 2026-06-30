@@ -6,11 +6,16 @@
   "about.title": "About BookBrainz",
   "area": "Area",
   "button.close": "Close",
+  "format": "Format",
   "gender": "Gender",
+  "languages": "Languages",
   "no": "no",
+  "pageCount": "Page Count",
+  "pages": "Pages",
   "pagination.previous": "← Previous Page",
   "pagination.results": "Results {{from}} — {{to}}",
+  "publisher": "Publisher",
+  "status": "Status",
   "type": "Type",
   "yes": "yes"
 }
-  

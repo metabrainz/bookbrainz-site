@@ -163,7 +163,7 @@ function WorkSection({
 			{translate('workSection.typeTooltip')}
 		</Tooltip>
 	);
-	const heading = <h2> What else do you know about the Work?</h2>;
+	const heading = <h2>{translate('shared.entityHeading', {entity: 'Work'})}</h2>;
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;

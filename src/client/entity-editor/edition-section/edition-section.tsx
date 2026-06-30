@@ -272,7 +272,7 @@ function EditionSection({
 			{translate('editionSection.statusTooltip')}
 		</Tooltip>
 	);
-	const headingTag = !isUnifiedForm && <h2>{translate('editionSection.heading')}</h2>;
+	const headingTag = !isUnifiedForm && <h2>{translate('shared.entityHeading', {entity: 'Edition'})}</h2>;
 	const colSpan = {
 		offset: 3,
 		span: 6
@@ -352,7 +352,7 @@ function EditionSection({
 					<EntitySearchFieldOption
 						isMulti
 						instanceId="publisher"
-						label={translate('editionSection.publisherLabel')}
+						label={translate('common:publisher')}
 						recentlyUsedEntityType="Publisher"
 						type="publisher"
 						value={publisherValue}
@@ -368,7 +368,7 @@ function EditionSection({
 						empty={isNullDate(releaseDateValue)}
 						error={!isValidReleaseDate}
 						errorMessage={dateErrorMessage}
-						label={translate('editionSection.releaseDateLabel')}
+						label={translate('shared.releaseDateLabel')}
 						placeholder="YYYY-MM-DD"
 						tooltipText={translate('editionSection.releaseDateTooltip')}
 						onChangeDate={onReleaseDateChange}
@@ -392,7 +392,7 @@ function EditionSection({
 				<Col lg={shortColSpan}>
 					<Form.Group>
 						<Form.Label>
-							{translate('editionSection.formatLabel')}
+							{translate('common:format')}
 							<OverlayTrigger delay={50} overlay={formatTooltip}>
 								<FontAwesomeIcon
 									className="margin-left-0-5"
@@ -414,7 +414,7 @@ function EditionSection({
 				<Col lg={3}>
 					<Form.Group>
 						<Form.Label>
-							{translate('editionSection.statusLabel')}
+							{translate('common:status')}
 							<OverlayTrigger delay={50} overlay={statusTooltip}>
 								<FontAwesomeIcon
 									className="margin-left-0-5"
@@ -441,7 +441,7 @@ function EditionSection({
 						defaultValue={pagesValue}
 						empty={_.isNil(pagesValue)}
 						error={!validateEditionSectionPages(pagesValue)}
-						label={translate('editionSection.pageCount')}
+						label={translate('common:pageCount')}
 						onChange={onPagesChange}
 					/>
 				</Col>
@@ -454,7 +454,7 @@ function EditionSection({
 						disabled={!physicalEnable}
 						empty={_.isNil(widthValue)}
 						error={!validateEditionSectionWidth(widthValue)}
-						label={translate('editionSection.widthLabel')}
+						label={translate('shared.widthLabel')}
 						onChange={onWidthChange}
 					/>
 					<NumericField
@@ -463,7 +463,7 @@ function EditionSection({
 						disabled={!physicalEnable}
 						empty={_.isNil(heightValue)}
 						error={!validateEditionSectionHeight(heightValue)}
-						label={translate('editionSection.heightLabel')}
+						label={translate('shared.heightLabel')}
 						onChange={onHeightChange}
 					/>
 				</Col>
@@ -474,7 +474,7 @@ function EditionSection({
 						disabled={!physicalEnable}
 						empty={_.isNil(weightValue)}
 						error={!validateEditionSectionWeight(weightValue)}
-						label={translate('editionSection.weightLabel')}
+						label={translate('shared.weightLabel')}
 						onChange={onWeightChange}
 					/>
 					<NumericField
@@ -483,7 +483,7 @@ function EditionSection({
 						disabled={!physicalEnable}
 						empty={_.isNil(depthValue)}
 						error={!validateEditionSectionDepth(depthValue)}
-						label={translate('editionSection.depthLabel')}
+						label={translate('shared.depthLabel')}
 						onChange={onDepthChange}
 					/>
 				</Col>

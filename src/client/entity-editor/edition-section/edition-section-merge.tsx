@@ -239,61 +239,61 @@ function EditionSectionMerge({
 			/>
 			<MergeField
 				currentValue={releaseDateValue}
-				label={translate('editionSectionMerge.releaseDateLabel')}
+				label={translate('shared.releaseDateLabel')}
 				options={releaseDateOptions}
 				onChange={onReleaseDateChange}
 			/>
 			<MergeField
 				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				currentValue={publisherValue}
-				label={translate('editionSectionMerge.publisherLabel')}
+				label={translate('common:publisher')}
 				options={publisherOptions}
 				onChange={onPublisherChange}
 			/>
 			<MergeField
 				currentValue={formatValue}
-				label={translate('editionSectionMerge.formatLabel')}
+				label={translate('common:format')}
 				options={formatOptions}
 				onChange={onFormatChange}
 			/>
 			<MergeField
 				currentValue={statusValue}
-				label={translate('editionSectionMerge.statusLabel')}
+				label={translate('common:status')}
 				options={statusOptions}
 				onChange={onStatusChange}
 			/>
 			<MergeField
 				currentValue={depthValue}
-				label={translate('editionSectionMerge.depthLabel')}
+				label={translate('shared.depthLabel')}
 				options={depthOptions}
 				onChange={onDepthChange}
 			/>
 			<MergeField
 				currentValue={widthValue}
-				label={translate('editionSectionMerge.widthLabel')}
+				label={translate('shared.widthLabel')}
 				options={widthOptions}
 				onChange={onWidthChange}
 			/>
 			<MergeField
 				currentValue={heightValue}
-				label={translate('editionSectionMerge.heightLabel')}
+				label={translate('shared.heightLabel')}
 				options={heightOptions}
 				onChange={onHeightChange}
 			/>
 			<MergeField
 				currentValue={pagesValue}
-				label={translate('editionSectionMerge.pagesLabel')}
+				label={translate('common:pages')}
 				options={pagesOptions}
 				onChange={onPagesChange}
 			/>
 			<MergeField
 				currentValue={weightValue}
-				label={translate('editionSectionMerge.weightLabel')}
+				label={translate('shared.weightLabel')}
 				options={weightOptions}
 				onChange={onWeightChange}
 			/>
 			<Form.Group>
-				<Form.Label>{translate('editionSectionMerge.languagesLabel')}</Form.Label>
+				<Form.Label>{translate('common:languages')}</Form.Label>
 				<Select
 					isDisabled
 					isMulti
