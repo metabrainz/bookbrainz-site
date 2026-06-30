@@ -132,7 +132,7 @@ function PublisherSection({
 	const typeOption = publisherTypesForDisplay.filter((el) => el.value === typeValue);
 	const {isValid: isValidBeginDate, errorMessage: errorMessageBeginDate} = validatePublisherSectionBeginDate(beginDateValue);
 	const {isValid: isValidEndDate, errorMessage: errorMessageEndDate} = validatePublisherSectionEndDate(beginDateValue, endDateValue, endedChecked);
-	const heading = <h2>{translate('EntityHeading', {entity: 'Publisher'})}</h2>;
+	const heading = <h2>{translate('shared.entityHeading', {entity: 'Publisher'})}</h2>;
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
@@ -141,7 +141,7 @@ function PublisherSection({
 		<div>
 			{!isUnifiedForm && heading}
 			<p className="text-muted">
-				{translate('allFieldsOptional')}
+				{translate('shared.allFieldsOptional')}
 			</p>
 			<Row>
 				<Col lg={lgCol}>
@@ -188,7 +188,7 @@ function PublisherSection({
 			<div className={`${!isUnifiedForm && 'text-center'}`}>
 				<Form.Check
 					defaultChecked={endedChecked}
-					label={translate('dissolvedLabel')}
+					label={translate('shared.dissolvedLabel')}
 					type="checkbox"
 					onChange={onEndedChange}
 				/>
