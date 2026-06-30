@@ -31,6 +31,7 @@ import {attachAttribToRelForDisplay} from '../helpers';
 import {connect} from 'react-redux';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {sortRelationshipOrdinal} from '../../../common/helpers/utils';
+import {useTranslation} from 'react-i18next';
 
 
 type SeriesOrderingType = {
@@ -115,6 +116,8 @@ function SeriesSection({
 	isUnifiedForm,
 	seriesTypeValue
 }: Props) {
+	const {t: translate} = useTranslation('entityEditor');
+
 	const baseEntity = {
 		bbid: _.get(entity, 'bbid'),
 		defaultAlias: {
@@ -161,15 +164,15 @@ function SeriesSection({
 	const seriesTypeOption = seriesTypesForDisplay.filter((el) => el.value === seriesTypeValue);
 	const orderingTooltip = (
 		<Tooltip>
-		Ordering Type of the Series Entity
+			{translate('seriesSection.orderingTypeTooltip')}
 		</Tooltip>
 	);
 	const seriesTypeTooltip = (
 		<Tooltip>
-		Entity Type of the Series
+			{translate('seriesSection.seriesTypeTooltip')}
 		</Tooltip>
 	);
-	const heading = <h2>What else do you know about the Series?</h2>;
+	const heading = <h2>{translate('shared.entityHeading', {entity: 'Series'})}</h2>;
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
@@ -179,13 +182,13 @@ function SeriesSection({
 			{!isUnifiedForm && heading}
 			{!hideItemSelect &&
 			<p className="text-muted">
-				All fields are mandatory — select the option from dropdown
+				{translate('seriesSection.allFieldsMandatory')}
 			</p>}
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>
-							Ordering Type
+							{translate('seriesSection.orderingTypeLabel')}
 							<OverlayTrigger delay={50} overlay={orderingTooltip}>
 								<FontAwesomeIcon
 									className="margin-left-0-5"
@@ -206,7 +209,7 @@ function SeriesSection({
 					{!isUnifiedForm &&
 					<Form.Group>
 						<Form.Label>
-							Series Type
+							{translate('seriesSection.seriesTypeLabel')}
 							<OverlayTrigger delay={50} overlay={seriesTypeTooltip}>
 								<FontAwesomeIcon
 									className="margin-left-0-5"

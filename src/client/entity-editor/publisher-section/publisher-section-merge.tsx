@@ -40,6 +40,7 @@ import MergeField from '../common/merge-field';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
+import {useTranslation} from 'react-i18next';
 
 
 type Area = {
@@ -115,6 +116,7 @@ function PublisherSectionMerge({
 	onEndedChange,
 	onTypeChange
 }: Props) {
+	const {t: translate} = useTranslation('entityEditor');
 	const areaOptions = [];
 	const typeOptions = [];
 	const beginDateOptions = [];
@@ -134,7 +136,12 @@ function PublisherSectionMerge({
 		if (beginDate && !_.find(beginDateOptions, ['value', beginDate.value])) {
 			beginDateOptions.push(beginDate);
 		}
-		const ended = !_.isNil(entity.ended) && {label: entity.ended ? 'Yes' : 'No', value: entity.ended};
+		const ended = !_.isNil(entity.ended) && {
+			label: entity.ended ?
+				translate('common:yes') :
+				translate('common:no'),
+			value: entity.ended
+		};
 		if (ended && !_.find(endedOptions, ['value', ended.value])) {
 			endedOptions.push(ended);
 		}
@@ -154,14 +161,14 @@ function PublisherSectionMerge({
 		<div>
 			<MergeField
 				currentValue={typeValue}
-				label="Type"
+				label={translate('common:type')}
 				options={typeOptions}
 				onChange={onTypeChange}
 			/>
 			<MergeField
 				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				currentValue={areaValue}
-				label="Area"
+				label={translate('common:area')}
 				options={areaOptions}
 				onChange={onAreaChange}
 			/>
@@ -169,13 +176,13 @@ function PublisherSectionMerge({
 				currentValue={formattedBeginDateValue}
 				error={!isValidBeginDate}
 				errorMessage={errorMessageBeginDate}
-				label="Date Founded"
+				label={translate('publisherSection.dateFounded')}
 				options={beginDateOptions}
 				onChange={onBeginDateChange}
 			/>
 			<MergeField
 				currentValue={endedChecked}
-				label="Dissolved?"
+				label={translate('shared.dissolvedLabel')}
 				options={endedOptions}
 				onChange={onEndedChange}
 			/>
@@ -184,7 +191,7 @@ function PublisherSectionMerge({
 					currentValue={formattedEndDateValue}
 					error={!isValidEndDate}
 					errorMessage={errorMessageEndDate}
-					label="Date Dissolved"
+					label={translate('publisherSection.dateDissolved')}
 					options={endDateOptions}
 					onChange={onEndDateChange}
 				/>

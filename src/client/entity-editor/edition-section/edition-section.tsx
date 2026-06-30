@@ -66,6 +66,7 @@ import {clearEditionGroups} from '../../unified-form/detail-tab/action';
 import {connect} from 'react-redux';
 import {entityToOption} from '../../helpers/entity';
 import makeImmutable from '../common/make-immutable';
+import {useTranslation} from 'react-i18next';
 
 
 const ImmutableLanguageField = makeImmutable(LanguageField);
@@ -195,6 +196,7 @@ function EditionSection({
 	widthValue,
 	...rest
 }: Props) {
+	const {t: translate} = useTranslation('entityEditor');
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		frequency: language.frequency,
 		label: language.name,
@@ -228,16 +230,17 @@ function EditionSection({
 			<Col className="margin-bottom-2" lg={{offset: isUnifiedForm || showMatchingEditionGroups ? 0 : 3, span: 6}}>
 				<EntitySearchField
 					error={!validateEditionSectionEditionGroup(editionGroupValue, true)}
-					help="Group with other Editions of the same book"
+					help={translate('editionSection.editionGroupHelp')}
 					instanceId="edition-group"
 					isUnifiedForm={isUnifiedForm}
-					label="Edition Group"
+					label={translate('editionSection.editionGroupLabel')}
 					languageOptions={languageOptions}
 					recentlyUsedEntityType="EditionGroup"
 					tooltipText={
 						<>
-						Group together different Editions of the same book.
-							<br/>For example paperback, hardcover and e-book editions.
+							{translate('editionSection.editionGroupTooltip')}
+							<br/>
+							{translate('editionSection.editionGroupTooltipExample')}
 						</>
 					}
 					type="editionGroup"
@@ -252,7 +255,7 @@ function EditionSection({
 					// eslint-disable-next-line react/jsx-no-bind
 					onClick={onToggleShowEditionGroupSection.bind(this, false)}
 				>
-					<FontAwesomeIcon icon={faClone}/>&nbsp;Automatically create an Edition Group
+					<FontAwesomeIcon icon={faClone}/>&nbsp;{translate('editionSection.autoCreateEditionGroup')}
 				</Button>
 			</Col>
 		</React.Fragment>
@@ -260,16 +263,16 @@ function EditionSection({
 
 	const formatTooltip = (
 		<Tooltip>
-			The type of printing and binding of the edition, or digital equivalent
+			{translate('editionSection.formatTooltip')}
 		</Tooltip>
 	);
 
 	const statusTooltip = (
 		<Tooltip>
-			Has the work been published, or is it in a draft stage?
+			{translate('editionSection.statusTooltip')}
 		</Tooltip>
 	);
-	const headingTag = !isUnifiedForm && <h2>What else do you know about the Edition?</h2>;
+	const headingTag = !isUnifiedForm && <h2>{translate('shared.entityHeading', {entity: 'Edition'})}</h2>;
 	const colSpan = {
 		offset: 3,
 		span: 6
@@ -287,8 +290,7 @@ function EditionSection({
 			{headingTag}
 			{!isUnifiedForm && <AuthorCreditSection type="edition"/>}
 			<p className="text-muted">
-				Edition Group is required — this cannot be blank. You can search for and choose an existing Edition Group,
-				or choose to automatically create one instead.
+				{translate('editionSection.editionGroupRequired')}
 			</p>
 
 			<Row className="margin-bottom-3">
@@ -296,7 +298,7 @@ function EditionSection({
 					showAutoCreateEditionGroupMessage ?
 						<Col lg={{offset: isUnifiedForm || showMatchingEditionGroups ? 0 : 3, span: 6}}>
 							<Alert variant="success">
-								<p>A new Edition Group with the same name will be created automatically.</p>
+								<p>{translate('editionSection.autoCreateMessage')}</p>
 								<br/>
 								<Button
 									block
@@ -305,7 +307,7 @@ function EditionSection({
 									// eslint-disable-next-line react/jsx-no-bind
 									onClick={onToggleShowEditionGroupSection.bind(this, true)}
 								>
-									<FontAwesomeIcon icon={faSearch}/>&nbsp;Search for an existing Edition Group
+									<FontAwesomeIcon icon={faSearch}/>&nbsp;{translate('editionSection.searchExistingEditionGroup')}
 								</Button>
 							</Alert>
 						</Col> :
@@ -315,16 +317,18 @@ function EditionSection({
 					<Col lg={6}>
 						<Alert variant="warning">
 							{matchingNameEditionGroups.length > 1 ?
-								'Edition Groups with the same name as this Edition already exist' :
-								'An existing Edition Group with the same name as this Edition already exists'
+								translate('editionSection.matchingEditionGroupsPlural') :
+								translate('editionSection.matchingEditionGroupSingular')
 							}
 							<br/>
-							Please review the Edition Groups below and select the one that corresponds to your Edition.
+							{translate('editionSection.reviewEditionGroups')}
 							<br/>
 							<small>
-								If no Edition Group is selected, a new one will be created automatically.
+								{translate('editionSection.noSelectionAutoCreate')}
 								<br/>
-								Click on the <FontAwesomeIcon icon={faExternalLinkAlt}/> icon open in a new tab, and click an item to select.
+								{translate('editionSection.clickIconToOpenBefore')}
+								<FontAwesomeIcon icon={faExternalLinkAlt}/>
+								{translate('editionSection.clickIconToOpenAfter')}
 							</small>
 							<ListGroup className="margin-top-1">
 								{matchingNameEditionGroups.map(eg => (
@@ -340,8 +344,7 @@ function EditionSection({
 
 
 			<p className="text-muted">
-				Below fields are optional — leave something blank if you
-				don&rsquo;t know it
+				{translate('editionSection.belowFieldsOptional')}
 			</p>
 			<Row>
 				{!isUnifiedForm &&
@@ -349,7 +352,7 @@ function EditionSection({
 					<EntitySearchFieldOption
 						isMulti
 						instanceId="publisher"
-						label="Publisher"
+						label={translate('common:publisher')}
 						recentlyUsedEntityType="Publisher"
 						type="publisher"
 						value={publisherValue}
@@ -365,10 +368,9 @@ function EditionSection({
 						empty={isNullDate(releaseDateValue)}
 						error={!isValidReleaseDate}
 						errorMessage={dateErrorMessage}
-						label="Release Date"
+						label={translate('shared.releaseDateLabel')}
 						placeholder="YYYY-MM-DD"
-						// eslint-disable-next-line max-len
-						tooltipText="The date this specific edition was published (not the first publication date of the work). If unsure, leave empty."
+						tooltipText={translate('editionSection.releaseDateTooltip')}
 						onChangeDate={onReleaseDateChange}
 					/>
 				</Col>
@@ -380,7 +382,7 @@ function EditionSection({
 						isMulti
 						instanceId="language"
 						options={languageOptionsForDisplay}
-						tooltipText="Main language used for the content of the edition"
+						tooltipText={translate('editionSection.languageTooltip')}
 						value={languageValues}
 						onChange={onLanguagesChange}
 					/>
@@ -390,7 +392,7 @@ function EditionSection({
 				<Col lg={shortColSpan}>
 					<Form.Group>
 						<Form.Label>
-							Format
+							{translate('common:format')}
 							<OverlayTrigger delay={50} overlay={formatTooltip}>
 								<FontAwesomeIcon
 									className="margin-left-0-5"
@@ -412,7 +414,7 @@ function EditionSection({
 				<Col lg={3}>
 					<Form.Group>
 						<Form.Label>
-							Status
+							{translate('common:status')}
 							<OverlayTrigger delay={50} overlay={statusTooltip}>
 								<FontAwesomeIcon
 									className="margin-left-0-5"
@@ -439,7 +441,7 @@ function EditionSection({
 						defaultValue={pagesValue}
 						empty={_.isNil(pagesValue)}
 						error={!validateEditionSectionPages(pagesValue)}
-						label="Page Count"
+						label={translate('common:pageCount')}
 						onChange={onPagesChange}
 					/>
 				</Col>
@@ -452,7 +454,7 @@ function EditionSection({
 						disabled={!physicalEnable}
 						empty={_.isNil(widthValue)}
 						error={!validateEditionSectionWidth(widthValue)}
-						label="Width"
+						label={translate('shared.widthLabel')}
 						onChange={onWidthChange}
 					/>
 					<NumericField
@@ -461,7 +463,7 @@ function EditionSection({
 						disabled={!physicalEnable}
 						empty={_.isNil(heightValue)}
 						error={!validateEditionSectionHeight(heightValue)}
-						label="Height"
+						label={translate('shared.heightLabel')}
 						onChange={onHeightChange}
 					/>
 				</Col>
@@ -472,7 +474,7 @@ function EditionSection({
 						disabled={!physicalEnable}
 						empty={_.isNil(weightValue)}
 						error={!validateEditionSectionWeight(weightValue)}
-						label="Weight"
+						label={translate('shared.weightLabel')}
 						onChange={onWeightChange}
 					/>
 					<NumericField
@@ -481,7 +483,7 @@ function EditionSection({
 						disabled={!physicalEnable}
 						empty={_.isNil(depthValue)}
 						error={!validateEditionSectionDepth(depthValue)}
-						label="Depth"
+						label={translate('shared.depthLabel')}
 						onChange={onDepthChange}
 					/>
 				</Col>

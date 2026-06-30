@@ -40,6 +40,7 @@ import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import Select from 'react-select';
 import {connect} from 'react-redux';
 import {isNullDate} from '../../helpers/utils';
+import {useTranslation} from 'react-i18next';
 
 
 type PublisherType = {
@@ -123,6 +124,7 @@ function PublisherSection({
 	onEndedChange,
 	onTypeChange
 }: Props) {
+	const {t: translate} = useTranslation('entityEditor');
 	const publisherTypesForDisplay = publisherTypes.map((type) => ({
 		label: type.label,
 		value: type.id
@@ -130,7 +132,7 @@ function PublisherSection({
 	const typeOption = publisherTypesForDisplay.filter((el) => el.value === typeValue);
 	const {isValid: isValidBeginDate, errorMessage: errorMessageBeginDate} = validatePublisherSectionBeginDate(beginDateValue);
 	const {isValid: isValidEndDate, errorMessage: errorMessageEndDate} = validatePublisherSectionEndDate(beginDateValue, endDateValue, endedChecked);
-	const heading = <h2>What else do you know about the Publisher?</h2>;
+	const heading = <h2>{translate('shared.entityHeading', {entity: 'Publisher'})}</h2>;
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
@@ -139,13 +141,12 @@ function PublisherSection({
 		<div>
 			{!isUnifiedForm && heading}
 			<p className="text-muted">
-				All fields optional — leave something blank if you don&rsquo;t
-				know it
+				{translate('shared.allFieldsOptional')}
 			</p>
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group>
-						<Form.Label>Type</Form.Label>
+						<Form.Label>{translate('common:type')}</Form.Label>
 						<Select
 							isClearable
 							classNamePrefix="react-select"
@@ -161,9 +162,9 @@ function PublisherSection({
 				<Col lg={lgCol}>
 					<EntitySearchFieldOption
 						instanceId="area"
-						label="Area"
+						label={translate('common:area')}
 						recentlyUsedEntityType="Area"
-						tooltipText="Country or place the publisher is registered in"
+						tooltipText={translate('publisherSection.areaTooltip')}
 						type="area"
 						value={areaValue}
 						onChange={onAreaChange}
@@ -178,7 +179,7 @@ function PublisherSection({
 						empty={isNullDate(beginDateValue)}
 						error={!isValidBeginDate}
 						errorMessage={errorMessageBeginDate}
-						label="Date Founded"
+						label={translate('publisherSection.dateFounded')}
 						placeholder="YYYY-MM-DD"
 						onChangeDate={onBeginDateChange}
 					/>
@@ -187,7 +188,7 @@ function PublisherSection({
 			<div className={`${!isUnifiedForm && 'text-center'}`}>
 				<Form.Check
 					defaultChecked={endedChecked}
-					label="Dissolved?"
+					label={translate('shared.dissolvedLabel')}
 					type="checkbox"
 					onChange={onEndedChange}
 				/>
@@ -202,7 +203,7 @@ function PublisherSection({
 								empty={isNullDate(endDateValue)}
 								error={!isValidEndDate}
 								errorMessage={errorMessageEndDate}
-								label="Date Dissolved"
+								label={translate('publisherSection.dateDissolved')}
 								placeholder="YYYY-MM-DD"
 								onChangeDate={onEndDateChange}
 							/>
