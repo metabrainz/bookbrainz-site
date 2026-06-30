@@ -4,7 +4,13 @@
   "about.lead": "BookBrainz is an online encyclopaedia which contains information about published literature. Our aim is to collect and store data about every book, magazine, journal or other publication ever written.",
   "about.ourStory": "Our Story",
   "about.title": "About BookBrainz",
+  "area": "Area",
   "button.close": "Close",
+  "gender": "Gender",
+  "no": "no",
   "pagination.previous": "← Previous Page",
-  "pagination.results": "Results {{from}} — {{to}}"
+  "pagination.results": "Results {{from}} — {{to}}",
+  "type": "Type",
+  "yes": "yes"
 }
+  
