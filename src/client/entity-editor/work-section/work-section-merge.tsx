@@ -94,7 +94,7 @@ function WorkSectionMerge({
 				onChange={onTypeChange}
 			/>
 			<Form.Group>
-				<Form.Label>{translate('entityEditor:workSectionMerge.languagesLabel')}</Form.Label>
+				<Form.Label>{translate('common:languages')}</Form.Label>
 				<Select
 					isDisabled
 					isMulti
