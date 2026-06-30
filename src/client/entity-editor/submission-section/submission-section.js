@@ -58,7 +58,7 @@ function SubmissionSection({
 	const editNoteLabel = (
 		<span>
 			{translate('submissionSection.editNoteLabel')}
-			<span className="text-muted"> {translate('optionalLabel')}</span>
+			<span className="text-muted"> {translate('shared.optionalLabel')}</span>
 		</span>
 	);
 
