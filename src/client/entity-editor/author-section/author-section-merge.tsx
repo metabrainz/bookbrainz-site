@@ -204,13 +204,13 @@ function AuthorSectionMerge({
 		<div>
 			<MergeField
 				currentValue={typeValue}
-				label={translate('entityEditor:authorSection.Merge.typeLabel')}
+				label={translate('common:type')}
 				options={typeOptions}
 				onChange={onTypeChange}
 			/>
 			<MergeField
 				currentValue={genderValue}
-				label={translate('entityEditor:authorSection.Merge.genderLabel')}
+				label={translate('common:gender')}
 				options={genderOptions}
 				onChange={onGenderChange}
 			/>

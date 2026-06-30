@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "clean": "./scripts/clean.sh",
-     "parse-i18n": "npx i18next-cli extract",
+    "parse-i18n": "i18next-cli extract",
     "prepare": "npm run clean",
     "build-server-js": "babel src --out-dir lib --source-maps --ignore src/api --extensions .js,.jsx,.ts,.tsx",
     "build-api-js": "babel src --out-dir lib --ignore 'src/server','src/client' --extensions .js,.jsx,.ts,.tsx",
@@ -138,6 +138,7 @@
     "eslint-plugin-react": "^7.26.1",
     "eslint-webpack-plugin": "^2.4.1",
     "file-loader": "^6.2.0",
+    "i18next-cli": "^1.64.2",
     "jsdom": "22.1.0",
     "jsdom-global": "3.0.2",
     "mini-css-extract-plugin": "^2.7.4",
