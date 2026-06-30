@@ -121,9 +121,14 @@
   "seriesSection.seriesTypeLabel": "Series Type",
   "seriesSection.seriesTypeTooltip": "Entity Type of the Series",
   "shared.allFieldsOptional": "All fields optional — leave something blank if you don't know it",
+  "shared.depthLabel": "Depth",
   "shared.dissolvedLabel": "Dissolved?",
   "shared.entityHeading": "What else do you know about the {{entity}}?",
+  "shared.heightLabel": "Height",
   "shared.optionalLabel": "(optional)",
+  "shared.releaseDateLabel": "Release Date",
+  "shared.weightLabel": "Weight",
+  "shared.widthLabel": "Width",
   "sortNameField.copyButton": "Copy",
   "sortNameField.guessButton": "Guess",
   "sortNameField.label": "Sort Name",
@@ -138,6 +143,5 @@
   "workSection.allFieldsOptional": "All fields optional — leave something blank if you don't know it",
   "workSection.heading": "What else do you know about the Work?",
   "workSection.languageTooltip": "Main language used for the content of the work",
-  "workSection.typeTooltip": "Literary form or structure of the work",
-  "workSectionMerge.languagesLabel": "Languages"
+  "workSection.typeTooltip": "Literary form or structure of the work"
 }
