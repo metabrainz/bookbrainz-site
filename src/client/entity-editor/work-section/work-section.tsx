@@ -163,7 +163,7 @@ function WorkSection({
 			{translate('workSection.typeTooltip')}
 		</Tooltip>
 	);
-	const heading = <h2> What else do you know about the Work?</h2>;
+	const heading = <h2>{translate('shared.entityHeading', {entity: 'Work'})}</h2>;
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
@@ -172,13 +172,13 @@ function WorkSection({
 		<div>
 			{!isUnifiedForm && heading}
 			<p className="text-muted">
-				{translate('workSection.allFieldsOptional')}
+				{translate('shared.allFieldsOptional')}
 			</p>
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>
-							{translate('workSection.typeLabel')}
+							{translate('common:type')}
 							<OverlayTrigger delay={50} overlay={tooltip}>
 								<FontAwesomeIcon
 									className="margin-left-0-5"

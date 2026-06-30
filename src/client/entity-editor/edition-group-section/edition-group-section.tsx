@@ -80,7 +80,7 @@ function EditionGroupSection({
 	}));
 	const typeOption = editionGroupTypesForDisplay.filter((el) => el.value === typeValue);
 	const tooltip = <Tooltip>{translate('editionGroupSection.typeTooltip')}</Tooltip>;
-	const heading = <h2>{translate('editionGroupSection.heading')}</h2>;
+	const heading = <h2>{translate('shared.entityHeading', {entity: 'Edition Group'})}</h2>;
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
@@ -90,13 +90,13 @@ function EditionGroupSection({
 			{!isUnifiedForm && heading}
 			<AuthorCreditSection isLeftAlign={isLeftAlign} type="editionGroup"/>
 			<p className="text-muted">
-				{translate('editionGroupSection.allFieldsOptional')}
+				{translate('shared.allFieldsOptional')}
 			</p>
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>
-							{translate('editionGroupSection.typeLabel')}
+							{translate('common:type')}
 							<OverlayTrigger delay={50} overlay={tooltip}>
 								<FontAwesomeIcon
 									className="margin-left-0-5"
