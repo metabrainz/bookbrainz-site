@@ -82,7 +82,7 @@ export function labelsForAuthor(isGroup: boolean, translate?: any) {
 				translate('entityEditor:authorSection.endDateLabel.group') :
 				translate('entityEditor:authorSection.endDateLabel.person'),
 			endedLabel: isGroup ?
-				translate('entityEditor:dissolvedLabel') :
+				translate('entityEditor:shared.dissolvedLabel') :
 				translate('entityEditor:authorSection.endedLabel.person')
 		};
 	}

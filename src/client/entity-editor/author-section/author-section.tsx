@@ -178,7 +178,7 @@ function AuthorSection({
 
 	const {isValid: isValidDob, errorMessage: dobError} = validateAuthorSectionBeginDate(beginDateValue);
 	const {isValid: isValidDod, errorMessage: dodError} = validateAuthorSectionEndDate(beginDateValue, endDateValue, currentAuthorType.label);
-	const heading = <h2>{translate('entityEditor:EntityHeading', {entity: 'Author'})}</h2>;
+	const heading = <h2>{translate('entityEditor:shared.entityHeading', {entity: 'Author'})}</h2>;
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
@@ -187,7 +187,7 @@ function AuthorSection({
 		<div>
 			{!isUnifiedForm && heading}
 			<p className="text-muted">
-				{translate('entityEditor:allFieldsOptional')}
+				{translate('entityEditor:shared.allFieldsOptional')}
 			</p>
 			<Row>
 				<Col lg={lgCol}>

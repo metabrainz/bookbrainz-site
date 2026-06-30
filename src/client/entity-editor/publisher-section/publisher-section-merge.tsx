@@ -182,7 +182,7 @@ function PublisherSectionMerge({
 			/>
 			<MergeField
 				currentValue={endedChecked}
-				label={translate('dissolvedLabel')}
+				label={translate('shared.dissolvedLabel')}
 				options={endedOptions}
 				onChange={onEndedChange}
 			/>

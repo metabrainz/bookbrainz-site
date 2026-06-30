@@ -49,7 +49,7 @@ function AnnotationSection({
 	const annotationLabel = (
 		<span>
 			{translate('annotationSection.label')}
-			<span className="text-muted"> {translate('optionalLabel')}</span>
+			<span className="text-muted"> {translate('shared.optionalLabel')}</span>
 		</span>
 	);
 
