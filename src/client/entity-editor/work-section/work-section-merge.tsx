@@ -89,7 +89,7 @@ function WorkSectionMerge({
 		<div>
 			<MergeField
 				currentValue={typeValue}
-				label={translate('entityEditor:workSectionMerge.typeLabel')}
+				label={translate('common:type')}
 				options={typeOptions}
 				onChange={onTypeChange}
 			/>

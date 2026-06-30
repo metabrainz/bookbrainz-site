@@ -95,7 +95,7 @@ function EditionGroupSectionMerge({
 			/>
 			<MergeField
 				currentValue={typeValue}
-				label={translate('editionGroupSectionMerge.typeLabel')}
+				label={translate('common:type')}
 				options={typeOptions}
 				onChange={onTypeChange}
 			/>
