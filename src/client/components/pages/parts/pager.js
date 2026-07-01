@@ -23,6 +23,7 @@ import React from 'react';
 import {getNextEnabledAndResultsArray} from '../../../../common/helpers/utils';
 import {isFunction} from 'lodash';
 import request from 'superagent';
+import {withTranslation} from 'react-i18next';
 
 
 const {Button, ButtonGroup, Col, Dropdown, DropdownButton, Row} = bootstrap;
@@ -138,6 +139,8 @@ class PagerElement extends React.Component {
 	}
 
 	render() {
+		// eslint-disable-next-line id-length
+		const {t: translate} = this.props;
 		return (
 			this.state.results && this.state.results.length ?
 				<div id="PagerElement">
@@ -150,27 +153,29 @@ class PagerElement extends React.Component {
 								variant="outline-primary"
 								onClick={this.handleClickPrevious}
 							>
-								&larr; Previous Page
+								{translate('pagination.previous')}
 							</Button>
 						</Col>
 						<Col className="text-center" lg={4}>
 							<ButtonGroup>
-								<Button disabled variant="secondary">Results {this.state.from + 1} —
-									{this.state.results.length < this.state.size ?
-										this.state.from + this.state.results.length :
-										this.state.from + this.state.size
-									}
+								<Button disabled variant="secondary">
+									{translate('pagination.results', {
+										from: this.state.from + 1,
+										to: this.state.results.length < this.state.size ?
+											this.state.from + this.state.results.length :
+											this.state.from + this.state.size
+									})}
 								</Button>
 								<DropdownButton
-									drop="up" id="bg-nested-dropdown" title={`${this.state.size} per page`}
+									drop="up" id="bg-nested-dropdown" title={translate('pagination.perPage', {count: this.state.size})}
 									variant="info"
 									onSelect={this.handleResultsPerPageChange}
 								>
-									<Dropdown.Item eventKey="10">10 per page</Dropdown.Item>
-									<Dropdown.Item eventKey="20">20 per page</Dropdown.Item>
-									<Dropdown.Item eventKey="35">35 per page</Dropdown.Item>
-									<Dropdown.Item eventKey="50">50 per page</Dropdown.Item>
-									<Dropdown.Item eventKey="100">100 per page</Dropdown.Item>
+									<Dropdown.Item eventKey="10">{translate('pagination.perPage', {count: 10})}</Dropdown.Item>
+									<Dropdown.Item eventKey="20">{translate('pagination.perPage', {count: 20})}</Dropdown.Item>
+									<Dropdown.Item eventKey="35">{translate('pagination.perPage', {count: 35})}</Dropdown.Item>
+									<Dropdown.Item eventKey="50">{translate('pagination.perPage', {count: 50})}</Dropdown.Item>
+									<Dropdown.Item eventKey="100">{translate('pagination.perPage', {count: 100})}</Dropdown.Item>
 								</DropdownButton>
 							</ButtonGroup>
 						</Col>
@@ -181,7 +186,7 @@ class PagerElement extends React.Component {
 								variant="outline-primary"
 								onClick={this.handleClickNext}
 							>
-								Next Page &rarr;
+								{translate('pagination.next')}
 							</Button>
 						</Col>
 					</Row>
@@ -200,7 +205,9 @@ PagerElement.propTypes = {
 	results: PropTypes.array,
 	searchParamsChangeCallback: PropTypes.func,
 	searchResultsCallback: PropTypes.func.isRequired,
-	size: PropTypes.number
+	size: PropTypes.number,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired
 };
 PagerElement.defaultProps = {
 	from: 0,
@@ -210,4 +217,4 @@ PagerElement.defaultProps = {
 	size: 20
 };
 
-export default PagerElement;
+export default withTranslation('common')(PagerElement);
