@@ -27,6 +27,7 @@ import MergeField from '../common/merge-field';
 import {authorCreditToString} from '../../helpers/entity';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
+import {useTranslation} from 'react-i18next';
 
 
 type StateProps = {
@@ -66,6 +67,7 @@ function EditionGroupSectionMerge({
 	onAuthorCreditChange,
 	onTypeChange
 }: Props) {
+	const {t: translate} = useTranslation('entityEditor');
 	const authorCreditOptions = [];
 	const typeOptions = [];
 	const editions = [];
@@ -86,14 +88,14 @@ function EditionGroupSectionMerge({
 		<div>
 			<MergeField
 				currentValue={authorCreditValue}
-				label="Author Credit"
+				label={translate('editionGroupSectionMerge.authorCreditLabel')}
 				options={authorCreditOptions}
 				valueRenderer={authorCreditToString}
 				onChange={onAuthorCreditChange}
 			/>
 			<MergeField
 				currentValue={typeValue}
-				label="Type"
+				label={translate('common:type')}
 				options={typeOptions}
 				onChange={onTypeChange}
 			/>

@@ -23,19 +23,10 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
+import {withTranslation} from 'react-i18next';
 
 
 const {Button, Col, InputGroup, Form, Row} = bootstrap;
-
-const SearchButton = (
-	<Button
-		block
-		type="submit"
-		variant="success"
-	>
-		<FontAwesomeIcon icon={faSearch}/>&nbsp;Search
-	</Button>
-);
 
 const updateDelay = 1000;
 
@@ -44,7 +35,9 @@ type AdminPanelSearchFieldState = {
 };
 type AdminPanelSearchFieldProps = {
 	onSearch: (query: string) => void,
-	query?: string
+	query?: string,
+	// eslint-disable-next-line id-length
+	t: any
 };
 
 class AdminPanelSearchField extends React.Component<AdminPanelSearchFieldProps, AdminPanelSearchFieldState> {
@@ -52,7 +45,9 @@ class AdminPanelSearchField extends React.Component<AdminPanelSearchFieldProps, 
 
 	static propTypes = {
 		onSearch: PropTypes.func.isRequired,
-		query: PropTypes.string
+		query: PropTypes.string,
+		// eslint-disable-next-line id-length
+		t: PropTypes.func.isRequired
 	};
 
 	static defaultProps = {
@@ -97,6 +92,8 @@ class AdminPanelSearchField extends React.Component<AdminPanelSearchFieldProps, 
 	};
 
 	render() {
+		// eslint-disable-next-line id-length
+		const {t: translate} = this.props;
 		return (
 			<Row>
 				<Col lg={{offset: 3, span: 6}}>
@@ -115,7 +112,13 @@ class AdminPanelSearchField extends React.Component<AdminPanelSearchFieldProps, 
 									onChange={this.handleChange}
 								/>
 								<InputGroup.Append>
-									{SearchButton}
+									<Button
+										block
+										type="submit"
+										variant="success"
+									>
+										<FontAwesomeIcon icon={faSearch}/>&nbsp;{translate('searchField.searchButton')}
+									</Button>
 								</InputGroup.Append>
 							</InputGroup>
 						</Form.Group>
@@ -126,4 +129,4 @@ class AdminPanelSearchField extends React.Component<AdminPanelSearchFieldProps, 
 	}
 }
 
-export default AdminPanelSearchField;
+export default withTranslation('pages')(AdminPanelSearchField);
