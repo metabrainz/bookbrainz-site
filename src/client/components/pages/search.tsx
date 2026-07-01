@@ -24,6 +24,7 @@ import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
+import {withTranslation} from 'react-i18next';
 
 
 type Props = {
@@ -34,7 +35,9 @@ type Props = {
 	query?: string,
 	resultsPerPage?: number,
 	type?: string,
-	user: Record<string, unknown>
+	user: Record<string, unknown>,
+	// eslint-disable-next-line id-length
+	t: any
 };
 
 type State = {
@@ -53,6 +56,8 @@ class SearchPage extends React.Component<Props, State> {
 		nextEnabled: PropTypes.bool.isRequired,
 		query: PropTypes.string,
 		resultsPerPage: PropTypes.number,
+		// eslint-disable-next-line id-length
+		t: PropTypes.func.isRequired,
 		type: PropTypes.string,
 		user: PropTypes.object.isRequired
 	};
@@ -145,6 +150,8 @@ class SearchPage extends React.Component<Props, State> {
 	 */
 	render() {
 		const {type, query, results} = this.state;
+		// eslint-disable-next-line id-length
+		const {t: translate} = this.props;
 		const querySearchParams = `q=${query}${type ? `&type=${type}` : ''}`;
 		return (
 			<div id="pageWithPagination">
@@ -174,17 +181,17 @@ class SearchPage extends React.Component<Props, State> {
 					<div>
 						<hr className="thin"/>
 						<h2 style={{color: '#754e37'}}>
-						No results found
+							{translate('searchPage.noResults')}
 						</h2>
 					</div>}
 
 					<div>
 						{results.length === 0 &&
-							<small>Make sure the spelling is correct, and that
-								 you have selected the correct type in the search bar.
+							<small>
+								{translate('searchPage.spellingWarning')}
 							</small>}
 						<hr className="wide"/>
-						<h3>Are we missing an entry?</h3>
+						<h3>{translate('searchPage.missingEntry')}</h3>
 						<CallToAction query={query}/>
 					</div>
 
@@ -194,4 +201,5 @@ class SearchPage extends React.Component<Props, State> {
 	}
 }
 
-export default SearchPage;
+export default withTranslation('pages')(SearchPage);
+

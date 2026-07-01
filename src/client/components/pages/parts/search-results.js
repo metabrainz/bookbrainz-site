@@ -19,12 +19,13 @@
 
 import * as bootstrap from 'react-bootstrap';
 
-import {differenceBy as _differenceBy, kebabCase as _kebabCase, startCase as _startCase, toLower} from 'lodash';
+import {camelCase as _camelCase, differenceBy as _differenceBy, kebabCase as _kebabCase, startCase as _startCase, toLower} from 'lodash';
 
 import AddToCollectionModal from './add-to-collection-modal';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
+import {withTranslation} from 'react-i18next';
 
 
 const {Alert, Badge, Button, ButtonGroup, Table} = bootstrap;
@@ -71,9 +72,11 @@ class SearchResults extends React.Component {
 			this.setState({showModal: true});
 		}
 		else {
+			// eslint-disable-next-line id-length
+			const {t: translate} = this.props;
 			this.setState({
 				message: {
-					text: 'You need to be logged in',
+					text: translate('searchResults.loginRequired'),
 					type: 'danger'
 				}
 			});
@@ -111,6 +114,8 @@ class SearchResults extends React.Component {
 	}
 
 	handleAddToCollection() {
+		// eslint-disable-next-line id-length
+		const {t: translate} = this.props;
 		const selectedEntities = this.state.selected;
 		if (selectedEntities.length) {
 			const areAllEntitiesOfSameType = selectedEntities.every(entity => entity.type === selectedEntities[0].type);
@@ -122,7 +127,7 @@ class SearchResults extends React.Component {
 				else {
 					this.setState({
 						message: {
-							text: `${selectedEntities[0].type} cannot be added to a collection`,
+							text: translate('searchResults.cannotAdd', {type: selectedEntities[0].type}),
 							type: 'danger'
 						}
 					});
@@ -131,7 +136,7 @@ class SearchResults extends React.Component {
 			else {
 				this.setState({
 					message: {
-						text: 'Selected entities should be of same type',
+						text: translate('searchResults.sameTypeRequired'),
 						type: 'danger'
 					}
 				});
@@ -140,7 +145,7 @@ class SearchResults extends React.Component {
 		else {
 			this.setState({
 				message: {
-					text: 'Nothing Selected',
+					text: translate('searchResults.nothingSelected'),
 					type: 'danger'
 				}
 			});
@@ -149,6 +154,8 @@ class SearchResults extends React.Component {
 
 	render() {
 		const noResults = !this.props.results || this.props.results.length === 0;
+		// eslint-disable-next-line id-length
+		const {t: translate} = this.props;
 
 		const results = this.props.results.map((result) => {
 			if (!result) {
@@ -156,7 +163,7 @@ class SearchResults extends React.Component {
 			}
 			const id = getId(result);
 			const name = result.defaultAlias ? result.defaultAlias.name :
-				'(unnamed)';
+				translate('common:unnamed');
 
 			const aliases = !this.props.condensed && result.aliasSet &&
 				Array.isArray(result.aliasSet.aliases) && result.aliasSet.aliases;
@@ -185,7 +192,7 @@ class SearchResults extends React.Component {
 										onChange={() => this.toggleRow(result)}
 									/> : null
 							}
-							{genEntityIconHTMLElement(result.type)}{_startCase(result.type)}
+							{genEntityIconHTMLElement(result.type)}{translate(`common:entityType.${_camelCase(result.type)}`)}
 						</td>
 					}
 					<td>
@@ -231,7 +238,7 @@ class SearchResults extends React.Component {
 				{
 					!this.props.condensed &&
 					<h3 className="search-results-heading">
-						Search Results
+						{translate('searchResults.heading')}
 					</h3>
 				}
 				<hr className="thin"/>
@@ -243,9 +250,9 @@ class SearchResults extends React.Component {
 						!this.props.condensed &&
 						<thead>
 							<tr>
-								<th width="25%">Type</th>
-								<th width="42%">Name</th>
-								<th width="33%">Aliases</th>
+								<th width="25%">{translate('searchResults.headerType')}</th>
+								<th width="42%">{translate('searchResults.headerName')}</th>
+								<th width="33%">{translate('searchResults.headerAliases')}</th>
 							</tr>
 						</thead>
 					}
@@ -274,7 +281,7 @@ class SearchResults extends React.Component {
 								onClick={this.handleAddToCollection}
 							>
 								{genEntityIconHTMLElement('Collection')}
-									Add to Collection
+								{translate('searchResults.addToCollection')}
 							</Button>
 							<Button
 								disabled={!this.state.selected.length}
@@ -282,7 +289,7 @@ class SearchResults extends React.Component {
 								variant="warning"
 								onClick={this.handleClearSelected}
 							>
-								Clear <Badge pill variant="light">{this.state.selected.length}</Badge> selected
+								{translate('searchResults.clearSelected', {count: this.state.selected.length})}
 							</Button>
 						</ButtonGroup> : null
 				}
@@ -295,6 +302,8 @@ SearchResults.displayName = 'SearchResults';
 SearchResults.propTypes = {
 	condensed: PropTypes.bool,
 	results: PropTypes.array,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired,
 	user: PropTypes.object.isRequired
 };
 SearchResults.defaultProps = {
@@ -302,4 +311,4 @@ SearchResults.defaultProps = {
 	results: null
 };
 
-export default SearchResults;
+export default withTranslation(['pages', 'common'])(SearchResults);
