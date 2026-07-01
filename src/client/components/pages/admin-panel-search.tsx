@@ -22,6 +22,7 @@ import AdminPanelSearchResults from './parts/admin-panel-search-results';
 import {Card} from 'react-bootstrap';
 import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
+import {withTranslation} from 'react-i18next';
 
 
 type Props = {
@@ -30,7 +31,9 @@ type Props = {
 	nextEnabled: boolean,
 	query?: string,
 	resultsPerPage?: number,
-	user: Record<string, unknown>
+	user: Record<string, unknown>,
+	// eslint-disable-next-line id-length
+	t: any
 };
 
 type State = {
@@ -47,6 +50,8 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 		nextEnabled: PropTypes.bool.isRequired,
 		query: PropTypes.string,
 		resultsPerPage: PropTypes.number,
+		// eslint-disable-next-line id-length
+		t: PropTypes.func.isRequired,
 		user: PropTypes.object.isRequired
 	};
 
@@ -137,15 +142,17 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 	 */
 	render() {
 		const {query, results} = this.state;
+		// eslint-disable-next-line id-length
+		const {t: translate} = this.props;
 		const querySearchParams = `q=${query}&type=editor`;
 		return (
 			<Card>
 				<Card.Header as="h2">
-					Admin Panel
+					{translate('adminPanelSearch.title')}
 				</Card.Header>
 				<Card.Body>
 					<div id="pageWithPagination">
-						<h3>User search</h3>
+						<h3>{translate('adminPanelSearch.heading')}</h3>
 						<AdminPanelSearchField
 							query={query}
 							onSearch={this.handleSearch}
@@ -171,7 +178,7 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 							<div>
 								<hr className="thin"/>
 								<h2 style={{color: '#754e37'}}>
-								No results found
+									{translate('searchPage.noResults')}
 								</h2>
 							</div>}
 						</div>
@@ -182,4 +189,4 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 	}
 }
 
-export default AdminPanelSearchPage;
+export default withTranslation('pages')(AdminPanelSearchPage);
