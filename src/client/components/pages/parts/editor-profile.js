@@ -27,6 +27,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {Line} from 'react-chartjs-2';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {withTranslation} from 'react-i18next';
 /* eslint-disable-next-line import/no-unassigned-import,sort-imports -- import this after react-chartjs-2 */
 import 'chartjs-adapter-date-fns';
 
@@ -44,7 +45,8 @@ class EditorProfileTab extends React.Component {
 	}
 
 	renderBasicInfo() {
-		const {user, editor} = this.props;
+		// eslint-disable-next-line id-length
+		const {t: translate, user, editor} = this.props;
 		const {
 			cachedMetabrainzName,
 			metabrainzUserId,
@@ -54,7 +56,7 @@ class EditorProfileTab extends React.Component {
 		const createdAtDate = formatDate(new Date(editor.createdAt), true);
 		const lastActiveDate = formatDate(new Date(editor.activeAt), true);
 
-		let musicbrainzAccount = 'No Linked MusicBrainz Account';
+		let musicbrainzAccount = translate('pages:profile.noLinkedMB');
 		if (cachedMetabrainzName) {
 			musicbrainzAccount = (
 				<span>
@@ -67,7 +69,7 @@ class EditorProfileTab extends React.Component {
 						rel="noopener noreferrer"
 						target="_blank"
 					>
-					send email <FontAwesomeIcon icon={faExternalLinkAlt}/>
+						{translate('pages:profile.sendEmail')} <FontAwesomeIcon icon={faExternalLinkAlt}/>
 					</a>)
 				</span>
 			);
@@ -77,45 +79,45 @@ class EditorProfileTab extends React.Component {
 		}
 		else if (user && editor.id === user.id) {
 			musicbrainzAccount =
-				<a href="/auth">Link My MusicBrainz Account</a>;
+				<a href="/auth">{translate('pages:profile.linkMB')}</a>;
 		}
 
 		return (
 			<div>
 				<h2>
-					Basic Info
+					{translate('pages:profile.basicInfo')}
 					{user && user.id === editor.id &&
 						<small className="float-right">
 							<Button
 								href="/editor/edit"
-								title="Edit basic editor info"
+								title={translate('pages:profile.editInfoTitle')}
 								variant="warning"
 							>
-								<FontAwesomeIcon icon={faPencilAlt}/>{' '}Edit Profile
+								<FontAwesomeIcon icon={faPencilAlt}/>{' '}{translate('pages:profile.editProfile')}
 							</Button>
 						</small>
 					}
 				</h2>
 				<dl className="row editor-info">
-					<dt className="col-md-2">MusicBrainz Account</dt>
+					<dt className="col-md-2">{translate('pages:profile.musicbrainzAccount')}</dt>
 					<dd className="col-md-10">
 						{musicbrainzAccount}
 					</dd>
-					<dt className="col-md-2">Display Name</dt>
+					<dt className="col-md-2">{translate('pages:profile.displayName')}</dt>
 					<dd className="col-md-10">{name}</dd>
-					<dt className="col-md-2">Area</dt>
+					<dt className="col-md-2">{translate('common:area')}</dt>
 					<dd className="col-md-10">{editor.area ? editor.area.name : '?'}</dd>
-					<dt className="col-md-2">Gender</dt>
+					<dt className="col-md-2">{translate('common:gender')}</dt>
 					<dd className="col-md-10">{gender ? gender.name : '?'}</dd>
-					<dt className="col-md-2">Type</dt>
+					<dt className="col-md-2">{translate('common:type')}</dt>
 					<dd className="col-md-10">{editor.type.label}</dd>
-					<dt className="col-md-2">Reputation</dt>
+					<dt className="col-md-2">{translate('pages:profile.reputation')}</dt>
 					<dd className="col-md-10">0</dd>
-					<dt className="col-md-2">Joined</dt>
+					<dt className="col-md-2">{translate('pages:profile.joined')}</dt>
 					<dd className="col-md-10">{createdAtDate}</dd>
-					<dt className="col-md-2">Last login</dt>
+					<dt className="col-md-2">{translate('pages:profile.lastLogin')}</dt>
 					<dd className="col-md-10">{lastActiveDate}</dd>
-					<dt className="col-md-2">Bio</dt>
+					<dt className="col-md-2">{translate('pages:profile.bio')}</dt>
 					<dd className="col-md-10">{editor.bio ? editor.bio : '-'}</dd>
 				</dl>
 			</div>
@@ -123,17 +125,18 @@ class EditorProfileTab extends React.Component {
 	}
 
 	renderStats() {
-		const {editor} = this.props;
+		// eslint-disable-next-line id-length
+		const {t: translate, editor} = this.props;
 
 		return (
 			<div>
-				<h2>Stats</h2>
+				<h2>{translate('pages:profile.stats')}</h2>
 				<dl className="row editor-info">
-					<dt className="col-md-8">Total Revisions</dt>
+					<dt className="col-md-8">{translate('pages:profile.totalRevisions')}</dt>
 					<dd className="col-md-4">{editor.totalRevisions}</dd>
-					<dt className="col-md-8">Revisions Applied</dt>
+					<dt className="col-md-8">{translate('pages:profile.revisionsApplied')}</dt>
 					<dd className="col-md-4">{editor.revisionsApplied}</dd>
-					<dt className="col-md-8">Revisions Reverted</dt>
+					<dt className="col-md-8">{translate('pages:profile.revisionsReverted')}</dt>
 					<dd className="col-md-4">{editor.revisionsReverted}</dd>
 				</dl>
 			</div>
@@ -141,7 +144,8 @@ class EditorProfileTab extends React.Component {
 	}
 
 	renderBadges() {
-		const {achievement} = this.props;
+		// eslint-disable-next-line id-length
+		const {t: translate, achievement} = this.props;
 		let achievementBsSize = 12;
 		if (achievement.length === 1) {
 			achievementBsSize = 8;
@@ -152,7 +156,7 @@ class EditorProfileTab extends React.Component {
 
 		return (
 			<div>
-				<h2>Badges</h2>
+				<h2>{translate('pages:profile.badges')}</h2>
 				<Row
 					height="200px"
 					margin="0"
@@ -172,9 +176,9 @@ class EditorProfileTab extends React.Component {
 										<ListGroup.Item>{model.achievement.name}</ListGroup.Item>
 										<ListGroup.Item>{model.achievement.description}</ListGroup.Item>
 										<ListGroup.Item>
-											{`Unlocked: ${formatDate(new Date(
-												model.unlockedAt
-											), true)}`}
+											{translate('pages:profile.unlocked', {
+												date: formatDate(new Date(model.unlockedAt), true)
+											})}
 										</ListGroup.Item>
 									</ListGroup>
 								</Card.Body>
@@ -191,8 +195,7 @@ class EditorProfileTab extends React.Component {
 									width="160px"
 								/>
 								<p className="text-center">
-									No badge to show, use the achievement menu
-									to see available achievements
+									{translate('pages:profile.noBadges')}
 								</p>
 							</Card>
 						</Col>
@@ -220,7 +223,8 @@ class EditorProfileTab extends React.Component {
 					data: numberOfRevisions,
 					hoverBackgroundColor: 'rgba(235,116,59,0.4)',
 					hoverBorderColor: 'rgba(235,116,59,1)',
-					label: 'Revisions'
+					// eslint-disable-next-line id-length
+					label: this.props.t('pages:profile.revisionsChartLabel')
 				}
 			],
 			labels: months
@@ -262,10 +266,12 @@ EditorProfileTab.displayName = 'EditorProfileTab';
 EditorProfileTab.propTypes = {
 	achievement: PropTypes.object.isRequired,
 	editor: PropTypes.object.isRequired,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired,
 	user: PropTypes.object
 };
 EditorProfileTab.defaultProps = {
 	user: null
 };
 
-export default EditorProfileTab;
+export default withTranslation(['pages', 'common'])(EditorProfileTab);
