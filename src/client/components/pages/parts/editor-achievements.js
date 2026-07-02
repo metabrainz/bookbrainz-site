@@ -23,6 +23,7 @@ import Achievement from '../../forms/parts/achievement';
 import DragAndDrop from '../../input/drag-and-drop';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {withTranslation} from 'react-i18next';
 
 
 const {Button, CardDeck, Col, Form, Row} = bootstrap;
@@ -79,6 +80,8 @@ class EditorAchievementTab extends React.Component {
 	 * EditorAchievements page.
 	 */
 	render() {
+		// eslint-disable-next-line id-length
+		const {t: translate} = this.props;
 		const [achievements, locked] = this.renderAchievements();
 
 		let rankUpdate;
@@ -105,10 +108,10 @@ class EditorAchievementTab extends React.Component {
 					</CardDeck>
 					<span className="margin-left-1">
 						<Button type="submit" variant="success">
-							Update
+							{translate('pages:achievements.updateButton')}
 						</Button>
 						<span className="margin-left-1">
-							click badge to unset
+							{translate('pages:achievements.unsetInstructions')}
 						</span>
 					</span>
 				</Form>
@@ -141,9 +144,9 @@ class EditorAchievementTab extends React.Component {
 								}
 							</Sticky>
 							<div style={{zIndex: 1}}>
-								<div className="h1">Unlocked Achievements</div>
+								<div className="h1">{translate('pages:achievements.unlockedHeading')}</div>
 								{achievements}
-								<div className="h1">Locked Achievements</div>
+								<div className="h1">{translate('pages:achievements.lockedHeading')}</div>
 								{locked}
 							</div>
 						</StickyContainer>
@@ -166,7 +169,9 @@ EditorAchievementTab.propTypes = {
 		authenticated: PropTypes.bool,
 		id: PropTypes.number
 	}).isRequired,
-	isOwner: PropTypes.bool.isRequired
+	isOwner: PropTypes.bool.isRequired,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired
 };
 
-export default EditorAchievementTab;
+export default withTranslation('pages')(EditorAchievementTab);

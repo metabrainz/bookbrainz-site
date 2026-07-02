@@ -23,6 +23,7 @@ import {PropTypes} from 'prop-types';
 import React from 'react';
 import {camelCase} from 'lodash';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
+import {useTranslation} from 'react-i18next';
 
 
 const {Button, ButtonGroup} = bootstrap;
@@ -34,6 +35,7 @@ const {Button, ButtonGroup} = bootstrap;
  * the 'CallToAction' component.
  */
 function CallToAction(props) {
+	const {t: translate} = useTranslation(['pages', 'common']);
 	const seedingParameters = new URLSearchParams({name: props.query});
 	function renderEntityLink(type) {
 		return (
@@ -43,7 +45,7 @@ function CallToAction(props) {
 					variant="secondary"
 				>
 					{genEntityIconHTMLElement(type, '3x', false)}
-					<div className="margin-top-d4">{type}</div>
+					<div className="margin-top-d4">{translate(`common:entityType.${camelCase(type)}`)}</div>
 				</Button>
 			</a>
 		);
@@ -52,8 +54,13 @@ function CallToAction(props) {
 	return (
 		<div className="text-center">
 			<p>
-				Help us and click on the right entity below to create a new entry.
-				<br/><small>Not sure what to do? Visit the <a href="/help">help page</a> to get started.</small>
+				{translate('callToAction.helpText')}
+				<br/>
+				<small>
+					{translate('callToAction.notSure')}
+					<a href="/help">{translate('callToAction.helpPage')}</a>
+					{translate('callToAction.toGetStarted')}
+				</small>
 			</p>
 			<div>
 				<ButtonGroup id="searchpage-button-group d-inline">

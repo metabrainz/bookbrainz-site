@@ -44,6 +44,7 @@ import type {Map} from 'immutable';
 import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import Select from 'react-select';
 import {connect} from 'react-redux';
+import {withTranslation} from 'react-i18next';
 
 
 type AuthorType = {
@@ -93,7 +94,9 @@ type DispatchProps = {
 type OwnProps = {
 	authorTypes: Array<AuthorType>,
 	genderOptions: Array<GenderOptions>,
-	isUnifiedForm?: boolean
+	isUnifiedForm?: boolean,
+	// eslint-disable-next-line id-length
+	t: any
 };
 
 export type Props = StateProps & DispatchProps & OwnProps;
@@ -158,7 +161,8 @@ function AuthorSection({
 	onEndDateChange,
 	onEndedChange,
 	onGenderChange,
-	onTypeChange
+	onTypeChange,
+	t: translate
 }: Props) {
 	const genderOptionsForDisplay = genderOptions.map((gender) => ({
 		label: gender.name,
@@ -174,7 +178,7 @@ function AuthorSection({
 
 	const {isValid: isValidDob, errorMessage: dobError} = validateAuthorSectionBeginDate(beginDateValue);
 	const {isValid: isValidDod, errorMessage: dodError} = validateAuthorSectionEndDate(beginDateValue, endDateValue, currentAuthorType.label);
-	const heading = <h2>What else do you know about the Author?</h2>;
+	const heading = <h2>{translate('entityEditor:shared.entityHeading', {entity: 'Author'})}</h2>;
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
@@ -183,13 +187,12 @@ function AuthorSection({
 		<div>
 			{!isUnifiedForm && heading}
 			<p className="text-muted">
-				All fields optional — leave something blank if you don&rsquo;t
-				know it
+				{translate('entityEditor:shared.allFieldsOptional')}
 			</p>
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group>
-						<Form.Label>Type</Form.Label>
+						<Form.Label>{translate('common:type')}</Form.Label>
 						<Select
 							isClearable
 							classNamePrefix="react-select"
@@ -204,7 +207,7 @@ function AuthorSection({
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group className={genderShow ? null : 'd-none'}>
-						<Form.Label>Gender</Form.Label>
+						<Form.Label>{translate('common:gender')}</Form.Label>
 						<Select
 							classNamePrefix="react-select"
 							instanceId="gender"
@@ -283,7 +286,7 @@ function AuthorSection({
 }
 AuthorSection.displayName = 'AuthorSection';
 
-function mapStateToProps(rootState, {authorTypes}: OwnProps): StateProps {
+function mapStateToProps(rootState, {authorTypes, t: translate}: OwnProps): StateProps {
 	const state = rootState.get('authorSection');
 
 	const typeValue = state.get('type');
@@ -303,7 +306,7 @@ function mapStateToProps(rootState, {authorTypes}: OwnProps): StateProps {
 		endedLabel,
 		endDateLabel,
 		endAreaLabel
-	} = labelsForAuthor(isGroup);
+	} = labelsForAuthor(isGroup, translate);
 
 	return {
 		beginAreaLabel,
@@ -349,4 +352,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	};
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AuthorSection);
+export default withTranslation('entityEditor')(
+	connect(mapStateToProps, mapDispatchToProps)(AuthorSection)
+);

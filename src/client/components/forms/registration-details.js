@@ -25,6 +25,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactSelect from 'react-select';
 import request from 'superagent';
+import {withTranslation} from 'react-i18next';
 
 
 const {Alert, Button, Col, Form, Row} = bootstrap;
@@ -86,6 +87,8 @@ class RegistrationForm extends React.Component {
 	}
 
 	render() {
+		// eslint-disable-next-line id-length
+		const {t: translate} = this.props;
 		let errorComponent = null;
 		if (this.state.error) {
 			errorComponent =
@@ -95,14 +98,9 @@ class RegistrationForm extends React.Component {
 		const initialGender = this.props.gender && this.props.gender.id;
 		return (
 			<div>
-				<div className="page-header"><h1>Register</h1></div>
+				<div className="page-header"><h1>{translate('pages:registration.heading')}</h1></div>
 				<div>
-					Great! You successfully logged in to MusicBrainz and
-					are now just one step away from becoming a BookBrainz
-					editor. The following form allows you to specify
-					additional information that will let other users know
-					a little bit more about you. When you’re done, just
-					click the blue button at the bottom of the page.
+					{translate('pages:registration.introText')}
 				</div>
 				<Row>
 					{loadingComponent}
@@ -112,18 +110,16 @@ class RegistrationForm extends React.Component {
 							onSubmit={this.handleSubmit}
 						>
 							<p>
-								Firstly, please check that your display
-								name is correct. This is the name that
-								other editors will get to know you by.
+								{translate('pages:registration.displayNameIntro')}
 							</p>
 							<Form.Group className="row">
 								<Form.Label className="col-lg-4 col-form-label">
-									Display Name
+									{translate('pages:registration.displayNameLabel')}
 								</Form.Label>
 								<div className="col-lg-4">
 									<Form.Control
 										defaultValue={this.props.name}
-										placeholder="Display Name"
+										placeholder={translate('pages:registration.displayNamePlaceholder')}
 										/* eslint-disable-next-line react/jsx-no-bind */
 										ref={(ref) => this.displayName = ref}
 										type="text"
@@ -132,12 +128,10 @@ class RegistrationForm extends React.Component {
 								</div>
 							</Form.Group>
 							<p>
-								And, optionally, set a gender
-								that will be displayed on your profile
-								page.
+								{translate('pages:registration.genderIntro')}
 							</p>
 							<Form.Group className="row">
-								<Form.Label className="col-lg-4 col-form-label">Gender</Form.Label>
+								<Form.Label className="col-lg-4 col-form-label">{translate('common:gender')}</Form.Label>
 								<div className="col-lg-4">
 									<ReactSelect
 										isClearable
@@ -145,7 +139,7 @@ class RegistrationForm extends React.Component {
 										getOptionLabel={this.getOptionLabel}
 										instanceId="gender"
 										options={this.props.genders}
-										placeholder="Select gender…"
+										placeholder={translate('pages:registration.genderPlaceholder')}
 										ref={(ref) => this.gender = ref}
 									/>
 								</div>
@@ -159,7 +153,7 @@ class RegistrationForm extends React.Component {
 									type="submit"
 									variant="primary"
 								>
-									Looks good, sign me up!
+									{translate('pages:registration.submitButton')}
 								</Button>
 							</div>
 						</form>
@@ -174,11 +168,13 @@ RegistrationForm.displayName = 'RegistrationForm';
 RegistrationForm.propTypes = {
 	gender: validators.namedProperty,
 	genders: PropTypes.arrayOf(validators.namedProperty).isRequired,
-	name: PropTypes.string
+	name: PropTypes.string,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired
 };
 RegistrationForm.defaultProps = {
 	gender: null,
 	name: null
 };
 
-export default RegistrationForm;
+export default withTranslation(['pages', 'common'])(RegistrationForm);

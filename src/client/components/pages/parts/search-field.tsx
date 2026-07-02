@@ -25,19 +25,11 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
+import {withTranslation} from 'react-i18next';
 
 
 const {Button, Col, Dropdown, DropdownButton, InputGroup, Form, Row} = bootstrap;
 
-const SearchButton = (
-	<Button
-		block
-		type="submit"
-		variant="success"
-	>
-		<FontAwesomeIcon icon={faSearch}/>&nbsp;Search
-	</Button>
-);
 
 const updateDelay = 1000;
 
@@ -49,7 +41,9 @@ type SearchFieldProps = {
 	entityTypes: any[],
 	onSearch: (query: string, type: string) => void,
 	query?: string,
-	type?: string
+	type?: string,
+	// eslint-disable-next-line id-length
+	t: any
 };
 
 class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
@@ -59,6 +53,8 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 		entityTypes: PropTypes.array.isRequired,
 		onSearch: PropTypes.func.isRequired,
 		query: PropTypes.string,
+		// eslint-disable-next-line id-length
+		t: PropTypes.func.isRequired,
 		type: PropTypes.string
 	};
 
@@ -114,11 +110,26 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 	};
 
 	render() {
+		// eslint-disable-next-line id-length
+		const {t: translate} = this.props;
+		const dropdownTitle = (() => {
+			if (!this.state.type || this.state.type === 'all_entities') {
+				return translate('searchField.allEntities');
+			}
+			if (this.state.type === 'editor') {
+				return translate('searchField.editor');
+			}
+			if (this.state.type === 'collection') {
+				return translate('searchField.collection');
+			}
+			return translate(`common:entityType.${_.camelCase(this.state.type)}`);
+		})();
+
 		const entityTypeSelect = Array.isArray(this.props.entityTypes) ? (
 			<DropdownButton
 				as={InputGroup.Append}
 				id="entity-type-select"
-				title={_.startCase(this.state.type) || 'All Entities'}
+				title={dropdownTitle}
 				variant="secondary"
 				onSelect={this.handleEntitySelect}
 			>
@@ -128,7 +139,7 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 						key={entityType}
 					>
 						{genEntityIconHTMLElement(entityType)}
-						{_.startCase(entityType)}
+						{translate(`common:entityType.${_.camelCase(entityType)}`)}
 					</Dropdown.Item>
 				))}
 				<Dropdown.Divider/>
@@ -136,7 +147,7 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 					eventKey="all_entities"
 					key="allEntities"
 				>
-					All Entities
+					{translate('searchField.allEntities')}
 				</Dropdown.Item>
 
 				<Dropdown.Divider/>
@@ -145,14 +156,14 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 					key="editor"
 				>
 					{genEntityIconHTMLElement('Editor')}
-					Editor
+					{translate('searchField.editor')}
 				</Dropdown.Item>
 				<Dropdown.Item
 					eventKey="collection"
 					key="collection"
 				>
 					{genEntityIconHTMLElement('Collection')}
-					Collection
+					{translate('searchField.collection')}
 				</Dropdown.Item>
 			</DropdownButton>
 		) : '';
@@ -176,7 +187,13 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 								/>
 								<InputGroup.Append>
 									{entityTypeSelect}
-									{SearchButton}
+									<Button
+										block
+										type="submit"
+										variant="success"
+									>
+										<FontAwesomeIcon icon={faSearch}/>&nbsp;{translate('searchField.searchButton')}
+									</Button>
 								</InputGroup.Append>
 							</InputGroup>
 						</Form.Group>
@@ -187,4 +204,5 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 	}
 }
 
-export default SearchField;
+export default withTranslation(['pages', 'common'])(SearchField);
+
