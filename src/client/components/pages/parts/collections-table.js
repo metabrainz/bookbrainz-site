@@ -24,6 +24,7 @@ import React from 'react';
 import _ from 'lodash';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
+import {withTranslation} from 'react-i18next';
 
 
 const {Button, ButtonGroup, Dropdown, DropdownButton, Table} = bootstrap;
@@ -42,12 +43,14 @@ class CollectionsTable extends React.Component {
 	}
 
 	render() {
+		// eslint-disable-next-line id-length
+		const {t: translate} = this.props;
 		const {showLastModified, showOwner, showIfOwnerOrCollaborator, showPrivacy, results, tableHeading, user, ownerId} = this.props;
 		const entityTypeSelect = (
 			<DropdownButton
 				className="margin-bottom-d5"
 				id="entity-type-select"
-				title={_.startCase(this.props.type) || 'Entity Type'}
+				title={this.props.type ? translate(`common:entityType.${_.camelCase(this.props.type)}`) : translate('common:type')}
 				variant="primary"
 				onSelect={this.handleEntitySelect}
 			>
@@ -57,7 +60,7 @@ class CollectionsTable extends React.Component {
 						key={entityType}
 					>
 						{genEntityIconHTMLElement(entityType)}
-						{_.startCase(entityType)}
+						{translate(`common:entityType.${_.camelCase(entityType)}`)}
 					</Dropdown.Item>
 				))}
 				<Dropdown.Divider/>
@@ -65,7 +68,7 @@ class CollectionsTable extends React.Component {
 					eventKey={null}
 					key="allTypes"
 				>
-					All Types
+					{translate('pages:collections.allTypes')}
 				</Dropdown.Item>
 			</DropdownButton>
 		);
@@ -83,7 +86,7 @@ class CollectionsTable extends React.Component {
 					variant="warning"
 				>
 					<FontAwesomeIcon icon={faPlus}/>
-					&nbsp;Create Collection
+					&nbsp;{translate('pages:collections.createButton')}
 				</Button>
 			);
 		}
@@ -100,7 +103,7 @@ class CollectionsTable extends React.Component {
 					type="button"
 					variant="success"
 				>
-					My Collections
+					{translate('pages:collections.myCollectionsButton')}
 				</Button>
 			);
 		}
@@ -128,26 +131,26 @@ class CollectionsTable extends React.Component {
 						>
 							<thead>
 								<tr>
-									<th width="16%">Name</th>
-									<th width="33%">Description</th>
-									<th width="16%">Entity Type</th>
-									<th width="16%">Entities</th>
+									<th width="16%">{translate('pages:collections.headerName')}</th>
+									<th width="33%">{translate('pages:collections.headerDescription')}</th>
+									<th width="16%">{translate('pages:collections.headerEntityType')}</th>
+									<th width="16%">{translate('pages:collections.headerEntities')}</th>
 									{
 										showPrivacy ?
-											<th width="16%">Privacy</th> : null
+											<th width="16%">{translate('pages:collections.headerPrivacy')}</th> : null
 									}
 									{
 										showIfOwnerOrCollaborator ?
-											<th width="16%">Collaborator/Owner</th> : null
+											<th width="16%">{translate('pages:collections.headerRole')}</th> : null
 									}
 									{
 										showOwner ?
-											<th width="16%">Owner</th> : null
+											<th width="16%">{translate('pages:collections.headerOwner')}</th> : null
 
 									}
 									{
 										showLastModified ?
-											<th width="16%">Last Modified</th> : null
+											<th width="16%">{translate('pages:collections.headerLastModified')}</th> : null
 									}
 								</tr>
 							</thead>
@@ -164,15 +167,15 @@ class CollectionsTable extends React.Component {
 												</a>
 											</td>
 											<td>{collection.description}</td>
-											<td>{collection.entityType}</td>
+											<td>{translate(`common:entityType.${_.camelCase(collection.entityType)}`)}</td>
 											<td>{collection.itemCount}</td>
 											{
 												showPrivacy ?
-													<td>{collection.public ? 'Public' : 'Private'}</td> : null
+													<td>{collection.public ? translate('pages:collections.public') : translate('pages:collections.private')}</td> : null
 											}
 											{
 												showIfOwnerOrCollaborator ?
-													<td>{collection.isOwner ? 'Owner' : 'Collaborator'}</td> : null
+													<td>{collection.isOwner ? translate('pages:collections.owner') : translate('pages:collections.collaborator')}</td> : null
 											}
 											{
 												showOwner ?
@@ -190,7 +193,7 @@ class CollectionsTable extends React.Component {
 						</Table> :
 
 						<div>
-							<h4> No collections to show</h4>
+							<h4> {translate('pages:collections.noCollections')}</h4>
 							<hr className="wide"/>
 						</div>
 				}
@@ -209,6 +212,8 @@ CollectionsTable.propTypes = {
 	showLastModified: PropTypes.bool,
 	showOwner: PropTypes.bool,
 	showPrivacy: PropTypes.bool,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired,
 	tableHeading: PropTypes.node,
 	type: PropTypes.string,
 	user: PropTypes.object
@@ -228,4 +233,4 @@ CollectionsTable.defaultProps = {
 CollectionsTable.displayName = 'CollectionsTable';
 
 
-export default CollectionsTable;
+export default withTranslation(['pages', 'common'])(CollectionsTable);
