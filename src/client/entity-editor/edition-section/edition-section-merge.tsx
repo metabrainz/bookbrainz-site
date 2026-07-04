@@ -225,7 +225,7 @@ function EditionSectionMerge({
 		<div>
 			<MergeField
 				currentValue={authorCreditValue}
-				label={translate('common:authorCredit')}
+				label={translate('shared.authorCreditLabel')}
 				options={authorCreditOptions}
 				valueRenderer={authorCreditToString}
 				onChange={onAuthorCreditChange}
