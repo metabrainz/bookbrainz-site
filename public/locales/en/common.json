@@ -11,10 +11,12 @@
   "button.copy": "Copy",
   "button.guess": "Guess",
   "button.remove": "Remove",
+  "button.submit": "Submit",
   "collaborator": "Collaborator",
   "description": "Description",
   "entities": "Entities",
   "entityType": "Entity Type",
+  "entityType.area": "Area",
   "entityType.author": "Author",
   "entityType.collection": "Collection",
   "entityType.edition": "Edition",
@@ -44,5 +46,6 @@
   "status": "Status",
   "type": "Type",
   "unnamed": "(unnamed)",
+  "value": "Value",
   "yes": "yes"
 }
