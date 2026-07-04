@@ -84,7 +84,6 @@
   "seriesSection.seriesTypeTooltip": "Entity Type of the Series",
   "shared.addIdentifiers": "Add identifiers (eg. ISBN, Wikidata ID)…",
   "shared.allFieldsOptional": "All fields optional — leave something blank if you don't know it",
-  "shared.addIdentifiers": "Add identifiers (eg. ISBN, Wikidata ID)…",
   "shared.authorCreditLabel": "Author Credit",
   "shared.depthLabel": "Depth",
   "shared.dissolvedLabel": "Dissolved?",
@@ -102,8 +101,6 @@
   "submissionSection.editNoteTooltip": "Cite your sources or an explanation of your edit",
   "submissionSection.heading": "Submit Your Edit",
   "submissionSection.submissionError": "Submission Error: {{errorText}}",
-  "submissionSection.submitButton": "Submit",
-  "valueField.label": "Value",
   "workSection.languageTooltip": "Main language used for the content of the work",
   "workSection.typeTooltip": "Literary form or structure of the work"
 }
