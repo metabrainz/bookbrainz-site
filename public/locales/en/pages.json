@@ -21,7 +21,6 @@
   "collections.headerEntityType": "Entity Type",
   "collections.headerLastModified": "Last Modified",
   "collections.headerName": "Name",
-  "collections.headerOwner": "Owner",
   "collections.headerPrivacy": "Privacy",
   "collections.headerRole": "Collaborator/Owner",
   "collections.myCollectionsButton": "My Collections",
@@ -32,7 +31,6 @@
   "profile.badges": "Badges",
   "profile.basicInfo": "Basic Info",
   "profile.bio": "Bio",
-  "profile.displayName": "Display Name",
   "profile.editInfoTitle": "Edit basic editor info",
   "profile.editProfile": "Edit Profile",
   "profile.joined": "Joined",
@@ -50,8 +48,6 @@
   "profile.totalRevisions": "Total Revisions",
   "profile.unlocked": "Unlocked: {{date}}",
   "registration.displayNameIntro": "Firstly, please check that your display name is correct. This is the name that other editors will get to know you by.",
-  "registration.displayNameLabel": "Display Name",
-  "registration.displayNamePlaceholder": "Display Name",
   "registration.genderIntro": "And, optionally, set a gender that will be displayed on your profile page.",
   "registration.genderPlaceholder": "Select gender…",
   "registration.heading": "Register",
@@ -63,6 +59,7 @@
   "revisions.headerNote": "Note",
   "revisions.headerUser": "User",
   "revisions.noRevisions": "No revisions to show",
+  "revisions.recentActivity": "Recent Activity",
   "revisions.titleMerge": "Merge revision",
   "revisions.titleNormal": "Revision",
   "searchAdmin.allEntities": "All entities",
@@ -86,5 +83,6 @@
   "searchResults.heading": "Search Results",
   "searchResults.loginRequired": "You need to be logged in",
   "searchResults.nothingSelected": "Nothing Selected",
-  "searchResults.sameTypeRequired": "Selected entities should be of same type"
+  "searchResults.sameTypeRequired": "Selected entities should be of same type",
+  "shared.displayName": "Display Name"
 }
