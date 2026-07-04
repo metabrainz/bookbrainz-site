@@ -120,6 +120,7 @@
   "shared.dissolvedLabel": "Dissolved?",
   "shared.entityHeading": "What else do you know about the {{entity}}?",
   "shared.heightLabel": "Height",
+  "shared.nameField": "Name",
   "shared.optionalLabel": "(optional)",
   "shared.releaseDateLabel": "Release Date",
   "shared.weightLabel": "Weight",
