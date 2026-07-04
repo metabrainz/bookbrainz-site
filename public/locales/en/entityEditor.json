@@ -120,6 +120,7 @@
   "shared.dissolvedLabel": "Dissolved?",
   "shared.entityHeading": "What else do you know about the {{entity}}?",
   "shared.heightLabel": "Height",
+  "shared.nameField": "Name",
   "shared.optionalLabel": "(optional)",
   "shared.releaseDateLabel": "Release Date",
   "shared.weightLabel": "Weight",
@@ -131,8 +132,6 @@
   "submissionSection.editNoteTooltip": "Cite your sources or an explanation of your edit",
   "submissionSection.heading": "Submit Your Edit",
   "submissionSection.submissionError": "Submission Error: {{errorText}}",
-  "submissionSection.submitButton": "Submit",
-  "valueField.label": "Value",
   "workSection.languageTooltip": "Main language used for the content of the work",
   "workSection.typeTooltip": "Literary form or structure of the work"
 }
