@@ -35,7 +35,7 @@ function RevisionsTable(props) {
 	return (
 		<div>
 			<div>
-				<h1 className="text-center">{tableHeading}</h1>
+				<h1 className="text-center">{tableHeading || translate('pages:revisions.recentActivity')}</h1>
 			</div>
 			<hr className="thin"/>
 			{
@@ -157,7 +157,7 @@ RevisionsTable.defaultProps = {
 	showEntities: false,
 	showRevisionEditor: false,
 	showRevisionNote: false,
-	tableHeading: 'Recent Activity'
+	tableHeading: null
 
 };
 

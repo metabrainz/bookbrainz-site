@@ -103,7 +103,7 @@ class EditorProfileTab extends React.Component {
 					<dd className="col-md-10">
 						{musicbrainzAccount}
 					</dd>
-					<dt className="col-md-2">{translate('pages:profile.displayName')}</dt>
+					<dt className="col-md-2">{translate('pages:shared.displayName')}</dt>
 					<dd className="col-md-10">{name}</dd>
 					<dt className="col-md-2">{translate('common:area')}</dt>
 					<dd className="col-md-10">{editor.area ? editor.area.name : '?'}</dd>
