@@ -145,7 +145,7 @@ class CollectionsTable extends React.Component {
 									}
 									{
 										showOwner ?
-											<th width="16%">{translate('pages:collections.headerOwner')}</th> : null
+											<th width="16%">{translate('pages:collections.owner')}</th> : null
 
 									}
 									{
