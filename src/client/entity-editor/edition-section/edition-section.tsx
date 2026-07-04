@@ -196,7 +196,7 @@ function EditionSection({
 	widthValue,
 	...rest
 }: Props) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		frequency: language.frequency,
 		label: language.name,
@@ -233,7 +233,7 @@ function EditionSection({
 					help={translate('editionSection.editionGroupHelp')}
 					instanceId="edition-group"
 					isUnifiedForm={isUnifiedForm}
-					label={translate('editionSection.editionGroupLabel')}
+					label={translate('common:entityType.editionGroup')}
 					languageOptions={languageOptions}
 					recentlyUsedEntityType="EditionGroup"
 					tooltipText={
