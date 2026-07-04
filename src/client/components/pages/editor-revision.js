@@ -79,7 +79,7 @@ EditorRevisionPage.defaultProps = {
 	showRevisionEditor: false,
 	showRevisionNote: true,
 	size: 20,
-	tableHeading: 'Recent Activity'
+	tableHeading: null
 };
 
 export default EditorRevisionPage;
