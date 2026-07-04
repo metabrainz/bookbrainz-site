@@ -84,6 +84,7 @@
   "seriesSection.seriesTypeTooltip": "Entity Type of the Series",
   "shared.addIdentifiers": "Add identifiers (eg. ISBN, Wikidata ID)…",
   "shared.allFieldsOptional": "All fields optional — leave something blank if you don't know it",
+  "shared.authorCreditLabel": "Author Credit",
   "shared.depthLabel": "Depth",
   "shared.dissolvedLabel": "Dissolved?",
   "shared.entityHeading": "What else do you know about the {{entity}}?",
