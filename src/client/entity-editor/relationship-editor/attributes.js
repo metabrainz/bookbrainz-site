@@ -19,17 +19,19 @@
 import {Form} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 
 
 export function NumberAttribute({
 	onHandleChange, value
 }) {
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	return (
 	    <>
-			<Form.Label>Number</Form.Label>
+			<Form.Label>{translate('common:number')}</Form.Label>
 			<input
 				className="form-control"
-				placeholder="Enter a value"
+				placeholder={translate('relationshipAttribute.numberPlaceholder')}
 				type="text"
 				value={value || ''}
 				onChange={onHandleChange}
