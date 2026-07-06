@@ -114,12 +114,12 @@ class RegistrationForm extends React.Component {
 							</p>
 							<Form.Group className="row">
 								<Form.Label className="col-lg-4 col-form-label">
-									{translate('pages:shared.displayName')}
+									{translate('common:displayName')}
 								</Form.Label>
 								<div className="col-lg-4">
 									<Form.Control
 										defaultValue={this.props.name}
-										placeholder={translate('pages:shared.displayName')}
+										placeholder={translate('common:displayName')}
 										/* eslint-disable-next-line react/jsx-no-bind */
 										ref={(ref) => this.displayName = ref}
 										type="text"

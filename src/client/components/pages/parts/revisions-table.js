@@ -36,7 +36,7 @@ function RevisionsTable({
 	showRevisionEditor = false,
 	tableHeading = 'Recent Activity'
 }) {
-	const {t: translate} = useTranslation('pages');
+	const {t: translate} = useTranslation(['pages', 'common']);
 	return (
 		<div>
 			<div>
@@ -65,7 +65,7 @@ function RevisionsTable({
 									showRevisionNote ?
 										<th width="16%">{translate('pages:revisions.headerNote')}</th> : null
 								}
-								<th width="16%">{translate('pages:revisions.headerDate')}</th>
+								<th width="16%">{translate('common:date')}</th>
 							</tr>
 						</thead>
 

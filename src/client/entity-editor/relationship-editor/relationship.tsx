@@ -24,9 +24,10 @@ import Entity from '../common/entity';
 import RelationshipAttribute from './relationship-attribute';
 import _ from 'lodash';
 import {getEntityLink} from '../../../common/helpers/utils';
+import {useTranslation} from 'react-i18next';
 
 
-function getEntityObjectForDisplay(entity: _Entity, makeLink: boolean) {
+function getEntityObjectForDisplay(entity: _Entity, makeLink: boolean, translate: any) {
 	const link = makeLink && entity.bbid &&
 		getEntityLink({bbid: entity.bbid, type: entity.type});
 	let disambiguation = _.get(entity, ['disambiguation']);
@@ -38,7 +39,7 @@ function getEntityObjectForDisplay(entity: _Entity, makeLink: boolean) {
 		link,
 		text: _.get(entity, ['defaultAlias', 'name']),
 		type: entity.type,
-		unnamedText: entity.bbid ? '(unnamed)' : 'New Entity'
+		unnamedText: entity.bbid ? translate('common:unnamed') : translate('entityEditor:relationship.newEntity')
 	};
 }
 
@@ -60,16 +61,17 @@ function Relationship({Parent = React.Fragment, ...props}: RelationshipProps) {
 		contextEntity, link, relationshipType, sourceEntity, attributes = [],
 		showAttributes = false, targetEntity, ...rest
 	} = props;
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	const {depth, description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
 
 	const reversed = contextEntity &&
 		(_.get(contextEntity, 'bbid') === _.get(targetEntity, 'bbid'));
 
 	const sourceObject = getEntityObjectForDisplay(
-		reversed ? targetEntity : sourceEntity, link
+		reversed ? targetEntity : sourceEntity, link, translate
 	);
 	const targetObject = getEntityObjectForDisplay(
-		reversed ? sourceEntity : targetEntity, link
+		reversed ? sourceEntity : targetEntity, link, translate
 	);
 
 	const usedLinkPhrase = reversed ? reverseLinkPhrase : linkPhrase;

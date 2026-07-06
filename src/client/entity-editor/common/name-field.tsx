@@ -58,10 +58,10 @@ function NameField({
 	warn = false,
 	...rest
 }: Props) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	const inputLabel = (
 		<ValidationLabel empty={empty} error={error} warn={warn}>
-			{!label ? translate('shared.nameField') : label}
+			{!label ? translate('common:name') : label}
 		</ValidationLabel>
 	);
 
