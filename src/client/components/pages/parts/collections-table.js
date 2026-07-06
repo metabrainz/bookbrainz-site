@@ -131,7 +131,7 @@ class CollectionsTable extends React.Component {
 						>
 							<thead>
 								<tr>
-									<th width="16%">{translate('pages:collections.headerName')}</th>
+									<th width="16%">{translate('common:name')}</th>
 									<th width="33%">{translate('pages:collections.headerDescription')}</th>
 									<th width="16%">{translate('pages:collections.headerEntityType')}</th>
 									<th width="16%">{translate('pages:collections.headerEntities')}</th>
@@ -145,7 +145,7 @@ class CollectionsTable extends React.Component {
 									}
 									{
 										showOwner ?
-											<th width="16%">{translate('pages:collections.owner')}</th> : null
+											<th width="16%">{translate('common:owner')}</th> : null
 
 									}
 									{
@@ -171,11 +171,11 @@ class CollectionsTable extends React.Component {
 											<td>{collection.itemCount}</td>
 											{
 												showPrivacy ?
-													<td>{collection.public ? translate('pages:collections.public') : translate('pages:collections.private')}</td> : null
+													<td>{collection.public ? translate('common:public') : translate('common:private')}</td> : null
 											}
 											{
 												showIfOwnerOrCollaborator ?
-													<td>{collection.isOwner ? translate('pages:collections.owner') : translate('pages:collections.collaborator')}</td> : null
+													<td>{collection.isOwner ? translate('common:owner') : translate('common:collaborator')}</td> : null
 											}
 											{
 												showOwner ?
