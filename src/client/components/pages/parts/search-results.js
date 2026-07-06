@@ -28,7 +28,7 @@ import {genEntityIconHTMLElement} from '../../../helpers/entity';
 import {withTranslation} from 'react-i18next';
 
 
-const {Alert, Badge, Button, ButtonGroup, Table} = bootstrap;
+const {Alert, Button, ButtonGroup, Table} = bootstrap;
 
 // Main entities have a BBID but some other indexed types
 // have an ID field instead (collections, editors, areas)
@@ -238,7 +238,7 @@ class SearchResults extends React.Component {
 				{
 					!this.props.condensed &&
 					<h3 className="search-results-heading">
-						{translate('searchResults.heading')}
+						{translate('common:searchResults')}
 					</h3>
 				}
 				<hr className="thin"/>
@@ -251,7 +251,7 @@ class SearchResults extends React.Component {
 						<thead>
 							<tr>
 								<th width="25%">{translate('searchResults.headerType')}</th>
-								<th width="42%">{translate('searchResults.headerName')}</th>
+								<th width="42%">{translate('common:name')}</th>
 								<th width="33%">{translate('searchResults.headerAliases')}</th>
 							</tr>
 						</thead>

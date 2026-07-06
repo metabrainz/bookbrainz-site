@@ -31,7 +31,7 @@ const {formatDate, stringToHTMLWithLinks} = utilsHelper;
 
 function RevisionsTable(props) {
 	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading} = props;
-	const {t: translate} = useTranslation('pages');
+	const {t: translate} = useTranslation(['pages', 'common']);
 	return (
 		<div>
 			<div>
@@ -60,7 +60,7 @@ function RevisionsTable(props) {
 									showRevisionNote ?
 										<th width="16%">{translate('pages:revisions.headerNote')}</th> : null
 								}
-								<th width="16%">{translate('pages:revisions.headerDate')}</th>
+								<th width="16%">{translate('common:date')}</th>
 							</tr>
 						</thead>
 
