@@ -9,7 +9,7 @@ import {useTranslation} from 'react-i18next';
 
 
 export default function SearchAdminPage() {
-	const {t: translate} = useTranslation('pages');
+	const {t: translate} = useTranslation(['pages', 'common']);
 	const [loading, setLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string>();
 	const [success, setSuccess] = useState(false);
@@ -102,7 +102,7 @@ export default function SearchAdminPage() {
 					<Button size="lg" variant="warning" onClick={() => { indexEntity(); }}>
 						<FontAwesomeIcon
 							icon={faListCheck}
-						/> {translate('searchAdmin.allEntities')}
+						/> {translate('common:allEntities')}
 					</Button>
 				</div>
 				<br/>
