@@ -103,7 +103,7 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 							variant="outline-info"
 							onClick={() => this.openPrivsEditModal(result)}
 						>
-							Edit
+							{translate('common:button.edit')}
 						</Button>
 					</td>
 				</tr>
@@ -130,7 +130,7 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 					)
 				}
 				<h3 className="search-results-heading">
-					Search Results
+					{translate('common:searchResults')}
 				</h3>
 				<hr className="thin"/>
 				<Table
@@ -139,8 +139,8 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 				>
 					<thead>
 						<tr>
-							<th width="42%">Name</th>
-							<th width="42%">Privileges</th>
+							<th width="42%">{translate('common:name')}</th>
+							<th width="42%">{translate('common:privileges')}</th>
 							<th width="16%"/>
 						</tr>
 					</thead>
