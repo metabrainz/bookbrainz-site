@@ -115,7 +115,13 @@ class AdminPanelSearchField extends React.Component<AdminPanelSearchFieldProps, 
 									onChange={this.handleChange}
 								/>
 								<InputGroup.Append>
-									{SearchButton}
+									<Button
+										block
+										type="submit"
+										variant="success"
+									>
+										<FontAwesomeIcon icon={faSearch}/>&nbsp;{translate('common:button.search')}
+									</Button>
 								</InputGroup.Append>
 							</InputGroup>
 						</Form.Group>
@@ -126,4 +132,4 @@ class AdminPanelSearchField extends React.Component<AdminPanelSearchFieldProps, 
 	}
 }
 
-export default AdminPanelSearchField;
+export default withTranslation(['pages', 'common'])(AdminPanelSearchField);
