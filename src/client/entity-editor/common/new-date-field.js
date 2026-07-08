@@ -11,6 +11,7 @@ import classNames from 'classnames';
 import {dateIsBefore} from '../validators/base';
 import {faCalendarAlt} from '@fortawesome/free-solid-svg-icons';
 import {transformISODateForDisplay} from '../../helpers/entity';
+import {withTranslation} from 'react-i18next';
 
 
 class DateField extends React.Component {
@@ -113,7 +114,8 @@ class DateField extends React.Component {
 	};
 
 	render() {
-		const warnMessage = 'Are you sure? You entered a date in the future!';
+		const {t: translate} = this.props;
+		const warnMessage = translate('dateField.futureDateWarning');
 		const labelElement = (
 			<ValidationLabel
 				empty={this.props.empty}
@@ -178,7 +180,11 @@ class DateField extends React.Component {
 								showMonthDropdown
 								showYearDropdown
 								customInput={
-									<Button style={{lineHeight: '1.75', padding: '0.375em 0.938em'}} title="Date picker" variant="info">
+									<Button
+										style={{lineHeight: '1.75', padding: '0.375em 0.938em'}}
+										title={translate('dateField.datePickerTitle')}
+										variant="info"
+									>
 										<FontAwesomeIcon icon={faCalendarAlt}/>
 									</Button>
 								}
@@ -210,11 +216,13 @@ DateField.propTypes = {
 	errorMessage: PropTypes.string,
 	label: PropTypes.string.isRequired,
 	onChangeDate: PropTypes.func.isRequired,
-	show: PropTypes.bool.isRequired
+	show: PropTypes.bool.isRequired,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired
 };
 DateField.defaultProps = {
 	defaultValue: '',
 	errorMessage: null
 };
 
-export default DateField;
+export default withTranslation('entityEditor')(DateField);

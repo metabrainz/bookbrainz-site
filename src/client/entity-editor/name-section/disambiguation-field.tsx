@@ -52,7 +52,7 @@ function DisambiguationField({
 		<ValidationLabel empty={empty} error={error}>
 			{translate('disambiguationField.label')}
 			{required || null ? null :
-				<span className="text-muted"> {translate('disambiguationField.optional')}</span>
+				<span className="text-muted"> {translate('shared.optionalLabel')}</span>
 			}
 		</ValidationLabel>
 	);
