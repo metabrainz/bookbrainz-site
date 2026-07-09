@@ -557,6 +557,7 @@ router.get('/:id/achievements', async (req, res, next) => {
 		currAchievement: currAchievementJSON,
 		editor: editorJSON,
 		isOwner,
+		showSuccess: req.query.updated === '1',
 		tabActive: 2
 	});
 
@@ -570,6 +571,7 @@ router.get('/:id/achievements', async (req, res, next) => {
 					currAchievement={props.currAchievement}
 					editor={props.editor}
 					isOwner={props.isOwner}
+					showSuccess={props.showSuccess}
 				/>
 			</EditorContainer>
 		</Layout>
@@ -626,7 +628,7 @@ router.post('/:id/achievements/', auth.isAuthenticatedForHandler, async (req, re
 	await rankUpdate(orm, userId, req.body.rank1, 1);
 	await rankUpdate(orm, userId, req.body.rank2, 2);
 	await rankUpdate(orm, userId, req.body.rank3, 3);
-	return res.redirect(`/editor/${req.params.id}`);
+	return res.redirect(`/editor/${req.params.id}/achievements?updated=1`);
 });
 
 
