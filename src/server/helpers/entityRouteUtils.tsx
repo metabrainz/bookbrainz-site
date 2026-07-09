@@ -260,12 +260,31 @@ export function makeEntityCreateOrEditHandler(
 	) {
 		const {mergeQueue} = req.session;
 		const isMergeOperation = isMergeHandler && mergeQueue && _.size(mergeQueue.mergingEntities) >= 2;
+		
+		// Additional validation: check if req.body exists and is not empty
+		if (!req.body || typeof req.body !== 'object') {
+			const err = new error.FormSubmissionError('Invalid or empty form data. If you refreshed the page after filling the form, please fill it out again.');
+			return error.sendErrorAsJSON(res, err);
+		}
+		
+		// Check if critical sections exist
+		if (!req.body.nameSection || !req.body.submissionSection) {
+			const err = new error.FormSubmissionError('Required form sections are missing. If you refreshed the page, please fill out the form again.');
+			return error.sendErrorAsJSON(res, err);
+		}
+		
 		if (!validate(req.body, null, isMergeOperation)) {
-			const err = new error.FormSubmissionError();
-			error.sendErrorAsJSON(res, err);
+			const err = new error.FormSubmissionError('Form validation failed. Please check all required fields are filled correctly.');
+			return error.sendErrorAsJSON(res, err);
 		}
 
-		req.body = transformNewForm(req.body);
+		try {
+			req.body = transformNewForm(req.body);
+		}
+		catch (transformError) {
+			const err = new error.FormSubmissionError(`Error processing form data: ${transformError.message}. If you refreshed the page, please fill out the form again.`);
+			return error.sendErrorAsJSON(res, err);
+		}
 
 		return entityRoutes.handleCreateOrEditEntity(
 			req, res, entityName, _.pick(req.body, propertiesToPick), isMergeOperation

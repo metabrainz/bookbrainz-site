@@ -1057,11 +1057,21 @@ export async function indexAutoCreatedEditionGroup(orm, newEdition, transacting)
 }
 
 function sanitizeBody(body:any) {
-	for (const alias of body.aliases) {
-		alias.name = commonUtils.sanitize(alias.name);
-		alias.sortName = commonUtils.sanitize(alias.sortName);
+	// Defensive check: ensure aliases exists and is an array
+	if (Array.isArray(body.aliases)) {
+		for (const alias of body.aliases) {
+			if (alias) {
+				alias.name = commonUtils.sanitize(alias.name);
+				alias.sortName = commonUtils.sanitize(alias.sortName);
+			}
+		}
 	}
-	body.disambiguation = commonUtils.sanitize(body.disambiguation);
+	
+	// Safely sanitize disambiguation if it exists
+	if (body.disambiguation) {
+		body.disambiguation = commonUtils.sanitize(body.disambiguation);
+	}
+	
 	return body;
 }
 
@@ -1079,22 +1089,40 @@ export async function processSingleEntity(formBody, JSONEntity, reqSession,
 	} | null | undefined = JSONEntity;
 
 	try {
+		// Validate required fields early to prevent crashes from malformed data
+		if (!body || typeof body !== 'object') {
+			throw new error.FormSubmissionError('Invalid form data submitted');
+		}
+		
+		if (!Array.isArray(body.aliases) || body.aliases.length === 0) {
+			throw new error.FormSubmissionError('At least one alias is required. Please refresh the page and fill out the form again.');
+		}
+		
+		// Validate that the first alias (default alias) has required fields
+		const defaultAlias = body.aliases[0];
+		if (!defaultAlias || !defaultAlias.name || !defaultAlias.sortName) {
+			throw new error.FormSubmissionError('Name and sort name are required. Please refresh the page and fill out the form again.');
+		}
+		
 		// Determine if a new entity is being created
 		const isNew = !currentEntity;
-		// sanitize namesection inputs
-		body = sanitizeBody(body);
+		
 		if (isNew) {
 			const newEntity = await new Entity({type: entityType})
 				.save(null, {transacting});
 			const newEntityBBID = newEntity.get('bbid');
-			body.relationships = _.map(
-				body.relationships,
-				({sourceBbid, targetBbid, ...others}) => ({
-					sourceBbid: sourceBbid || newEntityBBID,
-					targetBbid: targetBbid || newEntityBBID,
-					...others
-				})
-			);
+			
+			// Safely handle relationships array
+			if (Array.isArray(body.relationships)) {
+				body.relationships = _.map(
+					body.relationships,
+					({sourceBbid, targetBbid, ...others}) => ({
+						sourceBbid: sourceBbid || newEntityBBID,
+						targetBbid: targetBbid || newEntityBBID,
+						...others
+					})
+				);
+			}
 
 			currentEntity = newEntity.toJSON();
 		}
