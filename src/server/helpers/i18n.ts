@@ -18,7 +18,6 @@
 
 import type {Request} from 'express';
 
-
 type AcceptedLanguage = {
 	code: string,
 	subtags: string[],
@@ -33,15 +32,35 @@ type AcceptedLanguage = {
 export function parseAcceptLanguage(acceptLanguage: string): AcceptedLanguage[] {
 	return acceptLanguage
 		.split(',')
+		.map((rawValue) => rawValue.trim())
+		.filter(Boolean)
 		.map((value) => {
-			const match = value.match(/(?<tag>[a-zA-Z]{2,3})(?:-(?<subtag>[\w-]+))?(?:;q=(?<weight>[01](?:\.[0-9]+)?))?/);
-			return match ? {
-				code: match.groups.tag,
-				subtags: match.groups.subtag?.split('-') ?? [],
-				weight: parseFloat(match.groups.weight ?? '1')
-			} : null;
+			// Matches:
+			// - primary tag: 2-3 letters (e.g. en, fr, pt)
+			// - optional subtags: -Latn, -US, etc.
+			// - optional quality weight: ;q=0.8
+			const match = value.match(
+				/^(?<tag>[a-zA-Z]{2,3})(?:-(?<subtag>[a-zA-Z0-9-]+))?(?:\s*;\s*q=(?<weight>[01](?:\.[0-9]+)?))?$/
+			);
+
+			if (!match?.groups?.tag) {
+				return null;
+			}
+
+			const weight = parseFloat(match.groups.weight ?? '1');
+			if (Number.isNaN(weight) || weight < 0 || weight > 1) {
+				return null;
+			}
+
+			return {
+				code: match.groups.tag.toLowerCase(),
+				subtags: match.groups.subtag
+					? match.groups.subtag.split('-').map((subtag) => subtag.toLowerCase())
+					: [],
+				weight
+			};
 		})
-		.filter((value) => value !== null)
+		.filter((value): value is AcceptedLanguage => value !== null)
 		.sort((a, b) => b.weight - a.weight);
 }
 
