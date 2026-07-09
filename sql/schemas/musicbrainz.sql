@@ -18,6 +18,14 @@ CREATE TABLE musicbrainz.language (
     iso_code_3          CHAR(3)  -- ISO 639-3
 );
 
+CREATE TABLE musicbrainz.script (
+    id              SERIAL PRIMARY KEY,
+    iso_code        CHAR(4) NOT NULL,
+    iso_number      CHAR(3) NOT NULL,
+    name            VARCHAR(100) NOT NULL,
+    frequency       INTEGER NOT NULL DEFAULT 0
+);
+
 CREATE TABLE musicbrainz.area_type ( -- replicate
     id                  SERIAL PRIMARY KEY, -- PK
     name                VARCHAR(255) NOT NULL,

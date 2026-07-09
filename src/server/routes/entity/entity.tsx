@@ -1221,6 +1221,7 @@ type AliasEditorT = {
 	language: number | null | undefined,
 	name: string,
 	primary: boolean,
+	script: number | null | undefined,
 	sortName: string
 };
 
@@ -1228,6 +1229,7 @@ type NameSectionT = {
 	disambiguation: string,
 	language: number | null | undefined,
 	name: string,
+	script: number | null | undefined,
 	sortName: string,
 	id: string
 };
@@ -1238,7 +1240,7 @@ export function constructAliases(
 	const aliases = _.map(
 		aliasEditor,
 		(
-			{language: languageId, name, primary, sortName}: AliasEditorT,
+			{language: languageId, name, primary, script: scriptId, sortName}: AliasEditorT,
 			id
 		) => ({
 			default: false,
@@ -1246,6 +1248,7 @@ export function constructAliases(
 			languageId,
 			name,
 			primary,
+			scriptId,
 			sortName
 		})
 	);
@@ -1256,6 +1259,7 @@ export function constructAliases(
 		languageId: nameSection.language,
 		name: nameSection.name,
 		primary: true,
+		scriptId: nameSection.script || null,
 		sortName: nameSection.sortName
 	}, ...aliases];
 }
