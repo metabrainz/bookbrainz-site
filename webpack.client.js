@@ -46,7 +46,8 @@ const clientConfig = {
 		'entity-merge': ['./entity-editor/entity-merge.tsx'],
 		style: './stylesheets/style.scss',
 		'relationship-type-editor': ['./controllers/type-editor/relationship-type.tsx'],
-		'identifier-type-editor': ['./controllers/type-editor/identifier-type.tsx']
+		'identifier-type-editor': ['./controllers/type-editor/identifier-type.tsx'],
+		'create-multiple-works': ['./controllers/create-multiple-works.tsx']
 	},
 	externals: {
 		moment: 'moment'

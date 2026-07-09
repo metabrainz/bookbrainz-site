@@ -20,6 +20,7 @@
 import * as auth from '../../helpers/auth';
 import * as entityRoutes from './entity';
 import * as middleware from '../../helpers/middleware';
+import * as propHelpers from '../../../client/helpers/props';
 import * as search from '../../../common/helpers/search';
 import * as utils from '../../helpers/utils';
 
@@ -29,15 +30,21 @@ import {
 	generateEntityProps,
 	makeEntityCreateOrEditHandler
 } from '../../helpers/entityRouteUtils';
+import {escapeProps, generateProps} from '../../helpers/props';
+import {filterIdentifierTypesByEntityType, makePromiseFromObject} from '../../../common/helpers/utils';
 
+import {AppContainer} from 'react-hot-loader';
 import {ConflictError} from '../../../common/helpers/error';
+import CreateMultipleWorks from '../../../client/components/pages/create-multiple-works';
+import Layout from '../../../client/containers/layout';
 import {PrivilegeType} from '../../../common/helpers/privileges-utils';
+import React from 'react';
+import ReactDOMServer from 'react-dom/server';
 import {RelationshipTypes} from '../../../client/entity-editor/relationship-editor/types';
 import _ from 'lodash';
-import {escapeProps} from '../../helpers/props';
 import express from 'express';
 import log from 'log';
-import {makePromiseFromObject} from '../../../common/helpers/utils';
+import {processSingleEntity} from './entity';
 import target from '../../templates/target';
 
 /** ****************************
@@ -151,6 +158,7 @@ router.get(
 				}
 			}
 			props.initialState.nameSection = nameSection;
+			props.createMultipleUrl = '/work/create-multiple';
 			const editorMarkup = entityEditorMarkup(props);
 			const {markup} = editorMarkup;
 			const updatedProps = editorMarkup.props;
@@ -205,6 +213,76 @@ router.post(
 
 router.post('/create/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR),
 	createOrEditHandler);
+router.get('/create-multiple', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR),
+	middleware.loadIdentifierTypes, middleware.loadLanguages, middleware.loadWorkTypes,
+	(req, res) => {
+		const props = generateProps(req as any, res, {
+			identifierTypes: filterIdentifierTypesByEntityType(res.locals.identifierTypes, 'Work'),
+			languageOptions: res.locals.languages,
+			submissionUrl: '/work/create-multiple/handler',
+			workTypes: res.locals.workTypes
+		});
+		const markup = ReactDOMServer.renderToString(
+			<AppContainer>
+				<Layout {...propHelpers.extractLayoutProps(props)}>
+					<CreateMultipleWorks {...props}/>
+				</Layout>
+			</AppContainer>
+		);
+		return res.send(target({
+			markup,
+			props: escapeProps(props),
+			script: '/js/create-multiple-works.js',
+			title: 'Create Multiple Works'
+		}));
+	});
+
+router.post(
+	'/create-multiple/handler',
+	auth.isAuthenticatedForHandler,
+	auth.isAuthorized(ENTITY_EDITOR),
+	async (req, res, next) => {
+		const {orm} = req.app.locals;
+		const {bookshelf} = orm;
+		const editorJSON = req.user;
+		const {works, globalTypeId, globalLanguages, note} = req.body;
+		const createdEntities = [];
+		try {
+			await bookshelf.transaction(async (transacting) => {
+				for (const work of works) {
+					const formBody = {
+						aliases: [{
+							default: true,
+							languageId: work.languageId || null,
+							name: work.title,
+							primary: true,
+							sortName: work.sortName || work.title
+						}],
+						annotation: '',
+						disambiguation: '',
+						identifiers: work.identifiers || [],
+						languages: globalLanguages || [],
+						note: note || 'Batch work creation',
+						relationships: [],
+						typeId: globalTypeId || null
+					};
+					// eslint-disable-next-line no-await-in-loop
+					const saved = await processSingleEntity(
+						formBody, null, req.session, 'Work', orm, editorJSON,
+						{typeId: globalTypeId || null}, false, transacting
+					);
+					// eslint-disable-next-line no-await-in-loop
+					await search.indexEntity(saved);
+					createdEntities.push(saved.toJSON());
+				}
+			});
+			return res.status(200).send(createdEntities);
+		}
+		catch (err) {
+			return next(err);
+		}
+	}
+);
 
 
 /* If the route specifies a BBID, make sure it does not redirect to another bbid then load the corresponding entity */
