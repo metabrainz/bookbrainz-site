@@ -99,7 +99,7 @@ router.get(
 	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
 	middleware.loadLanguages, middleware.loadWorkTypes,
 	middleware.loadRelationshipTypes,
-	(req, res, next) => {
+	async (req, res, next) => {
 		const {Author, Edition} = req.app.locals.orm;
 		let relationshipTypeId;
 		let initialRelationshipIndex = 0;
@@ -108,17 +108,15 @@ router.get(
 		);
 
 		if (req.query.author) {
-			propsPromise.author =
-				Author.forge({bbid: req.query.author})
-					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && utils.entityToOption(data.toJSON()));
+			const data = await Author.forge({bbid: req.query.author})
+				.fetch({require: false, withRelated: 'defaultAlias'});
+			propsPromise.author = data && utils.entityToOption(data.toJSON());
 		}
 
 		if (req.query.edition) {
-			propsPromise.edition =
-				Edition.forge({bbid: req.query.edition})
-					.fetch({require: false, withRelated: 'defaultAlias'})
-					.then((data) => data && utils.entityToOption(data.toJSON()));
+			const data = await Edition.forge({bbid: req.query.edition})
+				.fetch({require: false, withRelated: 'defaultAlias'});
+			propsPromise.edition = data && utils.entityToOption(data.toJSON());
 		}
 
 		async function render(props) {
@@ -162,9 +160,13 @@ router.get(
 				title: props.heading
 			}));
 		}
-		makePromiseFromObject(propsPromise)
-			.then(render)
-			.catch(next);
+		try {
+			const props = await makePromiseFromObject(propsPromise);
+			await render(props);
+		}
+		catch (err) {
+			next(err);
+		}
 	}
 );
 
@@ -197,9 +199,13 @@ router.post(
 				title: props.heading
 			}));
 		}
-		makePromiseFromObject(propsPromise)
-			.then(render)
-			.catch(next);
+		try {
+			const props = await makePromiseFromObject(propsPromise);
+			render(props);
+		}
+		catch (err) {
+			next(err);
+		}
 	}
 );
 
