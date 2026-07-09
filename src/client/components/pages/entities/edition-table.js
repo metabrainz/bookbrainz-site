@@ -135,16 +135,6 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showAuthorC
 						}
 					</tbody>
 				</Table>
-				{showAdd &&
-					<Button
-						className="margin-top-d15"
-						href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
-						variant="success"
-					>
-						<FontAwesomeIcon icon={faPlus}/>
-						{'  Add Edition'}
-					</Button>
-				}
 			</React.Fragment>
 		);
 	}
@@ -178,7 +168,19 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showAuthorC
 	}
 	return (
 		<div>
-			<h2>Editions</h2>
+			<div className="d-flex justify-content-between align-items-center mb-3">
+				<h2>Editions</h2>
+				{editions.length && showAdd &&
+					<Button
+						className="margin-top-d15"
+						href={`/edition/create?${_kebabCase(entity.type)}=${entity.bbid}`}
+						variant="success"
+					>
+						<FontAwesomeIcon icon={faPlus}/>
+						{'  Add Edition'}
+					</Button>
+				}
+			</div>
 			{tableContent}
 		</div>
 	);

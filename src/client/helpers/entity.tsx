@@ -310,15 +310,29 @@ export function getEditionFormat(entity) {
 
 
 /**
- * Remove the all relationships which are belongs to given relationshipTypeId.
+ * Remove all relationships which are belonging to the given relationshipTypeIds.
  *
  * @param {object} entity - Entity with all relationships
- * @param {number} relationshipTypeId - typeId of spacific relationshipType
- * @returns {array} retrun the all relationships after removing the relatioships for given relationshipTypeId
+ * @param {array} relationshipTypeIds - typeId of spacific relationshipType
+ * @returns {array} return all relationships after removing the relatioships for given relationshipTypeId
  */
-export function filterOutRelationshipTypeById(entity, relationshipTypeId: number) {
+export function filterOutRelationshipTypeById(entity, relationshipTypeIds: number[] = []) {
+	if (!Array.isArray(entity.relationships)) { return []; }
 	return (Array.isArray(entity.relationships) &&
-				entity.relationships.filter((relation) => relation.typeId !== relationshipTypeId)) || [];
+				entity.relationships.filter((relation) => !relationshipTypeIds.includes(relation.typeId))) || [];
+}
+
+/**
+ * Fetch all relationships which belong to given relationshipTypeIds.
+ *
+ * @param {object} entity - Entity with all relationships
+ * @param {array} relationshipTypeIds - typeIds of spacific relationshipType
+ * @returns {array} retrun only those relationships which match with the given relationshipTypeIds
+ */
+export function getRelationshipsByTypeId(entity, relationshipTypeIds: number[] = []) {
+	if (!Array.isArray(entity.relationships)) { return []; }
+	return (Array.isArray(entity.relationships) &&
+				entity.relationships.filter((relation) => relationshipTypeIds.includes(relation.typeId))) || [];
 }
 
 

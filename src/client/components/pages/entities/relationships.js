@@ -16,15 +16,31 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as bootstrap from 'react-bootstrap';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Relationship from '../../../entity-editor/relationship-editor/relationship';
+import {faPlus} from '@fortawesome/free-solid-svg-icons';
 
 
-function EntityRelationships({contextEntity, relationships, entityUrl}) {
+const {Button} = bootstrap;
+function EntityRelationships({contextEntity, label, relationships, entityUrl, buttonHref}) {
+	const actionUrl = buttonHref ?? `${entityUrl}/edit`;
 	return (
 		<div>
-			<h2>Relationships</h2>
+			<div className="d-flex justify-content-between align-items-center mb-3">
+				<h2>{label}s</h2>
+				{relationships?.length > 0 &&
+				<Button
+					className="margin-top-d15"
+					href={actionUrl}
+					variant="success"
+				>
+					<FontAwesomeIcon icon={faPlus}/>
+					{`Add ${label}`}
+				</Button>}
+			</div>
 			{relationships?.length > 0 ? (
 				<ul className="list-unstyled">
 					{relationships.map((relationship) => (
@@ -43,7 +59,7 @@ function EntityRelationships({contextEntity, relationships, entityUrl}) {
 				</ul>
 			) : (
 				<p className="text-muted">
-					<b>No relationships.</b> <a href={`${entityUrl}/edit`}>Click here to edit</a> and create new relationships.
+					<b>No {label}.</b> <a href={`${entityUrl}/edit`}>Click here to edit</a> and create new {label}.
 				</p>
 			)}
 		</div>
@@ -52,9 +68,16 @@ function EntityRelationships({contextEntity, relationships, entityUrl}) {
 
 EntityRelationships.displayName = 'EntityRelationships';
 EntityRelationships.propTypes = {
+	buttonHref: PropTypes.string,
 	contextEntity: PropTypes.object.isRequired,
 	entityUrl: PropTypes.string.isRequired,
+	label: PropTypes.string,
 	relationships: PropTypes.array.isRequired
+};
+
+EntityRelationships.defaultProps = {
+	buttonHref: null,
+	label: ''
 };
 
 export default EntityRelationships;
