@@ -23,6 +23,7 @@ import {faPencilAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ReactSelect from 'react-select';
 import classNames from 'classnames';
+import {getAvailableValidatorNames} from '../../../../common/helpers/identifier-validators';
 import request from 'superagent';
 
 
@@ -255,6 +256,34 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 									value={formData.validationRegex}
 									onChange={handleInputChange}
 								/>
+							</Form.Group>
+						</Col>
+					</Row>
+					<Row>
+						<Col lg={lgCol}>
+							<Form.Group>
+								<Form.Label>
+									Built-in Validation Function
+								</Form.Label>
+								<Form.Control
+									as="select"
+									name="validationFunction"
+									value={formData.validationFunction || ''}
+									onChange={handleInputChange}
+								>
+									<option value="">
+										None (use regex only)
+									</option>
+									{getAvailableValidatorNames().map((name) => (
+										<option key={name} value={name}>
+											{name}
+										</option>
+									))}
+								</Form.Control>
+								<Form.Text className="text-muted">
+									Optional, If set provides additional
+									validation beyond the regex.
+								</Form.Text>
 							</Form.Group>
 						</Col>
 					</Row>

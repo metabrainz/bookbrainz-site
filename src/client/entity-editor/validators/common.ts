@@ -26,6 +26,7 @@ import {
 } from './base';
 
 import {AuthorCredit} from '../author-credit-editor/actions';
+import {BUILTIN_VALIDATORS} from '../../../common/helpers/identifier-validators';
 import {Iterable} from 'immutable';
 import _ from 'lodash';
 
@@ -83,7 +84,8 @@ export const validateAliases = _.partial(
 export type IdentifierType = {
 	id: number,
 	label: string,
-	validationRegex: string
+	validationRegex: string,
+	validationFunction?: string | null
 };
 
 export function validateIdentifierValue(
@@ -100,6 +102,10 @@ export function validateIdentifierValue(
 	const selectedType = _.find(types, (type) => type.id === typeId);
 
 	if (selectedType) {
+		if (selectedType.validationFunction &&
+			BUILTIN_VALIDATORS[selectedType.validationFunction]) {
+			return BUILTIN_VALIDATORS[selectedType.validationFunction](value);
+		}
 		return new RegExp(selectedType.validationRegex).test(value);
 	}
 
