@@ -29,8 +29,10 @@ import {repositoryUrl, siteRevision, userAgent} from './info';
 import BookBrainzData from 'bookbrainz-data';
 import Debug from 'debug';
 import appCleanup from '../common/helpers/appCleanup';
+import {betaMiddleware} from './helpers/middleware';
 import compression from 'compression';
 import config from '../common/helpers/config';
+import cookieParser from 'cookie-parser';
 import express from 'express';
 import favicon from 'serve-favicon';
 import initInflux from './influx';
@@ -40,7 +42,6 @@ import path from 'path';
 import routes from './routes';
 import serveStatic from 'serve-static';
 import session from '../common/helpers/session';
-
 
 // Initialize log-to-stdout  writer
 logNode({
@@ -69,6 +70,8 @@ app.use(express.urlencoded({
 	extended: false
 }));
 app.use(compression());
+app.use(cookieParser());
+app.use(betaMiddleware());
 
 // Set up serving of static assets
 if (process.env.NODE_ENV === 'development') {
