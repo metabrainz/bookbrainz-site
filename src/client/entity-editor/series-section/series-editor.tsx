@@ -84,42 +84,45 @@ type SeriesItemsProps = {
  *
  */
 
-const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemove, dragHandler, isUnifiedForm, placeholder, removeButtonText}) => (
-	<Row className={`margin-top-d5 ${isUnifiedForm ? 'w-100 align-items-center' : ''}`} key={value.rowID}>
-		{(!isUnifiedForm || dragHandler) &&
-		<Col className="text-right form-control-static padding-left-0" lg={1}>
-			{dragHandler ? <><FontAwesomeIcon icon={faBars}/> &nbsp;&nbsp;</> : null}
-		</Col>}
-		<Col lg={2}>
-			<input
-				className="form-control"
-				placeholder={placeholder}
-				type="text"
-				value={_.find(value.attributes, {attributeType: 2})?.value.textValue || ''}
-				onChange={handleNumberAttributeChange.bind(this, value.rowID)}
-			/>
-		</Col>
-		<Col className="form-control-static" lg={7}>
-			<Relationship
-				link
-				contextEntity={baseEntity}
-				relationshipType={value.relationshipType}
-				sourceEntity={value.sourceEntity}
-				targetEntity={value.targetEntity}
-			/>
-		</Col>
-		<Col lg={2}>
-			<Button
-				role="button"
-				variant="danger"
-				onClick={onRemove.bind(this, value.rowID)}
-			>
-				<FontAwesomeIcon icon={faTimes}/>
-				<span>&nbsp;{removeButtonText}</span>
-			</Button>
-		</Col>
-	</Row>
-);
+const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemove, dragHandler, isUnifiedForm}) => {
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	return (
+		<Row className={`margin-top-d5 ${isUnifiedForm ? 'w-100 align-items-center' : ''}`} key={value.rowID}>
+			{(!isUnifiedForm || dragHandler) &&
+			<Col className="text-right form-control-static padding-left-0" lg={1}>
+				{dragHandler ? <><FontAwesomeIcon icon={faBars}/> &nbsp;&nbsp;</> : null}
+			</Col>}
+			<Col lg={2}>
+				<input
+					className="form-control"
+					placeholder={translate('seriesEditor.placeholder')}
+					type="text"
+					value={_.find(value.attributes, {attributeType: 2})?.value.textValue || ''}
+					onChange={handleNumberAttributeChange.bind(this, value.rowID)}
+				/>
+			</Col>
+			<Col className="form-control-static" lg={7}>
+				<Relationship
+					link
+					contextEntity={baseEntity}
+					relationshipType={value.relationshipType}
+					sourceEntity={value.sourceEntity}
+					targetEntity={value.targetEntity}
+				/>
+			</Col>
+			<Col lg={2}>
+				<Button
+					role="button"
+					variant="danger"
+					onClick={onRemove.bind(this, value.rowID)}
+				>
+					<FontAwesomeIcon icon={faTimes}/>
+					<span>&nbsp;{translate('common:button.remove')}</span>
+				</Button>
+			</Col>
+		</Row>
+	);
+};
 
 SeriesListItem.displayName = 'SeriesListItem';
 SeriesListItem.propTypes = {
@@ -128,19 +131,15 @@ SeriesListItem.propTypes = {
 	handleNumberAttributeChange: PropTypes.func.isRequired,
 	isUnifiedForm: PropTypes.bool.isRequired,
 	onRemove: PropTypes.func.isRequired,
-	placeholder: PropTypes.string.isRequired,
-	removeButtonText: PropTypes.string.isRequired,
 	value: PropTypes.any.isRequired
 };
 
-const SortableItem = SortableElement(({value, onRemove, baseEntity, handleNumberAttributeChange, isUnifiedForm, placeholder, removeButtonText}) => (
+const SortableItem = SortableElement(({value, onRemove, baseEntity, handleNumberAttributeChange, isUnifiedForm}) => (
 	<SeriesListItem
 		dragHandler
 		baseEntity={baseEntity}
 		handleNumberAttributeChange={handleNumberAttributeChange}
 		isUnifiedForm={isUnifiedForm}
-		placeholder={placeholder}
-		removeButtonText={removeButtonText}
 		value={value}
 		onRemove={onRemove}
 	/>
@@ -203,7 +202,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 		onEdit(attributeNumber, rowID);
 		onSort({newIndex: null, oldIndex: null});
 	};
-	const heading = <h2>{translate('seriesEditor.heading', {seriesType})}</h2>;
+	const heading = <h2>{translate('seriesEditor.heading', {seriesType: `${seriesType}s`})}</h2>;
 	const alignText = isUnifiedForm ? 'text-left' : 'text-right';
 	return (
 		<div>
@@ -219,8 +218,11 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 									handleNumberAttributeChange={handleNumberAttributeChange}
 									isUnifiedForm={isUnifiedForm}
 									key={value.rowID}
+<<<<<<< HEAD
 									placeholder={translate('seriesEditor.placeholder')}
 									removeButtonText={translate('common:button.remove')}
+=======
+>>>>>>> gsoc/week4-edition-and-edition-merge
 									value={value}
 									onRemove={onRemove}
 								/>
@@ -235,8 +237,6 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 									index={index}
 									isUnifiedForm={isUnifiedForm}
 									key={value.rowID}
-									placeholder={translate('seriesEditor.placeholder')}
-									removeButtonText={translate('common:button.remove')}
 									value={value}
 									onRemove={onRemove}
 								/>
