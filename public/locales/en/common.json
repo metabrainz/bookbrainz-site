@@ -33,6 +33,7 @@
   "entityType.author_plural": "Authors",
   "entityType.book": "Book",
   "entityType.collection": "Collection",
+  "entityType.collection_plural": "Collections",
   "entityType.edition": "Edition",
   "entityType.editionGroup": "Edition Group",
   "entityType.editor": "Editor",
