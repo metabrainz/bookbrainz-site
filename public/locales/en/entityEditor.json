@@ -27,7 +27,6 @@
   "disambiguationField.label": "Disambiguation",
   "disambiguationField.tooltip": "If a different entity with the same name already exists or if there is a need for clarification",
   "editionGroupSection.typeTooltip": "Physical format of the Edition Group",
-  "editionGroupSectionMerge.authorCreditLabel": "Author Credit",
   "entityType.author": "Author",
   "entityType.author_plural": "Authors",
   "entityType.publisher": "Publisher",
@@ -89,6 +88,5 @@
   "submissionSection.submitButton": "Submit",
   "valueField.label": "Value",
   "workSection.languageTooltip": "Main language used for the content of the work",
-  "workSection.typeTooltip": "Literary form or structure of the work",
-  "workSectionMerge.languagesLabel": "Languages"
+  "workSection.typeTooltip": "Literary form or structure of the work"
 }
