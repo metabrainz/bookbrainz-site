@@ -75,7 +75,7 @@ function WorkSectionMerge({
 	typeValue,
 	onTypeChange
 }: Props) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	const typeOptions = [];
 
 	mergingEntities.forEach(entity => {

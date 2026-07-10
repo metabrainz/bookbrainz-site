@@ -88,7 +88,7 @@ function EditionGroupSectionMerge({
 		<div>
 			<MergeField
 				currentValue={authorCreditValue}
-				label={translate('editionGroupSectionMerge.authorCreditLabel')}
+				label={translate('common:authorCredit')}
 				options={authorCreditOptions}
 				valueRenderer={authorCreditToString}
 				onChange={onAuthorCreditChange}
