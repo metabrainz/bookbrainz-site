@@ -218,11 +218,6 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 									handleNumberAttributeChange={handleNumberAttributeChange}
 									isUnifiedForm={isUnifiedForm}
 									key={value.rowID}
-<<<<<<< HEAD
-									placeholder={translate('seriesEditor.placeholder')}
-									removeButtonText={translate('common:button.remove')}
-=======
->>>>>>> gsoc/week4-edition-and-edition-merge
 									value={value}
 									onRemove={onRemove}
 								/>
