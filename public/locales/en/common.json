@@ -49,7 +49,11 @@
   "footer.testedWith": "Tested with ",
   "footer.unknownRevision": "unknown revision",
   "format": "Format",
+  "Onforums": "on our forums,",
+  "forums": "Forums",
   "gender": "Gender",
+  "Ongithub": "on GitHub",
+  "ircChannel": "IRC channel",
   "languages": "Languages",
   "lastModified": "Last Modified",
   "name": "Name",
@@ -90,9 +94,11 @@
   "Relationship": "Relationship",
   "role": "Collaborator/Owner",
   "searchResults": "Search Results",
+  "sortName": "common:sortName",
   "status": "Status",
   "type": "Type",
   "unnamed": "(unnamed)",
+  "userGuideAndDoc": "user guide and documentation",
   "value": "Value",
   "yes": "yes"
 }

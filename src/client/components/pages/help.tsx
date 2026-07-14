@@ -19,6 +19,7 @@
 import {Col, ListGroup, Row} from 'react-bootstrap';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
+import {useTranslation} from 'react-i18next';
 
 
 /**
@@ -26,6 +27,7 @@ import {genEntityIconHTMLElement} from '../../helpers/entity';
  * @returns {JSX.Element} a React JSX Element
  */
 function HelpPage(): JSX.Element {
+	const {t: translate} = useTranslation(['staticPages', 'common', 'pages']);
 	const IRCLink = 'https://kiwiirc.com/nextclient/irc.libera.chat/?#bookbrainz';
 	const userGuideLink =
 		'https://bookbrainz-user-guide.readthedocs.io/';
@@ -34,21 +36,22 @@ function HelpPage(): JSX.Element {
 		<div>
 
 			<div className="page-header">
-				<h1>Help page</h1>
+				<h1>{translate('staticPages:help.title')}</h1>
 			</div>
 			<p className="lead">
-				Feeling lost? On this page you will find explanations of the basic concepts
-				used across BookBrainz, as well as an F.A.Q and a glossary.
+				{translate('staticPages:help.leadIntro')}
 				<br/>
-				Still having some trouble with something?
-				You can refer to the <a href={userGuideLink}>user guide and documentation</a>,
-				or come ask us directly on our <a href={IRCLink}>IRC channel</a>.
+				{translate('staticPages:help.leadTrouble')}
+				<a href={userGuideLink}>{translate('common:userGuideAndDoc')}</a>
+				{translate('staticPages:help.leadOrAsk')}
+				<a href={IRCLink}>{translate('common:ircChannel')}</a>
+				{translate('staticPages:help.leadPeriod')}
 			</p>
 			<hr/>
 
-			<h2>Entities</h2>
+			<h2>{translate('pages:collections.headerEntities')}</h2>
 			<p>
-				Entities are the main concepts used to describe a bibliographic record through their relationships
+				{translate('staticPages:help.entitiesDescription')}
 			</p>
 
 			<Row>
@@ -61,43 +64,54 @@ function HelpPage(): JSX.Element {
 				</Col>
 				<Col className="margin-top-2" lg={6}>
 					<ListGroup>
-						<ListGroup.Item><b>{genEntityIconHTMLElement('Author')}Author</b> – an individual, group or collective that participates in the creative process of an artistic work. It also includes translators, illustrators, editors, etc.</ListGroup.Item>
+						<ListGroup.Item><b>{genEntityIconHTMLElement('Author')}{translate('common:entityType.author')}</b>{translate('staticPages:help.authorDesc')}</ListGroup.Item>
 						<ListGroup.Item>
-							<b>{genEntityIconHTMLElement('Work')}Work</b> – a distinct intellectual or artistic creation expressed in words and/or images.
-							Here we are not talking, for example, about a physical book, but the introduction, story, illustrations, etc. it contains.
+							<b>{genEntityIconHTMLElement('Work')}{translate('common:entityType.work')}</b>{translate('staticPages:help.workDesc')}
 							<ul>
-								<li>Examples: novel, poem, translation, introduction & foreword, article, research paper, etc.</li>
+								<li>{translate('staticPages:help.workExamples')}</li>
 							</ul>
 						</ListGroup.Item>
 						<ListGroup.Item>
-							<b>{genEntityIconHTMLElement('Series')}Series</b> – a set or sequence of related works, editions, authors, publishers or edition-groups.
+							<b>{genEntityIconHTMLElement('Series')}{translate('common:entityType.series')}</b>{translate('staticPages:help.seriesDesc')}
 							<ul>
-								<li>Examples: a series of novels, a series of comics, etc.</li>
+								<li>{translate('staticPages:help.seriesExamples')}</li>
 							</ul>
 						</ListGroup.Item>
 						<ListGroup.Item>
-							<b>{genEntityIconHTMLElement('Edition')}Edition</b> –  a published physical or digital version of one or more Works.
+							<b>{genEntityIconHTMLElement('Edition')}{translate('common:entityType.edition')}</b>{translate('staticPages:help.editionDesc')}
 							<ul>
-								<li>Examples: book, anthology, comic book, magazine, leaflet</li>
-								<li>Note: An Author can self-publish an Edition</li>
+								<li>{translate('staticPages:help.editionExamples')}</li>
+								<li>{translate('staticPages:help.editionNote')}</li>
 							</ul>
 						</ListGroup.Item>
 						<ListGroup.Item>
-							<b>{genEntityIconHTMLElement('EditionGroup')}Edition Group</b> – a logical grouping of different Editions of the same book.
-							<ul><li>Example: paperback, hardcover and e-book editions of a novel</li></ul>
+							<b>{genEntityIconHTMLElement('EditionGroup')}{translate('common:entityType.editionGroup')}</b>{translate('staticPages:help.editionGroupDesc')}
+							<ul><li>{translate('staticPages:help.editionGroupExamples')}</li></ul>
 						</ListGroup.Item>
-						<ListGroup.Item><b>{genEntityIconHTMLElement('Publisher')}Publisher</b> – publishing company or imprint</ListGroup.Item>
+						<ListGroup.Item><b>{genEntityIconHTMLElement('Publisher')}{translate('common:entityType.publisher')}</b>{translate('staticPages:help.publisherDesc')}</ListGroup.Item>
 					</ListGroup>
 				</Col>
 
 				<Col lg={12}>
-					<h4>Examples</h4>
+					<h4>{translate('staticPages:help.examplesTitle')}</h4>
 					<p>
-						The following examples should help you understand the different entities and how they relate to each other:
+						{translate('staticPages:help.examplesIntro')}
 						<br/>
-						The relationship between <a href="/author/e66704df-2386-4af9-9b02-a3440a1bc828">Ursula K. Le Guin</a>, her novel <a href="/work/11f0af2a-7034-4e7d-baa2-7cf0cb7bcbea">A Wizard of Earthsea</a> and an Edition <a href="/edition/731ccc5f-35c3-4056-a6e3-00996bb79380">Earthsea: The First Four Books</a> which contain it and several more works.
+						{translate('staticPages:help.exampleLeGuinPre')}
+						<a href="/author/e66704df-2386-4af9-9b02-a3440a1bc828">Ursula K. Le Guin</a>
+						{translate('staticPages:help.exampleLeGuinMid')}
+						<a href="/work/11f0af2a-7034-4e7d-baa2-7cf0cb7bcbea">A Wizard of Earthsea</a>
+						{translate('staticPages:help.exampleLeGuinPost')}
+						<a href="/edition/731ccc5f-35c3-4056-a6e3-00996bb79380">Earthsea: The First Four Books</a>
+						{translate('staticPages:help.exampleLeGuinEnd')}
 						<br/>
-						<a href="/edition/54331325-d11b-47f4-bb74-0485e582c52e">Paperback</a> and <a href="/edition/3fa9fdcd-098d-4ec1-82e4-f5fdfb92c41f">E-book</a> editions of the novel Ancillary Mercy by the publisher <a href="publisher/b065b24d-136f-45e3-badc-48aea4728c73">Orbit Books</a>  making them part of the same <a href="/edition-group/540e9c4a-f9fa-427b-a41f-bb12c48f902b">Edition Group</a>
+						<a href="/edition/54331325-d11b-47f4-bb74-0485e582c52e">{translate('staticPages:help.exampleAncillaryLink1')}</a>
+						{translate('staticPages:help.exampleAncillaryAnd')}
+						<a href="/edition/3fa9fdcd-098d-4ec1-82e4-f5fdfb92c41f">{translate('staticPages:help.exampleAncillaryLink2')}</a>
+						{translate('staticPages:help.exampleAncillaryText1')}
+						<a href="publisher/b065b24d-136f-45e3-badc-48aea4728c73">{translate('staticPages:help.exampleAncillaryLink3')}</a>
+						{translate('staticPages:help.exampleAncillaryText2')}
+						<a href="/edition-group/540e9c4a-f9fa-427b-a41f-bb12c48f902b">{translate('staticPages:help.exampleAncillaryLink4')}</a>
 					</p>
 					<hr/>
 				</Col>
@@ -105,54 +119,51 @@ function HelpPage(): JSX.Element {
 			<Row>
 				<Col lg={12}>
 					<hr className="d-lg-none"/>
-					<h2>Glossary</h2>
+					<h2>{translate('staticPages:help.glossaryTitle')}</h2>
 					<p>
-					Here is a short description of some of the main terms you will encounter.
-					Some terms are borrowed from MusicBrainz; click on the term to be redirected to the MusicBrainz guidelines or a definition.
+						{translate('staticPages:help.glossaryIntro')}
 					</p>
 					<br/>
 					<ListGroup>
-						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Aliases">Aliases</a></b> – Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc.
+						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Aliases">{translate('staticPages:help.glossaryAliases')}</a></b>{translate('staticPages:help.glossaryAliasesDesc')}
 							<br/>
-							Example:
+							{translate('staticPages:help.glossaryExample')}:
 							<ul>
-								<li>Name: 村上 春樹 – Alias (english): Haruki Murakami</li>
-								<li>Name: bell hooks - Alias (full name): Gloria Jean Watkins</li>
+								<li>{translate('staticPages:help.glossaryAliasesExampleName1')}</li>
+								<li>{translate('staticPages:help.glossaryAliasesExampleName2')}</li>
 							</ul>
 						</ListGroup.Item>
 
-						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Style/Artist_Credits">Author Credits</a></b> – As appearing on the publication cover. For example, if the author is using a pseudonym, the credits should reflect that.</ListGroup.Item>
+						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Style/Artist_Credits">{translate('common:authorCredits')}</a></b>{translate('staticPages:help.glossaryAuthorCreditsDesc')}</ListGroup.Item>
 
-						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Disambiguation_Comment">Disambiguation</a></b> – Short comment added to differentiate between similarly-named entities.
+						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Disambiguation_Comment">{translate('staticPages:help.glossaryDisambiguation')}</a></b>{translate('staticPages:help.glossaryDisambiguationDesc')}
 							<br/>
-							Example:
+							{translate('staticPages:help.glossaryExample')}:
 							<ul>
-								<li>The Alchemist (philosophical novel) by Paulo Coelho</li>
-								<li>The Alchemyst (YA novel featuring Nicolas Flamel) by Michael Scott</li>
+								<li>{translate('staticPages:help.glossaryDisambiguationExample1')}</li>
+								<li>{translate('staticPages:help.glossaryDisambiguationExample2')}</li>
 							</ul>
 						</ListGroup.Item>
 
-						<ListGroup.Item><b>Entities</b> – Conceptual items representing the various authors and parts of a publication. See the previous Entities section for details.</ListGroup.Item>
+						<ListGroup.Item><b>{translate('pages:collections.headerEntities')}</b>{translate('staticPages:help.glossaryEntitiesDesc')}</ListGroup.Item>
 
-						<ListGroup.Item><b><a href="https://en.wikipedia.org/wiki/Category:Book_formats">Format</a></b> – Refers to different printing and/or binding methods, or digital distribution.
-							<br/>For example: paperback, mass-market, hardcover and e-book are all book formats
+						<ListGroup.Item><b><a href="https://en.wikipedia.org/wiki/Category:Book_formats">{translate('common:format')}</a></b>{translate('staticPages:help.glossaryFormatDesc')}</ListGroup.Item>
+
+						<ListGroup.Item><b>{translate('staticPages:help.glossaryIdentifiers')}</b>{translate('staticPages:help.glossaryIdentifiersDescPre')}
+							<br/>{translate('staticPages:help.glossaryIdentifiersDescPost')}
 						</ListGroup.Item>
 
-						<ListGroup.Item><b>Identifiers</b> – identity of an entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, etc.
-							<br/>When adding identifiers to an entity, you can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).
+						<ListGroup.Item><b><a href="https://en.wikipedia.org/wiki/Edition_(book)#Printing,_print_run,_impression,_et_cetera">{translate('staticPages:help.glossaryPrinting')}</a></b>{translate('staticPages:help.glossaryPrintingDescPre')}
+							<br/>{translate('staticPages:help.glossaryPrintingDescPost')}
 						</ListGroup.Item>
 
-						<ListGroup.Item><b><a href="https://en.wikipedia.org/wiki/Edition_(book)#Printing,_print_run,_impression,_et_cetera">Printing, print run, impression</a></b> – A batch of identical copies of an edition of a work that is printed in a same, single production set-up.
-							<br/>One edition of a work may have any number of printings, e. g. a same Edition can have a first impression and a second impression.
-						</ListGroup.Item>
-
-						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Style/Artist/Sort_Name">Sort name</a></b> – Modified name to help sorting alphabetically
+						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Style/Artist/Sort_Name">{translate('staticPages:help.glossarySortName')}</a></b>{translate('staticPages:help.glossarySortNameDesc')}
 							<br/>
-							Example:
+							{translate('staticPages:help.glossaryExample')}:
 							<ul>
-								<li>Charles Dickens -&gt; Dickens, Charles</li>
-								<li>A Tale of Two Cities -&gt; Tale of Two Cities, A</li>
-								<li>Benito Pérez Galdós -&gt; Pérez Galdós, Benito</li>
+								<li>{translate('staticPages:help.glossarySortNameExample1')}</li>
+								<li>{translate('staticPages:help.glossarySortNameExample2')}</li>
+								<li>{translate('staticPages:help.glossarySortNameExample3')}</li>
 							</ul>
 						</ListGroup.Item>
 					</ListGroup>
