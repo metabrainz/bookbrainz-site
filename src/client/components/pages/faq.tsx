@@ -19,70 +19,71 @@
 import {Card, ListGroup} from 'react-bootstrap';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Renders the page for the Frequently Asked Questions on Bookbrainz
  * @returns {JSX.Element} a React JSX Element
  */
 function FAQPage(): JSX.Element {
+	const {t: translate} = useTranslation(['staticPages', 'common']);
 	return (
 		<Card>
 			<Card.Header as="h2">
-				Frequently Asked Questions
+				{translate('staticPages:faq.title')}
 			</Card.Header>
 			<Card.Body>
 				<ListGroup>
 					<ListGroup.Item>
-						<h4><b>How do I add a book?</b></h4>
-						First and foremost, search for both the author and the title of the book to avoid creating duplicates.
-						<br/>If a Work and an Edition containing it exist, the questions below will help you decide whether to create a new Edition.
-						<br/>Otherwise, here is a step-by-step procedure:
+						<h4><b>{translate('staticPages:faq.q1')}</b></h4>
+						{translate('staticPages:faq.q1.a1')}
+						<br/>{translate('staticPages:faq.q1.a2')}
+						<br/>{translate('staticPages:faq.q1.a3')}
 						<br/>
 						<br/>
 						<ol>
-						    <li>Find or add a new {genEntityIconHTMLElement('Author')}Author</li>
-						    <li>On the Author page, click on &#39;Add Work&#39; to create a {genEntityIconHTMLElement('Work')}Work with a relationship to the Author</li>
+							<li>{translate('staticPages:faq.q1.step1Pre')}{genEntityIconHTMLElement('Author')}{translate('common:entityType.author')}</li>
+							<li>On the Author page, click on &#39;Add Work&#39; to create a {genEntityIconHTMLElement('Work')}{translate('staticPages:faq.q1.step2Post')}</li>
 							<li>
-								On the Work page, click &#39;Add Edition&#39; to create an {genEntityIconHTMLElement('Edition')}Edition with a relationship to the Work.
+								{translate('staticPages:faq.q1.step3Pre')}{genEntityIconHTMLElement('Edition')}{translate('staticPages:faq.q1.step3Mid')}
 								<ul>
-									<li>A new {genEntityIconHTMLElement('EditionGroup')}Edition Group will be created automatically, but you can select an existing one</li>
-									<li>Create a new {genEntityIconHTMLElement('Publisher')}Publisher if you cannot find an existing one</li>
+									<li>{translate('staticPages:faq.q1.step3Sub1Pre')}{genEntityIconHTMLElement('EditionGroup')}{translate('staticPages:faq.q1.step3Sub1Post')}</li>
+									<li>{translate('staticPages:faq.q1.step3Sub2Pre')}{genEntityIconHTMLElement('Publisher')}{translate('staticPages:faq.q1.step3Sub2Post')}</li>
 								</ul>
 							</li>
-							<li>To enter another format of the same book (see explanations below), go to the Edition Group and click the &#x27;Add Edition&#x27; button. Repeat step 4.</li>
+							<li>{translate('staticPages:faq.q1.step4')}</li>
 						</ol>
 					</ListGroup.Item>
 					<ListGroup.Item>
-						<h4><b>When should I create a new Edition of a Work?</b></h4>
+						<h4><b>{translate('staticPages:faq.q2')}</b></h4>
 						<ul>
-							<li>When it is published in a different format (e.g. paperback and e-book)</li>
-							<li>When there are substantial content (textual or editorial) changes</li>
-							<li>Translations will both be a new Work and a new Edition for it.</li>
-							<li>Add a relationship between the original and the translated Works</li>
-							<li>New cover or changed credits/attribution on the cover</li>
-							<li>When there&#x27;s a new ISBN</li>
+							<li>{translate('staticPages:faq.q2.item1')}</li>
+							<li>{translate('staticPages:faq.q2.item2')}</li>
+							<li>{translate('staticPages:faq.q2.item3')}</li>
+							<li>{translate('staticPages:faq.q2.item4')}</li>
+							<li>{translate('staticPages:faq.q2.item5')}</li>
+							<li>{translate('staticPages:faq.q2.item6')}</li>
 						</ul>
 					</ListGroup.Item>
 					<ListGroup.Item>
-						<h4><b>When should I <i>not</i> create a new Edition of a Work?</b></h4>
+						<h4><b>{translate('staticPages:faq.q3')}</b></h4>
 						<ul>
-							<li>Minimal changes as in proofreading errors</li>
-							<li>Minimal changes on the cover</li>
-							<li>Reprints of the same Edition. You can mention “Reprint – [date]” in the annotations.</li>
-							<li>When the edition uses the same ISBN (with rare exceptions)</li>
+							<li>{translate('staticPages:faq.q3.item1')}</li>
+							<li>{translate('staticPages:faq.q3.item2')}</li>
+							<li>{translate('staticPages:faq.q3.item3')}</li>
+							<li>{translate('staticPages:faq.q3.item4')}</li>
 						</ul>
 					</ListGroup.Item>
 					<ListGroup.Item>
-						<h4><b>When should two Editions be part of the same Edition Group?</b></h4>
-						Edition Groups exist to group together all the variations of an edition (an identifiable set of works) in a given language.
-						Here are examples of Editions that should be part of the same Edition Group:
+						<h4><b>{translate('staticPages:faq.q4')}</b></h4>
+						{translate('staticPages:faq.q4.introPre')}
 						<br/>
 						<ul>
-							<li>Different formats of the same edition (paperback, hardcover and e-book by the same publisher)</li>
-							<li>Revised and updated editions</li>
-							<li>Reprints</li>
-							<li>Editions with different forewords/intros</li>
-							<li>Co-editions (same book published in different countries by different publishers)</li>
+							<li>{translate('staticPages:faq.q4.item1')}</li>
+							<li>{translate('staticPages:faq.q4.item2')}</li>
+							<li>{translate('staticPages:faq.q4.item3')}</li>
+							<li>{translate('staticPages:faq.q4.item4')}</li>
+							<li>{translate('staticPages:faq.q4.item5')}</li>
 						</ul>
 					</ListGroup.Item>
 				</ListGroup>
