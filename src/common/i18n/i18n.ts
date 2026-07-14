@@ -41,7 +41,7 @@ export function createI18n(locale = 'en', resources?) {
 		fallbackLng: 'en',
 		initAsync: false,
 		lng: locale,
-		ns: ['common', 'entityEditor', 'pages', 'entities', 'errors'],
+		ns: ['common', 'entityEditor', 'pages', 'entities', 'errors', 'staticPages'],
 		...hasResources ? {resources} : {backend: {loadPath: '/locales/{{lng}}/{{ns}}.json'}}
 	});
 
