@@ -137,7 +137,7 @@ class CollectionsTable extends React.Component {
 									<th width="16%">{translate('pages:collections.headerEntities')}</th>
 									{
 										showPrivacy ?
-											<th width="16%">{translate('pages:collections.headerPrivacy')}</th> : null
+											<th width="16%">{translate('common:Privacy')}</th> : null
 									}
 									{
 										showIfOwnerOrCollaborator ?

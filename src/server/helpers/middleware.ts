@@ -492,7 +492,8 @@ export async function i18nMiddleware(req: $Request, res: $Response, next: NextFu
 			entities: await load(loc, 'entities'),
 			entityEditor: await load(loc, 'entityEditor'),
 			errors: await load(loc, 'errors'),
-			pages: await load(loc, 'pages')
+			pages: await load(loc, 'pages'),
+			staticPages: await load(loc, 'staticPages')
 		};
 	}
 
