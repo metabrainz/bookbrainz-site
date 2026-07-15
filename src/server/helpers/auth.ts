@@ -95,6 +95,81 @@ export async function updateMetaBrainzUser(orm:ORM, bbUserJSON, mbUserJSON) {
 	}, {patch: true});
 }
 
+function getMetaBrainzUserId(mbUserJSON) {
+	const metabrainzUserId = mbUserJSON.metabrainz_user_id ||
+		parseInt(mbUserJSON.sub, 10);
+	if (!Number.isInteger(metabrainzUserId) || metabrainzUserId < 0) {
+		throw new Error('MetaBrainz profile did not include a valid user id');
+	}
+	return metabrainzUserId;
+}
+
+function getCachedMetaBrainzName(mbUserJSON, metabrainzUserId) {
+	return mbUserJSON.username || String(metabrainzUserId);
+}
+
+function getEditorNameCandidate(name, suffix = '') {
+	const maxLength = 64;
+	const trimmedName = _.trim(name) || 'Editor';
+	const availableLength = Math.max(maxLength - suffix.length, 1);
+	return `${trimmedName.slice(0, availableLength)}${suffix}`;
+}
+
+async function getAvailableEditorName(Editor, preferredName, metabrainzUserId) {
+	const preferredCandidate = getEditorNameCandidate(preferredName);
+	const existingEditor = await new Editor({name: preferredCandidate})
+		.fetch({require: false});
+	if (!existingEditor) {
+		return preferredCandidate;
+	}
+
+	for (let attempt = 1; attempt < Number.MAX_SAFE_INTEGER; attempt += 1) {
+		const suffix = `-${metabrainzUserId}${attempt > 1 ? `-${attempt}` : ''}`;
+		const candidate = getEditorNameCandidate(preferredName, suffix);
+		// eslint-disable-next-line no-await-in-loop
+		const existingCandidate = await new Editor({name: candidate})
+			.fetch({require: false});
+		if (!existingCandidate) {
+			return candidate;
+		}
+	}
+
+	throw new Error('Could not find an available editor name');
+}
+
+async function getGenderIdFromMetaBrainzProfile(orm:ORM, mbUserJSON) {
+	if (!mbUserJSON.gender) {
+		return null;
+	}
+
+	const gender = await new orm.Gender({
+		name: _.capitalize(mbUserJSON.gender)
+	}).fetch({require: false});
+
+	return gender ? gender.id : null;
+}
+
+export async function createBookBrainzEditorForMetaBrainzProfile(orm:ORM, mbUserJSON) {
+	const {Editor, EditorType} = orm;
+	const metabrainzUserId = getMetaBrainzUserId(mbUserJSON);
+	const cachedMetabrainzName = getCachedMetaBrainzName(mbUserJSON, metabrainzUserId);
+	const [editorType, genderId, name] = await Promise.all([
+		EditorType.forge({label: 'Editor'}).fetch({require: true}),
+		getGenderIdFromMetaBrainzProfile(orm, mbUserJSON),
+		getAvailableEditorName(Editor, cachedMetabrainzName, metabrainzUserId)
+	]);
+
+	return new Editor({
+		cachedMetabrainzName,
+		genderId,
+		metabrainzOauthAccessToken: mbUserJSON.metabrainzOauthAccessToken,
+		metabrainzOauthRefreshToken: mbUserJSON.metabrainzOauthRefreshToken,
+		metabrainzUserId,
+		name,
+		typeId: editorType.id
+	}).save();
+}
+
 export function init(app) {
 	const {orm} = app.locals as {orm: ORM};
 	try {

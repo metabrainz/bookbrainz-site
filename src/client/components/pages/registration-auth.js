@@ -40,16 +40,9 @@ function RegistrationAuth({email, error, signUpDisabled, username}) {
 			<p>
 				To sign up as an editor of BookBrainz, start by creating
 				or signing in to a MetaBrainz account. BookBrainz will send
-				you to MetaBrainz and bring you back here to finish your
-				BookBrainz profile.
+				you to MetaBrainz and bring you back to your BookBrainz
+				profile.
 			</p>
-			<Alert variant="warning">
-				If you already registered for BookBrainz, and your account
-				isn’t linked to a MetaBrainz account, please contact us using
-				one of the links on our homepage instead of registering. We’ll
-				update your account details to link your account so that you
-				can sign in.
-			</Alert>
 			{errorComponent}
 			<Row>
 				<Col lg={{span: 6}}>
@@ -90,8 +83,8 @@ function RegistrationAuth({email, error, signUpDisabled, username}) {
 				<Col lg={{span: 6}}>
 					<h2>Already have a MetaBrainz account?</h2>
 					<p>
-						Sign in with MetaBrainz and then finish creating
-						your BookBrainz editor profile.
+						Sign in with MetaBrainz to create or open your
+						BookBrainz editor profile.
 					</p>
 					<Button
 						disabled={signUpDisabled}

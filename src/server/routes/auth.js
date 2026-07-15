@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import * as search from '../../common/helpers/search';
 import {
 	clearPendingRegistrationRequest,
 	exchangeRegistrationRequestCode,
@@ -24,11 +25,14 @@ import {
 	isPendingRegistrationRequestExpired,
 	isRegistrationRequestCallback
 } from '../helpers/metabrainz-registration';
+import {
+	createBookBrainzEditorForMetaBrainzProfile,
+	updateMetaBrainzUser
+} from '../helpers/auth';
 import express from 'express';
 import log from 'log';
 import passport from 'passport';
 import status from 'http-status';
-import {updateMetaBrainzUser} from '../helpers/auth';
 
 
 const router = express.Router();
@@ -61,6 +65,19 @@ function logInUser(req, res, next, user) {
 
 		return res.redirect(redirectTo);
 	});
+}
+
+async function createEditorAndLogIn(req, res, next, mbProfile) {
+	const editor = await createBookBrainzEditorForMetaBrainzProfile(
+		req.app.locals.orm,
+		mbProfile
+	);
+	const editorJSON = editor.toJSON();
+
+	editor.set('type', 'Editor');
+	await search.indexEntity(editor);
+
+	return logInUser(req, res, next, editorJSON);
 }
 
 async function handleRegistrationRequestCallback(req, res, next) {
@@ -98,8 +115,8 @@ async function handleRegistrationRequestCallback(req, res, next) {
 
 		clearPendingRegistrationRequest(req);
 		if (!updatedUser) {
-			req.session.mbProfile = mbProfile;
-			return res.redirect('/register/details');
+			const response = await createEditorAndLogIn(req, res, next, mbProfile);
+			return response;
 		}
 
 		return logInUser(req, res, next, updatedUser.toJSON());
@@ -118,7 +135,7 @@ router.get('/cb', (req, res, next) => {
 		return handleRegistrationRequestCallback(req, res, next);
 	}
 
-	return passport.authenticate(authenticationStrategy, (authErr, user, info) => {
+	return passport.authenticate(authenticationStrategy, async (authErr, user, info) => {
 		if (authErr) {
 			res.locals.alerts.push({
 				level: 'danger',
@@ -127,13 +144,17 @@ router.get('/cb', (req, res, next) => {
 			return next(authErr);
 		}
 
-		if (!user) {
-			// Set profile in session, and continue to registration
-			req.session.mbProfile = info;
-			return res.redirect('/register/details');
-		}
+		try {
+			if (!user) {
+				const response = await createEditorAndLogIn(req, res, next, info);
+				return response;
+			}
 
-		return logInUser(req, res, next, user);
+			return logInUser(req, res, next, user);
+		}
+		catch (err) {
+			return next(err);
+		}
 	})(req, res, next);
 });
 
