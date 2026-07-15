@@ -22,6 +22,11 @@ import * as error from '../../common/helpers/error';
 import * as middleware from '../helpers/middleware';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
+import {
+	clearPendingRegistrationRequest,
+	createRegistrationRequest,
+	getRegistrationRequestErrorMessage
+} from '../helpers/metabrainz-registration';
 import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
 import React from 'react';
@@ -32,7 +37,9 @@ import RegisterDetailPage from
 import _ from 'lodash';
 import express from 'express';
 import log from 'log';
+import status from 'http-status';
 import target from '../templates/target';
+import validator from 'validator';
 
 
 const router = express.Router();
@@ -43,15 +50,67 @@ router.get('/', (req, res) => {
 		return res.redirect(`/editor/${req.user.id}`);
 	}
 
-	const props = generateProps(req, res);
+	const {registrationRequestError} = req.session;
+	const registrationRequestValues = req.session.registrationRequestValues || {};
+	req.session.registrationRequestError = null;
+	req.session.registrationRequestValues = null;
+
+	const props = generateProps(req, res, {
+		email: registrationRequestValues.email,
+		error: registrationRequestError,
+		signUpDisabled: req.signUpDisabled,
+		username: registrationRequestValues.username
+	});
 
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(props)}>
-			<RegisterAuthPage/>
+			<RegisterAuthPage
+				email={props.email}
+				error={props.error}
+				signUpDisabled={props.signUpDisabled}
+				username={props.username}
+			/>
 		</Layout>
 	);
 
 	return res.send(target({markup, title: 'Register'}));
+});
+
+router.post('/metabrainz-request', async (req, res) => {
+	const username = _.trim(req.body.username);
+	const email = _.trim(req.body.email);
+
+	req.session.registrationRequestValues = {email, username};
+
+	if (!username) {
+		req.session.registrationRequestError = 'Please enter a MetaBrainz username.';
+		return res.redirect(status.SEE_OTHER, '/register');
+	}
+
+	if (!validator.isEmail(email)) {
+		req.session.registrationRequestError = 'Please enter a valid email address.';
+		return res.redirect(status.SEE_OTHER, '/register');
+	}
+
+	try {
+		const responseBody = await createRegistrationRequest(req, username, email);
+		if (!responseBody?.redirect_to) {
+			clearPendingRegistrationRequest(req);
+			req.session.registrationRequestError =
+				'MetaBrainz did not return a registration redirect. Please try again.';
+			return res.redirect(status.SEE_OTHER, '/register');
+		}
+
+		req.session.registrationRequestValues = null;
+		return res.redirect(status.SEE_OTHER, responseBody.redirect_to);
+	}
+	catch (err) {
+		clearPendingRegistrationRequest(req);
+		log.error('MetaBrainz registration request failed', err?.response?.body || err);
+		req.session.registrationRequestError =
+			getRegistrationRequestErrorMessage(err);
+		return res.redirect(status.SEE_OTHER, '/register');
+	}
 });
 
 router.get('/details', middleware.loadGenders, (req, res) => {
@@ -71,7 +130,7 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 	const props = generateProps(req, res, {
 		gender,
 		genders: res.locals.genders,
-		name: req.session.mbProfile.sub
+		name: req.session.mbProfile.username || req.session.mbProfile.sub
 	});
 
 	const markup = ReactDOMServer.renderToString(
@@ -111,12 +170,17 @@ router.post('/handler', async (req, res) => {
 
 		// Create a new Editor and add to the database
 
+		const metabrainzUserId = req.session.mbProfile.metabrainz_user_id ||
+			parseInt(req.session.mbProfile.sub, 10);
+		const cachedMetabrainzName =
+			req.session.mbProfile.username || req.session.mbProfile.sub;
+
 		const editor = await new Editor({
-			cachedMetabrainzName: req.session.mbProfile.sub,
+			cachedMetabrainzName,
 			genderId: req.body.gender,
 			metabrainzOauthAccessToken: req.session.mbProfile.metabrainzOauthAccessToken,
 			metabrainzOauthRefreshToken: req.session.mbProfile.metabrainzOauthRefreshToken,
-			metabrainzUserId: req.session.mbProfile.metabrainz_user_id,
+			metabrainzUserId,
 			name: req.body.displayName,
 			typeId: editorType.id
 		})
@@ -137,7 +201,7 @@ router.post('/handler', async (req, res) => {
 			return error.sendErrorAsJSON(res, new error.FormSubmissionError(
 				'That username already exists - please try using another,' +
 			' or contact us to have your existing BookBrainz account' +
-			' linked to a MusicBrainz account.'
+			' linked to a MetaBrainz account.'
 			));
 		}
 		log.error(err);

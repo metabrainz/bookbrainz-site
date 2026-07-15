@@ -16,9 +16,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {
+	clearPendingRegistrationRequest,
+	exchangeRegistrationRequestCode,
+	fetchUserInfo,
+	getRegistrationRequestErrorMessage,
+	isPendingRegistrationRequestExpired,
+	isRegistrationRequestCallback
+} from '../helpers/metabrainz-registration';
 import express from 'express';
+import log from 'log';
 import passport from 'passport';
 import status from 'http-status';
+import {updateMetaBrainzUser} from '../helpers/auth';
 
 
 const router = express.Router();
@@ -28,8 +38,87 @@ const authenticationStrategy = process.env.NODE_ENV === 'test' ? 'mock' : 'oauth
 
 router.get('/auth', passport.authenticate(authenticationStrategy));
 
+function logInUser(req, res, next, user) {
+	const redirectTo =
+		req.session.redirectTo ? req.session.redirectTo : '/';
+	req.session.redirectTo = null;
+
+	return req.logIn(user, async (loginErr) => {
+		if (loginErr) {
+			return next(loginErr);
+		}
+
+		const {Editor} = req.app.locals.orm;
+		// lastLoginDate is current login date with time in ISO format
+		const lastLoginDate = new Date().toISOString();
+		// Query for update activeAt with current login timestamp
+		try {
+			await Editor.where({id: req.user.id}).save({activeAt: lastLoginDate}, {patch: true});
+		}
+		catch (error) {
+			return next(error);
+		}
+
+		return res.redirect(redirectTo);
+	});
+}
+
+async function handleRegistrationRequestCallback(req, res, next) {
+	if (isPendingRegistrationRequestExpired(req.session.metabrainzRegistrationRequest)) {
+		clearPendingRegistrationRequest(req);
+		req.session.registrationRequestError =
+			'The MetaBrainz registration request expired. Please try again.';
+		return res.redirect(status.SEE_OTHER, '/register');
+	}
+
+	if (!req.query.code) {
+		clearPendingRegistrationRequest(req);
+		req.session.registrationRequestError =
+			'MetaBrainz did not return an authorization code. Please try again.';
+		return res.redirect(status.SEE_OTHER, '/register');
+	}
+
+	try {
+		const tokenResponse = await exchangeRegistrationRequestCode(req);
+		const userInfo = await fetchUserInfo(tokenResponse.access_token);
+		const metabrainzUserId = parseInt(userInfo.sub, 10);
+		if (!Number.isInteger(metabrainzUserId) || metabrainzUserId < 0) {
+			throw new Error('MetaBrainz UserInfo did not include a valid user id');
+		}
+
+		const mbProfile = {
+			...userInfo,
+			metabrainzOauthAccessToken: tokenResponse.access_token,
+			metabrainzOauthRefreshToken: tokenResponse.refresh_token,
+			// eslint-disable-next-line camelcase
+			metabrainz_user_id: metabrainzUserId
+		};
+		const {orm} = req.app.locals;
+		const updatedUser = await updateMetaBrainzUser(orm, req.user, mbProfile);
+
+		clearPendingRegistrationRequest(req);
+		if (!updatedUser) {
+			req.session.mbProfile = mbProfile;
+			return res.redirect('/register/details');
+		}
+
+		return logInUser(req, res, next, updatedUser.toJSON());
+	}
+	catch (err) {
+		clearPendingRegistrationRequest(req);
+		log.error('MetaBrainz registration callback failed', err?.response?.body || err);
+		req.session.registrationRequestError =
+			getRegistrationRequestErrorMessage(err);
+		return res.redirect(status.SEE_OTHER, '/register');
+	}
+}
+
 router.get('/cb', (req, res, next) => {
-	passport.authenticate(authenticationStrategy, (authErr, user, info) => {
+	if (isRegistrationRequestCallback(req)) {
+		return handleRegistrationRequestCallback(req, res, next);
+	}
+
+	return passport.authenticate(authenticationStrategy, (authErr, user, info) => {
 		if (authErr) {
 			res.locals.alerts.push({
 				level: 'danger',
@@ -44,28 +133,7 @@ router.get('/cb', (req, res, next) => {
 			return res.redirect('/register/details');
 		}
 
-		const redirectTo =
-				req.session.redirectTo ? req.session.redirectTo : '/';
-		req.session.redirectTo = null;
-
-		return req.logIn(user, async (loginErr) => {
-			if (loginErr) {
-				return next(loginErr);
-			}
-
-			const {Editor} = req.app.locals.orm;
-			// lastLoginDate is current login date with time in ISO format
-			const lastLoginDate = new Date().toISOString();
-			// Query for update activeAt with current login timestamp
-			try {
-				await Editor.where({id: req.user.id}).save({activeAt: lastLoginDate}, {patch: true});
-			}
-			catch (error) {
-				return next(error);
-			}
-
-			return res.redirect(redirectTo);
-		});
+		return logInUser(req, res, next, user);
 	})(req, res, next);
 });
 
