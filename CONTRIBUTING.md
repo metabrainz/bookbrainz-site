@@ -24,6 +24,7 @@ to BookBrainz:
  * Use ES6/ES7 features - they make life easier and result in cleaner code
  * Use [JSDoc](https://jsdoc.app/) for commenting code
  * Use [TypeScript](https://www.typescriptlang.org/) everywhere - static type checking is useful
+ * If your component has user-visible text, make it translatable — see [CONTRIBUTING-I18N.md](CONTRIBUTING-I18N.md)
 
 ## Pull requests
 
