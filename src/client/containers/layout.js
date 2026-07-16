@@ -139,9 +139,9 @@ class Layout extends React.Component {
 		return (
 			<Nav>
 				<Nav.Item>
-					<Nav.Link {...disableSignUp} href="/register">
+					<Nav.Link {...disableSignUp} href="/auth">
 						<FontAwesomeIcon icon={faSignInAlt}/>
-						{' Sign In / Register'}
+						{' Sign In'}
 					</Nav.Link>
 				</Nav.Item>
 			</Nav>

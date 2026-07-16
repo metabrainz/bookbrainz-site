@@ -60,6 +60,11 @@ function Footer({repositoryUrl, siteRevision}: Props) {
 					</Col>
 					<Col className="text-right" xs={4}>
 						<div className="small">
+							<a href="/register">
+								Register
+							</a>
+						</div>
+						<div className="small">
 							<a href="/admin-logs">
 								Admin Logs
 							</a>
