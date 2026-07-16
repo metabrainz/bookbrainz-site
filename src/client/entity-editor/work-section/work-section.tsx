@@ -34,6 +34,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LanguageField from '../common/language-field';
 import {connect} from 'react-redux';
 import makeImmutable from '../common/make-immutable';
+import {useTranslation} from 'react-i18next';
 
 
 const ImmutableLanguageField = makeImmutable(LanguageField);
@@ -147,6 +148,7 @@ function WorkSection({
 	onLanguagesChange,
 	onTypeChange
 }: Props) {
+	const {t: translate} = useTranslation('entityEditor');
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		frequency: language.frequency,
 		label: language.name,
@@ -158,10 +160,10 @@ function WorkSection({
 	const selectedTypeOption:WorkType = workTypesForDisplay.find((el) => el.id === typeValue);
 	const tooltip = (
 		<Tooltip id="work-type-tooltip">
-			Literary form or structure of the work
+			{translate('workSection.typeTooltip')}
 		</Tooltip>
 	);
-	const heading = <h2> What else do you know about the Work?</h2>;
+	const heading = <h2>{translate('shared.entityHeading', {entity: 'Work'})}</h2>;
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
@@ -170,14 +172,13 @@ function WorkSection({
 		<div>
 			{!isUnifiedForm && heading}
 			<p className="text-muted">
-				All fields optional — leave something blank if you don&rsquo;t
-				know it
+				{translate('shared.allFieldsOptional')}
 			</p>
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>
-							Type
+							{translate('common:type')}
 							<OverlayTrigger delay={50} overlay={tooltip}>
 								<FontAwesomeIcon
 									className="margin-left-0-5"
@@ -212,7 +213,7 @@ function WorkSection({
 						isMulti
 						instanceId="language"
 						options={languageOptionsForDisplay}
-						tooltipText="Main language used for the content of the work"
+						tooltipText={translate('workSection.languageTooltip')}
 						value={languageValues}
 						onChange={onLanguagesChange}
 					/>
