@@ -103,8 +103,8 @@ describe('OAuth webhook event handlers', () => {
 			await createEditorFromWebhook(456, 'oldusername');
 
 			await handleUserUpdated(orm, {
-				new: {username: 'newusername'},
-				old: {username: 'oldusername'},
+				new: {name: 'newusername'},
+				old: {name: 'oldusername'},
 				user_id: 456
 			}, deliveryId);
 
@@ -133,11 +133,11 @@ describe('OAuth webhook event handlers', () => {
 			await handleUserUpdated(orm, {
 				new: {
 					email: 'user-456@example.com',
-					username: 'user-456'
+					name: 'user-456'
 				},
 				old: {
 					email: 'new@example.com',
-					username: 'newusername'
+					name: 'newusername'
 				},
 				user_id: 456
 			}, deliveryId);
@@ -149,8 +149,8 @@ describe('OAuth webhook event handlers', () => {
 
 		it('should not create an editor when the MetaBrainz user ID is not found', async () => {
 			await handleUserUpdated(orm, {
-				new: {username: 'newname'},
-				old: {username: 'nonexistent'},
+				new: {name: 'newname'},
+				old: {name: 'nonexistent'},
 				user_id: 99999
 			}, deliveryId);
 
