@@ -149,7 +149,7 @@ const SortableList = SortableContainer(({children}) => <div>{children}</div>);
 function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onRemove, hideItemSelect,
 	onAdd, onEdit, onSort, seriesItemsArray, isUnifiedForm}:SeriesItemsProps) {
 	const [seriesItem, setSeriesItem] = useState(null);
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	const [targetEntity, setTargetEntity] = useState(null);
 
 	const handleEntityChange = (value: EntitySearchResult) => {
