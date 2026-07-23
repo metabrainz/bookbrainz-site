@@ -225,7 +225,7 @@ function EditionSectionMerge({
 		<div>
 			<MergeField
 				currentValue={authorCreditValue}
-				label={translate('shared.authorCreditLabel')}
+				label={translate('common:authorCredit')}
 				options={authorCreditOptions}
 				valueRenderer={authorCreditToString}
 				onChange={onAuthorCreditChange}
@@ -246,7 +246,7 @@ function EditionSectionMerge({
 			<MergeField
 				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				currentValue={publisherValue}
-				label={translate('common:publisher')}
+				label={translate('common:entityType.publisher')}
 				options={publisherOptions}
 				onChange={onPublisherChange}
 			/>
