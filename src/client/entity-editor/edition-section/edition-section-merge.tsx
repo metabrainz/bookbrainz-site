@@ -156,7 +156,7 @@ function EditionSectionMerge({
 	weightValue,
 	widthValue
 }: Props) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	const editionGroupOptions = [];
 	const authorCreditOptions = [];
 	const releaseDateOptions = [];
@@ -225,7 +225,7 @@ function EditionSectionMerge({
 		<div>
 			<MergeField
 				currentValue={authorCreditValue}
-				label={translate('editionSectionMerge.authorCreditLabel')}
+				label={translate('common:authorCredit')}
 				options={authorCreditOptions}
 				valueRenderer={authorCreditToString}
 				onChange={onAuthorCreditChange}
@@ -233,7 +233,7 @@ function EditionSectionMerge({
 			<MergeField
 				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				currentValue={editionGroupValue}
-				label={translate('editionSectionMerge.editionGroupLabel')}
+				label={translate('common:entityType.editionGroup')}
 				options={editionGroupOptions}
 				onChange={onEditionGroupChange}
 			/>
@@ -246,7 +246,7 @@ function EditionSectionMerge({
 			<MergeField
 				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				currentValue={publisherValue}
-				label={translate('common:publisher')}
+				label={translate('common:entityType.publisher')}
 				options={publisherOptions}
 				onChange={onPublisherChange}
 			/>

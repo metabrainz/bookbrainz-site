@@ -39,6 +39,7 @@ import {
 import {Alert, Button, Col, Form, ListGroup, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
 import {DateObject, convertMapToObject, isNullDate} from '../../helpers/utils';
 import type {List, Map} from 'immutable';
+import {Trans, useTranslation} from 'react-i18next';
 import {faClone, faExternalLinkAlt, faQuestionCircle, faSearch} from '@fortawesome/free-solid-svg-icons';
 import {
 	validateEditionSectionDepth,
@@ -66,7 +67,6 @@ import {clearEditionGroups} from '../../unified-form/detail-tab/action';
 import {connect} from 'react-redux';
 import {entityToOption} from '../../helpers/entity';
 import makeImmutable from '../common/make-immutable';
-import {useTranslation} from 'react-i18next';
 
 
 const ImmutableLanguageField = makeImmutable(LanguageField);
@@ -196,7 +196,7 @@ function EditionSection({
 	widthValue,
 	...rest
 }: Props) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		frequency: language.frequency,
 		label: language.name,
@@ -316,19 +316,19 @@ function EditionSection({
 				{showMatchingEditionGroups &&
 					<Col lg={6}>
 						<Alert variant="warning">
-							{matchingNameEditionGroups.length > 1 ?
-								translate('editionSection.matchingEditionGroupsPlural') :
-								translate('editionSection.matchingEditionGroupSingular')
-							}
+							{translate('editionSection.matchingEditionGroups', {count: matchingNameEditionGroups.length})}
 							<br/>
 							{translate('editionSection.reviewEditionGroups')}
 							<br/>
 							<small>
 								{translate('editionSection.noSelectionAutoCreate')}
 								<br/>
-								{translate('editionSection.clickIconToOpenBefore')}
-								<FontAwesomeIcon icon={faExternalLinkAlt}/>
-								{translate('editionSection.clickIconToOpenAfter')}
+								<Trans
+									components={{
+										icon: <FontAwesomeIcon icon={faExternalLinkAlt}/>
+									}}
+									i18nKey="entityEditor:editionSection.clickIconToOpen"
+								/>
 							</small>
 							<ListGroup className="margin-top-1">
 								{matchingNameEditionGroups.map(eg => (
