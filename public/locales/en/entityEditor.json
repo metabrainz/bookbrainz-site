@@ -37,7 +37,6 @@
   "editionSection.depthLabel": "Depth",
   "editionSection.clickIconToOpen": "Click on the <icon /> icon open in a new tab, and click an item to select.",
   "editionSection.editionGroupHelp": "Group with other Editions of the same book",
-  "editionSection.editionGroupLabel": "editionSection.editionGroupLabel",
   "editionSection.editionGroupRequired": "Edition Group is required — this cannot be blank. You can search for and choose an existing Edition Group, or choose to automatically create one instead.",
   "editionSection.editionGroupTooltip": "Group together different Editions of the same book.",
   "editionSection.editionGroupTooltipExample": "For example paperback, hardcover and e-book editions.",
