@@ -4,11 +4,25 @@ on:
     workflows: ['CI']                     # runs after CI workflow
     types:
       - completed
+
+permissions:
+  actions: read
+  checks: write
+  contents: read
+
 jobs:
   report:
+    if: >-
+      ${{
+        github.event.workflow_run.event == 'pull_request' &&
+        github.event.workflow_run.conclusion != 'cancelled' &&
+        github.event.workflow_run.conclusion != 'skipped' &&
+        github.event.workflow_run.pull_requests[0].number
+      }}
     runs-on: ubuntu-latest
     steps:
-    - uses: dorny/test-reporter@v1
+    - name: Publish test report
+      uses: dorny/test-reporter@v3
       with:
         artifact: test-results            # artifact name
         name: Mocha Tests                  # Name of the check run which will be created
