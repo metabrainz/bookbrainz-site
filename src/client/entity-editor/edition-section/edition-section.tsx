@@ -352,7 +352,7 @@ function EditionSection({
 					<EntitySearchFieldOption
 						isMulti
 						instanceId="publisher"
-						label={translate('common:publisher')}
+						label={translate('common:entityType.publisher')}
 						recentlyUsedEntityType="Publisher"
 						type="publisher"
 						value={publisherValue}
