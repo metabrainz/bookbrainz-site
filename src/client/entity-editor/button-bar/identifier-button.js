@@ -47,6 +47,9 @@ function IdentifierButton({
 	const {t: translate} = useTranslation('entityEditor');
 	const textComponent = (() => {
 		if (!isUnifiedForm) {
+			if (numIdentifiers === 0) {
+				return translate('shared.addIdentifiers');
+			}
 			return translate('identifierButton.editIdentifiers', {count: numIdentifiers});
 		}
 
