@@ -233,7 +233,7 @@ function EditionSection({
 					help={translate('editionSection.editionGroupHelp')}
 					instanceId="edition-group"
 					isUnifiedForm={isUnifiedForm}
-					label={translate('editionSection.editionGroupLabel')}
+					label={translate('common:entityType.editionGroup')}
 					languageOptions={languageOptions}
 					recentlyUsedEntityType="EditionGroup"
 					tooltipText={
