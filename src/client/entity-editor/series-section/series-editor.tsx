@@ -218,6 +218,8 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 									handleNumberAttributeChange={handleNumberAttributeChange}
 									isUnifiedForm={isUnifiedForm}
 									key={value.rowID}
+									placeholder={translate('seriesEditor.placeholder')}
+									removeButtonText={translate('common:button.remove')}
 									value={value}
 									onRemove={onRemove}
 								/>
