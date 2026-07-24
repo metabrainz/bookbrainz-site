@@ -5,11 +5,9 @@ import React, {useCallback, useState} from 'react';
 import {faCheck, faListCheck, faTriangleExclamation} from '@fortawesome/free-solid-svg-icons';
 import {ENTITY_TYPE_ICONS} from '../../helpers/entity';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {useTranslation} from 'react-i18next';
 
 
 export default function SearchAdminPage() {
-	const {t: translate} = useTranslation('pages');
 	const [loading, setLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string>();
 	const [success, setSuccess] = useState(false);
@@ -37,7 +35,7 @@ export default function SearchAdminPage() {
 	return (
 		<Card>
 			<Card.Header as="h2">
-				{translate('searchAdmin.heading')}
+				Search indexing
 			</Card.Header>
 			<Card.Body>
 				<div
@@ -102,15 +100,15 @@ export default function SearchAdminPage() {
 					<Button size="lg" variant="warning" onClick={() => { indexEntity(); }}>
 						<FontAwesomeIcon
 							icon={faListCheck}
-						/> {translate('searchAdmin.allEntities')}
+						/> All entities
 					</Button>
 				</div>
 				<br/>
 				<div>
-					{loading && <><Spinner animation="border"/> {translate('searchAdmin.inProgress')}</>}
+					{loading && <><Spinner animation="border"/> In progress...</>}
 					{success &&
 					<Alert dismissible variant="success" onClose={() => { setSuccess(false); }}>
-						<FontAwesomeIcon icon={faCheck}/> {translate('searchAdmin.success')}
+						<FontAwesomeIcon icon={faCheck}/> Success
 					</Alert>
 					}
 					{errorMessage &&
