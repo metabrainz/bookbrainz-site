@@ -127,7 +127,7 @@ function SortNameField({
 	storedNameValue,
 	...rest
 }: Props) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	let input;
 
 	function handleGuessClick() {
@@ -159,10 +159,10 @@ function SortNameField({
 
 	/* eslint-disable react/jsx-no-bind */
 	const guessButton =
-		<Button variant="primary" onClick={handleGuessClick}>{translate('sortNameField.guessButton')}</Button>;
+		<Button variant="primary" onClick={handleGuessClick}>{translate('common:button.guess')}</Button>;
 
 	const copyButton =
-		<Button className="ml-1" variant="primary" onClick={handleCopyClick}>{translate('sortNameField.copyButton')}</Button>;
+		<Button className="ml-1" variant="primary" onClick={handleCopyClick}>{translate('common:button.copy')}</Button>;
 	/* eslint-enable react/jsx-no-bind */
 
 	const tooltip = (

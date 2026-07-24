@@ -67,7 +67,7 @@ function EditionGroupSectionMerge({
 	onAuthorCreditChange,
 	onTypeChange
 }: Props) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	const authorCreditOptions = [];
 	const typeOptions = [];
 	const editions = [];
