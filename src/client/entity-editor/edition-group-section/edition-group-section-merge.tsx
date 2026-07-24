@@ -88,11 +88,7 @@ function EditionGroupSectionMerge({
 		<div>
 			<MergeField
 				currentValue={authorCreditValue}
-<<<<<<< HEAD
 				label={translate('common:authorCredit')}
-=======
-				label={translate('shared.authorCreditLabel')}
->>>>>>> eb1139587 (refactor(i18n): Deduplicate shared entity editor translation keys)
 				options={authorCreditOptions}
 				valueRenderer={authorCreditToString}
 				onChange={onAuthorCreditChange}
