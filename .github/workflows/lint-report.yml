@@ -32,12 +32,24 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
 
-      - name: Publish ESLint check
-        uses: ataylorme/eslint-annotate-action@v4
+      - name: Set up reviewdog
+        uses: reviewdog/action-setup@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          report-json: lint-results/eslint_report.json
-          check-name: ESLint
-          post-comment: false
-          only-pr-files: true
-          markdown-report-on-step-summary: true
+          reviewdog_version: latest
+
+      - name: Publish ESLint check
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CI_PULL_REQUEST: ${{ github.event.workflow_run.pull_requests[0].number }}
+          CI_COMMIT: ${{ github.event.workflow_run.head_sha }}
+          CI_REPO_OWNER: ${{ github.repository_owner }}
+          CI_REPO_NAME: ${{ github.event.repository.name }}
+        run: >-
+          reviewdog
+          -f=rdjson
+          -name="ESLint"
+          -reporter=github-pr-check
+          -filter-mode=nofilter
+          -level=error
+          -fail-on-error
+          < lint-results/eslint_report.rdjson

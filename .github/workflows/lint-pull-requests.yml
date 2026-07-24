@@ -37,7 +37,7 @@ jobs:
 
       - name: Run ESLint
         id: eslint
-        run: yarn run lint --format json --output-file eslint_report.json
+        run: yarn run lint --format rdjson --output-file eslint_report.rdjson
         continue-on-error: true
 
       - name: Upload ESLint report
@@ -45,7 +45,7 @@ jobs:
         if: success() || failure()
         with:
           name: eslint-report
-          path: eslint_report.json
+          path: eslint_report.rdjson
 
       - name: Fail on ESLint errors
         if: steps.eslint.outcome == 'failure'
