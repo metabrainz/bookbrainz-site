@@ -4,19 +4,17 @@ name: Lint pull requests
 
 # Controls when the action will run.
 on:
-  # Triggers the workflow on pull request events in the context of the fork
-  # trying to sidestep limitations here: https://github.com/wearerequired/lint-action/issues/13
-  pull_request_target:
+  # Triggers the workflow on pull request events with fork-safe permissions.
+  pull_request:
 
 # Limit permissions of the token
 # When running an untrusted fork, we don't want to give write permissions
 # See https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
 permissions:
-  checks: write # Allows the creation of annotations on forks
-  contents: read # Don't allow untrusted forks write access
+  contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request_target' && github.head_ref || github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -26,19 +24,29 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          
-      - name: NPM install
-        uses: bahmutov/npm-install@v1
+        uses: actions/checkout@v7
 
-      - name: Run linters
-        uses: wearerequired/lint-action@v1
+      - name: Set up node
+        uses: actions/setup-node@v7
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          eslint: true
-          # Auto-fix requires write permissions to commit changes, which we don't want to allow
-          # See https://github.com/wearerequired/lint-action/issues/13
-          auto_fix: false
-          
+          node-version: "24"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run ESLint
+        id: eslint
+        run: yarn run lint --format json --output-file eslint_report.json
+        continue-on-error: true
+
+      - name: Upload ESLint report
+        uses: actions/upload-artifact@v7
+        if: success() || failure()
+        with:
+          name: eslint-report
+          path: eslint_report.json
+
+      - name: Fail on ESLint errors
+        if: steps.eslint.outcome == 'failure'
+        run: exit 1

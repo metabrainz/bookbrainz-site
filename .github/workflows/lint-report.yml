@@ -1,0 +1,43 @@
+name: Lint Report
+
+on:
+  workflow_run:
+    workflows: ['Lint pull requests']
+    types:
+      - completed
+
+permissions:
+  actions: read
+  checks: write
+  contents: read
+  pull-requests: read
+
+jobs:
+  report:
+    name: Report linter results
+    if: >-
+      ${{
+        github.event.workflow_run.event == 'pull_request' &&
+        github.event.workflow_run.conclusion != 'cancelled' &&
+        github.event.workflow_run.conclusion != 'skipped' &&
+        github.event.workflow_run.pull_requests[0].number
+      }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download ESLint report
+        uses: actions/download-artifact@v8
+        with:
+          name: eslint-report
+          path: lint-results
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Publish ESLint check
+        uses: ataylorme/eslint-annotate-action@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          report-json: lint-results/eslint_report.json
+          check-name: ESLint
+          post-comment: false
+          only-pr-files: true
+          markdown-report-on-step-summary: true
