@@ -8,12 +8,18 @@
   "authorCredit": "Author Credit",
   "button.close": "Close",
   "button.remove": "Remove",
+  "entityType.editionGroup": "Edition Group",
+  "entityType.publisher": "Publisher",
+  "format": "Format",
   "gender": "Gender",
   "languages": "Languages",
   "no": "no",
+  "pageCount": "Page Count",
+  "pages": "Pages",
   "pagination.previous": "← Previous Page",
   "pagination.results": "Results {{from}} — {{to}}",
+  "publisher": "Publisher",
+  "status": "Status",
   "type": "Type",
   "yes": "yes"
 }
-  
