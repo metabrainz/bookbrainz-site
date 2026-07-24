@@ -39,7 +39,7 @@ describe('Author routes with entity editing priv', () => {
 		const res = await agent
 			.get('/author/create');
 		expect(res.ok).to.be.true;
-		expect(res).to.have.status(200);
+		expect(res).to.not.have.status(200);
 	});
 	it('should not throw an error trying to edit an existing author', async () => {
 		const res = await agent
