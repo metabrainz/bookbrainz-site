@@ -88,7 +88,7 @@ function IdentifierRow({
 	onRemoveButtonClick,
 	onValueChange
 }: Props) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	const identifierTypesForDisplay = typeOptions.map((type) => ({
 		label: type.label,
 		value: type.id
@@ -127,7 +127,7 @@ function IdentifierRow({
 						onClick={onRemoveButtonClick}
 					>
 						<FontAwesomeIcon icon={faTimes}/>
-						<span>&nbsp;{translate('identifierRow.removeButton')}</span>
+						<span>&nbsp;{translate('common:button.remove')}</span>
 					</Button>
 				</Col>
 			</Row>

@@ -44,11 +44,11 @@ function AnnotationSection({
 	onAnnotationChange,
 	isUnifiedForm
 }) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	const annotation = convertMapToObject(immutableAnnotation);
 	const annotationLabel = (
 		<span>
-			{translate('annotationSection.label')}
+			{translate('common:annotation')}
 			<span className="text-muted"> {translate('shared.optionalLabel')}</span>
 		</span>
 	);
@@ -62,7 +62,7 @@ function AnnotationSection({
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
 	}
-	const heading = <h2> {translate('annotationSection.heading')}</h2>;
+	const heading = <h2> {translate('common:annotation')}</h2>;
 	return (
 		<div>
 			{!isUnifiedForm && heading}

@@ -67,7 +67,7 @@ function EditionGroupSectionMerge({
 	onAuthorCreditChange,
 	onTypeChange
 }: Props) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	const authorCreditOptions = [];
 	const typeOptions = [];
 	const editions = [];
@@ -88,7 +88,11 @@ function EditionGroupSectionMerge({
 		<div>
 			<MergeField
 				currentValue={authorCreditValue}
+<<<<<<< HEAD
 				label={translate('common:authorCredit')}
+=======
+				label={translate('shared.authorCreditLabel')}
+>>>>>>> eb1139587 (refactor(i18n): Deduplicate shared entity editor translation keys)
 				options={authorCreditOptions}
 				valueRenderer={authorCreditToString}
 				onChange={onAuthorCreditChange}

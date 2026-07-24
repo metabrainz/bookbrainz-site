@@ -59,7 +59,7 @@ function NameField({
 	const {t: translate} = useTranslation('entityEditor');
 	const inputLabel = (
 		<ValidationLabel empty={empty} error={error} warn={warn}>
-			{!label ? translate('nameField.label') : label}
+			{!label ? translate('shared.nameField') : label}
 		</ValidationLabel>
 	);
 

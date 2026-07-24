@@ -149,7 +149,7 @@ const SortableList = SortableContainer(({children}) => <div>{children}</div>);
 function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onRemove, hideItemSelect,
 	onAdd, onEdit, onSort, seriesItemsArray, isUnifiedForm}:SeriesItemsProps) {
 	const [seriesItem, setSeriesItem] = useState(null);
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	const [targetEntity, setTargetEntity] = useState(null);
 
 	const handleEntityChange = (value: EntitySearchResult) => {
@@ -218,6 +218,8 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 									handleNumberAttributeChange={handleNumberAttributeChange}
 									isUnifiedForm={isUnifiedForm}
 									key={value.rowID}
+									placeholder={translate('seriesEditor.placeholder')}
+									removeButtonText={translate('common:button.remove')}
 									value={value}
 									onRemove={onRemove}
 								/>
@@ -232,6 +234,8 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 									index={index}
 									isUnifiedForm={isUnifiedForm}
 									key={value.rowID}
+									placeholder={translate('seriesEditor.placeholder')}
+									removeButtonText={translate('common:button.remove')}
 									value={value}
 									onRemove={onRemove}
 								/>
