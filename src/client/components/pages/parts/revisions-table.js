@@ -30,12 +30,12 @@ const {Table} = bootstrap;
 const {formatDate, stringToHTMLWithLinks} = utilsHelper;
 
 function RevisionsTable(props) {
-	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading} = props;
+	const {results, showEntities, showRevisionNote, showRevisionEditor} = props;
 	const {t: translate} = useTranslation('pages');
 	return (
 		<div>
 			<div>
-				<h1 className="text-center">{tableHeading || translate('pages:revisions.recentActivity')}</h1>
+				<h1 className="text-center">{translate('pages:revisions.recentActivity')}</h1>
 			</div>
 			<hr className="thin"/>
 			{
@@ -150,15 +150,12 @@ RevisionsTable.propTypes = {
 	results: PropTypes.array.isRequired,
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
-	showRevisionNote: PropTypes.bool,
-	tableHeading: PropTypes.node
+	showRevisionNote: PropTypes.bool
 };
 RevisionsTable.defaultProps = {
 	showEntities: false,
 	showRevisionEditor: false,
-	showRevisionNote: false,
-	tableHeading: null
-
+	showRevisionNote: false
 };
 
 RevisionsTable.displayName = 'RevisionsTable';

@@ -131,26 +131,26 @@ class CollectionsTable extends React.Component {
 						>
 							<thead>
 								<tr>
-									<th width="16%">{translate('pages:collections.headerName')}</th>
-									<th width="33%">{translate('pages:collections.headerDescription')}</th>
-									<th width="16%">{translate('pages:collections.headerEntityType')}</th>
-									<th width="16%">{translate('pages:collections.headerEntities')}</th>
+									<th width="16%">{translate('common:name')}</th>
+									<th width="33%">{translate('common:description')}</th>
+									<th width="16%">{translate('common:entityType')}</th>
+									<th width="16%">{translate('common:entities')}</th>
 									{
 										showPrivacy ?
-											<th width="16%">{translate('pages:collections.headerPrivacy')}</th> : null
+											<th width="16%">{translate('common:privacy')}</th> : null
 									}
 									{
 										showIfOwnerOrCollaborator ?
-											<th width="16%">{translate('pages:collections.headerRole')}</th> : null
+											<th width="16%">{translate('common:role')}</th> : null
 									}
 									{
 										showOwner ?
-											<th width="16%">{translate('pages:collections.owner')}</th> : null
+											<th width="16%">{translate('common:owner')}</th> : null
 
 									}
 									{
 										showLastModified ?
-											<th width="16%">{translate('pages:collections.headerLastModified')}</th> : null
+											<th width="16%">{translate('common:lastModified')}</th> : null
 									}
 								</tr>
 							</thead>
@@ -171,11 +171,11 @@ class CollectionsTable extends React.Component {
 											<td>{collection.itemCount}</td>
 											{
 												showPrivacy ?
-													<td>{collection.public ? translate('pages:collections.public') : translate('pages:collections.private')}</td> : null
+													<td>{collection.public ? translate('common:public') : translate('common:private')}</td> : null
 											}
 											{
 												showIfOwnerOrCollaborator ?
-													<td>{collection.isOwner ? translate('pages:collections.owner') : translate('pages:collections.collaborator')}</td> : null
+													<td>{collection.isOwner ? translate('common:owner') : translate('common:collaborator')}</td> : null
 											}
 											{
 												showOwner ?
