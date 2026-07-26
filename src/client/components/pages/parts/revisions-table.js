@@ -30,7 +30,7 @@ const {Table} = bootstrap;
 const {formatDate, stringToHTMLWithLinks} = utilsHelper;
 
 function RevisionsTable(props) {
-	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading} = props;
+	const {results, showEntities, showRevisionNote, showRevisionEditor} = props;
 	const {t: translate} = useTranslation(['pages', 'common']);
 	return (
 		<div>
@@ -150,8 +150,7 @@ RevisionsTable.propTypes = {
 	results: PropTypes.array.isRequired,
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
-	showRevisionNote: PropTypes.bool,
-	tableHeading: PropTypes.node
+	showRevisionNote: PropTypes.bool
 };
 RevisionsTable.defaultProps = {
 	showEntities: false,
