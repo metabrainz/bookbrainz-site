@@ -132,16 +132,16 @@ class CollectionsTable extends React.Component {
 							<thead>
 								<tr>
 									<th width="16%">{translate('common:name')}</th>
-									<th width="33%">{translate('pages:collections.headerDescription')}</th>
-									<th width="16%">{translate('pages:collections.headerEntityType')}</th>
-									<th width="16%">{translate('pages:collections.headerEntities')}</th>
+									<th width="33%">{translate('common:description')}</th>
+									<th width="16%">{translate('common:entityType')}</th>
+									<th width="16%">{translate('common:entities')}</th>
 									{
 										showPrivacy ?
-											<th width="16%">{translate('common:Privacy')}</th> : null
+											<th width="16%">{translate('common:privacy')}</th> : null
 									}
 									{
 										showIfOwnerOrCollaborator ?
-											<th width="16%">{translate('pages:collections.headerRole')}</th> : null
+											<th width="16%">{translate('common:role')}</th> : null
 									}
 									{
 										showOwner ?
@@ -150,7 +150,7 @@ class CollectionsTable extends React.Component {
 									}
 									{
 										showLastModified ?
-											<th width="16%">{translate('pages:collections.headerLastModified')}</th> : null
+											<th width="16%">{translate('common:lastModified')}</th> : null
 									}
 								</tr>
 							</thead>
