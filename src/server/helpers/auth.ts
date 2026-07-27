@@ -78,7 +78,7 @@ async function _updateMetaBrainzUser(orm:ORM, bbUserJSON, mbUserJSON) {
 			.fetch({require: true});
 	}
 	else {
-		fetchedEditor = await new Editor({metabrainzUserId: mbUserJSON.metabrainz_user_id})
+		fetchedEditor = await new Editor({metabrainzUserId: mbUserJSON.sub})
 			.fetch({require: false});
 		if (!fetchedEditor) {
 			return null;
@@ -88,7 +88,7 @@ async function _updateMetaBrainzUser(orm:ORM, bbUserJSON, mbUserJSON) {
 		cachedMetabrainzName: mbUserJSON.sub,
 		metabrainzOauthAccessToken: mbUserJSON.metabrainzOauthAccessToken,
 		metabrainzOauthRefreshToken: mbUserJSON.metabrainzOauthRefreshToken,
-		metabrainzUserId: mbUserJSON.metabrainz_user_id
+		metabrainzUserId: mbUserJSON.sub
 	}, {patch: true});
 }
 
