@@ -64,7 +64,23 @@ if (app.get('env') !== 'testing') {
 	app.use(logger('dev'));
 }
 
-app.use(express.json({limit: '10mb'}));
+app.use(express.json({
+	limit: '10mb',
+	verify: (req, res, buffer) => {
+		if (req.originalUrl === '/webhooks/metabrainz/') {
+			// Attach the raw buffer for OAuth webhook signature verification
+			req.rawBody = buffer;
+		}
+	}
+}));
+app.use((err, req, res, next) => {
+	if (err?.type === 'entity.parse.failed' && req.path === '/webhooks/metabrainz/') {
+		//  for OAuth webhook signature verification, we need the raw body, so if JSON parsing fails,
+		// we should still attempt to verify the signature and respond accordingly
+		return res.status(400).json({error: 'Invalid JSON payload'});
+	}
+	return next(err);
+});
 app.use(express.urlencoded({
 	extended: false
 }));

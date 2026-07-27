@@ -452,11 +452,45 @@ export async function createSeries(optionalBBID, optionalSeriesAttribs = {}) {
 	return series;
 }
 
+function fetchPublisherType(PublisherTypeModel, publisherTypeAttribs) {
+	return new PublisherTypeModel().query((qb) => {
+		if (!isNil(publisherTypeAttribs.id)) {
+			qb.where('id', publisherTypeAttribs.id);
+		}
+		if (!isNil(publisherTypeAttribs.label)) {
+			if (!isNil(publisherTypeAttribs.id)) {
+				qb.orWhere('label', publisherTypeAttribs.label);
+			}
+			else {
+				qb.where('label', publisherTypeAttribs.label);
+			}
+		}
+	}).fetch({require: false});
+}
+
 async function fetchOrCreatePublisherType(PublisherTypeModel, optionalPublisherAttribs = {}) {
 	const PublisherTypeAttribs = {
-		label: faker.commerce.productAdjective()
+		label: `Publisher Type ${string.uuid()}`
 	};
-	const publisherType = await new PublisherTypeModel({...PublisherTypeAttribs, ...optionalPublisherAttribs}).save(null, {method: 'insert'});
+	const publisherTypeAttribs = {...PublisherTypeAttribs, ...optionalPublisherAttribs};
+
+	let publisherType = await fetchPublisherType(PublisherTypeModel, publisherTypeAttribs);
+
+	if (publisherType) {
+		return publisherType;
+	}
+
+	try {
+		publisherType = await new PublisherTypeModel(publisherTypeAttribs).save(null, {method: 'insert'});
+	}
+	catch (error) {
+		// Another test process may have inserted this type after our initial fetch.
+		publisherType = await fetchPublisherType(PublisherTypeModel, publisherTypeAttribs);
+		if (!publisherType) {
+			throw error;
+		}
+	}
+
 	return publisherType;
 }
 
@@ -489,6 +523,7 @@ export async function createPublisher(optionalBBID, optionalPublisherAttribs = {
 	}
 
 	const publisherAttribs = {
+		...optionalPublisherAttribs,
 		areaId: area.id,
 		bbid,
 		beginDay: 25,
@@ -498,8 +533,7 @@ export async function createPublisher(optionalBBID, optionalPublisherAttribs = {
 		endMonth: 5,
 		endYear: 2012,
 		ended: true,
-		typeId: publisherType.id,
-		...optionalPublisherAttribs
+		typeId: publisherType.id
 	};
 	const publisher = await new Publisher({...entityAttribs, ...publisherAttribs})
 		.save(null, {method: 'insert'});

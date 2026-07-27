@@ -513,11 +513,20 @@ export function formatSearchResponse(searchResult?: {results:any[], total:number
 	return _.isNil(searchResult) ? null :
 		{
 			resultCount: results.length,
-			searchResult: results.map((entity) => ({
-				bbid: _.get(entity, 'bbid', null),
-				defaultAlias: getDefaultAlias(entity),
-				entityType: _.get(entity, 'type', null)
-			})),
+			searchResult: results.map((entity) => {
+				const entityType = _.get(entity, 'type', null);
+
+				const formattedEntity: any = {
+					bbid: _.get(entity, 'bbid', null),
+					defaultAlias: getDefaultAlias(entity),
+					entityType
+				};
+
+				if (entityType === 'Edition' || entityType === 'EditionGroup') {
+					formattedEntity.authors = _.get(entity, 'authors', []);
+				}
+				return formattedEntity;
+			}),
 			totalCount: total
 		};
 }

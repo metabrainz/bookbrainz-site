@@ -39,7 +39,7 @@ CREATE TABLE bookbrainz.editor (
 	reputation INT NOT NULL DEFAULT 0,
 	bio TEXT NOT NULL DEFAULT '',
 	created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
-	active_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT timezone('UTC'::TEXT, now()),
+	active_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT TIMESTAMP 'epoch',
 	type_id INT NOT NULL,
 	gender_id INT,
 	area_id INT,
