@@ -19,6 +19,7 @@
 
 import * as error from '../../common/helpers/error';
 
+import {DELETED_EDITOR_CACHED_METABRAINZ_NAME} from './editor';
 import OAuth2Strategy from 'passport-oauth2';
 import type {ORM} from 'bookbrainz-data';
 import {PrivilegeType} from '../../common/helpers/privileges-utils';
@@ -92,6 +93,30 @@ async function _updateMetaBrainzUser(orm:ORM, bbUserJSON, mbUserJSON) {
 	}, {patch: true});
 }
 
+function getSerializedUserId(user) {
+	return _.isObject(user) ? _.get(user, 'id') : user;
+}
+
+export async function deserializeEditor(orm: ORM, serializedUser) {
+	const editorId = getSerializedUserId(serializedUser);
+	if (!editorId) {
+		return false;
+	}
+
+	const {Editor} = orm;
+	const editor = await new Editor({id: editorId}).fetch({require: false});
+	if (!editor) {
+		return false;
+	}
+
+	const editorJSON = editor.toJSON();
+	if (editorJSON.cachedMetabrainzName === DELETED_EDITOR_CACHED_METABRAINZ_NAME) {
+		return false;
+	}
+
+	return editorJSON;
+}
+
 export function init(app) {
 	const {orm} = app.locals as {orm: ORM};
 	try {
@@ -149,11 +174,17 @@ export function init(app) {
 		passport.use(strategy);
 
 		passport.serializeUser((user, done) => {
-			done(null, user);
+			const userId = getSerializedUserId(user);
+			if (!userId) {
+				return done(new Error('Cannot serialize user without an editor ID'));
+			}
+			return done(null, userId);
 		});
 
-		passport.deserializeUser((user, done) => {
-			done(null, user);
+		passport.deserializeUser((serializedUser, done) => {
+			deserializeEditor(orm, serializedUser)
+				.then(user => done(null, user))
+				.catch(err => done(err));
 		});
 
 		app.use(passport.initialize());
