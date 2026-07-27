@@ -267,7 +267,7 @@ function _createNote(orm, content, editorID, revision, transacting) {
 export function addNoteToRevision(req: PassportRequest, res: $Response) {
 	const {orm}: {orm?: any} = req.app.locals;
 	const {Revision, bookshelf} = orm;
-	const editorJSON = req.session.passport.user;
+	const editorJSON = req.user;
 	const revision = Revision.forge({id: req.params.id});
 	const {body}: {body: any} = req;
 	const revisionNotePromise = bookshelf.transaction(
@@ -425,7 +425,7 @@ export function handleDelete(
 		throw new error.ConflictError('This entity has already been deleted');
 	}
 	const {Revision, bookshelf} = orm;
-	const editorJSON = req.session.passport.user;
+	const editorJSON = req.user;
 	const {body}: {body: any} = req;
 	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
 		if (!body.note || !body.note.length) {
