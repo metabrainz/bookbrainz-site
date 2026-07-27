@@ -2,6 +2,8 @@
 import type {ORM} from 'bookbrainz-data';
 
 
+export const DELETED_EDITOR_CACHED_METABRAINZ_NAME = '<deleted>';
+
 export function fetchEditorByMetaBrainzUserId(orm: ORM, metabrainzUserId: number) {
 	const {Editor} = orm;
 
@@ -16,7 +18,7 @@ function clearEditorByID(trx, editorID) {
 		.update({
 			area_id: null,
 			bio: '',
-			cached_metabrainz_name: '<deleted>',
+			cached_metabrainz_name: DELETED_EDITOR_CACHED_METABRAINZ_NAME,
 			gender_id: null,
 			metabrainz_oauth_access_token: null,
 			metabrainz_oauth_refresh_token: null,
