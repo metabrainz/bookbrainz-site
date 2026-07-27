@@ -85,7 +85,7 @@ async function _updateMetaBrainzUser(orm:ORM, bbUserJSON, mbUserJSON) {
 		}
 	}
 	return fetchedEditor.save({
-		cachedMetabrainzName: mbUserJSON.sub,
+		cachedMetabrainzName: mbUserJSON.name,
 		metabrainzOauthAccessToken: mbUserJSON.metabrainzOauthAccessToken,
 		metabrainzOauthRefreshToken: mbUserJSON.metabrainzOauthRefreshToken,
 		metabrainzUserId: mbUserJSON.sub
