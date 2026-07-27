@@ -71,7 +71,7 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 	const props = generateProps(req, res, {
 		gender,
 		genders: res.locals.genders,
-		name: req.session.mbProfile.name
+		name: req.session.mbProfile.username
 	});
 
 	const markup = ReactDOMServer.renderToString(
