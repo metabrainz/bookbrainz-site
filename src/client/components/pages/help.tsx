@@ -49,7 +49,7 @@ function HelpPage(): JSX.Element {
 			</p>
 			<hr/>
 
-			<h2>{translate('pages:collections.headerEntities')}</h2>
+			<h2>{translate('common:entities')}</h2>
 			<p>
 				{translate('staticPages:help.entitiesDescription')}
 			</p>
@@ -145,7 +145,7 @@ function HelpPage(): JSX.Element {
 							</ul>
 						</ListGroup.Item>
 
-						<ListGroup.Item><b>{translate('pages:collections.headerEntities')}</b>{translate('staticPages:help.glossaryEntitiesDesc')}</ListGroup.Item>
+						<ListGroup.Item><b>{translate('common:entities')}</b>{translate('staticPages:help.glossaryEntitiesDesc')}</ListGroup.Item>
 
 						<ListGroup.Item><b><a href="https://en.wikipedia.org/wiki/Category:Book_formats">{translate('common:format')}</a></b>{translate('staticPages:help.glossaryFormatDesc')}</ListGroup.Item>
 

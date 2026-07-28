@@ -132,7 +132,7 @@ class EditorProfileTab extends React.Component {
 			<div>
 				<h2>{translate('pages:profile.stats')}</h2>
 				<dl className="row editor-info">
-					<dt className="col-md-8">{translate('pages:profile.totalRevisions')}</dt>
+					<dt className="col-md-8">{translate('common:totalRevisions')}</dt>
 					<dd className="col-md-4">{editor.totalRevisions}</dd>
 					<dt className="col-md-8">{translate('pages:profile.revisionsApplied')}</dt>
 					<dd className="col-md-4">{editor.revisionsApplied}</dd>

@@ -21,6 +21,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 
+import {Trans, withTranslation} from 'react-i18next';
 import {faBluesky, faMastodon} from '@fortawesome/free-brands-svg-icons';
 import {faCircle, faCommentDots, faComments, faEnvelope, faListUl, faSearch, faUser} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -39,24 +40,26 @@ class IndexPage extends React.Component {
 	}
 
 	renderHeader() {
+		const {t: translate} = this.props;
 		return (
 			<div>
 				<Alert className="text-center" variant="warning">
-					Under development — adventurous users, please test and
-					add data! Give us feedback about bugs, glitches and
-					potential improvements at {' '}
-					<a href="//tickets.metabrainz.org/projects/BB">
-						MetaBrainz JIRA!
-					</a>
+					<Trans
+						components={{
+							jiraLink: <a href="//tickets.metabrainz.org/projects/BB"/>
+						}}
+						i18nKey="index.underDevelopment"
+						ns="pages"
+					/>
 				</Alert>
 				<div id="background-image">
 					<div className="text-center" id="background-overlay">
 						<Container>
 							<img
-								alt="BookBrainz logo"
+								alt={translate('pages:index.logoAlt')}
 								className="img-fluid center-block"
 								src="/images/BookBrainz_text.svg"
-								title="BookBrainz"
+								title={translate('common:Bookbrainz')}
 								width="500"
 							/>
 							<Row>
@@ -67,7 +70,7 @@ class IndexPage extends React.Component {
 											autoFocus="autofocus"
 											className="form-control"
 											name="q"
-											placeholder="Search for..."
+											placeholder={translate('common:nav.searchPlaceholder')}
 											type="text"
 										/>
 										<span className="input-group-append">
@@ -87,7 +90,7 @@ class IndexPage extends React.Component {
 												size="lg"
 												variant="secondary"
 											>
-												About
+												{translate('pages:index.aboutButton')}
 											</Button>
 										</Col>
 										<Col md={4}>
@@ -97,7 +100,7 @@ class IndexPage extends React.Component {
 												size="lg"
 												variant="secondary"
 											>
-												Contribute
+												{translate('pages:index.contributeButton')}
 											</Button>
 										</Col>
 										<Col md={4}>
@@ -107,13 +110,13 @@ class IndexPage extends React.Component {
 												size="lg"
 												variant="secondary"
 											>
-												Develop
+												{translate('pages:index.developButton')}
 											</Button>
 										</Col>
 									</Row>
 									<div className="margin-top-3">
 										<h4 className="contact-text">
-											Contact Us
+											{translate('common:about.contactUs')}
 										</h4>
 										<div style={{
 											alignItems: 'center',
@@ -131,8 +134,8 @@ class IndexPage extends React.Component {
 													icon={faCommentDots}
 													size="2x"
 												/>
-												Chat with us<br/>
-												<small>(Matrix, IRC, Discord)</small>
+												{translate('pages:index.chatWithUs')}<br/>
+												<small>{translate('pages:index.matrixIrcDiscord')}</small>
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
@@ -144,7 +147,7 @@ class IndexPage extends React.Component {
 													icon={faComments}
 													size="2x"
 												/>
-												Forums
+												{translate('common:forums')}
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
@@ -156,7 +159,7 @@ class IndexPage extends React.Component {
 													icon={faMastodon}
 													size="2x"
 												/>
-												Mastodon
+												{translate('pages:index.mastodon')}
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
@@ -168,7 +171,7 @@ class IndexPage extends React.Component {
 													icon={faBluesky}
 													size="2x"
 												/>
-												Bluesky
+												{translate('pages:index.bluesky')}
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
@@ -180,7 +183,7 @@ class IndexPage extends React.Component {
 													icon={faEnvelope}
 													size="2x"
 												/>
-												Email
+												{translate('common:email')}
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
@@ -198,20 +201,14 @@ class IndexPage extends React.Component {
 	}
 
 	renderContent() {
+		const {t: translate} = this.props;
 		return (
 			<Container>
 				<Row>
 					<Col lg={{offset: 2, span: 8}}>
-						<h1 className="text-center">The Open Book Database</h1>
+						<h1 className="text-center">{translate('pages:index.openBookDatabase')}</h1>
 						<p className="lead text-justify">
-							BookBrainz is a project to create an online database
-							of information about every single book, magazine,
-							journal and other publication ever written. We make
-							all the data that we collect available to the whole
-							world to consume and use as they see fit. Anyone can
-							contribute to BookBrainz, whether through editing
-							our information, helping out with development, or
-							just spreading the word about our project.
+							{translate('pages:index.openBookDatabaseDescription')}
 						</p>
 					</Col>
 				</Row>
@@ -229,7 +226,7 @@ class IndexPage extends React.Component {
 							variant="primary"
 						>
 							<FontAwesomeIcon className="margin-right-0-5" icon={faListUl}/>
-							See all revisions
+							{translate('pages:index.seeAllRevisions')}
 						</Button>
 					</div>
 				</div>
@@ -239,6 +236,7 @@ class IndexPage extends React.Component {
 
 	renderAboutUs() {
 		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
+		const {t: translate} = this.props;
 		return (
 			<React.Fragment>
 				<Row>
@@ -246,17 +244,16 @@ class IndexPage extends React.Component {
 						<FontAwesomeIcon icon={faUser} size="5x"/>
 					</Col>
 					<Col lg={10}>
-						<h2>Join Us!</h2>
+						<h2>{translate('pages:index.joinUs')}</h2>
 						<p className="lead">
-					First off,{' '}
-							<a href="/about" target="blank">
-						read about us
-							</a>{' and '}
-							<a href="/contribute" target="blank">
-						how you can help
-							</a>. Then, if you think you want
-					to stick around, hit the button below to sign up
-					for a free BookBrainz account!
+							<Trans
+								components={{
+									aboutLink: <a href="/about" target="blank"/>,
+									contributeLink: <a href="/contribute" target="blank"/>
+								}}
+								i18nKey="index.joinUsDescription"
+								ns="pages"
+							/>
 						</p>
 					</Col>
 				</Row>
@@ -267,7 +264,7 @@ class IndexPage extends React.Component {
 						size="lg"
 						variant="success"
 					>
-				Register!
+						{translate('pages:index.registerButton')}
 					</Button>
 				</div>
 			</React.Fragment>
@@ -290,8 +287,9 @@ IndexPage.propTypes = {
 	isLoggedIn: PropTypes.bool.isRequired,
 	recent: PropTypes.array.isRequired,
 	showEntities: PropTypes.bool,
-	showRevisionEditor: PropTypes.bool
-
+	showRevisionEditor: PropTypes.bool,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired
 };
 IndexPage.defaultProps = {
 	disableSignUp: false,
@@ -299,4 +297,4 @@ IndexPage.defaultProps = {
 	showRevisionEditor: true
 };
 
-export default IndexPage;
+export default withTranslation(['pages', 'common'])(IndexPage);
