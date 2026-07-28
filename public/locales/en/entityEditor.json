@@ -115,7 +115,7 @@
   "shared.addIdentifiers": "Add identifiers (eg. ISBN, Wikidata ID)…",
   "shared.addRelationship": "Add a relationship",
   "shared.allFieldsOptional": "All fields optional — leave something blank if you don't know it",
-  "shared.authorCreditLabel": "Author Credit",
+  "shared.authorCreditLabel": "Edit Author credit",
   "shared.depthLabel": "Depth",
   "shared.dissolvedLabel": "Dissolved?",
   "shared.entityHeading": "What else do you know about the {{entity}}?",
