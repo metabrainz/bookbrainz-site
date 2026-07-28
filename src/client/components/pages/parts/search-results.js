@@ -250,9 +250,9 @@ class SearchResults extends React.Component {
 						!this.props.condensed &&
 						<thead>
 							<tr>
-								<th width="25%">{translate('searchResults.headerType')}</th>
+								<th width="25%">{translate('common:type')}</th>
 								<th width="42%">{translate('common:name')}</th>
-								<th width="33%">{translate('searchResults.headerAliases')}</th>
+								<th width="33%">{translate('common:aliases')}</th>
 							</tr>
 						</thead>
 					}
