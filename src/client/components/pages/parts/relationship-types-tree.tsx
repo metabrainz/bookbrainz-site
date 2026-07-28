@@ -21,6 +21,7 @@ import {RelationshipTypeDataT} from '../../forms/type-editor/typeUtils';
 import {orderBy as _orderBy} from 'lodash';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 import {sanitize} from 'isomorphic-dompurify';
+import {useTranslation} from 'react-i18next';
 
 
 type RelationshipTypeTreePropsT = {
@@ -30,6 +31,7 @@ type RelationshipTypeTreePropsT = {
 };
 
 function RelationshipTypeTree({relationshipTypes, parentId, indentLevel}: RelationshipTypeTreePropsT) {
+	const {t: translate} = useTranslation(['pages', 'common']);
 	const [expandedRelationshipTypeIds, setExpandedRelationshipTypeIds] = useState([]);
 
 	function toggleExpand(relTypeId) {
@@ -72,7 +74,7 @@ function RelationshipTypeTree({relationshipTypes, parentId, indentLevel}: Relati
 								variant="link"
 								onClick={handleClick}
 							>
-								{expandedRelationshipTypeIds.includes(relType.id) ? '(Less)' : '(More)'}
+								{expandedRelationshipTypeIds.includes(relType.id) ? translate('typeTree.showLess') : translate('typeTree.showMore')}
 							</Button>
 							<p>
 								<small><span dangerouslySetInnerHTML={{__html: sanitizedDescription}}/></small>
@@ -80,20 +82,20 @@ function RelationshipTypeTree({relationshipTypes, parentId, indentLevel}: Relati
 						</p>
 						{expandedRelationshipTypeIds.includes(relType.id) && (
 							<div className="type-details small">
-								<div><strong>Forward link phrase: </strong>{relType.linkPhrase}</div>
-								<div><strong>Reverse link phrase: </strong>{relType.reverseLinkPhrase}</div>
-								<div><strong>Source Entity Type: </strong>{relType.sourceEntityType}</div>
-								<div><strong>Target Entity Type: </strong>{relType.targetEntityType}</div>
-								<div><strong>Description: </strong><span dangerouslySetInnerHTML={{__html: sanitizedDescription}}/></div>
-								<div><strong>Child Order: </strong>{relType.childOrder}</div>
-								<div><strong>Deprecated: </strong>{relType.deprecated ? 'Yes' : 'No'}</div>
+								<div><strong>{translate('typeTree.forwardLinkPhrase')}</strong>{relType.linkPhrase}</div>
+								<div><strong>{translate('typeTree.reverseLinkPhrase')}</strong>{relType.reverseLinkPhrase}</div>
+								<div><strong>{translate('typeTree.sourceEntityType')}</strong>{relType.sourceEntityType}</div>
+								<div><strong>{translate('typeTree.targetEntityType')}</strong>{relType.targetEntityType}</div>
+								<div><strong>{translate('common:description')}: </strong><span dangerouslySetInnerHTML={{__html: sanitizedDescription}}/></div>
+								<div><strong>{translate('typeTree.childOrder')}</strong>{relType.childOrder}</div>
+								<div><strong>{translate('typeTree.deprecated')}</strong>{relType.deprecated ? translate('common:yes') : translate('common:no')}</div>
 								<div>
 									<Button
 										className="btn btn-sm"
 										href={`/relationship-type/${relType.id}/edit`}
 										size="sm"
 									>
-										Edit
+										{translate('common:button.edit')}
 									</Button>
 								</div>
 							</div>
