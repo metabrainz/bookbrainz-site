@@ -22,6 +22,7 @@ import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import React from 'react';
 import RevisionsTable from './parts/revisions-table';
+import {withTranslation} from 'react-i18next';
 
 
 /**
@@ -56,12 +57,12 @@ class EntityRevisions extends React.Component {
 	 * @returns {ReactElement} a HTML document which is a part of Revision page
 	 */
 	renderHeader() {
-		const {entity} = this.props;
+		const {entity, t: translate} = this.props;
 		return (
 			<div>
-				Revision History
+				{translate('pages:revisions.history')}
 				<h3>
-					for&nbsp;
+					{translate('common:for')}&nbsp;
 					<a href={getEntityUrl(entity)} >
 						{genEntityIconHTMLElement(entity.type)}
 						{getEntityLabel(entity)}
@@ -113,7 +114,9 @@ EntityRevisions.propTypes = {
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
 	showRevisionNote: PropTypes.bool,
-	size: PropTypes.number
+	size: PropTypes.number,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired
 };
 EntityRevisions.defaultProps = {
 	from: 0,
@@ -123,4 +126,4 @@ EntityRevisions.defaultProps = {
 	size: 20
 };
 
-export default EntityRevisions;
+export default withTranslation(['pages', 'common'])(EntityRevisions);
