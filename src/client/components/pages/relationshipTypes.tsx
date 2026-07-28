@@ -21,6 +21,7 @@ import React from 'react';
 import {RelationshipTypeDataT} from '../forms/type-editor/typeUtils';
 import RelationshipTypeTree from './parts/relationship-types-tree';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 
 type Props = {
@@ -29,12 +30,13 @@ type Props = {
 };
 
 function RelationshipTypesPage({heading, relationshipTypes}: Props) {
+	const {t: translate} = useTranslation(['pages', 'common']);
 	return (
 		<Card>
 			<Card.Header as="h2">
 				{heading}
 				<Button className="float-right" href="/relationship-types" variant="link">
-					<FontAwesomeIcon icon={faArrowLeft}/> All relationships
+					<FontAwesomeIcon icon={faArrowLeft}/>&nbsp;{translate('pages:typeTree.allRelationships')}
 				</Button>
 			</Card.Header>
 			<Card.Body>
@@ -43,7 +45,7 @@ function RelationshipTypesPage({heading, relationshipTypes}: Props) {
 						<RelationshipTypeTree
 							relationshipTypes={relationshipTypes}
 						/> :
-						`No ${heading} found.`
+						translate('pages:typeTree.noTypesFound', {heading})
 				}
 			</Card.Body>
 		</Card>

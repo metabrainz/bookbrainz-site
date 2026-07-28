@@ -17,6 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {Trans, withTranslation} from 'react-i18next';
 import {faPencilAlt, faPlus, faTimesCircle, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {formatDate, getEntityKey, getEntityTable} from '../../helpers/utils';
 import AddEntityToCollectionModal from './parts/add-entity-to-collection-modal';
@@ -33,27 +34,27 @@ import request from 'superagent';
 
 const {Alert, Badge, Button, Col, Row} = bootstrap;
 
-function CollectionAttributes({collection}) {
+function CollectionAttributes({collection, t: translate}) {
 	return (
 		<div>
 			{
 				collection.description.length ?
 					<Row>
 						<Col lg={12}>
-							<dt>Description</dt>
+							<dt>{translate('common:description')}</dt>
 							<dd>{collection.description}</dd>
 						</Col>
 					</Row> : null
 			}
 			<Row>
 				<Col lg={3}>
-					<dt>Owner</dt>
+					<dt>{translate('common:owner')}</dt>
 					<dd><a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a></dd>
 				</Col>
 				{
 					collection.collaborators.length ?
 						<Col lg={3}>
-							<dt>Collaborator{collection.collaborators.length > 1 ? 's' : null}</dt>
+							<dt>{translate('common:collaborator', {count: collection.collaborators.length})}</dt>
 							<dd>
 								{
 									collection.collaborators.map((collaborator, id) =>
@@ -67,23 +68,23 @@ function CollectionAttributes({collection}) {
 						</Col> : null
 				}
 				<Col lg={3}>
-					<dt>Privacy</dt>
-					<dd>{collection.public ? 'Public' : 'Private'}</dd>
+					<dt>{translate('common:Privacy')}</dt>
+					<dd>{collection.public ? translate('common:public') : translate('common:private')}</dd>
 				</Col>
 				<Col lg={3}>
-					<dt>Collection type</dt>
-					<dd>{collection.entityType}</dd>
+					<dt>{translate('collection.collectionType')}</dt>
+					<dd>{translate(`common:entityType.${_.camelCase(collection.entityType)}`)}</dd>
 				</Col>
 				<Col lg={3}>
-					<dt>Number of {_.kebabCase(collection.entityType)}s</dt>
+					<dt>{translate('collection.numberOfEntities', {type: translate(`common:entityType.${_.camelCase(collection.entityType)}_plural`)})}</dt>
 					<dd>{collection.items.length}</dd>
 				</Col>
 				<Col lg={3}>
-					<dt>Created At</dt>
+					<dt>{translate('collection.createdAt')}</dt>
 					<dd>{formatDate(new Date(collection.createdAt), true)}</dd>
 				</Col>
 				<Col lg={3}>
-					<dt>Last Modified</dt>
+					<dt>{translate('common:lastModified')}</dt>
 					<dd>{formatDate(new Date(collection.lastModified), true)}</dd>
 				</Col>
 			</Row>
@@ -92,7 +93,9 @@ function CollectionAttributes({collection}) {
 }
 CollectionAttributes.displayName = 'CollectionAttributes';
 CollectionAttributes.propTypes = {
-	collection: PropTypes.object.isRequired
+	collection: PropTypes.object.isRequired,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired
 };
 
 class CollectionPage extends React.Component {
@@ -141,6 +144,7 @@ class CollectionPage extends React.Component {
 	}
 
 	handleRemoveEntities() {
+		const {t: translate} = this.props;
 		if (this.state.selectedEntities.length) {
 			const bbids = this.state.selectedEntities;
 			const submissionUrl = `/collection/${this.props.collection.id}/remove`;
@@ -149,7 +153,7 @@ class CollectionPage extends React.Component {
 				.then(() => {
 					this.setState({
 						message: {
-							text: `Removed ${bbids.length} ${_.kebabCase(this.props.collection.entityType)}${bbids.length > 1 ? 's' : ''}`,
+							text: translate('collection.removedEntities', {count: bbids.length, type: translate(`common:entityType.${_.camelCase(this.props.collection.entityType)}${bbids.length === 1 ? '' : '_plural'}`)}),
 							type: 'success'
 						},
 						selectedEntities: []
@@ -157,7 +161,7 @@ class CollectionPage extends React.Component {
 				}, () => {
 					this.setState({
 						message: {
-							text: 'Something went wrong! Please try again later',
+							text: translate('common:error'),
 							type: 'danger'
 						}
 					});
@@ -166,7 +170,7 @@ class CollectionPage extends React.Component {
 		else {
 			this.setState({
 				message: {
-					text: `No ${_.kebabCase(this.props.collection.entityType)} selected`,
+					text: translate('common:noEntitySelected', {type: translate(`common:entityType.${_.camelCase(this.props.collection.entityType)}`)}),
 					type: 'danger'
 				}
 			});
@@ -201,6 +205,7 @@ class CollectionPage extends React.Component {
 	}
 
 	render() {
+		const {t: translate} = this.props;
 		const messageComponent =
 			this.state.message.text ? (
 				<Alert
@@ -245,7 +250,7 @@ class CollectionPage extends React.Component {
 					<Col lg={10}>
 						<h1>{this.props.collection.name}</h1>
 						<hr/>
-						<CollectionAttributes collection={this.props.collection}/>
+						<CollectionAttributes collection={this.props.collection} t={translate}/>
 					</Col>
 				</Row>
 				<EntityTable {...propsForTable}/>
@@ -256,12 +261,12 @@ class CollectionPage extends React.Component {
 							<Button
 								className="margin-bottom-d5"
 								size="sm"
-								title={`Add ${this.props.collection.entityType}`}
+								title={translate('collection.addEntity', {type: translate(`common:entityType.${_.camelCase(this.props.collection.entityType)}`)})}
 								variant="success"
 								onClick={this.handleShowAddEntityModal}
 							>
 								<FontAwesomeIcon icon={faPlus}/>
-								&nbsp;Add {_.lowerCase(this.props.collection.entityType)}
+								&nbsp;{translate('collection.addEntity', {type: translate(`common:entityType.${_.camelCase(this.props.collection.entityType)}`)})}
 							</Button> : null
 					}
 					{
@@ -270,13 +275,23 @@ class CollectionPage extends React.Component {
 								className="margin-bottom-d5"
 								disabled={!this.state.selectedEntities.length}
 								size="sm"
-								title={`Remove selected ${_.kebabCase(this.props.collection.entityType)}s`}
+								title={translate('collection.removeSelectedTooltip', {type: translate(`common:entityType.${_.camelCase(this.props.collection.entityType)}_plural`)})}
 								variant="danger"
 								onClick={this.handleRemoveEntities}
 							>
 								<FontAwesomeIcon icon={faTimesCircle}/>
-								&nbsp;Remove <Badge pill>{this.state.selectedEntities.length}</Badge> selected&nbsp;
-								{_.kebabCase(this.props.collection.entityType)}{this.state.selectedEntities.length > 1 ? 's' : null}
+								&nbsp;
+								<Trans
+									components={{
+										badge: <Badge pill/>
+									}}
+									i18nKey="collection.removeSelected"
+									ns="pages"
+									values={{
+										count: this.state.selectedEntities.length,
+										type: translate(`common:entityType.${_.camelCase(this.props.collection.entityType)}${this.state.selectedEntities.length === 1 ? '' : '_plural'}`)
+									}}
+								/>
 							</Button> : null
 					}
 					{
@@ -285,10 +300,10 @@ class CollectionPage extends React.Component {
 								className="margin-bottom-d5"
 								href={`/collection/${this.props.collection.id}/edit`}
 								size="sm"
-								title="Edit Collection"
+								title={translate('collection.editCollection')}
 								variant="warning"
 							>
-								<FontAwesomeIcon icon={faPencilAlt}/>&nbsp;Edit collection
+								<FontAwesomeIcon icon={faPencilAlt}/>&nbsp;{translate('collection.editCollection')}
 							</Button> : null
 					}
 					{
@@ -296,11 +311,11 @@ class CollectionPage extends React.Component {
 							<Button
 								className="margin-bottom-d5"
 								size="sm"
-								title="Delete Collection"
+								title={translate('collection.deleteCollection')}
 								variant="danger"
 								onClick={this.handleShowDeleteModal}
 							>
-								<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;Delete collection
+								<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;{translate('collection.deleteCollection')}
 							</Button> : null
 					}
 					{
@@ -308,11 +323,11 @@ class CollectionPage extends React.Component {
 							<Button
 								className="margin-bottom-d5"
 								size="sm"
-								title="Remove yourself as a collaborator"
+								title={translate('collection.stopCollaborationTooltip')}
 								variant="warning"
 								onClick={this.handleShowDeleteModal}
 							>
-								<FontAwesomeIcon icon={faTimesCircle}/>&nbsp;Stop collaboration
+								<FontAwesomeIcon icon={faTimesCircle}/>&nbsp;{translate('collection.stopCollaboration')}
 							</Button> : null
 					}
 				</div>
@@ -343,6 +358,8 @@ CollectionPage.propTypes = {
 	nextEnabled: PropTypes.bool.isRequired,
 	showCheckboxes: PropTypes.bool,
 	size: PropTypes.number,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired,
 	userId: PropTypes.number
 };
 CollectionPage.defaultProps = {
@@ -355,4 +372,4 @@ CollectionPage.defaultProps = {
 	userId: null
 };
 
-export default CollectionPage;
+export default withTranslation(['pages', 'common'])(CollectionPage);
