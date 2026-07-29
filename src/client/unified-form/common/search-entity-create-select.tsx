@@ -8,6 +8,7 @@ import BaseEntitySearch from '../../entity-editor/common/entity-search-field-opt
 import CreateEntityModal from './create-entity-modal';
 import React from 'react';
 import {addEditionGroup} from '../detail-tab/action';
+import {camelCase} from 'lodash';
 import {connect} from 'react-redux';
 import makeImmutable from '../../entity-editor/common/make-immutable';
 import {submitSingleEntity} from '../../entity-editor/submission-section/actions';
@@ -25,8 +26,7 @@ const addEntityAction = {
 function SearchEntityCreate(props:SearchEntityCreateProps) {
 	const {t: translate} = useTranslation('entityEditor');
 	const {type, nextId, onModalOpen, onModalClose, onSubmitEntity, rowId, onOpenCallback, ...rest} = props;
-	const createLabel = React.useCallback((input) => translate('unifiedForm.createEntity', {entityType: translate(`common:entityType.${camelCase(type)}`),name: input}),[translate, type]
-);
+	const createLabel = React.useCallback((input) => translate('unifiedForm.createEntity', {entityType: translate(`common:entityType.${camelCase(type)}`),name: input}), [translate, type]);
 	const [showModal, setShowModal] = React.useState(false);
 	const getNewOptionData = React.useCallback((_, label) => ({
 		__isNew__: true,
