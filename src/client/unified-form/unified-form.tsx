@@ -18,12 +18,14 @@ import {freezeObjects} from './common/freezed-objects';
 import {getUfValidator} from './validators/base';
 import {omit} from 'lodash';
 import {submit} from '../entity-editor/submission-section/actions';
+import {useTranslation} from 'react-i18next';
 
 
 const {Tabs, Tab} = Boostrap;
 
 
 export function UnifiedForm(props:UnifiedFormProps) {
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	const {allIdentifierTypes, validator, onSubmit, formValid,
 		languageOptions, contentTabEmpty, coverTabValid, coverTabEmpty, detailTabValid, detailTabEmpty} = props;
 	const rest = omit(props, ['contentTabEmpty', 'coverTabValid', 'coverTabEmpty', 'detailTabValid', 'formValid', 'detailTabEmpty', 'i18n']);
@@ -63,18 +65,18 @@ export function UnifiedForm(props:UnifiedFormProps) {
 	return (
 		<form className="uf-main" onSubmit={onSubmit}>
 			<div className="uf-tab">
-				<h4>Add Book</h4>
+				<h4>{translate('unifiedForm.addBook')}</h4>
 				<Tabs activeKey={tabKey} className="uf-tab-header" id="controlled-tab" onSelect={setTabKey}>
-					<Tab eventKey="cover" title={<ValidationLabel hideIcon empty={coverTabEmpty} error={!coverTabValid}>Cover</ValidationLabel>}>
+					<Tab eventKey="cover" title={<ValidationLabel hideIcon empty={coverTabEmpty} error={!coverTabValid}>{translate('unifiedForm.tabCover')}</ValidationLabel>}>
 						<CoverTab {...rest} identifierTypes={editionIdentifierTypes as IdentifierType[]}/>
 					</Tab>
-					<Tab eventKey="detail" title={<ValidationLabel hideIcon empty={detailTabEmpty} error={!detailTabValid}>Details</ValidationLabel>}>
+					<Tab eventKey="detail" title={<ValidationLabel hideIcon empty={detailTabEmpty} error={!detailTabValid}>{translate('common:details')}</ValidationLabel>}>
 						<DetailTab {...rest}/>
 					</Tab>
-					<Tab eventKey="content" title={<ValidationLabel hideIcon empty={contentTabEmpty}>Contents</ValidationLabel>}>
+					<Tab eventKey="content" title={<ValidationLabel hideIcon empty={contentTabEmpty}>{translate('unifiedForm.tabContents')}</ValidationLabel>}>
 						<ContentTab {...rest}/>
 					</Tab>
-					<Tab disabled={!formValid} eventKey="submit" title="Submit">
+					<Tab disabled={!formValid} eventKey="submit" title={translate('common:button.submit')}>
 						<SummarySection languageOptions={languageOptions}/>
 						<SubmitSection isUnifiedForm formValid={formValid} identifierTypes={editionIdentifierTypes} validate={editionValidator}/>
 
