@@ -6,21 +6,23 @@ import {FormCheck} from 'react-bootstrap';
 import NameField from '../../entity-editor/common/name-field';
 import React from 'react';
 import {connect} from 'react-redux';
+import {useTranslation} from 'react-i18next';
 
 
 export function ISBNField(props:ISBNProps) {
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	const {value, type, onChange, autoISBN, onAutoISBNChange} = props;
 	const onChangeHandler = React.useCallback((event:RInputEvent) => onChange(event.target.value, autoISBN), [onChange, autoISBN]);
 	const onAutoISBNChangeHandler = React.useCallback((event:RInputEvent) => {
 		onAutoISBNChange(event.target.checked);
 		onChange(value, event.target.checked);
 	}, [onAutoISBNChange, onChange, value]);
-	let checkboxLabel = 'Automatically add ISBN';
+	let checkboxLabel = translate('unifiedForm.autoAddISBN', {isbnValue: '', isbnVersion: '?'});
 	if (type) {
-		checkboxLabel += type === 10 ? `13 (${isbn10To13(value)})` : `10 (${isbn13To10(value)})`;
-	}
-	else {
-		checkboxLabel += '?';
+		checkboxLabel = translate('unifiedForm.autoAddISBN', {
+			isbnValue: ` (${type === 10 ? isbn10To13(value) : isbn13To10(value)})`,
+			isbnVersion: type === 10 ? '13' : '10'
+		});
 	}
 	return (
 		<div>
@@ -28,9 +30,8 @@ export function ISBNField(props:ISBNProps) {
 				defaultValue={value}
 				empty={value.length === 0}
 				error={Boolean(!type && value)}
-				label="ISBN"
-				tooltipText="The International Standard Book Number (ISBN) is a commercial book identifier,
-				composed of 10 or 13 numbers, often also used as the barcode."
+				label={translate('common:isbn')}
+				tooltipText={translate('unifiedForm.isbnTooltip')}
 				onChange={onChangeHandler}
 			/>
 			<FormCheck
