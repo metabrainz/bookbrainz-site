@@ -8,6 +8,7 @@ import BaseEntitySearch from '../../entity-editor/common/entity-search-field-opt
 import CreateEntityModal from './create-entity-modal';
 import React from 'react';
 import {addEditionGroup} from '../detail-tab/action';
+import {camelCase} from 'lodash';
 import {connect} from 'react-redux';
 import {camelCase, defaults} from 'lodash';
 import makeImmutable from '../../entity-editor/common/make-immutable';
