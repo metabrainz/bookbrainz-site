@@ -12,9 +12,11 @@ import SearchEntityCreate from '../common/search-entity-create-select';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {updatePublisher} from '../../entity-editor/edition-section/actions';
+import {useTranslation} from 'react-i18next';
 
 
 export function CoverTab(props:CoverProps) {
+	const {t: translate} = useTranslation('common');
 	const {publisherValue: publishers, onPublisherChange, identifierEditorVisible,
 		onClearPublisher, handleClearPublishers, modalIsOpen, ...rest} = props;
 	const publisherValue:EntitySelect[] = Object.values(convertMapToObject(publishers ?? {}));
@@ -37,7 +39,7 @@ export function CoverTab(props:CoverProps) {
 				<Col lg={{offset: 0, span: 6}}>
 					<SearchEntityCreate
 						isMulti
-						label="Publisher"
+						label={translate('publisher')}
 						recentlyUsedEntityType="Publisher"
 						type="publisher"
 						value={publisherValue}
