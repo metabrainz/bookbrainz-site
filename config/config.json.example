@@ -8,7 +8,8 @@
 		"clientID": null,
 		"clientSecret": null,
 		"callbackURL": "http://localhost:9099/cb",
-		"oAuthBaseURL": "https://musicbrainz.org/new-oauth2"
+		"oAuthBaseURL": "https://musicbrainz.org/new-oauth2",
+		"oAuthWebhookSecret": "<WEBHOOK_SECRET>"
 	},
 	"critiquebrainz": {
 		"clientID": null,
