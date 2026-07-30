@@ -230,11 +230,7 @@ class NameSection extends React.Component {
 							onChange={this.handleNameChange}
 						/>
 					</Col>
-					{!isModal && duplicateAlert}
 				</Row>
-				{
-					!isModal && duplicateSuggestions
-				}
 				<Row>
 					<Col lg={lgCol}>
 						<SortNameField
@@ -279,10 +275,8 @@ class NameSection extends React.Component {
 						/>
 					</Col>
 				</Row>
-				{isModal && <Row>{duplicateAlert}</Row>}
-				{
-					isModal && duplicateSuggestions
-				}
+				<Row>{duplicateAlert}</Row>
+				{duplicateSuggestions}
 			</div>
 		);
 	}
