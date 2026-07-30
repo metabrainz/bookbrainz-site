@@ -37,7 +37,6 @@
   "email": "Email",
   "entities": "Entities",
   "entityType": "Entity Type",
-  "entityType.area": "Area",
   "entityType.author": "Author",
   "entityType.author_plural": "Authors",
   "entityType.book": "Book",
