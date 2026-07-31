@@ -27,6 +27,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import RevisionsTable from './parts/revisions-table';
+import {withTranslation} from 'react-i18next';
 
 
 const {Alert, Button, Col, Container, Row} = bootstrap;
@@ -198,6 +199,7 @@ class IndexPage extends React.Component {
 	}
 
 	renderContent() {
+		const {t: translate} = this.props;
 		return (
 			<Container>
 				<Row>
@@ -222,6 +224,7 @@ class IndexPage extends React.Component {
 						results={this.props.recent}
 						showEntities={this.props.showEntities}
 						showRevisionEditor={this.props.showRevisionEditor}
+						tableHeading={translate('pages:revisions.recentActivity')}
 					/>
 					<div className="text-center">
 						<Button
@@ -290,7 +293,9 @@ IndexPage.propTypes = {
 	isLoggedIn: PropTypes.bool.isRequired,
 	recent: PropTypes.array.isRequired,
 	showEntities: PropTypes.bool,
-	showRevisionEditor: PropTypes.bool
+	showRevisionEditor: PropTypes.bool,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired
 
 };
 IndexPage.defaultProps = {
@@ -299,4 +304,4 @@ IndexPage.defaultProps = {
 	showRevisionEditor: true
 };
 
-export default IndexPage;
+export default withTranslation('pages')(IndexPage);
