@@ -105,7 +105,7 @@ function AuthorCreditSection({
 
 	const label = (
 		<ValidationLabel empty={false} error={!isValid}>
-			{translate('shared.authorCreditLabel')}
+			{translate('common:authorCredit')}
 		</ValidationLabel>
 	);
 	const SingleValue = (props:SingleValueProps<any>) => (

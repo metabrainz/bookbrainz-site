@@ -100,7 +100,7 @@
   "relationshipModal.selectType": "Please select a relationship type",
   "relationshipModal.sourceLabel": "This entity",
   "relationshipModal.targetLabel": "Other entity",
-  "relationshipModal.targetLabelList": "Other Entity ({{types}})",
+  "relationshipModal.targetLabelList": "Other entity ({{types}})",
   "relationshipModal.typeLabel": "Relationship type",
   "relationshipSection.heading": "How are other entities related to this {{entityType}}?",
   "seriesEditor.addButton": "Add {{seriesType}}",
