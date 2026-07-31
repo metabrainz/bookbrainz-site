@@ -33,13 +33,14 @@ function RevisionsTable({
 	results,
 	showEntities = false,
 	showRevisionNote = false,
-	showRevisionEditor = false
+	showRevisionEditor = false,
+	tableHeading = 'Recent Activity'
 }) {
 	const {t: translate} = useTranslation('pages');
 	return (
 		<div>
 			<div>
-				<h1 className="text-center">{translate('pages:revisions.recentActivity')}</h1>
+				<h1 className="text-center">{tableHeading}</h1>
 			</div>
 			<hr className="thin"/>
 			{
@@ -154,7 +155,8 @@ RevisionsTable.propTypes = {
 	results: PropTypes.array.isRequired,
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
-	showRevisionNote: PropTypes.bool
+	showRevisionNote: PropTypes.bool,
+	tableHeading: PropTypes.node
 };
 RevisionsTable.displayName = 'RevisionsTable';
 
