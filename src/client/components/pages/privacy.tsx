@@ -17,6 +17,7 @@
  */
 
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 
 
 /**
@@ -26,24 +27,22 @@ import React from 'react';
  * @returns {JSX.Element} an element containing the rendered output
  */
 function PrivacyPage(): JSX.Element {
+	const {t: translate} = useTranslation(['staticPages', 'common']);
+
 	return (
 		<div>
 			<div className="page-header">
-				<h1>Privacy</h1>
+				<h1>{translate('common:privacy')}</h1>
 			</div>
 			<p>
-				For a privacy policy, please see&nbsp;
+				{translate('staticPages:privacy.p1Pre')}
 				<a href="http://musicbrainz.org/doc/About/Privacy_Policy">
 					http://musicbrainz.org/doc/About/Privacy_Policy
 				</a>
 			</p>
 
 			<p>
-				While this currently does not apply to BookBrainz, it
-				gives an idea of what can be expected when it gets updated
-				to cover all MetaBrainz projects. If you&rsquo;re happy
-				using MusicBrainz, we aim to make you just as comfortable
-				using BookBrainz.
+				{translate('staticPages:privacy.p2')}
 			</p>
 		</div>
 	);

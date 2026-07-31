@@ -41,10 +41,10 @@ function ValueField({
 	empty,
 	...rest
 }) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	const label = (
 		<ValidationLabel empty={empty} error={error}>
-			{translate('valueField.label')}
+			{translate('common:value')}
 		</ValidationLabel>
 	);
 

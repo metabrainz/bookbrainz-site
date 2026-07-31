@@ -51,7 +51,7 @@ function SubmissionSection({
 	onNoteChange,
 	submitted
 }) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	const errorAlertClass =
 		classNames('text-center', 'margin-top-1', {'d-none': !errorText});
 
@@ -106,7 +106,7 @@ function SubmissionSection({
 						role="status"
 						size="sm"
 					/>}
-					 {submitted ? ` ${translate('submissionSection.submitButton')}` : translate('submissionSection.submitButton')}
+					 {submitted ? ` ${translate('common:button.submit')}` : translate('common:button.submit')}
 				</Button>
 			</div>
 			<div className={errorAlertClass}>
