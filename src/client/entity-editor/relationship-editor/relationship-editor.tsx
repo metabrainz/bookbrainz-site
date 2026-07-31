@@ -428,7 +428,7 @@ class RelationshipModal
 		// We are disabling this rule because we are already sanitizing the html here
 		return (
 			<Form.Group>
-				<Form.Label>{translate('relationshipModal.typeLabel')}</Form.Label>
+				<Form.Label>{translate('common:Relationship')}</Form.Label>
 				<ReactSelect
 					classNamePrefix="react-select"
 					components={{Option: RelationshipSelect, SingleValue: RelationshipSelect}}
