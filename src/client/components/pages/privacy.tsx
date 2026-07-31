@@ -32,7 +32,7 @@ function PrivacyPage(): JSX.Element {
 	return (
 		<div>
 			<div className="page-header">
-				<h1>{translate('common:Privacy')}</h1>
+				<h1>{translate('common:privacy')}</h1>
 			</div>
 			<p>
 				{translate('staticPages:privacy.p1Pre')}
