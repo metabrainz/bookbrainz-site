@@ -20,6 +20,7 @@ import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import React from 'react';
 import RevisionsTable from './parts/revisions-table';
+import {withTranslation} from 'react-i18next';
 
 
 class RevisionsPage extends React.Component {
@@ -39,12 +40,14 @@ class RevisionsPage extends React.Component {
 	}
 
 	render() {
+		const {t: translate} = this.props;
 		return (
 			<div id="pageWithPagination">
 				<RevisionsTable
 					results={this.state.results}
 					showEntities={this.props.showEntities}
 					showRevisionEditor={this.props.showRevisionEditor}
+					tableHeading={translate('revisions.recentActivity')}
 				/>
 				<PagerElement
 					from={this.props.from}
@@ -67,7 +70,9 @@ RevisionsPage.propTypes = {
 	results: PropTypes.array,
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
-	size: PropTypes.number
+	size: PropTypes.number,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired
 };
 RevisionsPage.defaultProps = {
 	from: 0,
@@ -77,4 +82,4 @@ RevisionsPage.defaultProps = {
 	size: 20
 };
 
-export default RevisionsPage;
+export default withTranslation('pages')(RevisionsPage);
