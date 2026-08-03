@@ -2,7 +2,9 @@
 
 set -e
 
-source /home/bookbrainz/bookbrainz-site/scripts/config.sh
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+source /home/monkey/Work/BookBrainz/bookbrainz-site-test/scripts/config.sh
 
 # Switch directory
 pushd /home/bookbrainz/data/dumps
@@ -95,12 +97,70 @@ EXPORTED_TABLES=(
 	bookbrainz.discard_votes
 	bookbrainz.origin_source
 	bookbrainz.link_import
+	# User collections are processed to only export public collections info
+	bookbrainz.user_collection
+	bookbrainz.user_collection_item
+	bookbrainz.user_collection_collaborator
 )
 
 PG_DUMP_TABLE_ARGS=()
 for table_name in "${EXPORTED_TABLES[@]}"; do
 	PG_DUMP_TABLE_ARGS+=("--table=$table_name")
 done
+
+append_copy_from_query() {
+	local table_name=$1
+	local columns=$2
+	local query=$3
+
+	{
+		echo
+		echo "COPY $table_name ($columns) FROM stdin;"
+		psql \
+			-h "$POSTGRES_HOST" \
+			-p "$POSTGRES_PORT" \
+			-U bookbrainz \
+			-d bookbrainz \
+			-v ON_ERROR_STOP=1 \
+			--tuples-only \
+			--no-align \
+			--command "COPY ($query) TO STDOUT;"
+		echo "\\."
+	} >> "/tmp/$DUMP_FILE"
+}
+
+append_public_collection_data() {
+	append_copy_from_query \
+		bookbrainz.user_collection \
+		"id, owner_id, name, description, entity_type, public, created_at, last_modified" \
+		"
+			SELECT
+				id,
+				owner_id,
+				name,
+				description,
+				entity_type,
+				public,
+				created_at,
+				last_modified
+			FROM bookbrainz.user_collection
+			WHERE public = TRUE
+		"
+
+	append_copy_from_query \
+		bookbrainz.user_collection_item \
+		"collection_id, bbid, added_at" \
+		"
+			SELECT
+				item.collection_id,
+				item.bbid,
+				item.added_at
+			FROM bookbrainz.user_collection_item item
+			JOIN bookbrainz.user_collection collection
+				ON collection.id = item.collection_id
+			WHERE collection.public = TRUE
+		"
+}
 
 echo "Creating data dump..."
 
@@ -110,11 +170,19 @@ pg_dump \
 	-p "$POSTGRES_PORT" \
 	-U bookbrainz \
 	"${PG_DUMP_TABLE_ARGS[@]}" \
+	--exclude-table-data=bookbrainz.user_collection \
+	--exclude-table-data=bookbrainz.user_collection_item \
+	--exclude-table-data=bookbrainz.user_collection_collaborator \
 	--serializable-deferrable \
-	bookbrainz > "/tmp/$DUMP_FILE"
-echo "Dump created!"
+	bookbrainz >> "/tmp/$DUMP_FILE"
+echo "Main dump created"
+
+echo "Exporting public collections..."
+append_public_collection_data
+echo "Public collections exported"
 
 # Compress new backup and move to dump dir
+echo "Successfully created public dump: $DUMP_FILE"
 echo "Compressing..."
 rm -f /tmp/$DUMP_FILE.bz2
 bzip2 /tmp/$DUMP_FILE
