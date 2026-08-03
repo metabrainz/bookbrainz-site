@@ -46,6 +46,7 @@ import {clearAuthor} from '../../unified-form/cover-tab/action';
 import {components} from 'react-select';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
+import {useTranslation} from 'react-i18next';
 import {validateAuthorCreditSection} from '../validators/common';
 
 
@@ -77,6 +78,7 @@ function AuthorCreditSection({
 	showEditor, onAuthorChange, isEditable, authorCreditEnable, toggleAuthorCreditEnable,
 	onClearHandler, isUnifiedForm, isLeftAlign, ...rest
 }: Props) {
+	const {t: translate} = useTranslation(['entityEditor', 'common']);
 	const authorCreditEditor = convertMapToObject(immutableAuthorCreditEditor);
 	let editor;
 	if (showEditor) {
@@ -98,12 +100,12 @@ function AuthorCreditSection({
 		// eslint-disable-next-line react/jsx-no-bind
 		<Button disabled={!authorCreditEnable} variant="success" onClick={function openEditor() { onEditAuthorCredit(authorCreditRows.length); }}>
 			<FontAwesomeIcon icon={faPencilAlt}/>
-			&nbsp;Edit
+			&nbsp;{translate('common:button.edit')}
 		</Button>);
 
 	const label = (
 		<ValidationLabel empty={false} error={!isValid}>
-			Author Credit
+			{translate('common:authorCredit')}
 		</ValidationLabel>
 	);
 	const SingleValue = (props:SingleValueProps<any>) => (
@@ -116,19 +118,17 @@ function AuthorCreditSection({
 	const optionValue = authorCreditPreview.length && {label: authorCreditPreview, value: authorCreditPreview};
 	const tooltip = (
 		<Tooltip id="AC-checkbox-tooltip">
-			Name(s) of the Author(s) as they appear on the book cover
+			{translate('authorCreditSection.tooltip')}
 		</Tooltip>
 	);
 	const checkboxLabel = (
 		<>
 			<FormLabel className="font-weight-normal">
-			This Edition doesn&apos;t have an Author
+				{translate('authorCreditSection.noAuthorLabel')}
 				<OverlayTrigger
 					delay={50}
 					overlay={
-						<Tooltip id="ac-enabled">Select this checkbox if this Edition doesn&apos;t have an Author or
-					if you don&apos;t know the Author(s)
-						</Tooltip>}
+						<Tooltip id="ac-enabled">{translate('authorCreditSection.noAuthorTooltip')}</Tooltip>}
 				>
 					<FontAwesomeIcon
 						className="margin-left-0-5"
@@ -176,7 +176,7 @@ function AuthorCreditSection({
 								isClearable={false}
 								isDisabled={!isEditable}
 								isUnifiedForm={isUnifiedForm}
-								placeholder="Type to search or paste a BBID"
+								placeholder={translate('authorCreditSection.placeholder')}
 								recentlyUsedEntityType="Author"
 								rowId="n0"
 								value={optionValue}
