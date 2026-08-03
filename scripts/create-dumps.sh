@@ -164,7 +164,21 @@ append_public_collection_data() {
 
 echo "Creating data dump..."
 
-# Dump new backup to /tmp
+# We do the dump in 3 steps because --table used for allowlisting does not create schema objects, indexes, constraints etc..
+# So we first dump the schema objects, then the allowlisted table data, and finally the indexes, constraints and triggers.
+
+# Dump schema objects that must exist before data.
+pg_dump \
+	-h "$POSTGRES_HOST" \
+	-p "$POSTGRES_PORT" \
+	-U bookbrainz \
+	--schema=bookbrainz \
+	--schema=musicbrainz \
+	--exclude-table=bookbrainz._editor_entity_visits \
+	--section=pre-data \
+	bookbrainz > "/tmp/$DUMP_FILE"
+
+# Dump allowlisted table data to /tmp.
 pg_dump \
 	-h "$POSTGRES_HOST" \
 	-p "$POSTGRES_PORT" \
@@ -173,6 +187,7 @@ pg_dump \
 	--exclude-table-data=bookbrainz.user_collection \
 	--exclude-table-data=bookbrainz.user_collection_item \
 	--exclude-table-data=bookbrainz.user_collection_collaborator \
+	--data-only \
 	--serializable-deferrable \
 	bookbrainz >> "/tmp/$DUMP_FILE"
 echo "Main dump created"
@@ -180,6 +195,18 @@ echo "Main dump created"
 echo "Exporting public collections..."
 append_public_collection_data
 echo "Public collections exported"
+
+echo "Adding indexes, constraints and triggers..."
+pg_dump \
+	-h "$POSTGRES_HOST" \
+	-p "$POSTGRES_PORT" \
+	-U bookbrainz \
+	--schema=bookbrainz \
+	--schema=musicbrainz \
+	--exclude-table=bookbrainz._editor_entity_visits \
+	--section=post-data \
+	bookbrainz >> "/tmp/$DUMP_FILE"
+echo "Indexes, constraints and triggers added"
 
 # Compress new backup and move to dump dir
 echo "Successfully created public dump: $DUMP_FILE"
