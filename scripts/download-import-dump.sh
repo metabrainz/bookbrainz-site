@@ -2,7 +2,7 @@
 
 # set up variables with defaults
 : "${POSTGRES_USER:=bookbrainz}"
-: "${POSTGRES_PASSWORD:=}"
+: "${POSTGRES_PASSWORD:=""}"
 : "${POSTGRES_DB:=bookbrainz}"
 : "${POSTGRES_HOST:=postgres}"
 : "${POSTGRES_PORT:=5432}"

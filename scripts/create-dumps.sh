@@ -107,6 +107,7 @@ for table_name in "${EXPORTED_TABLES[@]}"; do
 done
 
 append_copy_from_query() {
+	#  Allows us to append a COPY FROM query to the dump file for exporting filtered data.
 	local table_name=$1
 	local columns=$2
 	local query=$3
@@ -160,9 +161,42 @@ append_public_collection_data() {
 		"
 }
 
+append_editor_data() {
+	#  Specifically ignore the columns that contain OAuth tokens
+	#  postgres will fill them with NULLs when importing
+	local editor_columns="id, name, metabrainz_user_id, cached_metabrainz_name, reputation, bio, "
+	editor_columns+="created_at, active_at, type_id, gender_id, area_id, privs, "
+	editor_columns+="revisions_applied, revisions_reverted, total_revisions, title_unlock_id"
+
+	append_copy_from_query \
+		bookbrainz.editor \
+		"$editor_columns" \
+		"
+			SELECT
+				id,
+				name,
+				metabrainz_user_id,
+				cached_metabrainz_name,
+				reputation,
+				bio,
+				created_at,
+				active_at,
+				type_id,
+				gender_id,
+				area_id,
+				privs,
+				revisions_applied,
+				revisions_reverted,
+				total_revisions,
+				title_unlock_id
+			FROM bookbrainz.editor
+		"
+}
+
 echo "Creating data dump..."
 
-# We do the dump in 3 steps because --table used for allowlisting does not create schema objects, indexes, constraints etc..
+# We do the dump in multiple steps because --table used for allowlisting does not create schema objects, indexes, constraints etc.
+# Furthermore we want to filter out sensitive data from some tables, which is not possible with pg_dump's --table option.
 # So we first dump the schema objects, then the allowlisted table data, and finally the indexes, constraints and triggers.
 
 # Dump schema objects that must exist before data.
@@ -182,6 +216,8 @@ pg_dump \
 	-p "$POSTGRES_PORT" \
 	-U bookbrainz \
 	"${PG_DUMP_TABLE_ARGS[@]}" \
+	# We process some tables separately to filter out sensitive or private data
+	--exclude-table-data=bookbrainz.editor \
 	--exclude-table-data=bookbrainz.user_collection \
 	--exclude-table-data=bookbrainz.user_collection_item \
 	--exclude-table-data=bookbrainz.user_collection_collaborator \
@@ -189,6 +225,10 @@ pg_dump \
 	--serializable-deferrable \
 	bookbrainz >> "/tmp/$DUMP_FILE"
 echo "Main dump created"
+
+echo "Exporting editor data without OAuth tokens..."
+append_editor_data
+echo "Editor data exported"
 
 echo "Exporting public collections..."
 append_public_collection_data
