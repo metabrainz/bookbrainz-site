@@ -2,9 +2,7 @@
 
 set -e
 
-SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-
-source /home/monkey/Work/BookBrainz/bookbrainz-site-test/scripts/config.sh
+source /home/bookbrainz/bookbrainz-site/scripts/config.sh
 
 # Switch directory
 pushd /home/bookbrainz/data/dumps
