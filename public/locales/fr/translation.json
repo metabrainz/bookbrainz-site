@@ -1,0 +1,27 @@
+{
+  "common": {
+    "about": {
+      "title": "À propos de BookBrainz",
+      "lead": "BookBrainz est une encyclopédie en ligne qui contient des informations sur la littérature publiée. Notre objectif est de collecter et stocker des données sur chaque livre, magazine, journal ou autre publication jamais écrit.",
+      "contactUs": "Contactez-nous",
+      "ourStory": "Notre histoire",
+      "accessingData": "Accéder aux données"
+    },
+    "button": {
+      "close": "Fermer"
+    },
+    "pagination": {
+      "previous": "← Page précédente",
+      "results": "Résultats {{from}} — {{to}}"
+    }
+  },
+  "entities": {},
+  "entityEditor": {
+    "aliasEditor": {
+      "helpText": "Noms variantes pour une entité tels qu'une orthographe alternative, une écriture différente, une représentation stylistique, des acronymes, etc. Consultez la page d'aide pour plus de détails et d'exemples.",
+      "title": "Éditeur d'alias"
+    }
+  },
+  "errors": {},
+  "pages": {}
+}
