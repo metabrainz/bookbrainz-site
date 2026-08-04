@@ -147,7 +147,7 @@ export function init(app) {
 				clientID,
 				clientSecret,
 				passReqToCallback: true,
-				scope: 'profile',
+				scope: ['profile', 'critiquebrainz:review', 'critiquebrainz:vote'],
 				tokenURL: `${oAuthBaseURL}/token`
 			};
 			strategy = new MetaBrainzOAuth2Strategy(
