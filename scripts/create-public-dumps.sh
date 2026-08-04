@@ -224,7 +224,7 @@ pg_dump \
 	--data-only \
 	--serializable-deferrable \
 	bookbrainz >> "/tmp/$DUMP_FILE"
-echo "Main dump created"
+echo "Main public dump created"
 
 echo "Exporting editor data without OAuth tokens..."
 append_editor_data
@@ -254,9 +254,9 @@ bzip2 /tmp/$DUMP_FILE
 mv /tmp/$DUMP_FILE.bz2 .
 echo "Compressed!"
 
-echo "Removing old dumps..."
+echo "Removing old public dumps..."
 rm -f /tmp/*.sql
-# Remove backups older than 8 days
+# Remove public backups older than 8 days
 find ./ -name '*.sql.bz2' -type f -mtime +7 -print | xargs /bin/rm -f
 echo "Done!"
 
