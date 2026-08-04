@@ -211,12 +211,12 @@ pg_dump \
 	bookbrainz > "/tmp/$DUMP_FILE"
 
 # Dump allowlisted table data to /tmp.
+# We process some tables separately (exclude-table-data) to filter out sensitive or private data
 pg_dump \
 	-h "$POSTGRES_HOST" \
 	-p "$POSTGRES_PORT" \
 	-U bookbrainz \
 	"${PG_DUMP_TABLE_ARGS[@]}" \
-	# We process some tables separately to filter out sensitive or private data
 	--exclude-table-data=bookbrainz.editor \
 	--exclude-table-data=bookbrainz.user_collection \
 	--exclude-table-data=bookbrainz.user_collection_item \
