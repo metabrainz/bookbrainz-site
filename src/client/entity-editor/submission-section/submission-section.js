@@ -51,27 +51,27 @@ function SubmissionSection({
 	onNoteChange,
 	submitted
 }) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation();
 	const errorAlertClass =
 		classNames('text-center', 'margin-top-1', {'d-none': !errorText});
 
 	const editNoteLabel = (
 		<span>
-			{translate('submissionSection.editNoteLabel')}
-			<span className="text-muted"> {translate('shared.optionalLabel')}</span>
+			{translate('entityEditor.submissionSection.editNoteLabel')}
+			<span className="text-muted"> {translate('entityEditor.shared.optionalLabel')}</span>
 		</span>
 	);
 
 	const tooltip = (
 		<Tooltip>
-			{translate('submissionSection.editNoteTooltip')}
+			{translate('entityEditor.submissionSection.editNoteTooltip')}
 		</Tooltip>
 	);
 
 	return (
 		<div>
 			<h2>
-				{translate('submissionSection.heading')}
+				{translate('entityEditor.submissionSection.heading')}
 			</h2>
 			<Row>
 				<Col lg={{offset: 3, span: 6}}>
@@ -88,7 +88,7 @@ function SubmissionSection({
 						<Form.Control as="textarea" defaultValue={note} rows="6" onChange={onNoteChange}/>
 					</Form.Group>
 					<p className="text-muted">
-						{translate('submissionSection.editNoteHelp')}
+						{translate('entityEditor.submissionSection.editNoteHelp')}
 					</p>
 				</Col>
 			</Row>
@@ -106,11 +106,11 @@ function SubmissionSection({
 						role="status"
 						size="sm"
 					/>}
-					 {submitted ? ` ${translate('submissionSection.submitButton')}` : translate('submissionSection.submitButton')}
+					 {submitted ? ` ${translate('entityEditor.submissionSection.submitButton')}` : translate('entityEditor.submissionSection.submitButton')}
 				</Button>
 			</div>
 			<div className={errorAlertClass}>
-				<Alert variant="danger">{translate('submissionSection.submissionError', {errorText})}</Alert>
+				<Alert variant="danger">{translate('entityEditor.submissionSection.submissionError', {errorText})}</Alert>
 			</div>
 		</div>
 	);

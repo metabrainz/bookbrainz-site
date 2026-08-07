@@ -70,20 +70,20 @@ export function labelsForAuthor(isGroup: boolean, translate?: any) {
 	if (translate) {
 		return {
 			beginAreaLabel: isGroup ?
-				translate('entityEditor:authorSection.beginAreaLabel.group') :
-				translate('entityEditor:authorSection.beginAreaLabel.person'),
+				translate('entityEditor.authorSection.beginAreaLabel.group') :
+				translate('entityEditor.authorSection.beginAreaLabel.person'),
 			beginDateLabel: isGroup ?
-				translate('entityEditor:authorSection.beginDateLabel.group') :
-				translate('entityEditor:authorSection.beginDateLabel.person'),
+				translate('entityEditor.authorSection.beginDateLabel.group') :
+				translate('entityEditor.authorSection.beginDateLabel.person'),
 			endAreaLabel: isGroup ?
-				translate('entityEditor:authorSection.endAreaLabel.group') :
-				translate('entityEditor:authorSection.endAreaLabel.person'),
+				translate('entityEditor.authorSection.endAreaLabel.group') :
+				translate('entityEditor.authorSection.endAreaLabel.person'),
 			endDateLabel: isGroup ?
-				translate('entityEditor:authorSection.endDateLabel.group') :
-				translate('entityEditor:authorSection.endDateLabel.person'),
+				translate('entityEditor.authorSection.endDateLabel.group') :
+				translate('entityEditor.authorSection.endDateLabel.person'),
 			endedLabel: isGroup ?
-				translate('entityEditor:shared.dissolvedLabel') :
-				translate('entityEditor:authorSection.endedLabel.person')
+				translate('entityEditor.shared.dissolvedLabel') :
+				translate('entityEditor.authorSection.endedLabel.person')
 		};
 	}
 	return {

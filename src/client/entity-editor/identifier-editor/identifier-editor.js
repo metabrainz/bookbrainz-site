@@ -51,8 +51,8 @@ const IdentifierEditor = ({
 	onClose,
 	show
 }) => {
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
-	const helpText = translate('identifierEditor.helpText');
+	const {t: translate} = useTranslation();
+	const helpText = translate('entityEditor.identifierEditor.helpText');
 
 	const helpIconElement = (
 		<OverlayTrigger
@@ -71,7 +71,7 @@ const IdentifierEditor = ({
 		<Modal show={show} size="lg" onHide={onClose}>
 			<Modal.Header>
 				<Modal.Title>
-					{translate('identifierEditor.title')} {helpIconElement}
+					{translate('entityEditor.identifierEditor.title')} {helpIconElement}
 				</Modal.Title>
 			</Modal.Header>
 
@@ -80,7 +80,7 @@ const IdentifierEditor = ({
 			</Modal.Body>
 
 			<Modal.Footer>
-				<Button variant="primary" onClick={onClose}>{translate('button.close', {ns: 'common'})}</Button>
+				<Button variant="primary" onClick={onClose}>{translate('common.button.close')}</Button>
 			</Modal.Footer>
 		</Modal>
 	);

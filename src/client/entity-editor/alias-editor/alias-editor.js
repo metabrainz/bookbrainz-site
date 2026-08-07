@@ -48,8 +48,8 @@ const AliasEditor = ({
 	onClose,
 	show
 }) => {
-	const {t: translate} = useTranslation('entityEditor');
-	const helpText = translate('aliasEditor.helpText');
+	const {t: translate} = useTranslation();
+	const helpText = translate('entityEditor.aliasEditor.helpText');
 	const helpIconElement = (
 		<OverlayTrigger
 			delay={50}
@@ -67,7 +67,7 @@ const AliasEditor = ({
 		<Modal show={show} size="lg" onHide={onClose}>
 			<Modal.Header>
 				<Modal.Title>
-					{translate('aliasEditor.title')} {helpIconElement}
+					{translate('entityEditor.aliasEditor.title')} {helpIconElement}
 				</Modal.Title>
 			</Modal.Header>
 
@@ -76,7 +76,7 @@ const AliasEditor = ({
 			</Modal.Body>
 
 			<Modal.Footer>
-				<Button variant="primary" onClick={onClose}>{translate('button.close', {ns: 'common'})}</Button>
+				<Button variant="primary" onClick={onClose}>{translate('common.button.close')}</Button>
 			</Modal.Footer>
 		</Modal>
 	);

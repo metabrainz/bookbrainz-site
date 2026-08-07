@@ -47,19 +47,19 @@ function DisambiguationField({
 	required,
 	...rest
 }: Props) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation();
 	const label = (
 		<ValidationLabel empty={empty} error={error}>
-			{translate('disambiguationField.label')}
+			{translate('entityEditor.disambiguationField.label')}
 			{required || null ? null :
-				<span className="text-muted"> {translate('shared.optionalLabel')}</span>
+				<span className="text-muted"> {translate('entityEditor.shared.optionalLabel')}</span>
 			}
 		</ValidationLabel>
 	);
 
 	const tooltip = (
 		<Tooltip>
-			{translate('disambiguationField.tooltip')}
+			{translate('entityEditor.disambiguationField.tooltip')}
 		</Tooltip>
 	);
 

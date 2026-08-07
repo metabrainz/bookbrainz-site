@@ -67,9 +67,9 @@ function LanguageField({
 	onChange,
 	...rest
 }: Props) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation();
 	const label =
-		<ValidationLabel empty={empty} error={error}>{translate('languageField.label')}</ValidationLabel>
+		<ValidationLabel empty={empty} error={error}>{translate('entityEditor.languageField.label')}</ValidationLabel>
 	;
 	const MAX_DROPDOWN_OPTIONS = 20;
 	const MAX_F1_OPTIONS = 400;
@@ -95,15 +95,15 @@ function LanguageField({
 	const recentItems = RecentlyUsed.getItems('languages').filter(item => item.name !== '[Multiple languages]');
 	const defaultOptions = [
 		{
-			label: translate('languageField.recentlyUsed'),
+			label: translate('entityEditor.languageField.recentlyUsed'),
 			options: recentItems.map(item => ({label: item.name, value: item.id}))
 		},
 		{
-			label: translate('languageField.frequentlyUsed'),
+			label: translate('entityEditor.languageField.frequentlyUsed'),
 			options: f2Languages
 		},
 		{
-			label: translate('languageField.other'),
+			label: translate('entityEditor.languageField.other'),
 			options: f1Languages
 		}
 	];
@@ -140,7 +140,7 @@ function LanguageField({
 				components={{Option: OptimizedOption}}
 				defaultOptions={defaultOptions}
 				loadOptions={fetchOptions}
-				placeholder={translate('languageField.placeholder')}
+				placeholder={translate('entityEditor.languageField.placeholder')}
 				{...rest}
 				onChange={handleChange}
 			/>

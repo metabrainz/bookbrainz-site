@@ -44,25 +44,25 @@ function IdentifierButton({
 	isUnifiedForm,
 	...props
 }) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation();
 	const textComponent = (() => {
 		if (!isUnifiedForm) {
 			if (numIdentifiers === 0) {
-				return translate('shared.addIdentifiers');
+				return translate('entityEditor.shared.addIdentifiers');
 			}
-			return translate('identifierButton.editIdentifiers', {count: numIdentifiers});
+			return translate('entityEditor.identifierButton.editIdentifiers', {count: numIdentifiers});
 		}
 
 		if (numIdentifiers > 0) {
 			return (
 				<span>
-					{translate('identifierButton.editIdentifiersUnified')}{' '}
+					{translate('entityEditor.identifierButton.editIdentifiersUnified')}{' '}
 					<Badge className="ml-1" variant="light">{numIdentifiers}</Badge>
 				</span>
 			);
 		}
 
-		return translate('identifierButton.addIdentifiersUnified');
+		return translate('entityEditor.identifierButton.addIdentifiersUnified');
 	})();
 	const iconElement = identifiersInvalid &&
 		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes}/>;
