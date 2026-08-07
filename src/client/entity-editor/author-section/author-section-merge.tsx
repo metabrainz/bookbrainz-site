@@ -180,8 +180,8 @@ function AuthorSectionMerge({
 
 		const ended = !_.isNil(entity.ended) && {
 			label: entity.ended ?
-				translate('common:yes') :
-				translate('common:no'),
+				translate('common.yes') :
+				translate('common.no'),
 			value: entity.ended
 		};
 		if (ended && !_.find(endedOptions, ['value', ended.value])) {
@@ -204,13 +204,13 @@ function AuthorSectionMerge({
 		<div>
 			<MergeField
 				currentValue={typeValue}
-				label={translate('common:type')}
+				label={translate('common.type')}
 				options={typeOptions}
 				onChange={onTypeChange}
 			/>
 			<MergeField
 				currentValue={genderValue}
-				label={translate('common:gender')}
+				label={translate('common.gender')}
 				options={genderOptions}
 				onChange={onGenderChange}
 			/>
@@ -305,6 +305,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	};
 }
 
-export default withTranslation('entityEditor')(
+export default withTranslation()(
 	connect(mapStateToProps, mapDispatchToProps)(AuthorSectionMerge)
 );

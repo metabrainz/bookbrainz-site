@@ -67,7 +67,7 @@ function EditionGroupSectionMerge({
 	onAuthorCreditChange,
 	onTypeChange
 }: Props) {
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const {t: translate} = useTranslation();
 	const authorCreditOptions = [];
 	const typeOptions = [];
 	const editions = [];
@@ -88,14 +88,14 @@ function EditionGroupSectionMerge({
 		<div>
 			<MergeField
 				currentValue={authorCreditValue}
-				label={translate('common:authorCredit')}
+				label={translate('common.authorCredit')}
 				options={authorCreditOptions}
 				valueRenderer={authorCreditToString}
 				onChange={onAuthorCreditChange}
 			/>
 			<MergeField
 				currentValue={typeValue}
-				label={translate('common:type')}
+				label={translate('common.type')}
 				options={typeOptions}
 				onChange={onTypeChange}
 			/>

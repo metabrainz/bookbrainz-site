@@ -116,7 +116,7 @@ function PublisherSectionMerge({
 	onEndedChange,
 	onTypeChange
 }: Props) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation();
 	const areaOptions = [];
 	const typeOptions = [];
 	const beginDateOptions = [];
@@ -138,8 +138,8 @@ function PublisherSectionMerge({
 		}
 		const ended = !_.isNil(entity.ended) && {
 			label: entity.ended ?
-				translate('common:yes') :
-				translate('common:no'),
+				translate('common.yes') :
+				translate('common.no'),
 			value: entity.ended
 		};
 		if (ended && !_.find(endedOptions, ['value', ended.value])) {
@@ -161,14 +161,14 @@ function PublisherSectionMerge({
 		<div>
 			<MergeField
 				currentValue={typeValue}
-				label={translate('common:type')}
+				label={translate('common.type')}
 				options={typeOptions}
 				onChange={onTypeChange}
 			/>
 			<MergeField
 				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				currentValue={areaValue}
-				label={translate('common:area')}
+				label={translate('common.area')}
 				options={areaOptions}
 				onChange={onAreaChange}
 			/>
@@ -176,13 +176,13 @@ function PublisherSectionMerge({
 				currentValue={formattedBeginDateValue}
 				error={!isValidBeginDate}
 				errorMessage={errorMessageBeginDate}
-				label={translate('publisherSection.dateFounded')}
+				label={translate('entityEditor.publisherSection.dateFounded')}
 				options={beginDateOptions}
 				onChange={onBeginDateChange}
 			/>
 			<MergeField
 				currentValue={endedChecked}
-				label={translate('shared.dissolvedLabel')}
+				label={translate('entityEditor.shared.dissolvedLabel')}
 				options={endedOptions}
 				onChange={onEndedChange}
 			/>
@@ -191,7 +191,7 @@ function PublisherSectionMerge({
 					currentValue={formattedEndDateValue}
 					error={!isValidEndDate}
 					errorMessage={errorMessageEndDate}
-					label={translate('publisherSection.dateDissolved')}
+					label={translate('entityEditor.publisherSection.dateDissolved')}
 					options={endDateOptions}
 					onChange={onEndDateChange}
 				/>

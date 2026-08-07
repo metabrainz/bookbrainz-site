@@ -178,7 +178,7 @@ function AuthorSection({
 
 	const {isValid: isValidDob, errorMessage: dobError} = validateAuthorSectionBeginDate(beginDateValue);
 	const {isValid: isValidDod, errorMessage: dodError} = validateAuthorSectionEndDate(beginDateValue, endDateValue, currentAuthorType.label);
-	const heading = <h2>{translate('entityEditor:shared.entityHeading', {entity: 'Author'})}</h2>;
+	const heading = <h2>{translate('entityEditor.shared.entityHeading', {entity: 'Author'})}</h2>;
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
@@ -187,12 +187,12 @@ function AuthorSection({
 		<div>
 			{!isUnifiedForm && heading}
 			<p className="text-muted">
-				{translate('entityEditor:shared.allFieldsOptional')}
+				{translate('entityEditor.shared.allFieldsOptional')}
 			</p>
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group>
-						<Form.Label>{translate('common:type')}</Form.Label>
+						<Form.Label>{translate('common.type')}</Form.Label>
 						<Select
 							isClearable
 							classNamePrefix="react-select"
@@ -207,7 +207,7 @@ function AuthorSection({
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group className={genderShow ? null : 'd-none'}>
-						<Form.Label>{translate('common:gender')}</Form.Label>
+						<Form.Label>{translate('common.gender')}</Form.Label>
 						<Select
 							classNamePrefix="react-select"
 							instanceId="gender"
@@ -352,6 +352,6 @@ function mapDispatchToProps(dispatch: Dispatch<Action>): DispatchProps {
 	};
 }
 
-export default withTranslation('entityEditor')(
+export default withTranslation()(
 	connect(mapStateToProps, mapDispatchToProps)(AuthorSection)
 );

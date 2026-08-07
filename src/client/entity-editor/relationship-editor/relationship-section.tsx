@@ -63,7 +63,7 @@ type RelationshipListProps = {
 export function RelationshipList(
 	{contextEntity, relationships, onEdit, onRemove}: RelationshipListProps
 ) {
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const {t: translate} = useTranslation();
 	/* eslint-disable react/jsx-no-bind */
 	const renderedRelationships = _.map(
 		relationships,
@@ -92,7 +92,7 @@ export function RelationshipList(
 									onClick={onEdit.bind(this, rowID)}
 								>
 									<FontAwesomeIcon icon={faPencilAlt}/>
-									<span>&nbsp;{translate('common:button.edit')}</span>
+									<span>&nbsp;{translate('common.button.edit')}</span>
 								</Button>
 							}
 							{onRemove &&
@@ -104,7 +104,7 @@ export function RelationshipList(
 									onClick={onRemove.bind(this, rowID)}
 								>
 									<FontAwesomeIcon icon={faTimes}/>
-									<span>&nbsp;{translate('common:button.remove')}</span>
+									<span>&nbsp;{translate('common.button.remove')}</span>
 								</Button>
 							}
 						</div>
@@ -152,7 +152,7 @@ function RelationshipSection({
 	relationshipEditorProps, relationshipTypes, onAddRelationship,
 	onEditorClose, onEditorAdd, onEdit, onRemove, onUndo, undoPossible
 }: Props) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation();
 	const baseEntity = {
 		bbid: _.get(entity, 'bbid'),
 		defaultAlias: {
@@ -201,7 +201,7 @@ function RelationshipSection({
 		<div>
 			{canEdit && showEditor && editor}
 			<h2>
-				{translate('relationshipSection.heading', {
+				{translate('entityEditor.relationshipSection.heading', {
 					entityType: _.startCase(entityType)
 				})}
 			</h2>
@@ -226,7 +226,7 @@ function RelationshipSection({
 							onClick={onAddRelationship}
 						>
 							<FontAwesomeIcon icon={faPlus}/>
-							<span>&nbsp;{translate('shared.addRelationship')}</span>
+							<span>&nbsp;{translate('entityEditor.shared.addRelationship')}</span>
 						</Button>
 					</Col>
 				</Row>
@@ -241,7 +241,7 @@ function RelationshipSection({
 							onClick={onUndo}
 						>
 							<FontAwesomeIcon icon={faUndo}/>
-							<span>&nbsp;{translate('relationshipEditor.undoLastAction')}</span>
+							<span>&nbsp;{translate('entityEditor.relationshipEditor.undoLastAction')}</span>
 						</Button>
 					</Col>
 				</Row>

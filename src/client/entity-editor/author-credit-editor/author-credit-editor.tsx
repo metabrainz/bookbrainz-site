@@ -55,20 +55,20 @@ const AuthorCreditEditor = ({
 	...rest
 }) => {
 	// eslint-disable-next-line id-length
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const {t: translate} = useTranslation();
 
 	return (
 		<Modal show={showEditor} size="lg" onHide={onClose} >
 			<Modal.Header>
-				<Modal.Title>{translate('shared.authorCreditLabel')}</Modal.Title>
+				<Modal.Title>{translate('entityEditor.shared.authorCreditLabel')}</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 				<p>
-					{translate('authorCreditEditor.introText')}
+					{translate('entityEditor.authorCreditEditor.introText')}
 				</p>
 				<hr/>
 				<dl>
-					<dt>{translate('authorCreditEditor.previewText')}</dt>
+					<dt>{translate('entityEditor.authorCreditEditor.previewText')}</dt>
 					<dd>
 						<AuthorCreditDisplay names={authorCredit}/>
 					</dd>
@@ -90,9 +90,9 @@ const AuthorCreditEditor = ({
 			<Modal.Footer>
 				<Button variant="success" onClick={onAddAuthorCreditRow}>
 					<FontAwesomeIcon icon={faPlus}/>
-					&nbsp;{translate('authorCreditEditor.addAuthor')}
+					&nbsp;{translate('entityEditor.authorCreditEditor.addAuthor')}
 				</Button>
-				<Button variant="warning" onClick={onClose}>{translate('common:button.close')}</Button>
+				<Button variant="warning" onClick={onClose}>{translate('common.button.close')}</Button>
 			</Modal.Footer>
 		</Modal>
 	);
