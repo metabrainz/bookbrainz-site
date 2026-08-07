@@ -64,6 +64,10 @@ if (app.get('env') !== 'testing') {
 	app.use(logger('dev'));
 }
 
+server.use(function (req, res, next) {
+  res.set('X-Clacks-Overhead', 'GNU Terry Pratchet');
+  next();
+});
 app.use(express.json({
 	limit: '10mb',
 	verify: (req, res, buffer) => {
