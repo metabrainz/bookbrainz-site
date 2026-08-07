@@ -44,25 +44,25 @@ function AnnotationSection({
 	onAnnotationChange,
 	isUnifiedForm
 }) {
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const {t: translate} = useTranslation();
 	const annotation = convertMapToObject(immutableAnnotation);
 	const annotationLabel = (
 		<span>
-			{translate('common:annotation')}
-			<span className="text-muted"> {translate('shared.optionalLabel')}</span>
+			{translate('common.annotation')}
+			<span className="text-muted"> {translate('entityEditor.shared.optionalLabel')}</span>
 		</span>
 	);
 
 	const tooltip = (
 		<Tooltip>
-			{translate('annotationSection.tooltip')}
+			{translate('entityEditor.annotationSection.tooltip')}
 		</Tooltip>
 	);
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
 	}
-	const heading = <h2> {translate('common:annotation')}</h2>;
+	const heading = <h2> {translate('common.annotation')}</h2>;
 	return (
 		<div>
 			{!isUnifiedForm && heading}
@@ -88,20 +88,20 @@ function AnnotationSection({
 					{
 						annotation && annotation.lastRevision &&
 						<p className="small text-muted">
-							{translate('annotationSection.lastModified', {
+							{translate('entityEditor.annotationSection.lastModified', {
 								date: formatDate(new Date(annotation.lastRevision.createdAt))
 							})}
 						</p>
 					}
 					<p className="text-muted">
-						{translate('annotationSection.helpText')}
-						<b> {translate('annotationSection.copyrightWarning')}</b>
+						{translate('entityEditor.annotationSection.helpText')}
+						<b> {translate('entityEditor.annotationSection.copyrightWarning')}</b>
 						{' '}
-						{translate('annotationSection.openLicenseNoticePre')}
+						{translate('entityEditor.annotationSection.openLicenseNoticePre')}
 						<a href="https://musicbrainz.org/doc/About/Data_License">
-							{translate('annotationSection.openLicenseNoticeLink')}
+							{translate('entityEditor.annotationSection.openLicenseNoticeLink')}
 						</a>
-						{translate('annotationSection.openLicenseNoticePost')}
+						{translate('entityEditor.annotationSection.openLicenseNoticePost')}
 					</p>
 				</Col>
 			</Row>
