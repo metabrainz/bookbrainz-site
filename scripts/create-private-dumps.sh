@@ -2,13 +2,20 @@
 
 set -e
 
-source /home/bookbrainz/bookbrainz-site/scripts/config.sh
+BB_SERVER_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../" && pwd)
 
-PRIVATE_BACKUP_FOLDER=/mnt/private_backup
+source $BB_SERVER_ROOT/scripts/config.sh
+source $BB_SERVER_ROOT/scripts/functions.sh
+
 PRIVATE_DUMP_FILE=bookbrainz-full-dump-$(date -I).sql
 
-# Switch directory
-pushd $PRIVATE_BACKUP_FOLDER
+# Check that the directory exists
+if [ -d $PRIVATE_BACKUP_FOLDER ]; then
+    echo "Private backup folder exists at $PRIVATE_BACKUP_FOLDER"
+else
+    echo "Private backup folder does not exist at $PRIVATE_BACKUP_FOLDER, aborting"
+	exit 1
+fi
 
 echo "Creating full private dump..."
 pg_dump \
@@ -32,8 +39,6 @@ if [ "$(find "$PRIVATE_BACKUP_FOLDER" -maxdepth 1 -name '*.sql.bz2' -type f | se
 fi
 echo "Done!"
 
-chmod 600 ./*
-
-popd
+chmod 600 $PRIVATE_BACKUP_FOLDER/*
 
 exit 0
