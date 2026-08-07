@@ -40,7 +40,7 @@ class EditorRevisionPage extends React.Component {
 
 	render() {
 		const {t: translate} = this.props;
-		const tableHeading = this.props.tableHeading ?? translate('revisions.recentActivity');
+		const tableHeading = this.props.tableHeading ?? translate('pages.revisions.recentActivity');
 		return (
 			<div id="pageWithPagination">
 				<RevisionsTable
@@ -87,4 +87,4 @@ EditorRevisionPage.defaultProps = {
 	tableHeading: null
 };
 
-export default withTranslation('pages')(EditorRevisionPage);
+export default withTranslation()(EditorRevisionPage);

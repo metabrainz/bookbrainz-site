@@ -108,10 +108,10 @@ class EditorAchievementTab extends React.Component {
 					</CardDeck>
 					<span className="margin-left-1">
 						<Button type="submit" variant="success">
-							{translate('pages:achievements.updateButton')}
+							{translate('pages.achievements.updateButton')}
 						</Button>
 						<span className="margin-left-1">
-							{translate('pages:achievements.unsetInstructions')}
+							{translate('pages.achievements.unsetInstructions')}
 						</span>
 					</span>
 				</Form>
@@ -144,9 +144,9 @@ class EditorAchievementTab extends React.Component {
 								}
 							</Sticky>
 							<div style={{zIndex: 1}}>
-								<div className="h1">{translate('pages:achievements.unlockedHeading')}</div>
+								<div className="h1">{translate('pages.achievements.unlockedHeading')}</div>
 								{achievements}
-								<div className="h1">{translate('pages:achievements.lockedHeading')}</div>
+								<div className="h1">{translate('pages.achievements.lockedHeading')}</div>
 								{locked}
 							</div>
 						</StickyContainer>
@@ -174,4 +174,4 @@ EditorAchievementTab.propTypes = {
 	t: PropTypes.func.isRequired
 };
 
-export default withTranslation('pages')(EditorAchievementTab);
+export default withTranslation()(EditorAchievementTab);
