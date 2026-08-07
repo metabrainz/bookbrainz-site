@@ -75,7 +75,7 @@ function WorkSectionMerge({
 	typeValue,
 	onTypeChange
 }: Props) {
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const {t: translate} = useTranslation();
 	const typeOptions = [];
 
 	mergingEntities.forEach(entity => {
@@ -89,12 +89,12 @@ function WorkSectionMerge({
 		<div>
 			<MergeField
 				currentValue={typeValue}
-				label={translate('common:type')}
+				label={translate('common.type')}
 				options={typeOptions}
 				onChange={onTypeChange}
 			/>
 			<Form.Group>
-				<Form.Label>{translate('common:languages')}</Form.Label>
+				<Form.Label>{translate('common.languages')}</Form.Label>
 				<Select
 					isDisabled
 					isMulti

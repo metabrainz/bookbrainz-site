@@ -26,7 +26,7 @@ const {Tabs, Tab} = Boostrap;
 export function UnifiedForm(props:UnifiedFormProps) {
 	const {allIdentifierTypes, validator, onSubmit, formValid,
 		languageOptions, contentTabEmpty, coverTabValid, coverTabEmpty, detailTabValid, detailTabEmpty} = props;
-	const rest = omit(props, ['contentTabEmpty', 'coverTabValid', 'coverTabEmpty', 'detailTabValid', 'formValid', 'detailTabEmpty']);
+	const rest = omit(props, ['contentTabEmpty', 'coverTabValid', 'coverTabEmpty', 'detailTabValid', 'formValid', 'detailTabEmpty', 'i18n']);
 	React.useMemo(() => {
 		// without this check, it would cause undefined behaviour
 		if (!freezeObjects.filterOptions) {

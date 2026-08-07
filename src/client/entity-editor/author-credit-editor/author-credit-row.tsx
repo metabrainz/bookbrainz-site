@@ -93,7 +93,7 @@ function AuthorCreditRow({
 	onRemoveButtonClick,
 	...rest
 }: Props) {
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const {t: translate} = useTranslation();
 	const SelectWrapper = !isUnifiedForm ? EntitySearchFieldOption : SearchEntityCreate;
 	const onChangeHandler = React.useCallback((value, action) => {
 		if (['clear', 'pop-value', 'select-option'].includes(action?.action) && author?.get('__isNew__', false)) {
@@ -114,7 +114,7 @@ function AuthorCreditRow({
 					<SelectWrapper
 						instanceId={`author${index}`}
 						isUnifiedForm={isUnifiedForm}
-						label={translate('common:entityType.author')}
+						label={translate('common.entityType.author')}
 						rowId={index}
 						validationState={!author ? 'error' : null}
 						value={author}
@@ -128,7 +128,7 @@ function AuthorCreditRow({
 					<Form.Group>
 						<Form.Label>
 							<ValidationLabel empty={name.length === 0} error={!name.length}>
-								{translate('authorCreditRow.creditedAsLabel')}
+								{translate('entityEditor.authorCreditRow.creditedAsLabel')}
 							</ValidationLabel>
 						</Form.Label>
 						<Form.Control type="text" value={name} onChange={onNameChange}/>
@@ -137,7 +137,7 @@ function AuthorCreditRow({
 				</Col>
 				<Col md={{span: 3}}>
 					<Form.Group>
-						<Form.Label>{translate('authorCreditEditor.joinPhraseLabel')}</Form.Label>
+						<Form.Label>{translate('entityEditor.authorCreditEditor.joinPhraseLabel')}</Form.Label>
 						<Form.Control type="text" value={joinPhrase} onChange={onJoinPhraseChange}/>
 
 					</Form.Group>
@@ -150,7 +150,7 @@ function AuthorCreditRow({
 						onClick={handleButtonClick}
 					>
 						<FontAwesomeIcon icon={faTimes}/>
-						&nbsp;{translate('common:button.remove')}
+						&nbsp;{translate('common.button.remove')}
 					</Button>
 				</Col>
 			</Row>

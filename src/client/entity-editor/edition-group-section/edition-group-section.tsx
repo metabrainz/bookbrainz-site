@@ -72,15 +72,15 @@ function EditionGroupSection({
 	isLeftAlign,
 	onTypeChange
 }: Props) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation();
 
 	const editionGroupTypesForDisplay = editionGroupTypes.map((type) => ({
 		label: type.label,
 		value: type.id
 	}));
 	const typeOption = editionGroupTypesForDisplay.filter((el) => el.value === typeValue);
-	const tooltip = <Tooltip>{translate('editionGroupSection.typeTooltip')}</Tooltip>;
-	const heading = <h2>{translate('shared.entityHeading', {entity: 'Edition Group'})}</h2>;
+	const tooltip = <Tooltip>{translate('entityEditor.editionGroupSection.typeTooltip')}</Tooltip>;
+	const heading = <h2>{translate('entityEditor.shared.entityHeading', {entity: 'Edition Group'})}</h2>;
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
@@ -90,13 +90,13 @@ function EditionGroupSection({
 			{!isUnifiedForm && heading}
 			<AuthorCreditSection isLeftAlign={isLeftAlign} type="editionGroup"/>
 			<p className="text-muted">
-				{translate('shared.allFieldsOptional')}
+				{translate('entityEditor.shared.allFieldsOptional')}
 			</p>
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>
-							{translate('common:type')}
+							{translate('common.type')}
 							<OverlayTrigger delay={50} overlay={tooltip}>
 								<FontAwesomeIcon
 									className="margin-left-0-5"

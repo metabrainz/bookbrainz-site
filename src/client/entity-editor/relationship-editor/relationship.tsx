@@ -39,7 +39,7 @@ function getEntityObjectForDisplay(entity: _Entity, makeLink: boolean, translate
 		link,
 		text: _.get(entity, ['defaultAlias', 'name']),
 		type: entity.type,
-		unnamedText: entity.bbid ? translate('common:unnamed') : translate('entityEditor:relationship.newEntity')
+		unnamedText: entity.bbid ? translate('common.unnamed') : translate('entityEditor.relationship.newEntity')
 	};
 }
 
@@ -56,7 +56,7 @@ export {Relationship as RelationshipType};
 type RelationshipProps = Relationship & {Parent?:React.FunctionComponent<any>};
 
 function Relationship({Parent, ...props}: RelationshipProps) {
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const {t: translate} = useTranslation();
 	const {contextEntity, link, relationshipType, sourceEntity, attributes, showAttributes, targetEntity, ...rest} = props;
 	const {depth, description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
 
