@@ -50,7 +50,7 @@ class CollectionsTable extends React.Component {
 			<DropdownButton
 				className="margin-bottom-d5"
 				id="entity-type-select"
-				title={this.props.type ? translate(`common:entityType.${_.camelCase(this.props.type)}`) : translate('common:type')}
+				title={this.props.type ? translate(`common.entityType.${_.camelCase(this.props.type)}`) : translate('common.type')}
 				variant="primary"
 				onSelect={this.handleEntitySelect}
 			>
@@ -60,7 +60,7 @@ class CollectionsTable extends React.Component {
 						key={entityType}
 					>
 						{genEntityIconHTMLElement(entityType)}
-						{translate(`common:entityType.${_.camelCase(entityType)}`)}
+						{translate(`common.entityType.${_.camelCase(entityType)}`)}
 					</Dropdown.Item>
 				))}
 				<Dropdown.Divider/>
@@ -68,7 +68,7 @@ class CollectionsTable extends React.Component {
 					eventKey={null}
 					key="allTypes"
 				>
-					{translate('pages:collections.allTypes')}
+					{translate('pages.collections.allTypes')}
 				</Dropdown.Item>
 			</DropdownButton>
 		);
@@ -86,7 +86,7 @@ class CollectionsTable extends React.Component {
 					variant="warning"
 				>
 					<FontAwesomeIcon icon={faPlus}/>
-					&nbsp;{translate('pages:collections.createButton')}
+					&nbsp;{translate('pages.collections.createButton')}
 				</Button>
 			);
 		}
@@ -103,7 +103,7 @@ class CollectionsTable extends React.Component {
 					type="button"
 					variant="success"
 				>
-					{translate('pages:collections.myCollectionsButton')}
+					{translate('pages.collections.myCollectionsButton')}
 				</Button>
 			);
 		}
@@ -131,26 +131,26 @@ class CollectionsTable extends React.Component {
 						>
 							<thead>
 								<tr>
-									<th width="16%">{translate('common:name')}</th>
-									<th width="33%">{translate('common:description')}</th>
-									<th width="16%">{translate('common:entityType')}</th>
-									<th width="16%">{translate('common:entities')}</th>
+									<th width="16%">{translate('common.name')}</th>
+									<th width="33%">{translate('common.description')}</th>
+									<th width="16%">{translate('common.entityType._self')}</th>
+									<th width="16%">{translate('common.entities')}</th>
 									{
 										showPrivacy ?
-											<th width="16%">{translate('common:privacy')}</th> : null
+											<th width="16%">{translate('common.privacy')}</th> : null
 									}
 									{
 										showIfOwnerOrCollaborator ?
-											<th width="16%">{translate('common:role')}</th> : null
+											<th width="16%">{translate('common.role')}</th> : null
 									}
 									{
 										showOwner ?
-											<th width="16%">{translate('common:owner')}</th> : null
+											<th width="16%">{translate('common.owner')}</th> : null
 
 									}
 									{
 										showLastModified ?
-											<th width="16%">{translate('common:lastModified')}</th> : null
+											<th width="16%">{translate('common.lastModified')}</th> : null
 									}
 								</tr>
 							</thead>
@@ -167,15 +167,15 @@ class CollectionsTable extends React.Component {
 												</a>
 											</td>
 											<td>{collection.description}</td>
-											<td>{translate(`common:entityType.${_.camelCase(collection.entityType)}`)}</td>
+											<td>{translate(`common.entityType.${_.camelCase(collection.entityType)}`)}</td>
 											<td>{collection.itemCount}</td>
 											{
 												showPrivacy ?
-													<td>{collection.public ? translate('common:public') : translate('common:private')}</td> : null
+													<td>{collection.public ? translate('common.public') : translate('common.private')}</td> : null
 											}
 											{
 												showIfOwnerOrCollaborator ?
-													<td>{collection.isOwner ? translate('common:owner') : translate('common:collaborator')}</td> : null
+													<td>{collection.isOwner ? translate('common.owner') : translate('common.collaborator')}</td> : null
 											}
 											{
 												showOwner ?
@@ -193,7 +193,7 @@ class CollectionsTable extends React.Component {
 						</Table> :
 
 						<div>
-							<h4> {translate('pages:collections.noCollections')}</h4>
+							<h4> {translate('pages.collections.noCollections')}</h4>
 							<hr className="wide"/>
 						</div>
 				}
@@ -233,4 +233,4 @@ CollectionsTable.defaultProps = {
 CollectionsTable.displayName = 'CollectionsTable';
 
 
-export default withTranslation(['pages', 'common'])(CollectionsTable);
+export default withTranslation()(CollectionsTable);

@@ -35,7 +35,7 @@ const {Button, ButtonGroup} = bootstrap;
  * the 'CallToAction' component.
  */
 function CallToAction(props) {
-	const {t: translate} = useTranslation(['pages', 'common']);
+	const {t: translate} = useTranslation();
 	const seedingParameters = new URLSearchParams({name: props.query});
 	function renderEntityLink(type) {
 		return (
@@ -45,7 +45,7 @@ function CallToAction(props) {
 					variant="secondary"
 				>
 					{genEntityIconHTMLElement(type, '3x', false)}
-					<div className="margin-top-d4">{translate(`common:entityType.${camelCase(type)}`)}</div>
+					<div className="margin-top-d4">{translate(`common.entityType.${camelCase(type)}`)}</div>
 				</Button>
 			</a>
 		);
@@ -54,12 +54,12 @@ function CallToAction(props) {
 	return (
 		<div className="text-center">
 			<p>
-				{translate('callToAction.helpText')}
+				{translate('pages.callToAction.helpText')}
 				<br/>
 				<small>
-					{translate('callToAction.notSure')}
-					<a href="/help">{translate('callToAction.helpPage')}</a>
-					{translate('callToAction.toGetStarted')}
+					{translate('pages.callToAction.notSure')}
+					<a href="/help">{translate('pages.callToAction.helpPage')}</a>
+					{translate('pages.callToAction.toGetStarted')}
 				</small>
 			</p>
 			<div>

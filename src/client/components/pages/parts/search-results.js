@@ -76,7 +76,7 @@ class SearchResults extends React.Component {
 			const {t: translate} = this.props;
 			this.setState({
 				message: {
-					text: translate('searchResults.loginRequired'),
+					text: translate('pages.searchResults.loginRequired'),
 					type: 'danger'
 				}
 			});
@@ -127,7 +127,7 @@ class SearchResults extends React.Component {
 				else {
 					this.setState({
 						message: {
-							text: translate('searchResults.cannotAdd', {type: selectedEntities[0].type}),
+							text: translate('pages.searchResults.cannotAdd', {type: selectedEntities[0].type}),
 							type: 'danger'
 						}
 					});
@@ -136,7 +136,7 @@ class SearchResults extends React.Component {
 			else {
 				this.setState({
 					message: {
-						text: translate('searchResults.sameTypeRequired'),
+						text: translate('pages.searchResults.sameTypeRequired'),
 						type: 'danger'
 					}
 				});
@@ -145,7 +145,7 @@ class SearchResults extends React.Component {
 		else {
 			this.setState({
 				message: {
-					text: translate('searchResults.nothingSelected'),
+					text: translate('pages.searchResults.nothingSelected'),
 					type: 'danger'
 				}
 			});
@@ -163,7 +163,7 @@ class SearchResults extends React.Component {
 			}
 			const id = getId(result);
 			const name = result.defaultAlias ? result.defaultAlias.name :
-				translate('common:unnamed');
+				translate('common.unnamed');
 
 			const aliases = !this.props.condensed && result.aliasSet &&
 				Array.isArray(result.aliasSet.aliases) && result.aliasSet.aliases;
@@ -192,7 +192,7 @@ class SearchResults extends React.Component {
 										onChange={() => this.toggleRow(result)}
 									/> : null
 							}
-							{genEntityIconHTMLElement(result.type)}{translate(`common:entityType.${_camelCase(result.type)}`)}
+							{genEntityIconHTMLElement(result.type)}{translate(`common.entityType.${_camelCase(result.type)}`)}
 						</td>
 					}
 					<td>
@@ -238,7 +238,7 @@ class SearchResults extends React.Component {
 				{
 					!this.props.condensed &&
 					<h3 className="search-results-heading">
-						{translate('common:searchResults')}
+						{translate('common.searchResults')}
 					</h3>
 				}
 				<hr className="thin"/>
@@ -250,9 +250,9 @@ class SearchResults extends React.Component {
 						!this.props.condensed &&
 						<thead>
 							<tr>
-								<th width="25%">{translate('searchResults.headerType')}</th>
-								<th width="42%">{translate('common:name')}</th>
-								<th width="33%">{translate('searchResults.headerAliases')}</th>
+								<th width="25%">{translate('pages.searchResults.headerType')}</th>
+								<th width="42%">{translate('common.name')}</th>
+								<th width="33%">{translate('pages.searchResults.headerAliases')}</th>
 							</tr>
 						</thead>
 					}
@@ -281,7 +281,7 @@ class SearchResults extends React.Component {
 								onClick={this.handleAddToCollection}
 							>
 								{genEntityIconHTMLElement('Collection')}
-								{translate('searchResults.addToCollection')}
+								{translate('pages.searchResults.addToCollection')}
 							</Button>
 							<Button
 								disabled={!this.state.selected.length}
@@ -289,7 +289,7 @@ class SearchResults extends React.Component {
 								variant="warning"
 								onClick={this.handleClearSelected}
 							>
-								{translate('searchResults.clearSelected', {count: this.state.selected.length})}
+								{translate('pages.searchResults.clearSelected', {count: this.state.selected.length})}
 							</Button>
 						</ButtonGroup> : null
 				}
@@ -311,4 +311,4 @@ SearchResults.defaultProps = {
 	results: null
 };
 
-export default withTranslation(['pages', 'common'])(SearchResults);
+export default withTranslation()(SearchResults);
