@@ -56,7 +56,7 @@ class EditorProfileTab extends React.Component {
 		const createdAtDate = formatDate(new Date(editor.createdAt), true);
 		const lastActiveDate = formatDate(new Date(editor.activeAt), true);
 
-		let musicbrainzAccount = translate('pages:profile.noLinkedMB');
+		let musicbrainzAccount = translate('pages.profile.noLinkedMB');
 		if (cachedMetabrainzName) {
 			musicbrainzAccount = (
 				<span>
@@ -69,7 +69,7 @@ class EditorProfileTab extends React.Component {
 						rel="noopener noreferrer"
 						target="_blank"
 					>
-						{translate('pages:profile.sendEmail')} <FontAwesomeIcon icon={faExternalLinkAlt}/>
+						{translate('pages.profile.sendEmail')} <FontAwesomeIcon icon={faExternalLinkAlt}/>
 					</a>)
 				</span>
 			);
@@ -79,45 +79,45 @@ class EditorProfileTab extends React.Component {
 		}
 		else if (user && editor.id === user.id) {
 			musicbrainzAccount =
-				<a href="/auth">{translate('pages:profile.linkMB')}</a>;
+				<a href="/auth">{translate('pages.profile.linkMB')}</a>;
 		}
 
 		return (
 			<div>
 				<h2>
-					{translate('pages:profile.basicInfo')}
+					{translate('pages.profile.basicInfo')}
 					{user && user.id === editor.id &&
 						<small className="float-right">
 							<Button
 								href="/editor/edit"
-								title={translate('pages:profile.editInfoTitle')}
+								title={translate('pages.profile.editInfoTitle')}
 								variant="warning"
 							>
-								<FontAwesomeIcon icon={faPencilAlt}/>{' '}{translate('pages:profile.editProfile')}
+								<FontAwesomeIcon icon={faPencilAlt}/>{' '}{translate('pages.profile.editProfile')}
 							</Button>
 						</small>
 					}
 				</h2>
 				<dl className="row editor-info">
-					<dt className="col-md-2">{translate('pages:profile.musicbrainzAccount')}</dt>
+					<dt className="col-md-2">{translate('pages.profile.musicbrainzAccount')}</dt>
 					<dd className="col-md-10">
 						{musicbrainzAccount}
 					</dd>
-					<dt className="col-md-2">{translate('common:displayName')}</dt>
+					<dt className="col-md-2">{translate('common.displayName')}</dt>
 					<dd className="col-md-10">{name}</dd>
-					<dt className="col-md-2">{translate('common:area')}</dt>
+					<dt className="col-md-2">{translate('common.area')}</dt>
 					<dd className="col-md-10">{editor.area ? editor.area.name : '?'}</dd>
-					<dt className="col-md-2">{translate('common:gender')}</dt>
+					<dt className="col-md-2">{translate('common.gender')}</dt>
 					<dd className="col-md-10">{gender ? gender.name : '?'}</dd>
-					<dt className="col-md-2">{translate('common:type')}</dt>
+					<dt className="col-md-2">{translate('common.type')}</dt>
 					<dd className="col-md-10">{editor.type.label}</dd>
-					<dt className="col-md-2">{translate('pages:profile.reputation')}</dt>
+					<dt className="col-md-2">{translate('pages.profile.reputation')}</dt>
 					<dd className="col-md-10">0</dd>
-					<dt className="col-md-2">{translate('pages:profile.joined')}</dt>
+					<dt className="col-md-2">{translate('pages.profile.joined')}</dt>
 					<dd className="col-md-10">{createdAtDate}</dd>
-					<dt className="col-md-2">{translate('pages:profile.lastLogin')}</dt>
+					<dt className="col-md-2">{translate('pages.profile.lastLogin')}</dt>
 					<dd className="col-md-10">{lastActiveDate}</dd>
-					<dt className="col-md-2">{translate('pages:profile.bio')}</dt>
+					<dt className="col-md-2">{translate('pages.profile.bio')}</dt>
 					<dd className="col-md-10">{editor.bio ? editor.bio : '-'}</dd>
 				</dl>
 			</div>
@@ -130,13 +130,13 @@ class EditorProfileTab extends React.Component {
 
 		return (
 			<div>
-				<h2>{translate('pages:profile.stats')}</h2>
+				<h2>{translate('pages.profile.stats')}</h2>
 				<dl className="row editor-info">
-					<dt className="col-md-8">{translate('pages:profile.totalRevisions')}</dt>
+					<dt className="col-md-8">{translate('pages.profile.totalRevisions')}</dt>
 					<dd className="col-md-4">{editor.totalRevisions}</dd>
-					<dt className="col-md-8">{translate('pages:profile.revisionsApplied')}</dt>
+					<dt className="col-md-8">{translate('pages.profile.revisionsApplied')}</dt>
 					<dd className="col-md-4">{editor.revisionsApplied}</dd>
-					<dt className="col-md-8">{translate('pages:profile.revisionsReverted')}</dt>
+					<dt className="col-md-8">{translate('pages.profile.revisionsReverted')}</dt>
 					<dd className="col-md-4">{editor.revisionsReverted}</dd>
 				</dl>
 			</div>
@@ -156,7 +156,7 @@ class EditorProfileTab extends React.Component {
 
 		return (
 			<div>
-				<h2>{translate('pages:profile.badges')}</h2>
+				<h2>{translate('pages.profile.badges')}</h2>
 				<Row
 					height="200px"
 					margin="0"
@@ -176,7 +176,7 @@ class EditorProfileTab extends React.Component {
 										<ListGroup.Item>{model.achievement.name}</ListGroup.Item>
 										<ListGroup.Item>{model.achievement.description}</ListGroup.Item>
 										<ListGroup.Item>
-											{translate('pages:profile.unlocked', {
+											{translate('pages.profile.unlocked', {
 												date: formatDate(new Date(model.unlockedAt), true)
 											})}
 										</ListGroup.Item>
@@ -195,7 +195,7 @@ class EditorProfileTab extends React.Component {
 									width="160px"
 								/>
 								<p className="text-center">
-									{translate('pages:profile.noBadges')}
+									{translate('pages.profile.noBadges')}
 								</p>
 							</Card>
 						</Col>
@@ -224,7 +224,7 @@ class EditorProfileTab extends React.Component {
 					hoverBackgroundColor: 'rgba(235,116,59,0.4)',
 					hoverBorderColor: 'rgba(235,116,59,1)',
 					// eslint-disable-next-line id-length
-					label: this.props.t('pages:profile.revisionsChartLabel')
+					label: this.props.t('pages.profile.revisionsChartLabel')
 				}
 			],
 			labels: months
@@ -274,4 +274,4 @@ EditorProfileTab.defaultProps = {
 	user: null
 };
 
-export default withTranslation(['pages', 'common'])(EditorProfileTab);
+export default withTranslation()(EditorProfileTab);
