@@ -156,7 +156,7 @@ function EditionSectionMerge({
 	weightValue,
 	widthValue
 }: Props) {
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const {t: translate} = useTranslation();
 	const editionGroupOptions = [];
 	const authorCreditOptions = [];
 	const releaseDateOptions = [];
@@ -225,7 +225,7 @@ function EditionSectionMerge({
 		<div>
 			<MergeField
 				currentValue={authorCreditValue}
-				label={translate('common:authorCredit')}
+				label={translate('common.authorCredit')}
 				options={authorCreditOptions}
 				valueRenderer={authorCreditToString}
 				onChange={onAuthorCreditChange}
@@ -233,73 +233,73 @@ function EditionSectionMerge({
 			<MergeField
 				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				currentValue={editionGroupValue}
-				label={translate('common:entityType.editionGroup')}
+				label={translate('common.entityType.editionGroup')}
 				options={editionGroupOptions}
 				onChange={onEditionGroupChange}
 			/>
 			<MergeField
 				currentValue={releaseDateValue}
-				label={translate('shared.releaseDateLabel')}
+				label={translate('entityEditor.shared.releaseDateLabel')}
 				options={releaseDateOptions}
 				onChange={onReleaseDateChange}
 			/>
 			<MergeField
 				components={{Option: LinkedEntitySelect, SingleValue: EntitySelect}}
 				currentValue={publisherValue}
-				label={translate('common:entityType.publisher')}
+				label={translate('common.entityType.publisher')}
 				options={publisherOptions}
 				onChange={onPublisherChange}
 			/>
 			<MergeField
 				currentValue={formatValue}
-				label={translate('common:format')}
+				label={translate('common.format')}
 				options={formatOptions}
 				onChange={onFormatChange}
 			/>
 			<MergeField
 				currentValue={statusValue}
-				label={translate('common:status')}
+				label={translate('common.status')}
 				options={statusOptions}
 				onChange={onStatusChange}
 			/>
 			<MergeField
 				currentValue={depthValue}
-				label={translate('shared.depthLabel')}
+				label={translate('entityEditor.shared.depthLabel')}
 				options={depthOptions}
 				onChange={onDepthChange}
 			/>
 			<MergeField
 				currentValue={widthValue}
-				label={translate('shared.widthLabel')}
+				label={translate('entityEditor.shared.widthLabel')}
 				options={widthOptions}
 				onChange={onWidthChange}
 			/>
 			<MergeField
 				currentValue={heightValue}
-				label={translate('shared.heightLabel')}
+				label={translate('entityEditor.shared.heightLabel')}
 				options={heightOptions}
 				onChange={onHeightChange}
 			/>
 			<MergeField
 				currentValue={pagesValue}
-				label={translate('common:pages')}
+				label={translate('common.pages')}
 				options={pagesOptions}
 				onChange={onPagesChange}
 			/>
 			<MergeField
 				currentValue={weightValue}
-				label={translate('shared.weightLabel')}
+				label={translate('entityEditor.shared.weightLabel')}
 				options={weightOptions}
 				onChange={onWeightChange}
 			/>
 			<Form.Group>
-				<Form.Label>{translate('common:languages')}</Form.Label>
+				<Form.Label>{translate('common.languages')}</Form.Label>
 				<Select
 					isDisabled
 					isMulti
 					classNamePrefix="react-select"
 					instanceId="languages"
-					placeholder={translate('editionSectionMerge.noLanguages')}
+					placeholder={translate('entityEditor.editionSectionMerge.noLanguages')}
 					value={languageValues}
 				/>
 			</Form.Group>

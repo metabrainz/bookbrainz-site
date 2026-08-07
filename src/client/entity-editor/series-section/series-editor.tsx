@@ -85,7 +85,7 @@ type SeriesItemsProps = {
  */
 
 const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemove, dragHandler, isUnifiedForm}) => {
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const {t: translate} = useTranslation();
 	return (
 		<Row className={`margin-top-d5 ${isUnifiedForm ? 'w-100 align-items-center' : ''}`} key={value.rowID}>
 			{(!isUnifiedForm || dragHandler) &&
@@ -95,7 +95,7 @@ const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemov
 			<Col lg={2}>
 				<input
 					className="form-control"
-					placeholder={translate('seriesEditor.placeholder')}
+					placeholder={translate('entityEditor.seriesEditor.placeholder')}
 					type="text"
 					value={_.find(value.attributes, {attributeType: 2})?.value.textValue || ''}
 					onChange={handleNumberAttributeChange.bind(this, value.rowID)}
@@ -117,7 +117,7 @@ const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemov
 					onClick={onRemove.bind(this, value.rowID)}
 				>
 					<FontAwesomeIcon icon={faTimes}/>
-					<span>&nbsp;{translate('common:button.remove')}</span>
+					<span>&nbsp;{translate('common.button.remove')}</span>
 				</Button>
 			</Col>
 		</Row>
@@ -149,7 +149,7 @@ const SortableList = SortableContainer(({children}) => <div>{children}</div>);
 function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onRemove, hideItemSelect,
 	onAdd, onEdit, onSort, seriesItemsArray, isUnifiedForm}:SeriesItemsProps) {
 	const [seriesItem, setSeriesItem] = useState(null);
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const {t: translate} = useTranslation();
 	const [targetEntity, setTargetEntity] = useState(null);
 
 	const handleEntityChange = (value: EntitySearchResult) => {
@@ -202,7 +202,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 		onEdit(attributeNumber, rowID);
 		onSort({newIndex: null, oldIndex: null});
 	};
-	const heading = <h2>{translate('seriesEditor.heading', {seriesType: `${seriesType}s`})}</h2>;
+	const heading = <h2>{translate('entityEditor.seriesEditor.heading', {seriesType: `${seriesType}s`})}</h2>;
 	const alignText = isUnifiedForm ? 'text-left' : 'text-right';
 	return (
 		<div>
@@ -218,8 +218,8 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 									handleNumberAttributeChange={handleNumberAttributeChange}
 									isUnifiedForm={isUnifiedForm}
 									key={value.rowID}
-									placeholder={translate('seriesEditor.placeholder')}
-									removeButtonText={translate('common:button.remove')}
+									placeholder={translate('entityEditor.seriesEditor.placeholder')}
+									removeButtonText={translate('common.button.remove')}
 									value={value}
 									onRemove={onRemove}
 								/>
@@ -234,8 +234,8 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 									index={index}
 									isUnifiedForm={isUnifiedForm}
 									key={value.rowID}
-									placeholder={translate('seriesEditor.placeholder')}
-									removeButtonText={translate('common:button.remove')}
+									placeholder={translate('entityEditor.seriesEditor.placeholder')}
+									removeButtonText={translate('common.button.remove')}
 									value={value}
 									onRemove={onRemove}
 								/>
@@ -247,7 +247,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 			{!hideItemSelect &&
 			<Row className="margin-top-d8">
 				<Col className={alignText} lg={isUnifiedForm ? 7 : 3}>
-					<p className="margin-top-d5">{translate('seriesEditor.addEntityPrompt')}</p>
+					<p className="margin-top-d5">{translate('entityEditor.seriesEditor.addEntityPrompt')}</p>
 				</Col>
 				<Col lg={isUnifiedForm ? 6 : 7} style={{marginTop: -22}}>
 					<EntitySearchFieldOption
@@ -263,7 +263,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 				<Col lg={isUnifiedForm ? 7 : 2}>
 					<Button variant="success" onClick={handleAdd}>
 						<FontAwesomeIcon icon={faPlus}/>
-						<span>&nbsp;{translate('seriesEditor.addButton', {seriesType})}</span>
+						<span>&nbsp;{translate('entityEditor.seriesEditor.addButton', {seriesType})}</span>
 					</Button>
 				</Col>
 			</Row>

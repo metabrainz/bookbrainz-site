@@ -290,7 +290,8 @@
     "achievements": {
       "lockedHeading": "Locked Achievements",
       "unlockedHeading": "Unlocked Achievements",
-      "unsetInstructions": "click badge to unset"
+      "unsetInstructions": "click badge to unset",
+       "updateButton": "Update"
     },
     "callToAction": {
       "helpPage": "help page",
