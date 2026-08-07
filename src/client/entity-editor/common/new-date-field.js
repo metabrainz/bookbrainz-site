@@ -115,7 +115,7 @@ class DateField extends React.Component {
 
 	render() {
 		const {t: translate} = this.props;
-		const warnMessage = translate('dateField.futureDateWarning');
+		const warnMessage = translate('entityEditor.dateField.futureDateWarning');
 		const labelElement = (
 			<ValidationLabel
 				empty={this.props.empty}
@@ -182,7 +182,7 @@ class DateField extends React.Component {
 								customInput={
 									<Button
 										style={{lineHeight: '1.75', padding: '0.375em 0.938em'}}
-										title={translate('dateField.datePickerTitle')}
+										title={translate('entityEditor.dateField.datePickerTitle')}
 										variant="info"
 									>
 										<FontAwesomeIcon icon={faCalendarAlt}/>
@@ -225,4 +225,4 @@ DateField.defaultProps = {
 	errorMessage: null
 };
 
-export default withTranslation('entityEditor')(DateField);
+export default withTranslation()(DateField);
