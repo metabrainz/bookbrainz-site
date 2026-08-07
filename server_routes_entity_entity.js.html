@@ -166,23 +166,23 @@ function _objectSpread(e) { for (var r = 1; r &lt; arguments.length; r++) { var 
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol &amp;&amp; r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e &amp;&amp; r &amp;&amp; "number" == typeof r.length) { t &amp;&amp; (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t.return || t.return(); } finally { if (u) throw o; } } }; }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t &amp;&amp; r.constructor &amp;&amp; (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) &amp;&amp; (a = r.length); for (var e = 0, n = Array(a); e &lt; a; e++) { n[e] = r[e]; } return n; } /*
-                                                                                                                                                          * Copyright (C) 2016  Ben Ockmore
-                                                                                                                                                          *               2016  Sean Burke
-                                                                                                                                                          *				 2021  Akash Gupta
-                                                                                                                                                          * This program is free software; you can redistribute it and/or modify
-                                                                                                                                                          * it under the terms of the GNU General Public License as published by
-                                                                                                                                                          * the Free Software Foundation; either version 2 of the License, or
-                                                                                                                                                          * (at your option) any later version.
-                                                                                                                                                          *
-                                                                                                                                                          * This program is distributed in the hope that it will be useful,
-                                                                                                                                                          * but WITHOUT ANY WARRANTY; without even the implied warranty of
-                                                                                                                                                          * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-                                                                                                                                                          * GNU General Public License for more details.
-                                                                                                                                                          *
-                                                                                                                                                          * You should have received a copy of the GNU General Public License along
-                                                                                                                                                          * with this program; if not, write to the Free Software Foundation, Inc.,
-                                                                                                                                                          * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-                                                                                                                                                          */
+ * Copyright (C) 2016  Ben Ockmore
+ *               2016  Sean Burke
+ *				 2021  Akash Gupta
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 var entityComponents = {
   author: _author.default,
   edition: _edition.default,
@@ -275,7 +275,7 @@ function displayEntity(req, res) {
         genderOptions: res.locals.genders,
         identifierTypes: identifierTypes
       });
-      var markup = _server.default.renderToString( /*#__PURE__*/React.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/React.createElement(EntityComponent, propHelpers.extractEntityProps(props))));
+      var markup = _server.default.renderToString(/*#__PURE__*/React.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/React.createElement(EntityComponent, propHelpers.extractEntityProps(props))));
       res.send((0, _target.default)({
         markup: markup,
         page: entityName,
@@ -290,7 +290,7 @@ function displayEntity(req, res) {
 }
 function displayDeleteEntity(req, res) {
   var props = (0, _props2.generateProps)(req, res);
-  var markup = _server.default.renderToString( /*#__PURE__*/React.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/React.createElement(_deletion.default, {
+  var markup = _server.default.renderToString(/*#__PURE__*/React.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/React.createElement(_deletion.default, {
     entity: props.entity
   })));
   res.send((0, _target.default)({
@@ -303,7 +303,7 @@ function displayRevisions(_x, _x2, _x3, _x4) {
   return _displayRevisions.apply(this, arguments);
 } // eslint-disable-next-line consistent-return
 function _displayRevisions() {
-  _displayRevisions = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(req, res, next, RevisionModel) {
+  _displayRevisions = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(req, res, next, RevisionModel) {
     var size, from, orm, bbid, orderedRevisions, _commonUtils$getNextE, newResultsArray, nextEnabled, props, markup;
     return _regenerator.default.wrap(function _callee2$(_context2) {
       while (1) {
@@ -327,7 +327,7 @@ function _displayRevisions() {
               showRevisionNote: true,
               size: size
             });
-            markup = _server.default.renderToString( /*#__PURE__*/React.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/React.createElement(_entityRevisions.default, (0, _extends2.default)({
+            markup = _server.default.renderToString(/*#__PURE__*/React.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/React.createElement(_entityRevisions.default, (0, _extends2.default)({
               entity: props.entity
             }, propHelpers.extractChildProps(props)))));
             return _context2.abrupt("return", res.send((0, _target.default)({
@@ -353,7 +353,7 @@ function updateDisplayedRevisions(_x5, _x6, _x7, _x8) {
   return _updateDisplayedRevisions.apply(this, arguments);
 }
 function _updateDisplayedRevisions() {
-  _updateDisplayedRevisions = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(req, res, next, RevisionModel) {
+  _updateDisplayedRevisions = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee3(req, res, next, RevisionModel) {
     var size, from, orm, bbid, orderedRevisions;
     return _regenerator.default.wrap(function _callee3$(_context3) {
       while (1) {
@@ -412,11 +412,11 @@ function addNoteToRevision(req, res) {
   });
   return handler.sendPromiseResult(res, revisionNotePromise);
 }
-function getEntityByBBID(_x9, _x10, _x11) {
+function getEntityByBBID(_x9, _x0, _x1) {
   return _getEntityByBBID.apply(this, arguments);
 }
 function _getEntityByBBID() {
-  _getEntityByBBID = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4(orm, transacting, bbid) {
+  _getEntityByBBID = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee4(orm, transacting, bbid) {
     var redirectBbid, entityHeader, model;
     return _regenerator.default.wrap(function _callee4$(_context4) {
       while (1) {
@@ -449,11 +449,11 @@ function _getEntityByBBID() {
   }));
   return _getEntityByBBID.apply(this, arguments);
 }
-function setParentRevisions(_x12, _x13, _x14) {
+function setParentRevisions(_x10, _x11, _x12) {
   return _setParentRevisions.apply(this, arguments);
 }
 function _setParentRevisions() {
-  _setParentRevisions = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5(transacting, newRevision, parentRevisionIDs) {
+  _setParentRevisions = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee5(transacting, newRevision, parentRevisionIDs) {
     var parents;
     return _regenerator.default.wrap(function _callee5$(_context5) {
       while (1) {
@@ -485,11 +485,11 @@ function _setParentRevisions() {
   }));
   return _setParentRevisions.apply(this, arguments);
 }
-function saveEntitiesAndFinishRevision(_x15, _x16, _x17, _x18, _x19, _x20, _x21, _x22) {
+function saveEntitiesAndFinishRevision(_x13, _x14, _x15, _x16, _x17, _x18, _x19, _x20) {
   return _saveEntitiesAndFinishRevision.apply(this, arguments);
 }
 function _saveEntitiesAndFinishRevision() {
-  _saveEntitiesAndFinishRevision = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6(orm, transacting, isNew, newRevision, mainEntity, updatedEntities, editorID, note) {
+  _saveEntitiesAndFinishRevision = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee6(orm, transacting, isNew, newRevision, mainEntity, updatedEntities, editorID, note) {
     var parentRevisionIDs, entitiesSavedPromise, editorUpdatePromise, notePromise, parentsAddedPromise, _yield$Promise$all, _yield$Promise$all2, savedEntities, others;
     return _regenerator.default.wrap(function _callee6$(_context6) {
       while (1) {
@@ -531,11 +531,11 @@ function _saveEntitiesAndFinishRevision() {
   }));
   return _saveEntitiesAndFinishRevision.apply(this, arguments);
 }
-function deleteRelationships(_x23, _x24, _x25) {
+function deleteRelationships(_x21, _x22, _x23) {
   return _deleteRelationships.apply(this, arguments);
 }
 function _deleteRelationships() {
-  _deleteRelationships = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee8(orm, transacting, mainEntity) {
+  _deleteRelationships = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee8(orm, transacting, mainEntity) {
     var mainBBID, relationshipSet, otherBBIDs, otherEntities;
     return _regenerator.default.wrap(function _callee8$(_context8) {
       while (1) {
@@ -569,8 +569,8 @@ function _deleteRelationships() {
             return _context8.abrupt("return", []);
           case 10:
             _context8.next = 12;
-            return Promise.all((0, _uniq2.default)(otherBBIDs).map( /*#__PURE__*/function () {
-              var _ref6 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee7(entityBbid) {
+            return Promise.all((0, _uniq2.default)(otherBBIDs).map(/*#__PURE__*/function () {
+              var _ref6 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee7(entityBbid) {
                 var otherEntity, otherEntityRelationshipSet, otherEntityRelationships, newRelationshipSet;
                 return _regenerator.default.wrap(function _callee7$(_context7) {
                   while (1) {
@@ -616,7 +616,7 @@ function _deleteRelationships() {
                   }
                 }, _callee7);
               }));
-              return function (_x99) {
+              return function (_x97) {
                 return _ref6.apply(this, arguments);
               };
             }()));
@@ -654,8 +654,8 @@ function handleDelete(orm, req, res, HeaderModel, RevisionModel) {
     bookshelf = orm.bookshelf;
   var editorJSON = req.user;
   var body = req.body;
-  var entityDeletePromise = bookshelf.transaction( /*#__PURE__*/function () {
-    var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(transacting) {
+  var entityDeletePromise = bookshelf.transaction(/*#__PURE__*/function () {
+    var _ref = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee(transacting) {
       var otherEntities, newRevision, entityRevision, mainEntity, savedMainEntity;
       return _regenerator.default.wrap(function _callee$(_context) {
         while (1) {
@@ -716,26 +716,26 @@ function handleDelete(orm, req, res, HeaderModel, RevisionModel) {
         }
       }, _callee);
     }));
-    return function (_x26) {
+    return function (_x24) {
       return _ref.apply(this, arguments);
     };
   }());
   return handler.sendPromiseResult(res, entityDeletePromise, search.deleteEntity);
 }
-function processMergeOperation(_x27, _x28, _x29, _x30, _x31, _x32) {
+function processMergeOperation(_x25, _x26, _x27, _x28, _x29, _x30) {
   return _processMergeOperation.apply(this, arguments);
 }
 function _processMergeOperation() {
-  _processMergeOperation = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee14(orm, transacting, session, mainEntity, allEntities, relationshipSets) {
+  _processMergeOperation = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee12(orm, transacting, session, mainEntity, allEntities, relationshipSets) {
     var Edition, bookshelf, mergingEntities, entityType, currentEntityBBID, mergingEntitiesBBIDs, entitiesToMergeBBIDs, allEntitiesReturnArray, entitiesToMerge, entitiesModelsToMerge, editionsToSet, editionsToSetCollections, _editionsToSet;
-    return _regenerator.default.wrap(function _callee14$(_context14) {
+    return _regenerator.default.wrap(function _callee12$(_context12) {
       while (1) {
-        switch (_context14.prev = _context14.next) {
+        switch (_context12.prev = _context12.next) {
           case 0:
             Edition = orm.Edition, bookshelf = orm.bookshelf;
             mergingEntities = session.mergeQueue.mergingEntities;
             if (mergingEntities) {
-              _context14.next = 4;
+              _context12.next = 4;
               break;
             }
             throw new Error('Merge handler called with no merge queue, aborting');
@@ -744,7 +744,7 @@ function _processMergeOperation() {
             currentEntityBBID = mainEntity.get('bbid');
             mergingEntitiesBBIDs = Object.keys(mergingEntities);
             if ((0, _includes2.default)(mergingEntitiesBBIDs, currentEntityBBID)) {
-              _context14.next = 9;
+              _context12.next = 9;
               break;
             }
             throw new Error('Entity being merged into does not appear in merge queue, aborting');
@@ -755,19 +755,19 @@ function _processMergeOperation() {
               var bbid = _ref7.bbid;
               return bbid !== currentEntityBBID;
             });
-            _context14.next = 14;
+            _context12.next = 14;
             return Promise.all(entitiesToMergeBBIDs.map(function (bbid) {
               return fetchOrCreateMainEntity(orm, transacting, false, bbid, entityType);
             }));
           case 14:
-            entitiesModelsToMerge = _context14.sent;
+            entitiesModelsToMerge = _context12.sent;
             /** Add entities to be merged to the array of modified entities */
             allEntitiesReturnArray = (0, _unionBy2.default)(allEntitiesReturnArray, entitiesModelsToMerge, 'id');
 
             /** Remove relationships that concern entities being merged from already modified relationshipSets */
-            _context14.next = 18;
+            _context12.next = 18;
             return Promise.all((0, _map2.default)(relationshipSets, /*#__PURE__*/function () {
-              var _ref8 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee9(relationshipSet) {
+              var _ref8 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee9(relationshipSet) {
                 var refreshedrelationshipSet, relationshipsToRemove;
                 return _regenerator.default.wrap(function _callee9$(_context9) {
                   while (1) {
@@ -789,8 +789,8 @@ function _processMergeOperation() {
                           var sourceBbid = _ref9.sourceBbid,
                             targetBbid = _ref9.targetBbid;
                           return (0, _includes2.default)(entitiesToMergeBBIDs, sourceBbid) || (0, _includes2.default)(entitiesToMergeBBIDs, targetBbid);
-                        }).map(function (_ref10) {
-                          var id = _ref10.id;
+                        }).map(function (_ref0) {
+                          var id = _ref0.id;
                           return id;
                         });
                         if (!relationshipsToRemove.length) {
@@ -808,33 +808,33 @@ function _processMergeOperation() {
                   }
                 }, _callee9);
               }));
-              return function (_x100) {
+              return function (_x98) {
                 return _ref8.apply(this, arguments);
               };
             }()));
           case 18:
-            _context14.next = 20;
-            return Promise.all(entitiesModelsToMerge.map( /*#__PURE__*/function () {
-              var _ref11 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee11(entity) {
+            _context12.next = 20;
+            return Promise.all(entitiesModelsToMerge.map(/*#__PURE__*/function () {
+              var _ref1 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee1(entity) {
                 var entityBBID, relationshipSet, relationships, otherEntitiesToFetch;
-                return _regenerator.default.wrap(function _callee11$(_context11) {
+                return _regenerator.default.wrap(function _callee1$(_context1) {
                   while (1) {
-                    switch (_context11.prev = _context11.next) {
+                    switch (_context1.prev = _context1.next) {
                       case 0:
                         entityBBID = entity.get('bbid');
-                        _context11.next = 3;
+                        _context1.next = 3;
                         return entity.relationshipSet().fetch({
                           require: false,
                           transacting: transacting,
                           withRelated: 'relationships'
                         });
                       case 3:
-                        relationshipSet = _context11.sent;
+                        relationshipSet = _context1.sent;
                         if (relationshipSet) {
-                          _context11.next = 6;
+                          _context1.next = 6;
                           break;
                         }
-                        return _context11.abrupt("return");
+                        return _context1.abrupt("return");
                       case 6:
                         relationships = relationshipSet.related('relationships').toJSON();
                         otherEntitiesToFetch = relationships.reduce(function (accumulator, relationship) {
@@ -849,31 +849,31 @@ function _processMergeOperation() {
                         .filter(function (bbid) {
                           return !(0, _includes2.default)((0, _keys2.default)(relationshipSets), bbid);
                         });
-                        _context11.next = 10;
-                        return Promise.all(otherEntitiesToFetch.map( /*#__PURE__*/function () {
-                          var _ref12 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee10(bbid) {
+                        _context1.next = 10;
+                        return Promise.all(otherEntitiesToFetch.map(/*#__PURE__*/function () {
+                          var _ref10 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee0(bbid) {
                             var otherEntity, otherEntityRelationshipSet, otherEntityRelationships, relsHaveChanged, updatedRelationshipSets;
-                            return _regenerator.default.wrap(function _callee10$(_context10) {
+                            return _regenerator.default.wrap(function _callee0$(_context0) {
                               while (1) {
-                                switch (_context10.prev = _context10.next) {
+                                switch (_context0.prev = _context0.next) {
                                   case 0:
-                                    _context10.next = 2;
+                                    _context0.next = 2;
                                     return getEntityByBBID(orm, transacting, bbid);
                                   case 2:
-                                    otherEntity = _context10.sent;
-                                    _context10.next = 5;
+                                    otherEntity = _context0.sent;
+                                    _context0.next = 5;
                                     return entity.relationshipSet().fetch({
                                       require: false,
                                       transacting: transacting,
                                       withRelated: 'relationships'
                                     });
                                   case 5:
-                                    otherEntityRelationshipSet = _context10.sent;
+                                    otherEntityRelationshipSet = _context0.sent;
                                     if (otherEntityRelationshipSet) {
-                                      _context10.next = 8;
+                                      _context0.next = 8;
                                       break;
                                     }
-                                    return _context10.abrupt("return");
+                                    return _context0.abrupt("return");
                                   case 8:
                                     otherEntityRelationships = otherEntityRelationshipSet.related('relationships').toJSON();
                                     relsHaveChanged = false; // Mark relationships with entity being merged as removed
@@ -886,44 +886,44 @@ function _processMergeOperation() {
 
                                     // If there's a difference, apply the new relationships array without rels to merged entity
                                     if (!relsHaveChanged) {
-                                      _context10.next = 17;
+                                      _context0.next = 17;
                                       break;
                                     }
-                                    _context10.next = 14;
+                                    _context0.next = 14;
                                     return orm.func.relationship.updateRelationshipSets(orm, transacting, otherEntityRelationshipSet, otherEntityRelationships);
                                   case 14:
-                                    updatedRelationshipSets = _context10.sent;
+                                    updatedRelationshipSets = _context0.sent;
                                     // Make sure the entity is later updated with its new relationshipSet id
                                     allEntitiesReturnArray = (0, _unionBy2.default)(allEntitiesReturnArray, [otherEntity], 'id');
                                     (0, _assign2.default)(relationshipSets, (0, _pick2.default)(updatedRelationshipSets, bbid));
                                   case 17:
                                   case "end":
-                                    return _context10.stop();
+                                    return _context0.stop();
                                 }
                               }
-                            }, _callee10);
+                            }, _callee0);
                           }));
-                          return function (_x102) {
-                            return _ref12.apply(this, arguments);
+                          return function (_x100) {
+                            return _ref10.apply(this, arguments);
                           };
                         }()));
                       case 10:
                       case "end":
-                        return _context11.stop();
+                        return _context1.stop();
                     }
                   }
-                }, _callee11);
+                }, _callee1);
               }));
-              return function (_x101) {
-                return _ref11.apply(this, arguments);
+              return function (_x99) {
+                return _ref1.apply(this, arguments);
               };
             }()));
           case 20:
             if (!(entityType === 'EditionGroup')) {
-              _context14.next = 25;
+              _context12.next = 25;
               break;
             }
-            _context14.next = 23;
+            _context12.next = 23;
             return Edition.query(function (qb) {
               return qb.whereIn('edition_group_bbid', entitiesToMergeBBIDs).andWhere('master', true);
             }).fetchAll({
@@ -931,7 +931,7 @@ function _processMergeOperation() {
               transacting: transacting
             });
           case 23:
-            editionsToSet = _context14.sent;
+            editionsToSet = _context12.sent;
             if (editionsToSet.length) {
               editionsToSet.forEach(function (editionModel) {
                 return editionModel.set({
@@ -943,16 +943,16 @@ function _processMergeOperation() {
             }
           case 25:
             if (!(entityType === 'Publisher')) {
-              _context14.next = 40;
+              _context12.next = 40;
               break;
             }
-            _context14.prev = 26;
-            _context14.next = 29;
+            _context12.prev = 26;
+            _context12.next = 29;
             return Promise.all(entitiesModelsToMerge.map(function (entitiesModel) {
               return entitiesModel.editions();
             }));
           case 29:
-            editionsToSetCollections = _context14.sent;
+            editionsToSetCollections = _context12.sent;
             // eslint-disable-next-line consistent-return
             _editionsToSet = (0, _flatMap2.default)(editionsToSetCollections, function (edition) {
               if (edition.models &amp;&amp; edition.models.length) {
@@ -960,65 +960,65 @@ function _processMergeOperation() {
               }
             }); // Remove 'undefined' entries (no editions in those publishers)
             _editionsToSet = (0, _reject2.default)(_editionsToSet, _isNil2.default);
-            _context14.next = 34;
-            return Promise.all(_editionsToSet.map( /*#__PURE__*/function () {
-              var _ref13 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee12(edition) {
+            _context12.next = 34;
+            return Promise.all(_editionsToSet.map(/*#__PURE__*/function () {
+              var _ref11 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee10(edition) {
                 var oldPublisherSet, newPublisherSet;
-                return _regenerator.default.wrap(function _callee12$(_context12) {
+                return _regenerator.default.wrap(function _callee10$(_context10) {
                   while (1) {
-                    switch (_context12.prev = _context12.next) {
+                    switch (_context10.prev = _context10.next) {
                       case 0:
-                        _context12.next = 2;
+                        _context10.next = 2;
                         return edition.publisherSet();
                       case 2:
-                        oldPublisherSet = _context12.sent;
-                        _context12.next = 5;
+                        oldPublisherSet = _context10.sent;
+                        _context10.next = 5;
                         return orm.func.publisher.updatePublisherSet(orm, transacting, oldPublisherSet, [{
                           bbid: currentEntityBBID
                         }]);
                       case 5:
-                        newPublisherSet = _context12.sent;
+                        newPublisherSet = _context10.sent;
                         // Set the new PublisherSet on the Edition
                         edition.set('publisherSetId', newPublisherSet.get('id'));
                         // Add the modified Edition to the revision (if it doesn't exist yet)
                         allEntitiesReturnArray = (0, _unionBy2.default)(allEntitiesReturnArray, [edition], 'id');
                       case 8:
                       case "end":
-                        return _context12.stop();
+                        return _context10.stop();
                     }
                   }
-                }, _callee12);
+                }, _callee10);
               }));
-              return function (_x103) {
-                return _ref13.apply(this, arguments);
+              return function (_x101) {
+                return _ref11.apply(this, arguments);
               };
             }()));
           case 34:
-            _context14.next = 40;
+            _context12.next = 40;
             break;
           case 36:
-            _context14.prev = 36;
-            _context14.t0 = _context14["catch"](26);
-            _log.default.error(_context14.t0);
-            throw _context14.t0;
+            _context12.prev = 36;
+            _context12.t0 = _context12["catch"](26);
+            _log.default.error(_context12.t0);
+            throw _context12.t0;
           case 40:
             /**
              * Some actions we only want to take once the main entity has been saved
             */
             mainEntity.once('saved', /*#__PURE__*/function () {
-              var _ref14 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee13(model) {
+              var _ref12 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee11(model) {
                 var newEntityRevision;
-                return _regenerator.default.wrap(function _callee13$(_context13) {
+                return _regenerator.default.wrap(function _callee11$(_context11) {
                   while (1) {
-                    switch (_context13.prev = _context13.next) {
+                    switch (_context11.prev = _context11.next) {
                       case 0:
-                        _context13.next = 2;
+                        _context11.next = 2;
                         return model.revision().fetch({
                           transacting: transacting
                         });
                       case 2:
-                        newEntityRevision = _context13.sent;
-                        _context13.next = 5;
+                        newEntityRevision = _context11.sent;
+                        _context11.next = 5;
                         return newEntityRevision.where('bbid', currentEntityBBID).save({
                           isMerge: true
                         }, {
@@ -1026,7 +1026,7 @@ function _processMergeOperation() {
                           transacting: transacting
                         });
                       case 5:
-                        _context13.next = 7;
+                        _context11.next = 7;
                         return newEntityRevision.query(function (qb) {
                           return qb.whereIn('bbid', entitiesToMergeBBIDs);
                         }).save({
@@ -1039,32 +1039,32 @@ function _processMergeOperation() {
                       case 7:
                         /** Clear the merge queue */
                         session.mergeQueue = null;
-                        _context13.prev = 8;
-                        _context13.next = 11;
+                        _context11.prev = 8;
+                        _context11.next = 11;
                         return Promise.all(entitiesToMerge.map(search.deleteEntity));
                       case 11:
-                        _context13.next = 16;
+                        _context11.next = 16;
                         break;
                       case 13:
-                        _context13.prev = 13;
-                        _context13.t0 = _context13["catch"](8);
-                        _log.default.debug(_context13.t0);
+                        _context11.prev = 13;
+                        _context11.t0 = _context11["catch"](8);
+                        _log.default.debug(_context11.t0);
                       case 16:
                       case "end":
-                        return _context13.stop();
+                        return _context11.stop();
                     }
                   }
-                }, _callee13, null, [[8, 13]]);
+                }, _callee11, null, [[8, 13]]);
               }));
-              return function (_x104) {
-                return _ref14.apply(this, arguments);
+              return function (_x102) {
+                return _ref12.apply(this, arguments);
               };
             }());
 
             /** Update the redirection table to redirect merged entities' bbids
              *  to currentEntityBBID (the entity we're merging into)
             */
-            _context14.next = 43;
+            _context12.next = 43;
             return bookshelf.knex('bookbrainz.entity_redirect').transacting(transacting).insert(entitiesToMergeBBIDs.map(function (bbid) {
               return (
                 // eslint-disable-next-line camelcase
@@ -1075,37 +1075,37 @@ function _processMergeOperation() {
               );
             }));
           case 43:
-            return _context14.abrupt("return", allEntitiesReturnArray);
+            return _context12.abrupt("return", allEntitiesReturnArray);
           case 44:
           case "end":
-            return _context14.stop();
+            return _context12.stop();
         }
       }
-    }, _callee14, null, [[26, 36]]);
+    }, _callee12, null, [[26, 36]]);
   }));
   return _processMergeOperation.apply(this, arguments);
 }
-function processAuthorCredit(_x33, _x34, _x35, _x36) {
+function processAuthorCredit(_x31, _x32, _x33, _x34) {
   return _processAuthorCredit.apply(this, arguments);
 }
 function _processAuthorCredit() {
-  _processAuthorCredit = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee15(orm, currentEntity, newEntityBody, transacting) {
+  _processAuthorCredit = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee13(orm, currentEntity, newEntityBody, transacting) {
     var authorCreditEnabled, existingAuthorCreditID, oldAuthorCredit, names, newAuthorCredit;
-    return _regenerator.default.wrap(function _callee15$(_context15) {
+    return _regenerator.default.wrap(function _callee13$(_context13) {
       while (1) {
-        switch (_context15.prev = _context15.next) {
+        switch (_context13.prev = _context13.next) {
           case 0:
             authorCreditEnabled = newEntityBody.creditSection !== false;
             if (authorCreditEnabled) {
-              _context15.next = 3;
+              _context13.next = 3;
               break;
             }
-            return _context15.abrupt("return", {
+            return _context13.abrupt("return", {
               authorCreditId: null
             });
           case 3:
             existingAuthorCreditID = (0, _get2.default)(currentEntity, ['authorCredit', 'id']);
-            _context15.next = 6;
+            _context13.next = 6;
             return existingAuthorCreditID &amp;&amp; orm.AuthorCredit.forge({
               id: existingAuthorCreditID
             }).fetch({
@@ -1113,9 +1113,9 @@ function _processAuthorCredit() {
               withRelated: ['names']
             });
           case 6:
-            oldAuthorCredit = _context15.sent;
+            oldAuthorCredit = _context13.sent;
             names = (0, _get2.default)(newEntityBody, 'authorCredit') || [];
-            _context15.next = 10;
+            _context13.next = 10;
             return orm.func.authorCredit.updateAuthorCredit(orm, transacting, oldAuthorCredit, names.map(function (name) {
               return {
                 authorBBID: name.authorBBID,
@@ -1124,31 +1124,31 @@ function _processAuthorCredit() {
               };
             }));
           case 10:
-            newAuthorCredit = _context15.sent;
-            return _context15.abrupt("return", {
+            newAuthorCredit = _context13.sent;
+            return _context13.abrupt("return", {
               authorCreditId: newAuthorCredit &amp;&amp; newAuthorCredit.get('id')
             });
           case 12:
           case "end":
-            return _context15.stop();
+            return _context13.stop();
         }
       }
-    }, _callee15);
+    }, _callee13);
   }));
   return _processAuthorCredit.apply(this, arguments);
 }
-function processEditionSets(_x37, _x38, _x39, _x40) {
+function processEditionSets(_x35, _x36, _x37, _x38) {
   return _processEditionSets.apply(this, arguments);
 }
 function _processEditionSets() {
-  _processEditionSets = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee16(orm, currentEntity, body, transacting) {
+  _processEditionSets = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee14(orm, currentEntity, body, transacting) {
     var languageSetID, oldLanguageSet, languages, newLanguageSet, newLanguageSetID, publisherSetID, oldPublisherSet, publishers, newPublisherSet, newPublisherSetID, releaseEventSetID, oldReleaseEventSet, releaseEvents, newReleaseEventSet, newReleaseEventSetID, newAuthorCredit, newAuthorCreditID;
-    return _regenerator.default.wrap(function _callee16$(_context16) {
+    return _regenerator.default.wrap(function _callee14$(_context14) {
       while (1) {
-        switch (_context16.prev = _context16.next) {
+        switch (_context14.prev = _context14.next) {
           case 0:
             languageSetID = (0, _get2.default)(currentEntity, ['languageSet', 'id']);
-            _context16.next = 3;
+            _context14.next = 3;
             return languageSetID &amp;&amp; orm.LanguageSet.forge({
               id: languageSetID
             }).fetch({
@@ -1156,19 +1156,19 @@ function _processEditionSets() {
               withRelated: ['languages']
             });
           case 3:
-            oldLanguageSet = _context16.sent;
+            oldLanguageSet = _context14.sent;
             languages = (0, _get2.default)(body, 'languages') || [];
-            _context16.next = 7;
+            _context14.next = 7;
             return orm.func.language.updateLanguageSet(orm, transacting, oldLanguageSet, languages.map(function (languageID) {
               return {
                 id: languageID
               };
             }));
           case 7:
-            newLanguageSet = _context16.sent;
+            newLanguageSet = _context14.sent;
             newLanguageSetID = newLanguageSet &amp;&amp; newLanguageSet.get('id');
             publisherSetID = (0, _get2.default)(currentEntity, ['publisherSet', 'id']);
-            _context16.next = 12;
+            _context14.next = 12;
             return publisherSetID &amp;&amp; orm.PublisherSet.forge({
               id: publisherSetID
             }).fetch({
@@ -1176,19 +1176,19 @@ function _processEditionSets() {
               withRelated: ['publishers']
             });
           case 12:
-            oldPublisherSet = _context16.sent;
+            oldPublisherSet = _context14.sent;
             publishers = (0, _get2.default)(body, 'publishers') || [];
-            _context16.next = 16;
+            _context14.next = 16;
             return orm.func.publisher.updatePublisherSet(orm, transacting, oldPublisherSet, publishers.map(function (publisherBBID) {
               return {
                 bbid: publisherBBID
               };
             }));
           case 16:
-            newPublisherSet = _context16.sent;
+            newPublisherSet = _context14.sent;
             newPublisherSetID = newPublisherSet &amp;&amp; newPublisherSet.get('id');
             releaseEventSetID = (0, _get2.default)(currentEntity, ['releaseEventSet', 'id']);
-            _context16.next = 21;
+            _context14.next = 21;
             return releaseEventSetID &amp;&amp; orm.ReleaseEventSet.forge({
               id: releaseEventSetID
             }).fetch({
@@ -1196,7 +1196,7 @@ function _processEditionSets() {
               withRelated: ['releaseEvents']
             });
           case 21:
-            oldReleaseEventSet = _context16.sent;
+            oldReleaseEventSet = _context14.sent;
             releaseEvents = (0, _get2.default)(body, 'releaseEvents') || []; // if areaId is not present, set it to null.
             // otherwise it shows error while comparing old and new releaseEvent;
             if (releaseEvents[0]) {
@@ -1207,17 +1207,17 @@ function _processEditionSets() {
                 releaseEvents[0].date = null;
               }
             }
-            _context16.next = 26;
+            _context14.next = 26;
             return orm.func.releaseEvent.updateReleaseEventSet(orm, transacting, oldReleaseEventSet, releaseEvents);
           case 26:
-            newReleaseEventSet = _context16.sent;
+            newReleaseEventSet = _context14.sent;
             newReleaseEventSetID = newReleaseEventSet &amp;&amp; newReleaseEventSet.get('id');
-            _context16.next = 30;
+            _context14.next = 30;
             return processAuthorCredit(orm, currentEntity, body, transacting);
           case 30:
-            newAuthorCredit = _context16.sent;
+            newAuthorCredit = _context14.sent;
             newAuthorCreditID = newAuthorCredit.authorCreditId;
-            return _context16.abrupt("return", {
+            return _context14.abrupt("return", {
               authorCreditId: newAuthorCreditID,
               languageSetId: newLanguageSetID,
               publisherSetId: newPublisherSetID,
@@ -1225,25 +1225,25 @@ function _processEditionSets() {
             });
           case 33:
           case "end":
-            return _context16.stop();
+            return _context14.stop();
         }
       }
-    }, _callee16);
+    }, _callee14);
   }));
   return _processEditionSets.apply(this, arguments);
 }
-function processWorkSets(_x41, _x42, _x43, _x44) {
+function processWorkSets(_x39, _x40, _x41, _x42) {
   return _processWorkSets.apply(this, arguments);
 }
 function _processWorkSets() {
-  _processWorkSets = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee17(orm, currentEntity, body, transacting) {
+  _processWorkSets = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee15(orm, currentEntity, body, transacting) {
     var id, oldSet, languages;
-    return _regenerator.default.wrap(function _callee17$(_context17) {
+    return _regenerator.default.wrap(function _callee15$(_context15) {
       while (1) {
-        switch (_context17.prev = _context17.next) {
+        switch (_context15.prev = _context15.next) {
           case 0:
             id = (0, _get2.default)(currentEntity, ['languageSet', 'id']);
-            _context17.next = 3;
+            _context15.next = 3;
             return id &amp;&amp; orm.LanguageSet.forge({
               id: id
             }).fetch({
@@ -1251,9 +1251,9 @@ function _processWorkSets() {
               withRelated: ['languages']
             });
           case 3:
-            oldSet = _context17.sent;
+            oldSet = _context15.sent;
             languages = (0, _get2.default)(body, 'languages') || [];
-            return _context17.abrupt("return", commonUtils.makePromiseFromObject({
+            return _context15.abrupt("return", commonUtils.makePromiseFromObject({
               languageSetId: orm.func.language.updateLanguageSet(orm, transacting, oldSet, languages.map(function (languageID) {
                 return {
                   id: languageID
@@ -1264,76 +1264,76 @@ function _processWorkSets() {
             }));
           case 6:
           case "end":
-            return _context17.stop();
+            return _context15.stop();
         }
       }
-    }, _callee17);
+    }, _callee15);
   }));
   return _processWorkSets.apply(this, arguments);
 }
-function processEntitySets(_x45, _x46, _x47, _x48, _x49) {
+function processEntitySets(_x43, _x44, _x45, _x46, _x47) {
   return _processEntitySets.apply(this, arguments);
 }
 function _processEntitySets() {
-  _processEntitySets = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee18(orm, currentEntity, entityType, body, transacting) {
+  _processEntitySets = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee16(orm, currentEntity, entityType, body, transacting) {
     var editionSets, authorCredit, workSets;
-    return _regenerator.default.wrap(function _callee18$(_context18) {
+    return _regenerator.default.wrap(function _callee16$(_context16) {
       while (1) {
-        switch (_context18.prev = _context18.next) {
+        switch (_context16.prev = _context16.next) {
           case 0:
             if (!(entityType === 'Edition')) {
-              _context18.next = 5;
+              _context16.next = 5;
               break;
             }
-            _context18.next = 3;
+            _context16.next = 3;
             return processEditionSets(orm, currentEntity, body, transacting);
           case 3:
-            editionSets = _context18.sent;
-            return _context18.abrupt("return", editionSets);
+            editionSets = _context16.sent;
+            return _context16.abrupt("return", editionSets);
           case 5:
             if (!(entityType === 'EditionGroup')) {
-              _context18.next = 10;
+              _context16.next = 10;
               break;
             }
-            _context18.next = 8;
+            _context16.next = 8;
             return processAuthorCredit(orm, currentEntity, body, transacting);
           case 8:
-            authorCredit = _context18.sent;
-            return _context18.abrupt("return", authorCredit);
+            authorCredit = _context16.sent;
+            return _context16.abrupt("return", authorCredit);
           case 10:
             if (!(entityType === 'Work')) {
-              _context18.next = 15;
+              _context16.next = 15;
               break;
             }
-            _context18.next = 13;
+            _context16.next = 13;
             return processWorkSets(orm, currentEntity, body, transacting);
           case 13:
-            workSets = _context18.sent;
-            return _context18.abrupt("return", workSets);
+            workSets = _context16.sent;
+            return _context16.abrupt("return", workSets);
           case 15:
-            return _context18.abrupt("return", null);
+            return _context16.abrupt("return", null);
           case 16:
           case "end":
-            return _context18.stop();
+            return _context16.stop();
         }
       }
-    }, _callee18);
+    }, _callee16);
   }));
   return _processEntitySets.apply(this, arguments);
 }
-function getNextAliasSet(_x50, _x51, _x52, _x53) {
+function getNextAliasSet(_x48, _x49, _x50, _x51) {
   return _getNextAliasSet.apply(this, arguments);
 }
 function _getNextAliasSet() {
-  _getNextAliasSet = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee19(orm, transacting, currentEntity, body) {
+  _getNextAliasSet = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee17(orm, transacting, currentEntity, body) {
     var AliasSet, id, oldAliasSet;
-    return _regenerator.default.wrap(function _callee19$(_context19) {
+    return _regenerator.default.wrap(function _callee17$(_context17) {
       while (1) {
-        switch (_context19.prev = _context19.next) {
+        switch (_context17.prev = _context17.next) {
           case 0:
             AliasSet = orm.AliasSet;
             id = (0, _get2.default)(currentEntity, ['aliasSet', 'id']);
-            _context19.next = 4;
+            _context17.next = 4;
             return id &amp;&amp; new AliasSet({
               id: id
             }).fetch({
@@ -1342,30 +1342,30 @@ function _getNextAliasSet() {
               withRelated: ['aliases']
             });
           case 4:
-            oldAliasSet = _context19.sent;
-            return _context19.abrupt("return", orm.func.alias.updateAliasSet(orm, transacting, oldAliasSet, oldAliasSet &amp;&amp; oldAliasSet.get('defaultAliasId'), body.aliases || []));
+            oldAliasSet = _context17.sent;
+            return _context17.abrupt("return", orm.func.alias.updateAliasSet(orm, transacting, oldAliasSet, oldAliasSet &amp;&amp; oldAliasSet.get('defaultAliasId'), body.aliases || []));
           case 6:
           case "end":
-            return _context19.stop();
+            return _context17.stop();
         }
       }
-    }, _callee19);
+    }, _callee17);
   }));
   return _getNextAliasSet.apply(this, arguments);
 }
-function getNextIdentifierSet(_x54, _x55, _x56, _x57) {
+function getNextIdentifierSet(_x52, _x53, _x54, _x55) {
   return _getNextIdentifierSet.apply(this, arguments);
 }
 function _getNextIdentifierSet() {
-  _getNextIdentifierSet = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee20(orm, transacting, currentEntity, body) {
+  _getNextIdentifierSet = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee18(orm, transacting, currentEntity, body) {
     var IdentifierSet, id, oldIdentifierSet;
-    return _regenerator.default.wrap(function _callee20$(_context20) {
+    return _regenerator.default.wrap(function _callee18$(_context18) {
       while (1) {
-        switch (_context20.prev = _context20.next) {
+        switch (_context18.prev = _context18.next) {
           case 0:
             IdentifierSet = orm.IdentifierSet;
             id = (0, _get2.default)(currentEntity, ['identifierSet', 'id']);
-            _context20.next = 4;
+            _context18.next = 4;
             return id &amp;&amp; new IdentifierSet({
               id: id
             }).fetch({
@@ -1374,45 +1374,45 @@ function _getNextIdentifierSet() {
               withRelated: ['identifiers']
             });
           case 4:
-            oldIdentifierSet = _context20.sent;
-            return _context20.abrupt("return", orm.func.identifier.updateIdentifierSet(orm, transacting, oldIdentifierSet, body.identifiers || []));
+            oldIdentifierSet = _context18.sent;
+            return _context18.abrupt("return", orm.func.identifier.updateIdentifierSet(orm, transacting, oldIdentifierSet, body.identifiers || []));
           case 6:
           case "end":
-            return _context20.stop();
+            return _context18.stop();
         }
       }
-    }, _callee20);
+    }, _callee18);
   }));
   return _getNextIdentifierSet.apply(this, arguments);
 }
-function getNextRelationshipAttributeSets(_x58, _x59, _x60) {
+function getNextRelationshipAttributeSets(_x56, _x57, _x58) {
   return _getNextRelationshipAttributeSets.apply(this, arguments);
 }
 function _getNextRelationshipAttributeSets() {
-  _getNextRelationshipAttributeSets = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee22(orm, transacting, body) {
+  _getNextRelationshipAttributeSets = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee20(orm, transacting, body) {
     var RelationshipAttributeSet, relationships;
-    return _regenerator.default.wrap(function _callee22$(_context22) {
+    return _regenerator.default.wrap(function _callee20$(_context20) {
       while (1) {
-        switch (_context22.prev = _context22.next) {
+        switch (_context20.prev = _context20.next) {
           case 0:
             RelationshipAttributeSet = orm.RelationshipAttributeSet;
-            _context22.next = 3;
-            return Promise.all(body.relationships.map( /*#__PURE__*/function () {
-              var _ref15 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee21(relationship) {
+            _context20.next = 3;
+            return Promise.all(body.relationships.map(/*#__PURE__*/function () {
+              var _ref13 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee19(relationship) {
                 var id, oldRelationshipAttributeSet, attributeSet, attributeSetId;
-                return _regenerator.default.wrap(function _callee21$(_context21) {
+                return _regenerator.default.wrap(function _callee19$(_context19) {
                   while (1) {
-                    switch (_context21.prev = _context21.next) {
+                    switch (_context19.prev = _context19.next) {
                       case 0:
                         if (relationship.isAdded) {
-                          _context21.next = 3;
+                          _context19.next = 3;
                           break;
                         }
                         relationship.attributeSetId = (0, _get2.default)(relationship, ['attributeSetId'], null);
-                        return _context21.abrupt("return", relationship);
+                        return _context19.abrupt("return", relationship);
                       case 3:
                         id = relationship.attributeSetId;
-                        _context21.next = 6;
+                        _context19.next = 6;
                         return id &amp;&amp; new RelationshipAttributeSet({
                           id: id
                         }).fetch({
@@ -1421,55 +1421,55 @@ function _getNextRelationshipAttributeSets() {
                           withRelated: ['relationshipAttributes.value']
                         });
                       case 6:
-                        oldRelationshipAttributeSet = _context21.sent;
-                        _context21.next = 9;
+                        oldRelationshipAttributeSet = _context19.sent;
+                        _context19.next = 9;
                         return orm.func.relationshipAttributes.updateRelationshipAttributeSet(orm, transacting, oldRelationshipAttributeSet, relationship.attributes || []);
                       case 9:
-                        attributeSet = _context21.sent;
+                        attributeSet = _context19.sent;
                         attributeSetId = attributeSet &amp;&amp; attributeSet.get('id');
                         relationship.attributeSetId = attributeSetId;
                         delete relationship.attributes;
-                        return _context21.abrupt("return", relationship);
+                        return _context19.abrupt("return", relationship);
                       case 14:
                       case "end":
-                        return _context21.stop();
+                        return _context19.stop();
                     }
                   }
-                }, _callee21);
+                }, _callee19);
               }));
-              return function (_x105) {
-                return _ref15.apply(this, arguments);
+              return function (_x103) {
+                return _ref13.apply(this, arguments);
               };
             }()));
           case 3:
-            relationships = _context22.sent;
-            return _context22.abrupt("return", relationships);
+            relationships = _context20.sent;
+            return _context20.abrupt("return", relationships);
           case 5:
           case "end":
-            return _context22.stop();
+            return _context20.stop();
         }
       }
-    }, _callee22);
+    }, _callee20);
   }));
   return _getNextRelationshipAttributeSets.apply(this, arguments);
 }
-function getNextRelationshipSets(_x61, _x62, _x63, _x64) {
+function getNextRelationshipSets(_x59, _x60, _x61, _x62) {
   return _getNextRelationshipSets.apply(this, arguments);
 }
 function _getNextRelationshipSets() {
-  _getNextRelationshipSets = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee23(orm, transacting, currentEntity, body) {
+  _getNextRelationshipSets = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee21(orm, transacting, currentEntity, body) {
     var RelationshipSet, relationships, id, oldRelationshipSet;
-    return _regenerator.default.wrap(function _callee23$(_context23) {
+    return _regenerator.default.wrap(function _callee21$(_context21) {
       while (1) {
-        switch (_context23.prev = _context23.next) {
+        switch (_context21.prev = _context21.next) {
           case 0:
             RelationshipSet = orm.RelationshipSet;
-            _context23.next = 3;
+            _context21.next = 3;
             return getNextRelationshipAttributeSets(orm, transacting, body);
           case 3:
-            relationships = _context23.sent;
+            relationships = _context21.sent;
             id = (0, _get2.default)(currentEntity, ['relationshipSet', 'id']);
-            _context23.next = 7;
+            _context21.next = 7;
             return id &amp;&amp; new RelationshipSet({
               id: id
             }).fetch({
@@ -1478,30 +1478,30 @@ function _getNextRelationshipSets() {
               withRelated: ['relationships']
             });
           case 7:
-            oldRelationshipSet = _context23.sent;
-            return _context23.abrupt("return", orm.func.relationship.updateRelationshipSets(orm, transacting, oldRelationshipSet, relationships || []));
+            oldRelationshipSet = _context21.sent;
+            return _context21.abrupt("return", orm.func.relationship.updateRelationshipSets(orm, transacting, oldRelationshipSet, relationships || []));
           case 9:
           case "end":
-            return _context23.stop();
+            return _context21.stop();
         }
       }
-    }, _callee23);
+    }, _callee21);
   }));
   return _getNextRelationshipSets.apply(this, arguments);
 }
-function getNextAnnotation(_x65, _x66, _x67, _x68, _x69) {
+function getNextAnnotation(_x63, _x64, _x65, _x66, _x67) {
   return _getNextAnnotation.apply(this, arguments);
 }
 function _getNextAnnotation() {
-  _getNextAnnotation = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee24(orm, transacting, currentEntity, body, revision) {
+  _getNextAnnotation = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee22(orm, transacting, currentEntity, body, revision) {
     var Annotation, id, oldAnnotation;
-    return _regenerator.default.wrap(function _callee24$(_context24) {
+    return _regenerator.default.wrap(function _callee22$(_context22) {
       while (1) {
-        switch (_context24.prev = _context24.next) {
+        switch (_context22.prev = _context22.next) {
           case 0:
             Annotation = orm.Annotation;
             id = (0, _get2.default)(currentEntity, ['annotation', 'id']);
-            _context24.next = 4;
+            _context22.next = 4;
             return id &amp;&amp; new Annotation({
               id: id
             }).fetch({
@@ -1509,32 +1509,32 @@ function _getNextAnnotation() {
               transacting: transacting
             });
           case 4:
-            oldAnnotation = _context24.sent;
-            return _context24.abrupt("return", body.annotation ? orm.func.annotation.updateAnnotation(orm, transacting, oldAnnotation, body.annotation, revision) : new Promise(function (resolve) {
+            oldAnnotation = _context22.sent;
+            return _context22.abrupt("return", body.annotation ? orm.func.annotation.updateAnnotation(orm, transacting, oldAnnotation, body.annotation, revision) : new Promise(function (resolve) {
               return resolve(null);
             }));
           case 6:
           case "end":
-            return _context24.stop();
+            return _context22.stop();
         }
       }
-    }, _callee24);
+    }, _callee22);
   }));
   return _getNextAnnotation.apply(this, arguments);
 }
-function getNextDisambiguation(_x70, _x71, _x72, _x73) {
+function getNextDisambiguation(_x68, _x69, _x70, _x71) {
   return _getNextDisambiguation.apply(this, arguments);
 }
 function _getNextDisambiguation() {
-  _getNextDisambiguation = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee25(orm, transacting, currentEntity, body) {
+  _getNextDisambiguation = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee23(orm, transacting, currentEntity, body) {
     var Disambiguation, id, oldDisambiguation;
-    return _regenerator.default.wrap(function _callee25$(_context25) {
+    return _regenerator.default.wrap(function _callee23$(_context23) {
       while (1) {
-        switch (_context25.prev = _context25.next) {
+        switch (_context23.prev = _context23.next) {
           case 0:
             Disambiguation = orm.Disambiguation;
             id = (0, _get2.default)(currentEntity, ['disambiguation', 'id']);
-            _context25.next = 4;
+            _context23.next = 4;
             return id &amp;&amp; new Disambiguation({
               id: id
             }).fetch({
@@ -1542,36 +1542,36 @@ function _getNextDisambiguation() {
               transacting: transacting
             });
           case 4:
-            oldDisambiguation = _context25.sent;
-            return _context25.abrupt("return", orm.func.disambiguation.updateDisambiguation(orm, transacting, oldDisambiguation, body.disambiguation));
+            oldDisambiguation = _context23.sent;
+            return _context23.abrupt("return", orm.func.disambiguation.updateDisambiguation(orm, transacting, oldDisambiguation, body.disambiguation));
           case 6:
           case "end":
-            return _context25.stop();
+            return _context23.stop();
         }
       }
-    }, _callee25);
+    }, _callee23);
   }));
   return _getNextDisambiguation.apply(this, arguments);
 }
-function getChangedProps(_x74, _x75, _x76, _x77, _x78, _x79, _x80, _x81) {
+function getChangedProps(_x72, _x73, _x74, _x75, _x76, _x77, _x78, _x79) {
   return _getChangedProps.apply(this, arguments);
 }
 function _getChangedProps() {
-  _getChangedProps = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee26(orm, transacting, isNew, currentEntity, body, entityType, newRevision, derivedProps) {
+  _getChangedProps = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee24(orm, transacting, isNew, currentEntity, body, entityType, newRevision, derivedProps) {
     var aliasSetPromise, identSetPromise, annotationPromise, disambiguationPromise, entitySetIdsPromise, _yield$Promise$all3, _yield$Promise$all4, aliasSet, identSet, annotation, disambiguation, entitySetIds, propsToSet;
-    return _regenerator.default.wrap(function _callee26$(_context26) {
+    return _regenerator.default.wrap(function _callee24$(_context24) {
       while (1) {
-        switch (_context26.prev = _context26.next) {
+        switch (_context24.prev = _context24.next) {
           case 0:
             aliasSetPromise = getNextAliasSet(orm, transacting, currentEntity, body);
             identSetPromise = getNextIdentifierSet(orm, transacting, currentEntity, body);
             annotationPromise = getNextAnnotation(orm, transacting, currentEntity, body, newRevision);
             disambiguationPromise = getNextDisambiguation(orm, transacting, currentEntity, body);
             entitySetIdsPromise = processEntitySets(orm, currentEntity, entityType, body, transacting);
-            _context26.next = 7;
+            _context24.next = 7;
             return Promise.all([aliasSetPromise, identSetPromise, annotationPromise, disambiguationPromise, entitySetIdsPromise]);
           case 7:
-            _yield$Promise$all3 = _context26.sent;
+            _yield$Promise$all3 = _context24.sent;
             _yield$Promise$all4 = (0, _slicedToArray2.default)(_yield$Promise$all3, 5);
             aliasSet = _yield$Promise$all4[0];
             identSet = _yield$Promise$all4[1];
@@ -1585,12 +1585,12 @@ function _getChangedProps() {
               identifierSetId: identSet &amp;&amp; identSet.get('id')
             }, derivedProps), entitySetIds);
             if (!isNew) {
-              _context26.next = 17;
+              _context24.next = 17;
               break;
             }
-            return _context26.abrupt("return", propsToSet);
+            return _context24.abrupt("return", propsToSet);
           case 17:
-            return _context26.abrupt("return", (0, _reduce2.default)(propsToSet, function (result, value, key) {
+            return _context24.abrupt("return", (0, _reduce2.default)(propsToSet, function (result, value, key) {
               if (!(0, _isEqual2.default)(value, currentEntity[key]) &amp;&amp;
               // If both items are null or undefined, consider them equal (null !=== undefined)
               !((0, _isNil2.default)(value) &amp;&amp; (0, _isNil2.default)(currentEntity[key]))) {
@@ -1600,10 +1600,10 @@ function _getChangedProps() {
             }, {}));
           case 18:
           case "end":
-            return _context26.stop();
+            return _context24.stop();
         }
       }
-    }, _callee26);
+    }, _callee24);
   }));
   return _getChangedProps.apply(this, arguments);
 }
@@ -1621,20 +1621,20 @@ function fetchEntitiesForRelationships(orm, transacting, currentEntity, relation
  * @description Edition Groups will be created automatically by the ORM if no EditionGroup BBID is set on a new Edition.
  * This method fetches and indexes (search) those potential new EditionGroups that may have been created automatically.
  */
-function indexAutoCreatedEditionGroup(_x82, _x83, _x84) {
+function indexAutoCreatedEditionGroup(_x80, _x81, _x82) {
   return _indexAutoCreatedEditionGroup.apply(this, arguments);
 }
 function _indexAutoCreatedEditionGroup() {
-  _indexAutoCreatedEditionGroup = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee27(orm, newEdition, transacting) {
+  _indexAutoCreatedEditionGroup = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee25(orm, newEdition, transacting) {
     var EditionGroup, bbid, editionGroup;
-    return _regenerator.default.wrap(function _callee27$(_context27) {
+    return _regenerator.default.wrap(function _callee25$(_context25) {
       while (1) {
-        switch (_context27.prev = _context27.next) {
+        switch (_context25.prev = _context25.next) {
           case 0:
             EditionGroup = orm.EditionGroup;
             bbid = newEdition.get('editionGroupBbid');
-            _context27.prev = 2;
-            _context27.next = 5;
+            _context25.prev = 2;
+            _context25.next = 5;
             return new EditionGroup({
               bbid: bbid
             }).fetch({
@@ -1643,22 +1643,22 @@ function _indexAutoCreatedEditionGroup() {
               withRelated: 'aliasSet.aliases'
             });
           case 5:
-            editionGroup = _context27.sent;
-            _context27.next = 8;
+            editionGroup = _context25.sent;
+            _context25.next = 8;
             return search.indexEntity(editionGroup);
           case 8:
-            _context27.next = 13;
+            _context25.next = 13;
             break;
           case 10:
-            _context27.prev = 10;
-            _context27.t0 = _context27["catch"](2);
-            _log.default.error('Could not reindex edition group after edition creation:', _context27.t0);
+            _context25.prev = 10;
+            _context25.t0 = _context25["catch"](2);
+            _log.default.error('Could not reindex edition group after edition creation:', _context25.t0);
           case 13:
           case "end":
-            return _context27.stop();
+            return _context25.stop();
         }
       }
-    }, _callee27, null, [[2, 10]]);
+    }, _callee25, null, [[2, 10]]);
   }));
   return _indexAutoCreatedEditionGroup.apply(this, arguments);
 }
@@ -1679,40 +1679,40 @@ function sanitizeBody(body) {
   body.disambiguation = commonUtils.sanitize(body.disambiguation);
   return body;
 }
-function processSingleEntity(_x85, _x86, _x87, _x88, _x89, _x90, _x91, _x92, _x93) {
+function processSingleEntity(_x83, _x84, _x85, _x86, _x87, _x88, _x89, _x90, _x91) {
   return _processSingleEntity.apply(this, arguments);
 }
 function _processSingleEntity() {
-  _processSingleEntity = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee29(formBody, JSONEntity, reqSession, entityType, orm, editorJSON, derivedProps, isMergeOperation, transacting) {
+  _processSingleEntity = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee27(formBody, JSONEntity, reqSession, entityType, orm, editorJSON, derivedProps, isMergeOperation, transacting) {
     var Entity, Revision, body, currentEntity, _savedMainEntity$rela, isNew, newEntity, newEntityBBID, newRevision, relationshipSets, changedProps, mainEntity, otherEntities, allEntities, savedMainEntity, entityRelationships, authorsOfWork;
-    return _regenerator.default.wrap(function _callee29$(_context29) {
+    return _regenerator.default.wrap(function _callee27$(_context27) {
       while (1) {
-        switch (_context29.prev = _context29.next) {
+        switch (_context27.prev = _context27.next) {
           case 0:
             Entity = orm.Entity, Revision = orm.Revision;
             body = sanitizeBody(formBody);
             currentEntity = JSONEntity;
-            _context29.prev = 3;
+            _context27.prev = 3;
             // Determine if a new entity is being created
             isNew = !currentEntity; // sanitize namesection inputs
             body = sanitizeBody(body);
             if (!isNew) {
-              _context29.next = 13;
+              _context27.next = 13;
               break;
             }
-            _context29.next = 9;
+            _context27.next = 9;
             return new Entity({
               type: entityType
             }).save(null, {
               transacting: transacting
             });
           case 9:
-            newEntity = _context29.sent;
+            newEntity = _context27.sent;
             newEntityBBID = newEntity.get('bbid');
-            body.relationships = (0, _map2.default)(body.relationships, function (_ref16) {
-              var sourceBbid = _ref16.sourceBbid,
-                targetBbid = _ref16.targetBbid,
-                others = (0, _objectWithoutProperties2.default)(_ref16, _excluded);
+            body.relationships = (0, _map2.default)(body.relationships, function (_ref14) {
+              var sourceBbid = _ref14.sourceBbid,
+                targetBbid = _ref14.targetBbid,
+                others = (0, _objectWithoutProperties2.default)(_ref14, _excluded);
               return _objectSpread({
                 sourceBbid: sourceBbid || newEntityBBID,
                 targetBbid: targetBbid || newEntityBBID
@@ -1720,7 +1720,7 @@ function _processSingleEntity() {
             });
             currentEntity = newEntity.toJSON();
           case 13:
-            _context29.next = 15;
+            _context27.next = 15;
             return new Revision({
               authorId: editorJSON.id,
               isMerge: isMergeOperation
@@ -1728,29 +1728,29 @@ function _processSingleEntity() {
               transacting: transacting
             });
           case 15:
-            newRevision = _context29.sent;
-            _context29.next = 18;
+            newRevision = _context27.sent;
+            _context27.next = 18;
             return getNextRelationshipSets(orm, transacting, currentEntity, body);
           case 18:
-            relationshipSets = _context29.sent;
-            _context29.next = 21;
+            relationshipSets = _context27.sent;
+            _context27.next = 21;
             return getChangedProps(orm, transacting, isNew, currentEntity, body, entityType, newRevision, derivedProps);
           case 21:
-            changedProps = _context29.sent;
+            changedProps = _context27.sent;
             if (!((0, _isEmpty2.default)(changedProps) &amp;&amp; (0, _isEmpty2.default)(relationshipSets) &amp;&amp; !isMergeOperation)) {
-              _context29.next = 24;
+              _context27.next = 24;
               break;
             }
             throw new error.FormSubmissionError('No Updated Field');
           case 24:
-            _context29.next = 26;
+            _context27.next = 26;
             return fetchOrCreateMainEntity(orm, transacting, isNew, currentEntity.bbid, entityType);
           case 26:
-            mainEntity = _context29.sent;
-            _context29.next = 29;
+            mainEntity = _context27.sent;
+            _context27.next = 29;
             return fetchEntitiesForRelationships(orm, transacting, currentEntity, relationshipSets);
           case 29:
-            otherEntities = _context29.sent;
+            otherEntities = _context27.sent;
             otherEntities.forEach(function (entity) {
               entity.shouldInsert = false;
             });
@@ -1764,13 +1764,13 @@ function _processSingleEntity() {
               return entity.get('dataId') !== null;
             });
             if (!isMergeOperation) {
-              _context29.next = 38;
+              _context27.next = 38;
               break;
             }
-            _context29.next = 37;
+            _context27.next = 37;
             return processMergeOperation(orm, transacting, reqSession, mainEntity, allEntities, relationshipSets);
           case 37:
-            allEntities = _context29.sent;
+            allEntities = _context27.sent;
           case 38:
             (0, _forEach2.default)(allEntities, function (entityModel) {
               var bbid = entityModel.get('bbid');
@@ -1780,120 +1780,120 @@ function _processSingleEntity() {
                 relationshipSets[bbid] &amp;&amp; relationshipSets[bbid].get('id'));
               }
             });
-            _context29.next = 41;
+            _context27.next = 41;
             return saveEntitiesAndFinishRevision(orm, transacting, isNew, newRevision, mainEntity, allEntities, editorJSON.id, body.note);
           case 41:
-            savedMainEntity = _context29.sent;
-            _context29.next = 44;
+            savedMainEntity = _context27.sent;
+            _context27.next = 44;
             return savedMainEntity.refresh({
               transacting: transacting,
               withRelated: ['aliasSet.aliases', 'defaultAlias.language', 'relationshipSet.relationships.source', 'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation']
             });
           case 44:
             if (!(isNew &amp;&amp; savedMainEntity.get('type') === 'Edition')) {
-              _context29.next = 47;
+              _context27.next = 47;
               break;
             }
-            _context29.next = 47;
+            _context27.next = 47;
             return indexAutoCreatedEditionGroup(orm, savedMainEntity, transacting);
           case 47:
             entityRelationships = (_savedMainEntity$rela = savedMainEntity.related('relationshipSet')) === null || _savedMainEntity$rela === void 0 ? void 0 : _savedMainEntity$rela.related('relationships');
             if (!(savedMainEntity.get('type') === 'Work' &amp;&amp; entityRelationships !== null &amp;&amp; entityRelationships !== void 0 &amp;&amp; entityRelationships.length)) {
-              _context29.next = 53;
+              _context27.next = 53;
               break;
             }
-            _context29.next = 51;
+            _context27.next = 51;
             return Promise.all(entityRelationships.toJSON().filter(
             // "Author wrote Work" relationship
             function (relation) {
               return relation.typeId === 8;
-            }).map( /*#__PURE__*/function () {
-              var _ref17 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee28(relationshipJSON) {
+            }).map(/*#__PURE__*/function () {
+              var _ref15 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee26(relationshipJSON) {
                 var source, sourceEntity;
-                return _regenerator.default.wrap(function _callee28$(_context28) {
+                return _regenerator.default.wrap(function _callee26$(_context26) {
                   while (1) {
-                    switch (_context28.prev = _context28.next) {
+                    switch (_context26.prev = _context26.next) {
                       case 0:
-                        _context28.prev = 0;
+                        _context26.prev = 0;
                         source = relationshipJSON.source;
-                        _context28.next = 4;
+                        _context26.next = 4;
                         return commonUtils.getEntity(orm, source.bbid, source.type, {
                           require: false,
                           transacting: transacting
                         });
                       case 4:
-                        sourceEntity = _context28.sent;
-                        return _context28.abrupt("return", sourceEntity.name);
+                        sourceEntity = _context26.sent;
+                        return _context26.abrupt("return", sourceEntity.name);
                       case 8:
-                        _context28.prev = 8;
-                        _context28.t0 = _context28["catch"](0);
-                        _log.default.error(_context28.t0);
+                        _context26.prev = 8;
+                        _context26.t0 = _context26["catch"](0);
+                        _log.default.error(_context26.t0);
                       case 11:
-                        return _context28.abrupt("return", null);
+                        return _context26.abrupt("return", null);
                       case 12:
                       case "end":
-                        return _context28.stop();
+                        return _context26.stop();
                     }
                   }
-                }, _callee28, null, [[0, 8]]);
+                }, _callee26, null, [[0, 8]]);
               }));
-              return function (_x106) {
-                return _ref17.apply(this, arguments);
+              return function (_x104) {
+                return _ref15.apply(this, arguments);
               };
             }()));
           case 51:
-            authorsOfWork = _context29.sent;
+            authorsOfWork = _context27.sent;
             // Attach a work's authors for search indexing
             savedMainEntity.set('authors', authorsOfWork.filter(Boolean));
           case 53:
-            return _context29.abrupt("return", savedMainEntity);
+            return _context27.abrupt("return", savedMainEntity);
           case 56:
-            _context29.prev = 56;
-            _context29.t0 = _context29["catch"](3);
-            _log.default.error(_context29.t0);
-            throw _context29.t0;
+            _context27.prev = 56;
+            _context27.t0 = _context27["catch"](3);
+            _log.default.error(_context27.t0);
+            throw _context27.t0;
           case 60:
           case "end":
-            return _context29.stop();
+            return _context27.stop();
         }
       }
-    }, _callee29, null, [[3, 56]]);
+    }, _callee27, null, [[3, 56]]);
   }));
   return _processSingleEntity.apply(this, arguments);
 }
-function handleCreateOrEditEntity(_x94, _x95, _x96, _x97, _x98) {
+function handleCreateOrEditEntity(_x92, _x93, _x94, _x95, _x96) {
   return _handleCreateOrEditEntity.apply(this, arguments);
 }
 function _handleCreateOrEditEntity() {
-  _handleCreateOrEditEntity = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee30(req, res, entityType, derivedProps, isMergeOperation) {
+  _handleCreateOrEditEntity = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee28(req, res, entityType, derivedProps, isMergeOperation) {
     var orm, editorJSON, bookshelf, savedEntityModel, entityJSON;
-    return _regenerator.default.wrap(function _callee30$(_context30) {
+    return _regenerator.default.wrap(function _callee28$(_context28) {
       while (1) {
-        switch (_context30.prev = _context30.next) {
+        switch (_context28.prev = _context28.next) {
           case 0:
             orm = req.app.locals.orm;
             editorJSON = req.user;
             bookshelf = orm.bookshelf;
-            _context30.next = 5;
+            _context28.next = 5;
             return bookshelf.transaction(function (transacting) {
               return processSingleEntity(req.body, res.locals.entity, req.session, entityType, orm, editorJSON, derivedProps, isMergeOperation, transacting);
             });
           case 5:
-            savedEntityModel = _context30.sent;
+            savedEntityModel = _context28.sent;
             entityJSON = savedEntityModel.toJSON();
-            _context30.next = 9;
+            _context28.next = 9;
             return (0, _processUnifiedForm.processAchievement)(orm, editorJSON.id, entityJSON);
           case 9:
-            _context30.next = 11;
+            _context28.next = 11;
             return search.indexEntity(savedEntityModel);
           case 11:
-            return _context30.abrupt("return", res.status(200).send(entityJSON));
+            return _context28.abrupt("return", res.status(200).send(entityJSON));
           case 12:
           case "end":
-            return _context30.stop();
+            return _context28.stop();
         }
       }
-    }, _callee30);
+    }, _callee28);
   }));
   return _handleCreateOrEditEntity.apply(this, arguments);
 }
@@ -2049,7 +2049,7 @@ function displayPreview(req, res, next) {
   var props = (0, _props2.generateProps)(req, res, _objectSpread({
     alert: []
   }, finalProps));
-  var markup = _server.default.renderToString( /*#__PURE__*/React.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/React.createElement(_preview.default, propHelpers.extractPreviewProps(props))));
+  var markup = _server.default.renderToString(/*#__PURE__*/React.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/React.createElement(_preview.default, propHelpers.extractPreviewProps(props))));
   return res.send((0, _target.default)({
     markup: markup,
     props: JSON.stringify(props),
@@ -2069,7 +2069,7 @@ function displayPreview(req, res, next) {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Aug 07 2026 16:27:15 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Aug 07 2026 16:36:38 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

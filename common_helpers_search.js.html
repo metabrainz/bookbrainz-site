@@ -105,22 +105,22 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) &amp;&amp; (a = r.length); for (var e = 0, n = Array(a); e &lt; a; e++) { n[e] = r[e]; } return n; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r &amp;&amp; (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r &lt; arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { (0, _defineProperty2.default)(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; } /* eslint-disable lines-around-comment, sort-keys, camelcase */ /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * Copyright (C) 2016  Sean Burke
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * This program is free software; you can redistribute it and/or modify
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * it under the terms of the GNU General Public License as published by
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * the Free Software Foundation; either version 2 of the License, or
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * (at your option) any later version.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * This program is distributed in the hope that it will be useful,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * but WITHOUT ANY WARRANTY; without even the implied warranty of
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * GNU General Public License for more details.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * You should have received a copy of the GNU General Public License along
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * with this program; if not, write to the Free Software Foundation, Inc.,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
+ * Copyright (C) 2016  Sean Burke
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 var _index = 'bookbrainz';
 var _bulkIndexSize = 10000;
 
@@ -292,7 +292,7 @@ function _indexExists(_x) {
   return _indexExists2.apply(this, arguments);
 } // Helper to add a `type` filter into a dslQuery body, since ES 7+ removed document types
 function _indexExists2() {
-  _indexExists2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(indexName) {
+  _indexExists2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee(indexName) {
     return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -387,7 +387,7 @@ function _fetchEntityModelsForESResults(_x2, _x3) {
   return _fetchEntityModelsForESResults2.apply(this, arguments);
 } // Returns the results of a search translated to entity objects
 function _fetchEntityModelsForESResults2() {
-  _fetchEntityModelsForESResults2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4(orm, results) {
+  _fetchEntityModelsForESResults2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee4(orm, results) {
     var Area, Editor, UserCollection, processedResults;
     return _regenerator.default.wrap(function _callee4$(_context4) {
       while (1) {
@@ -401,8 +401,8 @@ function _fetchEntityModelsForESResults2() {
             return _context4.abrupt("return", null);
           case 3:
             _context4.next = 5;
-            return Promise.all(results.hits.map( /*#__PURE__*/function () {
-              var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(hit) {
+            return Promise.all(results.hits.map(/*#__PURE__*/function () {
+              var _ref = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee3(hit) {
                 var entityStub, _areaJSON$areaType, area, areaJSON, areaParents, editor, editorJSON, collection, collectionJSON, Model, entity, entityJSON;
                 return _regenerator.default.wrap(function _callee3$(_context3) {
                   while (1) {
@@ -498,8 +498,8 @@ function _fetchEntityModelsForESResults2() {
                           break;
                         }
                         _context3.next = 39;
-                        return Promise.all(entityJSON.relationshipSet.relationships.map( /*#__PURE__*/function () {
-                          var _ref2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(rel) {
+                        return Promise.all(entityJSON.relationshipSet.relationships.map(/*#__PURE__*/function () {
+                          var _ref2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(rel) {
                             return _regenerator.default.wrap(function _callee2$(_context2) {
                               while (1) {
                                 switch (_context2.prev = _context2.next) {
@@ -520,7 +520,7 @@ function _fetchEntityModelsForESResults2() {
                               }
                             }, _callee2);
                           }));
-                          return function (_x18) {
+                          return function (_x16) {
                             return _ref2.apply(this, arguments);
                           };
                         }()));
@@ -538,7 +538,7 @@ function _fetchEntityModelsForESResults2() {
                   }
                 }, _callee3);
               }));
-              return function (_x17) {
+              return function (_x15) {
                 return _ref.apply(this, arguments);
               };
             }())).catch(function (err) {
@@ -560,7 +560,7 @@ function _searchForEntities(_x4, _x5) {
   return _searchForEntities2.apply(this, arguments);
 }
 function _searchForEntities2() {
-  _searchForEntities2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5(orm, dslQuery) {
+  _searchForEntities2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee5(orm, dslQuery) {
     var searchResponse, hits, results, total, _hits$total$value, _hits$total;
     return _regenerator.default.wrap(function _callee5$(_context5) {
       while (1) {
@@ -607,7 +607,7 @@ function _bulkIndexEntities(_x6) {
   return _bulkIndexEntities2.apply(this, arguments);
 }
 function _bulkIndexEntities2() {
-  _bulkIndexEntities2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee7(entities) {
+  _bulkIndexEntities2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee7(entities) {
     var entitiesToIndex, operationSucceeded, bulkOperations, bulkResponse;
     return _regenerator.default.wrap(function _callee7$(_context7) {
       while (1) {
@@ -673,7 +673,7 @@ function _bulkIndexEntities2() {
               _context7.next = 17;
               break;
             }
-            return _context7.delegateYield( /*#__PURE__*/_regenerator.default.mark(function _callee6() {
+            return _context7.delegateYield(/*#__PURE__*/_regenerator.default.mark(function _callee6() {
               var jitter;
               return _regenerator.default.wrap(function _callee6$(_context6) {
                 while (1) {
@@ -716,7 +716,7 @@ function _processEntityListForBulk(_x7) {
   return _processEntityListForBulk2.apply(this, arguments);
 } // eslint-disable-next-line consistent-return
 function _processEntityListForBulk2() {
-  _processEntityListForBulk2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee8(entityList) {
+  _processEntityListForBulk2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee8(entityList) {
     var indexOperations, bulkQueue, _iterator, _step, entity;
     return _regenerator.default.wrap(function _callee8$(_context8) {
       while (1) {
@@ -785,7 +785,7 @@ function generateIndex(_x8) {
   return _generateIndex.apply(this, arguments);
 }
 function _generateIndex() {
-  _generateIndex = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee10(orm) {
+  _generateIndex = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee0(orm) {
     var entityType,
       recreateIndex,
       Area,
@@ -821,36 +821,36 @@ function _generateIndex() {
       userCollections,
       userCollectionsJSON,
       processedCollections,
-      _args10 = arguments;
-    return _regenerator.default.wrap(function _callee10$(_context10) {
+      _args0 = arguments;
+    return _regenerator.default.wrap(function _callee0$(_context0) {
       while (1) {
-        switch (_context10.prev = _context10.next) {
+        switch (_context0.prev = _context0.next) {
           case 0:
-            entityType = _args10.length > 1 &amp;&amp; _args10[1] !== undefined ? _args10[1] : 'allEntities';
-            recreateIndex = _args10.length > 2 &amp;&amp; _args10[2] !== undefined ? _args10[2] : false;
+            entityType = _args0.length > 1 &amp;&amp; _args0[1] !== undefined ? _args0[1] : 'allEntities';
+            recreateIndex = _args0.length > 2 &amp;&amp; _args0[2] !== undefined ? _args0[2] : false;
             Area = orm.Area, Author = orm.Author, Edition = orm.Edition, EditionGroup = orm.EditionGroup, Editor = orm.Editor, Publisher = orm.Publisher, Series = orm.Series, UserCollection = orm.UserCollection, Work = orm.Work;
             allEntities = entityType === 'allEntities';
-            _context10.next = 6;
+            _context0.next = 6;
             return _indexExists(_index);
           case 6:
-            mainIndexExists = _context10.sent;
+            mainIndexExists = _context0.sent;
             shouldRecreateIndex = !mainIndexExists || recreateIndex || allEntities;
             if (!shouldRecreateIndex) {
-              _context10.next = 16;
+              _context0.next = 16;
               break;
             }
             if (!mainIndexExists) {
-              _context10.next = 13;
+              _context0.next = 13;
               break;
             }
             _log.default.notice('Deleting search index');
-            _context10.next = 13;
+            _context0.next = 13;
             return _client.indices.delete({
               index: _index
             });
           case 13:
             _log.default.notice('Creating new search index');
-            _context10.next = 16;
+            _context0.next = 16;
             return _client.indices.create(indexSettings);
           case 16:
             _log.default.notice("Starting indexing of ".concat(entityType));
@@ -900,9 +900,9 @@ function _generateIndex() {
               });
             }
             // Update the indexed entries for each entity type
-            _context10.next = 27;
-            return Promise.all(entityBehaviors.map( /*#__PURE__*/function () {
-              var _ref3 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee9(behavior) {
+            _context0.next = 27;
+            return Promise.all(entityBehaviors.map(/*#__PURE__*/function () {
+              var _ref3 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee9(behavior) {
                 var totalCount, maxChunk, collectionsPromises, _loop, i, collections, allModels;
                 return _regenerator.default.wrap(function _callee9$(_context9) {
                   while (1) {
@@ -956,12 +956,12 @@ function _generateIndex() {
                   }
                 }, _callee9);
               }));
-              return function (_x19) {
+              return function (_x17) {
                 return _ref3.apply(this, arguments);
               };
             }()));
           case 27:
-            entityLists = _context10.sent;
+            entityLists = _context0.sent;
             _log.default.info("Finished fetching entities from database for types ".concat(entityBehaviors.map(function (_ref4) {
               var type = _ref4.type;
               return type;
@@ -1046,24 +1046,24 @@ function _generateIndex() {
               listIndexes.push(_processEntityListForBulk(listArray));
             });
             if (!listIndexes.length) {
-              _context10.next = 39;
+              _context0.next = 39;
               break;
             }
             _log.default.info("Indexing documents for entity type ".concat(entityType));
-            _context10.next = 38;
+            _context0.next = 38;
             return Promise.all(listIndexes);
           case 38:
             _log.default.info("Finished indexing entity documents for entity type ".concat(entityType));
           case 39:
             if (!(allEntities || entityType === 'Area')) {
-              _context10.next = 49;
+              _context0.next = 49;
               break;
             }
             _log.default.info('Indexing Areas');
-            _context10.next = 43;
+            _context0.next = 43;
             return new Area().fetchAll();
           case 43:
-            areaCollection = _context10.sent;
+            areaCollection = _context0.sent;
             areas = areaCollection.toJSON({
               omitPivot: true
             });
@@ -1079,22 +1079,22 @@ function _generateIndex() {
                 type: 'Area'
               };
             });
-            _context10.next = 48;
+            _context0.next = 48;
             return _processEntityListForBulk(processedAreas);
           case 48:
             _log.default.info('Finished indexing Areas');
           case 49:
             if (!(allEntities || entityType === 'Editor')) {
-              _context10.next = 59;
+              _context0.next = 59;
               break;
             }
             _log.default.info('Indexing Editors');
-            _context10.next = 53;
+            _context0.next = 53;
             return new Editor()
             // no bots
             .where('type_id', 1).fetchAll();
           case 53:
-            editorCollection = _context10.sent;
+            editorCollection = _context0.sent;
             editors = editorCollection.toJSON({
               omitPivot: true
             });
@@ -1110,22 +1110,22 @@ function _generateIndex() {
                 type: 'Editor'
               };
             });
-            _context10.next = 58;
+            _context0.next = 58;
             return _processEntityListForBulk(processedEditors);
           case 58:
             _log.default.info('Finished indexing Editors');
           case 59:
             if (!(allEntities || entityType === 'Collection')) {
-              _context10.next = 69;
+              _context0.next = 69;
               break;
             }
             _log.default.info('Indexing Collections');
-            _context10.next = 63;
+            _context0.next = 63;
             return new UserCollection().where({
               public: true
             }).fetchAll();
           case 63:
-            userCollections = _context10.sent;
+            userCollections = _context0.sent;
             userCollectionsJSON = userCollections.toJSON({
               omitPivot: true
             });
@@ -1141,105 +1141,105 @@ function _generateIndex() {
                 type: 'Collection'
               };
             });
-            _context10.next = 68;
+            _context0.next = 68;
             return _processEntityListForBulk(processedCollections);
           case 68:
             _log.default.info('Finished indexing Collections');
           case 69:
             _log.default.info('Refreshing search index');
-            _context10.next = 72;
+            _context0.next = 72;
             return refreshIndex();
           case 72:
             _log.default.notice('Search indexing finished succesfully');
           case 73:
+          case "end":
+            return _context0.stop();
+        }
+      }
+    }, _callee0);
+  }));
+  return _generateIndex.apply(this, arguments);
+}
+function checkIfExists(_x9, _x0, _x1) {
+  return _checkIfExists.apply(this, arguments);
+}
+function _checkIfExists() {
+  _checkIfExists = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee10(orm, name, type) {
+    var bookshelf, formattedType, bbids, baseRelations, processedResults;
+    return _regenerator.default.wrap(function _callee10$(_context10) {
+      while (1) {
+        switch (_context10.prev = _context10.next) {
+          case 0:
+            bookshelf = orm.bookshelf;
+            formattedType = (0, _upperFirst2.default)((0, _camelCase2.default)(type));
+            _context10.next = 4;
+            return new Promise(function (resolve, reject) {
+              bookshelf.transaction(/*#__PURE__*/function () {
+                var _ref5 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee1(transacting) {
+                  var result;
+                  return _regenerator.default.wrap(function _callee1$(_context1) {
+                    while (1) {
+                      switch (_context1.prev = _context1.next) {
+                        case 0:
+                          _context1.prev = 0;
+                          _context1.next = 3;
+                          return orm.func.alias.getBBIDsWithMatchingAlias(transacting, formattedType, name);
+                        case 3:
+                          result = _context1.sent;
+                          resolve(result);
+                          _context1.next = 10;
+                          break;
+                        case 7:
+                          _context1.prev = 7;
+                          _context1.t0 = _context1["catch"](0);
+                          reject(_context1.t0);
+                        case 10:
+                        case "end":
+                          return _context1.stop();
+                      }
+                    }
+                  }, _callee1, null, [[0, 7]]);
+                }));
+                return function (_x18) {
+                  return _ref5.apply(this, arguments);
+                };
+              }());
+            });
+          case 4:
+            bbids = _context10.sent;
+            // Follow-up: Fetch all entities in a single transaction from the postgres server
+            baseRelations = ['aliasSet.aliases.language', 'defaultAlias', 'disambiguation', 'identifierSet.identifiers.type', 'relationshipSet.relationships.type', 'revision.revision'];
+            _context10.next = 8;
+            return Promise.all(bbids.map(function (bbid) {
+              return orm.func.entity.getEntity(orm, formattedType, bbid, baseRelations);
+            }));
+          case 8:
+            processedResults = _context10.sent;
+            return _context10.abrupt("return", processedResults);
+          case 10:
           case "end":
             return _context10.stop();
         }
       }
     }, _callee10);
   }));
-  return _generateIndex.apply(this, arguments);
-}
-function checkIfExists(_x9, _x10, _x11) {
   return _checkIfExists.apply(this, arguments);
 }
-function _checkIfExists() {
-  _checkIfExists = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee12(orm, name, type) {
-    var bookshelf, formattedType, bbids, baseRelations, processedResults;
-    return _regenerator.default.wrap(function _callee12$(_context12) {
-      while (1) {
-        switch (_context12.prev = _context12.next) {
-          case 0:
-            bookshelf = orm.bookshelf;
-            formattedType = (0, _upperFirst2.default)((0, _camelCase2.default)(type));
-            _context12.next = 4;
-            return new Promise(function (resolve, reject) {
-              bookshelf.transaction( /*#__PURE__*/function () {
-                var _ref5 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee11(transacting) {
-                  var result;
-                  return _regenerator.default.wrap(function _callee11$(_context11) {
-                    while (1) {
-                      switch (_context11.prev = _context11.next) {
-                        case 0:
-                          _context11.prev = 0;
-                          _context11.next = 3;
-                          return orm.func.alias.getBBIDsWithMatchingAlias(transacting, formattedType, name);
-                        case 3:
-                          result = _context11.sent;
-                          resolve(result);
-                          _context11.next = 10;
-                          break;
-                        case 7:
-                          _context11.prev = 7;
-                          _context11.t0 = _context11["catch"](0);
-                          reject(_context11.t0);
-                        case 10:
-                        case "end":
-                          return _context11.stop();
-                      }
-                    }
-                  }, _callee11, null, [[0, 7]]);
-                }));
-                return function (_x20) {
-                  return _ref5.apply(this, arguments);
-                };
-              }());
-            });
-          case 4:
-            bbids = _context12.sent;
-            // Follow-up: Fetch all entities in a single transaction from the postgres server
-            baseRelations = ['aliasSet.aliases.language', 'defaultAlias', 'disambiguation', 'identifierSet.identifiers.type', 'relationshipSet.relationships.type', 'revision.revision'];
-            _context12.next = 8;
-            return Promise.all(bbids.map(function (bbid) {
-              return orm.func.entity.getEntity(orm, formattedType, bbid, baseRelations);
-            }));
-          case 8:
-            processedResults = _context12.sent;
-            return _context12.abrupt("return", processedResults);
-          case 10:
-          case "end":
-            return _context12.stop();
-        }
-      }
-    }, _callee12);
-  }));
-  return _checkIfExists.apply(this, arguments);
-}
-function autocomplete(_x12, _x13, _x14) {
+function autocomplete(_x10, _x11, _x12) {
   return _autocomplete.apply(this, arguments);
 }
 function _autocomplete() {
-  _autocomplete = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee13(orm, query, type) {
+  _autocomplete = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee11(orm, query, type) {
     var size,
       queryBody,
       dslQuery,
       searchResponse,
-      _args13 = arguments;
-    return _regenerator.default.wrap(function _callee13$(_context13) {
+      _args11 = arguments;
+    return _regenerator.default.wrap(function _callee11$(_context11) {
       while (1) {
-        switch (_context13.prev = _context13.next) {
+        switch (_context11.prev = _context11.next) {
           case 0:
-            size = _args13.length > 3 &amp;&amp; _args13[3] !== undefined ? _args13[3] : 42;
+            size = _args11.length > 3 &amp;&amp; _args11[3] !== undefined ? _args11[3] : 42;
             if (commonUtils.isValidBBID(query)) {
               queryBody = {
                 ids: {
@@ -1264,17 +1264,17 @@ function _autocomplete() {
               index: _index
             };
             _applyTypeFilterToDSL(dslQuery, type);
-            _context13.next = 6;
+            _context11.next = 6;
             return _searchForEntities(orm, dslQuery);
           case 6:
-            searchResponse = _context13.sent;
-            return _context13.abrupt("return", searchResponse.results);
+            searchResponse = _context11.sent;
+            return _context11.abrupt("return", searchResponse.results);
           case 8:
           case "end":
-            return _context13.stop();
+            return _context11.stop();
         }
       }
-    }, _callee13);
+    }, _callee11);
   }));
   return _autocomplete.apply(this, arguments);
 }
@@ -1352,15 +1352,15 @@ function searchByName(orm, name, type) {
  * @param {ClientOptions} [options] Optional (but recommended) connection settings, will provide defaults if missing
  * @returns {Promise&lt;boolean>} A Promise which resolves to the connection status boolean
  */
-function init(_x15, _x16) {
+function init(_x13, _x14) {
   return _init.apply(this, arguments);
 }
 function _init() {
-  _init = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee14(orm, options) {
+  _init = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee12(orm, options) {
     var defaultOptions, mainIndexExists;
-    return _regenerator.default.wrap(function _callee14$(_context14) {
+    return _regenerator.default.wrap(function _callee12$(_context12) {
       while (1) {
-        switch (_context14.prev = _context14.next) {
+        switch (_context12.prev = _context12.next) {
           case 0:
             if (!(0, _isString2.default)(options.node)) {
               defaultOptions = {
@@ -1372,35 +1372,35 @@ function _init() {
             } else {
               _client = new _elasticsearch.default.Client(options);
             }
-            _context14.prev = 1;
-            _context14.next = 4;
+            _context12.prev = 1;
+            _context12.next = 4;
             return _client.ping();
           case 4:
-            _context14.next = 10;
+            _context12.next = 10;
             break;
           case 6:
-            _context14.prev = 6;
-            _context14.t0 = _context14["catch"](1);
-            _log.default.warning('Could not connect to ElasticSearch:', _context14.t0.toString());
-            return _context14.abrupt("return", false);
+            _context12.prev = 6;
+            _context12.t0 = _context12["catch"](1);
+            _log.default.warning('Could not connect to ElasticSearch:', _context12.t0.toString());
+            return _context12.abrupt("return", false);
           case 10:
-            _context14.next = 12;
+            _context12.next = 12;
             return _indexExists(_index);
           case 12:
-            mainIndexExists = _context14.sent;
+            mainIndexExists = _context12.sent;
             if (!mainIndexExists) {
               // Automatically index on app startup if we haven't already, but don't block app setup
               generateIndex(orm).catch(_log.default.error);
             } else {
               _log.default.notice('Search index already exists, skipping generation');
             }
-            return _context14.abrupt("return", true);
+            return _context12.abrupt("return", true);
           case 15:
           case "end":
-            return _context14.stop();
+            return _context12.stop();
         }
       }
-    }, _callee14, null, [[1, 6]]);
+    }, _callee12, null, [[1, 6]]);
   }));
   return _init.apply(this, arguments);
 }
@@ -1416,7 +1416,7 @@ function _init() {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Aug 07 2026 16:27:15 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Aug 07 2026 16:36:38 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

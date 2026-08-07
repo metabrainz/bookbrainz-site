@@ -103,27 +103,27 @@ var _target = _interopRequireDefault(require("../templates/target"));
 function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != _typeof(e) &amp;&amp; "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (var _t in e) { "default" !== _t &amp;&amp; {}.hasOwnProperty.call(e, _t) &amp;&amp; ((i = (o = Object.defineProperty) &amp;&amp; Object.getOwnPropertyDescriptor(e, _t)) &amp;&amp; (i.get || i.set) ? o(f, _t, i) : f[_t] = e[_t]); } return f; })(e, t); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r &amp;&amp; (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r &lt; arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { (0, _defineProperty2.default)(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * Copyright (C) 2015, 2020  Ben Ockmore
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *               2015-2016   Sean Burke
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * This program is free software; you can redistribute it and/or modify
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * it under the terms of the GNU General Public License as published by
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * the Free Software Foundation; either version 2 of the License, or
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * (at your option) any later version.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * This program is distributed in the hope that it will be useful,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * but WITHOUT ANY WARRANTY; without even the implied warranty of
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * GNU General Public License for more details.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * You should have received a copy of the GNU General Public License along
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * with this program; if not, write to the Free Software Foundation, Inc.,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
+ * Copyright (C) 2015, 2020  Ben Ockmore
+ *               2015-2016   Sean Burke
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 var ADMIN = _privilegesUtils.PrivilegeType.ADMIN;
 var router = _express.default.Router();
 router.get('/edit', auth.isAuthenticated, /*#__PURE__*/function () {
-  var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(req, res, next) {
+  var _ref = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee(req, res, next) {
     var _req$app$locals$orm, Editor, Gender, TitleUnlock, editorModelPromise, titleUnlockModelPromise, gendersModelPromise, _yield$Promise$all$ca, _yield$Promise$all$ca2, editorModel, titleUnlockModel, genderModel, editorJSON, titleJSON, genderJSON, props, markup;
     return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
@@ -166,7 +166,7 @@ router.get('/edit', auth.isAuthenticated, /*#__PURE__*/function () {
               genders: genderJSON,
               titles: titleJSON
             }); // Render the DOM
-            markup = _server.default.renderToString( /*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_profile.default, {
+            markup = _server.default.renderToString(/*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_profile.default, {
               editor: props.editor,
               genders: props.genders,
               titles: props.titles
@@ -197,7 +197,7 @@ function isCurrentUser(reqUserID, sessionUser) {
   return reqUserID === sessionUser.id;
 }
 router.post('/edit/handler', auth.isAuthenticatedForHandler, /*#__PURE__*/function () {
-  var _ref2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(req, res) {
+  var _ref2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(req, res) {
     var Editor, editor, modifiedEditor, editorJSON;
     return _regenerator.default.wrap(function _callee2$(_context2) {
       while (1) {
@@ -265,7 +265,7 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, /*#__PURE__*/functi
   };
 }());
 router.post('/privs/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ADMIN), /*#__PURE__*/function () {
-  var _ref3 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(req, res, next) {
+  var _ref3 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee3(req, res, next) {
     var _req$app$locals$orm2, Editor, AdminLog, bookshelf, _req$body, adminId, newPrivs, note, oldPrivs, targetUserId, actionType, trx, editor, logData;
     return _regenerator.default.wrap(function _callee3$(_context3) {
       while (1) {
@@ -339,24 +339,24 @@ router.post('/privs/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthor
     return _ref3.apply(this, arguments);
   };
 }());
-function getEditorTitleJSON(_x9, _x10) {
+function getEditorTitleJSON(_x9, _x0) {
   return _getEditorTitleJSON.apply(this, arguments);
 }
 function _getEditorTitleJSON() {
-  _getEditorTitleJSON = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee11(editorJSON, TitleUnlock) {
+  _getEditorTitleJSON = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee1(editorJSON, TitleUnlock) {
     var unlockID, titleUnlockModel;
-    return _regenerator.default.wrap(function _callee11$(_context11) {
+    return _regenerator.default.wrap(function _callee1$(_context1) {
       while (1) {
-        switch (_context11.prev = _context11.next) {
+        switch (_context1.prev = _context1.next) {
           case 0:
             unlockID = editorJSON.titleUnlockId;
             if (!(unlockID === null)) {
-              _context11.next = 3;
+              _context1.next = 3;
               break;
             }
-            return _context11.abrupt("return", editorJSON);
+            return _context1.abrupt("return", editorJSON);
           case 3:
-            _context11.next = 5;
+            _context1.next = 5;
             return new TitleUnlock({
               id: unlockID
             }).fetch({
@@ -364,32 +364,32 @@ function _getEditorTitleJSON() {
               withRelated: ['title']
             });
           case 5:
-            titleUnlockModel = _context11.sent;
+            titleUnlockModel = _context1.sent;
             if (titleUnlockModel !== null) {
               editorJSON.title = titleUnlockModel.relations.title.attributes;
             }
-            return _context11.abrupt("return", editorJSON);
+            return _context1.abrupt("return", editorJSON);
           case 8:
           case "end":
-            return _context11.stop();
+            return _context1.stop();
         }
       }
-    }, _callee11);
+    }, _callee1);
   }));
   return _getEditorTitleJSON.apply(this, arguments);
 }
-function getIdEditorJSONPromise(_x11, _x12) {
+function getIdEditorJSONPromise(_x1, _x10) {
   return _getIdEditorJSONPromise.apply(this, arguments);
 }
 function _getIdEditorJSONPromise() {
-  _getIdEditorJSONPromise = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee12(userId, req) {
+  _getIdEditorJSONPromise = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee10(userId, req) {
     var _req$app$locals$orm6, Editor, TitleUnlock, editorData;
-    return _regenerator.default.wrap(function _callee12$(_context12) {
+    return _regenerator.default.wrap(function _callee10$(_context10) {
       while (1) {
-        switch (_context12.prev = _context12.next) {
+        switch (_context10.prev = _context10.next) {
           case 0:
             _req$app$locals$orm6 = req.app.locals.orm, Editor = _req$app$locals$orm6.Editor, TitleUnlock = _req$app$locals$orm6.TitleUnlock;
-            _context12.next = 3;
+            _context10.next = 3;
             return new Editor({
               id: userId
             }).fetch({
@@ -399,22 +399,22 @@ function _getIdEditorJSONPromise() {
               throw new error.NotFoundError('Editor not found', req);
             });
           case 3:
-            editorData = _context12.sent;
-            return _context12.abrupt("return", getEditorTitleJSON(editorData.toJSON(), TitleUnlock));
+            editorData = _context10.sent;
+            return _context10.abrupt("return", getEditorTitleJSON(editorData.toJSON(), TitleUnlock));
           case 5:
           case "end":
-            return _context12.stop();
+            return _context10.stop();
         }
       }
-    }, _callee12);
+    }, _callee10);
   }));
   return _getIdEditorJSONPromise.apply(this, arguments);
 }
-function getEditorActivity(_x13, _x14, _x15) {
+function getEditorActivity(_x11, _x12, _x13) {
   return _getEditorActivity.apply(this, arguments);
 }
 function _getEditorActivity() {
-  _getEditorActivity = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee13(editorId, startDate, Revision) {
+  _getEditorActivity = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee11(editorId, startDate, Revision) {
     var endDate,
       revisions,
       revisionJSON,
@@ -423,36 +423,36 @@ function _getEditorActivity() {
       firstRevisionDate,
       activityStart,
       allMonthsInInterval,
-      _args13 = arguments;
-    return _regenerator.default.wrap(function _callee13$(_context13) {
+      _args11 = arguments;
+    return _regenerator.default.wrap(function _callee11$(_context11) {
       while (1) {
-        switch (_context13.prev = _context13.next) {
+        switch (_context11.prev = _context11.next) {
           case 0:
-            endDate = _args13.length > 3 &amp;&amp; _args13[3] !== undefined ? _args13[3] : Date.now();
+            endDate = _args11.length > 3 &amp;&amp; _args11[3] !== undefined ? _args11[3] : Date.now();
             if ((0, _dateFns.isValid)(startDate)) {
-              _context13.next = 3;
+              _context11.next = 3;
               break;
             }
             throw new Error('Start date is invalid');
           case 3:
             if ((0, _dateFns.isValid)(endDate)) {
-              _context13.next = 5;
+              _context11.next = 5;
               break;
             }
             throw new Error('End date is invalid');
           case 5:
             if ((0, _dateFns.isAfter)(endDate, startDate)) {
-              _context13.next = 7;
+              _context11.next = 7;
               break;
             }
             throw new Error('Start date is greater than end date');
           case 7:
-            _context13.next = 9;
+            _context11.next = 9;
             return new Revision().query('where', 'author_id', '=', editorId).orderBy('created_at', 'ASC').fetchAll({
               require: false
             });
           case 9:
-            revisions = _context13.sent;
+            revisions = _context11.sent;
             revisionJSON = revisions ? revisions.toJSON() : [];
             revisionDates = revisionJSON.map(function (revision) {
               return (0, _dateFns.format)(new Date(revision.createdAt), 'LLL-yy');
@@ -469,13 +469,13 @@ function _getEditorActivity() {
               accumulator[month] = 0;
               return accumulator;
             }, {});
-            return _context13.abrupt("return", _objectSpread(_objectSpread({}, allMonthsInInterval), revisionsCount));
+            return _context11.abrupt("return", _objectSpread(_objectSpread({}, allMonthsInInterval), revisionsCount));
           case 17:
           case "end":
-            return _context13.stop();
+            return _context11.stop();
         }
       }
-    }, _callee13);
+    }, _callee11);
   }));
   return _getEditorActivity.apply(this, arguments);
 }
@@ -492,7 +492,7 @@ function achievementColToEditorGetJSON(achievementCol) {
   };
 }
 router.get('/:id', /*#__PURE__*/function () {
-  var _ref4 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4(req, res, next) {
+  var _ref4 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee4(req, res, next) {
     var _req$app$locals$orm3, AchievementUnlock, Revision, userId, editorJSON, achievementCol, achievementJSON, props, markup;
     return _regenerator.default.wrap(function _callee4$(_context4) {
       while (1) {
@@ -530,7 +530,7 @@ router.get('/:id', /*#__PURE__*/function () {
               editor: editorJSON,
               tabActive: 0
             });
-            markup = _server.default.renderToString( /*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_editor.default, propHelpers.extractEditorProps(props), /*#__PURE__*/_react.default.createElement(_editorProfile.default, (0, _extends2.default)({
+            markup = _server.default.renderToString(/*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_editor.default, propHelpers.extractEditorProps(props), /*#__PURE__*/_react.default.createElement(_editorProfile.default, (0, _extends2.default)({
               user: props.user
             }, propHelpers.extractChildProps(props))))));
             return _context4.abrupt("return", res.send((0, _target.default)({
@@ -551,14 +551,14 @@ router.get('/:id', /*#__PURE__*/function () {
       }
     }, _callee4, null, [[4, 20]]);
   }));
-  return function (_x16, _x17, _x18) {
+  return function (_x14, _x15, _x16) {
     return _ref4.apply(this, arguments);
   };
 }());
 
 // eslint-disable-next-line consistent-return
 router.get('/:id/revisions', /*#__PURE__*/function () {
-  var _ref5 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5(req, res, next) {
+  var _ref5 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee5(req, res, next) {
     var DEFAULT_MAX_REVISIONS, DEFAULT_REVISION_OFFSET, query, size, from, orderedRevisionsPromise, editorJSONPromise, _yield$Promise$all, _yield$Promise$all2, orderedRevisions, editorJSON, _commonUtils$getNextE, newResultsArray, nextEnabled, props, markup;
     return _regenerator.default.wrap(function _callee5$(_context5) {
       while (1) {
@@ -591,7 +591,7 @@ router.get('/:id/revisions', /*#__PURE__*/function () {
               tabActive: 1,
               tableHeading: 'Revision History'
             });
-            markup = _server.default.renderToString( /*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_editor.default, propHelpers.extractEditorProps(props), /*#__PURE__*/_react.default.createElement(_editorRevision.default, propHelpers.extractChildProps(props)))));
+            markup = _server.default.renderToString(/*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_editor.default, propHelpers.extractEditorProps(props), /*#__PURE__*/_react.default.createElement(_editorRevision.default, propHelpers.extractChildProps(props)))));
             res.send((0, _target.default)({
               markup: markup,
               page: 'revisions',
@@ -612,12 +612,12 @@ router.get('/:id/revisions', /*#__PURE__*/function () {
       }
     }, _callee5, null, [[5, 20]]);
   }));
-  return function (_x19, _x20, _x21) {
+  return function (_x17, _x18, _x19) {
     return _ref5.apply(this, arguments);
   };
 }());
 router.get('/:id/revisions/revisions', /*#__PURE__*/function () {
-  var _ref6 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6(req, res, next) {
+  var _ref6 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee6(req, res, next) {
     var DEFAULT_MAX_REVISIONS, DEFAULT_REVISION_OFFSET, query, size, from, orderedRevisions;
     return _regenerator.default.wrap(function _callee6$(_context6) {
       while (1) {
@@ -640,7 +640,7 @@ router.get('/:id/revisions/revisions', /*#__PURE__*/function () {
       }
     }, _callee6);
   }));
-  return function (_x22, _x23, _x24) {
+  return function (_x20, _x21, _x22) {
     return _ref6.apply(this, arguments);
   };
 }());
@@ -652,32 +652,32 @@ router.get('/:id/revisions/revisions', /*#__PURE__*/function () {
  * @param {object} orm - orm
  * @returns {Promise&lt;number>} - Promise resolved to progress counter
  */
-function getProgress(_x25, _x26, _x27) {
+function getProgress(_x23, _x24, _x25) {
   return _getProgress.apply(this, arguments);
 }
 function _getProgress() {
-  _getProgress = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee14(achievementId, editorId, orm) {
+  _getProgress = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee12(achievementId, editorId, orm) {
     var revisionist, Editor, editor, revisions, authorRevisionist, editionGroupRevisionist, publisherRevisionist, editionRevisionist, workRevisionist, seriesRevisionist, AuthorRevision, EditionGroupRevision, EditionRevision, PublisherRevision, WorkRevision, SeriesRevision, bookshelf, rawSql, out, explorerVisits;
-    return _regenerator.default.wrap(function _callee14$(_context14) {
+    return _regenerator.default.wrap(function _callee12$(_context12) {
       while (1) {
-        switch (_context14.prev = _context14.next) {
+        switch (_context12.prev = _context12.next) {
           case 0:
             revisionist = [1, 2, 3];
             if (!revisionist.includes(achievementId)) {
-              _context14.next = 8;
+              _context12.next = 8;
               break;
             }
             Editor = orm.Editor;
-            _context14.next = 5;
+            _context12.next = 5;
             return new Editor({
               id: editorId
             }).fetch({
               require: false
             });
           case 5:
-            editor = _context14.sent;
+            editor = _context12.sent;
             revisions = editor.get('revisionsApplied');
-            return _context14.abrupt("return", revisions);
+            return _context12.abrupt("return", revisions);
           case 8:
             // entity revisionist
             authorRevisionist = [4, 5, 6];
@@ -687,153 +687,153 @@ function _getProgress() {
             workRevisionist = [21, 22, 23];
             seriesRevisionist = [28, 29, 30];
             if (!authorRevisionist.includes(achievementId)) {
-              _context14.next = 17;
+              _context12.next = 17;
               break;
             }
             AuthorRevision = orm.AuthorRevision;
-            return _context14.abrupt("return", (0, _achievement.getTypeCreation)(new AuthorRevision(), 'author_revision', editorId));
+            return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new AuthorRevision(), 'author_revision', editorId));
           case 17:
             if (!editionGroupRevisionist.includes(achievementId)) {
-              _context14.next = 20;
+              _context12.next = 20;
               break;
             }
             EditionGroupRevision = orm.EditionGroupRevision;
-            return _context14.abrupt("return", (0, _achievement.getTypeCreation)(new EditionGroupRevision(), 'edition_group_revision', editorId));
+            return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new EditionGroupRevision(), 'edition_group_revision', editorId));
           case 20:
             if (!editionRevisionist.includes(achievementId)) {
-              _context14.next = 23;
+              _context12.next = 23;
               break;
             }
             EditionRevision = orm.EditionRevision;
-            return _context14.abrupt("return", (0, _achievement.getTypeCreation)(new EditionRevision(), 'edition_revision', editorId));
+            return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new EditionRevision(), 'edition_revision', editorId));
           case 23:
             if (!publisherRevisionist.includes(achievementId)) {
-              _context14.next = 26;
+              _context12.next = 26;
               break;
             }
             PublisherRevision = orm.PublisherRevision;
-            return _context14.abrupt("return", (0, _achievement.getTypeCreation)(new PublisherRevision(), 'publisher_revision', editorId));
+            return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new PublisherRevision(), 'publisher_revision', editorId));
           case 26:
             if (!workRevisionist.includes(achievementId)) {
-              _context14.next = 29;
+              _context12.next = 29;
               break;
             }
             WorkRevision = orm.WorkRevision;
-            return _context14.abrupt("return", (0, _achievement.getTypeCreation)(new WorkRevision(), 'work_revision', editorId));
+            return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new WorkRevision(), 'work_revision', editorId));
           case 29:
             if (!seriesRevisionist.includes(achievementId)) {
-              _context14.next = 32;
+              _context12.next = 32;
               break;
             }
             SeriesRevision = orm.SeriesRevision;
-            return _context14.abrupt("return", (0, _achievement.getTypeCreation)(new SeriesRevision(), 'series_revision', editorId));
+            return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new SeriesRevision(), 'series_revision', editorId));
           case 32:
             if (!(achievementId === 10)) {
-              _context14.next = 39;
+              _context12.next = 39;
               break;
             }
             bookshelf = orm.bookshelf;
             rawSql = "SELECT * from bookbrainz.revision WHERE author_id=".concat(editorId, " \t\tand created_at > (SELECT CURRENT_DATE - INTERVAL '1 hour');");
-            _context14.next = 37;
+            _context12.next = 37;
             return bookshelf.knex.raw(rawSql);
           case 37:
-            out = _context14.sent;
-            return _context14.abrupt("return", out.rowCount);
+            out = _context12.sent;
+            return _context12.abrupt("return", out.rowCount);
           case 39:
             if (!(achievementId === 11)) {
-              _context14.next = 41;
+              _context12.next = 41;
               break;
             }
-            return _context14.abrupt("return", (0, _achievement.getConsecutiveDaysWithEdits)(orm, editorId, 6));
+            return _context12.abrupt("return", (0, _achievement.getConsecutiveDaysWithEdits)(orm, editorId, 6));
           case 41:
             if (!(achievementId === 12)) {
-              _context14.next = 43;
+              _context12.next = 43;
               break;
             }
-            return _context14.abrupt("return", (0, _achievement.getConsecutiveDaysWithEdits)(orm, editorId, 29));
+            return _context12.abrupt("return", (0, _achievement.getConsecutiveDaysWithEdits)(orm, editorId, 29));
           case 43:
             // Explorer achivements
             explorerVisits = [24, 25, 26];
             if (!explorerVisits.includes(achievementId)) {
-              _context14.next = 46;
+              _context12.next = 46;
               break;
             }
-            return _context14.abrupt("return", (0, _achievement.getEntityVisits)(orm, editorId));
+            return _context12.abrupt("return", (0, _achievement.getEntityVisits)(orm, editorId));
           case 46:
-            return _context14.abrupt("return", 0);
+            return _context12.abrupt("return", 0);
           case 47:
+          case "end":
+            return _context12.stop();
+        }
+      }
+    }, _callee12);
+  }));
+  return _getProgress.apply(this, arguments);
+}
+function setAchievementUnlockedField(_x26, _x27, _x28, _x29) {
+  return _setAchievementUnlockedField.apply(this, arguments);
+}
+function _setAchievementUnlockedField() {
+  _setAchievementUnlockedField = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee14(achievements, unlocks, userId, orm) {
+    var unlockIDSet, model;
+    return _regenerator.default.wrap(function _callee14$(_context14) {
+      while (1) {
+        switch (_context14.prev = _context14.next) {
+          case 0:
+            if (unlocks) {
+              _context14.next = 2;
+              break;
+            }
+            return _context14.abrupt("return", null);
+          case 2:
+            unlockIDSet = new Set(unlocks.map('attributes.achievementId'));
+            _context14.next = 5;
+            return Promise.all(achievements.map(/*#__PURE__*/function () {
+              var _ref1 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee13(achievementType) {
+                return _regenerator.default.wrap(function _callee13$(_context13) {
+                  while (1) {
+                    switch (_context13.prev = _context13.next) {
+                      case 0:
+                        _context13.t0 = _objectSpread;
+                        _context13.t1 = _objectSpread({}, achievementType.toJSON());
+                        _context13.t2 = {};
+                        _context13.next = 5;
+                        return getProgress(achievementType.id, userId, orm);
+                      case 5:
+                        _context13.t3 = _context13.sent;
+                        _context13.t4 = unlockIDSet.has(achievementType.id);
+                        _context13.t5 = {
+                          counter: _context13.t3,
+                          unlocked: _context13.t4
+                        };
+                        return _context13.abrupt("return", (0, _context13.t0)(_context13.t1, _context13.t2, _context13.t5));
+                      case 9:
+                      case "end":
+                        return _context13.stop();
+                    }
+                  }
+                }, _callee13);
+              }));
+              return function (_x45) {
+                return _ref1.apply(this, arguments);
+              };
+            }()));
+          case 5:
+            model = _context14.sent;
+            return _context14.abrupt("return", {
+              model: model
+            });
+          case 7:
           case "end":
             return _context14.stop();
         }
       }
     }, _callee14);
   }));
-  return _getProgress.apply(this, arguments);
-}
-function setAchievementUnlockedField(_x28, _x29, _x30, _x31) {
-  return _setAchievementUnlockedField.apply(this, arguments);
-}
-function _setAchievementUnlockedField() {
-  _setAchievementUnlockedField = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee16(achievements, unlocks, userId, orm) {
-    var unlockIDSet, model;
-    return _regenerator.default.wrap(function _callee16$(_context16) {
-      while (1) {
-        switch (_context16.prev = _context16.next) {
-          case 0:
-            if (unlocks) {
-              _context16.next = 2;
-              break;
-            }
-            return _context16.abrupt("return", null);
-          case 2:
-            unlockIDSet = new Set(unlocks.map('attributes.achievementId'));
-            _context16.next = 5;
-            return Promise.all(achievements.map( /*#__PURE__*/function () {
-              var _ref11 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee15(achievementType) {
-                return _regenerator.default.wrap(function _callee15$(_context15) {
-                  while (1) {
-                    switch (_context15.prev = _context15.next) {
-                      case 0:
-                        _context15.t0 = _objectSpread;
-                        _context15.t1 = _objectSpread({}, achievementType.toJSON());
-                        _context15.t2 = {};
-                        _context15.next = 5;
-                        return getProgress(achievementType.id, userId, orm);
-                      case 5:
-                        _context15.t3 = _context15.sent;
-                        _context15.t4 = unlockIDSet.has(achievementType.id);
-                        _context15.t5 = {
-                          counter: _context15.t3,
-                          unlocked: _context15.t4
-                        };
-                        return _context15.abrupt("return", (0, _context15.t0)(_context15.t1, _context15.t2, _context15.t5));
-                      case 9:
-                      case "end":
-                        return _context15.stop();
-                    }
-                  }
-                }, _callee15);
-              }));
-              return function (_x47) {
-                return _ref11.apply(this, arguments);
-              };
-            }()));
-          case 5:
-            model = _context16.sent;
-            return _context16.abrupt("return", {
-              model: model
-            });
-          case 7:
-          case "end":
-            return _context16.stop();
-        }
-      }
-    }, _callee16);
-  }));
   return _setAchievementUnlockedField.apply(this, arguments);
 }
 router.get('/:id/achievements', /*#__PURE__*/function () {
-  var _ref7 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee7(req, res, next) {
+  var _ref7 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee7(req, res, next) {
     var _req$app$locals$orm4, AchievementType, AchievementUnlock, userId, isOwner, editorJSONPromise, unlocksPromise, achievementColPromise, achievementTypesPromise, _yield$Promise$all3, _yield$Promise$all4, unlocks, editorJSON, achievementTypes, achievementCol, achievementJSON, currAchievementJSON, props, markup;
     return _regenerator.default.wrap(function _callee7$(_context7) {
       while (1) {
@@ -874,7 +874,7 @@ router.get('/:id/achievements', /*#__PURE__*/function () {
               isOwner: isOwner,
               tabActive: 2
             });
-            markup = _server.default.renderToString( /*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_editor.default, propHelpers.extractEditorProps(props), /*#__PURE__*/_react.default.createElement(_editorAchievements.default, {
+            markup = _server.default.renderToString(/*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_editor.default, propHelpers.extractEditorProps(props), /*#__PURE__*/_react.default.createElement(_editorAchievements.default, {
               achievement: props.achievement,
               currAchievement: props.currAchievement,
               editor: props.editor,
@@ -893,22 +893,22 @@ router.get('/:id/achievements', /*#__PURE__*/function () {
       }
     }, _callee7);
   }));
-  return function (_x32, _x33, _x34) {
+  return function (_x30, _x31, _x32) {
     return _ref7.apply(this, arguments);
   };
 }());
-function rankUpdate(_x35, _x36, _x37, _x38) {
+function rankUpdate(_x33, _x34, _x35, _x36) {
   return _rankUpdate.apply(this, arguments);
 }
 function _rankUpdate() {
-  _rankUpdate = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee17(orm, editorId, bodyRank, rank) {
+  _rankUpdate = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee15(orm, editorId, bodyRank, rank) {
     var AchievementUnlock, unlockToUnrank, unlockToRank;
-    return _regenerator.default.wrap(function _callee17$(_context17) {
+    return _regenerator.default.wrap(function _callee15$(_context15) {
       while (1) {
-        switch (_context17.prev = _context17.next) {
+        switch (_context15.prev = _context15.next) {
           case 0:
             AchievementUnlock = orm.AchievementUnlock; // Get the achievement unlock which is currently in this "rank"/slot
-            _context17.next = 3;
+            _context15.next = 3;
             return new AchievementUnlock({
               editorId: editorId,
               profileRank: rank
@@ -916,21 +916,21 @@ function _rankUpdate() {
               require: false
             });
           case 3:
-            unlockToUnrank = _context17.sent;
+            unlockToUnrank = _context15.sent;
             if (!(unlockToUnrank !== null)) {
-              _context17.next = 7;
+              _context15.next = 7;
               break;
             }
-            _context17.next = 7;
+            _context15.next = 7;
             return unlockToUnrank.set('profileRank', null).save();
           case 7:
             if (!(bodyRank === '')) {
-              _context17.next = 9;
+              _context15.next = 9;
               break;
             }
-            return _context17.abrupt("return", false);
+            return _context15.abrupt("return", false);
           case 9:
-            _context17.next = 11;
+            _context15.next = 11;
             return new AchievementUnlock({
               achievementId: parseInt(bodyRank, 10),
               editorId: editorId
@@ -938,19 +938,19 @@ function _rankUpdate() {
               require: true
             });
           case 11:
-            unlockToRank = _context17.sent;
-            return _context17.abrupt("return", unlockToRank.set('profileRank', rank).save());
+            unlockToRank = _context15.sent;
+            return _context15.abrupt("return", unlockToRank.set('profileRank', rank).save());
           case 13:
           case "end":
-            return _context17.stop();
+            return _context15.stop();
         }
       }
-    }, _callee17);
+    }, _callee15);
   }));
   return _rankUpdate.apply(this, arguments);
 }
 router.post('/:id/achievements/', auth.isAuthenticatedForHandler, /*#__PURE__*/function () {
-  var _ref8 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee8(req, res) {
+  var _ref8 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee8(req, res) {
     var orm, userId;
     return _regenerator.default.wrap(function _callee8$(_context8) {
       while (1) {
@@ -981,14 +981,14 @@ router.post('/:id/achievements/', auth.isAuthenticatedForHandler, /*#__PURE__*/f
       }
     }, _callee8);
   }));
-  return function (_x39, _x40) {
+  return function (_x37, _x38) {
     return _ref8.apply(this, arguments);
   };
 }());
 
 // eslint-disable-next-line consistent-return
 router.get('/:id/collections', /*#__PURE__*/function () {
-  var _ref9 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee9(req, res, next) {
+  var _ref9 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee9(req, res, next) {
     var _req$app$locals$orm5, Editor, TitleUnlock, DEFAULT_MAX_COLLECTIONS, DEFAULT_COLLECTION_OFFSET, query, size, from, type, entityTypes, orderedCollections, _commonUtils$getNextE2, newResultsArray, nextEnabled, editor, editorJSON, props, markup;
     return _regenerator.default.wrap(function _callee9$(_context9) {
       while (1) {
@@ -1036,7 +1036,7 @@ router.get('/:id/collections', /*#__PURE__*/function () {
               tabActive: 3,
               tableHeading: 'Collections'
             });
-            markup = _server.default.renderToString( /*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_editor.default, propHelpers.extractEditorProps(props), /*#__PURE__*/_react.default.createElement(_collections.default, propHelpers.extractChildProps(props)))));
+            markup = _server.default.renderToString(/*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_editor.default, propHelpers.extractEditorProps(props), /*#__PURE__*/_react.default.createElement(_collections.default, propHelpers.extractChildProps(props)))));
             res.send((0, _target.default)({
               markup: markup,
               page: 'collections',
@@ -1057,51 +1057,51 @@ router.get('/:id/collections', /*#__PURE__*/function () {
       }
     }, _callee9, null, [[7, 26]]);
   }));
-  return function (_x41, _x42, _x43) {
+  return function (_x39, _x40, _x41) {
     return _ref9.apply(this, arguments);
   };
 }());
 
 // eslint-disable-next-line consistent-return
 router.get('/:id/collections/collections', /*#__PURE__*/function () {
-  var _ref10 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee10(req, res, next) {
+  var _ref0 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee0(req, res, next) {
     var query, size, from, type, entityTypes, orderedCollections;
-    return _regenerator.default.wrap(function _callee10$(_context10) {
+    return _regenerator.default.wrap(function _callee0$(_context0) {
       while (1) {
-        switch (_context10.prev = _context10.next) {
+        switch (_context0.prev = _context0.next) {
           case 0:
-            _context10.prev = 0;
+            _context0.prev = 0;
             query = (0, _utils2.parseQuery)(req.url);
             size = (0, _utils2.getIntFromQueryParams)(query, 'size', 20);
             from = (0, _utils2.getIntFromQueryParams)(query, 'from');
             type = query.get('type');
             entityTypes = (0, _keys2.default)(commonUtils.getEntityModels(req.app.locals.orm));
             if (!(!entityTypes.includes(type) &amp;&amp; type !== null)) {
-              _context10.next = 8;
+              _context0.next = 8;
               break;
             }
             throw new error.BadRequestError("Type ".concat(type, " do not exist"));
           case 8:
-            _context10.next = 10;
+            _context0.next = 10;
             return (0, _collections2.getOrderedCollectionsForEditorPage)(from, size, type, req);
           case 10:
-            orderedCollections = _context10.sent;
+            orderedCollections = _context0.sent;
             res.send(orderedCollections);
-            _context10.next = 17;
+            _context0.next = 17;
             break;
           case 14:
-            _context10.prev = 14;
-            _context10.t0 = _context10["catch"](0);
-            return _context10.abrupt("return", next(_context10.t0));
+            _context0.prev = 14;
+            _context0.t0 = _context0["catch"](0);
+            return _context0.abrupt("return", next(_context0.t0));
           case 17:
           case "end":
-            return _context10.stop();
+            return _context0.stop();
         }
       }
-    }, _callee10, null, [[0, 14]]);
+    }, _callee0, null, [[0, 14]]);
   }));
-  return function (_x44, _x45, _x46) {
-    return _ref10.apply(this, arguments);
+  return function (_x42, _x43, _x44) {
+    return _ref0.apply(this, arguments);
   };
 }());
 var _default = exports.default = router;
@@ -1117,7 +1117,7 @@ var _default = exports.default = router;
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Aug 07 2026 16:27:15 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Aug 07 2026 16:36:38 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

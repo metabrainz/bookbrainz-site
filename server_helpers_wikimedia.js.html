@@ -81,22 +81,22 @@ var _info = require("../info");
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol &amp;&amp; r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e &amp;&amp; r &amp;&amp; "number" == typeof r.length) { t &amp;&amp; (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t.return || t.return(); } finally { if (u) throw o; } } }; }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t &amp;&amp; r.constructor &amp;&amp; (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) &amp;&amp; (a = r.length); for (var e = 0, n = Array(a); e &lt; a; e++) { n[e] = r[e]; } return n; } /*
-                                                                                                                                                          * Copyright (C) 2023  David Kellner
-                                                                                                                                                          *
-                                                                                                                                                          * This program is free software; you can redistribute it and/or modify
-                                                                                                                                                          * it under the terms of the GNU General Public License as published by
-                                                                                                                                                          * the Free Software Foundation; either version 2 of the License, or
-                                                                                                                                                          * (at your option) any later version.
-                                                                                                                                                          *
-                                                                                                                                                          * This program is distributed in the hope that it will be useful,
-                                                                                                                                                          * but WITHOUT ANY WARRANTY; without even the implied warranty of
-                                                                                                                                                          * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-                                                                                                                                                          * GNU General Public License for more details.
-                                                                                                                                                          *
-                                                                                                                                                          * You should have received a copy of the GNU General Public License along
-                                                                                                                                                          * with this program; if not, write to the Free Software Foundation, Inc.,
-                                                                                                                                                          * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-                                                                                                                                                          */
+ * Copyright (C) 2023  David Kellner
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 // incomplete, only the parts we need
 
 /** Maximum age of cached results in seconds. */
@@ -118,7 +118,7 @@ function getAvailableWikipediaArticles(_x) {
  * @param {string[]} preferredLanguages - List of language codes, preference in descending order.
  */
 function _getAvailableWikipediaArticles() {
-  _getAvailableWikipediaArticles = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(wikidataId) {
+  _getAvailableWikipediaArticles = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee(wikidataId) {
     var _result$entities;
     var _ref,
       _ref$forceCache,
@@ -198,7 +198,7 @@ function selectWikipediaPage(_x2) {
  * @param {object} article - Title and language of the article.
  */
 function _selectWikipediaPage() {
-  _selectWikipediaPage = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(wikidataId) {
+  _selectWikipediaPage = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(wikidataId) {
     var _ref2,
       _ref2$forceCache,
       forceCache,
@@ -274,7 +274,7 @@ function getWikipediaExtract(_x3) {
   return _getWikipediaExtract.apply(this, arguments);
 }
 function _getWikipediaExtract() {
-  _getWikipediaExtract = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(article) {
+  _getWikipediaExtract = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee3(article) {
     var _result$query, _result$query$pages;
     var _ref3,
       _ref3$forceCache,
@@ -344,7 +344,7 @@ function _getWikipediaExtract() {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Aug 07 2026 16:27:15 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Aug 07 2026 16:36:38 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

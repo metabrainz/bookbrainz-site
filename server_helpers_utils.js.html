@@ -97,25 +97,25 @@ function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol &amp;&amp; r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e &amp;&amp; r &amp;&amp; "number" == typeof r.length) { t &amp;&amp; (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t.return || t.return(); } finally { if (u) throw o; } } }; }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t &amp;&amp; r.constructor &amp;&amp; (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) &amp;&amp; (a = r.length); for (var e = 0, n = Array(a); e &lt; a; e++) { n[e] = r[e]; } return n; } /*
-                                                                                                                                                          * Copyright (C) 2015       Ben Ockmore
-                                                                                                                                                          *               2015-2017  Sean Burke
-                                                                                                                                                          				 2019       Akhilesh Kumar (@akhilesh26)
-                                                                                                                                                          				 2020		Prabal Singh
-                                                                                                                                                          *
-                                                                                                                                                          * This program is free software; you can redistribute it and/or modify
-                                                                                                                                                          * it under the terms of the GNU General Public License as published by
-                                                                                                                                                          * the Free Software Foundation; either version 2 of the License, or
-                                                                                                                                                          * (at your option) any later version.
-                                                                                                                                                          *
-                                                                                                                                                          * This program is distributed in the hope that it will be useful,
-                                                                                                                                                          * but WITHOUT ANY WARRANTY; without even the implied warranty of
-                                                                                                                                                          * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-                                                                                                                                                          * GNU General Public License for more details.
-                                                                                                                                                          *
-                                                                                                                                                          * You should have received a copy of the GNU General Public License along
-                                                                                                                                                          * with this program; if not, write to the Free Software Foundation, Inc.,
-                                                                                                                                                          * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-                                                                                                                                                          */
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2017  Sean Burke
+ 				 2019       Akhilesh Kumar (@akhilesh26)
+ 				 2020		Prabal Singh
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 function getDateBeforeDays(days) {
   var date = new Date();
   date.setDate(date.getDate() - days);
@@ -322,7 +322,7 @@ function getIdByField(_x, _x2, _x3) {
  * @returns {object} - correctly formatted identifierEditor state
  */
 function _getIdByField() {
-  _getIdByField = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(model, fieldName, fieldValue) {
+  _getIdByField = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee(model, fieldName, fieldValue) {
     var _yield$model$query$fe, _yield$model$query$fe2;
     return _regenerator.default.wrap(function _callee$(_context) {
       while (1) {
@@ -416,7 +416,7 @@ function parseLanguages(_x4, _x5) {
  * @returns {Promise} - resolves to option object
  */
 function _parseLanguages() {
-  _parseLanguages = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(sourceEntitySection, orm) {
+  _parseLanguages = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(sourceEntitySection, orm) {
     var Language, languages, langKey;
     return _regenerator.default.wrap(function _callee2$(_context2) {
       while (1) {
@@ -483,7 +483,7 @@ function searchOption(_x6, _x7, _x8) {
  * @returns {Promise} - Resolves to Entity initialState
  */
 function _searchOption() {
-  _searchOption = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(orm, type, query) {
+  _searchOption = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee3(orm, type, query) {
     var idKey,
       exactMatch,
       results,
@@ -535,11 +535,11 @@ function _searchOption() {
   }));
   return _searchOption.apply(this, arguments);
 }
-function parseInitialState(_x9, _x10) {
+function parseInitialState(_x9, _x0) {
   return _parseInitialState.apply(this, arguments);
 }
 function _parseInitialState() {
-  _parseInitialState = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4(req, type) {
+  _parseInitialState = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee4(req, type) {
     var emptyState, entity, orm, Language, initialState;
     return _regenerator.default.wrap(function _callee4$(_context4) {
       while (1) {
@@ -628,7 +628,7 @@ function getIntFromQueryParams(query, name) {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Aug 07 2026 16:27:15 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Aug 07 2026 16:36:38 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

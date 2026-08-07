@@ -119,30 +119,30 @@ var _log = _interopRequireDefault(require("log"));
 function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != _typeof3(e) &amp;&amp; "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (var _t in e) { "default" !== _t &amp;&amp; {}.hasOwnProperty.call(e, _t) &amp;&amp; ((i = (o = Object.defineProperty) &amp;&amp; Object.getOwnPropertyDescriptor(e, _t)) &amp;&amp; (i.get || i.set) ? o(f, _t, i) : f[_t] = e[_t]); } return f; })(e, t); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r &amp;&amp; (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r &lt; arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { (0, _defineProperty2.default)(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * Copyright (C) 2015       Ben Ockmore
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *               2015-2016  Sean Burke
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *               2021       Akash Gupta
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *               2022       Ansh Goyal
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *               2023       David Kellner
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * This program is free software; you can redistribute it and/or modify
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * it under the terms of the GNU General Public License as published by
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * the Free Software Foundation; either version 2 of the License, or
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * (at your option) any later version.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * This program is distributed in the hope that it will be useful,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * but WITHOUT ANY WARRANTY; without even the implied warranty of
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * GNU General Public License for more details.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * You should have received a copy of the GNU General Public License along
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * with this program; if not, write to the Free Software Foundation, Inc.,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
+ * Copyright (C) 2015       Ben Ockmore
+ *               2015-2016  Sean Burke
+ *               2021       Akash Gupta
+ *               2022       Ansh Goyal
+ *               2023       David Kellner
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 function makeLoader(modelName, propName, sortFunc) {
   var relations = arguments.length > 3 &amp;&amp; arguments[3] !== undefined ? arguments[3] : [];
   return /*#__PURE__*/function () {
-    var _loaderFunc = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee(req, res, next) {
+    var _loaderFunc = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee(req, res, next) {
       var orm, model, results, resultsSerial;
       return _regenerator.default.wrap(function _callee$(_context) {
         while (1) {
@@ -243,7 +243,7 @@ function loadWorkTableAuthors(_x4, _x5, _x6) {
  * @param {Object} orm - The ORM instance.
  */
 function _loadWorkTableAuthors() {
-  _loadWorkTableAuthors = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4(req, res, next) {
+  _loadWorkTableAuthors = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee4(req, res, next) {
     var orm, entity, workBBIDs, authorsData, authorsDataGroupedByWorkBBID;
     return _regenerator.default.wrap(function _callee4$(_context4) {
       while (1) {
@@ -280,14 +280,14 @@ function addRelationships(_x7, _x8, _x9) {
   return _addRelationships.apply(this, arguments);
 }
 function _addRelationships() {
-  _addRelationships = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee7(entity, relationshipSet, orm) {
+  _addRelationships = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee7(entity, relationshipSet, orm) {
     var getEntityWithAlias, _getEntityWithAlias, relationshipPromises, relationships;
     return _regenerator.default.wrap(function _callee7$(_context7) {
       while (1) {
         switch (_context7.prev = _context7.next) {
           case 0:
             _getEntityWithAlias = function _getEntityWithAlias3() {
-              _getEntityWithAlias = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6(relEntity) {
+              _getEntityWithAlias = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee6(relEntity) {
                 var redirectBbid, model;
                 return _regenerator.default.wrap(function _callee6$(_context6) {
                   while (1) {
@@ -313,7 +313,7 @@ function _addRelationships() {
               }));
               return _getEntityWithAlias.apply(this, arguments);
             };
-            getEntityWithAlias = function _getEntityWithAlias2(_x34) {
+            getEntityWithAlias = function _getEntityWithAlias2(_x32) {
               return _getEntityWithAlias.apply(this, arguments);
             };
             entity.relationships = relationshipSet ? relationshipSet.related('relationships').toJSON() : [];
@@ -324,8 +324,8 @@ function _addRelationships() {
              * a good way of polymorphically fetching the right specific entity,
              * we need to fetch default alias in a somewhat sketchier way.
              */
-            relationshipPromises = entity.relationships.map( /*#__PURE__*/function () {
-              var _ref3 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5(relationship) {
+            relationshipPromises = entity.relationships.map(/*#__PURE__*/function () {
+              var _ref3 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee5(relationship) {
                 var _yield$Promise$all, _yield$Promise$all2, source, target;
                 return _regenerator.default.wrap(function _callee5$(_context5) {
                   while (1) {
@@ -348,7 +348,7 @@ function _addRelationships() {
                   }
                 }, _callee5);
               }));
-              return function (_x35) {
+              return function (_x33) {
                 return _ref3.apply(this, arguments);
               };
             }());
@@ -366,11 +366,11 @@ function _addRelationships() {
   }));
   return _addRelationships.apply(this, arguments);
 }
-function loadEntityRelationships(_x10, _x11, _x12) {
+function loadEntityRelationships(_x0, _x1, _x10) {
   return _loadEntityRelationships.apply(this, arguments);
 }
 function _loadEntityRelationships() {
-  _loadEntityRelationships = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee8(req, res, next) {
+  _loadEntityRelationships = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee8(req, res, next) {
     var orm, RelationshipSet, entity, relationshipSet;
     return _regenerator.default.wrap(function _callee8$(_context8) {
       while (1) {
@@ -415,11 +415,11 @@ function _loadEntityRelationships() {
   }));
   return _loadEntityRelationships.apply(this, arguments);
 }
-function loadWikipediaExtract(_x13, _x14, _x15) {
+function loadWikipediaExtract(_x11, _x12, _x13) {
   return _loadWikipediaExtract.apply(this, arguments);
 }
 function _loadWikipediaExtract() {
-  _loadWikipediaExtract = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee9(req, res, next) {
+  _loadWikipediaExtract = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee9(req, res, next) {
     var entity, wikidataId, browserLanguages, aliasLanguages, preferredLanguages, article, extract;
     return _regenerator.default.wrap(function _callee9$(_context9) {
       while (1) {
@@ -507,55 +507,55 @@ function checkValidEntityType(req, res, next, entityType) {
   }
   return next();
 }
-function redirectedBbid(_x16, _x17, _x18, _x19) {
+function redirectedBbid(_x14, _x15, _x16, _x17) {
   return _redirectedBbid.apply(this, arguments);
 }
 function _redirectedBbid() {
-  _redirectedBbid = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee10(req, res, next, bbid) {
+  _redirectedBbid = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee0(req, res, next, bbid) {
     var orm, redirectBbid;
-    return _regenerator.default.wrap(function _callee10$(_context10) {
+    return _regenerator.default.wrap(function _callee0$(_context0) {
       while (1) {
-        switch (_context10.prev = _context10.next) {
+        switch (_context0.prev = _context0.next) {
           case 0:
             if (commonUtils.isValidBBID(bbid)) {
-              _context10.next = 2;
+              _context0.next = 2;
               break;
             }
-            return _context10.abrupt("return", next(new error.BadRequestError("Invalid bbid: ".concat(req.params.bbid), req)));
+            return _context0.abrupt("return", next(new error.BadRequestError("Invalid bbid: ".concat(req.params.bbid), req)));
           case 2:
             orm = req.app.locals.orm;
-            _context10.prev = 3;
-            _context10.next = 6;
+            _context0.prev = 3;
+            _context0.next = 6;
             return orm.func.entity.recursivelyGetRedirectBBID(orm, bbid);
           case 6:
-            redirectBbid = _context10.sent;
+            redirectBbid = _context0.sent;
             if (!(redirectBbid !== bbid)) {
-              _context10.next = 9;
+              _context0.next = 9;
               break;
             }
-            return _context10.abrupt("return", res.redirect(301, "".concat(req.baseUrl).concat(req.path.replace(bbid, redirectBbid))));
+            return _context0.abrupt("return", res.redirect(301, "".concat(req.baseUrl).concat(req.path.replace(bbid, redirectBbid))));
           case 9:
-            _context10.next = 14;
+            _context0.next = 14;
             break;
           case 11:
-            _context10.prev = 11;
-            _context10.t0 = _context10["catch"](3);
-            return _context10.abrupt("return", next(_context10.t0));
+            _context0.prev = 11;
+            _context0.t0 = _context0["catch"](3);
+            return _context0.abrupt("return", next(_context0.t0));
           case 14:
-            return _context10.abrupt("return", next());
+            return _context0.abrupt("return", next());
           case 15:
           case "end":
-            return _context10.stop();
+            return _context0.stop();
         }
       }
-    }, _callee10, null, [[3, 11]]);
+    }, _callee0, null, [[3, 11]]);
   }));
   return _redirectedBbid.apply(this, arguments);
 }
 function makeEntityLoader(modelName, additionalRels, errMessage) {
   var relations = ['aliasSet.aliases.language', 'annotation.lastRevision', 'defaultAlias', 'disambiguation', 'identifierSet.identifiers.type', 'relationshipSet.relationships.type', 'revision.revision', 'collections.owner'].concat(additionalRels);
   return /*#__PURE__*/function () {
-    var _ref = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(req, res, next, bbid) {
+    var _ref = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(req, res, next, bbid) {
       var orm, entity, reviews;
       return _regenerator.default.wrap(function _callee2$(_context2) {
         while (1) {
@@ -610,14 +610,14 @@ function makeEntityLoader(modelName, additionalRels, errMessage) {
         }
       }, _callee2, null, [[2, 20]]);
     }));
-    return function (_x20, _x21, _x22, _x23) {
+    return function (_x18, _x19, _x20, _x21) {
       return _ref.apply(this, arguments);
     };
   }();
 }
 function makeCollectionLoader() {
   return /*#__PURE__*/function () {
-    var _ref2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(req, res, next, collectionId) {
+    var _ref2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee3(req, res, next, collectionId) {
       var UserCollection, collection, collectionJSON;
       return _regenerator.default.wrap(function _callee3$(_context3) {
         while (1) {
@@ -663,36 +663,36 @@ function makeCollectionLoader() {
         }
       }, _callee3, null, [[2, 12]]);
     }));
-    return function (_x24, _x25, _x26, _x27) {
+    return function (_x22, _x23, _x24, _x25) {
       return _ref2.apply(this, arguments);
     };
   }();
 }
-function validateCollectionParams(_x28, _x29, _x30) {
+function validateCollectionParams(_x26, _x27, _x28) {
   return _validateCollectionParams.apply(this, arguments);
 }
 function _validateCollectionParams() {
-  _validateCollectionParams = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee11(req, res, next) {
+  _validateCollectionParams = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee1(req, res, next) {
     var _req$body, _req$body$collaborato2, collaborators, name, entityType, orm, Editor, entityTypes, collaboratorIds, i, collaboratorId, editors, editorsJSON, _loop3, _i2, _ret3;
-    return _regenerator.default.wrap(function _callee11$(_context11) {
+    return _regenerator.default.wrap(function _callee1$(_context1) {
       while (1) {
-        switch (_context11.prev = _context11.next) {
+        switch (_context1.prev = _context1.next) {
           case 0:
             _req$body = req.body, _req$body$collaborato2 = _req$body.collaborators, collaborators = _req$body$collaborato2 === void 0 ? [] : _req$body$collaborato2, name = _req$body.name, entityType = _req$body.entityType;
             orm = req.app.locals.orm;
             Editor = orm.Editor;
             if ((0, _trim2.default)(name).length) {
-              _context11.next = 5;
+              _context1.next = 5;
               break;
             }
-            return _context11.abrupt("return", next(new error.BadRequestError('Invalid collection name: Empty string not allowed', req)));
+            return _context1.abrupt("return", next(new error.BadRequestError('Invalid collection name: Empty string not allowed', req)));
           case 5:
             entityTypes = (0, _keys2.default)(commonUtils.getEntityModels(orm));
             if (entityTypes.includes((0, _upperFirst2.default)((0, _camelCase2.default)(entityType)))) {
-              _context11.next = 8;
+              _context1.next = 8;
               break;
             }
-            return _context11.abrupt("return", next(new error.BadRequestError("Invalid entity type: ".concat(entityType, " does not exist"), req)));
+            return _context1.abrupt("return", next(new error.BadRequestError("Invalid entity type: ".concat(entityType, " does not exist"), req)));
           case 8:
             collaboratorIds = collaborators.map(function (collaborator) {
               return collaborator.id;
@@ -700,26 +700,26 @@ function _validateCollectionParams() {
             i = 0;
           case 10:
             if (!(i &lt; collaboratorIds.length)) {
-              _context11.next = 17;
+              _context1.next = 17;
               break;
             }
             collaboratorId = collaboratorIds[i];
             if (/^\d+$/.test(collaboratorId)) {
-              _context11.next = 14;
+              _context1.next = 14;
               break;
             }
-            return _context11.abrupt("return", next(new error.BadRequestError("Invalid collaborator id: ".concat(collaboratorId, " not valid"), req)));
+            return _context1.abrupt("return", next(new error.BadRequestError("Invalid collaborator id: ".concat(collaboratorId, " not valid"), req)));
           case 14:
             i++;
-            _context11.next = 10;
+            _context1.next = 10;
             break;
           case 17:
-            _context11.next = 19;
+            _context1.next = 19;
             return new Editor().where('id', 'in', collaboratorIds).fetchAll({
               require: false
             });
           case 19:
-            editors = _context11.sent;
+            editors = _context1.sent;
             editorsJSON = editors.toJSON();
             _loop3 = function _loop3(_i2) {
               var collaboratorId = collaboratorIds[_i2];
@@ -734,73 +734,73 @@ function _validateCollectionParams() {
             _i2 = 0;
           case 23:
             if (!(_i2 &lt; collaboratorIds.length)) {
-              _context11.next = 30;
+              _context1.next = 30;
               break;
             }
             _ret3 = _loop3(_i2);
             if (!((0, _typeof2.default)(_ret3) === "object")) {
-              _context11.next = 27;
+              _context1.next = 27;
               break;
             }
-            return _context11.abrupt("return", _ret3.v);
+            return _context1.abrupt("return", _ret3.v);
           case 27:
             _i2++;
-            _context11.next = 23;
+            _context1.next = 23;
             break;
           case 30:
-            return _context11.abrupt("return", next());
+            return _context1.abrupt("return", next());
           case 31:
           case "end":
-            return _context11.stop();
+            return _context1.stop();
         }
       }
-    }, _callee11);
+    }, _callee1);
   }));
   return _validateCollectionParams.apply(this, arguments);
 }
-function validateBBIDsForCollectionAdd(_x31, _x32, _x33) {
+function validateBBIDsForCollectionAdd(_x29, _x30, _x31) {
   return _validateBBIDsForCollectionAdd.apply(this, arguments);
 }
 function _validateBBIDsForCollectionAdd() {
-  _validateBBIDsForCollectionAdd = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee12(req, res, next) {
+  _validateBBIDsForCollectionAdd = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee10(req, res, next) {
     var Entity, _req$body$bbids2, bbids, collection, collectionType, i, bbid, entities, entitiesJSON, _loop4, _i3, _ret4;
-    return _regenerator.default.wrap(function _callee12$(_context12) {
+    return _regenerator.default.wrap(function _callee10$(_context10) {
       while (1) {
-        switch (_context12.prev = _context12.next) {
+        switch (_context10.prev = _context10.next) {
           case 0:
             Entity = req.app.locals.orm.Entity;
             _req$body$bbids2 = req.body.bbids, bbids = _req$body$bbids2 === void 0 ? [] : _req$body$bbids2;
             if (bbids.length) {
-              _context12.next = 4;
+              _context10.next = 4;
               break;
             }
-            return _context12.abrupt("return", next(new error.BadRequestError('BBIDs array is empty')));
+            return _context10.abrupt("return", next(new error.BadRequestError('BBIDs array is empty')));
           case 4:
             collection = res.locals.collection;
             collectionType = collection.entityType;
             i = 0;
           case 7:
             if (!(i &lt; bbids.length)) {
-              _context12.next = 14;
+              _context10.next = 14;
               break;
             }
             bbid = bbids[i];
             if (commonUtils.isValidBBID(bbid)) {
-              _context12.next = 11;
+              _context10.next = 11;
               break;
             }
-            return _context12.abrupt("return", next(new error.BadRequestError("Invalid BBID ".concat(bbid), req)));
+            return _context10.abrupt("return", next(new error.BadRequestError("Invalid BBID ".concat(bbid), req)));
           case 11:
             i++;
-            _context12.next = 7;
+            _context10.next = 7;
             break;
           case 14:
-            _context12.next = 16;
+            _context10.next = 16;
             return new Entity().where('bbid', 'in', bbids).fetchAll({
               require: false
             });
           case 16:
-            entities = _context12.sent;
+            entities = _context10.sent;
             entitiesJSON = entities.toJSON();
             _loop4 = function _loop4(_i3) {
               var bbid = bbids[_i3];
@@ -821,27 +821,27 @@ function _validateBBIDsForCollectionAdd() {
             _i3 = 0;
           case 20:
             if (!(_i3 &lt; bbids.length)) {
-              _context12.next = 27;
+              _context10.next = 27;
               break;
             }
             _ret4 = _loop4(_i3);
             if (!((0, _typeof2.default)(_ret4) === "object")) {
-              _context12.next = 24;
+              _context10.next = 24;
               break;
             }
-            return _context12.abrupt("return", _ret4.v);
+            return _context10.abrupt("return", _ret4.v);
           case 24:
             _i3++;
-            _context12.next = 20;
+            _context10.next = 20;
             break;
           case 27:
-            return _context12.abrupt("return", next());
+            return _context10.abrupt("return", next());
           case 28:
           case "end":
-            return _context12.stop();
+            return _context10.stop();
         }
       }
-    }, _callee12);
+    }, _callee10);
   }));
   return _validateBBIDsForCollectionAdd.apply(this, arguments);
 }
@@ -911,7 +911,7 @@ function validateCollaboratorIdsForCollectionRemove(req, res, next) {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Aug 07 2026 16:27:15 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Aug 07 2026 16:36:38 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
