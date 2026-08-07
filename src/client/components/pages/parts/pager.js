@@ -153,13 +153,13 @@ class PagerElement extends React.Component {
 								variant="outline-primary"
 								onClick={this.handleClickPrevious}
 							>
-								{translate('pagination.previous')}
+								{translate('common.pagination.previous')}
 							</Button>
 						</Col>
 						<Col className="text-center" lg={4}>
 							<ButtonGroup>
 								<Button disabled variant="secondary">
-									{translate('pagination.results', {
+									{translate('common.pagination.results', {
 										from: this.state.from + 1,
 										to: this.state.results.length < this.state.size ?
 											this.state.from + this.state.results.length :
@@ -167,15 +167,15 @@ class PagerElement extends React.Component {
 									})}
 								</Button>
 								<DropdownButton
-									drop="up" id="bg-nested-dropdown" title={translate('pagination.perPage', {count: this.state.size})}
+									drop="up" id="bg-nested-dropdown" title={translate('common.pagination.perPage', {count: this.state.size})}
 									variant="info"
 									onSelect={this.handleResultsPerPageChange}
 								>
-									<Dropdown.Item eventKey="10">{translate('pagination.perPage', {count: 10})}</Dropdown.Item>
-									<Dropdown.Item eventKey="20">{translate('pagination.perPage', {count: 20})}</Dropdown.Item>
-									<Dropdown.Item eventKey="35">{translate('pagination.perPage', {count: 35})}</Dropdown.Item>
-									<Dropdown.Item eventKey="50">{translate('pagination.perPage', {count: 50})}</Dropdown.Item>
-									<Dropdown.Item eventKey="100">{translate('pagination.perPage', {count: 100})}</Dropdown.Item>
+									<Dropdown.Item eventKey="10">{translate('common.pagination.perPage', {count: 10})}</Dropdown.Item>
+									<Dropdown.Item eventKey="20">{translate('common.pagination.perPage', {count: 20})}</Dropdown.Item>
+									<Dropdown.Item eventKey="35">{translate('common.pagination.perPage', {count: 35})}</Dropdown.Item>
+									<Dropdown.Item eventKey="50">{translate('common.pagination.perPage', {count: 50})}</Dropdown.Item>
+									<Dropdown.Item eventKey="100">{translate('common.pagination.perPage', {count: 100})}</Dropdown.Item>
 								</DropdownButton>
 							</ButtonGroup>
 						</Col>
@@ -186,7 +186,7 @@ class PagerElement extends React.Component {
 								variant="outline-primary"
 								onClick={this.handleClickNext}
 							>
-								{translate('pagination.next')}
+								{translate('common.pagination.next')}
 							</Button>
 						</Col>
 					</Row>
@@ -217,4 +217,4 @@ PagerElement.defaultProps = {
 	size: 20
 };
 
-export default withTranslation('common')(PagerElement);
+export default withTranslation()(PagerElement);

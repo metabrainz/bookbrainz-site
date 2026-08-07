@@ -36,7 +36,7 @@ function RevisionsTable({
 	showRevisionEditor = false,
 	tableHeading = 'Recent Activity'
 }) {
-	const {t: translate} = useTranslation(['pages', 'common']);
+	const {t: translate} = useTranslation();
 	return (
 		<div>
 			<div>
@@ -52,20 +52,20 @@ function RevisionsTable({
 					>
 						<thead>
 							<tr>
-								<th width="16%">{translate('pages:revisions.headerId')}</th>
+								<th width="16%">{translate('pages.revisions.headerId')}</th>
 								{
 									showEntities ?
-										<th width="42%">{translate('pages:revisions.headerModifiedEntities')}</th> : null
+										<th width="42%">{translate('pages.revisions.headerModifiedEntities')}</th> : null
 								}
 								{
 									showRevisionEditor ?
-										<th width="25%">{translate('pages:revisions.headerUser')}</th> : null
+										<th width="25%">{translate('pages.revisions.headerUser')}</th> : null
 								}
 								{
 									showRevisionNote ?
-										<th width="16%">{translate('pages:revisions.headerNote')}</th> : null
+										<th width="16%">{translate('pages.revisions.headerNote')}</th> : null
 								}
-								<th width="16%">{translate('common:date')}</th>
+								<th width="16%">{translate('common.date')}</th>
 							</tr>
 						</thead>
 
@@ -76,8 +76,8 @@ function RevisionsTable({
 										<td>
 											<a
 												href={`/revision/${revision.revisionId}`}
-												title={`${revision.isMerge ? translate('pages:revisions.titleMerge') :
-													translate('pages:revisions.titleNormal')} ${revision.revisionId}`}
+												title={`${revision.isMerge ? translate('pages.revisions.titleMerge') :
+													translate('pages.revisions.titleNormal')} ${revision.revisionId}`}
 											>
 												#{revision.revisionId}
 												{revision.isMerge &&
@@ -142,7 +142,7 @@ function RevisionsTable({
 					</Table> :
 
 					<div>
-						<h4> {translate('pages:revisions.noRevisions')}</h4>
+						<h4> {translate('pages.revisions.noRevisions')}</h4>
 						<hr className="wide"/>
 					</div>
 			}
