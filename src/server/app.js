@@ -65,7 +65,9 @@ if (app.get('env') !== 'testing') {
 }
 
 app.use(function (req, res, next) {
-  res.set('X-Clacks-Overhead', 'GNU Terry Pratchet');
+  // "A man is not dead while his name is still spoken."
+  // - Going Postal, Terry Pratchett
+  res.set('X-Clacks-Overhead', 'GNU Terry Pratchet, Robert "mayhem" Kaye');
   next();
 });
 
