@@ -1,7 +1,4 @@
 # m h d m w
 
-# Database backup creation
-10 01 * * 1 root /home/bookbrainz/bookbrainz-site/scripts/create-dumps.sh >> /tmp/logs/create-dumps-logs 2>&1
-
-# Copy dumps over to MusicBrainz FTP
-30 01 * * 1 root /home/bookbrainz/bookbrainz-site/scripts/rsync-dump-files.sh >> /tmp/logs/rsync-dumps-logs 2>&1
+# Database backup creation and copy to MusicBrainz FTP
+01 00 * * 1 root /home/bookbrainz/bookbrainz-site/scripts/create-and-rsync-dumps.sh >> /tmp/logs/create-and-rsync-dumps-logs 2>&1
