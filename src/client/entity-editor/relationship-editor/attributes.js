@@ -25,13 +25,13 @@ import {useTranslation} from 'react-i18next';
 export function NumberAttribute({
 	onHandleChange, value
 }) {
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const {t: translate} = useTranslation();
 	return (
 	    <>
-			<Form.Label>{translate('common:number')}</Form.Label>
+			<Form.Label>{translate('common.number')}</Form.Label>
 			<input
 				className="form-control"
-				placeholder={translate('relationshipAttribute.numberPlaceholder')}
+				placeholder={translate('entityEditor.relationshipAttribute.numberPlaceholder')}
 				type="text"
 				value={value || ''}
 				onChange={onHandleChange}

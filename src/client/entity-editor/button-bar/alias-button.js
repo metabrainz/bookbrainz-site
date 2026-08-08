@@ -40,8 +40,8 @@ function AliasButton({
 	numAliases,
 	...props
 }) {
-	const {t: translate} = useTranslation('entityEditor');
-	const text = translate('aliasButton.editAliases', {count: numAliases});
+	const {t: translate} = useTranslation();
+	const text = translate('entityEditor.aliasButton.editAliases', {count: numAliases});
 
 	const iconElement = aliasesInvalid &&
 		<FontAwesomeIcon className="margin-right-0-5 text-danger" icon={faTimes}/>;

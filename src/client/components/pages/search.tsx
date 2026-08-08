@@ -181,17 +181,17 @@ class SearchPage extends React.Component<Props, State> {
 					<div>
 						<hr className="thin"/>
 						<h2 style={{color: '#754e37'}}>
-							{translate('searchPage.noResults')}
+							{translate('pages.searchPage.noResults')}
 						</h2>
 					</div>}
 
 					<div>
 						{results.length === 0 &&
 							<small>
-								{translate('searchPage.spellingWarning')}
+								{translate('pages.searchPage.spellingWarning')}
 							</small>}
 						<hr className="wide"/>
-						<h3>{translate('searchPage.missingEntry')}</h3>
+						<h3>{translate('pages.searchPage.missingEntry')}</h3>
 						<CallToAction query={query}/>
 					</div>
 
@@ -201,5 +201,5 @@ class SearchPage extends React.Component<Props, State> {
 	}
 }
 
-export default withTranslation('pages')(SearchPage);
+export default withTranslation()(SearchPage);
 
