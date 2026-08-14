@@ -105,7 +105,7 @@ class Layout extends React.Component {
 		const docsDropdownTitle = (
 			<span>
 				<FontAwesomeIcon icon={faFileLines}/>
-				{`  ${translate('nav.docs')}`}
+				{`  ${translate('common.nav.docs')}`}
 			</span>
 		);
 		return (
@@ -118,19 +118,19 @@ class Layout extends React.Component {
 				>
 					<NavDropdown.Item href="/help">
 						<FontAwesomeIcon fixedWidth icon={faQuestionCircle}/>
-						{` ${translate('nav.help')} `}
+						{` ${translate('common.nav.help')} `}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/faq">
 						<FontAwesomeIcon fixedWidth icon={faClipboardQuestion}/>
-						{` ${translate('nav.faqs')} `}
+						{` ${translate('common.nav.faqs')} `}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/relationship-types">
 						<FontAwesomeIcon fixedWidth icon={faLink}/>
-						{` ${translate('nav.relationshipTypes')} `}
+						{` ${translate('common.nav.relationshipTypes')} `}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/identifier-types">
 						<FontAwesomeIcon fixedWidth icon={faBarcode}/>
-						{` ${translate('nav.identifierTypes')} `}
+						{` ${translate('common.nav.identifierTypes')} `}
 					</NavDropdown.Item>
 				</NavDropdown>
 			</Nav>
@@ -149,7 +149,7 @@ class Layout extends React.Component {
 				<Nav.Item>
 					<Nav.Link {...disableSignUp} href="/auth">
 						<FontAwesomeIcon icon={faSignInAlt}/>
-						{` ${translate('auth.signInRegister')}`}
+						{` ${translate('common.auth.signInRegister')}`}
 					</Nav.Link>
 				</Nav.Item>
 			</Nav>
@@ -164,7 +164,7 @@ class Layout extends React.Component {
 		const createDropdownTitle = (
 			<span>
 				<FontAwesomeIcon icon={faPlus}/>
-				{`  ${translate('button.add')}`}
+				{`  ${translate('common.button.add')}`}
 			</span>
 		);
 
@@ -178,7 +178,7 @@ class Layout extends React.Component {
 		const privilegesDropdownTitle = (
 			<span>
 				<FontAwesomeIcon className="margin-right-0-3" icon={faShieldHalved}/>
-				{translate('privileges')}
+				{translate('common.privileges')}
 			</span>
 		);
 
@@ -187,11 +187,11 @@ class Layout extends React.Component {
 			<>
 				<NavDropdown.Item href="/admin-panel">
 					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faUserGear}/>
-					{translate('nav.adminPanel')}
+					{translate('common.nav.adminPanel')}
 				</NavDropdown.Item>
 				<NavDropdown.Item href="/admin-logs">
 					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faNewspaper}/>
-					{translate('nav.adminLogs')}
+					{translate('common.nav.adminLogs')}
 				</NavDropdown.Item>
 			</>
 		);
@@ -200,7 +200,7 @@ class Layout extends React.Component {
 			<>
 				<NavDropdown.Item href="/relationship-type/create">
 					{RelationshipTypeEditorIcon}
-					{translate('nav.addRelationshipType')}
+					{translate('common.nav.addRelationshipType')}
 				</NavDropdown.Item>
 			</>
 		);
@@ -209,7 +209,7 @@ class Layout extends React.Component {
 			<>
 				<NavDropdown.Item href="/search-admin">
 					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faSearchengin}/>
-					{translate('nav.searchAdmin')}
+					{translate('common.nav.searchAdmin')}
 				</NavDropdown.Item>
 			</>
 		);
@@ -218,7 +218,7 @@ class Layout extends React.Component {
 			<>
 				<NavDropdown.Item href="/identifier-type/create">
 					{IdentifierTypeEditorIcon}
-					{translate('nav.addIdentifierType')}
+					{translate('common.nav.addIdentifierType')}
 				</NavDropdown.Item>
 			</>
 		);
@@ -255,32 +255,32 @@ class Layout extends React.Component {
 				>
 					<NavDropdown.Item href="/create">
 						{genEntityIconHTMLElement('Book')}
-						{translate('entityType.book')}
+						{translate('common.entityType.book')}
 					</NavDropdown.Item>
 					<NavDropdown.Divider/>
 					<NavDropdown.Item href="/work/create">
 						{genEntityIconHTMLElement('Work')}
-						{translate('entityType.work')}
+						{translate('common.entityType.work')}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/edition/create">
 						{genEntityIconHTMLElement('Edition')}
-						{translate('entityType.edition')}
+						{translate('common.entityType.edition')}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/edition-group/create">
 						{genEntityIconHTMLElement('EditionGroup')}
-						{translate('entityType.editionGroup')}
+						{translate('common.entityType.editionGroup')}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/series/create">
 						{genEntityIconHTMLElement('Series')}
-						{translate('entityType.series')}
+						{translate('common.entityType.series')}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/author/create">
 						{genEntityIconHTMLElement('Author')}
-						{translate('entityType.author')}
+						{translate('common.entityType.author')}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/publisher/create">
 						{genEntityIconHTMLElement('Publisher')}
-						{translate('entityType.publisher')}
+						{translate('common.entityType.publisher')}
 					</NavDropdown.Item>
 				</NavDropdown>
 				<NavDropdown
@@ -291,27 +291,27 @@ class Layout extends React.Component {
 				>
 					<NavDropdown.Item href={`/editor/${user.id}`}>
 						<FontAwesomeIcon fixedWidth icon={faUserCircle}/>
-						{` ${translate('nav.profile')}`}
+						{` ${translate('common.nav.profile')}`}
 					</NavDropdown.Item>
 					<NavDropdown.Item href={`/editor/${user.id}/revisions`}>
 						<FontAwesomeIcon fixedWidth icon={faListUl}/>
-						{` ${translate('nav.revisions')}`}
+						{` ${translate('common.nav.revisions')}`}
 					</NavDropdown.Item>
 					<NavDropdown.Item href={`/editor/${user.id}/achievements`}>
 						<FontAwesomeIcon fixedWidth icon={faTrophy}/>
-						{` ${translate('nav.achievements')}`}
+						{` ${translate('common.nav.achievements')}`}
 					</NavDropdown.Item>
 					<NavDropdown.Item href={`/editor/${user.id}/collections`}>
 						<FontAwesomeIcon fixedWidth icon={faGripVertical}/>
-						{` ${translate('entityType.collection_plural')}`}
+						{` ${translate('common.entityType.collection_plural')}`}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/external-service/">
 						<FontAwesomeIcon fixedWidth icon={faLink}/>
-						{` ${translate('nav.externalServices')}`}
+						{` ${translate('common.nav.externalServices')}`}
 					</NavDropdown.Item>
 					<NavDropdown.Item {...disableSignUp} href="/logout">
 						<FontAwesomeIcon fixedWidth icon={faSignOutAlt}/>
-						{` ${translate('auth.signOut')}`}
+						{` ${translate('common.auth.signOut')}`}
 					</NavDropdown.Item>
 				</NavDropdown>
 			</Nav>
@@ -329,7 +329,7 @@ class Layout extends React.Component {
 				role="search"
 			>
 				<InputGroup>
-					<FormControl required name="q" placeholder={translate('nav.searchPlaceholder')} type="text"/>
+					<FormControl required name="q" placeholder={translate('common.nav.searchPlaceholder')} type="text"/>
 					<InputGroup.Append>
 						<Button type="submit" variant="success">
 							<FontAwesomeIcon icon={faSearch}/>
@@ -358,7 +358,7 @@ class Layout extends React.Component {
 					<Nav.Item>
 						<Nav.Link href="/revisions">
 							<FontAwesomeIcon icon={faListUl}/>
-							{` ${translate('nav.revisions')} `}
+							{` ${translate('common.nav.revisions')} `}
 						</Nav.Link>
 					</Nav.Item>
 				</Nav>
@@ -366,7 +366,7 @@ class Layout extends React.Component {
 					<Nav.Item>
 						<Nav.Link href="/collections">
 							<FontAwesomeIcon icon={faGripVertical}/>
-							{` ${translate('entityType.collection_plural')} `}
+							{` ${translate('common.entityType.collection_plural')} `}
 						</Nav.Link>
 					</Nav.Item>
 				</Nav>
@@ -374,7 +374,7 @@ class Layout extends React.Component {
 					<Nav.Item>
 						<Nav.Link href="/statistics">
 							<FontAwesomeIcon icon={faChartLine}/>
-							{` ${translate('nav.statistics')} `}
+							{` ${translate('common.nav.statistics')} `}
 						</Nav.Link>
 					</Nav.Item>
 				</Nav>
@@ -408,7 +408,7 @@ class Layout extends React.Component {
 						<div>
 							<noscript>
 								<div className="alert alert-danger" role="alert">
-									{translate('nav.noscriptWarning')}
+									{translate('common.nav.noscriptWarning')}
 								</div>
 							</noscript>
 						</div>
@@ -433,7 +433,7 @@ class Layout extends React.Component {
 			<I18nextProvider i18n={this.i18n}>
 				<div>
 					<a className="sr-only sr-only-focusable" href="#content">
-						{translate('nav.skipToContent')}
+						{translate('common.nav.skipToContent')}
 					</a>
 					<Navbar className="BookBrainz" expand="lg" fixed="top" role="navigation">
 						{this.renderNavHeader()}

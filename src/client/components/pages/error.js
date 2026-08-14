@@ -39,16 +39,16 @@ function translateDetailedMessage(message, translate) {
 	const noContentPrefix = 'No content exists at the path requested: ';
 	if (message.startsWith(noContentPrefix)) {
 		const path = message.slice(noContentPrefix.length).trim();
-		return translate('No content exists at the path requested: {{path}}', {interpolation: {escapeValue: false}, path});
+		return translate('errors.No content exists at the path requested: {{path}}', {interpolation: {escapeValue: false}, path});
 	}
 
 	if (message.includes('You do not have permission to access the following path:')) {
 		const lines = message.split('\n');
 		const path = lines[lines.length - 1].trim();
-		return translate('You do not have permission to access the following path: {{path}}', {interpolation: {escapeValue: false}, path});
+		return translate('errors.You do not have permission to access the following path: {{path}}', {interpolation: {escapeValue: false}, path});
 	}
 
-	return translate(message);
+	return translate(`errors.${message}`, {defaultValue: message});
 }
 
 /**
@@ -57,7 +57,7 @@ function translateDetailedMessage(message, translate) {
 
 function ErrorPage(props) {
 	const {error} = props;
-	const {t: translate} = useTranslation(['errors', 'common']);
+	const {t: translate} = useTranslation();
 	let {detailedMessage} = error;
 
 	if (typeof detailedMessage === 'string') {
@@ -75,7 +75,7 @@ function ErrorPage(props) {
 			</Row>
 			<Row className="margin-top-6 margin-bottom-1">
 				<p className="lead">
-					<b>{translate(`${error.message}`)}</b>
+					<b>{translate(`errors.${error.message}`, {defaultValue: error.message})}</b>
 				</p>
 			</Row>
 			<div>
@@ -96,7 +96,7 @@ function ErrorPage(props) {
 					size="sm"
 					variant="link"
 				>
-					{translate('common:button.returnToMain')}
+					{translate('common.button.returnToMain')}
 				</Button>
 			</Row>
 		</Container>

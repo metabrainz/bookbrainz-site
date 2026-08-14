@@ -36,12 +36,12 @@ function RegistrationAuth() {
 
 	return (
 		<div>
-			<div className="page-header"><h1>{translate('pages:registration.heading')}</h1></div>
+			<div className="page-header"><h1>{translate('pages.registration.heading')}</h1></div>
 			<p>
-				{translate('pages:registration.authIntroText')}
+				{translate('pages.registration.authIntroText')}
 			</p>
 			<Alert variant="warning">
-				{translate('pages:registration.authWarningAlert')}
+				{translate('pages.registration.authWarningAlert')}
 			</Alert>
 			<div className="text-center">
 				<Button
@@ -53,7 +53,7 @@ function RegistrationAuth() {
 						className="margin-right-0-5"
 						src="/images/MusicBrainz_logo_icon.svg"
 					/>
-					{translate('pages:registration.authButtonText')}
+					{translate('pages.registration.authButtonText')}
 				</Button>
 			</div>
 		</div>

@@ -30,51 +30,51 @@ import {useTranslation} from 'react-i18next';
  * page
  */
 function AboutPage(): JSX.Element {
-	const {t: translate} = useTranslation(['staticPages', 'common']);
+	const {t: translate} = useTranslation();
 	const NESLink =
 		'https://ocharles.org.uk/blog/posts/' +
 			'2012-07-10-nes-does-it-better-1.html';
 
 	return (
 		<div>
-			<div className="page-header"><h1>{translate('common:about.title')}</h1></div>
+			<div className="page-header"><h1>{translate('common.about.title')}</h1></div>
 			<p className="lead">
-				{translate('common:about.lead')}
+				{translate('common.about.lead')}
 			</p>
 
 			<p>
-				{translate('staticPages:about.welcomeMessage')}&nbsp;
+				{translate('staticPages.about.welcomeMessage')}&nbsp;
 				<a href="/register">
-					{translate('staticPages:about.becomeEditor')}
+					{translate('staticPages.about.becomeEditor')}
 				</a>
 			</p>
 
 			<p>
-				{translate('staticPages:about.contributionsNotice')}
+				{translate('staticPages.about.contributionsNotice')}
 			</p>
 
-			<h2>{translate('common:about.accessingData')}</h2>
+			<h2>{translate('common.about.accessingData')}</h2>
 			<p>
-				{translate('staticPages:about.dataLicensePre')}
+				{translate('staticPages.about.dataLicensePre')}
 				<a href="/licensing">
-					 {translate('staticPages:about.licensingPageLink')}
+					 {translate('staticPages.about.licensingPageLink')}
 				</a>
-				{translate('staticPages:about.dataLicensePost')}
+				{translate('staticPages.about.dataLicensePost')}
 			</p>
 			<p>
-				{translate('staticPages:about.dbDumpsPre')}
+				{translate('staticPages.about.dbDumpsPre')}
 				<a href="http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2">
-					{translate('staticPages:about.dbDumpsLink')}
+					{translate('staticPages.about.dbDumpsLink')}
 				</a>
 			</p>
 			<p>
-				{translate('staticPages:about.webservicePre')}
+				{translate('staticPages.about.webservicePre')}
 				<a href="https://api.bookbrainz.org/1/docs/">
-					{translate('staticPages:about.webserviceLink')}
+					{translate('staticPages.about.webserviceLink')}
 				</a>.
 			</p>
 
-			<h2>{translate('common:about.contactUs')}</h2>
+			<h2>{translate('common.about.contactUs')}</h2>
 			<div style={{
 				alignItems: 'center',
 				display: 'flex',
@@ -91,8 +91,8 @@ function AboutPage(): JSX.Element {
 						icon={faCommentDots}
 						size="2x"
 					/>
-					{translate('staticPages:about.chatWithUs')}<br/>
-					<small>{translate('staticPages:about.chatChannels')}</small>
+					{translate('staticPages.about.chatWithUs')}<br/>
+					<small>{translate('staticPages.about.chatChannels')}</small>
 				</a>
 				<FontAwesomeIcon
 					className="margin-sides-1 contact-text"
@@ -104,7 +104,7 @@ function AboutPage(): JSX.Element {
 						icon={faComments}
 						size="2x"
 					/>
-					{translate('common:forums')}
+					{translate('common.forums')}
 				</a>
 				<FontAwesomeIcon
 					className="margin-sides-1 contact-text"
@@ -116,7 +116,7 @@ function AboutPage(): JSX.Element {
 						icon={faXTwitter}
 						size="2x"
 					/>
-					{translate('staticPages:about.x')}
+					{translate('staticPages.about.x')}
 				</a>
 				<FontAwesomeIcon
 					className="margin-sides-1 contact-text"
@@ -128,7 +128,7 @@ function AboutPage(): JSX.Element {
 						icon={faEnvelope}
 						size="2x"
 					/>
-					{translate('common:email')}
+					{translate('common.Anemail')}
 				</a>
 				<FontAwesomeIcon
 					className="margin-sides-1 contact-text"
@@ -136,45 +136,45 @@ function AboutPage(): JSX.Element {
 				/>
 			</div>
 
-			<h2>{translate('common:about.ourStory')}</h2>
+			<h2>{translate('common.about.ourStory')}</h2>
 			<p>
-				{translate('staticPages:about.storyPart1Pre')}&nbsp;
+				{translate('staticPages.about.storyPart1Pre')}&nbsp;
 				<a href="https://github.com/ocharles">
-					 {translate('staticPages:about.oliver')}
+					 {translate('staticPages.about.oliver')}
 				</a>
-				{translate('staticPages:about.storyPart1Mid')}
+				{translate('staticPages.about.storyPart1Mid')}
 			</p>
 
 			<p>
-				{translate('staticPages:about.storyPart2Pre')}&nbsp;
+				{translate('staticPages.about.storyPart2Pre')}&nbsp;
 				<a href="https://github.com/Leftmostcat">
-					{translate('staticPages:about.sean')}
+					{translate('staticPages.about.sean')}
 				</a>
-				{translate('staticPages:about.storyPart2Mid')}
+				{translate('staticPages.about.storyPart2Mid')}
 			</p>
 
 			<p>
-				{translate('staticPages:about.storyPart3Pre')}&nbsp;
+				{translate('staticPages.about.storyPart3Pre')}&nbsp;
 				<a href="https://github.com/LordSputnik">
-					{translate('staticPages:about.ben')}
+					{translate('staticPages.about.ben')}
 				</a>
-				{translate('staticPages:about.storyPart3Mid')}
+				{translate('staticPages.about.storyPart3Mid')}
 			</p>
 
 			<p>
-				{translate('staticPages:about.storyPart4Pre')}&nbsp;
+				{translate('staticPages.about.storyPart4Pre')}&nbsp;
 				<a href="https://github.com/MonkeyDo">
-					{translate('staticPages:about.monkey')}
+					{translate('staticPages.about.monkey')}
 				</a>
-				{translate('staticPages:about.storyPart4Mid')}
+				{translate('staticPages.about.storyPart4Mid')}
 			</p>
 
 			<p>
-				{translate('staticPages:about.storyPart5Pre')}
+				{translate('staticPages.about.storyPart5Pre')}
 				<a href={NESLink}>
-					{translate('staticPages:about.storyPart5Link')}
+					{translate('staticPages.about.storyPart5Link')}
 				</a>
-				{translate('staticPages:about.storyPart5Post')}
+				{translate('staticPages.about.storyPart5Post')}
 			</p>
 		</div>
 	);
