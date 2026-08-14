@@ -27,22 +27,22 @@ import {useTranslation} from 'react-i18next';
  * @returns {JSX.Element} an element containing the rendered output
  */
 function PrivacyPage(): JSX.Element {
-	const {t: translate} = useTranslation(['staticPages', 'common']);
+	const {t: translate} = useTranslation();
 
 	return (
 		<div>
 			<div className="page-header">
-				<h1>{translate('common:Privacy')}</h1>
+				<h1>{translate('common.Privacy')}</h1>
 			</div>
 			<p>
-				{translate('staticPages:privacy.p1Pre')}
+				{translate('staticPages.privacy.p1Pre')}
 				<a href="http://musicbrainz.org/doc/About/Privacy_Policy">
 					http://musicbrainz.org/doc/About/Privacy_Policy
 				</a>
 			</p>
 
 			<p>
-				{translate('staticPages:privacy.p2')}
+				{translate('staticPages.privacy.p2')}
 			</p>
 		</div>
 	);
