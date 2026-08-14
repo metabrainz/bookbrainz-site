@@ -8,10 +8,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 
 export default function SearchAdminPage() {
-<<<<<<< HEAD
-	const {t: translate} = useTranslation(['pages', 'common']);
-=======
->>>>>>> 7287dbb00 (revert(i18n): remove admin page migrations and translation keys)
 	const [loading, setLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string>();
 	const [success, setSuccess] = useState(false);
