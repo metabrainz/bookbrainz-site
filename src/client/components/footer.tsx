@@ -30,20 +30,20 @@ type FooterProps = {
     siteRevision: string;
 };
 function Footer({repositoryUrl, siteRevision}: FooterProps) {
-	const {t: translate} = useTranslation('common');
+	const {t: translate} = useTranslation();
 	return (
 		<footer className="footer">
 			<Container fluid>
 				<Row>
 					<Col xs={4}>
-						<small>{translate('footer.testedWith')}
+						<small>{translate('common.footer.testedWith')}
 							<a
 								href="https://www.browserstack.com/"
 								rel="noopener noreferrer"
 								target="_blank"
 							>
 								<img
-									alt={translate('footer.browserStackAlt')}
+									alt={translate('common.footer.browserStackAlt')}
 									height="25"
 									src="/images/BrowserStack.png"
 								/>
@@ -51,7 +51,7 @@ function Footer({repositoryUrl, siteRevision}: FooterProps) {
 						</small>
 					</Col>
 					<Col className="text-center" xs={4}>
-						<small>{translate('footer.coverImageBy')}{' '}
+						<small>{translate('common.footer.coverImageBy')}{' '}
 							<a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">
 								Stewart Butterfield
 							</a> (
@@ -63,12 +63,12 @@ function Footer({repositoryUrl, siteRevision}: FooterProps) {
 					<Col className="text-right" xs={4}>
 						<div className="small">
 							<a href="/admin-logs">
-								{translate('nav.adminLogs')}
+								{translate('common.nav.adminLogs')}
 							</a>
 						</div>
 						<div className="small">
 							<a href="/privacy">
-								{translate('footer.privacyAndTerms')}
+								{translate('common.footer.privacyAndTerms')}
 							</a>
 						</div>
 					</Col>
@@ -76,12 +76,12 @@ function Footer({repositoryUrl, siteRevision}: FooterProps) {
 				<Row>
 					<Col className="text-center" xs={12}>
 						<small>
-							{translate('footer.alphaSoftware')} —{' '}
+							{translate('common.footer.alphaSoftware')} —{' '}
 							<a href={`${repositoryUrl}tree/${siteRevision || 'master'}`}>
-								{siteRevision || translate('footer.unknownRevision')}
+								{siteRevision || translate('common.footer.unknownRevision')}
 							</a> —&nbsp;
 							<a href="https://tickets.metabrainz.org/projects/BB/issues/">
-								{translate('footer.reportBug')}
+								{translate('common.footer.reportBug')}
 							</a>
 						</small>
 					</Col>
