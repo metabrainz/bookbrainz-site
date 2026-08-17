@@ -2,4 +2,4 @@
 
 # Database backup creation and copy to MusicBrainz FTP
 00 00 * * 1 root /home/bookbrainz/bookbrainz-site/scripts/create-private-dumps.sh >> /tmp/logs/create-private-dumps-logs 2>&1
-01 00 * * 1 root /home/bookbrainz/bookbrainz-site/scripts/create-and-rsync-dumps.sh >> /tmp/logs/create-and-rsync-dumps-logs 2>&1
+01 00 * * 1 root /home/bookbrainz/bookbrainz-site/scripts/create-and-rsync-public-dumps.sh >> /tmp/logs/create-and-rsync-dumps-logs 2>&1
