@@ -65,7 +65,13 @@ class EntitySearchFieldOption extends React.Component<Props> {
 		this.fetchOptions = this.fetchOptions.bind(this);
 		this.isArea = this.isArea.bind(this);
 		this.entityToOption = this.entityToOption.bind(this);
+		this.handleInputChange = this.handleInputChange.bind(this);
 	}
+
+	state = {
+		inputValue: '',
+		lastSearchResults: null
+	};
 
 	/**
 	 * Determines whether an entity provided to the EntitySearch component is an
@@ -182,6 +188,7 @@ class EntitySearchFieldOption extends React.Component<Props> {
 				const newValue = this.props.isMulti ? [...this.props.value, entityOption] : entityOption;
 				this.props.onChange(newValue);
 				this.selectRef.current.blur();
+				this.setState({inputValue: ''});
 				return [entityOption];
 			}
 		}
@@ -202,8 +209,9 @@ class EntitySearchFieldOption extends React.Component<Props> {
 		const filteredRecent = recentOptions.filter(
 			option => option.text.toLowerCase().includes(query.toLowerCase())
 		);
+		let results;
 		if (filteredRecent.length > 0) {
-			return [
+			results = [
 				{
 					label: 'Recently Used',
 					options: filteredRecent
@@ -214,7 +222,11 @@ class EntitySearchFieldOption extends React.Component<Props> {
 				}
 			];
 		}
-		return searchResults;
+		else {
+			results = searchResults;
+		}
+		this.setState({lastSearchResults: results});
+		return results;
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -235,6 +247,12 @@ class EntitySearchFieldOption extends React.Component<Props> {
 				<InputGroup.Append>{buttonAfter}</InputGroup.Append>
 			</InputGroup>
 		);
+	}
+
+	handleInputChange(newValue, actionMeta) {
+		if (actionMeta.action !== 'input-blur' && actionMeta.action !== 'menu-close') {
+			this.setState({inputValue: newValue, lastSearchResults: null});
+		}
 	}
 
 	getOptionLabel(option) {
@@ -263,6 +281,9 @@ class EntitySearchFieldOption extends React.Component<Props> {
 			</OverlayTrigger>
 		);
 		const SelectWrapper = this.props.SelectWrapper ?? ImmutableAsyncSelect;
+		const baseOptions = this.props.recentlyUsedEntityType ? this.getDefaultOptions() : true;
+		const defaultOpts = this.state.inputValue && this.state.lastSearchResults ?
+			this.state.lastSearchResults : baseOptions;
 		const wrappedSelect = (
 			<SelectWrapper
 				{...this.props}
@@ -276,13 +297,14 @@ class EntitySearchFieldOption extends React.Component<Props> {
 					...this.props.customComponents &&
 					this.props.customComponents
 				}}
-				defaultOptions={this.props.recentlyUsedEntityType ? this.getDefaultOptions() : true}
+				defaultOptions={defaultOpts}
 				filterOptions={false}
 				getOptionLabel={this.getOptionLabel}
 				getOptionValue={this.getOptionValue}
 				innerRef={this.selectRef}
+				inputValue={this.state.inputValue}
 				loadOptions={this.fetchOptions}
-				onBlurResetsInput={false}
+				onInputChange={this.handleInputChange}
 			/>
 		);
 

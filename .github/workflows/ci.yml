@@ -2,12 +2,15 @@ name: CI
 on:
   push:
     branches: [master]
-  # Triggers the workflow on pull request events in the context of the fork
-  # trying to sidestep limitations here: https://github.com/wearerequired/lint-action/issues/13
+  # Triggers the workflow on pull request events with fork-safe permissions.
   pull_request:
+
+permissions:
+  contents: read
 
 jobs:
   build-test:
+    name: Build and run tests
     runs-on: ubuntu-latest
 
     services:
@@ -51,7 +54,7 @@ jobs:
           security-enabled: false
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
 
       # Set up the test dabatase
       - name: Set up test database in PostgreSQL
@@ -63,10 +66,10 @@ jobs:
           POSTGRES_HOST: localhost
 
       - name: Set up node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v7
         with:
           # We could also test on multiple Node versions if needed: https://github.com/actions/setup-node#matrix-testing
-          node-version: "20"
+          node-version: "24"
           # Enables caching NPM dependencies (uses https://github.com/actions/cache under the hood)
           cache: "yarn"
 
@@ -79,7 +82,7 @@ jobs:
         run: yarn run test-ci # run tests (configured to use mocha's json reporter)
 
       - name: Export test results
-        uses: actions/upload-artifact@v4 # upload test results
+        uses: actions/upload-artifact@v7 # upload test results
         if: success() || failure() # run this step even if previous step failed
         with:
           name: test-results

@@ -71,7 +71,7 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 	const props = generateProps(req, res, {
 		gender,
 		genders: res.locals.genders,
-		name: req.session.mbProfile.sub
+		name: req.session.mbProfile.username
 	});
 
 	const markup = ReactDOMServer.renderToString(
@@ -112,11 +112,11 @@ router.post('/handler', async (req, res) => {
 		// Create a new Editor and add to the database
 
 		const editor = await new Editor({
-			cachedMetabrainzName: req.session.mbProfile.sub,
+			cachedMetabrainzName: req.session.mbProfile.name,
 			genderId: req.body.gender,
 			metabrainzOauthAccessToken: req.session.mbProfile.metabrainzOauthAccessToken,
 			metabrainzOauthRefreshToken: req.session.mbProfile.metabrainzOauthRefreshToken,
-			metabrainzUserId: req.session.mbProfile.metabrainz_user_id,
+			metabrainzUserId: req.session.mbProfile.sub,
 			name: req.body.displayName,
 			typeId: editorType.id
 		})

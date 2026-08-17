@@ -1,0 +1,58 @@
+name: Lint Report
+
+on:
+  workflow_run:
+    workflows: ['Lint pull requests']
+    types:
+      - completed
+
+permissions:
+  actions: read
+  checks: write
+  contents: read
+  pull-requests: read
+
+jobs:
+  report:
+    name: Report linter results
+    if: >-
+      ${{
+        github.event.workflow_run.event == 'pull_request' &&
+        github.event.workflow_run.conclusion != 'cancelled' &&
+        github.event.workflow_run.conclusion != 'skipped' &&
+        github.event.workflow_run.pull_requests[0].number
+      }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Download ESLint report
+        uses: actions/download-artifact@v8
+        with:
+          name: eslint-report
+          path: lint-results
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Set up reviewdog
+        uses: reviewdog/action-setup@v1
+        with:
+          reviewdog_version: latest
+
+      - name: Publish ESLint check
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CI_PULL_REQUEST: ${{ github.event.workflow_run.pull_requests[0].number }}
+          CI_COMMIT: ${{ github.event.workflow_run.head_sha }}
+          CI_REPO_OWNER: ${{ github.repository_owner }}
+          CI_REPO_NAME: ${{ github.event.repository.name }}
+        run: >-
+          reviewdog
+          -f=rdjson
+          -name="ESLint"
+          -reporter=github-pr-check
+          -filter-mode=nofilter
+          -level=error
+          -fail-level=error
+          < lint-results/eslint_report.rdjson
