@@ -29,7 +29,7 @@ type IdentifierTypeTreePropsT = {
 };
 
 function IdentifierTypeTree({identifierTypes, parentId, indentLevel}: IdentifierTypeTreePropsT) {
-	const {t: translate} = useTranslation(['pages', 'common']);
+	const {t: translate} = useTranslation();
 	const [expandedIdentifierTypeIds, setExpandedIdentifierTypeIds] = useState([]);
 
 	function toggleExpand(identifierTypeId) {
@@ -66,7 +66,7 @@ function IdentifierTypeTree({identifierTypes, parentId, indentLevel}: Identifier
 								variant="link"
 								onClick={handleClick}
 							>
-								{expandedIdentifierTypeIds.includes(idenType.id) ? translate('typeTree.showLess') : translate('typeTree.showMore')}
+								{expandedIdentifierTypeIds.includes(idenType.id) ? translate('pages.typeTree.showLess') : translate('pages.typeTree.showMore')}
 							</Button>
 							<div className="small">
 								<div className="text-muted">{idenType.displayTemplate}</div>
@@ -75,19 +75,19 @@ function IdentifierTypeTree({identifierTypes, parentId, indentLevel}: Identifier
 						</div>
 						{expandedIdentifierTypeIds.includes(idenType.id) && (
 							<div className="type-details small">
-								<div><strong>{translate('typeTree.detectionRegex')}</strong>{idenType.detectionRegex}</div>
-								<div><strong>{translate('typeTree.validationRegex')}</strong>{idenType.validationRegex}</div>
-								<div><strong>{translate('typeTree.displayTemplate')}</strong>{idenType.displayTemplate}</div>
-								<div><strong>{translate('common:description')}: </strong>{idenType.description}</div>
-								<div><strong>{translate('typeTree.childOrder')}</strong>{idenType.childOrder}</div>
-								<div><strong>{translate('typeTree.deprecated')}</strong>{idenType.deprecated ? translate('common:yes') : translate('common:no')}</div>
+								<div><strong>{translate('pages.typeTree.detectionRegex')}</strong>{idenType.detectionRegex}</div>
+								<div><strong>{translate('pages.typeTree.validationRegex')}</strong>{idenType.validationRegex}</div>
+								<div><strong>{translate('pages.typeTree.displayTemplate')}</strong>{idenType.displayTemplate}</div>
+								<div><strong>{translate('common.description')}: </strong>{idenType.description}</div>
+								<div><strong>{translate('pages.typeTree.childOrder')}</strong>{idenType.childOrder}</div>
+								<div><strong>{translate('pages.typeTree.deprecated')}</strong>{idenType.deprecated ? translate('common.yes') : translate('common.no')}</div>
 								<div>
 									<Button
 										className="btn btn-sm"
 										href={`/identifier-type/${idenType.id}/edit`}
 										size="sm"
 									>
-										{translate('common:button.edit')}
+										{translate('common.button.edit')}
 									</Button>
 								</div>
 							</div>
