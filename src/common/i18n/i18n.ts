@@ -38,11 +38,14 @@ export function createI18n(locale = 'en', resources?) {
 	}
 
 	instance.init({
+		defaultNS: 'translation',
 		fallbackLng: 'en',
 		initAsync: false,
+		keySeparator: '.',
 		lng: locale,
-		ns: ['common', 'entityEditor', 'pages', 'entities', 'errors'],
-		...hasResources ? {resources} : {backend: {loadPath: '/locales/{{lng}}/{{ns}}.json'}}
+		ns: ['translation'],
+		nsSeparator: false,
+		...hasResources ? {resources} : {backend: {loadPath: '/locales/{{lng}}/translation.json'}}
 	});
 
 	return instance;

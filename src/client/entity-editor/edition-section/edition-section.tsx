@@ -196,7 +196,7 @@ function EditionSection({
 	widthValue,
 	...rest
 }: Props) {
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const {t: translate} = useTranslation();
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		frequency: language.frequency,
 		label: language.name,
@@ -230,17 +230,17 @@ function EditionSection({
 			<Col className="margin-bottom-2" lg={{offset: isUnifiedForm || showMatchingEditionGroups ? 0 : 3, span: 6}}>
 				<EntitySearchField
 					error={!validateEditionSectionEditionGroup(editionGroupValue, true)}
-					help={translate('editionSection.editionGroupHelp')}
+					help={translate('entityEditor.editionSection.editionGroupHelp')}
 					instanceId="edition-group"
 					isUnifiedForm={isUnifiedForm}
-					label={translate('common:entityType.editionGroup')}
+					label={translate('common.entityType.editionGroup')}
 					languageOptions={languageOptions}
 					recentlyUsedEntityType="EditionGroup"
 					tooltipText={
 						<>
-							{translate('editionSection.editionGroupTooltip')}
+							{translate('entityEditor.editionSection.editionGroupTooltip')}
 							<br/>
-							{translate('editionSection.editionGroupTooltipExample')}
+							{translate('entityEditor.editionSection.editionGroupTooltipExample')}
 						</>
 					}
 					type="editionGroup"
@@ -255,7 +255,7 @@ function EditionSection({
 					// eslint-disable-next-line react/jsx-no-bind
 					onClick={onToggleShowEditionGroupSection.bind(this, false)}
 				>
-					<FontAwesomeIcon icon={faClone}/>&nbsp;{translate('editionSection.autoCreateEditionGroup')}
+					<FontAwesomeIcon icon={faClone}/>&nbsp;{translate('entityEditor.editionSection.autoCreateEditionGroup')}
 				</Button>
 			</Col>
 		</React.Fragment>
@@ -263,16 +263,16 @@ function EditionSection({
 
 	const formatTooltip = (
 		<Tooltip>
-			{translate('editionSection.formatTooltip')}
+			{translate('entityEditor.editionSection.formatTooltip')}
 		</Tooltip>
 	);
 
 	const statusTooltip = (
 		<Tooltip>
-			{translate('editionSection.statusTooltip')}
+			{translate('entityEditor.editionSection.statusTooltip')}
 		</Tooltip>
 	);
-	const headingTag = !isUnifiedForm && <h2>{translate('shared.entityHeading', {entity: 'Edition'})}</h2>;
+	const headingTag = !isUnifiedForm && <h2>{translate('entityEditor.shared.entityHeading', {entity: 'Edition'})}</h2>;
 	const colSpan = {
 		offset: 3,
 		span: 6
@@ -290,7 +290,7 @@ function EditionSection({
 			{headingTag}
 			{!isUnifiedForm && <AuthorCreditSection type="edition"/>}
 			<p className="text-muted">
-				{translate('editionSection.editionGroupRequired')}
+				{translate('entityEditor.editionSection.editionGroupRequired')}
 			</p>
 
 			<Row className="margin-bottom-3">
@@ -298,7 +298,7 @@ function EditionSection({
 					showAutoCreateEditionGroupMessage ?
 						<Col lg={{offset: isUnifiedForm || showMatchingEditionGroups ? 0 : 3, span: 6}}>
 							<Alert variant="success">
-								<p>{translate('editionSection.autoCreateMessage')}</p>
+								<p>{translate('entityEditor.editionSection.autoCreateMessage')}</p>
 								<br/>
 								<Button
 									block
@@ -307,7 +307,7 @@ function EditionSection({
 									// eslint-disable-next-line react/jsx-no-bind
 									onClick={onToggleShowEditionGroupSection.bind(this, true)}
 								>
-									<FontAwesomeIcon icon={faSearch}/>&nbsp;{translate('editionSection.searchExistingEditionGroup')}
+									<FontAwesomeIcon icon={faSearch}/>&nbsp;{translate('entityEditor.editionSection.searchExistingEditionGroup')}
 								</Button>
 							</Alert>
 						</Col> :
@@ -316,18 +316,18 @@ function EditionSection({
 				{showMatchingEditionGroups &&
 					<Col lg={6}>
 						<Alert variant="warning">
-							{translate('editionSection.matchingEditionGroups', {count: matchingNameEditionGroups.length})}
+							{translate('entityEditor.editionSection.matchingEditionGroups', {count: matchingNameEditionGroups.length})}
 							<br/>
-							{translate('editionSection.reviewEditionGroups')}
+							{translate('entityEditor.editionSection.reviewEditionGroups')}
 							<br/>
 							<small>
-								{translate('editionSection.noSelectionAutoCreate')}
+								{translate('entityEditor.editionSection.noSelectionAutoCreate')}
 								<br/>
 								<Trans
 									components={{
 										icon: <FontAwesomeIcon icon={faExternalLinkAlt}/>
 									}}
-									i18nKey="entityEditor:editionSection.clickIconToOpen"
+									i18nKey="entityEditor.editionSection.clickIconToOpen"
 								/>
 							</small>
 							<ListGroup className="margin-top-1">
@@ -344,7 +344,7 @@ function EditionSection({
 
 
 			<p className="text-muted">
-				{translate('editionSection.belowFieldsOptional')}
+				{translate('entityEditor.editionSection.belowFieldsOptional')}
 			</p>
 			<Row>
 				{!isUnifiedForm &&
@@ -352,7 +352,7 @@ function EditionSection({
 					<EntitySearchFieldOption
 						isMulti
 						instanceId="publisher"
-						label={translate('common:entityType.publisher')}
+						label={translate('common.entityType.publisher')}
 						recentlyUsedEntityType="Publisher"
 						type="publisher"
 						value={publisherValue}
@@ -368,9 +368,9 @@ function EditionSection({
 						empty={isNullDate(releaseDateValue)}
 						error={!isValidReleaseDate}
 						errorMessage={dateErrorMessage}
-						label={translate('shared.releaseDateLabel')}
+						label={translate('entityEditor.shared.releaseDateLabel')}
 						placeholder="YYYY-MM-DD"
-						tooltipText={translate('editionSection.releaseDateTooltip')}
+						tooltipText={translate('entityEditor.editionSection.releaseDateTooltip')}
 						onChangeDate={onReleaseDateChange}
 					/>
 				</Col>
@@ -382,7 +382,7 @@ function EditionSection({
 						isMulti
 						instanceId="language"
 						options={languageOptionsForDisplay}
-						tooltipText={translate('editionSection.languageTooltip')}
+						tooltipText={translate('entityEditor.editionSection.languageTooltip')}
 						value={languageValues}
 						onChange={onLanguagesChange}
 					/>
@@ -392,7 +392,7 @@ function EditionSection({
 				<Col lg={shortColSpan}>
 					<Form.Group>
 						<Form.Label>
-							{translate('common:format')}
+							{translate('common.format')}
 							<OverlayTrigger delay={50} overlay={formatTooltip}>
 								<FontAwesomeIcon
 									className="margin-left-0-5"
@@ -414,7 +414,7 @@ function EditionSection({
 				<Col lg={3}>
 					<Form.Group>
 						<Form.Label>
-							{translate('common:status')}
+							{translate('common.status')}
 							<OverlayTrigger delay={50} overlay={statusTooltip}>
 								<FontAwesomeIcon
 									className="margin-left-0-5"
@@ -441,7 +441,7 @@ function EditionSection({
 						defaultValue={pagesValue}
 						empty={_.isNil(pagesValue)}
 						error={!validateEditionSectionPages(pagesValue)}
-						label={translate('common:pageCount')}
+						label={translate('common.pageCount')}
 						onChange={onPagesChange}
 					/>
 				</Col>
@@ -454,7 +454,7 @@ function EditionSection({
 						disabled={!physicalEnable}
 						empty={_.isNil(widthValue)}
 						error={!validateEditionSectionWidth(widthValue)}
-						label={translate('shared.widthLabel')}
+						label={translate('entityEditor.shared.widthLabel')}
 						onChange={onWidthChange}
 					/>
 					<NumericField
@@ -463,7 +463,7 @@ function EditionSection({
 						disabled={!physicalEnable}
 						empty={_.isNil(heightValue)}
 						error={!validateEditionSectionHeight(heightValue)}
-						label={translate('shared.heightLabel')}
+						label={translate('entityEditor.shared.heightLabel')}
 						onChange={onHeightChange}
 					/>
 				</Col>
@@ -474,7 +474,7 @@ function EditionSection({
 						disabled={!physicalEnable}
 						empty={_.isNil(weightValue)}
 						error={!validateEditionSectionWeight(weightValue)}
-						label={translate('shared.weightLabel')}
+						label={translate('entityEditor.shared.weightLabel')}
 						onChange={onWeightChange}
 					/>
 					<NumericField
@@ -483,7 +483,7 @@ function EditionSection({
 						disabled={!physicalEnable}
 						empty={_.isNil(depthValue)}
 						error={!validateEditionSectionDepth(depthValue)}
-						label={translate('shared.depthLabel')}
+						label={translate('entityEditor.shared.depthLabel')}
 						onChange={onDepthChange}
 					/>
 				</Col>

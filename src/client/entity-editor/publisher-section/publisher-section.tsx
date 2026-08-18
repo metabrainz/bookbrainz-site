@@ -124,7 +124,7 @@ function PublisherSection({
 	onEndedChange,
 	onTypeChange
 }: Props) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation();
 	const publisherTypesForDisplay = publisherTypes.map((type) => ({
 		label: type.label,
 		value: type.id
@@ -132,7 +132,7 @@ function PublisherSection({
 	const typeOption = publisherTypesForDisplay.filter((el) => el.value === typeValue);
 	const {isValid: isValidBeginDate, errorMessage: errorMessageBeginDate} = validatePublisherSectionBeginDate(beginDateValue);
 	const {isValid: isValidEndDate, errorMessage: errorMessageEndDate} = validatePublisherSectionEndDate(beginDateValue, endDateValue, endedChecked);
-	const heading = <h2>{translate('shared.entityHeading', {entity: 'Publisher'})}</h2>;
+	const heading = <h2>{translate('entityEditor.shared.entityHeading', {entity: 'Publisher'})}</h2>;
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
@@ -141,12 +141,12 @@ function PublisherSection({
 		<div>
 			{!isUnifiedForm && heading}
 			<p className="text-muted">
-				{translate('shared.allFieldsOptional')}
+				{translate('entityEditor.shared.allFieldsOptional')}
 			</p>
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group>
-						<Form.Label>{translate('common:type')}</Form.Label>
+						<Form.Label>{translate('common.type')}</Form.Label>
 						<Select
 							isClearable
 							classNamePrefix="react-select"
@@ -162,9 +162,9 @@ function PublisherSection({
 				<Col lg={lgCol}>
 					<EntitySearchFieldOption
 						instanceId="area"
-						label={translate('common:area')}
+						label={translate('common.area')}
 						recentlyUsedEntityType="Area"
-						tooltipText={translate('publisherSection.areaTooltip')}
+						tooltipText={translate('entityEditor.publisherSection.areaTooltip')}
 						type="area"
 						value={areaValue}
 						onChange={onAreaChange}
@@ -179,7 +179,7 @@ function PublisherSection({
 						empty={isNullDate(beginDateValue)}
 						error={!isValidBeginDate}
 						errorMessage={errorMessageBeginDate}
-						label={translate('publisherSection.dateFounded')}
+						label={translate('entityEditor.publisherSection.dateFounded')}
 						placeholder="YYYY-MM-DD"
 						onChangeDate={onBeginDateChange}
 					/>
@@ -188,7 +188,7 @@ function PublisherSection({
 			<div className={`${!isUnifiedForm && 'text-center'}`}>
 				<Form.Check
 					defaultChecked={endedChecked}
-					label={translate('shared.dissolvedLabel')}
+					label={translate('entityEditor.shared.dissolvedLabel')}
 					type="checkbox"
 					onChange={onEndedChange}
 				/>
@@ -203,7 +203,7 @@ function PublisherSection({
 								empty={isNullDate(endDateValue)}
 								error={!isValidEndDate}
 								errorMessage={errorMessageEndDate}
-								label={translate('publisherSection.dateDissolved')}
+								label={translate('entityEditor.publisherSection.dateDissolved')}
 								placeholder="YYYY-MM-DD"
 								onChangeDate={onEndDateChange}
 							/>

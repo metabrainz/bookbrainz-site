@@ -148,7 +148,7 @@ function WorkSection({
 	onLanguagesChange,
 	onTypeChange
 }: Props) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation();
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		frequency: language.frequency,
 		label: language.name,
@@ -160,10 +160,10 @@ function WorkSection({
 	const selectedTypeOption:WorkType = workTypesForDisplay.find((el) => el.id === typeValue);
 	const tooltip = (
 		<Tooltip id="work-type-tooltip">
-			{translate('workSection.typeTooltip')}
+			{translate('entityEditor.workSection.typeTooltip')}
 		</Tooltip>
 	);
-	const heading = <h2>{translate('shared.entityHeading', {entity: 'Work'})}</h2>;
+	const heading = <h2>{translate('entityEditor.shared.entityHeading', {entity: 'Work'})}</h2>;
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
@@ -172,13 +172,13 @@ function WorkSection({
 		<div>
 			{!isUnifiedForm && heading}
 			<p className="text-muted">
-				{translate('shared.allFieldsOptional')}
+				{translate('entityEditor.shared.allFieldsOptional')}
 			</p>
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>
-							{translate('common:type')}
+							{translate('common.type')}
 							<OverlayTrigger delay={50} overlay={tooltip}>
 								<FontAwesomeIcon
 									className="margin-left-0-5"
@@ -213,7 +213,7 @@ function WorkSection({
 						isMulti
 						instanceId="language"
 						options={languageOptionsForDisplay}
-						tooltipText={translate('workSection.languageTooltip')}
+						tooltipText={translate('entityEditor.workSection.languageTooltip')}
 						value={languageValues}
 						onChange={onLanguagesChange}
 					/>

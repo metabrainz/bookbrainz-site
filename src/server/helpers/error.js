@@ -45,6 +45,7 @@ export function renderError(req, res, err) {
 	res.status(
 		errorToSend.status || status.INTERNAL_SERVER_ERROR
 	).send(target({
+		locale: res.locals.locale || 'en',
 		markup,
 		page: 'Error',
 		props: escapeProps(props),
