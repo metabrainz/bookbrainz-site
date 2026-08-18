@@ -133,7 +133,7 @@ class CollectionsTable extends React.Component {
 								<tr>
 									<th width="16%">{translate('common.name')}</th>
 									<th width="33%">{translate('common.description')}</th>
-									<th width="16%">{translate('common.entityType._self')}</th>
+									<th width="16%">{translate('common.entityTypeLabel')}</th>
 									<th width="16%">{translate('common.entities')}</th>
 									{
 										showPrivacy ?

@@ -30,7 +30,6 @@
     "displayName": "Display Name",
     "entities": "Entities",
     "entityType": {
-      "_self": "Entity Type",
       "area": "Area",
       "author": "Author",
       "collection": "Collection",
@@ -41,6 +40,7 @@
       "series": "Series",
       "work": "Work"
     },
+    "entityTypeLabel": "Entity Type",
     "format": "Format",
     "gender": "Gender",
     "languages": "Languages",
@@ -64,7 +64,7 @@
     "privileges": "Privileges",
     "public": "Public",
     "publisher": "Publisher",
-    "Relationship": "Relationship",
+    "relationship": "Relationship",
     "role": "Collaborator/Owner",
     "searchResults": "Search Results",
     "status": "Status",
