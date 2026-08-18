@@ -27,7 +27,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 				window.location.href = `/editor/${this.props.userId}/collections`;
 			}, () => {
 				this.setState({
-					error: translate('common:error')
+					error: translate('common.error')
 				});
 			});
 	}
@@ -39,22 +39,22 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 		if (this.props.isDelete) {
 			this.postUrl = `/collection/${collection.id}/delete/handler`;
 			this.postData = {};
-			modalTitle = translate('common:confirmDeletion');
+			modalTitle = translate('common.confirmDeletion');
 			modalBody = (
 				<Alert variant="danger">
 					<h4>
 						<FontAwesomeIcon icon={faExclamationTriangle}/>&nbsp;
-						{translate('collection.deleteNotice', {name: collection.name})}
+						{translate('pages.collection.deleteNotice', {name: collection.name})}
 					</h4>
 					<p>
-						{translate('collection.deleteWarning')} <br/>
-						{translate('collection.deleteUndoWarning')}
+						{translate('pages.collection.deleteWarning')} <br/>
+						{translate('pages.collection.deleteUndoWarning')}
 					</p>
 				</Alert>
 			);
 			submitButton = (
 				<Button variant="danger" onClick={this.handleSubmit}>
-					<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;{translate('common:button.delete')}
+					<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;{translate('common.button.delete')}
 				</Button>
 			);
 		}
@@ -62,21 +62,21 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 			// loggedInUser must be collaborator here
 			this.postUrl = `/collection/${collection.id}/collaborator/remove`;
 			this.postData = {collaboratorIds: [this.props.userId]};
-			modalTitle = translate('collection.stopCollaborationTooltip');
+			modalTitle = translate('pages.collection.stopCollaborationTooltip');
 			modalBody = (
 				<Alert variant="warning">
 					<h4>
 						<FontAwesomeIcon icon={faExclamationTriangle}/>&nbsp;
-						{translate('collection.stopCollaborationNotice', {name: collection.name})}
+						{translate('pages.collection.stopCollaborationNotice', {name: collection.name})}
 					</h4>
 					<p>
-						{translate('collection.stopCollaborationWarning')}
+						{translate('pages.collection.stopCollaborationWarning')}
 					</p>
 				</Alert>
 			);
 			submitButton = (
 				<Button variant="warning" onClick={this.handleSubmit}>
-					<FontAwesomeIcon icon={faTimesCircle}/>&nbsp;{translate('collection.stopCollaboration')}
+					<FontAwesomeIcon icon={faTimesCircle}/>&nbsp;{translate('pages.collection.stopCollaboration')}
 				</Button>
 			);
 		}
@@ -101,7 +101,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 				</Modal.Body>
 				<Modal.Footer>
 					<Button variant="info" onClick={this.props.onCloseModal}>
-						{translate('common:button.cancel')}
+						{translate('common.button.cancel')}
 					</Button>
 					{submitButton}
 				</Modal.Footer>
@@ -125,4 +125,4 @@ DeleteOrRemoveCollaborationModal.defaultProps = {
 	isDelete: true
 };
 
-export default withTranslation(['pages', 'common'])(DeleteOrRemoveCollaborationModal);
+export default withTranslation()(DeleteOrRemoveCollaborationModal);
