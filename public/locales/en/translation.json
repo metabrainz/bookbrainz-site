@@ -37,7 +37,6 @@
     "displayName": "Display Name",
     "entities": "Entities",
     "entityType": {
-      "_self": "Entity Type",
       "area": "Area",
       "author": "Author",
       "author_plural": "Authors",
@@ -61,6 +60,7 @@
       "testedWith": "Tested with ",
       "unknownRevision": "unknown revision"
     },
+    "entityTypeLabel": "Entity Type",
     "format": "Format",
     "forums": "Forums",
     "gender": "Gender",
@@ -108,7 +108,7 @@
     "privileges": "Privileges",
     "public": "Public",
     "publisher": "Publisher",
-    "Relationship": "Relationship",
+    "relationship": "Relationship",
     "role": "Collaborator/Owner",
     "searchResults": "Search Results",
     "sortName": "Sort Name",
