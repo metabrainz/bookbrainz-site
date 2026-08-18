@@ -28,7 +28,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import RevisionsTable from './parts/revisions-table';
-import {withTranslation} from 'react-i18next';
 
 
 const {Alert, Button, Col, Container, Row} = bootstrap;
@@ -49,18 +48,17 @@ class IndexPage extends React.Component {
 						components={{
 							jiraLink: <a href="//tickets.metabrainz.org/projects/BB"/>
 						}}
-						i18nKey="index.underDevelopment"
-						ns="pages"
+						i18nKey="pages.index.underDevelopment"
 					/>
 				</Alert>
 				<div id="background-image">
 					<div className="text-center" id="background-overlay">
 						<Container>
 							<img
-								alt={translate('pages:index.logoAlt')}
+								alt={translate('pages.index.logoAlt')}
 								className="img-fluid center-block"
 								src="/images/BookBrainz_text.svg"
-								title={translate('common:Bookbrainz')}
+								title={translate('common.Bookbrainz')}
 								width="500"
 							/>
 							<Row>
@@ -71,7 +69,7 @@ class IndexPage extends React.Component {
 											autoFocus="autofocus"
 											className="form-control"
 											name="q"
-											placeholder={translate('common:nav.searchPlaceholder')}
+											placeholder={translate('common.nav.searchPlaceholder')}
 											type="text"
 										/>
 										<span className="input-group-append">
@@ -91,7 +89,7 @@ class IndexPage extends React.Component {
 												size="lg"
 												variant="secondary"
 											>
-												{translate('pages:index.aboutButton')}
+												{translate('pages.index.aboutButton')}
 											</Button>
 										</Col>
 										<Col md={4}>
@@ -101,7 +99,7 @@ class IndexPage extends React.Component {
 												size="lg"
 												variant="secondary"
 											>
-												{translate('pages:index.contributeButton')}
+												{translate('pages.index.contributeButton')}
 											</Button>
 										</Col>
 										<Col md={4}>
@@ -111,13 +109,13 @@ class IndexPage extends React.Component {
 												size="lg"
 												variant="secondary"
 											>
-												{translate('pages:index.developButton')}
+												{translate('pages.index.developButton')}
 											</Button>
 										</Col>
 									</Row>
 									<div className="margin-top-3">
 										<h4 className="contact-text">
-											{translate('common:about.contactUs')}
+											{translate('common.about.contactUs')}
 										</h4>
 										<div style={{
 											alignItems: 'center',
@@ -135,8 +133,8 @@ class IndexPage extends React.Component {
 													icon={faCommentDots}
 													size="2x"
 												/>
-												{translate('pages:index.chatWithUs')}<br/>
-												<small>{translate('pages:index.matrixIrcDiscord')}</small>
+												{translate('pages.index.chatWithUs')}<br/>
+												<small>{translate('pages.index.matrixIrcDiscord')}</small>
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
@@ -148,7 +146,7 @@ class IndexPage extends React.Component {
 													icon={faComments}
 													size="2x"
 												/>
-												{translate('common:forums')}
+												{translate('common.forums')}
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
@@ -160,7 +158,7 @@ class IndexPage extends React.Component {
 													icon={faMastodon}
 													size="2x"
 												/>
-												{translate('pages:index.mastodon')}
+												{translate('pages.index.mastodon')}
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
@@ -172,7 +170,7 @@ class IndexPage extends React.Component {
 													icon={faBluesky}
 													size="2x"
 												/>
-												{translate('pages:index.bluesky')}
+												{translate('pages.index.bluesky')}
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
@@ -184,7 +182,7 @@ class IndexPage extends React.Component {
 													icon={faEnvelope}
 													size="2x"
 												/>
-												{translate('common:email')}
+												{translate('common.email')}
 											</a>
 											<FontAwesomeIcon
 												className="margin-sides-1 contact-text"
@@ -207,9 +205,9 @@ class IndexPage extends React.Component {
 			<Container>
 				<Row>
 					<Col lg={{offset: 2, span: 8}}>
-						<h1 className="text-center">{translate('pages:index.openBookDatabase')}</h1>
+						<h1 className="text-center">{translate('pages.index.openBookDatabase')}</h1>
 						<p className="lead text-justify">
-							{translate('pages:index.openBookDatabaseDescription')}
+							{translate('pages.index.openBookDatabaseDescription')}
 						</p>
 					</Col>
 				</Row>
@@ -228,7 +226,7 @@ class IndexPage extends React.Component {
 							variant="primary"
 						>
 							<FontAwesomeIcon className="margin-right-0-5" icon={faListUl}/>
-							{translate('pages:index.seeAllRevisions')}
+							{translate('pages.index.seeAllRevisions')}
 						</Button>
 					</div>
 				</div>
@@ -246,15 +244,14 @@ class IndexPage extends React.Component {
 						<FontAwesomeIcon icon={faUser} size="5x"/>
 					</Col>
 					<Col lg={10}>
-						<h2>{translate('pages:index.joinUs')}</h2>
+						<h2>{translate('pages.index.joinUs')}</h2>
 						<p className="lead">
 							<Trans
 								components={{
 									aboutLink: <a href="/about" target="blank"/>,
 									contributeLink: <a href="/contribute" target="blank"/>
 								}}
-								i18nKey="index.joinUsDescription"
-								ns="pages"
+								i18nKey="pages.index.joinUsDescription"
 							/>
 						</p>
 					</Col>
@@ -266,7 +263,7 @@ class IndexPage extends React.Component {
 						size="lg"
 						variant="success"
 					>
-						{translate('pages:index.registerButton')}
+						{translate('pages.index.registerButton')}
 					</Button>
 				</div>
 			</React.Fragment>
