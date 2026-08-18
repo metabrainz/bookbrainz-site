@@ -29,7 +29,7 @@ type Props = {
 };
 
 function IdentifierTypesPage({identifierTypes}: Props) {
-	const {t: translate} = useTranslation(['common']);
+	const {t: translate} = useTranslation();
 	const [activeTab, setActiveTab] = useState<string>(ENTITY_TYPES[0]);
 	const handleTabSelect = useCallback((entityType: string) => {
 		setActiveTab(entityType);
@@ -40,7 +40,7 @@ function IdentifierTypesPage({identifierTypes}: Props) {
 	return (
 		<Card>
 			<Card.Header as="h2">
-				{translate('common:nav.identifierTypes')}
+				{translate('common.nav.identifierTypes')}
 			</Card.Header>
 			<Card.Body>
 				<Container>
@@ -48,7 +48,7 @@ function IdentifierTypesPage({identifierTypes}: Props) {
 						<Nav className="flex-row mb-3" variant="pills">
 							{ENTITY_TYPES.map((entityType) => (
 								<Nav.Item key={entityType}>
-									<Nav.Link eventKey={entityType}>{translate(`common:entityType.${_camelCase(entityType)}`)}</Nav.Link>
+									<Nav.Link eventKey={entityType}>{translate(`common.entityType.${_camelCase(entityType)}`)}</Nav.Link>
 								</Nav.Item>
 							))}
 						</Nav>

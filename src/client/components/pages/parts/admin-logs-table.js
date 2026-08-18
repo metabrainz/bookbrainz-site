@@ -25,12 +25,12 @@ import {useTranslation} from 'react-i18next';
 
 
 function AdminLogsTable(props) {
-	const {t: translate} = useTranslation(['pages', 'common']);
+	const {t: translate} = useTranslation();
 	const {results, tableHeading} = props;
 	return (
 		<div>
 			<div>
-				<h1 className="text-center">{tableHeading ?? translate('common:nav.adminLogs')}</h1>
+				<h1 className="text-center">{tableHeading ?? translate('common.nav.adminLogs')}</h1>
 			</div>
 			<hr className="thin"/>
 			{
@@ -42,8 +42,8 @@ function AdminLogsTable(props) {
 					>
 						<thead>
 							<tr>
-								<th width="85%">{translate('common:action')}</th>
-								<th width="15%">{translate('common:date')}</th>
+								<th width="85%">{translate('common.action')}</th>
+								<th width="15%">{translate('common.date')}</th>
 							</tr>
 						</thead>
 
@@ -64,7 +64,7 @@ function AdminLogsTable(props) {
 					</Table> :
 
 					<div>
-						<h4>{translate('adminLogs.noLogs')}</h4>
+						<h4>{translate('pages.adminLogs.noLogs')}</h4>
 						<hr className="wide"/>
 					</div>
 			}

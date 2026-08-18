@@ -41,11 +41,11 @@ interface TopEditorsTableProps {
 }
 
 function TopEditorsTable({editors}: TopEditorsTableProps) {
-	const {t: translate} = useTranslation(['pages', 'common']);
+	const {t: translate} = useTranslation();
 	return (
 		<div>
 			<div>
-				<h2>{translate('pages:statistics.topEditors')}</h2>
+				<h2>{translate('pages.statistics.topEditors')}</h2>
 			</div>
 			<Table
 				bordered
@@ -55,9 +55,9 @@ function TopEditorsTable({editors}: TopEditorsTableProps) {
 				<thead>
 					<tr>
 						<th width="8%" >#</th>
-						<th width="42%" >{translate('pages:statistics.editorName')}</th>
-						<th width="25%" >{translate('common:totalRevisions')}</th>
-						<th width="25%" >{translate('pages:statistics.registrationDate')}</th>
+						<th width="42%" >{translate('pages.statistics.editorName')}</th>
+						<th width="25%" >{translate('common.totalRevisions')}</th>
+						<th width="25%" >{translate('pages.statistics.registrationDate')}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -101,11 +101,11 @@ interface EntityCountTableProps {
 }
 
 function EntityCountTable({allEntities, last30DaysEntities}: EntityCountTableProps): JSX.Element {
-	const {t: translate} = useTranslation(['pages', 'common']);
+	const {t: translate} = useTranslation();
 	return (
 		<div>
 			<div>
-				<h2>{translate('pages:statistics.totalEntities')}</h2>
+				<h2>{translate('pages.statistics.totalEntities')}</h2>
 			</div>
 			<Table
 				bordered
@@ -115,9 +115,9 @@ function EntityCountTable({allEntities, last30DaysEntities}: EntityCountTablePro
 				<thead>
 					<tr>
 						<th width="8%" >#</th>
-						<th width="42%" >{translate('common:entityType')}</th>
-						<th width="25%" >{translate('pages:statistics.total')}</th>
-						<th width="25%" >{translate('pages:statistics.addedLast30Days')}</th>
+						<th width="42%" >{translate('common.entityType._self')}</th>
+						<th width="25%" >{translate('pages.statistics.total')}</th>
+						<th width="25%" >{translate('pages.statistics.addedLast30Days')}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -127,7 +127,7 @@ function EntityCountTable({allEntities, last30DaysEntities}: EntityCountTablePro
 								<td>{i + 1}</td>
 								<td>
 									{genEntityIconHTMLElement(entity.modelName)}
-									{translate(`common:entityType.${_.camelCase(entity.modelName)}`)}
+									{translate(`common.entityType.${_.camelCase(entity.modelName)}`)}
 								</td>
 								<td>{entity.Count}</td>
 								<td>{last30DaysEntities[entity.modelName]}</td>
@@ -156,10 +156,10 @@ interface StatisticsPageProps{
 }
 
 function StatisticsPage({allEntities, last30DaysEntities, topEditors}: StatisticsPageProps): JSX.Element {
-	const {t: translate} = useTranslation('pages');
+	const {t: translate} = useTranslation();
 	return (
 		<div>
-			<div className="page-header"><h1>{translate('pages:statistics.title')}</h1></div>
+			<div className="page-header"><h1>{translate('pages.statistics.title')}</h1></div>
 			<TopEditorsTable editors={topEditors}/>
 			<EntityCountTable
 				allEntities={allEntities}

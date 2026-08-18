@@ -63,7 +63,7 @@ class CollectionsPage extends React.Component {
 					showLastModified={this.props.showLastModified}
 					showOwner={this.props.showOwner}
 					showPrivacy={this.props.showPrivacy}
-					tableHeading={this.props.tableHeading ?? this.props.t('pages:collections.title')}
+					tableHeading={this.props.tableHeading ?? this.props.t('pages.collections.title')}
 					type={this.state.type}
 					user={this.props.user}
 					onTypeChange={this.handleTypeChange}
@@ -116,4 +116,4 @@ CollectionsPage.defaultProps = {
 
 };
 
-export default withTranslation(['pages', 'common'])(CollectionsPage);
+export default withTranslation()(CollectionsPage);

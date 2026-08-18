@@ -30,13 +30,13 @@ type Props = {
 };
 
 function RelationshipTypesPage({heading, relationshipTypes}: Props) {
-	const {t: translate} = useTranslation(['pages', 'common']);
+	const {t: translate} = useTranslation();
 	return (
 		<Card>
 			<Card.Header as="h2">
 				{heading}
 				<Button className="float-right" href="/relationship-types" variant="link">
-					<FontAwesomeIcon icon={faArrowLeft}/>&nbsp;{translate('pages:typeTree.allRelationships')}
+					<FontAwesomeIcon icon={faArrowLeft}/>&nbsp;{translate('pages.typeTree.allRelationships')}
 				</Button>
 			</Card.Header>
 			<Card.Body>
@@ -45,7 +45,7 @@ function RelationshipTypesPage({heading, relationshipTypes}: Props) {
 						<RelationshipTypeTree
 							relationshipTypes={relationshipTypes}
 						/> :
-						translate('pages:typeTree.noTypesFound', {heading})
+						translate('pages.typeTree.noTypesFound', {heading})
 				}
 			</Card.Body>
 		</Card>

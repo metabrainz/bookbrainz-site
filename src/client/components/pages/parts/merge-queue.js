@@ -62,7 +62,7 @@ class MergeQueue extends React.Component {
 		const entityCount = size(mergingEntities);
 		let entityList;
 		if (entityCount === 0) {
-			entityList = <div>{translate('merge.noEntities')}</div>;
+			entityList = <div>{translate('pages.merge.noEntities')}</div>;
 		}
 		else {
 			entityList = (
@@ -75,7 +75,7 @@ class MergeQueue extends React.Component {
 									<input
 										checked={this.state.selectedOption === entity.bbid}
 										className="margin-right-1"
-										title={translate('merge.selectEntity')}
+										title={translate('pages.merge.selectEntity')}
 										type="radio"
 										value={entity.bbid}
 										onChange={this.handleOptionChange}
@@ -90,7 +90,7 @@ class MergeQueue extends React.Component {
 		return (
 			<Card bg="light" className="margin-top-2">
 				<h3 className="margin-top-0">
-					{translate('merge.selectedEntities', {count: entityCount})}
+					{translate('pages.merge.selectedEntities', {count: entityCount})}
 				</h3>
 				<p className="text-muted">
 					<Trans
@@ -98,8 +98,7 @@ class MergeQueue extends React.Component {
 							italic: <i/>,
 							lineBreak: <br/>
 						}}
-						i18nKey="merge.mergeInstructions"
-						ns="pages"
+						i18nKey="pages.merge.mergeInstructions"
 					/>
 				</p>
 				{entityList}
@@ -107,28 +106,28 @@ class MergeQueue extends React.Component {
 					<Button
 						disabled={isNil(this.state.selectedOption)}
 						href={`/merge/submit/${this.state.selectedOption}`}
-						title={translate('merge.mergeEntities')}
+						title={translate('pages.merge.mergeEntities')}
 						variant="success"
 					>
 						<FontAwesomeIcon icon={faTasks}/>
-						&nbsp;{translate('merge.mergeButton')}
+						&nbsp;{translate('pages.merge.mergeButton')}
 					</Button>
 					<Button
 						disabled={isNil(this.state.selectedOption)}
 						href={`/merge/remove/${this.state.selectedOption}`}
-						title={translate('merge.removeFromMerge')}
+						title={translate('pages.merge.removeFromMerge')}
 						variant="warning"
 					>
 						<FontAwesomeIcon icon={faTrashAlt}/>
-						&nbsp;{translate('merge.removeSelected')}
+						&nbsp;{translate('pages.merge.removeSelected')}
 					</Button>
 					<Button
 						href="/merge/cancel"
-						title={translate('merge.cancelMerge')}
+						title={translate('pages.merge.cancelMerge')}
 						variant="danger"
 					>
 						<FontAwesomeIcon icon={faTrashAlt}/>
-						&nbsp;{translate('merge.cancelMerge')}
+						&nbsp;{translate('pages.merge.cancelMerge')}
 					</Button>
 				</ButtonGroup>
 			</Card>
@@ -143,4 +142,4 @@ MergeQueue.propTypes = {
 	t: PropTypes.func.isRequired
 };
 
-export default withTranslation(['pages', 'common'])(MergeQueue);
+export default withTranslation()(MergeQueue);

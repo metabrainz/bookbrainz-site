@@ -60,9 +60,9 @@ class EntityRevisions extends React.Component {
 		const {entity, t: translate} = this.props;
 		return (
 			<div>
-				{translate('pages:revisions.history')}
+				{translate('pages.revisions.history')}
 				<h3>
-					{translate('common:for')}&nbsp;
+					{translate('common.for')}&nbsp;
 					<a href={getEntityUrl(entity)} >
 						{genEntityIconHTMLElement(entity.type)}
 						{getEntityLabel(entity)}
@@ -126,4 +126,4 @@ EntityRevisions.defaultProps = {
 	size: 20
 };
 
-export default withTranslation(['pages', 'common'])(EntityRevisions);
+export default withTranslation()(EntityRevisions);

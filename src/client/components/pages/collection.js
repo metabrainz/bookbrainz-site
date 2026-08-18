@@ -41,20 +41,20 @@ function CollectionAttributes({collection, t: translate}) {
 				collection.description.length ?
 					<Row>
 						<Col lg={12}>
-							<dt>{translate('common:description')}</dt>
+							<dt>{translate('common.description')}</dt>
 							<dd>{collection.description}</dd>
 						</Col>
 					</Row> : null
 			}
 			<Row>
 				<Col lg={3}>
-					<dt>{translate('common:owner')}</dt>
+					<dt>{translate('common.owner')}</dt>
 					<dd><a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a></dd>
 				</Col>
 				{
 					collection.collaborators.length ?
 						<Col lg={3}>
-							<dt>{translate('common:collaborator', {count: collection.collaborators.length})}</dt>
+							<dt>{translate('common.collaborator', {count: collection.collaborators.length})}</dt>
 							<dd>
 								{
 									collection.collaborators.map((collaborator, id) =>
@@ -68,23 +68,23 @@ function CollectionAttributes({collection, t: translate}) {
 						</Col> : null
 				}
 				<Col lg={3}>
-					<dt>{translate('common:Privacy')}</dt>
-					<dd>{collection.public ? translate('common:public') : translate('common:private')}</dd>
+					<dt>{translate('common.Privacy')}</dt>
+					<dd>{collection.public ? translate('common.public') : translate('common.private')}</dd>
 				</Col>
 				<Col lg={3}>
-					<dt>{translate('collection.collectionType')}</dt>
-					<dd>{translate(`common:entityType.${_.camelCase(collection.entityType)}`)}</dd>
+					<dt>{translate('pages.collection.collectionType')}</dt>
+					<dd>{translate(`common.entityType.${_.camelCase(collection.entityType)}`)}</dd>
 				</Col>
 				<Col lg={3}>
-					<dt>{translate('collection.numberOfEntities', {type: translate(`common:entityType.${_.camelCase(collection.entityType)}_plural`)})}</dt>
+					<dt>{translate('pages.collection.numberOfEntities', {type: translate(`common.entityType.${_.camelCase(collection.entityType)}_plural`)})}</dt>
 					<dd>{collection.items.length}</dd>
 				</Col>
 				<Col lg={3}>
-					<dt>{translate('collection.createdAt')}</dt>
+					<dt>{translate('pages.collection.createdAt')}</dt>
 					<dd>{formatDate(new Date(collection.createdAt), true)}</dd>
 				</Col>
 				<Col lg={3}>
-					<dt>{translate('common:lastModified')}</dt>
+					<dt>{translate('common.lastModified')}</dt>
 					<dd>{formatDate(new Date(collection.lastModified), true)}</dd>
 				</Col>
 			</Row>
@@ -153,7 +153,7 @@ class CollectionPage extends React.Component {
 				.then(() => {
 					this.setState({
 						message: {
-							text: translate('collection.removedEntities', {count: bbids.length, type: translate(`common:entityType.${_.camelCase(this.props.collection.entityType)}${bbids.length === 1 ? '' : '_plural'}`)}),
+							text: translate('pages.collection.removedEntities', {count: bbids.length, type: translate(`common.entityType.${_.camelCase(this.props.collection.entityType)}${bbids.length === 1 ? '' : '_plural'}`)}),
 							type: 'success'
 						},
 						selectedEntities: []
@@ -161,7 +161,7 @@ class CollectionPage extends React.Component {
 				}, () => {
 					this.setState({
 						message: {
-							text: translate('common:error'),
+							text: translate('common.error'),
 							type: 'danger'
 						}
 					});
@@ -170,7 +170,7 @@ class CollectionPage extends React.Component {
 		else {
 			this.setState({
 				message: {
-					text: translate('common:noEntitySelected', {type: translate(`common:entityType.${_.camelCase(this.props.collection.entityType)}`)}),
+					text: translate('common.noEntitySelected', {type: translate(`common.entityType.${_.camelCase(this.props.collection.entityType)}`)}),
 					type: 'danger'
 				}
 			});
@@ -261,12 +261,12 @@ class CollectionPage extends React.Component {
 							<Button
 								className="margin-bottom-d5"
 								size="sm"
-								title={translate('collection.addEntity', {type: translate(`common:entityType.${_.camelCase(this.props.collection.entityType)}`)})}
+								title={translate('pages.collection.addEntity', {type: translate(`common.entityType.${_.camelCase(this.props.collection.entityType)}`)})}
 								variant="success"
 								onClick={this.handleShowAddEntityModal}
 							>
 								<FontAwesomeIcon icon={faPlus}/>
-								&nbsp;{translate('collection.addEntity', {type: translate(`common:entityType.${_.camelCase(this.props.collection.entityType)}`)})}
+								&nbsp;{translate('pages.collection.addEntity', {type: translate(`common.entityType.${_.camelCase(this.props.collection.entityType)}`)})}
 							</Button> : null
 					}
 					{
@@ -275,7 +275,7 @@ class CollectionPage extends React.Component {
 								className="margin-bottom-d5"
 								disabled={!this.state.selectedEntities.length}
 								size="sm"
-								title={translate('collection.removeSelectedTooltip', {type: translate(`common:entityType.${_.camelCase(this.props.collection.entityType)}_plural`)})}
+								title={translate('pages.collection.removeSelectedTooltip', {type: translate(`common.entityType.${_.camelCase(this.props.collection.entityType)}_plural`)})}
 								variant="danger"
 								onClick={this.handleRemoveEntities}
 							>
@@ -285,11 +285,10 @@ class CollectionPage extends React.Component {
 									components={{
 										badge: <Badge pill/>
 									}}
-									i18nKey="collection.removeSelected"
-									ns="pages"
+									i18nKey="pages.collection.removeSelected"
 									values={{
 										count: this.state.selectedEntities.length,
-										type: translate(`common:entityType.${_.camelCase(this.props.collection.entityType)}${this.state.selectedEntities.length === 1 ? '' : '_plural'}`)
+										type: translate(`common.entityType.${_.camelCase(this.props.collection.entityType)}${this.state.selectedEntities.length === 1 ? '' : '_plural'}`)
 									}}
 								/>
 							</Button> : null
@@ -300,10 +299,10 @@ class CollectionPage extends React.Component {
 								className="margin-bottom-d5"
 								href={`/collection/${this.props.collection.id}/edit`}
 								size="sm"
-								title={translate('collection.editCollection')}
+								title={translate('pages.collection.editCollection')}
 								variant="warning"
 							>
-								<FontAwesomeIcon icon={faPencilAlt}/>&nbsp;{translate('collection.editCollection')}
+								<FontAwesomeIcon icon={faPencilAlt}/>&nbsp;{translate('pages.collection.editCollection')}
 							</Button> : null
 					}
 					{
@@ -311,11 +310,11 @@ class CollectionPage extends React.Component {
 							<Button
 								className="margin-bottom-d5"
 								size="sm"
-								title={translate('collection.deleteCollection')}
+								title={translate('pages.collection.deleteCollection')}
 								variant="danger"
 								onClick={this.handleShowDeleteModal}
 							>
-								<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;{translate('collection.deleteCollection')}
+								<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;{translate('pages.collection.deleteCollection')}
 							</Button> : null
 					}
 					{
@@ -323,11 +322,11 @@ class CollectionPage extends React.Component {
 							<Button
 								className="margin-bottom-d5"
 								size="sm"
-								title={translate('collection.stopCollaborationTooltip')}
+								title={translate('pages.collection.stopCollaborationTooltip')}
 								variant="warning"
 								onClick={this.handleShowDeleteModal}
 							>
-								<FontAwesomeIcon icon={faTimesCircle}/>&nbsp;{translate('collection.stopCollaboration')}
+								<FontAwesomeIcon icon={faTimesCircle}/>&nbsp;{translate('pages.collection.stopCollaboration')}
 							</Button> : null
 					}
 				</div>
@@ -372,4 +371,4 @@ CollectionPage.defaultProps = {
 	userId: null
 };
 
-export default withTranslation(['pages', 'common'])(CollectionPage);
+export default withTranslation()(CollectionPage);
