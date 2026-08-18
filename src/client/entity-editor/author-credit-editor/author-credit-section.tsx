@@ -78,7 +78,7 @@ function AuthorCreditSection({
 	showEditor, onAuthorChange, isEditable, authorCreditEnable, toggleAuthorCreditEnable,
 	onClearHandler, isUnifiedForm, isLeftAlign, ...rest
 }: Props) {
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const {t: translate} = useTranslation();
 	const authorCreditEditor = convertMapToObject(immutableAuthorCreditEditor);
 	let editor;
 	if (showEditor) {
@@ -100,12 +100,12 @@ function AuthorCreditSection({
 		// eslint-disable-next-line react/jsx-no-bind
 		<Button disabled={!authorCreditEnable} variant="success" onClick={function openEditor() { onEditAuthorCredit(authorCreditRows.length); }}>
 			<FontAwesomeIcon icon={faPencilAlt}/>
-			&nbsp;{translate('common:button.edit')}
+			&nbsp;{translate('common.button.edit')}
 		</Button>);
 
 	const label = (
 		<ValidationLabel empty={false} error={!isValid}>
-			{translate('common:authorCredit')}
+			{translate('common.authorCredit')}
 		</ValidationLabel>
 	);
 	const SingleValue = (props:SingleValueProps<any>) => (
@@ -118,17 +118,17 @@ function AuthorCreditSection({
 	const optionValue = authorCreditPreview.length && {label: authorCreditPreview, value: authorCreditPreview};
 	const tooltip = (
 		<Tooltip id="AC-checkbox-tooltip">
-			{translate('authorCreditSection.tooltip')}
+			{translate('entityEditor.authorCreditSection.tooltip')}
 		</Tooltip>
 	);
 	const checkboxLabel = (
 		<>
 			<FormLabel className="font-weight-normal">
-				{translate('authorCreditSection.noAuthorLabel')}
+				{translate('entityEditor.authorCreditSection.noAuthorLabel')}
 				<OverlayTrigger
 					delay={50}
 					overlay={
-						<Tooltip id="ac-enabled">{translate('authorCreditSection.noAuthorTooltip')}</Tooltip>}
+						<Tooltip id="ac-enabled">{translate('entityEditor.authorCreditSection.noAuthorTooltip')}</Tooltip>}
 				>
 					<FontAwesomeIcon
 						className="margin-left-0-5"
@@ -176,7 +176,7 @@ function AuthorCreditSection({
 								isClearable={false}
 								isDisabled={!isEditable}
 								isUnifiedForm={isUnifiedForm}
-								placeholder={translate('authorCreditSection.placeholder')}
+								placeholder={translate('entityEditor.authorCreditSection.placeholder')}
 								recentlyUsedEntityType="Author"
 								rowId="n0"
 								value={optionValue}

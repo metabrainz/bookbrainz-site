@@ -21,6 +21,7 @@
 import * as bootstrap from 'react-bootstrap';
 import React from 'react';
 import {hot} from 'react-hot-loader';
+import {useTranslation} from 'react-i18next';
 
 
 const {Alert, Button} = bootstrap;
@@ -31,21 +32,16 @@ const {Alert, Button} = bootstrap;
  * @returns {ReactElement} an element containing the rendered output.
  */
 function RegistrationAuth() {
+	const {t: translate} = useTranslation();
+
 	return (
 		<div>
-			<div className="page-header"><h1>Register</h1></div>
+			<div className="page-header"><h1>{translate('pages.registration.heading')}</h1></div>
 			<p>
-				To sign up as an editor of BookBrainz, you need to first
-				have a MusicBrainz account. Please click the button below
-				to sign in or register with MusicBrainz. You’ll then be
-				redirected back to BookBrainz to continue registration!
+				{translate('pages.registration.authIntroText')}
 			</p>
 			<Alert variant="warning">
-				If you already registered for BookBrainz, and your account
-				isn’t linked to a MusicBrainz account, please contact us using
-				one of the links on our homepage instead of registering. We’ll
-				update your account details to link your account so that you
-				can sign in.
+				{translate('pages.registration.authWarningAlert')}
 			</Alert>
 			<div className="text-center">
 				<Button
@@ -57,7 +53,7 @@ function RegistrationAuth() {
 						className="margin-right-0-5"
 						src="/images/MusicBrainz_logo_icon.svg"
 					/>
-					Sign In or Register with MusicBrainz
+					{translate('pages.registration.authButtonText')}
 				</Button>
 			</div>
 		</div>

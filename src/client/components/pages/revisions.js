@@ -47,7 +47,7 @@ class RevisionsPage extends React.Component {
 					results={this.state.results}
 					showEntities={this.props.showEntities}
 					showRevisionEditor={this.props.showRevisionEditor}
-					tableHeading={translate('revisions.recentActivity')}
+					tableHeading={translate('pages.revisions.recentActivity')}
 				/>
 				<PagerElement
 					from={this.props.from}
@@ -82,4 +82,4 @@ RevisionsPage.defaultProps = {
 	size: 20
 };
 
-export default withTranslation('pages')(RevisionsPage);
+export default withTranslation()(RevisionsPage);
