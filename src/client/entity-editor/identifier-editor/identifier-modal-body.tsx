@@ -23,14 +23,14 @@ type IdentifierModalBodyProps = IdentifierModalBodyOwnProps & IdentifierModalBod
 
 
 export const IdentifierModalBody = ({identifiers, onAddIdentifier, identifierTypes}:IdentifierModalBodyProps) => {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation();
 	const noIdentifiersTextClass =
 		classNames('text-center', {'d-none': identifiers.size});
 
 	return (
 		<>
 			<div className={noIdentifiersTextClass}>
-				<p className="text-muted">{translate('identifierModalBody.noIdentifiers')}</p>
+				<p className="text-muted">{translate('entityEditor.identifierModalBody.noIdentifiers')}</p>
 			</div>
 			<div>
 				{
@@ -48,7 +48,7 @@ export const IdentifierModalBody = ({identifiers, onAddIdentifier, identifierTyp
 				<Col className="text-right" lg={{offset: 9, span: 3}}>
 					<Button variant="success" onClick={onAddIdentifier}>
 						<FontAwesomeIcon icon={faPlus}/>
-						<span>&nbsp;{translate('identifierModalBody.addButton')}</span>
+						<span>&nbsp;{translate('entityEditor.identifierModalBody.addButton')}</span>
 					</Button>
 				</Col>
 			</Row>

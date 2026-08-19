@@ -224,7 +224,7 @@ class IndexPage extends React.Component {
 						results={this.props.recent}
 						showEntities={this.props.showEntities}
 						showRevisionEditor={this.props.showRevisionEditor}
-						tableHeading={translate('pages:revisions.recentActivity')}
+						tableHeading={translate('pages.revisions.recentActivity')}
 					/>
 					<div className="text-center">
 						<Button
@@ -304,4 +304,4 @@ IndexPage.defaultProps = {
 	showRevisionEditor: true
 };
 
-export default withTranslation('pages')(IndexPage);
+export default withTranslation()(IndexPage);

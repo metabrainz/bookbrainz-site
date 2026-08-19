@@ -350,7 +350,7 @@ class RelationshipModal
 		const typesForDisplay = types.map(_.startCase);
 		const lastType = _.last(typesForDisplay);
 		const otherTypes = _.join(typesForDisplay.slice(0, -1), ', ');
-		const label = translate('relationshipModal.targetLabelList', {
+		const label = translate('entityEditor.relationshipModal.targetLabelList', {
 			types: otherTypes.length ? `${otherTypes} or ${lastType}` : lastType
 		});
 
@@ -360,7 +360,7 @@ class RelationshipModal
 				disabled={!targetEntity}
 				href={link}
 				target="_blank"
-				title={translate('common:openNewTab')}
+				title={translate('common.openNewTab')}
 				variant="info"
 			>
 				<FontAwesomeIcon icon={faExternalLinkAlt}/>
@@ -428,7 +428,7 @@ class RelationshipModal
 		// We are disabling this rule because we are already sanitizing the html here
 		return (
 			<Form.Group>
-				<Form.Label>{translate('common:Relationship')}</Form.Label>
+				<Form.Label>{translate('common.relationship')}</Form.Label>
 				<ReactSelect
 					classNamePrefix="react-select"
 					components={{Option: RelationshipSelect, SingleValue: RelationshipSelect}}
@@ -468,19 +468,19 @@ class RelationshipModal
 			return (
 				<Modal show size="lg" onHide={onClose}>
 					<Modal.Header>
-						<Modal.Title>{translate('shared.addRelationship')}</Modal.Title>
+						<Modal.Title>{translate('entityEditor.shared.addRelationship')}</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
 						<p>
 							<strong>
-								{translate('relationshipModal.noRelationshipsPossible', {
+								{translate('entityEditor.relationshipModal.noRelationshipsPossible', {
 									entityType: baseEntityTypeForDisplay
 								})}
 							</strong>
 						</p>
 					</Modal.Body>
 					<Modal.Footer>
-						<Button variant="danger" onClick={onCancel}>{translate('common:button.cancel')}</Button>
+						<Button variant="danger" onClick={onCancel}>{translate('common.button.cancel')}</Button>
 					</Modal.Footer>
 				</Modal>
 			);
@@ -489,17 +489,17 @@ class RelationshipModal
 		return (
 			<Modal show size="lg" onHide={onClose} onKeyUp={this.handleKeyPress}>
 				<Modal.Header>
-					<Modal.Title>{translate('shared.addRelationship')}</Modal.Title>
+					<Modal.Title>{translate('entityEditor.shared.addRelationship')}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<p>
 						<strong>
-							{translate('relationshipModal.introText', {
+							{translate('entityEditor.relationshipModal.introText', {
 								entityType: baseEntityTypeForDisplay
 							})}
 						</strong>
 						{' '}
-						{translate('relationshipModal.exampleText')}
+						{translate('entityEditor.relationshipModal.exampleText')}
 					</p>
 					<hr/>
 					<Row>
@@ -528,7 +528,7 @@ class RelationshipModal
 					</Container>
 					<Button variant="danger" onClick={onCancel}>
 						<FontAwesomeIcon icon={faTimes}/>
-						<span>&nbsp;{translate('common:button.cancel')}</span>
+						<span>&nbsp;{translate('common.button.cancel')}</span>
 					</Button>
 					<Button
 						disabled={submitDisabled}
@@ -536,7 +536,7 @@ class RelationshipModal
 						onClick={this.handleAdd}
 					>
 						<FontAwesomeIcon icon={faPlus}/>
-						<span>&nbsp;{translate('common:button.add')}</span>
+						<span>&nbsp;{translate('common.button.add')}</span>
 					</Button>
 				</Modal.Footer>
 			</Modal>
@@ -544,4 +544,4 @@ class RelationshipModal
 	}
 }
 
-export default withTranslation(['entityEditor', 'common'])(RelationshipModal);
+export default withTranslation()(RelationshipModal);

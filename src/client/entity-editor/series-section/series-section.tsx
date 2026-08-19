@@ -116,7 +116,7 @@ function SeriesSection({
 	isUnifiedForm,
 	seriesTypeValue
 }: Props) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation();
 
 	const baseEntity = {
 		bbid: _.get(entity, 'bbid'),
@@ -164,15 +164,15 @@ function SeriesSection({
 	const seriesTypeOption = seriesTypesForDisplay.filter((el) => el.value === seriesTypeValue);
 	const orderingTooltip = (
 		<Tooltip>
-			{translate('seriesSection.orderingTypeTooltip')}
+			{translate('entityEditor.seriesSection.orderingTypeTooltip')}
 		</Tooltip>
 	);
 	const seriesTypeTooltip = (
 		<Tooltip>
-			{translate('seriesSection.seriesTypeTooltip')}
+			{translate('entityEditor.seriesSection.seriesTypeTooltip')}
 		</Tooltip>
 	);
-	const heading = <h2>{translate('shared.entityHeading', {entity: 'Series'})}</h2>;
+	const heading = <h2>{translate('entityEditor.shared.entityHeading', {entity: 'Series'})}</h2>;
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
@@ -182,13 +182,13 @@ function SeriesSection({
 			{!isUnifiedForm && heading}
 			{!hideItemSelect &&
 			<p className="text-muted">
-				{translate('seriesSection.allFieldsMandatory')}
+				{translate('entityEditor.seriesSection.allFieldsMandatory')}
 			</p>}
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>
-							{translate('seriesSection.orderingTypeLabel')}
+							{translate('entityEditor.seriesSection.orderingTypeLabel')}
 							<OverlayTrigger delay={50} overlay={orderingTooltip}>
 								<FontAwesomeIcon
 									className="margin-left-0-5"
@@ -209,7 +209,7 @@ function SeriesSection({
 					{!isUnifiedForm &&
 					<Form.Group>
 						<Form.Label>
-							{translate('seriesSection.seriesTypeLabel')}
+							{translate('entityEditor.seriesSection.seriesTypeLabel')}
 							<OverlayTrigger delay={50} overlay={seriesTypeTooltip}>
 								<FontAwesomeIcon
 									className="margin-left-0-5"

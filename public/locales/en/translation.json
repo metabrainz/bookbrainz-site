@@ -1,0 +1,370 @@
+{
+  "common": {
+    "about": {
+      "accessingData": "Accessing the data",
+      "contactUs": "Contact Us",
+      "lead": "BookBrainz is an online encyclopaedia which contains information about published literature. Our aim is to collect and store data about every book, magazine, journal or other publication ever written.",
+      "ourStory": "Our Story",
+      "title": "About BookBrainz"
+    },
+    "allEntities": "All Entities",
+    "annotation": "Annotation",
+    "area": "Area",
+    "authorCredit": "Author Credit",
+    "button": {
+      "add": "Add",
+      "cancel": "Cancel",
+      "close": "Close",
+      "copy": "Copy",
+      "discard": "Discard changes",
+      "edit": "Edit",
+      "guess": "Guess",
+      "remove": "Remove",
+      "search": "Search",
+      "submit": "Submit",
+      "update": "Update"
+    },
+    "collaborator": "Collaborator",
+    "date": "Date",
+    "description": "Description",
+    "displayName": "Display Name",
+    "entities": "Entities",
+    "entityType": {
+      "area": "Area",
+      "author": "Author",
+      "collection": "Collection",
+      "edition": "Edition",
+      "editionGroup": "Edition Group",
+      "editor": "Editor",
+      "publisher": "Publisher",
+      "series": "Series",
+      "work": "Work"
+    },
+    "entityTypeLabel": "Entity Type",
+    "format": "Format",
+    "gender": "Gender",
+    "languages": "Languages",
+    "lastModified": "Last Modified",
+    "name": "Name",
+    "no": "no",
+    "number": "Number",
+    "openNewTab": "Open in a new tab",
+    "owner": "Owner",
+    "pageCount": "Page Count",
+    "pages": "Pages",
+    "pagination": {
+      "next": "Next Page →",
+      "perPage": "{{count}} per page",
+      "previous": "← Previous Page",
+      "results": "Results {{from}} — {{to}}"
+    },
+    "preview": "Preview",
+    "privacy": "Privacy",
+    "private": "Private",
+    "privileges": "Privileges",
+    "public": "Public",
+    "publisher": "Publisher",
+    "relationship": "Relationship",
+    "role": "Collaborator/Owner",
+    "searchResults": "Search Results",
+    "status": "Status",
+    "type": "Type",
+    "unnamed": "(unnamed)",
+    "yes": "yes"
+  },
+  "entities": {},
+  "entityEditor": {
+    "aliasButton": {
+      "editAliases_zero": "Add aliases…",
+      "editAliases_one": "Edit 1 alias…",
+      "editAliases_other": "Edit {{count}} aliases…"
+    },
+    "aliasEditor": {
+      "helpText": "Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc. Refer to the help page for more details and examples.",
+      "title": "Alias Editor"
+    },
+    "annotationSection": {
+      "copyrightWarning": "Do not submit any copyrighted text here.",
+      "helpText": "Annotations allow you to enter freeform data that does not otherwise fit in the above form.",
+      "lastModified": "Last modified: {{date}}",
+      "openLicenseNoticeLink": "open licenses",
+      "openLicenseNoticePost": ".",
+      "openLicenseNoticePre": "The contents will be made available to the public under ",
+      "tooltip": "Additional freeform data that does not fit in the above form"
+    },
+    "authorCreditEditor": {
+      "addAuthor": "Add Author",
+      "introText": "Author credits indicate who is the main credited Author (or Authors) for Editions, and how they are credited. They consist of Authors, with (optionally) their names as credited in the specific Edition (i.e. on the cover), and join phrases between them. Keep in mind that join phrases should include spaces before and after if you want any to appear in the final credit.",
+      "joinPhraseLabel": "Join Phrase",
+      "previewText": "Preview of the final Author credit:"
+    },
+    "authorCreditRow": {
+      "creditedAsLabel": "Author as credited"
+    },
+    "authorCreditSection": {
+      "noAuthorLabel": "This Edition doesn't have an Author",
+      "noAuthorTooltip": "Select this checkbox if this Edition doesn't have an Author or if you don't know the Author(s)",
+      "placeholder": "Type to search or paste a BBID",
+      "tooltip": "Who wrote this work? You can add multiple authors."
+    },
+    "authorSection": {
+      "beginAreaLabel": {
+        "group": "Place founded",
+        "person": "Place of birth"
+      },
+      "beginDateLabel": {
+        "group": "Date founded",
+        "person": "Date of birth"
+      },
+      "endAreaLabel": {
+        "group": "Place of dissolution",
+        "person": "Place of death"
+      },
+      "endDateLabel": {
+        "group": "Date of dissolution",
+        "person": "Date of death"
+      },
+      "endedLabel": {
+        "person": "Died?"
+      }
+    },
+    "dateField": {
+      "datePickerTitle": "Date picker",
+      "futureDateWarning": "Are you sure? You entered a date in the future!"
+    },
+    "disambiguationField": {
+      "label": "Disambiguation",
+      "tooltip": "If a different entity with the same name already exists or if there is a need for clarification"
+    },
+    "editionGroupSection": {
+      "typeTooltip": "Physical format of the Edition Group"
+    },
+    "editionSection": {
+      "autoCreateEditionGroup": "Automatically create an Edition Group",
+      "autoCreateMessage": "A new Edition Group with the same name will be created automatically.",
+      "belowFieldsOptional": "Below fields are optional — leave something blank if you don't know it",
+      "clickIconToOpen": "Click on the <icon /> icon open in a new tab, and click an item to select.",
+      "editionGroupHelp": "Group with other Editions of the same book",
+      "editionGroupRequired": "Edition Group is required — this cannot be blank. You can search for and choose an existing Edition Group, or choose to automatically create one instead.",
+      "editionGroupTooltip": "Group together different Editions of the same book.",
+      "editionGroupTooltipExample": "For example paperback, hardcover and e-book editions.",
+      "formatTooltip": "The type of printing and binding of the edition, or digital equivalent",
+      "languageTooltip": "Main language used for the content of the edition",
+      "matchingEditionGroups_one": "An existing Edition Group with the same name as this Edition already exists",
+      "matchingEditionGroups_other": "Edition Groups with the same name as this Edition already exist",
+      "noSelectionAutoCreate": "If no Edition Group is selected, a new one will be created automatically.",
+      "releaseDateTooltip": "The date this specific edition was published (not the first publication date of the work). If unsure, leave empty.",
+      "reviewEditionGroups": "Please review the Edition Groups below and select the one that corresponds to your Edition.",
+      "searchExistingEditionGroup": "Search for an existing Edition Group",
+      "statusTooltip": "Has the work been published, or is it in a draft stage?"
+    },
+    "editionSectionMerge": {
+      "noLanguages": "No languages"
+    },
+    "entityType": {
+      "author_plural": "Authors",
+      "publisher_plural": "Publishers"
+    },
+    "identifierButton": {
+      "addIdentifiersUnified": "Add Identifiers",
+      "editIdentifiers_one": "Edit 1 identifier (eg. ISBN, Wikidata ID)…",
+      "editIdentifiers_other": "Edit {{count}} identifiers (eg. ISBN, Wikidata ID)…",
+      "editIdentifiersUnified": "Edit identifiers"
+    },
+    "identifierEditor": {
+      "helpText": "identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc. You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).",
+      "title": "Identifier Editor"
+    },
+    "identifierModalBody": {
+      "addButton": "Add identifier",
+      "noIdentifiers": "This entity has no identifiers"
+    },
+    "identifierRow": {
+      "previewLink": "Preview Link: ",
+      "typeLabel": "Type"
+    },
+    "languageField": {
+      "frequentlyUsed": "Frequently Used",
+      "label": "Language",
+      "other": "Other",
+      "placeholder": "Search language",
+      "recentlyUsed": "Recently Used"
+    },
+    "nameSection": {
+      "clickToOpen": "Click on a name to open it (Ctrl/Cmd + click to open in a new tab)",
+      "ctrlClick": "Ctrl/Cmd + click to open in a new tab",
+      "duplicateSuggestion": "If the {{entityType}} you want to add appears in the results below, click on it to inspect it before adding a possible duplicate.",
+      "duplicateWarning_one": "We found the following {{entityType}} with exactly the same name or alias:",
+      "duplicateWarning_other": "We found the following {{entityType}}s with exactly the same name or alias:",
+      "fillDisambiguation": "If you are sure your entry is different, please fill the disambiguation field below to help us differentiate between them.",
+      "heading": "What is the {{entityType}} called?",
+      "languageTooltip": "Language used for the above name",
+      "nameTooltip": "Official name of the {{entityType}} in its original language. Names in other languages should be added as aliases."
+    },
+    "publisherSection": {
+      "areaTooltip": "Country or place the publisher is registered in",
+      "dateDissolved": "Date Dissolved",
+      "dateFounded": "Date Founded"
+    },
+    "relationship": {
+      "newEntity": "New Entity"
+    },
+    "relationshipAttribute": {
+      "numberPlaceholder": "Enter a value"
+    },
+    "relationshipEditor": {
+      "heading": "Relationships",
+      "noRelationships": "No relationships have been added yet.",
+      "relationshipType": "Relationship Type",
+      "sourceEntity": "Source Entity",
+      "targetEntity": "Target Entity",
+      "undoLastAction": "Undo last action"
+    },
+    "relationshipModal": {
+      "beginDate": "Begin Date",
+      "editTitle": "Edit relationship",
+      "endDate": "End Date",
+      "exampleText": "For example, you can link an author to a work, or a work to another work to show translation or derivation.",
+      "introText": "Use this form to add links between this {{entityType}} and other entities.",
+      "noRelationshipsPossible": "{{entityType}}s have no possible relationships with other entities at the moment.",
+      "searchPlaceholder": "Search for an entity…",
+      "selectTarget": "Please select a target entity",
+      "selectType": "Please select a relationship type",
+      "sourceLabel": "This entity",
+      "targetLabel": "Other entity",
+      "targetLabelList": "Other entity ({{types}})",
+      "typeLabel": "Relationship type"
+    },
+    "relationshipSection": {
+      "heading": "How are other entities related to this {{entityType}}?"
+    },
+    "seriesEditor": {
+      "addButton": "Add {{seriesType}}",
+      "addEntityPrompt": "Add an entity to the series:",
+      "heading": "What {{seriesType}} are part of this Series?",
+      "placeholder": "Enter value..."
+    },
+    "seriesSection": {
+      "allFieldsMandatory": "All fields are mandatory — select the option from dropdown",
+      "orderingTypeLabel": "Ordering Type",
+      "orderingTypeTooltip": "Ordering Type of the Series Entity",
+      "seriesTypeLabel": "Series Type",
+      "seriesTypeTooltip": "Entity Type of the Series"
+    },
+    "shared": {
+      "addIdentifiers": "Add identifiers (eg. ISBN, Wikidata ID)…",
+      "addRelationship": "Add a relationship",
+      "allFieldsOptional": "All fields optional — leave something blank if you don't know it",
+      "authorCreditLabel": "Edit Author Credit",
+      "depthLabel": "Depth",
+      "dissolvedLabel": "Dissolved?",
+      "entityHeading": "What else do you know about the {{entity}}?",
+      "heightLabel": "Height",
+      "optionalLabel": "(optional)",
+      "releaseDateLabel": "Release Date",
+      "weightLabel": "Weight",
+      "widthLabel": "Width"
+    },
+    "sortNameField": {
+      "label": "Sort Name",
+      "tooltip": "Alphabetical sorting name. Examples: 'Dickens, Charles', 'Christmas Carol, A'. You can try to fill it automatically with the guess button"
+    },
+    "submissionSection": {
+      "editNoteHelp": "An edit note will make your entries more credible. Reply to one or more of these questions in the textarea below:\n- Where did you get your info from? A link is worth a thousand words.\n- What kind of information did you provide? If you made any changes, what are they and why?\n- Do you have any questions concerning the editing process you want to ask?",
+      "editNoteLabel": "Edit Note",
+      "editNoteTooltip": "Cite your sources or an explanation of your edit",
+      "heading": "Submit Your Edit",
+      "submissionError": "Submission Error: {{errorText}}",
+      "submitButton": "Submit"
+    },
+    "valueField": {
+      "label": "Value"
+    },
+    "workSection": {
+      "languageTooltip": "Main language used for the content of the work",
+      "typeTooltip": "Literary form or structure of the work"
+    }
+  },
+  "errors": {},
+  "pages": {
+    "achievements": {
+      "lockedHeading": "Locked Achievements",
+      "unlockedHeading": "Unlocked Achievements",
+      "unsetInstructions": "click badge to unset",
+       "updateButton": "Update"
+    },
+    "callToAction": {
+      "helpPage": "help page",
+      "helpText": "Help us and click on the right entity below to create a new entry.",
+      "notSure": "Not sure what to do? Visit the ",
+      "toGetStarted": " to get started."
+    },
+    "collections": {
+      "allTypes": "All Types",
+      "createButton": "Create Collection",
+      "headerDescription": "Description",
+      "headerEntities": "Entities",
+      "headerEntityType": "Entity Type",
+      "headerLastModified": "Last Modified",
+      "headerPrivacy": "Privacy",
+      "headerRole": "Collaborator/Owner",
+      "myCollectionsButton": "My Collections",
+      "noCollections": "No collections to show"
+    },
+    "profile": {
+      "badges": "Badges",
+      "basicInfo": "Basic Info",
+      "bio": "Bio",
+      "editInfoTitle": "Edit basic editor info",
+      "editProfile": "Edit Profile",
+      "joined": "Joined",
+      "lastLogin": "Last login",
+      "linkMB": "Link My MusicBrainz Account",
+      "musicbrainzAccount": "MusicBrainz Account",
+      "noBadges": "No badge to show, use the achievement menu to see available achievements",
+      "noLinkedMB": "No Linked MusicBrainz Account",
+      "reputation": "Reputation",
+      "revisionsApplied": "Revisions Applied",
+      "revisionsChartLabel": "Revisions",
+      "revisionsReverted": "Revisions Reverted",
+      "sendEmail": "send email",
+      "stats": "Stats",
+      "totalRevisions": "Total Revisions",
+      "unlocked": "Unlocked: {{date}}"
+    },
+    "registration": {
+      "displayNameIntro": "Firstly, please check that your display name is correct. This is the name that other editors will get to know you by.",
+      "genderIntro": "And, optionally, set a gender that will be displayed on your profile page.",
+      "genderPlaceholder": "Select gender…",
+      "heading": "Register",
+      "introText": "Great! You successfully logged in to MusicBrainz and are now just one step away from becoming a BookBrainz editor. The following form allows you to specify additional information that will let other users know a little bit more about you. When you’re done, just click the blue button at the bottom of the page.",
+      "submitButton": "Looks good, sign me up!"
+    },
+    "revisions": {
+      "headerId": "Revision ID",
+      "headerModifiedEntities": "Modified entities",
+      "headerNote": "Note",
+      "headerUser": "User",
+      "noRevisions": "No revisions to show",
+      "recentActivity": "Recent Activity",
+      "titleMerge": "Merge revision",
+      "titleNormal": "Revision"
+    },
+    "searchPage": {
+      "missingEntry": "Are we missing an entry?",
+      "noResults": "No results found",
+      "spellingWarning": "Make sure the spelling is correct, and that you have selected the correct type in the search bar."
+    },
+    "searchResults": {
+      "addToCollection": "Add to Collection",
+      "cannotAdd": "{{type}} cannot be added to a collection",
+      "clearSelected_one": "Clear 1 selected",
+      "clearSelected_other": "Clear {{count}} selected",
+      "headerAliases": "Aliases",
+      "headerType": "Type",
+      "loginRequired": "You need to be logged in",
+      "nothingSelected": "Nothing Selected",
+      "sameTypeRequired": "Selected entities should be of same type"
+    }
+  }
+}
