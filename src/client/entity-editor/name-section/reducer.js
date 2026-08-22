@@ -17,14 +17,15 @@
  */
 
 import {
-	UPDATE_DISAMBIGUATION_FIELD, UPDATE_LANGUAGE_FIELD, UPDATE_NAME_FIELD,
-	UPDATE_SEARCH_RESULTS, UPDATE_SORT_NAME_FIELD, UPDATE_WARN_IF_EXISTS
+	UPDATE_COPY_LANGUAGE_TO_CONTENT, UPDATE_DISAMBIGUATION_FIELD, UPDATE_LANGUAGE_FIELD,
+	UPDATE_NAME_FIELD, UPDATE_SEARCH_RESULTS, UPDATE_SORT_NAME_FIELD, UPDATE_WARN_IF_EXISTS
 } from './actions';
 import Immutable from 'immutable';
 
 
 function reducer(
 	state = Immutable.Map({
+		copyLanguageToContent: false,
 		disambiguation: '',
 		exactMatches: [],
 		language: null,
@@ -48,6 +49,8 @@ function reducer(
 			return state.set('searchResults', payload);
 		case UPDATE_WARN_IF_EXISTS:
 			return state.set('exactMatches', payload);
+		case UPDATE_COPY_LANGUAGE_TO_CONTENT:
+			return state.set('copyLanguageToContent', payload);
 		// no default
 	}
 	return state;
