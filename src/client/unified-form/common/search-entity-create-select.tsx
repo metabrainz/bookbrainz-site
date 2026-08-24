@@ -24,9 +24,15 @@ const addEntityAction = {
 	work: addWork
 };
 function SearchEntityCreate(props:SearchEntityCreateProps) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation();
 	const {type, nextId, onModalOpen, onModalClose, onSubmitEntity, rowId, onOpenCallback, ...rest} = props;
-	const createLabel = React.useCallback((input) => translate('unifiedForm.createEntity', {entityType: translate(`common:entityType.${camelCase(type)}`),name: input}), [translate, type]);
+	const createLabel = React.useCallback(
+		(input) => translate('entityEditor.unifiedForm.createEntity', {
+			entityType: translate(`common.entityType.${camelCase(type)}`),
+			name: input
+		}),
+		[translate, type]
+	);
 	const [showModal, setShowModal] = React.useState(false);
 	const getNewOptionData = React.useCallback((_, label) => ({
 		__isNew__: true,

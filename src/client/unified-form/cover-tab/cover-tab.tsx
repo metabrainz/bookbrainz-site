@@ -16,7 +16,7 @@ import {useTranslation} from 'react-i18next';
 
 
 export function CoverTab(props:CoverProps) {
-	const {t: translate} = useTranslation('common');
+	const {t: translate} = useTranslation();
 	const {publisherValue: publishers, onPublisherChange, identifierEditorVisible,
 		onClearPublisher, handleClearPublishers, modalIsOpen, ...rest} = props;
 	const publisherValue:EntitySelect[] = Object.values(convertMapToObject(publishers ?? {}));
@@ -39,7 +39,7 @@ export function CoverTab(props:CoverProps) {
 				<Col lg={{offset: 0, span: 6}}>
 					<SearchEntityCreate
 						isMulti
-						label={translate('publisher')}
+						label={translate('common.publisher')}
 						recentlyUsedEntityType="Publisher"
 						type="publisher"
 						value={publisherValue}
