@@ -1,1 +1,17 @@
-{}
+{
+  "An award was not unlocked": "An award was not unlocked",
+  "An unhandled error occurred": "An unhandled error occurred",
+  "Bad Request": "Bad Request",
+  "Form contained invalid data": "Form contained invalid data",
+  "Invalid authentication credentials": "Invalid authentication credentials",
+  "No content exists at the path requested: {{path}}": "No content exists at the path requested: {{path}}",
+  "Page not found": "Page not found",
+  "Please make sure you have entered in the correct address!": "Please make sure you have entered in the correct address!",
+  "Please make sure you have entered in the correct credentials and address!": "Please make sure you have entered in the correct credentials and address!",
+  "Please make sure you have the privileges to access the route!": "Please make sure you have the privileges to access the route!",
+  "Resource conflict": "Resource conflict",
+  "You are not currently authenticated": "You are not currently authenticated",
+  "You do not have permission to access the following path: {{path}}": "You do not have permission to access the following path: {{path}}",
+  "You do not have permission to access this page": "You do not have permission to access this page",
+  "You do not have permission to access this route": "You do not have permission to access this route"
+}
