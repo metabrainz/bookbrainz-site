@@ -10,16 +10,16 @@ import {useTranslation} from 'react-i18next';
 
 
 export function ISBNField(props:ISBNProps) {
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const {t: translate} = useTranslation();
 	const {value, type, onChange, autoISBN, onAutoISBNChange} = props;
 	const onChangeHandler = React.useCallback((event:RInputEvent) => onChange(event.target.value, autoISBN), [onChange, autoISBN]);
 	const onAutoISBNChangeHandler = React.useCallback((event:RInputEvent) => {
 		onAutoISBNChange(event.target.checked);
 		onChange(value, event.target.checked);
 	}, [onAutoISBNChange, onChange, value]);
-	let checkboxLabel = translate('unifiedForm.autoAddISBN', {isbnValue: '', isbnVersion: '?'});
+	let checkboxLabel = translate('entityEditor.unifiedForm.autoAddISBN', {isbnValue: '', isbnVersion: '?'});
 	if (type) {
-		checkboxLabel = translate('unifiedForm.autoAddISBN', {
+		checkboxLabel = translate('entityEditor.unifiedForm.autoAddISBN', {
 			isbnValue: ` (${type === 10 ? isbn10To13(value) : isbn13To10(value)})`,
 			isbnVersion: type === 10 ? '13' : '10'
 		});
@@ -30,8 +30,8 @@ export function ISBNField(props:ISBNProps) {
 				defaultValue={value}
 				empty={value.length === 0}
 				error={Boolean(!type && value)}
-				label={translate('common:isbn')}
-				tooltipText={translate('unifiedForm.isbnTooltip')}
+				label={translate('common.isbn')}
+				tooltipText={translate('entityEditor.unifiedForm.isbnTooltip')}
 				onChange={onChangeHandler}
 			/>
 			<FormCheck
