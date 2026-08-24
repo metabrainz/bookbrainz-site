@@ -295,6 +295,7 @@ export function makeEntityLoader(modelName: string, additionalRels: Array<string
 	return async (req: $Request, res: $Response, next: NextFunction, bbid: string) => {
 		const {orm}: any = req.app.locals;
 		if (commonUtils.isValidBBID(bbid)) {
+			const model = commonUtils.getEntityModelByType(orm, modelName);
 			try {
 				const entity = await orm.func.entity.getEntity(orm, modelName, bbid, relations);
 				if (!entity.dataId) {
@@ -313,7 +314,10 @@ export function makeEntityLoader(modelName: string, additionalRels: Array<string
 				return next();
 			}
 			catch (err) {
-				return next(new error.NotFoundError(errMessage, req));
+				if (err instanceof model.NotFoundError) {
+					return next(new error.NotFoundError(errMessage, req));
+				}
+				return next(new error.SiteError(`Error loading entity ${bbid} of type ${modelName}: ${err.message}`));
 			}
 		}
 		else {
