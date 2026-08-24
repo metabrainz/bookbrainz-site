@@ -20,6 +20,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 
 
 const {Col, Container, Row} = bootstrap;
@@ -28,20 +29,21 @@ type FooterProps = {
     repositoryUrl: string;
     siteRevision: string;
 };
-function Footer({repositoryUrl, siteRevision}: Props) {
+function Footer({repositoryUrl, siteRevision}: FooterProps) {
+	const {t: translate} = useTranslation();
 	return (
 		<footer className="footer">
 			<Container fluid>
 				<Row>
 					<Col xs={4}>
-						<small>{'Tested with '}
+						<small>{translate('common.footer.testedWith')}
 							<a
 								href="https://www.browserstack.com/"
 								rel="noopener noreferrer"
 								target="_blank"
 							>
 								<img
-									alt="BrowserStack Logo"
+									alt={translate('common.footer.browserStackAlt')}
 									height="25"
 									src="/images/BrowserStack.png"
 								/>
@@ -49,7 +51,7 @@ function Footer({repositoryUrl, siteRevision}: Props) {
 						</small>
 					</Col>
 					<Col className="text-center" xs={4}>
-						<small>Cover image by{' '}
+						<small>{translate('common.footer.coverImageBy')}{' '}
 							<a href="https://commons.wikimedia.org/wiki/File:Bookshelf.jpg">
 								Stewart Butterfield
 							</a> (
@@ -61,12 +63,12 @@ function Footer({repositoryUrl, siteRevision}: Props) {
 					<Col className="text-right" xs={4}>
 						<div className="small">
 							<a href="/admin-logs">
-								Admin Logs
+								{translate('common.nav.adminLogs')}
 							</a>
 						</div>
 						<div className="small">
 							<a href="/privacy">
-								Privacy & Terms
+								{translate('common.footer.privacyAndTerms')}
 							</a>
 						</div>
 					</Col>
@@ -74,12 +76,12 @@ function Footer({repositoryUrl, siteRevision}: Props) {
 				<Row>
 					<Col className="text-center" xs={12}>
 						<small>
-							Alpha Software —{' '}
+							{translate('common.footer.alphaSoftware')} —{' '}
 							<a href={`${repositoryUrl}tree/${siteRevision || 'master'}`}>
-								{siteRevision || 'unknown revision'}
+								{siteRevision || translate('common.footer.unknownRevision')}
 							</a> —&nbsp;
 							<a href="https://tickets.metabrainz.org/projects/BB/issues/">
-								Report a Bug
+								{translate('common.footer.reportBug')}
 							</a>
 						</small>
 					</Col>
