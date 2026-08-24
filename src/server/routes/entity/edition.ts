@@ -85,7 +85,7 @@ export function transformNewForm(data) {
 	);
 
 	let authorCredit = {};
-	const authorCreditEnable = _.get(data, ['editionSection', 'authorCreditEnable'], true);
+	const authorCreditEnable = Boolean(_.get(data, ['editionSection', 'authorCreditEnable'], true));
 
 	if (!authorCreditEnable) {
 		authorCredit = null;
@@ -445,10 +445,11 @@ export function editionToFormState(edition) {
 	for (const credit of credits) {
 		authorCreditEditor[credit.position] = credit;
 	}
-	if (!edition.creditSection) {
+	const authorCreditEnable = Boolean(edition.creditSection);
+	if (!authorCreditEnable) {
 		authorCreditEditor = {};
 	}
-	if (_.isEmpty(authorCreditEditor) && edition.creditSection) {
+	else if (_.isEmpty(authorCreditEditor)) {
 		authorCreditEditor.n0 = {
 			author: null,
 			joinPhrase: '',
@@ -483,7 +484,7 @@ export function editionToFormState(edition) {
 	const editionGroup = utils.entityToOption(edition.editionGroup);
 
 	const editionSection = {
-		authorCreditEnable: edition.creditSection,
+		authorCreditEnable,
 		depth: edition.depth,
 		editionGroup,
 		// Determines whether the EG can be left blank (an EG will be auto-created) for existing Editions
