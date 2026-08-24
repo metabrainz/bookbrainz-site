@@ -13,7 +13,7 @@ import {useTranslation} from 'react-i18next';
 const {Row, Col, Button, FormCheck, ButtonGroup, Tooltip, OverlayTrigger, FormLabel} = Bootstrap;
 
 function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, rowId, ...rest}:WorkRowProps) {
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const {t: translate} = useTranslation();
 	const isChecked = work?.checked;
 	const handleCopy = React.useCallback(() => onCopyHandler(rowId), [onCopyHandler, work]);
 	const onChangeHandler = React.useCallback((value:any, action:any) => {
@@ -27,11 +27,11 @@ function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, rowId, ...r
 		value.checked = isChecked;
 		onChange(value);
 	}, [isChecked, onChange, onRemove]);
-	const checkToolTip = <Tooltip id="work-check">{translate('unifiedForm.copyAuthorsTooltip')}</Tooltip>;
+	const checkToolTip = <Tooltip id="work-check">{translate('entityEditor.unifiedForm.copyAuthorsTooltip')}</Tooltip>;
 	const checkLabel = (
 		<>
 			<FormLabel className="font-weight-normal">
-				{translate('unifiedForm.copyAuthorsLabel')}
+				{translate('entityEditor.unifiedForm.copyAuthorsLabel')}
 				<OverlayTrigger
 					delay={50}
 					overlay={checkToolTip}
@@ -58,8 +58,8 @@ function WorkRow({onChange, work, onRemove, onToggle, onCopyHandler, rowId, ...r
 				</Col>
 				<Col lg={{span: 2}}>
 					<ButtonGroup>
-						<Button variant="primary" onClick={handleCopy as React.MouseEventHandler}>{translate('common:button.duplicate')}</Button>
-						<Button variant="danger" onClick={onRemove}>{translate('common:button.remove')}</Button>
+						<Button variant="primary" onClick={handleCopy as React.MouseEventHandler}>{translate('common.button.duplicate')}</Button>
+						<Button variant="danger" onClick={onRemove}>{translate('common.button.remove')}</Button>
 					</ButtonGroup>
 				</Col>
 			</Row>

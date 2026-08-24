@@ -51,7 +51,7 @@ function generateRel(workEntity, seriesEntity, attributeSetId?, isAdded = false,
 }
 export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeriesChange, series,
 	 onAddSeriesItem, onSubmitWork, resetSeries, bulkAddSeriesItems, ...rest}:ContentTabProps) {
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const {t: translate} = useTranslation();
 	const [isChecked, setIsChecked] = React.useState(true);
 	const [copyToSeries, setCopyToSeries] = React.useState(false);
 	const [onChangeRefresh, setOnChangeRefresh] = React.useState(0);
@@ -123,7 +123,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 		onChange(work);
 		setOnChangeRefresh(prev => prev + 1);
 	}, [isChecked, onChange, copyToSeries, series]);
-	const checkToolTip = <Tooltip id="work-check">{translate('unifiedForm.copyAuthorsTooltip')}</Tooltip>;
+	const checkToolTip = <Tooltip id="work-check">{translate('entityEditor.unifiedForm.copyAuthorsTooltip')}</Tooltip>;
 	const seriesSectionProps = {
 		...rest,
 		entity: {
@@ -135,7 +135,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 	const checkLabel = (
 		<>
 			<FormLabel className="font-weight-normal">
-				{translate('unifiedForm.copyAuthorsLabel')}
+				{translate('entityEditor.unifiedForm.copyAuthorsLabel')}
 				<OverlayTrigger
 					delay={50}
 					overlay={checkToolTip}
@@ -151,10 +151,10 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 
 		<>
 			<FormLabel className="font-weight-normal">
-				{translate('unifiedForm.addWorksToSeries')}
+				{translate('entityEditor.unifiedForm.addWorksToSeries')}
 				<OverlayTrigger
 					delay={50}
-					overlay={<Tooltip id="series-work">{translate('unifiedForm.addWorksToSeriesTooltip')}</Tooltip>}
+					overlay={<Tooltip id="series-work">{translate('entityEditor.unifiedForm.addWorksToSeriesTooltip')}</Tooltip>}
 				>
 					<FontAwesomeIcon
 						className="margin-left-0-5"
@@ -170,7 +170,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 	return (
 		<>
 			<div>
-				<h3>{translate('common:entityType.work_plural')}</h3>
+				<h3>{translate('common.entityType.work_plural')}</h3>
 				{map(works, (_, rowId) => <WorkRow key={rowId} rowId={rowId} onCopyHandler={openModalHandler} {...rest}/>)}
 				<CreateEntityModal handleClose={closeModalHandler} handleSubmit={submitModalHandler} show={showModal} type="work" {...rest}/>
 				<Row>
@@ -198,8 +198,8 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 			</div>
 			<hr/>
 			<div>
-				<h3>{translate('common:entityType.series')}</h3>
-				<p className="text-muted">{translate('unifiedForm.seriesDescription')}</p>
+				<h3>{translate('common.entityType.series')}</h3>
+				<p className="text-muted">{translate('entityEditor.unifiedForm.seriesDescription')}</p>
 				<FormCheck
 					className="ml-1 mb-2"
 					defaultChecked={copyToSeries}

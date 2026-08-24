@@ -17,14 +17,14 @@ import {useTranslation} from 'react-i18next';
 
 function EntityModalBody({onModalSubmit, children, validate, onAliasClose, onIdentifierClose, ...rest}
 	:EntityModalBodyProps) {
-	const {t: translate} = useTranslation('common');
+	const {t: translate} = useTranslation();
 	const genericProps:any = omit(rest, ['allIdentifierTypes']);
 	return (
 		<form className="uf-modal-body" onSubmit={onModalSubmit}>
-			<SingleAccordion defaultActive heading={translate('name')} >
+			<SingleAccordion defaultActive heading={translate('common.name')} >
 				<NameSection isModal {...rest}/>
 			</SingleAccordion>
-			<SingleAccordion defaultActive heading={translate('details')}>
+			<SingleAccordion defaultActive heading={translate('common.details')}>
 				{
 					React.cloneElement(
 						React.Children.only(children),
@@ -32,16 +32,16 @@ function EntityModalBody({onModalSubmit, children, validate, onAliasClose, onIde
 					)
 				}
 			</SingleAccordion>
-			<SingleAccordion heading={translate('aliases')} onToggle={onAliasClose}>
+			<SingleAccordion heading={translate('common.aliases')} onToggle={onAliasClose}>
 				<AliasModalBody {...genericProps}/>
 			</SingleAccordion>
-			<SingleAccordion heading={translate('identifiers')} onToggle={onIdentifierClose}>
+			<SingleAccordion heading={translate('common.identifiers')} onToggle={onIdentifierClose}>
 				<IdentifierModalBody {...rest}/>
 			</SingleAccordion>
-			<SingleAccordion heading={translate('relationships')}>
+			<SingleAccordion heading={translate('common.relationships')}>
 				<RelationshipSection {...genericProps}/>
 			</SingleAccordion>
-			<SingleAccordion heading={translate('annotation')}>
+			<SingleAccordion heading={translate('common.annotation')}>
 				<AnnotationSection {...rest}/>
 			</SingleAccordion>
 			<SubmissionSection {...rest} validate={validate} onSubmit={onModalSubmit}/>
