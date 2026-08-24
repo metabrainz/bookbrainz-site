@@ -10,8 +10,8 @@ import {useTranslation} from 'react-i18next';
 
 const {Modal} = Bootstrap;
 export default function CreateEntityModal({show, handleClose, handleSubmit, type, ...rest}:CreateEntityModalProps) {
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
-	const heading = translate('unifiedForm.addEntityHeading', {entityType: translate(`common:entityType.${camelCase(type)}`)});
+	const {t: translate} = useTranslation();
+	const heading = translate('entityEditor.unifiedForm.addEntityHeading', {entityType: translate(`common.entityType.${camelCase(type)}`)});
 	const EntitySection = getEntitySection(type);
 	const validate = getValidator(type);
 	const {allIdentifierTypes} = rest;

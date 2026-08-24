@@ -37,9 +37,12 @@ function SearchEntityCreate(rawProps:SearchEntityCreateProps) {
 	// Fill in the defaults for props that are missing (or undefined); they are also passed on to the select and the modal
 	const allProps = defaults({}, rawProps, defaultProps);
 	const {type, nextId, onModalOpen, onModalClose, onSubmitEntity, rowId, onOpenCallback, ...rest} = allProps;
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation();
 	const createLabel = React.useCallback(
-		(input) => translate('unifiedForm.createEntity', {entityType: translate(`common:entityType.${camelCase(type)}`), name: input}),
+		(input) => translate('entityEditor.unifiedForm.createEntity', {
+			entityType: translate(`common.entityType.${camelCase(type)}`),
+			name: input
+		}),
 		[translate, type]
 	);
 	const [showModal, setShowModal] = React.useState(false);

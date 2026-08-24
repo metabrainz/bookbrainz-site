@@ -17,7 +17,7 @@ function SummarySection({
 	languageOptions,
 	Editions
 }: SummarySectionProps) {
-	const {t: translate} = useTranslation('entityEditor');
+	const {t: translate} = useTranslation();
 	const createdEntities = {
 		Authors,
 		EditionGroups,
@@ -43,8 +43,8 @@ function SummarySection({
 	}
 	return (
 		<div>
-			<h3>{translate('unifiedForm.newEntities')}</h3>
-			<p className="text-muted">{translate('unifiedForm.previewDescription')}</p>
+			<h3>{translate('entityEditor.unifiedForm.newEntities')}</h3>
+			<p className="text-muted">{translate('entityEditor.unifiedForm.previewDescription')}</p>
 			<section className="review-section">
 				{_.map(createdEntities, renderEntityGroup)}
 			</section>

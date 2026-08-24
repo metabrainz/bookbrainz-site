@@ -1,7 +1,8 @@
 /** @type {import('i18next-cli').I18nextToolkitConfig} */
 export default {
 	extract: {
-		defaultNS: 'translation',
+		defaultNS: false,
+		functions: ['t', '*.t', 'translate'],
 		input: ['src/**/*.{js,jsx,ts,tsx}'],
 		keySeparator: '.',
 		nsSeparator: false,
