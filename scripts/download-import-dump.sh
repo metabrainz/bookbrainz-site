@@ -40,3 +40,14 @@ then
     exit $?
 fi
 
+# The official BookBrainz data dump does not include the create_triggers.sql
+# (create_triggers.sql was never executed on the production server).
+# We run it manually after import, just like the user_collection migration.
+echo "Running create_triggers.sql to create missing triggers"
+psql -h $DB_HOSTNAME -p $DB_PORT -U $DB_USER -d $DB_NAME -f sql/scripts/create_triggers.sql
+if [ $? -ne 0 ]
+then
+    echo "Failed to run sql/scripts/create_triggers.sql"
+    exit $?
+fi
+
