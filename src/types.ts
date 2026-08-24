@@ -34,7 +34,8 @@ export type _Gender = {
 export type _IdentifierType = {
 	id: number,
 	label: string,
-	validationRegex: string
+	validationRegex: string,
+	validationFunction?: string | null
 };
 
 export type _Language = {
