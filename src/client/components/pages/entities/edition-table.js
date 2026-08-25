@@ -27,6 +27,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
+import {useTranslation} from 'react-i18next';
 
 
 const {
@@ -101,6 +102,7 @@ EditionTableRow.defaultProps = {
 };
 
 function EditionTable({editions, entity, showAddedAtColumn, showAdd, showAuthorCreditsColumn, showCheckboxes, selectedEntities, onToggleRow}) {
+	const {t: translate} = useTranslation();
 	let tableContent;
 	if (editions.length) {
 		tableContent = (
@@ -109,13 +111,13 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showAuthorC
 					<thead>
 						<tr>
 							{editions[0].displayNumber && <th style={{width: '10%'}}>#</th>}
-							<th>Name</th>
-							{showAuthorCreditsColumn && <th>Author Credits</th>}
-							<th>Format</th>
-							<th>ISBN</th>
-							<th>Release Date</th>
+							<th>{translate('common.name')}</th>
+							{showAuthorCreditsColumn && <th>{translate('pages.entity.authorCredits')}</th>}
+							<th>{translate('common.format')}</th>
+							<th>{translate('common.isbn')}</th>
+							<th>{translate('pages.entity.releaseDate')}</th>
 							{
-								showAddedAtColumn ? <th>Added at</th> : null
+								showAddedAtColumn ? <th>{translate('pages.entity.addedAt')}</th> : null
 							}
 						</tr>
 					</thead>
@@ -142,7 +144,7 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showAuthorC
 						variant="success"
 					>
 						<FontAwesomeIcon icon={faPlus}/>
-						{'  Add Edition'}
+						{'  '}{translate('pages.entity.addEdition')}
 					</Button>
 				}
 			</React.Fragment>
@@ -158,27 +160,32 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showAuthorC
 					>
 						<FontAwesomeIcon icon={faBook} size="2x"/>
 						<br/>
-						Add Edition
+						{translate('pages.entity.addEdition')}
 					</Button>
 				</span>
 				<span>
-					<h4>There are no Editions yet!</h4>
+					<h4>{translate('pages.entity.noEditionsYet')}</h4>
 					<p>
-						Help us complete BookBrainz
+						{translate('pages.entity.helpUsComplete')}
 						<br/>
 					</p>
-					<br/><small>Not sure what to do? Visit the <a href="/help">help page</a> to get started.</small>
+					<br/>
+					<small>
+						{translate('pages.callToAction.notSure')}
+						<a href="/help">{translate('pages.callToAction.helpPage')}</a>
+						{translate('pages.callToAction.toGetStarted')}
+					</small>
 				</span>
 				<hr className="margin-bottom-d0"/>
 			</React.Fragment>
 		);
 	}
 	else {
-		tableContent = <span>No editions</span>;
+		tableContent = <span>{translate('pages.entity.noEditions')}</span>;
 	}
 	return (
 		<div>
-			<h2>Editions</h2>
+			<h2>{translate('common.entityType.edition_plural')}</h2>
 			{tableContent}
 		</div>
 	);

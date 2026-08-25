@@ -21,6 +21,7 @@ import * as entityHelper from '../../../helpers/entity';
 import * as utilHelper from '../../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 
 
 const {Table} = bootstrap;
@@ -72,6 +73,7 @@ SeriesTableRow.defaultProps = {
 };
 
 function SeriesTable({series, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
+	const {t: translate} = useTranslation();
 	let tableContent;
 	if (series.length) {
 		tableContent = (
@@ -79,11 +81,11 @@ function SeriesTable({series, showAddedAtColumn, showCheckboxes, selectedEntitie
 				<Table striped>
 					<thead>
 						<tr>
-							<th width="40%">Name</th>
-							<th>Series Type</th>
-							<th>Ordering Type</th>
+							<th width="40%">{translate('common.name')}</th>
+							<th>{translate('pages.entity.seriesType')}</th>
+							<th>{translate('pages.entity.orderingType')}</th>
 							{
-								showAddedAtColumn ? <th>Added at</th> : null
+								showAddedAtColumn ? <th>{translate('pages.entity.addedAt')}</th> : null
 							}
 						</tr>
 					</thead>
@@ -106,11 +108,11 @@ function SeriesTable({series, showAddedAtColumn, showCheckboxes, selectedEntitie
 		);
 	}
 	else {
-		tableContent = <span>No Series</span>;
+		tableContent = <span>{translate('pages.entity.noSeries')}</span>;
 	}
 	return (
 		<div>
-			<h2>Series</h2>
+			<h2>{translate('common.entityType.series_plural')}</h2>
 			{tableContent}
 		</div>
 	);
