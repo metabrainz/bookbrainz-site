@@ -7,6 +7,7 @@ import {addAliasRow} from './actions';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 
 type AliasModalBodyStateProps = {
@@ -22,6 +23,7 @@ type AliasModalBodyOwnProps = {
 type AliasModalBodyProps = AliasModalBodyStateProps & AliasModalBodyDispatchProps & AliasModalBodyOwnProps;
 
 export const AliasModalBody = ({aliases, onAddAlias, languageOptions}:AliasModalBodyProps) => {
+	const {t: translate} = useTranslation();
 	const noAliasesTextClass =
 		classNames('text-center', {'d-none': aliases.size});
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
@@ -32,7 +34,7 @@ export const AliasModalBody = ({aliases, onAddAlias, languageOptions}:AliasModal
 	return (
 		<>
 			<div className={noAliasesTextClass}>
-				<p className="text-muted">This entity has no aliases</p>
+				<p className="text-muted">{translate('entityEditor.aliasEditor.noAliases')}</p>
 			</div>
 			<div>
 				{
@@ -50,7 +52,7 @@ export const AliasModalBody = ({aliases, onAddAlias, languageOptions}:AliasModal
 				<Col className="text-right" lg={{offset: 9, span: 3}}>
 					<Button variant="success" onClick={onAddAlias}>
 						<FontAwesomeIcon icon={faPlus}/>
-						<span>&nbsp;Add alias</span>
+						<span>&nbsp;{translate('entityEditor.aliasEditor.addAlias')}</span>
 					</Button>
 				</Col>
 			</Row>
