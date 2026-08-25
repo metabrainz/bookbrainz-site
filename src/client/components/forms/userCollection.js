@@ -28,6 +28,7 @@ import React from 'react';
 import ReactSelect from 'react-select';
 import classNames from 'classnames';
 import request from 'superagent';
+import {withTranslation} from 'react-i18next';
 
 
 const {Alert, Button, Col, Form, Row} = bootstrap;
@@ -59,7 +60,7 @@ class UserCollectionForm extends React.Component {
 		evt.preventDefault();
 		if (!this.isValid()) {
 			this.setState({
-				errorText: 'Incomplete Form'
+				errorText: this.props.t('pages.collection.incompleteFormError')
 			});
 			return;
 		}
@@ -90,7 +91,7 @@ class UserCollectionForm extends React.Component {
 				window.location.href = `/collection/${res.body.id}`;
 			}, () => {
 				this.setState({
-					errorText: 'Internal Error'
+					errorText: this.props.t('common.error')
 				});
 			});
 	}
@@ -154,13 +155,15 @@ class UserCollectionForm extends React.Component {
 	}
 
 	render() {
+		const {t: translate} = this.props;
 		if (this.state.collaborators.length === 0) {
 			this.handleAddCollaborator();
 		}
 
-		const privacyOptions = ['Private', 'Public'].map((option) => ({
-			name: option
-		}));
+		const privacyOptions = [
+			{label: translate('common.private'), name: 'Private'},
+			{label: translate('common.public'), name: 'Public'}
+		];
 		const entityTypeOptions = ['Author', 'Work', 'Series', 'Edition', 'Edition-Group', 'Publisher'].map((entity) => ({
 			name: entity
 		}));
@@ -176,13 +179,15 @@ class UserCollectionForm extends React.Component {
 		}
 		const {errorText} = this.state;
 		const errorAlertClass = classNames('text-center', 'margin-top-1', {'d-none': !errorText});
-		const submitLabel = this.props.collection.name ? 'Update collection' : 'Create collection';
+		const submitLabel = this.props.collection.name ?
+			translate('pages.collection.updateCollection') :
+			translate('pages.collection.createCollection');
 		const canEditType = this.props.collection.items.length === 0;
 
 		/* eslint-disable react/jsx-no-bind */
 		return (
 			<div>
-				<h1>Create your collection</h1>
+				<h1>{translate('pages.collection.createHeading')}</h1>
 				<DeleteOrRemoveCollaborationModal
 					collection={this.props.collection}
 					show={this.state.showModal}
@@ -199,7 +204,7 @@ class UserCollectionForm extends React.Component {
 							onSubmit={this.handleSubmit}
 						>
 							<Form.Group>
-								<Form.Label>Name</Form.Label>
+								<Form.Label>{translate('common.name')}</Form.Label>
 								<Form.Control
 									defaultValue={initialName}
 									ref={(ref) => this.name = ref}
@@ -207,7 +212,7 @@ class UserCollectionForm extends React.Component {
 								/>
 							</Form.Group>
 							<Form.Group>
-								<Form.Label>Description</Form.Label>
+								<Form.Label>{translate('common.description')}</Form.Label>
 								<Form.Control
 									as="textarea"
 									defaultValue={initialDescription}
@@ -215,7 +220,7 @@ class UserCollectionForm extends React.Component {
 								/>
 							</Form.Group>
 							<Form.Group>
-								<Form.Label>Entity Type</Form.Label>
+								<Form.Label>{translate('pages.collections.headerEntityType')}</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"
 									defaultValue={entityTypeOptions.filter((option) => option.name === initialType)}
@@ -224,28 +229,28 @@ class UserCollectionForm extends React.Component {
 									instanceId="title"
 									isDisabled={!canEditType}
 									options={entityTypeOptions}
-									placeholder="Select title"
+									placeholder={translate('pages.collection.selectTypePlaceholder')}
 									ref={(ref) => this.entityType = ref}
 								/>
 							</Form.Group>
 							<Form.Group>
-								<Form.Label>Privacy</Form.Label>
+								<Form.Label>{translate('pages.collections.headerPrivacy')}</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"
 									defaultValue={privacyOptions.filter((option) => option.name === initialPrivacy)}
-									getOptionLabel={this.getOptionLabel}
+									getOptionLabel={(option) => option.label || option.name}
 									getOptionValue={this.getOptionValue}
 									instanceId="Privacy"
 									options={privacyOptions}
-									placeholder="Select Privacy"
+									placeholder={translate('pages.collection.selectPrivacyPlaceholder')}
 									ref={(ref) => this.privacy = ref}
 								/>
 							</Form.Group>
-							<h3><b>Collaborators</b></h3>
+							<h3><b>{translate('common.collaborator_other')}</b></h3>
 							<Row className="margin-bottom-2">
 								<Col className="margin-top-d5" md={6}>
 									<p className="text-muted">
-								Collaborators can add/remove entities from your collection
+										{translate('pages.collection.collaboratorsDescription')}
 									</p>
 								</Col>
 								<Col className="margin-top-d5" md={6}>
@@ -256,7 +261,7 @@ class UserCollectionForm extends React.Component {
 										onClick={this.handleAddCollaborator}
 									>
 										<FontAwesomeIcon icon={faPlus}/>
-										&nbsp;Add another collaborator
+										&nbsp;{translate('pages.collection.addAnotherCollaborator')}
 									</Button>
 								</Col>
 							</Row>
@@ -269,7 +274,7 @@ class UserCollectionForm extends React.Component {
 											variant="danger"
 											onClick={() => this.handleRemoveCollaborator(index)}
 										>
-											<FontAwesomeIcon icon={faTimes}/>&nbsp;Remove
+											<FontAwesomeIcon icon={faTimes}/>&nbsp;{translate('common.button.remove')}
 										</Button>
 									);
 									return (
@@ -277,7 +282,7 @@ class UserCollectionForm extends React.Component {
 											<EntitySearchFieldOption
 												buttonAfter={buttonAfter}
 												instanceId="collaboratorSearchField"
-												label="Select Collaborator"
+												label={translate('pages.collection.selectCollaboratorLabel')}
 												name="editor"
 												type="editor"
 												value={collaborator}
@@ -289,7 +294,7 @@ class UserCollectionForm extends React.Component {
 							}
 							<hr/>
 							<div className={errorAlertClass}>
-								<Alert variant="danger">Error: {errorText}</Alert>
+								<Alert variant="danger">{translate('common.errorLabel')} {errorText}</Alert>
 							</div>
 							<Row className="margin-bottom-2">
 								<Col className="margin-top-d5" md={6}>
@@ -310,7 +315,8 @@ class UserCollectionForm extends React.Component {
 												variant="danger"
 												onClick={this.handleShowModal}
 											>
-												<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;Delete collection
+												<FontAwesomeIcon icon={faTrashAlt}/>
+												&nbsp;{translate('pages.collection.deleteCollection')}
 											</Button>
 										</Col> : null
 								}
@@ -335,7 +341,9 @@ UserCollectionForm.propTypes = {
 		name: PropTypes.string,
 		ownerId: PropTypes.number,
 		public: PropTypes.bool
-	})
+	}),
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired
 };
 UserCollectionForm.defaultProps = {
 	collection: {
@@ -350,4 +358,4 @@ UserCollectionForm.defaultProps = {
 	}
 };
 
-export default UserCollectionForm;
+export default withTranslation()(UserCollectionForm);
