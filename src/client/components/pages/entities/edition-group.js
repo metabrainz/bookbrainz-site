@@ -34,6 +34,7 @@ import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import WikipediaExtract from './wikipedia-extract';
+import {useTranslation} from 'react-i18next';
 
 
 const {deletedEntityMessage, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
@@ -82,6 +83,7 @@ EditionGroupAttributes.propTypes = {
 
 
 function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
+	const {t: translate} = useTranslation();
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);
