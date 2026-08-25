@@ -20,6 +20,7 @@ import {Trans, useTranslation} from 'react-i18next';
 import IdentifierLink from './identifiers-links';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 
 
 function EntityIdentifiers({entityUrl, identifiers, identifierTypes}) {
