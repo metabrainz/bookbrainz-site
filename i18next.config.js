@@ -1,11 +1,12 @@
 /** @type {import('i18next-cli').I18nextToolkitConfig} */
 export default {
 	extract: {
-		defaultNS: 'common',
+		defaultNS: false,
+		functions: ['t', '*.t', 'translate'],
 		input: ['src/**/*.{js,jsx,ts,tsx}'],
-		keySeparator: false,
-		nsSeparator: ':',
-		output: 'public/locales/{{language}}/{{namespace}}.json',
+		keySeparator: '.',
+		nsSeparator: false,
+		output: 'public/locales/{{language}}/translation.json',
 		removeUnusedKeys: false,
 		sort: true
 	},

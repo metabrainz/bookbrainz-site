@@ -88,7 +88,7 @@ function IdentifierRow({
 	onRemoveButtonClick,
 	onValueChange
 }: Props) {
-	const {t: translate} = useTranslation(['entityEditor', 'common']);
+	const {t: translate} = useTranslation();
 	const identifierTypesForDisplay = typeOptions.map((type) => ({
 		label: type.label,
 		value: type.id
@@ -109,7 +109,7 @@ function IdentifierRow({
 				</Col>
 				<Col lg={4}>
 					<Form.Group>
-						<Form.Label>{translate('identifierRow.typeLabel')}</Form.Label>
+						<Form.Label>{translate('entityEditor.identifierRow.typeLabel')}</Form.Label>
 						<Select
 							classNamePrefix="react-select"
 							instanceId={`identifierType${index}`}
@@ -127,14 +127,14 @@ function IdentifierRow({
 						onClick={onRemoveButtonClick}
 					>
 						<FontAwesomeIcon icon={faTimes}/>
-						<span>&nbsp;{translate('common:button.remove')}</span>
+						<span>&nbsp;{translate('common.button.remove')}</span>
 					</Button>
 				</Col>
 			</Row>
 			{typeValue && valueValue && (
 				<Row>
 					<Col>
-						{translate('identifierRow.previewLink')}
+						{translate('entityEditor.identifierRow.previewLink')}
 						<IdentifierLink typeId={typeValue} value={valueValue}/>
 					</Col>
 				</Row>

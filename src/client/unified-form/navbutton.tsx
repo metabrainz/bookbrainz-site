@@ -3,21 +3,23 @@ import {faAngleLeft, faAngleRight} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {NavButtonsProps} from './interface/type';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 
 
 const {Row, Col, Button} = Bootstrap;
 
 export default function NavButtons({onNext, onBack, disableBack, disableNext}:NavButtonsProps) {
+	const {t: translate} = useTranslation();
 	return (
 		<Row className="uf-navbtn-row">
 			<Col>
-				<Button href="/" type="button" variant="danger">Cancel </Button>
+				<Button href="/" type="button" variant="danger">{translate('common.button.cancel')}</Button>
 			</Col>
 			<Col>
-				<Button disabled={disableBack} type="button" variant="primary" onClick={onBack}><FontAwesomeIcon icon={faAngleLeft}/> Back</Button>
+				<Button disabled={disableBack} type="button" variant="primary" onClick={onBack}><FontAwesomeIcon icon={faAngleLeft}/> {translate('common.button.back')}</Button>
 			</Col>
 			<Col>
-				<Button disabled={disableNext} type="button" variant="primary" onClick={onNext}>Next <FontAwesomeIcon icon={faAngleRight}/></Button>
+				<Button disabled={disableNext} type="button" variant="primary" onClick={onNext}>{translate('common.button.next')} <FontAwesomeIcon icon={faAngleRight}/></Button>
 			</Col>
 		</Row>
 	);

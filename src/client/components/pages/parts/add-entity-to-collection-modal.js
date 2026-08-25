@@ -17,16 +17,17 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {camelCase, uniqBy} from 'lodash';
 import {faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
-import {lowerCase, uniqBy} from 'lodash';
 import EntitySearchFieldOption from '../../../entity-editor/common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import request from 'superagent';
+import {withTranslation} from 'react-i18next';
 
 
-const {Alert, Badge, Button, ButtonGroup, Col, Modal, Row} = bootstrap;
+const {Alert, Button, ButtonGroup, Col, Modal, Row} = bootstrap;
 
 class AddEntityToCollectionModal extends React.Component {
 	constructor(props) {
@@ -87,8 +88,10 @@ class AddEntityToCollectionModal extends React.Component {
 	}
 
 	handleSubmit() {
+		const {t: translate} = this.props;
 		const cleanedEntities = this.getCleanedEntities();
 		const bbids = cleanedEntities.map(entity => entity.id);
+		const entityTypeLabel = translate(`common.entityType.${camelCase(this.props.collectionType)}`);
 		if (bbids.length) {
 			request.post(`/collection/${this.props.collectionId}/add`)
 				.send({bbids})
@@ -98,24 +101,25 @@ class AddEntityToCollectionModal extends React.Component {
 						error: null
 					}, () => {
 						this.props.closeModalAndShowMessage({
-							text: `Added ${bbids.length} ${lowerCase(this.props.collectionType)}${bbids.length > 1 ? 's' : ''}`,
+							text: translate('pages.collection.addedEntities', {count: bbids.length, type: translate(`common.entityType.${camelCase(this.props.collectionType)}${bbids.length === 1 ? '' : '_plural'}`)}),
 							type: 'success'
 						});
 					});
 				}, () => {
 					this.setState({
-						error: 'Something went wrong! Please try again later'
+						error: translate('common.error')
 					});
 				});
 		}
 		else {
 			this.setState({
-				error: `No ${lowerCase(this.props.collectionType)} selected`
+				error: translate('common.noEntitySelected', {type: entityTypeLabel})
 			});
 		}
 	}
 
 	render() {
+		const {t: translate} = this.props;
 		if (this.state.entities.length === 0) {
 			this.handleAddEntity();
 		}
@@ -130,6 +134,7 @@ class AddEntityToCollectionModal extends React.Component {
 				);
 		}
 		const cleanedEntities = this.getCleanedEntities();
+		const entityTypeLabel = translate(`common.entityType.${camelCase(this.props.collectionType)}`);
 
 		/* eslint-disable react/jsx-no-bind */
 		const addEntityToCollectionForm = (
@@ -150,7 +155,7 @@ class AddEntityToCollectionModal extends React.Component {
 										variant="danger"
 										onClick={() => this.handleRemoveEntity(index)}
 									>
-										<FontAwesomeIcon icon={faTimes}/>&nbsp;Remove
+										<FontAwesomeIcon icon={faTimes}/>&nbsp;{translate('common.button.remove')}
 									</Button>
 								);
 								return (
@@ -158,7 +163,7 @@ class AddEntityToCollectionModal extends React.Component {
 										<EntitySearchFieldOption
 											buttonAfter={buttonAfter}
 											instanceId="entitySearchField"
-											label={`Select ${this.props.collectionType}`}
+											label={translate('pages.collection.selectEntity', {type: entityTypeLabel})}
 											name={this.props.collectionType}
 											type={this.props.collectionType}
 											value={entity}
@@ -181,7 +186,7 @@ class AddEntityToCollectionModal extends React.Component {
 			>
 				<Modal.Header closeButton>
 					<Modal.Title>
-						Add {lowerCase(this.props.collectionType)}s to the collection
+						{translate('pages.collection.addEntitiesToCollection', {type: translate(`common.entityType.${camelCase(this.props.collectionType)}_plural`)})}
 					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
@@ -196,7 +201,7 @@ class AddEntityToCollectionModal extends React.Component {
 							onClick={this.handleAddEntity}
 						>
 							<FontAwesomeIcon icon={faPlus}/>
-							&nbsp;Add another {lowerCase(this.props.collectionType)}
+							&nbsp;{translate('pages.collection.addAnotherEntity', {type: entityTypeLabel})}
 						</Button>
 						<Button
 							disabled={!cleanedEntities.length}
@@ -204,8 +209,7 @@ class AddEntityToCollectionModal extends React.Component {
 							onClick={this.handleSubmit}
 						>
 							<FontAwesomeIcon icon={faPlus}/>
-							&nbsp;Add <Badge pill>{cleanedEntities.length}</Badge>&nbsp;
-							{lowerCase(this.props.collectionType)}{cleanedEntities.length > 1 ? 's' : ''} to the collection
+							&nbsp;{translate('pages.collection.addEntitiesToCollectionCount', {count: cleanedEntities.length, type: translate(`common.entityType.${camelCase(this.props.collectionType)}${cleanedEntities.length === 1 ? '' : '_plural'}`)})}
 						</Button>
 					</ButtonGroup>
 				</Modal.Footer>
@@ -220,7 +224,8 @@ AddEntityToCollectionModal.propTypes = {
 	collectionId: PropTypes.string.isRequired,
 	collectionType: PropTypes.string.isRequired,
 	onCloseModal: PropTypes.func.isRequired,
-	show: PropTypes.bool.isRequired
+	show: PropTypes.bool.isRequired,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired
 };
-export default AddEntityToCollectionModal;
-
+export default withTranslation()(AddEntityToCollectionModal);

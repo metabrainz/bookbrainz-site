@@ -3,6 +3,7 @@ import React from 'react';
 import {SingleEntityCardProps} from '../interface/type';
 import _ from 'lodash';
 import {dateObjectToISOString} from '../../helpers/utils';
+import {useTranslation} from 'react-i18next';
 
 /* eslint-disable sort-keys */
 const BASE_ENTITY = {
@@ -67,6 +68,40 @@ const ENTITY_FIELDS = {
 	}
 };
 export default function SingleEntityCard({entity, languageOptions}:SingleEntityCardProps) {
+	const {t: translate} = useTranslation();
+	const fieldLabels = {
+		Annotation: translate('common.annotation'),
+		'Author-Type': translate('common.type'),
+		'Begin-Area': translate('common.area'),
+		'Begin-Date': translate('common.date'),
+		'Dead?': translate('entityEditor.authorSection.endedLabel.person'),
+		Disambiguation: translate('entityEditor.disambiguationField.label'),
+		'Dissolved?': translate('entityEditor.shared.dissolvedLabel'),
+		depth: translate('entityEditor.shared.depthLabel'),
+		'Edit-Note': translate('entityEditor.submissionSection.editNoteLabel'),
+		'Edition-Languages': translate('common.languages'),
+		'EditionGroup-Type': translate('common.type'),
+		'End-Area': translate('common.area'),
+		'End-Date': translate('common.date'),
+		format: translate('common.format'),
+		Gender: translate('common.gender'),
+		height: translate('entityEditor.shared.heightLabel'),
+		Language: translate('common.languages'),
+		Name: translate('common.name'),
+		orderType: translate('entityEditor.seriesSection.orderingTypeLabel'),
+		pages: translate('common.pages'),
+		'Publihser-Type': translate('common.type'),
+		'Release-date': translate('entityEditor.shared.releaseDateLabel'),
+		'series-Type': translate('common.type'),
+		'Series-Items': translate('entityEditor.unifiedForm.seriesItems'),
+		'Sort-Name': translate('common.sortName'),
+		status: translate('common.status'),
+		Type: translate('common.type'),
+		weight: translate('entityEditor.shared.weightLabel'),
+		width: translate('entityEditor.shared.widthLabel'),
+		'Work-Languages': translate('common.languages'),
+		'Work-Type': translate('common.type')
+	};
 	const id2LanguageMap = React.useMemo(() => Object.fromEntries(_.map(languageOptions, (option) => [option.id, option.name])), []);
 	// display formatted entity attributes in modal
 	function renderField(path, key) {
@@ -99,7 +134,7 @@ export default function SingleEntityCard({entity, languageOptions}:SingleEntityC
 		}
 		// make sure attribute is stringified
 		// eslint-disable-next-line consistent-return
-		return <span className="d-block"><b>{key}</b>: {typeof fieldVal === 'string' ? fieldVal : JSON.stringify(fieldVal)}</span>;
+		return <span className="d-block"><b>{fieldLabels[key]}</b>: {typeof fieldVal === 'string' ? fieldVal : JSON.stringify(fieldVal)}</span>;
 	}
 	const entityFields = ENTITY_FIELDS[_.camelCase(entity.type)] ?? {};
 	return (

@@ -114,15 +114,15 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 		const {t: translate} = this.props;
 		const dropdownTitle = (() => {
 			if (!this.state.type || this.state.type === 'all_entities') {
-				return translate('searchField.allEntities');
+				return translate('common.allEntities');
 			}
 			if (this.state.type === 'editor') {
-				return translate('searchField.editor');
+				return translate('common.entityType.editor');
 			}
 			if (this.state.type === 'collection') {
-				return translate('searchField.collection');
+				return translate('common.entityType.collection');
 			}
-			return translate(`common:entityType.${_.camelCase(this.state.type)}`);
+			return translate(`common.entityType.${_.camelCase(this.state.type)}`);
 		})();
 
 		const entityTypeSelect = Array.isArray(this.props.entityTypes) ? (
@@ -139,7 +139,7 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 						key={entityType}
 					>
 						{genEntityIconHTMLElement(entityType)}
-						{translate(`common:entityType.${_.camelCase(entityType)}`)}
+						{translate(`common.entityType.${_.camelCase(entityType)}`)}
 					</Dropdown.Item>
 				))}
 				<Dropdown.Divider/>
@@ -147,7 +147,7 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 					eventKey="all_entities"
 					key="allEntities"
 				>
-					{translate('searchField.allEntities')}
+					{translate('common.allEntities')}
 				</Dropdown.Item>
 
 				<Dropdown.Divider/>
@@ -156,14 +156,14 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 					key="editor"
 				>
 					{genEntityIconHTMLElement('Editor')}
-					{translate('searchField.editor')}
+					{translate('common.entityType.editor')}
 				</Dropdown.Item>
 				<Dropdown.Item
 					eventKey="collection"
 					key="collection"
 				>
 					{genEntityIconHTMLElement('Collection')}
-					{translate('searchField.collection')}
+					{translate('common.entityType.collection')}
 				</Dropdown.Item>
 			</DropdownButton>
 		) : '';
@@ -192,7 +192,7 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 										type="submit"
 										variant="success"
 									>
-										<FontAwesomeIcon icon={faSearch}/>&nbsp;{translate('searchField.searchButton')}
+										<FontAwesomeIcon icon={faSearch}/>&nbsp;{translate('common.button.search')}
 									</Button>
 								</InputGroup.Append>
 							</InputGroup>
@@ -204,5 +204,5 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 	}
 }
 
-export default withTranslation(['pages', 'common'])(SearchField);
+export default withTranslation()(SearchField);
 

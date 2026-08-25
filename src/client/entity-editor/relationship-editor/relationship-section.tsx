@@ -45,6 +45,7 @@ import Relationship from './relationship';
 import RelationshipEditor from './relationship-editor';
 import _ from 'lodash';
 import {connect} from 'react-redux';
+import {useTranslation} from 'react-i18next';
 
 
 type RelationshipListProps = {
@@ -62,6 +63,7 @@ type RelationshipListProps = {
 export function RelationshipList(
 	{contextEntity, relationships, onEdit, onRemove}: RelationshipListProps
 ) {
+	const {t: translate} = useTranslation();
 	/* eslint-disable react/jsx-no-bind */
 	const renderedRelationships = _.map(
 		relationships,
@@ -90,7 +92,7 @@ export function RelationshipList(
 									onClick={onEdit.bind(this, rowID)}
 								>
 									<FontAwesomeIcon icon={faPencilAlt}/>
-									<span>&nbsp;Edit</span>
+									<span>&nbsp;{translate('common.button.edit')}</span>
 								</Button>
 							}
 							{onRemove &&
@@ -102,7 +104,7 @@ export function RelationshipList(
 									onClick={onRemove.bind(this, rowID)}
 								>
 									<FontAwesomeIcon icon={faTimes}/>
-									<span>&nbsp;Remove</span>
+									<span>&nbsp;{translate('common.button.remove')}</span>
 								</Button>
 							}
 						</div>
@@ -150,6 +152,7 @@ function RelationshipSection({
 	relationshipEditorProps, relationshipTypes, onAddRelationship,
 	onEditorClose, onEditorAdd, onEdit, onRemove, onUndo, undoPossible
 }: Props) {
+	const {t: translate} = useTranslation();
 	const baseEntity = {
 		bbid: _.get(entity, 'bbid'),
 		defaultAlias: {
@@ -197,7 +200,11 @@ function RelationshipSection({
 	return (
 		<div>
 			{canEdit && showEditor && editor}
-			<h2>How are other entities related to this {_.startCase(entityType)}?</h2>
+			<h2>
+				{translate('entityEditor.relationshipSection.heading', {
+					entityType: _.startCase(entityType)
+				})}
+			</h2>
 			<Row>
 				<Col md={12}>
 					<RelationshipList
@@ -219,7 +226,7 @@ function RelationshipSection({
 							onClick={onAddRelationship}
 						>
 							<FontAwesomeIcon icon={faPlus}/>
-							<span>&nbsp;Add relationship</span>
+							<span>&nbsp;{translate('entityEditor.shared.addRelationship')}</span>
 						</Button>
 					</Col>
 				</Row>
@@ -234,7 +241,7 @@ function RelationshipSection({
 							onClick={onUndo}
 						>
 							<FontAwesomeIcon icon={faUndo}/>
-							<span>&nbsp;Undo last action</span>
+							<span>&nbsp;{translate('entityEditor.relationshipEditor.undoLastAction')}</span>
 						</Button>
 					</Col>
 				</Row>
