@@ -22,6 +22,7 @@ import * as utilHelper from '../../../helpers/utils';
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 
 
 const {Table} = bootstrap;
@@ -73,6 +74,7 @@ EditionGroupTableRow.defaultProps = {
 };
 
 function EditionGroupTable({editionGroups, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
+	const {t: translate} = useTranslation();
 	let tableContent;
 	if (editionGroups.length) {
 		tableContent = (
@@ -81,10 +83,10 @@ function EditionGroupTable({editionGroups, showAddedAtColumn, showCheckboxes, se
 					<thead>
 						<tr>
 							{editionGroups[0].displayNumber && <th style={{width: '10%'}}>#</th>}
-							<th>Name</th>
-							<th>Type</th>
+							<th>{translate('common.name')}</th>
+							<th>{translate('common.type')}</th>
 							{
-								showAddedAtColumn ? <th>Added at</th> : null
+								showAddedAtColumn ? <th>{translate('pages.entity.addedAt')}</th> : null
 							}
 						</tr>
 					</thead>
@@ -107,11 +109,11 @@ function EditionGroupTable({editionGroups, showAddedAtColumn, showCheckboxes, se
 		);
 	}
 	else {
-		tableContent = <span>No edition groups</span>;
+		tableContent = <span>{translate('pages.entity.noEditionGroups')}</span>;
 	}
 	return (
 		<div>
-			<h2>Edition Groups</h2>
+			<h2>{translate('common.entityType.editionGroup_plural')}</h2>
 			{tableContent}
 		</div>
 	);

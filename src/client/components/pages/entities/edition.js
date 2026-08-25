@@ -31,6 +31,7 @@ import React from 'react';
 import WikipediaExtract from './wikipedia-extract';
 import WorksTable from './work-table';
 import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 
 const {
@@ -43,6 +44,7 @@ function EditionAttributes({edition}) {
 	if (edition.deleted) {
 		return deletedEntityMessage;
 	}
+	const {t: translate} = useTranslation();
 	const status = extractAttribute(edition.editionStatus, 'label');
 	const format = extractAttribute(edition.editionFormat, 'label');
 	const pageCount = extractAttribute(edition.pages);
@@ -62,19 +64,19 @@ function EditionAttributes({edition}) {
 			<Row>
 				<Col lg={3}>
 					<dl>
-						<dt>Sort Name</dt>
+						<dt>{translate('common.sortName')}</dt>
 						<dd>{sortNameOfDefaultAlias}</dd>
-						<dt>Release Date</dt>
+						<dt>{translate('pages.entity.releaseDate')}</dt>
 						<dd>{releaseDate}</dd>
-						<dt>Format</dt>
+						<dt>{translate('common.format')}</dt>
 						<dd>{format}</dd>
 					</dl>
 				</Col>
 				<Col lg={3}>
 					<dl>
-						<dt>Status</dt>
+						<dt>{translate('common.status')}</dt>
 						<dd>{status}</dd>
-						<dt>Languages</dt>
+						<dt>{translate('common.languages')}</dt>
 						<dd>{languages}</dd>
 					</dl>
 				</Col>
@@ -82,18 +84,18 @@ function EditionAttributes({edition}) {
 					<dl>
 						{format !== 'eBook' &&
 						<>
-							<dt>Dimensions (WxHxD)</dt>
+							<dt>{translate('pages.entity.dimensions')}</dt>
 							<dd>{width}&times;{height}&times;{depth} mm</dd>
-							<dt>Weight</dt>
+							<dt>{translate('pages.entity.weight')}</dt>
 							<dd>{weight} g</dd>
 						</>}
-						<dt>Page Count</dt>
+						<dt>{translate('common.pageCount')}</dt>
 						<dd>{pageCount}</dd>
 					</dl>
 				</Col>
 				<Col lg={3}>
 					<dl>
-						<dt>Publishers</dt>
+						<dt>{translate('common.publisher')}</dt>
 						<dd>{publishers}</dd>
 					</dl>
 				</Col>
@@ -108,6 +110,7 @@ EditionAttributes.propTypes = {
 
 
 function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
+	const {t: translate} = useTranslation();
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
@@ -126,9 +129,9 @@ function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	else if (!entity.deleted && (hasAuthorCredits === true || hasAuthorCredits === null)) {
 		authorCreditSection = (
 			<div className="alert alert-warning text-center">
-				Author Credit unset; please&nbsp;
-				<a href={`/edition/${entity.bbid}/edit`}>edit this Edition</a>&nbsp;
-				and add its Author(s) if you see this!
+				{translate('pages.entity.authorCreditUnsetPre')}&nbsp;
+				<a href={`/edition/${entity.bbid}/edit`}>{translate('pages.entity.editThisEdition')}</a>&nbsp;
+				{translate('pages.entity.authorCreditUnsetPost')}
 			</div>);
 	}
 
@@ -138,7 +141,7 @@ function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 			<div className="margin-bottom-d15">
 				<a href={`/edition-group/${entity.editionGroup.bbid}`}>
 					<FontAwesomeIcon icon={faExternalLinkAlt}/>
-					<span>&nbsp;See all similar editions</span>
+					<span>&nbsp;{translate('pages.entity.seeAllSimilarEditions')}</span>
 				</a>
 			</div>
 		);
@@ -146,9 +149,9 @@ function EditionDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 	else if (!entity.deleted) {
 		editionGroupSection = (
 			<div className="alert alert-warning text-center">
-				Edition Group unset - please&nbsp;
-				<a href={`/edition/${entity.bbid}/edit`}>edit this Edition</a>&nbsp;
-				and add one if you see this!
+				{translate('pages.entity.editionGroupUnsetPre')}&nbsp;
+				<a href={`/edition/${entity.bbid}/edit`}>{translate('pages.entity.editThisEdition')}</a>&nbsp;
+				{translate('pages.entity.editionGroupUnsetPost')}
 			</div>
 		);
 	}
