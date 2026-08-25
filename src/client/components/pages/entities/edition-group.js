@@ -33,6 +33,7 @@ import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import WikipediaExtract from './wikipedia-extract';
+import {useTranslation} from 'react-i18next';
 
 
 const {deletedEntityMessage, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
@@ -42,6 +43,7 @@ function EditionGroupAttributes({editionGroup}) {
 	if (editionGroup.deleted) {
 		return deletedEntityMessage;
 	}
+	const {t: translate} = useTranslation();
 	const type = getTypeAttribute(editionGroup.editionGroupType).data;
 	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(editionGroup);
 	const averageRating = editionGroup.reviews?.reviews?.average_rating?.rating || 0;
@@ -51,13 +53,13 @@ function EditionGroupAttributes({editionGroup}) {
 			<Row>
 				<Col lg={3}>
 					<dl>
-						<dt>Sort Name</dt>
+						<dt>{translate('common.sortName')}</dt>
 						<dd>{sortNameOfDefaultAlias}</dd>
 					</dl>
 				</Col>
 				<Col lg={3}>
 					<dl>
-						<dt>Type</dt>
+						<dt>{translate('common.type')}</dt>
 						<dd>{type}</dd>
 					</dl>
 				</Col>
@@ -80,6 +82,7 @@ EditionGroupAttributes.propTypes = {
 
 
 function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
+	const {t: translate} = useTranslation();
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);
@@ -105,10 +108,9 @@ function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtrac
 	else if (!entity.deleted && (hasAuthorCredits === true || hasAuthorCredits === null)) {
 		authorCreditSection = (
 			<div className="alert alert-warning text-center">
-				Author Credit unset; please&nbsp;
-				<a href={`/edition-group/${entity.bbid}/edit`}>edit this Edition Group</a>&nbsp;
-				and add its Author(s) if you see this!
-				You can copy the Author Credit from one of the Editions as well
+				{translate('pages.entity.authorCreditUnsetEGPre')}&nbsp;
+				<a href={`/edition-group/${entity.bbid}/edit`}>{translate('pages.entity.editThisEditionGroup')}</a>&nbsp;
+				{translate('pages.entity.authorCreditUnsetEGPost')}
 			</div>);
 	}
 
