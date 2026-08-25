@@ -70,6 +70,7 @@
       "work_plural": "Works"
     },
     "error": "Something went wrong! Please try again later",
+    "errorLabel": "Error!",
     "footer": {
       "alphaSoftware": "Alpha Software",
       "browserStackAlt": "BrowserStack Logo",
@@ -140,8 +141,10 @@
     "searchResults": "Search Results",
     "selectEntity": "Select {{type}}",
     "show": "Show",
+    "somethingWentWrong": "Something went wrong. Please try again.",
     "sortName": "Sort Name",
     "status": "Status",
+    "successLabel": "Success!",
     "totalRevisions": "Total Revisions",
     "type": "Type",
     "unnamed": "(unnamed)",
@@ -157,7 +160,10 @@
       "editAliases_other": "Edit {{count}} aliases…"
     },
     "aliasEditor": {
+      "addAlias": "Add alias",
       "helpText": "Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc. Refer to the help page for more details and examples.",
+      "noAliases": "This entity has no aliases",
+      "primaryLabel": "Primary",
       "title": "Alias Editor"
     },
     "annotationSection": {
@@ -413,6 +419,7 @@
       "toGetStarted": " to get started."
     },
     "collection": {
+      "addAnotherCollaborator": "Add another collaborator",
       "addAnotherEntity": "Add another {{type}}",
       "addedEntities": "Added {{count}} {{type}}",
       "addedEntities_one": "Added 1 {{type}}",
@@ -422,13 +429,25 @@
       "addEntitiesToCollectionCount_one": "Add 1 {{type}} to the collection",
       "addEntitiesToCollectionCount_other": "Add {{count}} {{type}} to the collection",
       "addEntity": "Add {{type}}",
+      "addToNewCollection": "Add to new collection",
+      "addToSelectedCollection": "Add to selected collection",
+      "addToSelectedCollections": "Add to selected collections",
+      "collaboratorsDescription": "Collaborators can add/remove entities from your collection",
       "collectionType": "Collection type",
+      "createCollection": "Create Collection",
       "createdAt": "Created At",
+      "createHeading": "Create your collection",
       "deleteCollection": "Delete collection",
       "deleteNotice": "You’re about to delete the Collection: {{name}}.",
       "deleteUndoWarning": "There is no way to undo this.",
       "deleteWarning": "Make sure you actually want to delete this Collection",
       "editCollection": "Edit collection",
+      "editHeading": "Edit collection",
+      "fetchCollectionsError": "Sorry, we could not fetch your collections ",
+      "incompleteFormError": "The form is incomplete. Please fill in a name and privacy option before continuing.",
+      "newCollectionButton": "New collection",
+      "noCollectionSelectedError": "No collection selected",
+      "noCollectionsPrompt": "Oops, looks like you do not yet have any collection of {{type}}s. Click on the button below to create a new collection",
       "numberOfEntities": "Number of {{type}}",
       "removedEntities": "Removed {{count}} {{type}}",
       "removedEntities_one": "Removed 1 {{type}}",
@@ -437,11 +456,21 @@
       "removeSelected_one": "Remove <badge>{{count}}</badge> selected {{type}}",
       "removeSelected_other": "Remove <badge>{{count}}</badge> selected {{type}}",
       "removeSelectedTooltip": "Remove selected {{type}}",
+      "selectCollaboratorLabel": "Select Collaborator",
+      "selectCollection": "Select Collection",
       "selectEntity": "Select {{type}}",
+      "selectFromCollections": "Select from collections",
+      "selectOrCreatePrompt": "Select the collection in which you want to add this entity or create a new collection",
+      "selectPrivacyPlaceholder": "Select Privacy",
+      "selectTypePlaceholder": "Select title",
       "stopCollaboration": "Stop collaboration",
       "stopCollaborationNotice": "You’re about to remove yourself as a collaborator of Collection: {{name}}.",
       "stopCollaborationTooltip": "Remove yourself as a collaborator",
-      "stopCollaborationWarning": "Are you sure you want to proceed? You won’t be able to undo this yourself and will need to ask the collection's owner to add you again."
+      "stopCollaborationWarning": "Are you sure you want to proceed? You won’t be able to undo this yourself and will need to ask the collection's owner to add you again.",
+      "successAddCollection": "Successfully added to selected collection",
+      "successAddCollections": "Successfully added to selected collections",
+      "successAddNewCollection": "Successfully added to your new collection: {{name}}",
+      "updateCollection": "Update collection"
     },
     "collections": {
       "allTypes": "All Types",
@@ -457,6 +486,16 @@
       "myCollectionsButton": "My Collections",
       "noCollections": "No collections to show",
       "title": "Collections"
+    },
+    "develop": {
+      "dumpsHeading": "Database Dumps",
+      "dumpsText": "The database dumps will be useful if you need to process a lot of data quickly — in cases where the web service is not able to respond quickly enough. The latest database dump can be found <dumpLink>at this address</dumpLink>. A dump is made every week.",
+      "heading": "Developing with BookBrainz",
+      "lead": "We aim to make it as easy as possible to use the data stored in BookBrainz. If you’re a developer wanting to make programs that depend on BookBrainz, we have a web service available, and are releasing database dumps regularly.",
+      "sourceHeading": "Source Code",
+      "sourceText": "BookBrainz runs on open source software. If you wish to access the source and contribute to the project, please see <githubLink>our github page</githubLink>.",
+      "webServiceHeading": "Web Service / API",
+      "webServiceText": "The web service is the primary way of getting BookBrainz data. The key advantage of using the web service over the dumps is that you don’t need to install any database engine — you can access the data through the internet. The web service is currently in alpha version and a <docsLink>live documentation is served at this address</docsLink>."
     },
     "entity": {
       "addedAt": "Added at",
@@ -554,6 +593,13 @@
       "wikipedia": "Wikipedia",
       "wikipediaLicense": "Wikipedia content provided under the terms of the"
     },
+    "externalServices": {
+      "critiqueBrainzDescription": "Connect to your CritiqueBrainz account to publish reviews directly from BookBrainz. Your reviews will be independently visible on CritiqueBrainz and appear publicly on your CritiqueBrainz profile unless removed. To view or delete your reviews, visit your CritiqueBrainz profile.",
+      "disableTitle": "Disable",
+      "heading": "Connect with third-party services",
+      "reviewsDisabledDetail": "You will not be able to publish reviews directly from BookBrainz.",
+      "reviewsEnabledDetail": "You will be able to publish reviews directly from BookBrainz."
+    },
     "index": {
       "aboutButton": "About",
       "bluesky": " Bluesky",
@@ -572,14 +618,29 @@
       "seeAllRevisions": "See all revisions",
       "underDevelopment": "Under development — adventurous users, please test and add data! Give us feedback about bugs, glitches and potential improvements at <jiraLink>MetaBrainz JIRA!</jiraLink>"
     },
+    "licensing": {
+      "cc0Alt": "CC0",
+      "ccBySaAlt": "Creative Commons License",
+      "coreAuthor": "BBID, aliases, type, begin and end dates, gender and disambiguation comment",
+      "coreDataNotice": "The BookBrainz core data is licensed under the <cc0Link>Creative Commons CC0</cc0Link> license. The core data includes the following information:",
+      "coreEdition": "BBID, aliases, begin and end dates, language, status and disambiguation comment",
+      "coreEditionGroup": "BBID, aliases, type and disambiguation comment",
+      "corePublisher": "BBID, aliases, type, begin and end dates and disambiguation comment",
+      "coreRelationship": "ID, type, and entity and text associations",
+      "coreWork": "BBID, aliases, languages, type, disambiguation comment",
+      "heading": "Licensing",
+      "publicDataNotice": "Other publically available data is licensed under the <ccBySaLink>Creative Commons CC BY-SA</ccBySaLink> license. If you have any queries about licensing of the public data, please <askLink>ask for clarification</askLink>. Please see the links below for more details about CC0 and CC BY-SA."
+    },
     "merge": {
       "cancelMerge": "Cancel merge",
       "mergeButton": "Merge into selected entity",
       "mergeEntities": "Merge entities",
       "mergeInstructions": "Select the entity you want to merge into, or add more duplicates to merge.<lineBreak />After clicking <italic>Merge into selected entity</italic>, you will be redirected to a page where you can review the data before merging.",
+      "mergeTargetNotice": "You are merging into entity {{targetBBID}}. If you want to merge into another entity instead, you can select the correct entity in the merge queue at the bottom of the page and click the <buttonText>Merge into selected entity</buttonText> button again. This will reload the page with the new merge target selected.",
       "noEntities": "No entities selected for merge",
       "removeFromMerge": "Remove from merge",
       "removeSelected": "Remove selected entity",
+      "reviewDataNotice": "Select and review the data to merge. For further modifications, edit the resulting merged entity.",
       "selectedEntities_one": "Selected 1 entity for merging",
       "selectedEntities_other": "Selected {{count}} entities for merging",
       "selectEntity": "Select entity"

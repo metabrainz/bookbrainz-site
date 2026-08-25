@@ -6,6 +6,7 @@ import React from 'react';
 import ReactSelect from 'react-select';
 import _ from 'lodash';
 import request from 'superagent';
+import {withTranslation} from 'react-i18next';
 
 
 const {Alert, Col, Button, Form, Modal} = bootstrap;
@@ -70,7 +71,7 @@ class AddToCollectionModal extends React.Component {
 		catch (err) {
 			return this.setState({
 				message: {
-					text: 'Sorry, we could not fetch your collections ',
+					text: this.props.t('pages.collection.fetchCollectionsError'),
 					type: 'danger'
 				}
 			});
@@ -93,7 +94,11 @@ class AddToCollectionModal extends React.Component {
 				await Promise.all(promiseArray);
 				this.setState({selectedCollections: []}, () => {
 					this.props.closeModalAndShowMessage({
-						text: `Successfully added to selected collection${selectedCollections.length > 1 ? 's' : ''}`,
+						text: this.props.t(
+							selectedCollections.length > 1 ?
+								'pages.collection.successAddCollections' :
+								'pages.collection.successAddCollection'
+						),
 						type: 'success'
 					});
 				});
@@ -101,7 +106,7 @@ class AddToCollectionModal extends React.Component {
 			catch (err) {
 				this.setState({
 					message: {
-						text: 'Something went wrong! Please try again later',
+						text: this.props.t('common.error'),
 						type: 'danger'
 					}
 				});
@@ -110,7 +115,7 @@ class AddToCollectionModal extends React.Component {
 		else {
 			this.setState({
 				message: {
-					text: 'No collection selected',
+					text: this.props.t('pages.collection.noCollectionSelectedError'),
 					type: 'danger'
 				}
 			});
@@ -131,7 +136,7 @@ class AddToCollectionModal extends React.Component {
 		if (!this.isValid()) {
 			this.setState({
 				message: {
-					text: 'The form is incomplete. Please fill in a name and privacy option before continuing.',
+					text: this.props.t('pages.collection.incompleteFormError'),
 					type: 'danger'
 				}
 			});
@@ -157,7 +162,7 @@ class AddToCollectionModal extends React.Component {
 					.send({bbids}).then(() => {
 						this.setState({selectedCollections: []}, () => {
 							this.props.closeModalAndShowMessage({
-								text: `Successfully added to your new collection: ${name}`,
+								text: this.props.t('pages.collection.successAddNewCollection', {name}),
 								type: 'success'
 							});
 						});
@@ -165,7 +170,7 @@ class AddToCollectionModal extends React.Component {
 			}, () => {
 				this.setState({
 					message: {
-						text: 'Something went wrong! Please try again later',
+						text: this.props.t('common.error'),
 						type: 'danger'
 					}
 				});
@@ -186,6 +191,8 @@ class AddToCollectionModal extends React.Component {
 
 	/* eslint-disable react/jsx-no-bind */
 	render() {
+		const {t: translate} = this.props;
+
 		let messageComponent = null;
 		if (this.state.message.text) {
 			messageComponent = (
@@ -200,7 +207,7 @@ class AddToCollectionModal extends React.Component {
 			existingCollections = (
 				<div>
 					<h4>
-						Select the collection in which you want to add this entity or create a new collection
+						{translate('pages.collection.selectOrCreatePrompt')}
 					</h4>
 					<div className="addToCollectionModal-body">
 						{
@@ -225,15 +232,15 @@ class AddToCollectionModal extends React.Component {
 		else {
 			existingCollections = (
 				<div>
-					Oops, looks like you do not yet have any collection of {this.props.entityType}s .
-					Click on the button below to create a new collection
+					{translate('pages.collection.noCollectionsPrompt', {type: this.props.entityType})}
 				</div>
 			);
 		}
 
-		const privacyOptions = ['Private', 'Public'].map((option) => ({
-			name: option
-		}));
+		const privacyOptions = [
+			{label: translate('common.private'), name: 'Private'},
+			{label: translate('common.public'), name: 'Public'}
+		];
 		const collectionForm = (
 			<div>
 				<Col
@@ -243,28 +250,28 @@ class AddToCollectionModal extends React.Component {
 						className="padding-sides-0 addToCollectionModal-body"
 					>
 						<Form.Group>
-							<Form.Label>Name</Form.Label>
+							<Form.Label>{translate('common.name')}</Form.Label>
 							<Form.Control
 								ref={(ref) => this.name = ref}
 								type="text"
 							/>
 						</Form.Group>
 						<Form.Group>
-							<Form.Label>Description</Form.Label>
+							<Form.Label>{translate('common.description')}</Form.Label>
 							<Form.Control
 								as="textarea"
 								ref={(ref) => this.description = ref}
 							/>
 						</Form.Group>
 						<Form.Group>
-							<Form.Label>Privacy</Form.Label>
+							<Form.Label>{translate('common.privacy')}</Form.Label>
 							<ReactSelect
 								classNamePrefix="react-select"
-								getOptionLabel={this.getOptionLabel}
+								getOptionLabel={(option) => option.label || option.name}
 								getOptionValue={this.getOptionValue}
 								menuPosition="fixed"
 								options={privacyOptions}
-								placeholder="Select Privacy"
+								placeholder={translate('pages.collection.selectPrivacyPlaceholder')}
 								ref={(ref) => this.privacy = ref}
 							/>
 						</Form.Group>
@@ -281,7 +288,9 @@ class AddToCollectionModal extends React.Component {
 			>
 				<Modal.Header closeButton>
 					<Modal.Title>
-						{this.state.showCollectionForm ? 'Create' : 'Select'} Collection
+						{this.state.showCollectionForm ?
+							translate('pages.collection.createCollection') :
+							translate('pages.collection.selectCollection')}
 					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
@@ -297,27 +306,34 @@ class AddToCollectionModal extends React.Component {
 								variant="primary"
 								onClick={this.handleShowAllCollections}
 							>
-								Select from collections
+								{translate('pages.collection.selectFromCollections')}
 							</Button> :
 							<Button
 								variant="warning"
 								onClick={this.handleShowCollectionForm}
 							>
 								<FontAwesomeIcon icon={faPlus}/>
-								&nbsp;New collection
+								&nbsp;{translate('pages.collection.newCollectionButton')}
 							</Button>
 					}
 					{
 						this.state.showCollectionForm ?
 							<Button variant="success" onClick={this.handleAddToNewCollection}>
-								<FontAwesomeIcon icon={faPlus}/> Add to new collection
+								<FontAwesomeIcon icon={faPlus}/> {translate('pages.collection.addToNewCollection')}
 							</Button> :
-							<Button disabled={!this.state.collectionsAvailable.length} variant="success" onClick={this.handleAddToCollection}>
-								<FontAwesomeIcon icon={faPlus}/>Add to selected collection{this.state.selectedCollections.length > 1 ? 's' : null}
+							<Button
+								disabled={!this.state.collectionsAvailable.length}
+								variant="success"
+								onClick={this.handleAddToCollection}
+							>
+								<FontAwesomeIcon icon={faPlus}/>
+								{this.state.selectedCollections.length > 1 ?
+									translate('pages.collection.addToSelectedCollections') :
+									translate('pages.collection.addToSelectedCollection')}
 							</Button>
 					}
 					<Button variant="danger" onClick={this.props.handleCloseModal}>
-						<FontAwesomeIcon icon={faTimes}/> Close
+						<FontAwesomeIcon icon={faTimes}/> {translate('common.button.close')}
 					</Button>
 				</Modal.Footer>
 			</Modal>
@@ -333,7 +349,9 @@ AddToCollectionModal.propTypes = {
 	entityType: PropTypes.string.isRequired,
 	handleCloseModal: PropTypes.func.isRequired,
 	show: PropTypes.bool.isRequired,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired,
 	userId: PropTypes.number.isRequired
 };
 
-export default AddToCollectionModal;
+export default withTranslation()(AddToCollectionModal);
