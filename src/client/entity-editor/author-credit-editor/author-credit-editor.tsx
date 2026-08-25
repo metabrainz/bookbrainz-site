@@ -29,6 +29,7 @@ import {addAuthorCreditRow} from './actions';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Container component. The AuthorCreditEditor component contains a number of
@@ -52,49 +53,50 @@ const AuthorCreditEditor = ({
 	onClose,
 	showEditor,
 	...rest
-}) => (
-	<Modal show={showEditor} size="lg" onHide={onClose} >
-		<Modal.Header>
-			<Modal.Title>Edit Author credit</Modal.Title>
-		</Modal.Header>
-		<Modal.Body>
-			<p>
-				Author credits indicate who is the main credited Author (or Authors) for Editions,
-				and how they are credited. They consist of Authors, with (optionally) their names
-				as credited in the specific Edition (i.e. on the cover), and join phrases between them.
-				Keep in mind that join phrases should include spaces before and after if you want any
-				to appear in the final credit.
-			</p>
-			<hr/>
-			<dl>
-				<dt>Preview of the final Author credit:</dt>
-				<dd>
-					<AuthorCreditDisplay names={authorCredit}/>
-				</dd>
-			</dl>
-			<hr className="thin"/>
-			<div>
-				{
-					_keys(authorCredit).map(rowId => (
-						<AuthorCreditRow
-							index={rowId}
-							// eslint-disable-next-line react/no-array-index-key
-							key={rowId}
-							{...rest}
-						/>
-					))
-				}
-			</div>
-		</Modal.Body>
-		<Modal.Footer>
-			<Button variant="success" onClick={onAddAuthorCreditRow}>
-				<FontAwesomeIcon icon={faPlus}/>
-				&nbsp;Add another author
-			</Button>
-			<Button variant="warning" onClick={onClose}>Close</Button>
-		</Modal.Footer>
-	</Modal>
-);
+}) => {
+	// eslint-disable-next-line id-length
+	const {t: translate} = useTranslation();
+
+	return (
+		<Modal show={showEditor} size="lg" onHide={onClose} >
+			<Modal.Header>
+				<Modal.Title>{translate('entityEditor.shared.authorCreditLabel')}</Modal.Title>
+			</Modal.Header>
+			<Modal.Body>
+				<p>
+					{translate('entityEditor.authorCreditEditor.introText')}
+				</p>
+				<hr/>
+				<dl>
+					<dt>{translate('entityEditor.authorCreditEditor.previewText')}</dt>
+					<dd>
+						<AuthorCreditDisplay names={authorCredit}/>
+					</dd>
+				</dl>
+				<hr className="thin"/>
+				<div>
+					{
+						_keys(authorCredit).map(rowId => (
+							<AuthorCreditRow
+								index={rowId}
+								// eslint-disable-next-line react/no-array-index-key
+								key={rowId}
+								{...rest}
+							/>
+						))
+					}
+				</div>
+			</Modal.Body>
+			<Modal.Footer>
+				<Button variant="success" onClick={onAddAuthorCreditRow}>
+					<FontAwesomeIcon icon={faPlus}/>
+					&nbsp;{translate('entityEditor.authorCreditEditor.addAuthor')}
+				</Button>
+				<Button variant="warning" onClick={onClose}>{translate('common.button.close')}</Button>
+			</Modal.Footer>
+		</Modal>
+	);
+};
 
 AuthorCreditEditor.displayName = 'AuthorCreditEditor';
 AuthorCreditEditor.propTypes = {

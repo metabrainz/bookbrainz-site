@@ -32,6 +32,7 @@ import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import WikipediaExtract from './wikipedia-extract';
+import {useTranslation} from 'react-i18next';
 
 
 const {deletedEntityMessage, getRelationshipSourceByTypeId, getLanguageAttribute, getTypeAttribute, getEntityUrl,
@@ -43,6 +44,7 @@ function WorkAttributes({work}) {
 	if (work.deleted) {
 		return deletedEntityMessage;
 	}
+	const {t: translate} = useTranslation();
 	const type = getTypeAttribute(work.workType).data;
 	const languages = getLanguageAttribute(work).data;
 	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(work);
@@ -53,19 +55,19 @@ function WorkAttributes({work}) {
 			<Row>
 				<Col lg={3}>
 					<dl>
-						<dt>Sort Name</dt>
+						<dt>{translate('common.sortName')}</dt>
 						<dd>{sortNameOfDefaultAlias}</dd>
 					</dl>
 				</Col>
 				<Col lg={3}>
 					<dl>
-						<dt>Type</dt>
+						<dt>{translate('common.type')}</dt>
 						<dd>{type}</dd>
 					</dl>
 				</Col>
 				<Col lg={3}>
 					<dl>
-						<dt>Language</dt>
+						<dt>{translate('pages.entity.language')}</dt>
 						<dd>{languages}</dd>
 					</dl>
 				</Col>

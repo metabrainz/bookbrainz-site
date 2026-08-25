@@ -20,6 +20,7 @@ import CollectionsTable from './parts/collections-table';
 import PagerElement from './parts/pager';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {withTranslation} from 'react-i18next';
 
 
 class CollectionsPage extends React.Component {
@@ -62,7 +63,7 @@ class CollectionsPage extends React.Component {
 					showLastModified={this.props.showLastModified}
 					showOwner={this.props.showOwner}
 					showPrivacy={this.props.showPrivacy}
-					tableHeading={this.props.tableHeading}
+					tableHeading={this.props.tableHeading ?? this.props.t('pages.collections.title')}
 					type={this.state.type}
 					user={this.props.user}
 					onTypeChange={this.handleTypeChange}
@@ -94,6 +95,8 @@ CollectionsPage.propTypes = {
 	showOwner: PropTypes.bool,
 	showPrivacy: PropTypes.bool,
 	size: PropTypes.number,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired,
 	tableHeading: PropTypes.string,
 	type: PropTypes.string,
 	user: PropTypes.object
@@ -107,10 +110,10 @@ CollectionsPage.defaultProps = {
 	showOwner: false,
 	showPrivacy: false,
 	size: 20,
-	tableHeading: 'Collections',
+	tableHeading: null,
 	type: '',
 	user: null
 
 };
 
-export default CollectionsPage;
+export default withTranslation()(CollectionsPage);

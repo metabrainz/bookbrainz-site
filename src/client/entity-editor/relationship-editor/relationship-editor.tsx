@@ -47,6 +47,7 @@ import ReactSelect from 'react-select';
 import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import RelationshipSelect from './relationship-select';
 import _ from 'lodash';
+import {withTranslation} from 'react-i18next';
 
 
 function isValidRelationship(relationship: _Relationship) {
@@ -159,7 +160,9 @@ type RelationshipModalProps = {
 	languageOptions: Array<{label: string, value: number}>,
 	onCancel?: () => unknown,
 	onClose?: () => unknown,
-	onAdd?: (_Relationship) => unknown
+	onAdd?: (_Relationship) => unknown,
+	// eslint-disable-next-line id-length
+	t: any
 };
 
 
@@ -338,7 +341,7 @@ class RelationshipModal
 	}
 
 	renderEntitySelect() {
-		const {baseEntity, relationshipTypes} = this.props;
+		const {baseEntity, relationshipTypes, t: translate} = this.props;
 		const {targetEntity} = this.state;
 		const types = getValidOtherEntityTypes(relationshipTypes, baseEntity);
 		if (!types.length) {
@@ -347,8 +350,9 @@ class RelationshipModal
 		const typesForDisplay = types.map(_.startCase);
 		const lastType = _.last(typesForDisplay);
 		const otherTypes = _.join(typesForDisplay.slice(0, -1), ', ');
-		const label =
-			`Other Entity (${otherTypes.length ? `${otherTypes} or ` : ''}${lastType})`;
+		const label = translate('entityEditor.relationshipModal.targetLabelList', {
+			types: otherTypes.length ? `${otherTypes} or ${lastType}` : lastType
+		});
 
 		const link = targetEntity ? getEntityLink({bbid: targetEntity.id, type: targetEntity.type}) : '';
 		const openButton = (
@@ -356,7 +360,7 @@ class RelationshipModal
 				disabled={!targetEntity}
 				href={link}
 				target="_blank"
-				title="Open in a new tab"
+				title={translate('common.openNewTab')}
 				variant="info"
 			>
 				<FontAwesomeIcon icon={faExternalLinkAlt}/>
@@ -392,7 +396,7 @@ class RelationshipModal
 	}
 
 	renderRelationshipSelect() {
-		const {baseEntity, relationshipTypes} = this.props;
+		const {baseEntity, relationshipTypes, t: translate} = this.props;
 
 		const otherEntity = {
 			bbid: _.get(this.state, ['targetEntity', 'id']),
@@ -424,7 +428,7 @@ class RelationshipModal
 		// We are disabling this rule because we are already sanitizing the html here
 		return (
 			<Form.Group>
-				<Form.Label>Relationship</Form.Label>
+				<Form.Label>{translate('common.relationship')}</Form.Label>
 				<ReactSelect
 					classNamePrefix="react-select"
 					components={{Option: RelationshipSelect, SingleValue: RelationshipSelect}}
@@ -453,7 +457,7 @@ class RelationshipModal
 	}
 
 	render() {
-		const {onCancel, onClose, baseEntity} = this.props;
+		const {onCancel, onClose, baseEntity, t: translate} = this.props;
 		const baseEntityTypeForDisplay = _.startCase(baseEntity.type);
 		const submitDisabled = this.calculateProgressAmount() < 100;
 		const entitySelect = this.renderEntitySelect();
@@ -464,17 +468,19 @@ class RelationshipModal
 			return (
 				<Modal show size="lg" onHide={onClose}>
 					<Modal.Header>
-						<Modal.Title>Add a relationship</Modal.Title>
+						<Modal.Title>{translate('entityEditor.shared.addRelationship')}</Modal.Title>
 					</Modal.Header>
 					<Modal.Body>
 						<p>
 							<strong>
-								{baseEntityTypeForDisplay}s have no possible relationships with other entities at the moment.
+								{translate('entityEditor.relationshipModal.noRelationshipsPossible', {
+									entityType: baseEntityTypeForDisplay
+								})}
 							</strong>
 						</p>
 					</Modal.Body>
 					<Modal.Footer>
-						<Button variant="danger" onClick={onCancel}>Cancel</Button>
+						<Button variant="danger" onClick={onCancel}>{translate('common.button.cancel')}</Button>
 					</Modal.Footer>
 				</Modal>
 			);
@@ -483,18 +489,17 @@ class RelationshipModal
 		return (
 			<Modal show size="lg" onHide={onClose} onKeyUp={this.handleKeyPress}>
 				<Modal.Header>
-					<Modal.Title>Add a relationship</Modal.Title>
+					<Modal.Title>{translate('entityEditor.shared.addRelationship')}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<p>
 						<strong>
-							Use this form to add links between this{' '}
-							{baseEntityTypeForDisplay}
-							{' '}and other entities.
+							{translate('entityEditor.relationshipModal.introText', {
+								entityType: baseEntityTypeForDisplay
+							})}
 						</strong>
-						{' '}For example, you can link an author
-						to a work, or a work to another work
-						to show translation or derivation.
+						{' '}
+						{translate('entityEditor.relationshipModal.exampleText')}
 					</p>
 					<hr/>
 					<Row>
@@ -523,7 +528,7 @@ class RelationshipModal
 					</Container>
 					<Button variant="danger" onClick={onCancel}>
 						<FontAwesomeIcon icon={faTimes}/>
-						<span>&nbsp;Cancel</span>
+						<span>&nbsp;{translate('common.button.cancel')}</span>
 					</Button>
 					<Button
 						disabled={submitDisabled}
@@ -531,7 +536,7 @@ class RelationshipModal
 						onClick={this.handleAdd}
 					>
 						<FontAwesomeIcon icon={faPlus}/>
-						<span>&nbsp;Add</span>
+						<span>&nbsp;{translate('common.button.add')}</span>
 					</Button>
 				</Modal.Footer>
 			</Modal>
@@ -539,4 +544,4 @@ class RelationshipModal
 	}
 }
 
-export default RelationshipModal;
+export default withTranslation()(RelationshipModal);

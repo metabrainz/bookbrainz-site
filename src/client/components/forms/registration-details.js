@@ -98,9 +98,9 @@ class RegistrationForm extends React.Component {
 		const initialGender = this.props.gender && this.props.gender.id;
 		return (
 			<div>
-				<div className="page-header"><h1>{translate('pages:registration.heading')}</h1></div>
+				<div className="page-header"><h1>{translate('pages.registration.heading')}</h1></div>
 				<div>
-					{translate('pages:registration.introText')}
+					{translate('pages.registration.introText')}
 				</div>
 				<Row>
 					{loadingComponent}
@@ -110,16 +110,16 @@ class RegistrationForm extends React.Component {
 							onSubmit={this.handleSubmit}
 						>
 							<p>
-								{translate('pages:registration.displayNameIntro')}
+								{translate('pages.registration.displayNameIntro')}
 							</p>
 							<Form.Group className="row">
 								<Form.Label className="col-lg-4 col-form-label">
-									{translate('pages:shared.displayName')}
+									{translate('common.displayName')}
 								</Form.Label>
 								<div className="col-lg-4">
 									<Form.Control
 										defaultValue={this.props.name}
-										placeholder={translate('pages:shared.displayName')}
+										placeholder={translate('common.displayName')}
 										/* eslint-disable-next-line react/jsx-no-bind */
 										ref={(ref) => this.displayName = ref}
 										type="text"
@@ -128,10 +128,10 @@ class RegistrationForm extends React.Component {
 								</div>
 							</Form.Group>
 							<p>
-								{translate('pages:registration.genderIntro')}
+								{translate('pages.registration.genderIntro')}
 							</p>
 							<Form.Group className="row">
-								<Form.Label className="col-lg-4 col-form-label">{translate('common:gender')}</Form.Label>
+								<Form.Label className="col-lg-4 col-form-label">{translate('common.gender')}</Form.Label>
 								<div className="col-lg-4">
 									<ReactSelect
 										isClearable
@@ -139,7 +139,7 @@ class RegistrationForm extends React.Component {
 										getOptionLabel={this.getOptionLabel}
 										instanceId="gender"
 										options={this.props.genders}
-										placeholder={translate('pages:registration.genderPlaceholder')}
+										placeholder={translate('pages.registration.genderPlaceholder')}
 										ref={(ref) => this.gender = ref}
 									/>
 								</div>
@@ -153,7 +153,7 @@ class RegistrationForm extends React.Component {
 									type="submit"
 									variant="primary"
 								>
-									{translate('pages:registration.submitButton')}
+									{translate('pages.registration.submitButton')}
 								</Button>
 							</div>
 						</form>
@@ -177,4 +177,4 @@ RegistrationForm.defaultProps = {
 	name: null
 };
 
-export default withTranslation(['pages', 'common'])(RegistrationForm);
+export default withTranslation()(RegistrationForm);

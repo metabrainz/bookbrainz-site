@@ -27,24 +27,24 @@ const {expect} = chai;
 describe('createI18n', () => {
 	it('should default to English when no locale is provided', () => {
 		// eslint-disable-next-line no-undefined
-		const i18n = createI18n(undefined, {en: {common: {}}});
+		const i18n = createI18n(undefined, {en: {translation: {}}});
 		expect(i18n.language).to.equal('en');
 	});
 
 	it('should use the specified locale', () => {
-		const i18n = createI18n('fr', {fr: {common: {'test.key': 'Bonjour'}}});
+		const i18n = createI18n('fr', {fr: {translation: {common: {test: {key: 'Bonjour'}}}}});
 		expect(i18n.language).to.equal('fr');
 	});
 
 	it('should use pre-loaded resources for translation', () => {
-		const resources = {en: {common: {'button.submit': 'Submit'}}};
+		const resources = {en: {translation: {common: {button: {submit: 'Submit'}}}}};
 		const i18n = createI18n('en', resources);
-		expect(i18n.t('button.submit', {ns: 'common'})).to.equal('Submit');
+		expect(i18n.t('common.button.submit')).to.equal('Submit');
 	});
 
 	it('should return the key when translation is missing', () => {
-		const i18n = createI18n('en', {en: {common: {}}});
-		expect(i18n.t('nonexistent.key', {ns: 'common'})).to.equal('nonexistent.key');
+		const i18n = createI18n('en', {en: {translation: {}}});
+		expect(i18n.t('common.nonexistent.key')).to.equal('common.nonexistent.key');
 	});
 
 	it('should initialize synchronously for SSR compatibility', () => {
@@ -53,7 +53,7 @@ describe('createI18n', () => {
 				// No-op (needed by i18next backend interface)
 			},
 			read: (lng, ns, callback) => {
-				callback(null, {'sync.test': 'Works'});
+				callback(null, {common: {sync: {test: 'Works'}}});
 			},
 			type: 'backend'
 		};
@@ -65,9 +65,9 @@ describe('createI18n', () => {
 		asyncInstance.init({
 			initAsync: true,
 			lng: 'en',
-			ns: ['common']
+			ns: ['translation']
 		});
-		expect(asyncInstance.t('sync.test', {ns: 'common'})).to.equal('sync.test');
+		expect(asyncInstance.t('common.sync.test')).to.equal('common.sync.test');
 
 		// When initAsync is false, translations load synchronously and are immediately available
 		const syncInstance = createInstance();
@@ -75,12 +75,12 @@ describe('createI18n', () => {
 		syncInstance.init({
 			initAsync: false,
 			lng: 'en',
-			ns: ['common']
+			ns: ['translation']
 		});
-		expect(syncInstance.t('sync.test', {ns: 'common'})).to.equal('Works');
+		expect(syncInstance.t('common.sync.test')).to.equal('Works');
 
 		// Verify our createI18n behaves synchronously
-		const i18n = createI18n('en', {en: {common: {'sync.test': 'Works'}}});
-		expect(i18n.t('sync.test', {ns: 'common'})).to.equal('Works');
+		const i18n = createI18n('en', {en: {translation: {common: {sync: {test: 'Works'}}}}});
+		expect(i18n.t('common.sync.test')).to.equal('Works');
 	});
 });

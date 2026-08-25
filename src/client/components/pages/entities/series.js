@@ -31,6 +31,7 @@ import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import WikipediaExtract from './wikipedia-extract';
+import {useTranslation} from 'react-i18next';
 
 
 const {deletedEntityMessage, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
@@ -40,6 +41,7 @@ function SeriesAttributes({series}) {
 	if (series.deleted) {
 		return deletedEntityMessage;
 	}
+	const {t: translate} = useTranslation();
 	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(series);
 	const averageRating = series.reviews?.reviews?.average_rating?.rating || 0;
 	const reviewsCount = series.reviews?.reviews?.average_rating?.count || 0;
@@ -48,25 +50,25 @@ function SeriesAttributes({series}) {
 			<Row>
 				<Col lg={3}>
 					<dl>
-						<dt>Sort Name</dt>
+						<dt>{translate('common.sortName')}</dt>
 						<dd>{sortNameOfDefaultAlias}</dd>
 					</dl>
 				</Col>
 				<Col lg={2}>
 					<dl>
-						<dt>Series Type</dt>
+						<dt>{translate('pages.entity.seriesType')}</dt>
 						<dd>{series.entityType}</dd>
 					</dl>
 				</Col>
 				<Col lg={2}>
 					<dl>
-						<dt>Ordering Type</dt>
+						<dt>{translate('pages.entity.orderingType')}</dt>
 						<dd>{series.seriesOrderingType.label}</dd>
 					</dl>
 				</Col>
 				<Col lg={2}>
 					<dl>
-						<dt>Total Items</dt>
+						<dt>{translate('pages.entity.totalItems')}</dt>
 						<dd>{series.seriesItems.length}</dd>
 					</dl>
 				</Col>
