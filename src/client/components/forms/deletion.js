@@ -17,6 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {Trans, withTranslation} from 'react-i18next';
 import {faExclamationTriangle, faQuestionCircle, faTimesCircle, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LoadingSpinner from '../loading-spinner';
@@ -53,8 +54,7 @@ class EntityDeletionForm extends React.Component {
 
 		if (!note || !note.length) {
 			this.setState({
-				error: `We require users to leave a note explaining the reasons why they are deleting an entity.
-				Please provide an explanation in the text area above.`,
+				error: this.props.t('pages.entity.deleteNoteRequiredError'),
 				waiting: false
 			});
 			return;
@@ -79,7 +79,7 @@ class EntityDeletionForm extends React.Component {
 	}
 
 	render() {
-		const {entity} = this.props;
+		const {entity, t: translate} = this.props;
 		const {note} = this.state;
 
 		this.entityUrl = `/${_kebabCase(entity.type)}/${entity.bbid}`;
@@ -102,81 +102,85 @@ class EntityDeletionForm extends React.Component {
 					type="submit"
 					variant="danger"
 				>
-					<FontAwesomeIcon icon={faTrashAlt}/> Delete
+					<FontAwesomeIcon icon={faTrashAlt}/> {translate('common.button.delete')}
 				</Button>
 				<Button
 					className="float-right"
 					href={this.entityUrl}
 					variant="secondary"
 				>
-					<FontAwesomeIcon icon={faTimesCircle}/> Cancel
+					<FontAwesomeIcon icon={faTimesCircle}/> {translate('common.button.cancel')}
 				</Button>
 			</span>
 		);
 
 		const entityName =
-			entity.defaultAlias ? entity.defaultAlias.name : '(unnamed)';
+			entity.defaultAlias ? entity.defaultAlias.name : translate('common.unnamed');
 
 		const noteLabel = (
 			<ValidationLabel error={!hasNote}>
-				Note
+				{translate('common.note')}
 			</ValidationLabel>
 		);
 
 		const deletionTooltip = (
 			<Tooltip>
-				Please explain why you are deleting this entity. This is required.
+				{translate('pages.entity.deletionTooltip')}
 			</Tooltip>
 		);
 
 		return (
 			<div id="deletion-form">
-				<h1>Delete Entity</h1>
+				<h1>{translate('pages.entity.deleteEntity')}</h1>
 				<Row className="margin-top-2">
 					{loadingComponent}
 					<Col lg={{offset: 3, span: 6}}>
 						<form onSubmit={this.handleSubmit}>
 							<Card bg="danger">
 								<Card.Header as="h4">
-									Confirm Deletion
+									{translate('common.confirmDeletion')}
 								</Card.Header>
 								<Card.Body>
 
 									<Alert variant="warning">
 										<h4>
 											<FontAwesomeIcon icon={faExclamationTriangle}/>&nbsp;
-											You’re about to delete the {entity.type} {entityName}.
+											{translate('pages.entity.aboutToDeleteNotice', {name: entityName, type: entity.type})}
 										</h4>
-										<span style={{fontSize: '1.3em'}}>Edit the entity or merge duplicates rather than delete !</span>
+										<span style={{fontSize: '1.3em'}}>{translate('pages.entity.preferEditNotice')}</span>
 									</Alert>
 									<p>
-									As a general principle, if you can solve an issue with non-destructive edits,
-									that&apos;s preferable to a removal. That way the unique identifier of the entity is preserved.
-										<br/>
-									In case of merged entities, the old identifier will forward to the entity it is merged into.
+										{translate('pages.entity.deletionGeneralPrinciple')}
 									</p>
-									<p>If you are certain it should be deleted, please enter a
-									revision note below to explain why and confirm the deletion.
-									If you are not sure, you can get feedback from the community&nbsp;
-									<a
-										href="//community.metabrainz.org/c/bookbrainz"
-										rel="noopener noreferrer"
-										target="_blank"
-									>
-										on our forums
-									</a>
-									&nbsp;or on our&nbsp;
-									<a
-										href="//kiwiirc.com/nextclient/irc.libera.chat/?#bookbrainz"
-										rel="noopener noreferrer"
-										target="_blank"
-									>
-										IRC channel
-									</a>.
+									<p>
+										<Trans
+											components={{
+												forumsLink: (
+													<a
+														href="//community.metabrainz.org/c/bookbrainz"
+														rel="noopener noreferrer"
+														target="_blank"
+													/>
+												),
+												ircLink: (
+													<a
+														href="//kiwiirc.com/nextclient/irc.libera.chat/?#bookbrainz"
+														rel="noopener noreferrer"
+														target="_blank"
+													/>
+												)
+											}}
+											i18nKey="pages.entity.deletionCertainNotice"
+										/>
 									</p>
 									<p className="text-muted">
-									If this {entity.type} is a duplicate, click <a href={`/merge/add/${entity.bbid}`}>this link</a>
-									&nbsp;to select it to be merged instead.
+										<Trans
+											components={{
+												mergeLink: <a href={`/merge/add/${entity.bbid}`}/>
+											}}
+											i18nKey="pages.entity.deletionDuplicateNotice"
+											values={{type: entity.type}}
+										/>
 									</p>
 									<hr/>
 									<Form.Group>
@@ -200,7 +204,7 @@ class EntityDeletionForm extends React.Component {
 												value={note}
 												onChange={this.handleNoteChange}
 											/>
-											<Form.Text muted>* A note is required</Form.Text>
+											<Form.Text muted>{translate('pages.entity.noteIsRequired')}</Form.Text>
 										</div>
 									</Form.Group>
 									{errorComponent}
@@ -219,7 +223,9 @@ class EntityDeletionForm extends React.Component {
 
 EntityDeletionForm.displayName = 'EntityDeletionForm';
 EntityDeletionForm.propTypes = {
-	entity: PropTypes.object.isRequired
+	entity: PropTypes.object.isRequired,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired
 };
 
-export default EntityDeletionForm;
+export default withTranslation()(EntityDeletionForm);
