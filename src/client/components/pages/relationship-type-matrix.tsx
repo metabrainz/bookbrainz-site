@@ -19,13 +19,15 @@ import {Card, Table} from 'react-bootstrap';
 import {ENTITY_TYPES} from '../../helpers/entity';
 import React from 'react';
 import {snakeCase} from 'lodash';
+import {useTranslation} from 'react-i18next';
 
 
 function RelationshipTypeMatrixPage() {
+	const {t: translate} = useTranslation();
 	return (
 		<Card>
 			<Card.Header as="h2">
-				Relationship Types
+				{translate('pages.relationshipTypes.heading')}
 			</Card.Header>
 			<Card.Body>
 				<Table bordered responsive>

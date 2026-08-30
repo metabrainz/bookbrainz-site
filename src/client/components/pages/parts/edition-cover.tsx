@@ -17,6 +17,7 @@
  */
 
 import React, {useCallback, useEffect, useState} from 'react';
+import {Trans, useTranslation} from 'react-i18next';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import {faSlash} from '@fortawesome/free-solid-svg-icons';
@@ -24,6 +25,7 @@ import {getOpenLibraryCoverUrl} from '../../../../common/helpers/cover-image';
 
 
 function EditionCover({backupIcon, deleted, editionName, identifiers}) {
+	const {t: translate} = useTranslation();
 	const [imageError, setImageError] = useState(false);
 	const [imageLoading, setImageLoading] = useState(true);
 
@@ -95,7 +97,7 @@ function EditionCover({backupIcon, deleted, editionName, identifiers}) {
 						</div>
 					)}
 					<img
-						alt={editionName ? `Cover of ${editionName}` : 'Book cover'}
+						alt={editionName ? translate('pages.edition.coverOfName', {name: editionName}) : translate('pages.edition.bookCover')}
 						className={`edition-cover-image ${imageLoading ? 'loading' : ''}`}
 						src={coverUrl}
 						onError={handleImageError}
@@ -104,14 +106,18 @@ function EditionCover({backupIcon, deleted, editionName, identifiers}) {
 				</div>
 				{!imageLoading && (
 					<small className="edition-cover-attribution text-muted">
-					Cover from{' '}
-						<a
-							href={sourcePageUrl}
-							rel="noopener noreferrer"
-							target="_blank"
-						>
-						OpenLibrary
-						</a>
+						<Trans
+							components={{
+								openLibraryLink: (
+									<a
+										href={sourcePageUrl}
+										rel="noopener noreferrer"
+										target="_blank"
+									/>
+								)
+							}}
+							i18nKey="pages.edition.coverFrom"
+						/>
 					</small>
 				)}
 			</div>

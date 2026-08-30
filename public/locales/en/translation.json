@@ -19,12 +19,14 @@
     },
     "authorCredit": "Author Credit",
     "authorCredits": "Author Credits",
+    "bio": "Bio",
     "Bookbrainz": "BookBrainz",
     "button": {
       "add": "Add",
       "back": "Back",
       "cancel": "Cancel",
       "close": "Close",
+      "continue": "Continue",
       "copy": "Copy",
       "delete": "Delete",
       "discard": "Discard changes",
@@ -34,6 +36,7 @@
       "next": "Next",
       "remove": "Remove",
       "returnToMain": "Return to Main Page",
+      "saveChanges": "Save changes",
       "search": "Search",
       "submit": "Submit",
       "update": "Update"
@@ -112,6 +115,7 @@
     },
     "no": "no",
     "noEntitySelected": "No {{type}} selected",
+    "note": "Note",
     "number": "Number",
     "Onforums": "on our forums,",
     "Ongithub": "on GitHub",
@@ -136,6 +140,7 @@
     "publisher": "Publisher",
     "relationship": "Relationship",
     "relationships": "Relationships",
+    "required": "required",
     "revision": "revision",
     "role": "Collaborator/Owner",
     "searchResults": "Search Results",
@@ -145,6 +150,7 @@
     "sortName": "Sort Name",
     "status": "Status",
     "successLabel": "Success!",
+    "title": "title",
     "totalRevisions": "Total Revisions",
     "type": "Type",
     "unnamed": "(unnamed)",
@@ -497,7 +503,13 @@
       "webServiceHeading": "Web Service / API",
       "webServiceText": "The web service is the primary way of getting BookBrainz data. The key advantage of using the web service over the dumps is that you don’t need to install any database engine — you can access the data through the internet. The web service is currently in alpha version and a <docsLink>live documentation is served at this address</docsLink>."
     },
+    "edition": {
+      "bookCover": "Book cover",
+      "coverFrom": "Cover from <openLibraryLink>OpenLibrary</openLibraryLink>",
+      "coverOfName": "Cover of {{name}}"
+    },
     "entity": {
+      "aboutToDeleteNotice": "You’re about to delete the {{type}} {{name}}.",
       "addedAt": "Added at",
       "addEdition": "Add Edition",
       "addIdentifiersDescription": "and add identifiers to this entity.",
@@ -543,7 +555,14 @@
       "dateFoundedPublisher": "Date Founded",
       "dateOfBirth": "Date of birth",
       "dateOfDeath": "Date of death",
+      "deletedEntityNotice": "This entity has been deleted by an editor. This is most likely because it was added accidentally or incorrectly.<lineBreak />The edit history has been preserved, and you can see the revisions by clicking the history button below.<lineBreak />If you’re sure this entity should still exist, you will be able to restore it to a previous revision in a future version of BookBrainz, but that’s not quite ready yet.",
+      "deletedEntityType": "Deleted {{type}} {{bbid}}",
       "deleteEntity": "Delete Entity",
+      "deleteNoteRequiredError": "We require users to leave a note explaining the reasons why they are deleting an entity.\nPlease provide an explanation in the text area above.",
+      "deletionCertainNotice": "If you are certain it should be deleted, please enter a revision note below to explain why and confirm the deletion. If you are not sure, you can get feedback from the community <forumsLink>on our forums</forumsLink> or on our <ircLink>IRC channel</ircLink>.",
+      "deletionDuplicateNotice": "If this {{type}} is a duplicate, click <mergeLink>this link</mergeLink> to select it to be merged instead.",
+      "deletionGeneralPrinciple": "As a general principle, if you can solve an issue with non-destructive edits, that's preferable to a removal. That way the unique identifier of the entity is preserved.\nIn case of merged entities, the old identifier will forward to the entity it is merged into.",
+      "deletionTooltip": "Please explain why you are deleting this entity. This is required.",
       "dimensions": "Dimensions (WxHxD)",
       "editEntity": "Edit Entity",
       "editionGroupUnsetPost": "and add one if you see this!",
@@ -565,10 +584,12 @@
       "noRelationships": "No relationships.",
       "noReviews": "No reviews yet.",
       "noSeries": "No Series",
+      "noteIsRequired": "* A note is required",
       "notSureVisitHelp": "Not sure what to do? Visit the",
       "noWorks": "No works",
       "noWorksYet": "There are no Works yet!",
       "orderingType": "Ordering Type",
+      "preferEditNotice": "Edit the entity or merge duplicates rather than delete !",
       "ratingOptional": "Rating (optional):",
       "ratings": "Ratings",
       "relatedCollections": "Related Collections",
@@ -586,7 +607,10 @@
       "seriesType": "Series Type",
       "showLess": "less",
       "showMore": "more…",
+      "thisTypeWasDeleted": "This {{type}} was deleted",
       "totalItems": "Total Items",
+      "unnamedLabel": "Unnamed",
+      "unnamedType": "Unnamed {{type}} {{bbid}}",
       "view": "View",
       "viewAllReviews": "View all reviews",
       "weight": "Weight",
@@ -599,6 +623,9 @@
       "heading": "Connect with third-party services",
       "reviewsDisabledDetail": "You will not be able to publish reviews directly from BookBrainz.",
       "reviewsEnabledDetail": "You will be able to publish reviews directly from BookBrainz."
+    },
+    "help": {
+      "entityRelationshipsAlt": "Entity relationships"
     },
     "index": {
       "aboutButton": "About",
@@ -645,11 +672,19 @@
       "selectedEntities_other": "Selected {{count}} entities for merging",
       "selectEntity": "Select entity"
     },
+    "preview": {
+      "explanation": "This confirmation is important to ensure that no malicious actor can use your account to modify data without your knowledge.\nBelow this line, you can review the data being sent and make any modifications if desired.",
+      "heading": "Confirm Form Submission",
+      "submitPrompt": "You are about to submit a request to <destSpan>{{originalUrl}}</destSpan> originating from <srcSpan>{{sourceUrl}}</srcSpan>. Continue?",
+      "submittedDataToggle": "Data submitted with this request"
+    },
     "profile": {
       "badges": "Badges",
       "basicInfo": "Basic Info",
       "bio": "Bio",
       "displayName": "Display Name",
+      "dragBadgeToSet": "drag badge to set",
+      "editHeading": "Edit your public profile",
       "editInfoTitle": "Edit basic editor info",
       "editProfile": "Edit Profile",
       "joined": "Joined",
@@ -662,6 +697,9 @@
       "revisionsApplied": "Revisions Applied",
       "revisionsChartLabel": "Revisions",
       "revisionsReverted": "Revisions Reverted",
+      "selectAreaPlaceholder": "Select area...",
+      "selectGenderPlaceholder": "Select Gender",
+      "selectTitlePlaceholder": "Select title",
       "sendEmail": "send email",
       "stats": "Stats",
       "totalRevisions": "Total Revisions",
@@ -677,6 +715,9 @@
       "heading": "Register",
       "introText": "Great! You successfully logged in to MusicBrainz and are now just one step away from becoming a BookBrainz editor. The following form allows you to specify additional information that will let other users know a little bit more about you. When you’re done, just click the blue button at the bottom of the page.",
       "submitButton": "Looks good, sign me up!"
+    },
+    "relationshipTypes": {
+      "heading": "Relationship Types"
     },
     "revision": {
       "addNote": "Add Note",
@@ -747,9 +788,6 @@
       "targetEntityType": "Target Entity Type: ",
       "validationRegex": "Validation RegEx: "
     }
-  },
-  "pages:collections": {
-    "title": "Collections"
   },
   "staticPages": {
     "about": {
@@ -855,23 +893,17 @@
     },
     "help": {
       "authorDesc": " – an individual, group or collective that participates in the creative process of an artistic work. It also includes translators, illustrators, editors, etc.",
+      "earthseafourbooks": "Earthsea: The First Four Books",
       "editionDesc": " – a published physical or digital version of one or more Works.",
       "editionExamples": "Examples: book, anthology, comic book, magazine, leaflet",
       "editionGroupDesc": " – a logical grouping of different Editions of the same book.",
       "editionGroupExamples": "Example: paperback, hardcover and e-book editions of a novel",
       "editionNote": "Note: An Author can self-publish an Edition",
       "entitiesDescription": "Entities are the main concepts used to describe a bibliographic record through their relationships",
-      "exampleAncillaryAnd": " and ",
+      "exampleAncillary": "The <paperbackLink>Paperback</paperbackLink> and <ebookLink>E-book</ebookLink> editions of the novel Ancillary Mercy by the publisher <publisherLink>Orbit Books</publisherLink> making them part of the same <editionGroupLink>Edition Group</editionGroupLink>.",
       "exampleAncillaryLink1": "Paperback",
       "exampleAncillaryLink2": "E-book",
-      "exampleAncillaryLink3": "Orbit Books",
-      "exampleAncillaryLink4": "Edition Group",
-      "exampleAncillaryText1": " editions of the novel Ancillary Mercy by the publisher ",
-      "exampleAncillaryText2": " making them part of the same ",
-      "exampleLeGuinEnd": " which contain it and several more works.",
-      "exampleLeGuinMid": ", her novel ",
-      "exampleLeGuinPost": " and an Edition ",
-      "exampleLeGuinPre": "The relationship between ",
+      "exampleLeGuin": "The relationship between <authorLink>Ursula K. Le Guin</authorLink>, her novel <workLink>A Wizard of Earthsea</workLink> and an Edition <editionLink>Earthsea: The First Four Books</editionLink> which contain it and several more works.",
       "examplesIntro": "The following examples should help you understand the different entities and how they relate to each other:",
       "examplesTitle": "Examples",
       "glossaryAliases": "Aliases",
@@ -907,6 +939,8 @@
       "seriesDesc": " – a set or sequence of related works, editions, authors, publishers or edition-groups.",
       "seriesExamples": "Examples: a series of novels, a series of comics, etc.",
       "title": "Help page",
+      "Ursula": "Ursula K. Le Guin",
+      "wizardofearthsea": "A Wizard of Earthsea",
       "workDesc": " – a distinct intellectual or artistic creation expressed in words and/or images. Here we are not talking, for example, about a physical book, but the introduction, story, illustrations, etc. it contains.",
       "workExamples": "Examples: novel, poem, translation, introduction & foreword, article, research paper, etc."
     },

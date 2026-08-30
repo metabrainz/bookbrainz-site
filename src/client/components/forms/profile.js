@@ -27,6 +27,7 @@ import ReactSelect from 'react-select';
 import SearchSelect from '../../entity-editor/common/entity-search-field-option';
 import ValidationLabel from '../../entity-editor/common/validation-label';
 import {entityToOption} from '../../helpers/entity';
+import {withTranslation} from 'react-i18next';
 
 
 const {Alert, Button, Col, Card, Form, Row} = bootstrap;
@@ -145,6 +146,7 @@ class ProfileForm extends React.Component {
 	}
 
 	render() {
+		const {t: translate} = this.props;
 		const loadingElement =
 			this.state.waiting ? <LoadingSpinner/> : null;
 		const genderOptions = this.state.genders.map((gender) => ({
@@ -170,7 +172,7 @@ class ProfileForm extends React.Component {
 
 		const nameLabel = (
 			<ValidationLabel error={!this.valid()}>
-				Display Name
+				{translate('common.displayName')}
 			</ValidationLabel>
 		);
 
@@ -182,7 +184,7 @@ class ProfileForm extends React.Component {
 						<form onSubmit={this.handleSubmit}>
 							<Card>
 								<Card.Header as="h3">
-									Edit your public profile
+									{translate('pages.profile.editHeading')}
 								</Card.Header>
 								<Card.Body>
 									<Form.Group>
@@ -193,10 +195,10 @@ class ProfileForm extends React.Component {
 											type="text"
 											onChange={this.handleValueChange}
 										/>
-										<Form.Text muted>required</Form.Text>
+										<Form.Text muted>{translate('common.required')}</Form.Text>
 									</Form.Group>
 									<Form.Group>
-										<Form.Label>Bio</Form.Label>
+										<Form.Label>{translate('common.bio')}</Form.Label>
 										<Form.Control
 											as="textarea"
 											defaultValue={bio}
@@ -206,14 +208,14 @@ class ProfileForm extends React.Component {
 									</Form.Group>
 									{titleOptions.length > 0 &&
 										<Form.Group>
-											<Form.Label>title</Form.Label>
+											<Form.Label>{translate('common.title')}</Form.Label>
 											<ReactSelect
 												classNamePrefix="react-select"
 												getOptionLabel={this.getTitleOptionLabel}
 												getOptionValue={this.getTitleOptionValue}
 												instanceId="title"
 												options={titleOptions}
-												placeholder="Select title"
+												placeholder={translate('pages.profile.selectTitlePlaceholder')}
 												value={titleOptions.filter((option) => option.unlockId === titleId)}
 												onChange={this.handleTitleChange}
 											/>
@@ -222,19 +224,19 @@ class ProfileForm extends React.Component {
 									}
 									<SearchSelect
 										defaultValue={entityToOption(transformedArea)}
-										label="Area"
-										placeholder="Select area..."
+										label={translate('common.area')}
+										placeholder={translate('pages.profile.selectAreaPlaceholder')}
 										type="area"
 										onChange={this.handleAreaChange}
 									/>
 									<Form.Group>
-										<Form.Label>Gender</Form.Label>
+										<Form.Label>{translate('common.gender')}</Form.Label>
 										<ReactSelect
 											classNamePrefix="react-select"
 											getOptionLabel={this.getGenderOptionLabel}
 											getOptionValue={this.getGenderOptionValue}
 											options={genderOptions}
-											placeholder="Select Gender"
+											placeholder={translate('pages.profile.selectGenderPlaceholder')}
 											value={genderOptions.filter((option) => option.id === genderId)}
 											onChange={this.handleGenderChange}
 										/>
@@ -247,7 +249,7 @@ class ProfileForm extends React.Component {
 										type="submit"
 										variant="success"
 									>
-										Save changes
+										{translate('common.button.saveChanges')}
 									</Button>
 								</Card.Footer>
 							</Card>
@@ -272,7 +274,9 @@ ProfileForm.propTypes = {
 		titleUnlockId: PropTypes.number
 	}).isRequired,
 	genders: PropTypes.array.isRequired,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired,
 	titles: PropTypes.array.isRequired
 };
 
-export default ProfileForm;
+export default withTranslation()(ProfileForm);

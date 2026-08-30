@@ -17,9 +17,9 @@
  */
 /* eslint-disable max-len */
 import {Col, ListGroup, Row} from 'react-bootstrap';
+import {Trans, useTranslation} from 'react-i18next';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
-import {useTranslation} from 'react-i18next';
 
 
 /**
@@ -57,7 +57,7 @@ function HelpPage(): JSX.Element {
 			<Row>
 				<Col lg={6}>
 					<img
-						alt="Entity relationships"
+						alt={translate('pages.help.entityRelationshipsAlt')}
 						className="img-fluid center-block"
 						src="/images/entity_relationships.svg"
 					/>
@@ -97,21 +97,24 @@ function HelpPage(): JSX.Element {
 					<p>
 						{translate('staticPages.help.examplesIntro')}
 						<br/>
-						{translate('staticPages.help.exampleLeGuinPre')}
-						<a href="/author/e66704df-2386-4af9-9b02-a3440a1bc828">Ursula K. Le Guin</a>
-						{translate('staticPages.help.exampleLeGuinMid')}
-						<a href="/work/11f0af2a-7034-4e7d-baa2-7cf0cb7bcbea">A Wizard of Earthsea</a>
-						{translate('staticPages.help.exampleLeGuinPost')}
-						<a href="/edition/731ccc5f-35c3-4056-a6e3-00996bb79380">Earthsea: The First Four Books</a>
-						{translate('staticPages.help.exampleLeGuinEnd')}
+						<Trans
+							components={{
+								authorLink: <a href="/author/e66704df-2386-4af9-9b02-a3440a1bc828"/>,
+								editionLink: <a href="/edition/731ccc5f-35c3-4056-a6e3-00996bb79380"/>,
+								workLink: <a href="/work/11f0af2a-7034-4e7d-baa2-7cf0cb7bcbea"/>
+							}}
+							i18nKey="staticPages.help.exampleLeGuin"
+						/>
 						<br/>
-						<a href="/edition/54331325-d11b-47f4-bb74-0485e582c52e">{translate('staticPages.help.exampleAncillaryLink1')}</a>
-						{translate('staticPages.help.exampleAncillaryAnd')}
-						<a href="/edition/3fa9fdcd-098d-4ec1-82e4-f5fdfb92c41f">{translate('staticPages.help.exampleAncillaryLink2')}</a>
-						{translate('staticPages.help.exampleAncillaryText1')}
-						<a href="publisher/b065b24d-136f-45e3-badc-48aea4728c73">{translate('staticPages.help.exampleAncillaryLink3')}</a>
-						{translate('staticPages.help.exampleAncillaryText2')}
-						<a href="/edition-group/540e9c4a-f9fa-427b-a41f-bb12c48f902b">{translate('staticPages.help.exampleAncillaryLink4')}</a>
+						<Trans
+							components={{
+								ebookLink: <a href="/edition/3fa9fdcd-098d-4ec1-82e4-f5fdfb92c41f"/>,
+								editionGroupLink: <a href="/edition-group/540e9c4a-f9fa-427b-a41f-bb12c48f902b"/>,
+								paperbackLink: <a href="/edition/54331325-d11b-47f4-bb74-0485e582c52e"/>,
+								publisherLink: <a href="publisher/b065b24d-136f-45e3-badc-48aea4728c73"/>
+							}}
+							i18nKey="staticPages.help.exampleAncillary"
+						/>
 					</p>
 					<hr/>
 				</Col>
