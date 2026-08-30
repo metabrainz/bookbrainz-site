@@ -18,6 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 
 
 const {Card, Form} = bootstrap;
@@ -65,6 +66,7 @@ type Props = {
 * @returns {JSX.Element} A React component that displays a drag-and-drop card for an achievement.
 */
 function DragAndDrop({name, initialAchievement}: Props): JSX.Element {
+	const {t: translate} = useTranslation();
 	const [achievement, setAchievement] = useState<AchievementForDisplay>(initialAchievement);
 	const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
 		event.preventDefault();
@@ -111,7 +113,8 @@ function DragAndDrop({name, initialAchievement}: Props): JSX.Element {
 					/>
 				</Form.Group>
 				<div className="h3">
-					{achievement.name}
+					{achievement.name === 'drag badge to set' ?
+						translate('pages.profile.dragBadgeToSet') : achievement.name}
 				</div>
 			</Card.Body>
 		</Card>

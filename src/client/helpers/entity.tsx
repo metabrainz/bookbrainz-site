@@ -26,7 +26,9 @@ import {
 	faBook, faGlobe, faGripVertical, faLayerGroup, faMagicWandSparkles, faPenNib, faUniversity, faUser, faUserCircle, faWindowRestore
 } from '@fortawesome/free-solid-svg-icons';
 import {format, isValid, parseISO} from 'date-fns';
+import {Trans} from 'react-i18next';
 import {dateObjectToISOString} from './utils';
+import {t as translate} from 'i18next';
 
 
 export function extractAttribute(attr, path) {
@@ -44,11 +46,11 @@ export function getLanguageAttribute(entity) {
 		entity.languageSet.languages.map(
 			(language) => language.name
 		).join(', ') : '?';
-	return {data: languages, title: 'Languages'};
+	return {data: languages, title: translate('common.languages')};
 }
 
 export function getTypeAttribute(entityType) {
-	return {data: extractAttribute(entityType, 'label'), title: 'Type'};
+	return {data: extractAttribute(entityType, 'label'), title: translate('common.type')};
 }
 
 /**
@@ -158,7 +160,7 @@ export function entityToOption(entity) {
 			entity.disambiguation.comment : null,
 		id: entity.bbid,
 		text: entity.defaultAlias ?
-			entity.defaultAlias.name : '(unnamed)',
+			entity.defaultAlias.name : translate('common.unnamed'),
 		type: entity.type
 	};
 }
@@ -170,19 +172,25 @@ export function getEntityLabel(entity, returnHTML = true) {
 
 	// Deleted entities
 	if (!entity.dataId) {
-		let deletedEntityName = `Deleted ${entity.type} ${entity.bbid}`;
+		let deletedEntityName = translate('pages.entity.deletedEntityType', {bbid: entity.bbid, type: entity.type});
 		if (entity.parentAlias) {
 			deletedEntityName = entity.parentAlias.name;
 		}
 		if (returnHTML) {
-			return <span className="deleted"><span className="text-muted" title={`This ${entity.type} was deleted`}>{deletedEntityName}</span></span>;
+			return (
+				<span className="deleted">
+					<span className="text-muted" title={translate('pages.entity.thisTypeWasDeleted', {type: entity.type})}>
+						{deletedEntityName}
+					</span>
+				</span>
+			);
 		}
 		return `${deletedEntityName}`;
 	}
 	if (returnHTML) {
-		return <span title={`Unnamed ${entity.type} ${entity.bbid}`}>(unnamed)</span>;
+		return <span title={translate('pages.entity.unnamedType', {bbid: entity.bbid, type: entity.type})}>{translate('common.unnamed')}</span>;
 	}
-	return 'Unnamed';
+	return translate('pages.entity.unnamedLabel');
 }
 
 export function getEditionReleaseDate(edition) {
@@ -410,10 +418,11 @@ export function getRelationshipSourceByTypeId(entity, relationshipTypeId: number
 
 export const deletedEntityMessage = (
 	<p>
-		This entity has been deleted by an editor.
-		This is most likely because it was added accidentally or incorrectly.
-		<br/>The edit history has been preserved, and you can see the revisions by clicking the history button below.
-		<br/>If you’re sure this entity should still exist, you will be able to
-		restore it to a previous revision in a future version of BookBrainz, but that’s not quite ready yet.
+		<Trans
+			components={{
+				lineBreak: <br/>
+			}}
+			i18nKey="pages.entity.deletedEntityNotice"
+		/>
 	</p>
 );
