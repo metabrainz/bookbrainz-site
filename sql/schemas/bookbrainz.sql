@@ -78,7 +78,7 @@ ALTER TABLE bookbrainz.admin_log ADD FOREIGN KEY (admin_id) REFERENCES bookbrain
 ALTER TABLE bookbrainz.admin_log ADD FOREIGN KEY (target_user_id) REFERENCES bookbrainz.editor (id);
 
 CREATE TABLE bookbrainz.entity (
-	bbid UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+	bbid UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 	type bookbrainz.entity_type NOT NULL
 );
 ALTER TABLE bookbrainz.entity ADD FOREIGN KEY (bbid) REFERENCES bookbrainz.entity (bbid);
@@ -805,7 +805,7 @@ ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (import_id) REFERENCES bookbr
 ALTER TABLE bookbrainz.link_import ADD FOREIGN KEY (origin_source_id) REFERENCES bookbrainz.origin_source (id);
 
 CREATE TABLE bookbrainz.user_collection (
-	id UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+	id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 	owner_id INT NOT NULL,
 	name VARCHAR(80) NOT NULL CHECK (name <> ''),
 	description TEXT NOT NULL DEFAULT '',
