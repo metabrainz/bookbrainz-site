@@ -15,3 +15,6 @@ RSYNC_FULLEXPORT_HOST="{{template "KEY" "rsync_fullexport_host"}}"
 RSYNC_FULLEXPORT_PORT="{{template "KEY" "rsync_fullexport_port"}}"
 RSYNC_FULLEXPORT_DIR="/home/bookbrainz/data/dumps"
 RSYNC_FULLEXPORT_KEY='/home/bookbrainz/.ssh/rsync-bookbrainz-dumps'
+
+#Private dumps
+PRIVATE_BACKUP_FOLDER="{{template "KEY" "private_backup_dir"}}"
