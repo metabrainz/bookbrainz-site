@@ -21,11 +21,11 @@ import {
 } from './actions';
 import {HIDE_ALIAS_EDITOR} from '../alias-editor/actions';
 import {HIDE_IDENTIFIER_EDITOR} from '../identifier-editor/actions';
-import Immutable from 'immutable';
+import {Map as ImmutableMap} from 'immutable';
 
 
 function reducer(
-	state = Immutable.Map({
+	state = ImmutableMap({
 		aliasEditorVisible: false,
 		identifierEditorVisible: false
 	}),
