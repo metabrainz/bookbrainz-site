@@ -1,4 +1,4 @@
-import {Iterable} from 'immutable';
+import {Collection, isCollection} from 'immutable';
 
 
 export type _Author = {
@@ -41,6 +41,6 @@ export type _Language = {
 
 };
 
-export function isIterable<K, V>(testVal: any): testVal is Iterable<K, V> {
-	return Iterable.isIterable(testVal);
+export function isIterable<K, V>(testVal: any): testVal is Collection<K, V> {
+	return isCollection(testVal);
 }
