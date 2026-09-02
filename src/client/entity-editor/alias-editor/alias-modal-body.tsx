@@ -43,7 +43,7 @@ export const AliasModalBody = ({aliases, onAddAlias, languageOptions}:AliasModal
 							key={`alias-row-${rowId}`}
 							languageOptions={languageOptionsForDisplay}
 						/>
-					)).toArray()
+					)).valueSeq().toArray()
 				}
 			</div>
 			<Row>
