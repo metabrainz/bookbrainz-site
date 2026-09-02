@@ -1396,10 +1396,10 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.47.0.tgz#5478fdf443ff8158f9de171c704ae45308696c7d"
   integrity sha512-P6omY1zv5MItm93kLM8s2vr1HICJH8v0dvddDhysbIuZ+vcjOHg5Zbkf1mTkcmi2JA9oBG2anOkRnW8WJTS8Og==
 
-"@faker-js/faker@^8.1.0":
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/@faker-js/faker/-/faker-8.1.0.tgz#e14896f1c57af2495e341dc4c7bf04125c8aeafd"
-  integrity sha512-38DT60rumHfBYynif3lmtxMqMqmsOQIxQgEuPZxCk2yUYN0eqWpTACgxi0VpidvsJB8CRxCpvP7B3anK85FjtQ==
+"@faker-js/faker@^10.5.0":
+  version "10.5.0"
+  resolved "https://registry.yarnpkg.com/@faker-js/faker/-/faker-10.5.0.tgz#d2f6a8c7f08d087ac5f077d6babd0821edf24c03"
+  integrity sha512-bsxD8WLS5lIj7aaoCx1YJkktqYj5vlBUE6HWzu2Q51ksrGJ0H737ECCKlFU7Yf8Br45z9t99frBp/J7kzbMPAg==
 
 "@fortawesome/fontawesome-common-types@6.7.2":
   version "6.7.2"
