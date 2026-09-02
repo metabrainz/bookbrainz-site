@@ -2,7 +2,7 @@
 import {
 	ADD_BULK_SERIES_ITEMS
 } from '../../../../../src/client/entity-editor/series-section/actions';
-import {Map} from 'immutable';
+import {Map as ImmutableMap} from 'immutable';
 import chai from 'chai';
 import reducer from '../../../../../src/client/entity-editor/series-section/reducer';
 
@@ -42,7 +42,7 @@ describe('seriesSection reducer', () => {
 		});
 
 		const seriesItems = nextState.get('seriesItems');
-		expect(Map.isMap(seriesItems)).to.be.true;
+		expect(ImmutableMap.isMap(seriesItems)).to.be.true;
 		expect(seriesItems.keySeq().toArray()).to.deep.equal(['ws0', 'ws1']);
 		expect(seriesItems.getIn(['ws0', 'attributeSetId'])).to.equal(1);
 		expect(seriesItems.getIn(['ws1', 'attributeSetId'])).to.equal(null);
