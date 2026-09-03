@@ -47,7 +47,7 @@ export const VALID_IDENTIFIERS = {
 
 export const IDENTIFIER_TYPES = [{
 	id: 1,
-	validationRegex: /^(?:B\d{2}\w{7}|\d{9}[X\d])$/
+	validationRegex: /^(?:B0[A-Z0-9]{8}|\d{9}[X\d])$/
 }];
 
 export const INVALID_IDENTIFIER = {...VALID_IDENTIFIERS, value: 'B076QRJV1'};
