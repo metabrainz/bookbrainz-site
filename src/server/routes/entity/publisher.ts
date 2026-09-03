@@ -98,7 +98,7 @@ const router = express.Router();
 
 router.get(
 	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadLanguages, middleware.loadPublisherTypes,
+	middleware.loadLanguages, middleware.loadScripts, middleware.loadPublisherTypes,
 	middleware.loadRelationshipTypes,
 	async (req, res) => {
 		const markupProps = generateEntityProps(
@@ -137,7 +137,7 @@ router.get(
 
 router.post(
 	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadLanguages, middleware.loadPublisherTypes,
+	middleware.loadLanguages, middleware.loadScripts, middleware.loadPublisherTypes,
 	middleware.loadRelationshipTypes,
 	async (req, res) => {
 		const {orm} = req.app.locals;
@@ -335,7 +335,7 @@ export function publisherToFormState(publisher) {
 
 router.get(
 	'/:bbid/edit', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadPublisherTypes, middleware.loadLanguages,
+	middleware.loadPublisherTypes, middleware.loadLanguages, middleware.loadScripts,
 	 middleware.loadEntityRelationships, middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(

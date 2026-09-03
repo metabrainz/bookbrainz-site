@@ -22,6 +22,7 @@ import request from 'superagent';
 
 export const UPDATE_DISAMBIGUATION_FIELD = 'UPDATE_DISAMBIGUATION_FIELD';
 export const UPDATE_LANGUAGE_FIELD = 'UPDATE_LANGUAGE_FIELD';
+export const UPDATE_SCRIPT_FIELD = 'UPDATE_SCRIPT_FIELD';
 export const UPDATE_NAME_FIELD = 'UPDATE_NAME_FIELD';
 export const UPDATE_SORT_NAME_FIELD = 'UPDATE_SORT_NAME_FIELD';
 export const UPDATE_WARN_IF_EXISTS = 'UPDATE_WARN_IF_EXISTS';
@@ -106,6 +107,13 @@ export function updateLanguageField(newLanguageId: number | null | undefined): A
 	return {
 		payload: newLanguageId,
 		type: UPDATE_LANGUAGE_FIELD
+	};
+}
+
+export function updateScriptField(newScriptId: number | null | undefined): Action {
+	return {
+		payload: newScriptId,
+		type: UPDATE_SCRIPT_FIELD
 	};
 }
 
