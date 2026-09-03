@@ -340,7 +340,8 @@ router.get('/',
 
 		return res.status(200).send({
 			authors: authorRelationshipList,
-			bbid: req.query.bbid
+			bbid: req.query.bbid,
+			aLintingTest: 'revert this change'
 		});
 	});
 
