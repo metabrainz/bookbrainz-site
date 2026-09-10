@@ -266,6 +266,8 @@ ALTER TABLE bookbrainz.author_data ADD FOREIGN KEY (area_id) REFERENCES musicbra
 ALTER TABLE bookbrainz.author_data ADD FOREIGN KEY (begin_area_id) REFERENCES musicbrainz.area (id) DEFERRABLE;
 ALTER TABLE bookbrainz.author_data ADD FOREIGN KEY (end_area_id) REFERENCES musicbrainz.area (id) DEFERRABLE;
 ALTER TABLE bookbrainz.author_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.author_data (id);
+-- Used by `get_authors_for_artist` in CritiqueBrainz.
+CREATE INDEX author_revision_data_id_idx ON bookbrainz.author_revision (data_id);
 
 CREATE TABLE bookbrainz.release_event (
 	id SERIAL PRIMARY KEY,
@@ -451,6 +453,8 @@ CREATE TABLE bookbrainz.work_data (
 );
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.work_type (id);
 ALTER TABLE bookbrainz.work_revision ADD FOREIGN KEY (data_id) REFERENCES bookbrainz.work_data (id);
+-- Used by `get_literary_works_for_work` in CritiqueBrainz.
+CREATE INDEX work_revision_data_id_idx ON bookbrainz.work_revision (data_id);
 
 CREATE TABLE bookbrainz.annotation (
 	id SERIAL PRIMARY KEY,
@@ -503,6 +507,8 @@ CREATE TABLE bookbrainz.identifier (
 	value TEXT NOT NULL CHECK (value <> '')
 );
 ALTER TABLE bookbrainz.identifier ADD FOREIGN KEY (type_id) REFERENCES bookbrainz.identifier_type (id);
+-- Used by `get_authors_for_artist` and `get_literary_works_for_work` in CritiqueBrainz.
+CREATE INDEX identifier_type_id_value_idx ON bookbrainz.identifier (type_id, value);
 
 CREATE TABLE bookbrainz.relationship_type (
 	id SERIAL PRIMARY KEY,
@@ -548,6 +554,10 @@ ALTER TABLE bookbrainz.edition_data ADD FOREIGN KEY (identifier_set_id) REFERENC
 ALTER TABLE bookbrainz.edition_group_data ADD FOREIGN KEY (identifier_set_id) REFERENCES bookbrainz.identifier_set (id);
 ALTER TABLE bookbrainz.publisher_data ADD FOREIGN KEY (identifier_set_id) REFERENCES bookbrainz.identifier_set (id);
 ALTER TABLE bookbrainz.work_data ADD FOREIGN KEY (identifier_set_id) REFERENCES bookbrainz.identifier_set (id);
+-- Used by `get_authors_for_artist` in CritiqueBrainz.
+CREATE INDEX author_data_identifier_set_id_idx ON bookbrainz.author_data (identifier_set_id);
+-- Used by `get_literary_works_for_work` in CritiqueBrainz.
+CREATE INDEX work_data_identifier_set_id_idx ON bookbrainz.work_data (identifier_set_id);
 
 CREATE TABLE bookbrainz.identifier_set__identifier (
 	set_id INT,
@@ -559,6 +569,8 @@ CREATE TABLE bookbrainz.identifier_set__identifier (
 );
 ALTER TABLE bookbrainz.identifier_set__identifier ADD FOREIGN KEY (set_id) REFERENCES bookbrainz.identifier_set (id);
 ALTER TABLE bookbrainz.identifier_set__identifier ADD FOREIGN KEY (identifier_id) REFERENCES bookbrainz.identifier (id);
+-- Used by `get_authors_for_artist` and `get_literary_works_for_work` in CritiqueBrainz.
+CREATE INDEX identifier_set__identifier_identifier_id_idx ON bookbrainz.identifier_set__identifier (identifier_id);
 
 CREATE TABLE bookbrainz.relationship_set (
 	id SERIAL PRIMARY KEY
