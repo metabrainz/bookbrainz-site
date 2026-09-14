@@ -74,7 +74,7 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 			query: props.query || '',
 			type: props.type || ''
 		};
-		this.debouncedTriggerOnSearch = _.debounce(this.triggerOnSearch, updateDelay, {leading:false});
+		this.debouncedTriggerOnSearch = _.debounce(this.triggerOnSearch, updateDelay, {leading: false});
 	}
 
 	// If search term is changed outside this component (for example browser navigation),
