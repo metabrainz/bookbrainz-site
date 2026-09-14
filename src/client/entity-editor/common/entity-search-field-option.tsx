@@ -18,6 +18,7 @@
  */
 
 import {Form, InputGroup, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import _, {DebouncedFunc} from 'lodash';
 import {ENTITY_TYPES} from 'bookbrainz-data/lib/types/entity';
 import EntitySelect from './entity-select';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -26,7 +27,6 @@ import React from 'react';
 import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import SelectAsync from 'react-select/async';
 import ValidationLabel from './validation-label';
-import _ from 'lodash';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {isValidBBID} from '../../../common/helpers/utils';
 import makeImmutable from './make-immutable';
@@ -34,6 +34,7 @@ import request from 'superagent';
 
 
 const ImmutableAsyncSelect = makeImmutable(SelectAsync);
+const searchDelay = 1000;
 
 const entityTypeStrings = [...ENTITY_TYPES, 'Area'] as const;
 type SearchEntityTypes = typeof entityTypeStrings[number];
@@ -66,12 +67,24 @@ class EntitySearchFieldOption extends React.Component<Props> {
 		this.isArea = this.isArea.bind(this);
 		this.entityToOption = this.entityToOption.bind(this);
 		this.handleInputChange = this.handleInputChange.bind(this);
+		this.loadOptions = this.loadOptions.bind(this);
+		this.debouncedFetchOptions = _.debounce((query, callback) => {
+			this.fetchOptions(query).then(callback).catch(() => callback([]));
+		}, searchDelay);
 	}
 
 	state = {
 		inputValue: '',
 		lastSearchResults: null
 	};
+
+	componentWillUnmount() {
+		this.debouncedFetchOptions.cancel();
+	}
+
+	debouncedFetchOptions: DebouncedFunc<typeof this.fetchOptions>;
+
+	selectRef: React.RefObject<any>;
 
 	/**
 	 * Determines whether an entity provided to the EntitySearch component is an
@@ -229,6 +242,15 @@ class EntitySearchFieldOption extends React.Component<Props> {
 		return results;
 	}
 
+	loadOptions(query, callback) {
+		if (!query) {
+			// Empty queries only return local recently-used options; no search request is made.
+			this.fetchOptions(query).then(callback).catch(() => callback([]));
+			return;
+		}
+		this.debouncedFetchOptions(query, callback);
+	}
+
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	renderInputGroup({buttonAfter, help, wrappedSelect, ...props}) {
 		if (!buttonAfter) {
@@ -303,7 +325,7 @@ class EntitySearchFieldOption extends React.Component<Props> {
 				getOptionValue={this.getOptionValue}
 				innerRef={this.selectRef}
 				inputValue={this.state.inputValue}
-				loadOptions={this.fetchOptions}
+				loadOptions={this.loadOptions}
 				onInputChange={this.handleInputChange}
 			/>
 		);
