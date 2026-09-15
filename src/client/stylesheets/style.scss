@@ -898,3 +898,53 @@ div[class~=collapsing]+div[class=card-header] .accordion-arrow {
     bottom: 0.3em;
 	left: -0.5em;
 }
+
+/* ========================= */
+/* Dark Mode (Initial pass)  */
+/* ========================= */
+
+.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+
+  body {
+    background-color: #121212;
+    color: #e0e0e0;
+  }
+
+  a {
+    color: #90caf9;
+
+    &:visited {
+      color: #90caf9;
+    }
+  }
+
+  /* Navbar */
+  .navbar.BookBrainz {
+    background: #1e1e1e;
+
+    .navbar-nav > li > a {
+      color: #e0e0e0;
+    }
+  }
+
+  /* Footer */
+  .footer {
+    background-color: #1e1e1e;
+    color: #bdbdbd;
+  }
+
+  /* Cards / panels */
+  .card,
+  .list-group-item {
+    background-color: #1c1c1c;
+    color: #e0e0e0;
+    border-color: #2a2a2a;
+  }
+
+  /* Tables */
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #181818;
+  }
+}
