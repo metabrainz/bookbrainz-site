@@ -133,13 +133,20 @@ class NameSection extends React.Component {
 		this.nameInputRef = inputRef;
 	}
 
-	renderDuplicateAlert(warnIfExists, disambiguationDefaultValue, exactMatches, entityType, lgCol) {
+	renderDuplicatePanel(warnIfExists, disambiguationDefaultValue, exactMatches, searchResults, entityType) {
+		const hasDuplicateAlert = isRequiredDisambiguationEmpty(
+			warnIfExists,
+			disambiguationDefaultValue
+		);
+		const hasSuggestions = !warnIfExists && !_.isEmpty(searchResults);
+
+		if (!hasDuplicateAlert && !hasSuggestions) {
+			return null;
+		}
+
 		return (
-			<Col lg={lgCol}>
-				{isRequiredDisambiguationEmpty(
-					warnIfExists,
-					disambiguationDefaultValue
-				) ?
+			<div className="duplicate-panel">
+				{hasDuplicateAlert &&
 					<Alert variant="warning">
 					We found the following&nbsp;
 						{_.startCase(entityType)}{exactMatches.length > 1 ? 's' : ''} with
@@ -160,10 +167,18 @@ class NameSection extends React.Component {
 								))}
 						</ListGroup>
 					If you are sure your entry is different, please fill the
-					disambiguation field below to help us differentiate between them.
-					</Alert> : null
+					disambiguation field to help us differentiate between them.
+					</Alert>
 				}
-			</Col>
+				{hasSuggestions &&
+					<div>
+						If the {_.startCase(entityType)} you want to add appears in the results
+						below, click on it to inspect it before adding a possible duplicate.<br/>
+						<small>Ctrl/Cmd + click to open in a new tab</small>
+						<SearchResults condensed results={searchResults}/>
+					</div>
+				}
+			</div>
 		);
 	}
 
@@ -197,23 +212,98 @@ class NameSection extends React.Component {
 		if (isUnifiedForm) {
 			lgCol.offset = 0;
 		}
-		const duplicateSuggestions = !warnIfExists &&
-		!_.isEmpty(searchResults) &&
-		<Row>
-			<Col lg={lgCol}>
-				If the {_.startCase(entityType)} you want to add appears in the results
-				below, click on it to inspect it before adding a possible duplicate.<br/>
-				<small>Ctrl/Cmd + click to open in a new tab</small>
-				<SearchResults condensed results={searchResults}/>
-			</Col>
-		</Row>;
-		const duplicateAlert = this.renderDuplicateAlert(warnIfExists, disambiguationDefaultValue, exactMatches, entityType, lgCol);
+
+		const duplicatePanel = this.renderDuplicatePanel(
+			warnIfExists, disambiguationDefaultValue, exactMatches, searchResults, entityType
+		);
+
 		const heading = <h2>{`What is the ${_.startCase(entityType)} called?`}</h2>;
+
+		// For modal or unified form, no side panel — render duplicates below
+		if (isModal || isUnifiedForm) {
+			return (
+				<div>
+					{!isUnifiedForm && heading}
+					<Row>
+						<Col lg={lgCol}>
+							<NameField
+								defaultValue={nameValue}
+								empty={isAliasEmpty(
+									nameValue, sortNameValue, languageValue
+								)}
+								error={!validateNameSectionName(nameValue)}
+								inputRef={this.updateNameFieldInputRef}
+								tooltipText={`Official name of the ${_.startCase(entityType)} in its original language.
+									Names in other languages should be added as aliases.`}
+								warn={(isRequiredDisambiguationEmpty(
+									warnIfExists,
+									disambiguationDefaultValue
+								))}
+								onChange={this.handleNameChange}
+							/>
+						</Col>
+					</Row>
+					<Row>
+						<Col lg={lgCol}>
+							<SortNameField
+								defaultValue={sortNameValue}
+								empty={isAliasEmpty(
+									nameValue, sortNameValue, languageValue
+								)}
+								error={!validateNameSectionSortName(sortNameValue)}
+								storedNameValue={nameValue}
+								onChange={onSortNameChange}
+							/>
+						</Col>
+					</Row>
+					<Row>
+						<Col lg={lgCol}>
+							<ImmutableLanguageField
+								empty={isAliasEmpty(
+									nameValue, sortNameValue, languageValue
+								)}
+								error={!validateNameSectionLanguage(languageValue)}
+								instanceId="language"
+								options={languageOptionsForDisplay}
+								tooltipText="Language used for the above name"
+								value={languageOption}
+								onChange={onLanguageChange}
+							/>
+						</Col>
+					</Row>
+					<Row>
+						<Col lg={lgCol}>
+							<DisambiguationField
+								defaultValue={disambiguationDefaultValue}
+								error={isRequiredDisambiguationEmpty(
+									warnIfExists,
+									disambiguationDefaultValue
+								) ||
+									!validateNameSectionDisambiguation(
+										disambiguationDefaultValue
+									)}
+								required={warnIfExists}
+								onChange={onDisambiguationChange}
+							/>
+						</Col>
+					</Row>
+					{duplicatePanel &&
+						<Row>
+							<Col lg={lgCol}>
+								{duplicatePanel}
+							</Col>
+						</Row>
+					}
+				</div>
+			);
+		}
+
+		// Standard (non-modal, non-unified) layout: side panel on the right
 		return (
 			<div>
-				{!isUnifiedForm && heading}
+				{heading}
 				<Row>
-					<Col lg={lgCol}>
+					<Col lg={{offset: 3, span: 6}}>
 						<NameField
 							defaultValue={nameValue}
 							empty={isAliasEmpty(
@@ -229,14 +319,6 @@ class NameSection extends React.Component {
 							))}
 							onChange={this.handleNameChange}
 						/>
-					</Col>
-					{!isModal && duplicateAlert}
-				</Row>
-				{
-					!isModal && duplicateSuggestions
-				}
-				<Row>
-					<Col lg={lgCol}>
 						<SortNameField
 							defaultValue={sortNameValue}
 							empty={isAliasEmpty(
@@ -246,10 +328,6 @@ class NameSection extends React.Component {
 							storedNameValue={nameValue}
 							onChange={onSortNameChange}
 						/>
-					</Col>
-				</Row>
-				<Row>
-					<Col lg={lgCol}>
 						<ImmutableLanguageField
 							empty={isAliasEmpty(
 								nameValue, sortNameValue, languageValue
@@ -261,10 +339,6 @@ class NameSection extends React.Component {
 							value={languageOption}
 							onChange={onLanguageChange}
 						/>
-					</Col>
-				</Row>
-				<Row>
-					<Col lg={lgCol}>
 						<DisambiguationField
 							defaultValue={disambiguationDefaultValue}
 							error={isRequiredDisambiguationEmpty(
@@ -278,11 +352,14 @@ class NameSection extends React.Component {
 							onChange={onDisambiguationChange}
 						/>
 					</Col>
+					{duplicatePanel &&
+						<Col lg={3}>
+							<div className="duplicate-side-panel">
+								{duplicatePanel}
+							</div>
+						</Col>
+					}
 				</Row>
-				{isModal && <Row>{duplicateAlert}</Row>}
-				{
-					isModal && duplicateSuggestions
-				}
 			</div>
 		);
 	}
