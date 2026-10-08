@@ -40,7 +40,7 @@ declare module 'express-serve-static-core' {
 
 class MetaBrainzOAuth2Strategy extends OAuth2Strategy {
 	userProfile(accessToken:string, done:OAuth2Strategy.VerifyCallback) {
-		const {oAuthBaseURL} = config.musicbrainz;
+		const {oAuthBaseURL} = config.metabrainz;
 		const introspectUrl = `${oAuthBaseURL}/introspect`;
 
 		request
@@ -48,8 +48,8 @@ class MetaBrainzOAuth2Strategy extends OAuth2Strategy {
 			.type('form')
 			.send({
 				/* eslint-disable camelcase */
-				client_id: config.musicbrainz.clientID,
-				client_secret: config.musicbrainz.clientSecret,
+				client_id: config.metabrainz.clientID,
+				client_secret: config.metabrainz.clientSecret,
 				token: accessToken,
 				token_type_hint: 'access_token'
 				/* eslint-enable camelcase */
@@ -138,8 +138,8 @@ export function init(app) {
 				});
 		}
 		else {
-			const {oAuthBaseURL} = config.musicbrainz;
-			const {clientID, clientSecret, callbackURL} = config.musicbrainz;
+			const {oAuthBaseURL} = config.metabrainz;
+			const {clientID, clientSecret, callbackURL} = config.metabrainz;
 
 			const options:OAuth2Strategy.StrategyOptionsWithRequest = {
 				authorizationURL: `${oAuthBaseURL}/authorize`,

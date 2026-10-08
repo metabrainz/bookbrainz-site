@@ -4,11 +4,11 @@
 		"log": "debug",
 		"forceExitAfterMs": 5000
 	},
-	"musicbrainz": {
+	"metabrainz": {
 		"clientID": null,
 		"clientSecret": null,
 		"callbackURL": "http://localhost:9099/cb",
-		"oAuthBaseURL": "https://musicbrainz.org/new-oauth2",
+		"oAuthBaseURL": "https://metabrainz.org/oauth2",
 		"oAuthWebhookSecret": "<WEBHOOK_SECRET>"
 	},
 	"critiquebrainz": {

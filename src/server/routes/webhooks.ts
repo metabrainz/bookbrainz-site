@@ -76,9 +76,9 @@ router.post('/metabrainz/', async (req: Request, res:Response) => {
 		});
 	}
 
-	const {oAuthWebhookSecret} = config.musicbrainz;
+	const {oAuthWebhookSecret} = config.metabrainz;
 	if (!oAuthWebhookSecret) {
-		log.error('config.musicbrainz.oAuthWebhookSecret not configured');
+		log.error('config.metabrainz.oAuthWebhookSecret not configured');
 		return res.status(status.SERVICE_UNAVAILABLE).json({
 			error: 'Webhook receiver not properly configured'
 		});
