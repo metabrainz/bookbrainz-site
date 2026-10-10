@@ -16,36 +16,45 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {groupBy as _groupBy, sortBy as _sortBy} from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Relationship from '../../../entity-editor/relationship-editor/relationship';
 
 
 function EntityRelationships({contextEntity, relationships, entityUrl}) {
+	const groupedRelationships = _groupBy(relationships, 'type.label');
+	const sortedGroupLabels = _sortBy(Object.keys(groupedRelationships));
+
 	return (
 		<div>
 			<h2>Relationships</h2>
-			{relationships?.length > 0 ? (
-				<ul className="list-unstyled">
-					{relationships.map((relationship) => (
-						<li key={relationship.id}>
-							<Relationship
-								link
-								attributes={relationship.attributeSet?.relationshipAttributes ?? null}
-								contextEntity={contextEntity}
-								relationshipType={relationship.type}
-								showAttributes={Boolean(relationship.attributeSetId)}
-								sourceEntity={relationship.source}
-								targetEntity={relationship.target}
-							/>
-						</li>
-					))}
-				</ul>
-			) : (
-				<p className="text-muted">
-					<b>No relationships.</b> <a href={`${entityUrl}/edit`}>Click here to edit</a> and create new relationships.
-				</p>
-			)}
+			{relationships?.length > 0 ?
+				sortedGroupLabels.map((groupLabel) => (
+					<div key={groupLabel}>
+						<h4>{groupLabel}</h4>
+						<ul className="list-unstyled">
+							{groupedRelationships[groupLabel].map((relationship) => (
+								<li key={relationship.id}>
+									<Relationship
+										link
+										attributes={relationship.attributeSet?.relationshipAttributes ?? null}
+										contextEntity={contextEntity}
+										relationshipType={relationship.type}
+										showAttributes={Boolean(relationship.attributeSetId)}
+										sourceEntity={relationship.source}
+										targetEntity={relationship.target}
+									/>
+								</li>
+							))}
+						</ul>
+					</div>
+				)) :
+				(
+					<p className="text-muted">
+						<b>No relationships.</b> <a href={`${entityUrl}/edit`}>Click here to edit</a> and create new relationships.
+					</p>
+				)}
 		</div>
 	);
 }
