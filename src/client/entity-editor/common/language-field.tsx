@@ -43,6 +43,7 @@ type Props = {
 	error?: boolean,
 	tooltipText?: string,
 	onChange?: (selectedOption: any) => void
+	hideLabel?: boolean,
 	[propName: string]: any
 };
 
@@ -64,6 +65,7 @@ function LanguageField({
 	error,
 	tooltipText,
 	onChange,
+	hideLabel,
 	...rest
 }: Props) {
 	const label =
@@ -120,16 +122,20 @@ function LanguageField({
 		}
 	};
 	return (
-		<Form.Group>
-			<Form.Label>
-				{label}
-				<OverlayTrigger delay={50} overlay={tooltip}>
-					<FontAwesomeIcon
-						className="margin-left-0-5"
-						icon={faQuestionCircle}
-					/>
-				</OverlayTrigger>
-			</Form.Label>
+		<Form.Group className={hideLabel ? 'mb-0' : ''}>
+			{!hideLabel && (
+				<Form.Label>
+					{label}
+					{tooltipText && (
+						<OverlayTrigger delay={50} overlay={tooltip}>
+							<FontAwesomeIcon
+								className="margin-left-0-5"
+								icon={faQuestionCircle}
+							/>
+						</OverlayTrigger>
+					)}
+				</Form.Label>
+			)}
 			<AsyncSelect
 				cacheOptions
 				isClearable
@@ -146,6 +152,7 @@ LanguageField.displayName = 'LanguageField';
 LanguageField.defaultProps = {
 	empty: false,
 	error: false,
+	hideLabel: false,
 	onChange: null,
 	tooltipText: null
 };

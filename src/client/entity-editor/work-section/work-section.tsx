@@ -78,7 +78,7 @@ type DispatchProps = {
 
 type Props = OwnProps & StateProps & DispatchProps;
 
-function sortWorkTypes(
+export function sortWorkTypes(
 	workTypes: Array<WorkType>,
 	parentId: number | null = null,
 	depth = 0
@@ -103,7 +103,7 @@ function sortWorkTypes(
 	return sortedArray;
 }
 
-function workTypeSelectMenuOption(props: Select.OptionProps<WorkType, false>) {
+export function workTypeSelectMenuOption(props: Select.OptionProps<WorkType, false>) {
 	const {data, label} = props;
 	const {depth, id, description} = data;
 	let indentationClass;

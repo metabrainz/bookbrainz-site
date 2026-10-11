@@ -33,6 +33,7 @@ import {submit} from './submission-section/actions';
 
 type OwnProps = {
 	children: React.ReactElement<any>,
+	createMultipleUrl?: string,
 	heading: string,
 	intitialState:Record<string, any>,
 	entity: any
@@ -92,9 +93,18 @@ const EntityEditor = (props: Props) => {
 		<form onSubmit={onSubmit}>
 			<Card>
 				<Card.Header as="h4">
-					<div>
-					 {entityURL ? <a href={entityURL}>{heading}</a> : heading}
-					</div>
+					{entityURL ?
+						<a className="create-works-tab-link" href={entityURL}>{heading}</a> :
+						<a className="create-works-tab-link">{heading}</a>
+					}
+					{props.createMultipleUrl && (
+						<React.Fragment>
+							<span className="text-muted mx-2">|</span>
+							<a className="create-works-tab-link inactive" href={props.createMultipleUrl}>
+							Add Multiple Works
+							</a>
+						</React.Fragment>
+					)}
 				</Card.Header>
 				<Card.Body>
 					<AliasEditor show={aliasEditorVisible} {...props}/>
@@ -118,6 +128,9 @@ const EntityEditor = (props: Props) => {
 	);
 };
 EntityEditor.displayName = 'EntityEditor';
+EntityEditor.defaultProps = {
+	createMultipleUrl: null
+};
 
 function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('buttonBar');
