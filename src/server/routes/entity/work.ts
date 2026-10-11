@@ -97,7 +97,7 @@ const router = express.Router();
 
 router.get(
 	'/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadLanguages, middleware.loadWorkTypes,
+	middleware.loadLanguages, middleware.loadScripts, middleware.loadWorkTypes,
 	middleware.loadRelationshipTypes,
 	(req, res, next) => {
 		const {Author, Edition} = req.app.locals.orm;
@@ -170,7 +170,7 @@ router.get(
 
 router.post(
 	'/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadLanguages, middleware.loadWorkTypes,
+	middleware.loadLanguages, middleware.loadScripts, middleware.loadWorkTypes,
 	middleware.loadRelationshipTypes,
 	async (req, res, next) => {
 		const {WorkType} = req.app.locals.orm;
@@ -347,7 +347,7 @@ export function workToFormState(work) {
 
 router.get(
 	'/:bbid/edit', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes,
-	middleware.loadWorkTypes, middleware.loadLanguages,
+	middleware.loadWorkTypes, middleware.loadLanguages, middleware.loadScripts,
 	 middleware.loadEntityRelationships, middleware.loadRelationshipTypes,
 	(req, res) => {
 		const {markup, props} = entityEditorMarkup(generateEntityProps(

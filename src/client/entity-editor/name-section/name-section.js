@@ -24,7 +24,8 @@ import {
 	debouncedUpdateNameField,
 	debouncedUpdateSortNameField,
 	searchName,
-	updateLanguageField
+	updateLanguageField,
+	updateScriptField
 } from './actions';
 import {isAliasEmpty, isRequiredDisambiguationEmpty} from '../helpers';
 import {
@@ -40,6 +41,7 @@ import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import PropTypes from 'prop-types';
 import React from 'react';
+import ScriptField from '../common/script-field';
 import SearchResults from '../../components/pages/parts/search-results';
 import SortNameField from '../common/sort-name-field';
 import _ from 'lodash';
@@ -175,8 +177,11 @@ class NameSection extends React.Component {
 			languageOptions,
 			languageValue,
 			nameValue,
+			scriptOptions,
+			scriptValue,
 			sortNameValue,
 			onLanguageChange,
+			onScriptChange,
 			onSortNameChange,
 			onDisambiguationChange,
 			searchResults: immutableSearchResults,
@@ -190,6 +195,11 @@ class NameSection extends React.Component {
 			label: language.name,
 			value: language.id
 		}));
+		const scriptOptionsForDisplay = scriptOptions ? scriptOptions.map((script) => ({
+			frequency: script.frequency,
+			label: script.name,
+			value: script.id
+		})) : [];
 
 		const warnIfExists = !_.isEmpty(exactMatches);
 		const languageOption = languageOptionsForDisplay.filter((el) => el.value === languageValue);
@@ -265,6 +275,20 @@ class NameSection extends React.Component {
 				</Row>
 				<Row>
 					<Col lg={lgCol}>
+						<ScriptField
+							empty={isAliasEmpty(
+								nameValue, sortNameValue, languageValue
+							)}
+							instanceId="script"
+							options={scriptOptionsForDisplay}
+							tooltipText="Script used for the above name"
+							value={scriptOptionsForDisplay.filter((el) => el.value === scriptValue)}
+							onChange={onScriptChange}
+						/>
+					</Col>
+				</Row>
+				<Row>
+					<Col lg={lgCol}>
 						<DisambiguationField
 							defaultValue={disambiguationDefaultValue}
 							error={isRequiredDisambiguationEmpty(
@@ -304,7 +328,10 @@ NameSection.propTypes = {
 	onNameChangeCheckIfEditionGroupExists: PropTypes.func.isRequired,
 	onNameChangeCheckIfExists: PropTypes.func.isRequired,
 	onNameChangeSearchName: PropTypes.func.isRequired,
+	onScriptChange: PropTypes.func.isRequired,
 	onSortNameChange: PropTypes.func.isRequired,
+	scriptOptions: PropTypes.array,
+	scriptValue: PropTypes.number,
 	searchForExistingEditionGroup: PropTypes.bool,
 	searchResults: PropTypes.object,
 	sortNameValue: PropTypes.string.isRequired
@@ -316,6 +343,8 @@ NameSection.defaultProps = {
 	isModal: false,
 	isUnifiedForm: false,
 	languageValue: null,
+	scriptOptions: [],
+	scriptValue: null,
 	searchForExistingEditionGroup: true,
 	searchResults: []
 };
@@ -345,6 +374,7 @@ function mapStateToProps(rootState, {isUnifiedForm, setDefault}) {
 		exactMatches: state.get('exactMatches'),
 		languageValue: state.get('language'),
 		nameValue: state.get('name'),
+		scriptValue: state.get('script'),
 		searchForExistingEditionGroup,
 		searchResults: state.get('searchResults'),
 		sortNameValue: state.get('sortName')
@@ -369,6 +399,8 @@ function mapDispatchToProps(dispatch, {entity, entityType, copyLanguages}) {
 		onNameChangeSearchName: _.debounce((value) => {
 			dispatch(searchName(value, entityBBID, entityType));
 		}, 500),
+		onScriptChange: (value) =>
+			dispatch(updateScriptField(value && value.value)),
 		onSortNameChange: (event) =>
 			dispatch(debouncedUpdateSortNameField(event.target.value))
 	};

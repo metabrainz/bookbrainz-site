@@ -89,6 +89,14 @@ export const loadLanguages = makeLoader('Language', 'languages', (a, b) => {
 	return a.name.localeCompare(b.name);
 });
 
+export const loadScripts = makeLoader('Script', 'scripts', (a, b) => {
+	if (a.frequency !== b.frequency) {
+		return b.frequency - a.frequency;
+	}
+
+	return a.name.localeCompare(b.name);
+});
+
 export function loadSeriesItems(req: $Request, res: $Response, next: NextFunction) {
 	try {
 		const {entity} = res.locals;
