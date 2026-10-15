@@ -22,12 +22,12 @@ import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
-import {AdminActionType, PrivilegeType} from '../../common/helpers/privileges-utils';
-import {AdminLogDataT, createAdminLog} from '../helpers/adminLogs';
-import {eachMonthOfInterval, format, isAfter, isValid} from 'date-fns';
-import {escapeProps, generateProps} from '../helpers/props';
-import {getConsecutiveDaysWithEdits, getEntityVisits, getTypeCreation} from '../helpers/achievement';
-import {getIntFromQueryParams, parseQuery} from '../helpers/utils';
+import { AdminActionType, PrivilegeType } from '../../common/helpers/privileges-utils';
+import { AdminLogDataT, createAdminLog } from '../helpers/adminLogs';
+import { eachMonthOfInterval, format, isAfter, isValid } from 'date-fns';
+import { escapeProps, generateProps } from '../helpers/props';
+import { getConsecutiveDaysWithEdits, getEntityVisits, getTypeCreation } from '../helpers/achievement';
+import { getIntFromQueryParams, parseQuery } from '../helpers/utils';
 import AchievementsTab from '../../client/components/pages/parts/editor-achievements';
 import CollectionsPage from '../../client/components/pages/collections';
 import EditorContainer from '../../client/containers/editor';
@@ -39,21 +39,21 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import _ from 'lodash';
 import express from 'express';
-import {getOrderedCollectionsForEditorPage} from '../helpers/collections';
-import {getOrderedRevisionForEditorPage} from '../helpers/revisions';
+import { getOrderedCollectionsForEditorPage } from '../helpers/collections';
+import { getOrderedRevisionForEditorPage } from '../helpers/revisions';
 import target from '../templates/target';
 
 
-const {ADMIN} = PrivilegeType;
+const { ADMIN } = PrivilegeType;
 
 const router = express.Router();
 
 router.get('/edit', auth.isAuthenticated, async (req, res, next) => {
-	const {Editor, Gender, TitleUnlock} = req.app.locals.orm;
+	const { Editor, Gender, TitleUnlock } = req.app.locals.orm;
 
 	// Prepare three promises to be resolved in parallel to fetch the required
 	// data.
-	const editorModelPromise = new Editor({id: parseInt(req.user.id, 10)})
+	const editorModelPromise = new Editor({ id: parseInt(req.user.id, 10) })
 		.fetch({
 			require: true,
 			withRelated: ['area', 'gender']
@@ -69,7 +69,7 @@ router.get('/edit', auth.isAuthenticated, async (req, res, next) => {
 			withRelated: ['title']
 		});
 
-	const gendersModelPromise = new Gender().fetchAll({require: false});
+	const gendersModelPromise = new Gender().fetchAll({ require: false });
 
 	// Parallel fetch the three required models. Only "editorModelPromise" has
 	// "require: true", so only that can throw a NotFoundError, which is why the
@@ -123,7 +123,7 @@ function isCurrentUser(reqUserID, sessionUser) {
 
 router.post('/edit/handler', auth.isAuthenticatedForHandler, async (req, res) => {
 	try {
-		const {Editor} = req.app.locals.orm;
+		const { Editor } = req.app.locals.orm;
 
 		if (!isCurrentUser(req.body.id, req.user)) {
 			// Edit is for a user other than the current one
@@ -133,16 +133,16 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, async (req, res) =>
 		}
 
 		const editor = await Editor
-			.forge({id: parseInt(req.user.id, 10)})
-			.fetch({require: true})
+			.forge({ id: parseInt(req.user.id, 10) })
+			.fetch({ require: true })
 			.catch(Editor.NotFoundError, () => {
 				throw new error.NotFoundError('Editor not found', req);
 			});
 		if (editor.get('areaId') === req.body.areaId &&
-				editor.get('bio') === req.body.bio &&
-				editor.get('name') === req.body.name &&
-				editor.get('titleUnlockId') === req.body.title &&
-				editor.get('genderId') === req.body.genderId
+			editor.get('bio') === req.body.bio &&
+			editor.get('name') === req.body.name &&
+			editor.get('titleUnlockId') === req.body.title &&
+			editor.get('genderId') === req.body.genderId
 		) {
 			throw new error.FormSubmissionError('No change to the profile');
 		}
@@ -173,19 +173,19 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, async (req, res) =>
 		return res.status(200).send(editorJSON);
 	}
 	catch (err) {
-	 return error.sendErrorAsJSON(res, err);
+		return error.sendErrorAsJSON(res, err);
 	}
 });
 
 router.post('/privs/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ADMIN), async (req, res, next) => {
-	const {Editor, AdminLog, bookshelf} = req.app.locals.orm;
-	const {adminId, newPrivs, note, oldPrivs, targetUserId} = req.body;
+	const { Editor, AdminLog, bookshelf } = req.app.locals.orm;
+	const { adminId, newPrivs, note, oldPrivs, targetUserId } = req.body;
 	const actionType = AdminActionType.CHANGE_PRIV;
 	try {
 		const trx = await bookshelf.transaction();
 		const editor = await Editor
-			.forge({id: parseInt(targetUserId, 10)})
-			.fetch({require: true, transacting: trx})
+			.forge({ id: parseInt(targetUserId, 10) })
+			.fetch({ require: true, transacting: trx })
 			.catch(Editor.NotFoundError, () => next(new error.NotFoundError('Editor not found', req)));
 		if (editor.get('privs') === newPrivs) {
 			return next(new error.FormSubmissionError(
@@ -197,7 +197,7 @@ router.post('/privs/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthor
 				'You must add a note to this action!', req
 			));
 		}
-		await editor.save({privs: newPrivs}, {transacting: trx});
+		await editor.save({ privs: newPrivs }, { transacting: trx });
 		const logData: AdminLogDataT = {
 			actionType,
 			adminId,
@@ -221,7 +221,7 @@ async function getEditorTitleJSON(editorJSON, TitleUnlock) {
 		return editorJSON;
 	}
 
-	const titleUnlockModel = await new TitleUnlock({id: unlockID})
+	const titleUnlockModel = await new TitleUnlock({ id: unlockID })
 		.fetch({
 			require: false,
 			withRelated: ['title']
@@ -235,9 +235,9 @@ async function getEditorTitleJSON(editorJSON, TitleUnlock) {
 }
 
 async function getIdEditorJSONPromise(userId, req) {
-	const {Editor, TitleUnlock} = req.app.locals.orm;
+	const { Editor, TitleUnlock } = req.app.locals.orm;
 
-	const editorData = await new Editor({id: userId})
+	const editorData = await new Editor({ id: userId })
 		.fetch({
 			require: true,
 			withRelated: ['type', 'gender', 'area']
@@ -285,12 +285,12 @@ export async function getEditorActivity(editorId, startDate, Revision, endDate =
 			return accumulator;
 		}, {});
 
-	return {...allMonthsInInterval, ...revisionsCount};
+	return { ...allMonthsInInterval, ...revisionsCount };
 }
 
 function achievementColToEditorGetJSON(achievementCol) {
 	if (!achievementCol) {
-		return {length: 0, model: null};
+		return { length: 0, model: null };
 	}
 
 	return {
@@ -300,7 +300,7 @@ function achievementColToEditorGetJSON(achievementCol) {
 }
 
 router.get('/:id', async (req, res, next) => {
-	const {AchievementUnlock, Revision} = req.app.locals.orm;
+	const { AchievementUnlock, Revision } = req.app.locals.orm;
 	const userId = parseInt(req.params.id, 10);
 	if (!userId) {
 		return next(new error.BadRequestError('Editor Id is not valid!', req));
@@ -318,7 +318,7 @@ router.get('/:id', async (req, res, next) => {
 				withRelated: ['achievement']
 			});
 		editorJSON.activityData =
-		await getEditorActivity(editorJSON.id, editorJSON.createdAt, Revision);
+			await getEditorActivity(editorJSON.id, editorJSON.createdAt, Revision);
 
 		const achievementJSON = achievementColToEditorGetJSON(achievementCol);
 
@@ -371,7 +371,7 @@ router.get('/:id/revisions', async (req, res, next) => {
 		const [orderedRevisions, editorJSON] =
 			await Promise.all([orderedRevisionsPromise, editorJSONPromise]);
 
-		const {newResultsArray, nextEnabled} =
+		const { newResultsArray, nextEnabled } =
 			commonUtils.getNextEnabledAndResultsArray(orderedRevisions, size);
 
 		const props = generateProps(req, res, {
@@ -435,9 +435,9 @@ router.get('/:id/revisions/revisions', async (req, res, next) => {
 async function getProgress(achievementId, editorId, orm) {
 	const revisionist = [1, 2, 3];
 	if (revisionist.includes(achievementId)) {
-		const {Editor} = orm;
-		const editor = await new Editor({id: editorId})
-			.fetch({require: false});
+		const { Editor } = orm;
+		const editor = await new Editor({ id: editorId })
+			.fetch({ require: false });
 		const revisions = editor.get('revisionsApplied');
 		return revisions;
 	}
@@ -451,34 +451,34 @@ async function getProgress(achievementId, editorId, orm) {
 	const seriesRevisionist = [28, 29, 30];
 
 	if (authorRevisionist.includes(achievementId)) {
-		const {AuthorRevision} = orm;
+		const { AuthorRevision } = orm;
 		return getTypeCreation(new AuthorRevision(), 'author_revision', editorId);
 	}
 	if (editionGroupRevisionist.includes(achievementId)) {
-		const {EditionGroupRevision} = orm;
+		const { EditionGroupRevision } = orm;
 		return getTypeCreation(new EditionGroupRevision(), 'edition_group_revision', editorId);
 	}
 	if (editionRevisionist.includes(achievementId)) {
-		const {EditionRevision} = orm;
+		const { EditionRevision } = orm;
 		return getTypeCreation(new EditionRevision(), 'edition_revision', editorId);
 	}
 	if (publisherRevisionist.includes(achievementId)) {
-		const {PublisherRevision} = orm;
+		const { PublisherRevision } = orm;
 		return getTypeCreation(new PublisherRevision(), 'publisher_revision', editorId);
 	}
 	if (workRevisionist.includes(achievementId)) {
-		const {WorkRevision} = orm;
+		const { WorkRevision } = orm;
 		return getTypeCreation(new WorkRevision(), 'work_revision', editorId);
 	}
 	if (seriesRevisionist.includes(achievementId)) {
-		const {SeriesRevision} = orm;
+		const { SeriesRevision } = orm;
 		return getTypeCreation(new SeriesRevision(), 'series_revision', editorId);
 	}
 	// Sprinter
 	if (achievementId === 10) {
-		const {bookshelf} = orm;
+		const { bookshelf } = orm;
 		const rawSql =
-		`SELECT * from bookbrainz.revision WHERE author_id=${editorId} \
+			`SELECT * from bookbrainz.revision WHERE author_id=${editorId} \
 		and created_at > (SELECT CURRENT_DATE - INTERVAL '1 hour');`;
 
 		const out = await bookshelf.knex.raw(rawSql);
@@ -513,11 +513,11 @@ async function setAchievementUnlockedField(achievements, unlocks, userId, orm) {
 		unlocked: unlockIDSet.has(achievementType.id)
 	})));
 
-	return {model};
+	return { model };
 }
 
 router.get('/:id/achievements', async (req, res, next) => {
-	const {AchievementType, AchievementUnlock} = req.app.locals.orm;
+	const { AchievementType, AchievementUnlock } = req.app.locals.orm;
 
 	const userId = parseInt(req.params.id, 10);
 	const isOwner = isCurrentUser(userId, req.user);
@@ -527,7 +527,7 @@ router.get('/:id/achievements', async (req, res, next) => {
 
 	const unlocksPromise = new AchievementUnlock()
 		.where('editor_id', userId)
-		.fetchAll({require: false});
+		.fetchAll({ require: false });
 
 	const achievementColPromise = new AchievementUnlock()
 		.where('editor_id', userId)
@@ -584,14 +584,14 @@ router.get('/:id/achievements', async (req, res, next) => {
 });
 
 async function rankUpdate(orm, editorId, bodyRank, rank) {
-	const {AchievementUnlock} = orm;
+	const { AchievementUnlock } = orm;
 
 	// Get the achievement unlock which is currently in this "rank"/slot
 	const unlockToUnrank = await new AchievementUnlock({
 		editorId,
 		profileRank: rank
 	})
-		.fetch({require: false});
+		.fetch({ require: false });
 
 
 	// If there's a match, then unset the rank on the unlock, and save
@@ -608,31 +608,40 @@ async function rankUpdate(orm, editorId, bodyRank, rank) {
 		achievementId: parseInt(bodyRank, 10),
 		editorId
 	})
-		.fetch({require: true});
+		.fetch({ require: false });
 
-	// TODO: this can throw, so missing error handling (but so was old code)
+	if (!unlockToRank) {
+		throw new error.NotFoundError(
+			`Editor has not unlocked the achievement with ID ${bodyRank}`
+		);
+	}
 
 	// And set the rank on the achievement and save it
 	return unlockToRank.set('profileRank', rank).save();
 }
 
 
-router.post('/:id/achievements/', auth.isAuthenticatedForHandler, async (req, res) => {
-	const {orm} = req.app.locals;
+router.post('/:id/achievements/', auth.isAuthenticatedForHandler, async (req, res, next) => {
+	const { orm } = req.app.locals;
 	const userId = parseInt(req.params.id, 10);
 	if (!isCurrentUser(userId, req.user)) {
-		throw new Error('Not authenticated');
+		return next(new error.NotAuthenticatedError());
 	}
-	await rankUpdate(orm, userId, req.body.rank1, 1);
-	await rankUpdate(orm, userId, req.body.rank2, 2);
-	await rankUpdate(orm, userId, req.body.rank3, 3);
-	return res.redirect(`/editor/${req.params.id}`);
+	try {
+		await rankUpdate(orm, userId, req.body.rank1, 1);
+		await rankUpdate(orm, userId, req.body.rank2, 2);
+		await rankUpdate(orm, userId, req.body.rank3, 3);
+		return res.redirect(`/editor/${req.params.id}`);
+	}
+	catch (err) {
+		return next(err);
+	}
 });
 
 
 // eslint-disable-next-line consistent-return
 router.get('/:id/collections', async (req, res, next) => {
-	const {Editor, TitleUnlock} = req.app.locals.orm;
+	const { Editor, TitleUnlock } = req.app.locals.orm;
 
 	const DEFAULT_MAX_COLLECTIONS = 20;
 	const DEFAULT_COLLECTION_OFFSET = 0;
@@ -651,8 +660,8 @@ router.get('/:id/collections', async (req, res, next) => {
 
 		// fetch 1 more collections than required to check nextEnabled
 		const orderedCollections = await getOrderedCollectionsForEditorPage(from, size + 1, type, req);
-		const {newResultsArray, nextEnabled} = commonUtils.getNextEnabledAndResultsArray(orderedCollections, size);
-		const editor = await new Editor({id: req.params.id}).fetch();
+		const { newResultsArray, nextEnabled } = commonUtils.getNextEnabledAndResultsArray(orderedCollections, size);
+		const editor = await new Editor({ id: req.params.id }).fetch();
 		const editorJSON = await getEditorTitleJSON(editor.toJSON(), TitleUnlock);
 
 		const props = generateProps(req, res, {
