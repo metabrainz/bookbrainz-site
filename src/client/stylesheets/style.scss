@@ -194,7 +194,8 @@ body {
 
 .deleted {
 	text-decoration: line-through;
-	color: $danger;
+	text-decoration-line: line-through;
+	text-decoration-color: $danger;
 }
 
 // Fix to put react-bootstrap tooltips in front of modals
