@@ -83,7 +83,7 @@ const initialState = ImmutableMap({
 		physicalEnable: true,
 		publisher: ImmutableMap({}),
 		releaseDate: '',
-		status: null
+		status: 1,
 	}),
 	identifierEditor: OrderedMap(),
 	nameSection: ImmutableMap({
