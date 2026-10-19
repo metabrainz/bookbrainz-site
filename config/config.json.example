@@ -4,6 +4,11 @@
 		"log": "debug",
 		"forceExitAfterMs": 5000
 	},
+	"sentry": {
+		"dsn": "",
+		"environment": "development",
+		"tracesSampleRate": 0
+	},
 	"musicbrainz": {
 		"clientID": null,
 		"clientSecret": null,
