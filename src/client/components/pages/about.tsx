@@ -128,7 +128,7 @@ function AboutPage(): JSX.Element {
 						icon={faEnvelope}
 						size="2x"
 					/>
-					{translate('common.Anemail')}
+					{translate('common.anEmail')}
 				</a>
 				<FontAwesomeIcon
 					className="margin-sides-1 contact-text"
