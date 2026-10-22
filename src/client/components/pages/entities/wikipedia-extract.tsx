@@ -19,9 +19,9 @@
 import {Col, Row} from 'react-bootstrap';
 import React, {useEffect, useState} from 'react';
 import {WikipediaArticleExtract, buildWikipediaUrl, getWikidataId} from '../../../../common/helpers/wikimedia';
-import DOMPurify from 'isomorphic-dompurify';
 import type {LazyLoadedEntityT} from 'bookbrainz-data/lib/types/entity';
 import {getAliasLanguageCodes} from '../../../../common/helpers/utils';
+import {sanitize} from 'isomorphic-dompurify';
 import {uniq} from 'lodash';
 
 
@@ -76,7 +76,7 @@ function WikipediaExtract({entity, articleExtract}: Props) {
 			<Col>
 				<h2>Wikipedia</h2>
 				{/* eslint-disable-next-line react/no-danger */}
-				<div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(extract)}}/>
+				<div dangerouslySetInnerHTML={{__html: sanitize(extract)}}/>
 				<a href={buildWikipediaUrl(article)?.href}>Continue reading at Wikipedia...</a>
 				{' '}
 				<small>
