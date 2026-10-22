@@ -18,7 +18,6 @@
 
 import {faBarcode, faLink, faPlus} from '@fortawesome/free-solid-svg-icons';
 import AuthorTable from '../components/pages/entities/author-table';
-import DOMPurify from 'isomorphic-dompurify';
 import EditionGroupTable from '../components/pages/entities/editionGroup-table';
 import EditionTable from '../components/pages/entities/edition-table';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -29,6 +28,7 @@ import WorkTable from '../components/pages/entities/work-table';
 import _ from 'lodash';
 import {format} from 'date-fns';
 import {isIterable} from '../../types';
+import {sanitize} from 'isomorphic-dompurify';
 
 
 export interface DateObject {
@@ -218,7 +218,7 @@ export function stringToHTMLWithLinks(content: string) {
 			return link + suffix;
 		}
 	);
-	const sanitizedHtml = DOMPurify.sanitize(replacedContent, {ADD_ATTR: ['target']});
+	const sanitizedHtml = sanitize(replacedContent, {ADD_ATTR: ['target']});
 	// eslint-disable-next-line react/no-danger
 	return <span dangerouslySetInnerHTML={{__html: sanitizedHtml}}/>;
 }

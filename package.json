@@ -57,7 +57,7 @@
     "http-status": "^1.8.1",
     "immutable": "^4.3.9",
     "influx": "^5.12.0",
-    "isomorphic-dompurify": "^2.36.0",
+    "isomorphic-dompurify": "^4.6.0",
     "jsesc": "^3.1.0",
     "lobes4": "4.0.1",
     "lodash": "^4.18.1",
