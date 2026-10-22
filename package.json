@@ -138,7 +138,7 @@
     "jsdom": "22.1.0",
     "jsdom-global": "3.0.2",
     "mini-css-extract-plugin": "^2.10.2",
-    "mocha": "11.1.0",
+    "mocha": "12",
     "nodemon": "^2.0.22",
     "redux-mock-store": "^1.5.5",
     "resolve-url-loader": "^5.0.0",
