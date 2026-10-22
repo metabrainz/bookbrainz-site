@@ -22,7 +22,6 @@ import {
 } from '../helpers/props';
 
 import AboutPage from '../../client/components/pages/about';
-import {AppContainer} from 'react-hot-loader';
 import ContributePage from '../../client/components/pages/contribute';
 import DevelopPage from '../../client/components/pages/develop';
 import FAQPage from '../components/pages/faq';
@@ -55,21 +54,9 @@ const pageMap = {
 const Child = pageMap[page] || Index;
 
 const markup = (
-	<AppContainer>
-		<Layout {...extractLayoutProps(props)}>
-			<Child {...extractChildProps(props)}/>
-		</Layout>
-	</AppContainer>
+	<Layout {...extractLayoutProps(props)}>
+		<Child {...extractChildProps(props)}/>
+	</Layout>
 );
 
 ReactDOM.hydrate(markup, document.getElementById('target'));
-
-/*
- * As we are not exporting a component,
- * we cannot use the react-hot-loader module wrapper,
- * but instead directly use webpack Hot Module Replacement API
- */
-
-if (module.hot) {
-	module.hot.accept();
-}

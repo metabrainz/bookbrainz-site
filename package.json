@@ -74,7 +74,6 @@
     "react-chartjs-2": "^2.11.2",
     "react-datepicker": "^4.25.0",
     "react-dom": "^16.13.1",
-    "react-hot-loader": "^4.13.1",
     "react-redux": "^7.2.9",
     "react-select": "^4.3.1",
     "react-select-fast-filter-options": "^0.2.3",
