@@ -39,7 +39,7 @@ export const IdentifierModalBody = ({identifiers, onAddIdentifier, identifierTyp
 							key={rowId}
 							typeOptions={identifierTypes}
 						/>
-					)).toArray()
+					)).valueSeq().toArray()
 				}
 			</div>
 			<Row>

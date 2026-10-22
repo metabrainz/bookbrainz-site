@@ -16,12 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import Immutable from 'immutable';
+import {Map as ImmutableMap} from 'immutable';
 import {UPDATE_ANNOTATION} from './actions';
 
 
 function reducer(
-	state = Immutable.Map({content: ''}),
+	state = ImmutableMap({content: ''}),
 	action
 ) {
 	switch (action.type) {

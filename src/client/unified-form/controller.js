@@ -5,7 +5,6 @@ import {
 	extractLayoutProps
 } from '../helpers/props';
 import {AppContainer} from 'react-hot-loader';
-import Immutable from 'immutable';
 import Layout from '../containers/layout';
 import {Provider} from 'react-redux';
 import React from 'react';
@@ -13,6 +12,7 @@ import ReactDOM from 'react-dom';
 import ReduxThunk from 'redux-thunk';
 import UnifiedForm from './unified-form';
 import createDebounce from 'redux-debounce';
+import {fromJS} from 'immutable';
 import {validateForm as validateEditionForm} from '../entity-editor/validators/edition';
 
 
@@ -38,7 +38,7 @@ function getEntityEditor() {
 
 const store = createStore(
 	rootReducer,
-	Immutable.fromJS(initialState),
+	fromJS(initialState),
 	composeEnhancers(applyMiddleware(debouncer, ReduxThunk))
 );
 

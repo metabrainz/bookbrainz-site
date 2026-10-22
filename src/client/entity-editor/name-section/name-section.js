@@ -35,7 +35,7 @@ import {
 } from '../validators/common';
 
 import DisambiguationField from './disambiguation-field';
-import Immutable from 'immutable';
+import {Map as ImmutableMap} from 'immutable';
 import LanguageField from '../common/language-field';
 import NameField from '../common/name-field';
 import PropTypes from 'prop-types';
@@ -333,10 +333,10 @@ function mapStateToProps(rootState, {isUnifiedForm, setDefault}) {
 	if (isUnifiedForm && setDefault) {
 		return {
 			disambiguationDefaultValue: '',
-			exactMatches: Immutable.Map([]),
+			exactMatches: ImmutableMap([]),
 			languageValue: null,
 			nameValue: '',
-			searchResults: Immutable.Map([]),
+			searchResults: ImmutableMap([]),
 			sortNameValue: ''
 		};
 	}

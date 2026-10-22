@@ -28,7 +28,6 @@ import {
 	validateSubmissionSection
 } from './common';
 
-import {Iterable} from 'immutable';
 import _ from 'lodash';
 import {convertMapToObject} from '../../helpers/utils';
 
@@ -55,7 +54,7 @@ export function validateEditionSectionLanguages(values: any): boolean {
 	}
 
 	let every = (object, predicate) => _.every(object, predicate);
-	if (Iterable.isIterable(values)) {
+	if (isIterable(values)) {
 		every = (object, predicate) => object.every(predicate);
 	}
 	else if (!_.isObject(values)) {

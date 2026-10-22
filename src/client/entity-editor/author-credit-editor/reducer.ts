@@ -26,11 +26,10 @@ import {
 	UPDATE_CREDIT_DISPLAY_VALUE,
 	UPDATE_CREDIT_JOIN_PHRASE_VALUE
 } from './actions';
+import {Map as ImmutableMap, OrderedMap, fromJS} from 'immutable';
 
-import Immutable from 'immutable';
 
-
-const EMPTY_CREDIT_ROW = Immutable.Map({
+const EMPTY_CREDIT_ROW = ImmutableMap({
 	author: null,
 	automaticJoinPhrase: true,
 	joinPhrase: '',
@@ -86,7 +85,7 @@ function setNewAuthorAndDisplay(state, payload) {
 		const firstRowKey = state.keySeq().first();
 		payload.rowId = firstRowKey;
 	}
-	let returnState = state.setIn([payload.rowId, 'author'], Immutable.fromJS(payload));
+	let returnState = state.setIn([payload.rowId, 'author'], fromJS(payload));
 
 	if (!payload.id) {
 		// If the user has emptied the author field, also empty the display
@@ -129,7 +128,7 @@ const initialState = {
 	n0: EMPTY_CREDIT_ROW
 };
 function reducer(
-	state = Immutable.OrderedMap(initialState),
+	state = OrderedMap(initialState),
 	action
 ) {
 	const {type, payload} = action;
@@ -151,9 +150,9 @@ function reducer(
 		case REMOVE_EMPTY_CREDIT_ROWS:
 			return deleteEmptyRows(state);
 		case CLEAR_AUTHOR_CREDIT:
-			return Immutable.OrderedMap({});
+			return OrderedMap({});
 		case RESET_AUTHOR_CREDIT:
-			return Immutable.OrderedMap(initialState);
+			return OrderedMap(initialState);
 		// no default
 	}
 	return state;

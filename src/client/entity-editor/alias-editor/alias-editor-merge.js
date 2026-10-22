@@ -58,7 +58,7 @@ const AliasEditorMerge = ({
 						key={rowId}
 						languageOptions={languageOptionsForDisplay}
 					/>
-				)).toArray()
+				)).valueSeq().toArray()
 			}
 		</React.Fragment>
 	);

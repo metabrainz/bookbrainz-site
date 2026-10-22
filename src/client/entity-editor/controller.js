@@ -30,13 +30,13 @@ import {
 import {AppContainer} from 'react-hot-loader';
 import EntityEditor from './entity-editor';
 import EntityMerge from './entity-merge';
-import Immutable from 'immutable';
 import Layout from '../containers/layout';
 import {Provider} from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReduxThunk from 'redux-thunk';
 import createDebounce from 'redux-debounce';
+import {fromJS} from 'immutable';
 
 
 const {
@@ -78,7 +78,7 @@ const getEntityEditor = () => {
 };
 const store = createStore(
 	rootReducer,
-	Immutable.fromJS(initialState),
+	fromJS(initialState),
 	composeEnhancers(applyMiddleware(debouncer, ReduxThunk))
 );
 

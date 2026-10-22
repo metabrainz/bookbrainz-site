@@ -2,10 +2,10 @@ import {ADD_AUTHOR, ADD_PUBLISHER} from './cover-tab/action';
 import {Action, State} from './interface/type';
 import {CLOSE_ENTITY_MODAL, DUMP_EDITION, LOAD_EDITION, OPEN_ENTITY_MODAL} from './action';
 import {ISBNReducer, authorsReducer, autoISBNReducer, publishersReducer} from './cover-tab/reducer';
+import {Map as ImmutableMap, List, OrderedMap, fromJS} from 'immutable';
 import {seriesReducer, worksReducer} from './content-tab/reducer';
 import {ADD_EDITION_GROUP} from './detail-tab/action';
 import {DUPLICATE_WORK} from './content-tab/action';
-import Immutable from 'immutable';
 import aliasEditorReducer from '../entity-editor/alias-editor/reducer';
 import annotationSectionReducer from '../entity-editor/annotation-section/reducer';
 import authorCreditEditorReducer from '../entity-editor/author-credit-editor/reducer';
@@ -34,13 +34,13 @@ export function shouldDevToolsBeInjected(): boolean {
 	);
 }
 
-function newEditionReducer(state = Immutable.Map({}), action) {
+function newEditionReducer(state = ImmutableMap({}), action) {
 	const {type, payload} = action;
 	switch (type) {
 		case DUMP_EDITION:
-			return state.set(payload.id, Immutable.fromJS(payload.value));
+			return state.set(payload.id, fromJS(payload.value));
 		case LOAD_EDITION:
-			return Immutable.Map({});
+			return ImmutableMap({});
 		default:
 			return state;
 	}
@@ -56,7 +56,7 @@ function entityModalIsOpenReducer(state = false, action) {
 			return state;
 	}
 }
-const initialACState = Immutable.fromJS(
+const initialACState = fromJS(
 	{
 		n0: {
 			author: null,
@@ -66,27 +66,27 @@ const initialACState = Immutable.fromJS(
 		}
 	}
 );
-const initialState = Immutable.Map({
-	aliasEditor: Immutable.Map({}),
-	annotationSection: Immutable.Map({content: ''}),
-	buttonBar: Immutable.Map({
+const initialState = ImmutableMap({
+	aliasEditor: ImmutableMap({}),
+	annotationSection: ImmutableMap({content: ''}),
+	buttonBar: ImmutableMap({
 		aliasEditorVisible: false,
 		identifierEditorVisible: false
 	}),
-	editionSection: Immutable.Map({
+	editionSection: ImmutableMap({
 		authorCreditEditorVisible: false,
 		authorCreditEnable: true,
 		editionGroupVisible: true,
 		format: null,
-		languages: Immutable.List([]),
+		languages: List([]),
 		matchingNameEditionGroups: [],
 		physicalEnable: true,
-		publisher: Immutable.Map({}),
+		publisher: ImmutableMap({}),
 		releaseDate: '',
 		status: null
 	}),
-	identifierEditor: Immutable.OrderedMap(),
-	nameSection: Immutable.Map({
+	identifierEditor: OrderedMap(),
+	nameSection: ImmutableMap({
 		disambiguation: '',
 		exactMatches: [],
 		language: null,
@@ -94,20 +94,20 @@ const initialState = Immutable.Map({
 		searchResults: [],
 		sortName: ''
 	}),
-	relationshipSection: Immutable.Map({
+	relationshipSection: ImmutableMap({
 		canEdit: true,
 		lastRelationships: null,
 		relationshipEditorProps: null,
 		relationshipEditorVisible: false,
-		relationships: Immutable.OrderedMap()
+		relationships: OrderedMap()
 	}),
-	submissionSection: Immutable.Map({
+	submissionSection: ImmutableMap({
 		note: '',
 		submitError: '',
 		submitted: false
 	}),
-	workSection: Immutable.Map({
-		languages: Immutable.List([]),
+	workSection: ImmutableMap({
+		languages: List([]),
 		type: null
 	})
 });
@@ -130,7 +130,7 @@ function crossSliceReducer(state:State, action:Action) {
 	switch (type) {
 		case ADD_AUTHOR:
 			// add new author for AC in edition
-			intermediateState = intermediateState.setIn(['authorCreditEditor', action.payload.rowId, 'author'], Immutable.Map({
+			intermediateState = intermediateState.setIn(['authorCreditEditor', action.payload.rowId, 'author'], ImmutableMap({
 				__isNew__: true,
 				id: newEntity.id,
 				rowId: action.payload.rowId,
@@ -169,7 +169,7 @@ function crossSliceReducer(state:State, action:Action) {
 			// set new publisher in edition state as well
 			intermediateState = intermediateState.setIn(
 				['editionSection', 'publisher', newEntity.id]
-				, Immutable.Map(newEntity)
+				, ImmutableMap(newEntity)
 			);
 			break;
 		}
@@ -182,7 +182,7 @@ function crossSliceReducer(state:State, action:Action) {
 			const identifiers = fromWork.getIn(['identifierSet', 'identifiers'], null);
 			const other:any = {};
 			if (identifiers) {
-				const identifierEditor = identifiers.map((identifier) => Immutable.Map({type: identifier.get('typeId'),
+				const identifierEditor = identifiers.map((identifier) => ImmutableMap({type: identifier.get('typeId'),
 					value: identifier.get('value')}));
 				other.identifierEditor = identifierEditor;
 			}
@@ -205,7 +205,7 @@ function crossSliceReducer(state:State, action:Action) {
 						type: relationship.target.type
 					};
 					relationship.relationshipType = relationship.type;
-					return Immutable.fromJS(relationship);
+					return fromJS(relationship);
 				});
 				other.relationshipSection = {
 					canEdit: true,
@@ -215,7 +215,7 @@ function crossSliceReducer(state:State, action:Action) {
 					relationships: rels
 				};
 			}
-			const changedAttributes = Immutable.fromJS({
+			const changedAttributes = fromJS({
 				nameSection: {
 					language: defaultAlias.get('languageId'),
 					name: defaultAlias.get('name'),
@@ -249,7 +249,7 @@ function crossSliceReducer(state:State, action:Action) {
 }
 
 export function createRootReducer() {
-	return (state: Immutable.Map<string, any>, action) => {
+	return (state: ImmutableMap<string, any>, action) => {
 		// first pass the state to our cross slice reducer to handle UF specific actions.
 		const intermediateState = crossSliceReducer(state, action);
 		return combineReducers({

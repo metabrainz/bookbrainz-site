@@ -26,8 +26,8 @@ import {
 } from './base';
 
 import {AuthorCredit} from '../author-credit-editor/actions';
-import {Iterable} from 'immutable';
 import _ from 'lodash';
+import {isIterable} from '../../../types';
 
 
 export function validateMultiple(
@@ -40,7 +40,7 @@ export function validateMultiple(
 		return false;
 	}
 	let every = (object, predicate) => _.every(object, predicate);
-	if (Iterable.isIterable(values)) {
+	if (isIterable(values)) {
 		every = (object, predicate) => object.every(predicate);
 	}
 	else if (!_.isObject(values)) {
