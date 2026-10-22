@@ -282,6 +282,9 @@ function AuthorSection({
 	);
 }
 AuthorSection.displayName = 'AuthorSection';
+AuthorSection.defaultProps = {
+	isUnifiedForm: false
+};
 
 function mapStateToProps(rootState, {authorTypes}: OwnProps): StateProps {
 	const state = rootState.get('authorSection');
