@@ -94,7 +94,7 @@ function ContributePage(): JSX.Element {
 				</a>
 				{translate('staticPages.contribute.communityP2Mid')}
 				<a href="mailto:bookbrainz@metabrainz.org">
-					{translate('common.Anemail')}.
+					{translate('common.anEmail')}.
 				</a>
 			</p>
 		</div>
