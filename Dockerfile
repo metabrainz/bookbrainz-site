@@ -14,9 +14,8 @@ ARG RUN_DEPS=" \
 
 RUN apt-get update && \
     apt-get install --no-install-suggests --no-install-recommends -y $RUN_DEPS \
-# remove expired let's encrypt certificate and install new ones (see ca-certificates in build deps too)
-    && rm -rf /usr/share/ca-certificates/mozilla/DST_Root_CA_X3.crt \
-    && update-ca-certificates \
+# Require Ubuntu Noble's eMudhra/emSign distrust update before HTTPS downloads.
+    && dpkg --compare-versions "$(dpkg-query -W -f='${Version}' ca-certificates)" ge 20260816ubuntu0.24.04.1 \
     && rm -rf /var/lib/apt/lists/*
 
 # PostgreSQL client
