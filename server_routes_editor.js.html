@@ -41,35 +41,33 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-require("core-js/modules/es.object.keys.js");
 require("core-js/modules/es.symbol.js");
 require("core-js/modules/es.array.filter.js");
 require("core-js/modules/es.object.get-own-property-descriptor.js");
-require("core-js/modules/web.dom-collections.for-each.js");
 require("core-js/modules/es.object.get-own-property-descriptors.js");
+require("core-js/modules/es.object.keys.js");
 require("core-js/modules/es.weak-map.js");
+require("core-js/modules/web.dom-collections.for-each.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
 exports.getEditorActivity = getEditorActivity;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-require("core-js/modules/es.parse-int.js");
-require("core-js/modules/es.array.iterator.js");
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/es.promise.js");
-require("core-js/modules/es.string.iterator.js");
-require("core-js/modules/web.dom-collections.iterator.js");
-require("core-js/modules/es.date.to-json.js");
-require("core-js/modules/web.url.to-json.js");
-require("core-js/modules/es.function.name.js");
 require("core-js/modules/es.array.includes.js");
-require("core-js/modules/es.string.includes.js");
+require("core-js/modules/es.array.iterator.js");
 require("core-js/modules/es.array.map.js");
 require("core-js/modules/es.array.reduce.js");
+require("core-js/modules/es.date.to-json.js");
+require("core-js/modules/es.function.name.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.parse-int.js");
+require("core-js/modules/es.promise.js");
 require("core-js/modules/es.set.js");
+require("core-js/modules/es.string.includes.js");
+require("core-js/modules/es.string.iterator.js");
+require("core-js/modules/web.dom-collections.iterator.js");
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
@@ -100,7 +98,8 @@ var _express = _interopRequireDefault(require("express"));
 var _collections2 = require("../helpers/collections");
 var _revisions = require("../helpers/revisions");
 var _target = _interopRequireDefault(require("../templates/target"));
-function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != _typeof(e) &amp;&amp; "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (var _t in e) { "default" !== _t &amp;&amp; {}.hasOwnProperty.call(e, _t) &amp;&amp; ((i = (o = Object.defineProperty) &amp;&amp; Object.getOwnPropertyDescriptor(e, _t)) &amp;&amp; (i.get || i.set) ? o(f, _t, i) : f[_t] = e[_t]); } return f; })(e, t); }
+var cache;
+function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c &amp;&amp; {}.hasOwnProperty.call(e, c) &amp;&amp; ((r = a &amp;&amp; Object.getOwnPropertyDescriptor(e, c)) &amp;&amp; (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r &amp;&amp; (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r &lt; arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { (0, _defineProperty2.default)(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; } /*
  * Copyright (C) 2015, 2020  Ben Ockmore
@@ -125,61 +124,59 @@ var router = _express.default.Router();
 router.get('/edit', auth.isAuthenticated, /*#__PURE__*/function () {
   var _ref = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee(req, res, next) {
     var _req$app$locals$orm, Editor, Gender, TitleUnlock, editorModelPromise, titleUnlockModelPromise, gendersModelPromise, _yield$Promise$all$ca, _yield$Promise$all$ca2, editorModel, titleUnlockModel, genderModel, editorJSON, titleJSON, genderJSON, props, markup;
-    return _regenerator.default.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            _req$app$locals$orm = req.app.locals.orm, Editor = _req$app$locals$orm.Editor, Gender = _req$app$locals$orm.Gender, TitleUnlock = _req$app$locals$orm.TitleUnlock; // Prepare three promises to be resolved in parallel to fetch the required
-            // data.
-            editorModelPromise = new Editor({
-              id: parseInt(req.user.id, 10)
-            }).fetch({
-              require: true,
-              withRelated: ['area', 'gender']
-            }).catch(Editor.NotFoundError, function () {
-              throw new error.NotFoundError('Editor not found', req);
-            });
-            titleUnlockModelPromise = new TitleUnlock().where('editor_id', parseInt(req.user.id, 10)).fetchAll({
-              require: false,
-              withRelated: ['title']
-            });
-            gendersModelPromise = new Gender().fetchAll({
-              require: false
-            }); // Parallel fetch the three required models. Only "editorModelPromise" has
-            // "require: true", so only that can throw a NotFoundError, which is why the
-            // other two model fetch operations have no error handling.
-            _context.next = 6;
-            return Promise.all([editorModelPromise, titleUnlockModelPromise, gendersModelPromise]).catch(next);
-          case 6:
-            _yield$Promise$all$ca = _context.sent;
-            _yield$Promise$all$ca2 = (0, _slicedToArray2.default)(_yield$Promise$all$ca, 3);
-            editorModel = _yield$Promise$all$ca2[0];
-            titleUnlockModel = _yield$Promise$all$ca2[1];
-            genderModel = _yield$Promise$all$ca2[2];
-            // Convert the requested models to JSON structures.
-            editorJSON = editorModel.toJSON();
-            titleJSON = titleUnlockModel === null ? {} : titleUnlockModel.toJSON();
-            genderJSON = genderModel ? genderModel.toJSON() : []; // Populate the props to be passed to React with the fetched and formatted
-            // information.
-            props = (0, _props2.generateProps)(req, res, {
-              editor: editorJSON,
-              genders: genderJSON,
-              titles: titleJSON
-            }); // Render the DOM
-            markup = _server.default.renderToString(/*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_profile.default, {
-              editor: props.editor,
-              genders: props.genders,
-              titles: props.titles
-            }))); // Send the rendered DOM, the props and the script to the client
-            res.send((0, _target.default)({
-              markup: markup,
-              props: (0, _props2.escapeProps)(props),
-              script: '/js/editor/edit.js'
-            }));
-          case 17:
-          case "end":
-            return _context.stop();
-        }
+    return _regenerator.default.wrap(function (_context) {
+      while (1) switch (_context.prev = _context.next) {
+        case 0:
+          _req$app$locals$orm = req.app.locals.orm, Editor = _req$app$locals$orm.Editor, Gender = _req$app$locals$orm.Gender, TitleUnlock = _req$app$locals$orm.TitleUnlock; // Prepare three promises to be resolved in parallel to fetch the required
+          // data.
+          editorModelPromise = new Editor({
+            id: parseInt(req.user.id, 10)
+          }).fetch({
+            require: true,
+            withRelated: ['area', 'gender']
+          }).catch(Editor.NotFoundError, function () {
+            throw new error.NotFoundError('Editor not found', req);
+          });
+          titleUnlockModelPromise = new TitleUnlock().where('editor_id', parseInt(req.user.id, 10)).fetchAll({
+            require: false,
+            withRelated: ['title']
+          });
+          gendersModelPromise = new Gender().fetchAll({
+            require: false
+          }); // Parallel fetch the three required models. Only "editorModelPromise" has
+          // "require: true", so only that can throw a NotFoundError, which is why the
+          // other two model fetch operations have no error handling.
+          _context.next = 1;
+          return Promise.all([editorModelPromise, titleUnlockModelPromise, gendersModelPromise]).catch(next);
+        case 1:
+          _yield$Promise$all$ca = _context.sent;
+          _yield$Promise$all$ca2 = (0, _slicedToArray2.default)(_yield$Promise$all$ca, 3);
+          editorModel = _yield$Promise$all$ca2[0];
+          titleUnlockModel = _yield$Promise$all$ca2[1];
+          genderModel = _yield$Promise$all$ca2[2];
+          // Convert the requested models to JSON structures.
+          editorJSON = editorModel.toJSON();
+          titleJSON = titleUnlockModel === null ? {} : titleUnlockModel.toJSON();
+          genderJSON = genderModel ? genderModel.toJSON() : []; // Populate the props to be passed to React with the fetched and formatted
+          // information.
+          props = (0, _props2.generateProps)(req, res, {
+            editor: editorJSON,
+            genders: genderJSON,
+            titles: titleJSON
+          }); // Render the DOM
+          markup = _server.default.renderToString(/*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_profile.default, {
+            editor: props.editor,
+            genders: props.genders,
+            titles: props.titles
+          }))); // Send the rendered DOM, the props and the script to the client
+          res.send((0, _target.default)({
+            markup: markup,
+            props: (0, _props2.escapeProps)(props),
+            script: '/js/editor/edit.js'
+          }));
+        case 2:
+        case "end":
+          return _context.stop();
       }
     }, _callee);
   }));
@@ -198,67 +195,65 @@ function isCurrentUser(reqUserID, sessionUser) {
 }
 router.post('/edit/handler', auth.isAuthenticatedForHandler, /*#__PURE__*/function () {
   var _ref2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(req, res) {
-    var Editor, editor, modifiedEditor, editorJSON;
-    return _regenerator.default.wrap(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            _context2.prev = 0;
-            Editor = req.app.locals.orm.Editor;
-            if (isCurrentUser(req.body.id, req.user)) {
-              _context2.next = 4;
-              break;
+    var Editor, editor, modifiedEditor, editorJSON, _t;
+    return _regenerator.default.wrap(function (_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.prev = 0;
+          Editor = req.app.locals.orm.Editor;
+          if (isCurrentUser(req.body.id, req.user)) {
+            _context2.next = 1;
+            break;
+          }
+          throw new error.PermissionDeniedError('You do not have permission to edit that user', req);
+        case 1:
+          _context2.next = 2;
+          return Editor.forge({
+            id: parseInt(req.user.id, 10)
+          }).fetch({
+            require: true
+          }).catch(Editor.NotFoundError, function () {
+            throw new error.NotFoundError('Editor not found', req);
+          });
+        case 2:
+          editor = _context2.sent;
+          if (!(editor.get('areaId') === req.body.areaId &amp;&amp; editor.get('bio') === req.body.bio &amp;&amp; editor.get('name') === req.body.name &amp;&amp; editor.get('titleUnlockId') === req.body.title &amp;&amp; editor.get('genderId') === req.body.genderId)) {
+            _context2.next = 3;
+            break;
+          }
+          throw new error.FormSubmissionError('No change to the profile');
+        case 3:
+          _context2.next = 4;
+          return editor.save({
+            areaId: req.body.areaId,
+            bio: req.body.bio,
+            genderId: req.body.genderId,
+            name: req.body.name,
+            titleUnlockId: req.body.title
+          }).catch(function (err) {
+            if (err.constraint === 'editor_name_key') {
+              throw new error.ConflictError('Name already in use');
             }
-            throw new error.PermissionDeniedError('You do not have permission to edit that user', req);
-          case 4:
-            _context2.next = 6;
-            return Editor.forge({
-              id: parseInt(req.user.id, 10)
-            }).fetch({
-              require: true
-            }).catch(Editor.NotFoundError, function () {
-              throw new error.NotFoundError('Editor not found', req);
-            });
-          case 6:
-            editor = _context2.sent;
-            if (!(editor.get('areaId') === req.body.areaId &amp;&amp; editor.get('bio') === req.body.bio &amp;&amp; editor.get('name') === req.body.name &amp;&amp; editor.get('titleUnlockId') === req.body.title &amp;&amp; editor.get('genderId') === req.body.genderId)) {
-              _context2.next = 9;
-              break;
-            }
-            throw new error.FormSubmissionError('No change to the profile');
-          case 9:
-            _context2.next = 11;
-            return editor.save({
-              areaId: req.body.areaId,
-              bio: req.body.bio,
-              genderId: req.body.genderId,
-              name: req.body.name,
-              titleUnlockId: req.body.title
-            }).catch(function (err) {
-              if (err.constraint === 'editor_name_key') {
-                throw new error.ConflictError('Name already in use');
-              }
-              throw new error.FormSubmissionError();
-            });
-          case 11:
-            modifiedEditor = _context2.sent;
-            res.locals.user.name = req.body.name;
-            editorJSON = modifiedEditor.toJSON(); // Type needed for indexing
-            modifiedEditor.set('type', 'Editor');
-            _context2.next = 17;
-            return search.indexEntity(modifiedEditor);
-          case 17:
-            return _context2.abrupt("return", res.status(200).send(editorJSON));
-          case 20:
-            _context2.prev = 20;
-            _context2.t0 = _context2["catch"](0);
-            return _context2.abrupt("return", error.sendErrorAsJSON(res, _context2.t0));
-          case 23:
-          case "end":
-            return _context2.stop();
-        }
+            throw new error.FormSubmissionError();
+          });
+        case 4:
+          modifiedEditor = _context2.sent;
+          res.locals.user.name = req.body.name;
+          editorJSON = modifiedEditor.toJSON(); // Type needed for indexing
+          modifiedEditor.set('type', 'Editor');
+          _context2.next = 5;
+          return search.indexEntity(modifiedEditor);
+        case 5:
+          return _context2.abrupt("return", res.status(200).send(editorJSON));
+        case 6:
+          _context2.prev = 6;
+          _t = _context2["catch"](0);
+          return _context2.abrupt("return", error.sendErrorAsJSON(res, _t));
+        case 7:
+        case "end":
+          return _context2.stop();
       }
-    }, _callee2, null, [[0, 20]]);
+    }, _callee2, null, [[0, 6]]);
   }));
   return function (_x4, _x5) {
     return _ref2.apply(this, arguments);
@@ -266,74 +261,72 @@ router.post('/edit/handler', auth.isAuthenticatedForHandler, /*#__PURE__*/functi
 }());
 router.post('/privs/edit/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(ADMIN), /*#__PURE__*/function () {
   var _ref3 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee3(req, res, next) {
-    var _req$app$locals$orm2, Editor, AdminLog, bookshelf, _req$body, adminId, newPrivs, note, oldPrivs, targetUserId, actionType, trx, editor, logData;
-    return _regenerator.default.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            _req$app$locals$orm2 = req.app.locals.orm, Editor = _req$app$locals$orm2.Editor, AdminLog = _req$app$locals$orm2.AdminLog, bookshelf = _req$app$locals$orm2.bookshelf;
-            _req$body = req.body, adminId = _req$body.adminId, newPrivs = _req$body.newPrivs, note = _req$body.note, oldPrivs = _req$body.oldPrivs, targetUserId = _req$body.targetUserId;
-            actionType = _privilegesUtils.AdminActionType.CHANGE_PRIV;
-            _context3.prev = 3;
-            _context3.next = 6;
-            return bookshelf.transaction();
-          case 6:
-            trx = _context3.sent;
-            _context3.next = 9;
-            return Editor.forge({
-              id: parseInt(targetUserId, 10)
-            }).fetch({
-              require: true,
-              transacting: trx
-            }).catch(Editor.NotFoundError, function () {
-              return next(new error.NotFoundError('Editor not found', req));
-            });
-          case 9:
-            editor = _context3.sent;
-            if (!(editor.get('privs') === newPrivs)) {
-              _context3.next = 12;
-              break;
-            }
-            return _context3.abrupt("return", next(new error.FormSubmissionError('No change to Privileges', req)));
-          case 12:
-            if (note.length) {
-              _context3.next = 14;
-              break;
-            }
-            return _context3.abrupt("return", next(new error.FormSubmissionError('You must add a note to this action!', req)));
-          case 14:
-            _context3.next = 16;
-            return editor.save({
-              privs: newPrivs
-            }, {
-              transacting: trx
-            });
-          case 16:
-            logData = {
-              actionType: actionType,
-              adminId: adminId,
-              newPrivs: newPrivs,
-              note: note,
-              oldPrivs: oldPrivs,
-              targetUserId: targetUserId
-            };
-            _context3.next = 19;
-            return (0, _adminLogs.createAdminLog)(logData, AdminLog, trx);
-          case 19:
-            _context3.next = 21;
-            return trx.commit();
-          case 21:
-            return _context3.abrupt("return", res.status(200).send());
-          case 24:
-            _context3.prev = 24;
-            _context3.t0 = _context3["catch"](3);
-            return _context3.abrupt("return", next(_context3.t0));
-          case 27:
-          case "end":
-            return _context3.stop();
-        }
+    var _req$app$locals$orm2, Editor, AdminLog, bookshelf, _req$body, adminId, newPrivs, note, oldPrivs, targetUserId, actionType, trx, editor, logData, _t2;
+    return _regenerator.default.wrap(function (_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          _req$app$locals$orm2 = req.app.locals.orm, Editor = _req$app$locals$orm2.Editor, AdminLog = _req$app$locals$orm2.AdminLog, bookshelf = _req$app$locals$orm2.bookshelf;
+          _req$body = req.body, adminId = _req$body.adminId, newPrivs = _req$body.newPrivs, note = _req$body.note, oldPrivs = _req$body.oldPrivs, targetUserId = _req$body.targetUserId;
+          actionType = _privilegesUtils.AdminActionType.CHANGE_PRIV;
+          _context3.prev = 1;
+          _context3.next = 2;
+          return bookshelf.transaction();
+        case 2:
+          trx = _context3.sent;
+          _context3.next = 3;
+          return Editor.forge({
+            id: parseInt(targetUserId, 10)
+          }).fetch({
+            require: true,
+            transacting: trx
+          }).catch(Editor.NotFoundError, function () {
+            return next(new error.NotFoundError('Editor not found', req));
+          });
+        case 3:
+          editor = _context3.sent;
+          if (!(editor.get('privs') === newPrivs)) {
+            _context3.next = 4;
+            break;
+          }
+          return _context3.abrupt("return", next(new error.FormSubmissionError('No change to Privileges', req)));
+        case 4:
+          if (note.length) {
+            _context3.next = 5;
+            break;
+          }
+          return _context3.abrupt("return", next(new error.FormSubmissionError('You must add a note to this action!', req)));
+        case 5:
+          _context3.next = 6;
+          return editor.save({
+            privs: newPrivs
+          }, {
+            transacting: trx
+          });
+        case 6:
+          logData = {
+            actionType: actionType,
+            adminId: adminId,
+            newPrivs: newPrivs,
+            note: note,
+            oldPrivs: oldPrivs,
+            targetUserId: targetUserId
+          };
+          _context3.next = 7;
+          return (0, _adminLogs.createAdminLog)(logData, AdminLog, trx);
+        case 7:
+          _context3.next = 8;
+          return trx.commit();
+        case 8:
+          return _context3.abrupt("return", res.status(200).send());
+        case 9:
+          _context3.prev = 9;
+          _t2 = _context3["catch"](1);
+          return _context3.abrupt("return", next(_t2));
+        case 10:
+        case "end":
+          return _context3.stop();
       }
-    }, _callee3, null, [[3, 24]]);
+    }, _callee3, null, [[1, 9]]);
   }));
   return function (_x6, _x7, _x8) {
     return _ref3.apply(this, arguments);
@@ -345,34 +338,32 @@ function getEditorTitleJSON(_x9, _x0) {
 function _getEditorTitleJSON() {
   _getEditorTitleJSON = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee1(editorJSON, TitleUnlock) {
     var unlockID, titleUnlockModel;
-    return _regenerator.default.wrap(function _callee1$(_context1) {
-      while (1) {
-        switch (_context1.prev = _context1.next) {
-          case 0:
-            unlockID = editorJSON.titleUnlockId;
-            if (!(unlockID === null)) {
-              _context1.next = 3;
-              break;
-            }
-            return _context1.abrupt("return", editorJSON);
-          case 3:
-            _context1.next = 5;
-            return new TitleUnlock({
-              id: unlockID
-            }).fetch({
-              require: false,
-              withRelated: ['title']
-            });
-          case 5:
-            titleUnlockModel = _context1.sent;
-            if (titleUnlockModel !== null) {
-              editorJSON.title = titleUnlockModel.relations.title.attributes;
-            }
-            return _context1.abrupt("return", editorJSON);
-          case 8:
-          case "end":
-            return _context1.stop();
-        }
+    return _regenerator.default.wrap(function (_context1) {
+      while (1) switch (_context1.prev = _context1.next) {
+        case 0:
+          unlockID = editorJSON.titleUnlockId;
+          if (!(unlockID === null)) {
+            _context1.next = 1;
+            break;
+          }
+          return _context1.abrupt("return", editorJSON);
+        case 1:
+          _context1.next = 2;
+          return new TitleUnlock({
+            id: unlockID
+          }).fetch({
+            require: false,
+            withRelated: ['title']
+          });
+        case 2:
+          titleUnlockModel = _context1.sent;
+          if (titleUnlockModel !== null) {
+            editorJSON.title = titleUnlockModel.relations.title.attributes;
+          }
+          return _context1.abrupt("return", editorJSON);
+        case 3:
+        case "end":
+          return _context1.stop();
       }
     }, _callee1);
   }));
@@ -384,27 +375,25 @@ function getIdEditorJSONPromise(_x1, _x10) {
 function _getIdEditorJSONPromise() {
   _getIdEditorJSONPromise = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee10(userId, req) {
     var _req$app$locals$orm6, Editor, TitleUnlock, editorData;
-    return _regenerator.default.wrap(function _callee10$(_context10) {
-      while (1) {
-        switch (_context10.prev = _context10.next) {
-          case 0:
-            _req$app$locals$orm6 = req.app.locals.orm, Editor = _req$app$locals$orm6.Editor, TitleUnlock = _req$app$locals$orm6.TitleUnlock;
-            _context10.next = 3;
-            return new Editor({
-              id: userId
-            }).fetch({
-              require: true,
-              withRelated: ['type', 'gender', 'area']
-            }).catch(Editor.NotFoundError, function () {
-              throw new error.NotFoundError('Editor not found', req);
-            });
-          case 3:
-            editorData = _context10.sent;
-            return _context10.abrupt("return", getEditorTitleJSON(editorData.toJSON(), TitleUnlock));
-          case 5:
-          case "end":
-            return _context10.stop();
-        }
+    return _regenerator.default.wrap(function (_context10) {
+      while (1) switch (_context10.prev = _context10.next) {
+        case 0:
+          _req$app$locals$orm6 = req.app.locals.orm, Editor = _req$app$locals$orm6.Editor, TitleUnlock = _req$app$locals$orm6.TitleUnlock;
+          _context10.next = 1;
+          return new Editor({
+            id: userId
+          }).fetch({
+            require: true,
+            withRelated: ['type', 'gender', 'area']
+          }).catch(Editor.NotFoundError, function () {
+            throw new error.NotFoundError('Editor not found', req);
+          });
+        case 1:
+          editorData = _context10.sent;
+          return _context10.abrupt("return", getEditorTitleJSON(editorData.toJSON(), TitleUnlock));
+        case 2:
+        case "end":
+          return _context10.stop();
       }
     }, _callee10);
   }));
@@ -424,56 +413,54 @@ function _getEditorActivity() {
       activityStart,
       allMonthsInInterval,
       _args11 = arguments;
-    return _regenerator.default.wrap(function _callee11$(_context11) {
-      while (1) {
-        switch (_context11.prev = _context11.next) {
-          case 0:
-            endDate = _args11.length > 3 &amp;&amp; _args11[3] !== undefined ? _args11[3] : Date.now();
-            if ((0, _dateFns.isValid)(startDate)) {
-              _context11.next = 3;
-              break;
-            }
-            throw new Error('Start date is invalid');
-          case 3:
-            if ((0, _dateFns.isValid)(endDate)) {
-              _context11.next = 5;
-              break;
-            }
-            throw new Error('End date is invalid');
-          case 5:
-            if ((0, _dateFns.isAfter)(endDate, startDate)) {
-              _context11.next = 7;
-              break;
-            }
-            throw new Error('Start date is greater than end date');
-          case 7:
-            _context11.next = 9;
-            return new Revision().query('where', 'author_id', '=', editorId).orderBy('created_at', 'ASC').fetchAll({
-              require: false
-            });
-          case 9:
-            revisions = _context11.sent;
-            revisionJSON = revisions ? revisions.toJSON() : [];
-            revisionDates = revisionJSON.map(function (revision) {
-              return (0, _dateFns.format)(new Date(revision.createdAt), 'LLL-yy');
-            });
-            revisionsCount = (0, _countBy2.default)(revisionDates);
-            firstRevisionDate = revisionJSON.length ? revisionJSON[0].createdAt : Date.now();
-            activityStart = startDate > firstRevisionDate ? firstRevisionDate : startDate;
-            allMonthsInInterval = (0, _dateFns.eachMonthOfInterval)({
-              end: endDate,
-              start: activityStart
-            }).map(function (month) {
-              return (0, _dateFns.format)(new Date(month), 'LLL-yy');
-            }).reduce(function (accumulator, month) {
-              accumulator[month] = 0;
-              return accumulator;
-            }, {});
-            return _context11.abrupt("return", _objectSpread(_objectSpread({}, allMonthsInInterval), revisionsCount));
-          case 17:
-          case "end":
-            return _context11.stop();
-        }
+    return _regenerator.default.wrap(function (_context11) {
+      while (1) switch (_context11.prev = _context11.next) {
+        case 0:
+          endDate = _args11.length > 3 &amp;&amp; _args11[3] !== undefined ? _args11[3] : Date.now();
+          if ((0, _dateFns.isValid)(startDate)) {
+            _context11.next = 1;
+            break;
+          }
+          throw new Error('Start date is invalid');
+        case 1:
+          if ((0, _dateFns.isValid)(endDate)) {
+            _context11.next = 2;
+            break;
+          }
+          throw new Error('End date is invalid');
+        case 2:
+          if ((0, _dateFns.isAfter)(endDate, startDate)) {
+            _context11.next = 3;
+            break;
+          }
+          throw new Error('Start date is greater than end date');
+        case 3:
+          _context11.next = 4;
+          return new Revision().query('where', 'author_id', '=', editorId).orderBy('created_at', 'ASC').fetchAll({
+            require: false
+          });
+        case 4:
+          revisions = _context11.sent;
+          revisionJSON = revisions ? revisions.toJSON() : [];
+          revisionDates = revisionJSON.map(function (revision) {
+            return (0, _dateFns.format)(new Date(revision.createdAt), 'LLL-yy');
+          });
+          revisionsCount = (0, _countBy2.default)(revisionDates);
+          firstRevisionDate = revisionJSON.length ? revisionJSON[0].createdAt : Date.now();
+          activityStart = startDate > firstRevisionDate ? firstRevisionDate : startDate;
+          allMonthsInInterval = (0, _dateFns.eachMonthOfInterval)({
+            end: endDate,
+            start: activityStart
+          }).map(function (month) {
+            return (0, _dateFns.format)(new Date(month), 'LLL-yy');
+          }).reduce(function (accumulator, month) {
+            accumulator[month] = 0;
+            return accumulator;
+          }, {});
+          return _context11.abrupt("return", _objectSpread(_objectSpread({}, allMonthsInInterval), revisionsCount));
+        case 5:
+        case "end":
+          return _context11.stop();
       }
     }, _callee11);
   }));
@@ -493,63 +480,61 @@ function achievementColToEditorGetJSON(achievementCol) {
 }
 router.get('/:id', /*#__PURE__*/function () {
   var _ref4 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee4(req, res, next) {
-    var _req$app$locals$orm3, AchievementUnlock, Revision, userId, editorJSON, achievementCol, achievementJSON, props, markup;
-    return _regenerator.default.wrap(function _callee4$(_context4) {
-      while (1) {
-        switch (_context4.prev = _context4.next) {
-          case 0:
-            _req$app$locals$orm3 = req.app.locals.orm, AchievementUnlock = _req$app$locals$orm3.AchievementUnlock, Revision = _req$app$locals$orm3.Revision;
-            userId = parseInt(req.params.id, 10);
-            if (userId) {
-              _context4.next = 4;
-              break;
-            }
-            return _context4.abrupt("return", next(new error.BadRequestError('Editor Id is not valid!', req)));
-          case 4:
-            _context4.prev = 4;
-            _context4.next = 7;
-            return getIdEditorJSONPromise(userId, req);
-          case 7:
-            editorJSON = _context4.sent;
-            _context4.next = 10;
-            return new AchievementUnlock().where('editor_id', userId).where('profile_rank', '&lt;=', '3').query(function (qb) {
-              return qb.limit(3);
-            }).orderBy('profile_rank', 'ASC').fetchAll({
-              require: false,
-              withRelated: ['achievement']
-            });
-          case 10:
-            achievementCol = _context4.sent;
-            _context4.next = 13;
-            return getEditorActivity(editorJSON.id, editorJSON.createdAt, Revision);
-          case 13:
-            editorJSON.activityData = _context4.sent;
-            achievementJSON = achievementColToEditorGetJSON(achievementCol);
-            props = (0, _props2.generateProps)(req, res, {
-              achievement: achievementJSON,
-              editor: editorJSON,
-              tabActive: 0
-            });
-            markup = _server.default.renderToString(/*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_editor.default, propHelpers.extractEditorProps(props), /*#__PURE__*/_react.default.createElement(_editorProfile.default, (0, _extends2.default)({
-              user: props.user
-            }, propHelpers.extractChildProps(props))))));
-            return _context4.abrupt("return", res.send((0, _target.default)({
-              markup: markup,
-              page: 'profile',
-              props: (0, _props2.escapeProps)(props),
-              script: '/js/editor/editor.js',
-              title: "".concat(props.editor.name, "'s Profile")
-            })));
-          case 20:
-            _context4.prev = 20;
-            _context4.t0 = _context4["catch"](4);
-            return _context4.abrupt("return", next(_context4.t0));
-          case 23:
-          case "end":
-            return _context4.stop();
-        }
+    var _req$app$locals$orm3, AchievementUnlock, Revision, userId, editorJSON, achievementCol, achievementJSON, props, markup, _t3;
+    return _regenerator.default.wrap(function (_context4) {
+      while (1) switch (_context4.prev = _context4.next) {
+        case 0:
+          _req$app$locals$orm3 = req.app.locals.orm, AchievementUnlock = _req$app$locals$orm3.AchievementUnlock, Revision = _req$app$locals$orm3.Revision;
+          userId = parseInt(req.params.id, 10);
+          if (userId) {
+            _context4.next = 1;
+            break;
+          }
+          return _context4.abrupt("return", next(new error.BadRequestError('Editor Id is not valid!', req)));
+        case 1:
+          _context4.prev = 1;
+          _context4.next = 2;
+          return getIdEditorJSONPromise(userId, req);
+        case 2:
+          editorJSON = _context4.sent;
+          _context4.next = 3;
+          return new AchievementUnlock().where('editor_id', userId).where('profile_rank', '&lt;=', '3').query(function (qb) {
+            return qb.limit(3);
+          }).orderBy('profile_rank', 'ASC').fetchAll({
+            require: false,
+            withRelated: ['achievement']
+          });
+        case 3:
+          achievementCol = _context4.sent;
+          _context4.next = 4;
+          return getEditorActivity(editorJSON.id, editorJSON.createdAt, Revision);
+        case 4:
+          editorJSON.activityData = _context4.sent;
+          achievementJSON = achievementColToEditorGetJSON(achievementCol);
+          props = (0, _props2.generateProps)(req, res, {
+            achievement: achievementJSON,
+            editor: editorJSON,
+            tabActive: 0
+          });
+          markup = _server.default.renderToString(/*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_editor.default, propHelpers.extractEditorProps(props), /*#__PURE__*/_react.default.createElement(_editorProfile.default, (0, _extends2.default)({
+            user: props.user
+          }, propHelpers.extractChildProps(props))))));
+          return _context4.abrupt("return", res.send((0, _target.default)({
+            markup: markup,
+            page: 'profile',
+            props: (0, _props2.escapeProps)(props),
+            script: '/js/editor/editor.js',
+            title: "".concat(props.editor.name, "'s Profile")
+          })));
+        case 5:
+          _context4.prev = 5;
+          _t3 = _context4["catch"](1);
+          return _context4.abrupt("return", next(_t3));
+        case 6:
+        case "end":
+          return _context4.stop();
       }
-    }, _callee4, null, [[4, 20]]);
+    }, _callee4, null, [[1, 5]]);
   }));
   return function (_x14, _x15, _x16) {
     return _ref4.apply(this, arguments);
@@ -559,58 +544,56 @@ router.get('/:id', /*#__PURE__*/function () {
 // eslint-disable-next-line consistent-return
 router.get('/:id/revisions', /*#__PURE__*/function () {
   var _ref5 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee5(req, res, next) {
-    var DEFAULT_MAX_REVISIONS, DEFAULT_REVISION_OFFSET, query, size, from, orderedRevisionsPromise, editorJSONPromise, _yield$Promise$all, _yield$Promise$all2, orderedRevisions, editorJSON, _commonUtils$getNextE, newResultsArray, nextEnabled, props, markup;
-    return _regenerator.default.wrap(function _callee5$(_context5) {
-      while (1) {
-        switch (_context5.prev = _context5.next) {
-          case 0:
-            DEFAULT_MAX_REVISIONS = 20;
-            DEFAULT_REVISION_OFFSET = 0;
-            query = (0, _utils2.parseQuery)(req.url);
-            size = (0, _utils2.getIntFromQueryParams)(query, 'size', DEFAULT_MAX_REVISIONS);
-            from = (0, _utils2.getIntFromQueryParams)(query, 'from', DEFAULT_REVISION_OFFSET);
-            _context5.prev = 5;
-            // get 1 more result to check nextEnabled
-            orderedRevisionsPromise = (0, _revisions.getOrderedRevisionForEditorPage)(from, size + 1, req);
-            editorJSONPromise = getIdEditorJSONPromise(req.params.id, req);
-            _context5.next = 10;
-            return Promise.all([orderedRevisionsPromise, editorJSONPromise]);
-          case 10:
-            _yield$Promise$all = _context5.sent;
-            _yield$Promise$all2 = (0, _slicedToArray2.default)(_yield$Promise$all, 2);
-            orderedRevisions = _yield$Promise$all2[0];
-            editorJSON = _yield$Promise$all2[1];
-            _commonUtils$getNextE = commonUtils.getNextEnabledAndResultsArray(orderedRevisions, size), newResultsArray = _commonUtils$getNextE.newResultsArray, nextEnabled = _commonUtils$getNextE.nextEnabled;
-            props = (0, _props2.generateProps)(req, res, {
-              editor: editorJSON,
-              from: from,
-              nextEnabled: nextEnabled,
-              results: newResultsArray,
-              showRevisionNote: true,
-              size: size,
-              tabActive: 1,
-              tableHeading: 'Revision History'
-            });
-            markup = _server.default.renderToString(/*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_editor.default, propHelpers.extractEditorProps(props), /*#__PURE__*/_react.default.createElement(_editorRevision.default, propHelpers.extractChildProps(props)))));
-            res.send((0, _target.default)({
-              markup: markup,
-              page: 'revisions',
-              props: (0, _props2.escapeProps)(props),
-              script: '/js/editor/editor.js',
-              title: "".concat(props.editor.name, "'s Revisions")
-            }));
-            _context5.next = 23;
-            break;
-          case 20:
-            _context5.prev = 20;
-            _context5.t0 = _context5["catch"](5);
-            return _context5.abrupt("return", next(_context5.t0));
-          case 23:
-          case "end":
-            return _context5.stop();
-        }
+    var DEFAULT_MAX_REVISIONS, DEFAULT_REVISION_OFFSET, query, size, from, orderedRevisionsPromise, editorJSONPromise, _yield$Promise$all, _yield$Promise$all2, orderedRevisions, editorJSON, _commonUtils$getNextE, newResultsArray, nextEnabled, props, markup, _t4;
+    return _regenerator.default.wrap(function (_context5) {
+      while (1) switch (_context5.prev = _context5.next) {
+        case 0:
+          DEFAULT_MAX_REVISIONS = 20;
+          DEFAULT_REVISION_OFFSET = 0;
+          query = (0, _utils2.parseQuery)(req.url);
+          size = (0, _utils2.getIntFromQueryParams)(query, 'size', DEFAULT_MAX_REVISIONS);
+          from = (0, _utils2.getIntFromQueryParams)(query, 'from', DEFAULT_REVISION_OFFSET);
+          _context5.prev = 1;
+          // get 1 more result to check nextEnabled
+          orderedRevisionsPromise = (0, _revisions.getOrderedRevisionForEditorPage)(from, size + 1, req);
+          editorJSONPromise = getIdEditorJSONPromise(req.params.id, req);
+          _context5.next = 2;
+          return Promise.all([orderedRevisionsPromise, editorJSONPromise]);
+        case 2:
+          _yield$Promise$all = _context5.sent;
+          _yield$Promise$all2 = (0, _slicedToArray2.default)(_yield$Promise$all, 2);
+          orderedRevisions = _yield$Promise$all2[0];
+          editorJSON = _yield$Promise$all2[1];
+          _commonUtils$getNextE = commonUtils.getNextEnabledAndResultsArray(orderedRevisions, size), newResultsArray = _commonUtils$getNextE.newResultsArray, nextEnabled = _commonUtils$getNextE.nextEnabled;
+          props = (0, _props2.generateProps)(req, res, {
+            editor: editorJSON,
+            from: from,
+            nextEnabled: nextEnabled,
+            results: newResultsArray,
+            showRevisionNote: true,
+            size: size,
+            tabActive: 1,
+            tableHeading: 'Revision History'
+          });
+          markup = _server.default.renderToString(/*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_editor.default, propHelpers.extractEditorProps(props), /*#__PURE__*/_react.default.createElement(_editorRevision.default, propHelpers.extractChildProps(props)))));
+          res.send((0, _target.default)({
+            markup: markup,
+            page: 'revisions',
+            props: (0, _props2.escapeProps)(props),
+            script: '/js/editor/editor.js',
+            title: "".concat(props.editor.name, "'s Revisions")
+          }));
+          _context5.next = 4;
+          break;
+        case 3:
+          _context5.prev = 3;
+          _t4 = _context5["catch"](1);
+          return _context5.abrupt("return", next(_t4));
+        case 4:
+        case "end":
+          return _context5.stop();
       }
-    }, _callee5, null, [[5, 20]]);
+    }, _callee5, null, [[1, 3]]);
   }));
   return function (_x17, _x18, _x19) {
     return _ref5.apply(this, arguments);
@@ -619,24 +602,22 @@ router.get('/:id/revisions', /*#__PURE__*/function () {
 router.get('/:id/revisions/revisions', /*#__PURE__*/function () {
   var _ref6 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee6(req, res, next) {
     var DEFAULT_MAX_REVISIONS, DEFAULT_REVISION_OFFSET, query, size, from, orderedRevisions;
-    return _regenerator.default.wrap(function _callee6$(_context6) {
-      while (1) {
-        switch (_context6.prev = _context6.next) {
-          case 0:
-            DEFAULT_MAX_REVISIONS = 20;
-            DEFAULT_REVISION_OFFSET = 0;
-            query = (0, _utils2.parseQuery)(req.url);
-            size = (0, _utils2.getIntFromQueryParams)(query, 'size', DEFAULT_MAX_REVISIONS);
-            from = (0, _utils2.getIntFromQueryParams)(query, 'from', DEFAULT_REVISION_OFFSET);
-            _context6.next = 7;
-            return (0, _revisions.getOrderedRevisionForEditorPage)(from, size, req).catch(next);
-          case 7:
-            orderedRevisions = _context6.sent;
-            res.send(orderedRevisions);
-          case 9:
-          case "end":
-            return _context6.stop();
-        }
+    return _regenerator.default.wrap(function (_context6) {
+      while (1) switch (_context6.prev = _context6.next) {
+        case 0:
+          DEFAULT_MAX_REVISIONS = 20;
+          DEFAULT_REVISION_OFFSET = 0;
+          query = (0, _utils2.parseQuery)(req.url);
+          size = (0, _utils2.getIntFromQueryParams)(query, 'size', DEFAULT_MAX_REVISIONS);
+          from = (0, _utils2.getIntFromQueryParams)(query, 'from', DEFAULT_REVISION_OFFSET);
+          _context6.next = 1;
+          return (0, _revisions.getOrderedRevisionForEditorPage)(from, size, req).catch(next);
+        case 1:
+          orderedRevisions = _context6.sent;
+          res.send(orderedRevisions);
+        case 2:
+        case "end":
+          return _context6.stop();
       }
     }, _callee6);
   }));
@@ -658,113 +639,111 @@ function getProgress(_x23, _x24, _x25) {
 function _getProgress() {
   _getProgress = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee12(achievementId, editorId, orm) {
     var revisionist, Editor, editor, revisions, authorRevisionist, editionGroupRevisionist, publisherRevisionist, editionRevisionist, workRevisionist, seriesRevisionist, AuthorRevision, EditionGroupRevision, EditionRevision, PublisherRevision, WorkRevision, SeriesRevision, bookshelf, rawSql, out, explorerVisits;
-    return _regenerator.default.wrap(function _callee12$(_context12) {
-      while (1) {
-        switch (_context12.prev = _context12.next) {
-          case 0:
-            revisionist = [1, 2, 3];
-            if (!revisionist.includes(achievementId)) {
-              _context12.next = 8;
-              break;
-            }
-            Editor = orm.Editor;
+    return _regenerator.default.wrap(function (_context12) {
+      while (1) switch (_context12.prev = _context12.next) {
+        case 0:
+          revisionist = [1, 2, 3];
+          if (!revisionist.includes(achievementId)) {
+            _context12.next = 2;
+            break;
+          }
+          Editor = orm.Editor;
+          _context12.next = 1;
+          return new Editor({
+            id: editorId
+          }).fetch({
+            require: false
+          });
+        case 1:
+          editor = _context12.sent;
+          revisions = editor.get('revisionsApplied');
+          return _context12.abrupt("return", revisions);
+        case 2:
+          // entity revisionist
+          authorRevisionist = [4, 5, 6];
+          editionGroupRevisionist = [7, 8, 9];
+          publisherRevisionist = [15, 16, 17];
+          editionRevisionist = [18, 19, 20];
+          workRevisionist = [21, 22, 23];
+          seriesRevisionist = [28, 29, 30];
+          if (!authorRevisionist.includes(achievementId)) {
+            _context12.next = 3;
+            break;
+          }
+          AuthorRevision = orm.AuthorRevision;
+          return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new AuthorRevision(), 'author_revision', editorId));
+        case 3:
+          if (!editionGroupRevisionist.includes(achievementId)) {
+            _context12.next = 4;
+            break;
+          }
+          EditionGroupRevision = orm.EditionGroupRevision;
+          return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new EditionGroupRevision(), 'edition_group_revision', editorId));
+        case 4:
+          if (!editionRevisionist.includes(achievementId)) {
             _context12.next = 5;
-            return new Editor({
-              id: editorId
-            }).fetch({
-              require: false
-            });
-          case 5:
-            editor = _context12.sent;
-            revisions = editor.get('revisionsApplied');
-            return _context12.abrupt("return", revisions);
-          case 8:
-            // entity revisionist
-            authorRevisionist = [4, 5, 6];
-            editionGroupRevisionist = [7, 8, 9];
-            publisherRevisionist = [15, 16, 17];
-            editionRevisionist = [18, 19, 20];
-            workRevisionist = [21, 22, 23];
-            seriesRevisionist = [28, 29, 30];
-            if (!authorRevisionist.includes(achievementId)) {
-              _context12.next = 17;
-              break;
-            }
-            AuthorRevision = orm.AuthorRevision;
-            return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new AuthorRevision(), 'author_revision', editorId));
-          case 17:
-            if (!editionGroupRevisionist.includes(achievementId)) {
-              _context12.next = 20;
-              break;
-            }
-            EditionGroupRevision = orm.EditionGroupRevision;
-            return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new EditionGroupRevision(), 'edition_group_revision', editorId));
-          case 20:
-            if (!editionRevisionist.includes(achievementId)) {
-              _context12.next = 23;
-              break;
-            }
-            EditionRevision = orm.EditionRevision;
-            return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new EditionRevision(), 'edition_revision', editorId));
-          case 23:
-            if (!publisherRevisionist.includes(achievementId)) {
-              _context12.next = 26;
-              break;
-            }
-            PublisherRevision = orm.PublisherRevision;
-            return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new PublisherRevision(), 'publisher_revision', editorId));
-          case 26:
-            if (!workRevisionist.includes(achievementId)) {
-              _context12.next = 29;
-              break;
-            }
-            WorkRevision = orm.WorkRevision;
-            return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new WorkRevision(), 'work_revision', editorId));
-          case 29:
-            if (!seriesRevisionist.includes(achievementId)) {
-              _context12.next = 32;
-              break;
-            }
-            SeriesRevision = orm.SeriesRevision;
-            return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new SeriesRevision(), 'series_revision', editorId));
-          case 32:
-            if (!(achievementId === 10)) {
-              _context12.next = 39;
-              break;
-            }
-            bookshelf = orm.bookshelf;
-            rawSql = "SELECT * from bookbrainz.revision WHERE author_id=".concat(editorId, " \t\tand created_at > (SELECT CURRENT_DATE - INTERVAL '1 hour');");
-            _context12.next = 37;
-            return bookshelf.knex.raw(rawSql);
-          case 37:
-            out = _context12.sent;
-            return _context12.abrupt("return", out.rowCount);
-          case 39:
-            if (!(achievementId === 11)) {
-              _context12.next = 41;
-              break;
-            }
-            return _context12.abrupt("return", (0, _achievement.getConsecutiveDaysWithEdits)(orm, editorId, 6));
-          case 41:
-            if (!(achievementId === 12)) {
-              _context12.next = 43;
-              break;
-            }
-            return _context12.abrupt("return", (0, _achievement.getConsecutiveDaysWithEdits)(orm, editorId, 29));
-          case 43:
-            // Explorer achivements
-            explorerVisits = [24, 25, 26];
-            if (!explorerVisits.includes(achievementId)) {
-              _context12.next = 46;
-              break;
-            }
-            return _context12.abrupt("return", (0, _achievement.getEntityVisits)(orm, editorId));
-          case 46:
-            return _context12.abrupt("return", 0);
-          case 47:
-          case "end":
-            return _context12.stop();
-        }
+            break;
+          }
+          EditionRevision = orm.EditionRevision;
+          return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new EditionRevision(), 'edition_revision', editorId));
+        case 5:
+          if (!publisherRevisionist.includes(achievementId)) {
+            _context12.next = 6;
+            break;
+          }
+          PublisherRevision = orm.PublisherRevision;
+          return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new PublisherRevision(), 'publisher_revision', editorId));
+        case 6:
+          if (!workRevisionist.includes(achievementId)) {
+            _context12.next = 7;
+            break;
+          }
+          WorkRevision = orm.WorkRevision;
+          return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new WorkRevision(), 'work_revision', editorId));
+        case 7:
+          if (!seriesRevisionist.includes(achievementId)) {
+            _context12.next = 8;
+            break;
+          }
+          SeriesRevision = orm.SeriesRevision;
+          return _context12.abrupt("return", (0, _achievement.getTypeCreation)(new SeriesRevision(), 'series_revision', editorId));
+        case 8:
+          if (!(achievementId === 10)) {
+            _context12.next = 10;
+            break;
+          }
+          bookshelf = orm.bookshelf;
+          rawSql = "SELECT * from bookbrainz.revision WHERE author_id=".concat(editorId, " \t\tand created_at > (SELECT CURRENT_DATE - INTERVAL '1 hour');");
+          _context12.next = 9;
+          return bookshelf.knex.raw(rawSql);
+        case 9:
+          out = _context12.sent;
+          return _context12.abrupt("return", out.rowCount);
+        case 10:
+          if (!(achievementId === 11)) {
+            _context12.next = 11;
+            break;
+          }
+          return _context12.abrupt("return", (0, _achievement.getConsecutiveDaysWithEdits)(orm, editorId, 6));
+        case 11:
+          if (!(achievementId === 12)) {
+            _context12.next = 12;
+            break;
+          }
+          return _context12.abrupt("return", (0, _achievement.getConsecutiveDaysWithEdits)(orm, editorId, 29));
+        case 12:
+          // Explorer achivements
+          explorerVisits = [24, 25, 26];
+          if (!explorerVisits.includes(achievementId)) {
+            _context12.next = 13;
+            break;
+          }
+          return _context12.abrupt("return", (0, _achievement.getEntityVisits)(orm, editorId));
+        case 13:
+          return _context12.abrupt("return", 0);
+        case 14:
+        case "end":
+          return _context12.stop();
       }
     }, _callee12);
   }));
@@ -776,57 +755,53 @@ function setAchievementUnlockedField(_x26, _x27, _x28, _x29) {
 function _setAchievementUnlockedField() {
   _setAchievementUnlockedField = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee14(achievements, unlocks, userId, orm) {
     var unlockIDSet, model;
-    return _regenerator.default.wrap(function _callee14$(_context14) {
-      while (1) {
-        switch (_context14.prev = _context14.next) {
-          case 0:
-            if (unlocks) {
-              _context14.next = 2;
-              break;
-            }
-            return _context14.abrupt("return", null);
-          case 2:
-            unlockIDSet = new Set(unlocks.map('attributes.achievementId'));
-            _context14.next = 5;
-            return Promise.all(achievements.map(/*#__PURE__*/function () {
-              var _ref1 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee13(achievementType) {
-                return _regenerator.default.wrap(function _callee13$(_context13) {
-                  while (1) {
-                    switch (_context13.prev = _context13.next) {
-                      case 0:
-                        _context13.t0 = _objectSpread;
-                        _context13.t1 = _objectSpread({}, achievementType.toJSON());
-                        _context13.t2 = {};
-                        _context13.next = 5;
-                        return getProgress(achievementType.id, userId, orm);
-                      case 5:
-                        _context13.t3 = _context13.sent;
-                        _context13.t4 = unlockIDSet.has(achievementType.id);
-                        _context13.t5 = {
-                          counter: _context13.t3,
-                          unlocked: _context13.t4
-                        };
-                        return _context13.abrupt("return", (0, _context13.t0)(_context13.t1, _context13.t2, _context13.t5));
-                      case 9:
-                      case "end":
-                        return _context13.stop();
-                    }
-                  }
-                }, _callee13);
-              }));
-              return function (_x45) {
-                return _ref1.apply(this, arguments);
-              };
-            }()));
-          case 5:
-            model = _context14.sent;
-            return _context14.abrupt("return", {
-              model: model
-            });
-          case 7:
-          case "end":
-            return _context14.stop();
-        }
+    return _regenerator.default.wrap(function (_context14) {
+      while (1) switch (_context14.prev = _context14.next) {
+        case 0:
+          if (unlocks) {
+            _context14.next = 1;
+            break;
+          }
+          return _context14.abrupt("return", null);
+        case 1:
+          unlockIDSet = new Set(unlocks.map('attributes.achievementId'));
+          _context14.next = 2;
+          return Promise.all(achievements.map(/*#__PURE__*/function () {
+            var _ref1 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee13(achievementType) {
+              var _t7, _t8, _t9, _t0, _t1;
+              return _regenerator.default.wrap(function (_context13) {
+                while (1) switch (_context13.prev = _context13.next) {
+                  case 0:
+                    _t7 = _objectSpread;
+                    _t8 = _objectSpread({}, achievementType.toJSON());
+                    _t9 = {};
+                    _context13.next = 1;
+                    return getProgress(achievementType.id, userId, orm);
+                  case 1:
+                    _t0 = _context13.sent;
+                    _t1 = unlockIDSet.has(achievementType.id);
+                    return _context13.abrupt("return", _t7(_t8, _t9, {
+                      counter: _t0,
+                      unlocked: _t1
+                    }));
+                  case 2:
+                  case "end":
+                    return _context13.stop();
+                }
+              }, _callee13);
+            }));
+            return function (_x45) {
+              return _ref1.apply(this, arguments);
+            };
+          }()));
+        case 2:
+          model = _context14.sent;
+          return _context14.abrupt("return", {
+            model: model
+          });
+        case 3:
+        case "end":
+          return _context14.stop();
       }
     }, _callee14);
   }));
@@ -835,61 +810,59 @@ function _setAchievementUnlockedField() {
 router.get('/:id/achievements', /*#__PURE__*/function () {
   var _ref7 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee7(req, res, next) {
     var _req$app$locals$orm4, AchievementType, AchievementUnlock, userId, isOwner, editorJSONPromise, unlocksPromise, achievementColPromise, achievementTypesPromise, _yield$Promise$all3, _yield$Promise$all4, unlocks, editorJSON, achievementTypes, achievementCol, achievementJSON, currAchievementJSON, props, markup;
-    return _regenerator.default.wrap(function _callee7$(_context7) {
-      while (1) {
-        switch (_context7.prev = _context7.next) {
-          case 0:
-            _req$app$locals$orm4 = req.app.locals.orm, AchievementType = _req$app$locals$orm4.AchievementType, AchievementUnlock = _req$app$locals$orm4.AchievementUnlock;
-            userId = parseInt(req.params.id, 10);
-            isOwner = isCurrentUser(userId, req.user);
-            editorJSONPromise = getIdEditorJSONPromise(userId, req).catch(next);
-            unlocksPromise = new AchievementUnlock().where('editor_id', userId).fetchAll({
-              require: false
-            });
-            achievementColPromise = new AchievementUnlock().where('editor_id', userId).where('profile_rank', '&lt;=', '3').query(function (qb) {
-              return qb.limit(3);
-            }).orderBy('profile_rank', 'ASC').fetchAll({
-              require: false,
-              withRelated: ['achievement']
-            });
-            achievementTypesPromise = new AchievementType().orderBy('id', 'ASC').fetchAll();
-            _context7.next = 9;
-            return Promise.all([unlocksPromise, editorJSONPromise, achievementTypesPromise, achievementColPromise]);
-          case 9:
-            _yield$Promise$all3 = _context7.sent;
-            _yield$Promise$all4 = (0, _slicedToArray2.default)(_yield$Promise$all3, 4);
-            unlocks = _yield$Promise$all4[0];
-            editorJSON = _yield$Promise$all4[1];
-            achievementTypes = _yield$Promise$all4[2];
-            achievementCol = _yield$Promise$all4[3];
-            _context7.next = 17;
-            return setAchievementUnlockedField(achievementTypes, unlocks, userId, res.app.locals.orm);
-          case 17:
-            achievementJSON = _context7.sent;
-            currAchievementJSON = achievementColToEditorGetJSON(achievementCol);
-            props = (0, _props2.generateProps)(req, res, {
-              achievement: achievementJSON,
-              currAchievement: currAchievementJSON,
-              editor: editorJSON,
-              isOwner: isOwner,
-              tabActive: 2
-            });
-            markup = _server.default.renderToString(/*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_editor.default, propHelpers.extractEditorProps(props), /*#__PURE__*/_react.default.createElement(_editorAchievements.default, {
-              achievement: props.achievement,
-              currAchievement: props.currAchievement,
-              editor: props.editor,
-              isOwner: props.isOwner
-            }))));
-            res.send((0, _target.default)({
-              markup: markup,
-              props: (0, _props2.escapeProps)(props),
-              script: '/js/editor/achievement.js',
-              title: "".concat(props.editor.name, "'s Achievements")
-            }));
-          case 22:
-          case "end":
-            return _context7.stop();
-        }
+    return _regenerator.default.wrap(function (_context7) {
+      while (1) switch (_context7.prev = _context7.next) {
+        case 0:
+          _req$app$locals$orm4 = req.app.locals.orm, AchievementType = _req$app$locals$orm4.AchievementType, AchievementUnlock = _req$app$locals$orm4.AchievementUnlock;
+          userId = parseInt(req.params.id, 10);
+          isOwner = isCurrentUser(userId, req.user);
+          editorJSONPromise = getIdEditorJSONPromise(userId, req).catch(next);
+          unlocksPromise = new AchievementUnlock().where('editor_id', userId).fetchAll({
+            require: false
+          });
+          achievementColPromise = new AchievementUnlock().where('editor_id', userId).where('profile_rank', '&lt;=', '3').query(function (qb) {
+            return qb.limit(3);
+          }).orderBy('profile_rank', 'ASC').fetchAll({
+            require: false,
+            withRelated: ['achievement']
+          });
+          achievementTypesPromise = new AchievementType().orderBy('id', 'ASC').fetchAll();
+          _context7.next = 1;
+          return Promise.all([unlocksPromise, editorJSONPromise, achievementTypesPromise, achievementColPromise]);
+        case 1:
+          _yield$Promise$all3 = _context7.sent;
+          _yield$Promise$all4 = (0, _slicedToArray2.default)(_yield$Promise$all3, 4);
+          unlocks = _yield$Promise$all4[0];
+          editorJSON = _yield$Promise$all4[1];
+          achievementTypes = _yield$Promise$all4[2];
+          achievementCol = _yield$Promise$all4[3];
+          _context7.next = 2;
+          return setAchievementUnlockedField(achievementTypes, unlocks, userId, res.app.locals.orm);
+        case 2:
+          achievementJSON = _context7.sent;
+          currAchievementJSON = achievementColToEditorGetJSON(achievementCol);
+          props = (0, _props2.generateProps)(req, res, {
+            achievement: achievementJSON,
+            currAchievement: currAchievementJSON,
+            editor: editorJSON,
+            isOwner: isOwner,
+            tabActive: 2
+          });
+          markup = _server.default.renderToString(/*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_editor.default, propHelpers.extractEditorProps(props), /*#__PURE__*/_react.default.createElement(_editorAchievements.default, {
+            achievement: props.achievement,
+            currAchievement: props.currAchievement,
+            editor: props.editor,
+            isOwner: props.isOwner
+          }))));
+          res.send((0, _target.default)({
+            markup: markup,
+            props: (0, _props2.escapeProps)(props),
+            script: '/js/editor/achievement.js',
+            title: "".concat(props.editor.name, "'s Achievements")
+          }));
+        case 3:
+        case "end":
+          return _context7.stop();
       }
     }, _callee7);
   }));
@@ -903,47 +876,45 @@ function rankUpdate(_x33, _x34, _x35, _x36) {
 function _rankUpdate() {
   _rankUpdate = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee15(orm, editorId, bodyRank, rank) {
     var AchievementUnlock, unlockToUnrank, unlockToRank;
-    return _regenerator.default.wrap(function _callee15$(_context15) {
-      while (1) {
-        switch (_context15.prev = _context15.next) {
-          case 0:
-            AchievementUnlock = orm.AchievementUnlock; // Get the achievement unlock which is currently in this "rank"/slot
+    return _regenerator.default.wrap(function (_context15) {
+      while (1) switch (_context15.prev = _context15.next) {
+        case 0:
+          AchievementUnlock = orm.AchievementUnlock; // Get the achievement unlock which is currently in this "rank"/slot
+          _context15.next = 1;
+          return new AchievementUnlock({
+            editorId: editorId,
+            profileRank: rank
+          }).fetch({
+            require: false
+          });
+        case 1:
+          unlockToUnrank = _context15.sent;
+          if (!(unlockToUnrank !== null)) {
+            _context15.next = 2;
+            break;
+          }
+          _context15.next = 2;
+          return unlockToUnrank.set('profileRank', null).save();
+        case 2:
+          if (!(bodyRank === '')) {
             _context15.next = 3;
-            return new AchievementUnlock({
-              editorId: editorId,
-              profileRank: rank
-            }).fetch({
-              require: false
-            });
-          case 3:
-            unlockToUnrank = _context15.sent;
-            if (!(unlockToUnrank !== null)) {
-              _context15.next = 7;
-              break;
-            }
-            _context15.next = 7;
-            return unlockToUnrank.set('profileRank', null).save();
-          case 7:
-            if (!(bodyRank === '')) {
-              _context15.next = 9;
-              break;
-            }
-            return _context15.abrupt("return", false);
-          case 9:
-            _context15.next = 11;
-            return new AchievementUnlock({
-              achievementId: parseInt(bodyRank, 10),
-              editorId: editorId
-            }).fetch({
-              require: true
-            });
-          case 11:
-            unlockToRank = _context15.sent;
-            return _context15.abrupt("return", unlockToRank.set('profileRank', rank).save());
-          case 13:
-          case "end":
-            return _context15.stop();
-        }
+            break;
+          }
+          return _context15.abrupt("return", false);
+        case 3:
+          _context15.next = 4;
+          return new AchievementUnlock({
+            achievementId: parseInt(bodyRank, 10),
+            editorId: editorId
+          }).fetch({
+            require: true
+          });
+        case 4:
+          unlockToRank = _context15.sent;
+          return _context15.abrupt("return", unlockToRank.set('profileRank', rank).save());
+        case 5:
+        case "end":
+          return _context15.stop();
       }
     }, _callee15);
   }));
@@ -952,32 +923,30 @@ function _rankUpdate() {
 router.post('/:id/achievements/', auth.isAuthenticatedForHandler, /*#__PURE__*/function () {
   var _ref8 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee8(req, res) {
     var orm, userId;
-    return _regenerator.default.wrap(function _callee8$(_context8) {
-      while (1) {
-        switch (_context8.prev = _context8.next) {
-          case 0:
-            orm = req.app.locals.orm;
-            userId = parseInt(req.params.id, 10);
-            if (isCurrentUser(userId, req.user)) {
-              _context8.next = 4;
-              break;
-            }
-            throw new Error('Not authenticated');
-          case 4:
-            _context8.next = 6;
-            return rankUpdate(orm, userId, req.body.rank1, 1);
-          case 6:
-            _context8.next = 8;
-            return rankUpdate(orm, userId, req.body.rank2, 2);
-          case 8:
-            _context8.next = 10;
-            return rankUpdate(orm, userId, req.body.rank3, 3);
-          case 10:
-            return _context8.abrupt("return", res.redirect("/editor/".concat(req.params.id)));
-          case 11:
-          case "end":
-            return _context8.stop();
-        }
+    return _regenerator.default.wrap(function (_context8) {
+      while (1) switch (_context8.prev = _context8.next) {
+        case 0:
+          orm = req.app.locals.orm;
+          userId = parseInt(req.params.id, 10);
+          if (isCurrentUser(userId, req.user)) {
+            _context8.next = 1;
+            break;
+          }
+          throw new Error('Not authenticated');
+        case 1:
+          _context8.next = 2;
+          return rankUpdate(orm, userId, req.body.rank1, 1);
+        case 2:
+          _context8.next = 3;
+          return rankUpdate(orm, userId, req.body.rank2, 2);
+        case 3:
+          _context8.next = 4;
+          return rankUpdate(orm, userId, req.body.rank3, 3);
+        case 4:
+          return _context8.abrupt("return", res.redirect("/editor/".concat(req.params.id)));
+        case 5:
+        case "end":
+          return _context8.stop();
       }
     }, _callee8);
   }));
@@ -989,73 +958,71 @@ router.post('/:id/achievements/', auth.isAuthenticatedForHandler, /*#__PURE__*/f
 // eslint-disable-next-line consistent-return
 router.get('/:id/collections', /*#__PURE__*/function () {
   var _ref9 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee9(req, res, next) {
-    var _req$app$locals$orm5, Editor, TitleUnlock, DEFAULT_MAX_COLLECTIONS, DEFAULT_COLLECTION_OFFSET, query, size, from, type, entityTypes, orderedCollections, _commonUtils$getNextE2, newResultsArray, nextEnabled, editor, editorJSON, props, markup;
-    return _regenerator.default.wrap(function _callee9$(_context9) {
-      while (1) {
-        switch (_context9.prev = _context9.next) {
-          case 0:
-            _req$app$locals$orm5 = req.app.locals.orm, Editor = _req$app$locals$orm5.Editor, TitleUnlock = _req$app$locals$orm5.TitleUnlock;
-            DEFAULT_MAX_COLLECTIONS = 20;
-            DEFAULT_COLLECTION_OFFSET = 0;
-            query = (0, _utils2.parseQuery)(req.url);
-            size = (0, _utils2.getIntFromQueryParams)(query, 'size', DEFAULT_MAX_COLLECTIONS);
-            from = (0, _utils2.getIntFromQueryParams)(query, 'from', DEFAULT_COLLECTION_OFFSET);
-            type = query.get('type');
-            _context9.prev = 7;
-            entityTypes = (0, _keys2.default)(commonUtils.getEntityModels(req.app.locals.orm));
-            if (!(!entityTypes.includes(type) &amp;&amp; type !== null)) {
-              _context9.next = 11;
-              break;
-            }
-            throw new error.BadRequestError("Type ".concat(type, " do not exist"));
-          case 11:
-            _context9.next = 13;
-            return (0, _collections2.getOrderedCollectionsForEditorPage)(from, size + 1, type, req);
-          case 13:
-            orderedCollections = _context9.sent;
-            _commonUtils$getNextE2 = commonUtils.getNextEnabledAndResultsArray(orderedCollections, size), newResultsArray = _commonUtils$getNextE2.newResultsArray, nextEnabled = _commonUtils$getNextE2.nextEnabled;
-            _context9.next = 17;
-            return new Editor({
-              id: req.params.id
-            }).fetch();
-          case 17:
-            editor = _context9.sent;
-            _context9.next = 20;
-            return getEditorTitleJSON(editor.toJSON(), TitleUnlock);
-          case 20:
-            editorJSON = _context9.sent;
-            props = (0, _props2.generateProps)(req, res, {
-              editor: editorJSON,
-              entityTypes: entityTypes,
-              from: from,
-              nextEnabled: nextEnabled,
-              results: newResultsArray,
-              showIfOwnerOrCollaborator: true,
-              showPrivacy: true,
-              size: size,
-              tabActive: 3,
-              tableHeading: 'Collections'
-            });
-            markup = _server.default.renderToString(/*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_editor.default, propHelpers.extractEditorProps(props), /*#__PURE__*/_react.default.createElement(_collections.default, propHelpers.extractChildProps(props)))));
-            res.send((0, _target.default)({
-              markup: markup,
-              page: 'collections',
-              props: (0, _props2.escapeProps)(props),
-              script: '/js/editor/editor.js',
-              title: "".concat(props.editor.name, "'s Collections")
-            }));
-            _context9.next = 29;
+    var _req$app$locals$orm5, Editor, TitleUnlock, DEFAULT_MAX_COLLECTIONS, DEFAULT_COLLECTION_OFFSET, query, size, from, type, entityTypes, orderedCollections, _commonUtils$getNextE2, newResultsArray, nextEnabled, editor, editorJSON, props, markup, _t5;
+    return _regenerator.default.wrap(function (_context9) {
+      while (1) switch (_context9.prev = _context9.next) {
+        case 0:
+          _req$app$locals$orm5 = req.app.locals.orm, Editor = _req$app$locals$orm5.Editor, TitleUnlock = _req$app$locals$orm5.TitleUnlock;
+          DEFAULT_MAX_COLLECTIONS = 20;
+          DEFAULT_COLLECTION_OFFSET = 0;
+          query = (0, _utils2.parseQuery)(req.url);
+          size = (0, _utils2.getIntFromQueryParams)(query, 'size', DEFAULT_MAX_COLLECTIONS);
+          from = (0, _utils2.getIntFromQueryParams)(query, 'from', DEFAULT_COLLECTION_OFFSET);
+          type = query.get('type');
+          _context9.prev = 1;
+          entityTypes = (0, _keys2.default)(commonUtils.getEntityModels(req.app.locals.orm));
+          if (!(!entityTypes.includes(type) &amp;&amp; type !== null)) {
+            _context9.next = 2;
             break;
-          case 26:
-            _context9.prev = 26;
-            _context9.t0 = _context9["catch"](7);
-            return _context9.abrupt("return", next(_context9.t0));
-          case 29:
-          case "end":
-            return _context9.stop();
-        }
+          }
+          throw new error.BadRequestError("Type ".concat(type, " do not exist"));
+        case 2:
+          _context9.next = 3;
+          return (0, _collections2.getOrderedCollectionsForEditorPage)(from, size + 1, type, req);
+        case 3:
+          orderedCollections = _context9.sent;
+          _commonUtils$getNextE2 = commonUtils.getNextEnabledAndResultsArray(orderedCollections, size), newResultsArray = _commonUtils$getNextE2.newResultsArray, nextEnabled = _commonUtils$getNextE2.nextEnabled;
+          _context9.next = 4;
+          return new Editor({
+            id: req.params.id
+          }).fetch();
+        case 4:
+          editor = _context9.sent;
+          _context9.next = 5;
+          return getEditorTitleJSON(editor.toJSON(), TitleUnlock);
+        case 5:
+          editorJSON = _context9.sent;
+          props = (0, _props2.generateProps)(req, res, {
+            editor: editorJSON,
+            entityTypes: entityTypes,
+            from: from,
+            nextEnabled: nextEnabled,
+            results: newResultsArray,
+            showIfOwnerOrCollaborator: true,
+            showPrivacy: true,
+            size: size,
+            tabActive: 3,
+            tableHeading: 'Collections'
+          });
+          markup = _server.default.renderToString(/*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_editor.default, propHelpers.extractEditorProps(props), /*#__PURE__*/_react.default.createElement(_collections.default, propHelpers.extractChildProps(props)))));
+          res.send((0, _target.default)({
+            markup: markup,
+            page: 'collections',
+            props: (0, _props2.escapeProps)(props),
+            script: '/js/editor/editor.js',
+            title: "".concat(props.editor.name, "'s Collections")
+          }));
+          _context9.next = 7;
+          break;
+        case 6:
+          _context9.prev = 6;
+          _t5 = _context9["catch"](1);
+          return _context9.abrupt("return", next(_t5));
+        case 7:
+        case "end":
+          return _context9.stop();
       }
-    }, _callee9, null, [[7, 26]]);
+    }, _callee9, null, [[1, 6]]);
   }));
   return function (_x39, _x40, _x41) {
     return _ref9.apply(this, arguments);
@@ -1065,40 +1032,38 @@ router.get('/:id/collections', /*#__PURE__*/function () {
 // eslint-disable-next-line consistent-return
 router.get('/:id/collections/collections', /*#__PURE__*/function () {
   var _ref0 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee0(req, res, next) {
-    var query, size, from, type, entityTypes, orderedCollections;
-    return _regenerator.default.wrap(function _callee0$(_context0) {
-      while (1) {
-        switch (_context0.prev = _context0.next) {
-          case 0:
-            _context0.prev = 0;
-            query = (0, _utils2.parseQuery)(req.url);
-            size = (0, _utils2.getIntFromQueryParams)(query, 'size', 20);
-            from = (0, _utils2.getIntFromQueryParams)(query, 'from');
-            type = query.get('type');
-            entityTypes = (0, _keys2.default)(commonUtils.getEntityModels(req.app.locals.orm));
-            if (!(!entityTypes.includes(type) &amp;&amp; type !== null)) {
-              _context0.next = 8;
-              break;
-            }
-            throw new error.BadRequestError("Type ".concat(type, " do not exist"));
-          case 8:
-            _context0.next = 10;
-            return (0, _collections2.getOrderedCollectionsForEditorPage)(from, size, type, req);
-          case 10:
-            orderedCollections = _context0.sent;
-            res.send(orderedCollections);
-            _context0.next = 17;
+    var query, size, from, type, entityTypes, orderedCollections, _t6;
+    return _regenerator.default.wrap(function (_context0) {
+      while (1) switch (_context0.prev = _context0.next) {
+        case 0:
+          _context0.prev = 0;
+          query = (0, _utils2.parseQuery)(req.url);
+          size = (0, _utils2.getIntFromQueryParams)(query, 'size', 20);
+          from = (0, _utils2.getIntFromQueryParams)(query, 'from');
+          type = query.get('type');
+          entityTypes = (0, _keys2.default)(commonUtils.getEntityModels(req.app.locals.orm));
+          if (!(!entityTypes.includes(type) &amp;&amp; type !== null)) {
+            _context0.next = 1;
             break;
-          case 14:
-            _context0.prev = 14;
-            _context0.t0 = _context0["catch"](0);
-            return _context0.abrupt("return", next(_context0.t0));
-          case 17:
-          case "end":
-            return _context0.stop();
-        }
+          }
+          throw new error.BadRequestError("Type ".concat(type, " do not exist"));
+        case 1:
+          _context0.next = 2;
+          return (0, _collections2.getOrderedCollectionsForEditorPage)(from, size, type, req);
+        case 2:
+          orderedCollections = _context0.sent;
+          res.send(orderedCollections);
+          _context0.next = 4;
+          break;
+        case 3:
+          _context0.prev = 3;
+          _t6 = _context0["catch"](0);
+          return _context0.abrupt("return", next(_t6));
+        case 4:
+        case "end":
+          return _context0.stop();
       }
-    }, _callee0, null, [[0, 14]]);
+    }, _callee0, null, [[0, 3]]);
   }));
   return function (_x42, _x43, _x44) {
     return _ref0.apply(this, arguments);
@@ -1117,7 +1082,7 @@ var _default = exports.default = router;
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 13:45:01 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 15:19:59 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

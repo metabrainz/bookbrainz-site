@@ -41,17 +41,16 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-require("core-js/modules/es.object.keys.js");
 require("core-js/modules/es.symbol.js");
-require("core-js/modules/es.object.get-own-property-descriptor.js");
-require("core-js/modules/es.object.get-own-property-descriptors.js");
-require("core-js/modules/es.array.slice.js");
-require("core-js/modules/es.array.from.js");
 require("core-js/modules/es.symbol.description.js");
 require("core-js/modules/es.symbol.iterator.js");
+require("core-js/modules/es.array.from.js");
+require("core-js/modules/es.array.slice.js");
+require("core-js/modules/es.object.get-own-property-descriptor.js");
+require("core-js/modules/es.object.get-own-property-descriptors.js");
+require("core-js/modules/es.object.keys.js");
 require("core-js/modules/es.weak-map.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -66,29 +65,28 @@ exports.init = init;
 exports.refreshIndex = refreshIndex;
 exports.searchByName = searchByName;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-require("core-js/modules/es.array.map.js");
-require("core-js/modules/es.date.to-json.js");
-require("core-js/modules/web.url.to-json.js");
 require("core-js/modules/es.array.concat.js");
-require("core-js/modules/es.regexp.exec.js");
-require("core-js/modules/es.string.replace.js");
-require("core-js/modules/es.array.includes.js");
-require("core-js/modules/es.string.includes.js");
-require("core-js/modules/es.array.iterator.js");
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/es.promise.js");
-require("core-js/modules/es.string.iterator.js");
-require("core-js/modules/web.dom-collections.iterator.js");
-require("core-js/modules/es.function.name.js");
-require("core-js/modules/es.array.join.js");
-require("core-js/modules/es.string.search.js");
-require("core-js/modules/es.array.reduce.js");
+require("core-js/modules/es.array.filter.js");
 require("core-js/modules/es.array.find.js");
 require("core-js/modules/es.array.flat.js");
+require("core-js/modules/es.array.includes.js");
+require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.array.join.js");
+require("core-js/modules/es.array.map.js");
+require("core-js/modules/es.array.reduce.js");
 require("core-js/modules/es.array.unscopables.flat.js");
-require("core-js/modules/web.dom-collections.for-each.js");
-require("core-js/modules/es.array.filter.js");
+require("core-js/modules/es.date.to-json.js");
+require("core-js/modules/es.function.name.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.promise.js");
+require("core-js/modules/es.regexp.exec.js");
 require("core-js/modules/es.regexp.to-string.js");
+require("core-js/modules/es.string.includes.js");
+require("core-js/modules/es.string.iterator.js");
+require("core-js/modules/es.string.replace.js");
+require("core-js/modules/es.string.search.js");
+require("core-js/modules/web.dom-collections.for-each.js");
+require("core-js/modules/web.dom-collections.iterator.js");
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _upperFirst2 = _interopRequireDefault(require("lodash/upperFirst"));
@@ -99,10 +97,11 @@ var commonUtils = _interopRequireWildcard(require("./utils"));
 var _elasticsearch = _interopRequireDefault(require("@elastic/elasticsearch"));
 var _httpStatus = _interopRequireDefault(require("http-status"));
 var _log = _interopRequireDefault(require("log"));
-function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != _typeof(e) &amp;&amp; "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (var _t in e) { "default" !== _t &amp;&amp; {}.hasOwnProperty.call(e, _t) &amp;&amp; ((i = (o = Object.defineProperty) &amp;&amp; Object.getOwnPropertyDescriptor(e, _t)) &amp;&amp; (i.get || i.set) ? o(f, _t, i) : f[_t] = e[_t]); } return f; })(e, t); }
+var cache;
+function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c &amp;&amp; {}.hasOwnProperty.call(e, c) &amp;&amp; ((r = a &amp;&amp; Object.getOwnPropertyDescriptor(e, c)) &amp;&amp; (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol &amp;&amp; r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e &amp;&amp; r &amp;&amp; "number" == typeof r.length) { t &amp;&amp; (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t.return || t.return(); } finally { if (u) throw o; } } }; }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t &amp;&amp; r.constructor &amp;&amp; (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) &amp;&amp; (a = r.length); for (var e = 0, n = Array(a); e &lt; a; e++) { n[e] = r[e]; } return n; }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) &amp;&amp; (a = r.length); for (var e = 0, n = Array(a); e &lt; a; e++) n[e] = r[e]; return n; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r &amp;&amp; (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r &lt; arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { (0, _defineProperty2.default)(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; } /* eslint-disable lines-around-comment, sort-keys, camelcase */ /*
  * Copyright (C) 2016  Sean Burke
@@ -293,20 +292,18 @@ function _indexExists(_x) {
 } // Helper to add a `type` filter into a dslQuery body, since ES 7+ removed document types
 function _indexExists2() {
   _indexExists2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee(indexName) {
-    return _regenerator.default.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            _context.next = 2;
-            return _client.indices.exists({
-              index: indexName
-            });
-          case 2:
-            return _context.abrupt("return", _context.sent);
-          case 3:
-          case "end":
-            return _context.stop();
-        }
+    return _regenerator.default.wrap(function (_context) {
+      while (1) switch (_context.prev = _context.next) {
+        case 0:
+          _context.next = 1;
+          return _client.indices.exists({
+            index: indexName
+          });
+        case 1:
+          return _context.abrupt("return", _context.sent);
+        case 2:
+        case "end":
+          return _context.stop();
       }
     }, _callee);
   }));
@@ -344,7 +341,7 @@ function _applyTypeFilterToDSL(dslQuery, type) {
    This utility function prepares the Model into a minimal object that will be indexed
 */
 function getDocumentToIndex(entity) {
-  var _entity$related, _entity$related$relat, _entity$related2, _entity$related2$rela;
+  var _entity$related, _entity$related2;
   var additionalProperties = [];
   var entityType = entity.get('type');
   switch (entityType) {
@@ -360,7 +357,7 @@ function getDocumentToIndex(entity) {
     default:
       break;
   }
-  var aliases = (_entity$related = entity.related('aliasSet')) === null || _entity$related === void 0 ? void 0 : (_entity$related$relat = _entity$related.related('aliases')) === null || _entity$related$relat === void 0 ? void 0 : _entity$related$relat.toJSON({
+  var aliases = (_entity$related = entity.related('aliasSet')) === null || _entity$related === void 0 || (_entity$related = _entity$related.related('aliases')) === null || _entity$related === void 0 ? void 0 : _entity$related.toJSON({
     ignorePivot: true,
     visible: 'name'
   });
@@ -371,7 +368,7 @@ function getDocumentToIndex(entity) {
       name: name
     };
   }
-  var identifiers = (_entity$related2 = entity.related('identifierSet')) === null || _entity$related2 === void 0 ? void 0 : (_entity$related2$rela = _entity$related2.related('identifiers')) === null || _entity$related2$rela === void 0 ? void 0 : _entity$related2$rela.toJSON({
+  var identifiers = (_entity$related2 = entity.related('identifierSet')) === null || _entity$related2 === void 0 || (_entity$related2 = _entity$related2.related('identifiers')) === null || _entity$related2 === void 0 ? void 0 : _entity$related2.toJSON({
     ignorePivot: true,
     visible: 'value'
   });
@@ -389,168 +386,162 @@ function _fetchEntityModelsForESResults(_x2, _x3) {
 function _fetchEntityModelsForESResults2() {
   _fetchEntityModelsForESResults2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee4(orm, results) {
     var Area, Editor, UserCollection, processedResults;
-    return _regenerator.default.wrap(function _callee4$(_context4) {
-      while (1) {
-        switch (_context4.prev = _context4.next) {
-          case 0:
-            Area = orm.Area, Editor = orm.Editor, UserCollection = orm.UserCollection;
-            if (results !== null &amp;&amp; results !== void 0 &amp;&amp; results.hits) {
-              _context4.next = 3;
-              break;
-            }
-            return _context4.abrupt("return", null);
-          case 3:
-            _context4.next = 5;
-            return Promise.all(results.hits.map(/*#__PURE__*/function () {
-              var _ref = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee3(hit) {
-                var entityStub, _areaJSON$areaType, area, areaJSON, areaParents, editor, editorJSON, collection, collectionJSON, Model, entity, entityJSON;
-                return _regenerator.default.wrap(function _callee3$(_context3) {
-                  while (1) {
-                    switch (_context3.prev = _context3.next) {
-                      case 0:
-                        entityStub = hit._source; // Special cases first
-                        if (!(entityStub.type === 'Area')) {
-                          _context3.next = 13;
-                          break;
-                        }
-                        _context3.next = 4;
-                        return new Area({
-                          gid: entityStub.id
-                        }).fetch({
-                          withRelated: ['areaType']
-                        });
-                      case 4:
-                        area = _context3.sent;
-                        areaJSON = area.toJSON({
-                          omitPivot: true
-                        });
-                        _context3.next = 8;
-                        return area.parents();
-                      case 8:
-                        areaParents = _context3.sent;
-                        areaJSON.defaultAlias = {
-                          name: areaJSON.name
-                        };
-                        areaJSON.type = 'Area';
-                        areaJSON.disambiguation = {
-                          comment: "".concat((_areaJSON$areaType = areaJSON.areaType) === null || _areaJSON$areaType === void 0 ? void 0 : _areaJSON$areaType.name).concat(areaParents !== null &amp;&amp; areaParents !== void 0 &amp;&amp; areaParents.length ? ' - ' : '').concat(areaParents === null || areaParents === void 0 ? void 0 : areaParents.map(function (parent) {
-                            return parent.name;
-                          }).join(', '))
-                        };
-                        return _context3.abrupt("return", areaJSON);
-                      case 13:
-                        if (!(entityStub.type === 'Editor')) {
-                          _context3.next = 22;
-                          break;
-                        }
-                        _context3.next = 16;
-                        return new Editor({
-                          id: entityStub.id
-                        }).fetch();
-                      case 16:
-                        editor = _context3.sent;
-                        editorJSON = editor.toJSON({
-                          omitPivot: true
-                        });
-                        editorJSON.defaultAlias = {
-                          name: editorJSON.name
-                        };
-                        editorJSON.type = 'Editor';
-                        editorJSON.id = entityStub.id;
-                        return _context3.abrupt("return", editorJSON);
-                      case 22:
-                        if (!(entityStub.type === 'Collection')) {
-                          _context3.next = 31;
-                          break;
-                        }
-                        _context3.next = 25;
-                        return new UserCollection({
-                          id: entityStub.id
-                        }).fetch();
-                      case 25:
-                        collection = _context3.sent;
-                        collectionJSON = collection.toJSON({
-                          omitPivot: true
-                        });
-                        collectionJSON.defaultAlias = {
-                          name: collectionJSON.name
-                        };
-                        collectionJSON.type = 'Collection';
-                        collectionJSON.id = entityStub.id;
-                        return _context3.abrupt("return", collectionJSON);
-                      case 31:
-                        // Regular entity
-                        Model = commonUtils.getEntityModelByType(orm, entityStub.type);
-                        _context3.next = 34;
-                        return new Model({
-                          bbid: entityStub.bbid
-                        }).fetch({
-                          require: false,
-                          withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases', 'identifierSet.identifiers', 'relationshipSet.relationships.source', 'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation']
-                        });
-                      case 34:
-                        entity = _context3.sent;
-                        entityJSON = entity === null || entity === void 0 ? void 0 : entity.toJSON({
-                          omitPivot: true
-                        });
-                        if (!(entityJSON &amp;&amp; entityJSON.relationshipSet)) {
-                          _context3.next = 40;
-                          break;
-                        }
-                        _context3.next = 39;
-                        return Promise.all(entityJSON.relationshipSet.relationships.map(/*#__PURE__*/function () {
-                          var _ref2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(rel) {
-                            return _regenerator.default.wrap(function _callee2$(_context2) {
-                              while (1) {
-                                switch (_context2.prev = _context2.next) {
-                                  case 0:
-                                    _context2.next = 2;
-                                    return commonUtils.getEntity(orm, rel.source.bbid, rel.source.type);
-                                  case 2:
-                                    rel.source = _context2.sent;
-                                    _context2.next = 5;
-                                    return commonUtils.getEntity(orm, rel.target.bbid, rel.target.type);
-                                  case 5:
-                                    rel.target = _context2.sent;
-                                    return _context2.abrupt("return", rel);
-                                  case 7:
-                                  case "end":
-                                    return _context2.stop();
-                                }
-                              }
-                            }, _callee2);
-                          }));
-                          return function (_x16) {
-                            return _ref2.apply(this, arguments);
-                          };
-                        }()));
-                      case 39:
-                        entityJSON.relationshipSet.relationships = _context3.sent;
-                      case 40:
-                        if (entityStub.authors) {
-                          entityJSON.authors = entityStub.authors;
-                        }
-                        return _context3.abrupt("return", entityJSON);
-                      case 42:
-                      case "end":
-                        return _context3.stop();
+    return _regenerator.default.wrap(function (_context4) {
+      while (1) switch (_context4.prev = _context4.next) {
+        case 0:
+          Area = orm.Area, Editor = orm.Editor, UserCollection = orm.UserCollection;
+          if (results !== null &amp;&amp; results !== void 0 &amp;&amp; results.hits) {
+            _context4.next = 1;
+            break;
+          }
+          return _context4.abrupt("return", null);
+        case 1:
+          _context4.next = 2;
+          return Promise.all(results.hits.map(/*#__PURE__*/function () {
+            var _ref = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee3(hit) {
+              var entityStub, _areaJSON$areaType, area, areaJSON, areaParents, editor, editorJSON, collection, collectionJSON, Model, entity, entityJSON;
+              return _regenerator.default.wrap(function (_context3) {
+                while (1) switch (_context3.prev = _context3.next) {
+                  case 0:
+                    entityStub = hit._source; // Special cases first
+                    if (!(entityStub.type === 'Area')) {
+                      _context3.next = 3;
+                      break;
                     }
-                  }
-                }, _callee3);
-              }));
-              return function (_x15) {
-                return _ref.apply(this, arguments);
-              };
-            }())).catch(function (err) {
-              return _log.default.error(err);
-            });
-          case 5:
-            processedResults = _context4.sent;
-            return _context4.abrupt("return", processedResults);
-          case 7:
-          case "end":
-            return _context4.stop();
-        }
+                    _context3.next = 1;
+                    return new Area({
+                      gid: entityStub.id
+                    }).fetch({
+                      withRelated: ['areaType']
+                    });
+                  case 1:
+                    area = _context3.sent;
+                    areaJSON = area.toJSON({
+                      omitPivot: true
+                    });
+                    _context3.next = 2;
+                    return area.parents();
+                  case 2:
+                    areaParents = _context3.sent;
+                    areaJSON.defaultAlias = {
+                      name: areaJSON.name
+                    };
+                    areaJSON.type = 'Area';
+                    areaJSON.disambiguation = {
+                      comment: "".concat((_areaJSON$areaType = areaJSON.areaType) === null || _areaJSON$areaType === void 0 ? void 0 : _areaJSON$areaType.name).concat(areaParents !== null &amp;&amp; areaParents !== void 0 &amp;&amp; areaParents.length ? ' - ' : '').concat(areaParents === null || areaParents === void 0 ? void 0 : areaParents.map(function (parent) {
+                        return parent.name;
+                      }).join(', '))
+                    };
+                    return _context3.abrupt("return", areaJSON);
+                  case 3:
+                    if (!(entityStub.type === 'Editor')) {
+                      _context3.next = 5;
+                      break;
+                    }
+                    _context3.next = 4;
+                    return new Editor({
+                      id: entityStub.id
+                    }).fetch();
+                  case 4:
+                    editor = _context3.sent;
+                    editorJSON = editor.toJSON({
+                      omitPivot: true
+                    });
+                    editorJSON.defaultAlias = {
+                      name: editorJSON.name
+                    };
+                    editorJSON.type = 'Editor';
+                    editorJSON.id = entityStub.id;
+                    return _context3.abrupt("return", editorJSON);
+                  case 5:
+                    if (!(entityStub.type === 'Collection')) {
+                      _context3.next = 7;
+                      break;
+                    }
+                    _context3.next = 6;
+                    return new UserCollection({
+                      id: entityStub.id
+                    }).fetch();
+                  case 6:
+                    collection = _context3.sent;
+                    collectionJSON = collection.toJSON({
+                      omitPivot: true
+                    });
+                    collectionJSON.defaultAlias = {
+                      name: collectionJSON.name
+                    };
+                    collectionJSON.type = 'Collection';
+                    collectionJSON.id = entityStub.id;
+                    return _context3.abrupt("return", collectionJSON);
+                  case 7:
+                    // Regular entity
+                    Model = commonUtils.getEntityModelByType(orm, entityStub.type);
+                    _context3.next = 8;
+                    return new Model({
+                      bbid: entityStub.bbid
+                    }).fetch({
+                      require: false,
+                      withRelated: ['defaultAlias.language', 'disambiguation', 'aliasSet.aliases', 'identifierSet.identifiers', 'relationshipSet.relationships.source', 'relationshipSet.relationships.target', 'relationshipSet.relationships.type', 'annotation']
+                    });
+                  case 8:
+                    entity = _context3.sent;
+                    entityJSON = entity === null || entity === void 0 ? void 0 : entity.toJSON({
+                      omitPivot: true
+                    });
+                    if (!(entityJSON &amp;&amp; entityJSON.relationshipSet)) {
+                      _context3.next = 10;
+                      break;
+                    }
+                    _context3.next = 9;
+                    return Promise.all(entityJSON.relationshipSet.relationships.map(/*#__PURE__*/function () {
+                      var _ref2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(rel) {
+                        return _regenerator.default.wrap(function (_context2) {
+                          while (1) switch (_context2.prev = _context2.next) {
+                            case 0:
+                              _context2.next = 1;
+                              return commonUtils.getEntity(orm, rel.source.bbid, rel.source.type);
+                            case 1:
+                              rel.source = _context2.sent;
+                              _context2.next = 2;
+                              return commonUtils.getEntity(orm, rel.target.bbid, rel.target.type);
+                            case 2:
+                              rel.target = _context2.sent;
+                              return _context2.abrupt("return", rel);
+                            case 3:
+                            case "end":
+                              return _context2.stop();
+                          }
+                        }, _callee2);
+                      }));
+                      return function (_x16) {
+                        return _ref2.apply(this, arguments);
+                      };
+                    }()));
+                  case 9:
+                    entityJSON.relationshipSet.relationships = _context3.sent;
+                  case 10:
+                    if (entityStub.authors) {
+                      entityJSON.authors = entityStub.authors;
+                    }
+                    return _context3.abrupt("return", entityJSON);
+                  case 11:
+                  case "end":
+                    return _context3.stop();
+                }
+              }, _callee3);
+            }));
+            return function (_x15) {
+              return _ref.apply(this, arguments);
+            };
+          }())).catch(function (err) {
+            return _log.default.error(err);
+          });
+        case 2:
+          processedResults = _context4.sent;
+          return _context4.abrupt("return", processedResults);
+        case 3:
+        case "end":
+          return _context4.stop();
       }
     }, _callee4);
   }));
@@ -561,45 +552,42 @@ function _searchForEntities(_x4, _x5) {
 }
 function _searchForEntities2() {
   _searchForEntities2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee5(orm, dslQuery) {
-    var searchResponse, hits, results, total, _hits$total$value, _hits$total;
-    return _regenerator.default.wrap(function _callee5$(_context5) {
-      while (1) {
-        switch (_context5.prev = _context5.next) {
-          case 0:
-            _context5.prev = 0;
-            _context5.next = 3;
-            return _client.search(dslQuery);
-          case 3:
-            searchResponse = _context5.sent;
-            hits = searchResponse.hits;
-            _context5.next = 7;
-            return _fetchEntityModelsForESResults(orm, hits);
-          case 7:
-            results = _context5.sent;
-            if (typeof hits.total === 'number') {
-              total = hits.total;
-            } else {
-              total = (_hits$total$value = (_hits$total = hits.total) === null || _hits$total === void 0 ? void 0 : _hits$total.value) !== null &amp;&amp; _hits$total$value !== void 0 ? _hits$total$value : 0;
-            }
-            return _context5.abrupt("return", {
-              results: results,
-              total: total || 0
-            });
-          case 12:
-            _context5.prev = 12;
-            _context5.t0 = _context5["catch"](0);
-            _log.default.error(_context5.t0);
-          case 15:
-            return _context5.abrupt("return", {
-              results: [],
-              total: 0
-            });
-          case 16:
-          case "end":
-            return _context5.stop();
-        }
+    var searchResponse, hits, results, total, _hits$total$value, _hits$total, _t;
+    return _regenerator.default.wrap(function (_context5) {
+      while (1) switch (_context5.prev = _context5.next) {
+        case 0:
+          _context5.prev = 0;
+          _context5.next = 1;
+          return _client.search(dslQuery);
+        case 1:
+          searchResponse = _context5.sent;
+          hits = searchResponse.hits;
+          _context5.next = 2;
+          return _fetchEntityModelsForESResults(orm, hits);
+        case 2:
+          results = _context5.sent;
+          if (typeof hits.total === 'number') {
+            total = hits.total;
+          } else {
+            total = (_hits$total$value = (_hits$total = hits.total) === null || _hits$total === void 0 ? void 0 : _hits$total.value) !== null &amp;&amp; _hits$total$value !== void 0 ? _hits$total$value : 0;
+          }
+          return _context5.abrupt("return", {
+            results: results,
+            total: total || 0
+          });
+        case 3:
+          _context5.prev = 3;
+          _t = _context5["catch"](0);
+          _log.default.error(_t);
+          return _context5.abrupt("return", {
+            results: [],
+            total: 0
+          });
+        case 4:
+        case "end":
+          return _context5.stop();
       }
-    }, _callee5, null, [[0, 12]]);
+    }, _callee5, null, [[0, 3]]);
   }));
   return _searchForEntities2.apply(this, arguments);
 }
@@ -607,108 +595,105 @@ function _bulkIndexEntities(_x6) {
   return _bulkIndexEntities2.apply(this, arguments);
 }
 function _bulkIndexEntities2() {
-  _bulkIndexEntities2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee7(entities) {
-    var entitiesToIndex, operationSucceeded, bulkOperations, bulkResponse;
-    return _regenerator.default.wrap(function _callee7$(_context7) {
-      while (1) {
-        switch (_context7.prev = _context7.next) {
-          case 0:
-            if (entities.length) {
-              _context7.next = 2;
-              break;
-            }
-            return _context7.abrupt("return");
-          case 2:
-            // Proxy the list of entities to index in case we need to retry
-            entitiesToIndex = entities;
-            operationSucceeded = false;
-          case 4:
-            if (operationSucceeded) {
-              _context7.next = 25;
-              break;
-            }
-            bulkOperations = entitiesToIndex.reduce(function (accumulator, entity) {
-              var _entity$bbid2;
-              accumulator.push({
-                index: {
-                  _id: (_entity$bbid2 = entity.bbid) !== null &amp;&amp; _entity$bbid2 !== void 0 ? _entity$bbid2 : entity.id,
-                  _index: _index
-                }
-              });
-              accumulator.push(entity);
-              return accumulator;
-            }, []);
-            operationSucceeded = true;
-            _context7.prev = 7;
-            _context7.next = 10;
-            return _client.bulk({
-              body: bulkOperations
-            }).catch(function (error) {
-              _log.default.error('error bulk indexing entities for search:', error);
-            });
-          case 10:
-            bulkResponse = _context7.sent;
-            if (bulkResponse) {
-              _context7.next = 13;
-              break;
-            }
-            throw new Error('No response from bulk indexing operation');
-          case 13:
-            if (!((bulkResponse === null || bulkResponse === void 0 ? void 0 : bulkResponse.errors) === true)) {
-              _context7.next = 17;
-              break;
-            }
-            entitiesToIndex = bulkResponse.items.reduce(function (accumulator, item) {
-              // We currently only handle queue overrun
-              if (item.index.status === _httpStatus.default.TOO_MANY_REQUESTS) {
-                var failedEntity = entities.find(function (element) {
-                  var _element$bbid;
-                  return ((_element$bbid = element.bbid) !== null &amp;&amp; _element$bbid !== void 0 ? _element$bbid : element.id) === item.index._id;
-                });
-                accumulator.push(failedEntity);
-              }
-              return accumulator;
-            }, []);
-            if (!entitiesToIndex.length) {
-              _context7.next = 17;
-              break;
-            }
-            return _context7.delegateYield(/*#__PURE__*/_regenerator.default.mark(function _callee6() {
-              var jitter;
-              return _regenerator.default.wrap(function _callee6$(_context6) {
-                while (1) {
-                  switch (_context6.prev = _context6.next) {
-                    case 0:
-                      operationSucceeded = false;
-                      jitter = Math.random() * _maxJitter; // eslint-disable-next-line no-await-in-loop
-                      _context6.next = 4;
-                      return new Promise(function (resolve) {
-                        return setTimeout(resolve, _retryDelay + jitter);
-                      });
-                    case 4:
-                    case "end":
-                      return _context6.stop();
-                  }
-                }
-              }, _callee6);
-            })(), "t0", 17);
-          case 17:
-            _context7.next = 23;
+  _bulkIndexEntities2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee6(entities) {
+    var entitiesToIndex, operationSucceeded, _loop;
+    return _regenerator.default.wrap(function (_context7) {
+      while (1) switch (_context7.prev = _context7.next) {
+        case 0:
+          if (entities.length) {
+            _context7.next = 1;
             break;
-          case 19:
-            _context7.prev = 19;
-            _context7.t1 = _context7["catch"](7);
-            _log.default.error('error bulk indexing entities for search:', _context7.t1);
-            operationSucceeded = false;
-          case 23:
+          }
+          return _context7.abrupt("return");
+        case 1:
+          // Proxy the list of entities to index in case we need to retry
+          entitiesToIndex = entities;
+          operationSucceeded = false;
+          _loop = /*#__PURE__*/_regenerator.default.mark(function _loop() {
+            var bulkOperations, bulkResponse, jitter, _t2;
+            return _regenerator.default.wrap(function (_context6) {
+              while (1) switch (_context6.prev = _context6.next) {
+                case 0:
+                  bulkOperations = entitiesToIndex.reduce(function (accumulator, entity) {
+                    var _entity$bbid2;
+                    accumulator.push({
+                      index: {
+                        _id: (_entity$bbid2 = entity.bbid) !== null &amp;&amp; _entity$bbid2 !== void 0 ? _entity$bbid2 : entity.id,
+                        _index: _index
+                      }
+                    });
+                    accumulator.push(entity);
+                    return accumulator;
+                  }, []);
+                  operationSucceeded = true;
+                  _context6.prev = 1;
+                  _context6.next = 2;
+                  return _client.bulk({
+                    body: bulkOperations
+                  }).catch(function (error) {
+                    _log.default.error('error bulk indexing entities for search:', error);
+                  });
+                case 2:
+                  bulkResponse = _context6.sent;
+                  if (bulkResponse) {
+                    _context6.next = 3;
+                    break;
+                  }
+                  throw new Error('No response from bulk indexing operation');
+                case 3:
+                  if (!((bulkResponse === null || bulkResponse === void 0 ? void 0 : bulkResponse.errors) === true)) {
+                    _context6.next = 4;
+                    break;
+                  }
+                  entitiesToIndex = bulkResponse.items.reduce(function (accumulator, item) {
+                    // We currently only handle queue overrun
+                    if (item.index.status === _httpStatus.default.TOO_MANY_REQUESTS) {
+                      var failedEntity = entities.find(function (element) {
+                        var _element$bbid;
+                        return ((_element$bbid = element.bbid) !== null &amp;&amp; _element$bbid !== void 0 ? _element$bbid : element.id) === item.index._id;
+                      });
+                      accumulator.push(failedEntity);
+                    }
+                    return accumulator;
+                  }, []);
+                  if (!entitiesToIndex.length) {
+                    _context6.next = 4;
+                    break;
+                  }
+                  operationSucceeded = false;
+                  jitter = Math.random() * _maxJitter; // eslint-disable-next-line no-await-in-loop
+                  _context6.next = 4;
+                  return new Promise(function (resolve) {
+                    return setTimeout(resolve, _retryDelay + jitter);
+                  });
+                case 4:
+                  _context6.next = 6;
+                  break;
+                case 5:
+                  _context6.prev = 5;
+                  _t2 = _context6["catch"](1);
+                  _log.default.error('error bulk indexing entities for search:', _t2);
+                  operationSucceeded = false;
+                case 6:
+                case "end":
+                  return _context6.stop();
+              }
+            }, _loop, null, [[1, 5]]);
+          });
+        case 2:
+          if (operationSucceeded) {
             _context7.next = 4;
             break;
-          case 25:
-          case "end":
-            return _context7.stop();
-        }
+          }
+          return _context7.delegateYield(_loop(), "t0", 3);
+        case 3:
+          _context7.next = 2;
+          break;
+        case 4:
+        case "end":
+          return _context7.stop();
       }
-    }, _callee7, null, [[7, 19]]);
+    }, _callee6);
   }));
   return _bulkIndexEntities2.apply(this, arguments);
 }
@@ -716,38 +701,36 @@ function _processEntityListForBulk(_x7) {
   return _processEntityListForBulk2.apply(this, arguments);
 } // eslint-disable-next-line consistent-return
 function _processEntityListForBulk2() {
-  _processEntityListForBulk2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee8(entityList) {
+  _processEntityListForBulk2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee7(entityList) {
     var indexOperations, bulkQueue, _iterator, _step, entity;
-    return _regenerator.default.wrap(function _callee8$(_context8) {
-      while (1) {
-        switch (_context8.prev = _context8.next) {
-          case 0:
-            indexOperations = [];
-            bulkQueue = [];
-            _iterator = _createForOfIteratorHelper(entityList);
-            try {
-              for (_iterator.s(); !(_step = _iterator.n()).done;) {
-                entity = _step.value;
-                bulkQueue.push(entity);
-                if (bulkQueue.length >= _bulkIndexSize) {
-                  indexOperations.push(_bulkIndexEntities(bulkQueue));
-                  bulkQueue = [];
-                }
+    return _regenerator.default.wrap(function (_context8) {
+      while (1) switch (_context8.prev = _context8.next) {
+        case 0:
+          indexOperations = [];
+          bulkQueue = [];
+          _iterator = _createForOfIteratorHelper(entityList);
+          try {
+            for (_iterator.s(); !(_step = _iterator.n()).done;) {
+              entity = _step.value;
+              bulkQueue.push(entity);
+              if (bulkQueue.length >= _bulkIndexSize) {
+                indexOperations.push(_bulkIndexEntities(bulkQueue));
+                bulkQueue = [];
               }
-            } catch (err) {
-              _iterator.e(err);
-            } finally {
-              _iterator.f();
             }
-            indexOperations.push(_bulkIndexEntities(bulkQueue));
-            _context8.next = 7;
-            return Promise.all(indexOperations);
-          case 7:
-          case "end":
-            return _context8.stop();
-        }
+          } catch (err) {
+            _iterator.e(err);
+          } finally {
+            _iterator.f();
+          }
+          indexOperations.push(_bulkIndexEntities(bulkQueue));
+          _context8.next = 1;
+          return Promise.all(indexOperations);
+        case 1:
+        case "end":
+          return _context8.stop();
       }
-    }, _callee8);
+    }, _callee7);
   }));
   return _processEntityListForBulk2.apply(this, arguments);
 }
@@ -785,7 +768,7 @@ function generateIndex(_x8) {
   return _generateIndex.apply(this, arguments);
 }
 function _generateIndex() {
-  _generateIndex = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee0(orm) {
+  _generateIndex = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee9(orm) {
     var entityType,
       recreateIndex,
       Area,
@@ -821,342 +804,356 @@ function _generateIndex() {
       userCollections,
       userCollectionsJSON,
       processedCollections,
-      _args0 = arguments;
-    return _regenerator.default.wrap(function _callee0$(_context0) {
-      while (1) {
-        switch (_context0.prev = _context0.next) {
-          case 0:
-            entityType = _args0.length > 1 &amp;&amp; _args0[1] !== undefined ? _args0[1] : 'allEntities';
-            recreateIndex = _args0.length > 2 &amp;&amp; _args0[2] !== undefined ? _args0[2] : false;
-            Area = orm.Area, Author = orm.Author, Edition = orm.Edition, EditionGroup = orm.EditionGroup, Editor = orm.Editor, Publisher = orm.Publisher, Series = orm.Series, UserCollection = orm.UserCollection, Work = orm.Work;
-            allEntities = entityType === 'allEntities';
-            _context0.next = 6;
-            return _indexExists(_index);
-          case 6:
-            mainIndexExists = _context0.sent;
-            shouldRecreateIndex = !mainIndexExists || recreateIndex || allEntities;
-            if (!shouldRecreateIndex) {
-              _context0.next = 16;
-              break;
-            }
-            if (!mainIndexExists) {
-              _context0.next = 13;
-              break;
-            }
-            _log.default.notice('Deleting search index');
-            _context0.next = 13;
-            return _client.indices.delete({
-              index: _index
+      _args1 = arguments;
+    return _regenerator.default.wrap(function (_context1) {
+      while (1) switch (_context1.prev = _context1.next) {
+        case 0:
+          entityType = _args1.length > 1 &amp;&amp; _args1[1] !== undefined ? _args1[1] : 'allEntities';
+          recreateIndex = _args1.length > 2 &amp;&amp; _args1[2] !== undefined ? _args1[2] : false;
+          Area = orm.Area, Author = orm.Author, Edition = orm.Edition, EditionGroup = orm.EditionGroup, Editor = orm.Editor, Publisher = orm.Publisher, Series = orm.Series, UserCollection = orm.UserCollection, Work = orm.Work;
+          allEntities = entityType === 'allEntities';
+          _context1.next = 1;
+          return _indexExists(_index);
+        case 1:
+          mainIndexExists = _context1.sent;
+          shouldRecreateIndex = !mainIndexExists || recreateIndex || allEntities;
+          if (!shouldRecreateIndex) {
+            _context1.next = 3;
+            break;
+          }
+          if (!mainIndexExists) {
+            _context1.next = 2;
+            break;
+          }
+          _log.default.notice('Deleting search index');
+          _context1.next = 2;
+          return _client.indices.delete({
+            index: _index
+          });
+        case 2:
+          _log.default.notice('Creating new search index');
+          _context1.next = 3;
+          return _client.indices.create(indexSettings);
+        case 3:
+          _log.default.notice("Starting indexing of ".concat(entityType));
+          entityBehaviors = [];
+          baseRelations = ['annotation', 'defaultAlias', 'aliasSet.aliases', 'identifierSet.identifiers'];
+          if (allEntities || entityType === 'Author' || entityType === 'Work' || entityType === 'Edition' || entityType === 'EditionGroup') {
+            entityBehaviors.push({
+              model: Author,
+              relations: ['gender', 'beginArea', 'endArea'],
+              type: 'Author'
             });
-          case 13:
-            _log.default.notice('Creating new search index');
-            _context0.next = 16;
-            return _client.indices.create(indexSettings);
-          case 16:
-            _log.default.notice("Starting indexing of ".concat(entityType));
-            entityBehaviors = [];
-            baseRelations = ['annotation', 'defaultAlias', 'aliasSet.aliases', 'identifierSet.identifiers'];
-            if (allEntities || entityType === 'Author' || entityType === 'Work' || entityType === 'Edition' || entityType === 'EditionGroup') {
-              entityBehaviors.push({
-                model: Author,
-                relations: ['gender', 'beginArea', 'endArea'],
-                type: 'Author'
-              });
-            }
-            if (allEntities || entityType === 'Edition') {
-              entityBehaviors.push({
-                model: Edition,
-                relations: ['editionGroup', 'editionFormat', 'editionStatus', 'authorCredit.names'],
-                type: 'Edition'
-              });
-            }
-            if (allEntities || entityType === 'EditionGroup') {
-              entityBehaviors.push({
-                model: EditionGroup,
-                relations: ['authorCredit.names'],
-                type: 'EditionGroup'
-              });
-            }
-            if (allEntities || entityType === 'Publisher') {
-              entityBehaviors.push({
-                model: Publisher,
-                relations: ['area'],
-                type: 'Publisher'
-              });
-            }
-            if (allEntities || entityType === 'Series') {
-              entityBehaviors.push({
-                model: Series,
-                relations: ['seriesOrderingType'],
-                type: 'Series'
-              });
-            }
-            if (allEntities || entityType === 'Work') {
-              _log.default.info('Also indexing Author entities');
-              entityBehaviors.push({
-                model: Work,
-                relations: ['relationshipSet.relationships.type'],
-                type: 'Work'
-              });
-            }
-            // Update the indexed entries for each entity type
-            _context0.next = 27;
-            return Promise.all(entityBehaviors.map(/*#__PURE__*/function () {
-              var _ref3 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee9(behavior) {
-                var totalCount, maxChunk, collectionsPromises, _loop, i, collections, allModels;
-                return _regenerator.default.wrap(function _callee9$(_context9) {
-                  while (1) {
-                    switch (_context9.prev = _context9.next) {
-                      case 0:
-                        _log.default.info("Fetching ".concat(behavior.type, " models from the database"));
-                        _context9.next = 3;
-                        return behavior.model.query(function (qb) {
-                          qb.where('master', true);
-                          qb.whereNotNull('data_id');
-                        }).count();
-                      case 3:
-                        totalCount = _context9.sent;
-                        _log.default.info("".concat(totalCount, " ").concat(behavior.type, " models in total"));
-                        maxChunk = 50000;
-                        collectionsPromises = []; // Fetch by chunks of 50.000 entities
-                        _loop = function _loop(i) {
-                          var collection = behavior.model.forge().query(function (qb) {
-                            qb.where('master', true);
-                            qb.whereNotNull('data_id');
-                            qb.limit(maxChunk);
-                            qb.offset(i);
-                            _log.default.info("Fetching ".concat(maxChunk, " ").concat(behavior.type, " models with offset ").concat(i));
-                          }).fetchAll({
-                            withRelated: baseRelations.concat(behavior.relations)
-                          }).catch(function (err) {
-                            _log.default.error(err);
-                            throw err;
-                          });
-                          collectionsPromises.push(collection);
-                        };
-                        for (i = 0; i &lt; totalCount; i += maxChunk) {
-                          _loop(i);
+          }
+          if (allEntities || entityType === 'Edition') {
+            entityBehaviors.push({
+              model: Edition,
+              relations: ['editionGroup', 'editionFormat', 'editionStatus', 'authorCredit.names'],
+              type: 'Edition'
+            });
+          }
+          if (allEntities || entityType === 'EditionGroup') {
+            entityBehaviors.push({
+              model: EditionGroup,
+              relations: ['authorCredit.names'],
+              type: 'EditionGroup'
+            });
+          }
+          if (allEntities || entityType === 'Publisher') {
+            entityBehaviors.push({
+              model: Publisher,
+              relations: ['area'],
+              type: 'Publisher'
+            });
+          }
+          if (allEntities || entityType === 'Series') {
+            entityBehaviors.push({
+              model: Series,
+              relations: ['seriesOrderingType'],
+              type: 'Series'
+            });
+          }
+          if (allEntities || entityType === 'Work') {
+            _log.default.info('Also indexing Author entities');
+            entityBehaviors.push({
+              model: Work,
+              relations: ['relationshipSet.relationships.type'],
+              type: 'Work'
+            });
+          }
+          // Update the indexed entries for each entity type
+          _context1.next = 4;
+          return Promise.all(entityBehaviors.map(/*#__PURE__*/function () {
+            var _ref3 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee8(behavior) {
+              var totalCount, maxChunk, collectionsPromises, _loop2, i, collections, allModels;
+              return _regenerator.default.wrap(function (_context0) {
+                while (1) switch (_context0.prev = _context0.next) {
+                  case 0:
+                    _log.default.info("Fetching ".concat(behavior.type, " models from the database"));
+                    _context0.next = 1;
+                    return behavior.model.query(function (qb) {
+                      qb.where('master', true);
+                      qb.whereNotNull('data_id');
+                    }).count();
+                  case 1:
+                    totalCount = _context0.sent;
+                    _log.default.info("".concat(totalCount, " ").concat(behavior.type, " models in total"));
+                    maxChunk = 50000;
+                    collectionsPromises = []; // Fetch by chunks of 50.000 entities
+                    _loop2 = /*#__PURE__*/_regenerator.default.mark(function _loop2(i) {
+                      var collection;
+                      return _regenerator.default.wrap(function (_context9) {
+                        while (1) switch (_context9.prev = _context9.next) {
+                          case 0:
+                            collection = behavior.model.forge().query(function (qb) {
+                              qb.where('master', true);
+                              qb.whereNotNull('data_id');
+                              qb.limit(maxChunk);
+                              qb.offset(i);
+                              _log.default.info("Fetching ".concat(maxChunk, " ").concat(behavior.type, " models with offset ").concat(i));
+                            }).fetchAll({
+                              withRelated: baseRelations.concat(behavior.relations)
+                            }).catch(function (err) {
+                              _log.default.error(err);
+                              throw err;
+                            });
+                            collectionsPromises.push(collection);
+                          case 1:
+                          case "end":
+                            return _context9.stop();
                         }
-                        _context9.next = 11;
-                        return Promise.all(collectionsPromises);
-                      case 11:
-                        collections = _context9.sent;
-                        // Put all models back into a single collection
-                        allModels = collections.map(function (col) {
-                          return col.models;
-                        }).flat();
-                        return _context9.abrupt("return", {
-                          collection: behavior.model.collection(allModels),
-                          type: behavior.type
-                        });
-                      case 14:
-                      case "end":
-                        return _context9.stop();
+                      }, _loop2);
+                    });
+                    i = 0;
+                  case 2:
+                    if (!(i &lt; totalCount)) {
+                      _context0.next = 4;
+                      break;
                     }
-                  }
-                }, _callee9);
-              }));
-              return function (_x17) {
-                return _ref3.apply(this, arguments);
-              };
-            }()));
-          case 27:
-            entityLists = _context0.sent;
-            _log.default.info("Finished fetching entities from database for types ".concat(entityBehaviors.map(function (_ref4) {
-              var type = _ref4.type;
-              return type;
-            }).join(', ')));
-            if (allEntities || entityType === 'Edition') {
-              _log.default.info('Attaching author names to Edition entities');
-              editionCollection = (_entityLists$find = entityLists.find(function (result) {
-                return result.type === 'Edition';
-              })) === null || _entityLists$find === void 0 ? void 0 : _entityLists$find.collection;
-              editionCollection === null || editionCollection === void 0 ? void 0 : editionCollection.forEach(function (editionEntity) {
-                var authorCredit = editionEntity.related('authorCredit');
-                var authorNames = [];
-                if (authorCredit) {
-                  var names = authorCredit.related('names');
-                  if (names) {
-                    names.forEach(function (nameModel) {
-                      var nameStr = nameModel.get('name');
-                      if (nameStr) {
-                        authorNames.push(nameStr);
-                      }
+                    return _context0.delegateYield(_loop2(i), "t0", 3);
+                  case 3:
+                    i += maxChunk;
+                    _context0.next = 2;
+                    break;
+                  case 4:
+                    _context0.next = 5;
+                    return Promise.all(collectionsPromises);
+                  case 5:
+                    collections = _context0.sent;
+                    // Put all models back into a single collection
+                    allModels = collections.map(function (col) {
+                      return col.models;
+                    }).flat();
+                    return _context0.abrupt("return", {
+                      collection: behavior.model.collection(allModels),
+                      type: behavior.type
                     });
-                  }
+                  case 6:
+                  case "end":
+                    return _context0.stop();
                 }
-                editionEntity.set('authors', authorNames);
-              });
-            }
-            if (allEntities || entityType === 'EditionGroup') {
-              _log.default.info('Attaching author names to EditionGroup entities');
-              _editionCollection = (_entityLists$find2 = entityLists.find(function (result) {
-                return result.type === 'EditionGroup';
-              })) === null || _entityLists$find2 === void 0 ? void 0 : _entityLists$find2.collection;
-              _editionCollection === null || _editionCollection === void 0 ? void 0 : _editionCollection.forEach(function (editionEntity) {
-                var authorCredit = editionEntity.related('authorCredit');
-                var authorNames = [];
-                if (authorCredit) {
-                  var names = authorCredit.related('names');
-                  if (names) {
-                    names.forEach(function (nameModel) {
-                      var nameStr = nameModel.get('name');
-                      if (nameStr) {
-                        authorNames.push(nameStr);
-                      }
-                    });
-                  }
-                }
-                editionEntity.set('authors', authorNames);
-              });
-            }
-            if (allEntities || entityType === 'Work') {
-              _log.default.info('Attaching author names to Work entities');
-              authorCollection = (_entityLists$find3 = entityLists.find(function (result) {
-                return result.type === 'Author';
-              })) === null || _entityLists$find3 === void 0 ? void 0 : _entityLists$find3.collection;
-              workCollection = (_entityLists$find4 = entityLists.find(function (result) {
-                return result.type === 'Work';
-              })) === null || _entityLists$find4 === void 0 ? void 0 : _entityLists$find4.collection;
-              workCollection === null || workCollection === void 0 ? void 0 : workCollection.forEach(function (workEntity) {
-                var relationshipSet = workEntity.related('relationshipSet');
-                if (relationshipSet) {
-                  var _relationshipSet$rela;
-                  var authorWroteWorkRels = (_relationshipSet$rela = relationshipSet.related('relationships')) === null || _relationshipSet$rela === void 0 ? void 0 : _relationshipSet$rela.filter(function (relationshipModel) {
-                    return relationshipModel.get('typeId') === 8;
-                  });
-                  var authorNames = [];
-                  authorWroteWorkRels.forEach(function (relationshipModel) {
-                    var _source$related;
-                    // Search for the Author in the already fetched BookshelfJS Collection
-                    var sourceBBID = relationshipModel.get('sourceBbid');
-                    var source = authorCollection.get(sourceBBID);
-                    var name = source === null || source === void 0 ? void 0 : (_source$related = source.related('defaultAlias')) === null || _source$related === void 0 ? void 0 : _source$related.get('name');
-                    if (name) {
-                      authorNames.push(name);
+              }, _callee8);
+            }));
+            return function (_x17) {
+              return _ref3.apply(this, arguments);
+            };
+          }()));
+        case 4:
+          entityLists = _context1.sent;
+          _log.default.info("Finished fetching entities from database for types ".concat(entityBehaviors.map(function (_ref4) {
+            var type = _ref4.type;
+            return type;
+          }).join(', ')));
+          if (allEntities || entityType === 'Edition') {
+            _log.default.info('Attaching author names to Edition entities');
+            editionCollection = (_entityLists$find = entityLists.find(function (result) {
+              return result.type === 'Edition';
+            })) === null || _entityLists$find === void 0 ? void 0 : _entityLists$find.collection;
+            editionCollection === null || editionCollection === void 0 || editionCollection.forEach(function (editionEntity) {
+              var authorCredit = editionEntity.related('authorCredit');
+              var authorNames = [];
+              if (authorCredit) {
+                var names = authorCredit.related('names');
+                if (names) {
+                  names.forEach(function (nameModel) {
+                    var nameStr = nameModel.get('name');
+                    if (nameStr) {
+                      authorNames.push(nameStr);
                     }
                   });
-                  workEntity.set('authors', authorNames);
                 }
-              });
-            }
-            listIndexes = []; // Index all the entities
-            entityLists.forEach(function (entityList) {
-              var listArray = entityList.collection.map(getDocumentToIndex);
-              listIndexes.push(_processEntityListForBulk(listArray));
+              }
+              editionEntity.set('authors', authorNames);
             });
-            if (!listIndexes.length) {
-              _context0.next = 39;
-              break;
-            }
-            _log.default.info("Indexing documents for entity type ".concat(entityType));
-            _context0.next = 38;
-            return Promise.all(listIndexes);
-          case 38:
-            _log.default.info("Finished indexing entity documents for entity type ".concat(entityType));
-          case 39:
-            if (!(allEntities || entityType === 'Area')) {
-              _context0.next = 49;
-              break;
-            }
-            _log.default.info('Indexing Areas');
-            _context0.next = 43;
-            return new Area().fetchAll();
-          case 43:
-            areaCollection = _context0.sent;
-            areas = areaCollection.toJSON({
-              omitPivot: true
+          }
+          if (allEntities || entityType === 'EditionGroup') {
+            _log.default.info('Attaching author names to EditionGroup entities');
+            _editionCollection = (_entityLists$find2 = entityLists.find(function (result) {
+              return result.type === 'EditionGroup';
+            })) === null || _entityLists$find2 === void 0 ? void 0 : _entityLists$find2.collection;
+            _editionCollection === null || _editionCollection === void 0 || _editionCollection.forEach(function (editionEntity) {
+              var authorCredit = editionEntity.related('authorCredit');
+              var authorNames = [];
+              if (authorCredit) {
+                var names = authorCredit.related('names');
+                if (names) {
+                  names.forEach(function (nameModel) {
+                    var nameStr = nameModel.get('name');
+                    if (nameStr) {
+                      authorNames.push(nameStr);
+                    }
+                  });
+                }
+              }
+              editionEntity.set('authors', authorNames);
             });
-            /** To index names, we use aliases.name and type, which Areas don't have.
-             * We massage the area to return a similar format as BB entities
-             */
-            processedAreas = areas.map(function (area) {
-              return {
-                aliases: [{
-                  name: area.name
-                }],
-                id: area.gid,
-                type: 'Area'
-              };
+          }
+          if (allEntities || entityType === 'Work') {
+            _log.default.info('Attaching author names to Work entities');
+            authorCollection = (_entityLists$find3 = entityLists.find(function (result) {
+              return result.type === 'Author';
+            })) === null || _entityLists$find3 === void 0 ? void 0 : _entityLists$find3.collection;
+            workCollection = (_entityLists$find4 = entityLists.find(function (result) {
+              return result.type === 'Work';
+            })) === null || _entityLists$find4 === void 0 ? void 0 : _entityLists$find4.collection;
+            workCollection === null || workCollection === void 0 || workCollection.forEach(function (workEntity) {
+              var relationshipSet = workEntity.related('relationshipSet');
+              if (relationshipSet) {
+                var _relationshipSet$rela;
+                var authorWroteWorkRels = (_relationshipSet$rela = relationshipSet.related('relationships')) === null || _relationshipSet$rela === void 0 ? void 0 : _relationshipSet$rela.filter(function (relationshipModel) {
+                  return relationshipModel.get('typeId') === 8;
+                });
+                var authorNames = [];
+                authorWroteWorkRels.forEach(function (relationshipModel) {
+                  var _source$related;
+                  // Search for the Author in the already fetched BookshelfJS Collection
+                  var sourceBBID = relationshipModel.get('sourceBbid');
+                  var source = authorCollection.get(sourceBBID);
+                  var name = source === null || source === void 0 || (_source$related = source.related('defaultAlias')) === null || _source$related === void 0 ? void 0 : _source$related.get('name');
+                  if (name) {
+                    authorNames.push(name);
+                  }
+                });
+                workEntity.set('authors', authorNames);
+              }
             });
-            _context0.next = 48;
-            return _processEntityListForBulk(processedAreas);
-          case 48:
-            _log.default.info('Finished indexing Areas');
-          case 49:
-            if (!(allEntities || entityType === 'Editor')) {
-              _context0.next = 59;
-              break;
-            }
-            _log.default.info('Indexing Editors');
-            _context0.next = 53;
-            return new Editor()
-            // no bots
-            .where('type_id', 1).fetchAll();
-          case 53:
-            editorCollection = _context0.sent;
-            editors = editorCollection.toJSON({
-              omitPivot: true
-            });
-            /** To index names, we use aliases.name and type, which Editors don't have.
-             * We massage the editor to return a similar format as BB entities
-             */
-            processedEditors = editors.map(function (editor) {
-              return {
-                aliases: [{
-                  name: editor.name
-                }],
-                id: editor.id,
-                type: 'Editor'
-              };
-            });
-            _context0.next = 58;
-            return _processEntityListForBulk(processedEditors);
-          case 58:
-            _log.default.info('Finished indexing Editors');
-          case 59:
-            if (!(allEntities || entityType === 'Collection')) {
-              _context0.next = 69;
-              break;
-            }
-            _log.default.info('Indexing Collections');
-            _context0.next = 63;
-            return new UserCollection().where({
-              public: true
-            }).fetchAll();
-          case 63:
-            userCollections = _context0.sent;
-            userCollectionsJSON = userCollections.toJSON({
-              omitPivot: true
-            });
-            /** To index names, we use aliases.name and type, which UserCollections don't have.
-             * We massage the editor to return a similar format as BB entities
-             */
-            processedCollections = userCollectionsJSON.map(function (collection) {
-              return {
-                aliases: [{
-                  name: collection.name
-                }],
-                id: collection.id,
-                type: 'Collection'
-              };
-            });
-            _context0.next = 68;
-            return _processEntityListForBulk(processedCollections);
-          case 68:
-            _log.default.info('Finished indexing Collections');
-          case 69:
-            _log.default.info('Refreshing search index');
-            _context0.next = 72;
-            return refreshIndex();
-          case 72:
-            _log.default.notice('Search indexing finished succesfully');
-          case 73:
-          case "end":
-            return _context0.stop();
-        }
+          }
+          listIndexes = []; // Index all the entities
+          entityLists.forEach(function (entityList) {
+            var listArray = entityList.collection.map(getDocumentToIndex);
+            listIndexes.push(_processEntityListForBulk(listArray));
+          });
+          if (!listIndexes.length) {
+            _context1.next = 6;
+            break;
+          }
+          _log.default.info("Indexing documents for entity type ".concat(entityType));
+          _context1.next = 5;
+          return Promise.all(listIndexes);
+        case 5:
+          _log.default.info("Finished indexing entity documents for entity type ".concat(entityType));
+        case 6:
+          if (!(allEntities || entityType === 'Area')) {
+            _context1.next = 9;
+            break;
+          }
+          _log.default.info('Indexing Areas');
+          _context1.next = 7;
+          return new Area().fetchAll();
+        case 7:
+          areaCollection = _context1.sent;
+          areas = areaCollection.toJSON({
+            omitPivot: true
+          });
+          /** To index names, we use aliases.name and type, which Areas don't have.
+           * We massage the area to return a similar format as BB entities
+           */
+          processedAreas = areas.map(function (area) {
+            return {
+              aliases: [{
+                name: area.name
+              }],
+              id: area.gid,
+              type: 'Area'
+            };
+          });
+          _context1.next = 8;
+          return _processEntityListForBulk(processedAreas);
+        case 8:
+          _log.default.info('Finished indexing Areas');
+        case 9:
+          if (!(allEntities || entityType === 'Editor')) {
+            _context1.next = 12;
+            break;
+          }
+          _log.default.info('Indexing Editors');
+          _context1.next = 10;
+          return new Editor()
+          // no bots
+          .where('type_id', 1).fetchAll();
+        case 10:
+          editorCollection = _context1.sent;
+          editors = editorCollection.toJSON({
+            omitPivot: true
+          });
+          /** To index names, we use aliases.name and type, which Editors don't have.
+           * We massage the editor to return a similar format as BB entities
+           */
+          processedEditors = editors.map(function (editor) {
+            return {
+              aliases: [{
+                name: editor.name
+              }],
+              id: editor.id,
+              type: 'Editor'
+            };
+          });
+          _context1.next = 11;
+          return _processEntityListForBulk(processedEditors);
+        case 11:
+          _log.default.info('Finished indexing Editors');
+        case 12:
+          if (!(allEntities || entityType === 'Collection')) {
+            _context1.next = 15;
+            break;
+          }
+          _log.default.info('Indexing Collections');
+          _context1.next = 13;
+          return new UserCollection().where({
+            public: true
+          }).fetchAll();
+        case 13:
+          userCollections = _context1.sent;
+          userCollectionsJSON = userCollections.toJSON({
+            omitPivot: true
+          });
+          /** To index names, we use aliases.name and type, which UserCollections don't have.
+           * We massage the editor to return a similar format as BB entities
+           */
+          processedCollections = userCollectionsJSON.map(function (collection) {
+            return {
+              aliases: [{
+                name: collection.name
+              }],
+              id: collection.id,
+              type: 'Collection'
+            };
+          });
+          _context1.next = 14;
+          return _processEntityListForBulk(processedCollections);
+        case 14:
+          _log.default.info('Finished indexing Collections');
+        case 15:
+          _log.default.info('Refreshing search index');
+          _context1.next = 16;
+          return refreshIndex();
+        case 16:
+          _log.default.notice('Search indexing finished succesfully');
+        case 17:
+        case "end":
+          return _context1.stop();
       }
-    }, _callee0);
+    }, _callee9);
   }));
   return _generateIndex.apply(this, arguments);
 }
@@ -1164,64 +1161,60 @@ function checkIfExists(_x9, _x0, _x1) {
   return _checkIfExists.apply(this, arguments);
 }
 function _checkIfExists() {
-  _checkIfExists = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee10(orm, name, type) {
+  _checkIfExists = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee1(orm, name, type) {
     var bookshelf, formattedType, bbids, baseRelations, processedResults;
-    return _regenerator.default.wrap(function _callee10$(_context10) {
-      while (1) {
-        switch (_context10.prev = _context10.next) {
-          case 0:
-            bookshelf = orm.bookshelf;
-            formattedType = (0, _upperFirst2.default)((0, _camelCase2.default)(type));
-            _context10.next = 4;
-            return new Promise(function (resolve, reject) {
-              bookshelf.transaction(/*#__PURE__*/function () {
-                var _ref5 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee1(transacting) {
-                  var result;
-                  return _regenerator.default.wrap(function _callee1$(_context1) {
-                    while (1) {
-                      switch (_context1.prev = _context1.next) {
-                        case 0:
-                          _context1.prev = 0;
-                          _context1.next = 3;
-                          return orm.func.alias.getBBIDsWithMatchingAlias(transacting, formattedType, name);
-                        case 3:
-                          result = _context1.sent;
-                          resolve(result);
-                          _context1.next = 10;
-                          break;
-                        case 7:
-                          _context1.prev = 7;
-                          _context1.t0 = _context1["catch"](0);
-                          reject(_context1.t0);
-                        case 10:
-                        case "end":
-                          return _context1.stop();
-                      }
-                    }
-                  }, _callee1, null, [[0, 7]]);
-                }));
-                return function (_x18) {
-                  return _ref5.apply(this, arguments);
-                };
-              }());
-            });
-          case 4:
-            bbids = _context10.sent;
-            // Follow-up: Fetch all entities in a single transaction from the postgres server
-            baseRelations = ['aliasSet.aliases.language', 'defaultAlias', 'disambiguation', 'identifierSet.identifiers.type', 'relationshipSet.relationships.type', 'revision.revision'];
-            _context10.next = 8;
-            return Promise.all(bbids.map(function (bbid) {
-              return orm.func.entity.getEntity(orm, formattedType, bbid, baseRelations);
-            }));
-          case 8:
-            processedResults = _context10.sent;
-            return _context10.abrupt("return", processedResults);
-          case 10:
-          case "end":
-            return _context10.stop();
-        }
+    return _regenerator.default.wrap(function (_context11) {
+      while (1) switch (_context11.prev = _context11.next) {
+        case 0:
+          bookshelf = orm.bookshelf;
+          formattedType = (0, _upperFirst2.default)((0, _camelCase2.default)(type));
+          _context11.next = 1;
+          return new Promise(function (resolve, reject) {
+            bookshelf.transaction(/*#__PURE__*/function () {
+              var _ref5 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee0(transacting) {
+                var result, _t3;
+                return _regenerator.default.wrap(function (_context10) {
+                  while (1) switch (_context10.prev = _context10.next) {
+                    case 0:
+                      _context10.prev = 0;
+                      _context10.next = 1;
+                      return orm.func.alias.getBBIDsWithMatchingAlias(transacting, formattedType, name);
+                    case 1:
+                      result = _context10.sent;
+                      resolve(result);
+                      _context10.next = 3;
+                      break;
+                    case 2:
+                      _context10.prev = 2;
+                      _t3 = _context10["catch"](0);
+                      reject(_t3);
+                    case 3:
+                    case "end":
+                      return _context10.stop();
+                  }
+                }, _callee0, null, [[0, 2]]);
+              }));
+              return function (_x18) {
+                return _ref5.apply(this, arguments);
+              };
+            }());
+          });
+        case 1:
+          bbids = _context11.sent;
+          // Follow-up: Fetch all entities in a single transaction from the postgres server
+          baseRelations = ['aliasSet.aliases.language', 'defaultAlias', 'disambiguation', 'identifierSet.identifiers.type', 'relationshipSet.relationships.type', 'revision.revision'];
+          _context11.next = 2;
+          return Promise.all(bbids.map(function (bbid) {
+            return orm.func.entity.getEntity(orm, formattedType, bbid, baseRelations);
+          }));
+        case 2:
+          processedResults = _context11.sent;
+          return _context11.abrupt("return", processedResults);
+        case 3:
+        case "end":
+          return _context11.stop();
       }
-    }, _callee10);
+    }, _callee1);
   }));
   return _checkIfExists.apply(this, arguments);
 }
@@ -1229,52 +1222,50 @@ function autocomplete(_x10, _x11, _x12) {
   return _autocomplete.apply(this, arguments);
 }
 function _autocomplete() {
-  _autocomplete = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee11(orm, query, type) {
+  _autocomplete = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee10(orm, query, type) {
     var size,
       queryBody,
       dslQuery,
       searchResponse,
-      _args11 = arguments;
-    return _regenerator.default.wrap(function _callee11$(_context11) {
-      while (1) {
-        switch (_context11.prev = _context11.next) {
-          case 0:
-            size = _args11.length > 3 &amp;&amp; _args11[3] !== undefined ? _args11[3] : 42;
-            if (commonUtils.isValidBBID(query)) {
-              queryBody = {
-                ids: {
-                  /*  Find by BBID directly instead of performing a text search */
-                  values: [query]
-                }
-              };
-            } else {
-              queryBody = {
-                multi_match: {
-                  query: query.toLowerCase(),
-                  type: 'bool_prefix',
-                  /* Uses the built-in search_as_you_type mapping
-                   https://www.elastic.co/docs/reference/elasticsearch/mapping-reference/search-as-you-type*/
-                  fields: ['aliases.name.suggest', 'aliases.name.suggest._2gram', 'aliases.name.suggest._3gram']
-                }
-              };
-            }
-            dslQuery = {
-              size: size,
-              query: queryBody,
-              index: _index
+      _args12 = arguments;
+    return _regenerator.default.wrap(function (_context12) {
+      while (1) switch (_context12.prev = _context12.next) {
+        case 0:
+          size = _args12.length > 3 &amp;&amp; _args12[3] !== undefined ? _args12[3] : 42;
+          if (commonUtils.isValidBBID(query)) {
+            queryBody = {
+              ids: {
+                /*  Find by BBID directly instead of performing a text search */
+                values: [query]
+              }
             };
-            _applyTypeFilterToDSL(dslQuery, type);
-            _context11.next = 6;
-            return _searchForEntities(orm, dslQuery);
-          case 6:
-            searchResponse = _context11.sent;
-            return _context11.abrupt("return", searchResponse.results);
-          case 8:
-          case "end":
-            return _context11.stop();
-        }
+          } else {
+            queryBody = {
+              multi_match: {
+                query: query.toLowerCase(),
+                type: 'bool_prefix',
+                /* Uses the built-in search_as_you_type mapping
+                 https://www.elastic.co/docs/reference/elasticsearch/mapping-reference/search-as-you-type*/
+                fields: ['aliases.name.suggest', 'aliases.name.suggest._2gram', 'aliases.name.suggest._3gram']
+              }
+            };
+          }
+          dslQuery = {
+            size: size,
+            query: queryBody,
+            index: _index
+          };
+          _applyTypeFilterToDSL(dslQuery, type);
+          _context12.next = 1;
+          return _searchForEntities(orm, dslQuery);
+        case 1:
+          searchResponse = _context12.sent;
+          return _context12.abrupt("return", searchResponse.results);
+        case 2:
+        case "end":
+          return _context12.stop();
       }
-    }, _callee11);
+    }, _callee10);
   }));
   return _autocomplete.apply(this, arguments);
 }
@@ -1356,51 +1347,49 @@ function init(_x13, _x14) {
   return _init.apply(this, arguments);
 }
 function _init() {
-  _init = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee12(orm, options) {
-    var defaultOptions, mainIndexExists;
-    return _regenerator.default.wrap(function _callee12$(_context12) {
-      while (1) {
-        switch (_context12.prev = _context12.next) {
-          case 0:
-            if (!(0, _isString2.default)(options.node)) {
-              defaultOptions = {
-                node: 'http://localhost:9200',
-                requestTimeout: 60000
-              };
-              _log.default.warning('ElasticSearch configuration not provided. Using default settings.');
-              _client = new _elasticsearch.default.Client(defaultOptions);
-            } else {
-              _client = new _elasticsearch.default.Client(options);
-            }
-            _context12.prev = 1;
-            _context12.next = 4;
-            return _client.ping();
-          case 4:
-            _context12.next = 10;
-            break;
-          case 6:
-            _context12.prev = 6;
-            _context12.t0 = _context12["catch"](1);
-            _log.default.warning('Could not connect to ElasticSearch:', _context12.t0.toString());
-            return _context12.abrupt("return", false);
-          case 10:
-            _context12.next = 12;
-            return _indexExists(_index);
-          case 12:
-            mainIndexExists = _context12.sent;
-            if (!mainIndexExists) {
-              // Automatically index on app startup if we haven't already, but don't block app setup
-              generateIndex(orm).catch(_log.default.error);
-            } else {
-              _log.default.notice('Search index already exists, skipping generation');
-            }
-            return _context12.abrupt("return", true);
-          case 15:
-          case "end":
-            return _context12.stop();
-        }
+  _init = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee11(orm, options) {
+    var defaultOptions, mainIndexExists, _t4;
+    return _regenerator.default.wrap(function (_context13) {
+      while (1) switch (_context13.prev = _context13.next) {
+        case 0:
+          if (!(0, _isString2.default)(options.node)) {
+            defaultOptions = {
+              node: 'http://localhost:9200',
+              requestTimeout: 60000
+            };
+            _log.default.warning('ElasticSearch configuration not provided. Using default settings.');
+            _client = new _elasticsearch.default.Client(defaultOptions);
+          } else {
+            _client = new _elasticsearch.default.Client(options);
+          }
+          _context13.prev = 1;
+          _context13.next = 2;
+          return _client.ping();
+        case 2:
+          _context13.next = 4;
+          break;
+        case 3:
+          _context13.prev = 3;
+          _t4 = _context13["catch"](1);
+          _log.default.warning('Could not connect to ElasticSearch:', _t4.toString());
+          return _context13.abrupt("return", false);
+        case 4:
+          _context13.next = 5;
+          return _indexExists(_index);
+        case 5:
+          mainIndexExists = _context13.sent;
+          if (!mainIndexExists) {
+            // Automatically index on app startup if we haven't already, but don't block app setup
+            generateIndex(orm).catch(_log.default.error);
+          } else {
+            _log.default.notice('Search index already exists, skipping generation');
+          }
+          return _context13.abrupt("return", true);
+        case 6:
+        case "end":
+          return _context13.stop();
       }
-    }, _callee12, null, [[1, 6]]);
+    }, _callee11, null, [[1, 3]]);
   }));
   return _init.apply(this, arguments);
 }
@@ -1416,7 +1405,7 @@ function _init() {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 13:45:01 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 15:19:59 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

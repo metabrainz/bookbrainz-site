@@ -41,21 +41,21 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-require("core-js/modules/es.object.keys.js");
 require("core-js/modules/es.symbol.js");
-require("core-js/modules/es.array.filter.js");
-require("core-js/modules/es.object.get-own-property-descriptor.js");
-require("core-js/modules/es.object.get-own-property-descriptors.js");
-require("core-js/modules/es.array.slice.js");
-require("core-js/modules/es.array.from.js");
-require("core-js/modules/es.string.iterator.js");
-require("core-js/modules/es.regexp.exec.js");
 require("core-js/modules/es.symbol.description.js");
 require("core-js/modules/es.symbol.iterator.js");
-require("core-js/modules/web.dom-collections.iterator.js");
+require("core-js/modules/es.array.filter.js");
+require("core-js/modules/es.array.from.js");
+require("core-js/modules/es.array.slice.js");
+require("core-js/modules/es.object.get-own-property-descriptor.js");
+require("core-js/modules/es.object.get-own-property-descriptors.js");
+require("core-js/modules/es.object.keys.js");
+require("core-js/modules/es.regexp.exec.js");
+require("core-js/modules/es.regexp.to-string.js");
+require("core-js/modules/es.string.iterator.js");
 require("core-js/modules/es.weak-map.js");
+require("core-js/modules/web.dom-collections.iterator.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -66,17 +66,16 @@ var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/de
 var _objectWithoutProperties2 = _interopRequireDefault(require("@babel/runtime/helpers/objectWithoutProperties"));
 var _taggedTemplateLiteral2 = _interopRequireDefault(require("@babel/runtime/helpers/taggedTemplateLiteral"));
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-require("core-js/modules/es.parse-int.js");
-require("core-js/modules/es.array.map.js");
-require("core-js/modules/es.object.values.js");
-require("core-js/modules/es.function.name.js");
-require("core-js/modules/es.date.to-json.js");
-require("core-js/modules/web.url.to-json.js");
-require("core-js/modules/es.array.splice.js");
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/web.dom-collections.for-each.js");
 require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.array.map.js");
+require("core-js/modules/es.array.splice.js");
+require("core-js/modules/es.date.to-json.js");
+require("core-js/modules/es.function.name.js");
 require("core-js/modules/es.object.from-entries.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.object.values.js");
+require("core-js/modules/es.parse-int.js");
+require("core-js/modules/web.dom-collections.for-each.js");
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _isNull2 = _interopRequireDefault(require("lodash/isNull"));
 var _isEmpty2 = _interopRequireDefault(require("lodash/isEmpty"));
@@ -120,10 +119,11 @@ var _templateObject;
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != _typeof(e) &amp;&amp; "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (var _t in e) { "default" !== _t &amp;&amp; {}.hasOwnProperty.call(e, _t) &amp;&amp; ((i = (o = Object.defineProperty) &amp;&amp; Object.getOwnPropertyDescriptor(e, _t)) &amp;&amp; (i.get || i.set) ? o(f, _t, i) : f[_t] = e[_t]); } return f; })(e, t); }
+var cache;
+function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c &amp;&amp; {}.hasOwnProperty.call(e, c) &amp;&amp; ((r = a &amp;&amp; Object.getOwnPropertyDescriptor(e, c)) &amp;&amp; (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol &amp;&amp; r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e &amp;&amp; r &amp;&amp; "number" == typeof r.length) { t &amp;&amp; (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t.return || t.return(); } finally { if (u) throw o; } } }; }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t &amp;&amp; r.constructor &amp;&amp; (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) &amp;&amp; (a = r.length); for (var e = 0, n = Array(a); e &lt; a; e++) { n[e] = r[e]; } return n; }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) &amp;&amp; (a = r.length); for (var e = 0, n = Array(a); e &lt; a; e++) n[e] = r[e]; return n; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r &amp;&amp; (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r &lt; arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { (0, _defineProperty2.default)(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 /** ****************************
@@ -254,112 +254,110 @@ router.get('/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), mi
   function _render() {
     _render = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee(props) {
       var _req$query$name, _req$query, _initialState$nameSec;
-      var initialState, relationshipTypeId, initialRelationshipIndex, name, _initialState$edition, editorMarkup, markup, updatedProps;
-      return _regenerator.default.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              initialState = props.initialState;
-              initialState.nameSection = {
-                disambiguation: '',
-                exactMatches: null,
-                language: null,
-                name: (_req$query$name = (_req$query = req.query) === null || _req$query === void 0 ? void 0 : _req$query.name) !== null &amp;&amp; _req$query$name !== void 0 ? _req$query$name : '',
-                searchResults: null,
-                sortName: ''
+      var initialState, relationshipTypeId, initialRelationshipIndex, name, _initialState$edition, editorMarkup, markup, updatedProps, _t, _t2;
+      return _regenerator.default.wrap(function (_context) {
+        while (1) switch (_context.prev = _context.next) {
+          case 0:
+            initialState = props.initialState;
+            initialState.nameSection = {
+              disambiguation: '',
+              exactMatches: null,
+              language: null,
+              name: (_req$query$name = (_req$query = req.query) === null || _req$query === void 0 ? void 0 : _req$query.name) !== null &amp;&amp; _req$query$name !== void 0 ? _req$query$name : '',
+              searchResults: null,
+              sortName: ''
+            };
+            initialState.editionSection = {};
+            initialRelationshipIndex = 0;
+            if (props.author) {
+              initialState.authorCreditEditor = {
+                a0: {
+                  author: {
+                    id: props.author.id,
+                    rowId: 'a0',
+                    text: props.author.text,
+                    type: 'Author'
+                  },
+                  automaticJoinPhrase: true,
+                  joinPhrase: '',
+                  name: props.author.text
+                }
               };
-              initialState.editionSection = {};
-              initialRelationshipIndex = 0;
-              if (props.author) {
-                initialState.authorCreditEditor = {
-                  a0: {
-                    author: {
-                      id: props.author.id,
-                      rowId: 'a0',
-                      text: props.author.text,
-                      type: 'Author'
-                    },
-                    automaticJoinPhrase: true,
-                    joinPhrase: '',
-                    name: props.author.text
-                  }
-                };
+            }
+            if (props.publisher) {
+              initialState.editionSection.publisher = props.publisher;
+              // add initial relationship with relationshipTypeId = 4 (&lt;Publisher> published &lt; New Edition>)
+              relationshipTypeId = _types.RelationshipTypes.PublisherPublishedEdition;
+              (0, _entityRouteUtils.addInitialRelationship)(props, relationshipTypeId, initialRelationshipIndex++, props.publisher);
+            }
+            if (props.editionGroup) {
+              if (!initialState.nameSection.name) {
+                // If a name hasn't been passed in query parameters, default to same name as the Edition Group
+                initialState.nameSection = getInitialNameSection(props.editionGroup);
               }
-              if (props.publisher) {
-                initialState.editionSection.publisher = props.publisher;
-                // add initial relationship with relationshipTypeId = 4 (&lt;Publisher> published &lt; New Edition>)
-                relationshipTypeId = _types.RelationshipTypes.PublisherPublishedEdition;
-                (0, _entityRouteUtils.addInitialRelationship)(props, relationshipTypeId, initialRelationshipIndex++, props.publisher);
+              initialState.editionSection.editionGroup = props.editionGroup;
+              // add initial raltionship with relationshipTypeId = 3 (&lt;New Edition> is an edition of &lt;EditionGroup>)
+              relationshipTypeId = _types.RelationshipTypes.EditionIsAnEditionOfEditionGroup;
+              (0, _entityRouteUtils.addInitialRelationship)(props, relationshipTypeId, initialRelationshipIndex++, props.editionGroup);
+            }
+            if (props.work) {
+              if (!initialState.nameSection.name) {
+                // If a name hasn't been passed in query parameters, default to same name as the Work
+                initialState.nameSection = getInitialNameSection(props.work);
               }
-              if (props.editionGroup) {
-                if (!initialState.nameSection.name) {
-                  // If a name hasn't been passed in query parameters, default to same name as the Edition Group
-                  initialState.nameSection = getInitialNameSection(props.editionGroup);
-                }
-                initialState.editionSection.editionGroup = props.editionGroup;
-                // add initial raltionship with relationshipTypeId = 3 (&lt;New Edition> is an edition of &lt;EditionGroup>)
-                relationshipTypeId = _types.RelationshipTypes.EditionIsAnEditionOfEditionGroup;
-                (0, _entityRouteUtils.addInitialRelationship)(props, relationshipTypeId, initialRelationshipIndex++, props.editionGroup);
-              }
-              if (props.work) {
-                if (!initialState.nameSection.name) {
-                  // If a name hasn't been passed in query parameters, default to same name as the Work
-                  initialState.nameSection = getInitialNameSection(props.work);
-                }
-                // add initial raltionship with relationshipTypeId = 10 (&lt;New Edition> Contains &lt;Work>)
-                relationshipTypeId = _types.RelationshipTypes.EditionContainsWork;
-                (0, _entityRouteUtils.addInitialRelationship)(props, relationshipTypeId, initialRelationshipIndex++, props.work);
-              }
-              if (!((_initialState$nameSec = initialState.nameSection) !== null &amp;&amp; _initialState$nameSec !== void 0 &amp;&amp; _initialState$nameSec.name)) {
-                _context.next = 30;
-                break;
-              }
-              name = initialState.nameSection.name;
-              _context.prev = 10;
-              _context.next = 13;
-              return search.autocomplete(req.app.locals.orm, name, 'Edition');
-            case 13:
-              initialState.nameSection.searchResults = _context.sent;
-              _context.next = 16;
-              return search.checkIfExists(req.app.locals.orm, name, 'Edition');
-            case 16:
-              initialState.nameSection.exactMatches = _context.sent;
-              if (!((_initialState$edition = initialState.editionSection.editionGroup) !== null &amp;&amp; _initialState$edition !== void 0)) {
-                _context.next = 21;
-                break;
-              }
-              _context.t0 = _initialState$edition;
-              _context.next = 24;
+              // add initial raltionship with relationshipTypeId = 10 (&lt;New Edition> Contains &lt;Work>)
+              relationshipTypeId = _types.RelationshipTypes.EditionContainsWork;
+              (0, _entityRouteUtils.addInitialRelationship)(props, relationshipTypeId, initialRelationshipIndex++, props.work);
+            }
+            if (!((_initialState$nameSec = initialState.nameSection) !== null &amp;&amp; _initialState$nameSec !== void 0 &amp;&amp; _initialState$nameSec.name)) {
+              _context.next = 8;
               break;
-            case 21:
-              _context.next = 23;
-              return search.autocomplete(req.app.locals.orm, name, 'EditionGroup');
-            case 23:
-              _context.t0 = _context.sent;
-            case 24:
-              initialState.editionSection.matchingNameEditionGroups = _context.t0;
-              _context.next = 30;
+            }
+            name = initialState.nameSection.name;
+            _context.prev = 1;
+            _context.next = 2;
+            return search.autocomplete(req.app.locals.orm, name, 'Edition');
+          case 2:
+            initialState.nameSection.searchResults = _context.sent;
+            _context.next = 3;
+            return search.checkIfExists(req.app.locals.orm, name, 'Edition');
+          case 3:
+            initialState.nameSection.exactMatches = _context.sent;
+            if (!((_initialState$edition = initialState.editionSection.editionGroup) !== null &amp;&amp; _initialState$edition !== void 0)) {
+              _context.next = 4;
               break;
-            case 27:
-              _context.prev = 27;
-              _context.t1 = _context["catch"](10);
-              _log.default.debug(_context.t1);
-            case 30:
-              editorMarkup = (0, _entityRouteUtils.entityEditorMarkup)(props);
-              markup = editorMarkup.markup;
-              updatedProps = editorMarkup.props;
-              return _context.abrupt("return", res.send((0, _target.default)({
-                markup: markup,
-                props: (0, _props.escapeProps)(updatedProps),
-                script: '/js/entity-editor.js',
-                title: props.heading
-              })));
-            case 34:
-            case "end":
-              return _context.stop();
-          }
+            }
+            _t = _initialState$edition;
+            _context.next = 6;
+            break;
+          case 4:
+            _context.next = 5;
+            return search.autocomplete(req.app.locals.orm, name, 'EditionGroup');
+          case 5:
+            _t = _context.sent;
+          case 6:
+            initialState.editionSection.matchingNameEditionGroups = _t;
+            _context.next = 8;
+            break;
+          case 7:
+            _context.prev = 7;
+            _t2 = _context["catch"](1);
+            _log.default.debug(_t2);
+          case 8:
+            editorMarkup = (0, _entityRouteUtils.entityEditorMarkup)(props);
+            markup = editorMarkup.markup;
+            updatedProps = editorMarkup.props;
+            return _context.abrupt("return", res.send((0, _target.default)({
+              markup: markup,
+              props: (0, _props.escapeProps)(updatedProps),
+              script: '/js/entity-editor.js',
+              title: props.heading
+            })));
+          case 9:
+          case "end":
+            return _context.stop();
         }
-      }, _callee, null, [[10, 27]]);
+      }, _callee, null, [[1, 7]]);
     }));
     return _render.apply(this, arguments);
   }
@@ -368,73 +366,71 @@ router.get('/create', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), mi
 router.post('/create', entityRoutes.displayPreview, auth.isAuthenticatedForHandler, auth.isAuthorized(ENTITY_EDITOR), middleware.loadIdentifierTypes, middleware.loadEditionStatuses, middleware.loadEditionFormats, middleware.loadLanguages, middleware.loadRelationshipTypes, /*#__PURE__*/function () {
   var _ref = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(req, res, next) {
     var entity, orm, EditionFormat, keysToInt, physicalEnable, _i, _keysToInt, key, foundOption, propsPromise, render;
-    return _regenerator.default.wrap(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            render = function _render2(props) {
-              var editorMarkup = (0, _entityRouteUtils.entityEditorMarkup)(props);
-              var markup = editorMarkup.markup;
-              var updatedProps = editorMarkup.props;
-              return res.send((0, _target.default)({
-                markup: markup,
-                props: (0, _props.escapeProps)(updatedProps),
-                script: '/js/entity-editor.js',
-                title: props.heading
-              }));
-            };
-            _context2.next = 3;
-            return utils.parseInitialState(req, 'edition');
-          case 3:
-            entity = _context2.sent;
-            if (!entity.editionSection) {
-              _context2.next = 23;
-              break;
+    return _regenerator.default.wrap(function (_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
+        case 0:
+          render = function _render2(props) {
+            var editorMarkup = (0, _entityRouteUtils.entityEditorMarkup)(props);
+            var markup = editorMarkup.markup;
+            var updatedProps = editorMarkup.props;
+            return res.send((0, _target.default)({
+              markup: markup,
+              props: (0, _props.escapeProps)(updatedProps),
+              script: '/js/entity-editor.js',
+              title: props.heading
+            }));
+          };
+          _context2.next = 1;
+          return utils.parseInitialState(req, 'edition');
+        case 1:
+          entity = _context2.sent;
+          if (!entity.editionSection) {
+            _context2.next = 6;
+            break;
+          }
+          orm = req.app.locals.orm;
+          EditionFormat = orm.EditionFormat;
+          _context2.next = 2;
+          return utils.parseLanguages(entity.editionSection, orm);
+        case 2:
+          entity.editionSection = _context2.sent;
+          if (!entity.editionSection.format) {
+            _context2.next = 4;
+            break;
+          }
+          _context2.next = 3;
+          return utils.getIdByField(EditionFormat, 'label', entity.editionSection.format);
+        case 3:
+          entity.editionSection.format = _context2.sent;
+        case 4:
+          keysToInt = ['height', 'width', 'depth', 'weight', 'pages'];
+          physicalEnable = false;
+          for (_i = 0, _keysToInt = keysToInt; _i &lt; _keysToInt.length; _i++) {
+            key = _keysToInt[_i];
+            entity.editionSection[key] = parseInt(entity.editionSection[key], 10) || null;
+            if (entity.editionSection[key]) {
+              physicalEnable = true;
             }
-            orm = req.app.locals.orm;
-            EditionFormat = orm.EditionFormat;
-            _context2.next = 9;
-            return utils.parseLanguages(entity.editionSection, orm);
-          case 9:
-            entity.editionSection = _context2.sent;
-            if (!entity.editionSection.format) {
-              _context2.next = 14;
-              break;
-            }
-            _context2.next = 13;
-            return utils.getIdByField(EditionFormat, 'label', entity.editionSection.format);
-          case 13:
-            entity.editionSection.format = _context2.sent;
-          case 14:
-            keysToInt = ['height', 'width', 'depth', 'weight', 'pages'];
-            physicalEnable = false;
-            for (_i = 0, _keysToInt = keysToInt; _i &lt; _keysToInt.length; _i++) {
-              key = _keysToInt[_i];
-              entity.editionSection[key] = parseInt(entity.editionSection[key], 10) || null;
-              if (entity.editionSection[key]) {
-                physicalEnable = true;
-              }
-            }
-            entity.editionSection.physicalEnable = physicalEnable;
-            // adding publisher
-            if (!entity.editionSection.publisher) {
-              _context2.next = 23;
-              break;
-            }
-            _context2.next = 21;
-            return utils.searchOption(orm, 'publisher', entity.editionSection.publisher, 'bbid', true);
-          case 21:
-            foundOption = _context2.sent;
-            entity.editionSection.publisher = foundOption ? (0, _omit2.default)(foundOption, ['disambiguation']) : null;
-          case 23:
-            propsPromise = (0, _entityRouteUtils.generateEntityProps)('edition', req, res, {}, function () {
-              return entity;
-            });
-            (0, _utils2.makePromiseFromObject)(propsPromise).then(render).catch(next);
-          case 25:
-          case "end":
-            return _context2.stop();
-        }
+          }
+          entity.editionSection.physicalEnable = physicalEnable;
+          // adding publisher
+          if (!entity.editionSection.publisher) {
+            _context2.next = 6;
+            break;
+          }
+          _context2.next = 5;
+          return utils.searchOption(orm, 'publisher', entity.editionSection.publisher, 'bbid', true);
+        case 5:
+          foundOption = _context2.sent;
+          entity.editionSection.publisher = foundOption ? (0, _omit2.default)(foundOption, ['disambiguation']) : null;
+        case 6:
+          propsPromise = (0, _entityRouteUtils.generateEntityProps)('edition', req, res, {}, function () {
+            return entity;
+          });
+          (0, _utils2.makePromiseFromObject)(propsPromise).then(render).catch(next);
+        case 7:
+        case "end":
+          return _context2.stop();
       }
     }, _callee2);
   }));
@@ -631,7 +627,7 @@ var _default = exports.default = router;
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 13:45:01 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 15:19:59 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

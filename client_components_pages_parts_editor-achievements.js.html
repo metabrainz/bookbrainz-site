@@ -41,42 +41,42 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-require("core-js/modules/es.reflect.construct.js");
-require("core-js/modules/es.object.keys.js");
 require("core-js/modules/es.symbol.js");
 require("core-js/modules/es.array.filter.js");
+require("core-js/modules/es.array.iterator.js");
 require("core-js/modules/es.object.get-own-property-descriptor.js");
 require("core-js/modules/es.object.get-own-property-descriptors.js");
-require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.object.keys.js");
+require("core-js/modules/es.reflect.construct.js");
 require("core-js/modules/es.string.iterator.js");
 require("core-js/modules/es.weak-map.js");
 require("core-js/modules/web.dom-collections.iterator.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+require("core-js/modules/es.array.concat.js");
 require("core-js/modules/es.object.to-string.js");
 require("core-js/modules/web.dom-collections.for-each.js");
-require("core-js/modules/es.array.concat.js");
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
 var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
+var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
 var ReactSticky = _interopRequireWildcard(require("react-sticky"));
 var bootstrap = _interopRequireWildcard(require("react-bootstrap"));
 var _achievement = _interopRequireDefault(require("../../forms/parts/achievement"));
 var _dragAndDrop = _interopRequireDefault(require("../../input/drag-and-drop"));
 var _propTypes = _interopRequireDefault(require("prop-types"));
 var _react = _interopRequireDefault(require("react"));
-function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != _typeof(e) &amp;&amp; "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (var _t in e) { "default" !== _t &amp;&amp; {}.hasOwnProperty.call(e, _t) &amp;&amp; ((i = (o = Object.defineProperty) &amp;&amp; Object.getOwnPropertyDescriptor(e, _t)) &amp;&amp; (i.get || i.set) ? o(f, _t, i) : f[_t] = e[_t]); } return f; })(e, t); }
+var cache;
+function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c &amp;&amp; {}.hasOwnProperty.call(e, c) &amp;&amp; ((r = a &amp;&amp; Object.getOwnPropertyDescriptor(e, c)) &amp;&amp; (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r &amp;&amp; (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r &lt; arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { (0, _defineProperty2.default)(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
-function _createSuper(t) { var r = _isNativeReflectConstruct(); return function () { var e, o = (0, _getPrototypeOf2.default)(t); if (r) { var s = (0, _getPrototypeOf2.default)(this).constructor; e = Reflect.construct(o, arguments, s); } else e = o.apply(this, arguments); return (0, _possibleConstructorReturn2.default)(this, e); }; }
+function _callSuper(t, o, e) { return o = (0, _getPrototypeOf2.default)(o), (0, _possibleConstructorReturn2.default)(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], (0, _getPrototypeOf2.default)(t).constructor) : o.apply(t, e)); }
 function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); } /*
  * Copyright (C) 2016  Daniel Hsing
  * 				 2016  Max Prettyjohns
@@ -107,8 +107,6 @@ var Sticky = ReactSticky.Sticky,
  * Renders the document and displays the 'Editor Achievements Tab'.
  */
 var EditorAchievementTab = /*#__PURE__*/function (_React$Component) {
-  (0, _inherits2.default)(EditorAchievementTab, _React$Component);
-  var _super = _createSuper(EditorAchievementTab);
   /**
    * Initializes the component state.
    * @constructor
@@ -117,7 +115,7 @@ var EditorAchievementTab = /*#__PURE__*/function (_React$Component) {
   function EditorAchievementTab(props) {
     var _this;
     (0, _classCallCheck2.default)(this, EditorAchievementTab);
-    _this = _super.call(this, props);
+    _this = _callSuper(this, EditorAchievementTab, [props]);
     _this.currAchievement = props.currAchievement;
     _this.state = {
       achievement: props.achievement,
@@ -132,7 +130,8 @@ var EditorAchievementTab = /*#__PURE__*/function (_React$Component) {
    * @returns {Array} - An array containing rendered achievements
    * list split into Unlocked and Locked.
    */
-  (0, _createClass2.default)(EditorAchievementTab, [{
+  (0, _inherits2.default)(EditorAchievementTab, _React$Component);
+  return (0, _createClass2.default)(EditorAchievementTab, [{
     key: "renderAchievements",
     value: function renderAchievements() {
       var _this2 = this;
@@ -167,7 +166,7 @@ var EditorAchievementTab = /*#__PURE__*/function (_React$Component) {
         locked = _this$renderAchieveme2[1];
       var rankUpdate;
       if (this.props.isOwner) {
-        var _this$currAchievement, _this$currAchievement2, _this$currAchievement3, _this$currAchievement4, _this$currAchievement5, _this$currAchievement6;
+        var _this$currAchievement, _this$currAchievement2, _this$currAchievement3;
         rankUpdate = /*#__PURE__*/_react.default.createElement(Form, {
           className: "padding-bottom-1",
           id: "rankSelectForm",
@@ -175,13 +174,13 @@ var EditorAchievementTab = /*#__PURE__*/function (_React$Component) {
         }, /*#__PURE__*/_react.default.createElement(CardDeck, {
           className: "mb-3"
         }, /*#__PURE__*/_react.default.createElement(_dragAndDrop.default, {
-          initialAchievement: (_this$currAchievement = this.currAchievement.model.fulfillmentValue) === null || _this$currAchievement === void 0 ? void 0 : (_this$currAchievement2 = _this$currAchievement[0]) === null || _this$currAchievement2 === void 0 ? void 0 : _this$currAchievement2.achievement,
+          initialAchievement: (_this$currAchievement = this.currAchievement.model.fulfillmentValue) === null || _this$currAchievement === void 0 || (_this$currAchievement = _this$currAchievement[0]) === null || _this$currAchievement === void 0 ? void 0 : _this$currAchievement.achievement,
           name: "rank1"
         }), /*#__PURE__*/_react.default.createElement(_dragAndDrop.default, {
-          initialAchievement: (_this$currAchievement3 = this.currAchievement.model.fulfillmentValue) === null || _this$currAchievement3 === void 0 ? void 0 : (_this$currAchievement4 = _this$currAchievement3[1]) === null || _this$currAchievement4 === void 0 ? void 0 : _this$currAchievement4.achievement,
+          initialAchievement: (_this$currAchievement2 = this.currAchievement.model.fulfillmentValue) === null || _this$currAchievement2 === void 0 || (_this$currAchievement2 = _this$currAchievement2[1]) === null || _this$currAchievement2 === void 0 ? void 0 : _this$currAchievement2.achievement,
           name: "rank2"
         }), /*#__PURE__*/_react.default.createElement(_dragAndDrop.default, {
-          initialAchievement: (_this$currAchievement5 = this.currAchievement.model.fulfillmentValue) === null || _this$currAchievement5 === void 0 ? void 0 : (_this$currAchievement6 = _this$currAchievement5[2]) === null || _this$currAchievement6 === void 0 ? void 0 : _this$currAchievement6.achievement,
+          initialAchievement: (_this$currAchievement3 = this.currAchievement.model.fulfillmentValue) === null || _this$currAchievement3 === void 0 || (_this$currAchievement3 = _this$currAchievement3[2]) === null || _this$currAchievement3 === void 0 ? void 0 : _this$currAchievement3.achievement,
           name: "rank3"
         })), /*#__PURE__*/_react.default.createElement("span", {
           className: "margin-left-1"
@@ -225,7 +224,6 @@ var EditorAchievementTab = /*#__PURE__*/function (_React$Component) {
       }, "Locked Achievements"), locked)))));
     }
   }]);
-  return EditorAchievementTab;
 }(_react.default.Component);
 EditorAchievementTab.displayName = 'EditorAchievementTab';
 EditorAchievementTab.propTypes = {
@@ -254,7 +252,7 @@ var _default = exports.default = EditorAchievementTab;
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 13:45:01 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 15:19:59 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

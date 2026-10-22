@@ -41,25 +41,24 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-require("core-js/modules/es.weak-map.js");
 require("core-js/modules/es.object.get-own-property-descriptor.js");
+require("core-js/modules/es.weak-map.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.array.map.js");
+require("core-js/modules/es.array.sort.js");
+require("core-js/modules/es.object.entries.js");
+require("core-js/modules/es.object.keys.js");
 require("core-js/modules/es.object.to-string.js");
 require("core-js/modules/es.promise.js");
 require("core-js/modules/es.string.iterator.js");
-require("core-js/modules/web.dom-collections.iterator.js");
-require("core-js/modules/es.array.map.js");
-require("core-js/modules/es.object.entries.js");
-require("core-js/modules/es.array.sort.js");
-require("core-js/modules/es.object.keys.js");
 require("core-js/modules/web.dom-collections.for-each.js");
+require("core-js/modules/web.dom-collections.iterator.js");
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _snakeCase2 = _interopRequireDefault(require("lodash/snakeCase"));
@@ -73,7 +72,8 @@ var _server = _interopRequireDefault(require("react-dom/server"));
 var _statistics = _interopRequireDefault(require("../../client/components/pages/statistics"));
 var _express = _interopRequireDefault(require("express"));
 var _target = _interopRequireDefault(require("../templates/target"));
-function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != _typeof(e) &amp;&amp; "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (var _t in e) { "default" !== _t &amp;&amp; {}.hasOwnProperty.call(e, _t) &amp;&amp; ((i = (o = Object.defineProperty) &amp;&amp; Object.getOwnPropertyDescriptor(e, _t)) &amp;&amp; (i.get || i.set) ? o(f, _t, i) : f[_t] = e[_t]); } return f; })(e, t); }
+var cache;
+function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c &amp;&amp; {}.hasOwnProperty.call(e, c) &amp;&amp; ((r = a &amp;&amp; Object.getOwnPropertyDescriptor(e, c)) &amp;&amp; (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
 /*
  * Copyright (C) 2018 Akhilesh Kumar &lt;akhilesh5991@gmail.com>
  *
@@ -116,60 +116,56 @@ function getAllEntities(_x) {
  */
 function _getAllEntities() {
   _getAllEntities = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee3(orm) {
-    var entityModels, countPromises, allEntities;
-    return _regenerator.default.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            _context3.prev = 0;
-            entityModels = commonUtils.getEntityModels(orm);
-            countPromises = Object.entries(entityModels).map(/*#__PURE__*/function () {
-              var _ref3 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(_ref2) {
-                var _ref4, modelName, model, Count;
-                return _regenerator.default.wrap(function _callee2$(_context2) {
-                  while (1) {
-                    switch (_context2.prev = _context2.next) {
-                      case 0:
-                        _ref4 = (0, _slicedToArray2.default)(_ref2, 2), modelName = _ref4[0], model = _ref4[1];
-                        _context2.next = 3;
-                        return model.query(function (qb) {
-                          qb.leftJoin('bookbrainz.revision', "bookbrainz.".concat((0, _snakeCase2.default)(modelName), ".revision_id"), 'bookbrainz.revision.id').where('master', true);
-                        }).count();
-                      case 3:
-                        Count = _context2.sent;
-                        return _context2.abrupt("return", {
-                          Count: Count,
-                          modelName: modelName
-                        });
-                      case 5:
-                      case "end":
-                        return _context2.stop();
-                    }
-                  }
-                }, _callee2);
-              }));
-              return function (_x7) {
-                return _ref3.apply(this, arguments);
-              };
-            }());
-            _context3.next = 5;
-            return Promise.all(countPromises);
-          case 5:
-            allEntities = _context3.sent;
-            allEntities.sort(function (a, b) {
-              return b.Count - a.Count;
-            });
-            return _context3.abrupt("return", allEntities);
-          case 10:
-            _context3.prev = 10;
-            _context3.t0 = _context3["catch"](0);
-            throw new Error('Error fetching all entities total');
-          case 13:
-          case "end":
-            return _context3.stop();
-        }
+    var entityModels, countPromises, allEntities, _t2;
+    return _regenerator.default.wrap(function (_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.prev = 0;
+          entityModels = commonUtils.getEntityModels(orm);
+          countPromises = Object.entries(entityModels).map(/*#__PURE__*/function () {
+            var _ref3 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(_ref2) {
+              var _ref4, modelName, model, Count;
+              return _regenerator.default.wrap(function (_context2) {
+                while (1) switch (_context2.prev = _context2.next) {
+                  case 0:
+                    _ref4 = (0, _slicedToArray2.default)(_ref2, 2), modelName = _ref4[0], model = _ref4[1];
+                    _context2.next = 1;
+                    return model.query(function (qb) {
+                      qb.leftJoin('bookbrainz.revision', "bookbrainz.".concat((0, _snakeCase2.default)(modelName), ".revision_id"), 'bookbrainz.revision.id').where('master', true);
+                    }).count();
+                  case 1:
+                    Count = _context2.sent;
+                    return _context2.abrupt("return", {
+                      Count: Count,
+                      modelName: modelName
+                    });
+                  case 2:
+                  case "end":
+                    return _context2.stop();
+                }
+              }, _callee2);
+            }));
+            return function (_x7) {
+              return _ref3.apply(this, arguments);
+            };
+          }());
+          _context3.next = 1;
+          return Promise.all(countPromises);
+        case 1:
+          allEntities = _context3.sent;
+          allEntities.sort(function (a, b) {
+            return b.Count - a.Count;
+          });
+          return _context3.abrupt("return", allEntities);
+        case 2:
+          _context3.prev = 2;
+          _t2 = _context3["catch"](0);
+          throw new Error('Error fetching all entities total');
+        case 3:
+        case "end":
+          return _context3.stop();
       }
-    }, _callee3, null, [[0, 10]]);
+    }, _callee3, null, [[0, 2]]);
   }));
   return _getAllEntities.apply(this, arguments);
 }
@@ -186,61 +182,57 @@ function getLast30DaysEntities(_x2) {
  */
 function _getLast30DaysEntities() {
   _getLast30DaysEntities = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee5(orm) {
-    var entityModels, countPromises, last30DaysEntitiesHelper, last30DaysEntities;
-    return _regenerator.default.wrap(function _callee5$(_context5) {
-      while (1) {
-        switch (_context5.prev = _context5.next) {
-          case 0:
-            _context5.prev = 0;
-            entityModels = commonUtils.getEntityModels(orm);
-            countPromises = Object.keys(entityModels).map(/*#__PURE__*/function () {
-              var _ref5 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee4(modelName) {
-                var model, Count;
-                return _regenerator.default.wrap(function _callee4$(_context4) {
-                  while (1) {
-                    switch (_context4.prev = _context4.next) {
-                      case 0:
-                        model = entityModels[modelName];
-                        _context4.next = 3;
-                        return model.query(function (qb) {
-                          qb.leftJoin('bookbrainz.revision', "bookbrainz.".concat((0, _snakeCase2.default)(modelName), ".revision_id"), 'bookbrainz.revision.id').where('master', true).where('bookbrainz.revision.created_at', '>=', utils.getDateBeforeDays(30));
-                        }).count();
-                      case 3:
-                        Count = _context4.sent;
-                        return _context4.abrupt("return", {
-                          Count: Count,
-                          modelName: modelName
-                        });
-                      case 5:
-                      case "end":
-                        return _context4.stop();
-                    }
-                  }
-                }, _callee4);
-              }));
-              return function (_x8) {
-                return _ref5.apply(this, arguments);
-              };
-            }());
-            _context5.next = 5;
-            return Promise.all(countPromises);
-          case 5:
-            last30DaysEntitiesHelper = _context5.sent;
-            last30DaysEntities = {};
-            last30DaysEntitiesHelper.forEach(function (model) {
-              last30DaysEntities[model.modelName] = model.Count;
-            });
-            return _context5.abrupt("return", last30DaysEntities);
-          case 11:
-            _context5.prev = 11;
-            _context5.t0 = _context5["catch"](0);
-            throw new Error('Error fetching entities from last 30 days');
-          case 14:
-          case "end":
-            return _context5.stop();
-        }
+    var entityModels, countPromises, last30DaysEntitiesHelper, last30DaysEntities, _t3;
+    return _regenerator.default.wrap(function (_context5) {
+      while (1) switch (_context5.prev = _context5.next) {
+        case 0:
+          _context5.prev = 0;
+          entityModels = commonUtils.getEntityModels(orm);
+          countPromises = Object.keys(entityModels).map(/*#__PURE__*/function () {
+            var _ref5 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee4(modelName) {
+              var model, Count;
+              return _regenerator.default.wrap(function (_context4) {
+                while (1) switch (_context4.prev = _context4.next) {
+                  case 0:
+                    model = entityModels[modelName];
+                    _context4.next = 1;
+                    return model.query(function (qb) {
+                      qb.leftJoin('bookbrainz.revision', "bookbrainz.".concat((0, _snakeCase2.default)(modelName), ".revision_id"), 'bookbrainz.revision.id').where('master', true).where('bookbrainz.revision.created_at', '>=', utils.getDateBeforeDays(30));
+                    }).count();
+                  case 1:
+                    Count = _context4.sent;
+                    return _context4.abrupt("return", {
+                      Count: Count,
+                      modelName: modelName
+                    });
+                  case 2:
+                  case "end":
+                    return _context4.stop();
+                }
+              }, _callee4);
+            }));
+            return function (_x8) {
+              return _ref5.apply(this, arguments);
+            };
+          }());
+          _context5.next = 1;
+          return Promise.all(countPromises);
+        case 1:
+          last30DaysEntitiesHelper = _context5.sent;
+          last30DaysEntities = {};
+          last30DaysEntitiesHelper.forEach(function (model) {
+            last30DaysEntities[model.modelName] = model.Count;
+          });
+          return _context5.abrupt("return", last30DaysEntities);
+        case 2:
+          _context5.prev = 2;
+          _t3 = _context5["catch"](0);
+          throw new Error('Error fetching entities from last 30 days');
+        case 3:
+        case "end":
+          return _context5.stop();
       }
-    }, _callee5, null, [[0, 11]]);
+    }, _callee5, null, [[0, 2]]);
   }));
   return _getLast30DaysEntities.apply(this, arguments);
 }
@@ -250,79 +242,75 @@ function getTop10Editors(_x3) {
 /* Get Statistics Page */
 function _getTop10Editors() {
   _getTop10Editors = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee6(orm) {
-    var Editor, topEditorsQuery, topEditors;
-    return _regenerator.default.wrap(function _callee6$(_context6) {
-      while (1) {
-        switch (_context6.prev = _context6.next) {
-          case 0:
-            _context6.prev = 0;
-            Editor = orm.Editor;
-            _context6.next = 4;
-            return new Editor().query(function (q) {
-              return q.orderBy('total_revisions', 'desc').limit(10);
-            }).fetchAll();
-          case 4:
-            topEditorsQuery = _context6.sent;
-            topEditors = topEditorsQuery.models.map(function (model) {
-              return model.attributes;
-            });
-            return _context6.abrupt("return", topEditors);
-          case 9:
-            _context6.prev = 9;
-            _context6.t0 = _context6["catch"](0);
-            throw new Error('Error fetching top 10 editors');
-          case 12:
-          case "end":
-            return _context6.stop();
-        }
+    var Editor, topEditorsQuery, topEditors, _t4;
+    return _regenerator.default.wrap(function (_context6) {
+      while (1) switch (_context6.prev = _context6.next) {
+        case 0:
+          _context6.prev = 0;
+          Editor = orm.Editor;
+          _context6.next = 1;
+          return new Editor().query(function (q) {
+            return q.orderBy('total_revisions', 'desc').limit(10);
+          }).fetchAll();
+        case 1:
+          topEditorsQuery = _context6.sent;
+          topEditors = topEditorsQuery.models.map(function (model) {
+            return model.attributes;
+          });
+          return _context6.abrupt("return", topEditors);
+        case 2:
+          _context6.prev = 2;
+          _t4 = _context6["catch"](0);
+          throw new Error('Error fetching top 10 editors');
+        case 3:
+        case "end":
+          return _context6.stop();
       }
-    }, _callee6, null, [[0, 9]]);
+    }, _callee6, null, [[0, 2]]);
   }));
   return _getTop10Editors.apply(this, arguments);
 }
 router.get('/', /*#__PURE__*/function () {
   var _ref = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee(req, res, next) {
-    var orm, _yield$Promise$all, _yield$Promise$all2, allEntities, last30DaysEntities, topEditors, props, markup;
-    return _regenerator.default.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            orm = req.app.locals.orm;
-            _context.prev = 1;
-            _context.next = 4;
-            return Promise.all([getAllEntities(orm), getLast30DaysEntities(orm), getTop10Editors(orm)]);
-          case 4:
-            _yield$Promise$all = _context.sent;
-            _yield$Promise$all2 = (0, _slicedToArray2.default)(_yield$Promise$all, 3);
-            allEntities = _yield$Promise$all2[0];
-            last30DaysEntities = _yield$Promise$all2[1];
-            topEditors = _yield$Promise$all2[2];
-            props = (0, _props2.generateProps)(req, res, {
-              allEntities: allEntities,
-              last30DaysEntities: last30DaysEntities,
-              topEditors: topEditors
-            });
-            markup = _server.default.renderToString(/*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_statistics.default, {
-              allEntities: allEntities,
-              last30DaysEntities: last30DaysEntities,
-              topEditors: topEditors
-            })));
-            return _context.abrupt("return", res.send((0, _target.default)({
-              markup: markup,
-              props: (0, _props2.escapeProps)(props),
-              script: '/js/statistics.js',
-              title: 'Statistics'
-            })));
-          case 14:
-            _context.prev = 14;
-            _context.t0 = _context["catch"](1);
-            return _context.abrupt("return", next(_context.t0));
-          case 17:
-          case "end":
-            return _context.stop();
-        }
+    var orm, _yield$Promise$all, _yield$Promise$all2, allEntities, last30DaysEntities, topEditors, props, markup, _t;
+    return _regenerator.default.wrap(function (_context) {
+      while (1) switch (_context.prev = _context.next) {
+        case 0:
+          orm = req.app.locals.orm;
+          _context.prev = 1;
+          _context.next = 2;
+          return Promise.all([getAllEntities(orm), getLast30DaysEntities(orm), getTop10Editors(orm)]);
+        case 2:
+          _yield$Promise$all = _context.sent;
+          _yield$Promise$all2 = (0, _slicedToArray2.default)(_yield$Promise$all, 3);
+          allEntities = _yield$Promise$all2[0];
+          last30DaysEntities = _yield$Promise$all2[1];
+          topEditors = _yield$Promise$all2[2];
+          props = (0, _props2.generateProps)(req, res, {
+            allEntities: allEntities,
+            last30DaysEntities: last30DaysEntities,
+            topEditors: topEditors
+          });
+          markup = _server.default.renderToString(/*#__PURE__*/_react.default.createElement(_layout.default, propHelpers.extractLayoutProps(props), /*#__PURE__*/_react.default.createElement(_statistics.default, {
+            allEntities: allEntities,
+            last30DaysEntities: last30DaysEntities,
+            topEditors: topEditors
+          })));
+          return _context.abrupt("return", res.send((0, _target.default)({
+            markup: markup,
+            props: (0, _props2.escapeProps)(props),
+            script: '/js/statistics.js',
+            title: 'Statistics'
+          })));
+        case 3:
+          _context.prev = 3;
+          _t = _context["catch"](1);
+          return _context.abrupt("return", next(_t));
+        case 4:
+        case "end":
+          return _context.stop();
       }
-    }, _callee, null, [[1, 14]]);
+    }, _callee, null, [[1, 3]]);
   }));
   return function (_x4, _x5, _x6) {
     return _ref.apply(this, arguments);
@@ -341,7 +329,7 @@ var _default = exports.default = router;
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 13:45:00 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 15:19:59 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

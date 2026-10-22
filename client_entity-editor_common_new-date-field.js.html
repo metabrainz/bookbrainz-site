@@ -47,17 +47,16 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-require("core-js/modules/es.number.constructor.js");
-require("core-js/modules/es.math.sign.js");
 require("core-js/modules/es.array.concat.js");
+require("core-js/modules/es.math.sign.js");
+require("core-js/modules/es.number.constructor.js");
 require("core-js/modules/es.object.to-string.js");
 require("core-js/modules/es.regexp.to-string.js");
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-var _assertThisInitialized2 = _interopRequireDefault(require("@babel/runtime/helpers/assertThisInitialized"));
-var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
 var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
+var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _padStart2 = _interopRequireDefault(require("lodash/padStart"));
 var _reactBootstrap = require("react-bootstrap");
@@ -72,16 +71,14 @@ var _classnames = _interopRequireDefault(require("classnames"));
 var _base = require("../validators/base");
 var _freeSolidSvgIcons = require("@fortawesome/free-solid-svg-icons");
 var _entity = require("../../helpers/entity");
-function _createSuper(t) { var r = _isNativeReflectConstruct(); return function () { var e, o = (0, _getPrototypeOf2.default)(t); if (r) { var s = (0, _getPrototypeOf2.default)(this).constructor; e = Reflect.construct(o, arguments, s); } else e = o.apply(this, arguments); return (0, _possibleConstructorReturn2.default)(this, e); }; }
+function _callSuper(t, o, e) { return o = (0, _getPrototypeOf2.default)(o), (0, _possibleConstructorReturn2.default)(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], (0, _getPrototypeOf2.default)(t).constructor) : o.apply(t, e)); }
 function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); }
 var DateField = /*#__PURE__*/function (_React$Component) {
-  (0, _inherits2.default)(DateField, _React$Component);
-  var _super = _createSuper(DateField);
   function DateField(props) {
     var _this;
     (0, _classCallCheck2.default)(this, DateField);
-    _this = _super.call(this, props);
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "updateDate", function (day, month, year) {
+    _this = _callSuper(this, DateField, [props]);
+    (0, _defineProperty2.default)(_this, "updateDate", function (day, month, year) {
       _this.props.onChangeDate((0, _utils.dateObjectToISOString)({
         day: day,
         month: month,
@@ -95,28 +92,35 @@ var DateField = /*#__PURE__*/function (_React$Component) {
         })
       });
     });
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "setStateCallback", function () {
+    (0, _defineProperty2.default)(_this, "setStateCallback", function () {
       _this.updateDate(_this.state.day, _this.state.month, _this.state.year);
     });
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "handleYearChange", function (event) {
+    (0, _defineProperty2.default)(_this, "handleYearChange", function (event) {
       var year = event.target.value;
       _this.setState({
         year: year
       }, _this.setStateCallback);
     });
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "handleMonthChange", function (event) {
+    (0, _defineProperty2.default)(_this, "handleMonthChange", function (event) {
       var month = event.target.value;
       _this.setState({
         month: month
       }, _this.setStateCallback);
     });
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "handleDayChange", function (event) {
+    (0, _defineProperty2.default)(_this, "handleDayChange", function (event) {
       var day = event.target.value;
       _this.setState({
         day: day
       }, _this.setStateCallback);
     });
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "formatYearForDisplay", function (year) {
+    /**
+     * If year is a number, pad it for clarity ('84' -> '0084' to clarify it isn't '1984')
+     * If it is too long (eg. extended ISO format ±YYYYYY), trim it
+     * @function formatYearForDisplay
+     * @param  {string|number} year - The year string or number to format
+     * @returns {string} a short ISO date string (YYYY-MM-DD)
+     */
+    (0, _defineProperty2.default)(_this, "formatYearForDisplay", function (year) {
       if (isNaN(Number(year)) || year === '') {
         return year;
       }
@@ -124,32 +128,32 @@ var DateField = /*#__PURE__*/function (_React$Component) {
       var ISOyear = "".concat(isCommonEraDate ? '+' : '-').concat((0, _padStart2.default)(Math.abs(year), 6, 0));
       return (0, _entity.transformISODateForDisplay)(ISOyear);
     });
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "padMonthOrDay", function (num) {
+    (0, _defineProperty2.default)(_this, "padMonthOrDay", function (num) {
       // If month/day is a number, pad it, mostly to match the year padding mechanism
       if (isNaN(Number(num)) || num === '') {
         return num;
       }
       return (0, _padStart2.default)(num, 2, 0);
     });
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "handleYearInputBlur", function (event) {
+    (0, _defineProperty2.default)(_this, "handleYearInputBlur", function (event) {
       var year = event.target.value;
       _this.setState({
         year: _this.formatYearForDisplay(year)
       });
     });
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "handleMonthInputBlur", function (event) {
+    (0, _defineProperty2.default)(_this, "handleMonthInputBlur", function (event) {
       var month = event.target.value;
       _this.setState({
         month: _this.padMonthOrDay(month)
       });
     });
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "handleDayInputBlur", function (event) {
+    (0, _defineProperty2.default)(_this, "handleDayInputBlur", function (event) {
       var day = event.target.value;
       _this.setState({
         day: _this.padMonthOrDay(day)
       });
     });
-    (0, _defineProperty2.default)((0, _assertThisInitialized2.default)(_this), "handleChangeOfDatePicker", function (value) {
+    (0, _defineProperty2.default)(_this, "handleChangeOfDatePicker", function (value) {
       var date = new Date(value);
       var year = date.getFullYear().toString();
       var month = (date.getMonth() + 1).toString();
@@ -176,15 +180,8 @@ var DateField = /*#__PURE__*/function (_React$Component) {
     };
     return _this;
   }
-
-  /**
-   * If year is a number, pad it for clarity ('84' -> '0084' to clarify it isn't '1984')
-   * If it is too long (eg. extended ISO format ±YYYYYY), trim it
-   * @function formatYearForDisplay
-   * @param  {string|number} year - The year string or number to format
-   * @returns {string} a short ISO date string (YYYY-MM-DD)
-   */
-  (0, _createClass2.default)(DateField, [{
+  (0, _inherits2.default)(DateField, _React$Component);
+  return (0, _createClass2.default)(DateField, [{
     key: "render",
     value: function render() {
       var warnMessage = 'Are you sure? You entered a date in the future!';
@@ -285,7 +282,6 @@ var DateField = /*#__PURE__*/function (_React$Component) {
       })))));
     }
   }]);
-  return DateField;
 }(_react.default.Component);
 DateField.propTypes = {
   defaultValue: _propTypes.default.string,
@@ -313,7 +309,7 @@ var _default = exports.default = DateField;
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 13:45:01 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 15:19:59 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

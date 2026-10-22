@@ -41,14 +41,13 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-require("core-js/modules/es.object.keys.js");
 require("core-js/modules/es.symbol.js");
 require("core-js/modules/es.object.get-own-property-descriptor.js");
-require("core-js/modules/web.dom-collections.for-each.js");
 require("core-js/modules/es.object.get-own-property-descriptors.js");
+require("core-js/modules/es.object.keys.js");
 require("core-js/modules/es.weak-map.js");
+require("core-js/modules/web.dom-collections.for-each.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-var _typeof3 = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -72,26 +71,24 @@ exports.validateBBIDsForCollectionRemove = validateBBIDsForCollectionRemove;
 exports.validateCollaboratorIdsForCollectionRemove = validateCollaboratorIdsForCollectionRemove;
 exports.validateCollectionParams = validateCollectionParams;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-require("core-js/modules/es.date.to-json.js");
-require("core-js/modules/web.url.to-json.js");
-require("core-js/modules/es.array.sort.js");
-require("core-js/modules/es.function.name.js");
-require("core-js/modules/es.array.map.js");
 require("core-js/modules/es.array.concat.js");
 require("core-js/modules/es.array.filter.js");
+require("core-js/modules/es.array.find.js");
+require("core-js/modules/es.array.includes.js");
+require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.array.map.js");
+require("core-js/modules/es.array.sort.js");
+require("core-js/modules/es.date.to-json.js");
+require("core-js/modules/es.function.name.js");
 require("core-js/modules/es.object.to-string.js");
 require("core-js/modules/es.parse-int.js");
-require("core-js/modules/es.array.find.js");
-require("core-js/modules/es.array.iterator.js");
 require("core-js/modules/es.promise.js");
-require("core-js/modules/es.string.iterator.js");
-require("core-js/modules/web.dom-collections.iterator.js");
 require("core-js/modules/es.regexp.exec.js");
-require("core-js/modules/es.string.replace.js");
-require("core-js/modules/es.array.includes.js");
 require("core-js/modules/es.string.includes.js");
+require("core-js/modules/es.string.iterator.js");
+require("core-js/modules/es.string.replace.js");
+require("core-js/modules/web.dom-collections.iterator.js");
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
-var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
@@ -116,7 +113,8 @@ var _i18n = require("./i18n");
 var _critiquebrainz = require("./critiquebrainz");
 var _wikimedia2 = require("../../common/helpers/wikimedia");
 var _log = _interopRequireDefault(require("log"));
-function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != _typeof3(e) &amp;&amp; "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (var _t in e) { "default" !== _t &amp;&amp; {}.hasOwnProperty.call(e, _t) &amp;&amp; ((i = (o = Object.defineProperty) &amp;&amp; Object.getOwnPropertyDescriptor(e, _t)) &amp;&amp; (i.get || i.set) ? o(f, _t, i) : f[_t] = e[_t]); } return f; })(e, t); }
+var cache;
+function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c &amp;&amp; {}.hasOwnProperty.call(e, c) &amp;&amp; ((r = a &amp;&amp; Object.getOwnPropertyDescriptor(e, c)) &amp;&amp; (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r &amp;&amp; (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r &lt; arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { (0, _defineProperty2.default)(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; } /*
  * Copyright (C) 2015       Ben Ockmore
@@ -143,37 +141,35 @@ function makeLoader(modelName, propName, sortFunc) {
   var relations = arguments.length > 3 &amp;&amp; arguments[3] !== undefined ? arguments[3] : [];
   return /*#__PURE__*/function () {
     var _loaderFunc = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee(req, res, next) {
-      var orm, model, results, resultsSerial;
-      return _regenerator.default.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.prev = 0;
-              orm = req.app.locals.orm;
-              model = orm[modelName];
-              _context.next = 5;
-              return model.fetchAll({
-                withRelated: (0, _toConsumableArray2.default)(relations)
-              });
-            case 5:
-              results = _context.sent;
-              resultsSerial = results.toJSON();
-              res.locals[propName] = sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
-              _context.next = 13;
-              break;
-            case 10:
-              _context.prev = 10;
-              _context.t0 = _context["catch"](0);
-              return _context.abrupt("return", next(_context.t0));
-            case 13:
-              next();
-              return _context.abrupt("return", null);
-            case 15:
-            case "end":
-              return _context.stop();
-          }
+      var orm, model, results, resultsSerial, _t;
+      return _regenerator.default.wrap(function (_context) {
+        while (1) switch (_context.prev = _context.next) {
+          case 0:
+            _context.prev = 0;
+            orm = req.app.locals.orm;
+            model = orm[modelName];
+            _context.next = 1;
+            return model.fetchAll({
+              withRelated: (0, _toConsumableArray2.default)(relations)
+            });
+          case 1:
+            results = _context.sent;
+            resultsSerial = results.toJSON();
+            res.locals[propName] = sortFunc ? resultsSerial.sort(sortFunc) : resultsSerial;
+            _context.next = 3;
+            break;
+          case 2:
+            _context.prev = 2;
+            _t = _context["catch"](0);
+            return _context.abrupt("return", next(_t));
+          case 3:
+            next();
+            return _context.abrupt("return", null);
+          case 4:
+          case "end":
+            return _context.stop();
         }
-      }, _callee, null, [[0, 10]]);
+      }, _callee, null, [[0, 2]]);
     }));
     function loaderFunc(_x, _x2, _x3) {
       return _loaderFunc.apply(this, arguments);
@@ -244,35 +240,33 @@ function loadWorkTableAuthors(_x4, _x5, _x6) {
  */
 function _loadWorkTableAuthors() {
   _loadWorkTableAuthors = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee4(req, res, next) {
-    var orm, entity, workBBIDs, authorsData, authorsDataGroupedByWorkBBID;
-    return _regenerator.default.wrap(function _callee4$(_context4) {
-      while (1) {
-        switch (_context4.prev = _context4.next) {
-          case 0:
-            orm = req.app.locals.orm;
-            entity = res.locals.entity;
-            _context4.prev = 2;
-            workBBIDs = (0, _entity.getRelationshipTargetBBIDByTypeId)(entity, 10);
-            _context4.next = 6;
-            return orm.func.work.loadAuthorNames(orm, workBBIDs);
-          case 6:
-            authorsData = _context4.sent;
-            authorsDataGroupedByWorkBBID = (0, _groupBy2.default)(authorsData, 'workbbid');
-            entity.authorsData = authorsDataGroupedByWorkBBID;
-            _context4.next = 14;
-            break;
-          case 11:
-            _context4.prev = 11;
-            _context4.t0 = _context4["catch"](2);
-            return _context4.abrupt("return", next(_context4.t0));
-          case 14:
-            return _context4.abrupt("return", next());
-          case 15:
-          case "end":
-            return _context4.stop();
-        }
+    var orm, entity, workBBIDs, authorsData, authorsDataGroupedByWorkBBID, _t4;
+    return _regenerator.default.wrap(function (_context4) {
+      while (1) switch (_context4.prev = _context4.next) {
+        case 0:
+          orm = req.app.locals.orm;
+          entity = res.locals.entity;
+          _context4.prev = 1;
+          workBBIDs = (0, _entity.getRelationshipTargetBBIDByTypeId)(entity, 10);
+          _context4.next = 2;
+          return orm.func.work.loadAuthorNames(orm, workBBIDs);
+        case 2:
+          authorsData = _context4.sent;
+          authorsDataGroupedByWorkBBID = (0, _groupBy2.default)(authorsData, 'workbbid');
+          entity.authorsData = authorsDataGroupedByWorkBBID;
+          _context4.next = 4;
+          break;
+        case 3:
+          _context4.prev = 3;
+          _t4 = _context4["catch"](1);
+          return _context4.abrupt("return", next(_t4));
+        case 4:
+          return _context4.abrupt("return", next());
+        case 5:
+        case "end":
+          return _context4.stop();
       }
-    }, _callee4, null, [[2, 11]]);
+    }, _callee4, null, [[1, 3]]);
   }));
   return _loadWorkTableAuthors.apply(this, arguments);
 }
@@ -282,85 +276,79 @@ function addRelationships(_x7, _x8, _x9) {
 function _addRelationships() {
   _addRelationships = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee7(entity, relationshipSet, orm) {
     var getEntityWithAlias, _getEntityWithAlias, relationshipPromises, relationships;
-    return _regenerator.default.wrap(function _callee7$(_context7) {
-      while (1) {
-        switch (_context7.prev = _context7.next) {
-          case 0:
-            _getEntityWithAlias = function _getEntityWithAlias3() {
-              _getEntityWithAlias = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee6(relEntity) {
-                var redirectBbid, model;
-                return _regenerator.default.wrap(function _callee6$(_context6) {
-                  while (1) {
-                    switch (_context6.prev = _context6.next) {
-                      case 0:
-                        _context6.next = 2;
-                        return orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
-                      case 2:
-                        redirectBbid = _context6.sent;
-                        model = commonUtils.getEntityModelByType(orm, relEntity.type);
-                        return _context6.abrupt("return", model.forge({
-                          bbid: redirectBbid
-                        }).fetch({
-                          require: false,
-                          withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))
-                        }));
-                      case 5:
-                      case "end":
-                        return _context6.stop();
-                    }
-                  }
-                }, _callee6);
-              }));
-              return _getEntityWithAlias.apply(this, arguments);
-            };
-            getEntityWithAlias = function _getEntityWithAlias2(_x32) {
-              return _getEntityWithAlias.apply(this, arguments);
-            };
-            entity.relationships = relationshipSet ? relationshipSet.related('relationships').toJSON() : [];
-            utils.attachAttributes(entity.relationships);
+    return _regenerator.default.wrap(function (_context7) {
+      while (1) switch (_context7.prev = _context7.next) {
+        case 0:
+          _getEntityWithAlias = function _getEntityWithAlias3() {
+            _getEntityWithAlias = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee6(relEntity) {
+              var redirectBbid, model;
+              return _regenerator.default.wrap(function (_context6) {
+                while (1) switch (_context6.prev = _context6.next) {
+                  case 0:
+                    _context6.next = 1;
+                    return orm.func.entity.recursivelyGetRedirectBBID(orm, relEntity.bbid, null);
+                  case 1:
+                    redirectBbid = _context6.sent;
+                    model = commonUtils.getEntityModelByType(orm, relEntity.type);
+                    return _context6.abrupt("return", model.forge({
+                      bbid: redirectBbid
+                    }).fetch({
+                      require: false,
+                      withRelated: ['defaultAlias'].concat(utils.getAdditionalRelations(relEntity.type))
+                    }));
+                  case 2:
+                  case "end":
+                    return _context6.stop();
+                }
+              }, _callee6);
+            }));
+            return _getEntityWithAlias.apply(this, arguments);
+          };
+          getEntityWithAlias = function _getEntityWithAlias2(_x32) {
+            return _getEntityWithAlias.apply(this, arguments);
+          };
+          entity.relationships = relationshipSet ? relationshipSet.related('relationships').toJSON() : [];
+          utils.attachAttributes(entity.relationships);
 
-            /**
-             * Source and target are generic Entity objects, so until we have
-             * a good way of polymorphically fetching the right specific entity,
-             * we need to fetch default alias in a somewhat sketchier way.
-             */
-            relationshipPromises = entity.relationships.map(/*#__PURE__*/function () {
-              var _ref3 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee5(relationship) {
-                var _yield$Promise$all, _yield$Promise$all2, source, target;
-                return _regenerator.default.wrap(function _callee5$(_context5) {
-                  while (1) {
-                    switch (_context5.prev = _context5.next) {
-                      case 0:
-                        _context5.next = 2;
-                        return Promise.all([getEntityWithAlias(relationship.source), getEntityWithAlias(relationship.target)]);
-                      case 2:
-                        _yield$Promise$all = _context5.sent;
-                        _yield$Promise$all2 = (0, _slicedToArray2.default)(_yield$Promise$all, 2);
-                        source = _yield$Promise$all2[0];
-                        target = _yield$Promise$all2[1];
-                        relationship.source = source.toJSON();
-                        relationship.target = target.toJSON();
-                        return _context5.abrupt("return", relationship);
-                      case 9:
-                      case "end":
-                        return _context5.stop();
-                    }
-                  }
-                }, _callee5);
-              }));
-              return function (_x33) {
-                return _ref3.apply(this, arguments);
-              };
-            }());
-            _context7.next = 7;
-            return Promise.all(relationshipPromises);
-          case 7:
-            relationships = _context7.sent;
-            return _context7.abrupt("return", relationships);
-          case 9:
-          case "end":
-            return _context7.stop();
-        }
+          /**
+           * Source and target are generic Entity objects, so until we have
+           * a good way of polymorphically fetching the right specific entity,
+           * we need to fetch default alias in a somewhat sketchier way.
+           */
+          relationshipPromises = entity.relationships.map(/*#__PURE__*/function () {
+            var _ref3 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee5(relationship) {
+              var _yield$Promise$all, _yield$Promise$all2, source, target;
+              return _regenerator.default.wrap(function (_context5) {
+                while (1) switch (_context5.prev = _context5.next) {
+                  case 0:
+                    _context5.next = 1;
+                    return Promise.all([getEntityWithAlias(relationship.source), getEntityWithAlias(relationship.target)]);
+                  case 1:
+                    _yield$Promise$all = _context5.sent;
+                    _yield$Promise$all2 = (0, _slicedToArray2.default)(_yield$Promise$all, 2);
+                    source = _yield$Promise$all2[0];
+                    target = _yield$Promise$all2[1];
+                    relationship.source = source.toJSON();
+                    relationship.target = target.toJSON();
+                    return _context5.abrupt("return", relationship);
+                  case 2:
+                  case "end":
+                    return _context5.stop();
+                }
+              }, _callee5);
+            }));
+            return function (_x33) {
+              return _ref3.apply(this, arguments);
+            };
+          }());
+          _context7.next = 1;
+          return Promise.all(relationshipPromises);
+        case 1:
+          relationships = _context7.sent;
+          return _context7.abrupt("return", relationships);
+        case 2:
+        case "end":
+          return _context7.stop();
       }
     }, _callee7);
   }));
@@ -371,47 +359,45 @@ function loadEntityRelationships(_x0, _x1, _x10) {
 }
 function _loadEntityRelationships() {
   _loadEntityRelationships = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee8(req, res, next) {
-    var orm, RelationshipSet, entity, relationshipSet;
-    return _regenerator.default.wrap(function _callee8$(_context8) {
-      while (1) {
-        switch (_context8.prev = _context8.next) {
-          case 0:
-            orm = req.app.locals.orm;
-            RelationshipSet = orm.RelationshipSet;
-            entity = res.locals.entity;
-            _context8.prev = 3;
-            if (entity) {
-              _context8.next = 6;
-              break;
-            }
-            throw new error.SiteError('Failed to load entity');
-          case 6:
-            _context8.next = 8;
-            return RelationshipSet.forge({
-              id: entity.relationshipSetId
-            }).fetch({
-              require: false,
-              withRelated: ['relationships.source', 'relationships.target', 'relationships.type.attributeTypes', 'relationships.attributeSet.relationshipAttributes.value', 'relationships.attributeSet.relationshipAttributes.type']
-            });
-          case 8:
-            relationshipSet = _context8.sent;
-            _context8.next = 11;
-            return addRelationships(entity, relationshipSet, orm);
-          case 11:
-            _context8.next = 16;
+    var orm, RelationshipSet, entity, relationshipSet, _t5;
+    return _regenerator.default.wrap(function (_context8) {
+      while (1) switch (_context8.prev = _context8.next) {
+        case 0:
+          orm = req.app.locals.orm;
+          RelationshipSet = orm.RelationshipSet;
+          entity = res.locals.entity;
+          _context8.prev = 1;
+          if (entity) {
+            _context8.next = 2;
             break;
-          case 13:
-            _context8.prev = 13;
-            _context8.t0 = _context8["catch"](3);
-            return _context8.abrupt("return", next(_context8.t0));
-          case 16:
-            return _context8.abrupt("return", next());
-          case 17:
-          case "end":
-            return _context8.stop();
-        }
+          }
+          throw new error.SiteError('Failed to load entity');
+        case 2:
+          _context8.next = 3;
+          return RelationshipSet.forge({
+            id: entity.relationshipSetId
+          }).fetch({
+            require: false,
+            withRelated: ['relationships.source', 'relationships.target', 'relationships.type.attributeTypes', 'relationships.attributeSet.relationshipAttributes.value', 'relationships.attributeSet.relationshipAttributes.type']
+          });
+        case 3:
+          relationshipSet = _context8.sent;
+          _context8.next = 4;
+          return addRelationships(entity, relationshipSet, orm);
+        case 4:
+          _context8.next = 6;
+          break;
+        case 5:
+          _context8.prev = 5;
+          _t5 = _context8["catch"](1);
+          return _context8.abrupt("return", next(_t5));
+        case 6:
+          return _context8.abrupt("return", next());
+        case 7:
+        case "end":
+          return _context8.stop();
       }
-    }, _callee8, null, [[3, 13]]);
+    }, _callee8, null, [[1, 5]]);
   }));
   return _loadEntityRelationships.apply(this, arguments);
 }
@@ -420,67 +406,65 @@ function loadWikipediaExtract(_x11, _x12, _x13) {
 }
 function _loadWikipediaExtract() {
   _loadWikipediaExtract = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee9(req, res, next) {
-    var entity, wikidataId, browserLanguages, aliasLanguages, preferredLanguages, article, extract;
-    return _regenerator.default.wrap(function _callee9$(_context9) {
-      while (1) {
-        switch (_context9.prev = _context9.next) {
-          case 0:
-            entity = res.locals.entity;
-            if (entity) {
-              _context9.next = 3;
-              break;
-            }
-            return _context9.abrupt("return", next(new error.SiteError('Failed to load entity')));
-          case 3:
-            wikidataId = (0, _wikimedia2.getWikidataId)(entity);
-            if (wikidataId) {
-              _context9.next = 6;
-              break;
-            }
-            return _context9.abrupt("return", next());
-          case 6:
-            // try to use the user's browser languages, fallback to English and alias languages
-            browserLanguages = (0, _i18n.getAcceptedLanguageCodes)(req);
-            aliasLanguages = commonUtils.getAliasLanguageCodes(entity);
-            preferredLanguages = browserLanguages.concat('en', aliasLanguages);
-            _context9.prev = 9;
-            _context9.next = 12;
-            return (0, _wikimedia.selectWikipediaPage)(wikidataId, {
-              forceCache: true,
-              preferredLanguages: preferredLanguages
-            });
-          case 12:
-            article = _context9.sent;
-            if (!article) {
-              _context9.next = 18;
-              break;
-            }
-            _context9.next = 16;
-            return (0, _wikimedia.getWikipediaExtract)(article, {
-              forceCache: true
-            });
-          case 16:
-            extract = _context9.sent;
-            if (extract) {
-              res.locals.wikipediaExtract = _objectSpread({
-                article: article
-              }, extract);
-            }
-          case 18:
-            _context9.next = 23;
+    var entity, wikidataId, browserLanguages, aliasLanguages, preferredLanguages, article, extract, _t6;
+    return _regenerator.default.wrap(function (_context9) {
+      while (1) switch (_context9.prev = _context9.next) {
+        case 0:
+          entity = res.locals.entity;
+          if (entity) {
+            _context9.next = 1;
             break;
-          case 20:
-            _context9.prev = 20;
-            _context9.t0 = _context9["catch"](9);
-            _log.default.warning("Failed to pre-load Wikipedia extract for ".concat(wikidataId, ": ").concat(_context9.t0.message));
-          case 23:
-            return _context9.abrupt("return", next());
-          case 24:
-          case "end":
-            return _context9.stop();
-        }
+          }
+          return _context9.abrupt("return", next(new error.SiteError('Failed to load entity')));
+        case 1:
+          wikidataId = (0, _wikimedia2.getWikidataId)(entity);
+          if (wikidataId) {
+            _context9.next = 2;
+            break;
+          }
+          return _context9.abrupt("return", next());
+        case 2:
+          // try to use the user's browser languages, fallback to English and alias languages
+          browserLanguages = (0, _i18n.getAcceptedLanguageCodes)(req);
+          aliasLanguages = commonUtils.getAliasLanguageCodes(entity);
+          preferredLanguages = browserLanguages.concat('en', aliasLanguages);
+          _context9.prev = 3;
+          _context9.next = 4;
+          return (0, _wikimedia.selectWikipediaPage)(wikidataId, {
+            forceCache: true,
+            preferredLanguages: preferredLanguages
+          });
+        case 4:
+          article = _context9.sent;
+          if (!article) {
+            _context9.next = 6;
+            break;
+          }
+          _context9.next = 5;
+          return (0, _wikimedia.getWikipediaExtract)(article, {
+            forceCache: true
+          });
+        case 5:
+          extract = _context9.sent;
+          if (extract) {
+            res.locals.wikipediaExtract = _objectSpread({
+              article: article
+            }, extract);
+          }
+        case 6:
+          _context9.next = 8;
+          break;
+        case 7:
+          _context9.prev = 7;
+          _t6 = _context9["catch"](3);
+          _log.default.warning("Failed to pre-load Wikipedia extract for ".concat(wikidataId, ": ").concat(_t6.message));
+        case 8:
+          return _context9.abrupt("return", next());
+        case 9:
+        case "end":
+          return _context9.stop();
       }
-    }, _callee9, null, [[9, 20]]);
+    }, _callee9, null, [[3, 7]]);
   }));
   return _loadWikipediaExtract.apply(this, arguments);
 }
@@ -512,43 +496,41 @@ function redirectedBbid(_x14, _x15, _x16, _x17) {
 }
 function _redirectedBbid() {
   _redirectedBbid = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee0(req, res, next, bbid) {
-    var orm, redirectBbid;
-    return _regenerator.default.wrap(function _callee0$(_context0) {
-      while (1) {
-        switch (_context0.prev = _context0.next) {
-          case 0:
-            if (commonUtils.isValidBBID(bbid)) {
-              _context0.next = 2;
-              break;
-            }
-            return _context0.abrupt("return", next(new error.BadRequestError("Invalid bbid: ".concat(req.params.bbid), req)));
-          case 2:
-            orm = req.app.locals.orm;
-            _context0.prev = 3;
-            _context0.next = 6;
-            return orm.func.entity.recursivelyGetRedirectBBID(orm, bbid);
-          case 6:
-            redirectBbid = _context0.sent;
-            if (!(redirectBbid !== bbid)) {
-              _context0.next = 9;
-              break;
-            }
-            return _context0.abrupt("return", res.redirect(301, "".concat(req.baseUrl).concat(req.path.replace(bbid, redirectBbid))));
-          case 9:
-            _context0.next = 14;
+    var orm, redirectBbid, _t7;
+    return _regenerator.default.wrap(function (_context0) {
+      while (1) switch (_context0.prev = _context0.next) {
+        case 0:
+          if (commonUtils.isValidBBID(bbid)) {
+            _context0.next = 1;
             break;
-          case 11:
-            _context0.prev = 11;
-            _context0.t0 = _context0["catch"](3);
-            return _context0.abrupt("return", next(_context0.t0));
-          case 14:
-            return _context0.abrupt("return", next());
-          case 15:
-          case "end":
-            return _context0.stop();
-        }
+          }
+          return _context0.abrupt("return", next(new error.BadRequestError("Invalid bbid: ".concat(req.params.bbid), req)));
+        case 1:
+          orm = req.app.locals.orm;
+          _context0.prev = 2;
+          _context0.next = 3;
+          return orm.func.entity.recursivelyGetRedirectBBID(orm, bbid);
+        case 3:
+          redirectBbid = _context0.sent;
+          if (!(redirectBbid !== bbid)) {
+            _context0.next = 4;
+            break;
+          }
+          return _context0.abrupt("return", res.redirect(301, "".concat(req.baseUrl).concat(req.path.replace(bbid, redirectBbid))));
+        case 4:
+          _context0.next = 6;
+          break;
+        case 5:
+          _context0.prev = 5;
+          _t7 = _context0["catch"](2);
+          return _context0.abrupt("return", next(_t7));
+        case 6:
+          return _context0.abrupt("return", next());
+        case 7:
+        case "end":
+          return _context0.stop();
       }
-    }, _callee0, null, [[3, 11]]);
+    }, _callee0, null, [[2, 5]]);
   }));
   return _redirectedBbid.apply(this, arguments);
 }
@@ -556,59 +538,54 @@ function makeEntityLoader(modelName, additionalRels, errMessage) {
   var relations = ['aliasSet.aliases.language', 'annotation.lastRevision', 'defaultAlias', 'disambiguation', 'identifierSet.identifiers.type', 'relationshipSet.relationships.type', 'revision.revision', 'collections.owner'].concat(additionalRels);
   return /*#__PURE__*/function () {
     var _ref = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(req, res, next, bbid) {
-      var orm, entity, reviews;
-      return _regenerator.default.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              orm = req.app.locals.orm;
-              if (!commonUtils.isValidBBID(bbid)) {
-                _context2.next = 25;
-                break;
-              }
-              _context2.prev = 2;
-              _context2.next = 5;
-              return orm.func.entity.getEntity(orm, modelName, bbid, relations);
-            case 5:
-              entity = _context2.sent;
-              if (entity.dataId) {
-                _context2.next = 11;
-                break;
-              }
-              entity.deleted = true;
-              _context2.next = 10;
-              return orm.func.entity.getEntityParentAlias(orm, modelName, bbid);
-            case 10:
-              entity.parentAlias = _context2.sent;
-            case 11:
-              if (entity.collections) {
-                entity.collections = entity.collections.filter(function (collection) {
-                  var _req$user;
-                  return collection.public === true || parseInt(collection.ownerId, 10) === parseInt((_req$user = req.user) === null || _req$user === void 0 ? void 0 : _req$user.id, 10);
-                });
-              }
-              _context2.next = 14;
-              return (0, _critiquebrainz.getReviewsFromCB)(bbid, entity.type);
-            case 14:
-              reviews = _context2.sent;
-              entity.reviews = reviews;
-              res.locals.entity = entity;
-              return _context2.abrupt("return", next());
-            case 20:
-              _context2.prev = 20;
-              _context2.t0 = _context2["catch"](2);
-              return _context2.abrupt("return", next(new error.NotFoundError(errMessage, req)));
-            case 23:
-              _context2.next = 26;
+      var orm, entity, reviews, _t2;
+      return _regenerator.default.wrap(function (_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
+          case 0:
+            orm = req.app.locals.orm;
+            if (!commonUtils.isValidBBID(bbid)) {
+              _context2.next = 7;
               break;
-            case 25:
-              return _context2.abrupt("return", next(new error.BadRequestError('Invalid BBID', req)));
-            case 26:
-            case "end":
-              return _context2.stop();
-          }
+            }
+            _context2.prev = 1;
+            _context2.next = 2;
+            return orm.func.entity.getEntity(orm, modelName, bbid, relations);
+          case 2:
+            entity = _context2.sent;
+            if (entity.dataId) {
+              _context2.next = 4;
+              break;
+            }
+            entity.deleted = true;
+            _context2.next = 3;
+            return orm.func.entity.getEntityParentAlias(orm, modelName, bbid);
+          case 3:
+            entity.parentAlias = _context2.sent;
+          case 4:
+            if (entity.collections) {
+              entity.collections = entity.collections.filter(function (collection) {
+                var _req$user;
+                return collection.public === true || parseInt(collection.ownerId, 10) === parseInt((_req$user = req.user) === null || _req$user === void 0 ? void 0 : _req$user.id, 10);
+              });
+            }
+            _context2.next = 5;
+            return (0, _critiquebrainz.getReviewsFromCB)(bbid, entity.type);
+          case 5:
+            reviews = _context2.sent;
+            entity.reviews = reviews;
+            res.locals.entity = entity;
+            return _context2.abrupt("return", next());
+          case 6:
+            _context2.prev = 6;
+            _t2 = _context2["catch"](1);
+            return _context2.abrupt("return", next(new error.NotFoundError(errMessage, req)));
+          case 7:
+            return _context2.abrupt("return", next(new error.BadRequestError('Invalid BBID', req)));
+          case 8:
+          case "end":
+            return _context2.stop();
         }
-      }, _callee2, null, [[2, 20]]);
+      }, _callee2, null, [[1, 6]]);
     }));
     return function (_x18, _x19, _x20, _x21) {
       return _ref.apply(this, arguments);
@@ -618,50 +595,45 @@ function makeEntityLoader(modelName, additionalRels, errMessage) {
 function makeCollectionLoader() {
   return /*#__PURE__*/function () {
     var _ref2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee3(req, res, next, collectionId) {
-      var UserCollection, collection, collectionJSON;
-      return _regenerator.default.wrap(function _callee3$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              UserCollection = req.app.locals.orm.UserCollection;
-              if (!commonUtils.isValidBBID(collectionId)) {
-                _context3.next = 17;
-                break;
-              }
-              _context3.prev = 2;
-              _context3.next = 5;
-              return new UserCollection({
-                id: collectionId
-              }).fetch({
-                require: true,
-                withRelated: ['collaborators.collaborator', 'items', 'owner']
-              });
-            case 5:
-              collection = _context3.sent;
-              collectionJSON = collection.toJSON(); // reshaping collaborators such that it can be used in EntitySearchFieldOption
-              collectionJSON.collaborators = collectionJSON.collaborators.map(function (collaborator) {
-                return {
-                  id: collaborator.collaborator.id,
-                  text: collaborator.collaborator.name
-                };
-              });
-              res.locals.collection = collectionJSON;
-              return _context3.abrupt("return", next());
-            case 12:
-              _context3.prev = 12;
-              _context3.t0 = _context3["catch"](2);
-              return _context3.abrupt("return", next(new error.NotFoundError('Collection Not Found', req)));
-            case 15:
-              _context3.next = 18;
+      var UserCollection, collection, collectionJSON, _t3;
+      return _regenerator.default.wrap(function (_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
+          case 0:
+            UserCollection = req.app.locals.orm.UserCollection;
+            if (!commonUtils.isValidBBID(collectionId)) {
+              _context3.next = 4;
               break;
-            case 17:
-              return _context3.abrupt("return", next(new error.BadRequestError('Invalid Collection ID', req)));
-            case 18:
-            case "end":
-              return _context3.stop();
-          }
+            }
+            _context3.prev = 1;
+            _context3.next = 2;
+            return new UserCollection({
+              id: collectionId
+            }).fetch({
+              require: true,
+              withRelated: ['collaborators.collaborator', 'items', 'owner']
+            });
+          case 2:
+            collection = _context3.sent;
+            collectionJSON = collection.toJSON(); // reshaping collaborators such that it can be used in EntitySearchFieldOption
+            collectionJSON.collaborators = collectionJSON.collaborators.map(function (collaborator) {
+              return {
+                id: collaborator.collaborator.id,
+                text: collaborator.collaborator.name
+              };
+            });
+            res.locals.collection = collectionJSON;
+            return _context3.abrupt("return", next());
+          case 3:
+            _context3.prev = 3;
+            _t3 = _context3["catch"](1);
+            return _context3.abrupt("return", next(new error.NotFoundError('Collection Not Found', req)));
+          case 4:
+            return _context3.abrupt("return", next(new error.BadRequestError('Invalid Collection ID', req)));
+          case 5:
+          case "end":
+            return _context3.stop();
         }
-      }, _callee3, null, [[2, 12]]);
+      }, _callee3, null, [[1, 3]]);
     }));
     return function (_x22, _x23, _x24, _x25) {
       return _ref2.apply(this, arguments);
@@ -673,86 +645,97 @@ function validateCollectionParams(_x26, _x27, _x28) {
 }
 function _validateCollectionParams() {
   _validateCollectionParams = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee1(req, res, next) {
-    var _req$body, _req$body$collaborato2, collaborators, name, entityType, orm, Editor, entityTypes, collaboratorIds, i, collaboratorId, editors, editorsJSON, _loop3, _i2, _ret3;
-    return _regenerator.default.wrap(function _callee1$(_context1) {
-      while (1) {
-        switch (_context1.prev = _context1.next) {
-          case 0:
-            _req$body = req.body, _req$body$collaborato2 = _req$body.collaborators, collaborators = _req$body$collaborato2 === void 0 ? [] : _req$body$collaborato2, name = _req$body.name, entityType = _req$body.entityType;
-            orm = req.app.locals.orm;
-            Editor = orm.Editor;
-            if ((0, _trim2.default)(name).length) {
-              _context1.next = 5;
-              break;
-            }
-            return _context1.abrupt("return", next(new error.BadRequestError('Invalid collection name: Empty string not allowed', req)));
-          case 5:
-            entityTypes = (0, _keys2.default)(commonUtils.getEntityModels(orm));
-            if (entityTypes.includes((0, _upperFirst2.default)((0, _camelCase2.default)(entityType)))) {
-              _context1.next = 8;
-              break;
-            }
-            return _context1.abrupt("return", next(new error.BadRequestError("Invalid entity type: ".concat(entityType, " does not exist"), req)));
-          case 8:
-            collaboratorIds = collaborators.map(function (collaborator) {
-              return collaborator.id;
-            });
-            i = 0;
-          case 10:
-            if (!(i &lt; collaboratorIds.length)) {
-              _context1.next = 17;
-              break;
-            }
-            collaboratorId = collaboratorIds[i];
-            if (/^\d+$/.test(collaboratorId)) {
-              _context1.next = 14;
-              break;
-            }
-            return _context1.abrupt("return", next(new error.BadRequestError("Invalid collaborator id: ".concat(collaboratorId, " not valid"), req)));
-          case 14:
-            i++;
-            _context1.next = 10;
+    var _req$body, _req$body$collaborato2, collaborators, name, entityType, orm, Editor, entityTypes, collaboratorIds, i, collaboratorId, editors, editorsJSON, _loop3, _ret3, _i2;
+    return _regenerator.default.wrap(function (_context10) {
+      while (1) switch (_context10.prev = _context10.next) {
+        case 0:
+          _req$body = req.body, _req$body$collaborato2 = _req$body.collaborators, collaborators = _req$body$collaborato2 === void 0 ? [] : _req$body$collaborato2, name = _req$body.name, entityType = _req$body.entityType;
+          orm = req.app.locals.orm;
+          Editor = orm.Editor;
+          if ((0, _trim2.default)(name).length) {
+            _context10.next = 1;
             break;
-          case 17:
-            _context1.next = 19;
-            return new Editor().where('id', 'in', collaboratorIds).fetchAll({
-              require: false
-            });
-          case 19:
-            editors = _context1.sent;
-            editorsJSON = editors.toJSON();
-            _loop3 = function _loop3(_i2) {
-              var collaboratorId = collaboratorIds[_i2];
-              if (!editorsJSON.find(function (editor) {
-                return editor.id === collaboratorId;
-              })) {
-                return {
-                  v: next(new error.NotFoundError("Collaborator ".concat(collaboratorId, " does not exist"), req))
-                };
+          }
+          return _context10.abrupt("return", next(new error.BadRequestError('Invalid collection name: Empty string not allowed', req)));
+        case 1:
+          entityTypes = (0, _keys2.default)(commonUtils.getEntityModels(orm));
+          if (entityTypes.includes((0, _upperFirst2.default)((0, _camelCase2.default)(entityType)))) {
+            _context10.next = 2;
+            break;
+          }
+          return _context10.abrupt("return", next(new error.BadRequestError("Invalid entity type: ".concat(entityType, " does not exist"), req)));
+        case 2:
+          collaboratorIds = collaborators.map(function (collaborator) {
+            return collaborator.id;
+          });
+          i = 0;
+        case 3:
+          if (!(i &lt; collaboratorIds.length)) {
+            _context10.next = 5;
+            break;
+          }
+          collaboratorId = collaboratorIds[i];
+          if (/^\d+$/.test(collaboratorId)) {
+            _context10.next = 4;
+            break;
+          }
+          return _context10.abrupt("return", next(new error.BadRequestError("Invalid collaborator id: ".concat(collaboratorId, " not valid"), req)));
+        case 4:
+          i++;
+          _context10.next = 3;
+          break;
+        case 5:
+          _context10.next = 6;
+          return new Editor().where('id', 'in', collaboratorIds).fetchAll({
+            require: false
+          });
+        case 6:
+          editors = _context10.sent;
+          editorsJSON = editors.toJSON();
+          _loop3 = /*#__PURE__*/_regenerator.default.mark(function _loop3() {
+            var collaboratorId;
+            return _regenerator.default.wrap(function (_context1) {
+              while (1) switch (_context1.prev = _context1.next) {
+                case 0:
+                  collaboratorId = collaboratorIds[_i2];
+                  if (editorsJSON.find(function (editor) {
+                    return editor.id === collaboratorId;
+                  })) {
+                    _context1.next = 1;
+                    break;
+                  }
+                  return _context1.abrupt("return", {
+                    v: next(new error.NotFoundError("Collaborator ".concat(collaboratorId, " does not exist"), req))
+                  });
+                case 1:
+                case "end":
+                  return _context1.stop();
               }
-            };
-            _i2 = 0;
-          case 23:
-            if (!(_i2 &lt; collaboratorIds.length)) {
-              _context1.next = 30;
-              break;
-            }
-            _ret3 = _loop3(_i2);
-            if (!((0, _typeof2.default)(_ret3) === "object")) {
-              _context1.next = 27;
-              break;
-            }
-            return _context1.abrupt("return", _ret3.v);
-          case 27:
-            _i2++;
-            _context1.next = 23;
+            }, _loop3);
+          });
+          _i2 = 0;
+        case 7:
+          if (!(_i2 &lt; collaboratorIds.length)) {
+            _context10.next = 10;
             break;
-          case 30:
-            return _context1.abrupt("return", next());
-          case 31:
-          case "end":
-            return _context1.stop();
-        }
+          }
+          return _context10.delegateYield(_loop3(), "t0", 8);
+        case 8:
+          _ret3 = _context10.t0;
+          if (!_ret3) {
+            _context10.next = 9;
+            break;
+          }
+          return _context10.abrupt("return", _ret3.v);
+        case 9:
+          _i2++;
+          _context10.next = 7;
+          break;
+        case 10:
+          return _context10.abrupt("return", next());
+        case 11:
+        case "end":
+          return _context10.stop();
       }
     }, _callee1);
   }));
@@ -763,83 +746,97 @@ function validateBBIDsForCollectionAdd(_x29, _x30, _x31) {
 }
 function _validateBBIDsForCollectionAdd() {
   _validateBBIDsForCollectionAdd = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee10(req, res, next) {
-    var Entity, _req$body$bbids2, bbids, collection, collectionType, i, bbid, entities, entitiesJSON, _loop4, _i3, _ret4;
-    return _regenerator.default.wrap(function _callee10$(_context10) {
-      while (1) {
-        switch (_context10.prev = _context10.next) {
-          case 0:
-            Entity = req.app.locals.orm.Entity;
-            _req$body$bbids2 = req.body.bbids, bbids = _req$body$bbids2 === void 0 ? [] : _req$body$bbids2;
-            if (bbids.length) {
-              _context10.next = 4;
-              break;
-            }
-            return _context10.abrupt("return", next(new error.BadRequestError('BBIDs array is empty')));
-          case 4:
-            collection = res.locals.collection;
-            collectionType = collection.entityType;
-            i = 0;
-          case 7:
-            if (!(i &lt; bbids.length)) {
-              _context10.next = 14;
-              break;
-            }
-            bbid = bbids[i];
-            if (commonUtils.isValidBBID(bbid)) {
-              _context10.next = 11;
-              break;
-            }
-            return _context10.abrupt("return", next(new error.BadRequestError("Invalid BBID ".concat(bbid), req)));
-          case 11:
-            i++;
-            _context10.next = 7;
+    var Entity, _req$body$bbids2, bbids, collection, collectionType, i, bbid, entities, entitiesJSON, _loop4, _ret4, _i3;
+    return _regenerator.default.wrap(function (_context12) {
+      while (1) switch (_context12.prev = _context12.next) {
+        case 0:
+          Entity = req.app.locals.orm.Entity;
+          _req$body$bbids2 = req.body.bbids, bbids = _req$body$bbids2 === void 0 ? [] : _req$body$bbids2;
+          if (bbids.length) {
+            _context12.next = 1;
             break;
-          case 14:
-            _context10.next = 16;
-            return new Entity().where('bbid', 'in', bbids).fetchAll({
-              require: false
-            });
-          case 16:
-            entities = _context10.sent;
-            entitiesJSON = entities.toJSON();
-            _loop4 = function _loop4(_i3) {
-              var bbid = bbids[_i3];
-              var entity = entitiesJSON.find(function (currEntity) {
-                return currEntity.bbid === bbid;
-              });
-              if (!entity) {
-                return {
-                  v: next(new error.NotFoundError("".concat(collectionType, " ").concat(bbid, " does not exist"), req))
-                };
-              }
-              if ((0, _lowerCase2.default)(entity.type) !== (0, _lowerCase2.default)(collectionType)) {
-                return {
-                  v: next(new error.BadRequestError("Cannot add an entity of type ".concat(entity.type, " to a collection of type ").concat(collectionType)))
-                };
-              }
-            };
-            _i3 = 0;
-          case 20:
-            if (!(_i3 &lt; bbids.length)) {
-              _context10.next = 27;
-              break;
-            }
-            _ret4 = _loop4(_i3);
-            if (!((0, _typeof2.default)(_ret4) === "object")) {
-              _context10.next = 24;
-              break;
-            }
-            return _context10.abrupt("return", _ret4.v);
-          case 24:
-            _i3++;
-            _context10.next = 20;
+          }
+          return _context12.abrupt("return", next(new error.BadRequestError('BBIDs array is empty')));
+        case 1:
+          collection = res.locals.collection;
+          collectionType = collection.entityType;
+          i = 0;
+        case 2:
+          if (!(i &lt; bbids.length)) {
+            _context12.next = 4;
             break;
-          case 27:
-            return _context10.abrupt("return", next());
-          case 28:
-          case "end":
-            return _context10.stop();
-        }
+          }
+          bbid = bbids[i];
+          if (commonUtils.isValidBBID(bbid)) {
+            _context12.next = 3;
+            break;
+          }
+          return _context12.abrupt("return", next(new error.BadRequestError("Invalid BBID ".concat(bbid), req)));
+        case 3:
+          i++;
+          _context12.next = 2;
+          break;
+        case 4:
+          _context12.next = 5;
+          return new Entity().where('bbid', 'in', bbids).fetchAll({
+            require: false
+          });
+        case 5:
+          entities = _context12.sent;
+          entitiesJSON = entities.toJSON();
+          _loop4 = /*#__PURE__*/_regenerator.default.mark(function _loop4() {
+            var bbid, entity;
+            return _regenerator.default.wrap(function (_context11) {
+              while (1) switch (_context11.prev = _context11.next) {
+                case 0:
+                  bbid = bbids[_i3];
+                  entity = entitiesJSON.find(function (currEntity) {
+                    return currEntity.bbid === bbid;
+                  });
+                  if (entity) {
+                    _context11.next = 1;
+                    break;
+                  }
+                  return _context11.abrupt("return", {
+                    v: next(new error.NotFoundError("".concat(collectionType, " ").concat(bbid, " does not exist"), req))
+                  });
+                case 1:
+                  if (!((0, _lowerCase2.default)(entity.type) !== (0, _lowerCase2.default)(collectionType))) {
+                    _context11.next = 2;
+                    break;
+                  }
+                  return _context11.abrupt("return", {
+                    v: next(new error.BadRequestError("Cannot add an entity of type ".concat(entity.type, " to a collection of type ").concat(collectionType)))
+                  });
+                case 2:
+                case "end":
+                  return _context11.stop();
+              }
+            }, _loop4);
+          });
+          _i3 = 0;
+        case 6:
+          if (!(_i3 &lt; bbids.length)) {
+            _context12.next = 9;
+            break;
+          }
+          return _context12.delegateYield(_loop4(), "t0", 7);
+        case 7:
+          _ret4 = _context12.t0;
+          if (!_ret4) {
+            _context12.next = 8;
+            break;
+          }
+          return _context12.abrupt("return", _ret4.v);
+        case 8:
+          _i3++;
+          _context12.next = 6;
+          break;
+        case 9:
+          return _context12.abrupt("return", next());
+        case 10:
+        case "end":
+          return _context12.stop();
       }
     }, _callee10);
   }));
@@ -858,20 +855,21 @@ function validateBBIDsForCollectionRemove(req, res, next) {
       return next(new error.BadRequestError("Invalid BBID ".concat(bbid), req));
     }
   }
-  var _loop = function _loop(_i) {
-    var bbid = bbids[_i];
-    var isBbidInCollection = collection.items.find(function (item) {
-      return item.bbid === bbid;
-    });
-    if (!isBbidInCollection) {
-      return {
-        v: next(new error.BadRequestError("Entity ".concat(bbid, " is not in collection ").concat(collection.id), req))
-      };
-    }
-  };
+  var _loop = function _loop() {
+      var bbid = bbids[_i];
+      var isBbidInCollection = collection.items.find(function (item) {
+        return item.bbid === bbid;
+      });
+      if (!isBbidInCollection) {
+        return {
+          v: next(new error.BadRequestError("Entity ".concat(bbid, " is not in collection ").concat(collection.id), req))
+        };
+      }
+    },
+    _ret;
   for (var _i = 0; _i &lt; bbids.length; _i++) {
-    var _ret = _loop(_i);
-    if ((0, _typeof2.default)(_ret) === "object") return _ret.v;
+    _ret = _loop();
+    if (_ret) return _ret.v;
   }
   return next();
 }
@@ -882,20 +880,21 @@ function validateCollaboratorIdsForCollectionRemove(req, res, next) {
     return next(new error.BadRequestError('CollaboratorIds array is empty'));
   }
   var collection = res.locals.collection;
-  var _loop2 = function _loop2(i) {
-    var collaboratorId = collaboratorIds[i];
-    var isCollaborator = collection.collaborators.find(function (collaborator) {
-      return collaborator.id === collaboratorId;
-    });
-    if (!isCollaborator) {
-      return {
-        v: next(new error.BadRequestError("User ".concat(collaboratorId, " is not a collaborator of collection ").concat(collection.id), req))
-      };
-    }
-  };
+  var _loop2 = function _loop2() {
+      var collaboratorId = collaboratorIds[i];
+      var isCollaborator = collection.collaborators.find(function (collaborator) {
+        return collaborator.id === collaboratorId;
+      });
+      if (!isCollaborator) {
+        return {
+          v: next(new error.BadRequestError("User ".concat(collaboratorId, " is not a collaborator of collection ").concat(collection.id), req))
+        };
+      }
+    },
+    _ret2;
   for (var i = 0; i &lt; collaboratorIds.length; i++) {
-    var _ret2 = _loop2(i);
-    if ((0, _typeof2.default)(_ret2) === "object") return _ret2.v;
+    _ret2 = _loop2();
+    if (_ret2) return _ret2.v;
   }
   return next();
 }
@@ -911,7 +910,7 @@ function validateCollaboratorIdsForCollectionRemove(req, res, next) {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 13:45:00 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 15:19:59 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

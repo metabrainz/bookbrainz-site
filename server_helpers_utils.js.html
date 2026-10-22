@@ -41,15 +41,15 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-require("core-js/modules/es.array.slice.js");
-require("core-js/modules/es.array.from.js");
 require("core-js/modules/es.symbol.js");
 require("core-js/modules/es.symbol.description.js");
 require("core-js/modules/es.symbol.iterator.js");
-require("core-js/modules/es.weak-map.js");
+require("core-js/modules/es.array.from.js");
+require("core-js/modules/es.array.slice.js");
 require("core-js/modules/es.object.get-own-property-descriptor.js");
+require("core-js/modules/es.regexp.to-string.js");
+require("core-js/modules/es.weak-map.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -70,33 +70,34 @@ exports.parseQuery = parseQuery;
 exports.searchOption = searchOption;
 exports.template = template;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-require("core-js/modules/es.array.iterator.js");
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/es.set.js");
-require("core-js/modules/es.string.iterator.js");
-require("core-js/modules/web.dom-collections.iterator.js");
 require("core-js/modules/es.array.filter.js");
-require("core-js/modules/web.dom-collections.for-each.js");
+require("core-js/modules/es.array.includes.js");
+require("core-js/modules/es.array.iterator.js");
 require("core-js/modules/es.array.join.js");
 require("core-js/modules/es.function.name.js");
-require("core-js/modules/es.promise.js");
-require("core-js/modules/es.parse-int.js");
-require("core-js/modules/es.regexp.exec.js");
-require("core-js/modules/es.string.replace.js");
-require("core-js/modules/web.url-search-params.js");
-require("core-js/modules/es.array.includes.js");
-require("core-js/modules/es.string.includes.js");
 require("core-js/modules/es.object.assign.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.parse-int.js");
+require("core-js/modules/es.promise.js");
+require("core-js/modules/es.regexp.exec.js");
+require("core-js/modules/es.set.js");
+require("core-js/modules/es.string.includes.js");
+require("core-js/modules/es.string.iterator.js");
+require("core-js/modules/es.string.replace.js");
+require("core-js/modules/web.dom-collections.for-each.js");
+require("core-js/modules/web.dom-collections.iterator.js");
+require("core-js/modules/web.url-search-params.js");
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _upperFirst2 = _interopRequireDefault(require("lodash/upperFirst"));
 var _isNil2 = _interopRequireDefault(require("lodash/isNil"));
 var search = _interopRequireWildcard(require("../../common/helpers/search"));
 var _utils = require("../../common/helpers/utils");
-function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != _typeof(e) &amp;&amp; "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (var _t in e) { "default" !== _t &amp;&amp; {}.hasOwnProperty.call(e, _t) &amp;&amp; ((i = (o = Object.defineProperty) &amp;&amp; Object.getOwnPropertyDescriptor(e, _t)) &amp;&amp; (i.get || i.set) ? o(f, _t, i) : f[_t] = e[_t]); } return f; })(e, t); }
+var cache;
+function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c &amp;&amp; {}.hasOwnProperty.call(e, c) &amp;&amp; ((r = a &amp;&amp; Object.getOwnPropertyDescriptor(e, c)) &amp;&amp; (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol &amp;&amp; r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e &amp;&amp; r &amp;&amp; "number" == typeof r.length) { t &amp;&amp; (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t.return || t.return(); } finally { if (u) throw o; } } }; }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t &amp;&amp; r.constructor &amp;&amp; (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) &amp;&amp; (a = r.length); for (var e = 0, n = Array(a); e &lt; a; e++) { n[e] = r[e]; } return n; } /*
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) &amp;&amp; (a = r.length); for (var e = 0, n = Array(a); e &lt; a; e++) n[e] = r[e]; return n; } /*
  * Copyright (C) 2015       Ben Ockmore
  *               2015-2017  Sean Burke
  				 2019       Akhilesh Kumar (@akhilesh26)
@@ -324,58 +325,57 @@ function getIdByField(_x, _x2, _x3) {
 function _getIdByField() {
   _getIdByField = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee(model, fieldName, fieldValue) {
     var _yield$model$query$fe, _yield$model$query$fe2;
-    return _regenerator.default.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
+    var _t, _t2, _t3, _t4, _t5, _t6;
+    return _regenerator.default.wrap(function (_context) {
+      while (1) switch (_context.prev = _context.next) {
+        case 0:
+          _context.next = 1;
+          return model.query({
+            where: (0, _defineProperty2.default)({}, fieldName, fieldValue)
+          }).fetch({
+            require: false
+          });
+        case 1:
+          _t3 = _yield$model$query$fe2 = _context.sent;
+          _t2 = _t3 === null;
+          if (_t2) {
             _context.next = 2;
-            return model.query({
-              where: (0, _defineProperty2.default)({}, fieldName, fieldValue)
-            }).fetch({
-              require: false
-            });
-          case 2:
-            _context.t2 = _yield$model$query$fe2 = _context.sent;
-            _context.t1 = _context.t2 === null;
-            if (_context.t1) {
-              _context.next = 6;
-              break;
-            }
-            _context.t1 = _yield$model$query$fe2 === void 0;
-          case 6:
-            if (!_context.t1) {
-              _context.next = 10;
-              break;
-            }
-            _context.t3 = void 0;
-            _context.next = 11;
             break;
-          case 10:
-            _context.t3 = _yield$model$query$fe2.get('id');
-          case 11:
-            _context.t4 = _yield$model$query$fe = _context.t3;
-            _context.t0 = _context.t4 !== null;
-            if (!_context.t0) {
-              _context.next = 15;
-              break;
-            }
-            _context.t0 = _yield$model$query$fe !== void 0;
-          case 15:
-            if (!_context.t0) {
-              _context.next = 19;
-              break;
-            }
-            _context.t5 = _yield$model$query$fe;
-            _context.next = 20;
+          }
+          _t2 = _yield$model$query$fe2 === void 0;
+        case 2:
+          if (!_t2) {
+            _context.next = 3;
             break;
-          case 19:
-            _context.t5 = null;
-          case 20:
-            return _context.abrupt("return", _context.t5);
-          case 21:
-          case "end":
-            return _context.stop();
-        }
+          }
+          _t4 = void 0;
+          _context.next = 4;
+          break;
+        case 3:
+          _t4 = _yield$model$query$fe2.get('id');
+        case 4:
+          _t5 = _yield$model$query$fe = _t4;
+          _t = _t5 !== null;
+          if (!_t) {
+            _context.next = 5;
+            break;
+          }
+          _t = _yield$model$query$fe !== void 0;
+        case 5:
+          if (!_t) {
+            _context.next = 6;
+            break;
+          }
+          _t6 = _yield$model$query$fe;
+          _context.next = 7;
+          break;
+        case 6:
+          _t6 = null;
+        case 7:
+          return _context.abrupt("return", _t6);
+        case 8:
+        case "end":
+          return _context.stop();
       }
     }, _callee);
   }));
@@ -417,56 +417,53 @@ function parseLanguages(_x4, _x5) {
  */
 function _parseLanguages() {
   _parseLanguages = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(sourceEntitySection, orm) {
-    var Language, languages, langKey;
-    return _regenerator.default.wrap(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            if (sourceEntitySection) {
-              _context2.next = 2;
-              break;
-            }
-            return _context2.abrupt("return", sourceEntitySection);
-          case 2:
-            Language = orm.Language;
-            languages = [];
-            _context2.t0 = _regenerator.default.keys(sourceEntitySection);
-          case 5:
-            if ((_context2.t1 = _context2.t0()).done) {
-              _context2.next = 19;
-              break;
-            }
-            langKey = _context2.t1.value;
-            if (!Object.prototype.hasOwnProperty.call(sourceEntitySection, langKey)) {
-              _context2.next = 17;
-              break;
-            }
-            if (!langKey.includes('languages')) {
-              _context2.next = 17;
-              break;
-            }
-            _context2.t2 = languages;
-            _context2.t3 = (0, _upperFirst2.default)(sourceEntitySection[langKey]);
-            _context2.next = 13;
-            return getIdByField(Language, 'name', (0, _upperFirst2.default)(sourceEntitySection[langKey]));
-          case 13:
-            _context2.t4 = _context2.sent;
-            _context2.t5 = {
-              label: _context2.t3,
-              value: _context2.t4
-            };
-            _context2.t2.push.call(_context2.t2, _context2.t5);
-            delete sourceEntitySection[langKey];
-          case 17:
+    var Language, languages, langKey, _t7, _t8, _t9, _t0, _t1;
+    return _regenerator.default.wrap(function (_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
+        case 0:
+          if (sourceEntitySection) {
+            _context2.next = 1;
+            break;
+          }
+          return _context2.abrupt("return", sourceEntitySection);
+        case 1:
+          Language = orm.Language;
+          languages = [];
+          _t7 = _regenerator.default.keys(sourceEntitySection);
+        case 2:
+          if ((_t8 = _t7()).done) {
             _context2.next = 5;
             break;
-          case 19:
-            sourceEntitySection.languages = languages;
-            return _context2.abrupt("return", sourceEntitySection);
-          case 21:
-          case "end":
-            return _context2.stop();
-        }
+          }
+          langKey = _t8.value;
+          if (!Object.prototype.hasOwnProperty.call(sourceEntitySection, langKey)) {
+            _context2.next = 4;
+            break;
+          }
+          if (!langKey.includes('languages')) {
+            _context2.next = 4;
+            break;
+          }
+          _t9 = languages;
+          _t0 = (0, _upperFirst2.default)(sourceEntitySection[langKey]);
+          _context2.next = 3;
+          return getIdByField(Language, 'name', (0, _upperFirst2.default)(sourceEntitySection[langKey]));
+        case 3:
+          _t1 = _context2.sent;
+          _t9.push.call(_t9, {
+            label: _t0,
+            value: _t1
+          });
+          delete sourceEntitySection[langKey];
+        case 4:
+          _context2.next = 2;
+          break;
+        case 5:
+          sourceEntitySection.languages = languages;
+          return _context2.abrupt("return", sourceEntitySection);
+        case 6:
+        case "end":
+          return _context2.stop();
       }
     }, _callee2);
   }));
@@ -490,46 +487,44 @@ function _searchOption() {
       firstMatch,
       option,
       _args3 = arguments;
-    return _regenerator.default.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            idKey = _args3.length > 3 &amp;&amp; _args3[3] !== undefined ? _args3[3] : 'id';
-            exactMatch = _args3.length > 4 &amp;&amp; _args3[4] !== undefined ? _args3[4] : false;
-            if (!exactMatch) {
-              _context3.next = 8;
-              break;
-            }
-            _context3.next = 5;
-            return search.checkIfExists(orm, query, type);
-          case 5:
-            results = _context3.sent;
-            _context3.next = 11;
+    return _regenerator.default.wrap(function (_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          idKey = _args3.length > 3 &amp;&amp; _args3[3] !== undefined ? _args3[3] : 'id';
+          exactMatch = _args3.length > 4 &amp;&amp; _args3[4] !== undefined ? _args3[4] : false;
+          if (!exactMatch) {
+            _context3.next = 2;
             break;
-          case 8:
-            _context3.next = 10;
-            return search.autocomplete(orm, query, type, 1);
-          case 10:
-            results = _context3.sent;
-          case 11:
-            if (!results.length) {
-              _context3.next = 15;
-              break;
-            }
-            firstMatch = results[0];
-            option = {
-              disambiguation: idKey === 'id' ? firstMatch.disambiguation.comment : null,
-              id: firstMatch[idKey],
-              text: firstMatch.defaultAlias.name,
-              type: firstMatch.type
-            };
-            return _context3.abrupt("return", option);
-          case 15:
-            return _context3.abrupt("return", null);
-          case 16:
-          case "end":
-            return _context3.stop();
-        }
+          }
+          _context3.next = 1;
+          return search.checkIfExists(orm, query, type);
+        case 1:
+          results = _context3.sent;
+          _context3.next = 4;
+          break;
+        case 2:
+          _context3.next = 3;
+          return search.autocomplete(orm, query, type, 1);
+        case 3:
+          results = _context3.sent;
+        case 4:
+          if (!results.length) {
+            _context3.next = 5;
+            break;
+          }
+          firstMatch = results[0];
+          option = {
+            disambiguation: idKey === 'id' ? firstMatch.disambiguation.comment : null,
+            id: firstMatch[idKey],
+            text: firstMatch.defaultAlias.name,
+            type: firstMatch.type
+          };
+          return _context3.abrupt("return", option);
+        case 5:
+          return _context3.abrupt("return", null);
+        case 6:
+        case "end":
+          return _context3.stop();
       }
     }, _callee3);
   }));
@@ -541,69 +536,67 @@ function parseInitialState(_x9, _x0) {
 function _parseInitialState() {
   _parseInitialState = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee4(req, type) {
     var emptyState, entity, orm, Language, initialState;
-    return _regenerator.default.wrap(function _callee4$(_context4) {
-      while (1) {
-        switch (_context4.prev = _context4.next) {
-          case 0:
-            emptyState = {
-              nameSection: {
-                disambiguation: '',
-                exactMatches: null,
-                language: null,
-                name: '',
-                searchResults: null,
-                sortName: ''
-              }
+    return _regenerator.default.wrap(function (_context4) {
+      while (1) switch (_context4.prev = _context4.next) {
+        case 0:
+          emptyState = {
+            nameSection: {
+              disambiguation: '',
+              exactMatches: null,
+              language: null,
+              name: '',
+              searchResults: null,
+              sortName: ''
+            }
+          };
+          entity = (0, _utils.unflatten)(req.body);
+          orm = req.app.locals.orm;
+          Language = orm.Language; // NameSection State
+          initialState = Object.assign(emptyState, entity); // We allow Editions (but not other entities) to have the same primary name as another Edition without requiring a disambiguation
+          if (!(initialState.nameSection.name &amp;&amp; type !== 'edition')) {
+            _context4.next = 3;
+            break;
+          }
+          _context4.next = 1;
+          return search.autocomplete(orm, initialState.nameSection.name, type, 10);
+        case 1:
+          initialState.nameSection.searchResults = _context4.sent;
+          _context4.next = 2;
+          return search.checkIfExists(orm, initialState.nameSection.name, type);
+        case 2:
+          initialState.nameSection.exactMatches = _context4.sent;
+        case 3:
+          if (!initialState.nameSection.language) {
+            _context4.next = 5;
+            break;
+          }
+          _context4.next = 4;
+          return getIdByField(Language, 'name', initialState.nameSection.language);
+        case 4:
+          initialState.nameSection.language = _context4.sent;
+        case 5:
+          // IdentifierEditor State
+          if (initialState.identifierEditor) {
+            initialState.identifierEditor = generateIdenfierState(initialState.identifierEditor);
+          }
+          // AnnotationSection State
+          if (initialState.annotationSection) {
+            initialState.annotationSection = {
+              content: initialState.annotationSection
             };
-            entity = (0, _utils.unflatten)(req.body);
-            orm = req.app.locals.orm;
-            Language = orm.Language; // NameSection State
-            initialState = Object.assign(emptyState, entity); // We allow Editions (but not other entities) to have the same primary name as another Edition without requiring a disambiguation
-            if (!(initialState.nameSection.name &amp;&amp; type !== 'edition')) {
-              _context4.next = 12;
-              break;
-            }
-            _context4.next = 8;
-            return search.autocomplete(orm, initialState.nameSection.name, type, 10);
-          case 8:
-            initialState.nameSection.searchResults = _context4.sent;
-            _context4.next = 11;
-            return search.checkIfExists(orm, initialState.nameSection.name, type);
-          case 11:
-            initialState.nameSection.exactMatches = _context4.sent;
-          case 12:
-            if (!initialState.nameSection.language) {
-              _context4.next = 16;
-              break;
-            }
-            _context4.next = 15;
-            return getIdByField(Language, 'name', initialState.nameSection.language);
-          case 15:
-            initialState.nameSection.language = _context4.sent;
-          case 16:
-            // IdentifierEditor State
-            if (initialState.identifierEditor) {
-              initialState.identifierEditor = generateIdenfierState(initialState.identifierEditor);
-            }
-            // AnnotationSection State
-            if (initialState.annotationSection) {
-              initialState.annotationSection = {
-                content: initialState.annotationSection
-              };
-            }
-            // SubmissionSection State
-            if (initialState.submissionSection) {
-              initialState.submissionSection = {
-                note: initialState.submissionSection,
-                submitError: '',
-                submitted: false
-              };
-            }
-            return _context4.abrupt("return", initialState);
-          case 20:
-          case "end":
-            return _context4.stop();
-        }
+          }
+          // SubmissionSection State
+          if (initialState.submissionSection) {
+            initialState.submissionSection = {
+              note: initialState.submissionSection,
+              submitError: '',
+              submitted: false
+            };
+          }
+          return _context4.abrupt("return", initialState);
+        case 6:
+        case "end":
+          return _context4.stop();
       }
     }, _callee4);
   }));
@@ -628,7 +621,7 @@ function getIntFromQueryParams(query, name) {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 13:45:00 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 15:19:59 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

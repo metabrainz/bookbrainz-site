@@ -42,12 +42,11 @@
             <pre class="prettyprint source linenums"><code>"use strict";
 
 require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.object.get-own-property-descriptor.js");
 require("core-js/modules/es.string.iterator.js");
 require("core-js/modules/es.weak-map.js");
 require("core-js/modules/web.dom-collections.iterator.js");
-require("core-js/modules/es.object.get-own-property-descriptor.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -55,15 +54,15 @@ exports.getCollectionItems = getCollectionItems;
 exports.getOrderedCollectionsForEditorPage = getOrderedCollectionsForEditorPage;
 exports.getOrderedPublicCollections = getOrderedPublicCollections;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-require("core-js/modules/es.parse-int.js");
-require("core-js/modules/es.date.to-json.js");
-require("core-js/modules/web.url.to-json.js");
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/web.dom-collections.for-each.js");
 require("core-js/modules/es.array.concat.js");
+require("core-js/modules/es.date.to-json.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.parse-int.js");
+require("core-js/modules/web.dom-collections.for-each.js");
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var error = _interopRequireWildcard(require("../../common/helpers/error"));
-function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != _typeof(e) &amp;&amp; "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (var _t in e) { "default" !== _t &amp;&amp; {}.hasOwnProperty.call(e, _t) &amp;&amp; ((i = (o = Object.defineProperty) &amp;&amp; Object.getOwnPropertyDescriptor(e, _t)) &amp;&amp; (i.get || i.set) ? o(f, _t, i) : f[_t] = e[_t]); } return f; })(e, t); }
+var cache;
+function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c &amp;&amp; {}.hasOwnProperty.call(e, c) &amp;&amp; ((r = a &amp;&amp; Object.getOwnPropertyDescriptor(e, c)) &amp;&amp; (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
 /*
  * Copyright (C) 2020 Prabal Singh
  *
@@ -110,62 +109,60 @@ function getOrderedCollectionsForEditorPage(_x, _x2, _x3, _x4) {
  */
 function _getOrderedCollectionsForEditorPage() {
   _getOrderedCollectionsForEditorPage = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee(from, size, entityType, req) {
-    var _req$app$locals$orm, Editor, UserCollection, isThisCurrentUser, allCollections, collectionsJSON;
-    return _regenerator.default.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            _req$app$locals$orm = req.app.locals.orm, Editor = _req$app$locals$orm.Editor, UserCollection = _req$app$locals$orm.UserCollection; // If editor isn't present, throw an error
-            _context.prev = 1;
+    var _req$app$locals$orm, Editor, UserCollection, isThisCurrentUser, allCollections, collectionsJSON, _t;
+    return _regenerator.default.wrap(function (_context) {
+      while (1) switch (_context.prev = _context.next) {
+        case 0:
+          _req$app$locals$orm = req.app.locals.orm, Editor = _req$app$locals$orm.Editor, UserCollection = _req$app$locals$orm.UserCollection; // If editor isn't present, throw an error
+          _context.prev = 1;
+          _context.next = 2;
+          return new Editor({
+            id: req.params.id
+          }).fetch();
+        case 2:
+          _context.next = 5;
+          break;
+        case 3:
+          _context.prev = 3;
+          _t = _context["catch"](1);
+          if (!(_t instanceof Editor.NotFoundError)) {
             _context.next = 4;
-            return new Editor({
-              id: req.params.id
-            }).fetch();
-          case 4:
-            _context.next = 11;
             break;
-          case 6:
-            _context.prev = 6;
-            _context.t0 = _context["catch"](1);
-            if (!(_context.t0 instanceof Editor.NotFoundError)) {
-              _context.next = 10;
-              break;
+          }
+          throw new error.NotFoundError('Editor not found', req);
+        case 4:
+          throw _t;
+        case 5:
+          isThisCurrentUser = req.user &amp;&amp; parseInt(req.params.id, 10) === parseInt(req.user.id, 10);
+          _context.next = 6;
+          return new UserCollection().query(function (qb) {
+            qb.leftJoin('bookbrainz.user_collection_collaborator', 'bookbrainz.user_collection.id', '=', 'bookbrainz.user_collection_collaborator.collection_id');
+          }).where(function (builder) {
+            if (!isThisCurrentUser) {
+              builder.where('public', true);
             }
-            throw new error.NotFoundError('Editor not found', req);
-          case 10:
-            throw _context.t0;
-          case 11:
-            isThisCurrentUser = req.user &amp;&amp; parseInt(req.params.id, 10) === parseInt(req.user.id, 10);
-            _context.next = 14;
-            return new UserCollection().query(function (qb) {
-              qb.leftJoin('bookbrainz.user_collection_collaborator', 'bookbrainz.user_collection.id', '=', 'bookbrainz.user_collection_collaborator.collection_id');
-            }).where(function (builder) {
-              if (!isThisCurrentUser) {
-                builder.where('public', true);
-              }
-              if (entityType) {
-                builder.where('entity_type', entityType);
-              }
-            }).where(function (builder) {
-              builder.where('collaborator_id', '=', req.params.id).orWhere('owner_id', '=', req.params.id);
-            }).orderBy('created_at').fetchPage({
-              limit: size,
-              offset: from,
-              withItemCount: true
-            });
-          case 14:
-            allCollections = _context.sent;
-            collectionsJSON = allCollections ? allCollections.toJSON() : [];
-            collectionsJSON.forEach(function (collection) {
-              collection.isOwner = parseInt(req.params.id, 10) === collection.ownerId;
-            });
-            return _context.abrupt("return", collectionsJSON);
-          case 18:
-          case "end":
-            return _context.stop();
-        }
+            if (entityType) {
+              builder.where('entity_type', entityType);
+            }
+          }).where(function (builder) {
+            builder.where('collaborator_id', '=', req.params.id).orWhere('owner_id', '=', req.params.id);
+          }).orderBy('created_at').fetchPage({
+            limit: size,
+            offset: from,
+            withItemCount: true
+          });
+        case 6:
+          allCollections = _context.sent;
+          collectionsJSON = allCollections ? allCollections.toJSON() : [];
+          collectionsJSON.forEach(function (collection) {
+            collection.isOwner = parseInt(req.params.id, 10) === collection.ownerId;
+          });
+          return _context.abrupt("return", collectionsJSON);
+        case 7:
+        case "end":
+          return _context.stop();
       }
-    }, _callee, null, [[1, 6]]);
+    }, _callee, null, [[1, 3]]);
   }));
   return _getOrderedCollectionsForEditorPage.apply(this, arguments);
 }
@@ -184,31 +181,29 @@ function getOrderedPublicCollections(_x5, _x6, _x7, _x8) {
 function _getOrderedPublicCollections() {
   _getOrderedPublicCollections = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(from, size, entityType, orm) {
     var UserCollection, allCollections, collectionsJSON;
-    return _regenerator.default.wrap(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            UserCollection = orm.UserCollection;
-            _context2.next = 3;
-            return new UserCollection().where(function (builder) {
-              builder.where('public', true);
-              if (entityType) {
-                builder.where('entity_type', entityType);
-              }
-            }).orderBy('last_modified', 'DESC').fetchPage({
-              limit: size,
-              offset: from,
-              withItemCount: true,
-              withRelated: ['owner']
-            });
-          case 3:
-            allCollections = _context2.sent;
-            collectionsJSON = allCollections ? allCollections.toJSON() : [];
-            return _context2.abrupt("return", collectionsJSON);
-          case 6:
-          case "end":
-            return _context2.stop();
-        }
+    return _regenerator.default.wrap(function (_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
+        case 0:
+          UserCollection = orm.UserCollection;
+          _context2.next = 1;
+          return new UserCollection().where(function (builder) {
+            builder.where('public', true);
+            if (entityType) {
+              builder.where('entity_type', entityType);
+            }
+          }).orderBy('last_modified', 'DESC').fetchPage({
+            limit: size,
+            offset: from,
+            withItemCount: true,
+            withRelated: ['owner']
+          });
+        case 1:
+          allCollections = _context2.sent;
+          collectionsJSON = allCollections ? allCollections.toJSON() : [];
+          return _context2.abrupt("return", collectionsJSON);
+        case 2:
+        case "end":
+          return _context2.stop();
       }
     }, _callee2);
   }));
@@ -220,19 +215,17 @@ function getCollectionItems(_x9, _x0, _x1, _x10) {
 function _getCollectionItems() {
   _getCollectionItems = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee3(collectionId, from, size, orm) {
     var result;
-    return _regenerator.default.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            _context3.next = 2;
-            return orm.bookshelf.knex.raw("\n\t\t\t\t\t\tSELECT bookbrainz.user_collection_item.bbid,\n\t\t\t\t\t\tbookbrainz.user_collection_item.added_at\n\t\t\t\t\t\tFROM bookbrainz.user_collection_item\n\t\t\t\t\t\tWHERE collection_id='".concat(collectionId, "'\n\t\t\t\t\t\tORDER BY user_collection_item.added_at ASC\n\t\t\t\t\t\tLIMIT ").concat(size, "\n\t\t\t\t\t\tOFFSET ").concat(from));
-          case 2:
-            result = _context3.sent;
-            return _context3.abrupt("return", result.rows);
-          case 4:
-          case "end":
-            return _context3.stop();
-        }
+    return _regenerator.default.wrap(function (_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.next = 1;
+          return orm.bookshelf.knex.raw("\n\t\t\t\t\t\tSELECT bookbrainz.user_collection_item.bbid,\n\t\t\t\t\t\tbookbrainz.user_collection_item.added_at\n\t\t\t\t\t\tFROM bookbrainz.user_collection_item\n\t\t\t\t\t\tWHERE collection_id='".concat(collectionId, "'\n\t\t\t\t\t\tORDER BY user_collection_item.added_at ASC\n\t\t\t\t\t\tLIMIT ").concat(size, "\n\t\t\t\t\t\tOFFSET ").concat(from));
+        case 1:
+          result = _context3.sent;
+          return _context3.abrupt("return", result.rows);
+        case 2:
+        case "end":
+          return _context3.stop();
       }
     }, _callee3);
   }));
@@ -250,7 +243,7 @@ function _getCollectionItems() {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 13:45:00 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 15:19:59 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

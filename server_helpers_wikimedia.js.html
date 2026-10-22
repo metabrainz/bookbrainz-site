@@ -41,12 +41,12 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-require("core-js/modules/es.array.slice.js");
-require("core-js/modules/es.function.name.js");
-require("core-js/modules/es.array.from.js");
 require("core-js/modules/es.symbol.js");
 require("core-js/modules/es.symbol.description.js");
 require("core-js/modules/es.symbol.iterator.js");
+require("core-js/modules/es.array.from.js");
+require("core-js/modules/es.array.slice.js");
+require("core-js/modules/es.function.name.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -55,22 +55,23 @@ exports.getAvailableWikipediaArticles = getAvailableWikipediaArticles;
 exports.getWikipediaExtract = getWikipediaExtract;
 exports.selectWikipediaPage = selectWikipediaPage;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+require("core-js/modules/es.array.concat.js");
+require("core-js/modules/es.array.filter.js");
+require("core-js/modules/es.array.find.js");
 require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.array.map.js");
 require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.object.values.js");
+require("core-js/modules/es.regexp.exec.js");
+require("core-js/modules/es.regexp.to-string.js");
+require("core-js/modules/es.string.ends-with.js");
 require("core-js/modules/es.string.iterator.js");
+require("core-js/modules/es.string.replace.js");
+require("core-js/modules/es.string.search.js");
 require("core-js/modules/web.dom-collections.iterator.js");
 require("core-js/modules/web.url.js");
+require("core-js/modules/web.url.to-json.js");
 require("core-js/modules/web.url-search-params.js");
-require("core-js/modules/es.regexp.exec.js");
-require("core-js/modules/es.string.search.js");
-require("core-js/modules/es.regexp.to-string.js");
-require("core-js/modules/es.array.map.js");
-require("core-js/modules/es.array.filter.js");
-require("core-js/modules/es.object.values.js");
-require("core-js/modules/es.string.ends-with.js");
-require("core-js/modules/es.string.replace.js");
-require("core-js/modules/es.array.find.js");
-require("core-js/modules/es.array.concat.js");
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _uniq2 = _interopRequireDefault(require("lodash/uniq"));
 var _toLower2 = _interopRequireDefault(require("lodash/toLower"));
@@ -80,7 +81,7 @@ var _superagent = _interopRequireDefault(require("superagent"));
 var _info = require("../info");
 function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol &amp;&amp; r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e &amp;&amp; r &amp;&amp; "number" == typeof r.length) { t &amp;&amp; (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t.return || t.return(); } finally { if (u) throw o; } } }; }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t &amp;&amp; r.constructor &amp;&amp; (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) &amp;&amp; (a = r.length); for (var e = 0, n = Array(a); e &lt; a; e++) { n[e] = r[e]; } return n; } /*
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) &amp;&amp; (a = r.length); for (var e = 0, n = Array(a); e &lt; a; e++) n[e] = r[e]; return n; } /*
  * Copyright (C) 2023  David Kellner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -131,60 +132,58 @@ function _getAvailableWikipediaArticles() {
       item,
       articles,
       _args = arguments;
-    return _regenerator.default.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            _ref = _args.length > 1 &amp;&amp; _args[1] !== undefined ? _args[1] : {}, _ref$forceCache = _ref.forceCache, forceCache = _ref$forceCache === void 0 ? false : _ref$forceCache;
-            cacheKey = "wiki:articles:".concat(wikidataId);
+    return _regenerator.default.wrap(function (_context) {
+      while (1) switch (_context.prev = _context.next) {
+        case 0:
+          _ref = _args.length > 1 &amp;&amp; _args[1] !== undefined ? _args[1] : {}, _ref$forceCache = _ref.forceCache, forceCache = _ref$forceCache === void 0 ? false : _ref$forceCache;
+          cacheKey = "wiki:articles:".concat(wikidataId);
+          _context.next = 1;
+          return (0, _cache.getCachedJSON)(cacheKey);
+        case 1:
+          cachedArticles = _context.sent;
+          if (!(cachedArticles || forceCache)) {
+            _context.next = 2;
+            break;
+          }
+          return _context.abrupt("return", cachedArticles || []);
+        case 2:
+          apiUrl = new URL('https://www.wikidata.org/w/api.php');
+          apiUrl.search = new URLSearchParams({
+            action: 'wbgetentities',
+            format: 'json',
+            ids: wikidataId,
+            props: 'sitelinks'
+          }).toString();
+          _context.next = 3;
+          return _superagent.default.get(apiUrl.href).set('User-Agent', _info.userAgent);
+        case 3:
+          response = _context.sent;
+          result = response.body;
+          item = (_result$entities = result.entities) === null || _result$entities === void 0 ? void 0 : _result$entities[wikidataId];
+          if (item) {
             _context.next = 4;
-            return (0, _cache.getCachedJSON)(cacheKey);
-          case 4:
-            cachedArticles = _context.sent;
-            if (!(cachedArticles || forceCache)) {
-              _context.next = 7;
-              break;
-            }
-            return _context.abrupt("return", cachedArticles || []);
-          case 7:
-            apiUrl = new URL('https://www.wikidata.org/w/api.php');
-            apiUrl.search = new URLSearchParams({
-              action: 'wbgetentities',
-              format: 'json',
-              ids: wikidataId,
-              props: 'sitelinks'
-            }).toString();
-            _context.next = 11;
-            return _superagent.default.get(apiUrl.href).set('User-Agent', _info.userAgent);
-          case 11:
-            response = _context.sent;
-            result = response.body;
-            item = (_result$entities = result.entities) === null || _result$entities === void 0 ? void 0 : _result$entities[wikidataId];
-            if (item) {
-              _context.next = 16;
-              break;
-            }
-            throw new Error("Failed to fetch Wikidata item ".concat(wikidataId));
-          case 16:
-            articles = Object.values(item.sitelinks)
-            // only keep Wikipedia pages
-            .filter(function (link) {
-              return link.site.endsWith('wiki');
-            }).map(function (page) {
-              return {
-                // drop project suffix
-                language: page.site.replace(/wiki$/, ''),
-                title: page.title
-              };
-            });
-            (0, _cache.cacheJSON)(cacheKey, articles, {
-              expireTime: cacheMaxAge.articles
-            });
-            return _context.abrupt("return", articles);
-          case 19:
-          case "end":
-            return _context.stop();
-        }
+            break;
+          }
+          throw new Error("Failed to fetch Wikidata item ".concat(wikidataId));
+        case 4:
+          articles = Object.values(item.sitelinks)
+          // only keep Wikipedia pages
+          .filter(function (link) {
+            return link.site.endsWith('wiki');
+          }).map(function (page) {
+            return {
+              // drop project suffix
+              language: page.site.replace(/wiki$/, ''),
+              title: page.title
+            };
+          });
+          (0, _cache.cacheJSON)(cacheKey, articles, {
+            expireTime: cacheMaxAge.articles
+          });
+          return _context.abrupt("return", articles);
+        case 5:
+        case "end":
+          return _context.stop();
       }
     }, _callee);
   }));
@@ -209,64 +208,74 @@ function _selectWikipediaPage() {
       _iterator,
       _step,
       _loop,
-      _ret,
-      _args2 = arguments;
-    return _regenerator.default.wrap(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            _ref2 = _args2.length > 1 &amp;&amp; _args2[1] !== undefined ? _args2[1] : {}, _ref2$forceCache = _ref2.forceCache, forceCache = _ref2$forceCache === void 0 ? false : _ref2$forceCache, _ref2$preferredLangua = _ref2.preferredLanguages, preferredLanguages = _ref2$preferredLangua === void 0 ? ['en'] : _ref2$preferredLangua;
-            _context2.next = 3;
-            return getAvailableWikipediaArticles(wikidataId, {
-              forceCache: forceCache
-            });
-          case 3:
-            articles = _context2.sent;
-            _iterator = _createForOfIteratorHelper((0, _uniq2.default)(preferredLanguages));
-            _context2.prev = 5;
-            _loop = function _loop() {
-              var language = _step.value;
-              result = articles.find(function (page) {
-                return page.language === (0, _toLower2.default)(language);
-              });
-              if (result) {
-                return "break";
+      _args3 = arguments,
+      _t;
+    return _regenerator.default.wrap(function (_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          _ref2 = _args3.length > 1 &amp;&amp; _args3[1] !== undefined ? _args3[1] : {}, _ref2$forceCache = _ref2.forceCache, forceCache = _ref2$forceCache === void 0 ? false : _ref2$forceCache, _ref2$preferredLangua = _ref2.preferredLanguages, preferredLanguages = _ref2$preferredLangua === void 0 ? ['en'] : _ref2$preferredLangua;
+          _context3.next = 1;
+          return getAvailableWikipediaArticles(wikidataId, {
+            forceCache: forceCache
+          });
+        case 1:
+          articles = _context3.sent;
+          _iterator = _createForOfIteratorHelper((0, _uniq2.default)(preferredLanguages));
+          _context3.prev = 2;
+          _loop = /*#__PURE__*/_regenerator.default.mark(function _loop() {
+            var language;
+            return _regenerator.default.wrap(function (_context2) {
+              while (1) switch (_context2.prev = _context2.next) {
+                case 0:
+                  language = _step.value;
+                  result = articles.find(function (page) {
+                    return page.language === (0, _toLower2.default)(language);
+                  });
+                  if (!result) {
+                    _context2.next = 1;
+                    break;
+                  }
+                  return _context2.abrupt("return", 1);
+                case 1:
+                case "end":
+                  return _context2.stop();
               }
-            };
-            _iterator.s();
-          case 8:
-            if ((_step = _iterator.n()).done) {
-              _context2.next = 14;
-              break;
-            }
-            _ret = _loop();
-            if (!(_ret === "break")) {
-              _context2.next = 12;
-              break;
-            }
-            return _context2.abrupt("break", 14);
-          case 12:
-            _context2.next = 8;
+            }, _loop);
+          });
+          _iterator.s();
+        case 3:
+          if ((_step = _iterator.n()).done) {
+            _context3.next = 6;
             break;
-          case 14:
-            _context2.next = 19;
+          }
+          return _context3.delegateYield(_loop(), "t0", 4);
+        case 4:
+          if (!_context3.t0) {
+            _context3.next = 5;
             break;
-          case 16:
-            _context2.prev = 16;
-            _context2.t0 = _context2["catch"](5);
-            _iterator.e(_context2.t0);
-          case 19:
-            _context2.prev = 19;
-            _iterator.f();
-            return _context2.finish(19);
-          case 22:
-            return _context2.abrupt("return", result);
-          case 23:
-          case "end":
-            return _context2.stop();
-        }
+          }
+          return _context3.abrupt("continue", 6);
+        case 5:
+          _context3.next = 3;
+          break;
+        case 6:
+          _context3.next = 8;
+          break;
+        case 7:
+          _context3.prev = 7;
+          _t = _context3["catch"](2);
+          _iterator.e(_t);
+        case 8:
+          _context3.prev = 8;
+          _iterator.f();
+          return _context3.finish(8);
+        case 9:
+          return _context3.abrupt("return", result);
+        case 10:
+        case "end":
+          return _context3.stop();
       }
-    }, _callee2, null, [[5, 16, 19, 22]]);
+    }, _callee2, null, [[2, 7, 8, 9]]);
   }));
   return _selectWikipediaPage.apply(this, arguments);
 }
@@ -275,7 +284,7 @@ function getWikipediaExtract(_x3) {
 }
 function _getWikipediaExtract() {
   _getWikipediaExtract = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee3(article) {
-    var _result$query, _result$query$pages;
+    var _result$query;
     var _ref3,
       _ref3$forceCache,
       forceCache,
@@ -285,48 +294,46 @@ function _getWikipediaExtract() {
       response,
       result,
       pageExtract,
-      _args3 = arguments;
-    return _regenerator.default.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            _ref3 = _args3.length > 1 &amp;&amp; _args3[1] !== undefined ? _args3[1] : {}, _ref3$forceCache = _ref3.forceCache, forceCache = _ref3$forceCache === void 0 ? false : _ref3$forceCache;
-            cacheKey = "wiki:extract:".concat(article.language, ":").concat(article.title);
-            _context3.next = 4;
-            return (0, _cache.getCachedJSON)(cacheKey);
-          case 4:
-            cachedExtract = _context3.sent;
-            if (!(cachedExtract || forceCache)) {
-              _context3.next = 7;
-              break;
-            }
-            return _context3.abrupt("return", cachedExtract);
-          case 7:
-            apiUrl = new URL("https://".concat(article.language, ".wikipedia.org/w/api.php"));
-            apiUrl.search = new URLSearchParams({
-              action: 'query',
-              format: 'json',
-              formatversion: '2',
-              prop: 'extracts',
-              // eslint-disable-next-line sort-keys -- `exintro` only allowed with `prop: 'extracts'`
-              exintro: '1',
-              redirects: '1',
-              titles: article.title
-            }).toString();
-            _context3.next = 11;
-            return _superagent.default.get(apiUrl.href).set('User-Agent', _info.userAgent);
-          case 11:
-            response = _context3.sent;
-            result = response.body;
-            pageExtract = (_result$query = result.query) === null || _result$query === void 0 ? void 0 : (_result$query$pages = _result$query.pages) === null || _result$query$pages === void 0 ? void 0 : _result$query$pages[0];
-            (0, _cache.cacheJSON)(cacheKey, pageExtract, {
-              expireTime: cacheMaxAge.extract
-            });
-            return _context3.abrupt("return", pageExtract);
-          case 16:
-          case "end":
-            return _context3.stop();
-        }
+      _args4 = arguments;
+    return _regenerator.default.wrap(function (_context4) {
+      while (1) switch (_context4.prev = _context4.next) {
+        case 0:
+          _ref3 = _args4.length > 1 &amp;&amp; _args4[1] !== undefined ? _args4[1] : {}, _ref3$forceCache = _ref3.forceCache, forceCache = _ref3$forceCache === void 0 ? false : _ref3$forceCache;
+          cacheKey = "wiki:extract:".concat(article.language, ":").concat(article.title);
+          _context4.next = 1;
+          return (0, _cache.getCachedJSON)(cacheKey);
+        case 1:
+          cachedExtract = _context4.sent;
+          if (!(cachedExtract || forceCache)) {
+            _context4.next = 2;
+            break;
+          }
+          return _context4.abrupt("return", cachedExtract);
+        case 2:
+          apiUrl = new URL("https://".concat(article.language, ".wikipedia.org/w/api.php"));
+          apiUrl.search = new URLSearchParams({
+            action: 'query',
+            format: 'json',
+            formatversion: '2',
+            prop: 'extracts',
+            // eslint-disable-next-line sort-keys -- `exintro` only allowed with `prop: 'extracts'`
+            exintro: '1',
+            redirects: '1',
+            titles: article.title
+          }).toString();
+          _context4.next = 3;
+          return _superagent.default.get(apiUrl.href).set('User-Agent', _info.userAgent);
+        case 3:
+          response = _context4.sent;
+          result = response.body;
+          pageExtract = (_result$query = result.query) === null || _result$query === void 0 || (_result$query = _result$query.pages) === null || _result$query === void 0 ? void 0 : _result$query[0];
+          (0, _cache.cacheJSON)(cacheKey, pageExtract, {
+            expireTime: cacheMaxAge.extract
+          });
+          return _context4.abrupt("return", pageExtract);
+        case 4:
+        case "end":
+          return _context4.stop();
       }
     }, _callee3);
   }));
@@ -344,7 +351,7 @@ function _getWikipediaExtract() {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 13:45:00 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 15:19:59 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

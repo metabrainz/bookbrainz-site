@@ -41,10 +41,9 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-require("core-js/modules/es.weak-map.js");
 require("core-js/modules/es.object.get-own-property-descriptor.js");
+require("core-js/modules/es.weak-map.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -54,19 +53,18 @@ exports.getTypeCreation = getTypeCreation;
 exports.processEdit = processEdit;
 exports.processPageVisit = processPageVisit;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/web.dom-collections.for-each.js");
-require("core-js/modules/es.object.keys.js");
-require("core-js/modules/es.date.to-json.js");
-require("core-js/modules/web.url.to-json.js");
-require("core-js/modules/es.array.map.js");
-require("core-js/modules/es.function.name.js");
+require("core-js/modules/es.array.concat.js");
 require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.array.join.js");
+require("core-js/modules/es.array.map.js");
+require("core-js/modules/es.date.to-json.js");
+require("core-js/modules/es.function.name.js");
+require("core-js/modules/es.object.keys.js");
+require("core-js/modules/es.object.to-string.js");
 require("core-js/modules/es.promise.js");
 require("core-js/modules/es.string.iterator.js");
+require("core-js/modules/web.dom-collections.for-each.js");
 require("core-js/modules/web.dom-collections.iterator.js");
-require("core-js/modules/es.array.concat.js");
-require("core-js/modules/es.array.join.js");
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 var _isNil2 = _interopRequireDefault(require("lodash/isNil"));
@@ -74,7 +72,8 @@ var _flattenDeep2 = _interopRequireDefault(require("lodash/flattenDeep"));
 var error = _interopRequireWildcard(require("../../common/helpers/error"));
 var _dateFns = require("date-fns");
 var _log = _interopRequireDefault(require("log"));
-function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != _typeof(e) &amp;&amp; "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (var _t in e) { "default" !== _t &amp;&amp; {}.hasOwnProperty.call(e, _t) &amp;&amp; ((i = (o = Object.defineProperty) &amp;&amp; Object.getOwnPropertyDescriptor(e, _t)) &amp;&amp; (i.get || i.set) ? o(f, _t, i) : f[_t] = e[_t]); } return f; })(e, t); }
+var cache;
+function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c &amp;&amp; {}.hasOwnProperty.call(e, c) &amp;&amp; ((r = a &amp;&amp; Object.getOwnPropertyDescriptor(e, c)) &amp;&amp; (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
 /*
  * Copyright (C) 2016  Max Prettyjohns
  *
@@ -117,33 +116,31 @@ function awardUnlock(_x, _x2) {
 function _awardUnlock() {
   _awardUnlock = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee(UnlockType, awardAttribs) {
     var award, unlock;
-    return _regenerator.default.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            _context.next = 2;
-            return new UnlockType(awardAttribs).fetch({
-              require: false
-            });
-          case 2:
-            award = _context.sent;
-            if (!(award === null || typeof award === 'undefined')) {
-              _context.next = 8;
-              break;
-            }
-            _context.next = 6;
-            return new UnlockType(awardAttribs).save(null, {
-              method: 'insert'
-            });
-          case 6:
-            unlock = _context.sent;
-            return _context.abrupt("return", unlock.toJSON());
-          case 8:
-            return _context.abrupt("return", 'Already unlocked');
-          case 9:
-          case "end":
-            return _context.stop();
-        }
+    return _regenerator.default.wrap(function (_context) {
+      while (1) switch (_context.prev = _context.next) {
+        case 0:
+          _context.next = 1;
+          return new UnlockType(awardAttribs).fetch({
+            require: false
+          });
+        case 1:
+          award = _context.sent;
+          if (!(award === null || typeof award === 'undefined')) {
+            _context.next = 3;
+            break;
+          }
+          _context.next = 2;
+          return new UnlockType(awardAttribs).save(null, {
+            method: 'insert'
+          });
+        case 2:
+          unlock = _context.sent;
+          return _context.abrupt("return", unlock.toJSON());
+        case 3:
+          return _context.abrupt("return", 'Already unlocked');
+        case 4:
+        case "end":
+          return _context.stop();
       }
     }, _callee);
   }));
@@ -163,46 +160,44 @@ function awardAchievement(_x3, _x4, _x5) {
  */
 function _awardAchievement() {
   _awardAchievement = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(orm, editorId, achievementName) {
-    var AchievementType, AchievementUnlock, achievementTier, achievementAttribs, unlock;
-    return _regenerator.default.wrap(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            AchievementType = orm.AchievementType, AchievementUnlock = orm.AchievementUnlock;
-            _context2.next = 3;
-            return new AchievementType({
-              name: achievementName
-            }).fetch({
-              require: false
-            });
-          case 3:
-            achievementTier = _context2.sent;
-            if (!(achievementTier === null)) {
-              _context2.next = 8;
-              break;
-            }
-            throw new error.AwardNotUnlockedError("Achievement ".concat(achievementName, " not found in database"));
-          case 8:
-            _context2.prev = 8;
-            achievementAttribs = {
-              achievementId: achievementTier.id,
-              editorId: editorId
-            };
-            _context2.next = 12;
-            return awardUnlock(AchievementUnlock, achievementAttribs);
-          case 12:
-            unlock = _context2.sent;
-            return _context2.abrupt("return", (0, _defineProperty2.default)({}, achievementName, unlock));
-          case 16:
-            _context2.prev = 16;
-            _context2.t0 = _context2["catch"](8);
-            throw new error.AwardNotUnlockedError(_context2.t0.message);
-          case 19:
-          case "end":
-            return _context2.stop();
-        }
+    var AchievementType, AchievementUnlock, achievementTier, achievementAttribs, unlock, _t;
+    return _regenerator.default.wrap(function (_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
+        case 0:
+          AchievementType = orm.AchievementType, AchievementUnlock = orm.AchievementUnlock;
+          _context2.next = 1;
+          return new AchievementType({
+            name: achievementName
+          }).fetch({
+            require: false
+          });
+        case 1:
+          achievementTier = _context2.sent;
+          if (!(achievementTier === null)) {
+            _context2.next = 2;
+            break;
+          }
+          throw new error.AwardNotUnlockedError("Achievement ".concat(achievementName, " not found in database"));
+        case 2:
+          _context2.prev = 2;
+          achievementAttribs = {
+            achievementId: achievementTier.id,
+            editorId: editorId
+          };
+          _context2.next = 3;
+          return awardUnlock(AchievementUnlock, achievementAttribs);
+        case 3:
+          unlock = _context2.sent;
+          return _context2.abrupt("return", (0, _defineProperty2.default)({}, achievementName, unlock));
+        case 4:
+          _context2.prev = 4;
+          _t = _context2["catch"](2);
+          throw new error.AwardNotUnlockedError(_t.message);
+        case 5:
+        case "end":
+          return _context2.stop();
       }
-    }, _callee2, null, [[8, 16]]);
+    }, _callee2, null, [[2, 4]]);
   }));
   return _awardAchievement.apply(this, arguments);
 }
@@ -222,55 +217,53 @@ function awardTitle(_x6, _x7, _x8) {
  */
 function _awardTitle() {
   _awardTitle = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee3(orm, editorId, tier) {
-    var TitleType, TitleUnlock, title, titleAttribs, unlock;
-    return _regenerator.default.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            TitleType = orm.TitleType, TitleUnlock = orm.TitleUnlock;
-            if (!tier.titleName) {
-              _context3.next = 22;
-              break;
-            }
-            _context3.next = 4;
-            return new TitleType({
-              title: tier.titleName
-            }).fetch({
-              require: false
-            });
-          case 4:
-            title = _context3.sent;
-            if (!(title === null)) {
-              _context3.next = 9;
-              break;
-            }
-            throw new error.AwardNotUnlockedError("Title ".concat(tier.titleName, " not found in database"));
-          case 9:
-            _context3.prev = 9;
-            titleAttribs = {
-              editorId: editorId,
-              titleId: title.id
-            };
-            _context3.next = 13;
-            return awardUnlock(TitleUnlock, titleAttribs);
-          case 13:
-            unlock = _context3.sent;
-            return _context3.abrupt("return", (0, _defineProperty2.default)({}, tier.titleName, unlock));
-          case 17:
-            _context3.prev = 17;
-            _context3.t0 = _context3["catch"](9);
-            throw new error.AwardNotUnlockedError(_context3.t0.message);
-          case 20:
-            _context3.next = 23;
+    var TitleType, TitleUnlock, title, titleAttribs, unlock, _t2;
+    return _regenerator.default.wrap(function (_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          TitleType = orm.TitleType, TitleUnlock = orm.TitleUnlock;
+          if (!tier.titleName) {
+            _context3.next = 6;
             break;
-          case 22:
-            return _context3.abrupt("return", false);
-          case 23:
-          case "end":
-            return _context3.stop();
-        }
+          }
+          _context3.next = 1;
+          return new TitleType({
+            title: tier.titleName
+          }).fetch({
+            require: false
+          });
+        case 1:
+          title = _context3.sent;
+          if (!(title === null)) {
+            _context3.next = 2;
+            break;
+          }
+          throw new error.AwardNotUnlockedError("Title ".concat(tier.titleName, " not found in database"));
+        case 2:
+          _context3.prev = 2;
+          titleAttribs = {
+            editorId: editorId,
+            titleId: title.id
+          };
+          _context3.next = 3;
+          return awardUnlock(TitleUnlock, titleAttribs);
+        case 3:
+          unlock = _context3.sent;
+          return _context3.abrupt("return", (0, _defineProperty2.default)({}, tier.titleName, unlock));
+        case 4:
+          _context3.prev = 4;
+          _t2 = _context3["catch"](2);
+          throw new error.AwardNotUnlockedError(_t2.message);
+        case 5:
+          _context3.next = 7;
+          break;
+        case 6:
+          return _context3.abrupt("return", false);
+        case 7:
+        case "end":
+          return _context3.stop();
       }
-    }, _callee3, null, [[9, 17]]);
+    }, _callee3, null, [[2, 4]]);
   }));
   return _awardTitle.apply(this, arguments);
 }
@@ -322,70 +315,63 @@ function testTiers(_x9, _x0, _x1, _x10) {
 function _testTiers() {
   _testTiers = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee5(orm, signal, editorId, tiers) {
     var tierPromise, awardList;
-    return _regenerator.default.wrap(function _callee5$(_context5) {
-      while (1) {
-        switch (_context5.prev = _context5.next) {
-          case 0:
-            tierPromise = tiers.map(/*#__PURE__*/function () {
-              var _ref3 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee4(tier) {
-                var achievementUnlock, title, out, _out;
-                return _regenerator.default.wrap(function _callee4$(_context4) {
-                  while (1) {
-                    switch (_context4.prev = _context4.next) {
-                      case 0:
-                        if (!(signal >= tier.threshold)) {
-                          _context4.next = 19;
-                          break;
-                        }
-                        _context4.prev = 1;
-                        _context4.next = 4;
-                        return awardAchievement(orm, editorId, tier.name);
-                      case 4:
-                        achievementUnlock = _context4.sent;
-                        _context4.next = 7;
-                        return awardTitle(orm, editorId, tier);
-                      case 7:
-                        title = _context4.sent;
-                        out = [];
-                        if (title) {
-                          out.push(title);
-                        }
-                        out.push(achievementUnlock);
-                        return _context4.abrupt("return", out);
-                      case 14:
-                        _context4.prev = 14;
-                        _context4.t0 = _context4["catch"](1);
-                        return _context4.abrupt("return", _log.default.debug(_context4.t0));
-                      case 17:
-                        _context4.next = 23;
-                        break;
-                      case 19:
-                        _out = {};
-                        _out[tier.name] = false;
-                        if (tier.titleName) {
-                          _out[tier.titleName] = false;
-                        }
-                        return _context4.abrupt("return", [_out]);
-                      case 23:
-                      case "end":
-                        return _context4.stop();
+    return _regenerator.default.wrap(function (_context5) {
+      while (1) switch (_context5.prev = _context5.next) {
+        case 0:
+          tierPromise = tiers.map(/*#__PURE__*/function () {
+            var _ref3 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee4(tier) {
+              var achievementUnlock, title, out, _out, _t3;
+              return _regenerator.default.wrap(function (_context4) {
+                while (1) switch (_context4.prev = _context4.next) {
+                  case 0:
+                    if (!(signal >= tier.threshold)) {
+                      _context4.next = 5;
+                      break;
                     }
-                  }
-                }, _callee4, null, [[1, 14]]);
-              }));
-              return function (_x54) {
-                return _ref3.apply(this, arguments);
-              };
-            }());
-            _context5.next = 3;
-            return Promise.all(tierPromise);
-          case 3:
-            awardList = _context5.sent;
-            return _context5.abrupt("return", awardListToAwardObject(awardList));
-          case 5:
-          case "end":
-            return _context5.stop();
-        }
+                    _context4.prev = 1;
+                    _context4.next = 2;
+                    return awardAchievement(orm, editorId, tier.name);
+                  case 2:
+                    achievementUnlock = _context4.sent;
+                    _context4.next = 3;
+                    return awardTitle(orm, editorId, tier);
+                  case 3:
+                    title = _context4.sent;
+                    out = [];
+                    if (title) {
+                      out.push(title);
+                    }
+                    out.push(achievementUnlock);
+                    return _context4.abrupt("return", out);
+                  case 4:
+                    _context4.prev = 4;
+                    _t3 = _context4["catch"](1);
+                    return _context4.abrupt("return", _log.default.debug(_t3));
+                  case 5:
+                    _out = {};
+                    _out[tier.name] = false;
+                    if (tier.titleName) {
+                      _out[tier.titleName] = false;
+                    }
+                    return _context4.abrupt("return", [_out]);
+                  case 6:
+                  case "end":
+                    return _context4.stop();
+                }
+              }, _callee4, null, [[1, 4]]);
+            }));
+            return function (_x54) {
+              return _ref3.apply(this, arguments);
+            };
+          }());
+          _context5.next = 1;
+          return Promise.all(tierPromise);
+        case 1:
+          awardList = _context5.sent;
+          return _context5.abrupt("return", awardListToAwardObject(awardList));
+        case 2:
+        case "end":
+          return _context5.stop();
       }
     }, _callee5);
   }));
@@ -397,27 +383,25 @@ function getTypeCreation(_x11, _x12, _x13) {
 function _getTypeCreation() {
   _getTypeCreation = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee6(revisionType, revisionString, editor) {
     var out;
-    return _regenerator.default.wrap(function _callee6$(_context6) {
-      while (1) {
-        switch (_context6.prev = _context6.next) {
-          case 0:
-            _context6.next = 2;
-            return revisionType.query(function (qb) {
-              qb.innerJoin('bookbrainz.revision', 'bookbrainz.revision.id', "bookbrainz.".concat(revisionString, ".id"));
-              qb.groupBy("".concat(revisionString, ".id"), "".concat(revisionString, ".bbid"), 'revision.id');
-              qb.where('bookbrainz.revision.author_id', '=', editor);
-              qb.leftOuterJoin('bookbrainz.revision_parent', 'bookbrainz.revision_parent.child_id', "bookbrainz.".concat(revisionString, ".id"));
-              qb.whereNull('bookbrainz.revision_parent.parent_id');
-            }).fetchAll({
-              require: false
-            });
-          case 2:
-            out = _context6.sent;
-            return _context6.abrupt("return", out.length);
-          case 4:
-          case "end":
-            return _context6.stop();
-        }
+    return _regenerator.default.wrap(function (_context6) {
+      while (1) switch (_context6.prev = _context6.next) {
+        case 0:
+          _context6.next = 1;
+          return revisionType.query(function (qb) {
+            qb.innerJoin('bookbrainz.revision', 'bookbrainz.revision.id', "bookbrainz.".concat(revisionString, ".id"));
+            qb.groupBy("".concat(revisionString, ".id"), "".concat(revisionString, ".bbid"), 'revision.id');
+            qb.where('bookbrainz.revision.author_id', '=', editor);
+            qb.leftOuterJoin('bookbrainz.revision_parent', 'bookbrainz.revision_parent.child_id', "bookbrainz.".concat(revisionString, ".id"));
+            qb.whereNull('bookbrainz.revision_parent.parent_id');
+          }).fetchAll({
+            require: false
+          });
+        case 1:
+          out = _context6.sent;
+          return _context6.abrupt("return", out.length);
+        case 2:
+        case "end":
+          return _context6.stop();
       }
     }, _callee6);
   }));
@@ -429,36 +413,34 @@ function processRevisionist(_x14, _x15) {
 function _processRevisionist() {
   _processRevisionist = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee7(orm, editorId) {
     var Editor, editor, revisions, tiers;
-    return _regenerator.default.wrap(function _callee7$(_context7) {
-      while (1) {
-        switch (_context7.prev = _context7.next) {
-          case 0:
-            Editor = orm.Editor;
-            _context7.next = 3;
-            return new Editor({
-              id: editorId
-            }).fetch({
-              require: false
-            });
-          case 3:
-            editor = _context7.sent;
-            revisions = editor.get('revisionsApplied');
-            tiers = [{
-              name: 'Revisionist III',
-              threshold: 250,
-              titleName: 'Revisionist'
-            }, {
-              name: 'Revisionist II',
-              threshold: 50
-            }, {
-              name: 'Revisionist I',
-              threshold: 1
-            }];
-            return _context7.abrupt("return", testTiers(orm, revisions, editorId, tiers));
-          case 7:
-          case "end":
-            return _context7.stop();
-        }
+    return _regenerator.default.wrap(function (_context7) {
+      while (1) switch (_context7.prev = _context7.next) {
+        case 0:
+          Editor = orm.Editor;
+          _context7.next = 1;
+          return new Editor({
+            id: editorId
+          }).fetch({
+            require: false
+          });
+        case 1:
+          editor = _context7.sent;
+          revisions = editor.get('revisionsApplied');
+          tiers = [{
+            name: 'Revisionist III',
+            threshold: 250,
+            titleName: 'Revisionist'
+          }, {
+            name: 'Revisionist II',
+            threshold: 50
+          }, {
+            name: 'Revisionist I',
+            threshold: 1
+          }];
+          return _context7.abrupt("return", testTiers(orm, revisions, editorId, tiers));
+        case 2:
+        case "end":
+          return _context7.stop();
       }
     }, _callee7);
   }));
@@ -470,31 +452,29 @@ function processAuthorCreator(_x16, _x17) {
 function _processAuthorCreator() {
   _processAuthorCreator = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee8(orm, editorId) {
     var AuthorRevision, rowCount, tiers;
-    return _regenerator.default.wrap(function _callee8$(_context8) {
-      while (1) {
-        switch (_context8.prev = _context8.next) {
-          case 0:
-            AuthorRevision = orm.AuthorRevision;
-            _context8.next = 3;
-            return getTypeCreation(new AuthorRevision(), 'author_revision', editorId);
-          case 3:
-            rowCount = _context8.sent;
-            tiers = [{
-              name: 'Author Creator III',
-              threshold: 100,
-              titleName: 'Author Creator'
-            }, {
-              name: 'Author Creator II',
-              threshold: 10
-            }, {
-              name: 'Author Creator I',
-              threshold: 1
-            }];
-            return _context8.abrupt("return", testTiers(orm, rowCount, editorId, tiers));
-          case 6:
-          case "end":
-            return _context8.stop();
-        }
+    return _regenerator.default.wrap(function (_context8) {
+      while (1) switch (_context8.prev = _context8.next) {
+        case 0:
+          AuthorRevision = orm.AuthorRevision;
+          _context8.next = 1;
+          return getTypeCreation(new AuthorRevision(), 'author_revision', editorId);
+        case 1:
+          rowCount = _context8.sent;
+          tiers = [{
+            name: 'Author Creator III',
+            threshold: 100,
+            titleName: 'Author Creator'
+          }, {
+            name: 'Author Creator II',
+            threshold: 10
+          }, {
+            name: 'Author Creator I',
+            threshold: 1
+          }];
+          return _context8.abrupt("return", testTiers(orm, rowCount, editorId, tiers));
+        case 2:
+        case "end":
+          return _context8.stop();
       }
     }, _callee8);
   }));
@@ -506,31 +486,29 @@ function processLimitedEdition(_x18, _x19) {
 function _processLimitedEdition() {
   _processLimitedEdition = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee9(orm, editorId) {
     var EditionRevision, rowCount, tiers;
-    return _regenerator.default.wrap(function _callee9$(_context9) {
-      while (1) {
-        switch (_context9.prev = _context9.next) {
-          case 0:
-            EditionRevision = orm.EditionRevision;
-            _context9.next = 3;
-            return getTypeCreation(new EditionRevision(), 'edition_revision', editorId);
-          case 3:
-            rowCount = _context9.sent;
-            tiers = [{
-              name: 'Limited Edition III',
-              threshold: 100,
-              titleName: 'Limited Edition'
-            }, {
-              name: 'Limited Edition II',
-              threshold: 10
-            }, {
-              name: 'Limited Edition I',
-              threshold: 1
-            }];
-            return _context9.abrupt("return", testTiers(orm, rowCount, editorId, tiers));
-          case 6:
-          case "end":
-            return _context9.stop();
-        }
+    return _regenerator.default.wrap(function (_context9) {
+      while (1) switch (_context9.prev = _context9.next) {
+        case 0:
+          EditionRevision = orm.EditionRevision;
+          _context9.next = 1;
+          return getTypeCreation(new EditionRevision(), 'edition_revision', editorId);
+        case 1:
+          rowCount = _context9.sent;
+          tiers = [{
+            name: 'Limited Edition III',
+            threshold: 100,
+            titleName: 'Limited Edition'
+          }, {
+            name: 'Limited Edition II',
+            threshold: 10
+          }, {
+            name: 'Limited Edition I',
+            threshold: 1
+          }];
+          return _context9.abrupt("return", testTiers(orm, rowCount, editorId, tiers));
+        case 2:
+        case "end":
+          return _context9.stop();
       }
     }, _callee9);
   }));
@@ -542,31 +520,29 @@ function processPublisher(_x20, _x21) {
 function _processPublisher() {
   _processPublisher = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee0(orm, editorId) {
     var EditionGroupRevision, rowCount, tiers;
-    return _regenerator.default.wrap(function _callee0$(_context0) {
-      while (1) {
-        switch (_context0.prev = _context0.next) {
-          case 0:
-            EditionGroupRevision = orm.EditionGroupRevision;
-            _context0.next = 3;
-            return getTypeCreation(new EditionGroupRevision(), 'edition_group_revision', editorId);
-          case 3:
-            rowCount = _context0.sent;
-            tiers = [{
-              name: 'Publisher III',
-              threshold: 100,
-              titleName: 'Publisher'
-            }, {
-              name: 'Publisher II',
-              threshold: 10
-            }, {
-              name: 'Publisher I',
-              threshold: 1
-            }];
-            return _context0.abrupt("return", testTiers(orm, rowCount, editorId, tiers));
-          case 6:
-          case "end":
-            return _context0.stop();
-        }
+    return _regenerator.default.wrap(function (_context0) {
+      while (1) switch (_context0.prev = _context0.next) {
+        case 0:
+          EditionGroupRevision = orm.EditionGroupRevision;
+          _context0.next = 1;
+          return getTypeCreation(new EditionGroupRevision(), 'edition_group_revision', editorId);
+        case 1:
+          rowCount = _context0.sent;
+          tiers = [{
+            name: 'Publisher III',
+            threshold: 100,
+            titleName: 'Publisher'
+          }, {
+            name: 'Publisher II',
+            threshold: 10
+          }, {
+            name: 'Publisher I',
+            threshold: 1
+          }];
+          return _context0.abrupt("return", testTiers(orm, rowCount, editorId, tiers));
+        case 2:
+        case "end":
+          return _context0.stop();
       }
     }, _callee0);
   }));
@@ -578,31 +554,29 @@ function processPublisherCreator(_x22, _x23) {
 function _processPublisherCreator() {
   _processPublisherCreator = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee1(orm, editorId) {
     var PublisherRevision, rowCount, tiers;
-    return _regenerator.default.wrap(function _callee1$(_context1) {
-      while (1) {
-        switch (_context1.prev = _context1.next) {
-          case 0:
-            PublisherRevision = orm.PublisherRevision;
-            _context1.next = 3;
-            return getTypeCreation(new PublisherRevision(), 'publisher_revision', editorId);
-          case 3:
-            rowCount = _context1.sent;
-            tiers = [{
-              name: 'Publisher Creator III',
-              threshold: 100,
-              titleName: 'Publisher Creator'
-            }, {
-              name: 'Publisher Creator II',
-              threshold: 10
-            }, {
-              name: 'Publisher Creator I',
-              threshold: 1
-            }];
-            return _context1.abrupt("return", testTiers(orm, rowCount, editorId, tiers));
-          case 6:
-          case "end":
-            return _context1.stop();
-        }
+    return _regenerator.default.wrap(function (_context1) {
+      while (1) switch (_context1.prev = _context1.next) {
+        case 0:
+          PublisherRevision = orm.PublisherRevision;
+          _context1.next = 1;
+          return getTypeCreation(new PublisherRevision(), 'publisher_revision', editorId);
+        case 1:
+          rowCount = _context1.sent;
+          tiers = [{
+            name: 'Publisher Creator III',
+            threshold: 100,
+            titleName: 'Publisher Creator'
+          }, {
+            name: 'Publisher Creator II',
+            threshold: 10
+          }, {
+            name: 'Publisher Creator I',
+            threshold: 1
+          }];
+          return _context1.abrupt("return", testTiers(orm, rowCount, editorId, tiers));
+        case 2:
+        case "end":
+          return _context1.stop();
       }
     }, _callee1);
   }));
@@ -614,31 +588,29 @@ function processWorkerBee(_x24, _x25) {
 function _processWorkerBee() {
   _processWorkerBee = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee10(orm, editorId) {
     var WorkRevision, rowCount, tiers;
-    return _regenerator.default.wrap(function _callee10$(_context10) {
-      while (1) {
-        switch (_context10.prev = _context10.next) {
-          case 0:
-            WorkRevision = orm.WorkRevision;
-            _context10.next = 3;
-            return getTypeCreation(new WorkRevision(), 'work_revision', editorId);
-          case 3:
-            rowCount = _context10.sent;
-            tiers = [{
-              name: 'Worker Bee III',
-              threshold: 100,
-              titleName: 'Worker Bee'
-            }, {
-              name: 'Worker Bee II',
-              threshold: 10
-            }, {
-              name: 'Worker Bee I',
-              threshold: 1
-            }];
-            return _context10.abrupt("return", testTiers(orm, rowCount, editorId, tiers));
-          case 6:
-          case "end":
-            return _context10.stop();
-        }
+    return _regenerator.default.wrap(function (_context10) {
+      while (1) switch (_context10.prev = _context10.next) {
+        case 0:
+          WorkRevision = orm.WorkRevision;
+          _context10.next = 1;
+          return getTypeCreation(new WorkRevision(), 'work_revision', editorId);
+        case 1:
+          rowCount = _context10.sent;
+          tiers = [{
+            name: 'Worker Bee III',
+            threshold: 100,
+            titleName: 'Worker Bee'
+          }, {
+            name: 'Worker Bee II',
+            threshold: 10
+          }, {
+            name: 'Worker Bee I',
+            threshold: 1
+          }];
+          return _context10.abrupt("return", testTiers(orm, rowCount, editorId, tiers));
+        case 2:
+        case "end":
+          return _context10.stop();
       }
     }, _callee10);
   }));
@@ -650,31 +622,29 @@ function processSeriesCreator(_x26, _x27) {
 function _processSeriesCreator() {
   _processSeriesCreator = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee11(orm, editorId) {
     var SeriesRevision, rowCount, tiers;
-    return _regenerator.default.wrap(function _callee11$(_context11) {
-      while (1) {
-        switch (_context11.prev = _context11.next) {
-          case 0:
-            SeriesRevision = orm.SeriesRevision;
-            _context11.next = 3;
-            return getTypeCreation(new SeriesRevision(), 'series_revision', editorId);
-          case 3:
-            rowCount = _context11.sent;
-            tiers = [{
-              name: 'Series Creator III',
-              threshold: 100,
-              titleName: 'Series Creator'
-            }, {
-              name: 'Series Creator II',
-              threshold: 10
-            }, {
-              name: 'Series Creator I',
-              threshold: 1
-            }];
-            return _context11.abrupt("return", testTiers(orm, rowCount, editorId, tiers));
-          case 6:
-          case "end":
-            return _context11.stop();
-        }
+    return _regenerator.default.wrap(function (_context11) {
+      while (1) switch (_context11.prev = _context11.next) {
+        case 0:
+          SeriesRevision = orm.SeriesRevision;
+          _context11.next = 1;
+          return getTypeCreation(new SeriesRevision(), 'series_revision', editorId);
+        case 1:
+          rowCount = _context11.sent;
+          tiers = [{
+            name: 'Series Creator III',
+            threshold: 100,
+            titleName: 'Series Creator'
+          }, {
+            name: 'Series Creator II',
+            threshold: 10
+          }, {
+            name: 'Series Creator I',
+            threshold: 1
+          }];
+          return _context11.abrupt("return", testTiers(orm, rowCount, editorId, tiers));
+        case 2:
+        case "end":
+          return _context11.stop();
       }
     }, _callee11);
   }));
@@ -694,26 +664,24 @@ function processSprinter(_x28, _x29) {
 function _processSprinter() {
   _processSprinter = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee12(orm, editorId) {
     var bookshelf, rawSql, out, tiers;
-    return _regenerator.default.wrap(function _callee12$(_context12) {
-      while (1) {
-        switch (_context12.prev = _context12.next) {
-          case 0:
-            bookshelf = orm.bookshelf;
-            rawSql = "SELECT * from bookbrainz.revision WHERE author_id=".concat(editorId, " \t\tand created_at > (SELECT CURRENT_DATE - INTERVAL '1 hour');");
-            _context12.next = 4;
-            return bookshelf.knex.raw(rawSql);
-          case 4:
-            out = _context12.sent;
-            tiers = [{
-              name: 'Sprinter',
-              threshold: 10,
-              titleName: 'Sprinter'
-            }];
-            return _context12.abrupt("return", testTiers(orm, out.rowCount, editorId, tiers));
-          case 7:
-          case "end":
-            return _context12.stop();
-        }
+    return _regenerator.default.wrap(function (_context12) {
+      while (1) switch (_context12.prev = _context12.next) {
+        case 0:
+          bookshelf = orm.bookshelf;
+          rawSql = "SELECT * from bookbrainz.revision WHERE author_id=".concat(editorId, " \t\tand created_at > (SELECT CURRENT_DATE - INTERVAL '1 hour');");
+          _context12.next = 1;
+          return bookshelf.knex.raw(rawSql);
+        case 1:
+          out = _context12.sent;
+          tiers = [{
+            name: 'Sprinter',
+            threshold: 10,
+            titleName: 'Sprinter'
+          }];
+          return _context12.abrupt("return", testTiers(orm, out.rowCount, editorId, tiers));
+        case 2:
+        case "end":
+          return _context12.stop();
       }
     }, _callee12);
   }));
@@ -725,45 +693,43 @@ function getConsecutiveDaysWithEdits(_x30, _x31, _x32) {
 function _getConsecutiveDaysWithEdits() {
   _getConsecutiveDaysWithEdits = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee13(orm, editorId, days) {
     var bookshelf, rawSql, out, dateList, countDays, lastDate, i;
-    return _regenerator.default.wrap(function _callee13$(_context13) {
-      while (1) {
-        switch (_context13.prev = _context13.next) {
-          case 0:
-            bookshelf = orm.bookshelf;
-            rawSql = "SELECT DISTINCT created_at::date from bookbrainz.revision \t\tWHERE author_id=".concat(editorId, " \t\tand created_at > (SELECT CURRENT_DATE - INTERVAL '").concat(days, " days');");
-            _context13.next = 4;
-            return bookshelf.knex.raw(rawSql);
-          case 4:
-            out = _context13.sent;
-            dateList = out.rows.map(function (row) {
-              return (0, _dateFns.parseISO)(row.created_at);
-            });
-            countDays = 0;
-            lastDate = new Date(); // count number of consecutive days starting from today
-            i = dateList.length - 1;
-          case 9:
-            if (!(i >= 0)) {
-              _context13.next = 17;
-              break;
-            }
-            if (!((0, _dateFns.differenceInCalendarDays)(lastDate, dateList[i]) > 1)) {
-              _context13.next = 12;
-              break;
-            }
-            return _context13.abrupt("break", 17);
-          case 12:
-            countDays++;
-            lastDate = dateList[i];
-          case 14:
-            i--;
-            _context13.next = 9;
+    return _regenerator.default.wrap(function (_context13) {
+      while (1) switch (_context13.prev = _context13.next) {
+        case 0:
+          bookshelf = orm.bookshelf;
+          rawSql = "SELECT DISTINCT created_at::date from bookbrainz.revision \t\tWHERE author_id=".concat(editorId, " \t\tand created_at > (SELECT CURRENT_DATE - INTERVAL '").concat(days, " days');");
+          _context13.next = 1;
+          return bookshelf.knex.raw(rawSql);
+        case 1:
+          out = _context13.sent;
+          dateList = out.rows.map(function (row) {
+            return (0, _dateFns.parseISO)(row.created_at);
+          });
+          countDays = 0;
+          lastDate = new Date(); // count number of consecutive days starting from today
+          i = dateList.length - 1;
+        case 2:
+          if (!(i >= 0)) {
+            _context13.next = 5;
             break;
-          case 17:
-            return _context13.abrupt("return", countDays);
-          case 18:
-          case "end":
-            return _context13.stop();
-        }
+          }
+          if (!((0, _dateFns.differenceInCalendarDays)(lastDate, dateList[i]) > 1)) {
+            _context13.next = 3;
+            break;
+          }
+          return _context13.abrupt("continue", 5);
+        case 3:
+          countDays++;
+          lastDate = dateList[i];
+        case 4:
+          i--;
+          _context13.next = 2;
+          break;
+        case 5:
+          return _context13.abrupt("return", countDays);
+        case 6:
+        case "end":
+          return _context13.stop();
       }
     }, _callee13);
   }));
@@ -775,24 +741,22 @@ function processFunRunner(_x33, _x34) {
 function _processFunRunner() {
   _processFunRunner = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee14(orm, editorId) {
     var rowCount, tiers;
-    return _regenerator.default.wrap(function _callee14$(_context14) {
-      while (1) {
-        switch (_context14.prev = _context14.next) {
-          case 0:
-            _context14.next = 2;
-            return getConsecutiveDaysWithEdits(orm, editorId, 6);
-          case 2:
-            rowCount = _context14.sent;
-            tiers = [{
-              name: 'Fun Runner',
-              threshold: 7,
-              titleName: 'Fun Runner'
-            }];
-            return _context14.abrupt("return", testTiers(orm, rowCount, editorId, tiers));
-          case 5:
-          case "end":
-            return _context14.stop();
-        }
+    return _regenerator.default.wrap(function (_context14) {
+      while (1) switch (_context14.prev = _context14.next) {
+        case 0:
+          _context14.next = 1;
+          return getConsecutiveDaysWithEdits(orm, editorId, 6);
+        case 1:
+          rowCount = _context14.sent;
+          tiers = [{
+            name: 'Fun Runner',
+            threshold: 7,
+            titleName: 'Fun Runner'
+          }];
+          return _context14.abrupt("return", testTiers(orm, rowCount, editorId, tiers));
+        case 2:
+        case "end":
+          return _context14.stop();
       }
     }, _callee14);
   }));
@@ -811,24 +775,22 @@ function processMarathoner(_x35, _x36) {
 function _processMarathoner() {
   _processMarathoner = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee15(orm, editorId) {
     var rowCount, tiers;
-    return _regenerator.default.wrap(function _callee15$(_context15) {
-      while (1) {
-        switch (_context15.prev = _context15.next) {
-          case 0:
-            _context15.next = 2;
-            return getConsecutiveDaysWithEdits(orm, editorId, 29);
-          case 2:
-            rowCount = _context15.sent;
-            tiers = [{
-              name: 'Marathoner',
-              threshold: 30,
-              titleName: 'Marathoner'
-            }];
-            return _context15.abrupt("return", testTiers(orm, rowCount, editorId, tiers));
-          case 5:
-          case "end":
-            return _context15.stop();
-        }
+    return _regenerator.default.wrap(function (_context15) {
+      while (1) switch (_context15.prev = _context15.next) {
+        case 0:
+          _context15.next = 1;
+          return getConsecutiveDaysWithEdits(orm, editorId, 29);
+        case 1:
+          rowCount = _context15.sent;
+          tiers = [{
+            name: 'Marathoner',
+            threshold: 30,
+            titleName: 'Marathoner'
+          }];
+          return _context15.abrupt("return", testTiers(orm, rowCount, editorId, tiers));
+        case 2:
+        case "end":
+          return _context15.stop();
       }
     }, _callee15);
   }));
@@ -855,44 +817,42 @@ function getEditionDateDifference(_x37, _x38) {
 }
 function _getEditionDateDifference() {
   _getEditionDateDifference = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee16(orm, revisionId) {
-    var EditionRevision, edition, editionJSON, releaseEvents, msInOneDay, attribs, date, now;
-    return _regenerator.default.wrap(function _callee16$(_context16) {
-      while (1) {
-        switch (_context16.prev = _context16.next) {
-          case 0:
-            EditionRevision = orm.EditionRevision;
-            _context16.prev = 1;
-            _context16.next = 4;
-            return new EditionRevision({
-              id: revisionId
-            }).fetch({
-              withRelated: 'data.releaseEventSet.releaseEvents'
-            });
-          case 4:
-            edition = _context16.sent;
-            editionJSON = edition.toJSON();
-            releaseEvents = editionJSON.data.releaseEventSet.releaseEvents;
-            if (!(releaseEvents.length > 0)) {
-              _context16.next = 13;
-              break;
-            }
-            msInOneDay = 86400000;
-            attribs = releaseEvents[0];
-            date = new Date(attribs.year, attribs.month - 1, attribs.day);
-            now = Date.now();
-            return _context16.abrupt("return", Math.round((date.getTime() - now) / msInOneDay));
-          case 13:
-            throw new Error('no date attribute');
-          case 16:
-            _context16.prev = 16;
-            _context16.t0 = _context16["catch"](1);
-            throw new Error('no date attribute');
-          case 19:
-          case "end":
-            return _context16.stop();
-        }
+    var EditionRevision, edition, editionJSON, releaseEvents, msInOneDay, attribs, date, now, _t4;
+    return _regenerator.default.wrap(function (_context16) {
+      while (1) switch (_context16.prev = _context16.next) {
+        case 0:
+          EditionRevision = orm.EditionRevision;
+          _context16.prev = 1;
+          _context16.next = 2;
+          return new EditionRevision({
+            id: revisionId
+          }).fetch({
+            withRelated: 'data.releaseEventSet.releaseEvents'
+          });
+        case 2:
+          edition = _context16.sent;
+          editionJSON = edition.toJSON();
+          releaseEvents = editionJSON.data.releaseEventSet.releaseEvents;
+          if (!(releaseEvents.length > 0)) {
+            _context16.next = 3;
+            break;
+          }
+          msInOneDay = 86400000;
+          attribs = releaseEvents[0];
+          date = new Date(attribs.year, attribs.month - 1, attribs.day);
+          now = Date.now();
+          return _context16.abrupt("return", Math.round((date.getTime() - now) / msInOneDay));
+        case 3:
+          throw new Error('no date attribute');
+        case 4:
+          _context16.prev = 4;
+          _t4 = _context16["catch"](1);
+          throw new Error('no date attribute');
+        case 5:
+        case "end":
+          return _context16.stop();
       }
-    }, _callee16, null, [[1, 16]]);
+    }, _callee16, null, [[1, 4]]);
   }));
   return _getEditionDateDifference.apply(this, arguments);
 }
@@ -901,34 +861,32 @@ function processTimeTraveller(_x39, _x40, _x41) {
 }
 function _processTimeTraveller() {
   _processTimeTraveller = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee17(orm, editorId, revisionId) {
-    var diff, tiers;
-    return _regenerator.default.wrap(function _callee17$(_context17) {
-      while (1) {
-        switch (_context17.prev = _context17.next) {
-          case 0:
-            _context17.prev = 0;
-            _context17.next = 3;
-            return getEditionDateDifference(orm, revisionId);
-          case 3:
-            diff = _context17.sent;
-            tiers = [{
-              name: 'Time Traveller',
-              threshold: 0,
-              titleName: 'Time Traveller'
-            }];
-            return _context17.abrupt("return", testTiers(orm, diff, editorId, tiers));
-          case 8:
-            _context17.prev = 8;
-            _context17.t0 = _context17["catch"](0);
-            return _context17.abrupt("return", {
-              'Time Traveller': _context17.t0
-            });
-          case 11:
-          case "end":
-            return _context17.stop();
-        }
+    var diff, tiers, _t5;
+    return _regenerator.default.wrap(function (_context17) {
+      while (1) switch (_context17.prev = _context17.next) {
+        case 0:
+          _context17.prev = 0;
+          _context17.next = 1;
+          return getEditionDateDifference(orm, revisionId);
+        case 1:
+          diff = _context17.sent;
+          tiers = [{
+            name: 'Time Traveller',
+            threshold: 0,
+            titleName: 'Time Traveller'
+          }];
+          return _context17.abrupt("return", testTiers(orm, diff, editorId, tiers));
+        case 2:
+          _context17.prev = 2;
+          _t5 = _context17["catch"](0);
+          return _context17.abrupt("return", {
+            'Time Traveller': _t5
+          });
+        case 3:
+        case "end":
+          return _context17.stop();
       }
-    }, _callee17, null, [[0, 8]]);
+    }, _callee17, null, [[0, 2]]);
   }));
   return _processTimeTraveller.apply(this, arguments);
 }
@@ -943,42 +901,40 @@ function processHotOffThePress(_x42, _x43, _x44) {
  */
 function _processHotOffThePress() {
   _processHotOffThePress = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee18(orm, editorId, revisionId) {
-    var diff, tiers;
-    return _regenerator.default.wrap(function _callee18$(_context18) {
-      while (1) {
-        switch (_context18.prev = _context18.next) {
-          case 0:
-            _context18.prev = 0;
-            _context18.next = 3;
-            return getEditionDateDifference(orm, revisionId);
-          case 3:
-            diff = _context18.sent;
-            if (!(diff &lt; 0)) {
-              _context18.next = 7;
-              break;
-            }
-            tiers = [{
-              name: 'Hot Off the Press',
-              threshold: -7,
-              titleName: 'Hot Off the Press'
-            }];
-            return _context18.abrupt("return", testTiers(orm, diff, editorId, tiers));
-          case 7:
-            return _context18.abrupt("return", {
-              'Hot Off the Press': false
-            });
-          case 10:
-            _context18.prev = 10;
-            _context18.t0 = _context18["catch"](0);
-            return _context18.abrupt("return", {
-              'Hot Off the Press': _context18.t0
-            });
-          case 13:
-          case "end":
-            return _context18.stop();
-        }
+    var diff, tiers, _t6;
+    return _regenerator.default.wrap(function (_context18) {
+      while (1) switch (_context18.prev = _context18.next) {
+        case 0:
+          _context18.prev = 0;
+          _context18.next = 1;
+          return getEditionDateDifference(orm, revisionId);
+        case 1:
+          diff = _context18.sent;
+          if (!(diff &lt; 0)) {
+            _context18.next = 2;
+            break;
+          }
+          tiers = [{
+            name: 'Hot Off the Press',
+            threshold: -7,
+            titleName: 'Hot Off the Press'
+          }];
+          return _context18.abrupt("return", testTiers(orm, diff, editorId, tiers));
+        case 2:
+          return _context18.abrupt("return", {
+            'Hot Off the Press': false
+          });
+        case 3:
+          _context18.prev = 3;
+          _t6 = _context18["catch"](0);
+          return _context18.abrupt("return", {
+            'Hot Off the Press': _t6
+          });
+        case 4:
+        case "end":
+          return _context18.stop();
       }
-    }, _callee18, null, [[0, 10]]);
+    }, _callee18, null, [[0, 3]]);
   }));
   return _processHotOffThePress.apply(this, arguments);
 }
@@ -987,30 +943,28 @@ function getEntityVisits(_x45, _x46) {
 }
 function _getEntityVisits() {
   _getEntityVisits = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee19(orm, editorId) {
-    var EditorEntityVisits, visits;
-    return _regenerator.default.wrap(function _callee19$(_context19) {
-      while (1) {
-        switch (_context19.prev = _context19.next) {
-          case 0:
-            EditorEntityVisits = orm.EditorEntityVisits;
-            _context19.prev = 1;
-            _context19.next = 4;
-            return new EditorEntityVisits().where('editor_id', editorId).fetchAll({
-              require: true
-            });
-          case 4:
-            visits = _context19.sent;
-            return _context19.abrupt("return", visits.length);
-          case 8:
-            _context19.prev = 8;
-            _context19.t0 = _context19["catch"](1);
-            return _context19.abrupt("return", 0);
-          case 11:
-          case "end":
-            return _context19.stop();
-        }
+    var EditorEntityVisits, visits, _t7;
+    return _regenerator.default.wrap(function (_context19) {
+      while (1) switch (_context19.prev = _context19.next) {
+        case 0:
+          EditorEntityVisits = orm.EditorEntityVisits;
+          _context19.prev = 1;
+          _context19.next = 2;
+          return new EditorEntityVisits().where('editor_id', editorId).fetchAll({
+            require: true
+          });
+        case 2:
+          visits = _context19.sent;
+          return _context19.abrupt("return", visits.length);
+        case 3:
+          _context19.prev = 3;
+          _t7 = _context19["catch"](1);
+          return _context19.abrupt("return", 0);
+        case 4:
+        case "end":
+          return _context19.stop();
       }
-    }, _callee19, null, [[1, 8]]);
+    }, _callee19, null, [[1, 3]]);
   }));
   return _getEntityVisits.apply(this, arguments);
 }
@@ -1019,40 +973,38 @@ function processExplorer(_x47, _x48) {
 }
 function _processExplorer() {
   _processExplorer = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee20(orm, editorId) {
-    var visits, tiers;
-    return _regenerator.default.wrap(function _callee20$(_context20) {
-      while (1) {
-        switch (_context20.prev = _context20.next) {
-          case 0:
-            _context20.prev = 0;
-            _context20.next = 3;
-            return getEntityVisits(orm, editorId);
-          case 3:
-            visits = _context20.sent;
-            tiers = [{
-              name: 'Explorer I',
-              threshold: 10
-            }, {
-              name: 'Explorer II',
-              threshold: 100
-            }, {
-              name: 'Explorer III',
-              threshold: 1000,
-              titleName: 'Explorer'
-            }];
-            return _context20.abrupt("return", testTiers(orm, visits, editorId, tiers));
-          case 8:
-            _context20.prev = 8;
-            _context20.t0 = _context20["catch"](0);
-            return _context20.abrupt("return", {
-              Explorer: _context20.t0
-            });
-          case 11:
-          case "end":
-            return _context20.stop();
-        }
+    var visits, tiers, _t8;
+    return _regenerator.default.wrap(function (_context20) {
+      while (1) switch (_context20.prev = _context20.next) {
+        case 0:
+          _context20.prev = 0;
+          _context20.next = 1;
+          return getEntityVisits(orm, editorId);
+        case 1:
+          visits = _context20.sent;
+          tiers = [{
+            name: 'Explorer I',
+            threshold: 10
+          }, {
+            name: 'Explorer II',
+            threshold: 100
+          }, {
+            name: 'Explorer III',
+            threshold: 1000,
+            titleName: 'Explorer'
+          }];
+          return _context20.abrupt("return", testTiers(orm, visits, editorId, tiers));
+        case 2:
+          _context20.prev = 2;
+          _t8 = _context20["catch"](0);
+          return _context20.abrupt("return", {
+            Explorer: _t8
+          });
+        case 3:
+        case "end":
+          return _context20.stop();
       }
-    }, _callee20, null, [[0, 8]]);
+    }, _callee20, null, [[0, 2]]);
   }));
   return _processExplorer.apply(this, arguments);
 }
@@ -1071,24 +1023,22 @@ function processPageVisit(_x49, _x50) {
 function _processPageVisit() {
   _processPageVisit = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee21(orm, userId) {
     var explorer, unlockIds, alert;
-    return _regenerator.default.wrap(function _callee21$(_context21) {
-      while (1) {
-        switch (_context21.prev = _context21.next) {
-          case 0:
-            _context21.next = 2;
-            return processExplorer(orm, userId);
-          case 2:
-            explorer = _context21.sent;
-            unlockIds = achievementToUnlockId(explorer);
-            alert = unlockIds.join(',');
-            return _context21.abrupt("return", {
-              alert: alert,
-              explorer: explorer
-            });
-          case 6:
-          case "end":
-            return _context21.stop();
-        }
+    return _regenerator.default.wrap(function (_context21) {
+      while (1) switch (_context21.prev = _context21.next) {
+        case 0:
+          _context21.next = 1;
+          return processExplorer(orm, userId);
+        case 1:
+          explorer = _context21.sent;
+          unlockIds = achievementToUnlockId(explorer);
+          alert = unlockIds.join(',');
+          return _context21.abrupt("return", {
+            alert: alert,
+            explorer: explorer
+          });
+        case 2:
+        case "end":
+          return _context21.stop();
       }
     }, _callee21);
   }));
@@ -1100,81 +1050,79 @@ function processEdit(_x51, _x52, _x53) {
 function _processEdit() {
   _processEdit = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee22(orm, userId, revisionId) {
     var revisionist, authorCreator, limitedEdition, publisher, publisherCreator, workerBee, seriesCreator, sprinter, funRunner, marathoner, timeTraveller, hotOffThePress, alert;
-    return _regenerator.default.wrap(function _callee22$(_context22) {
-      while (1) {
-        switch (_context22.prev = _context22.next) {
-          case 0:
-            _context22.next = 2;
-            return processRevisionist(orm, userId);
-          case 2:
-            revisionist = _context22.sent;
-            _context22.next = 5;
-            return processAuthorCreator(orm, userId);
-          case 5:
-            authorCreator = _context22.sent;
-            _context22.next = 8;
-            return processLimitedEdition(orm, userId);
-          case 8:
-            limitedEdition = _context22.sent;
-            _context22.next = 11;
-            return processPublisher(orm, userId);
-          case 11:
-            publisher = _context22.sent;
-            _context22.next = 14;
-            return processPublisherCreator(orm, userId);
-          case 14:
-            publisherCreator = _context22.sent;
-            _context22.next = 17;
-            return processWorkerBee(orm, userId);
-          case 17:
-            workerBee = _context22.sent;
-            _context22.next = 20;
-            return processSeriesCreator(orm, userId);
-          case 20:
-            seriesCreator = _context22.sent;
-            _context22.next = 23;
-            return processSprinter(orm, userId);
-          case 23:
-            sprinter = _context22.sent;
-            _context22.next = 26;
-            return processFunRunner(orm, userId);
-          case 26:
-            funRunner = _context22.sent;
-            _context22.next = 29;
-            return processMarathoner(orm, userId);
-          case 29:
-            marathoner = _context22.sent;
-            _context22.next = 32;
-            return processTimeTraveller(orm, userId, revisionId);
-          case 32:
-            timeTraveller = _context22.sent;
-            _context22.next = 35;
-            return processHotOffThePress(orm, userId, revisionId);
-          case 35:
-            hotOffThePress = _context22.sent;
-            alert = [];
-            alert.push(achievementToUnlockId(revisionist), achievementToUnlockId(authorCreator), achievementToUnlockId(limitedEdition), achievementToUnlockId(publisher), achievementToUnlockId(publisherCreator), achievementToUnlockId(workerBee), achievementToUnlockId(seriesCreator), achievementToUnlockId(sprinter), achievementToUnlockId(funRunner), achievementToUnlockId(marathoner), achievementToUnlockId(timeTraveller), achievementToUnlockId(hotOffThePress));
-            alert = (0, _flattenDeep2.default)(alert);
-            alert = alert.join(',');
-            return _context22.abrupt("return", {
-              alert: alert,
-              authorCreator: authorCreator,
-              funRunner: funRunner,
-              hotOffThePress: hotOffThePress,
-              limitedEdition: limitedEdition,
-              marathoner: marathoner,
-              publisher: publisher,
-              publisherCreator: publisherCreator,
-              revisionist: revisionist,
-              seriesCreator: seriesCreator,
-              sprinter: sprinter,
-              timeTraveller: timeTraveller,
-              workerBee: workerBee
-            });
-          case 41:
-          case "end":
-            return _context22.stop();
-        }
+    return _regenerator.default.wrap(function (_context22) {
+      while (1) switch (_context22.prev = _context22.next) {
+        case 0:
+          _context22.next = 1;
+          return processRevisionist(orm, userId);
+        case 1:
+          revisionist = _context22.sent;
+          _context22.next = 2;
+          return processAuthorCreator(orm, userId);
+        case 2:
+          authorCreator = _context22.sent;
+          _context22.next = 3;
+          return processLimitedEdition(orm, userId);
+        case 3:
+          limitedEdition = _context22.sent;
+          _context22.next = 4;
+          return processPublisher(orm, userId);
+        case 4:
+          publisher = _context22.sent;
+          _context22.next = 5;
+          return processPublisherCreator(orm, userId);
+        case 5:
+          publisherCreator = _context22.sent;
+          _context22.next = 6;
+          return processWorkerBee(orm, userId);
+        case 6:
+          workerBee = _context22.sent;
+          _context22.next = 7;
+          return processSeriesCreator(orm, userId);
+        case 7:
+          seriesCreator = _context22.sent;
+          _context22.next = 8;
+          return processSprinter(orm, userId);
+        case 8:
+          sprinter = _context22.sent;
+          _context22.next = 9;
+          return processFunRunner(orm, userId);
+        case 9:
+          funRunner = _context22.sent;
+          _context22.next = 10;
+          return processMarathoner(orm, userId);
+        case 10:
+          marathoner = _context22.sent;
+          _context22.next = 11;
+          return processTimeTraveller(orm, userId, revisionId);
+        case 11:
+          timeTraveller = _context22.sent;
+          _context22.next = 12;
+          return processHotOffThePress(orm, userId, revisionId);
+        case 12:
+          hotOffThePress = _context22.sent;
+          alert = [];
+          alert.push(achievementToUnlockId(revisionist), achievementToUnlockId(authorCreator), achievementToUnlockId(limitedEdition), achievementToUnlockId(publisher), achievementToUnlockId(publisherCreator), achievementToUnlockId(workerBee), achievementToUnlockId(seriesCreator), achievementToUnlockId(sprinter), achievementToUnlockId(funRunner), achievementToUnlockId(marathoner), achievementToUnlockId(timeTraveller), achievementToUnlockId(hotOffThePress));
+          alert = (0, _flattenDeep2.default)(alert);
+          alert = alert.join(',');
+          return _context22.abrupt("return", {
+            alert: alert,
+            authorCreator: authorCreator,
+            funRunner: funRunner,
+            hotOffThePress: hotOffThePress,
+            limitedEdition: limitedEdition,
+            marathoner: marathoner,
+            publisher: publisher,
+            publisherCreator: publisherCreator,
+            revisionist: revisionist,
+            seriesCreator: seriesCreator,
+            sprinter: sprinter,
+            timeTraveller: timeTraveller,
+            workerBee: workerBee
+          });
+        case 13:
+        case "end":
+          return _context22.stop();
       }
     }, _callee22);
   }));
@@ -1192,7 +1140,7 @@ function _processEdit() {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 13:45:01 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 15:19:59 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>

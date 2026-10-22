@@ -41,10 +41,9 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-require("core-js/modules/es.weak-map.js");
 require("core-js/modules/es.object.get-own-property-descriptor.js");
+require("core-js/modules/es.weak-map.js");
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -52,22 +51,22 @@ exports.identifierTypeCreateOrEditHandler = identifierTypeCreateOrEditHandler;
 exports.relationshipTypeCreateOrEditHandler = relationshipTypeCreateOrEditHandler;
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
-require("core-js/modules/es.array.filter.js");
-require("core-js/modules/es.object.to-string.js");
-require("core-js/modules/es.array.includes.js");
-require("core-js/modules/es.string.includes.js");
-require("core-js/modules/es.parse-int.js");
 require("core-js/modules/es.symbol.js");
 require("core-js/modules/es.symbol.description.js");
-require("core-js/modules/es.array.map.js");
+require("core-js/modules/es.array.filter.js");
+require("core-js/modules/es.array.includes.js");
 require("core-js/modules/es.array.iterator.js");
+require("core-js/modules/es.array.map.js");
+require("core-js/modules/es.date.to-json.js");
+require("core-js/modules/es.object.to-string.js");
+require("core-js/modules/es.parse-int.js");
 require("core-js/modules/es.promise.js");
+require("core-js/modules/es.string.includes.js");
 require("core-js/modules/es.string.iterator.js");
 require("core-js/modules/web.dom-collections.iterator.js");
-require("core-js/modules/es.date.to-json.js");
-require("core-js/modules/web.url.to-json.js");
 var error = _interopRequireWildcard(require("../../common/helpers/error"));
-function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != _typeof(e) &amp;&amp; "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (var _t in e) { "default" !== _t &amp;&amp; {}.hasOwnProperty.call(e, _t) &amp;&amp; ((i = (o = Object.defineProperty) &amp;&amp; Object.getOwnPropertyDescriptor(e, _t)) &amp;&amp; (i.get || i.set) ? o(f, _t, i) : f[_t] = e[_t]); } return f; })(e, t); }
+var cache;
+function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c &amp;&amp; {}.hasOwnProperty.call(e, c) &amp;&amp; ((r = a &amp;&amp; Object.getOwnPropertyDescriptor(e, c)) &amp;&amp; (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
 /*
  * Copyright (C) 2023 Shivam Awasthi
  *
@@ -124,133 +123,127 @@ function relationshipTypeCreateOrEditHandler(_x, _x2, _x3) {
  */
 function _relationshipTypeCreateOrEditHandler() {
   _relationshipTypeCreateOrEditHandler = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee3(req, res, next) {
-    var _req$app$locals$orm, RelationshipType, RelationshipTypeAttributeType, bookshelf, trx, newRelationshipType, method, _req$body, attributeTypes, childOrder, deprecated, description, label, linkPhrase, oldAttributeTypes, parentId, reverseLinkPhrase, sourceEntityType, targetEntityType, relationshipType, _getChangedAttributeT, attributesToBeAdded, attributesToBeRemoved, attributesToBeRemovedPromises, attributesToBeAddedPromises;
-    return _regenerator.default.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            _context3.prev = 0;
-            _req$app$locals$orm = req.app.locals.orm, RelationshipType = _req$app$locals$orm.RelationshipType, RelationshipTypeAttributeType = _req$app$locals$orm.RelationshipTypeAttributeType, bookshelf = _req$app$locals$orm.bookshelf;
-            _context3.next = 4;
-            return bookshelf.transaction();
-          case 4:
-            trx = _context3.sent;
-            if (req.params.id) {
-              _context3.next = 12;
-              break;
-            }
-            _context3.next = 8;
-            return RelationshipType.forge();
-          case 8:
-            newRelationshipType = _context3.sent;
-            method = 'insert';
-            _context3.next = 16;
+    var _req$app$locals$orm, RelationshipType, RelationshipTypeAttributeType, bookshelf, trx, newRelationshipType, method, _req$body, attributeTypes, childOrder, deprecated, description, label, linkPhrase, oldAttributeTypes, parentId, reverseLinkPhrase, sourceEntityType, targetEntityType, relationshipType, _getChangedAttributeT, attributesToBeAdded, attributesToBeRemoved, attributesToBeRemovedPromises, attributesToBeAddedPromises, _t;
+    return _regenerator.default.wrap(function (_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.prev = 0;
+          _req$app$locals$orm = req.app.locals.orm, RelationshipType = _req$app$locals$orm.RelationshipType, RelationshipTypeAttributeType = _req$app$locals$orm.RelationshipTypeAttributeType, bookshelf = _req$app$locals$orm.bookshelf;
+          _context3.next = 1;
+          return bookshelf.transaction();
+        case 1:
+          trx = _context3.sent;
+          if (req.params.id) {
+            _context3.next = 3;
             break;
-          case 12:
-            _context3.next = 14;
-            return RelationshipType.forge({
-              id: parseInt(req.params.id, 10)
-            }).fetch({
-              require: true
-            });
-          case 14:
-            newRelationshipType = _context3.sent;
-            method = 'update';
-          case 16:
-            _req$body = req.body, attributeTypes = _req$body.attributeTypes, childOrder = _req$body.childOrder, deprecated = _req$body.deprecated, description = _req$body.description, label = _req$body.label, linkPhrase = _req$body.linkPhrase, oldAttributeTypes = _req$body.oldAttributeTypes, parentId = _req$body.parentId, reverseLinkPhrase = _req$body.reverseLinkPhrase, sourceEntityType = _req$body.sourceEntityType, targetEntityType = _req$body.targetEntityType;
-            newRelationshipType.set('description', description);
-            newRelationshipType.set('label', label);
-            newRelationshipType.set('deprecated', deprecated);
-            newRelationshipType.set('linkPhrase', linkPhrase);
-            newRelationshipType.set('reverseLinkPhrase', reverseLinkPhrase);
-            newRelationshipType.set('childOrder', childOrder);
-            newRelationshipType.set('parentId', parentId);
-            newRelationshipType.set('sourceEntityType', sourceEntityType);
-            newRelationshipType.set('targetEntityType', targetEntityType);
-            _context3.next = 28;
-            return newRelationshipType.save(null, {
-              method: method
-            }, {
-              transacting: trx
-            });
-          case 28:
-            relationshipType = _context3.sent;
-            // Attributes
-            _getChangedAttributeT = getChangedAttributeTypes(oldAttributeTypes, attributeTypes), attributesToBeAdded = _getChangedAttributeT.attributesToBeAdded, attributesToBeRemoved = _getChangedAttributeT.attributesToBeRemoved;
-            attributesToBeRemovedPromises = attributesToBeRemoved.map(/*#__PURE__*/function () {
-              var _ref = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee(attributeID) {
-                return _regenerator.default.wrap(function _callee$(_context) {
-                  while (1) {
-                    switch (_context.prev = _context.next) {
-                      case 0:
-                        _context.next = 2;
-                        return new RelationshipTypeAttributeType().query(function (qb) {
-                          qb.where('relationship_type', newRelationshipType.id);
-                          qb.where('attribute_type', attributeID);
-                        }).destroy({
-                          transacting: trx
-                        });
-                      case 2:
-                      case "end":
-                        return _context.stop();
-                    }
-                  }
-                }, _callee);
-              }));
-              return function (_x6) {
-                return _ref.apply(this, arguments);
-              };
-            }());
-            _context3.next = 33;
-            return Promise.all(attributesToBeRemovedPromises);
-          case 33:
-            attributesToBeAddedPromises = attributesToBeAdded.map(/*#__PURE__*/function () {
-              var _ref2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(attributeID) {
-                var newRelTypeAttrType;
-                return _regenerator.default.wrap(function _callee2$(_context2) {
-                  while (1) {
-                    switch (_context2.prev = _context2.next) {
-                      case 0:
-                        _context2.next = 2;
-                        return new RelationshipTypeAttributeType();
-                      case 2:
-                        newRelTypeAttrType = _context2.sent;
-                        newRelTypeAttrType.set('relationshipType', relationshipType.id);
-                        newRelTypeAttrType.set('attributeType', attributeID);
-                        _context2.next = 7;
-                        return newRelTypeAttrType.save(null, {
-                          method: 'insert'
-                        }, {
-                          transacting: trx
-                        });
-                      case 7:
-                      case "end":
-                        return _context2.stop();
-                    }
-                  }
-                }, _callee2);
-              }));
-              return function (_x7) {
-                return _ref2.apply(this, arguments);
-              };
-            }());
-            _context3.next = 36;
-            return Promise.all(attributesToBeAddedPromises);
-          case 36:
-            _context3.next = 38;
-            return trx.commit();
-          case 38:
-            return _context3.abrupt("return", res.send(relationshipType.toJSON()));
-          case 41:
-            _context3.prev = 41;
-            _context3.t0 = _context3["catch"](0);
-            return _context3.abrupt("return", next(_context3.t0));
-          case 44:
-          case "end":
-            return _context3.stop();
-        }
+          }
+          _context3.next = 2;
+          return RelationshipType.forge();
+        case 2:
+          newRelationshipType = _context3.sent;
+          method = 'insert';
+          _context3.next = 5;
+          break;
+        case 3:
+          _context3.next = 4;
+          return RelationshipType.forge({
+            id: parseInt(req.params.id, 10)
+          }).fetch({
+            require: true
+          });
+        case 4:
+          newRelationshipType = _context3.sent;
+          method = 'update';
+        case 5:
+          _req$body = req.body, attributeTypes = _req$body.attributeTypes, childOrder = _req$body.childOrder, deprecated = _req$body.deprecated, description = _req$body.description, label = _req$body.label, linkPhrase = _req$body.linkPhrase, oldAttributeTypes = _req$body.oldAttributeTypes, parentId = _req$body.parentId, reverseLinkPhrase = _req$body.reverseLinkPhrase, sourceEntityType = _req$body.sourceEntityType, targetEntityType = _req$body.targetEntityType;
+          newRelationshipType.set('description', description);
+          newRelationshipType.set('label', label);
+          newRelationshipType.set('deprecated', deprecated);
+          newRelationshipType.set('linkPhrase', linkPhrase);
+          newRelationshipType.set('reverseLinkPhrase', reverseLinkPhrase);
+          newRelationshipType.set('childOrder', childOrder);
+          newRelationshipType.set('parentId', parentId);
+          newRelationshipType.set('sourceEntityType', sourceEntityType);
+          newRelationshipType.set('targetEntityType', targetEntityType);
+          _context3.next = 6;
+          return newRelationshipType.save(null, {
+            method: method
+          }, {
+            transacting: trx
+          });
+        case 6:
+          relationshipType = _context3.sent;
+          // Attributes
+          _getChangedAttributeT = getChangedAttributeTypes(oldAttributeTypes, attributeTypes), attributesToBeAdded = _getChangedAttributeT.attributesToBeAdded, attributesToBeRemoved = _getChangedAttributeT.attributesToBeRemoved;
+          attributesToBeRemovedPromises = attributesToBeRemoved.map(/*#__PURE__*/function () {
+            var _ref = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee(attributeID) {
+              return _regenerator.default.wrap(function (_context) {
+                while (1) switch (_context.prev = _context.next) {
+                  case 0:
+                    _context.next = 1;
+                    return new RelationshipTypeAttributeType().query(function (qb) {
+                      qb.where('relationship_type', newRelationshipType.id);
+                      qb.where('attribute_type', attributeID);
+                    }).destroy({
+                      transacting: trx
+                    });
+                  case 1:
+                  case "end":
+                    return _context.stop();
+                }
+              }, _callee);
+            }));
+            return function (_x6) {
+              return _ref.apply(this, arguments);
+            };
+          }());
+          _context3.next = 7;
+          return Promise.all(attributesToBeRemovedPromises);
+        case 7:
+          attributesToBeAddedPromises = attributesToBeAdded.map(/*#__PURE__*/function () {
+            var _ref2 = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee2(attributeID) {
+              var newRelTypeAttrType;
+              return _regenerator.default.wrap(function (_context2) {
+                while (1) switch (_context2.prev = _context2.next) {
+                  case 0:
+                    _context2.next = 1;
+                    return new RelationshipTypeAttributeType();
+                  case 1:
+                    newRelTypeAttrType = _context2.sent;
+                    newRelTypeAttrType.set('relationshipType', relationshipType.id);
+                    newRelTypeAttrType.set('attributeType', attributeID);
+                    _context2.next = 2;
+                    return newRelTypeAttrType.save(null, {
+                      method: 'insert'
+                    }, {
+                      transacting: trx
+                    });
+                  case 2:
+                  case "end":
+                    return _context2.stop();
+                }
+              }, _callee2);
+            }));
+            return function (_x7) {
+              return _ref2.apply(this, arguments);
+            };
+          }());
+          _context3.next = 8;
+          return Promise.all(attributesToBeAddedPromises);
+        case 8:
+          _context3.next = 9;
+          return trx.commit();
+        case 9:
+          return _context3.abrupt("return", res.send(relationshipType.toJSON()));
+        case 10:
+          _context3.prev = 10;
+          _t = _context3["catch"](0);
+          return _context3.abrupt("return", next(_t));
+        case 11:
+        case "end":
+          return _context3.stop();
       }
-    }, _callee3, null, [[0, 41]]);
+    }, _callee3, null, [[0, 10]]);
   }));
   return _relationshipTypeCreateOrEditHandler.apply(this, arguments);
 }
@@ -259,62 +252,60 @@ function identifierTypeCreateOrEditHandler(_x4, _x5) {
 }
 function _identifierTypeCreateOrEditHandler() {
   _identifierTypeCreateOrEditHandler = (0, _asyncToGenerator2.default)(/*#__PURE__*/_regenerator.default.mark(function _callee4(req, res) {
-    var IdentifierType, newIdentifierType, method, _req$body2, childOrder, deprecated, description, detectionRegex, displayTemplate, entityType, label, parentId, validationRegex, identifierType;
-    return _regenerator.default.wrap(function _callee4$(_context4) {
-      while (1) {
-        switch (_context4.prev = _context4.next) {
-          case 0:
-            _context4.prev = 0;
-            IdentifierType = req.app.locals.orm.IdentifierType;
-            if (req.params.id) {
-              _context4.next = 9;
-              break;
-            }
-            _context4.next = 5;
-            return IdentifierType.forge();
-          case 5:
-            newIdentifierType = _context4.sent;
-            method = 'insert';
-            _context4.next = 13;
+    var IdentifierType, newIdentifierType, method, _req$body2, childOrder, deprecated, description, detectionRegex, displayTemplate, entityType, label, parentId, validationRegex, identifierType, _t2;
+    return _regenerator.default.wrap(function (_context4) {
+      while (1) switch (_context4.prev = _context4.next) {
+        case 0:
+          _context4.prev = 0;
+          IdentifierType = req.app.locals.orm.IdentifierType;
+          if (req.params.id) {
+            _context4.next = 2;
             break;
-          case 9:
-            _context4.next = 11;
-            return IdentifierType.forge({
-              id: parseInt(req.params.id, 10)
-            }).fetch({
-              require: true
-            });
-          case 11:
-            newIdentifierType = _context4.sent;
-            method = 'update';
-          case 13:
-            _req$body2 = req.body, childOrder = _req$body2.childOrder, deprecated = _req$body2.deprecated, description = _req$body2.description, detectionRegex = _req$body2.detectionRegex, displayTemplate = _req$body2.displayTemplate, entityType = _req$body2.entityType, label = _req$body2.label, parentId = _req$body2.parentId, validationRegex = _req$body2.validationRegex;
-            newIdentifierType.set('description', description);
-            newIdentifierType.set('label', label);
-            newIdentifierType.set('deprecated', deprecated);
-            newIdentifierType.set('detectionRegex', detectionRegex);
-            newIdentifierType.set('displayTemplate', displayTemplate);
-            newIdentifierType.set('childOrder', childOrder);
-            newIdentifierType.set('parentId', parentId);
-            newIdentifierType.set('entityType', entityType);
-            newIdentifierType.set('validationRegex', validationRegex);
-            _context4.next = 25;
-            return newIdentifierType.save(null, {
-              method: method
-            });
-          case 25:
-            identifierType = _context4.sent;
-            return _context4.abrupt("return", res.status(200).send(identifierType.toJSON()));
-          case 29:
-            _context4.prev = 29;
-            _context4.t0 = _context4["catch"](0);
-            return _context4.abrupt("return", error.sendErrorAsJSON(res, new error.SiteError('A problem occurred while saving the identifier type')));
-          case 32:
-          case "end":
-            return _context4.stop();
-        }
+          }
+          _context4.next = 1;
+          return IdentifierType.forge();
+        case 1:
+          newIdentifierType = _context4.sent;
+          method = 'insert';
+          _context4.next = 4;
+          break;
+        case 2:
+          _context4.next = 3;
+          return IdentifierType.forge({
+            id: parseInt(req.params.id, 10)
+          }).fetch({
+            require: true
+          });
+        case 3:
+          newIdentifierType = _context4.sent;
+          method = 'update';
+        case 4:
+          _req$body2 = req.body, childOrder = _req$body2.childOrder, deprecated = _req$body2.deprecated, description = _req$body2.description, detectionRegex = _req$body2.detectionRegex, displayTemplate = _req$body2.displayTemplate, entityType = _req$body2.entityType, label = _req$body2.label, parentId = _req$body2.parentId, validationRegex = _req$body2.validationRegex;
+          newIdentifierType.set('description', description);
+          newIdentifierType.set('label', label);
+          newIdentifierType.set('deprecated', deprecated);
+          newIdentifierType.set('detectionRegex', detectionRegex);
+          newIdentifierType.set('displayTemplate', displayTemplate);
+          newIdentifierType.set('childOrder', childOrder);
+          newIdentifierType.set('parentId', parentId);
+          newIdentifierType.set('entityType', entityType);
+          newIdentifierType.set('validationRegex', validationRegex);
+          _context4.next = 5;
+          return newIdentifierType.save(null, {
+            method: method
+          });
+        case 5:
+          identifierType = _context4.sent;
+          return _context4.abrupt("return", res.status(200).send(identifierType.toJSON()));
+        case 6:
+          _context4.prev = 6;
+          _t2 = _context4["catch"](0);
+          return _context4.abrupt("return", error.sendErrorAsJSON(res, new error.SiteError('A problem occurred while saving the identifier type')));
+        case 7:
+        case "end":
+          return _context4.stop();
       }
-    }, _callee4, null, [[0, 29]]);
+    }, _callee4, null, [[0, 6]]);
   }));
   return _identifierTypeCreateOrEditHandler.apply(this, arguments);
 }
@@ -330,7 +321,7 @@ function _identifierTypeCreateOrEditHandler() {
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 13:45:01 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Oct 22 2026 15:19:59 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
