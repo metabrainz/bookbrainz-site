@@ -280,7 +280,7 @@
       "ctrlClick": "Ctrl/Cmd + click to open in a new tab",
       "duplicateSuggestion": "If the {{entityType}} you want to add appears in the results below, click on it to inspect it before adding a possible duplicate.",
       "duplicateWarning_one": "We found the following {{entityType}} with exactly the same name or alias:",
-      "duplicateWarning_other": "We found the following {{entityType}}s with exactly the same name or alias:",
+      "duplicateWarning_other": "We found the following {{entityType}} with exactly the same name or alias:",
       "fillDisambiguation": "If you are sure your entry is different, please fill the disambiguation field below to help us differentiate between them.",
       "heading": "What is the {{entityType}} called?",
       "languageTooltip": "Language used for the above name",

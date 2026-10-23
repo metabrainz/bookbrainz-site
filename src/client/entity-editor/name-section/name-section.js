@@ -136,6 +136,7 @@ class NameSection extends React.Component {
 
 	renderDuplicateAlert(warnIfExists, disambiguationDefaultValue, exactMatches, entityType, lgCol) {
 		const translate = this.props.t;
+		const entityTypeLabel = translate(`common.entityType.${_.camelCase(entityType)}${exactMatches.length === 1 ? '' : '_plural'}`);
 		return (
 			<Col lg={lgCol}>
 				{isRequiredDisambiguationEmpty(
@@ -143,7 +144,7 @@ class NameSection extends React.Component {
 					disambiguationDefaultValue
 				) ?
 					<Alert variant="warning">
-						{translate('entityEditor.nameSection.duplicateWarning', {count: exactMatches.length, entityType: _.startCase(entityType)})}
+						{translate('entityEditor.nameSection.duplicateWarning', {count: exactMatches.length, entityType: entityTypeLabel})}
 						<br/><small className="text-muted">{translate('entityEditor.nameSection.clickToOpen')}</small>
 						<ListGroup activeKey={null} className="margin-top-1 margin-bottom-1">
 							{exactMatches.map((match) =>
@@ -183,6 +184,7 @@ class NameSection extends React.Component {
 			isModal
 		} = this.props;
 		const translate = this.props.t;
+		const entityTypeLabel = translate(`common.entityType.${_.camelCase(entityType)}`);
 		const exactMatches = convertMapToObject(immutableExactMatches);
 		const searchResults = convertMapToObject(immutableSearchResults);
 		const languageOptionsForDisplay = languageOptions.map((language) => ({
@@ -201,14 +203,14 @@ class NameSection extends React.Component {
 		!_.isEmpty(searchResults) &&
 		<Row>
 			<Col lg={lgCol}>
-				{translate('entityEditor.nameSection.duplicateSuggestion', {entityType: _.startCase(entityType)})}
+				{translate('entityEditor.nameSection.duplicateSuggestion', {entityType: entityTypeLabel})}
 				<br/>
 				<small>{translate('entityEditor.nameSection.ctrlClick')}</small>
 				<SearchResults condensed results={searchResults}/>
 			</Col>
 		</Row>;
 		const duplicateAlert = this.renderDuplicateAlert(warnIfExists, disambiguationDefaultValue, exactMatches, entityType, lgCol);
-		const heading = <h2>{translate('entityEditor.nameSection.heading', {entityType: _.startCase(entityType)})}</h2>;
+		const heading = <h2>{translate('entityEditor.nameSection.heading', {entityType: entityTypeLabel})}</h2>;
 		return (
 			<div>
 				{!isUnifiedForm && heading}
@@ -221,7 +223,7 @@ class NameSection extends React.Component {
 							)}
 							error={!validateNameSectionName(nameValue)}
 							inputRef={this.updateNameFieldInputRef}
-							tooltipText={translate('entityEditor.nameSection.nameTooltip', {entityType: _.startCase(entityType)})}
+							tooltipText={translate('entityEditor.nameSection.nameTooltip', {entityType: entityTypeLabel})}
 							warn={(isRequiredDisambiguationEmpty(
 								warnIfExists,
 								disambiguationDefaultValue

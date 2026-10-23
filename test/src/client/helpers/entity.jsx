@@ -23,7 +23,7 @@ const resources = {
 	en: {translation: english},
 	fr: {
 		translation: {
-			common: {unnamed: '(sans nom)'},
+			common: {entityType: {work: 'Œuvre'}, unnamed: '(sans nom)'},
 			pages: {
 				entity: {
 					deletedEntityType: '{{type}} supprimé {{bbid}}',
@@ -51,7 +51,7 @@ describe('Entity helper translations', () => {
 		expect(entityToOption(unnamed, frenchI18n.t).text).to.equal('(sans nom)');
 		expect(getEntityLabelText(unnamed, englishI18n.t)).to.equal('Unnamed');
 		expect(getEntityLabelText(unnamed, frenchI18n.t)).to.equal('Sans nom');
-		expect(getEntityLabelText(deleted, frenchI18n.t)).to.equal('Work supprimé test-bbid');
+		expect(getEntityLabelText(deleted, frenchI18n.t)).to.equal('Œuvre supprimé test-bbid');
 	});
 
 	it('renders links and headings using their own provider instead of the last initialized locale', () => {
@@ -66,6 +66,6 @@ describe('Entity helper translations', () => {
 			</div>
 		);
 		expect(markup).to.contain('(unnamed)');
-		expect(markup).to.contain('Work supprimé test-bbid');
+		expect(markup).to.contain('Œuvre supprimé test-bbid');
 	});
 });
