@@ -471,7 +471,8 @@ export async function i18nMiddleware(req: $Request, res: $Response, next: NextFu
 	const cookieLang = rawCookies.split('; ')
 		.find(lang => lang.startsWith('bb_lang='))
 		?.split('=')[1];
-	const [headerLang = 'en'] = getAcceptedLanguageCodes(req);
+	const headerLang = getAcceptedLanguageCodes(req)
+		.find(language => availableLocales.includes(language)) ?? 'en';
 	const preferred = cookieLang ?? headerLang;
 	const locale = availableLocales.includes(preferred) ? preferred : 'en';
 
