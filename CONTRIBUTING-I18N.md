@@ -9,8 +9,10 @@ For **translating strings** into other languages (not coding), visit the
 ## How It Works
 
 BookBrainz uses [react-i18next](https://react.i18next.com/) for internationalization. Instead of
-hardcoding English text in components, we store all user-visible strings in JSON locale files under
-`public/locales/en/` and look them up at render time using a `translate()` function.
+hardcoding English text in components, we store user-visible strings in the English catalog at
+`public/locales/en/translation.json` and look them up at render time using a `translate()` function.
+Each language has its own `public/locales/<locale>/translation.json` file. The server loads the
+selected language and English fallback resources and passes them to the React i18n provider.
 
 When a translator adds a French translation on Weblate, the same component will automatically
 render French text for French-speaking users, no code changes needed.
@@ -23,16 +25,20 @@ Here's what a typical translatable component looks like:
 import {useTranslation} from 'react-i18next';
 
 function MyComponent() {
-    const {t: translate} = useTranslation(['pages', 'common']);
-    return <h1>{translate('myPage.title')}</h1>;
+    const {t: translate} = useTranslation();
+    return <h1>{translate('pages.myPage.title')}</h1>;
 }
 ```
 
-And the matching key in `public/locales/en/pages.json`:
+And the matching key in `public/locales/en/translation.json`:
 
 ```json
 {
-  "myPage.title": "My Page Title"
+  "pages": {
+    "myPage": {
+      "title": "My Page Title"
+    }
+  }
 }
 ```
 
@@ -48,65 +54,78 @@ destructure it with an alias:
  * **Do this:** `const {t: translate} = useTranslation();`
  * **Don't do this:** `const {t} = useTranslation();` — this will fail the linter
 
-## Namespaces
+## Translation File Structure
 
-Translation keys are organized into **namespaces**, each stored in a separate JSON file under
-`public/locales/en/`. Here are the current namespaces:
+The application uses one i18next namespace, `translation`. Within `translation.json`, keys are
+organized into nested objects:
 
- * `common` (`common.json`) — shared UI text: buttons, labels, nav items, entity types
- * `pages` (`pages.json`) — page-specific text: index, registration, search, revisions
- * `staticPages` (`staticPages.json`) — static content pages: about, help, FAQ, contribute, privacy
- * `errors` (`errors.json`) — error messages and detailed error descriptions
- * `entities` (`entities.json`) — entity display pages
- * `entityEditor` (`entityEditor.json`) — entity editor form labels, buttons, and validation text
+ * `common` — shared UI text: buttons, labels, nav items, entity types
+ * `pages` — page-specific text: index, registration, search, revisions
+ * `staticPages` — static content pages: about, help, FAQ, contribute, privacy
+ * `errors` — error messages and detailed error descriptions
+ * `entities` — entity display pages
+ * `entityEditor` — entity editor form labels, buttons, and validation text
 
-If a string is reused across many pages (e.g. a button label like "Submit"), put it in `common`.
-If it's specific to one page or feature, use the matching namespace.
-
-### Accessing multiple namespaces
-
-Pass an array to `useTranslation`. The **first** namespace becomes the default:
+These groups are key prefixes, not separate namespaces or files. Use `useTranslation()` without
+arguments and include the full dotted path in each call:
 
 ```jsx
-const {t: translate} = useTranslation(['staticPages', 'common']);
+const {t: translate} = useTranslation();
 
-// Default namespace (staticPages) — no prefix needed:
-translate('about.title')
-
-// Another namespace — prefix with the namespace name and a colon:
-translate('common:button.submit')
+translate('staticPages.about.chatWithUs')
+translate('common.button.submit')
 ```
+
+The shared configuration uses `keySeparator: '.'` and `nsSeparator: false`. Do not pass group names
+such as `pages` to `useTranslation`, or use colon-prefixed keys such as `common:button.submit`.
+Separate files such as `common.json` and `pages.json` are not loaded by the application.
+
+If a string is reused across many pages (e.g. a button label like "Submit"), put it in `common`.
+If it's specific to one page or feature, use the matching group.
 
 ## Key Naming Conventions
 
-### Dot-notation keys (most namespaces)
+### Dotted paths and nested objects
 
-Use `section.keyName` in camelCase:
-
-```json
-{
-  "button.returnToMain": "Return to Main Page",
-  "nav.profile": "Profile",
-  "registration.authIntroText": "To sign up as an editor..."
-}
-```
-
-### Natural-language keys (`errors.json` only)
-
-Error keys use the **full English sentence** as the key:
+Use camelCase names within nested objects. For example:
 
 ```json
 {
-  "Page not found": "Page not found",
-  "You are not currently authenticated": "You are not currently authenticated"
+  "common": {
+    "button": {
+      "returnToMain": "Return to Main Page"
+    },
+    "nav": {
+      "profile": "Profile"
+    }
+  }
 }
 ```
 
-Why? Error messages are defined as plain strings in the server-side error classes
-(`src/common/helpers/error.js`). The server sends these strings directly to the client
-(e.g. `error.message = "Page not found"`), and the client passes them straight to
-`translate(error.message)`. Using the English text as the key avoids having to rewrite
-every error class to emit key names.
+Look these up with `translate('common.button.returnToMain')` and `translate('common.nav.profile')`.
+
+### Natural-language keys (`errors` group)
+
+The error page uses the **full English sentence** as a key inside the `errors` object:
+
+```json
+{
+  "errors": {
+    "Page not found": "Page not found",
+    "You are not currently authenticated": "You are not currently authenticated"
+  }
+}
+```
+
+Error messages are defined as plain strings in the server-side error classes
+(`src/common/helpers/error.js`). The error page prefixes the message with `errors.` and
+preserves the original message if no translation exists:
+
+```jsx
+translate(`errors.${error.message}`, {defaultValue: error.message})
+```
+
+Dynamic error keys cannot all be discovered by the extractor. Add their English entries manually.
 
 ## Interpolation (Dynamic Values)
 
@@ -116,13 +135,15 @@ in the locale file and pass the value as an option:
 Locale file:
 ```json
 {
-  "greeting": "Hello, {{name}}!"
+  "common": {
+    "greeting": "Hello, {{name}}!"
+  }
 }
 ```
 
 Component:
 ```jsx
-translate('greeting', {name: userName})
+translate('common.greeting', {name: userName})
 ```
 
 The shared `createI18n()` configuration sets `interpolation.escapeValue: false` because
@@ -131,56 +152,31 @@ from being escaped twice; individual translation calls do not need this option.
 If you insert translated strings directly into HTML outside React, escape them at that
 output boundary.
 
-## Adding a New Namespace
+## Adding a New Feature's Strings
 
-If none of the existing namespaces fit your new feature, you can create one. Three files
-must be updated:
+Add a nested object to the appropriate group in `public/locales/en/translation.json`. For example,
+a new page can use `pages.myPage` as shown above. If no existing group fits, add a new top-level
+object to the same file. Neither case requires changing the i18n configuration or server loader.
 
-#### 1. Create the locale file
+Run `npm run parse-i18n` to extract keys from source files, then review the diff in
+`public/locales/en/translation.json` and supply meaningful English text for new entries.
+The extraction settings are in `i18next.config.js`; they write to the same single-file structure
+used at runtime and retain existing keys (`removeUnusedKeys: false`).
 
-Create `public/locales/en/myNamespace.json`:
-```json
-{
-  "myKey": "My translated text"
-}
-```
-
-#### 2. Register in the client-side i18n config
-
-Add the namespace to the `ns` array in `src/common/i18n/i18n.ts`:
-```js
-ns: ['common', 'entityEditor', 'myNamespace', 'pages', 'entities', 'errors', 'staticPages'],
-```
-
-#### 3. Register in the server-side resource loader
-
-Add it to `loadAllNamespaces` in `src/server/helpers/middleware.ts`:
-```js
-async function loadAllNamespaces(loc) {
-    return {
-        common: await load(loc, 'common'),
-        entities: await load(loc, 'entities'),
-        entityEditor: await load(loc, 'entityEditor'),
-        errors: await load(loc, 'errors'),
-        myNamespace: await load(loc, 'myNamespace'),
-        pages: await load(loc, 'pages'),
-        staticPages: await load(loc, 'staticPages')
-    };
-}
-```
-
-If you skip step 3, the first server-rendered page load will display raw translation keys
-instead of translated text.
+For dynamically constructed keys, such as entity types or validation messages returned by helpers,
+add every possible entry manually and verify it resolves. Extraction cannot infer every runtime key.
+Do not edit the unused per-group JSON files or create new ones.
 
 ## Checklist Before Submitting
 
 Before opening a PR that touches i18n, make sure:
 
  * All user-visible strings use `translate()`, no hardcoded English text
- * Keys are added to the correct JSON file in `public/locales/en/`
- * Key names follow the naming convention of the target namespace
- * No duplicate keys — check if a shared key already exists in `common.json` first
+ * Keys are added to the appropriate nested group in `public/locales/en/translation.json`
+ * Key names follow the naming convention of the target group
+ * No duplicate keys — check if a shared key already exists under `common` first
  * `useTranslation` is destructured as `{t: translate}` (not `{t}`)
- * If you created a new namespace, it's registered in both `i18n.ts` and `middleware.ts`
- *   Run `yarn parse-i18n`.
+ * Calls use full dotted paths and `useTranslation()` without group names
+ * Dynamically constructed keys have matching entries in the English catalog
+ * Run `npm run parse-i18n` and review the resulting catalog changes
  * `npm run lint` passes with no new errors
