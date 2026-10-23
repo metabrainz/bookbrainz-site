@@ -297,6 +297,7 @@
       "fillDisambiguation": "If you are sure your entry is different, please fill the disambiguation field below to help us differentiate between them.",
       "heading": "What is the {{entityType}} called?",
       "languageTooltip": "Language used for the above name",
+      "mergeSortNameTooltip": "Alphabetical sort name for the above name.",
       "nameTooltip": "Official name of the {{entityType}} in its original language. Names in other languages should be added as aliases."
     },
     "publisherSection": {
