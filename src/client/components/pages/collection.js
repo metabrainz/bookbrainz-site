@@ -68,7 +68,7 @@ function CollectionAttributes({collection, t: translate}) {
 						</Col> : null
 				}
 				<Col lg={3}>
-					<dt>{translate('common.Privacy')}</dt>
+					<dt>{translate('common.privacy')}</dt>
 					<dd>{collection.public ? translate('common.public') : translate('common.private')}</dd>
 				</Col>
 				<Col lg={3}>
