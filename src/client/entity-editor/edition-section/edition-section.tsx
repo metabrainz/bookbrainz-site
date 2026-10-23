@@ -211,9 +211,7 @@ function EditionSection({
 		label: status.label,
 		value: status.id
 	}));
-	const statusOption = editionStatusesForDisplay.filter((el) => el.value === statusValue);
-	const {isValid: isValidReleaseDate, errorMessage: dateErrorMessage} = validateEditionSectionReleaseDate(releaseDateValue);
-
+	
 	const hasmatchingNameEditionGroups = Boolean(matchingNameEditionGroups?.length);
 
 	const showAutoCreateEditionGroupMessage =
