@@ -20,7 +20,6 @@ import {Trans, useTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Relationship from '../../../entity-editor/relationship-editor/relationship';
-import {useTranslation} from 'react-i18next';
 
 
 function EntityRelationships({contextEntity, relationships, entityUrl}) {

@@ -21,7 +21,6 @@ import * as bootstrap from 'react-bootstrap';
 import {Trans, useTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {useTranslation} from 'react-i18next';
 
 
 const {Row, Col} = bootstrap;

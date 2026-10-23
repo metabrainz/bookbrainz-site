@@ -24,7 +24,6 @@ import DOMPurify from 'isomorphic-dompurify';
 import type {LazyLoadedEntityT} from 'bookbrainz-data/lib/types/entity';
 import {getAliasLanguageCodes} from '../../../../common/helpers/utils';
 import {uniq} from 'lodash';
-import {useTranslation} from 'react-i18next';
 
 
 type Props = {
