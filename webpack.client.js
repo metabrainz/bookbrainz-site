@@ -145,11 +145,15 @@ if (!production) {
 		clientConfig.plugins.push(new BundleAnalyzerPlugin());
 	}
 
-	/* Add webpack HMR middleware to all entry files except for styles */
+	/*
+	 * Add webpack HMR middleware to all entry files except for styles.
+	 * Pages are server-rendered and hydrated by their controllers, so there is no
+	 * component-level hot reloading: reload the page when a rebuild finishes.
+	 */
 	for (const entry in clientConfig.entry) {
 		if (Object.prototype.hasOwnProperty.call(clientConfig.entry, entry)) {
 			if(entry !== "style"){
-				clientConfig.entry[entry].push('webpack-hot-middleware/client');
+				clientConfig.entry[entry].push('webpack-hot-middleware/client?reload=true');
 			}
 		}
 	}
