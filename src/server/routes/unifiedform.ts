@@ -20,6 +20,7 @@ router.get('/create', isAuthenticated, isAuthorized(ENTITY_EDITOR), middleware.l
 		const formMarkup = unifiedFormMarkup(props);
 		const {markup, props: updatedProps} = formMarkup;
 		return res.send(target({
+			locale: res.locals.locale,
 			markup,
 			page: 'Unified form',
 			props: escapeProps(updatedProps),
