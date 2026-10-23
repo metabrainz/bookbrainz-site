@@ -120,7 +120,7 @@ class DateField extends React.Component {
 			<ValidationLabel
 				empty={this.props.empty}
 				error={this.props.error}
-				errorMessage={this.props.errorMessage}
+				errorMessage={this.props.errorMessage ? translate(this.props.errorMessage) : ''}
 				warn={this.state.warn}
 				warnMessage={warnMessage}
 			>
