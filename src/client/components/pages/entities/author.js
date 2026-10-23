@@ -36,6 +36,7 @@ import WikipediaExtract from './wikipedia-extract';
 import {kebabCase as _kebabCase} from 'lodash';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
 import {labelsForAuthor} from '../../../helpers/utils';
+import {useTranslation} from 'react-i18next';
 
 
 const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
@@ -46,6 +47,7 @@ function AuthorAttributes({author}) {
 	if (author.deleted) {
 		return deletedEntityMessage;
 	}
+	const {t: translate} = useTranslation();
 	const type = getTypeAttribute(author.authorType).data;
 	const gender = extractAttribute(author.gender, 'name');
 	const beginArea = extractAttribute(author.beginArea, 'name');
@@ -62,14 +64,14 @@ function AuthorAttributes({author}) {
 		beginAreaLabel,
 		endDateLabel,
 		endAreaLabel
-	} = labelsForAuthor(isGroup);
+	} = labelsForAuthor(isGroup, translate);
 	const showGender = !isGroup;
 	return (
 		<div>
 			<Row>
 				<Col lg={3}>
 					<dl>
-						<dt>Sort Name</dt>
+						<dt>{translate('common.sortName')}</dt>
 						<dd>{sortNameOfDefaultAlias}</dd>
 						<AverageRating
 							averageRatings={averageRating}
@@ -79,11 +81,11 @@ function AuthorAttributes({author}) {
 				</Col>
 				<Col lg={3}>
 					<dl>
-						<dt>Type</dt>
+						<dt>{translate('common.type')}</dt>
 						<dd>{type}</dd>
 						{showGender &&
 							<React.Fragment>
-								<dt>Gender</dt>
+								<dt>{translate('common.gender')}</dt>
 								<dd>{gender}</dd>
 							</React.Fragment>
 						}
@@ -119,6 +121,7 @@ AuthorAttributes.propTypes = {
 
 
 function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
+	const {t: translate} = useTranslation();
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);
@@ -175,7 +178,7 @@ function AuthorDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
 								href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 								variant="success"
 							>
-								<FontAwesomeIcon className="margin-right-0-5" icon={faPlus}/>Add Work
+								<FontAwesomeIcon className="margin-right-0-5" icon={faPlus}/>{translate('pages.entity.addWork')}
 							</Button>
 						</Col>
 						<Col lg={4}>

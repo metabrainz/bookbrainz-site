@@ -18,6 +18,7 @@
 
 import {Col, Row} from 'react-bootstrap';
 import React, {useEffect, useState} from 'react';
+import {Trans, useTranslation} from 'react-i18next';
 import {WikipediaArticleExtract, buildWikipediaUrl, getWikidataId} from '../../../../common/helpers/wikimedia';
 import DOMPurify from 'isomorphic-dompurify';
 import type {LazyLoadedEntityT} from 'bookbrainz-data/lib/types/entity';
@@ -45,6 +46,7 @@ async function getWikipediaExtractForWikidata(wikidataId: string, preferredLangu
 
 
 function WikipediaExtract({entity, articleExtract}: Props) {
+	const {t: translate} = useTranslation();
 	const [state, setState] = useState(articleExtract);
 
 	useEffect(() => {
@@ -74,13 +76,16 @@ function WikipediaExtract({entity, articleExtract}: Props) {
 	return extract ? (
 		<Row className="wikipedia-extract">
 			<Col>
-				<h2>Wikipedia</h2>
+				<h2>{translate('pages.entity.wikipedia')}</h2>
 				{/* eslint-disable-next-line react/no-danger */}
 				<div dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(extract)}}/>
-				<a href={buildWikipediaUrl(article)?.href}>Continue reading at Wikipedia...</a>
+				<a href={buildWikipediaUrl(article)?.href}>{translate('pages.entity.continueReadingWikipedia')}</a>
 				{' '}
 				<small>
-					Wikipedia content provided under the terms of the <a href={licenseUrl}>Creative Commons BY-SA license</a>
+					<Trans
+						components={{licenseLink: <a href={licenseUrl}/>}}
+						i18nKey="pages.entity.wikipediaLicense"
+					/>
 				</small>
 			</Col>
 		</Row>

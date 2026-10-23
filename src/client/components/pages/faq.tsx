@@ -17,9 +17,9 @@
  */
 /* eslint-disable max-len */
 import {Card, ListGroup} from 'react-bootstrap';
+import {Trans, useTranslation} from 'react-i18next';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
-import {useTranslation} from 'react-i18next';
 
 /**
  * Renders the page for the Frequently Asked Questions on Bookbrainz
@@ -42,13 +42,36 @@ function FAQPage(): JSX.Element {
 						<br/>
 						<br/>
 						<ol>
-							<li>{translate('staticPages.faq.q1.step1Pre')}{genEntityIconHTMLElement('Author')}{translate('common.entityType.author')}</li>
-							<li>{translate('staticPages.faq.q1.step2Pre')}{genEntityIconHTMLElement('Work')}{translate('staticPages.faq.q1.step2Post')}</li>
 							<li>
-								{translate('staticPages.faq.q1.step3Pre')}{genEntityIconHTMLElement('Edition')}{translate('staticPages.faq.q1.step3Mid')}
+								<Trans
+									components={{authorIcon: genEntityIconHTMLElement('Author')}}
+									i18nKey="staticPages.faq.q1.step1"
+								/>
+							</li>
+							<li>
+								<Trans
+									components={{workIcon: genEntityIconHTMLElement('Work')}}
+									i18nKey="staticPages.faq.q1.step2"
+								/>
+							</li>
+							<li>
+								<Trans
+									components={{editionIcon: genEntityIconHTMLElement('Edition')}}
+									i18nKey="staticPages.faq.q1.step3"
+								/>
 								<ul>
-									<li>{translate('staticPages.faq.q1.step3Sub1Pre')}{genEntityIconHTMLElement('EditionGroup')}{translate('staticPages.faq.q1.step3Sub1Post')}</li>
-									<li>{translate('staticPages.faq.q1.step3Sub2Pre')}{genEntityIconHTMLElement('Publisher')}{translate('staticPages.faq.q1.step3Sub2Post')}</li>
+									<li>
+										<Trans
+											components={{editionGroupIcon: genEntityIconHTMLElement('EditionGroup')}}
+											i18nKey="staticPages.faq.q1.step3Sub1"
+										/>
+									</li>
+									<li>
+										<Trans
+											components={{publisherIcon: genEntityIconHTMLElement('Publisher')}}
+											i18nKey="staticPages.faq.q1.step3Sub2"
+										/>
+									</li>
 								</ul>
 							</li>
 							<li>{translate('staticPages.faq.q1.step4')}</li>

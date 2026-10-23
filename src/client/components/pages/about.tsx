@@ -16,12 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {Trans, useTranslation} from 'react-i18next';
 import {faCircle, faCommentDots, faComments, faEnvelope} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import React from 'react';
 import {faXTwitter} from '@fortawesome/free-brands-svg-icons';
-import {useTranslation} from 'react-i18next';
 
 
 /**
@@ -43,10 +43,10 @@ function AboutPage(): JSX.Element {
 			</p>
 
 			<p>
-				{translate('staticPages.about.welcomeMessage')}&nbsp;
-				<a href="/register">
-					{translate('staticPages.about.becomeEditor')}
-				</a>
+				<Trans
+					components={{registerLink: <a href="/register"/>}}
+					i18nKey="staticPages.about.welcomeMessage"
+				/>
 			</p>
 
 			<p>
@@ -55,23 +55,24 @@ function AboutPage(): JSX.Element {
 
 			<h2>{translate('common.about.accessingData')}</h2>
 			<p>
-				{translate('staticPages.about.dataLicensePre')}
-				<a href="/licensing">
-					 {translate('staticPages.about.licensingPageLink')}
-				</a>
-				{translate('staticPages.about.dataLicensePost')}
+				<Trans
+					components={{licensingLink: <a href="/licensing"/>}}
+					i18nKey="staticPages.about.dataLicense"
+				/>
 			</p>
 			<p>
-				{translate('staticPages.about.dbDumpsPre')}
-				<a href="http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2">
-					{translate('staticPages.about.dbDumpsLink')}
-				</a>
+				<Trans
+					components={{
+						downloadLink: <a href="http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2"/>
+					}}
+					i18nKey="staticPages.about.dbDumps"
+				/>
 			</p>
 			<p>
-				{translate('staticPages.about.webservicePre')}
-				<a href="https://api.bookbrainz.org/1/docs/">
-					{translate('staticPages.about.webserviceLink')}
-				</a>.
+				<Trans
+					components={{documentationLink: <a href="https://api.bookbrainz.org/1/docs/"/>}}
+					i18nKey="staticPages.about.webservice"
+				/>
 			</p>
 
 			<h2>{translate('common.about.contactUs')}</h2>
@@ -91,8 +92,10 @@ function AboutPage(): JSX.Element {
 						icon={faCommentDots}
 						size="2x"
 					/>
-					{translate('staticPages.about.chatWithUs')}<br/>
-					<small>{translate('staticPages.about.chatChannels')}</small>
+					<Trans
+						components={{channels: <small/>, lineBreak: <br/>}}
+						i18nKey="staticPages.about.chatWithUs"
+					/>
 				</a>
 				<FontAwesomeIcon
 					className="margin-sides-1 contact-text"
@@ -138,43 +141,38 @@ function AboutPage(): JSX.Element {
 
 			<h2>{translate('common.about.ourStory')}</h2>
 			<p>
-				{translate('staticPages.about.storyPart1Pre')}&nbsp;
-				<a href="https://github.com/ocharles">
-					 {translate('staticPages.about.oliver')}
-				</a>
-				{translate('staticPages.about.storyPart1Mid')}
+				<Trans
+					components={{oliverLink: <a href="https://github.com/ocharles"/>}}
+					i18nKey="staticPages.about.storyPart1"
+				/>
 			</p>
 
 			<p>
-				{translate('staticPages.about.storyPart2Pre')}&nbsp;
-				<a href="https://github.com/Leftmostcat">
-					{translate('staticPages.about.sean')}
-				</a>
-				{translate('staticPages.about.storyPart2Mid')}
+				<Trans
+					components={{seanLink: <a href="https://github.com/Leftmostcat"/>}}
+					i18nKey="staticPages.about.storyPart2"
+				/>
 			</p>
 
 			<p>
-				{translate('staticPages.about.storyPart3Pre')}&nbsp;
-				<a href="https://github.com/LordSputnik">
-					{translate('staticPages.about.ben')}
-				</a>
-				{translate('staticPages.about.storyPart3Mid')}
+				<Trans
+					components={{benLink: <a href="https://github.com/LordSputnik"/>}}
+					i18nKey="staticPages.about.storyPart3"
+				/>
 			</p>
 
 			<p>
-				{translate('staticPages.about.storyPart4Pre')}&nbsp;
-				<a href="https://github.com/MonkeyDo">
-					{translate('staticPages.about.monkey')}
-				</a>
-				{translate('staticPages.about.storyPart4Mid')}
+				<Trans
+					components={{monkeyLink: <a href="https://github.com/MonkeyDo"/>}}
+					i18nKey="staticPages.about.storyPart4"
+				/>
 			</p>
 
 			<p>
-				{translate('staticPages.about.storyPart5Pre')}
-				<a href={NESLink}>
-					{translate('staticPages.about.storyPart5Link')}
-				</a>
-				{translate('staticPages.about.storyPart5Post')}
+				<Trans
+					components={{nesLink: <a href={NESLink}/>}}
+					i18nKey="staticPages.about.storyPart5"
+				/>
 			</p>
 		</div>
 	);

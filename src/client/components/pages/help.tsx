@@ -17,9 +17,9 @@
  */
 /* eslint-disable max-len */
 import {Col, ListGroup, Row} from 'react-bootstrap';
+import {Trans, useTranslation} from 'react-i18next';
 import React from 'react';
 import {genEntityIconHTMLElement} from '../../helpers/entity';
-import {useTranslation} from 'react-i18next';
 
 
 /**
@@ -41,11 +41,13 @@ function HelpPage(): JSX.Element {
 			<p className="lead">
 				{translate('staticPages.help.leadIntro')}
 				<br/>
-				{translate('staticPages.help.leadTrouble')}
-				<a href={userGuideLink}>{translate('common.userGuideAndDoc')}</a>
-				{translate('staticPages.help.leadOrAsk')}
-				<a href={IRCLink}>{translate('common.ircChannel')}</a>
-				{translate('staticPages.help.leadPeriod')}
+				<Trans
+					components={{
+						ircLink: <a href={IRCLink}/>,
+						userGuideLink: <a href={userGuideLink}/>
+					}}
+					i18nKey="staticPages.help.leadTrouble"
+				/>
 			</p>
 			<hr/>
 
@@ -97,13 +99,14 @@ function HelpPage(): JSX.Element {
 					<p>
 						{translate('staticPages.help.examplesIntro')}
 						<br/>
-						{translate('staticPages.help.exampleLeGuinPre')}
-						<a href="/author/e66704df-2386-4af9-9b02-a3440a1bc828">Ursula K. Le Guin</a>
-						{translate('staticPages.help.exampleLeGuinMid')}
-						<a href="/work/11f0af2a-7034-4e7d-baa2-7cf0cb7bcbea">A Wizard of Earthsea</a>
-						{translate('staticPages.help.exampleLeGuinPost')}
-						<a href="/edition/731ccc5f-35c3-4056-a6e3-00996bb79380">Earthsea: The First Four Books</a>
-						{translate('staticPages.help.exampleLeGuinEnd')}
+						<Trans
+							components={{
+								authorLink: <a href="/author/e66704df-2386-4af9-9b02-a3440a1bc828"/>,
+								editionLink: <a href="/edition/731ccc5f-35c3-4056-a6e3-00996bb79380"/>,
+								workLink: <a href="/work/11f0af2a-7034-4e7d-baa2-7cf0cb7bcbea"/>
+							}}
+							i18nKey="staticPages.help.exampleLeGuin"
+						/>
 						<br/>
 						<a href="/edition/54331325-d11b-47f4-bb74-0485e582c52e">{translate('staticPages.help.exampleAncillaryLink1')}</a>
 						{translate('staticPages.help.exampleAncillaryAnd')}
@@ -149,12 +152,18 @@ function HelpPage(): JSX.Element {
 
 						<ListGroup.Item><b><a href="https://en.wikipedia.org/wiki/Category:Book_formats">{translate('common.format')}</a></b>{translate('staticPages.help.glossaryFormatDesc')}</ListGroup.Item>
 
-						<ListGroup.Item><b>{translate('staticPages.help.glossaryIdentifiers')}</b>{translate('staticPages.help.glossaryIdentifiersDescPre')}
-							<br/>{translate('staticPages.help.glossaryIdentifiersDescPost')}
+						<ListGroup.Item><b>{translate('staticPages.help.glossaryIdentifiers')}</b>
+							<Trans
+								components={{lineBreak: <br/>}}
+								i18nKey="staticPages.help.glossaryIdentifiersDesc"
+							/>
 						</ListGroup.Item>
 
-						<ListGroup.Item><b><a href="https://en.wikipedia.org/wiki/Edition_(book)#Printing,_print_run,_impression,_et_cetera">{translate('staticPages.help.glossaryPrinting')}</a></b>{translate('staticPages.help.glossaryPrintingDescPre')}
-							<br/>{translate('staticPages.help.glossaryPrintingDescPost')}
+						<ListGroup.Item><b><a href="https://en.wikipedia.org/wiki/Edition_(book)#Printing,_print_run,_impression,_et_cetera">{translate('staticPages.help.glossaryPrinting')}</a></b>
+							<Trans
+								components={{lineBreak: <br/>}}
+								i18nKey="staticPages.help.glossaryPrintingDesc"
+							/>
 						</ListGroup.Item>
 
 						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Style/Artist/Sort_Name">{translate('staticPages.help.glossarySortName')}</a></b>{translate('staticPages.help.glossarySortNameDesc')}

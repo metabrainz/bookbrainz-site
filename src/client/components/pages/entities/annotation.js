@@ -20,6 +20,7 @@ import {Button, Col, Collapse, Row} from 'react-bootstrap';
 import {formatDate, stringToHTMLWithLinks} from '../../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {withTranslation} from 'react-i18next';
 
 
 class EntityAnnotation extends React.Component {
@@ -50,6 +51,7 @@ class EntityAnnotation extends React.Component {
 	};
 
 	render() {
+		const {t: translate} = this.props;
 		const {annotation} = this.props.entity;
 		if (!annotation || !annotation.content) {
 			return null;
@@ -58,16 +60,22 @@ class EntityAnnotation extends React.Component {
 		return (
 			<Row>
 				<Col lg={12}>
-					<h2>Annotation</h2>
+					<h2>{translate('common.annotation')}</h2>
 					<Collapse in={this.state.open}>
 						<pre className="annotation-content" ref={this.annotationContentRef} >{stringToHTMLWithLinks(annotation.content)}</pre>
 					</Collapse>
 					{this.state.showButton &&
 					<Button variant="link" onClick={this.handleToggleCollapse}>
-						Show {this.state.open ? 'less' : 'more…'}
+						{translate('common.show')} {this.state.open ? translate('pages.entity.showLess') : translate('pages.entity.showMore')}
 					</Button>}
-					<p className="text-muted">Last modified: <span title={formatDate(lastModifiedDate, true)}>{formatDate(lastModifiedDate)}</span>
-						<span className="small"> (revision <a href={`/revision/${annotation.lastRevisionId}`}>#{annotation.lastRevisionId}</a>)</span>
+					<p className="text-muted">
+						{translate('common.lastModified')}:{' '}
+						<span title={formatDate(lastModifiedDate, true)}>
+							{formatDate(lastModifiedDate)}
+						</span>
+						<span className="small">
+							{' '}({translate('common.revision')} <a href={`/revision/${annotation.lastRevisionId}`}>#{annotation.lastRevisionId}</a>)
+						</span>
 					</p>
 				</Col>
 			</Row>
@@ -76,7 +84,9 @@ class EntityAnnotation extends React.Component {
 }
 EntityAnnotation.displayName = 'EntityAnnotation';
 EntityAnnotation.propTypes = {
-	entity: PropTypes.object.isRequired
+	entity: PropTypes.object.isRequired,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired
 };
 
-export default EntityAnnotation;
+export default withTranslation()(EntityAnnotation);
