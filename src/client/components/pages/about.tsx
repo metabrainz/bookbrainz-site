@@ -16,12 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {Trans, useTranslation} from 'react-i18next';
 import {faCircle, faCommentDots, faComments, faEnvelope} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 import React from 'react';
 import {faXTwitter} from '@fortawesome/free-brands-svg-icons';
-import {useTranslation} from 'react-i18next';
 
 
 /**
@@ -55,17 +55,18 @@ function AboutPage(): JSX.Element {
 
 			<h2>{translate('common.about.accessingData')}</h2>
 			<p>
-				{translate('staticPages.about.dataLicensePre')}
-				<a href="/licensing">
-					 {translate('staticPages.about.licensingPageLink')}
-				</a>
-				{translate('staticPages.about.dataLicensePost')}
+				<Trans
+					components={{licensingLink: <a href="/licensing"/>}}
+					i18nKey="staticPages.about.dataLicense"
+				/>
 			</p>
 			<p>
-				{translate('staticPages.about.dbDumpsPre')}
-				<a href="http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2">
-					{translate('staticPages.about.dbDumpsLink')}
-				</a>
+				<Trans
+					components={{
+						downloadLink: <a href="http://ftp.musicbrainz.org/pub/musicbrainz/bookbrainz/latest.sql.bz2"/>
+					}}
+					i18nKey="staticPages.about.dbDumps"
+				/>
 			</p>
 			<p>
 				{translate('staticPages.about.webservicePre')}

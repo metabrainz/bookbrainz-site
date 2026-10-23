@@ -18,12 +18,12 @@
 
 import {Col, Row} from 'react-bootstrap';
 import React, {useEffect, useState} from 'react';
+import {Trans, useTranslation} from 'react-i18next';
 import {WikipediaArticleExtract, buildWikipediaUrl, getWikidataId} from '../../../../common/helpers/wikimedia';
 import type {LazyLoadedEntityT} from 'bookbrainz-data/lib/types/entity';
 import {getAliasLanguageCodes} from '../../../../common/helpers/utils';
 import {sanitize} from 'isomorphic-dompurify';
 import {uniq} from 'lodash';
-import {useTranslation} from 'react-i18next';
 
 
 type Props = {
@@ -82,7 +82,10 @@ function WikipediaExtract({entity, articleExtract = {}}: Props) {
 				<a href={buildWikipediaUrl(article)?.href}>{translate('pages.entity.continueReadingWikipedia')}</a>
 				{' '}
 				<small>
-					{translate('pages.entity.wikipediaLicense')} <a href={licenseUrl}>{translate('pages.entity.ccBySaLicense')}</a>
+					<Trans
+						components={{licenseLink: <a href={licenseUrl}/>}}
+						i18nKey="pages.entity.wikipediaLicense"
+					/>
 				</small>
 			</Col>
 		</Row>

@@ -19,11 +19,11 @@
 
 import * as bootstrap from 'react-bootstrap';
 
+import {Trans, useTranslation} from 'react-i18next';
 import {PropTypes} from 'prop-types';
 import React from 'react';
 import {camelCase} from 'lodash';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
-import {useTranslation} from 'react-i18next';
 
 
 const {Button, ButtonGroup} = bootstrap;
@@ -57,9 +57,10 @@ function CallToAction({query = null}) {
 				{translate('pages.callToAction.helpText')}
 				<br/>
 				<small>
-					{translate('pages.callToAction.notSure')}
-					<a href="/help">{translate('pages.callToAction.helpPage')}</a>
-					{translate('pages.callToAction.toGetStarted')}
+					<Trans
+						components={{helpLink: <a href="/help"/>}}
+						i18nKey="pages.callToAction.notSure"
+					/>
 				</small>
 			</p>
 			<div>

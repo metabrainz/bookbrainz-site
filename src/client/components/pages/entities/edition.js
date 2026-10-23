@@ -18,6 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
+import {Trans, useTranslation} from 'react-i18next';
 import AuthorCreditDisplay from '../../author-credit-display';
 import EditionCover from '../parts/edition-cover';
 import EntityAnnotation from './annotation';
@@ -31,7 +32,6 @@ import React from 'react';
 import WikipediaExtract from './wikipedia-extract';
 import WorksTable from './work-table';
 import {faExternalLinkAlt} from '@fortawesome/free-solid-svg-icons';
-import {useTranslation} from 'react-i18next';
 
 
 const {
@@ -129,9 +129,12 @@ function EditionDisplayPage({entity, identifierTypes = [], user, wikipediaExtrac
 	else if (!entity.deleted && (hasAuthorCredits === true || hasAuthorCredits === null)) {
 		authorCreditSection = (
 			<div className="alert alert-warning text-center">
-				{translate('pages.entity.authorCreditUnsetPre')}&nbsp;
-				<a href={`/edition/${entity.bbid}/edit`}>{translate('pages.entity.editThisEdition')}</a>&nbsp;
-				{translate('pages.entity.authorCreditUnsetPost')}
+				<Trans
+					components={{
+						editLink: <a href={`/edition/${entity.bbid}/edit`}/>
+					}}
+					i18nKey="pages.entity.authorCreditUnset"
+				/>
 			</div>);
 	}
 
@@ -149,9 +152,12 @@ function EditionDisplayPage({entity, identifierTypes = [], user, wikipediaExtrac
 	else if (!entity.deleted) {
 		editionGroupSection = (
 			<div className="alert alert-warning text-center">
-				{translate('pages.entity.editionGroupUnsetPre')}&nbsp;
-				<a href={`/edition/${entity.bbid}/edit`}>{translate('pages.entity.editThisEdition')}</a>&nbsp;
-				{translate('pages.entity.editionGroupUnsetPost')}
+				<Trans
+					components={{
+						editLink: <a href={`/edition/${entity.bbid}/edit`}/>
+					}}
+					i18nKey="pages.entity.editionGroupUnset"
+				/>
 			</div>
 		);
 	}

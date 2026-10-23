@@ -16,10 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {Trans, useTranslation} from 'react-i18next';
 import IdentifierLink from './identifiers-links';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {useTranslation} from 'react-i18next';
 
 
 function EntityIdentifiers({entityUrl, identifiers = [], identifierTypes}) {
@@ -57,9 +57,10 @@ function EntityIdentifiers({entityUrl, identifiers = [], identifierTypes}) {
 					<p className="text-muted">
 						<b>{translate('pages.entity.noIdentifiers')}</b>
 						&nbsp;
-						<a href={`${entityUrl}/edit`}>
-							{translate('pages.entity.clickToEdit')}
-						</a> {translate('pages.entity.addIdentifiersDescription')}
+						<Trans
+							components={{editLink: <a href={`${entityUrl}/edit`}/>}}
+							i18nKey="pages.entity.addIdentifiersDescription"
+						/>
 					</p>
 			}
 		</div>

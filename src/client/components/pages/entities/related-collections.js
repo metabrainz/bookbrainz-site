@@ -18,9 +18,9 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {Trans, useTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 import React from 'react';
-import {useTranslation} from 'react-i18next';
 
 
 const {Row, Col} = bootstrap;
@@ -44,9 +44,10 @@ function EntityRelatedCollections({collections}) {
 					<p className="text-muted">
 						<b>{translate('pages.entity.noCollections')}</b>
 						<br/>
-						{translate('pages.entity.clickAddToCollectionDescriptionPre')}
-						<b>&quot;{translate('pages.entity.addToCollection')}&quot;</b>
-						{translate('pages.entity.clickAddToCollectionDescriptionPost')}
+						<Trans
+							components={{buttonLabel: <b/>}}
+							i18nKey="pages.entity.clickAddToCollectionDescription"
+						/>
 					</p>
 				}
 			</Col>
