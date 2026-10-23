@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {Trans, useTranslation} from 'react-i18next';
 import React from 'react';
-import {useTranslation} from 'react-i18next';
 
 
 /**
@@ -40,62 +40,56 @@ function ContributePage(): JSX.Element {
 
 			<h2>{translate('staticPages.contribute.editingTitle')}</h2>
 			<p>
-				{translate('staticPages.contribute.editingP1Pre')}<br/>
-				{translate('staticPages.contribute.editingP1end')}&nbsp;
-				<a href="/register">
-					{translate('staticPages.contribute.registerLinkText')}
-				</a>
-				{translate('staticPages.contribute.editingP1Post')}
+				<Trans
+					components={{lineBreak: <br/>, registerLink: <a href="/register"/>}}
+					i18nKey="staticPages.contribute.editingP1"
+				/>
 			</p>
 			<p>
-				{translate('staticPages.contribute.editingP2Pre')}&nbsp;
-				<a href={styleLink}>
-					{translate('staticPages.contribute.guidelines')}
-				</a>
-				{translate('staticPages.contribute.editingP2End')}<br/>
-				{translate('staticPages.contribute.editingP2Mid')}&nbsp;
-				<a href="http://musicbrainz.org/doc/Style">
-					{translate('staticPages.contribute.musicbrainzStyleLinkText')}
-				</a>
-				{translate('staticPages.contribute.editingP2Post')}
+				<Trans
+					components={{
+						guidelinesLink: <a href={styleLink}/>,
+						lineBreak: <br/>,
+						musicbrainzStyleLink: <a href="http://musicbrainz.org/doc/Style"/>
+					}}
+					i18nKey="staticPages.contribute.editingP2"
+				/>
 			</p>
 			<p>
-				{translate('staticPages.contribute.editingP3Pre')}&nbsp;
-				<a href="https://bookbrainz-user-guide.readthedocs.io/en/latest/tutorials/merging.html">
-					{translate('staticPages.contribute.mergeTutorialLinkText')}
-				</a>
-				{translate('staticPages.contribute.editingP3Post')}
+				<Trans
+					components={{
+						tutorialLink: <a href="https://bookbrainz-user-guide.readthedocs.io/en/latest/tutorials/merging.html"/>
+					}}
+					i18nKey="staticPages.contribute.editingP3"
+				/>
 			</p>
 
 			<h2>{translate('staticPages.contribute.programmingTitle')}</h2>
 			<p>
-				{translate('staticPages.contribute.programmingP1Pre')}&nbsp;
-				<a href="https://wiki.musicbrainz.org/Development/Priorities#BookBrainz">
-					{translate('staticPages.contribute.roadmapLinkText')}
-				</a>
-				{translate('staticPages.contribute.programmingP1Mid')}&nbsp;
-				<a href="https://github.com/metabrainz?q=bookbrainz">
-					{translate('common.Ongithub')}
-				</a>
+				<Trans
+					components={{
+						githubLink: <a href="https://github.com/metabrainz?q=bookbrainz"/>,
+						roadmapLink: <a href="https://wiki.musicbrainz.org/Development/Priorities#BookBrainz"/>
+					}}
+					i18nKey="staticPages.contribute.programmingP1"
+				/>
 			</p>
 
 			<h2>{translate('staticPages.contribute.communityTitle')}</h2>
 			<p>
-				{translate('staticPages.contribute.communityP1Pre')}&nbsp;
-				<a href={IRCLink}>
-					{translate('common.ircChannel')}
-				</a>
-				{translate('staticPages.contribute.communityP1Post')}
+				<Trans
+					components={{ircLink: <a href={IRCLink}/>}}
+					i18nKey="staticPages.contribute.communityP1"
+				/>
 			</p>
 			<p>
-				{translate('staticPages.contribute.communityP2Pre')}
-				<a href="https://community.metabrainz.org/c/bookbrainz">
-					{translate('common.Onforums')}
-				</a>
-				{translate('staticPages.contribute.communityP2Mid')}
-				<a href="mailto:bookbrainz@metabrainz.org">
-					{translate('common.anEmail')}.
-				</a>
+				<Trans
+					components={{
+						emailLink: <a href="mailto:bookbrainz@metabrainz.org"/>,
+						forumsLink: <a href="https://community.metabrainz.org/c/bookbrainz"/>
+					}}
+					i18nKey="staticPages.contribute.communityP2"
+				/>
 			</p>
 		</div>
 	);

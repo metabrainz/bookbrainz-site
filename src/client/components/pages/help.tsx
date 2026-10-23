@@ -41,11 +41,13 @@ function HelpPage(): JSX.Element {
 			<p className="lead">
 				{translate('staticPages.help.leadIntro')}
 				<br/>
-				{translate('staticPages.help.leadTrouble')}
-				<a href={userGuideLink}>{translate('common.userGuideAndDoc')}</a>
-				{translate('staticPages.help.leadOrAsk')}
-				<a href={IRCLink}>{translate('common.ircChannel')}</a>
-				{translate('staticPages.help.leadPeriod')}
+				<Trans
+					components={{
+						ircLink: <a href={IRCLink}/>,
+						userGuideLink: <a href={userGuideLink}/>
+					}}
+					i18nKey="staticPages.help.leadTrouble"
+				/>
 			</p>
 			<hr/>
 
