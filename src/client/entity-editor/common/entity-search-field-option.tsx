@@ -31,6 +31,7 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {isValidBBID} from '../../../common/helpers/utils';
 import makeImmutable from './make-immutable';
 import request from 'superagent';
+import {withTranslation} from 'react-i18next';
 
 
 const ImmutableAsyncSelect = makeImmutable(SelectAsync);
@@ -169,7 +170,7 @@ class EntitySearchFieldOption extends React.Component<Props> {
 			return true;
 		}
 		return [{
-			label: 'Recently Used',
+			label: this.props.t('common.recentlyUsed'),
 			options: recentOptions
 		}];
 	}
@@ -181,7 +182,7 @@ class EntitySearchFieldOption extends React.Component<Props> {
 				return [];
 			}
 			return [{
-				label: 'Recently Used',
+				label: this.props.t('common.recentlyUsed'),
 				options: recentOptions
 			}];
 		}
@@ -226,11 +227,11 @@ class EntitySearchFieldOption extends React.Component<Props> {
 		if (filteredRecent.length > 0) {
 			results = [
 				{
-					label: 'Recently Used',
+					label: this.props.t('common.recentlyUsed'),
 					options: filteredRecent
 				},
 				{
-					label: 'Search Results',
+					label: this.props.t('common.searchResults'),
 					options: searchResults
 				}
 			];
@@ -361,4 +362,4 @@ EntitySearchFieldOption.defaultProps = {
 	value: null
 };
 
-export default EntitySearchFieldOption;
+export default withTranslation()(EntitySearchFieldOption);

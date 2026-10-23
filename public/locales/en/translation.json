@@ -136,6 +136,7 @@
     "privileges": "Privileges",
     "public": "Public",
     "publisher": "Publisher",
+    "recentlyUsed": "Recently Used",
     "relationship": "Relationship",
     "relationships": "Relationships",
     "required": "required",
@@ -285,8 +286,7 @@
       "frequentlyUsed": "Frequently Used",
       "label": "Language",
       "other": "Other",
-      "placeholder": "Search language",
-      "recentlyUsed": "Recently Used"
+      "placeholder": "Search language"
     },
     "nameSection": {
       "clickToOpen": "Click on a name to open it (Ctrl/Cmd + click to open in a new tab)",
