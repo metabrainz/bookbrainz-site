@@ -4,6 +4,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import request from 'superagent';
+import {withTranslation} from 'react-i18next';
 
 
 const {Alert, Button, Modal} = bootstrap;
@@ -19,40 +20,41 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 	}
 
 	handleSubmit() {
+		const {t: translate} = this.props;
 		request.post(this.postUrl)
 			.send(this.postData)
 			.then(() => {
 				window.location.href = `/editor/${this.props.userId}/collections`;
 			}, () => {
 				this.setState({
-					error: 'Something went wrong! Please try again later'
+					error: translate('common.error')
 				});
 			});
 	}
 
 	render() {
-		const {collection} = this.props;
+		const {collection, t: translate} = this.props;
 		// eslint-disable-next-line one-var
 		let modalBody, modalTitle, submitButton;
 		if (this.props.isDelete) {
 			this.postUrl = `/collection/${collection.id}/delete/handler`;
 			this.postData = {};
-			modalTitle = 'Confirm deletion';
+			modalTitle = translate('common.confirmDeletion');
 			modalBody = (
 				<Alert variant="danger">
 					<h4>
 						<FontAwesomeIcon icon={faExclamationTriangle}/>&nbsp;
-						You’re about to delete the Collection: {collection.name}.
+						{translate('pages.collection.deleteNotice', {name: collection.name})}
 					</h4>
 					<p>
-						Make sure you actually want to delete this Collection <br/>
-						There is no way to undo this.
+						{translate('pages.collection.deleteWarning')} <br/>
+						{translate('pages.collection.deleteUndoWarning')}
 					</p>
 				</Alert>
 			);
 			submitButton = (
 				<Button variant="danger" onClick={this.handleSubmit}>
-					<FontAwesomeIcon icon={faTrashAlt}/> Delete
+					<FontAwesomeIcon icon={faTrashAlt}/>&nbsp;{translate('common.button.delete')}
 				</Button>
 			);
 		}
@@ -60,22 +62,21 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 			// loggedInUser must be collaborator here
 			this.postUrl = `/collection/${collection.id}/collaborator/remove`;
 			this.postData = {collaboratorIds: [this.props.userId]};
-			modalTitle = 'Remove yourself as a collaborator';
+			modalTitle = translate('pages.collection.stopCollaborationTooltip');
 			modalBody = (
 				<Alert variant="warning">
 					<h4>
 						<FontAwesomeIcon icon={faExclamationTriangle}/>&nbsp;
-						You’re about to remove yourself as a collaborator of Collection: {collection.name}.
+						{translate('pages.collection.stopCollaborationNotice', {name: collection.name})}
 					</h4>
 					<p>
-						Are you sure you want to proceed ? You won’t be able to undo this yourself
-						and will need to ask the collection&apos;s owner to add you again.
+						{translate('pages.collection.stopCollaborationWarning')}
 					</p>
 				</Alert>
 			);
 			submitButton = (
 				<Button variant="warning" onClick={this.handleSubmit}>
-					<FontAwesomeIcon icon={faTimesCircle}/> Stop collaboration
+					<FontAwesomeIcon icon={faTimesCircle}/>&nbsp;{translate('pages.collection.stopCollaboration')}
 				</Button>
 			);
 		}
@@ -100,7 +101,7 @@ class DeleteOrRemoveCollaborationModal extends React.Component {
 				</Modal.Body>
 				<Modal.Footer>
 					<Button variant="info" onClick={this.props.onCloseModal}>
-						Cancel
+						{translate('common.button.cancel')}
 					</Button>
 					{submitButton}
 				</Modal.Footer>
@@ -116,10 +117,12 @@ DeleteOrRemoveCollaborationModal.propTypes = {
 	isDelete: PropTypes.bool,
 	onCloseModal: PropTypes.func.isRequired,
 	show: PropTypes.bool.isRequired,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired,
 	userId: PropTypes.number.isRequired
 };
 DeleteOrRemoveCollaborationModal.defaultProps = {
 	isDelete: true
 };
 
-export default DeleteOrRemoveCollaborationModal;
+export default withTranslation()(DeleteOrRemoveCollaborationModal);
