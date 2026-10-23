@@ -458,7 +458,7 @@ class RelationshipModal
 
 	render() {
 		const {onCancel, onClose, baseEntity, t: translate} = this.props;
-		const baseEntityTypeForDisplay = _.startCase(baseEntity.type);
+		const baseEntityTypeForDisplay = translate(`common.entityType.${_.camelCase(baseEntity.type)}`);
 		const submitDisabled = this.calculateProgressAmount() < 100;
 		const entitySelect = this.renderEntitySelect();
 

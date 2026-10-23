@@ -29,6 +29,7 @@ import {IconProp} from '@fortawesome/fontawesome-svg-core';
 import {Rating} from 'react-simple-star-rating';
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
+import {camelCase} from 'lodash';
 import {countWords} from '../../../helpers/utils';
 import {faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 import request from 'superagent';
@@ -387,7 +388,7 @@ class CBReviewModal extends React.Component<
 					i18nKey="pages.entity.cbReviewingHeader"
 					values={{
 						entityName: this.props.entityName,
-						entityType: this.props.entityType
+						entityType: translate(`common.entityType.${camelCase(this.props.entityType)}`)
 					}}
 				/>{' '}
 				{this.CBInfoButton()}
