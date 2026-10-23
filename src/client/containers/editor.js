@@ -59,7 +59,7 @@ function EditorContainer({tabActive, editor, children, user = null}) {
 								active={tabActive === 0}
 								href={`/editor/${editor.id}`}
 							>
-								{translate('common:nav.profile')}
+								{translate('common.nav.profile')}
 							</Nav.Link>
 						</Nav.Item>
 						<Nav.Item>
@@ -67,7 +67,7 @@ function EditorContainer({tabActive, editor, children, user = null}) {
 								active={tabActive === 1}
 								href={`/editor/${editor.id}/revisions`}
 							>
-								{translate('common:nav.revisions')}
+								{translate('common.nav.revisions')}
 							</Nav.Link>
 						</Nav.Item>
 						<Nav.Item>
@@ -75,7 +75,7 @@ function EditorContainer({tabActive, editor, children, user = null}) {
 								active={tabActive === 2}
 								href={`/editor/${editor.id}/achievements`}
 							>
-								{translate('common:nav.achievements')}
+								{translate('common.nav.achievements')}
 							</Nav.Link>
 						</Nav.Item>
 						<Nav.Item>
@@ -83,7 +83,7 @@ function EditorContainer({tabActive, editor, children, user = null}) {
 								active={tabActive === 3}
 								href={`/editor/${editor.id}/collections`}
 							>
-								{translate('common:entityType.collection_plural')}
+								{translate('common.entityType.collection_plural')}
 							</Nav.Link>
 						</Nav.Item>
 						{
@@ -94,7 +94,7 @@ function EditorContainer({tabActive, editor, children, user = null}) {
 											active={tabActive === 4}
 											href="/external-service"
 										>
-											{translate('common:nav.externalServices')}
+											{translate('common.nav.externalServices')}
 										</Nav.Link>
 									</Nav.Item>
 								) : null
