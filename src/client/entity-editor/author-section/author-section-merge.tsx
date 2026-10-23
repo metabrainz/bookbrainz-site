@@ -173,7 +173,7 @@ function AuthorSectionMerge({
 		if (beginDate && !_.find(beginDateOptions, ['value', beginDate.value])) {
 			beginDateOptions.push(beginDate);
 		}
-		const beginArea = !_.isNil(entity.beginArea) && {label: entity.beginArea.name, value: entityToOption(entity.beginArea)};
+		const beginArea = !_.isNil(entity.beginArea) && {label: entity.beginArea.name, value: entityToOption(entity.beginArea, translate)};
 		if (beginArea && !_.find(beginAreaOptions, ['value.id', beginArea.value.id])) {
 			beginAreaOptions.push(beginArea);
 		}
@@ -191,7 +191,7 @@ function AuthorSectionMerge({
 		if (endDate && !_.find(endDateOptions, ['value', endDate.value])) {
 			endDateOptions.push(endDate);
 		}
-		const endArea = !_.isNil(entity.endArea) && {label: entity.endArea.name, value: entityToOption(entity.endArea)};
+		const endArea = !_.isNil(entity.endArea) && {label: entity.endArea.name, value: entityToOption(entity.endArea, translate)};
 		if (endArea && !_.find(endAreaOptions, ['value.id', endArea.value.id])) {
 			endAreaOptions.push(endArea);
 		}
