@@ -22,7 +22,7 @@ import * as React from 'react';
 // eslint-disable-next-line import/named
 import {FontAwesomeIconProps as FAProps, FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {Trans, useTranslation} from 'react-i18next';
-import {get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst} from 'lodash';
+import {camelCase as _camelCase, get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst} from 'lodash';
 import {
 	faBook, faGlobe, faGripVertical, faLayerGroup, faMagicWandSparkles, faPenNib, faUniversity, faUser, faUserCircle, faWindowRestore
 } from '@fortawesome/free-solid-svg-icons';
@@ -173,23 +173,24 @@ export function getEntityLabelText(entity, translate: TFunction) {
 
 	if (!entity.dataId) {
 		return entity.parentAlias ? entity.parentAlias.name :
-			translate('pages.entity.deletedEntityType', {bbid: entity.bbid, type: entity.type});
+			translate('pages.entity.deletedEntityType', {bbid: entity.bbid, type: translate(`common.entityType.${_camelCase(entity.type)}`)});
 	}
 	return translate('pages.entity.unnamedLabel');
 }
 
 function EntityLabel({entity}: {entity: any}) {
 	const {t: translate} = useTranslation();
+	const entityTypeLabel = translate(`common.entityType.${_camelCase(entity.type)}`);
 	if (!entity.dataId) {
 		return (
 			<span className="deleted">
-				<span className="text-muted" title={translate('pages.entity.thisTypeWasDeleted', {type: entity.type})}>
+				<span className="text-muted" title={translate('pages.entity.thisTypeWasDeleted', {type: entityTypeLabel})}>
 					{getEntityLabelText(entity, translate)}
 				</span>
 			</span>
 		);
 	}
-	return <span title={translate('pages.entity.unnamedType', {bbid: entity.bbid, type: entity.type})}>{translate('common.unnamed')}</span>;
+	return <span title={translate('pages.entity.unnamedType', {bbid: entity.bbid, type: entityTypeLabel})}>{translate('common.unnamed')}</span>;
 }
 
 // Defer fallback translations until React renders under the page's i18n provider.
