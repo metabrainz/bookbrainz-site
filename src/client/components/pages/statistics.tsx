@@ -115,7 +115,7 @@ function EntityCountTable({allEntities, last30DaysEntities}: EntityCountTablePro
 				<thead>
 					<tr>
 						<th width="8%" >#</th>
-						<th width="42%" >{translate('common.entityType._self')}</th>
+						<th width="42%" >{translate('common.entityTypeLabel')}</th>
 						<th width="25%" >{translate('pages.statistics.total')}</th>
 						<th width="25%" >{translate('pages.statistics.addedLast30Days')}</th>
 					</tr>
