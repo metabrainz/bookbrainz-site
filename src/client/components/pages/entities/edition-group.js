@@ -20,6 +20,7 @@
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import React, {createRef, useCallback} from 'react';
+import {Trans, useTranslation} from 'react-i18next';
 import AuthorCreditDisplay from '../../author-credit-display';
 import AverageRating from './average-ratings';
 import CBReviewModal from './cbReviewModal';
@@ -33,7 +34,6 @@ import EntityReviews from './cb-review';
 import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import WikipediaExtract from './wikipedia-extract';
-import {useTranslation} from 'react-i18next';
 
 
 const {deletedEntityMessage, getTypeAttribute, getEntityUrl, ENTITY_TYPE_ICONS, getSortNameOfDefaultAlias} = entityHelper;
@@ -82,7 +82,6 @@ EditionGroupAttributes.propTypes = {
 
 
 function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
-	const {t: translate} = useTranslation();
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);
@@ -108,9 +107,12 @@ function EditionGroupDisplayPage({entity, identifierTypes, user, wikipediaExtrac
 	else if (!entity.deleted && (hasAuthorCredits === true || hasAuthorCredits === null)) {
 		authorCreditSection = (
 			<div className="alert alert-warning text-center">
-				{translate('pages.entity.authorCreditUnsetEGPre')}&nbsp;
-				<a href={`/edition-group/${entity.bbid}/edit`}>{translate('pages.entity.editThisEditionGroup')}</a>&nbsp;
-				{translate('pages.entity.authorCreditUnsetEGPost')}
+				<Trans
+					components={{
+						editLink: <a href={`/edition-group/${entity.bbid}/edit`}/>
+					}}
+					i18nKey="pages.entity.authorCreditUnsetEG"
+				/>
 			</div>);
 	}
 

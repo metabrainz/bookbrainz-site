@@ -16,10 +16,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {Trans, useTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Relationship from '../../../entity-editor/relationship-editor/relationship';
-import {useTranslation} from 'react-i18next';
 
 
 function EntityRelationships({contextEntity, relationships, entityUrl}) {
@@ -45,9 +45,13 @@ function EntityRelationships({contextEntity, relationships, entityUrl}) {
 				</ul>
 			) : (
 				<p className="text-muted">
-					<b>{translate('pages.entity.noRelationships')}</b>{' '}
-					<a href={`${entityUrl}/edit`}>{translate('pages.entity.clickToEdit')}</a>{' '}
-					{translate('pages.entity.addRelationshipsDescription')}
+					<Trans
+						components={{
+							editLink: <a href={`${entityUrl}/edit`}/>,
+							noRelationships: <b/>
+						}}
+						i18nKey="pages.entity.noRelationships"
+					/>
 				</p>
 			)}
 		</div>

@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {Trans, useTranslation} from 'react-i18next';
 import React from 'react';
-import {useTranslation} from 'react-i18next';
 
 
 /**
@@ -35,10 +35,12 @@ function PrivacyPage(): JSX.Element {
 				<h1>{translate('common.privacy')}</h1>
 			</div>
 			<p>
-				{translate('staticPages.privacy.p1Pre')}
-				<a href="http://musicbrainz.org/doc/About/Privacy_Policy">
-					http://musicbrainz.org/doc/About/Privacy_Policy
-				</a>
+				<Trans
+					components={{
+						privacyLink: <a href="http://musicbrainz.org/doc/About/Privacy_Policy"/>
+					}}
+					i18nKey="staticPages.privacy.p1"
+				/>
 			</p>
 
 			<p>
