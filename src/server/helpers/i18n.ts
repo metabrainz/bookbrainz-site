@@ -17,6 +17,50 @@
  */
 
 import type {Request} from 'express';
+import fs from 'fs';
+import log from 'log';
+import path from 'path';
+
+
+// Production catalogs are deployed with the app; restart to load changes.
+// Cache pending reads too, so concurrent requests share the same disk work.
+let availableLocalesPromise: Promise<string[]> | null = null;
+const translationPromises = new Map<string, Promise<Record<string, unknown>>>();
+
+export function getAvailableLocales(): Promise<string[]> {
+	const cacheEnabled = process.env.NODE_ENV === 'production';
+	if (cacheEnabled && availableLocalesPromise) {
+		return availableLocalesPromise;
+	}
+	const promise = fs.promises.readdir(path.join(process.cwd(), 'public', 'locales'), {withFileTypes: true})
+		.then(entries => entries.filter(entry => entry.isDirectory()).map(entry => entry.name))
+		.catch(err => {
+			availableLocalesPromise = null;
+			log.debug('Could not read public/locales, defaulting to en: %s', err.message);
+			return ['en'];
+		});
+	if (cacheEnabled) {
+		availableLocalesPromise = promise;
+	}
+	return promise;
+}
+
+export function loadTranslation(locale: string): Promise<Record<string, unknown>> {
+	const cacheEnabled = process.env.NODE_ENV === 'production';
+	if (cacheEnabled && translationPromises.has(locale)) {
+		return translationPromises.get(locale);
+	}
+	const promise = fs.promises.readFile(path.join(process.cwd(), 'public', 'locales', locale, 'translation.json'), 'utf8')
+		.then(contents => JSON.parse(contents))
+		.catch(() => {
+			translationPromises.delete(locale);
+			return {};
+		});
+	if (cacheEnabled) {
+		translationPromises.set(locale, promise);
+	}
+	return promise;
+}
 
 
 type AcceptedLanguage = {
