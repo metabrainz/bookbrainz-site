@@ -122,13 +122,14 @@ Locale file:
 
 Component:
 ```jsx
-translate('greeting', {name: userName, interpolation: {escapeValue: false}})
+translate('greeting', {name: userName})
 ```
 
-**Why `escapeValue: false`?** By default i18next HTML-escapes interpolated values
-(e.g. `/` becomes `&#x2F;`). Since React already escapes rendered output, this causes
-double-escaping. Add `interpolation: {escapeValue: false}` whenever your interpolated
-value might contain characters like `/`, `<`, or `&`.
+The shared `createI18n()` configuration sets `interpolation.escapeValue: false` because
+React already escapes rendered text. This prevents characters such as `/`, `<`, or `&`
+from being escaped twice; individual translation calls do not need this option.
+If you insert translated strings directly into HTML outside React, escape them at that
+output boundary.
 
 ## Adding a New Namespace
 

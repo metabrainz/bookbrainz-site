@@ -41,6 +41,8 @@ export function createI18n(locale = 'en', resources?) {
 		defaultNS: 'translation',
 		fallbackLng: 'en',
 		initAsync: false,
+		// React escapes rendered text, so i18next must not escape it first.
+		interpolation: {escapeValue: false},
 		keySeparator: '.',
 		lng: locale,
 		ns: ['translation'],
