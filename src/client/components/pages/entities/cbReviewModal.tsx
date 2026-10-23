@@ -21,7 +21,8 @@ import * as bootstrap from 'react-bootstrap';
 // eslint-disable-next-line import/no-internal-modules
 import * as eng from '@cospired/i18n-iso-languages/langs/en.json';
 import * as iso from '@cospired/i18n-iso-languages';
-import {Trans, withTranslation} from 'react-i18next';
+// eslint-disable-next-line import/named -- WithTranslation is a type-only export.
+import {Trans, type WithTranslation, withTranslation} from 'react-i18next';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 // eslint-disable-next-line import/named
 import {IconProp} from '@fortawesome/fontawesome-svg-core';
@@ -36,7 +37,7 @@ import request from 'superagent';
 const {Alert, Modal} = bootstrap;
 iso.registerLocale(eng);
 
-export interface CBReviewModalProps {
+export interface CBReviewModalProps extends WithTranslation {
 	entityBBID: string;
 	entityName: string;
 	entityType: string;
