@@ -17,6 +17,7 @@
  */
 
 import {Col, Form, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
+import {Trans, useTranslation} from 'react-i18next';
 import {convertMapToObject, formatDate} from '../../helpers/utils';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -25,7 +26,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {debounceUpdateAnnotation} from './actions';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
-import {useTranslation} from 'react-i18next';
 
 /**
  * Container component. The AnnotationSection component contains a
@@ -97,11 +97,12 @@ function AnnotationSection({
 						{translate('entityEditor.annotationSection.helpText')}
 						<b> {translate('entityEditor.annotationSection.copyrightWarning')}</b>
 						{' '}
-						{translate('entityEditor.annotationSection.openLicenseNoticePre')}
-						<a href="https://musicbrainz.org/doc/About/Data_License">
-							{translate('entityEditor.annotationSection.openLicenseNoticeLink')}
-						</a>
-						{translate('entityEditor.annotationSection.openLicenseNoticePost')}
+						<Trans
+							components={{
+								licenseLink: <a href="https://musicbrainz.org/doc/About/Data_License"/>
+							}}
+							i18nKey="entityEditor.annotationSection.openLicenseNotice"
+						/>
 					</p>
 				</Col>
 			</Row>

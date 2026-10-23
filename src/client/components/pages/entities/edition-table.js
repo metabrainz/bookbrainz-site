@@ -20,6 +20,7 @@ import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import * as utilHelper from '../../../helpers/utils';
 
+import {Trans, useTranslation} from 'react-i18next';
 import {faBook, faPlus} from '@fortawesome/free-solid-svg-icons';
 
 import AuthorCreditDisplay from '../../author-credit-display';
@@ -27,7 +28,6 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
-import {useTranslation} from 'react-i18next';
 
 
 const {
@@ -171,9 +171,10 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showAuthorC
 					</p>
 					<br/>
 					<small>
-						{translate('pages.callToAction.notSure')}
-						<a href="/help">{translate('pages.callToAction.helpPage')}</a>
-						{translate('pages.callToAction.toGetStarted')}
+						<Trans
+							components={{helpLink: <a href="/help"/>}}
+							i18nKey="pages.callToAction.notSure"
+						/>
 					</small>
 				</span>
 				<hr className="margin-bottom-d0"/>
