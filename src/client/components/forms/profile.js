@@ -223,7 +223,7 @@ class ProfileForm extends React.Component {
 
 									}
 									<SearchSelect
-										defaultValue={entityToOption(transformedArea)}
+										defaultValue={entityToOption(transformedArea, translate)}
 										label={translate('common.area')}
 										placeholder={translate('pages.profile.selectAreaPlaceholder')}
 										type="area"

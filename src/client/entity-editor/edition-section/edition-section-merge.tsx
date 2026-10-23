@@ -174,7 +174,7 @@ function EditionSectionMerge({
 		if (depth && !_.find(depthOptions, ['value', depth.value])) {
 			depthOptions.push(depth);
 		}
-		const editionGroup = !_.isNil(entity.editionGroup) && entityToOption(entity.editionGroup);
+		const editionGroup = !_.isNil(entity.editionGroup) && entityToOption(entity.editionGroup, translate);
 		const editionGroupOption = editionGroup && {label: editionGroup.text, value: editionGroup};
 		if (editionGroupOption && !_.find(editionGroupOptions, ['value.id', editionGroupOption.value.id])) {
 			editionGroupOptions.push(editionGroupOption);
@@ -197,7 +197,7 @@ function EditionSectionMerge({
 		if (pages && !_.find(pagesOptions, ['value', pages.value])) {
 			pagesOptions.push(pages);
 		}
-		const publisher = entityToOption(_.get(entity, 'publisherSet.publishers[0]'));
+		const publisher = entityToOption(_.get(entity, 'publisherSet.publishers[0]'), translate);
 		const publisherOption = publisher && {label: publisher.text, value: publisher};
 		if (publisherOption && !_.find(publisherOptions, ['value.id', publisherOption.value.id])) {
 			publisherOptions.push(publisherOption);
