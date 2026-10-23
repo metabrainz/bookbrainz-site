@@ -202,7 +202,7 @@ function RelationshipSection({
 			{canEdit && showEditor && editor}
 			<h2>
 				{translate('entityEditor.relationshipSection.heading', {
-					entityType: _.startCase(entityType)
+					entityType: translate(`common.entityType.${_.camelCase(entityType)}`)
 				})}
 			</h2>
 			<Row>

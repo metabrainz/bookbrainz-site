@@ -80,7 +80,7 @@ function EditionGroupSection({
 	}));
 	const typeOption = editionGroupTypesForDisplay.filter((el) => el.value === typeValue);
 	const tooltip = <Tooltip>{translate('entityEditor.editionGroupSection.typeTooltip')}</Tooltip>;
-	const heading = <h2>{translate('entityEditor.shared.entityHeading', {entity: 'Edition Group'})}</h2>;
+	const heading = <h2>{translate('entityEditor.shared.entityHeading', {entity: translate('common.entityType.editionGroup')})}</h2>;
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;

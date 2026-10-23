@@ -42,7 +42,7 @@ export function validatePublisherSectionEndDate(
 	beginValue: any, endValue: any, ended: boolean
 ) {
 	if (ended === false) {
-		return {errorMessage: 'Dissolved date will be ignored', isValid: true};
+		return {errorMessage: 'entityEditor.dateValidation.dissolvedDateIgnored', isValid: true};
 	}
 	const {isValid, errorMessage} = validateDate(endValue);
 
@@ -50,7 +50,7 @@ export function validatePublisherSectionEndDate(
 		if (dateIsBefore(beginValue, endValue)) {
 			return {errorMessage: '', isValid: true};
 		}
-		return {errorMessage: 'Dissolved Date must be greater than Founded Date', isValid: false};
+		return {errorMessage: 'entityEditor.dateValidation.dissolvedBeforeFounded', isValid: false};
 	}
 	return {errorMessage, isValid};
 }

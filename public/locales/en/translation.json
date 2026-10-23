@@ -136,6 +136,7 @@
     "privileges": "Privileges",
     "public": "Public",
     "publisher": "Publisher",
+    "recentlyUsed": "Recently Used",
     "relationship": "Relationship",
     "relationships": "Relationships",
     "required": "required",
@@ -217,6 +218,19 @@
       "datePickerTitle": "Date picker",
       "futureDateWarning": "Are you sure? You entered a date in the future!"
     },
+    "dateValidation": {
+      "deathBeforeBirth": "Date of death must be greater than Date of birth",
+      "dissolutionBeforeFounded": "Date of dissolution must be greater than Date founded",
+      "dissolvedBeforeFounded": "Dissolved Date must be greater than Founded Date",
+      "dissolvedDateIgnored": "Dissolved date will be ignored",
+      "invalidDay": "Day is not valid",
+      "invalidDayForMonth": "Day is not valid for this month",
+      "invalidLeapDay": "Year is not leap, invalid day",
+      "invalidMonth": "Month is not valid",
+      "invalidYear": "Year is not valid",
+      "monthRequired": "Month must be entered if day is entered",
+      "yearRequired": "Year must be entered if month and day are entered"
+    },
     "disambiguationField": {
       "label": "Disambiguation",
       "tooltip": "If a different entity with the same name already exists or if there is a need for clarification"
@@ -272,18 +286,18 @@
       "frequentlyUsed": "Frequently Used",
       "label": "Language",
       "other": "Other",
-      "placeholder": "Search language",
-      "recentlyUsed": "Recently Used"
+      "placeholder": "Search language"
     },
     "nameSection": {
       "clickToOpen": "Click on a name to open it (Ctrl/Cmd + click to open in a new tab)",
       "ctrlClick": "Ctrl/Cmd + click to open in a new tab",
       "duplicateSuggestion": "If the {{entityType}} you want to add appears in the results below, click on it to inspect it before adding a possible duplicate.",
       "duplicateWarning_one": "We found the following {{entityType}} with exactly the same name or alias:",
-      "duplicateWarning_other": "We found the following {{entityType}}s with exactly the same name or alias:",
+      "duplicateWarning_other": "We found the following {{entityType}} with exactly the same name or alias:",
       "fillDisambiguation": "If you are sure your entry is different, please fill the disambiguation field below to help us differentiate between them.",
       "heading": "What is the {{entityType}} called?",
       "languageTooltip": "Language used for the above name",
+      "mergeSortNameTooltip": "Alphabetical sort name for the above name.",
       "nameTooltip": "Official name of the {{entityType}} in its original language. Names in other languages should be added as aliases."
     },
     "publisherSection": {

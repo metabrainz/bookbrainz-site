@@ -18,13 +18,13 @@
 
 import * as bootstrap from 'react-bootstrap';
 import {Trans, withTranslation} from 'react-i18next';
+import {camelCase as _camelCase, kebabCase as _kebabCase} from 'lodash';
 import {faExclamationTriangle, faQuestionCircle, faTimesCircle, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LoadingSpinner from '../loading-spinner';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ValidationLabel from '../../entity-editor/common/validation-label';
-import {kebabCase as _kebabCase} from 'lodash';
 import request from 'superagent';
 
 
@@ -80,6 +80,7 @@ class EntityDeletionForm extends React.Component {
 
 	render() {
 		const {entity, t: translate} = this.props;
+		const entityTypeLabel = translate(`common.entityType.${_camelCase(entity.type)}`);
 		const {note} = this.state;
 
 		this.entityUrl = `/${_kebabCase(entity.type)}/${entity.bbid}`;
@@ -145,7 +146,7 @@ class EntityDeletionForm extends React.Component {
 									<Alert variant="warning">
 										<h4>
 											<FontAwesomeIcon icon={faExclamationTriangle}/>&nbsp;
-											{translate('pages.entity.aboutToDeleteNotice', {name: entityName, type: entity.type})}
+											{translate('pages.entity.aboutToDeleteNotice', {name: entityName, type: entityTypeLabel})}
 										</h4>
 										<span style={{fontSize: '1.3em'}}>{translate('pages.entity.preferEditNotice')}</span>
 									</Alert>
@@ -179,7 +180,7 @@ class EntityDeletionForm extends React.Component {
 												mergeLink: <a href={`/merge/add/${entity.bbid}`}/>
 											}}
 											i18nKey="pages.entity.deletionDuplicateNotice"
-											values={{type: entity.type}}
+											values={{type: entityTypeLabel}}
 										/>
 									</p>
 									<hr/>

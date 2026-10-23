@@ -272,7 +272,7 @@ function EditionSection({
 			{translate('entityEditor.editionSection.statusTooltip')}
 		</Tooltip>
 	);
-	const headingTag = !isUnifiedForm && <h2>{translate('entityEditor.shared.entityHeading', {entity: 'Edition'})}</h2>;
+	const headingTag = !isUnifiedForm && <h2>{translate('entityEditor.shared.entityHeading', {entity: translate('common.entityType.edition')})}</h2>;
 	const colSpan = {
 		offset: 3,
 		span: 6
@@ -333,7 +333,7 @@ function EditionSection({
 							<ListGroup className="margin-top-1">
 								{matchingNameEditionGroups.map(eg => (
 									<ListGroup.Item key={eg.bbid}>
-										<LinkedEntity data={entityToOption(eg)} onSelect={onEditionGroupChange}/>
+										<LinkedEntity data={entityToOption(eg, translate)} onSelect={onEditionGroupChange}/>
 									</ListGroup.Item>
 								))}
 							</ListGroup>

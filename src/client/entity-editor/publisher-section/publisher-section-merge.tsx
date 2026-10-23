@@ -128,7 +128,7 @@ function PublisherSectionMerge({
 		if (typeOption && !_.find(typeOptions, ['value', typeOption.value])) {
 			typeOptions.push(typeOption);
 		}
-		const area = !_.isNil(entity.area) && {label: entity.area.name, value: entityToOption(entity.area)};
+		const area = !_.isNil(entity.area) && {label: entity.area.name, value: entityToOption(entity.area, translate)};
 		if (area && !_.find(areaOptions, ['value.id', area.value.id])) {
 			areaOptions.push(area);
 		}
