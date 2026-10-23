@@ -38,6 +38,7 @@ router.get('/', middleware.loadIdentifierTypes, (req, res) => {
 	);
 
 	res.send(target({
+		locale: res.locals.locale,
 		markup,
 		props: escapeProps(props),
 		script: '/js/identifierTypes.js',

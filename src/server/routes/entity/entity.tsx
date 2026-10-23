@@ -163,6 +163,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 				</Layout>
 			);
 			res.send(target({
+				locale: res.locals.locale,
 				markup,
 				page: entityName,
 				props: escapeProps(props),
@@ -188,6 +189,7 @@ export function displayDeleteEntity(req: PassportRequest, res: $Response) {
 	);
 
 	res.send(target({
+		locale: res.locals.locale,
 		markup,
 		props: escapeProps(props),
 		script: '/js/deletion.js'
@@ -223,6 +225,7 @@ export async function displayRevisions(
 			</Layout>
 		);
 		return res.send(target({
+			locale: res.locals.locale,
 			markup,
 			page: 'revisions',
 			props: escapeProps(props),
@@ -1400,6 +1403,7 @@ export function displayPreview(req:PassportRequest, res:$Response, next) {
 		</Layout>
 	);
 	return res.send(target({
+		locale: res.locals.locale,
 		markup,
 		props: JSON.stringify(props),
 		script: '/js/preview.js',
