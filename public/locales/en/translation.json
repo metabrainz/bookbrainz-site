@@ -51,6 +51,7 @@
       "work": "Work",
       "work_plural": "Works"
     },
+    "entityTypeLabel": "Entity Type",
     "footer": {
       "alphaSoftware": "Alpha Software",
       "browserStackAlt": "BrowserStack Logo",
@@ -60,7 +61,6 @@
       "testedWith": "Tested with ",
       "unknownRevision": "unknown revision"
     },
-    "entityTypeLabel": "Entity Type",
     "format": "Format",
     "forums": "Forums",
     "gender": "Gender",
@@ -118,15 +118,6 @@
     "userGuideAndDoc": "user guide and documentation",
     "value": "Value",
     "yes": "yes"
-  },
-  "common:entityType": {
-    "collection_plural": "common:entityType.collection_plural"
-  },
-  "common:nav": {
-    "achievements": "common:nav.achievements",
-    "externalServices": "common:nav.externalServices",
-    "profile": "common:nav.profile",
-    "revisions": "common:nav.revisions"
   },
   "entities": {},
   "entityEditor": {
