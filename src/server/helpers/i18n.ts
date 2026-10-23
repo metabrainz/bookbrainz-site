@@ -34,9 +34,9 @@ export function parseAcceptLanguage(acceptLanguage: string): AcceptedLanguage[] 
 	return acceptLanguage
 		.split(',')
 		.map((value) => {
-			const match = value.match(/(?<tag>[a-zA-Z]{2,3})(?:-(?<subtag>[\w-]+))?(?:;q=(?<weight>[01](?:\.[0-9]+)?))?/);
+			const match = value.match(/(?<tag>[a-zA-Z]{2,3})(?:-(?<subtag>[\w-]+))?(?:;\s*q=(?<weight>[01](?:\.[0-9]+)?))?/);
 			return match ? {
-				code: match.groups.tag,
+				code: match.groups.tag.toLowerCase(),
 				subtags: match.groups.subtag?.split('-') ?? [],
 				weight: parseFloat(match.groups.weight ?? '1')
 			} : null;
@@ -46,11 +46,12 @@ export function parseAcceptLanguage(acceptLanguage: string): AcceptedLanguage[] 
 }
 
 /**
- * Extracts language codes from the Accept-Language header, ordered by weight/preference.
+ * Extracts language codes from the Accept-Language header, excluding zero-weight preferences.
  * @param {Request} request - Request object which includes HTTP headers.
  * @returns {string[]} Parsed language codes, sorted by weight in descending order.
  */
 export function getAcceptedLanguageCodes(request: Request): string[] {
 	return parseAcceptLanguage(request.headers['accept-language'] ?? '')
+		.filter((language) => language.weight > 0)
 		.map((language) => language.code);
 }
