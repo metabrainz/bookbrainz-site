@@ -333,7 +333,7 @@ function EditionSection({
 							<ListGroup className="margin-top-1">
 								{matchingNameEditionGroups.map(eg => (
 									<ListGroup.Item key={eg.bbid}>
-										<LinkedEntity data={entityToOption(eg)} onSelect={onEditionGroupChange}/>
+										<LinkedEntity data={entityToOption(eg, translate)} onSelect={onEditionGroupChange}/>
 									</ListGroup.Item>
 								))}
 							</ListGroup>

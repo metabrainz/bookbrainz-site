@@ -49,7 +49,8 @@ import ReactDOMServer from 'react-dom/server';
 import SeriesPage from '../../../client/components/pages/entities/series';
 import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
-import {getEntityLabel} from '../../../client/helpers/entity';
+import {createI18n} from '../../../common/i18n/i18n';
+import {getEntityLabelText} from '../../../client/helpers/entity';
 import {getOrderedRevisionsForEntityPage} from '../../helpers/revisions';
 import log from 'log';
 import {processAchievement} from './process-unified-form';
@@ -153,6 +154,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 				genderOptions: res.locals.genders,
 				identifierTypes
 			});
+			const {t: translate} = createI18n(res.locals.locale, res.locals.i18nResources);
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...propHelpers.extractLayoutProps(props)}>
 					<EntityComponent
@@ -165,7 +167,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 				page: entityName,
 				props: escapeProps(props),
 				script: '/js/entity/entity.js',
-				title: `${getEntityLabel(props.entity, false)} (${_.upperFirst(entityName)})`
+				title: `${getEntityLabelText(props.entity, translate)} (${_.upperFirst(entityName)})`
 			}));
 		}
 		else {
