@@ -217,6 +217,19 @@
       "datePickerTitle": "Date picker",
       "futureDateWarning": "Are you sure? You entered a date in the future!"
     },
+    "dateValidation": {
+      "deathBeforeBirth": "Date of death must be greater than Date of birth",
+      "dissolutionBeforeFounded": "Date of dissolution must be greater than Date founded",
+      "dissolvedBeforeFounded": "Dissolved Date must be greater than Founded Date",
+      "dissolvedDateIgnored": "Dissolved date will be ignored",
+      "invalidDay": "Day is not valid",
+      "invalidDayForMonth": "Day is not valid for this month",
+      "invalidLeapDay": "Year is not leap, invalid day",
+      "invalidMonth": "Month is not valid",
+      "invalidYear": "Year is not valid",
+      "monthRequired": "Month must be entered if day is entered",
+      "yearRequired": "Year must be entered if month and day are entered"
+    },
     "disambiguationField": {
       "label": "Disambiguation",
       "tooltip": "If a different entity with the same name already exists or if there is a need for clarification"
