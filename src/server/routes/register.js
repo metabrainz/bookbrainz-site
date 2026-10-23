@@ -51,7 +51,7 @@ router.get('/', (req, res) => {
 		</Layout>
 	);
 
-	return res.send(target({markup, title: 'Register'}));
+	return res.send(target({locale: res.locals.locale, markup, title: 'Register'}));
 });
 
 router.get('/details', middleware.loadGenders, (req, res) => {
@@ -85,6 +85,7 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 	);
 
 	return res.send(target({
+		locale: res.locals.locale,
 		markup,
 		props: escapeProps(props),
 		script: '/js/registrationDetails.js',

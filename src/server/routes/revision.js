@@ -339,6 +339,7 @@ router.get('/:id', async (req, res, next) => {
 		const script = '/js/revision.js';
 
 		return res.send(target({
+			locale: res.locals.locale,
 			markup,
 			props: escapeProps(props),
 			script

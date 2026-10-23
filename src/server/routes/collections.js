@@ -73,6 +73,7 @@ router.get('/', async (req, res, next) => {
 		);
 
 		res.send(target({
+			locale: res.locals.locale,
 			markup,
 			props: escapeProps(props),
 			script: '/js/collections.js',
