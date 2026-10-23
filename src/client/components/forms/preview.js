@@ -1,4 +1,5 @@
 import * as bootstrap from 'react-bootstrap';
+import {Trans, withTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -11,7 +12,7 @@ class PreviewPage extends React.Component {
 	}
 
 	render() {
-		const {baseUrl, sourceUrl, originalUrl, formBody} = this.props;
+		const {baseUrl, sourceUrl, originalUrl, formBody, t: translate} = this.props;
 		const formInputs = [];
 		for (const field in formBody) {
 			if (Object.hasOwnProperty.call(formBody, field)) {
@@ -26,17 +27,25 @@ class PreviewPage extends React.Component {
 		}
 		return (
 			<Form action={originalUrl} method="POST">
-				<h1>Confirm Form Submission</h1>
-				<p>You are about to submit a request to <span className="font-weight-bold">{originalUrl}</span> originating from
-					<span className="font-weight-bold"> {sourceUrl} </span>. Continue?
+				<h1>{translate('pages.preview.heading')}</h1>
+				<p>
+					<Trans
+						components={{
+							destSpan: <span className="font-weight-bold"/>,
+							srcSpan: <span className="font-weight-bold"/>
+						}}
+						i18nKey="pages.preview.submitPrompt"
+						values={{originalUrl, sourceUrl}}
+					/>
 				</p>
-				<p>This confirmation is important to ensure that no malicious actor can use your account to modify data without your knowledge.
-				Below this line, you can review the data being sent and make any modifications if desired.
+				<p>
+					{translate('pages.preview.explanation')}
 				</p>
 				<Accordion>
 					<Card>
 						<Card.Header>
-							<Accordion.Toggle as={Button} eventKey="0" variant="link"> &#9654; Data submitted with this request
+							<Accordion.Toggle as={Button} eventKey="0" variant="link">
+								&#9654; {translate('pages.preview.submittedDataToggle')}
 							</Accordion.Toggle>
 						</Card.Header>
 						<Accordion.Collapse eventKey="0">
@@ -44,9 +53,9 @@ class PreviewPage extends React.Component {
 						</Accordion.Collapse>
 					</Card>
 				</Accordion>
-				<ButtonGroup aria-label="submit" className="mb-3">
-					<Button className="mr-3" type="submit" variant="primary">Continue</Button>
-					<Button href={baseUrl} variant="danger">Cancel</Button>
+				<ButtonGroup aria-label={translate('common.button.submit')} className="mb-3">
+					<Button className="mr-3" type="submit" variant="primary">{translate('common.button.continue')}</Button>
+					<Button href={baseUrl} variant="danger">{translate('common.button.cancel')}</Button>
 				</ButtonGroup>
 			</Form>);
 	}
@@ -56,9 +65,11 @@ PreviewPage.propTypes = {
 	baseUrl: PropTypes.string.isRequired,
 	formBody: PropTypes.object.isRequired,
 	originalUrl: PropTypes.string.isRequired,
-	sourceUrl: PropTypes.string
+	sourceUrl: PropTypes.string,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired
 };
 PreviewPage.defaultProps = {
 	sourceUrl: null
 };
-export default PreviewPage;
+export default withTranslation()(PreviewPage);

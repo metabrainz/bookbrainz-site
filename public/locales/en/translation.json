@@ -19,12 +19,14 @@
     },
     "authorCredit": "Author Credit",
     "authorCredits": "Author Credits",
+    "bio": "Bio",
     "Bookbrainz": "BookBrainz",
     "button": {
       "add": "Add",
       "back": "Back",
       "cancel": "Cancel",
       "close": "Close",
+      "continue": "Continue",
       "copy": "Copy",
       "delete": "Delete",
       "discard": "Discard changes",
@@ -34,6 +36,7 @@
       "next": "Next",
       "remove": "Remove",
       "returnToMain": "Return to Main Page",
+      "saveChanges": "Save changes",
       "search": "Search",
       "submit": "Submit",
       "update": "Update"
@@ -70,6 +73,7 @@
     },
     "entityTypeLabel": "Entity Type",
     "error": "Something went wrong! Please try again later",
+    "errorLabel": "Error!",
     "footer": {
       "alphaSoftware": "Alpha Software",
       "browserStackAlt": "BrowserStack Logo",
@@ -110,6 +114,7 @@
     },
     "no": "no",
     "noEntitySelected": "No {{type}} selected",
+    "note": "Note",
     "number": "Number",
     "Onforums": "on our forums,",
     "Ongithub": "on GitHub",
@@ -133,13 +138,17 @@
     "publisher": "Publisher",
     "relationship": "Relationship",
     "relationships": "Relationships",
+    "required": "required",
     "revision": "revision",
     "role": "Collaborator/Owner",
     "searchResults": "Search Results",
     "selectEntity": "Select {{type}}",
     "show": "Show",
+    "somethingWentWrong": "Something went wrong. Please try again.",
     "sortName": "Sort Name",
     "status": "Status",
+    "successLabel": "Success!",
+    "title": "title",
     "totalRevisions": "Total Revisions",
     "type": "Type",
     "unnamed": "(unnamed)",
@@ -155,7 +164,10 @@
       "editAliases_other": "Edit {{count}} aliases…"
     },
     "aliasEditor": {
+      "addAlias": "Add alias",
       "helpText": "Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc. Refer to the help page for more details and examples.",
+      "noAliases": "This entity has no aliases",
+      "primaryLabel": "Primary",
       "title": "Alias Editor"
     },
     "annotationSection": {
@@ -407,6 +419,7 @@
       "notSure": "Not sure what to do? Visit the <helpLink>help page</helpLink> to get started."
     },
     "collection": {
+      "addAnotherCollaborator": "Add another collaborator",
       "addAnotherEntity": "Add another {{type}}",
       "addedEntities": "Added {{count}} {{type}}",
       "addedEntities_one": "Added 1 {{type}}",
@@ -416,13 +429,25 @@
       "addEntitiesToCollectionCount_one": "Add 1 {{type}} to the collection",
       "addEntitiesToCollectionCount_other": "Add {{count}} {{type}} to the collection",
       "addEntity": "Add {{type}}",
+      "addToNewCollection": "Add to new collection",
+      "addToSelectedCollection": "Add to selected collection",
+      "addToSelectedCollections": "Add to selected collections",
+      "collaboratorsDescription": "Collaborators can add/remove entities from your collection",
       "collectionType": "Collection type",
+      "createCollection": "Create Collection",
       "createdAt": "Created At",
+      "createHeading": "Create your collection",
       "deleteCollection": "Delete collection",
       "deleteNotice": "You’re about to delete the Collection: {{name}}.",
       "deleteUndoWarning": "There is no way to undo this.",
       "deleteWarning": "Make sure you actually want to delete this Collection",
       "editCollection": "Edit collection",
+      "editHeading": "Edit collection",
+      "fetchCollectionsError": "Sorry, we could not fetch your collections ",
+      "incompleteFormError": "The form is incomplete. Please fill in a name and privacy option before continuing.",
+      "newCollectionButton": "New collection",
+      "noCollectionSelectedError": "No collection selected",
+      "noCollectionsPrompt": "Oops, looks like you do not yet have any collection of {{type}}s. Click on the button below to create a new collection",
       "numberOfEntities": "Number of {{type}}",
       "removedEntities": "Removed {{count}} {{type}}",
       "removedEntities_one": "Removed 1 {{type}}",
@@ -431,11 +456,21 @@
       "removeSelected_one": "Remove <badge>{{count}}</badge> selected {{type}}",
       "removeSelected_other": "Remove <badge>{{count}}</badge> selected {{type}}",
       "removeSelectedTooltip": "Remove selected {{type}}",
+      "selectCollaboratorLabel": "Select Collaborator",
+      "selectCollection": "Select Collection",
       "selectEntity": "Select {{type}}",
+      "selectFromCollections": "Select from collections",
+      "selectOrCreatePrompt": "Select the collection in which you want to add this entity or create a new collection",
+      "selectPrivacyPlaceholder": "Select Privacy",
+      "selectTypePlaceholder": "Select title",
       "stopCollaboration": "Stop collaboration",
       "stopCollaborationNotice": "You’re about to remove yourself as a collaborator of Collection: {{name}}.",
       "stopCollaborationTooltip": "Remove yourself as a collaborator",
-      "stopCollaborationWarning": "Are you sure you want to proceed? You won’t be able to undo this yourself and will need to ask the collection's owner to add you again."
+      "stopCollaborationWarning": "Are you sure you want to proceed? You won’t be able to undo this yourself and will need to ask the collection's owner to add you again.",
+      "successAddCollection": "Successfully added to selected collection",
+      "successAddCollections": "Successfully added to selected collections",
+      "successAddNewCollection": "Successfully added to your new collection: {{name}}",
+      "updateCollection": "Update collection"
     },
     "collections": {
       "allTypes": "All Types",
@@ -452,7 +487,23 @@
       "noCollections": "No collections to show",
       "title": "Collections"
     },
+    "develop": {
+      "dumpsHeading": "Database Dumps",
+      "dumpsText": "The database dumps will be useful if you need to process a lot of data quickly — in cases where the web service is not able to respond quickly enough. The latest database dump can be found <dumpLink>at this address</dumpLink>. A dump is made every week.",
+      "heading": "Developing with BookBrainz",
+      "lead": "We aim to make it as easy as possible to use the data stored in BookBrainz. If you’re a developer wanting to make programs that depend on BookBrainz, we have a web service available, and are releasing database dumps regularly.",
+      "sourceHeading": "Source Code",
+      "sourceText": "BookBrainz runs on open source software. If you wish to access the source and contribute to the project, please see <githubLink>our github page</githubLink>.",
+      "webServiceHeading": "Web Service / API",
+      "webServiceText": "The web service is the primary way of getting BookBrainz data. The key advantage of using the web service over the dumps is that you don’t need to install any database engine — you can access the data through the internet. The web service is currently in alpha version and a <docsLink>live documentation is served at this address</docsLink>."
+    },
+    "edition": {
+      "bookCover": "Book cover",
+      "coverFrom": "Cover from <openLibraryLink>OpenLibrary</openLibraryLink>",
+      "coverOfName": "Cover of {{name}}"
+    },
     "entity": {
+      "aboutToDeleteNotice": "You’re about to delete the {{type}} {{name}}.",
       "addedAt": "Added at",
       "addEdition": "Add Edition",
       "addIdentifiersDescription": "<editLink>Click here to edit</editLink> and add identifiers to this entity.",
@@ -492,7 +543,14 @@
       "dateFoundedPublisher": "Date Founded",
       "dateOfBirth": "Date of birth",
       "dateOfDeath": "Date of death",
+      "deletedEntityNotice": "This entity has been deleted by an editor. This is most likely because it was added accidentally or incorrectly.<lineBreak />The edit history has been preserved, and you can see the revisions by clicking the history button below.<lineBreak />If you’re sure this entity should still exist, you will be able to restore it to a previous revision in a future version of BookBrainz, but that’s not quite ready yet.",
+      "deletedEntityType": "Deleted {{type}} {{bbid}}",
       "deleteEntity": "Delete Entity",
+      "deleteNoteRequiredError": "We require users to leave a note explaining the reasons why they are deleting an entity.\nPlease provide an explanation in the text area above.",
+      "deletionCertainNotice": "If you are certain it should be deleted, please enter a revision note below to explain why and confirm the deletion. If you are not sure, you can get feedback from the community <forumsLink>on our forums</forumsLink> or on our <ircLink>IRC channel</ircLink>.",
+      "deletionDuplicateNotice": "If this {{type}} is a duplicate, click <mergeLink>this link</mergeLink> to select it to be merged instead.",
+      "deletionGeneralPrinciple": "As a general principle, if you can solve an issue with non-destructive edits, that's preferable to a removal. That way the unique identifier of the entity is preserved.\nIn case of merged entities, the old identifier will forward to the entity it is merged into.",
+      "deletionTooltip": "Please explain why you are deleting this entity. This is required.",
       "dimensions": "Dimensions (WxHxD)",
       "editEntity": "Edit Entity",
       "editionGroupUnset": "Edition Group unset - please <editLink>edit this Edition</editLink> and add one if you see this!",
@@ -511,10 +569,12 @@
       "noRelationships": "<noRelationships>No relationships.</noRelationships> <editLink>Click here to edit</editLink> and create new relationships.",
       "noReviews": "No reviews yet.",
       "noSeries": "No Series",
+      "noteIsRequired": "* A note is required",
       "notSureVisitHelp": "Not sure what to do? Visit the",
       "noWorks": "No works",
       "noWorksYet": "There are no Works yet!",
       "orderingType": "Ordering Type",
+      "preferEditNotice": "Edit the entity or merge duplicates rather than delete !",
       "ratingOptional": "Rating (optional):",
       "ratings": "Ratings",
       "relatedCollections": "Related Collections",
@@ -532,12 +592,25 @@
       "seriesType": "Series Type",
       "showLess": "less",
       "showMore": "more…",
+      "thisTypeWasDeleted": "This {{type}} was deleted",
       "totalItems": "Total Items",
+      "unnamedLabel": "Unnamed",
+      "unnamedType": "Unnamed {{type}} {{bbid}}",
       "view": "View",
       "viewAllReviews": "View all reviews",
       "weight": "Weight",
       "wikipedia": "Wikipedia",
       "wikipediaLicense": "Wikipedia content provided under the terms of the <licenseLink>Creative Commons BY-SA license</licenseLink>"
+    },
+    "externalServices": {
+      "critiqueBrainzDescription": "Connect to your CritiqueBrainz account to publish reviews directly from BookBrainz. Your reviews will be independently visible on CritiqueBrainz and appear publicly on your CritiqueBrainz profile unless removed. To view or delete your reviews, visit your CritiqueBrainz profile.",
+      "disableTitle": "Disable",
+      "heading": "Connect with third-party services",
+      "reviewsDisabledDetail": "You will not be able to publish reviews directly from BookBrainz.",
+      "reviewsEnabledDetail": "You will be able to publish reviews directly from BookBrainz."
+    },
+    "help": {
+      "entityRelationshipsAlt": "Entity relationships"
     },
     "index": {
       "aboutButton": "About",
@@ -557,23 +630,46 @@
       "seeAllRevisions": "See all revisions",
       "underDevelopment": "Under development — adventurous users, please test and add data! Give us feedback about bugs, glitches and potential improvements at <jiraLink>MetaBrainz JIRA!</jiraLink>"
     },
+    "licensing": {
+      "cc0Alt": "CC0",
+      "ccBySaAlt": "Creative Commons License",
+      "coreAuthor": "BBID, aliases, type, begin and end dates, gender and disambiguation comment",
+      "coreDataNotice": "The BookBrainz core data is licensed under the <cc0Link>Creative Commons CC0</cc0Link> license. The core data includes the following information:",
+      "coreEdition": "BBID, aliases, begin and end dates, language, status and disambiguation comment",
+      "coreEditionGroup": "BBID, aliases, type and disambiguation comment",
+      "corePublisher": "BBID, aliases, type, begin and end dates and disambiguation comment",
+      "coreRelationship": "ID, type, and entity and text associations",
+      "coreWork": "BBID, aliases, languages, type, disambiguation comment",
+      "heading": "Licensing",
+      "publicDataNotice": "Other publically available data is licensed under the <ccBySaLink>Creative Commons CC BY-SA</ccBySaLink> license. If you have any queries about licensing of the public data, please <askLink>ask for clarification</askLink>. Please see the links below for more details about CC0 and CC BY-SA."
+    },
     "merge": {
       "cancelMerge": "Cancel merge",
       "mergeButton": "Merge into selected entity",
       "mergeEntities": "Merge entities",
       "mergeInstructions": "Select the entity you want to merge into, or add more duplicates to merge.<lineBreak />After clicking <italic>Merge into selected entity</italic>, you will be redirected to a page where you can review the data before merging.",
+      "mergeTargetNotice": "You are merging into entity {{targetBBID}}. If you want to merge into another entity instead, you can select the correct entity in the merge queue at the bottom of the page and click the <buttonText>Merge into selected entity</buttonText> button again. This will reload the page with the new merge target selected.",
       "noEntities": "No entities selected for merge",
       "removeFromMerge": "Remove from merge",
       "removeSelected": "Remove selected entity",
+      "reviewDataNotice": "Select and review the data to merge. For further modifications, edit the resulting merged entity.",
       "selectedEntities_one": "Selected 1 entity for merging",
       "selectedEntities_other": "Selected {{count}} entities for merging",
       "selectEntity": "Select entity"
+    },
+    "preview": {
+      "explanation": "This confirmation is important to ensure that no malicious actor can use your account to modify data without your knowledge.\nBelow this line, you can review the data being sent and make any modifications if desired.",
+      "heading": "Confirm Form Submission",
+      "submitPrompt": "You are about to submit a request to <destSpan>{{originalUrl}}</destSpan> originating from <srcSpan>{{sourceUrl}}</srcSpan>. Continue?",
+      "submittedDataToggle": "Data submitted with this request"
     },
     "profile": {
       "badges": "Badges",
       "basicInfo": "Basic Info",
       "bio": "Bio",
       "displayName": "Display Name",
+      "dragBadgeToSet": "drag badge to set",
+      "editHeading": "Edit your public profile",
       "editInfoTitle": "Edit basic editor info",
       "editProfile": "Edit Profile",
       "joined": "Joined",
@@ -586,6 +682,9 @@
       "revisionsApplied": "Revisions Applied",
       "revisionsChartLabel": "Revisions",
       "revisionsReverted": "Revisions Reverted",
+      "selectAreaPlaceholder": "Select area...",
+      "selectGenderPlaceholder": "Select Gender",
+      "selectTitlePlaceholder": "Select title",
       "sendEmail": "send email",
       "stats": "Stats",
       "totalRevisions": "Total Revisions",
@@ -601,6 +700,9 @@
       "heading": "Register",
       "introText": "Great! You successfully logged in to MusicBrainz and are now just one step away from becoming a BookBrainz editor. The following form allows you to specify additional information that will let other users know a little bit more about you. When you’re done, just click the blue button at the bottom of the page.",
       "submitButton": "Looks good, sign me up!"
+    },
+    "relationshipTypes": {
+      "heading": "Relationship Types"
     },
     "revision": {
       "addNote": "Add Note",
@@ -672,9 +774,6 @@
       "validationRegex": "Validation RegEx: "
     }
   },
-  "pages:collections": {
-    "title": "Collections"
-  },
   "staticPages": {
     "about": {
       "chatWithUs": "Chat with us<lineBreak/><channels>$t(pages.index.matrixIrcDiscord)</channels>",
@@ -745,19 +844,14 @@
     },
     "help": {
       "authorDesc": " – an individual, group or collective that participates in the creative process of an artistic work. It also includes translators, illustrators, editors, etc.",
+      "earthseafourbooks": "Earthsea: The First Four Books",
       "editionDesc": " – a published physical or digital version of one or more Works.",
       "editionExamples": "Examples: book, anthology, comic book, magazine, leaflet",
       "editionGroupDesc": " – a logical grouping of different Editions of the same book.",
       "editionGroupExamples": "Example: paperback, hardcover and e-book editions of a novel",
       "editionNote": "Note: An Author can self-publish an Edition",
       "entitiesDescription": "Entities are the main concepts used to describe a bibliographic record through their relationships",
-      "exampleAncillaryAnd": " and ",
-      "exampleAncillaryLink1": "Paperback",
-      "exampleAncillaryLink2": "E-book",
-      "exampleAncillaryLink3": "Orbit Books",
-      "exampleAncillaryLink4": "Edition Group",
-      "exampleAncillaryText1": " editions of the novel Ancillary Mercy by the publisher ",
-      "exampleAncillaryText2": " making them part of the same ",
+      "exampleAncillary": "The <paperbackLink>Paperback</paperbackLink> and <ebookLink>E-book</ebookLink> editions of the novel Ancillary Mercy by the publisher <publisherLink>Orbit Books</publisherLink> making them part of the same <editionGroupLink>Edition Group</editionGroupLink>.",
       "exampleLeGuin": "The relationship between <authorLink>Ursula K. Le Guin</authorLink>, her novel <workLink>A Wizard of Earthsea</workLink> and an Edition <editionLink>Earthsea: The First Four Books</editionLink> which contain it and several more works.",
       "examplesIntro": "The following examples should help you understand the different entities and how they relate to each other:",
       "examplesTitle": "Examples",
@@ -790,6 +884,8 @@
       "seriesDesc": " – a set or sequence of related works, editions, authors, publishers or edition-groups.",
       "seriesExamples": "Examples: a series of novels, a series of comics, etc.",
       "title": "Help page",
+      "Ursula": "Ursula K. Le Guin",
+      "wizardofearthsea": "A Wizard of Earthsea",
       "workDesc": " – a distinct intellectual or artistic creation expressed in words and/or images. Here we are not talking, for example, about a physical book, but the introduction, story, illustrations, etc. it contains.",
       "workExamples": "Examples: novel, poem, translation, introduction & foreword, article, research paper, etc."
     },
