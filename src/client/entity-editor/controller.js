@@ -29,13 +29,11 @@ import {
 } from '../helpers/props';
 import EntityEditor from './entity-editor';
 import EntityMerge from './entity-merge';
-import {I18nextProvider} from 'react-i18next';
 import Layout from '../containers/layout';
 import {Provider} from 'react-redux';
 import React from 'react';
 import ReduxThunk from 'redux-thunk';
 import createDebounce from 'redux-debounce';
-import {createI18n} from '../../common/i18n/i18n';
 import {fromJS} from 'immutable';
 import {hydrateRoot} from 'react-dom/client';
 
@@ -50,9 +48,6 @@ const KEYSTROKE_DEBOUNCE_TIME = 250;
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const {initialState, ...rest} = props;
-
-const {locale = 'en', resources = {}} = props.i18n || {};
-const i18nInstance = createI18n(locale, resources);
 
 const isMerge = Boolean(props.mergingEntities);
 const rootReducer = createRootReducer(props.entityType, isMerge);
@@ -87,13 +82,11 @@ const store = createStore(
 );
 
 const markup = (
-	<I18nextProvider i18n={i18nInstance}>
-		<Layout {...extractLayoutProps(rest)}>
-			<Provider store={store}>
-				{getEntityEditor()}
-			</Provider>
-		</Layout>
-	</I18nextProvider>
+	<Layout {...extractLayoutProps(rest)}>
+		<Provider store={store}>
+			{getEntityEditor()}
+		</Provider>
+	</Layout>
 );
 
 hydrateRoot(document.getElementById('target'), markup);
