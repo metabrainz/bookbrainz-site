@@ -95,7 +95,7 @@ function LanguageField({
 	const recentItems = RecentlyUsed.getItems('languages').filter(item => item.name !== '[Multiple languages]');
 	const defaultOptions = [
 		{
-			label: translate('entityEditor.languageField.recentlyUsed'),
+			label: translate('common.recentlyUsed'),
 			options: recentItems.map(item => ({label: item.name, value: item.id}))
 		},
 		{
