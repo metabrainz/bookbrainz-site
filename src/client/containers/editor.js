@@ -22,12 +22,14 @@
 import * as bootstrap from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 
 
 const {Col, Nav, Row} = bootstrap;
 
 function EditorContainer(props) {
 	const {tabActive, editor, children, user} = props;
+	const {t: translate} = useTranslation();
 
 	return (
 		<div>
@@ -58,7 +60,7 @@ function EditorContainer(props) {
 								active={tabActive === 0}
 								href={`/editor/${editor.id}`}
 							>
-								Profile
+								{translate('common.nav.profile')}
 							</Nav.Link>
 						</Nav.Item>
 						<Nav.Item>
@@ -66,7 +68,7 @@ function EditorContainer(props) {
 								active={tabActive === 1}
 								href={`/editor/${editor.id}/revisions`}
 							>
-								Revisions
+								{translate('common.nav.revisions')}
 							</Nav.Link>
 						</Nav.Item>
 						<Nav.Item>
@@ -74,7 +76,7 @@ function EditorContainer(props) {
 								active={tabActive === 2}
 								href={`/editor/${editor.id}/achievements`}
 							>
-								Achievements
+								{translate('common.nav.achievements')}
 							</Nav.Link>
 						</Nav.Item>
 						<Nav.Item>
@@ -82,7 +84,7 @@ function EditorContainer(props) {
 								active={tabActive === 3}
 								href={`/editor/${editor.id}/collections`}
 							>
-								Collections
+								{translate('common.entityType.collection_plural')}
 							</Nav.Link>
 						</Nav.Item>
 						{
@@ -93,7 +95,7 @@ function EditorContainer(props) {
 											active={tabActive === 4}
 											href="/external-service"
 										>
-										External Services
+											{translate('common.nav.externalServices')}
 										</Nav.Link>
 									</Nav.Item>
 								) : null

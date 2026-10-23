@@ -20,9 +20,36 @@ import * as bootstrap from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {hot} from 'react-hot-loader';
+import {useTranslation} from 'react-i18next';
 
 
 const {Button, Container, Row} = bootstrap;
+
+/**
+ * Helper to translate detailed error messages, handling dynamic path variables.
+ * @param {string} message - The message to translate.
+ * @param {Function} translate - The translation function.
+ * @returns {string} The translated message.
+ */
+function translateDetailedMessage(message, translate) {
+	if (typeof message !== 'string') {
+		return message;
+	}
+
+	const noContentPrefix = 'No content exists at the path requested: ';
+	if (message.startsWith(noContentPrefix)) {
+		const path = message.slice(noContentPrefix.length).trim();
+		return translate('errors.No content exists at the path requested: {{path}}', {interpolation: {escapeValue: false}, path});
+	}
+
+	if (message.includes('You do not have permission to access the following path:')) {
+		const lines = message.split('\n');
+		const path = lines[lines.length - 1].trim();
+		return translate('errors.You do not have permission to access the following path: {{path}}', {interpolation: {escapeValue: false}, path});
+	}
+
+	return translate(`errors.${message}`, {defaultValue: message});
+}
 
 /**
  * Links to different pages
@@ -30,6 +57,7 @@ const {Button, Container, Row} = bootstrap;
 
 function ErrorPage(props) {
 	const {error} = props;
+	const {t: translate} = useTranslation();
 	let {detailedMessage} = error;
 
 	if (typeof detailedMessage === 'string') {
@@ -47,7 +75,7 @@ function ErrorPage(props) {
 			</Row>
 			<Row className="margin-top-6 margin-bottom-1">
 				<p className="lead">
-					<b>{error.message}</b>
+					<b>{translate(`errors.${error.message}`, {defaultValue: error.message})}</b>
 				</p>
 			</Row>
 			<div>
@@ -56,7 +84,7 @@ function ErrorPage(props) {
 						// eslint-disable-next-line react/no-array-index-key
 						<Row key={`detailedMsg${idx}`}>
 							<span>
-								{message}
+								{translateDetailedMessage(message, translate)}
 							</span>
 						</Row>
 					))
@@ -68,7 +96,7 @@ function ErrorPage(props) {
 					size="sm"
 					variant="link"
 				>
-					Return to Main Page
+					{translate('common.button.returnToMain')}
 				</Button>
 			</Row>
 		</Container>

@@ -106,7 +106,7 @@ function SubmissionSection({
 						role="status"
 						size="sm"
 					/>}
-					 {submitted ? ` ${translate('entityEditor.submissionSection.submitButton')}` : translate('entityEditor.submissionSection.submitButton')}
+					 {submitted ? ` ${translate('common.button.submit')}` : translate('common.button.submit')}
 				</Button>
 			</div>
 			<div className={errorAlertClass}>
