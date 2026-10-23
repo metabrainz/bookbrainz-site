@@ -22,7 +22,6 @@ import PrivsEditModal from './privs-edit-modal';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {getPrivilegeShieldIcon} from '../../../../common/helpers/privileges-utils';
-import {withTranslation} from 'react-i18next';
 
 
 const {Button, Table} = bootstrap;
@@ -34,9 +33,7 @@ type AdminPanelSearchResultsState = {
 type AdminPanelSearchResultsProps = {
 	results?: any[],
 	updateResultsOnPrivsChange: () => void,
-	user: Record<string, unknown>,
-	// eslint-disable-next-line id-length
-	t: any
+	user: Record<string, unknown>
 };
 
 
@@ -50,8 +47,6 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 
 	static propTypes = {
 		results: PropTypes.array,
-		// eslint-disable-next-line id-length
-		t: PropTypes.func.isRequired,
 		updateResultsOnPrivsChange: PropTypes.func.isRequired,
 		user: PropTypes.object.isRequired
 	};
@@ -82,8 +77,6 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 	}
 
 	render() {
-		// eslint-disable-next-line id-length
-		const {t: translate} = this.props;
 		const noResults = !this.props.results || this.props.results.length === 0;
 		const results = this.props.results.map((result) => {
 			if (!result) {
@@ -98,7 +91,7 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 					<td>
 						<a href={link}>
 							<img className="margin-right-0-3" height="15" src={getPrivilegeShieldIcon(result.privs)}/>
-							{name ?? translate('common:unnamed')}
+							{name ?? '(unnamed)'}
 						</a>
 					</td>
 					<td>
@@ -110,7 +103,7 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 							variant="outline-info"
 							onClick={() => this.openPrivsEditModal(result)}
 						>
-							{translate('adminPanelSearchResults.editButton')}
+							Edit
 						</Button>
 					</td>
 				</tr>
@@ -137,7 +130,7 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 					)
 				}
 				<h3 className="search-results-heading">
-					{translate('adminPanelSearchResults.heading')}
+					Search Results
 				</h3>
 				<hr className="thin"/>
 				<Table
@@ -146,8 +139,8 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 				>
 					<thead>
 						<tr>
-							<th width="42%">{translate('adminPanelSearchResults.headerName')}</th>
-							<th width="42%">{translate('adminPanelSearchResults.headerPrivileges')}</th>
+							<th width="42%">Name</th>
+							<th width="42%">Privileges</th>
 							<th width="16%"/>
 						</tr>
 					</thead>
@@ -160,4 +153,4 @@ class AdminPanelSearchResults extends React.Component<AdminPanelSearchResultsPro
 	}
 }
 
-export default withTranslation(['pages', 'common'])(AdminPanelSearchResults);
+export default AdminPanelSearchResults;
