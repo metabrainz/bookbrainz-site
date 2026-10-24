@@ -19,8 +19,8 @@
 import {extractChildProps, extractLayoutProps} from '../../helpers/props';
 import Layout from '../../containers/layout';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import SearchAdminPage from '../../components/pages/searchAdmin';
+import {hydrateRoot} from 'react-dom/client';
 
 
 const propsTarget = document.getElementById('props');
@@ -35,4 +35,4 @@ const markup = (
 	</Layout>
 );
 
-ReactDOM.hydrate(markup, document.getElementById('target'));
+hydrateRoot(document.getElementById('target'), markup);

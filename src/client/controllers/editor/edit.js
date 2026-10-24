@@ -20,20 +20,20 @@
 import Layout from '../../containers/layout';
 import ProfileForm from '../../components/forms/profile';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {extractLayoutProps} from '../../helpers/props';
+import {hydrateRoot} from 'react-dom/client';
 
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
-ReactDOM.hydrate(
+hydrateRoot(
+	document.getElementById('target'),
 	<Layout {...extractLayoutProps(props)}>
 		<ProfileForm
 			editor={props.editor}
 			genders={props.genders}
 			titles={props.titles}
 		/>
-	</Layout>,
-	document.getElementById('target')
+	</Layout>
 );

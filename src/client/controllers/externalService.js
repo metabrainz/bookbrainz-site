@@ -20,7 +20,7 @@ import {extractChildProps, extractLayoutProps} from '../helpers/props';
 import ExternalServices from '../components/pages/externalService';
 import Layout from '../containers/layout';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {hydrateRoot} from 'react-dom/client';
 
 
 const propsTarget = document.getElementById('props');
@@ -35,4 +35,4 @@ const markup = (
 	</Layout>
 );
 
-ReactDOM.hydrate(markup, document.getElementById('target'));
+hydrateRoot(document.getElementById('target'), markup);
