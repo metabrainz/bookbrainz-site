@@ -1,12 +1,11 @@
-// eslint-disable-next-line import/no-unassigned-import
-import '../../../../../enzyme.config';
 import * as React from 'react';
 import {expect, use} from 'chai';
+import {render, waitFor} from '@testing-library/react';
 import {Provider} from 'react-redux';
 import SearchEntityCreate from '../../../../../src/client/unified-form/common/search-entity-create-select';
 import configureStore from 'redux-mock-store';
 import {jestSnapshotPlugin} from 'mocha-chai-jest-snapshot';
-import {mount} from 'enzyme';
+import {stableHtml} from '../../../../test-helpers/setup';
 import {stub} from 'sinon';
 
 
@@ -19,20 +18,25 @@ const props = {
 };
 
 const mockStore = configureStore();
+// The async select shows a loading indicator until its default options are loaded
+function waitForSelectsToLoad(container) {
+	return waitFor(() => expect(container.querySelector('.react-select__loading-indicator')).to.equal(null));
+}
+
 describe('SearchEntityCreaateSelect', () => {
-	let wrapper;
+	let container;
 	let store;
 	const formatCreateLabelSpy = stub();
-	before(() => {
+	beforeEach(() => {
 		store = mockStore();
-		wrapper = mount(
+		({container} = render(
 			<Provider store={store}>
 				<SearchEntityCreate {...props} formatCreateLabel={formatCreateLabelSpy}/>
 			</Provider>
-		);
+		));
 	});
-	it('renders correctly', () => {
-		expect(wrapper.html()).toMatchSnapshot();
+	it('renders correctly', async () => {
+		await waitForSelectsToLoad(container);
+		expect(stableHtml(container)).toMatchSnapshot();
 	});
 });
-
