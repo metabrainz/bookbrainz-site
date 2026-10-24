@@ -29,9 +29,9 @@ import EntityRevisions from '../../components/pages/entity-revisions';
 import Layout from '../../containers/layout';
 import PublisherPage from '../../components/pages/entities/publisher';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import SeriesPage from '../../components/pages/entities/series';
 import WorkPage from '../../components/pages/entities/work';
+import {hydrateRoot} from 'react-dom/client';
 
 
 const entityComponents = {
@@ -69,4 +69,4 @@ else {
 	);
 }
 
-ReactDOM.hydrate(markup, document.getElementById('target'));
+hydrateRoot(document.getElementById('target'), markup);

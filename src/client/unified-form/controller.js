@@ -7,11 +7,11 @@ import {
 import Layout from '../containers/layout';
 import {Provider} from 'react-redux';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import ReduxThunk from 'redux-thunk';
 import UnifiedForm from './unified-form';
 import createDebounce from 'redux-debounce';
 import {fromJS} from 'immutable';
+import {hydrateRoot} from 'react-dom/client';
 import {validateForm as validateEditionForm} from '../entity-editor/validators/edition';
 
 
@@ -49,4 +49,4 @@ const markup = (
 	</Layout>
 );
 
-ReactDOM.hydrate(markup, document.getElementById('target'));
+hydrateRoot(document.getElementById('target'), markup);

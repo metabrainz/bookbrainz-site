@@ -19,18 +19,18 @@ import {extractChildProps, extractLayoutProps} from '../../helpers/props';
 import IdentifierTypeEditor from '../../components/forms/type-editor/identifier-type';
 import Layout from '../../containers/layout';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {hydrateRoot} from 'react-dom/client';
 
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
-ReactDOM.hydrate(
+hydrateRoot(
+	document.getElementById('target'),
 	<Layout {...extractLayoutProps(props)}>
 		<IdentifierTypeEditor
 			identifierTypeData={props.identifierTypeData}
 			{...extractChildProps(props)}
 		/>
-	</Layout>,
-	document.getElementById('target')
+	</Layout>
 );

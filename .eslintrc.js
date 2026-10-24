@@ -530,6 +530,7 @@ const es6ImportRules = {
 				'**/data/**',
 				'**/config/**',
 				'**/test/**',
+				'react-dom/client',
 				'react-dom/server',
 				'**/react-select/*'
 			]
