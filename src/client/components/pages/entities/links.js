@@ -29,7 +29,9 @@ import React from 'react';
 const {filterOutRelationshipTypeById} = entityHelper;
 const {Row, Col} = bootstrap;
 
-function EntityLinks({entity, identifierTypes, urlPrefix}) {
+const defaultIdentifierTypes = [];
+
+function EntityLinks({entity, identifierTypes = defaultIdentifierTypes, urlPrefix}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const relationships = filterOutRelationshipTypeById(entity, relationshipTypeId);
@@ -61,9 +63,6 @@ EntityLinks.propTypes = {
 	entity: PropTypes.object.isRequired,
 	identifierTypes: PropTypes.array,
 	urlPrefix: PropTypes.string.isRequired
-};
-EntityLinks.defaultProps = {
-	identifierTypes: []
 };
 
 export default EntityLinks;

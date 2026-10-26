@@ -14,7 +14,7 @@ import {removeEmptyAliases} from '../../entity-editor/alias-editor/actions';
 import {removeEmptyIdentifiers} from '../../entity-editor/identifier-editor/actions';
 
 
-function EntityModalBody({onModalSubmit, children, validate, onAliasClose, onIdentifierClose, ...rest}
+function EntityModalBody({onModalSubmit, children = null, validate, onAliasClose, onIdentifierClose, ...rest}
 	:EntityModalBodyProps) {
 	const genericProps:any = omit(rest, ['allIdentifierTypes']);
 	return (
@@ -47,9 +47,6 @@ function EntityModalBody({onModalSubmit, children, validate, onAliasClose, onIde
 		</form>
 	);
 }
-EntityModalBody.defaultProps = {
-	children: null
-};
 function mapDispatchToProps(dispatch) {
 	return {
 		onAliasClose: () => dispatch(removeEmptyAliases()),

@@ -116,7 +116,7 @@ function PublisherSection({
 	endedChecked,
 	publisherTypes,
 	typeValue,
-	isUnifiedForm,
+	isUnifiedForm = false,
 	onAreaChange,
 	onBeginDateChange,
 	onEndDateChange,
@@ -214,9 +214,6 @@ function PublisherSection({
 	);
 }
 PublisherSection.displayName = 'PublisherSection';
-PublisherSection.defaultProps = {
-	isUnifiedForm: false
-};
 
 function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('publisherSection');

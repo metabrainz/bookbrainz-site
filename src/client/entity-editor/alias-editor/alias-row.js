@@ -65,7 +65,7 @@ import {isAliasEmpty} from '../helpers';
  */
 const AliasRow = ({
 	languageOptions,
-	languageValue,
+	languageValue = null,
 	nameValue,
 	sortNameValue,
 	primaryChecked,
@@ -148,9 +148,6 @@ AliasRow.propTypes = {
 	onSortNameChange: PropTypes.func.isRequired,
 	primaryChecked: PropTypes.bool.isRequired,
 	sortNameValue: PropTypes.string.isRequired
-};
-AliasRow.defaultProps = {
-	languageValue: null
 };
 
 function mapDispatchToProps(dispatch, {index}) {

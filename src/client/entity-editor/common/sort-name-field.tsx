@@ -120,9 +120,9 @@ type Props = {
  * @returns {Object} a React component containing the rendered input
  */
 function SortNameField({
-	empty,
-	error,
-	onChange,
+	empty = false,
+	error = false,
+	onChange = null,
 	storedNameValue,
 	...rest
 }: Props) {
@@ -195,10 +195,5 @@ function SortNameField({
 	);
 }
 SortNameField.displayName = 'SortNameField';
-SortNameField.defaultProps = {
-	empty: false,
-	error: false,
-	onChange: null
-};
 
 export default SortNameField;

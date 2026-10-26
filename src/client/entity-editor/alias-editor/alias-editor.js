@@ -45,7 +45,7 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 const AliasEditor = ({
 	languageOptions,
 	onClose,
-	show
+	show = false
 }) => {
 	const helpText = `Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc.
 		Refer to the help page for more details and examples.`;
@@ -85,9 +85,6 @@ AliasEditor.propTypes = {
 	languageOptions: PropTypes.array.isRequired,
 	onClose: PropTypes.func.isRequired,
 	show: PropTypes.bool
-};
-AliasEditor.defaultProps = {
-	show: false
 };
 
 function mapDispatchToProps(dispatch) {

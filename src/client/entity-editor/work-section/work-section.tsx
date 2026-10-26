@@ -143,7 +143,7 @@ function WorkSection({
 	languageValues,
 	typeValue,
 	workTypes,
-	isUnifiedForm,
+	isUnifiedForm = false,
 	onLanguagesChange,
 	onTypeChange
 }: Props) {
@@ -222,9 +222,6 @@ function WorkSection({
 	);
 }
 WorkSection.displayName = 'WorkSection';
-WorkSection.defaultProps = {
-	isUnifiedForm: false
-};
 type RootState = Map<string, Map<string, any>>;
 function mapStateToProps(rootState: RootState): StateProps {
 	const state: Map<string, any> = rootState.get('workSection');

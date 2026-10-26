@@ -64,7 +64,7 @@ type Props = {
 * @param {Props} props - The props object containing the following:
 * @returns {JSX.Element} A React component that displays a drag-and-drop card for an achievement.
 */
-function DragAndDrop({name, initialAchievement}: Props): JSX.Element {
+function DragAndDrop({name, initialAchievement = blankBadge}: Props): JSX.Element {
 	const [achievement, setAchievement] = useState<AchievementForDisplay>(initialAchievement);
 	const handleClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
 		event.preventDefault();
@@ -119,9 +119,5 @@ function DragAndDrop({name, initialAchievement}: Props): JSX.Element {
 }
 
 DragAndDrop.displayName = 'DragAndDrop';
-
-DragAndDrop.defaultProps = {
-	initialAchievement: blankBadge
-};
 
 export default DragAndDrop;

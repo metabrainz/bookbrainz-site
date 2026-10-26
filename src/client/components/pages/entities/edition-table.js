@@ -35,7 +35,16 @@ const {
 } = entityHelper;
 const {Button, Table} = bootstrap;
 
-function EditionTableRow({edition, showAddedAtColumn, showAuthorCreditsColumn, showCheckboxes, selectedEntities, onToggleRow}) {
+const defaultSelectedEntities = [];
+
+function EditionTableRow({
+	edition,
+	showAddedAtColumn,
+	showAuthorCreditsColumn = false,
+	showCheckboxes = false,
+	selectedEntities = defaultSelectedEntities,
+	onToggleRow = null
+}) {
 	const name = getEntityLabel(edition);
 	const disambiguation = getEntityDisambiguation(edition);
 	const number = edition.number || '?';
@@ -93,14 +102,19 @@ EditionTableRow.propTypes = {
 	showAuthorCreditsColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool
 };
-EditionTableRow.defaultProps = {
-	onToggleRow: null,
-	selectedEntities: [],
-	showAuthorCreditsColumn: false,
-	showCheckboxes: false
-};
 
-function EditionTable({editions, entity, showAddedAtColumn, showAdd, showAuthorCreditsColumn, showCheckboxes, selectedEntities, onToggleRow}) {
+const editionTableDefaultSelectedEntities = [];
+
+function EditionTable({
+	editions,
+	entity = null,
+	showAddedAtColumn = false,
+	showAdd = true,
+	showAuthorCreditsColumn = false,
+	showCheckboxes = false,
+	selectedEntities = editionTableDefaultSelectedEntities,
+	onToggleRow = null
+}) {
 	let tableContent;
 	if (editions.length) {
 		tableContent = (
@@ -193,15 +207,6 @@ EditionTable.propTypes = {
 	showAddedAtColumn: PropTypes.bool,
 	showAuthorCreditsColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool
-};
-EditionTable.defaultProps = {
-	entity: null,
-	onToggleRow: null,
-	selectedEntities: [],
-	showAdd: true,
-	showAddedAtColumn: false,
-	showAuthorCreditsColumn: false,
-	showCheckboxes: false
 };
 
 export default EditionTable;

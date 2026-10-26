@@ -27,7 +27,9 @@ import React from 'react';
 const {Table} = bootstrap;
 const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-function PublisherTableRow({showAddedAtColumn, publisher, showCheckboxes, selectedEntities, onToggleRow}) {
+const defaultSelectedEntities = [];
+
+function PublisherTableRow({showAddedAtColumn, publisher, showCheckboxes = false, selectedEntities = defaultSelectedEntities, onToggleRow = null}) {
 	const name = getEntityLabel(publisher);
 	const number = publisher.number || '?';
 	const disambiguation = getEntityDisambiguation(publisher);
@@ -71,13 +73,16 @@ PublisherTableRow.propTypes = {
 	showAddedAtColumn: PropTypes.bool.isRequired,
 	showCheckboxes: PropTypes.bool
 };
-PublisherTableRow.defaultProps = {
-	onToggleRow: null,
-	selectedEntities: [],
-	showCheckboxes: false
-};
 
-function PublisherTable({showAddedAtColumn, publishers, showCheckboxes, selectedEntities, onToggleRow}) {
+const publisherTableDefaultSelectedEntities = [];
+
+function PublisherTable({
+	showAddedAtColumn = false,
+	publishers,
+	showCheckboxes = false,
+	selectedEntities = publisherTableDefaultSelectedEntities,
+	onToggleRow = null
+}) {
 	let tableContent;
 	if (publishers.length) {
 		tableContent = (
@@ -131,12 +136,6 @@ PublisherTable.propTypes = {
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool
-};
-PublisherTable.defaultProps = {
-	onToggleRow: null,
-	selectedEntities: [],
-	showAddedAtColumn: false,
-	showCheckboxes: false
 };
 
 export default PublisherTable;

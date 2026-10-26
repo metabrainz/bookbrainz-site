@@ -41,9 +41,9 @@ type Props = {
  * @returns {Object} a React component containing the rendered input
  */
 function DisambiguationField({
-	empty,
-	error,
-	required,
+	empty = false,
+	error = false,
+	required = false,
 	...rest
 }: Props) {
 	const label = (
@@ -80,10 +80,5 @@ function DisambiguationField({
 	);
 }
 DisambiguationField.displayName = 'DisambiguationField';
-DisambiguationField.defaultProps = {
-	empty: false,
-	error: false,
-	required: false
-};
 
 export default React.memo(DisambiguationField);

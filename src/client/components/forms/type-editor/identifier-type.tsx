@@ -26,7 +26,7 @@ import classNames from 'classnames';
 import request from 'superagent';
 
 
-function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeEditorPropsT) {
+function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, parentTypes}: IdentifierTypeEditorPropsT) {
 	const [formData, setFormData] = useState<IdentifierTypeDataT>(identifierTypeData);
 
 	// State for the ParentType modal
@@ -420,9 +420,5 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 		</form>
 	);
 }
-
-IdentifierTypeEditor.defaultProps = {
-	identifierTypeData: defaultIdentifierTypeData
-};
 
 export default IdentifierTypeEditor;

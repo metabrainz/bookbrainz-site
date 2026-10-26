@@ -28,7 +28,7 @@ const {
 	getEntitySecondaryAliases, getEntityDisambiguation, getEntityLabel
 } = entityHelper;
 
-function EntityTitle({entity, handleModalToggle}) {
+function EntityTitle({entity, handleModalToggle = null}) {
 	const aliases = getEntitySecondaryAliases(entity);
 	const disambiguation = getEntityDisambiguation(entity);
 	const label = getEntityLabel(entity);
@@ -55,9 +55,6 @@ EntityTitle.displayName = 'EntityTitle';
 EntityTitle.propTypes = {
 	entity: PropTypes.object.isRequired,
 	handleModalToggle: PropTypes.func
-};
-EntityTitle.defaultProps = {
-	handleModalToggle: null
 };
 
 export default EntityTitle;

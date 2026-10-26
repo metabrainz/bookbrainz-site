@@ -58,11 +58,11 @@ import {entityTypeProperty} from '../../helpers/react-validators';
  */
 
 function NameSectionMerge({
-	disambiguationDefaultValue,
+	disambiguationDefaultValue = null,
 	mergingEntities,
 	entityType,
 	languageOptions,
-	languageValue,
+	languageValue = null,
 	nameValue,
 	sortNameValue,
 	onLanguageChange,
@@ -147,10 +147,6 @@ NameSectionMerge.propTypes = {
 	onNameChange: PropTypes.func.isRequired,
 	onSortNameChange: PropTypes.func.isRequired,
 	sortNameValue: PropTypes.string.isRequired
-};
-NameSectionMerge.defaultProps = {
-	disambiguationDefaultValue: null,
-	languageValue: null
 };
 
 function mapStateToProps(rootState) {

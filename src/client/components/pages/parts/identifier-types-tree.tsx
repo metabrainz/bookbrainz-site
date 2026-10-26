@@ -27,7 +27,7 @@ type IdentifierTypeTreePropsT = {
 	indentLevel?: number
 };
 
-function IdentifierTypeTree({identifierTypes, parentId, indentLevel}: IdentifierTypeTreePropsT) {
+function IdentifierTypeTree({identifierTypes, parentId = null, indentLevel = 0}: IdentifierTypeTreePropsT) {
 	const [expandedIdentifierTypeIds, setExpandedIdentifierTypeIds] = useState([]);
 
 	function toggleExpand(identifierTypeId) {
@@ -101,10 +101,5 @@ function IdentifierTypeTree({identifierTypes, parentId, indentLevel}: Identifier
 		</ul>
 	);
 }
-
-IdentifierTypeTree.defaultProps = {
-	indentLevel: 0,
-	parentId: null
-};
 
 export default IdentifierTypeTree;

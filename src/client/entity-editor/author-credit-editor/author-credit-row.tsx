@@ -84,7 +84,7 @@ function AuthorCreditRow({
 	author,
 	joinPhrase,
 	name,
-	isUnifiedForm,
+	isUnifiedForm = false,
 	onAuthorChange,
 	onJoinPhraseChange,
 	onClearHandler,
@@ -158,9 +158,6 @@ function AuthorCreditRow({
 	);
 }
 AuthorCreditRow.displayName = 'AuthorCreditEditor.CreditRow';
-AuthorCreditRow.defaultProps = {
-	isUnifiedForm: false
-};
 
 function mapStateToProps(rootState, {index}: OwnProps): StateProps {
 	const state = rootState.get('authorCreditEditor');

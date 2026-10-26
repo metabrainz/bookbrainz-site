@@ -48,11 +48,13 @@ type Props = {
  * @returns {Object} a React component containing the rendered input
  */
 function NameField({
-	empty,
-	error,
-	label,
-	tooltipText,
-	warn,
+	defaultValue = '',
+	empty = false,
+	error = false,
+	label = '',
+	onChange = null,
+	tooltipText = null,
+	warn = false,
 	...rest
 }: Props) {
 	const inputLabel = (
@@ -79,19 +81,10 @@ function NameField({
 				{inputLabel}
 				{helpIconElement}
 			</Form.Label>
-			<Form.Control type="text" {...rest}/>
+			<Form.Control defaultValue={defaultValue} type="text" onChange={onChange} {...rest}/>
 		</Form.Group>
 	);
 }
 NameField.displayName = 'NameField';
-NameField.defaultProps = {
-	defaultValue: '',
-	empty: false,
-	error: false,
-	label: '',
-	onChange: null,
-	tooltipText: null,
-	warn: false
-};
 
 export default NameField;

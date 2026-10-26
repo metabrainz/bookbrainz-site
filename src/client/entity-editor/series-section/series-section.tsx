@@ -101,7 +101,7 @@ function SeriesSection({
 	entity,
 	entityName,
 	entityType,
-	hideItemSelect,
+	hideItemSelect = false,
 	onEdit,
 	onOrderTypeChange,
 	onRemove,
@@ -112,7 +112,7 @@ function SeriesSection({
 	relationshipTypes,
 	seriesItems,
 	seriesOrderingTypes,
-	isUnifiedForm,
+	isUnifiedForm = false,
 	seriesTypeValue
 }: Props) {
 	const baseEntity = {
@@ -244,10 +244,6 @@ function SeriesSection({
 	);
 }
 SeriesSection.displayName = 'SeriesSection';
-SeriesSection.defaultProps = {
-	hideItemSelect: false,
-	isUnifiedForm: false
-};
 
 function mapStateToProps(rootState, {isUnifiedForm}): StateProps {
 	const state = rootState.get('seriesSection');
