@@ -103,6 +103,7 @@ router.get('/create', auth.isAuthenticated, (req, res) => {
 		</Layout>
 	);
 	res.send(target({
+		locale: res.locals.locale,
 		markup,
 		props: escapeProps(props),
 		script
@@ -164,6 +165,7 @@ router.get('/:collectionId', auth.isAuthenticatedForCollectionView, async (req, 
 
 		const script = '/js/collection.js';
 		return res.send(target({
+			locale: res.locals.locale,
 			markup,
 			props: escapeProps(props),
 			script
@@ -213,6 +215,7 @@ router.get('/:collectionId/edit', auth.isAuthenticated, auth.isCollectionOwner, 
 		</Layout>
 	);
 	res.send(target({
+		locale: res.locals.locale,
 		markup,
 		props: escapeProps(props),
 		script

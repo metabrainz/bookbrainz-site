@@ -105,6 +105,7 @@ router.get('/edit', auth.isAuthenticated, async (req, res, next) => {
 
 	// Send the rendered DOM, the props and the script to the client
 	res.send(target({
+		locale: res.locals.locale,
 		markup,
 		props: escapeProps(props),
 		script: '/js/editor/edit.js'
@@ -342,6 +343,7 @@ router.get('/:id', async (req, res, next) => {
 		);
 
 		return res.send(target({
+			locale: res.locals.locale,
 			markup,
 			page: 'profile',
 			props: escapeProps(props),
@@ -398,6 +400,7 @@ router.get('/:id/revisions', async (req, res, next) => {
 		);
 
 		res.send(target({
+			locale: res.locals.locale,
 			markup,
 			page: 'revisions',
 			props: escapeProps(props),
@@ -576,6 +579,7 @@ router.get('/:id/achievements', async (req, res, next) => {
 	);
 
 	res.send(target({
+		locale: res.locals.locale,
 		markup,
 		props: escapeProps(props),
 		script: '/js/editor/achievement.js',
@@ -680,6 +684,7 @@ router.get('/:id/collections', async (req, res, next) => {
 		);
 
 		res.send(target({
+			locale: res.locals.locale,
 			markup,
 			page: 'collections',
 			props: escapeProps(props),

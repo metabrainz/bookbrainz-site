@@ -36,7 +36,6 @@ import {Provider} from 'react-redux';
 import ReactDOMServer from 'react-dom/server';
 import UnifiedForm from '../../client/unified-form/unified-form';
 import _ from 'lodash';
-import {createI18n} from '../../common/i18n/i18n';
 import {createStore} from 'redux';
 import {generateProps} from './props';
 
@@ -168,8 +167,6 @@ export function entityEditorMarkup(
 	const rootReducer = createRootReducer(props.entityType);
 	const store: any = createStore(rootReducer, Immutable.fromJS(initialState));
 	const EntitySection = getEntitySection(props.entityType);
-	const {locale = 'en', resources = {}} = props.i18n || {};
-	createI18n(locale, resources);
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(rest)}>
 			<Provider store={store}>
@@ -206,8 +203,6 @@ export function entityMergeMarkup(
 	const rootReducer = createRootReducer(props.entityType, true);
 	const store: any = createStore(rootReducer, Immutable.fromJS(initialState));
 	const EntitySection = getEntitySectionMerge(props.entityType);
-	const {locale = 'en', resources = {}} = props.i18n || {};
-	createI18n(locale, resources);
 	const markup = ReactDOMServer.renderToString(
 		<Layout {...propHelpers.extractLayoutProps(rest)}>
 			<Provider store={store}>

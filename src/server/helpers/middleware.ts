@@ -25,15 +25,13 @@ import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
 import type {Response as $Response, NextFunction, Request} from 'express';
 import {ENTITY_TYPES, getRelationshipTargetBBIDByTypeId} from '../../client/helpers/entity';
+import {getAcceptedLanguageCodes, getAvailableLocales, loadTranslation} from './i18n';
 import {getWikipediaExtract, selectWikipediaPage} from './wikimedia';
 
 import _ from 'lodash';
-import fs from 'fs';
-import {getAcceptedLanguageCodes} from './i18n';
 import {getReviewsFromCB} from './critiquebrainz';
 import {getWikidataId} from '../../common/helpers/wikimedia';
 import log from 'log';
-import path from 'path';
 
 
 interface $Request extends Request {
@@ -455,46 +453,26 @@ export function validateCollaboratorIdsForCollectionRemove(req, res, next) {
 }
 
 export async function i18nMiddleware(req: $Request, res: $Response, next: NextFunction) {
-	let availableLocales: string[] = ['en'];
-	try {
-		const localesDir = path.join(process.cwd(), 'public', 'locales');
-		const entries = await fs.promises.readdir(localesDir, {withFileTypes: true});
-		availableLocales = entries
-			.filter((entry) => entry.isDirectory())
-			.map((entry) => entry.name);
-	}
-	catch (err) {
-		log.debug('Could not read public/locales, defaulting to en: %s', err.message);
-	}
+	const availableLocales = await getAvailableLocales();
 
 	const rawCookies = req.headers.cookie ?? '';
 	const cookieLang = rawCookies.split('; ')
 		.find(lang => lang.startsWith('bb_lang='))
 		?.split('=')[1];
-	const [headerLang = 'en'] = getAcceptedLanguageCodes(req);
+	const headerLang = getAcceptedLanguageCodes(req)
+		.find(language => availableLocales.includes(language)) ?? 'en';
 	const preferred = cookieLang ?? headerLang;
 	const locale = availableLocales.includes(preferred) ? preferred : 'en';
 
-	async function load(loc: string) {
-		try {
-			return JSON.parse(await fs.promises.readFile(
-				path.join(process.cwd(), 'public', 'locales', loc, 'translation.json'), 'utf8'
-			));
-		}
-		catch {
-			return {};
-		}
-	}
-
 	const resources: Record<string, any> = {
 		[locale]: {
-			translation: await load(locale)
+			translation: await loadTranslation(locale)
 		}
 	};
 
 	if (locale !== 'en') {
 		resources.en = {
-			translation: await load('en')
+			translation: await loadTranslation('en')
 		};
 	}
 

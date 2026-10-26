@@ -18,8 +18,8 @@
 
 
 import * as bootstrap from 'react-bootstrap';
+import {camelCase, trim, uniqBy} from 'lodash';
 import {faPlus, faSave, faTimes, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
-import {trim, uniqBy} from 'lodash';
 import DeleteOrRemoveCollaborationModal from '../pages/parts/delete-or-remove-collaboration-modal';
 import EntitySearchFieldOption from '../../entity-editor/common/entity-search-field-option';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -147,7 +147,7 @@ class UserCollectionForm extends React.Component {
 	}
 
 	getOptionLabel(option) {
-		return option.name;
+		return option.label;
 	}
 
 	getOptionValue(option) {
@@ -165,6 +165,7 @@ class UserCollectionForm extends React.Component {
 			{label: translate('common.public'), name: 'Public'}
 		];
 		const entityTypeOptions = ['Author', 'Work', 'Series', 'Edition', 'Edition-Group', 'Publisher'].map((entity) => ({
+			label: translate(`common.entityType.${camelCase(entity)}`),
 			name: entity
 		}));
 		const initialName = this.state.collection.name;
