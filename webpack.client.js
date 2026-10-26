@@ -126,6 +126,11 @@ const clientConfig = {
 		new CleanWebpackPlugin(cleanWebpackPluginOpts)
 	],
 	resolve: {
+		alias: {
+			// React 19 removed ReactDOM.findDOMNode, which some UI libraries still use: see the file for details
+			'react-dom$': path.resolve(__dirname, 'src', 'client', 'helpers', 'react-dom-compat.js'),
+			'react-dom-original$': path.resolve(path.dirname(require.resolve('react-dom/package.json')), 'index.js')
+		},
 		extensions: ['.js', '.jsx', '.ts', '.tsx']
 	},
 	target: 'web'
