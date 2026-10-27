@@ -19,19 +19,19 @@
 
 import Layout from '../../containers/layout';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import UserCollectionForm from '../../components/forms/userCollection';
 import {extractLayoutProps} from '../../helpers/props';
+import {hydrateRoot} from 'react-dom/client';
 
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
-ReactDOM.hydrate(
+hydrateRoot(
+	document.getElementById('target'),
 	<Layout {...extractLayoutProps(props)}>
 		<UserCollectionForm
 			collection={props.collection}
 		/>
-	</Layout>,
-	document.getElementById('target')
+	</Layout>
 );

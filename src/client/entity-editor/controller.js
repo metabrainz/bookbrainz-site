@@ -32,10 +32,10 @@ import EntityMerge from './entity-merge';
 import Layout from '../containers/layout';
 import {Provider} from 'react-redux';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import ReduxThunk from 'redux-thunk';
 import createDebounce from 'redux-debounce';
 import {fromJS} from 'immutable';
+import {hydrateRoot} from 'react-dom/client';
 
 
 const {
@@ -89,4 +89,4 @@ const markup = (
 	</Layout>
 );
 
-ReactDOM.hydrate(markup, document.getElementById('target'));
+hydrateRoot(document.getElementById('target'), markup);

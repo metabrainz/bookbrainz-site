@@ -18,19 +18,19 @@
 import {extractChildProps, extractLayoutProps} from '../../helpers/props';
 import Layout from '../../containers/layout';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import RelationshipTypeEditor from '../../components/forms/type-editor/relationship-type';
+import {hydrateRoot} from 'react-dom/client';
 
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
-ReactDOM.hydrate(
+hydrateRoot(
+	document.getElementById('target'),
 	<Layout {...extractLayoutProps(props)}>
 		<RelationshipTypeEditor
 			relationshipTypeData={props.relationshipTypeData}
 			{...extractChildProps(props)}
 		/>
-	</Layout>,
-	document.getElementById('target')
+	</Layout>
 );

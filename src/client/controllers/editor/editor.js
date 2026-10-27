@@ -28,7 +28,7 @@ import EditorRevisionPage from '../../components/pages/editor-revision';
 import Layout from '../../containers/layout';
 import ProfileTab from '../../components/pages/parts/editor-profile';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {hydrateRoot} from 'react-dom/client';
 
 
 const propsTarget = document.getElementById('props');
@@ -69,4 +69,4 @@ const markup = (
 	</Layout>
 );
 
-ReactDOM.hydrate(markup, document.getElementById('target'));
+hydrateRoot(document.getElementById('target'), markup);

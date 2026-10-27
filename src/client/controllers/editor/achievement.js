@@ -26,13 +26,14 @@ import AchievementsTab from '../../components/pages/parts/editor-achievements';
 import EditorContainer from '../../containers/editor';
 import Layout from '../../containers/layout';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {hydrateRoot} from 'react-dom/client';
 
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 
-ReactDOM.hydrate(
+hydrateRoot(
+	document.getElementById('target'),
 	<Layout {...extractLayoutProps(props)}>
 		<EditorContainer
 			{...extractEditorProps(props)}
@@ -44,6 +45,5 @@ ReactDOM.hydrate(
 				isOwner={props.isOwner}
 			/>
 		</EditorContainer>
-	</Layout>,
-	document.getElementById('target')
+	</Layout>
 );
