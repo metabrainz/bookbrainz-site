@@ -21,6 +21,7 @@ import request from 'superagent';
 
 
 export const UPDATE_DISAMBIGUATION_FIELD = 'UPDATE_DISAMBIGUATION_FIELD';
+export const UPDATE_EDITION_NUMBER_FIELD = 'UPDATE_EDITION_NUMBER_FIELD';
 export const UPDATE_LANGUAGE_FIELD = 'UPDATE_LANGUAGE_FIELD';
 export const UPDATE_NAME_FIELD = 'UPDATE_NAME_FIELD';
 export const UPDATE_SORT_NAME_FIELD = 'UPDATE_SORT_NAME_FIELD';
@@ -64,6 +65,20 @@ export function updateSortNameField(newSortName: string): Action {
 }
 
 /**
+ * Produces an action indicating that the edition number for the edition being
+ * edited should be updated with the provided value.
+ *
+ * @param {string} newEditionNumber - The new value to be used for the edition number.
+ * @returns {Action} The resulting UPDATE_EDITION_NUMBER_FIELD action.
+ */
+export function updateEditionNumberField(newEditionNumber: string): Action {
+	return {
+		payload: newEditionNumber,
+		type: UPDATE_EDITION_NUMBER_FIELD
+	};
+}
+
+/**
  * Produces an action indicating that the name for the entity being edited
  * should be updated with the provided value. The action is marked to be
  * debounced by the keystroke debouncer defined for redux-debounce.
@@ -92,6 +107,22 @@ export function debouncedUpdateSortNameField(newSortName: string): Action {
 		meta: {debounce: 'keystroke'},
 		payload: newSortName,
 		type: UPDATE_SORT_NAME_FIELD
+	};
+}
+
+/**
+ * Produces an action indicating that the edition number for the edition being
+ * edited should be updated with the provided value. The action is marked to be
+ * debounced by the keystroke debouncer defined for redux-debounce.
+ *
+ * @param {string} newEditionNumber - The new value to be used for the edition number.
+ * @returns {Action} The resulting UPDATE_EDITION_NUMBER_FIELD action.
+ */
+export function debouncedUpdateEditionNumberField(newEditionNumber: string): Action {
+	return {
+		meta: {debounce: 'keystroke'},
+		payload: newEditionNumber,
+		type: UPDATE_EDITION_NUMBER_FIELD
 	};
 }
 

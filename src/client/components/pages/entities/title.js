@@ -32,10 +32,13 @@ function EntityTitle({entity, handleModalToggle}) {
 	const aliases = getEntitySecondaryAliases(entity);
 	const disambiguation = getEntityDisambiguation(entity);
 	const label = getEntityLabel(entity);
+	const editionNumber = entity.type === 'Edition' ?
+		(entity.editionNumber || entity.edition_number) : null;
 	return (
 		<div>
 			<h1>
 				{label}{disambiguation}
+				{editionNumber && <span className="text-muted"> ({editionNumber})</span>}
 				{handleModalToggle &&
 					<Button
 						className="float-right"

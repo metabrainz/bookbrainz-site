@@ -21,6 +21,7 @@ import {UPDATE_WARN_IF_EDITION_GROUP_EXISTS, addLanguage} from '../edition-secti
 import {
 	checkIfNameExists,
 	debouncedUpdateDisambiguationField,
+	debouncedUpdateEditionNumberField,
 	debouncedUpdateNameField,
 	debouncedUpdateSortNameField,
 	searchName,
@@ -170,12 +171,14 @@ class NameSection extends React.Component {
 	render() {
 		const {
 			disambiguationDefaultValue,
+			editionNumberValue,
 			entityType,
 			exactMatches: immutableExactMatches,
 			languageOptions,
 			languageValue,
 			nameValue,
 			sortNameValue,
+			onEditionNumberChange,
 			onLanguageChange,
 			onSortNameChange,
 			onDisambiguationChange,
@@ -248,6 +251,20 @@ class NameSection extends React.Component {
 						/>
 					</Col>
 				</Row>
+				{_.toLower(entityType) === 'edition' && (
+					<Row>
+						<Col lg={lgCol}>
+							<NameField
+								defaultValue={editionNumberValue}
+								empty={false}
+								error={false}
+								label="Edition Number"
+								tooltipText="A short edition designation, such as 1st Edition, 2nd, or Revised."
+								onChange={onEditionNumberChange}
+							/>
+						</Col>
+					</Row>
+				)}
 				<Row>
 					<Col lg={lgCol}>
 						<ImmutableLanguageField
@@ -299,6 +316,7 @@ NameSection.propTypes = {
 	languageValue: PropTypes.number,
 	nameValue: PropTypes.string.isRequired,
 	onDisambiguationChange: PropTypes.func.isRequired,
+	onEditionNumberChange: PropTypes.func,
 	onLanguageChange: PropTypes.func.isRequired,
 	onNameChange: PropTypes.func.isRequired,
 	onNameChangeCheckIfEditionGroupExists: PropTypes.func.isRequired,
@@ -307,15 +325,18 @@ NameSection.propTypes = {
 	onSortNameChange: PropTypes.func.isRequired,
 	searchForExistingEditionGroup: PropTypes.bool,
 	searchResults: PropTypes.object,
-	sortNameValue: PropTypes.string.isRequired
+	sortNameValue: PropTypes.string.isRequired,
+	editionNumberValue: PropTypes.string
 };
 NameSection.defaultProps = {
 	action: 'create',
 	disambiguationDefaultValue: null,
+	editionNumberValue: '',
 	exactMatches: [],
 	isModal: false,
 	isUnifiedForm: false,
 	languageValue: null,
+	onEditionNumberChange: null,
 	searchForExistingEditionGroup: true,
 	searchResults: []
 };
@@ -333,6 +354,7 @@ function mapStateToProps(rootState, {isUnifiedForm, setDefault}) {
 	if (isUnifiedForm && setDefault) {
 		return {
 			disambiguationDefaultValue: '',
+			editionNumberValue: '',
 			exactMatches: ImmutableMap([]),
 			languageValue: null,
 			nameValue: '',
@@ -342,6 +364,7 @@ function mapStateToProps(rootState, {isUnifiedForm, setDefault}) {
 	}
 	return {
 		disambiguationDefaultValue: state.get('disambiguation'),
+		editionNumberValue: state.get('editionNumber'),
 		exactMatches: state.get('exactMatches'),
 		languageValue: state.get('language'),
 		nameValue: state.get('name'),
@@ -356,6 +379,8 @@ function mapDispatchToProps(dispatch, {entity, entityType, copyLanguages}) {
 	return {
 		onDisambiguationChange: (event) =>
 			dispatch(debouncedUpdateDisambiguationField(event.target.value)),
+		onEditionNumberChange: (event) =>
+			dispatch(debouncedUpdateEditionNumberField(event.target.value)),
 		onLanguageChange: (value) =>
 			dispatch(updateLanguageField(value && value.value)) && copyLanguages && dispatch(addLanguage(value)),
 		onNameChange: (value) =>
