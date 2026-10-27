@@ -124,7 +124,7 @@ function EditionTable({
 						<tr>
 							{editions[0].displayNumber && <th style={{width: '10%'}}>#</th>}
 							<th>{translate('common.name')}</th>
-							{showAuthorCreditsColumn && <th>{translate('pages.entity.authorCredits')}</th>}
+							{showAuthorCreditsColumn && <th>{translate('common.authorCredits')}</th>}
 							<th>{translate('common.format')}</th>
 							<th>{translate('common.isbn')}</th>
 							<th>{translate('pages.entity.releaseDate')}</th>

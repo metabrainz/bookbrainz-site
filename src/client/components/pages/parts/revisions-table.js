@@ -63,7 +63,7 @@ function RevisionsTable({
 								}
 								{
 									showRevisionNote ?
-										<th width="16%">{translate('pages.revisions.headerNote')}</th> : null
+										<th width="16%">{translate('common.note')}</th> : null
 								}
 								<th width="16%">{translate('common.date')}</th>
 							</tr>

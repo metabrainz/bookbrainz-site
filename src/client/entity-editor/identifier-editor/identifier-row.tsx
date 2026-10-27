@@ -109,7 +109,7 @@ function IdentifierRow({
 				</Col>
 				<Col lg={4}>
 					<Form.Group>
-						<Form.Label>{translate('entityEditor.identifierRow.typeLabel')}</Form.Label>
+						<Form.Label>{translate('common.type')}</Form.Label>
 						<Select
 							classNamePrefix="react-select"
 							instanceId={`identifierType${index}`}

@@ -166,7 +166,7 @@ class AddEntityToCollectionModal extends React.Component {
 										<EntitySearchFieldOption
 											buttonAfter={buttonAfter}
 											instanceId="entitySearchField"
-											label={translate('pages.collection.selectEntity', {type: entityTypeLabel})}
+											label={translate('common.selectEntity', {type: entityTypeLabel})}
 											name={this.props.collectionType}
 											type={this.props.collectionType}
 											value={entity}

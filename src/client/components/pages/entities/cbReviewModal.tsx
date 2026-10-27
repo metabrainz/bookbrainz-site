@@ -502,7 +502,7 @@ class CBReviewModal extends React.Component<
 				type="button"
 				onClick={this.handleCloseModal}
 			>
-				{translate('pages.entity.cbCloseButton')}
+				{translate('common.button.close')}
 			</button>
 		);
 	};

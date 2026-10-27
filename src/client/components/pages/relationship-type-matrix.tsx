@@ -27,7 +27,7 @@ function RelationshipTypeMatrixPage() {
 	return (
 		<Card>
 			<Card.Header as="h2">
-				{translate('pages.relationshipTypes.heading')}
+				{translate('common.relationshipTypes')}
 			</Card.Header>
 			<Card.Body>
 				<Table bordered responsive>
