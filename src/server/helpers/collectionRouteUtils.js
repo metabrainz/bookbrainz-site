@@ -84,12 +84,17 @@ export async function collectionCreateOrEditHandler(req, res, next) {
 
 		await Promise.all(collaboratorPromises);
 
-		// if it's new or the name is changed,
-		// we need to update this collection in ElasticSearch index
-		if (isNew || res.locals.collection.name !== newCollection.get('name')) {
+		// Only public collections belong in the ElasticSearch index:
+		// (re)index when it's new, renamed or made public, remove it when made private
+		const isPublic = newCollection.get('public');
+		const wasPublic = !isNew && res.locals.collection.public;
+		if (isPublic && (!wasPublic || res.locals.collection.name !== newCollection.get('name'))) {
 			// Type needed for indexing
 			newCollection.set('type', 'Collection');
 			await search.indexEntity(newCollection);
+		}
+		else if (!isPublic && wasPublic) {
+			await search.deleteEntity(newCollection);
 		}
 		return res.status(200).send(newCollection.toJSON());
 	}
