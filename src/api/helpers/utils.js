@@ -121,7 +121,7 @@ export async function getBrowsedRelationships(orm, locals, browsedEntityType,
 		.reduce((accumulator, relationship) => {
 			const entityAlreadyExists = accumulator.find(rel => rel.entity.bbid === relationship.entity.bbid);
 			if (entityAlreadyExists) {
-				entityAlreadyExists.relationships.push(...relationship.relationships);
+				entityAlreadyExists.relationship.push(...relationship.relationship);
 			}
 			else {
 				accumulator.push(relationship);

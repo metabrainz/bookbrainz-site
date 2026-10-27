@@ -221,6 +221,11 @@ export function getEditionBasicInfo(edition: any) {
 			depth: _.get(edition, 'depth', null),
 			disambiguation: _.get(edition, 'disambiguation.comment', null),
 			editionFormat: _.get(edition, 'editionFormat.label', null),
+			editionNumber: _.get(
+				edition,
+				'editionNumber',
+				_.get(edition, 'edition_number', null)
+			),
 			height: _.get(edition, 'height', null),
 			languages: getLanguages(edition),
 			pages: _.get(edition, 'pages', null),

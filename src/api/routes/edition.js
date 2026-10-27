@@ -71,6 +71,9 @@ const editionError = 'Edition not found';
  *        editionFormat:
  *          type: string
  *          example: 'eBook'
+ *        editionNumber:
+ *          type: string
+ *          example: '1st Edition'
  *        height:
  *          type: integer
  *          description: 'height in mm'

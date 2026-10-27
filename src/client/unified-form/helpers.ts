@@ -88,6 +88,7 @@ const initialState = ImmutableMap({
 	identifierEditor: OrderedMap(),
 	nameSection: ImmutableMap({
 		disambiguation: '',
+		editionNumber: '',
 		exactMatches: [],
 		language: null,
 		name: '',
