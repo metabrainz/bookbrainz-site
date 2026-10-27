@@ -1,4 +1,9 @@
 exit: true
+extension:
+  - js
+  - jsx
 recursive: true
-require: '.babel-ts-register.js'
+require:
+  - .babel-ts-register.js
+  - jsdom-global/register
 timeout: 50000
