@@ -153,7 +153,7 @@ function SortNameField({
 
 	const label = (
 		<ValidationLabel empty={empty} error={error}>
-			{translate('entityEditor.sortNameField.label')}
+			{translate('common.sortName')}
 		</ValidationLabel>
 	);
 

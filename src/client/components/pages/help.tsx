@@ -51,7 +51,7 @@ function HelpPage(): JSX.Element {
 			</p>
 			<hr/>
 
-			<h2>{translate('pages.collections.headerEntities')}</h2>
+			<h2>{translate('common.entities')}</h2>
 			<p>
 				{translate('staticPages.help.entitiesDescription')}
 			</p>
@@ -130,7 +130,7 @@ function HelpPage(): JSX.Element {
 					</p>
 					<br/>
 					<ListGroup>
-						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Aliases">{translate('staticPages.help.glossaryAliases')}</a></b>{translate('staticPages.help.glossaryAliasesDesc')}
+						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Aliases">{translate('common.aliases')}</a></b>{translate('staticPages.help.glossaryAliasesDesc')}
 							<br/>
 							{translate('staticPages.help.glossaryExample')}:
 							<ul>
@@ -150,11 +150,11 @@ function HelpPage(): JSX.Element {
 							</ul>
 						</ListGroup.Item>
 
-						<ListGroup.Item><b>{translate('pages.collections.headerEntities')}</b>{translate('staticPages.help.glossaryEntitiesDesc')}</ListGroup.Item>
+						<ListGroup.Item><b>{translate('common.entities')}</b>{translate('staticPages.help.glossaryEntitiesDesc')}</ListGroup.Item>
 
 						<ListGroup.Item><b><a href="https://en.wikipedia.org/wiki/Category:Book_formats">{translate('common.format')}</a></b>{translate('staticPages.help.glossaryFormatDesc')}</ListGroup.Item>
 
-						<ListGroup.Item><b>{translate('staticPages.help.glossaryIdentifiers')}</b>
+						<ListGroup.Item><b>{translate('common.identifiers')}</b>
 							<Trans
 								components={{lineBreak: <br/>}}
 								i18nKey="staticPages.help.glossaryIdentifiersDesc"

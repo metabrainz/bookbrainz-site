@@ -221,7 +221,7 @@ class UserCollectionForm extends React.Component {
 								/>
 							</Form.Group>
 							<Form.Group>
-								<Form.Label>{translate('pages.collections.headerEntityType')}</Form.Label>
+								<Form.Label>{translate('common.entityTypeLabel')}</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"
 									defaultValue={entityTypeOptions.filter((option) => option.name === initialType)}
@@ -235,7 +235,7 @@ class UserCollectionForm extends React.Component {
 								/>
 							</Form.Group>
 							<Form.Group>
-								<Form.Label>{translate('pages.collections.headerPrivacy')}</Form.Label>
+								<Form.Label>{translate('common.privacy')}</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"
 									defaultValue={privacyOptions.filter((option) => option.name === initialPrivacy)}
