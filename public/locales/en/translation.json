@@ -105,7 +105,6 @@
       "identifierTypes": "Identifier Types",
       "noscriptWarning": "This page will not function correctly without JavaScript! Please enable JavaScript to use this page.",
       "profile": "Profile",
-      "relationshipTypes": "Relationship Types",
       "revisions": "Revisions",
       "searchAdmin": "Search Admin",
       "searchPlaceholder": "Search for...",
@@ -139,6 +138,7 @@
     "recentlyUsed": "Recently Used",
     "relationship": "Relationship",
     "relationships": "Relationships",
+    "relationshipTypes": "Relationship Types",
     "required": "required",
     "revision": "revision",
     "role": "Collaborator/Owner",
@@ -157,7 +157,6 @@
     "value": "Value",
     "yes": "yes"
   },
-  "entities": {},
   "entityEditor": {
     "aliasButton": {
       "editAliases_zero": "Add aliases…",
@@ -260,10 +259,6 @@
     "editionSectionMerge": {
       "noLanguages": "No languages"
     },
-    "entityType": {
-      "author_plural": "Authors",
-      "publisher_plural": "Publishers"
-    },
     "identifierButton": {
       "addIdentifiersUnified": "Add Identifiers",
       "editIdentifiers_one": "Edit 1 identifier (eg. ISBN, Wikidata ID)…",
@@ -279,8 +274,7 @@
       "noIdentifiers": "This entity has no identifiers"
     },
     "identifierRow": {
-      "previewLink": "Preview Link: ",
-      "typeLabel": "Type"
+      "previewLink": "Preview Link: "
     },
     "languageField": {
       "frequentlyUsed": "Frequently Used",
@@ -312,7 +306,6 @@
       "numberPlaceholder": "Enter a value"
     },
     "relationshipEditor": {
-      "heading": "Relationships",
       "noRelationships": "No relationships have been added yet.",
       "relationshipType": "Relationship Type",
       "sourceEntity": "Source Entity",
@@ -365,7 +358,6 @@
       "widthLabel": "Width"
     },
     "sortNameField": {
-      "label": "Sort Name",
       "tooltip": "Alphabetical sorting name. Examples: 'Dickens, Charles', 'Christmas Carol, A'. You can try to fill it automatically with the guess button"
     },
     "submissionSection": {
@@ -373,8 +365,7 @@
       "editNoteLabel": "Edit Note",
       "editNoteTooltip": "Cite your sources or an explanation of your edit",
       "heading": "Submit Your Edit",
-      "submissionError": "Submission Error: {{errorText}}",
-      "submitButton": "Submit"
+      "submissionError": "Submission Error: {{errorText}}"
     },
     "unifiedForm": {
       "addBook": "Add Book",
@@ -392,9 +383,6 @@
       "seriesItems": "Series Items",
       "tabContents": "Contents",
       "tabCover": "Cover"
-    },
-    "valueField": {
-      "label": "Value"
     },
     "workSection": {
       "languageTooltip": "Main language used for the content of the work",
@@ -422,8 +410,7 @@
     "achievements": {
       "lockedHeading": "Locked Achievements",
       "unlockedHeading": "Unlocked Achievements",
-      "unsetInstructions": "click badge to unset",
-      "updateButton": "Update"
+      "unsetInstructions": "click badge to unset"
     },
     "adminLogs": {
       "noLogs": "No logs to show"
@@ -472,7 +459,6 @@
       "removeSelectedTooltip": "Remove selected {{type}}",
       "selectCollaboratorLabel": "Select Collaborator",
       "selectCollection": "Select Collection",
-      "selectEntity": "Select {{type}}",
       "selectFromCollections": "Select from collections",
       "selectOrCreatePrompt": "Select the collection in which you want to add this entity or create a new collection",
       "selectPrivacyPlaceholder": "Select Privacy",
@@ -489,17 +475,8 @@
     "collections": {
       "allTypes": "All Types",
       "createButton": "Create Collection",
-      "headerDescription": "Description",
-      "headerEntities": "Entities",
-      "headerEntityType": "Entity Type",
-      "headerLastModified": "Last Modified",
-      "headerName": "Name",
-      "headerOwner": "Owner",
-      "headerPrivacy": "Privacy",
-      "headerRole": "Collaborator/Owner",
       "myCollectionsButton": "My Collections",
-      "noCollections": "No collections to show",
-      "title": "Collections"
+      "noCollections": "No collections to show"
     },
     "develop": {
       "dumpsHeading": "Database Dumps",
@@ -525,12 +502,10 @@
       "addToCollection": "Add to collection",
       "addToCollectionTitle": "Add To Collection",
       "addWork": "Add Work",
-      "authorCredits": "Author Credits",
       "authorCreditUnset": "Author Credit unset; please <editLink>edit this Edition</editLink> and add its Author(s) if you see this!",
       "authorCreditUnsetEG": "Author Credit unset; please <editLink>edit this Edition Group</editLink> and add its Author(s) if you see this! You can copy the Author Credit from one of the Editions as well",
       "by": "by",
       "cbAccessReview": "You can access your CritiqueBrainz review by clicking <reviewLink>here.</reviewLink>",
-      "cbCloseButton": "Close",
       "cbConnectButton": "Connect To CritiqueBrainz",
       "cbConnectInstructions": "You can connect to your CritiqueBrainz account by visiting the <externalLink>external services page.</externalLink>",
       "cbConnectPrompt": "Before you can submit reviews to <cbLink>CritiqueBrainz</cbLink>, you must <b>connect to your CritiqueBrainz</b> account from BookBrainz.",
@@ -680,8 +655,6 @@
     "profile": {
       "badges": "Badges",
       "basicInfo": "Basic Info",
-      "bio": "Bio",
-      "displayName": "Display Name",
       "dragBadgeToSet": "drag badge to set",
       "editHeading": "Edit your public profile",
       "editInfoTitle": "Edit basic editor info",
@@ -694,14 +667,12 @@
       "noLinkedMB": "No Linked MusicBrainz Account",
       "reputation": "Reputation",
       "revisionsApplied": "Revisions Applied",
-      "revisionsChartLabel": "Revisions",
       "revisionsReverted": "Revisions Reverted",
       "selectAreaPlaceholder": "Select area...",
       "selectGenderPlaceholder": "Select Gender",
       "selectTitlePlaceholder": "Select title",
       "sendEmail": "send email",
       "stats": "Stats",
-      "totalRevisions": "Total Revisions",
       "unlocked": "Unlocked: {{date}}"
     },
     "registration": {
@@ -714,9 +685,6 @@
       "heading": "Register",
       "introText": "Great! You successfully logged in to MusicBrainz and are now just one step away from becoming a BookBrainz editor. The following form allows you to specify additional information that will let other users know a little bit more about you. When you’re done, just click the blue button at the bottom of the page.",
       "submitButton": "Looks good, sign me up!"
-    },
-    "relationshipTypes": {
-      "heading": "Relationship Types"
     },
     "revision": {
       "addNote": "Add Note",
@@ -739,7 +707,6 @@
     "revisions": {
       "headerId": "Revision ID",
       "headerModifiedEntities": "Modified entities",
-      "headerNote": "Note",
       "headerUser": "User",
       "history": "Revision History",
       "noRevisions": "No revisions to show",
@@ -757,8 +724,6 @@
       "cannotAdd": "{{type}} cannot be added to a collection",
       "clearSelected_one": "Clear 1 selected",
       "clearSelected_other": "Clear {{count}} selected",
-      "headerAliases": "Aliases",
-      "headerType": "Type",
       "loginRequired": "You need to be logged in",
       "nothingSelected": "Nothing Selected",
       "sameTypeRequired": "Selected entities should be of same type"
@@ -869,7 +834,6 @@
       "exampleLeGuin": "The relationship between <authorLink>Ursula K. Le Guin</authorLink>, her novel <workLink>A Wizard of Earthsea</workLink> and an Edition <editionLink>Earthsea: The First Four Books</editionLink> which contain it and several more works.",
       "examplesIntro": "The following examples should help you understand the different entities and how they relate to each other:",
       "examplesTitle": "Examples",
-      "glossaryAliases": "Aliases",
       "glossaryAliasesDesc": " – Variant names for an entity such as alternate spelling, different script, stylistic representation, acronyms, etc.",
       "glossaryAliasesExampleName1": "Name: 村上 春樹 – Alias (english): Haruki Murakami",
       "glossaryAliasesExampleName2": "Name: bell hooks - Alias (full name): Gloria Jean Watkins",
@@ -881,7 +845,6 @@
       "glossaryEntitiesDesc": " – Conceptual items representing the various authors and parts of a publication. See the previous Entities section for details.",
       "glossaryExample": "Example",
       "glossaryFormatDesc": " – Refers to different printing and/or binding methods, or digital distribution. For example: paperback, mass-market, hardcover and e-book are all book formats",
-      "glossaryIdentifiers": "Identifiers",
       "glossaryIdentifiersDesc": " – identity of an entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, etc.<lineBreak/>When adding identifiers to an entity, you can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).",
       "glossaryIntro": "Here is a short description of some of the main terms you will encounter. Some terms are borrowed from MusicBrainz; click on the term to be redirected to the MusicBrainz guidelines or a definition.",
       "glossaryPrinting": "Printing, print run, impression",
@@ -905,8 +868,7 @@
     },
     "privacy": {
       "p1": "For a privacy policy, please see <privacyLink>our dedicated page</privacyLink>",
-      "p2": "While this currently does not apply to BookBrainz, it gives an idea of what can be expected when it gets updated to cover all MetaBrainz projects. If you're happy using MusicBrainz, we aim to make you just as comfortable using BookBrainz.",
-      "title": "Privacy"
+      "p2": "While this currently does not apply to BookBrainz, it gives an idea of what can be expected when it gets updated to cover all MetaBrainz projects. If you're happy using MusicBrainz, we aim to make you just as comfortable using BookBrainz."
     }
   }
 }

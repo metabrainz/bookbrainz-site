@@ -117,7 +117,7 @@ class EditorProfileTab extends React.Component {
 					<dd className="col-md-10">{createdAtDate}</dd>
 					<dt className="col-md-2">{translate('pages.profile.lastLogin')}</dt>
 					<dd className="col-md-10">{lastActiveDate}</dd>
-					<dt className="col-md-2">{translate('pages.profile.bio')}</dt>
+					<dt className="col-md-2">{translate('common.bio')}</dt>
 					<dd className="col-md-10">{editor.bio ? editor.bio : '-'}</dd>
 				</dl>
 			</div>
@@ -132,7 +132,7 @@ class EditorProfileTab extends React.Component {
 			<div>
 				<h2>{translate('pages.profile.stats')}</h2>
 				<dl className="row editor-info">
-					<dt className="col-md-8">{translate('pages.profile.totalRevisions')}</dt>
+					<dt className="col-md-8">{translate('common.totalRevisions')}</dt>
 					<dd className="col-md-4">{editor.totalRevisions}</dd>
 					<dt className="col-md-8">{translate('pages.profile.revisionsApplied')}</dt>
 					<dd className="col-md-4">{editor.revisionsApplied}</dd>
@@ -224,7 +224,7 @@ class EditorProfileTab extends React.Component {
 					hoverBackgroundColor: 'rgba(235,116,59,0.4)',
 					hoverBorderColor: 'rgba(235,116,59,1)',
 					// eslint-disable-next-line id-length
-					label: this.props.t('pages.profile.revisionsChartLabel')
+					label: this.props.t('common.nav.revisions')
 				}
 			],
 			labels: months

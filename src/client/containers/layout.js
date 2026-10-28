@@ -126,7 +126,7 @@ class Layout extends React.Component {
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/relationship-types">
 						<FontAwesomeIcon fixedWidth icon={faLink}/>
-						{` ${translate('common.nav.relationshipTypes')} `}
+						{` ${translate('common.relationshipTypes')} `}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/identifier-types">
 						<FontAwesomeIcon fixedWidth icon={faBarcode}/>

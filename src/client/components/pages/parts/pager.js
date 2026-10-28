@@ -217,4 +217,4 @@ PagerElement.defaultProps = {
 	size: 20
 };
 
-export default withTranslation()(PagerElement);
+export default withTranslation(null, {withRef: true})(PagerElement);
