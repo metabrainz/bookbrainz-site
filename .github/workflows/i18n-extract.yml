@@ -11,6 +11,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'push' && github.head_ref || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   check-extraction:
     name: Check key extraction
