@@ -1,6 +1,7 @@
 import {SearchEntityCreateDispatchProps, SearchEntityCreateProps} from '../interface/type';
 import {addAuthor, addPublisher} from '../cover-tab/action';
 import {addSeries, addWork} from '../content-tab/action';
+import {camelCase, defaults} from 'lodash';
 import {checkIfNameExists, searchName, updateNameField, updateSortNameField} from '../../entity-editor/name-section/actions';
 import {closeEntityModal, dumpEdition, loadEdition, openEntityModal} from '../action';
 import AsyncCreatable from 'react-select/async-creatable';
@@ -8,9 +9,7 @@ import BaseEntitySearch from '../../entity-editor/common/entity-search-field-opt
 import CreateEntityModal from './create-entity-modal';
 import React from 'react';
 import {addEditionGroup} from '../detail-tab/action';
-import {camelCase} from 'lodash';
 import {connect} from 'react-redux';
-import {camelCase, defaults} from 'lodash';
 import makeImmutable from '../../entity-editor/common/make-immutable';
 import {submitSingleEntity} from '../../entity-editor/submission-section/actions';
 import {useTranslation} from 'react-i18next';
