@@ -28,13 +28,12 @@ const {Table} = bootstrap;
 
 const {getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-const defaultSelectedEntities = [];
 
 function EditionGroupTableRow({
 	editionGroup,
 	showAddedAtColumn,
 	showCheckboxes = false,
-	selectedEntities = defaultSelectedEntities,
+	selectedEntities = [],
 	onToggleRow = null
 }) {
 	const name = getEntityLabel(editionGroup);
@@ -75,13 +74,12 @@ EditionGroupTableRow.propTypes = {
 	showCheckboxes: PropTypes.bool
 };
 
-const editionGroupTableDefaultSelectedEntities = [];
 
 function EditionGroupTable({
 	editionGroups,
 	showAddedAtColumn = false,
 	showCheckboxes = false,
-	selectedEntities = editionGroupTableDefaultSelectedEntities,
+	selectedEntities = [],
 	onToggleRow = null
 }) {
 	let tableContent;

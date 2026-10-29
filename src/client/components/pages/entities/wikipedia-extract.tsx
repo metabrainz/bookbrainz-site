@@ -44,9 +44,7 @@ async function getWikipediaExtractForWikidata(wikidataId: string, preferredLangu
 }
 
 
-const defaultArticleExtract = {};
-
-function WikipediaExtract({entity, articleExtract = defaultArticleExtract}: Props) {
+function WikipediaExtract({entity, articleExtract = {}}: Props) {
 	const [state, setState] = useState(articleExtract);
 
 	useEffect(() => {

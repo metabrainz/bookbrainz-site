@@ -37,9 +37,8 @@ function renderAuthors(authorData) {
 	return authorData.map(author => <div key={author.authorbbid}><a href={`/author/${author.authorbbid}`}>{author.authoralias}</a></div>);
 }
 
-const defaultSelectedEntities = [];
 
-function WorkTableRow({showAddedAtColumn, work, showCheckboxes = false, selectedEntities = defaultSelectedEntities, onToggleRow = null}) {
+function WorkTableRow({showAddedAtColumn, work, showCheckboxes = false, selectedEntities = [], onToggleRow = null}) {
 	const name = getEntityLabel(work);
 	const authorData = work.authorsData;
 	const number = work.number || '?';
@@ -82,7 +81,6 @@ WorkTableRow.propTypes = {
 	work: PropTypes.object.isRequired
 };
 
-const workTableDefaultSelectedEntities = [];
 
 function WorkTable({
 	entity = null,
@@ -90,7 +88,7 @@ function WorkTable({
 	works,
 	showAdd = true,
 	showCheckboxes = false,
-	selectedEntities = workTableDefaultSelectedEntities,
+	selectedEntities = [],
 	onToggleRow = null
 }) {
 	let tableContent;

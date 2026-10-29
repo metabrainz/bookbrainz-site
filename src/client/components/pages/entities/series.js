@@ -88,16 +88,12 @@ SeriesAttributes.propTypes = {
 };
 
 
-const defaultGenderOptions = [];
-const defaultIdentifierTypes = [];
-const defaultWikipediaExtract = {};
-
 function SeriesDisplayPage({
 	entity,
-	identifierTypes = defaultIdentifierTypes,
+	identifierTypes = [],
 	user,
-	genderOptions = defaultGenderOptions,
-	wikipediaExtract = defaultWikipediaExtract
+	genderOptions = [],
+	wikipediaExtract = {}
 }) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {

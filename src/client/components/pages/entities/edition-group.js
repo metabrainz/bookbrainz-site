@@ -79,10 +79,7 @@ EditionGroupAttributes.propTypes = {
 };
 
 
-const defaultIdentifierTypes = [];
-const defaultWikipediaExtract = {};
-
-function EditionGroupDisplayPage({entity, identifierTypes = defaultIdentifierTypes, user, wikipediaExtract = defaultWikipediaExtract}) {
+function EditionGroupDisplayPage({entity, identifierTypes = [], user, wikipediaExtract = {}}) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);

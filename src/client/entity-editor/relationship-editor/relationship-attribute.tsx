@@ -44,9 +44,8 @@ function getAttributeForDisplay(attribute, key) {
 	}
 }
 
-const defaultAttributes = [];
 
-function RelationshipAttribute({attributes = defaultAttributes, showAttributes = false}: RelationshipAttributeProps) {
+function RelationshipAttribute({attributes = [], showAttributes = false}: RelationshipAttributeProps) {
 	if (showAttributes) {
 	    return (
 			<>{attributes.map((attribute, index) => getAttributeForDisplay(attribute, index))}</>

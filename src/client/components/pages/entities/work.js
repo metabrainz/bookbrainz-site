@@ -87,10 +87,7 @@ WorkAttributes.propTypes = {
 };
 
 
-const defaultIdentifierTypes = [];
-const defaultWikipediaExtract = {};
-
-function WorkDisplayPage({entity, identifierTypes = defaultIdentifierTypes, user, wikipediaExtract = defaultWikipediaExtract}) {
+function WorkDisplayPage({entity, identifierTypes = [], user, wikipediaExtract = {}}) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);

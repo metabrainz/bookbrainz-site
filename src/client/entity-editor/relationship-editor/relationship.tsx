@@ -54,11 +54,10 @@ type Relationship = {
 export {Relationship as RelationshipType};
 type RelationshipProps = Relationship & {Parent?:React.FunctionComponent<any>};
 
-const defaultAttributes = [];
 
 function Relationship({Parent = React.Fragment, ...props}: RelationshipProps) {
 	const {
-		contextEntity, link, relationshipType, sourceEntity, attributes = defaultAttributes,
+		contextEntity, link, relationshipType, sourceEntity, attributes = [],
 		showAttributes = false, targetEntity, ...rest
 	} = props;
 	const {depth, description, id, linkPhrase, reverseLinkPhrase} = relationshipType;

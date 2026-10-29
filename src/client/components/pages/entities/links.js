@@ -29,9 +29,8 @@ import React from 'react';
 const {filterOutRelationshipTypeById} = entityHelper;
 const {Row, Col} = bootstrap;
 
-const defaultIdentifierTypes = [];
 
-function EntityLinks({entity, identifierTypes = defaultIdentifierTypes, urlPrefix}) {
+function EntityLinks({entity, identifierTypes = [], urlPrefix}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const relationships = filterOutRelationshipTypeById(entity, relationshipTypeId);

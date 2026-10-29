@@ -26,9 +26,8 @@ import React from 'react';
 const {Table} = bootstrap;
 const {getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-const defaultSelectedEntities = [];
 
-function SeriesTableRow({series, showAddedAtColumn, showCheckboxes = false, selectedEntities = defaultSelectedEntities, onToggleRow = null}) {
+function SeriesTableRow({series, showAddedAtColumn, showCheckboxes = false, selectedEntities = [], onToggleRow = null}) {
 	const name = getEntityLabel(series);
 	const disambiguation = getEntityDisambiguation(series);
 	const seriesType = series.entityType || '?';
@@ -68,13 +67,12 @@ SeriesTableRow.propTypes = {
 	showCheckboxes: PropTypes.bool
 };
 
-const seriesTableDefaultSelectedEntities = [];
 
 function SeriesTable({
 	series,
 	showAddedAtColumn = false,
 	showCheckboxes = false,
-	selectedEntities = seriesTableDefaultSelectedEntities,
+	selectedEntities = [],
 	onToggleRow = null
 }) {
 	let tableContent;

@@ -26,16 +26,14 @@ import React from 'react';
 const {Table} = bootstrap;
 const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-const defaultGenderOptions = [];
-const defaultSelectedEntities = [];
 
 function AuthorTableRow({
 	author,
 	showAddedAtColumn,
 	showCheckboxes = false,
-	selectedEntities = defaultSelectedEntities,
+	selectedEntities = [],
 	onToggleRow = null,
-	genderOptions = defaultGenderOptions
+	genderOptions = []
 }) {
 	const name = getEntityLabel(author);
 	const disambiguation = getEntityDisambiguation(author);
@@ -83,16 +81,14 @@ AuthorTableRow.propTypes = {
 	showCheckboxes: PropTypes.bool
 };
 
-const authorTableDefaultGenderOptions = [];
-const authorTableDefaultSelectedEntities = [];
 
 function AuthorTable({
 	authors,
 	showAddedAtColumn = false,
 	showCheckboxes = false,
-	selectedEntities = authorTableDefaultSelectedEntities,
+	selectedEntities = [],
 	onToggleRow = null,
-	genderOptions = authorTableDefaultGenderOptions
+	genderOptions = []
 }) {
 	let tableContent;
 	if (authors.length) {

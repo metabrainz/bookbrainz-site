@@ -27,9 +27,8 @@ import React from 'react';
 const {Table} = bootstrap;
 const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-const defaultSelectedEntities = [];
 
-function PublisherTableRow({showAddedAtColumn, publisher, showCheckboxes = false, selectedEntities = defaultSelectedEntities, onToggleRow = null}) {
+function PublisherTableRow({showAddedAtColumn, publisher, showCheckboxes = false, selectedEntities = [], onToggleRow = null}) {
 	const name = getEntityLabel(publisher);
 	const number = publisher.number || '?';
 	const disambiguation = getEntityDisambiguation(publisher);
@@ -74,13 +73,12 @@ PublisherTableRow.propTypes = {
 	showCheckboxes: PropTypes.bool
 };
 
-const publisherTableDefaultSelectedEntities = [];
 
 function PublisherTable({
 	showAddedAtColumn = false,
 	publishers,
 	showCheckboxes = false,
-	selectedEntities = publisherTableDefaultSelectedEntities,
+	selectedEntities = [],
 	onToggleRow = null
 }) {
 	let tableContent;

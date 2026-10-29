@@ -21,9 +21,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-const defaultIdentifiers = [];
-
-function EntityIdentifiers({entityUrl, identifiers = defaultIdentifiers, identifierTypes}) {
+function EntityIdentifiers({entityUrl, identifiers = [], identifierTypes}) {
 	return (
 		<div>
 			<h2>Identifiers</h2>

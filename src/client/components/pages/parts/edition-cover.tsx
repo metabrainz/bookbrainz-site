@@ -23,9 +23,7 @@ import {faSlash} from '@fortawesome/free-solid-svg-icons';
 import {getOpenLibraryCoverUrl} from '../../../../common/helpers/cover-image';
 
 
-const defaultIdentifiers = [];
-
-function EditionCover({backupIcon, deleted = false, editionName = '', identifiers = defaultIdentifiers}) {
+function EditionCover({backupIcon, deleted = false, editionName = '', identifiers = []}) {
 	const [imageError, setImageError] = useState(false);
 	const [imageLoading, setImageLoading] = useState(true);
 

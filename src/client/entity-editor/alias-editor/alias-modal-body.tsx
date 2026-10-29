@@ -21,9 +21,8 @@ type AliasModalBodyOwnProps = {
 };
 type AliasModalBodyProps = AliasModalBodyStateProps & AliasModalBodyDispatchProps & AliasModalBodyOwnProps;
 
-const defaultLanguageOptions = [];
 
-export const AliasModalBody = ({aliases, onAddAlias, languageOptions = defaultLanguageOptions}:AliasModalBodyProps) => {
+export const AliasModalBody = ({aliases, onAddAlias, languageOptions = []}:AliasModalBodyProps) => {
 	const noAliasesTextClass =
 		classNames('text-center', {'d-none': aliases.size});
 	const languageOptionsForDisplay = languageOptions.map((language) => ({

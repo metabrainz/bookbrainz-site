@@ -118,10 +118,7 @@ AuthorAttributes.propTypes = {
 };
 
 
-const defaultIdentifierTypes = [];
-const defaultWikipediaExtract = {};
-
-function AuthorDisplayPage({entity, identifierTypes = defaultIdentifierTypes, user, wikipediaExtract = defaultWikipediaExtract}) {
+function AuthorDisplayPage({entity, identifierTypes = [], user, wikipediaExtract = {}}) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);

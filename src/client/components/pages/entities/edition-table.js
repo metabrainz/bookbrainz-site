@@ -35,14 +35,13 @@ const {
 } = entityHelper;
 const {Button, Table} = bootstrap;
 
-const defaultSelectedEntities = [];
 
 function EditionTableRow({
 	edition,
 	showAddedAtColumn,
 	showAuthorCreditsColumn = false,
 	showCheckboxes = false,
-	selectedEntities = defaultSelectedEntities,
+	selectedEntities = [],
 	onToggleRow = null
 }) {
 	const name = getEntityLabel(edition);
@@ -103,7 +102,6 @@ EditionTableRow.propTypes = {
 	showCheckboxes: PropTypes.bool
 };
 
-const editionTableDefaultSelectedEntities = [];
 
 function EditionTable({
 	editions,
@@ -112,7 +110,7 @@ function EditionTable({
 	showAdd = true,
 	showAuthorCreditsColumn = false,
 	showCheckboxes = false,
-	selectedEntities = editionTableDefaultSelectedEntities,
+	selectedEntities = [],
 	onToggleRow = null
 }) {
 	let tableContent;

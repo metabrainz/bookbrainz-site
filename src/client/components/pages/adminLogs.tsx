@@ -29,9 +29,8 @@ type Props = {
 	size?: number
 };
 
-const defaultResults = [];
 
-function AdminLogsPage({from = 0, nextEnabled, results = defaultResults, size = 20}: Props) {
+function AdminLogsPage({from = 0, nextEnabled, results = [], size = 20}: Props) {
 	const [logs, setLogs] = useState(results);
 	const paginationUrl = './admin-logs/admin-logs';
 	return (

@@ -107,10 +107,7 @@ EditionAttributes.propTypes = {
 };
 
 
-const defaultIdentifierTypes = [];
-const defaultWikipediaExtract = {};
-
-function EditionDisplayPage({entity, identifierTypes = defaultIdentifierTypes, user, wikipediaExtract = defaultWikipediaExtract}) {
+function EditionDisplayPage({entity, identifierTypes = [], user, wikipediaExtract = {}}) {
 	// relationshipTypeId = 10 refers the relation (<Work> is contained by <Edition>)
 	const relationshipTypeId = 10;
 	const worksContainedByEdition = getRelationshipTargetByTypeId(entity, relationshipTypeId);
