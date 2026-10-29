@@ -21,6 +21,7 @@ import {Button, Form, InputGroup, OverlayTrigger, Tooltip} from 'react-bootstrap
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ValidationLabel from '../common/validation-label';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Removes all period characters (dots) from the input string, returning a new
@@ -126,6 +127,7 @@ function SortNameField({
 	storedNameValue,
 	...rest
 }: Props) {
+	const {t: translate} = useTranslation();
 	let input;
 
 	function handleGuessClick() {
@@ -151,22 +153,21 @@ function SortNameField({
 
 	const label = (
 		<ValidationLabel empty={empty} error={error}>
-			Sort Name
+			{translate('common.sortName')}
 		</ValidationLabel>
 	);
 
 	/* eslint-disable react/jsx-no-bind */
 	const guessButton =
-		<Button variant="primary" onClick={handleGuessClick}>Guess</Button>;
+		<Button variant="primary" onClick={handleGuessClick}>{translate('common.button.guess')}</Button>;
 
 	const copyButton =
-		<Button className="ml-1" variant="primary" onClick={handleCopyClick}>Copy</Button>;
+		<Button className="ml-1" variant="primary" onClick={handleCopyClick}>{translate('common.button.copy')}</Button>;
 	/* eslint-enable react/jsx-no-bind */
 
 	const tooltip = (
 		<Tooltip>
-			Alphabetical sorting name. Examples: &apos;Dickens, Charles&apos;, &apos;Christmas Carol, A&apos;.
-			<br/>You can try to fill it automatically with the guess button
+			{translate('entityEditor.sortNameField.tooltip')}
 		</Tooltip>
 	);
 

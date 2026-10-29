@@ -18,6 +18,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {Trans, useTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -25,24 +26,28 @@ import React from 'react';
 const {Row, Col} = bootstrap;
 
 function EntityRelatedCollections({collections}) {
+	const {t: translate} = useTranslation();
 	return (
 		<Row>
 			<Col>
-				<h2>Related Collections</h2>
+				<h2>{translate('pages.entity.relatedCollections')}</h2>
 				{collections?.length > 0 ? (
 					<ul className="list-unstyled">
 						{collections.map((collection) => (
 							<li key={collection.id}>
-								<a href={`/collection/${collection.id}`}>{collection.name}</a> by {' '}
+								<a href={`/collection/${collection.id}`}>{collection.name}</a> {translate('pages.entity.by')}{' '}
 								<a href={`/editor/${collection.ownerId}`}>{collection.owner.name}</a>
 							</li>
 						))}
 					</ul>
 				) :
 					<p className="text-muted">
-						<b>This entity does not appear in any public collection.</b>
+						<b>{translate('pages.entity.noCollections')}</b>
 						<br/>
-						Click the <b>&quot;Add to collection&quot;</b> button below to add it to an existing collection or create a new one.
+						<Trans
+							components={{buttonLabel: <b/>}}
+							i18nKey="pages.entity.clickAddToCollectionDescription"
+						/>
 					</p>
 				}
 			</Col>

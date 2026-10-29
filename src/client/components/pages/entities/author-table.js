@@ -21,6 +21,7 @@ import * as entityHelper from '../../../helpers/entity';
 import * as utilHelper from '../../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 
 
 const {Table} = bootstrap;
@@ -90,6 +91,7 @@ function AuthorTable({
 	onToggleRow = null,
 	genderOptions = []
 }) {
+	const {t: translate} = useTranslation();
 	let tableContent;
 	if (authors.length) {
 		tableContent = (
@@ -98,13 +100,13 @@ function AuthorTable({
 					<thead>
 						<tr>
 							{authors[0].displayNumber && <th style={{width: '10%'}}>#</th>}
-							<th>Name</th>
-							<th>Gender</th>
-							<th>Type</th>
-							<th>Date of birth</th>
-							<th>Date of death</th>
+							<th>{translate('common.name')}</th>
+							<th>{translate('common.gender')}</th>
+							<th>{translate('common.type')}</th>
+							<th>{translate('pages.entity.dateOfBirth')}</th>
+							<th>{translate('pages.entity.dateOfDeath')}</th>
 							{
-								showAddedAtColumn ? <th>Added at</th> : null
+								showAddedAtColumn ? <th>{translate('pages.entity.addedAt')}</th> : null
 							}
 						</tr>
 					</thead>
@@ -128,11 +130,11 @@ function AuthorTable({
 		);
 	}
 	else {
-		tableContent = <span>No Authors</span>;
+		tableContent = <span>{translate('pages.entity.noAuthors')}</span>;
 	}
 	return (
 		<div>
-			<h2>Authors</h2>
+			<h2>{translate('common.entityType.author_plural')}</h2>
 			{tableContent}
 		</div>
 	);

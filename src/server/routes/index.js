@@ -64,6 +64,7 @@ router.get('/', async (req, res, next) => {
 		);
 
 		res.send(target({
+			locale: res.locals.locale,
 			markup,
 			page: 'Index',
 			props: escapeProps(props),
@@ -93,6 +94,7 @@ function _createStaticRoute(route, title, PageComponent) {
 		);
 
 		res.send(target({
+			locale: res.locals.locale,
 			markup,
 			page: title,
 			props: escapeProps(props),

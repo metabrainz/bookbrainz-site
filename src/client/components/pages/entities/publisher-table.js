@@ -22,6 +22,7 @@ import * as utilHelper from '../../../helpers/utils';
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 
 
 const {Table} = bootstrap;
@@ -81,6 +82,7 @@ function PublisherTable({
 	selectedEntities = [],
 	onToggleRow = null
 }) {
+	const {t: translate} = useTranslation();
 	let tableContent;
 	if (publishers.length) {
 		tableContent = (
@@ -89,13 +91,13 @@ function PublisherTable({
 					<thead>
 						<tr>
 							{publishers[0].displayNumber && <th style={{width: '10%'}}>#</th>}
-							<th>Name</th>
-							<th>Area</th>
-							<th>Type</th>
-							<th>Date founded</th>
-							<th>Date dissolved</th>
+							<th>{translate('common.name')}</th>
+							<th>{translate('common.area')}</th>
+							<th>{translate('common.type')}</th>
+							<th>{translate('pages.entity.dateFounded')}</th>
+							<th>{translate('pages.entity.dateDissolved')}</th>
 							{
-								showAddedAtColumn ? <th>Added at</th> : null
+								showAddedAtColumn ? <th>{translate('pages.entity.addedAt')}</th> : null
 							}
 						</tr>
 					</thead>
@@ -118,11 +120,11 @@ function PublisherTable({
 		);
 	}
 	else {
-		tableContent = <span>No publishers</span>;
+		tableContent = <span>{translate('pages.entity.noPublishers')}</span>;
 	}
 	return (
 		<div>
-			<h2>Publishers</h2>
+			<h2>{translate('common.entityType.publisher_plural')}</h2>
 			{tableContent}
 		</div>
 	);

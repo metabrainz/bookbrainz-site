@@ -19,6 +19,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 
+import {Trans, useTranslation} from 'react-i18next';
 import {PropTypes} from 'prop-types';
 import React from 'react';
 import {camelCase} from 'lodash';
@@ -34,6 +35,7 @@ const {Button, ButtonGroup} = bootstrap;
  * the 'CallToAction' component.
  */
 function CallToAction({query = null}) {
+	const {t: translate} = useTranslation();
 	const seedingParameters = new URLSearchParams({name: query});
 	function renderEntityLink(type) {
 		return (
@@ -43,7 +45,7 @@ function CallToAction({query = null}) {
 					variant="secondary"
 				>
 					{genEntityIconHTMLElement(type, '3x', false)}
-					<div className="margin-top-d4">{type}</div>
+					<div className="margin-top-d4">{translate(`common.entityType.${camelCase(type)}`)}</div>
 				</Button>
 			</a>
 		);
@@ -52,8 +54,14 @@ function CallToAction({query = null}) {
 	return (
 		<div className="text-center">
 			<p>
-				Help us and click on the right entity below to create a new entry.
-				<br/><small>Not sure what to do? Visit the <a href="/help">help page</a> to get started.</small>
+				{translate('pages.callToAction.helpText')}
+				<br/>
+				<small>
+					<Trans
+						components={{helpLink: <a href="/help"/>}}
+						i18nKey="pages.callToAction.notSure"
+					/>
+				</small>
 			</p>
 			<div>
 				<ButtonGroup id="searchpage-button-group d-inline">

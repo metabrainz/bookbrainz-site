@@ -20,6 +20,7 @@ import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import * as utilHelper from '../../../helpers/utils';
 
+import {Trans, useTranslation} from 'react-i18next';
 import {faBook, faPlus} from '@fortawesome/free-solid-svg-icons';
 
 import AuthorCreditDisplay from '../../author-credit-display';
@@ -113,6 +114,7 @@ function EditionTable({
 	selectedEntities = [],
 	onToggleRow = null
 }) {
+	const {t: translate} = useTranslation();
 	let tableContent;
 	if (editions.length) {
 		tableContent = (
@@ -121,13 +123,13 @@ function EditionTable({
 					<thead>
 						<tr>
 							{editions[0].displayNumber && <th style={{width: '10%'}}>#</th>}
-							<th>Name</th>
-							{showAuthorCreditsColumn && <th>Author Credits</th>}
-							<th>Format</th>
-							<th>ISBN</th>
-							<th>Release Date</th>
+							<th>{translate('common.name')}</th>
+							{showAuthorCreditsColumn && <th>{translate('common.authorCredits')}</th>}
+							<th>{translate('common.format')}</th>
+							<th>{translate('common.isbn')}</th>
+							<th>{translate('pages.entity.releaseDate')}</th>
 							{
-								showAddedAtColumn ? <th>Added at</th> : null
+								showAddedAtColumn ? <th>{translate('pages.entity.addedAt')}</th> : null
 							}
 						</tr>
 					</thead>
@@ -154,7 +156,7 @@ function EditionTable({
 						variant="success"
 					>
 						<FontAwesomeIcon icon={faPlus}/>
-						{'  Add Edition'}
+						{'  '}{translate('pages.entity.addEdition')}
 					</Button>
 				}
 			</React.Fragment>
@@ -170,27 +172,33 @@ function EditionTable({
 					>
 						<FontAwesomeIcon icon={faBook} size="2x"/>
 						<br/>
-						Add Edition
+						{translate('pages.entity.addEdition')}
 					</Button>
 				</span>
 				<span>
-					<h4>There are no Editions yet!</h4>
+					<h4>{translate('pages.entity.noEditionsYet')}</h4>
 					<p>
-						Help us complete BookBrainz
+						{translate('pages.entity.helpUsComplete')}
 						<br/>
 					</p>
-					<br/><small>Not sure what to do? Visit the <a href="/help">help page</a> to get started.</small>
+					<br/>
+					<small>
+						<Trans
+							components={{helpLink: <a href="/help"/>}}
+							i18nKey="pages.callToAction.notSure"
+						/>
+					</small>
 				</span>
 				<hr className="margin-bottom-d0"/>
 			</React.Fragment>
 		);
 	}
 	else {
-		tableContent = <span>No editions</span>;
+		tableContent = <span>{translate('pages.entity.noEditions')}</span>;
 	}
 	return (
 		<div>
-			<h2>Editions</h2>
+			<h2>{translate('common.entityType.edition_plural')}</h2>
 			{tableContent}
 		</div>
 	);

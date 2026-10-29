@@ -96,11 +96,11 @@ export async function getAvailableWikipediaArticles(wikidataId: string, {
 	const articles = Object.values(item.sitelinks)
 		// only keep Wikipedia pages
 		.filter((link) => link.site.endsWith('wiki'))
-		.map((page) => <WikipediaArticle>({
+		.map((page) => ({
 			// drop project suffix
 			language: page.site.replace(/wiki$/, ''),
 			title: page.title
-		}));
+		} as WikipediaArticle));
 
 	cacheJSON(cacheKey, articles, {expireTime: cacheMaxAge.articles});
 
