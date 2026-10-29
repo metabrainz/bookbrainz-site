@@ -86,13 +86,13 @@ type Props = {
  * @returns {Object} A React component containing the rendered input.
  */
 function ValidationLabel({
-	children,
-	empty,
-	error,
-	hideIcon,
-	errorMessage,
-	warn,
-	warnMessage
+	children = null,
+	empty = false,
+	error = false,
+	hideIcon = false,
+	errorMessage = '',
+	warn = false,
+	warnMessage = ''
 }: Props) {
 	const warnElement = (warn && !empty && !error) &&
 		<span className={contextualColor(empty, error, warn)}> {warnMessage} </span>;
@@ -111,14 +111,5 @@ function ValidationLabel({
 	);
 }
 ValidationLabel.displayName = 'ValidationLabel';
-ValidationLabel.defaultProps = {
-	children: null,
-	empty: false,
-	error: false,
-	errorMessage: '',
-	hideIcon: false,
-	warn: false,
-	warnMessage: ''
-};
 
 export default ValidationLabel;

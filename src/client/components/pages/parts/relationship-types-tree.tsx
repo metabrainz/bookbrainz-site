@@ -29,7 +29,7 @@ type RelationshipTypeTreePropsT = {
 	indentLevel?: number
 };
 
-function RelationshipTypeTree({relationshipTypes, parentId, indentLevel}: RelationshipTypeTreePropsT) {
+function RelationshipTypeTree({relationshipTypes, parentId = null, indentLevel = 0}: RelationshipTypeTreePropsT) {
 	const [expandedRelationshipTypeIds, setExpandedRelationshipTypeIds] = useState([]);
 
 	function toggleExpand(relTypeId) {
@@ -109,10 +109,5 @@ function RelationshipTypeTree({relationshipTypes, parentId, indentLevel}: Relati
 		</ul>
 	);
 }
-
-RelationshipTypeTree.defaultProps = {
-	indentLevel: 0,
-	parentId: null
-};
 
 export default RelationshipTypeTree;

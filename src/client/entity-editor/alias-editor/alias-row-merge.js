@@ -44,7 +44,7 @@ import {removeAliasRow} from './actions';
  */
 const AliasRowMerge = ({
 	languageOptions,
-	languageValue,
+	languageValue = null,
 	nameValue,
 	sortNameValue,
 	primaryChecked
@@ -62,9 +62,6 @@ AliasRowMerge.propTypes = {
 	nameValue: PropTypes.string.isRequired,
 	primaryChecked: PropTypes.bool.isRequired,
 	sortNameValue: PropTypes.string.isRequired
-};
-AliasRowMerge.defaultProps = {
-	languageValue: null
 };
 
 function mapDispatchToProps(dispatch, {index}) {

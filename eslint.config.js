@@ -332,6 +332,8 @@ const reactRules = {
 		ERROR,
 		{
 			forbidDefaultForRequired: true,
+			// React 19 no longer applies defaultProps to function components: use default parameter values instead
+			functions: "defaultArguments",
 		},
 	],
 	"react/self-closing-comp": ERROR,

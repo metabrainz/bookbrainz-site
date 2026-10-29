@@ -28,8 +28,13 @@ import {faCodeBranch} from '@fortawesome/free-solid-svg-icons';
 const {Table} = bootstrap;
 const {formatDate, stringToHTMLWithLinks} = utilsHelper;
 
-function RevisionsTable(props) {
-	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading} = props;
+function RevisionsTable({
+	results,
+	showEntities = false,
+	showRevisionNote = false,
+	showRevisionEditor = false,
+	tableHeading = 'Recent Activity'
+}) {
 	return (
 		<div>
 			<div>
@@ -150,14 +155,6 @@ RevisionsTable.propTypes = {
 	showRevisionNote: PropTypes.bool,
 	tableHeading: PropTypes.node
 };
-RevisionsTable.defaultProps = {
-	showEntities: false,
-	showRevisionEditor: false,
-	showRevisionNote: false,
-	tableHeading: 'Recent Activity'
-
-};
-
 RevisionsTable.displayName = 'RevisionsTable';
 
 export default RevisionsTable;

@@ -151,7 +151,7 @@ function AuthorSection({
 	genderShow,
 	genderValue,
 	typeValue,
-	isUnifiedForm,
+	isUnifiedForm = false,
 	onBeginAreaChange,
 	onBeginDateChange,
 	onEndAreaChange,
@@ -282,9 +282,6 @@ function AuthorSection({
 	);
 }
 AuthorSection.displayName = 'AuthorSection';
-AuthorSection.defaultProps = {
-	isUnifiedForm: false
-};
 
 function mapStateToProps(rootState, {authorTypes}: OwnProps): StateProps {
 	const state = rootState.get('authorSection');

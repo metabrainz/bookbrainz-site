@@ -88,7 +88,13 @@ SeriesAttributes.propTypes = {
 };
 
 
-function SeriesDisplayPage({entity, identifierTypes, user, genderOptions, wikipediaExtract}) {
+function SeriesDisplayPage({
+	entity,
+	identifierTypes = [],
+	user,
+	genderOptions = [],
+	wikipediaExtract = {}
+}) {
 	const [showCBReviewModal, setShowCBReviewModal] = React.useState(false);
 	const handleModalToggle = useCallback(() => {
 		setShowCBReviewModal(!showCBReviewModal);
@@ -185,11 +191,6 @@ SeriesDisplayPage.propTypes = {
 	identifierTypes: PropTypes.array,
 	user: PropTypes.object.isRequired,
 	wikipediaExtract: PropTypes.object
-};
-SeriesDisplayPage.defaultProps = {
-	genderOptions: [],
-	identifierTypes: [],
-	wikipediaExtract: {}
 };
 
 export default SeriesDisplayPage;

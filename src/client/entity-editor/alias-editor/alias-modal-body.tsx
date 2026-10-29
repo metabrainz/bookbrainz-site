@@ -21,7 +21,8 @@ type AliasModalBodyOwnProps = {
 };
 type AliasModalBodyProps = AliasModalBodyStateProps & AliasModalBodyDispatchProps & AliasModalBodyOwnProps;
 
-export const AliasModalBody = ({aliases, onAddAlias, languageOptions}:AliasModalBodyProps) => {
+
+export const AliasModalBody = ({aliases, onAddAlias, languageOptions = []}:AliasModalBodyProps) => {
 	const noAliasesTextClass =
 		classNames('text-center', {'d-none': aliases.size});
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
@@ -55,10 +56,6 @@ export const AliasModalBody = ({aliases, onAddAlias, languageOptions}:AliasModal
 				</Col>
 			</Row>
 		</>);
-};
-
-AliasModalBody.defaultProps = {
-	languageOptions: []
 };
 
 function mapDispatchToProps(dispatch) {

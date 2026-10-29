@@ -48,7 +48,7 @@ import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 const IdentifierEditor = ({
 	identifierTypes,
 	onClose,
-	show
+	show = false
 }) => {
 	const helpText = `identity of the entity in other databases and services, such as ISBN, barcode, MusicBrainz ID, WikiData ID, OpenLibrary ID, etc.
 	You can enter either the identifier only (Q2517049) or a full link (https://www.wikidata.org/wiki/Q2517049).`;
@@ -89,9 +89,6 @@ IdentifierEditor.propTypes = {
 	identifierTypes: PropTypes.array.isRequired,
 	onClose: PropTypes.func.isRequired,
 	show: PropTypes.bool
-};
-IdentifierEditor.defaultProps = {
-	show: false
 };
 
 function mapDispatchToProps(dispatch) {

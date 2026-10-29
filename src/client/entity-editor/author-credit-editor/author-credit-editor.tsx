@@ -50,7 +50,7 @@ const AuthorCreditEditor = ({
 	authorCredit,
 	onAddAuthorCreditRow,
 	onClose,
-	showEditor,
+	showEditor = false,
 	...rest
 }) => (
 	<Modal show={showEditor} size="lg" onHide={onClose} >
@@ -102,9 +102,6 @@ AuthorCreditEditor.propTypes = {
 	onAddAuthorCreditRow: PropTypes.func.isRequired,
 	onClose: PropTypes.func.isRequired,
 	showEditor: PropTypes.bool
-};
-AuthorCreditEditor.defaultProps = {
-	showEditor: false
 };
 
 function mapStateToProps(state) {

@@ -67,8 +67,8 @@ type Props = StateProps & DispatchProps & OwnProps;
 function EditionGroupSection({
 	editionGroupTypes,
 	typeValue,
-	isUnifiedForm,
-	isLeftAlign,
+	isUnifiedForm = false,
+	isLeftAlign = false,
 	onTypeChange
 }: Props) {
 	const editionGroupTypesForDisplay = editionGroupTypes.map((type) => ({
@@ -117,10 +117,6 @@ function EditionGroupSection({
 	);
 }
 EditionGroupSection.displayName = 'EditionGroupSection';
-EditionGroupSection.defaultProps = {
-	isLeftAlign: false,
-	isUnifiedForm: false
-};
 
 function mapStateToProps(rootState): StateProps {
 	const state = rootState.get('editionGroupSection');

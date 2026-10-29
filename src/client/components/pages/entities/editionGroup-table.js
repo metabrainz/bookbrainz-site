@@ -28,7 +28,14 @@ const {Table} = bootstrap;
 
 const {getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-function EditionGroupTableRow({editionGroup, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
+
+function EditionGroupTableRow({
+	editionGroup,
+	showAddedAtColumn,
+	showCheckboxes = false,
+	selectedEntities = [],
+	onToggleRow = null
+}) {
 	const name = getEntityLabel(editionGroup);
 	const number = editionGroup.number || '?';
 	const disambiguation = getEntityDisambiguation(editionGroup);
@@ -66,13 +73,15 @@ EditionGroupTableRow.propTypes = {
 	showAddedAtColumn: PropTypes.bool.isRequired,
 	showCheckboxes: PropTypes.bool
 };
-EditionGroupTableRow.defaultProps = {
-	onToggleRow: null,
-	selectedEntities: [],
-	showCheckboxes: false
-};
 
-function EditionGroupTable({editionGroups, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
+
+function EditionGroupTable({
+	editionGroups,
+	showAddedAtColumn = false,
+	showCheckboxes = false,
+	selectedEntities = [],
+	onToggleRow = null
+}) {
 	let tableContent;
 	if (editionGroups.length) {
 		tableContent = (
@@ -123,12 +132,6 @@ EditionGroupTable.propTypes = {
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool
-};
-EditionGroupTable.defaultProps = {
-	onToggleRow: null,
-	selectedEntities: [],
-	showAddedAtColumn: false,
-	showCheckboxes: false
 };
 
 export default EditionGroupTable;

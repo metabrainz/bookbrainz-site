@@ -9,6 +9,7 @@ import CreateEntityModal from './create-entity-modal';
 import React from 'react';
 import {addEditionGroup} from '../detail-tab/action';
 import {connect} from 'react-redux';
+import {defaults} from 'lodash';
 import makeImmutable from '../../entity-editor/common/make-immutable';
 import {submitSingleEntity} from '../../entity-editor/submission-section/actions';
 
@@ -21,8 +22,19 @@ const addEntityAction = {
 	series: addSeries,
 	work: addWork
 };
-function SearchEntityCreate(props:SearchEntityCreateProps) {
-	const {type, nextId, onModalOpen, onModalClose, onSubmitEntity, rowId, onOpenCallback, ...rest} = props;
+const defaultProps = {
+	bbid: null,
+	empty: true,
+	error: false,
+	filters: [],
+	languageOptions: [],
+	rowId: null,
+	tooltipText: null
+};
+function SearchEntityCreate(rawProps:SearchEntityCreateProps) {
+	// Fill in the defaults for props that are missing (or undefined); they are also passed on to the select and the modal
+	const allProps = defaults({}, rawProps, defaultProps);
+	const {type, nextId, onModalOpen, onModalClose, onSubmitEntity, rowId, onOpenCallback, ...rest} = allProps;
 	const createLabel = React.useCallback((input) => `Create ${type} "${input}"`, [type]);
 	const [showModal, setShowModal] = React.useState(false);
 	const getNewOptionData = React.useCallback((_, label) => ({
@@ -60,20 +72,11 @@ function SearchEntityCreate(props:SearchEntityCreateProps) {
 				getNewOptionData={getNewOptionData}
 				isValidNewOption={isValidNewOption}
 				onCreateOption={openModalHandler}
-				{...props}
+				{...allProps}
 			/>
 			<CreateEntityModal handleClose={closeModalHandler} handleSubmit={submitModalHandler} show={showModal} type={type} {...rest}/>
 		</>);
 }
-SearchEntityCreate.defaultProps = {
-	bbid: null,
-	empty: true,
-	error: false,
-	filters: [],
-	languageOptions: [],
-	rowId: null,
-	tooltipText: null
-};
 
 function mapDispatchToProps(dispatch, {type, submissionUrl, onAddCallback}):SearchEntityCreateDispatchProps {
 	return {

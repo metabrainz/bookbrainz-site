@@ -1,5 +1,12 @@
 /* eslint-disable node/no-process-env */
 /* Taken from: ListenBrainz */
+import ReactDOM from 'react-dom';
+import findDOMNode from '../../src/client/helpers/find-dom-node';
+
+
+// React 19 removed ReactDOM.findDOMNode but our UI libraries still call it (the
+// browser bundle gets it through the alias in webpack.client.js, see find-dom-node.js)
+ReactDOM.findDOMNode = findDOMNode;
 
 // In Node > v15 unhandled promise rejections will terminate the process
 if (!process.env.LISTENING_TO_UNHANDLED_REJECTION) {

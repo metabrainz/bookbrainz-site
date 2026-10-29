@@ -26,9 +26,7 @@ import React from 'react';
 
 const {Col, Nav, Row} = bootstrap;
 
-function EditorContainer(props) {
-	const {tabActive, editor, children, user} = props;
-
+function EditorContainer({tabActive, editor, children, user = null}) {
 	return (
 		<div>
 			<Row>
@@ -117,8 +115,4 @@ EditorContainer.propTypes = {
 	tabActive: PropTypes.number.isRequired,
 	user: PropTypes.object
 };
-EditorContainer.defaultProps = {
-	user: null
-};
-
 export default EditorContainer;

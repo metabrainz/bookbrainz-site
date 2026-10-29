@@ -54,8 +54,12 @@ type Relationship = {
 export {Relationship as RelationshipType};
 type RelationshipProps = Relationship & {Parent?:React.FunctionComponent<any>};
 
-function Relationship({Parent, ...props}: RelationshipProps) {
-	const {contextEntity, link, relationshipType, sourceEntity, attributes, showAttributes, targetEntity, ...rest} = props;
+
+function Relationship({Parent = React.Fragment, ...props}: RelationshipProps) {
+	const {
+		contextEntity, link, relationshipType, sourceEntity, attributes = [],
+		showAttributes = false, targetEntity, ...rest
+	} = props;
 	const {depth, description, id, linkPhrase, reverseLinkPhrase} = relationshipType;
 
 	const reversed = contextEntity &&
@@ -94,11 +98,5 @@ function Relationship({Parent, ...props}: RelationshipProps) {
 		</OverlayTrigger>
 	);
 }
-Relationship.defaultProps =
-{
-	Parent: React.Fragment,
-	attributes: [],
-	showAttributes: false
-};
 Relationship.displayName = 'Relationship';
 export default Relationship;

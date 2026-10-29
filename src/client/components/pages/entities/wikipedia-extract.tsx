@@ -44,7 +44,7 @@ async function getWikipediaExtractForWikidata(wikidataId: string, preferredLangu
 }
 
 
-function WikipediaExtract({entity, articleExtract}: Props) {
+function WikipediaExtract({entity, articleExtract = {}}: Props) {
 	const [state, setState] = useState(articleExtract);
 
 	useEffect(() => {
@@ -86,10 +86,5 @@ function WikipediaExtract({entity, articleExtract}: Props) {
 		</Row>
 	) : null;
 }
-
-WikipediaExtract.defaultProps = {
-	articleExtract: {}
-};
-
 
 export default WikipediaExtract;

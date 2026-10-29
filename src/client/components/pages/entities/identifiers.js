@@ -21,7 +21,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 
-function EntityIdentifiers({entityUrl, identifiers, identifierTypes}) {
+function EntityIdentifiers({entityUrl, identifiers = [], identifierTypes}) {
 	return (
 		<div>
 			<h2>Identifiers</h2>
@@ -69,9 +69,6 @@ EntityIdentifiers.propTypes = {
 	entityUrl: PropTypes.string.isRequired,
 	identifierTypes: PropTypes.array.isRequired,
 	identifiers: PropTypes.array
-};
-EntityIdentifiers.defaultProps = {
-	identifiers: []
 };
 
 export default EntityIdentifiers;

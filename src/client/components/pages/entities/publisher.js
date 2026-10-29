@@ -82,7 +82,7 @@ PublisherAttributes.propTypes = {
 };
 
 
-function PublisherDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
+function PublisherDisplayPage({entity, identifierTypes = [], user, wikipediaExtract = {}}) {
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
@@ -129,10 +129,6 @@ PublisherDisplayPage.propTypes = {
 	identifierTypes: PropTypes.array,
 	user: PropTypes.object.isRequired,
 	wikipediaExtract: PropTypes.object
-};
-PublisherDisplayPage.defaultProps = {
-	identifierTypes: [],
-	wikipediaExtract: {}
 };
 
 export default PublisherDisplayPage;

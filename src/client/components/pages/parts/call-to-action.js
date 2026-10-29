@@ -33,8 +33,8 @@ const {Button, ButtonGroup} = bootstrap;
  * @param {object} props - Properties passed to the component.
  * the 'CallToAction' component.
  */
-function CallToAction(props) {
-	const seedingParameters = new URLSearchParams({name: props.query});
+function CallToAction({query = null}) {
+	const seedingParameters = new URLSearchParams({name: query});
 	function renderEntityLink(type) {
 		return (
 			<a href={`/${camelCase(type)}/create?${seedingParameters}`}>
@@ -68,9 +68,5 @@ CallToAction.displayName = 'CallToAction';
 CallToAction.propTypes = {
 	query: PropTypes.string
 };
-CallToAction.defaultProps = {
-	query: null
-};
-
 
 export default CallToAction;

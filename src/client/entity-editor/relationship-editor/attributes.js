@@ -22,7 +22,7 @@ import React from 'react';
 
 
 export function NumberAttribute({
-	onHandleChange, value
+	onHandleChange, value = ''
 }) {
 	return (
 	    <>
@@ -44,6 +44,3 @@ NumberAttribute.propTypes = {
 	value: PropTypes.string
 };
 
-NumberAttribute.defaultProps = {
-	value: ''
-};

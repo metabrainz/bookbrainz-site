@@ -36,8 +36,8 @@ import ValidationLabel from '../common/validation-label';
  *          component.
  */
 function ValueField({
-	error,
-	empty,
+	error = false,
+	empty = true,
 	...rest
 }) {
 	const label = (
@@ -59,10 +59,6 @@ ValueField.displayName = 'ValueField';
 ValueField.propTypes = {
 	empty: PropTypes.bool,
 	error: PropTypes.bool
-};
-ValueField.defaultProps = {
-	empty: true,
-	error: false
 };
 
 export default ValueField;

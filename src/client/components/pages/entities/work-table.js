@@ -37,7 +37,8 @@ function renderAuthors(authorData) {
 	return authorData.map(author => <div key={author.authorbbid}><a href={`/author/${author.authorbbid}`}>{author.authoralias}</a></div>);
 }
 
-function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities, onToggleRow}) {
+
+function WorkTableRow({showAddedAtColumn, work, showCheckboxes = false, selectedEntities = [], onToggleRow = null}) {
 	const name = getEntityLabel(work);
 	const authorData = work.authorsData;
 	const number = work.number || '?';
@@ -79,13 +80,17 @@ WorkTableRow.propTypes = {
 	showCheckboxes: PropTypes.bool,
 	work: PropTypes.object.isRequired
 };
-WorkTableRow.defaultProps = {
-	onToggleRow: null,
-	selectedEntities: [],
-	showCheckboxes: false
-};
 
-function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
+
+function WorkTable({
+	entity = null,
+	showAddedAtColumn = false,
+	works,
+	showAdd = true,
+	showCheckboxes = false,
+	selectedEntities = [],
+	onToggleRow = null
+}) {
 	let tableContent;
 	if (works.length) {
 		const showAuthors = works[0].authorsData;
@@ -175,14 +180,6 @@ WorkTable.propTypes = {
 	showAddedAtColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool,
 	works: PropTypes.array.isRequired
-};
-WorkTable.defaultProps = {
-	entity: null,
-	onToggleRow: null,
-	selectedEntities: [],
-	showAdd: true,
-	showAddedAtColumn: false,
-	showCheckboxes: false
 };
 
 export default WorkTable;

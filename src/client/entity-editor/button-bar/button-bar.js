@@ -54,7 +54,7 @@ function ButtonBar({
 	numAliases,
 	numIdentifiers,
 	onAliasButtonClick,
-	isUnifiedForm,
+	isUnifiedForm = false,
 	onIdentifierButtonClick
 }) {
 	const className = isUnifiedForm ? 'text-right' : 'text-center';
@@ -98,9 +98,6 @@ ButtonBar.propTypes = {
 	numIdentifiers: PropTypes.number.isRequired,
 	onAliasButtonClick: PropTypes.func.isRequired,
 	onIdentifierButtonClick: PropTypes.func.isRequired
-};
-ButtonBar.defaultProps = {
-	isUnifiedForm: false
 };
 
 function mapStateToProps(rootState, {identifierTypes}) {

@@ -143,7 +143,7 @@ const SortableItem = SortableElement(({value, onRemove, baseEntity, handleNumber
 
 const SortableList = SortableContainer(({children}) => <div>{children}</div>);
 function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onRemove, hideItemSelect,
-	onAdd, onEdit, onSort, seriesItemsArray, isUnifiedForm}:SeriesItemsProps) {
+	onAdd, onEdit, onSort, seriesItemsArray, isUnifiedForm = false}:SeriesItemsProps) {
 	const [seriesItem, setSeriesItem] = useState(null);
 	const [targetEntity, setTargetEntity] = useState(null);
 
@@ -263,8 +263,5 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 	);
 }
 SeriesEditor.displayName = 'SeriesEditor';
-SeriesEditor.defaultProps = {
-	isUnifiedForm: false
-};
 
 export default SeriesEditor;

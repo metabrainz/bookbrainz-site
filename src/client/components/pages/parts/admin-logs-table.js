@@ -23,8 +23,7 @@ import {Table} from 'react-bootstrap';
 import {formatDate} from '../../../helpers/utils';
 
 
-function AdminLogsTable(props) {
-	const {results, tableHeading} = props;
+function AdminLogsTable({results, tableHeading = 'Admin Logs'}) {
 	return (
 		<div>
 			<div>
@@ -75,10 +74,6 @@ AdminLogsTable.propTypes = {
 	results: PropTypes.array.isRequired,
 	tableHeading: PropTypes.node
 };
-AdminLogsTable.defaultProps = {
-	tableHeading: 'Admin Logs'
-};
-
 AdminLogsTable.displayName = 'AdminLogsTable';
 
 export default AdminLogsTable;

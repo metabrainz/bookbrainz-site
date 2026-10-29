@@ -6,7 +6,14 @@ import ValidationLabel from '../../entity-editor/common/validation-label';
 import {faChevronRight} from '@fortawesome/free-solid-svg-icons';
 
 
-export default function SingleAccordion({children, defaultActive, heading, onToggle, isEmpty, isValid}:SingleAccordionProps) {
+export default function SingleAccordion({
+	children,
+	defaultActive = false,
+	heading,
+	onToggle = null,
+	isEmpty = true,
+	isValid = true
+}:SingleAccordionProps) {
 	const inputLabel = (
 		<ValidationLabel empty={isEmpty} error={!isValid}>
 			{heading}
@@ -28,9 +35,3 @@ export default function SingleAccordion({children, defaultActive, heading, onTog
 	);
 }
 
-SingleAccordion.defaultProps = {
-	defaultActive: false,
-	isEmpty: true,
-	isValid: true,
-	onToggle: null
-};

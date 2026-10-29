@@ -60,10 +60,10 @@ type Props = {
  * @returns {Object} A React component containing the rendered input.
  */
 function LanguageField({
-	empty,
-	error,
-	tooltipText,
-	onChange,
+	empty = false,
+	error = false,
+	tooltipText = null,
+	onChange = null,
 	...rest
 }: Props) {
 	const label =
@@ -143,12 +143,6 @@ function LanguageField({
 	);
 }
 LanguageField.displayName = 'LanguageField';
-LanguageField.defaultProps = {
-	empty: false,
-	error: false,
-	onChange: null,
-	tooltipText: null
-};
 
 function areEqual(prevProps, nextProps) {
 	return JSON.stringify(prevProps) === JSON.stringify(nextProps);

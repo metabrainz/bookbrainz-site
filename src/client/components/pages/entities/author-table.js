@@ -26,7 +26,15 @@ import React from 'react';
 const {Table} = bootstrap;
 const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-function AuthorTableRow({author, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow, genderOptions}) {
+
+function AuthorTableRow({
+	author,
+	showAddedAtColumn,
+	showCheckboxes = false,
+	selectedEntities = [],
+	onToggleRow = null,
+	genderOptions = []
+}) {
 	const name = getEntityLabel(author);
 	const disambiguation = getEntityDisambiguation(author);
 	const number = author.number || '?';
@@ -72,14 +80,16 @@ AuthorTableRow.propTypes = {
 	showAddedAtColumn: PropTypes.bool.isRequired,
 	showCheckboxes: PropTypes.bool
 };
-AuthorTableRow.defaultProps = {
-	genderOptions: [],
-	onToggleRow: null,
-	selectedEntities: [],
-	showCheckboxes: false
-};
 
-function AuthorTable({authors, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow, genderOptions}) {
+
+function AuthorTable({
+	authors,
+	showAddedAtColumn = false,
+	showCheckboxes = false,
+	selectedEntities = [],
+	onToggleRow = null,
+	genderOptions = []
+}) {
 	let tableContent;
 	if (authors.length) {
 		tableContent = (
@@ -135,13 +145,6 @@ AuthorTable.propTypes = {
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool
-};
-AuthorTable.defaultProps = {
-	genderOptions: [],
-	onToggleRow: null,
-	selectedEntities: [],
-	showAddedAtColumn: false,
-	showCheckboxes: false
 };
 
 export default AuthorTable;

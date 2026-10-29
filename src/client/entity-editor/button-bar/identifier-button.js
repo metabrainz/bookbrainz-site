@@ -40,7 +40,7 @@ import {faTimes} from '@fortawesome/free-solid-svg-icons';
 function IdentifierButton({
 	identifiersInvalid,
 	numIdentifiers,
-	isUnifiedForm,
+	isUnifiedForm = false,
 	...props
 }) {
 	let textComponent = 'Add identifiers (eg. ISBN, Wikidata ID)…';
@@ -73,9 +73,6 @@ IdentifierButton.propTypes = {
 	identifiersInvalid: PropTypes.bool.isRequired,
 	isUnifiedForm: PropTypes.bool,
 	numIdentifiers: PropTypes.number.isRequired
-};
-IdentifierButton.defaultProps = {
-	isUnifiedForm: false
 };
 
 export default IdentifierButton;

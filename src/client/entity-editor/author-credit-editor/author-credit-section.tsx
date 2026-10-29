@@ -75,7 +75,7 @@ type Props = OwnProps & StateProps & DispatchProps;
 function AuthorCreditSection({
 	authorCreditEditor: immutableAuthorCreditEditor, onEditAuthorCredit, onEditorClose,
 	showEditor, onAuthorChange, isEditable, authorCreditEnable, toggleAuthorCreditEnable,
-	onClearHandler, isUnifiedForm, isLeftAlign, ...rest
+	onClearHandler, isUnifiedForm = false, isLeftAlign = false, ...rest
 }: Props) {
 	const authorCreditEditor = convertMapToObject(immutableAuthorCreditEditor);
 	let editor;
@@ -208,10 +208,6 @@ AuthorCreditSection.propTypes = {
 	showEditor: PropTypes.bool.isRequired
 };
 
-AuthorCreditSection.defaultProps = {
-	isLeftAlign: false,
-	isUnifiedForm: false
-};
 function mapStateToProps(rootState, {type}): StateProps {
 	const entitySection = `${camelCase(type)}Section`;
 	const authorCreditEnable = rootState.getIn([entitySection, 'authorCreditEnable']) ?? true;
