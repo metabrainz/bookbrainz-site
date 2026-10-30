@@ -20,7 +20,6 @@
 
 import * as propHelpers from '../../client/helpers/props';
 import {escapeProps, generateProps} from '../helpers/props';
-import AboutPage from '../../client/components/pages/about';
 import ContributePage from '../../client/components/pages/contribute';
 import DevelopPage from '../../client/components/pages/develop';
 import FAQPage from '../../client/components/pages/faq';
@@ -102,7 +101,6 @@ function _createStaticRoute(route, title, PageComponent) {
 	});
 }
 
-_createStaticRoute('/about', 'About', AboutPage);
 _createStaticRoute('/contribute', 'Contribute', ContributePage);
 _createStaticRoute('/develop', 'Develop', DevelopPage);
 _createStaticRoute('/help', 'Help', HelpPage);
