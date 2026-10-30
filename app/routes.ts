@@ -6,5 +6,6 @@ import {type RouteConfig, route} from '@react-router/dev/routes';
  * route matches.
  */
 export default [
+	route('about', 'routes/static/about.tsx'),
 	route('*', 'routes/errors/not-found.tsx')
 ] satisfies RouteConfig;
