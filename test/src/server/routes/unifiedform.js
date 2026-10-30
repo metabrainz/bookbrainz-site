@@ -1,7 +1,7 @@
 import {authorWorkRelationshipTypeData, baseState, createAuthor, createEditionGroup,
 	createEditor, createPublisher, createWork, getRandomUUID, languageAttribs, truncateEntities} from '../../../test-helpers/create-entities';
 import {every, forOwn, get, map} from 'lodash';
-import app from '../../../../src/server/app';
+import {app} from '../../../fixtures/server';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import {getEntityByBBID} from '../../../../src/common/helpers/utils';

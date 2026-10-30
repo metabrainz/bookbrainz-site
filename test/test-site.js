@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import app from '../src/server/app';
+import {app} from './fixtures/server';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import status from 'http-status';

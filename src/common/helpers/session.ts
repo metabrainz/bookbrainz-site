@@ -1,25 +1,10 @@
+import session, {type SessionOptions} from 'express-session';
 import Debug from 'debug';
 import RedisStore from 'connect-redis';
 import {get as _get} from 'lodash';
 import config from './config';
 import redisClient from './cache';
-import session from 'express-session';
 
-
-type Session = {
-	cookie: any,
-	mergeQueue?: any,
-	resave: boolean,
-	saveUninitialized: boolean,
-	secret: any,
-	store?: any
-};
-
-declare module 'express-serve-static-core' {
-	interface Request {
-		session: Session;
-	}
-}
 
 const debug = Debug('bbsite');
 
@@ -28,8 +13,8 @@ const debug = Debug('bbsite');
  * @param {string} [environment] - Node.js environment.
  * @returns {function} Express session request handler.
  */
-function setupSessions(environment) {
-	const sessionOptions: Session = {
+function setupSessions(environment?: string) {
+	const sessionOptions: SessionOptions = {
 		cookie: {
 			maxAge: _get(config, 'session.maxAge', 2592000000),
 			secure: _get(config, 'session.secure', false)

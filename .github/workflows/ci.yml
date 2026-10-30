@@ -78,6 +78,14 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Type-check React Router pages
+        run: yarn run typecheck-app
+
+      - name: Build server and React Router
+        run: |
+          yarn run build-router
+          yarn run build-server-js
+
       - name: Run tests
         run: yarn run test-ci # run tests (configured to use mocha's json reporter)
 
