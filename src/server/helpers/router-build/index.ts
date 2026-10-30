@@ -1,5 +1,6 @@
 import type {Alert, SiteSession, SiteUser} from '../../../common/types/site';
 import {type Request as ExpressRequest, type NextFunction, type RequestHandler, type Response} from 'express';
+import type {Client} from '@elastic/elasticsearch';
 import type {ORM} from 'bookbrainz-data';
 import {createBackend} from '../../../backend';
 import {createRequestHandler} from '@react-router/express';
@@ -24,7 +25,7 @@ export type RouterBridge = {
 };
 
 type Options = {
-	getSearchClient: () => Parameters<typeof createBackend>[0]['searchClient'],
+	getSearchClient: () => Client | null,
 	mode: 'development' | 'production',
 	orm: ORM,
 	rootDir: string
