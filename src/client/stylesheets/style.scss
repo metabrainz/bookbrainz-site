@@ -831,6 +831,11 @@ ul {
 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00ffffff', endColorstr='#ffffff', GradientType=0);
 	}
 }
+
+.duplicate-side-panel {
+	position: sticky;
+	top: 20px;
+}
 .uf-dialog .accordion > .card{
 	overflow:visible;
 }
