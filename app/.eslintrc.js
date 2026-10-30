@@ -15,6 +15,11 @@ module.exports = {
 	rules: {
 		'import/no-internal-modules': 'off',
 		'import/no-unresolved': 'off',
+		'no-restricted-imports': ['error', {
+			paths: ['bookbrainz-data', 'express'],
+			patterns: ['**/src/server/**', '**/src/api/**', '**/src/common/helpers/search',
+				'**/src/common/helpers/config', '**/src/common/helpers/utils']
+		}],
 		'node/no-missing-import': 'off'
 	}
 };

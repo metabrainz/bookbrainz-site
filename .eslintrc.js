@@ -562,4 +562,18 @@ options.rules = Object.assign(
 );
 
 
+options.overrides = [{
+	files: ['src/common/types/**/*.ts', 'src/common/helpers/error.ts', 'src/client/containers/layout.d.ts',
+		'src/client/components/pages/error.d.ts'],
+	parserOptions: {project: './app/tsconfig.json'},
+	rules: {
+		'@typescript-eslint/no-explicit-any': ERROR,
+		'@typescript-eslint/no-unsafe-argument': ERROR,
+		'@typescript-eslint/no-unsafe-assignment': ERROR,
+		'@typescript-eslint/no-unsafe-call': ERROR,
+		'@typescript-eslint/no-unsafe-member-access': ERROR,
+		'@typescript-eslint/no-unsafe-return': ERROR
+	}
+}];
+
 module.exports = options;

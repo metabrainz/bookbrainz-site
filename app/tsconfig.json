@@ -26,6 +26,9 @@
 		"./**/*",
 		"../.react-router/types/**/*",
 		"../vite.config.mts",
-		"../react-router.config.ts"
+		"../react-router.config.ts",
+		"../src/backend/**/*.ts",
+		"../src/common/types/site.ts",
+		"../src/common/helpers/error.ts"
 	]
 }
