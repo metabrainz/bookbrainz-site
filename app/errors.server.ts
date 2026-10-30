@@ -11,12 +11,7 @@ export function toRouteError(error: unknown) {
 }
 
 
-/**
- * Wraps a loader or action so the SiteErrors that the shared helpers throw (404, 400...) reach the root
- * ErrorBoundary with their status and message, as in the Express handlers.
- * @param {Function} handler - the loader or action
- * @returns {Function} the same function, with errors passed through toRouteError
- */
+// Wraps a loader or action so the SiteErrors it throws (404, 400...) reach the root ErrorBoundary with their status and message
 export function siteErrors<Args, Result>(handler: (args: Args) => Promise<Result> | Result) {
 	return async (args: Args): Promise<Result> => {
 		try {

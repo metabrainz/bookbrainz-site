@@ -60,13 +60,10 @@ const debug = Debug('bbsite');
 
 const rootDir = path.join(__dirname, '../../');
 
-/**
- * Create the Express app and everything it owns: the ORM, authentication, the search client and the React Router
- * build. Nothing is started on import. If something cannot be created (the router build above all) this rejects
- * after closing what was already created.
- * @param {Object} [options] - optional application dependencies
- * @param {Object} [options.orm] - an existing ORM owned by the caller - an ORM to use instead of the one created from the configuration (tests share one)
- * @returns {Promise<Object>} the app and a function that releases its resources
+/*
+ * Creates the Express app and everything it owns (ORM, authentication, search client, router build); nothing starts
+ * on import. If something cannot be created this rejects after closing what was already created.
+ * Tests pass a shared `orm`.
  */
 export async function createApp({orm: sharedOrm} = {}) {
 	const app = express();
@@ -279,11 +276,7 @@ export async function createApp({orm: sharedOrm} = {}) {
 
 const DEFAULT_PORT = 9099;
 
-/**
- * Create the app, then start listening. The server only listens once everything it needs is ready; if anything
- * fails, what was created is closed and the process exits with an error.
- * @returns {Promise<Object>} a function that stops the server and releases its resources
- */
+// Creates the app, then listens. If anything fails, what was created is closed before the error is thrown.
 export async function start() {
 	const {app, close: closeApp} = await createApp();
 	const port = process.env.PORT || DEFAULT_PORT;
@@ -323,8 +316,7 @@ export async function start() {
 // Started by `node lib/server/app.js` and `yarn debug`, not when the tests import this file
 if (require.main === module) {
 	start().catch((error) => {
-		// eslint-disable-next-line no-console
-		console.error('Could not start the server:', error);
+		log.error('Could not start the server:', error);
 		process.exitCode = 1;
 	});
 }
