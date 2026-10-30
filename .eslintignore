@@ -6,3 +6,5 @@ coverage
 out
 !.eslintrc.js
 webpack.client.js
+build-router/
+.react-router/

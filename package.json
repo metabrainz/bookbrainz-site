@@ -8,7 +8,7 @@
     "build-server-js": "babel src --out-dir lib --source-maps --ignore src/api --extensions .js,.jsx,.ts,.tsx",
     "build-api-js": "babel src --out-dir lib --ignore 'src/server','src/client' --extensions .js,.jsx,.ts,.tsx",
     "build-scss": "./scripts/build-scss.sh",
-    "build": "npm run build-client && npm run build-server-js",
+    "build": "npm run build-client && npm run build-router && npm run build-server-js",
     "build-client": "cross-env NODE_ENV=production webpack --progress --config webpack.client.js",
     "prestart": "npm run build",
     "start": "node ./lib/server/app.js",
@@ -21,10 +21,11 @@
     "test-cov": "npx nyc --reporter=text npm run test",
     "test-ci": "NODE_ENV=test mocha --reporter json --reporter-option output=test-results.json",
     "jsdoc": "npx jsdoc -r src",
-    "dupreport": "npx jsinspect src/ || true"
+    "dupreport": "npx jsinspect src/ || true",
+    "build-router": "react-router build"
   },
   "engines": {
-    "node": ">= 20"
+    "node": ">= 22.22.0"
   },
   "browserslist": "> 0.25%, not dead",
   "overrides": {
@@ -40,6 +41,8 @@
     "@fortawesome/free-brands-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.1.19",
+    "@react-router/express": "^8.5.0",
+    "@react-router/node": "^8.5.0",
     "@sentry/node": "^11.8.0",
     "bookbrainz-data": "5.3.1",
     "chart.js": "^2.9.4",
@@ -57,6 +60,7 @@
     "http-status": "^1.8.1",
     "immutable": "^4.3.9",
     "influx": "^5.12.0",
+    "isbot": "^5",
     "isomorphic-dompurify": "^4.6.0",
     "jsesc": "^3.1.0",
     "lobes4": "4.0.1",
@@ -75,6 +79,7 @@
     "react-datepicker": "^4.25.0",
     "react-dom": "^19.2.7",
     "react-redux": "^7.2.9",
+    "react-router": "^8.5.0",
     "react-select": "^4.3.1",
     "react-select-fast-filter-options": "^0.2.3",
     "react-simple-star-rating": "~4.0.5",
@@ -106,6 +111,7 @@
     "@babel/preset-typescript": "^7.29.7",
     "@babel/register": "^7.29.7",
     "@faker-js/faker": "^10.5.0",
+    "@react-router/dev": "^8.5.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.0",
     "@types/express": "^4.17.25",
@@ -136,6 +142,7 @@
     "file-loader": "^6.2.0",
     "jsdom": "30.1.3",
     "jsdom-global": "3.0.2",
+    "lodash-es": "^4",
     "mini-css-extract-plugin": "^2.10.2",
     "mocha": "12",
     "nodemon": "^2.0.22",
@@ -146,6 +153,7 @@
     "sass-loader": "^13.3.3",
     "sinon": "^19.0.5",
     "typescript": "^4.9.5",
+    "vite": "^7",
     "webpack": "^5.111.1",
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^4.10.0",
