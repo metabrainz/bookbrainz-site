@@ -19,7 +19,9 @@
 		"target": "ESNext",
 		"types": [
 			"node",
-			"vite/client"
+			"vite/client",
+			"passport",
+			"express-session"
 		]
 	},
 	"include": [
@@ -29,6 +31,8 @@
 		"../react-router.config.ts",
 		"../src/backend/**/*.ts",
 		"../src/common/types/site.ts",
-		"../src/common/helpers/error.ts"
+		"../src/common/helpers/error.ts",
+		"../src/common/helpers/session-data.ts",
+		"../src/server/helpers/router-build/*.ts"
 	]
 }

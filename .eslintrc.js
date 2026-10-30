@@ -563,7 +563,8 @@ options.rules = Object.assign(
 
 
 options.overrides = [{
-	files: ['src/common/types/**/*.ts', 'src/common/helpers/error.ts', 'src/client/containers/layout.d.ts',
+	files: ['src/common/types/**/*.ts', 'src/common/helpers/error.ts', 'src/common/helpers/session-data.ts',
+		'src/server/helpers/router-build/*.ts', 'src/client/containers/layout.d.ts',
 		'src/client/components/pages/error.d.ts'],
 	parserOptions: {project: './app/tsconfig.json'},
 	rules: {
@@ -572,7 +573,8 @@ options.overrides = [{
 		'@typescript-eslint/no-unsafe-assignment': ERROR,
 		'@typescript-eslint/no-unsafe-call': ERROR,
 		'@typescript-eslint/no-unsafe-member-access': ERROR,
-		'@typescript-eslint/no-unsafe-return': ERROR
+		'@typescript-eslint/no-unsafe-return': ERROR,
+		'no-undefined': IGNORE
 	}
 }];
 

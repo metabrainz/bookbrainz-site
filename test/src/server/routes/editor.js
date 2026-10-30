@@ -1,7 +1,7 @@
 /* eslint-disable sort-keys */
 
 import {createEditor, truncateEntities} from '../../../test-helpers/create-entities';
-import app from '../../../../src/server/app';
+import {app} from '../../../fixtures/server';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import {getEditorActivity} from '../../../../src/server/routes/editor';

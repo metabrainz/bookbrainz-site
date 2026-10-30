@@ -4,6 +4,6 @@ import type {Config} from '@react-router/dev/config';
 
 export default {
 	buildDirectory: 'build-router',
-	serverBuildFile: 'index.mjs',
+	serverBuildFile: '[name].mjs',
 	ssr: true
 } satisfies Config;

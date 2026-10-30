@@ -12,3 +12,9 @@ React Router renders pages on the server and hydrates them in the browser. Expre
 Loaders receive a typed backend and request context. Data access lives in `src/backend`; page modules never import the ORM or Express helpers.
 
 `app/auth.server.ts` guards pages. Passport, OAuth and login/logout remain in Express. Backend functions enforce permissions for data operations.
+
+The Express entry creates the application before listening. `src/server/helpers/router-build/` loads the production build once, or starts Vite in development. The context factory is a second server-build entry so it shares the loaders' context key. Development resolves it again for each request to support hot updates.
+
+`createApp()` returns `{app, close}`; integration tests share one application fixture. Search availability does not block startup. A missing or invalid Router build does.
+
+Run `yarn build` before integration tests. Startup-failure checks also run against the Babel-compiled server helpers in `lib/`.

@@ -11,6 +11,10 @@ function contextFor(user, session) {
 }
 
 describe('page access', () => {
+	it('fails when request context was not initialized', () => {
+		expect(() => new RouterContextProvider().get(siteContext)).to.throw('No value found for context');
+	});
+
 	it('lets an authenticated user through', () => {
 		const context = contextFor({id: 7, name: 'editor', privs: 1}, {});
 		expect(() => requireUser({context, request: new Request('http://localhost/editor/edit')})).not.to.throw();

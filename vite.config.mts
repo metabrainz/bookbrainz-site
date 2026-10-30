@@ -1,7 +1,11 @@
 /* eslint-disable import/no-unresolved, node/no-missing-import */
-import {type Plugin, defineConfig, transformWithEsbuild} from 'vite';
+import {type DepOptimizationOptions, type Plugin, defineConfig, transformWithEsbuild} from 'vite';
 import {fileURLToPath} from 'node:url';
 import {reactRouter} from '@react-router/dev/vite';
+
+function here(relative: string) {
+	return fileURLToPath(new URL(relative, import.meta.url));
+}
 
 /*
  * Compile the JSX in src/ and app/ ourselves, with the classic transform (React.createElement) like Babel's
@@ -47,9 +51,15 @@ const reactDomCompat: Plugin = {
 	}
 };
 
-function here(relative: string) {
-	return fileURLToPath(new URL(relative, import.meta.url));
-}
+// The dependency optimizer used in development resolves imports with esbuild, so it gets the same rule
+type EsbuildPlugin = NonNullable<NonNullable<DepOptimizationOptions['esbuildOptions']>['plugins']>[number];
+const reactDomCompatForEsbuild: EsbuildPlugin = {
+	name: 'react-dom-compat',
+	setup(build) {
+		build.onResolve({filter: /^react-dom$/}, () => ({path: here('./src/client/helpers/react-dom-compat.js')}));
+		build.onResolve({filter: /^react-dom-original$/}, () => ({path: here('./node_modules/react-dom/index.js')}));
+	}
+};
 
 // @ts-expect-error Vite's types do not accept the source map that transformWithEsbuild returns (classicJsx above)
 export default defineConfig(({command}) => ({
@@ -57,11 +67,17 @@ export default defineConfig(({command}) => ({
 		ssr: {
 			build: {
 				rollupOptions: {
+					input: {index: 'virtual:react-router/server-build', 'load-context': './app/load-context.ts'},
 					// .mjs so that Node treats the build as ES modules without a package.json next to it
 					output: {chunkFileNames: 'assets/[name]-[hash].mjs'}
 				}
 			}
 		}
+	},
+	// Scan route imports up front so the first page does not race dependency optimization.
+	optimizeDeps: {
+		entries: ['./app/root.tsx', './app/routes/**/*.tsx'],
+		esbuildOptions: {loader: {'.js': 'jsx'}, plugins: [reactDomCompatForEsbuild]}
 	},
 	plugins: [reactDomCompat, classicJsx, reactRouter()],
 	resolve: {

@@ -4,7 +4,7 @@ import type {ORM} from 'bookbrainz-data';
 
 export type BackendDependencies = {
 	orm: ORM,
-	searchClient: Client | undefined
+	searchClient: Client | null
 };
 
 // Page migrations add their data functions here. Neither requests nor responses enter the backend.
