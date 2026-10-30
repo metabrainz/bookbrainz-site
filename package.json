@@ -5,7 +5,7 @@
   "scripts": {
     "clean": "./scripts/clean.sh",
     "prepare": "npm run clean",
-    "build-server-js": "babel src --out-dir lib --source-maps --ignore src/api --extensions .js,.jsx,.ts,.tsx",
+    "build-server-js": "babel src --out-dir lib --source-maps --ignore src/api,'**/*.d.ts' --extensions .js,.jsx,.ts,.tsx",
     "build-api-js": "babel src --out-dir lib --ignore 'src/server','src/client' --extensions .js,.jsx,.ts,.tsx",
     "build-scss": "./scripts/build-scss.sh",
     "build": "npm run build-client && npm run build-router && npm run build-server-js",
@@ -15,8 +15,8 @@
     "start-api": "npm run build-api-js && cross-env NODE_ENV=development node ./lib/api/app.js",
     "debug": "cross-env-shell DEBUG=bbsite NODE_ENV=development NODE_OPTIONS=\"--conditions=development $NODE_OPTIONS\" babel-node src/server/app.js --extensions .js,.jsx,.ts,.tsx",
     "debug-watch-server": "cross-env-shell DEBUG=bbsite NODE_ENV=development NODE_OPTIONS=\"--conditions=development $NODE_OPTIONS\" nodemon src/server/app.js --ext js,jsx,ts,tsx --watch src/server --exec 'babel-node --extensions .js,.jsx,.ts,.tsx'",
-    "lint": "eslint .",
-    "lint-errors": "eslint --quiet .",
+    "lint": "react-router typegen && eslint .",
+    "lint-errors": "react-router typegen && eslint --quiet .",
     "test": "npm run lint-errors && cross-env NODE_ENV=test mocha -r jsdom-global/register",
     "test-cov": "npx nyc --reporter=text npm run test",
     "test-ci": "NODE_ENV=test mocha --reporter json --reporter-option output=test-results.json",
@@ -113,9 +113,11 @@
     "@babel/register": "^7.29.7",
     "@faker-js/faker": "^10.5.0",
     "@react-router/dev": "^8.5.0",
+    "@stylistic/eslint-plugin": "^2.13.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.0",
     "@types/express": "^4.17.25",
+    "@types/express-session": "^1.18.2",
     "@types/lodash": "^4.17.26",
     "@types/passport-oauth2": "^1.8.0",
     "@types/react-select": "^4.0.18",
@@ -159,8 +161,6 @@
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^4.10.0",
     "webpack-dev-middleware": "^7.4.6",
-    "webpack-hot-middleware": "^2.26.1",
-    "@stylistic/eslint-plugin": "^2.13.0",
-    "@types/express-session": "^1.18.2"
+    "webpack-hot-middleware": "^2.26.1"
   }
 }

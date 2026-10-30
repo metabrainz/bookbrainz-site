@@ -18,6 +18,7 @@
 		"lib",
 		"build-router",
 		"app",
+		"src/server/helpers/router-build/*.ts",
 		"vite.config.mts",
 		"react-router.config.ts"
 	]

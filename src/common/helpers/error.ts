@@ -37,7 +37,8 @@ export class SiteError extends Error {
 
 	detailedMessage?: string | string[];
 
-	constructor(message?: string | null) {
+	// The request is accepted because many call sites pass it to every error class; only the path errors use it
+	constructor(message?: string | null, _req?: ErrorPath) {
 		super();
 
 		/*

@@ -98,3 +98,4 @@ typings/
 # React Router build output and generated types
 /build-router
 /.react-router
+/.router-check-*

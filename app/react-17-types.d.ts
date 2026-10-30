@@ -1,7 +1,7 @@
 /*
  * The project still type-checks against the React 17 types (react-bootstrap 1.x, react-fontawesome and other
- * libraries do not type-check with newer ones). These two React 18 APIs are used by the entry files; delete
- * this file when the project moves to the React 19 types.
+ * libraries do not type-check with newer ones). These two React 18 APIs are used by the default entry files of
+ * React Router; delete this file when the project moves to the React 19 types.
  */
 // Makes this file a module, so the declarations below add to the existing ones
 export {};

@@ -1,4 +1,4 @@
-/* eslint-disable no-console, import/no-commonjs, @typescript-eslint/no-var-requires */
+/* eslint-disable no-console, import/no-commonjs, @typescript-eslint/no-var-requires, node/no-missing-require */
 // eslint-disable-next-line node/no-unpublished-require -- exercise the compiled server artifact
 const {createRouterBridge} = require('../../lib/server/helpers/router-build');
 
