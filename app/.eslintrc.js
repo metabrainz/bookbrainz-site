@@ -1,9 +1,17 @@
 /* eslint-disable import/no-commonjs */
-/*
- * React Router app (built by Vite, not Babel). The packages it imports are ES modules
- * with `exports` maps and virtual modules that eslint-plugin-node / import cannot resolve.
- */
 module.exports = {
+	overrides: [{
+		files: ['**/*.ts', '**/*.tsx'],
+		parserOptions: {project: './app/tsconfig.json'},
+		rules: {
+			'@typescript-eslint/no-explicit-any': 'error',
+			'@typescript-eslint/no-unsafe-argument': 'error',
+			'@typescript-eslint/no-unsafe-assignment': 'error',
+			'@typescript-eslint/no-unsafe-call': 'error',
+			'@typescript-eslint/no-unsafe-member-access': 'error',
+			'@typescript-eslint/no-unsafe-return': 'error'
+		}
+	}],
 	rules: {
 		'import/no-internal-modules': 'off',
 		'import/no-unresolved': 'off',

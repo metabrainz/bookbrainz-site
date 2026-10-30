@@ -51,6 +51,7 @@ function here(relative: string) {
 	return fileURLToPath(new URL(relative, import.meta.url));
 }
 
+// @ts-expect-error Vite's types do not accept the source map that transformWithEsbuild returns (classicJsx above)
 export default defineConfig(({command}) => ({
 	environments: {
 		ssr: {

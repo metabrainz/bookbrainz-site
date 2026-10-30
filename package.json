@@ -22,7 +22,8 @@
     "test-ci": "NODE_ENV=test mocha --reporter json --reporter-option output=test-results.json",
     "jsdoc": "npx jsdoc -r src",
     "dupreport": "npx jsinspect src/ || true",
-    "build-router": "react-router build"
+    "build-router": "react-router build",
+    "typecheck-app": "react-router typegen && tsc -p app/tsconfig.json"
   },
   "engines": {
     "node": ">= 22.22.0"
@@ -118,8 +119,8 @@
     "@types/lodash": "^4.17.26",
     "@types/passport-oauth2": "^1.8.0",
     "@types/react-select": "^4.0.18",
-    "@typescript-eslint/eslint-plugin": "^4.28.3",
-    "@typescript-eslint/parser": "^4.6.1",
+    "@typescript-eslint/eslint-plugin": "^8.72.0",
+    "@typescript-eslint/parser": "^8.72.0",
     "babel-loader": "^8.4.1",
     "babel-plugin-lodash": "^3.3.4",
     "babel-plugin-transform-require-ignore": "^0.1.1",
@@ -132,7 +133,7 @@
     "clean-webpack-plugin": "^4.0.0",
     "compression-webpack-plugin": "^9.2.0",
     "css-loader": "^6.11.0",
-    "eslint": "^7.30.0",
+    "eslint": "^8.57.1",
     "eslint-formatter-rdjson": "^1.0.6",
     "eslint-plugin-babel": "^5.3.1",
     "eslint-plugin-import": "^2.32.0",
@@ -152,12 +153,14 @@
     "sass": "~1.78.0",
     "sass-loader": "^13.3.3",
     "sinon": "^19.0.5",
-    "typescript": "^4.9.5",
+    "typescript": "^5.9.3",
     "vite": "^7",
     "webpack": "^5.111.1",
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^4.10.0",
     "webpack-dev-middleware": "^7.4.6",
-    "webpack-hot-middleware": "^2.26.1"
+    "webpack-hot-middleware": "^2.26.1",
+    "@stylistic/eslint-plugin": "^2.13.0",
+    "@types/express-session": "^1.18.2"
   }
 }

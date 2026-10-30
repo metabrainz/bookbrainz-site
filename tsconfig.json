@@ -3,11 +3,22 @@
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"jsx": "preserve",
-		"lib": ["ESNext", "DOM"],
+		"lib": [
+			"ESNext",
+			"DOM"
+		],
 		"module": "CommonJS",
 		"noEmit": true,
 		"skipLibCheck": true,
 		"strict": false,
 		"target": "ESNext"
-	}
+	},
+	"exclude": [
+		"node_modules",
+		"lib",
+		"build-router",
+		"app",
+		"vite.config.mts",
+		"react-router.config.ts"
+	]
 }

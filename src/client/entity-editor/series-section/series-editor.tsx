@@ -15,7 +15,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-/* eslint-disable react/jsx-no-bind, @typescript-eslint/no-invalid-this */
+/* eslint-disable react/jsx-no-bind, no-invalid-this */
 
 
 import {Button, Col, Row} from 'react-bootstrap';

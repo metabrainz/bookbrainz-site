@@ -17,7 +17,8 @@ const options = {
 	plugins: [
 		'react',
 		'import',
-		'@typescript-eslint'
+		'@typescript-eslint',
+		'@stylistic'
 	],
 	root: true,
 	settings: {
@@ -45,6 +46,7 @@ const possibleErrorsRules = {
 	'no-await-in-loop': ERROR,
 	'no-console': ERROR,
 	'no-template-curly-in-string': ERROR,
+	'no-unsafe-optional-chaining': TRANSITION_WARNING,
 	'valid-jsdoc': [
 		ERROR,
 		{
@@ -393,24 +395,24 @@ const ecmaScript6Rules = {
 };
 
 const typescriptRules = {
-	'@typescript-eslint/ban-types': TRANSITION_WARNING,
+	'@stylistic/no-extra-parens': [ERROR, 'all', {
+		enforceForArrowConditionals: false,
+		ignoreJSX: 'multi-line',
+		nestedBinaryExpressions: false,
+		returnAssign: false
+	}],
+	'@stylistic/semi': ERROR,
 	'@typescript-eslint/explicit-module-boundary-types': TRANSITION_IGNORE,
+	'@typescript-eslint/no-empty-object-type': TRANSITION_IGNORE,
 	'@typescript-eslint/no-explicit-any': TRANSITION_IGNORE,
-	'@typescript-eslint/no-extra-parens': [
-		ERROR,
-		'all',
-		{
-			enforceForArrowConditionals: false,
-			ignoreJSX: 'multi-line',
-			nestedBinaryExpressions: false,
-			returnAssign: false
-		}
-	],
-	'@typescript-eslint/no-invalid-this': ERROR,
+	'@typescript-eslint/no-require-imports': TRANSITION_IGNORE,
 	'@typescript-eslint/no-shadow': ERROR,
+	'@typescript-eslint/no-unsafe-function-type': TRANSITION_IGNORE,
+	'@typescript-eslint/no-unused-expressions': TRANSITION_IGNORE,
 	'@typescript-eslint/no-unused-vars': WARNING,
 	'@typescript-eslint/no-use-before-define': ERROR,
-	'@typescript-eslint/semi': ERROR
+	'@typescript-eslint/no-wrapper-object-types': TRANSITION_WARNING,
+	'no-invalid-this': ERROR
 };
 
 const reactRules = {
