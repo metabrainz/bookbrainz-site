@@ -54,7 +54,7 @@ type AuthorCreditEditorT ={
 
 const additionalEditionProps = [
 	'editionGroupBbid', 'width', 'height', 'depth', 'weight', 'pages',
-	'formatId', 'statusId', 'creditSection'
+	'editionNumber', 'formatId', 'statusId', 'creditSection'
 ];
 
 type PassportRequest = express.Request & {
@@ -98,6 +98,12 @@ export function transformNewForm(data) {
 		authorCredit = entityRoutes.constructAuthorCredit(data.authorCreditEditor);
 	}
 
+	const editionNumber = _.get(
+		data,
+		['nameSection', 'editionNumber'],
+		_.get(data, ['nameSection', 'edition_number'], null)
+	);
+
 	return {
 		aliases,
 		annotation: data.annotationSection.content,
@@ -108,6 +114,7 @@ export function transformNewForm(data) {
 		disambiguation: data.nameSection.disambiguation,
 		editionGroupBbid: data.editionSection.editionGroup &&
 			data.editionSection.editionGroup.id,
+		editionNumber: _.isNil(editionNumber) || editionNumber === '' ? null : editionNumber,
 		formatId: data.editionSection.format &&
 			parseInt(data.editionSection.format, 10),
 		height: data.editionSection.height &&
@@ -133,6 +140,7 @@ export function transformNewForm(data) {
 function getInitialNameSection(entity) {
 	return {
 		disambiguation: entity.disambiguation,
+		editionNumber: entity.editionNumber || '',
 		language: entity.defaultAlias.languageId,
 		languageId: entity.defaultAlias.languageId,
 		name: entity.defaultAlias.name,
@@ -199,6 +207,7 @@ router.get(
 			const {initialState} = props;
 			initialState.nameSection = {
 				disambiguation: '',
+				editionNumber: '',
 				exactMatches: null,
 				language: null,
 				name: req.query?.name ?? '',

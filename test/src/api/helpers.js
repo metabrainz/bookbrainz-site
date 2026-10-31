@@ -121,6 +121,7 @@ export function browseEditionBasicTests(res) {
 			'depth',
 			'disambiguation',
 			'editionFormat',
+			'editionNumber',
 			'height',
 			'languages',
 			'pages',

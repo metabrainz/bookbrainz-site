@@ -156,6 +156,10 @@ export function validateNameSectionDisambiguation(value: any): boolean {
 	return validateOptionalString(value);
 }
 
+export function validateEditionNumber(value: any): boolean {
+	return validateOptionalString(value);
+}
+
 export function validateNameSection(
 	values: any
 ): boolean {
@@ -163,7 +167,8 @@ export function validateNameSection(
 		validateNameSectionName(get(values, 'name', null)) &&
 		validateNameSectionSortName(get(values, 'sortName', null)) &&
 		validateNameSectionLanguage(get(values, 'language', null)) &&
-		validateNameSectionDisambiguation(get(values, 'disambiguation', null))
+		validateNameSectionDisambiguation(get(values, 'disambiguation', null)) &&
+		validateEditionNumber(get(values, 'editionNumber', get(values, 'edition_number', null)))
 	);
 }
 

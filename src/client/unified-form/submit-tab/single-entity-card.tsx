@@ -20,6 +20,7 @@ const ENTITY_FIELDS = {
 		Name: 'nameSection.name',
 		Language: 'nameSection.language',
 		'Sort-Name': 'nameSection.sortName',
+		'Edition-Number': 'nameSection.editionNumber',
 		Disambiguation: 'nameSection.disambiguation',
 		Annotation: 'annotationSection.content',
 		format: 'editionSection.format',
