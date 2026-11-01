@@ -358,9 +358,12 @@ async function _fetchEntityModelsForESResults(orm:ORM, results:SearchHitsMetadat
 		if (entityStub.type === 'Collection') {
 			const collection = await new UserCollection({id: entityStub.id})
 				.fetch({require: false, withRelated: ['collaborators']});
-			const collectionJSON = collection?.toJSON({omitPivot: true});
 			// Stale index entries for deleted or private collections must not leak
-			if (!collectionJSON || !(collectionJSON.public || _getCollectionEditorIds(collectionJSON).includes(userId))) {
+			if (!collection) {
+				return null;
+			}
+			const collectionJSON = collection.toJSON({omitPivot: true});
+			if (!collectionJSON.public && !_getCollectionEditorIds(collectionJSON).includes(userId)) {
 				return null;
 			}
 			delete collectionJSON.collaborators;
