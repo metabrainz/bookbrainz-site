@@ -1381,3 +1381,56 @@ describe('POST /collection/collectionID/collaborator/remove', () => {
 		expect(collaboratorsJSON.length).to.equal(1);
 	});
 });
+
+describe('Private collections in search', () => {
+	let agent;
+	let collaborator;
+	let collection;
+	let owner;
+	let stranger;
+	const name = 'privateCollectionInES';
+	async function searchAs(userId) {
+		await refreshIndex();
+		const {results} = await searchByName(orm, name, 'Collection', 10, 0, userId);
+		return results.map(result => result.id);
+	}
+	before(async () => {
+		owner = await createEditor(123456);
+		collaborator = await createEditor();
+		stranger = await createEditor();
+		collection = await new UserCollection({
+			description: 'description',
+			entityType: 'Author',
+			name,
+			ownerId: owner.get('id'),
+			public: false
+		}).save(null, {method: 'insert'});
+		await new UserCollectionCollaborator({
+			collaboratorId: collaborator.get('id'),
+			collectionId: collection.get('id')
+		}).save(null, {method: 'insert'});
+		await generateIndex(orm, 'Collection', true);
+		agent = await chai.request.agent(app);
+		await agent.get('/cb');
+	});
+	after((done) => {
+		truncateEntities().then(() => {
+			agent.close(done);
+		});
+	});
+
+	it('should be found by its owner and collaborators only', async () => {
+		expect(await searchAs(owner.get('id'))).to.deep.equal([collection.get('id')]);
+		expect(await searchAs(collaborator.get('id'))).to.deep.equal([collection.get('id')]);
+		expect(await searchAs(stranger.get('id'))).to.deep.equal([]);
+		expect(await searchAs()).to.deep.equal([]);
+	});
+
+	it('should not be found by a collaborator after they are removed', async () => {
+		const res = await agent.post(`/collection/${collection.get('id')}/collaborator/remove`)
+			.send({collaboratorIds: [collaborator.get('id')]});
+		expect(res.status).to.equal(200);
+		expect(await searchAs(collaborator.get('id'))).to.deep.equal([]);
+		expect(await searchAs(owner.get('id'))).to.deep.equal([collection.get('id')]);
+	});
+});

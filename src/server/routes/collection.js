@@ -342,6 +342,8 @@ router.post(
 			await new UserCollection({id: collection.id}).save({
 				lastModified: new Date()
 			}, {patch: true});
+			// Removed collaborators must stop finding a private collection in search
+			await search.indexCollection(req.app.locals.orm, collection.id);
 			res.status(200).send();
 		}
 		catch (err) {

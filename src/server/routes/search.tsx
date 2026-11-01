@@ -57,7 +57,7 @@ router.get('/', async (req, res, next) => {
 		};
 		if (query) {
 			// get 1 more results to check nextEnabled
-			const searchResponse = await search.searchByName(orm, query, _snakeCase(type), size + 1, from);
+			const searchResponse = await search.searchByName(orm, query, _snakeCase(type), size + 1, from, req.user?.id);
 			const {results: entities} = searchResponse;
 			const initialResults = entities.filter(entity => !isNil(entity));
 			searchResults = {
@@ -108,7 +108,7 @@ router.get('/search', (req, res) => {
 
 	const {size, from} = req.query;
 
-	const searchPromise = search.searchByName(orm, query, _snakeCase(type), size, from);
+	const searchPromise = search.searchByName(orm, query, _snakeCase(type), size, from, req.user?.id);
 
 	handler.sendPromiseResult(res, searchPromise);
 });
@@ -123,7 +123,7 @@ router.get('/autocomplete', (req, res) => {
 	const type = req.query.type as search.IndexableEntitiesOrAll ?? 'allEntities';
 	const size = Number(req.query.size) || 42;
 
-	const searchPromise = search.autocomplete(orm, query, type, size);
+	const searchPromise = search.autocomplete(orm, query, type, size, req.user?.id);
 
 	handler.sendPromiseResult(res, searchPromise);
 });
