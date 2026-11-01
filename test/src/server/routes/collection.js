@@ -1433,4 +1433,16 @@ describe('Private collections in search', () => {
 		expect(await searchAs(collaborator.get('id'))).to.deep.equal([]);
 		expect(await searchAs(owner.get('id'))).to.deep.equal([collection.get('id')]);
 	});
+
+	it('should be found by everyone once it is made public', async () => {
+		const res = await agent.post(`/collection/${collection.get('id')}/edit/handler`).send({
+			description: 'description',
+			entityType: 'Author',
+			name,
+			privacy: 'public'
+		});
+		expect(res.status).to.equal(200);
+		expect(await searchAs(stranger.get('id'))).to.deep.equal([collection.get('id')]);
+		expect(await searchAs()).to.deep.equal([collection.get('id')]);
+	});
 });
