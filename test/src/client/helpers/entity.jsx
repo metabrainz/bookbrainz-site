@@ -7,10 +7,10 @@
  * (at your option) any later version.
  */
 
+import {I18nextProvider, getI18n, setI18n} from 'react-i18next';
 import {entityToOption, getEntityLabelText} from '../../../../src/client/helpers/entity';
 import EntityLink from '../../../../src/client/components/entity-link';
 import EntityTitle from '../../../../src/client/components/pages/entities/title';
-import {I18nextProvider} from 'react-i18next';
 import React from 'react';
 import {createI18n} from '../../../../src/common/i18n/i18n';
 // eslint-disable-next-line import/no-internal-modules
@@ -39,11 +39,17 @@ const unnamed = {bbid: 'test-bbid', dataId: 1, type: 'Work'};
 const deleted = {...unnamed, dataId: null};
 
 describe('Entity helper translations', () => {
+	let previousI18n;
 	let englishI18n;
 	let frenchI18n;
 	beforeEach(() => {
+		previousI18n = getI18n();
 		englishI18n = createI18n('en', resources);
 		frenchI18n = createI18n('fr', resources);
+	});
+
+	afterEach(() => {
+		setI18n(previousI18n);
 	});
 
 	it('uses each supplied translator for fallback options and plain-text titles', () => {
