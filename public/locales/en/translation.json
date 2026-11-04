@@ -19,6 +19,8 @@
     },
     "authorCredit": "Author Credit",
     "authorCredits": "Author Credits",
+    "beginArea": "Begin Area",
+    "beginDate": "Begin Date",
     "bio": "Bio",
     "Bookbrainz": "BookBrainz",
     "button": {
@@ -50,6 +52,8 @@
     "details": "Details",
     "displayName": "Display Name",
     "email": " Email",
+    "endArea": "End Area",
+    "endDate": "End Date",
     "entities": "Entities",
     "entityType": {
       "area": "Area",
@@ -313,9 +317,7 @@
       "undoLastAction": "Undo last action"
     },
     "relationshipModal": {
-      "beginDate": "Begin Date",
       "editTitle": "Edit relationship",
-      "endDate": "End Date",
       "exampleText": "For example, you can link an author to a work, or a work to another work to show translation or derivation.",
       "introText": "Use this form to add links between this {{entityType}} and other entities.",
       "noRelationshipsPossible": "{{entityType}}s have no possible relationships with other entities at the moment.",
