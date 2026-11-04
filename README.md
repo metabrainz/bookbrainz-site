@@ -88,3 +88,37 @@ __[beta.bookbrainz.org](https://beta.bookbrainz.org)__ uses the main database bu
 __[test.bookbrainz.org](https://test.bookbrainz.org)__: all changes made to this subdomain are not in sync with the main database and vice versa.
 This domain is for you to tinker with all features of the website freely without having to verify the correctness of the data you enter. This comes in handy if that's all you need to do instead of having to set up BookBrainz locally.
 This subdomain is used for testing only and the data is not maintained or updated. It is not guaranteed that any of the data will be authentic.
+
+<br/>
+
+## Release process
+### Building images
+We have 2 Github actions to build development (manual) and production (automated) images.
+
+#### Dev images for test and beta environments
+Use the [Push development Docker image](https://github.com/metabrainz/bookbrainz-site/actions/workflows/push-dev-docker-image.yml) action.
+Click on the "Run workflow" button
+You will need to select a branch to build (or alternatively a PR number, overrides the branch selection), then choose the target build (website or API), and finally a name for the image that will be pushed.
+For image naming, prefer `original-branch-name` or for PRs `pr-1234`.
+
+#### Prod images
+Production images are automatically built for new releases (see [Production deployment](#[production-deployment) below).
+
+### Deployment cycle
+We have a separate `beta` branch, allowing us to stage some functionality before it is merged in production, while still allowing us to merge PRs into the master branch separately.
+
+#### Beta deployment
+1. Merge `master` into the `beta` branch
+2. Publish a beta image, usually named `beta` (see ["Building images"](#building-images) above)
+3. Pull and deploy the new image on the appropriate server
+
+#### Production deployment
+1. Once the beta testing period is over, merge `beta` into the `stable` branch
+2. The draft release notes will be automatically updated by an action job whenever commits are pushed to `stable`
+3. The target branch should be `stable`
+4. Write a short summary of changes, especially for user-facing features (no AI/LLM please!)
+5. Create a new tag with the prefix "v-" then the date and finally a suffix ".X" with a zero-based integer (`v-YYYY-MM-DD.0`)
+6. Use the same as the tag for the title of the release
+7. Double-check! Once you are satisfied, click "Publish release"
+8. A new docker image will automatically be built by a GH action job
+9. Pull the image using the tag and deploy it on the appropriate server
