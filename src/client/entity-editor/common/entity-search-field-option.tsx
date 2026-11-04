@@ -82,6 +82,7 @@ class EntitySearchFieldOption extends React.Component<Props> {
 		this.debouncedFetchOptions.cancel();
 	}
 
+	// eslint-disable-next-line no-invalid-this -- type query for the instance method
 	debouncedFetchOptions: DebouncedFunc<typeof this.fetchOptions>;
 
 	selectRef: React.RefObject<any>;

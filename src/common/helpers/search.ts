@@ -37,6 +37,11 @@ const _maxJitter = 75;
 
 let _client:Client = null;
 
+// The Express entry owns this client and passes its availability to loaders.
+export function getClient(): Client | null {
+	return _client;
+}
+
 function sanitizeEntityType(type:IndexableEntitiesOrAll | IndexableEntities[]) {
 	if (!type) {
 		return null;

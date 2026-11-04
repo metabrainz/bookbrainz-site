@@ -16,43 +16,61 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import type {Response} from 'express';
 import log from 'log';
 import status from 'http-status';
 
 
+type ErrorPath = {originalUrl?: string; path?: string};
+
+
+/*
+ * Marks the errors that were raised on purpose and may be shown to the user. Code that receives an error from another
+ * copy of this module cannot rely on instanceof SiteError. The shared error handler recognizes this marker.
+ */
+export const SITE_ERROR_KIND = 'bookbrainz:site-error';
+
 export class SiteError extends Error {
-	constructor(message) {
+	status: number;
+
+	readonly kind = SITE_ERROR_KIND;
+
+	detailedMessage?: string | string[];
+
+	// The request is accepted because many call sites pass it to every error class; only the path errors use it
+	constructor(message?: string | null, _req?: ErrorPath) {
 		super();
 
 		/*
 		 * We can't access the subclass's default message before calling super,
 		 * so we set it manually here
 		 */
-		this.message = message || this.constructor.defaultMessage;
+		this.message = message || (this.constructor as typeof SiteError).defaultMessage;
 
 		this.name = this.constructor.name;
-		this.status = this.constructor.status;
+		this.status = (this.constructor as typeof SiteError).status;
 	}
 
 	static get defaultMessage() {
 		return 'An unhandled error occurred';
 	}
 
-	static get status() {
+	static get status(): number {
 		return status.INTERNAL_SERVER_ERROR;
 	}
 }
 
 class PathError extends SiteError {
-	constructor(message, req) {
+	static detailedMessage(_req: ErrorPath): string[] { return []; }
+
+	constructor(message: string | null | undefined, req: ErrorPath) {
 		super(message);
-		this.detailedMessage = this.constructor.detailedMessage &&
-				this.constructor.detailedMessage(req);
+		this.detailedMessage = (this.constructor as typeof PathError).detailedMessage(req);
 	}
 }
 
 class _AuthenticationError extends SiteError {
-	static get status() {
+	static get status(): number {
 		return status.UNAUTHORIZED;
 	}
 }
@@ -69,7 +87,7 @@ export class FormSubmissionError extends SiteError {
 		return 'Form contained invalid data';
 	}
 
-	static get status() {
+	static get status(): number {
 		return status.BAD_REQUEST;
 	}
 }
@@ -79,7 +97,7 @@ export class BadRequestError extends SiteError {
 		return 'Bad Request';
 	}
 
-	static get status() {
+	static get status(): number {
 		return status.BAD_REQUEST;
 	}
 }
@@ -95,11 +113,11 @@ export class NotFoundError extends PathError {
 		return 'Page not found';
 	}
 
-	static get status() {
+	static get status(): number {
 		return status.NOT_FOUND;
 	}
 
-	static detailedMessage(req) {
+	static detailedMessage(req: ErrorPath) {
 		return [
 			`No content exists at the path requested: ${req.originalUrl}`,
 			'Please make sure you have entered in the correct address!'
@@ -112,11 +130,11 @@ export class PermissionDeniedError extends PathError {
 		return 'You do not have permission to access this page';
 	}
 
-	static get status() {
+	static get status(): number {
 		return status.FORBIDDEN;
 	}
 
-	static detailedMessage(req) {
+	static detailedMessage(req: ErrorPath) {
 		return [
 			`You do not have permission to access the following path:
 			${req.path}`,
@@ -131,11 +149,11 @@ export class NotAuthorizedError extends PathError {
 		return 'You do not have permission to access this route';
 	}
 
-	static get status() {
+	static get status(): number {
 		return status.FORBIDDEN;
 	}
 
-	static detailedMessage(req) {
+	static detailedMessage(req: ErrorPath) {
 		return [
 			`You do not have permission to access the following path:
 			${req.originalUrl}`,
@@ -144,12 +162,17 @@ export class NotAuthorizedError extends PathError {
 	}
 }
 
-function _logError(err) {
+function _logError(err: unknown) {
 	log.error(err);
 }
 
-export function getErrorToSend(err) {
-	if (err instanceof SiteError) {
+function isSiteError(error: unknown): error is SiteError {
+	return error instanceof Error && 'kind' in error && error.kind === SITE_ERROR_KIND &&
+		'status' in error && typeof error.status === 'number';
+}
+
+export function getErrorToSend(err: unknown): SiteError {
+	if (isSiteError(err)) {
 		return err;
 	}
 
@@ -158,10 +181,10 @@ export function getErrorToSend(err) {
 	 * instead and return a new generic SiteError
 	 */
 	_logError(err);
-	return new SiteError(err.message);
+	return new SiteError(err instanceof Error ? err.message : null);
 }
 
-export function sendErrorAsJSON(res, err) {
+export function sendErrorAsJSON(res: Response, err: unknown) {
 	const errorToSend = getErrorToSend(err);
 
 	res.status(
@@ -170,14 +193,14 @@ export function sendErrorAsJSON(res, err) {
 }
 
 export class AwardNotUnlockedError extends Error {
-	constructor(message) {
+	constructor(message?: string) {
 		super();
 
 		/*
 		 * We can't access the subclass's default message before calling super,
 		 * so we set it manually here
 		 */
-		this.message = message || this.constructor.defaultMessage;
+		this.message = message || (this.constructor as typeof AwardNotUnlockedError).defaultMessage;
 
 		this.name = this.constructor.name;
 	}
@@ -188,14 +211,14 @@ export class AwardNotUnlockedError extends Error {
 }
 
 export class ConflictError extends SiteError {
-	constructor(message) {
+	constructor(message?: string) {
 		super();
 
 		/*
 		 * We can't access the subclass's default message before calling super,
 		 * so we set it manually here
 		 */
-		this.message = message || this.constructor.defaultMessage;
+		this.message = message || (this.constructor as typeof SiteError).defaultMessage;
 
 		this.name = this.constructor.name;
 	}
@@ -204,7 +227,7 @@ export class ConflictError extends SiteError {
 		return 'Resource conflict';
 	}
 
-	static get status() {
+	static get status(): number {
 		return status.CONFLICT;
 	}
 }

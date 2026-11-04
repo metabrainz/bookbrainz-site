@@ -17,3 +17,5 @@ test/
 .tern-project
 LICENSE
 README.md
+build-router/
+.react-router/

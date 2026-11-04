@@ -40,7 +40,7 @@ ENV GIT_COMMIT_SHA=$GIT_COMMIT_SHA
 
 # Files necessary to complete the JavaScript build
 COPY --chown=bookbrainz scripts/ scripts/
-COPY --chown=bookbrainz .babelrc .eslintrc.js .eslintignore webpack.client.js package.json yarn.lock ./
+COPY --chown=bookbrainz .babelrc .eslintrc.js .eslintignore webpack.client.js vite.config.mts react-router.config.ts package.json yarn.lock ./
 
 RUN yarn install
 
@@ -48,6 +48,7 @@ COPY --chown=bookbrainz static/ static/
 COPY --chown=bookbrainz config/ config/
 COPY --chown=bookbrainz sql/ sql/
 COPY --chown=bookbrainz src/ src/
+COPY --chown=bookbrainz app/ app/
 
 
 # Development target

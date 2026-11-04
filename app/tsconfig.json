@@ -1,0 +1,38 @@
+{
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"jsx": "react",
+		"lib": [
+			"ESNext",
+			"DOM",
+			"DOM.Iterable"
+		],
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"noEmit": true,
+		"rootDirs": [
+			".",
+			"../.react-router/types/app"
+		],
+		"skipLibCheck": true,
+		"strict": true,
+		"target": "ESNext",
+		"types": [
+			"node",
+			"vite/client",
+			"passport",
+			"express-session"
+		]
+	},
+	"include": [
+		"./**/*",
+		"../.react-router/types/**/*",
+		"../vite.config.mts",
+		"../react-router.config.ts",
+		"../src/backend/**/*.ts",
+		"../src/common/types/site.ts",
+		"../src/common/helpers/error.ts",
+		"../src/common/helpers/session-data.ts",
+		"../src/server/helpers/router-build/*.ts"
+	]
+}

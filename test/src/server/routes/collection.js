@@ -1,6 +1,6 @@
 import {createAuthor, createEditor, truncateEntities} from '../../../test-helpers/create-entities';
 import {generateIndex, refreshIndex, searchByName} from '../../../../src/common/helpers/search';
-import app from '../../../../src/server/app';
+import {app} from '../../../fixtures/server';
 import assertArrays from 'chai-arrays';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
