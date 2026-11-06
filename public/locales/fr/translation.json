@@ -1,5 +1,6 @@
 {
     "common": {
+        "Bookbrainz": "BookBrainz",
         "about": {
             "accessingData": "Accéder aux données",
             "contactUs": "Contactez-nous",
@@ -7,9 +8,21 @@
             "ourStory": "Notre histoire",
             "title": "À propos de BookBrainz"
         },
+        "action": "Action",
+        "aliases": "Alias",
+        "allEntities": "Toutes les entités",
+        "anEmail": "une adresse email",
         "annotation": "Annotation",
+        "area": "Lieu",
+        "bio": "Biographie",
         "button": {
-            "close": "Fermer"
+            "add": "Ajouter",
+            "back": "Retour",
+            "cancel": "Annuler",
+            "close": "Fermer",
+            "continue": "Continuer",
+            "copy": "Copier",
+            "delete": "Supprimer"
         },
         "pagination": {
             "previous": "← Page précédente",
@@ -21,8 +34,5 @@
             "helpText": "Noms variantes pour une entité tels qu'une orthographe alternative, une écriture différente, une représentation stylistique, des acronymes, etc. Consultez la page d'aide pour plus de détails et d'exemples.",
             "title": "Éditeur d'alias"
         }
-    },
-    "errors": {},
-    "pages": {},
-    "staticPages": {}
+    }
 }
