@@ -20,6 +20,7 @@
 import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import React, {createRef, useCallback} from 'react';
+import {Trans, useTranslation} from 'react-i18next';
 import AuthorCreditDisplay from '../../author-credit-display';
 import AverageRating from './average-ratings';
 import CBReviewModal from './cbReviewModal';
@@ -42,6 +43,7 @@ function EditionGroupAttributes({editionGroup}) {
 	if (editionGroup.deleted) {
 		return deletedEntityMessage;
 	}
+	const {t: translate} = useTranslation();
 	const type = getTypeAttribute(editionGroup.editionGroupType).data;
 	const sortNameOfDefaultAlias = getSortNameOfDefaultAlias(editionGroup);
 	const averageRating = editionGroup.reviews?.reviews?.average_rating?.rating || 0;
@@ -51,13 +53,13 @@ function EditionGroupAttributes({editionGroup}) {
 			<Row>
 				<Col lg={3}>
 					<dl>
-						<dt>Sort Name</dt>
+						<dt>{translate('common.sortName')}</dt>
 						<dd>{sortNameOfDefaultAlias}</dd>
 					</dl>
 				</Col>
 				<Col lg={3}>
 					<dl>
-						<dt>Type</dt>
+						<dt>{translate('common.type')}</dt>
 						<dd>{type}</dd>
 					</dl>
 				</Col>
@@ -105,10 +107,12 @@ function EditionGroupDisplayPage({entity, identifierTypes = [], user, wikipediaE
 	else if (!entity.deleted && (hasAuthorCredits === true || hasAuthorCredits === null)) {
 		authorCreditSection = (
 			<div className="alert alert-warning text-center">
-				Author Credit unset; please&nbsp;
-				<a href={`/edition-group/${entity.bbid}/edit`}>edit this Edition Group</a>&nbsp;
-				and add its Author(s) if you see this!
-				You can copy the Author Credit from one of the Editions as well
+				<Trans
+					components={{
+						editLink: <a href={`/edition-group/${entity.bbid}/edit`}/>
+					}}
+					i18nKey="pages.entity.authorCreditUnsetEG"
+				/>
 			</div>);
 	}
 

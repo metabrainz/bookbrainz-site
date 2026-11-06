@@ -34,6 +34,7 @@ import ValidationLabel from '../common/validation-label';
 import {clearAuthor} from '../../unified-form/cover-tab/action';
 import {connect} from 'react-redux';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 
 type OwnProps = {
@@ -92,6 +93,7 @@ function AuthorCreditRow({
 	onRemoveButtonClick,
 	...rest
 }: Props) {
+	const {t: translate} = useTranslation();
 	const SelectWrapper = !isUnifiedForm ? EntitySearchFieldOption : SearchEntityCreate;
 	const onChangeHandler = React.useCallback((value, action) => {
 		if (['clear', 'pop-value', 'select-option'].includes(action?.action) && author?.get('__isNew__', false)) {
@@ -112,7 +114,7 @@ function AuthorCreditRow({
 					<SelectWrapper
 						instanceId={`author${index}`}
 						isUnifiedForm={isUnifiedForm}
-						label="Author"
+						label={translate('common.entityType.author')}
 						rowId={index}
 						validationState={!author ? 'error' : null}
 						value={author}
@@ -126,8 +128,7 @@ function AuthorCreditRow({
 					<Form.Group>
 						<Form.Label>
 							<ValidationLabel empty={name.length === 0} error={!name.length}>
-								Author as credited
-
+								{translate('entityEditor.authorCreditRow.creditedAsLabel')}
 							</ValidationLabel>
 						</Form.Label>
 						<Form.Control type="text" value={name} onChange={onNameChange}/>
@@ -136,7 +137,7 @@ function AuthorCreditRow({
 				</Col>
 				<Col md={{span: 3}}>
 					<Form.Group>
-						<Form.Label>Join Phrase</Form.Label>
+						<Form.Label>{translate('entityEditor.authorCreditEditor.joinPhraseLabel')}</Form.Label>
 						<Form.Control type="text" value={joinPhrase} onChange={onJoinPhraseChange}/>
 
 					</Form.Group>
@@ -149,7 +150,7 @@ function AuthorCreditRow({
 						onClick={handleButtonClick}
 					>
 						<FontAwesomeIcon icon={faTimes}/>
-						&nbsp;Remove
+						&nbsp;{translate('common.button.remove')}
 					</Button>
 				</Col>
 			</Row>

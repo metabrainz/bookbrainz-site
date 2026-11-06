@@ -33,6 +33,7 @@ import SortNameField from '../common/sort-name-field';
 import {connect} from 'react-redux';
 import {faTimes} from '@fortawesome/free-solid-svg-icons';
 import {isAliasEmpty} from '../helpers';
+import {useTranslation} from 'react-i18next';
 
 
 /**
@@ -74,68 +75,71 @@ const AliasRow = ({
 	onSortNameChange,
 	onRemoveButtonClick,
 	onPrimaryClick
-}) => (
-	<div>
-		<Row>
-			<Col lg={4}>
-				<NameField
-					autoFocus
-					defaultValue={nameValue}
-					empty={
-						isAliasEmpty(nameValue, sortNameValue, languageValue)
-					}
-					error={!validateAliasName(nameValue)}
-					onChange={onNameChange}
-				/>
-			</Col>
-			<Col lg={4}>
-				<SortNameField
-					defaultValue={sortNameValue}
-					empty={
-						isAliasEmpty(nameValue, sortNameValue, languageValue)
-					}
-					error={!validateAliasSortName(sortNameValue)}
-					storedNameValue={nameValue}
-					onChange={onSortNameChange}
-				/>
-			</Col>
-			<Col lg={4}>
-				<LanguageField
-					empty={
-						isAliasEmpty(nameValue, sortNameValue, languageValue)
-					}
-					error={!validateAliasLanguage(languageValue)}
-					instanceId="language"
-					options={languageOptions}
-					value={languageOptions.filter((el) => el.value === languageValue)}
-					onChange={onLanguageChange}
-				/>
-			</Col>
-		</Row>
-		<Row>
-			<Col lg={{offset: 5, span: 2}}>
-				<Form.Check
-					defaultChecked={primaryChecked}
-					label="Primary"
-					type="checkbox"
-					onChange={onPrimaryClick}
-				/>
-			</Col>
-			<Col className="text-right" lg={{offset: 2, span: 3}}>
-				<Button
-					block
-					className="margin-top-d5"
-					variant="danger"
-					onClick={onRemoveButtonClick}
-				>
-					<FontAwesomeIcon icon={faTimes}/>
-					<span>&nbsp;Remove</span>
-				</Button>
-			</Col>
-		</Row>
-		<hr/>
-	</div>
-);
+}) => {
+	const {t: translate} = useTranslation();
+	return (
+		<div>
+			<Row>
+				<Col lg={4}>
+					<NameField
+						autoFocus
+						defaultValue={nameValue}
+						empty={
+							isAliasEmpty(nameValue, sortNameValue, languageValue)
+						}
+						error={!validateAliasName(nameValue)}
+						onChange={onNameChange}
+					/>
+				</Col>
+				<Col lg={4}>
+					<SortNameField
+						defaultValue={sortNameValue}
+						empty={
+							isAliasEmpty(nameValue, sortNameValue, languageValue)
+						}
+						error={!validateAliasSortName(sortNameValue)}
+						storedNameValue={nameValue}
+						onChange={onSortNameChange}
+					/>
+				</Col>
+				<Col lg={4}>
+					<LanguageField
+						empty={
+							isAliasEmpty(nameValue, sortNameValue, languageValue)
+						}
+						error={!validateAliasLanguage(languageValue)}
+						instanceId="language"
+						options={languageOptions}
+						value={languageOptions.filter((el) => el.value === languageValue)}
+						onChange={onLanguageChange}
+					/>
+				</Col>
+			</Row>
+			<Row>
+				<Col lg={{offset: 5, span: 2}}>
+					<Form.Check
+						defaultChecked={primaryChecked}
+						label={translate('entityEditor.aliasEditor.primaryLabel')}
+						type="checkbox"
+						onChange={onPrimaryClick}
+					/>
+				</Col>
+				<Col className="text-right" lg={{offset: 2, span: 3}}>
+					<Button
+						block
+						className="margin-top-d5"
+						variant="danger"
+						onClick={onRemoveButtonClick}
+					>
+						<FontAwesomeIcon icon={faTimes}/>
+						<span>&nbsp;{translate('common.button.remove')}</span>
+					</Button>
+				</Col>
+			</Row>
+			<hr/>
+		</div>
+	);
+};
 AliasRow.displayName = 'AliasEditor.AliasRow';
 AliasRow.propTypes = {
 	languageOptions: PropTypes.array.isRequired,

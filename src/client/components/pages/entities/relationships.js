@@ -16,15 +16,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {Trans, useTranslation} from 'react-i18next';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Relationship from '../../../entity-editor/relationship-editor/relationship';
 
 
 function EntityRelationships({contextEntity, relationships, entityUrl}) {
+	const {t: translate} = useTranslation();
 	return (
 		<div>
-			<h2>Relationships</h2>
+			<h2>{translate('common.relationships')}</h2>
 			{relationships?.length > 0 ? (
 				<ul className="list-unstyled">
 					{relationships.map((relationship) => (
@@ -43,7 +45,13 @@ function EntityRelationships({contextEntity, relationships, entityUrl}) {
 				</ul>
 			) : (
 				<p className="text-muted">
-					<b>No relationships.</b> <a href={`${entityUrl}/edit`}>Click here to edit</a> and create new relationships.
+					<Trans
+						components={{
+							editLink: <a href={`${entityUrl}/edit`}/>,
+							noRelationships: <b/>
+						}}
+						i18nKey="pages.entity.noRelationships"
+					/>
 				</p>
 			)}
 		</div>

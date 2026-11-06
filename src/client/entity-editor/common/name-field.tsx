@@ -22,6 +22,7 @@ import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ValidationLabel from '../common/validation-label';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 
 type Props = {
@@ -57,9 +58,10 @@ function NameField({
 	warn = false,
 	...rest
 }: Props) {
+	const {t: translate} = useTranslation();
 	const inputLabel = (
 		<ValidationLabel empty={empty} error={error} warn={warn}>
-			{!label ? 'Name' : label}
+			{!label ? translate('common.name') : label}
 		</ValidationLabel>
 	);
 

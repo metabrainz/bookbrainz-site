@@ -17,6 +17,7 @@
  */
 
 import * as bootstrap from 'react-bootstrap';
+import {Trans, withTranslation} from 'react-i18next';
 import {faTasks, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {isNil, isString, size, values} from 'lodash';
 import EntityLink from '../../entity-link';
@@ -53,7 +54,7 @@ class MergeQueue extends React.Component {
 	};
 
 	render() {
-		const {mergeQueue} = this.props;
+		const {mergeQueue, t: translate} = this.props;
 		if (isNil(mergeQueue)) {
 			return null;
 		}
@@ -61,7 +62,7 @@ class MergeQueue extends React.Component {
 		const entityCount = size(mergingEntities);
 		let entityList;
 		if (entityCount === 0) {
-			entityList = <div>No entities selected for merge</div>;
+			entityList = <div>{translate('pages.merge.noEntities')}</div>;
 		}
 		else {
 			entityList = (
@@ -74,7 +75,7 @@ class MergeQueue extends React.Component {
 									<input
 										checked={this.state.selectedOption === entity.bbid}
 										className="margin-right-1"
-										title="Select entity"
+										title={translate('pages.merge.selectEntity')}
 										type="radio"
 										value={entity.bbid}
 										onChange={this.handleOptionChange}
@@ -89,38 +90,44 @@ class MergeQueue extends React.Component {
 		return (
 			<Card bg="light" className="margin-top-2">
 				<h3 className="margin-top-0">
-					Selected {entityCount} entit{entityCount > 1 ? 'ies' : 'y'} for merging
+					{translate('pages.merge.selectedEntities', {count: entityCount})}
 				</h3>
-				<p className="text-muted">Select the entity you want to merge into, or add more duplicates to merge.<br/>
-					After clicking <i>Merge into selected entity</i>, you will be redirected to a page where you can review the data before merging.
+				<p className="text-muted">
+					<Trans
+						components={{
+							italic: <i/>,
+							lineBreak: <br/>
+						}}
+						i18nKey="pages.merge.mergeInstructions"
+					/>
 				</p>
 				{entityList}
 				<ButtonGroup className="d-inline-block">
 					<Button
 						disabled={isNil(this.state.selectedOption)}
 						href={`/merge/submit/${this.state.selectedOption}`}
-						title="Merge entities"
+						title={translate('pages.merge.mergeEntities')}
 						variant="success"
 					>
 						<FontAwesomeIcon icon={faTasks}/>
-						&nbsp;Merge into selected entity
+						&nbsp;{translate('pages.merge.mergeButton')}
 					</Button>
 					<Button
 						disabled={isNil(this.state.selectedOption)}
 						href={`/merge/remove/${this.state.selectedOption}`}
-						title="Remove from merge"
+						title={translate('pages.merge.removeFromMerge')}
 						variant="warning"
 					>
 						<FontAwesomeIcon icon={faTrashAlt}/>
-						&nbsp;Remove selected entity
+						&nbsp;{translate('pages.merge.removeSelected')}
 					</Button>
 					<Button
 						href="/merge/cancel"
-						title="Cancel merge"
+						title={translate('pages.merge.cancelMerge')}
 						variant="danger"
 					>
 						<FontAwesomeIcon icon={faTrashAlt}/>
-						&nbsp;Cancel merge
+						&nbsp;{translate('pages.merge.cancelMerge')}
 					</Button>
 				</ButtonGroup>
 			</Card>
@@ -130,7 +137,9 @@ class MergeQueue extends React.Component {
 
 MergeQueue.displayName = 'MergeQueue';
 MergeQueue.propTypes = {
-	mergeQueue: PropTypes.object.isRequired
+	mergeQueue: PropTypes.object.isRequired,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired
 };
 
-export default MergeQueue;
+export default withTranslation()(MergeQueue);

@@ -50,6 +50,7 @@ router.get('/', auth.isAuthenticated, auth.isAuthorized(REINDEX_SEARCH_SERVER), 
 		);
 
 		return res.send(target({
+			locale: res.locals.locale,
 			markup,
 			props: escapeProps(props),
 			script: '/js/searchAdmin.js',

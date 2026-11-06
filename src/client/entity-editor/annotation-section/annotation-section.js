@@ -17,6 +17,7 @@
  */
 
 import {Col, Form, OverlayTrigger, Row, Tooltip} from 'react-bootstrap';
+import {Trans, useTranslation} from 'react-i18next';
 import {convertMapToObject, formatDate} from '../../helpers/utils';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -43,24 +44,25 @@ function AnnotationSection({
 	onAnnotationChange,
 	isUnifiedForm = false
 }) {
+	const {t: translate} = useTranslation();
 	const annotation = convertMapToObject(immutableAnnotation);
 	const annotationLabel = (
 		<span>
-			Annotation
-			<span className="text-muted"> (optional)</span>
+			{translate('common.annotation')}
+			<span className="text-muted"> {translate('entityEditor.shared.optionalLabel')}</span>
 		</span>
 	);
 
 	const tooltip = (
 		<Tooltip>
-			Additional freeform data that does not fit in the above form
+			{translate('entityEditor.annotationSection.tooltip')}
 		</Tooltip>
 	);
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
 	}
-	const heading = <h2> Annotation</h2>;
+	const heading = <h2> {translate('common.annotation')}</h2>;
 	return (
 		<div>
 			{!isUnifiedForm && heading}
@@ -85,11 +87,22 @@ function AnnotationSection({
 					</Form.Group>
 					{
 						annotation && annotation.lastRevision &&
-						<p className="small text-muted">Last modified: {formatDate(new Date(annotation.lastRevision.createdAt))}</p>
+						<p className="small text-muted">
+							{translate('entityEditor.annotationSection.lastModified', {
+								date: formatDate(new Date(annotation.lastRevision.createdAt))
+							})}
+						</p>
 					}
 					<p className="text-muted">
-						Annotations allow you to enter freeform data that does not otherwise fit in the above form.
-						<b> Do not submit any copyrighted text here.</b> The contents will be made available to the public under <a href="https://musicbrainz.org/doc/About/Data_License">open licenses</a>.
+						{translate('entityEditor.annotationSection.helpText')}
+						<b> {translate('entityEditor.annotationSection.copyrightWarning')}</b>
+						{' '}
+						<Trans
+							components={{
+								licenseLink: <a href="https://musicbrainz.org/doc/About/Data_License"/>
+							}}
+							i18nKey="entityEditor.annotationSection.openLicenseNotice"
+						/>
 					</p>
 				</Col>
 			</Row>

@@ -91,6 +91,7 @@ router.get('/', auth.isAuthenticated, auth.isAuthorized(ADMIN), async (req, res,
 		);
 
 		return res.send(target({
+			locale: res.locals.locale,
 			markup,
 			props: escapeProps(props),
 			script: '/js/adminPanel.js',

@@ -20,6 +20,7 @@ import * as bootstrap from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
 import request from 'superagent';
+import {withTranslation} from 'react-i18next';
 
 
 const {Alert} = bootstrap;
@@ -44,14 +45,14 @@ class ExternalServices extends React.Component {
 				}
 				else {
 					this.setState({
-						alertDetails: 'Something went wrong. Please try again.',
+						alertDetails: this.props.t('common.somethingWentWrong'),
 						alertType: 'danger'
 					});
 				}
 			}
 			catch (err) {
 				this.setState({
-					alertDetails: 'Something went wrong. Please try again.',
+					alertDetails: this.props.t('common.somethingWentWrong'),
 					alertType: 'danger'
 				});
 			}
@@ -73,7 +74,7 @@ class ExternalServices extends React.Component {
 			}
 			catch (err) {
 				this.setState({
-					alertDetails: 'Something went wrong. Please try again.',
+					alertDetails: this.props.t('common.somethingWentWrong'),
 					alertType: 'danger'
 				});
 			}
@@ -82,6 +83,7 @@ class ExternalServices extends React.Component {
 
 
 	render() {
+		const {t: translate} = this.props;
 		const ShowServiceOption = (optionData) => {
 			const {
 				service, value, title, details
@@ -113,14 +115,14 @@ class ExternalServices extends React.Component {
 			if (alertType === 'success') {
 				return (
 					<Alert variant="success">
-						<strong>Success! {this.state.alertDetails}</strong>
+						<strong>{translate('common.successLabel')} {this.state.alertDetails}</strong>
 					</Alert>
 				);
 			}
 			else if (alertType === 'danger') {
 				return (
 					<Alert variant="danger">
-						<strong>Error! {this.state.alertDetails}</strong>
+						<strong>{translate('common.errorLabel')} {this.state.alertDetails}</strong>
 					</Alert>
 				);
 			}
@@ -130,29 +132,28 @@ class ExternalServices extends React.Component {
 		return (
 			<div>
 				{showAlert(this.state.alertType)}
-				<div className="page-header"><h1>Connect with third-party services</h1></div>
+				<div className="page-header">
+					<h1>{translate('pages.externalServices.heading')}</h1>
+				</div>
 				<div className="card">
 					<div className="card-header">
-						<h3 className="card-title">CritiqueBrainz</h3>
+						<h3 className="card-title">{translate('pages.entity.critiqueBrainz')}</h3>
 					</div>
 					<div className="card-body">
 						<p>
-							Connect to your CritiqueBrainz account to publish reviews directly from BookBrainz.
-							Your reviews will be independently visible on CritiqueBrainz and appear publicly
-							on your CritiqueBrainz profile unless removed. To view or delete your reviews, visit your
-							CritiqueBrainz profile.
+							{translate('pages.externalServices.critiqueBrainzDescription')}
 						</p>
 						<br/>
 						<ShowServiceOption
-							details="You will be able to publish reviews directly from BookBrainz."
+							details={translate('pages.externalServices.reviewsEnabledDetail')}
 							service="critiquebrainz"
-							title="Reviews"
+							title={translate('pages.entity.reviews')}
 							value="review"
 						/>
 						<ShowServiceOption
-							details="You will not be able to publish reviews directly from BookBrainz."
+							details={translate('pages.externalServices.reviewsDisabledDetail')}
 							service="critiquebrainz"
-							title="Disable"
+							title={translate('pages.externalServices.disableTitle')}
 							value="disable"
 						/>
 					</div>
@@ -166,7 +167,9 @@ ExternalServices.displayName = 'ExternalServices';
 ExternalServices.propTypes = {
 	alertDetails: PropTypes.string,
 	alertType: PropTypes.string,
-	cbPermission: PropTypes.string.isRequired
+	cbPermission: PropTypes.string.isRequired,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired
 };
 ExternalServices.defaultProps = {
 	alertDetails: '',
@@ -174,4 +177,4 @@ ExternalServices.defaultProps = {
 };
 
 
-export default ExternalServices;
+export default withTranslation()(ExternalServices);

@@ -18,6 +18,7 @@
 
 import * as bootstrap from 'react-bootstrap';
 
+import {Trans, useTranslation} from 'react-i18next';
 import React from 'react';
 
 
@@ -28,6 +29,7 @@ const {Col, Row} = bootstrap;
  * @returns {JSX.Element} a React JSX Component
  */
 function LicensingPage(): JSX.Element {
+	const {t: translate} = useTranslation();
 	const CC0Link = 'http://creativecommons.org/publicdomain/zero/1.0/';
 	const CC0Image = 'http://i.creativecommons.org/p/zero/1.0/88x31.png';
 
@@ -38,53 +40,51 @@ function LicensingPage(): JSX.Element {
 	return (
 		<div>
 			<div className="page-header">
-				<h1>Licensing</h1>
+				<h1>{translate('pages.licensing.heading')}</h1>
 			</div>
 
-			<p>The BookBrainz core data is licensed under the&nbsp;
-				<a href={CC0Link}>
-					Creative Commons CC0
-				</a> license. The core data includes the following
-				information:
+			<p>
+				<Trans
+					components={{cc0Link: <a href={CC0Link}/>}}
+					i18nKey="pages.licensing.coreDataNotice"
+				/>
 			</p>
 
 			<ul>
 				<li>
-					<b>Author</b>&nbsp;
-					BBID, aliases, type, begin and end dates, gender and
-					disambiguation comment
+					<b>{translate('common.entityType.author')}</b>&nbsp;
+					{translate('pages.licensing.coreAuthor')}
 				</li>
 				<li>
-					<b>Edition Group</b>&nbsp;
-					BBID, aliases, type and disambiguation comment
+					<b>{translate('common.entityType.editionGroup')}</b>&nbsp;
+					{translate('pages.licensing.coreEditionGroup')}
 				</li>
 				<li>
-					<b>Edition</b>&nbsp;
-					BBID, aliases, begin and end dates, language, status
-					and disambiguation comment
+					<b>{translate('common.entityType.edition')}</b>&nbsp;
+					{translate('pages.licensing.coreEdition')}
 				</li>
 				<li>
-					<b>Publisher</b>&nbsp;
-					BBID, aliases, type, begin and end dates and
-					disambiguation comment
+					<b>{translate('common.entityType.publisher')}</b>&nbsp;
+					{translate('pages.licensing.corePublisher')}
 				</li>
 				<li>
-					<b>Work</b>&nbsp;
-					BBID, aliases, languages, type, disambiguation comment
+					<b>{translate('common.entityType.work')}</b>&nbsp;
+					{translate('pages.licensing.coreWork')}
 				</li>
 				<li>
-					<b>Relationship</b>&nbsp;
-					ID, type, and entity and text associations
+					<b>{translate('common.relationship')}</b>&nbsp;
+					{translate('pages.licensing.coreRelationship')}
 				</li>
 			</ul>
 
 			<p>
-				Other publically available data is licensed under the&nbsp;
-				<a href={CCBYSALink}>
-					Creative Commons CC BY-SA
-				</a> license. If you have any queries about licensing of
-				the public data, please <a href="mailto:bookbrainz@metabrainz.org">ask for clarification</a>.
-				Please see the links below for more details about CC0 and CC BY-SA.
+				<Trans
+					components={{
+						askLink: <a href="mailto:bookbrainz@metabrainz.org"/>,
+						ccBySaLink: <a href={CCBYSALink}/>
+					}}
+					i18nKey="pages.licensing.publicDataNotice"
+				/>
 			</p>
 
 			<Row className="margin-top-2">
@@ -95,7 +95,7 @@ function LicensingPage(): JSX.Element {
 					>
 						<div>
 							<img
-								alt="CC0"
+								alt={translate('pages.licensing.cc0Alt')}
 								src={CC0Image}
 							/>
 						</div>
@@ -109,7 +109,7 @@ function LicensingPage(): JSX.Element {
 					>
 						<div>
 							<img
-								alt="Creative Commons License"
+								alt={translate('pages.licensing.ccBySaAlt')}
 								src={CCBYSAImage}
 							/>
 						</div>

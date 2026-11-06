@@ -23,6 +23,7 @@ import AddToCollectionModal from '../parts/add-to-collection-modal';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {withTranslation} from 'react-i18next';
 
 
 const {formatDate} = utilsHelper;
@@ -58,7 +59,7 @@ class EntityFooter extends React.Component {
 		else {
 			this.setState({
 				message: {
-					text: 'You need to be logged in',
+					text: this.props.t('pages.entity.needToBeLoggedIn'),
 					type: 'danger'
 				}
 			});
@@ -77,6 +78,7 @@ class EntityFooter extends React.Component {
 	}
 
 	render() {
+		const {t: translate} = this.props;
 		return (
 			<div>
 				{
@@ -103,58 +105,58 @@ class EntityFooter extends React.Component {
 							className="footer-button"
 							disabled={this.props.deleted}
 							href={`${this.props.entityUrl}/edit`}
-							title="Edit Entity"
+							title={translate('pages.entity.editEntity')}
 							variant="warning"
 						>
 							<FontAwesomeIcon icon={faPencilAlt}/>
-							&nbsp;Edit
+							{' '}{translate('common.button.edit')}
 						</Button>
 						<Button
 							className="footer-button"
 							href={`${this.props.entityUrl}/revisions`}
-							title="Revision History"
+							title={translate('pages.entity.revisionHistory')}
 							variant="primary"
 						>
 							<FontAwesomeIcon icon={faHistory}/>
-							&nbsp;History
+							{' '}{translate('pages.entity.history')}
 						</Button>
 						<Button
 							className="footer-button"
 							disabled={this.props.deleted}
 							href={`${this.props.entityUrl}/delete`}
-							title="Delete Entity"
+							title={translate('pages.entity.deleteEntity')}
 							variant="danger"
 						>
 							<FontAwesomeIcon icon={faTimes}/>
-							&nbsp;Delete
+							{' '}{translate('common.button.delete')}
 						</Button>
 						<Button
 							className="footer-button"
 							href={`/merge/add/${this.props.bbid}`}
-							title="Select entity for merging"
+							title={translate('pages.entity.selectForMerging')}
 							variant="secondary"
 						>
 							<FontAwesomeIcon
 								flip="vertical"
 								icon={faCodeBranch}
 							/>
-							&nbsp;Merge
+							{' '}{translate('pages.entity.merge')}
 						</Button>
 						<Button
 							className="footer-button"
 							href="#"
-							title="Add To Collection"
+							title={translate('pages.entity.addToCollectionTitle')}
 							variant="primary"
 							onClick={this.handleShowModal}
 						>
 							<FontAwesomeIcon icon={faGripVertical}/>
-							&nbsp;Add to collection
+							{' '}{translate('pages.entity.addToCollection')}
 						</Button>
 					</Col>
 				</Row>
 				<div className="text-center margin-top-d10">
 					<dl>
-						<dt>Last Modified</dt>
+						<dt>{translate('common.lastModified')}</dt>
 						<dd>{formatDate(new Date(this.props.lastModified))}</dd>
 					</dl>
 				</div>
@@ -169,10 +171,12 @@ EntityFooter.propTypes = {
 	entityType: PropTypes.string.isRequired,
 	entityUrl: PropTypes.string.isRequired,
 	lastModified: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]).isRequired,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired,
 	user: PropTypes.object.isRequired
 };
 EntityFooter.defaultProps = {
 	deleted: false
 };
 
-export default EntityFooter;
+export default withTranslation()(EntityFooter);

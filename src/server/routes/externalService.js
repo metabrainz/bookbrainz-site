@@ -72,6 +72,7 @@ router.get('/', async (req, res) => {
 	);
 
 	return res.send(target({
+		locale: res.locals.locale,
 		markup,
 		props: escapeProps(props),
 		script: '/js/externalService.js',
