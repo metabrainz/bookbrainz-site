@@ -10,7 +10,12 @@
             "ourStory": "Notre histoire",
             "title": "À propos de BookBrainz"
         },
+        "action": "Action",
+        "aliases": "Alias",
+        "allEntities": "Toutes les entitées",
+        "anEmail": "une adresse email",
         "annotation": "Annotation",
+        "area": "Lieu",
         "auth": {
             "signInRegister": "",
             "signOut": ""
@@ -19,6 +24,7 @@
         "authorCredits": "",
         "beginArea": "",
         "beginDate": "",
+        "bio": "Biographie",
         "button": {
             "add": "",
             "back": "",
@@ -45,6 +51,7 @@
         "description": "",
         "details": "",
         "displayName": "",
+        "email": "",
         "endArea": "",
         "endDate": "",
         "entities": "",
@@ -104,6 +111,7 @@
             "profile": "",
             "revisions": "",
             "searchAdmin": "",
+            "searchPlaceholder": "",
             "skipToContent": "",
             "statistics": ""
         },
@@ -326,7 +334,8 @@
         "seriesEditor": {
             "addButton": "",
             "addEntityPrompt": "",
-            "heading": ""
+            "heading": "",
+            "placeholder": ""
         },
         "seriesSection": {
             "allFieldsMandatory": "",
@@ -507,6 +516,7 @@
             "cbTooltip": "",
             "cbWordCharCount": "",
             "clickAddToCollectionDescription": "",
+            "continueReadingWikipedia": "",
             "couldNotFetchReviews": "",
             "critiqueBrainz": "",
             "dateDissolved": "",
@@ -652,6 +662,7 @@
             "reputation": "",
             "revisionsApplied": "",
             "revisionsReverted": "",
+            "selectAreaPlaceholder": "",
             "selectGenderPlaceholder": "",
             "selectTitlePlaceholder": "",
             "sendEmail": "",
