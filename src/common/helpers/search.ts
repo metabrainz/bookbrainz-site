@@ -168,6 +168,9 @@ const indexSettings:IndicesCreateRequest = {
 					trigrams: {type: 'text', analyzer: 'ngrams_analyzer'}
 				}
 			},
+			/* Collections only: who can find a private collection (owner and collaborators) */
+			editorIds: {type: 'integer'},
+			public: {type: 'boolean'},
 			/* Used only for filtering by entity type; uses a keyword 'type' field on the documents */
 			type: {
 				type: 'keyword',
@@ -223,6 +226,52 @@ function _applyTypeFilterToDSL(dslQuery:SearchRequest, type:IndexableEntitiesOrA
 	dslQuery.query = {bool: newQuery};
 }
 
+/* Hide private collections unless the user owns or collaborates on them.
+   Matches on `public: false` rather than `public: true` so documents without the field
+   (other entity types, collections indexed before it existed) are not filtered out here;
+   private ones among the latter are still dropped when hydrating results. */
+function _applyCollectionVisibilityFilterToDSL(dslQuery:SearchRequest, userId?:number) {
+	const visible:QueryDslQueryContainer[] = [{bool: {must_not: {term: {public: false}}}}];
+	if (userId) {
+		visible.push({term: {editorIds: userId}});
+	}
+	dslQuery.query = {
+		bool: {
+			filter: {bool: {minimum_should_match: 1, should: visible}},
+			must: dslQuery.query
+		}
+	};
+}
+
+// Owner and collaborators; expects the collection JSON fetched with its `collaborators`
+function _getCollectionEditorIds(collectionJSON):number[] {
+	return [collectionJSON.ownerId, ...collectionJSON.collaborators.map(({collaboratorId}) => collaboratorId)];
+}
+
+function _getCollectionDocument(collectionJSON) {
+	return {
+		aliases: [{name: collectionJSON.name}],
+		editorIds: _getCollectionEditorIds(collectionJSON),
+		id: collectionJSON.id,
+		public: collectionJSON.public,
+		type: 'Collection'
+	};
+}
+
+/* (Re)index a collection, public or not, with the editors allowed to find it */
+export async function indexCollection(orm:ORM, collectionId:string) {
+	const collection = await new orm.UserCollection({id: collectionId}).fetch({withRelated: ['collaborators']});
+	return _client
+		.index({
+			body: _getCollectionDocument(collection.toJSON()),
+			id: collectionId,
+			index: _index
+		})
+		.catch((error) => {
+			log.error('error indexing collection for search:', error);
+		});
+}
+
 /* We don't currently want to index the entire Model in ElasticSearch,
    which contains a lot of fields we don't use as well as some internal props (_pivot props)
    This utility function prepares the Model into a minimal object that will be indexed
@@ -268,7 +317,7 @@ export function getDocumentToIndex(entity:any) {
 	};
 }
 
-async function _fetchEntityModelsForESResults(orm:ORM, results:SearchHitsMetadata<any>) {
+async function _fetchEntityModelsForESResults(orm:ORM, results:SearchHitsMetadata<any>, userId?:number) {
 	const {Area, Editor, UserCollection} = orm;
 
 	if (!results?.hits) {
@@ -308,13 +357,16 @@ async function _fetchEntityModelsForESResults(orm:ORM, results:SearchHitsMetadat
 		}
 		if (entityStub.type === 'Collection') {
 			const collection = await new UserCollection({id: entityStub.id})
-				.fetch({require: false});
+				.fetch({require: false, withRelated: ['collaborators']});
 			// Stale index entries for deleted or private collections must not leak
-			if (!collection?.get('public')) {
+			if (!collection) {
 				return null;
 			}
-
 			const collectionJSON = collection.toJSON({omitPivot: true});
+			if (!collectionJSON.public && !_getCollectionEditorIds(collectionJSON).includes(userId)) {
+				return null;
+			}
+			delete collectionJSON.collaborators;
 			collectionJSON.defaultAlias = {
 				name: collectionJSON.name
 			};
@@ -345,11 +397,12 @@ async function _fetchEntityModelsForESResults(orm:ORM, results:SearchHitsMetadat
 }
 
 // Returns the results of a search translated to entity objects
-async function _searchForEntities(orm:ORM, dslQuery:SearchRequest) {
+async function _searchForEntities(orm:ORM, dslQuery:SearchRequest, userId?:number) {
+	_applyCollectionVisibilityFilterToDSL(dslQuery, userId);
 	try {
 		const searchResponse = await _client.search(dslQuery);
 		const {hits} = searchResponse;
-		const results = await _fetchEntityModelsForESResults(orm, hits);
+		const results = await _fetchEntityModelsForESResults(orm, hits, userId);
 		let total;
 		if (typeof hits.total === 'number') {
 			({total} = hits);
@@ -724,19 +777,10 @@ export async function generateIndex(orm:ORM, entityType: IndexableEntities | 'al
 
 	if (allEntities || entityType === 'Collection') {
 		log.info('Indexing Collections');
+		// Private collections are indexed too, searchable only by their owner and collaborators
 		const userCollections = await new UserCollection()
-			.where({public: true})
-			.fetchAll();
-		const userCollectionsJSON = userCollections.toJSON({omitPivot: true});
-
-		/** To index names, we use aliases.name and type, which UserCollections don't have.
-		 * We massage the editor to return a similar format as BB entities
-		 */
-		const processedCollections = userCollectionsJSON.map((collection) => ({
-			aliases: [{name: collection.name}],
-			id: collection.id,
-			type: 'Collection'
-		}));
+			.fetchAll({withRelated: ['collaborators']});
+		const processedCollections = userCollections.toJSON({omitPivot: true}).map(_getCollectionDocument);
 		await _processEntityListForBulk(processedCollections);
 		log.info('Finished indexing Collections');
 	}
@@ -786,7 +830,7 @@ export async function checkIfExists(orm:ORM, name:string, type:EntityTypeString)
 	return processedResults;
 }
 
-export async function autocomplete(orm:ORM, query:string, type:IndexableEntitiesOrAll | IndexableEntities[], size = 42) {
+export async function autocomplete(orm:ORM, query:string, type:IndexableEntitiesOrAll | IndexableEntities[], size = 42, userId?:number) {
 	let queryBody:QueryDslQueryContainer;
 
 	if (commonUtils.isValidBBID(query)) {
@@ -821,12 +865,12 @@ export async function autocomplete(orm:ORM, query:string, type:IndexableEntities
 
 	_applyTypeFilterToDSL(dslQuery, type);
 
-	const searchResponse = await _searchForEntities(orm, dslQuery);
+	const searchResponse = await _searchForEntities(orm, dslQuery, userId);
 	// Only return the results array, we're not interested in the total number of hits for this endpoint
 	return searchResponse.results;
 }
 
-export function searchByName(orm:ORM, name:string, type:IndexableEntitiesOrAll | IndexableEntities[], size = 20, from = 0) {
+export function searchByName(orm:ORM, name:string, type:IndexableEntitiesOrAll | IndexableEntities[], size = 20, from = 0, userId?:number) {
 	const sanitizedEntityType = sanitizeEntityType(type);
 	let queryBody:QueryDslQueryContainer;
 	const query = name.toLowerCase();
@@ -898,7 +942,7 @@ export function searchByName(orm:ORM, name:string, type:IndexableEntitiesOrAll |
 
 	_applyTypeFilterToDSL(dslQuery, type);
 
-	return _searchForEntities(orm, dslQuery);
+	return _searchForEntities(orm, dslQuery, userId);
 }
 
 /**
