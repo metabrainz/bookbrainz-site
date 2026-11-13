@@ -33,6 +33,13 @@
       "react-select": "$react-select"
     }
   },
+  "resolutions": {
+    "**/swagger-jsdoc/glob": "14.0.6",
+    "**/mocha/glob": "14.0.6",
+    "**/mocha/minimatch": "11.0.8",
+    "**/test-exclude/glob": "14.0.6",
+    "**/test-exclude/minimatch": "11.0.8"
+  },
   "dependencies": {
     "@babel/runtime": "^7.29.10",
     "@cospired/i18n-iso-languages": "^4.2.0",
@@ -41,7 +48,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.1.19",
-    "@sentry/node": "^11.8.0",
+    "@sentry/node": "^11.12.0",
     "bookbrainz-data": "5.3.1",
     "chart.js": "^2.9.4",
     "chartjs-adapter-date-fns": "^1.0.0",
@@ -139,7 +146,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-webpack-plugin": "^2.7.0",
     "file-loader": "^6.2.0",
-    "i18next-cli": "^1.64.2",
+    "i18next-cli": "^1.88.0",
     "jsdom": "30.1.3",
     "jsdom-global": "3.0.2",
     "mini-css-extract-plugin": "^2.10.2",
