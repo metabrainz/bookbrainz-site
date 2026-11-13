@@ -85,7 +85,7 @@
     "react-simple-star-rating": "~4.0.5",
     "react-sortable-hoc": "^2.0.0",
     "react-sticky": "^6.0.1",
-    "react-tooltip": "^4.5.1",
+    "react-tooltip": "^6.0.12",
     "redis": "^4.7.1",
     "redux": "^4.2.1",
     "redux-debounce": "^1.0.1",

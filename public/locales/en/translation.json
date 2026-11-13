@@ -522,7 +522,7 @@
       "cbSubmitSuccess": "Your review was submitted to CritiqueBrainz!",
       "cbSuccess": "Success",
       "cbThanks": "Thanks for submitting your review for <b>{{entityName}}</b>!",
-      "cbTooltip": "CritiqueBrainz is a <a href='{{mbUrl}}/projects'>MetaBrainz project</a> aimed at providing an open platform for music critics and hosting Creative Commons licensed music reviews. </br></br>Your reviews will be independently visible on CritiqueBrainz and appear publicly on your CritiqueBrainz profile. To view or delete your reviews, visit your <a href='{{cbUrl}}'>CritiqueBrainz</a> profile.",
+      "cbTooltip": "CritiqueBrainz is a <mbLink>MetaBrainz project</mbLink> aimed at providing an open platform for music critics and hosting Creative Commons licensed music reviews. <br/><br/>Your reviews will be independently visible on CritiqueBrainz and appear publicly on your CritiqueBrainz profile. To view or delete your reviews, visit your <cbLink>CritiqueBrainz</cbLink> profile.",
       "cbWordCharCount": "Words: {{words}} / Characters: {{chars}}",
       "clickAddToCollectionDescription": "Click the <buttonLabel>\"Add to collection\"</buttonLabel> button below to add it to an existing collection or create a new one.",
       "continueReadingWikipedia": "Continue reading at Wikipedia...",
