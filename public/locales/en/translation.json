@@ -336,6 +336,7 @@
       "addButton": "Add {{seriesType}}",
       "addEntityPrompt": "Add an entity to the series:",
       "heading": "What {{seriesType}} are part of this Series?",
+      "noNumber": "Does not have a number",
       "placeholder": "Enter value..."
     },
     "seriesSection": {

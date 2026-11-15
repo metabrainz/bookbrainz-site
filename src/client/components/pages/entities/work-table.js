@@ -42,7 +42,7 @@ function renderAuthors(authorData) {
 function WorkTableRow({showAddedAtColumn, work, showCheckboxes = false, selectedEntities = [], onToggleRow = null}) {
 	const name = getEntityLabel(work);
 	const authorData = work.authorsData;
-	const number = work.number || '?';
+	const number = work.number === '' ? '–' : work.number || '?';
 	const disambiguation = getEntityDisambiguation(work);
 	const workType = work.workType ? work.workType.label : '?';
 	const languages = getLanguageAttribute(work).data;

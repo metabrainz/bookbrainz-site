@@ -31,7 +31,7 @@ const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, ge
 
 function PublisherTableRow({showAddedAtColumn, publisher, showCheckboxes = false, selectedEntities = [], onToggleRow = null}) {
 	const name = getEntityLabel(publisher);
-	const number = publisher.number || '?';
+	const number = publisher.number === '' ? '–' : publisher.number || '?';
 	const disambiguation = getEntityDisambiguation(publisher);
 	const publisherType = publisher.publisherType ? publisher.publisherType.label : '?';
 	const area = publisher.area ? publisher.area.name : '?';
