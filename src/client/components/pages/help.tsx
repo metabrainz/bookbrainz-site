@@ -18,7 +18,7 @@
 /* eslint-disable max-len */
 import {Col, ListGroup, Row} from 'react-bootstrap';
 import React from 'react';
-import {genEntityIconHTMLElement} from '../../helpers/entity';
+import {genEntityIconHTMLElement} from '../../helpers/entity-icon';
 
 
 /**

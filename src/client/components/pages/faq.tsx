@@ -18,7 +18,7 @@
 /* eslint-disable max-len */
 import {Card, ListGroup} from 'react-bootstrap';
 import React from 'react';
-import {genEntityIconHTMLElement} from '../../helpers/entity';
+import {genEntityIconHTMLElement} from '../../helpers/entity-icon';
 
 /**
  * Renders the page for the Frequently Asked Questions on Bookbrainz
