@@ -20,6 +20,7 @@ export default [
 		route('relationship-types', 'routes/types/relationship-types-matrix.tsx'),
 		route('relationship-types/:types', 'routes/types/relationship-types-list.tsx'),
 		route('revisions', 'routes/browse/revisions.tsx'),
+		route('search-admin', 'routes/admin/search-admin.tsx'),
 		route('statistics', 'routes/browse/statistics.tsx')
 	]),
 	layout('routes/layouts/no-search.tsx', [
