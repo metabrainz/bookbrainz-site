@@ -34,7 +34,6 @@ const clientConfig = {
 		registrationDetails: ['./controllers/registrationDetails.js'],
 		relationshipTypes: ['./controllers/relationshipTypes.tsx'],
 		revision: ['./controllers/revision.js'],
-		statistics: ['./controllers/statistics.js'],
 		'editor/achievement': ['./controllers/editor/achievement.js'],
 		'editor/edit': ['./controllers/editor/edit.js'],
 		'editor/editor': ['./controllers/editor/editor.js'],
