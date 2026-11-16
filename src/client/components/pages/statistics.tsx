@@ -149,7 +149,7 @@ function EntityCountTable({allEntities, last30DaysEntities}: EntityCountTablePro
 interface StatisticsPageProps{
 	allEntities: Array<{
 		Count: string,
-		modelName: string,
+		modelName: EntityIconType,
 		}>,
 	last30DaysEntities: { [key: string]: string },
 	topEditors: Array<_Editor>,
