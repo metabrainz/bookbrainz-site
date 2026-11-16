@@ -3,6 +3,7 @@ import {getIdentifierTypes, getRelationshipTypesPage} from './types';
 import {getOrderedRevisions, getRevisionsPage} from './revisions';
 import type {Client} from '@elastic/elasticsearch';
 import type {ORM} from 'bookbrainz-data';
+import {getCritiqueBrainzPermission} from './external-service';
 import {getProfileEditData} from './editors';
 import {getPublicCollectionsPage} from './collections';
 import {getSearchPage} from './search';
@@ -26,6 +27,9 @@ export function createBackend({orm}: BackendDependencies) {
 		},
 		editors: {
 			getProfileEditData: (params: {editorId: number}) => getProfileEditData(orm, params)
+		},
+		externalService: {
+			getCritiqueBrainzPermission: (params: {editorId: number}) => getCritiqueBrainzPermission(orm, params)
 		},
 		revisions: {
 			getLatest: ({size}: {size: number}) => getOrderedRevisions(0, size, orm),

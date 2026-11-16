@@ -24,7 +24,6 @@ const clientConfig = {
 		deletion: ['./controllers/deletion.js'],
 		preview: ['./controllers/preview.js'],
 		error: ['./controllers/error.js'],
-		externalService: ['./controllers/externalService.js'],
 		registrationDetails: ['./controllers/registrationDetails.js'],
 		revision: ['./controllers/revision.js'],
 		'editor/achievement': ['./controllers/editor/achievement.js'],
