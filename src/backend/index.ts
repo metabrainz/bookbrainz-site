@@ -3,6 +3,7 @@ import {getIdentifierTypes, getRelationshipTypesPage} from './types';
 import {getOrderedRevisions, getRevisionsPage} from './revisions';
 import type {Client} from '@elastic/elasticsearch';
 import type {ORM} from 'bookbrainz-data';
+import {getProfileEditData} from './editors';
 import {getPublicCollectionsPage} from './collections';
 import {getSearchPage} from './search';
 import {getStatisticsPage} from './statistics';
@@ -22,6 +23,9 @@ export function createBackend({orm}: BackendDependencies) {
 		},
 		collections: {
 			getPublicPage: (params: Parameters<typeof getPublicCollectionsPage>[1]) => getPublicCollectionsPage(orm, params)
+		},
+		editors: {
+			getProfileEditData: (params: {editorId: number}) => getProfileEditData(orm, params)
 		},
 		revisions: {
 			getLatest: ({size}: {size: number}) => getOrderedRevisions(0, size, orm),

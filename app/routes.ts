@@ -12,6 +12,7 @@ export default [
 		route('collections', 'routes/browse/collections.tsx'),
 		route('contribute', 'routes/static/contribute.tsx'),
 		route('develop', 'routes/static/develop.tsx'),
+		route('editor/edit', 'routes/editor/edit.tsx'),
 		route('faq', 'routes/static/faq.tsx'),
 		route('help', 'routes/static/help.tsx'),
 		route('identifier-types', 'routes/types/identifier-types.tsx'),
