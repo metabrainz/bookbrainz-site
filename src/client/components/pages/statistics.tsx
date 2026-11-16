@@ -18,11 +18,11 @@
 
 import * as bootstrap from 'react-bootstrap';
 import * as utilsHelper from '../../helpers/utils';
+import {type EntityIconType, genEntityIconHTMLElement} from '../../helpers/entity-icon';
 
 import React from 'react';
 import _ from 'lodash';
 import {type _Editor} from '../../../types';
-import {genEntityIconHTMLElement} from '../../helpers/entity';
 import {useTranslation} from 'react-i18next';
 
 
@@ -95,7 +95,7 @@ TopEditorsTable.displayName = 'TopEditorsTable';
 interface EntityCountTableProps {
 	allEntities: Array<{
 		Count: string,
-		modelName: string,
+		modelName: EntityIconType,
 		}>,
 	last30DaysEntities: { [key: string]: string },
 }

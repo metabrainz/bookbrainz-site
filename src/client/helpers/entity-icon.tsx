@@ -23,19 +23,18 @@ export const ENTITY_TYPE_ICONS = {
 } satisfies Record<string, IconDefinition>;
 
 type FASize = FAProps['size'];
-type EntityIconType = keyof typeof ENTITY_TYPE_ICONS;
+export type EntityIconType = keyof typeof ENTITY_TYPE_ICONS;
 
-// A known entity type always gets an icon
-export function genEntityIconHTMLElement(entityType: EntityIconType, size?: FASize, margin?: boolean): React.JSX.Element;
-export function genEntityIconHTMLElement(entityType: string, size?: FASize, margin?: boolean): React.JSX.Element | null;
-export function genEntityIconHTMLElement(entityType: string, size: FASize = '1x', margin = true) {
-	const correctCaseEntityType = upperFirst(entityType);
-	const icon = (ENTITY_TYPE_ICONS as Record<string, IconDefinition | undefined>)[correctCaseEntityType];
-	if (!icon) { return null; }
+/*
+ * Only the entity types that have an icon are accepted. JavaScript callers are not checked: another string finds no
+ * icon, which FontAwesome reports and renders as nothing.
+ */
+export function genEntityIconHTMLElement(entityType: EntityIconType, size: FASize = '1x', margin = true) {
+	const correctCaseEntityType = upperFirst(entityType) as EntityIconType;
 	return (
 		<FontAwesomeIcon
 			className={margin ? 'margin-right-0-3' : ''}
-			icon={icon}
+			icon={ENTITY_TYPE_ICONS[correctCaseEntityType]}
 			size={size}
 			title={correctCaseEntityType}
 		/>);
