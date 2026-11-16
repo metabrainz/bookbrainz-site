@@ -1,3 +1,4 @@
+import {getOrderedRevisions, getRevisionsPage} from './revisions';
 import type {Client} from '@elastic/elasticsearch';
 import type {ORM} from 'bookbrainz-data';
 
@@ -8,8 +9,13 @@ export type BackendDependencies = {
 };
 
 // Page migrations add their data functions here. Neither requests nor responses enter the backend.
-export function createBackend(_dependencies: BackendDependencies) {
-	return {};
+export function createBackend({orm}: BackendDependencies) {
+	return {
+		revisions: {
+			getLatest: ({size}: {size: number}) => getOrderedRevisions(0, size, orm),
+			getPage: (params: {from: number, size: number}) => getRevisionsPage(orm, params)
+		}
+	};
 }
 
 export type Backend = ReturnType<typeof createBackend>;
