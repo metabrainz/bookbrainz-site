@@ -158,6 +158,7 @@ router.get('/', async (req, res, next) => {
 			</Layout>
 		);
 		return res.send(target({
+			locale: res.locals.locale,
 			markup,
 			props: escapeProps(props),
 			script: '/js/statistics.js',

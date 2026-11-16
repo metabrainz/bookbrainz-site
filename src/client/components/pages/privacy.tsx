@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {Trans, useTranslation} from 'react-i18next';
 import React from 'react';
 
 
@@ -26,24 +27,24 @@ import React from 'react';
  * @returns {JSX.Element} an element containing the rendered output
  */
 function PrivacyPage(): JSX.Element {
+	const {t: translate} = useTranslation();
+
 	return (
 		<div>
 			<div className="page-header">
-				<h1>Privacy</h1>
+				<h1>{translate('common.privacy')}</h1>
 			</div>
 			<p>
-				For a privacy policy, please see&nbsp;
-				<a href="http://musicbrainz.org/doc/About/Privacy_Policy">
-					http://musicbrainz.org/doc/About/Privacy_Policy
-				</a>
+				<Trans
+					components={{
+						privacyLink: <a href="http://musicbrainz.org/doc/About/Privacy_Policy"/>
+					}}
+					i18nKey="staticPages.privacy.p1"
+				/>
 			</p>
 
 			<p>
-				While this currently does not apply to BookBrainz, it
-				gives an idea of what can be expected when it gets updated
-				to cover all MetaBrainz projects. If you&rsquo;re happy
-				using MusicBrainz, we aim to make you just as comfortable
-				using BookBrainz.
+				{translate('staticPages.privacy.p2')}
 			</p>
 		</div>
 	);
