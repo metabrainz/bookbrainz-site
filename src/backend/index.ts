@@ -1,10 +1,10 @@
 import {getAdminLogsPage, getEditorSearchPage} from './admin';
+import {getGenders, getProfileEditData} from './editors';
 import {getIdentifierTypes, getRelationshipTypesPage} from './types';
 import {getOrderedRevisions, getRevisionsPage} from './revisions';
 import type {Client} from '@elastic/elasticsearch';
 import type {ORM} from 'bookbrainz-data';
 import {getCritiqueBrainzPermission} from './external-service';
-import {getProfileEditData} from './editors';
 import {getPublicCollectionsPage} from './collections';
 import {getSearchPage} from './search';
 import {getStatisticsPage} from './statistics';
@@ -26,6 +26,7 @@ export function createBackend({orm}: BackendDependencies) {
 			getPublicPage: (params: Parameters<typeof getPublicCollectionsPage>[1]) => getPublicCollectionsPage(orm, params)
 		},
 		editors: {
+			getGenders: () => getGenders(orm),
 			getProfileEditData: (params: {editorId: number}) => getProfileEditData(orm, params)
 		},
 		externalService: {

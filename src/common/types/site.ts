@@ -20,7 +20,14 @@ export type MergeQueue = {
 	seriesEntityType: string | null
 };
 
+// What the MetaBrainz login reported about someone who has no BookBrainz account yet
+export type MetaBrainzProfile = {
+	gender?: string,
+	username?: string
+};
+
 export type SiteSession = {
+	mbProfile?: MetaBrainzProfile,
 	mergeQueue?: MergeQueue | null,
 	redirectTo?: string
 };

@@ -2,7 +2,7 @@
  * TODO: the Bookshelf models are untyped, so the no-unsafe rules cannot hold in the queries below.
  * Replace the disables with proper ORM types.
  */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return */
 import type {ORM} from 'bookbrainz-data';
 
 
@@ -22,4 +22,9 @@ export async function getProfileEditData(orm: ORM, {editorId}: {editorId: number
 		genders: (genderModel ? genderModel.toJSON() : []) as Array<Record<string, unknown>>,
 		titles: (titleUnlockModel === null ? {} : titleUnlockModel.toJSON()) as Record<string, unknown>
 	};
+}
+
+export async function getGenders(orm: ORM): Promise<Array<{id: number, name: string}>> {
+	const genders = await new orm.Gender().orderBy('id').fetchAll();
+	return genders.toJSON();
 }

@@ -19,60 +19,13 @@
  */
 
 import * as error from '../../common/helpers/error';
-import * as middleware from '../helpers/middleware';
-import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
-import {escapeProps, generateProps} from '../helpers/props';
-import Layout from '../../client/containers/layout';
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
-import RegisterDetailPage from '../../client/components/forms/registration-details';
 import _ from 'lodash';
 import express from 'express';
 import log from 'log';
-import target from '../templates/target';
 
 
 const router = express.Router();
-
-router.get('/details', middleware.loadGenders, (req, res) => {
-	// Check whether the user is logged in - if so, redirect to profile page
-	if (req.user) {
-		return res.redirect(`/editor/${req.user.id}`);
-	}
-
-	if (!req.session.mbProfile) {
-		return res.redirect('/auth');
-	}
-
-	const gender = _.find(res.locals.genders, {
-		name: _.capitalize(req.session.mbProfile.gender)
-	});
-
-	const props = generateProps(req, res, {
-		gender,
-		genders: res.locals.genders,
-		name: req.session.mbProfile.username
-	});
-
-	const markup = ReactDOMServer.renderToString(
-		<Layout {...propHelpers.extractLayoutProps(props)}>
-			<RegisterDetailPage
-				gender={props.gender}
-				genders={props.genders}
-				name={props.name}
-			/>
-		</Layout>
-	);
-
-	return res.send(target({
-		locale: res.locals.locale,
-		markup,
-		props: escapeProps(props),
-		script: '/js/registrationDetails.js',
-		title: 'Register'
-	}));
-});
 
 router.post('/handler', async (req, res) => {
 	try {
