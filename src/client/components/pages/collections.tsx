@@ -17,13 +17,15 @@
  */
 
 
-import {type WithTranslation, withTranslation} from 'react-i18next';
+import React, {useCallback, useState} from 'react';
 import CollectionsTable from './parts/collections-table';
 import PagerElement from './parts/pager';
-import React from 'react';
+import {useTranslation} from 'react-i18next';
 
 
-type Props = WithTranslation & {
+const PAGINATION_URL = './collections/collections';
+
+type Props = {
 	editor?: {id: number} | null,
 	entityTypes: string[],
 	from?: number,
@@ -39,88 +41,53 @@ type Props = WithTranslation & {
 	user?: Record<string, unknown> | null
 };
 
-type State = {
-	querySearchParams: string,
-	results: unknown[],
-	type?: string | null
-};
+export default function CollectionsPage({
+	editor = null, entityTypes, from = 0, nextEnabled, results = [], showIfOwnerOrCollaborator = false, showLastModified = false,
+	showOwner = false, showPrivacy = false, size = 20, tableHeading = null, type: initialType = '', user = null
+}: Props) {
+	const {t: translate} = useTranslation();
+	const [querySearchParams, setQuerySearchParams] = useState(initialType ? `type=${initialType}` : '');
+	const [currentResults, setCurrentResults] = useState(results);
+	const [type, setType] = useState(initialType);
 
-class CollectionsPage extends React.Component<Props, State> {
-	static displayName = 'CollectionsPage';
+	const handleTypeChange = useCallback((newType: string) => {
+		setQuerySearchParams(newType ? `type=${newType}` : '');
+		setType(newType);
+	}, []);
 
-	static defaultProps = {
-		editor: null,
-		from: 0,
-		results: [],
-		showIfOwnerOrCollaborator: false,
-		showLastModified: false,
-		showOwner: false,
-		showPrivacy: false,
-		size: 20,
-		tableHeading: null,
-		type: '',
-		user: null
-	};
-
-
-	constructor(props: Props) {
-		super(props);
-		this.state = {
-			querySearchParams: props.type ? `type=${props.type}` : '',
-			results: this.props.results ?? [],
-			type: props.type
-		};
-		this.handleTypeChange = this.handleTypeChange.bind(this);
-		this.searchResultsCallback = this.searchResultsCallback.bind(this);
-		this.paginationUrl = './collections/collections';
-	}
-
-	paginationUrl: string;
-
-	searchResultsCallback(newResults: unknown[]) {
-		this.setState({results: newResults});
-	}
-
-	handleTypeChange(type: string) {
-		const querySearchParams = type ? `type=${type}` : '';
-		this.setState({querySearchParams, type});
-	}
-
-	searchParamsChangeCallback = (searchParms: URLSearchParams) => {
-		const type = searchParms.get('type') ?? '';
-		if (type !== this.state.type) {
-			this.setState({querySearchParams: `?${searchParms.toString()}`, type});
+	const searchParamsChangeCallback = useCallback((searchParams: URLSearchParams) => {
+		const newType = searchParams.get('type') ?? '';
+		if (newType !== type) {
+			setQuerySearchParams(`?${searchParams.toString()}`);
+			setType(newType);
 		}
-	};
+	}, [type]);
 
-	render() {
-		return (
-			<div id="pageWithPagination">
-				<CollectionsTable
-					entityTypes={this.props.entityTypes}
-					ownerId={this.props.editor ? this.props.editor.id : null}
-					results={this.state.results}
-					showIfOwnerOrCollaborator={this.props.showIfOwnerOrCollaborator}
-					showLastModified={this.props.showLastModified}
-					showOwner={this.props.showOwner}
-					showPrivacy={this.props.showPrivacy}
-					tableHeading={this.props.tableHeading ?? this.props.t('common.entityType.collection_plural')}
-					type={this.state.type}
-					user={this.props.user}
-					onTypeChange={this.handleTypeChange}
-				/>
-				<PagerElement
-					from={this.props.from}
-					nextEnabled={this.props.nextEnabled}
-					paginationUrl={this.paginationUrl}
-					querySearchParams={this.state.querySearchParams}
-					results={this.state.results}
-					searchParamsChangeCallback={this.searchParamsChangeCallback}
-					searchResultsCallback={this.searchResultsCallback}
-					size={this.props.size}
-				/>
-			</div>
-		);
-	}
+	return (
+		<div id="pageWithPagination">
+			<CollectionsTable
+				entityTypes={entityTypes}
+				ownerId={editor ? editor.id : null}
+				results={currentResults}
+				showIfOwnerOrCollaborator={showIfOwnerOrCollaborator}
+				showLastModified={showLastModified}
+				showOwner={showOwner}
+				showPrivacy={showPrivacy}
+				tableHeading={tableHeading ?? translate('common.entityType.collection_plural')}
+				type={type}
+				user={user}
+				onTypeChange={handleTypeChange}
+			/>
+			<PagerElement
+				from={from}
+				nextEnabled={nextEnabled}
+				paginationUrl={PAGINATION_URL}
+				querySearchParams={querySearchParams}
+				results={currentResults}
+				searchParamsChangeCallback={searchParamsChangeCallback}
+				searchResultsCallback={setCurrentResults}
+				size={size}
+			/>
+		</div>
+	);
 }
-export default withTranslation()(CollectionsPage);
