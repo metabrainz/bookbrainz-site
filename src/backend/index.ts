@@ -1,6 +1,7 @@
 import {getOrderedRevisions, getRevisionsPage} from './revisions';
 import type {Client} from '@elastic/elasticsearch';
 import type {ORM} from 'bookbrainz-data';
+import {getSearchPage} from './search';
 
 
 export type BackendDependencies = {
@@ -14,6 +15,9 @@ export function createBackend({orm}: BackendDependencies) {
 		revisions: {
 			getLatest: ({size}: {size: number}) => getOrderedRevisions(0, size, orm),
 			getPage: (params: {from: number, size: number}) => getRevisionsPage(orm, params)
+		},
+		search: {
+			getPage: (params: Parameters<typeof getSearchPage>[1]) => getSearchPage(orm, params)
 		}
 	};
 }

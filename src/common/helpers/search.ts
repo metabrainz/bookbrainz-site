@@ -1,3 +1,6 @@
+// Not type-checked yet: to be replaced by proper types.
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 /* eslint-disable lines-around-comment, sort-keys, camelcase */
 /*
  * Copyright (C) 2016  Sean Burke
