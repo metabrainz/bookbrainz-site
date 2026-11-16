@@ -14,7 +14,8 @@ export default [
 		route('help', 'routes/static/help.tsx'),
 		route('licensing', 'routes/static/licensing.tsx'),
 		route('privacy', 'routes/static/privacy.tsx'),
-		route('revisions', 'routes/browse/revisions.tsx')
+		route('revisions', 'routes/browse/revisions.tsx'),
+		route('statistics', 'routes/browse/statistics.tsx')
 	]),
 	layout('routes/layouts/no-search.tsx', [
 		route('search', 'routes/browse/search.tsx')
