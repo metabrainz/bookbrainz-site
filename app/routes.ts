@@ -1,4 +1,4 @@
-import {type RouteConfig, layout, route} from '@react-router/dev/routes';
+import {type RouteConfig, index, layout, route} from '@react-router/dev/routes';
 
 /*
  * The pages served by React Router. A page is added here together with the removal of its Express handler.
@@ -20,6 +20,9 @@ export default [
 	]),
 	layout('routes/layouts/no-search.tsx', [
 		route('search', 'routes/browse/search.tsx')
+	]),
+	layout('routes/layouts/home.tsx', [
+		index('routes/home/home.tsx')
 	]),
 	route('*', 'routes/errors/not-found.tsx')
 ] satisfies RouteConfig;
