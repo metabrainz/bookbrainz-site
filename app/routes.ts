@@ -19,6 +19,7 @@ export default [
 		route('identifier-types', 'routes/types/identifier-types.tsx'),
 		route('licensing', 'routes/static/licensing.tsx'),
 		route('privacy', 'routes/static/privacy.tsx'),
+		route('register', 'routes/register/register.tsx'),
 		route('relationship-types', 'routes/types/relationship-types-matrix.tsx'),
 		route('relationship-types/:types', 'routes/types/relationship-types-list.tsx'),
 		route('revisions', 'routes/browse/revisions.tsx'),

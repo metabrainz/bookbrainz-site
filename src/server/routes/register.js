@@ -26,9 +26,7 @@ import {escapeProps, generateProps} from '../helpers/props';
 import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import RegisterAuthPage from '../../client/components/pages/registration-auth';
-import RegisterDetailPage from
-	'../../client/components/forms/registration-details';
+import RegisterDetailPage from '../../client/components/forms/registration-details';
 import _ from 'lodash';
 import express from 'express';
 import log from 'log';
@@ -36,23 +34,6 @@ import target from '../templates/target';
 
 
 const router = express.Router();
-
-router.get('/', (req, res) => {
-	// Check whether the user is logged in - if so, redirect to profile page
-	if (req.user) {
-		return res.redirect(`/editor/${req.user.id}`);
-	}
-
-	const props = generateProps(req, res);
-
-	const markup = ReactDOMServer.renderToString(
-		<Layout {...propHelpers.extractLayoutProps(props)}>
-			<RegisterAuthPage/>
-		</Layout>
-	);
-
-	return res.send(target({locale: res.locals.locale, markup, title: 'Register'}));
-});
 
 router.get('/details', middleware.loadGenders, (req, res) => {
 	// Check whether the user is logged in - if so, redirect to profile page
