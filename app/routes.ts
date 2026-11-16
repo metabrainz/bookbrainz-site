@@ -23,6 +23,7 @@ export default [
 		route('statistics', 'routes/browse/statistics.tsx')
 	]),
 	layout('routes/layouts/no-search.tsx', [
+		route('admin-panel', 'routes/admin/admin-panel.tsx'),
 		route('search', 'routes/browse/search.tsx')
 	]),
 	layout('routes/layouts/home.tsx', [

@@ -1,8 +1,8 @@
+import {getAdminLogsPage, getEditorSearchPage} from './admin';
 import {getIdentifierTypes, getRelationshipTypesPage} from './types';
 import {getOrderedRevisions, getRevisionsPage} from './revisions';
 import type {Client} from '@elastic/elasticsearch';
 import type {ORM} from 'bookbrainz-data';
-import {getAdminLogsPage} from './admin';
 import {getPublicCollectionsPage} from './collections';
 import {getSearchPage} from './search';
 import {getStatisticsPage} from './statistics';
@@ -17,7 +17,8 @@ export type BackendDependencies = {
 export function createBackend({orm}: BackendDependencies) {
 	return {
 		admin: {
-			getLogsPage: (params: {from: number, size: number}) => getAdminLogsPage(orm, params)
+			getLogsPage: (params: {from: number, size: number}) => getAdminLogsPage(orm, params),
+			searchEditors: (params: {from: number, query: string, size: number}) => getEditorSearchPage(orm, params)
 		},
 		collections: {
 			getPublicPage: (params: Parameters<typeof getPublicCollectionsPage>[1]) => getPublicCollectionsPage(orm, params)

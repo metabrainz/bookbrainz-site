@@ -1,10 +1,12 @@
 /*
- * TODO: the Bookshelf models are untyped, so the no-unsafe rules cannot hold in the queries below.
- * Replace the disables with proper ORM types.
+ * TODO: the search helpers and the Bookshelf models are untyped, so the no-unsafe rules cannot hold here.
+ * Replace the disables with proper types.
  */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument */
+import {isNil, snakeCase} from 'lodash';
 import type {AdminLogDataT} from '../server/helpers/adminLogs';
 import type {ORM} from 'bookbrainz-data';
+import {searchByName} from '../common/helpers/search';
 
 
 /**
@@ -31,4 +33,15 @@ export async function getAdminLogsPage(orm: ORM, {from, size}: {from: number, si
 	const logs = await getOrderedAdminLogs(from, size + 1, orm);
 	const limit = Math.max(0, size);
 	return {nextEnabled: logs.length > limit, results: logs.slice(0, limit)};
+}
+
+export async function getEditorSearchPage(orm: ORM, {from, query, size}: {from: number, query: string, size: number}) {
+	let initialResults: unknown[] = [];
+	if (query) {
+		// Fetch one more result than required to know whether there is a next page
+		const {results} = await searchByName(orm, query, snakeCase('editor') as never, size + 1, from);
+		initialResults = results.filter((entity: unknown) => !isNil(entity));
+	}
+	const limit = Math.max(0, size);
+	return {initialResults: initialResults.slice(0, limit), nextEnabled: initialResults.length > limit};
 }
