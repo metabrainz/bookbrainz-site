@@ -16,18 +16,42 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+
+import {type WithTranslation, withTranslation} from 'react-i18next';
 import PagerElement from './parts/pager';
-import PropTypes from 'prop-types';
 import React from 'react';
 import RevisionsTable from './parts/revisions-table';
-import {withTranslation} from 'react-i18next';
 
 
-class RevisionsPage extends React.Component {
-	constructor(props) {
+type Props = WithTranslation & {
+	from?: number,
+	nextEnabled: boolean,
+	results?: unknown[],
+	showEntities?: boolean,
+	showRevisionEditor?: boolean,
+	size?: number
+};
+
+type State = {
+	results: unknown[]
+};
+
+class RevisionsPage extends React.Component<Props, State> {
+	static displayName = 'RevisionsPage';
+
+	static defaultProps = {
+		from: 0,
+		results: [],
+		showEntities: true,
+		showRevisionEditor: true,
+		size: 20
+	};
+
+
+	constructor(props: Props) {
 		super(props);
 		this.state = {
-			results: this.props.results
+			results: this.props.results ?? []
 		};
 
 		// React does not autobind non-React class methods
@@ -35,7 +59,9 @@ class RevisionsPage extends React.Component {
 		this.paginationUrl = './revisions/revisions';
 	}
 
-	searchResultsCallback(newResults) {
+	paginationUrl: string;
+
+	searchResultsCallback(newResults: unknown[]) {
 		this.setState({results: newResults});
 	}
 
@@ -62,24 +88,5 @@ class RevisionsPage extends React.Component {
 	}
 }
 
-
-RevisionsPage.displayName = 'RevisionsPage';
-RevisionsPage.propTypes = {
-	from: PropTypes.number,
-	nextEnabled: PropTypes.bool.isRequired,
-	results: PropTypes.array,
-	showEntities: PropTypes.bool,
-	showRevisionEditor: PropTypes.bool,
-	size: PropTypes.number,
-	// eslint-disable-next-line id-length
-	t: PropTypes.func.isRequired
-};
-RevisionsPage.defaultProps = {
-	from: 0,
-	results: [],
-	showEntities: true,
-	showRevisionEditor: true,
-	size: 20
-};
 
 export default withTranslation()(RevisionsPage);
