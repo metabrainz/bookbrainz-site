@@ -32,9 +32,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import Footer from './../components/footer';
+import {I18nextProvider} from 'react-i18next';
 import MergeQueue from '../components/pages/parts/merge-queue';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {createI18n} from '../../common/i18n/i18n';
 import {faSearchengin} from '@fortawesome/free-brands-svg-icons';
 import {genEntityIconHTMLElement} from '../helpers/entity';
 
@@ -51,6 +53,8 @@ class Layout extends React.Component {
 		this.handleDropdownToggle = this.handleDropdownToggle.bind(this);
 		this.handleDropdownClick = this.handleDropdownClick.bind(this);
 		this.handleMouseDown = this.handleMouseDown.bind(this);
+		const i18nConfig = props.i18n || {locale: 'en', resources: {}};
+		this.i18n = createI18n(i18nConfig.locale, i18nConfig.resources);
 	}
 
 	handleMouseDown(event) {
@@ -96,10 +100,12 @@ class Layout extends React.Component {
 	}
 
 	renderDocsDropdown() {
+		// eslint-disable-next-line id-length
+		const translate = this.i18n.t.bind(this.i18n);
 		const docsDropdownTitle = (
 			<span>
 				<FontAwesomeIcon icon={faFileLines}/>
-				{'  Docs'}
+				{`  ${translate('common.nav.docs')}`}
 			</span>
 		);
 		return (
@@ -112,19 +118,19 @@ class Layout extends React.Component {
 				>
 					<NavDropdown.Item href="/help">
 						<FontAwesomeIcon fixedWidth icon={faQuestionCircle}/>
-						{' Help '}
+						{` ${translate('common.nav.help')} `}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/faq">
 						<FontAwesomeIcon fixedWidth icon={faClipboardQuestion}/>
-						{' FAQs '}
+						{` ${translate('common.nav.faqs')} `}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/relationship-types">
 						<FontAwesomeIcon fixedWidth icon={faLink}/>
-						{' Relationship Types '}
+						{` ${translate('common.relationshipTypes')} `}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/identifier-types">
 						<FontAwesomeIcon fixedWidth icon={faBarcode}/>
-						{' Identifier Types '}
+						{` ${translate('common.nav.identifierTypes')} `}
 					</NavDropdown.Item>
 				</NavDropdown>
 			</Nav>
@@ -132,6 +138,8 @@ class Layout extends React.Component {
 	}
 
 	renderGuestDropdown() {
+		// eslint-disable-next-line id-length
+		const translate = this.i18n.t.bind(this.i18n);
 		const disableSignUp = this.props.disableSignUp ?
 			{disabled: true} :
 			{};
@@ -141,7 +149,7 @@ class Layout extends React.Component {
 				<Nav.Item>
 					<Nav.Link {...disableSignUp} href="/auth">
 						<FontAwesomeIcon icon={faSignInAlt}/>
-						{' Sign In / Register'}
+						{` ${translate('common.auth.signInRegister')}`}
 					</Nav.Link>
 				</Nav.Item>
 			</Nav>
@@ -149,12 +157,14 @@ class Layout extends React.Component {
 	}
 
 	renderLoggedInDropdown() {
+		// eslint-disable-next-line id-length
+		const translate = this.i18n.t.bind(this.i18n);
 		const {user} = this.props;
 
 		const createDropdownTitle = (
 			<span>
 				<FontAwesomeIcon icon={faPlus}/>
-				{'  Add'}
+				{`  ${translate('common.button.add')}`}
 			</span>
 		);
 
@@ -168,7 +178,7 @@ class Layout extends React.Component {
 		const privilegesDropdownTitle = (
 			<span>
 				<FontAwesomeIcon className="margin-right-0-3" icon={faShieldHalved}/>
-				Privileges
+				{translate('common.privileges')}
 			</span>
 		);
 
@@ -177,11 +187,11 @@ class Layout extends React.Component {
 			<>
 				<NavDropdown.Item href="/admin-panel">
 					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faUserGear}/>
-					Admin Panel
+					{translate('common.nav.adminPanel')}
 				</NavDropdown.Item>
 				<NavDropdown.Item href="/admin-logs">
 					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faNewspaper}/>
-					Admin Logs
+					{translate('common.nav.adminLogs')}
 				</NavDropdown.Item>
 			</>
 		);
@@ -190,7 +200,7 @@ class Layout extends React.Component {
 			<>
 				<NavDropdown.Item href="/relationship-type/create">
 					{RelationshipTypeEditorIcon}
-					Add Relationship Type
+					{translate('common.nav.addRelationshipType')}
 				</NavDropdown.Item>
 			</>
 		);
@@ -199,7 +209,7 @@ class Layout extends React.Component {
 			<>
 				<NavDropdown.Item href="/search-admin">
 					<FontAwesomeIcon fixedWidth className="margin-right-0-3" icon={faSearchengin}/>
-					Search Admin
+					{translate('common.nav.searchAdmin')}
 				</NavDropdown.Item>
 			</>
 		);
@@ -208,7 +218,7 @@ class Layout extends React.Component {
 			<>
 				<NavDropdown.Item href="/identifier-type/create">
 					{IdentifierTypeEditorIcon}
-					Add Identifier Type
+					{translate('common.nav.addIdentifierType')}
 				</NavDropdown.Item>
 			</>
 		);
@@ -245,32 +255,32 @@ class Layout extends React.Component {
 				>
 					<NavDropdown.Item href="/create">
 						{genEntityIconHTMLElement('Book')}
-						Book
+						{translate('common.entityType.book')}
 					</NavDropdown.Item>
 					<NavDropdown.Divider/>
 					<NavDropdown.Item href="/work/create">
 						{genEntityIconHTMLElement('Work')}
-						Work
+						{translate('common.entityType.work')}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/edition/create">
 						{genEntityIconHTMLElement('Edition')}
-						Edition
+						{translate('common.entityType.edition')}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/edition-group/create">
 						{genEntityIconHTMLElement('EditionGroup')}
-						Edition Group
+						{translate('common.entityType.editionGroup')}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/series/create">
 						{genEntityIconHTMLElement('Series')}
-						Series
+						{translate('common.entityType.series')}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/author/create">
 						{genEntityIconHTMLElement('Author')}
-						Author
+						{translate('common.entityType.author')}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/publisher/create">
 						{genEntityIconHTMLElement('Publisher')}
-						Publisher
+						{translate('common.entityType.publisher')}
 					</NavDropdown.Item>
 				</NavDropdown>
 				<NavDropdown
@@ -281,27 +291,27 @@ class Layout extends React.Component {
 				>
 					<NavDropdown.Item href={`/editor/${user.id}`}>
 						<FontAwesomeIcon fixedWidth icon={faUserCircle}/>
-						{' Profile'}
+						{` ${translate('common.nav.profile')}`}
 					</NavDropdown.Item>
 					<NavDropdown.Item href={`/editor/${user.id}/revisions`}>
 						<FontAwesomeIcon fixedWidth icon={faListUl}/>
-						{' Revisions'}
+						{` ${translate('common.nav.revisions')}`}
 					</NavDropdown.Item>
 					<NavDropdown.Item href={`/editor/${user.id}/achievements`}>
 						<FontAwesomeIcon fixedWidth icon={faTrophy}/>
-						{' Achievements'}
+						{` ${translate('common.nav.achievements')}`}
 					</NavDropdown.Item>
 					<NavDropdown.Item href={`/editor/${user.id}/collections`}>
 						<FontAwesomeIcon fixedWidth icon={faGripVertical}/>
-						{' Collections'}
+						{` ${translate('common.entityType.collection_plural')}`}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/external-service/">
 						<FontAwesomeIcon fixedWidth icon={faLink}/>
-						{' External Services'}
+						{` ${translate('common.nav.externalServices')}`}
 					</NavDropdown.Item>
 					<NavDropdown.Item {...disableSignUp} href="/logout">
 						<FontAwesomeIcon fixedWidth icon={faSignOutAlt}/>
-						{' Sign Out'}
+						{` ${translate('common.auth.signOut')}`}
 					</NavDropdown.Item>
 				</NavDropdown>
 			</Nav>
@@ -309,6 +319,8 @@ class Layout extends React.Component {
 	}
 
 	renderSearchForm() {
+		// eslint-disable-next-line id-length
+		const translate = this.i18n.t.bind(this.i18n);
 		return (
 			<Form
 				inline
@@ -317,7 +329,7 @@ class Layout extends React.Component {
 				role="search"
 			>
 				<InputGroup>
-					<FormControl required name="q" placeholder="Search for..." type="text"/>
+					<FormControl required name="q" placeholder={translate('common.nav.searchPlaceholder')} type="text"/>
 					<InputGroup.Append>
 						<Button type="submit" variant="success">
 							<FontAwesomeIcon icon={faSearch}/>
@@ -329,6 +341,8 @@ class Layout extends React.Component {
 	}
 
 	renderNavContent() {
+		// eslint-disable-next-line id-length
+		const translate = this.i18n.t.bind(this.i18n);
 		const {homepage, hideSearch, user} = this.props;
 
 		/*
@@ -344,7 +358,7 @@ class Layout extends React.Component {
 					<Nav.Item>
 						<Nav.Link href="/revisions">
 							<FontAwesomeIcon icon={faListUl}/>
-							{' Revisions '}
+							{` ${translate('common.nav.revisions')} `}
 						</Nav.Link>
 					</Nav.Item>
 				</Nav>
@@ -352,7 +366,7 @@ class Layout extends React.Component {
 					<Nav.Item>
 						<Nav.Link href="/collections">
 							<FontAwesomeIcon icon={faGripVertical}/>
-							{' Collections '}
+							{` ${translate('common.entityType.collection_plural')} `}
 						</Nav.Link>
 					</Nav.Item>
 				</Nav>
@@ -360,7 +374,7 @@ class Layout extends React.Component {
 					<Nav.Item>
 						<Nav.Link href="/statistics">
 							<FontAwesomeIcon icon={faChartLine}/>
-							{' Statistics '}
+							{` ${translate('common.nav.statistics')} `}
 						</Nav.Link>
 					</Nav.Item>
 				</Nav>
@@ -374,6 +388,8 @@ class Layout extends React.Component {
 	}
 
 	render() {
+		// eslint-disable-next-line id-length
+		const translate = this.i18n.t.bind(this.i18n);
 		const {
 			homepage,
 			siteRevision,
@@ -392,9 +408,7 @@ class Layout extends React.Component {
 						<div>
 							<noscript>
 								<div className="alert alert-danger" role="alert">
-									This page will not function correctly without
-									JavaScript! Please enable JavaScript to use this
-									page.
+									{translate('common.nav.noscriptWarning')}
 								</div>
 							</noscript>
 						</div>
@@ -416,22 +430,24 @@ class Layout extends React.Component {
 		));
 
 		return (
-			<div>
-				<a className="sr-only sr-only-focusable" href="#content">
-					Skip to main content
-				</a>
-				<Navbar className="BookBrainz" expand="lg" fixed="top" role="navigation">
-					{this.renderNavHeader()}
-					<Navbar.Toggle/>
-					{this.renderNavContent()}
-				</Navbar>
-				{alerts}
-				{childNode}
-				<Footer
-					repositoryUrl={repositoryUrl}
-					siteRevision={siteRevision}
-				/>
-			</div>
+			<I18nextProvider i18n={this.i18n}>
+				<div>
+					<a className="sr-only sr-only-focusable" href="#content">
+						{translate('common.nav.skipToContent')}
+					</a>
+					<Navbar className="BookBrainz" expand="lg" fixed="top" role="navigation">
+						{this.renderNavHeader()}
+						<Navbar.Toggle/>
+						{this.renderNavContent()}
+					</Navbar>
+					{alerts}
+					{childNode}
+					<Footer
+						repositoryUrl={repositoryUrl}
+						siteRevision={siteRevision}
+					/>
+				</div>
+			</I18nextProvider>
 		);
 	}
 }
@@ -443,6 +459,7 @@ Layout.propTypes = {
 	disableSignUp: PropTypes.bool,
 	hideSearch: PropTypes.bool,
 	homepage: PropTypes.bool,
+	i18n: PropTypes.object,
 	mergeQueue: PropTypes.object,
 	repositoryUrl: PropTypes.string.isRequired,
 	requiresJS: PropTypes.bool,
@@ -453,6 +470,7 @@ Layout.defaultProps = {
 	disableSignUp: false,
 	hideSearch: false,
 	homepage: false,
+	i18n: null,
 	mergeQueue: null,
 	requiresJS: false,
 	user: null

@@ -29,6 +29,8 @@ function createApp() {
 		req.session = {};
 		req.user = {id: 7, name: 'bridge-editor', privs: 1};
 		res.locals.alerts = [{level: 'info', message: 'bridge-context-marker'}];
+		res.locals.locale = 'en';
+		res.locals.i18nResources = {en: {translation: {}}};
 		next();
 	});
 	app.get('/express-only', (req, res) => res.send('answered by Express'));

@@ -35,5 +35,15 @@ export function generateProps<T>(req: PassportRequest, res: Response, props?: T)
 	if (req.session && req.session.mergeQueue) {
 		baseObject.mergeQueue = req.session.mergeQueue;
 	}
-	return Object.assign(baseObject, res.locals, props);
+
+	const {i18nResources, ...locals} = res.locals;
+	const merged = Object.assign(baseObject, locals, props);
+
+	merged.i18n = {
+		locale: res.locals.locale || 'en',
+		resources: i18nResources || {}
+	};
+
+	return merged;
 }
+

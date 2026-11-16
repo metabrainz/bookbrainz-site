@@ -48,6 +48,7 @@ router.get('/create', auth.isAuthenticated, auth.isAuthorized(IDENTIFIER_TYPE_ED
 			</Layout>
 		);
 		res.send(target({
+			locale: res.locals.locale,
 			markup,
 			props: escapeProps(props),
 			script
@@ -84,6 +85,7 @@ router.get('/:id/edit', auth.isAuthenticated, auth.isAuthorized(IDENTIFIER_TYPE_
 				</Layout>
 			);
 			return res.send(target({
+				locale: res.locals.locale,
 				markup,
 				props: escapeProps(props),
 				script

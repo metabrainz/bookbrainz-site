@@ -5,6 +5,7 @@ import SingleEntityCard from './single-entity-card';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {convertMapToObject} from '../../helpers/utils';
+import {useTranslation} from 'react-i18next';
 
 
 function SummarySection({
@@ -16,6 +17,7 @@ function SummarySection({
 	languageOptions,
 	Editions
 }: SummarySectionProps) {
+	const {t: translate} = useTranslation();
 	const createdEntities = {
 		Authors,
 		EditionGroups,
@@ -41,11 +43,8 @@ function SummarySection({
 	}
 	return (
 		<div>
-			<h3>New Entities</h3>
-			<p className="text-muted">Below you can see a preview of the entities you are about to create
-			or have created in the process of filling the form. Please verify the information and
-			make any adjustment if necessary before submitting the form
-			</p>
+			<h3>{translate('entityEditor.unifiedForm.newEntities')}</h3>
+			<p className="text-muted">{translate('entityEditor.unifiedForm.previewDescription')}</p>
 			<section className="review-section">
 				{_.map(createdEntities, renderEntityGroup)}
 			</section>

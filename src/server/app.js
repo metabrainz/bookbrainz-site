@@ -39,6 +39,7 @@ import config from '../common/helpers/config';
 import {createRouterBridge} from './helpers/router-build';
 import express from 'express';
 import favicon from 'serve-favicon';
+import {i18nMiddleware} from './helpers/middleware';
 import initInflux from './influx';
 import log from 'log';
 import logNode from 'log-node';
@@ -181,6 +182,7 @@ export async function createApp({orm: sharedOrm} = {}) {
 		bridge.assets.forEach((middleware) => app.use(middleware));
 
 		app.use(session(process.env.NODE_ENV));
+		app.use(i18nMiddleware);
 
 
 		if (config.influx) {
