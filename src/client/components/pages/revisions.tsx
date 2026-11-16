@@ -17,13 +17,15 @@
  */
 
 
-import {type WithTranslation, withTranslation} from 'react-i18next';
+import React, {useState} from 'react';
 import PagerElement from './parts/pager';
-import React from 'react';
 import RevisionsTable from './parts/revisions-table';
+import {useTranslation} from 'react-i18next';
 
 
-type Props = WithTranslation & {
+const PAGINATION_URL = './revisions/revisions';
+
+type Props = {
 	from?: number,
 	nextEnabled: boolean,
 	results?: unknown[],
@@ -32,61 +34,26 @@ type Props = WithTranslation & {
 	size?: number
 };
 
-type State = {
-	results: unknown[]
-};
+export default function RevisionsPage({from = 0, nextEnabled, results = [], showEntities = true, showRevisionEditor = true, size = 20}: Props) {
+	const {t: translate} = useTranslation();
+	const [currentResults, setCurrentResults] = useState(results);
 
-class RevisionsPage extends React.Component<Props, State> {
-	static displayName = 'RevisionsPage';
-
-	static defaultProps = {
-		from: 0,
-		results: [],
-		showEntities: true,
-		showRevisionEditor: true,
-		size: 20
-	};
-
-
-	constructor(props: Props) {
-		super(props);
-		this.state = {
-			results: this.props.results ?? []
-		};
-
-		// React does not autobind non-React class methods
-		this.searchResultsCallback = this.searchResultsCallback.bind(this);
-		this.paginationUrl = './revisions/revisions';
-	}
-
-	paginationUrl: string;
-
-	searchResultsCallback(newResults: unknown[]) {
-		this.setState({results: newResults});
-	}
-
-	render() {
-		const {t: translate} = this.props;
-		return (
-			<div id="pageWithPagination">
-				<RevisionsTable
-					results={this.state.results}
-					showEntities={this.props.showEntities}
-					showRevisionEditor={this.props.showRevisionEditor}
-					tableHeading={translate('pages.revisions.recentActivity')}
-				/>
-				<PagerElement
-					from={this.props.from}
-					nextEnabled={this.props.nextEnabled}
-					paginationUrl={this.paginationUrl}
-					results={this.state.results}
-					searchResultsCallback={this.searchResultsCallback}
-					size={this.props.size}
-				/>
-			</div>
-		);
-	}
+	return (
+		<div id="pageWithPagination">
+			<RevisionsTable
+				results={currentResults}
+				showEntities={showEntities}
+				showRevisionEditor={showRevisionEditor}
+				tableHeading={translate('pages.revisions.recentActivity')}
+			/>
+			<PagerElement
+				from={from}
+				nextEnabled={nextEnabled}
+				paginationUrl={PAGINATION_URL}
+				results={currentResults}
+				searchResultsCallback={setCurrentResults}
+				size={size}
+			/>
+		</div>
+	);
 }
-
-
-export default withTranslation()(RevisionsPage);
