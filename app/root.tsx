@@ -68,12 +68,10 @@ export function Layout({children}: {children: React.ReactNode}) {
 	);
 }
 
-export default function App({loaderData}: Route.ComponentProps) {
+export default function App() {
 	return (
 		<div id="target">
-			<SiteLayout {...loaderData}>
-				<Outlet/>
-			</SiteLayout>
+			<Outlet/>
 		</div>
 	);
 }
