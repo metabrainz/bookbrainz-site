@@ -16,19 +16,58 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+
+import {type WithTranslation, withTranslation} from 'react-i18next';
 import CollectionsTable from './parts/collections-table';
 import PagerElement from './parts/pager';
-import PropTypes from 'prop-types';
 import React from 'react';
-import {withTranslation} from 'react-i18next';
 
 
-class CollectionsPage extends React.Component {
-	constructor(props) {
+type Props = WithTranslation & {
+	editor?: {id: number} | null,
+	entityTypes: string[],
+	from?: number,
+	nextEnabled: boolean,
+	results?: unknown[],
+	showIfOwnerOrCollaborator?: boolean,
+	showLastModified?: boolean,
+	showOwner?: boolean,
+	showPrivacy?: boolean,
+	size?: number,
+	tableHeading?: string | null,
+	type?: string | null,
+	user?: Record<string, unknown> | null
+};
+
+type State = {
+	querySearchParams: string,
+	results: unknown[],
+	type?: string | null
+};
+
+class CollectionsPage extends React.Component<Props, State> {
+	static displayName = 'CollectionsPage';
+
+	static defaultProps = {
+		editor: null,
+		from: 0,
+		results: [],
+		showIfOwnerOrCollaborator: false,
+		showLastModified: false,
+		showOwner: false,
+		showPrivacy: false,
+		size: 20,
+		tableHeading: null,
+		type: '',
+		user: null
+	};
+
+
+	constructor(props: Props) {
 		super(props);
 		this.state = {
 			querySearchParams: props.type ? `type=${props.type}` : '',
-			results: this.props.results,
+			results: this.props.results ?? [],
 			type: props.type
 		};
 		this.handleTypeChange = this.handleTypeChange.bind(this);
@@ -36,16 +75,18 @@ class CollectionsPage extends React.Component {
 		this.paginationUrl = './collections/collections';
 	}
 
-	searchResultsCallback(newResults) {
+	paginationUrl: string;
+
+	searchResultsCallback(newResults: unknown[]) {
 		this.setState({results: newResults});
 	}
 
-	handleTypeChange(type) {
+	handleTypeChange(type: string) {
 		const querySearchParams = type ? `type=${type}` : '';
 		this.setState({querySearchParams, type});
 	}
 
-	searchParamsChangeCallback = (searchParms) => {
+	searchParamsChangeCallback = (searchParms: URLSearchParams) => {
 		const type = searchParms.get('type') ?? '';
 		if (type !== this.state.type) {
 			this.setState({querySearchParams: `?${searchParms.toString()}`, type});
@@ -82,38 +123,4 @@ class CollectionsPage extends React.Component {
 		);
 	}
 }
-
-CollectionsPage.displayName = 'CollectionsPage';
-CollectionsPage.propTypes = {
-	editor: PropTypes.object,
-	entityTypes: PropTypes.array.isRequired,
-	from: PropTypes.number,
-	nextEnabled: PropTypes.bool.isRequired,
-	results: PropTypes.array,
-	showIfOwnerOrCollaborator: PropTypes.bool,
-	showLastModified: PropTypes.bool,
-	showOwner: PropTypes.bool,
-	showPrivacy: PropTypes.bool,
-	size: PropTypes.number,
-	// eslint-disable-next-line id-length
-	t: PropTypes.func.isRequired,
-	tableHeading: PropTypes.string,
-	type: PropTypes.string,
-	user: PropTypes.object
-};
-CollectionsPage.defaultProps = {
-	editor: null,
-	from: 0,
-	results: [],
-	showIfOwnerOrCollaborator: false,
-	showLastModified: false,
-	showOwner: false,
-	showPrivacy: false,
-	size: 20,
-	tableHeading: null,
-	type: '',
-	user: null
-
-};
-
 export default withTranslation()(CollectionsPage);
