@@ -57,6 +57,7 @@ router.get('/', async (req, res, next) => {
 		);
 
 		res.send(target({
+			locale: res.locals.locale,
 			markup,
 			page: 'Index',
 			props: escapeProps(props),

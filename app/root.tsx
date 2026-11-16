@@ -12,9 +12,10 @@ const APPLE_TOUCH_ICON_SIZES = [57, 60, 72, 76, 114, 120, 144, 152, 180];
 
 /* Only what the Layout needs is sent to the browser: no database handles, and of the user only these fields */
 export function loader({context}: Route.LoaderArgs) {
-	const {alerts, mergeQueue, repositoryUrl, siteRevision, user} = context.get(siteContext);
+	const {alerts, i18n, mergeQueue, repositoryUrl, siteRevision, user} = context.get(siteContext);
 	return {
 		alerts,
+		i18n,
 		mergeQueue,
 		repositoryUrl,
 		siteRevision,

@@ -20,6 +20,7 @@
 import * as React from 'react';
 
 import {Card, Col, Row} from 'react-bootstrap';
+import {Trans, useTranslation} from 'react-i18next';
 
 import AliasEditorMerge from './alias-editor/alias-editor-merge';
 import AnnotationSection from './annotation-section/annotation-section';
@@ -68,6 +69,7 @@ type Props = StateProps & OwnProps & DispatchProps;
  * @returns {ReactElement} React element containing the rendered EntityMerge.
  */
 const EntityMerge = (props: Props) => {
+	const {t: translate} = useTranslation();
 	const {
 		children,
 		mergingEntities,
@@ -102,14 +104,14 @@ const EntityMerge = (props: Props) => {
 				</Card.Header>
 				<Card.Body>
 					<p className="alert alert-info">
-						You are merging into entity {mergingEntities[0].bbid}. If you want to merge into another entity instead,
-						you can select the correct entity in the merge queue at the bottom of the page and click
-						the <i>Merge into selected entity</i> button again.
-						This will reload the page with the new merge target selected.
+						<Trans
+							components={{buttonText: <i/>}}
+							i18nKey="pages.merge.mergeTargetNotice"
+							values={{targetBBID: mergingEntities[0].bbid}}
+						/>
 					</p>
 					<p className="text-muted">
-					Select and review the data to merge.
-					For further modifications, edit the resulting merged entity.
+						{translate('pages.merge.reviewDataNotice')}
 					</p>
 					<div>
 						<Row>

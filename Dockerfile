@@ -48,8 +48,8 @@ COPY --chown=bookbrainz static/ static/
 COPY --chown=bookbrainz config/ config/
 COPY --chown=bookbrainz sql/ sql/
 COPY --chown=bookbrainz src/ src/
+COPY --chown=bookbrainz public/ public/
 COPY --chown=bookbrainz app/ app/
-
 
 # Development target
 FROM bookbrainz-base AS bookbrainz-dev

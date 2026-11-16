@@ -19,8 +19,10 @@
 
 import * as React from 'react';
 
-import {get as _get, isNil as _isNil, kebabCase as _kebabCase} from 'lodash';
+import {Trans, useTranslation} from 'react-i18next';
+import {camelCase as _camelCase, get as _get, isNil as _isNil, kebabCase as _kebabCase} from 'lodash';
 import {format, isValid, parseISO} from 'date-fns';
+import type {TFunction} from 'i18next';
 import {dateObjectToISOString} from './utils';
 
 
@@ -39,11 +41,11 @@ export function getLanguageAttribute(entity) {
 		entity.languageSet.languages.map(
 			(language) => language.name
 		).join(', ') : '?';
-	return {data: languages, title: 'Languages'};
+	return {data: languages};
 }
 
 export function getTypeAttribute(entityType) {
-	return {data: extractAttribute(entityType, 'label'), title: 'Type'};
+	return {data: extractAttribute(entityType, 'label')};
 }
 
 /**
@@ -138,9 +140,10 @@ export function areaToOption(
 /**
  * Transforms an entity to a react-select component option
  * @param {object} entity - The entity to transfrom
+ * @param {Function} translate - The initialized request or component translator.
  * @returns {object} option - A react-select option
  */
-export function entityToOption(entity) {
+export function entityToOption(entity, translate: TFunction) {
 	if (_isNil(entity)) {
 		return null;
 	}
@@ -153,31 +156,41 @@ export function entityToOption(entity) {
 			entity.disambiguation.comment : null,
 		id: entity.bbid,
 		text: entity.defaultAlias ?
-			entity.defaultAlias.name : '(unnamed)',
+			entity.defaultAlias.name : translate('common.unnamed'),
 		type: entity.type
 	};
 }
 
-export function getEntityLabel(entity, returnHTML = true) {
+export function getEntityLabelText(entity, translate: TFunction) {
 	if (entity.defaultAlias) {
 		return `${entity.defaultAlias.name}`;
 	}
 
-	// Deleted entities
 	if (!entity.dataId) {
-		let deletedEntityName = `Deleted ${entity.type} ${entity.bbid}`;
-		if (entity.parentAlias) {
-			deletedEntityName = entity.parentAlias.name;
-		}
-		if (returnHTML) {
-			return <span className="deleted"><span className="text-muted" title={`This ${entity.type} was deleted`}>{deletedEntityName}</span></span>;
-		}
-		return `${deletedEntityName}`;
+		return entity.parentAlias ? entity.parentAlias.name :
+			translate('pages.entity.deletedEntityType', {bbid: entity.bbid, type: translate(`common.entityType.${_camelCase(entity.type)}`)});
 	}
-	if (returnHTML) {
-		return <span title={`Unnamed ${entity.type} ${entity.bbid}`}>(unnamed)</span>;
+	return translate('pages.entity.unnamedLabel');
+}
+
+function EntityLabel({entity}: {entity: any}) {
+	const {t: translate} = useTranslation();
+	const entityTypeLabel = translate(`common.entityType.${_camelCase(entity.type)}`);
+	if (!entity.dataId) {
+		return (
+			<span className="deleted">
+				<span className="text-muted" title={translate('pages.entity.thisTypeWasDeleted', {type: entityTypeLabel})}>
+					{getEntityLabelText(entity, translate)}
+				</span>
+			</span>
+		);
 	}
-	return 'Unnamed';
+	return <span title={translate('pages.entity.unnamedType', {bbid: entity.bbid, type: entityTypeLabel})}>{translate('common.unnamed')}</span>;
+}
+
+// Defer fallback translations until React renders under the page's i18n provider.
+export function getEntityLabel(entity) {
+	return entity.defaultAlias ? `${entity.defaultAlias.name}` : <EntityLabel entity={entity}/>;
 }
 
 export function getEditionReleaseDate(edition) {
@@ -381,10 +394,11 @@ export function getRelationshipSourceByTypeId(entity, relationshipTypeId: number
 
 export const deletedEntityMessage = (
 	<p>
-		This entity has been deleted by an editor.
-		This is most likely because it was added accidentally or incorrectly.
-		<br/>The edit history has been preserved, and you can see the revisions by clicking the history button below.
-		<br/>If you’re sure this entity should still exist, you will be able to
-		restore it to a previous revision in a future version of BookBrainz, but that’s not quite ready yet.
+		<Trans
+			components={{
+				lineBreak: <br/>
+			}}
+			i18nKey="pages.entity.deletedEntityNotice"
+		/>
 	</p>
 );

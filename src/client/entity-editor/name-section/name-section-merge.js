@@ -29,6 +29,7 @@ import React from 'react';
 import _ from 'lodash';
 import {connect} from 'react-redux';
 import {entityTypeProperty} from '../../helpers/react-validators';
+import {useTranslation} from 'react-i18next';
 
 /**
  * Container component. The NameSectionMerge component contains input fields for
@@ -70,6 +71,7 @@ function NameSectionMerge({
 	onSortNameChange,
 	onDisambiguationChange
 }) {
+	const {t: translate} = useTranslation();
 	const nameOptions = [];
 	const sortNameOptions = [];
 	const languageSelectOptions = [];
@@ -101,33 +103,32 @@ function NameSectionMerge({
 		<div>
 			<MergeField
 				currentValue={nameValue}
-				label="Name"
+				label={translate('common.name')}
 				options={nameOptions}
-				tooltipText={`Prefered name of the ${_.capitalize(entityType)} in their original language.
-				Other names (full name, name in another language) are added as 'aliases'.`}
+				tooltipText={translate('entityEditor.nameSection.nameTooltip', {entityType: translate(`common.entityType.${_.camelCase(entityType)}`)})}
 				valueProperty="value"
 				onChange={onNameChange}
 			/>
 			<MergeField
 				currentValue={sortNameValue}
-				label="Sort Name"
+				label={translate('common.sortName')}
 				options={sortNameOptions}
-				tooltipText="Alphabetical sort name for the above name."
+				tooltipText={translate('entityEditor.nameSection.mergeSortNameTooltip')}
 				valueProperty="value"
 				onChange={onSortNameChange}
 			/>
 			<MergeField
 				currentValue={languageValue}
-				label="Language"
+				label={translate('entityEditor.languageField.label')}
 				options={languageSelectOptions}
-				tooltipText="Language the above name is in"
+				tooltipText={translate('entityEditor.nameSection.languageTooltip')}
 				onChange={onLanguageChange}
 			/>
 			<MergeField
 				currentValue={disambiguationDefaultValue}
-				label="Disambiguation"
+				label={translate('entityEditor.disambiguationField.label')}
 				options={disambiguationOptions}
-				tooltipText="In case there is another distinct entity with the same name"
+				tooltipText={translate('entityEditor.disambiguationField.tooltip')}
 				onChange={onDisambiguationChange}
 			/>
 		</div>

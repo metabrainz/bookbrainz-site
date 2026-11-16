@@ -6,6 +6,7 @@ import {createContext} from 'react-router';
 export type SiteContext = {
 	alerts: Alert[],
 	backend: Backend,
+	i18n: {locale: string, resources: Record<string, unknown>},
 	mergeQueue?: MergeQueue | null,
 	repositoryUrl: string,
 	session: SiteSession | undefined,

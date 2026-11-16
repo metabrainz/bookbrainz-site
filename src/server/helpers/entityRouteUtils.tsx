@@ -160,7 +160,8 @@ export function generateEntityMergeProps(
 export function entityEditorMarkup(
 	props: { initialState: any,
 			 entityType: string,
-			 heading?: string }
+			 heading?: string,
+			  i18n?: { locale: string, resources: any } }
 ) {
 	const {initialState, ...rest} = props;
 	const rootReducer = createRootReducer(props.entityType);
@@ -195,7 +196,8 @@ export function entityEditorMarkup(
  */
 export function entityMergeMarkup(
 	props: { initialState: any,
-			 entityType: string }
+			 entityType: string,
+			 i18n?: { locale: string, resources: any } }
 ) {
 	const {initialState, ...rest} = props;
 	const rootReducer = createRootReducer(props.entityType, true);

@@ -10,6 +10,8 @@ import {loadRouterBuild} from './load';
 declare module 'express-serve-static-core' {
 	interface Locals {
 		alerts: Alert[],
+		locale: string,
+		i18nResources: Record<string, unknown>,
 		repositoryUrl: string,
 		siteRevision: string
 	}
@@ -42,6 +44,7 @@ export async function createRouterBridge({getSearchClient, mode, orm, rootDir}: 
 			return createLoadContext({
 				alerts: res.locals.alerts,
 				backend: createBackend({orm, searchClient: getSearchClient()}),
+				i18n: {locale: res.locals.locale, resources: res.locals.i18nResources},
 				mergeQueue: session?.mergeQueue,
 				repositoryUrl: res.locals.repositoryUrl,
 				session,

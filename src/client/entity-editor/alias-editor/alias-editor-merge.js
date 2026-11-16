@@ -21,6 +21,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
+import {useTranslation} from 'react-i18next';
 
 
 /**
@@ -39,6 +40,7 @@ const AliasEditorMerge = ({
 	aliases,
 	languageOptions
 }) => {
+	const {t: translate} = useTranslation();
 	const languageOptionsForDisplay = {};
 	languageOptions.forEach((language) => (languageOptionsForDisplay[language.id] = language.name));
 
@@ -46,9 +48,9 @@ const AliasEditorMerge = ({
 		classNames('text-center', {'d-none': aliases.size});
 	return (
 		<React.Fragment>
-			<h2>Aliases</h2>
+			<h2>{translate('common.aliases')}</h2>
 			<div className={noAliasesTextClass}>
-				<p className="text-muted">This entity has no aliases</p>
+				<p className="text-muted">{translate('entityEditor.aliasEditor.noAliases')}</p>
 			</div>
 			{
 				aliases.map((alias, rowId) => (
