@@ -19,7 +19,6 @@ const cleanWebpackPluginOpts = {
 const clientConfig = {
 	context: path.resolve(__dirname, 'src', 'client'),
 	entry: {
-		adminLogs: ['./controllers/adminLogs'],
 		adminPanel: ['./controllers/admin-panel'],
 		searchAdmin: ['./controllers/admin/searchAdmin.tsx'],
 		collection: ['./controllers/collection/collection'],

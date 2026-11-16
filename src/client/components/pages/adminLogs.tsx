@@ -24,7 +24,7 @@ import PagerElement from './parts/pager';
 
 type Props = {
 	from?: number,
-	nextEnabled: number,
+	nextEnabled: boolean,
 	results?: AdminLogDataT[],
 	size?: number
 };

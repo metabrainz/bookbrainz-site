@@ -8,6 +8,7 @@ import {type RouteConfig, index, layout, route} from '@react-router/dev/routes';
 export default [
 	layout('routes/layouts/site.tsx', [
 		route('about', 'routes/static/about.tsx'),
+		route('admin-logs', 'routes/admin/admin-logs.tsx'),
 		route('collections', 'routes/browse/collections.tsx'),
 		route('contribute', 'routes/static/contribute.tsx'),
 		route('develop', 'routes/static/develop.tsx'),
