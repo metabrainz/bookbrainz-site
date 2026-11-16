@@ -19,13 +19,13 @@ import {
 	createEditor,
 	truncateEntities
 } from '../../../test-helpers/create-entities';
-import {
-	getOrderedCollectionsForEditorPage,
-	getOrderedPublicCollections
-} from '../../../../src/server/helpers/collections';
 import assertArrays from 'chai-arrays';
 import chai from 'chai';
 import {faker} from '@faker-js/faker';
+import {
+	getOrderedCollectionsForEditorPage
+} from '../../../../src/server/helpers/collections';
+import {getOrderedPublicCollections} from '../../../../src/backend/collections';
 import isSorted from 'chai-sorted';
 import orm from '../../../bookbrainz-data';
 
