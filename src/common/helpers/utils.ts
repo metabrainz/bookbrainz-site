@@ -1,3 +1,6 @@
+// Not type-checked yet: to be replaced by proper types.
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 import {EntityType, Relationship, RelationshipForDisplay} from '../../client/entity-editor/relationship-editor/types';
 
 import {isString, kebabCase, toString, upperFirst} from 'lodash';

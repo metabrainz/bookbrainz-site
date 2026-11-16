@@ -16,5 +16,8 @@ export default [
 		route('privacy', 'routes/static/privacy.tsx'),
 		route('revisions', 'routes/browse/revisions.tsx')
 	]),
+	layout('routes/layouts/no-search.tsx', [
+		route('search', 'routes/browse/search.tsx')
+	]),
 	route('*', 'routes/errors/not-found.tsx')
 ] satisfies RouteConfig;

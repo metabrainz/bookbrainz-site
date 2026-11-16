@@ -21,86 +21,16 @@ import * as auth from '../helpers/auth';
 import * as commonUtils from '../../common/helpers/utils';
 import * as error from '../../common/helpers/error';
 import * as handler from '../helpers/handler';
-import * as propHelpers from '../../client/helpers/props';
 import * as search from '../../common/helpers/search';
 
-import {keys as _keys, snakeCase as _snakeCase, camelCase, isNil, isString, upperFirst} from 'lodash';
-import {escapeProps, generateProps} from '../helpers/props';
+import {snakeCase as _snakeCase, camelCase, isString, upperFirst} from 'lodash';
 
-import Layout from '../../client/containers/layout';
 import {PrivilegeType} from '../../common/helpers/privileges-utils';
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
-import SearchPage from '../../client/components/pages/search';
 import express from 'express';
-import target from '../templates/target';
 
 
 const router = express.Router();
 const {REINDEX_SEARCH_SERVER} = PrivilegeType;
-
-/**
- * Generates React markup for the search page that is rendered by the user's
- * browser.
- */
-router.get('/', async (req, res, next) => {
-	const {orm} = req.app.locals;
-	const query = req.query.q ?? '';
-	const type = req.query.type?.toString() || 'allEntities';
-	const size = req.query.size ? parseInt(String(req.query.size), 10) : 20;
-	const from = req.query.from ? parseInt(String(req.query.from), 10) : 0;
-	try {
-		let searchResults = {
-			initialResults: [],
-			query,
-			total: 0
-		};
-		if (query) {
-			// get 1 more results to check nextEnabled
-			const searchResponse = await search.searchByName(orm, query, _snakeCase(type), size + 1, from);
-			const {results: entities} = searchResponse;
-			const initialResults = entities.filter(entity => !isNil(entity));
-			searchResults = {
-				initialResults,
-				query,
-				total: initialResults.length
-			};
-		}
-
-		const entityTypes = _keys(commonUtils.getEntityModels(orm));
-		const {newResultsArray, nextEnabled} = commonUtils.getNextEnabledAndResultsArray(searchResults.initialResults, size);
-		searchResults.initialResults = newResultsArray;
-
-		const props = generateProps(req, res, {
-			entityTypes,
-			from,
-			hideSearch: true,
-			nextEnabled,
-			resultsPerPage: size,
-			...searchResults,
-			type: req.query.type
-		});
-		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<SearchPage
-					user={props.user}
-					{...propHelpers.extractChildProps(props)}
-				/>
-			</Layout>
-		);
-
-		return res.send(target({
-			locale: res.locals.locale,
-			markup,
-			props: escapeProps(props),
-			script: '/js/search.js',
-			title: 'Search Results'
-		}));
-	}
-	catch (err) {
-		return next(err);
-	}
-});
 
 router.get('/search', (req, res) => {
 	const {orm} = req.app.locals;
