@@ -25,6 +25,7 @@ import {Trans, withTranslation} from 'react-i18next';
 import {faBluesky, faMastodon} from '@fortawesome/free-brands-svg-icons';
 import {faCircle, faCommentDots, faComments, faEnvelope, faListUl, faSearch, faUser} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {Link} from 'react-router';
 import PropTypes from 'prop-types';
 import React from 'react';
 import RevisionsTable from './parts/revisions-table';
@@ -85,8 +86,9 @@ class IndexPage extends React.Component {
 										<Col md={4}>
 											<Button
 												block
-												href="/about"
+												as={Link}
 												size="lg"
+												to="/about"
 												variant="secondary"
 											>
 												{translate('pages.index.aboutButton')}
@@ -95,8 +97,9 @@ class IndexPage extends React.Component {
 										<Col md={4}>
 											<Button
 												block
-												href="/contribute"
+												as={Link}
 												size="lg"
+												to="/contribute"
 												variant="secondary"
 											>
 												{translate('pages.index.contributeButton')}
@@ -105,8 +108,9 @@ class IndexPage extends React.Component {
 										<Col md={4}>
 											<Button
 												block
-												href="/develop"
+												as={Link}
 												size="lg"
+												to="/develop"
 												variant="secondary"
 											>
 												{translate('pages.index.developButton')}
@@ -222,7 +226,8 @@ class IndexPage extends React.Component {
 					/>
 					<div className="text-center">
 						<Button
-							href="/revisions"
+							as={Link}
+							to="/revisions"
 							variant="primary"
 						>
 							<FontAwesomeIcon className="margin-right-0-5" icon={faListUl}/>
