@@ -1,18 +1,20 @@
-import {type RouteConfig, route} from '@react-router/dev/routes';
+import {type RouteConfig, layout, route} from '@react-router/dev/routes';
 
 /*
  * The pages served by React Router. A page is added here together with the removal of its Express handler.
- * Route modules are grouped by feature under routes/. The 404 route comes last: it matches every URL no other
- * route matches.
+ * Route modules are grouped by feature under routes/. Each layout route renders the frame of the site around the
+ * pages inside it. The 404 route comes last: it matches every URL no other route matches.
  */
 export default [
-	route('about', 'routes/static/about.tsx'),
-	route('contribute', 'routes/static/contribute.tsx'),
-	route('develop', 'routes/static/develop.tsx'),
-	route('faq', 'routes/static/faq.tsx'),
-	route('help', 'routes/static/help.tsx'),
-	route('licensing', 'routes/static/licensing.tsx'),
-	route('privacy', 'routes/static/privacy.tsx'),
-	route('revisions', 'routes/browse/revisions.tsx'),
+	layout('routes/layouts/site.tsx', [
+		route('about', 'routes/static/about.tsx'),
+		route('contribute', 'routes/static/contribute.tsx'),
+		route('develop', 'routes/static/develop.tsx'),
+		route('faq', 'routes/static/faq.tsx'),
+		route('help', 'routes/static/help.tsx'),
+		route('licensing', 'routes/static/licensing.tsx'),
+		route('privacy', 'routes/static/privacy.tsx'),
+		route('revisions', 'routes/browse/revisions.tsx')
+	]),
 	route('*', 'routes/errors/not-found.tsx')
 ] satisfies RouteConfig;
