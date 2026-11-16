@@ -24,7 +24,6 @@ const clientConfig = {
 		searchAdmin: ['./controllers/admin/searchAdmin.tsx'],
 		collection: ['./controllers/collection/collection'],
 		'collection/create': ['./controllers/collection/userCollectionForm'],
-		collections: ['./controllers/collections'],
 		deletion: ['./controllers/deletion.js'],
 		preview: ['./controllers/preview.js'],
 		error: ['./controllers/error.js'],

@@ -1,6 +1,7 @@
 import {getOrderedRevisions, getRevisionsPage} from './revisions';
 import type {Client} from '@elastic/elasticsearch';
 import type {ORM} from 'bookbrainz-data';
+import {getPublicCollectionsPage} from './collections';
 import {getSearchPage} from './search';
 import {getStatisticsPage} from './statistics';
 
@@ -13,6 +14,9 @@ export type BackendDependencies = {
 // Page migrations add their data functions here. Neither requests nor responses enter the backend.
 export function createBackend({orm}: BackendDependencies) {
 	return {
+		collections: {
+			getPublicPage: (params: Parameters<typeof getPublicCollectionsPage>[1]) => getPublicCollectionsPage(orm, params)
+		},
 		revisions: {
 			getLatest: ({size}: {size: number}) => getOrderedRevisions(0, size, orm),
 			getPage: (params: {from: number, size: number}) => getRevisionsPage(orm, params)
