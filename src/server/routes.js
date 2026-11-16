@@ -29,7 +29,6 @@ import editorRouter from './routes/editor';
 import externalServiceRouter from './routes/externalService';
 import identifierTypeRouter from './routes/type-editor/identifier-type';
 import identifierTypesRouter from './routes/identifier-types';
-import indexRouter from './routes/index';
 import mergeRouter from './routes/merge';
 import publisherRouter from './routes/entity/publisher';
 import registerRouter from './routes/register';
@@ -49,7 +48,6 @@ import workRouter from './routes/entity/work';
 
 
 function initRootRoutes(app) {
-	app.use('/', indexRouter);
 	app.use('/', authRouter);
 	app.use('/', unifiedFormRouter);
 	app.use('/', reviewsRouter);
