@@ -13,5 +13,6 @@ export default [
 	route('help', 'routes/static/help.tsx'),
 	route('licensing', 'routes/static/licensing.tsx'),
 	route('privacy', 'routes/static/privacy.tsx'),
+	route('revisions', 'routes/browse/revisions.tsx'),
 	route('*', 'routes/errors/not-found.tsx')
 ] satisfies RouteConfig;

@@ -25,7 +25,7 @@ import Layout from '../../client/containers/layout';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import express from 'express';
-import {getOrderedRevisions} from '../helpers/revisions';
+import {getOrderedRevisions} from '../../backend/revisions';
 import target from '../templates/target';
 
 
