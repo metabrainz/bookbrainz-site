@@ -38,7 +38,7 @@ function EditionGroupTableRow({
 	onToggleRow = null
 }) {
 	const name = getEntityLabel(editionGroup);
-	const number = editionGroup.number || '?';
+	const number = editionGroup.number === '' ? '–' : editionGroup.number || '?';
 	const disambiguation = getEntityDisambiguation(editionGroup);
 	const editionGroupType = editionGroup.editionGroupType ? editionGroup.editionGroupType.label : '?';
 	const addedAt = showAddedAtColumn ? utilHelper.formatDate(new Date(editionGroup.addedAt), true) : null;

@@ -47,7 +47,7 @@ function EditionTableRow({
 }) {
 	const name = getEntityLabel(edition);
 	const disambiguation = getEntityDisambiguation(edition);
-	const number = edition.number || '?';
+	const number = edition.number === '' ? '–' : edition.number || '?';
 	const releaseDate = getEditionReleaseDate(edition);
 	const isbn = getISBNOfEdition(edition);
 	const editionFormat = getEditionFormat(edition);

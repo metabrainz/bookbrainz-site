@@ -18,7 +18,7 @@
 /* eslint-disable react/jsx-no-bind, no-invalid-this */
 
 
-import {Button, Col, Row} from 'react-bootstrap';
+import {Button, Col, Form, Row} from 'react-bootstrap';
 import type {
 	Entity, EntityType, RelationshipForDisplay,
 	RelationshipType
@@ -84,8 +84,10 @@ type SeriesItemsProps = {
  *
  */
 
-const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemove, dragHandler, isUnifiedForm}) => {
+const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, handleNoNumberChange, onRemove, dragHandler, isUnifiedForm}) => {
 	const {t: translate} = useTranslation();
+	// An empty string (as opposed to null) marks an item that has no number
+	const hasNoNumber = _.find(value.attributes, {attributeType: 2})?.value.textValue === '';
 	return (
 		<Row className={`margin-top-d5 ${isUnifiedForm ? 'w-100 align-items-center' : ''}`} key={value.rowID}>
 			{(!isUnifiedForm || dragHandler) &&
@@ -95,10 +97,18 @@ const SeriesListItem = ({value, baseEntity, handleNumberAttributeChange, onRemov
 			<Col lg={2}>
 				<input
 					className="form-control"
+					disabled={hasNoNumber}
 					placeholder={translate('entityEditor.seriesEditor.placeholder')}
 					type="text"
 					value={_.find(value.attributes, {attributeType: 2})?.value.textValue || ''}
 					onChange={handleNumberAttributeChange.bind(this, value.rowID)}
+				/>
+				<Form.Check
+					checked={hasNoNumber}
+					id={`no-number-${value.rowID}`}
+					label={translate('entityEditor.seriesEditor.noNumber')}
+					type="checkbox"
+					onChange={handleNoNumberChange.bind(this, value.rowID)}
 				/>
 			</Col>
 			<Col className="form-control-static" lg={7}>
@@ -128,16 +138,18 @@ SeriesListItem.displayName = 'SeriesListItem';
 SeriesListItem.propTypes = {
 	baseEntity: PropTypes.object.isRequired,
 	dragHandler: PropTypes.bool.isRequired,
+	handleNoNumberChange: PropTypes.func.isRequired,
 	handleNumberAttributeChange: PropTypes.func.isRequired,
 	isUnifiedForm: PropTypes.bool.isRequired,
 	onRemove: PropTypes.func.isRequired,
 	value: PropTypes.any.isRequired
 };
 
-const SortableItem = SortableElement(({value, onRemove, baseEntity, handleNumberAttributeChange, isUnifiedForm}) => (
+const SortableItem = SortableElement(({value, onRemove, baseEntity, handleNumberAttributeChange, handleNoNumberChange, isUnifiedForm}) => (
 	<SeriesListItem
 		dragHandler
 		baseEntity={baseEntity}
+		handleNoNumberChange={handleNoNumberChange}
 		handleNumberAttributeChange={handleNumberAttributeChange}
 		isUnifiedForm={isUnifiedForm}
 		value={value}
@@ -202,6 +214,15 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 		onEdit(attributeNumber, rowID);
 		onSort({newIndex: null, oldIndex: null});
 	};
+	const handleNoNumberChange = (rowID, {target}) => {
+		// '' marks "does not have a number"; null means the number is unknown
+		const attributeNumber = {
+			attributeType: 2,
+			value: {textValue: target.checked ? '' : null}
+		};
+		onEdit(attributeNumber, rowID);
+		onSort({newIndex: null, oldIndex: null});
+	};
 	const heading = <h2>{translate('entityEditor.seriesEditor.heading', {seriesType: `${seriesType}s`})}</h2>;
 	const alignText = isUnifiedForm ? 'text-left' : 'text-right';
 	return (
@@ -215,6 +236,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 								<SeriesListItem
 									baseEntity={baseEntity}
 									dragHandler={false}
+									handleNoNumberChange={handleNoNumberChange}
 									handleNumberAttributeChange={handleNumberAttributeChange}
 									isUnifiedForm={isUnifiedForm}
 									key={value.rowID}
@@ -230,6 +252,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 							{seriesItemsArray.map((value, index) => !value.isRemoved && (
 								<SortableItem
 									baseEntity={baseEntity}
+									handleNoNumberChange={handleNoNumberChange}
 									handleNumberAttributeChange={handleNumberAttributeChange}
 									index={index}
 									isUnifiedForm={isUnifiedForm}

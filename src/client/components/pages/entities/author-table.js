@@ -38,7 +38,7 @@ function AuthorTableRow({
 }) {
 	const name = getEntityLabel(author);
 	const disambiguation = getEntityDisambiguation(author);
-	const number = author.number || '?';
+	const number = author.number === '' ? '–' : author.number || '?';
 	const authorType = author.authorType?.label || author.authorType || '?';
 	const gender = author.gender?.name ?? genderOptions.find((option) => option.id === author.genderId)?.name ?? '?';
 	const beginDate = transformISODateForDisplay(extractAttribute(author.beginDate));
