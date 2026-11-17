@@ -19,11 +19,11 @@
 import {
 	SET_SUBMITTED, SET_SUBMIT_ERROR, UPDATE_REVISION_NOTE
 } from './actions';
-import Immutable from 'immutable';
+import {Map as ImmutableMap} from 'immutable';
 
 
 function reducer(
-	state = Immutable.Map({
+	state = ImmutableMap({
 		note: '',
 		submitError: '',
 		submitted: false

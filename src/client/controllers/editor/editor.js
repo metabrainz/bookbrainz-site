@@ -22,14 +22,13 @@ import {
 	extractEditorProps,
 	extractLayoutProps
 } from '../../helpers/props';
-import {AppContainer} from 'react-hot-loader';
 import CollectionsPage from '../../components/pages/collections';
 import EditorContainer from '../../containers/editor';
 import EditorRevisionPage from '../../components/pages/editor-revision';
 import Layout from '../../containers/layout';
 import ProfileTab from '../../components/pages/parts/editor-profile';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {hydrateRoot} from 'react-dom/client';
 
 
 const propsTarget = document.getElementById('props');
@@ -61,25 +60,13 @@ else {
 }
 
 const markup = (
-	<AppContainer>
-		<Layout {...extractLayoutProps(props)} >
-			<EditorContainer
-				{...extractEditorProps(props)}
-			>
-				{tab}
-			</EditorContainer>
-		</Layout>
-	</AppContainer>
+	<Layout {...extractLayoutProps(props)} >
+		<EditorContainer
+			{...extractEditorProps(props)}
+		>
+			{tab}
+		</EditorContainer>
+	</Layout>
 );
 
-ReactDOM.hydrate(markup, document.getElementById('target'));
-
-/*
- * As we are not exporting a component,
- * we cannot use the react-hot-loader module wrapper,
- * but instead directly use webpack Hot Module Replacement API
- */
-
-if (module.hot) {
-	module.hot.accept();
-}
+hydrateRoot(document.getElementById('target'), markup);

@@ -43,13 +43,14 @@ export default ({
 	markup,
 	page,
 	props,
-	script
+	script,
+	locale
 }) => {
 	const pageScript =
 		`<script id='page' type='application/json'>${page}</script>`;
 	return `
 	<!doctype html>
-	<html lang="en">
+	<html lang="${locale || 'en'}">
 		<head>
 			<title>${title ? `${title} – BookBrainz` :
 		'BookBrainz – The Open Book Database'}</title>

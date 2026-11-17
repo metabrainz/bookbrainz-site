@@ -18,7 +18,6 @@
 
 import {faBarcode, faLink, faPlus} from '@fortawesome/free-solid-svg-icons';
 import AuthorTable from '../components/pages/entities/author-table';
-import DOMPurify from 'isomorphic-dompurify';
 import EditionGroupTable from '../components/pages/entities/editionGroup-table';
 import EditionTable from '../components/pages/entities/edition-table';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -29,6 +28,7 @@ import WorkTable from '../components/pages/entities/work-table';
 import _ from 'lodash';
 import {format} from 'date-fns';
 import {isIterable} from '../../types';
+import {sanitize} from 'isomorphic-dompurify';
 
 
 export interface DateObject {
@@ -66,7 +66,26 @@ export function formatDate(date: Date, includeTime?: boolean) {
 	return format(date, 'yyyy-MM-dd');
 }
 
-export function labelsForAuthor(isGroup) {
+export function labelsForAuthor(isGroup: boolean, translate?: any) {
+	if (translate) {
+		return {
+			beginAreaLabel: isGroup ?
+				translate('entityEditor.authorSection.beginAreaLabel.group') :
+				translate('entityEditor.authorSection.beginAreaLabel.person'),
+			beginDateLabel: isGroup ?
+				translate('entityEditor.authorSection.beginDateLabel.group') :
+				translate('entityEditor.authorSection.beginDateLabel.person'),
+			endAreaLabel: isGroup ?
+				translate('entityEditor.authorSection.endAreaLabel.group') :
+				translate('entityEditor.authorSection.endAreaLabel.person'),
+			endDateLabel: isGroup ?
+				translate('entityEditor.authorSection.endDateLabel.group') :
+				translate('entityEditor.authorSection.endDateLabel.person'),
+			endedLabel: isGroup ?
+				translate('entityEditor.shared.dissolvedLabel') :
+				translate('entityEditor.authorSection.endedLabel.person')
+		};
+	}
 	return {
 		beginAreaLabel: isGroup ? 'Place founded' : 'Place of birth',
 		beginDateLabel: isGroup ? 'Date founded' : 'Date of birth',
@@ -218,7 +237,7 @@ export function stringToHTMLWithLinks(content: string) {
 			return link + suffix;
 		}
 	);
-	const sanitizedHtml = DOMPurify.sanitize(replacedContent, {ADD_ATTR: ['target']});
+	const sanitizedHtml = sanitize(replacedContent, {ADD_ATTR: ['target']});
 	// eslint-disable-next-line react/no-danger
 	return <span dangerouslySetInnerHTML={{__html: sanitizedHtml}}/>;
 }

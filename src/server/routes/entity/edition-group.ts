@@ -135,6 +135,7 @@ router.get(
 		const {markup, props} = entityEditorMarkup(markupProps);
 
 		return res.send(target({
+			locale: res.locals.locale,
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
@@ -162,6 +163,7 @@ router.post(
 		const {markup, props} = entityEditorMarkup(markupProps);
 
 		return res.send(target({
+			locale: res.locals.locale,
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
@@ -352,6 +354,7 @@ router.get(
 		));
 
 		return res.send(target({
+			locale: res.locals.locale,
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',

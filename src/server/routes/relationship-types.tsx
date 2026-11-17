@@ -40,6 +40,7 @@ router.get('/', (req, res) => {
 	);
 
 	res.send(target({
+		locale: res.locals.locale,
 		markup,
 		page: 'RelationshipTypeMatrix',
 		props: escapeProps(props),
@@ -77,6 +78,7 @@ router.get('/:type1-:type2', async (req, res) => {
 		</Layout>
 	);
 	res.send(target({
+		locale: res.locals.locale,
 		markup,
 		page: 'RelationshipTypes',
 		props: escapeProps(props),

@@ -41,6 +41,7 @@ jobs:
           DEPLOY_ENV=prod
         cache-from: metabrainz/bookbrainz:cache
         cache-to: metabrainz/bookbrainz:cache
+        pull: true
         push: true
         tags: metabrainz/bookbrainz:${{ steps.get_tag.outputs.TAG }}
         target: bookbrainz-prod

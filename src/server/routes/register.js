@@ -51,7 +51,7 @@ router.get('/', (req, res) => {
 		</Layout>
 	);
 
-	return res.send(target({markup, title: 'Register'}));
+	return res.send(target({locale: res.locals.locale, markup, title: 'Register'}));
 });
 
 router.get('/details', middleware.loadGenders, (req, res) => {
@@ -71,7 +71,7 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 	const props = generateProps(req, res, {
 		gender,
 		genders: res.locals.genders,
-		name: req.session.mbProfile.sub
+		name: req.session.mbProfile.username
 	});
 
 	const markup = ReactDOMServer.renderToString(
@@ -85,6 +85,7 @@ router.get('/details', middleware.loadGenders, (req, res) => {
 	);
 
 	return res.send(target({
+		locale: res.locals.locale,
 		markup,
 		props: escapeProps(props),
 		script: '/js/registrationDetails.js',
@@ -112,11 +113,11 @@ router.post('/handler', async (req, res) => {
 		// Create a new Editor and add to the database
 
 		const editor = await new Editor({
-			cachedMetabrainzName: req.session.mbProfile.sub,
+			cachedMetabrainzName: req.session.mbProfile.name,
 			genderId: req.body.gender,
 			metabrainzOauthAccessToken: req.session.mbProfile.metabrainzOauthAccessToken,
 			metabrainzOauthRefreshToken: req.session.mbProfile.metabrainzOauthRefreshToken,
-			metabrainzUserId: req.session.mbProfile.metabrainz_user_id,
+			metabrainzUserId: req.session.mbProfile.sub,
 			name: req.body.displayName,
 			typeId: editorType.id
 		})

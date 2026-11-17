@@ -20,11 +20,11 @@ import {
 	UPDATE_DISAMBIGUATION_FIELD, UPDATE_LANGUAGE_FIELD, UPDATE_NAME_FIELD,
 	UPDATE_SEARCH_RESULTS, UPDATE_SORT_NAME_FIELD, UPDATE_WARN_IF_EXISTS
 } from './actions';
-import Immutable from 'immutable';
+import {Map as ImmutableMap} from 'immutable';
 
 
 function reducer(
-	state = Immutable.Map({
+	state = ImmutableMap({
 		disambiguation: '',
 		exactMatches: [],
 		language: null,

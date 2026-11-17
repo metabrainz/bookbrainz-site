@@ -7,6 +7,7 @@ import {addIdentifierRow} from './actions';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 
 type IdentifierModalBodyStateProps = {
@@ -22,13 +23,14 @@ type IdentifierModalBodyProps = IdentifierModalBodyOwnProps & IdentifierModalBod
 
 
 export const IdentifierModalBody = ({identifiers, onAddIdentifier, identifierTypes}:IdentifierModalBodyProps) => {
+	const {t: translate} = useTranslation();
 	const noIdentifiersTextClass =
 		classNames('text-center', {'d-none': identifiers.size});
 
 	return (
 		<>
 			<div className={noIdentifiersTextClass}>
-				<p className="text-muted">This entity has no identifiers</p>
+				<p className="text-muted">{translate('entityEditor.identifierModalBody.noIdentifiers')}</p>
 			</div>
 			<div>
 				{
@@ -39,14 +41,14 @@ export const IdentifierModalBody = ({identifiers, onAddIdentifier, identifierTyp
 							key={rowId}
 							typeOptions={identifierTypes}
 						/>
-					)).toArray()
+					)).valueSeq().toArray()
 				}
 			</div>
 			<Row>
 				<Col className="text-right" lg={{offset: 9, span: 3}}>
 					<Button variant="success" onClick={onAddIdentifier}>
 						<FontAwesomeIcon icon={faPlus}/>
-						<span>&nbsp;Add identifier</span>
+						<span>&nbsp;{translate('entityEditor.identifierModalBody.addButton')}</span>
 					</Button>
 				</Col>
 			</Row>

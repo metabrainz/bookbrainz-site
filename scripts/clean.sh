@@ -6,3 +6,4 @@ rm -Rf src/client/stylesheets/react-select
 rm -Rf static/stylesheets/*
 rm -Rf static/js/*
 rm -Rf lib/*
+rm -Rf build-router .react-router

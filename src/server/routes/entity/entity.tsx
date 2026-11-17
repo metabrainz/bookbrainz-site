@@ -49,7 +49,8 @@ import ReactDOMServer from 'react-dom/server';
 import SeriesPage from '../../../client/components/pages/entities/series';
 import WorkPage from '../../../client/components/pages/entities/work';
 import _ from 'lodash';
-import {getEntityLabel} from '../../../client/helpers/entity';
+import {createI18n} from '../../../common/i18n/i18n';
+import {getEntityLabelText} from '../../../client/helpers/entity';
 import {getOrderedRevisionsForEntityPage} from '../../helpers/revisions';
 import log from 'log';
 import {processAchievement} from './process-unified-form';
@@ -153,6 +154,7 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 				genderOptions: res.locals.genders,
 				identifierTypes
 			});
+			const {t: translate} = createI18n(res.locals.locale, res.locals.i18nResources);
 			const markup = ReactDOMServer.renderToString(
 				<Layout {...propHelpers.extractLayoutProps(props)}>
 					<EntityComponent
@@ -161,11 +163,12 @@ export function displayEntity(req: PassportRequest, res: $Response) {
 				</Layout>
 			);
 			res.send(target({
+				locale: res.locals.locale,
 				markup,
 				page: entityName,
 				props: escapeProps(props),
 				script: '/js/entity/entity.js',
-				title: `${getEntityLabel(props.entity, false)} (${_.upperFirst(entityName)})`
+				title: `${getEntityLabelText(props.entity, translate)} (${_.upperFirst(entityName)})`
 			}));
 		}
 		else {
@@ -186,6 +189,7 @@ export function displayDeleteEntity(req: PassportRequest, res: $Response) {
 	);
 
 	res.send(target({
+		locale: res.locals.locale,
 		markup,
 		props: escapeProps(props),
 		script: '/js/deletion.js'
@@ -221,6 +225,7 @@ export async function displayRevisions(
 			</Layout>
 		);
 		return res.send(target({
+			locale: res.locals.locale,
 			markup,
 			page: 'revisions',
 			props: escapeProps(props),
@@ -267,7 +272,7 @@ function _createNote(orm, content, editorID, revision, transacting) {
 export function addNoteToRevision(req: PassportRequest, res: $Response) {
 	const {orm}: {orm?: any} = req.app.locals;
 	const {Revision, bookshelf} = orm;
-	const editorJSON = req.session.passport.user;
+	const editorJSON = req.user;
 	const revision = Revision.forge({id: req.params.id});
 	const {body}: {body: any} = req;
 	const revisionNotePromise = bookshelf.transaction(
@@ -425,7 +430,7 @@ export function handleDelete(
 		throw new error.ConflictError('This entity has already been deleted');
 	}
 	const {Revision, bookshelf} = orm;
-	const editorJSON = req.session.passport.user;
+	const editorJSON = req.user;
 	const {body}: {body: any} = req;
 	const entityDeletePromise = bookshelf.transaction(async (transacting) => {
 		if (!body.note || !body.note.length) {
@@ -1398,6 +1403,7 @@ export function displayPreview(req:PassportRequest, res:$Response, next) {
 		</Layout>
 	);
 	return res.send(target({
+		locale: res.locals.locale,
 		markup,
 		props: JSON.stringify(props),
 		script: '/js/preview.js',

@@ -29,6 +29,7 @@ import _ from 'lodash';
 import {faCodeBranch} from '@fortawesome/free-solid-svg-icons';
 import request from 'superagent';
 import {transformISODateForDisplay} from '../../helpers/entity';
+import {withTranslation} from 'react-i18next';
 
 
 const {Badge, Button, Col, Form, ListGroup, Row} = bootstrap;
@@ -100,7 +101,7 @@ class RevisionPage extends React.Component {
 		return _.compact(result);
 	}
 
-	static getEntityDiff(diff) {
+	static getEntityDiff(diff, translate) {
 		let mergeBadge = null;
 		let deleteBadge = null;
 		if (diff.isDeletion) {
@@ -108,16 +109,16 @@ class RevisionPage extends React.Component {
 				mergeBadge = (
 					<Badge
 						pill className="merged margin-right-0-5 text-light"
-						title={`This ${diff.entity.type} was merged in this revision`}
-					>Merged
+						title={translate('pages.revision.entityMergedTitle', {type: translate(`common.entityType.${_.camelCase(diff.entity.type)}`)})}
+					>{translate('pages.revision.badgeMerged')}
 					</Badge>);
 			}
 			else {
 				deleteBadge = (
 					<Badge
 						pill className="deletion margin-right-0-5 text-light"
-						title={`This ${diff.entity.type} was deleted in this revision`}
-					>- Deleted
+						title={translate('pages.revision.entityDeletedTitle', {type: translate(`common.entityType.${_.camelCase(diff.entity.type)}`)})}
+					>{translate('pages.revision.badgeDeleted')}
 					</Badge>);
 			}
 		}
@@ -127,8 +128,8 @@ class RevisionPage extends React.Component {
 					{diff.isNew &&
 					<Badge
 						pill className="new margin-right-0-5 text-light"
-						title={`This ${diff.entity.type} was created in this revision`}
-					>+ New
+						title={translate('pages.revision.entityCreatedTitle', {type: translate(`common.entityType.${_.camelCase(diff.entity.type)}`)})}
+					>{translate('pages.revision.badgeNew')}
 					</Badge>}
 					{mergeBadge}
 					{deleteBadge}
@@ -146,14 +147,14 @@ class RevisionPage extends React.Component {
 		);
 	}
 
-	static formatTitle(author) {
+	static formatTitle(author, translate) {
 		let title;
 		if (_.get(author, ['titleUnlock', 'title'], null)) {
 			const authorTitle = author.titleUnlock.title;
 			title = `${authorTitle.title}: ${authorTitle.description}`;
 		}
 		else {
-			title = 'No Title Set: This user hasn\'t selected a title';
+			title = translate('pages.revision.noTitleSet');
 		}
 		return title;
 	}
@@ -181,7 +182,7 @@ class RevisionPage extends React.Component {
 	}
 
 	render() {
-		const {revision, diffs, user} = this.props;
+		const {diffs, revision, t: translate, user} = this.props;
 		let regularDiffs = diffs;
 		let mergeDiffDivs;
 
@@ -206,18 +207,18 @@ class RevisionPage extends React.Component {
 					}
 					return 0;
 				})
-				.map(RevisionPage.getEntityDiff);
+				.map(diff => RevisionPage.getEntityDiff(diff, translate));
 		}
 
-		const diffDivs = regularDiffs.map(RevisionPage.getEntityDiff);
+		const diffDivs = regularDiffs.map(diff => RevisionPage.getEntityDiff(diff, translate));
 
 		const editorTitle =
-			RevisionPage.formatTitle(revision.author);
+			RevisionPage.formatTitle(revision.author, translate);
 
 		let revisionNotes = revision.notes.map((note) => {
 			const timeCreated = formatDate(new Date(note.postedAt), true);
 			const noteAuthorTitle =
-				RevisionPage.formatTitle(note.author);
+				RevisionPage.formatTitle(note.author, translate);
 			return (
 				<ListGroup.Item
 					key={note.id}
@@ -242,36 +243,36 @@ class RevisionPage extends React.Component {
 		});
 
 		if (revisionNotes.length === 0) {
-			revisionNotes = <p> No revision notes present </p>;
+			revisionNotes = <p>{translate('pages.revision.noNotes')}</p>;
 		}
 
 		const dateRevisionCreated = formatDate(new Date(revision.createdAt), true);
 		return (
 			<Row id="mergePage">
 				<Col lg={12}>
-					<h1>Revision #{revision.id}</h1>
+					<h1>{translate('pages.revision.heading', {id: revision.id})}</h1>
 					{revision.isMerge && (
 						<div className="mergedEntities">
 							<h3>
 								<span
 									className="round-color-icon"
-									title="Merge revision"
+									title={translate('pages.revisions.titleMerge')}
 								>
 									<FontAwesomeIcon
 										flip="vertical" icon={faCodeBranch}
 										transform="shrink-4"
 									/>
 								</span>
-								Merges {mergeDiffDivs.length > 2 ? 'entities' : 'entity'}:
+								{translate('pages.revision.mergesEntities', {count: mergeDiffDivs.length})}
 							</h3>
 							{mergeDiffDivs.slice(0, -1)}
-							<h4>Into:</h4>
+							<h4>{translate('pages.revision.mergeInto')}</h4>
 							{mergeDiffDivs.slice(-1)}
 						</div>
 					)}
 					{diffDivs}
 					<p className="text-right">
-						Created by&nbsp;
+						{translate('pages.revision.createdBy')}&nbsp;
 						<a
 							href={`/editor/${revision.author.id}`}
 							title={editorTitle}
@@ -281,7 +282,7 @@ class RevisionPage extends React.Component {
 						, {dateRevisionCreated}
 					</p>
 
-					<h3>Revision Notes</h3>
+					<h3>{translate('pages.revision.notesHeading')}</h3>
 					<ListGroup>
 						{revisionNotes}
 					</ListGroup>
@@ -291,7 +292,7 @@ class RevisionPage extends React.Component {
 							onSubmit={this.handleSubmit}
 						>
 							<Form.Group>
-								<Form.Label>Add Note</Form.Label>
+								<Form.Label>{translate('pages.revision.addNote')}</Form.Label>
 								<Form.Control
 									as="textarea"
 									autoComplete="off"
@@ -301,11 +302,11 @@ class RevisionPage extends React.Component {
 							</Form.Group>
 							<Button
 								className="float-right margin-top-1"
-								title="Submit revision note"
+								title={translate('pages.revision.submitNoteTitle')}
 								type="submit"
 								variant="primary"
 							>
-								Submit
+								{translate('common.button.submit')}
 							</Button>
 						</form>
 					}
@@ -319,10 +320,12 @@ RevisionPage.displayName = 'RevisionPage';
 RevisionPage.propTypes = {
 	diffs: PropTypes.any.isRequired,
 	revision: PropTypes.any.isRequired,
+	// eslint-disable-next-line id-length
+	t: PropTypes.func.isRequired,
 	user: PropTypes.object
 };
 RevisionPage.defaultProps = {
 	user: null
 };
 
-export default RevisionPage;
+export default withTranslation()(RevisionPage);

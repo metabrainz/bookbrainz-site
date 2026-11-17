@@ -21,6 +21,7 @@ import {Form} from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ValidationLabel from '../common/validation-label';
+import {useTranslation} from 'react-i18next';
 
 
 /**
@@ -36,13 +37,14 @@ import ValidationLabel from '../common/validation-label';
  *          component.
  */
 function ValueField({
-	error,
-	empty,
+	error = false,
+	empty = true,
 	...rest
 }) {
+	const {t: translate} = useTranslation();
 	const label = (
 		<ValidationLabel empty={empty} error={error}>
-			Value
+			{translate('common.value')}
 		</ValidationLabel>
 	);
 
@@ -59,10 +61,6 @@ ValueField.displayName = 'ValueField';
 ValueField.propTypes = {
 	empty: PropTypes.bool,
 	error: PropTypes.bool
-};
-ValueField.defaultProps = {
-	empty: true,
-	error: false
 };
 
 export default ValueField;

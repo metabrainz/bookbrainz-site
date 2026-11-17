@@ -32,7 +32,7 @@ type EntityProps = {
 };
 
 function Entity(
-	{disambiguation, language, link, text, type, unnamedText, authors}: EntityProps
+	{disambiguation = null, language = null, link = false, text, type, unnamedText = '(unnamed)', authors}: EntityProps
 ) {
 	const nameComponent = text || <i>{unnamedText}</i>;
 	const contents = (
@@ -64,11 +64,5 @@ function Entity(
 }
 
 Entity.displayName = 'Entity';
-Entity.defaultProps = {
-	disambiguation: null,
-	language: null,
-	link: false,
-	unnamedText: '(unnamed)'
-};
 
 export default Entity;

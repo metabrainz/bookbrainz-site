@@ -28,6 +28,7 @@ import EntityTitle from './title';
 import PropTypes from 'prop-types';
 import React from 'react';
 import WikipediaExtract from './wikipedia-extract';
+import {useTranslation} from 'react-i18next';
 
 
 const {deletedEntityMessage, extractAttribute, getTypeAttribute, getEntityUrl,
@@ -38,6 +39,7 @@ function PublisherAttributes({publisher}) {
 	if (publisher.deleted) {
 		return deletedEntityMessage;
 	}
+	const {t: translate} = useTranslation();
 	const type = getTypeAttribute(publisher.publisherType).data;
 	const area = extractAttribute(publisher.area, 'name');
 	const beginDate = transformISODateForDisplay(extractAttribute(publisher.beginDate));
@@ -48,27 +50,27 @@ function PublisherAttributes({publisher}) {
 			<Row>
 				<Col lg={3}>
 					<dl>
-						<dt>Sort Name</dt>
+						<dt>{translate('common.sortName')}</dt>
 						<dd>{sortNameOfDefaultAlias}</dd>
 					</dl>
 				</Col>
 				<Col lg={3}>
 					<dl>
-						<dt>Type</dt>
+						<dt>{translate('common.type')}</dt>
 						<dd>{type}</dd>
 					</dl>
 				</Col>
 				<Col lg={3}>
 					<dl>
-						<dt>Area</dt>
+						<dt>{translate('common.area')}</dt>
 						<dd>{area}</dd>
 					</dl>
 				</Col>
 				<Col lg={3}>
 					<dl>
-						<dt>Date Founded</dt>
+						<dt>{translate('pages.entity.dateFoundedPublisher')}</dt>
 						<dd>{beginDate}</dd>
-						<dt>Date Dissolved</dt>
+						<dt>{translate('pages.entity.dateDissolvedPublisher')}</dt>
 						<dd>{endDate}</dd>
 					</dl>
 				</Col>
@@ -82,7 +84,7 @@ PublisherAttributes.propTypes = {
 };
 
 
-function PublisherDisplayPage({entity, identifierTypes, user, wikipediaExtract}) {
+function PublisherDisplayPage({entity, identifierTypes = [], user, wikipediaExtract = {}}) {
 	const urlPrefix = getEntityUrl(entity);
 	return (
 		<div>
@@ -129,10 +131,6 @@ PublisherDisplayPage.propTypes = {
 	identifierTypes: PropTypes.array,
 	user: PropTypes.object.isRequired,
 	wikipediaExtract: PropTypes.object
-};
-PublisherDisplayPage.defaultProps = {
-	identifierTypes: [],
-	wikipediaExtract: {}
 };
 
 export default PublisherDisplayPage;

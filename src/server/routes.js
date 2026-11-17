@@ -44,6 +44,7 @@ import seriesRouter from './routes/entity/series';
 import statisticsRouter from './routes/statistics';
 import unifiedFormRouter from './routes/unifiedform';
 import userRouter from './routes/user';
+import webhooksRouter from './routes/webhooks';
 import wikimediaRouter from './routes/wikimedia';
 import workRouter from './routes/entity/work';
 
@@ -60,6 +61,7 @@ function initRootRoutes(app) {
 	app.use('/collections', collectionsRouter);
 	app.use('/statistics', statisticsRouter);
 	app.use('/external-service', externalServiceRouter);
+	app.use('/webhooks', webhooksRouter);
 	app.use('/user', userRouter);
 	app.use('/admin-panel', adminPanelRouter);
 	app.use('/search-admin', searchAdminRouter);

@@ -1,8 +1,8 @@
 import {ADD_AUTHOR, ADD_PUBLISHER, AUTO_ISBN, CLEAR_AUTHOR, CLEAR_PUBLISHER, CLEAR_PUBLISHERS, UPDATE_ISBN_TYPE, UPDATE_ISBN_VALUE} from './action';
-import Immutable from 'immutable';
+import {Map as ImmutableMap, fromJS} from 'immutable';
 
 
-export function ISBNReducer(state = Immutable.Map({
+export function ISBNReducer(state = ImmutableMap({
 	type: null,
 	value: ''
 }), action) {
@@ -17,23 +17,23 @@ export function ISBNReducer(state = Immutable.Map({
 	}
 }
 
-export function publishersReducer(state = Immutable.Map({}), {type, payload}) {
+export function publishersReducer(state = ImmutableMap({}), {type, payload}) {
 	switch (type) {
 		case ADD_PUBLISHER:
-			return state.set(payload.id, Immutable.fromJS(payload.value));
+			return state.set(payload.id, fromJS(payload.value));
 		case CLEAR_PUBLISHER:
 			return state.delete(payload);
 		case CLEAR_PUBLISHERS:
-			return Immutable.Map({});
+			return ImmutableMap({});
 		default:
 			return state;
 	}
 }
 
-export function authorsReducer(state = Immutable.Map({}), {type, payload}) {
+export function authorsReducer(state = ImmutableMap({}), {type, payload}) {
 	switch (type) {
 		case ADD_AUTHOR:
-			return state.set(payload.id, Immutable.fromJS(payload.value));
+			return state.set(payload.id, fromJS(payload.value));
 		case CLEAR_AUTHOR:
 			return state.delete(payload);
 		default:

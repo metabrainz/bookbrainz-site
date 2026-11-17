@@ -2,11 +2,11 @@ import {
 	Action,
 	UPDATE_AUTHOR_CREDIT
 } from './actions';
-import Immutable from 'immutable';
+import {Map as ImmutableMap, fromJS} from 'immutable';
 
 
 function reducer(
-	state = Immutable.Map({
+	state = ImmutableMap({
 		authorCount: 0,
 		id: null,
 		names: []
@@ -19,7 +19,7 @@ function reducer(
 		// This action is used for the merging page, where users select an existing author credit
 		// rather than use the authorCreditEditor reducer which has a different structure
 		case UPDATE_AUTHOR_CREDIT:
-			return Immutable.fromJS(payload);
+			return fromJS(payload);
 		// no default
 	}
 	return state;

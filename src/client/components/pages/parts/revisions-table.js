@@ -23,13 +23,20 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {faCodeBranch} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 
 const {Table} = bootstrap;
 const {formatDate, stringToHTMLWithLinks} = utilsHelper;
 
-function RevisionsTable(props) {
-	const {results, showEntities, showRevisionNote, showRevisionEditor, tableHeading} = props;
+function RevisionsTable({
+	results,
+	showEntities = false,
+	showRevisionNote = false,
+	showRevisionEditor = false,
+	tableHeading = 'Recent Activity'
+}) {
+	const {t: translate} = useTranslation();
 	return (
 		<div>
 			<div>
@@ -45,20 +52,20 @@ function RevisionsTable(props) {
 					>
 						<thead>
 							<tr>
-								<th width="16%">Revision ID</th>
+								<th width="16%">{translate('pages.revisions.headerId')}</th>
 								{
 									showEntities ?
-										<th width="42%">Modified entities</th> : null
+										<th width="42%">{translate('pages.revisions.headerModifiedEntities')}</th> : null
 								}
 								{
 									showRevisionEditor ?
-										<th width="25%">User</th> : null
+										<th width="25%">{translate('pages.revisions.headerUser')}</th> : null
 								}
 								{
 									showRevisionNote ?
-										<th width="16%">Note</th> : null
+										<th width="16%">{translate('common.note')}</th> : null
 								}
-								<th width="16%">Date</th>
+								<th width="16%">{translate('common.date')}</th>
 							</tr>
 						</thead>
 
@@ -69,7 +76,8 @@ function RevisionsTable(props) {
 										<td>
 											<a
 												href={`/revision/${revision.revisionId}`}
-												title={`${revision.isMerge ? 'Merge revision' : 'Revision'} ${revision.revisionId}`}
+												title={`${revision.isMerge ? translate('pages.revisions.titleMerge') :
+													translate('pages.revisions.titleNormal')} ${revision.revisionId}`}
 											>
 												#{revision.revisionId}
 												{revision.isMerge &&
@@ -134,7 +142,7 @@ function RevisionsTable(props) {
 					</Table> :
 
 					<div>
-						<h4> No revisions to show</h4>
+						<h4> {translate('pages.revisions.noRevisions')}</h4>
 						<hr className="wide"/>
 					</div>
 			}
@@ -148,16 +156,8 @@ RevisionsTable.propTypes = {
 	showEntities: PropTypes.bool,
 	showRevisionEditor: PropTypes.bool,
 	showRevisionNote: PropTypes.bool,
-	tableHeading: PropTypes.node
+	tableHeading: PropTypes.string
 };
-RevisionsTable.defaultProps = {
-	showEntities: false,
-	showRevisionEditor: false,
-	showRevisionNote: false,
-	tableHeading: 'Recent Activity'
-
-};
-
 RevisionsTable.displayName = 'RevisionsTable';
 
 export default RevisionsTable;

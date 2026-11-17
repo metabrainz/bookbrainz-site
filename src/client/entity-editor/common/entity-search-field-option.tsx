@@ -18,6 +18,7 @@
  */
 
 import {Form, InputGroup, OverlayTrigger, Tooltip} from 'react-bootstrap';
+import _, {DebouncedFunc} from 'lodash';
 import {ENTITY_TYPES} from 'bookbrainz-data/lib/types/entity';
 import EntitySelect from './entity-select';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -25,15 +26,17 @@ import LinkedEntitySelect from './linked-entity-select';
 import React from 'react';
 import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import SelectAsync from 'react-select/async';
+import type {TFunction} from 'i18next';
 import ValidationLabel from './validation-label';
-import _ from 'lodash';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {isValidBBID} from '../../../common/helpers/utils';
 import makeImmutable from './make-immutable';
 import request from 'superagent';
+import {withTranslation} from 'react-i18next';
 
 
 const ImmutableAsyncSelect = makeImmutable(SelectAsync);
+const searchDelay = 1000;
 
 const entityTypeStrings = [...ENTITY_TYPES, 'Area'] as const;
 type SearchEntityTypes = typeof entityTypeStrings[number];
@@ -51,6 +54,8 @@ type Props = {
 	languageOptions?: Array<{value: number, label: string}>,
 	onChange: (value: Record<string, unknown> | Record<string, unknown>[] | null) => void,
 	recentlyUsedEntityType?: SearchEntityTypes | SearchEntityTypes[] | null,
+	// eslint-disable-next-line id-length
+	t: TFunction,
 	tooltipText?: string | null,
 	type: string | string[],
 	value?: Record<string, unknown> | Record<string, unknown>[] | null,
@@ -66,12 +71,25 @@ class EntitySearchFieldOption extends React.Component<Props> {
 		this.isArea = this.isArea.bind(this);
 		this.entityToOption = this.entityToOption.bind(this);
 		this.handleInputChange = this.handleInputChange.bind(this);
+		this.loadOptions = this.loadOptions.bind(this);
+		this.debouncedFetchOptions = _.debounce((query, callback) => {
+			this.fetchOptions(query).then(callback).catch(() => callback([]));
+		}, searchDelay);
 	}
 
 	state = {
 		inputValue: '',
 		lastSearchResults: null
 	};
+
+	componentWillUnmount() {
+		this.debouncedFetchOptions.cancel();
+	}
+
+	// eslint-disable-next-line no-invalid-this -- type query for the instance method
+	debouncedFetchOptions: DebouncedFunc<typeof this.fetchOptions>;
+
+	selectRef: React.RefObject<any>;
 
 	/**
 	 * Determines whether an entity provided to the EntitySearch component is an
@@ -156,7 +174,7 @@ class EntitySearchFieldOption extends React.Component<Props> {
 			return true;
 		}
 		return [{
-			label: 'Recently Used',
+			label: this.props.t('common.recentlyUsed'),
 			options: recentOptions
 		}];
 	}
@@ -168,7 +186,7 @@ class EntitySearchFieldOption extends React.Component<Props> {
 				return [];
 			}
 			return [{
-				label: 'Recently Used',
+				label: this.props.t('common.recentlyUsed'),
 				options: recentOptions
 			}];
 		}
@@ -213,11 +231,11 @@ class EntitySearchFieldOption extends React.Component<Props> {
 		if (filteredRecent.length > 0) {
 			results = [
 				{
-					label: 'Recently Used',
+					label: this.props.t('common.recentlyUsed'),
 					options: filteredRecent
 				},
 				{
-					label: 'Search Results',
+					label: this.props.t('common.searchResults'),
 					options: searchResults
 				}
 			];
@@ -227,6 +245,15 @@ class EntitySearchFieldOption extends React.Component<Props> {
 		}
 		this.setState({lastSearchResults: results});
 		return results;
+	}
+
+	loadOptions(query, callback) {
+		if (!query) {
+			// Empty queries only return local recently-used options; no search request is made.
+			this.fetchOptions(query).then(callback).catch(() => callback([]));
+			return;
+		}
+		this.debouncedFetchOptions(query, callback);
 	}
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -303,7 +330,7 @@ class EntitySearchFieldOption extends React.Component<Props> {
 				getOptionValue={this.getOptionValue}
 				innerRef={this.selectRef}
 				inputValue={this.state.inputValue}
-				loadOptions={this.fetchOptions}
+				loadOptions={this.loadOptions}
 				onInputChange={this.handleInputChange}
 			/>
 		);
@@ -339,4 +366,4 @@ EntitySearchFieldOption.defaultProps = {
 	value: null
 };
 
-export default EntitySearchFieldOption;
+export default withTranslation()(EntitySearchFieldOption);

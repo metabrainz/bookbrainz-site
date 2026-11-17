@@ -1,7 +1,7 @@
 BEGIN;
 
 CREATE TABLE IF NOT EXISTS bookbrainz.user_collection (
-	id UUID PRIMARY KEY DEFAULT public.uuid_generate_v4(),
+	id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 	owner_id INT NOT NULL,
 	name VARCHAR(80) NOT NULL CHECK (name <> ''),
 	description TEXT NOT NULL DEFAULT '',

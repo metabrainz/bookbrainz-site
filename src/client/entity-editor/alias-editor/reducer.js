@@ -20,10 +20,10 @@ import {
 	ADD_ALIAS_ROW, REMOVE_ALIAS_ROW, REMOVE_EMPTY_ALIASES, UPDATE_ALIAS_LANGUAGE,
 	UPDATE_ALIAS_NAME, UPDATE_ALIAS_PRIMARY, UPDATE_ALIAS_SORT_NAME
 } from './actions';
-import Immutable from 'immutable';
+import {Map as ImmutableMap, OrderedMap} from 'immutable';
 
 
-const EMPTY_ALIAS = Immutable.Map({
+const EMPTY_ALIAS = ImmutableMap({
 	language: null,
 	name: '',
 	primary: false,
@@ -31,7 +31,7 @@ const EMPTY_ALIAS = Immutable.Map({
 });
 
 function reducer(
-	state = Immutable.OrderedMap(),
+	state = OrderedMap(),
 	action
 ) {
 	const {payload, type} = action;

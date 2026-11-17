@@ -21,12 +21,15 @@ import * as bootstrap from 'react-bootstrap';
 // eslint-disable-next-line import/no-internal-modules
 import * as eng from '@cospired/i18n-iso-languages/langs/en.json';
 import * as iso from '@cospired/i18n-iso-languages';
+// eslint-disable-next-line import/named -- WithTranslation is a type-only export.
+import {Trans, type WithTranslation, withTranslation} from 'react-i18next';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 // eslint-disable-next-line import/named
 import {IconProp} from '@fortawesome/fontawesome-svg-core';
 import {Rating} from 'react-simple-star-rating';
 import React from 'react';
-import ReactTooltip from 'react-tooltip';
+import {Tooltip} from 'react-tooltip';
+import {camelCase} from 'lodash';
 import {countWords} from '../../../helpers/utils';
 import {faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 import request from 'superagent';
@@ -35,7 +38,7 @@ import request from 'superagent';
 const {Alert, Modal} = bootstrap;
 iso.registerLocale(eng);
 
-export interface CBReviewModalProps {
+export interface CBReviewModalProps extends WithTranslation {
 	entityBBID: string;
 	entityName: string;
 	entityType: string;
@@ -90,32 +93,43 @@ class CBReviewModal extends React.Component<
 	// gets all iso-639-1 languages and codes for dropdown
 	private allLanguagesKeyValue = Object.entries(iso.getNames('en'));
 
-	private CBInfoButton = (
-		<span>
-			<span
-				className="CBInfoButton"
-				data-event="click focus"
-				data-tip={`CritiqueBrainz is a <a href='${this.MBBaseUrl}/projects'>
-					MetaBrainz project</a> aimed at providing an open platform for music critics
-					and hosting Creative Commons licensed music reviews. </br></br>
-					Your reviews will be independently visible on CritiqueBrainz and appear publicly
-					on your CritiqueBrainz profile. To view or delete your reviews, visit your
-					<a href='${this.CBBaseUrl}'>CritiqueBrainz</a>  profile.`}
-			>
-				<FontAwesomeIcon
-					icon={faInfoCircle as IconProp}
-					style={{color: 'black'}}
-				/>
+	private CBInfoButton() {
+		const {t: translate} = this.props;
+		const tooltipId = `cb-info-${this.props.entityBBID}`;
+		return (
+			<span>
+				<button
+					aria-label={translate('pages.entity.critiqueBrainz')}
+					className="CBInfoButton btn btn-link p-0 border-0 align-baseline"
+					data-tooltip-id={tooltipId}
+					type="button"
+				>
+					<FontAwesomeIcon
+						icon={faInfoCircle as IconProp}
+						style={{color: 'black'}}
+					/>
+				</button>
+				<Tooltip
+					clickable
+					className="cb-data-tip"
+					closeEvents={{}}
+					globalCloseEvents={{clickOutsideAnchor: true, escape: true}}
+					id={tooltipId}
+					openEvents={{click: true, focus: true}}
+					place="bottom"
+					role="dialog"
+				>
+					<Trans
+						components={{
+							cbLink: <a href={this.CBBaseUrl}/>,
+							mbLink: <a href={`${this.MBBaseUrl}/projects`}/>
+						}}
+						i18nKey="pages.entity.cbTooltip"
+					/>
+				</Tooltip>
 			</span>
-			<ReactTooltip
-				clickable
-				html
-				className="cb-data-tip"
-				globalEventOff="click"
-				place="bottom"
-			/>
-		</span>
-	);
+		);
+	}
 
 	handleError = (error: string | Error, title?: string): void => {
 		if (!error) {
@@ -142,7 +156,8 @@ class CBReviewModal extends React.Component<
 			return null;
 		}
 		catch (error) {
-			this.handleError(error, 'We could not submit your review');
+			const {t: translate} = this.props;
+			this.handleError(error, translate('pages.entity.cbFetchError'));
 		}
 		return null;
 	};
@@ -222,7 +237,8 @@ class CBReviewModal extends React.Component<
 		const {
 			entityBBID,
 			entityType,
-			userId
+			userId,
+			t: translate
 		} = this.props;
 
 		const {
@@ -234,7 +250,7 @@ class CBReviewModal extends React.Component<
 
 		if (textContent.length < this.minTextLength) {
 			this.setState({
-				reviewValidateAlert: `Your review needs to be longer than ${this.minTextLength} characters.`
+				reviewValidateAlert: translate('pages.entity.cbMinLengthError', {minLen: this.minTextLength})
 			});
 			return null;
 		}
@@ -272,8 +288,8 @@ class CBReviewModal extends React.Component<
 				if (result?.reviewID) {
 					this.setState({
 						alert: {
-							message: 'Your review was submitted to CritiqueBrainz!',
-							title: 'Success',
+							message: translate('pages.entity.cbSubmitSuccess'),
+							title: translate('pages.entity.cbSuccess'),
 							type: 'success'
 						}
 					});
@@ -287,7 +303,7 @@ class CBReviewModal extends React.Component<
 					this.setState({
 						alert: {
 							message: result?.message,
-							title: 'Error submitting your review',
+							title: translate('pages.entity.cbErrorSubmitting'),
 							type: 'danger'
 						}
 					});
@@ -296,7 +312,7 @@ class CBReviewModal extends React.Component<
 			catch (error) {
 				this.handleError(
 					error,
-					'Error while submitting review to CritiqueBrainz'
+					translate('pages.entity.cbErrorSubmittingDetail')
 				);
 			}
 		}
@@ -315,23 +331,27 @@ class CBReviewModal extends React.Component<
 			success,
 			textContent
 		} = this.state;
+		const {t: translate} = this.props;
 
 		if (!hasPermissions) {
 			return (
 				<div>
-					Before you can submit reviews to{' '}
-					<a href={this.CBBaseUrl}>CritiqueBrainz</a>, you must{' '}
-					<b> connect to your CritiqueBrainz </b> account from
-					BookBrainz.
-					{this.CBInfoButton}
+					<Trans
+						components={{
+							b: <b/>,
+							cbLink: <a href={this.CBBaseUrl}/>
+						}}
+						i18nKey="pages.entity.cbConnectPrompt"
+					/>
+					{this.CBInfoButton()}
 					<br/>
 					<br/>
-					You can connect to your CritiqueBrainz account by visiting
-					the
-					<a href={`${window.location.origin}/external-service/`}>
-						{' '}
-						external services page.
-					</a>
+					<Trans
+						components={{
+							externalLink: <a href={`${window.location.origin}/external-service/`}/>
+						}}
+						i18nKey="pages.entity.cbConnectInstructions"
+					/>
 				</div>
 			);
 		}
@@ -339,15 +359,21 @@ class CBReviewModal extends React.Component<
 		if (success) {
 			return (
 				<div>
-					Thanks for submitting your review for{' '}
-					<b>{this.props.entityName}</b>!
+					<Trans
+						components={{
+							b: <b/>
+						}}
+						i18nKey="pages.entity.cbThanks"
+						values={{entityName: this.props.entityName}}
+					/>
 					<br/>
 					<br/>
-					You can access your CritiqueBrainz review by clicking{' '}
-					<a href={`${this.CBBaseUrl}/review/${reviewID}`}>
-						{' '}
-						here.
-					</a>
+					<Trans
+						components={{
+							reviewLink: <a href={`${this.CBBaseUrl}/review/${reviewID}`}/>
+						}}
+						i18nKey="pages.entity.cbAccessReview"
+					/>
 				</div>
 			);
 		}
@@ -367,20 +393,25 @@ class CBReviewModal extends React.Component<
 					</Alert>
 				)}
 
-				You are reviewing
-				<b>
-					{` ${this.props.entityName} (${this.props.entityType}) `}
-				</b>
-				for <a href={this.CBBaseUrl}>CritiqueBrainz</a>.{' '}
-
-				{this.CBInfoButton}
+				<Trans
+					components={{
+						b: <b/>,
+						cbLink: <a href={this.CBBaseUrl}/>
+					}}
+					i18nKey="pages.entity.cbReviewingHeader"
+					values={{
+						entityName: this.props.entityName,
+						entityType: translate(`common.entityType.${camelCase(this.props.entityType)}`)
+					}}
+				/>{' '}
+				{this.CBInfoButton()}
 				<div className="form-group">
 					<textarea
 						required
 						className="form-control"
 						id="review-text"
 						name="review-text"
-						placeholder={`Review length must be at least ${this.minTextLength} characters.`}
+						placeholder={translate('pages.entity.cbReviewMinLengthPlaceholder', {minLen: this.minTextLength})}
 						rows={6}
 						spellCheck="false"
 						style={{resize: 'vertical'}}
@@ -396,11 +427,13 @@ class CBReviewModal extends React.Component<
 					}
 					style={{display: 'block', textAlign: 'right'}}
 				>
-					Words: {countWords(textContent)} / Characters:{' '}
-					{textContent?.length}
+					{translate('pages.entity.cbWordCharCount', {
+						chars: textContent?.length,
+						words: countWords(textContent)
+					})}
 				</small>
 				<div className="rating-container">
-					<b>Rating (optional): </b>
+					<b>{translate('pages.entity.ratingOptional')}&nbsp;</b>
 					<Rating
 						transition
 						className="rating-stars"
@@ -410,7 +443,7 @@ class CBReviewModal extends React.Component<
 					/>
 				</div>
 				<div className="dropdown">
-					<b>Language of your review: </b>
+					<b>{translate('pages.entity.reviewLanguage')}&nbsp;</b>
 					<select
 						id="language-selector"
 						name="language"
@@ -435,20 +468,7 @@ class CBReviewModal extends React.Component<
 							onChange={this.handleInputChange}
 						/>
 						<small>
-							&nbsp; You acknowledge and agree that your
-							contributed reviews to CritiqueBrainz are licensed
-							under a Creative Commons Attribution-ShareAlike 3.0
-							Unported (CC BY-SA 3.0) license. You agree to license your work
-							under this license. You represent and warrant that
-							you own or control all rights in and to the work,
-							that nothing in the work infringes the rights of any
-							third-party, and that you have the permission to use
-							and to license the work under the selected Creative
-							Commons license. Finally, you give the MetaBrainz
-							Foundation permission to license this content for
-							commercial use outside of Creative Commons licenses
-							in order to support the operations of the
-							organization.
+							&nbsp;{translate('pages.entity.cbLicenseNotice')}
 						</small>
 					</label>
 				</div>
@@ -458,6 +478,7 @@ class CBReviewModal extends React.Component<
 
 	getModalFooter = (hasPermissions: boolean) => {
 		const {success} = this.state;
+		const {t: translate} = this.props;
 
 		if (!hasPermissions) {
 			return (
@@ -467,7 +488,7 @@ class CBReviewModal extends React.Component<
 					role="button"
 				>
 					{' '}
-					Connect To CritiqueBrainz{' '}
+					{translate('pages.entity.cbConnectButton')}{' '}
 				</a>
 			);
 		}
@@ -482,7 +503,7 @@ class CBReviewModal extends React.Component<
 					id="submitReviewButton"
 					type="submit"
 				>
-					Submit Review to CritiqueBrainz
+					{translate('pages.entity.cbSubmitButton')}
 				</button>
 			);
 		}
@@ -494,7 +515,7 @@ class CBReviewModal extends React.Component<
 				type="button"
 				onClick={this.handleCloseModal}
 			>
-				Close
+				{translate('common.button.close')}
 			</button>
 		);
 	};
@@ -550,4 +571,4 @@ class CBReviewModal extends React.Component<
 	}
 }
 
-export default CBReviewModal;
+export default withTranslation()(CBReviewModal);
