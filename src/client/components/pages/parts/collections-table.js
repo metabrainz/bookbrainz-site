@@ -175,7 +175,7 @@ class CollectionsTable extends React.Component {
 											}
 											{
 												showIfOwnerOrCollaborator ?
-													<td>{collection.isOwner ? translate('common.owner') : translate('common.collaborator')}</td> : null
+													<td>{collection.isOwner ? translate('common.owner') : translate('common.collaborator_one')}</td> : null
 											}
 											{
 												showOwner ?
