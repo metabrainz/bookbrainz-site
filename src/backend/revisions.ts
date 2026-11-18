@@ -3,11 +3,12 @@
  * To be replaced by proper ORM types.
  */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
+import type {EntityType} from 'bookbrainz-data/lib/types/schema';
 import type {ORM} from 'bookbrainz-data';
 
 
-type EntityRevisionModel = ORM['AuthorRevision'];
-type EntityType = Parameters<ORM['func']['entity']['getEntityParentAlias']>[1];
+type EntityRevisionModel = ORM['AuthorRevision'] | ORM['EditionGroupRevision'] | ORM['EditionRevision'] |
+	ORM['PublisherRevision'] | ORM['SeriesRevision'] | ORM['WorkRevision'];
 
 // Bookshelf accepts `merge` and `remove` but its types do not list them, so the options are kept in a variable.
 // Without them rows that share an id would be merged: a revision can change several entities of one type.
