@@ -28,12 +28,10 @@ import editionRouter from './routes/entity/edition';
 import editorRouter from './routes/editor';
 import externalServiceRouter from './routes/externalService';
 import identifierTypeRouter from './routes/type-editor/identifier-type';
-import identifierTypesRouter from './routes/identifier-types';
 import mergeRouter from './routes/merge';
 import publisherRouter from './routes/entity/publisher';
 import registerRouter from './routes/register';
 import relationshipTypeRouter from './routes/type-editor/relationship-type';
-import relationshipTypesRouter from './routes/relationship-types';
 import reviewsRouter from './routes/reviews';
 import revisionRouter from './routes/revision';
 import revisionsRouter from './routes/revisions';
@@ -63,9 +61,7 @@ function initRootRoutes(app) {
 	app.use('/search-admin', searchAdminRouter);
 	app.use('/admin-logs', adminLogsRouter);
 	app.use('/relationship-type', relationshipTypeRouter);
-	app.use('/relationship-types', relationshipTypesRouter);
 	app.use('/identifier-type', identifierTypeRouter);
-	app.use('/identifier-types', identifierTypesRouter);
 }
 
 function initEditionGroupRoutes(app) {
