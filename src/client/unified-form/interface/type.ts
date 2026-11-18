@@ -1,4 +1,4 @@
-// Not type-checked yet: to be replaced by proper types.
+// TODO: type this file properly and remove the ts-nocheck.
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-nocheck
 import Immutable from 'immutable';

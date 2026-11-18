@@ -1,6 +1,6 @@
 /*
- * The Bookshelf models are untyped, so the no-unsafe rules cannot hold in the queries below.
- * To be replaced by proper ORM types.
+ * TODO: the Bookshelf models are untyped, so the no-unsafe rules cannot hold in the queries below.
+ * Replace the disables with proper ORM types.
  */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument */
 import {BadRequestError} from '../common/helpers/error';
