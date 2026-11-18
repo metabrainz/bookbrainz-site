@@ -3,6 +3,7 @@
  * To be replaced by proper ORM types.
  */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument */
+import {ENTITY_TYPES} from 'bookbrainz-data/lib/types/entity';
 import type {ORM} from 'bookbrainz-data';
 import type {_Editor} from '../types';
 import {snakeCase} from 'lodash';
@@ -10,11 +11,9 @@ import {snakeCase} from 'lodash';
 
 type QueryBuilder = ReturnType<ORM['bookshelf']['knex']['queryBuilder']>;
 
-const ENTITY_MODEL_NAMES = ['Author', 'Edition', 'EditionGroup', 'Publisher', 'Series', 'Work'] as const;
-
 // The number of master revisions of each entity type, from `since` on if given
 function countEntities(orm: ORM, since?: Date) {
-	return Promise.all(ENTITY_MODEL_NAMES.map(async (modelName) => {
+	return Promise.all(ENTITY_TYPES.map(async (modelName) => {
 		// The database returns counts as strings
 		const Count = await new orm[modelName]()
 			.query((qb: QueryBuilder) => {
