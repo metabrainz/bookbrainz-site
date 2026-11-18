@@ -11,6 +11,12 @@ import type {ORM} from 'bookbrainz-data';
 
 type QueryBuilder = ReturnType<ORM['bookshelf']['knex']['queryBuilder']>;
 
+
+export async function getIdentifierTypes(orm: ORM) {
+	const identifierTypes = await orm.IdentifierType.fetchAll();
+	return identifierTypes.toJSON() as Array<Record<string, unknown>>;
+}
+
 // The relationship types between two entity types, given in snake case (for example edition_group)
 export async function getRelationshipTypesPage(orm: ORM, {type1, type2}: {type1: string, type2: string}) {
 	const entityTypes = ENTITY_TYPES.map((entity) => snakeCase(entity));

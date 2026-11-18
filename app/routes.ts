@@ -13,6 +13,7 @@ export default [
 		route('develop', 'routes/static/develop.tsx'),
 		route('faq', 'routes/static/faq.tsx'),
 		route('help', 'routes/static/help.tsx'),
+		route('identifier-types', 'routes/types/identifier-types.tsx'),
 		route('licensing', 'routes/static/licensing.tsx'),
 		route('privacy', 'routes/static/privacy.tsx'),
 		route('relationship-types', 'routes/types/relationship-types-matrix.tsx'),

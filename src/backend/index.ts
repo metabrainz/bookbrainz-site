@@ -1,8 +1,8 @@
+import {getIdentifierTypes, getRelationshipTypesPage} from './types';
 import {getOrderedRevisions, getRevisionsPage} from './revisions';
 import type {Client} from '@elastic/elasticsearch';
 import type {ORM} from 'bookbrainz-data';
 import {getPublicCollectionsPage} from './collections';
-import {getRelationshipTypesPage} from './types';
 import {getSearchPage} from './search';
 import {getStatisticsPage} from './statistics';
 
@@ -29,6 +29,7 @@ export function createBackend({orm}: BackendDependencies) {
 			getPage: () => getStatisticsPage(orm)
 		},
 		types: {
+			getIdentifierTypes: () => getIdentifierTypes(orm),
 			getRelationshipTypesPage: (params: {type1: string, type2: string}) => getRelationshipTypesPage(orm, params)
 		}
 	};
