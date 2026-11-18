@@ -1,6 +1,3 @@
-// TODO: type this file properly and remove the ts-nocheck.
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 /*
  * Copyright (C) 2018 Akhilesh Kumar <akhilesh5991@gmail.com>
  *
@@ -57,10 +54,10 @@ function TopEditorsTable({editors}: TopEditorsTableProps) {
 			>
 				<thead>
 					<tr>
-						<th width="8%" >#</th>
-						<th width="42%" >{translate('pages.statistics.editorName')}</th>
-						<th width="25%" >{translate('common.totalRevisions')}</th>
-						<th width="25%" >{translate('pages.statistics.registrationDate')}</th>
+						<th style={{width: '8%'}}>#</th>
+						<th style={{width: '42%'}}>{translate('pages.statistics.editorName')}</th>
+						<th style={{width: '25%'}}>{translate('common.totalRevisions')}</th>
+						<th style={{width: '25%'}}>{translate('pages.statistics.registrationDate')}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -117,10 +114,10 @@ function EntityCountTable({allEntities, last30DaysEntities}: EntityCountTablePro
 			>
 				<thead>
 					<tr>
-						<th width="8%" >#</th>
-						<th width="42%" >{translate('common.entityTypeLabel')}</th>
-						<th width="25%" >{translate('pages.statistics.total')}</th>
-						<th width="25%" >{translate('pages.statistics.addedLast30Days')}</th>
+						<th style={{width: '8%'}}>#</th>
+						<th style={{width: '42%'}}>{translate('common.entityTypeLabel')}</th>
+						<th style={{width: '25%'}}>{translate('pages.statistics.total')}</th>
+						<th style={{width: '25%'}}>{translate('pages.statistics.addedLast30Days')}</th>
 					</tr>
 				</thead>
 				<tbody>
