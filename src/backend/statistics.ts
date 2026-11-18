@@ -15,7 +15,7 @@ type QueryBuilder = ReturnType<ORM['bookshelf']['knex']['queryBuilder']>;
 function countEntities(orm: ORM, since?: Date) {
 	return Promise.all(ENTITY_TYPES.map(async (modelName) => {
 		// The database returns counts as strings
-		const Count = await new orm[modelName]()
+		const count = await new orm[modelName]()
 			.query((qb: QueryBuilder) => {
 				qb
 					.leftJoin('bookbrainz.revision', `bookbrainz.${snakeCase(modelName)}.revision_id`, 'bookbrainz.revision.id')
@@ -25,7 +25,7 @@ function countEntities(orm: ORM, since?: Date) {
 				}
 			})
 			.count() as string;
-		return {Count, modelName};
+		return {count, modelName};
 	}));
 }
 
@@ -41,7 +41,7 @@ function countEntities(orm: ORM, since?: Date) {
 async function getAllEntities(orm: ORM) {
 	try {
 		const allEntities = await countEntities(orm);
-		return allEntities.sort((a, b) => Number(b.Count) - Number(a.Count));
+		return allEntities.sort((a, b) => Number(b.count) - Number(a.count));
 	}
 	catch {
 		throw new Error('Error fetching all entities total');
@@ -61,7 +61,7 @@ async function getLast30DaysEntities(orm: ORM) {
 		const since = new Date();
 		since.setDate(since.getDate() - 30);
 		const counts = await countEntities(orm, since);
-		return Object.fromEntries(counts.map(({Count, modelName}) => [modelName, Count])) as Record<string, string>;
+		return Object.fromEntries(counts.map(({count, modelName}) => [modelName, count])) as Record<string, string>;
 	}
 	catch {
 		throw new Error('Error fetching entities from last 30 days');
