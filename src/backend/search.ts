@@ -1,6 +1,6 @@
 /*
- * The search helpers and the Bookshelf models are untyped, so the no-unsafe rules cannot hold here.
- * To be replaced by proper types.
+ * TODO: the search helpers and the Bookshelf models are untyped, so the no-unsafe rules cannot hold here.
+ * Replace the disables with proper types.
  */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
 import {getEntityModels, getNextEnabledAndResultsArray} from '../common/helpers/utils';
