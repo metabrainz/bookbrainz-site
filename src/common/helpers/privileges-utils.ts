@@ -93,11 +93,11 @@ export function checkPrivilege(privs: number, privType: PrivilegeType) {
 }
 
 export function getPrivilegeTitleFromBit(bit: number) {
-	return PRIVILEGE_PROPERTIES[bit].title;
+	return PRIVILEGE_PROPERTIES[bit as keyof typeof PRIVILEGE_PROPERTIES].title;
 }
 
 export function getBadgeVariantFromBit(bit: number) {
-	return PRIVILEGE_PROPERTIES[bit].badgeVariant;
+	return PRIVILEGE_PROPERTIES[bit as keyof typeof PRIVILEGE_PROPERTIES].badgeVariant;
 }
 
 /**

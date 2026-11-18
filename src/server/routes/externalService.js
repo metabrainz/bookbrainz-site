@@ -19,66 +19,13 @@
 
 import * as auth from '../helpers/auth';
 import * as cbHelper from '../helpers/critiquebrainz';
-import * as propHelpers from '../../client/helpers/props';
 import {AuthenticationFailedError, BadRequestError} from '../../common/helpers/error';
-import {escapeProps, generateProps} from '../helpers/props';
-import ExternalServices from '../../client/components/pages/externalService';
-import Layout from '../../client/containers/layout';
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
 import express from 'express';
-import target from '../templates/target';
 import url from 'url';
 
 
 const marginTime = 5 * 60 * 1000;
 const router = express.Router();
-
-
-router.get('/', async (req, res) => {
-	if (!req.user) {
-		return res.redirect('/register');
-	}
-	const {alertType, alertDetails} = req.query;
-	const {orm} = req.app.locals;
-	const editorId = req.user.id;
-
-	const cbUser = await orm.func.externalServiceOauth.getOauthToken(
-		editorId,
-		'critiquebrainz',
-		orm
-	);
-
-	let cbPermission = 'disable';
-	if (cbUser) {
-		cbPermission = 'review';
-	}
-
-	const props = generateProps(req, res, {
-		alertDetails,
-		alertType,
-		cbPermission
-	});
-
-	const markup = ReactDOMServer.renderToString(
-		<Layout {...propHelpers.extractLayoutProps(props)}>
-			<ExternalServices
-				{...escapeProps(props)}
-				alertDetails={props.alertDetails}
-				alertType={props.alertType}
-				cbPermission={props.cbPermission}
-			/>
-		</Layout>
-	);
-
-	return res.send(target({
-		locale: res.locals.locale,
-		markup,
-		props: escapeProps(props),
-		script: '/js/externalService.js',
-		title: 'External Services'
-	}));
-});
 
 
 router.get('/critiquebrainz/callback', auth.isAuthenticated, async (req, res, next) => {

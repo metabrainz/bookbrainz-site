@@ -17,6 +17,7 @@
  */
 
 import {AdminActionType} from '../../common/helpers/privileges-utils';
+import type {ORM} from 'bookbrainz-data';
 
 
 export type AdminLogDataT = {
@@ -32,7 +33,7 @@ export type AdminLogDataT = {
 	time?: any
 };
 
-export async function createAdminLog(logData: AdminLogDataT, AdminLog, transacting: any) {
+export async function createAdminLog(logData: AdminLogDataT, AdminLog: ORM['AdminLog'], transacting: any) {
 	const {actionType, adminId, newPrivs, note, oldPrivs, targetUserId} = logData;
 	await new AdminLog({
 		actionType,
@@ -41,29 +42,5 @@ export async function createAdminLog(logData: AdminLogDataT, AdminLog, transacti
 		note,
 		oldPrivs,
 		targetUserId
-	}).save(null, {method: 'insert', transacting});
-}
-
-/**
- * Fetches Admin logs for Show All Admin Logs page
- * Fetches the last 'size' number of admin logs with offset 'from'
- *
- * @param {number} from - the offset value
- * @param {number} size - no. of last logs required
- * @param {object} orm - the BookBrainz ORM, initialized during app setup
- * @returns {array} - orderedLogs
- */
-export async function getOrderedAdminLogs(from, size, orm) {
-	const {AdminLog} = orm;
-	const logs = await new AdminLog().orderBy('time', 'DESC')
-		.fetchPage({
-			limit: size,
-			offset: from,
-			withRelated: [
-				'admin',
-				'targetUser'
-			]
-		});
-	const logsJSON = logs.toJSON();
-	return logsJSON;
+	}).save({}, {method: 'insert', transacting});
 }
