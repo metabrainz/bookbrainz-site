@@ -30,7 +30,6 @@ const clientConfig = {
 		externalService: ['./controllers/externalService.js'],
 		identifierTypes: ['./controllers/identifierTypes.tsx'],
 		registrationDetails: ['./controllers/registrationDetails.js'],
-		relationshipTypes: ['./controllers/relationshipTypes.tsx'],
 		revision: ['./controllers/revision.js'],
 		'editor/achievement': ['./controllers/editor/achievement.js'],
 		'editor/edit': ['./controllers/editor/edit.js'],
