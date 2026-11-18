@@ -4,10 +4,9 @@
  */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument */
 import {BadRequestError} from '../common/helpers/error';
+import {ENTITY_TYPES} from 'bookbrainz-data/lib/types/entity';
 import type {ORM} from 'bookbrainz-data';
 
-
-const ENTITY_TYPES = ['Author', 'Edition', 'EditionGroup', 'Publisher', 'Series', 'Work'];
 
 /**
  * Fetches public collections for Show All Collections/Index Page
@@ -39,7 +38,7 @@ export async function getOrderedPublicCollections(from: number, size: number, en
 }
 
 export function checkCollectionType(type: string | null) {
-	if (type !== null && !ENTITY_TYPES.includes(type)) {
+	if (type !== null && !ENTITY_TYPES.some((entityType) => entityType === type)) {
 		throw new BadRequestError(`Type ${type} do not exist`);
 	}
 }
@@ -50,7 +49,7 @@ export async function getPublicCollectionsPage(orm: ORM, {from, size, type}: {fr
 	const collections = await getOrderedPublicCollections(from, size + 1, type, orm);
 	const limit = Math.max(0, size);
 	return {
-		entityTypes: ENTITY_TYPES,
+		entityTypes: [...ENTITY_TYPES],
 		nextEnabled: collections.length > limit,
 		results: collections.slice(0, limit)
 	};
