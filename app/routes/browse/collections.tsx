@@ -24,6 +24,5 @@ export const loader = siteErrors(async ({context, request}: Route.LoaderArgs) =>
 });
 
 export default function Collections({loaderData}: Route.ComponentProps) {
-	const {user, ...props} = loaderData;
-	return <CollectionsPage {...props} {...user ? {user} : {}}/>;
+	return <CollectionsPage {...loaderData}/>;
 }
