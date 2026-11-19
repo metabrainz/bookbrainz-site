@@ -140,7 +140,7 @@ describe('Relationship Type routes without Relationship Editor priv', () => {
 		const res = await agent.get(`/relationship-type/${relationshipTypeId}/edit`);
 		expect(res.ok).to.be.false;
 		expect(res).to.have.status(403);
-		expect(res.res.statusMessage).to.equal('You do not have the privilege to access this route');
+		expect(res.text).to.include('You do not have the privilege to access this route');
 	});
 
 	it('should throw an error when trying to access Relationship Type Editor with a non-existent id', async () => {

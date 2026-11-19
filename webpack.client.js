@@ -31,8 +31,7 @@ const clientConfig = {
 		'entity-editor': ['./entity-editor/controller.js'],
 		'unified-form':['./unified-form/controller.js'],
 		'entity-merge': ['./entity-editor/entity-merge.tsx'],
-		style: './stylesheets/style.scss',
-		'relationship-type-editor': ['./controllers/type-editor/relationship-type.tsx']
+		style: './stylesheets/style.scss'
 	},
 	externals: {
 		moment: 'moment'

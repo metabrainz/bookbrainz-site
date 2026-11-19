@@ -49,3 +49,23 @@ async function getRelationshipTypeLists(orm: ORM): Promise<{attributeTypes: Attr
 export function getRelationshipTypeCreateData(orm: ORM) {
 	return getRelationshipTypeLists(orm);
 }
+
+export async function getRelationshipTypeEditData(orm: ORM, {id, path}: {id: string, path: string}): Promise<{
+	attributeTypes: AttributeTypeDataT[],
+	parentTypes: RelationshipTypeDataT[],
+	relationshipTypeData: RelationshipTypeDataT
+}> {
+	const typeId = checkTypeId(id, path);
+	const lists = await getRelationshipTypeLists(orm);
+	const relationshipType = await new orm.RelationshipType({id: typeId})
+		.fetch({require: false, withRelated: ['attributeTypes']});
+	if (!relationshipType) {
+		throw new NotFoundError(`Relationship Type with id ${id} not found`, {originalUrl: path});
+	}
+	const relationshipTypeData: Omit<RelationshipTypeDataT, 'attributeTypes'> & {attributeTypes: Array<{id: number}>} = relationshipType.toJSON();
+	return {
+		...lists,
+		// The form wants the ids of the attribute types
+		relationshipTypeData: {...relationshipTypeData, attributeTypes: relationshipTypeData.attributeTypes.map(({id: attributeId}) => attributeId)}
+	};
+}
