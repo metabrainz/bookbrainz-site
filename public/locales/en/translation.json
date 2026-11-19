@@ -446,7 +446,7 @@
       "incompleteFormError": "The form is incomplete. Please fill in a name and privacy option before continuing.",
       "newCollectionButton": "New collection",
       "noCollectionSelectedError": "No collection selected",
-      "noCollectionsPrompt": "Oops, looks like you do not yet have any collection of {{type}}s. Click on the button below to create a new collection",
+      "noCollectionsPrompt": "Oops, looks like you do not yet have any collection of {{type}}. Click on the button below to create a new collection",
       "numberOfEntities": "Number of {{type}}",
       "removedEntities_one": "Removed 1 {{type}}",
       "removedEntities_other": "Removed {{count}} {{type}}",

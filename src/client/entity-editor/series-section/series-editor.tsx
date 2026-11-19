@@ -202,7 +202,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 		onEdit(attributeNumber, rowID);
 		onSort({newIndex: null, oldIndex: null});
 	};
-	const heading = <h2>{translate('entityEditor.seriesEditor.heading', {seriesType: `${seriesType}s`})}</h2>;
+	const heading = <h2>{translate('entityEditor.seriesEditor.heading', {seriesType: translate(`common.entityType.${_.camelCase(seriesType)}_other`)})}</h2>;
 	const alignText = isUnifiedForm ? 'text-left' : 'text-right';
 	return (
 		<div>
@@ -263,7 +263,7 @@ function SeriesEditor({baseEntity, relationshipTypes, seriesType, orderType, onR
 				<Col lg={isUnifiedForm ? 7 : 2}>
 					<Button variant="success" onClick={handleAdd}>
 						<FontAwesomeIcon icon={faPlus}/>
-						<span>&nbsp;{translate('entityEditor.seriesEditor.addButton', {seriesType})}</span>
+						<span>&nbsp;{translate('entityEditor.seriesEditor.addButton', {seriesType: translate(`common.entityType.${_.camelCase(seriesType)}`)})}</span>
 					</Button>
 				</Col>
 			</Row>
