@@ -456,8 +456,8 @@
             "stopCollaborationNotice": "",
             "stopCollaborationTooltip": "",
             "stopCollaborationWarning": "",
-            "successAddCollection": "",
-            "successAddCollections": "",
+            "successAddCollection_one": "",
+            "successAddCollection_other": "",
             "successAddNewCollection": "",
             "updateCollection": ""
         },

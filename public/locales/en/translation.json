@@ -463,8 +463,8 @@
       "stopCollaborationNotice": "You’re about to remove yourself as a collaborator of Collection: {{name}}.",
       "stopCollaborationTooltip": "Remove yourself as a collaborator",
       "stopCollaborationWarning": "Are you sure you want to proceed? You won’t be able to undo this yourself and will need to ask the collection's owner to add you again.",
-      "successAddCollection": "Successfully added to selected collection",
-      "successAddCollections": "Successfully added to selected collections",
+      "successAddCollection_one": "Successfully added to selected collection",
+      "successAddCollection_other": "Successfully added to selected collections",
       "successAddNewCollection": "Successfully added to your new collection: {{name}}",
       "updateCollection": "Update collection"
     },
