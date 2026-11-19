@@ -26,7 +26,7 @@ function EntityRelationships({contextEntity, relationships, entityUrl}) {
 	const {t: translate} = useTranslation();
 	return (
 		<div>
-			<h2>{translate('common.relationships')}</h2>
+			<h2>{translate('common.relationship_other')}</h2>
 			{relationships?.length > 0 ? (
 				<ul className="list-unstyled">
 					{relationships.map((relationship) => (
