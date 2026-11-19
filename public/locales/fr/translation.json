@@ -45,6 +45,7 @@
             "submit": "Valider",
             "update": "Mettre à jour"
         },
+        "collaborator_many": "Collaborateurs",
         "collaborator_one": "Collaborateur",
         "collaborator_other": "Collaborateurs",
         "confirmDeletion": "Confirmer la suppression",
