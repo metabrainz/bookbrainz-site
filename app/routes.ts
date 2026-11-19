@@ -16,6 +16,7 @@ export default [
 		route('external-service', 'routes/external-service.tsx'),
 		route('faq', 'routes/static/faq.tsx'),
 		route('help', 'routes/static/help.tsx'),
+		route('identifier-type/:id/edit', 'routes/type-editors/identifier-type-edit.tsx'),
 		route('identifier-type/create', 'routes/type-editors/identifier-type-create.tsx'),
 		route('identifier-types', 'routes/types/identifier-types.tsx'),
 		route('licensing', 'routes/static/licensing.tsx'),
