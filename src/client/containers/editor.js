@@ -83,7 +83,7 @@ function EditorContainer({tabActive, editor, children, user = null}) {
 								active={tabActive === 3}
 								href={`/editor/${editor.id}/collections`}
 							>
-								{translate('common.entityType.collection_plural')}
+								{translate('common.entityType.collection_other')}
 							</Nav.Link>
 						</Nav.Item>
 						{

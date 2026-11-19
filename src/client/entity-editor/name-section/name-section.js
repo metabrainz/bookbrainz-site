@@ -137,7 +137,7 @@ class NameSection extends React.Component {
 	renderDuplicateAlert(warnIfExists, disambiguationDefaultValue, exactMatches, entityType, lgCol) {
 		const translate = this.props.t;
 		const exactMatchesCount = exactMatches ? exactMatches.length : 0;
-		const entityTypeLabel = translate(`common.entityType.${_.camelCase(entityType)}${exactMatchesCount === 1 ? '' : '_plural'}`);
+		const entityTypeLabel = translate(`common.entityType.${_.camelCase(entityType)}`, {count: exactMatchesCount});
 		return (
 			<Col lg={lgCol}>
 				{isRequiredDisambiguationEmpty(
