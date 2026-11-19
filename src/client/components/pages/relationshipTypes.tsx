@@ -18,7 +18,7 @@
 import {Button, Card} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
-import {RelationshipTypeDataT} from '../forms/type-editor/typeUtils';
+import type {RelationshipTypeDataT} from '../../../common/types/type-data';
 import RelationshipTypeTree from './parts/relationship-types-tree';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import {useTranslation} from 'react-i18next';

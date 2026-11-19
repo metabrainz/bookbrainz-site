@@ -20,7 +20,7 @@
  */
 import React, {useCallback, useState} from 'react';
 import {Button} from 'react-bootstrap';
-import {IdentifierTypeDataT} from '../../forms/type-editor/typeUtils';
+import type {IdentifierTypeDataT} from '../../../../common/types/type-data';
 import {orderBy as _orderBy} from 'lodash';
 import {useTranslation} from 'react-i18next';
 

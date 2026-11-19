@@ -134,7 +134,7 @@ describe('Identifier Type routes without Identifier Editor priv', () => {
 		const res = await agent.get('/identifier-type/create');
 		expect(res.ok).to.be.false;
 		expect(res).to.have.status(403);
-		expect(res.res.statusMessage).to.equal('You do not have the privilege to access this route');
+		expect(res.text).to.include('You do not have the privilege to access this route');
 	});
 
 	it('should throw an error while accessing Identifier Type Editor to edit an existing Identifier type', async () => {
@@ -142,7 +142,7 @@ describe('Identifier Type routes without Identifier Editor priv', () => {
 		const res = await agent.get(`/identifier-type/${identifierTypeId}/edit`);
 		expect(res.ok).to.be.false;
 		expect(res).to.have.status(403);
-		expect(res.res.statusMessage).to.equal('You do not have the privilege to access this route');
+		expect(res.text).to.include('You do not have the privilege to access this route');
 	});
 
 	it('should throw an error when trying to access Identifier Type Editor with a non-existent id', async () => {
