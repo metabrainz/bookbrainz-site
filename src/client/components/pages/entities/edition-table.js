@@ -20,6 +20,7 @@ import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import * as utilHelper from '../../../helpers/utils';
 
+import {Trans, useTranslation} from 'react-i18next';
 import {faBook, faPlus} from '@fortawesome/free-solid-svg-icons';
 
 import AuthorCreditDisplay from '../../author-credit-display';
@@ -35,7 +36,15 @@ const {
 } = entityHelper;
 const {Button, Table} = bootstrap;
 
-function EditionTableRow({edition, showAddedAtColumn, showAuthorCreditsColumn, showCheckboxes, selectedEntities, onToggleRow}) {
+
+function EditionTableRow({
+	edition,
+	showAddedAtColumn,
+	showAuthorCreditsColumn = false,
+	showCheckboxes = false,
+	selectedEntities = [],
+	onToggleRow = null
+}) {
 	const name = getEntityLabel(edition);
 	const disambiguation = getEntityDisambiguation(edition);
 	const number = edition.number || '?';
@@ -93,14 +102,19 @@ EditionTableRow.propTypes = {
 	showAuthorCreditsColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool
 };
-EditionTableRow.defaultProps = {
-	onToggleRow: null,
-	selectedEntities: [],
-	showAuthorCreditsColumn: false,
-	showCheckboxes: false
-};
 
-function EditionTable({editions, entity, showAddedAtColumn, showAdd, showAuthorCreditsColumn, showCheckboxes, selectedEntities, onToggleRow}) {
+
+function EditionTable({
+	editions,
+	entity = null,
+	showAddedAtColumn = false,
+	showAdd = true,
+	showAuthorCreditsColumn = false,
+	showCheckboxes = false,
+	selectedEntities = [],
+	onToggleRow = null
+}) {
+	const {t: translate} = useTranslation();
 	let tableContent;
 	if (editions.length) {
 		tableContent = (
@@ -109,13 +123,13 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showAuthorC
 					<thead>
 						<tr>
 							{editions[0].displayNumber && <th style={{width: '10%'}}>#</th>}
-							<th>Name</th>
-							{showAuthorCreditsColumn && <th>Author Credits</th>}
-							<th>Format</th>
-							<th>ISBN</th>
-							<th>Release Date</th>
+							<th>{translate('common.name')}</th>
+							{showAuthorCreditsColumn && <th>{translate('common.authorCredits')}</th>}
+							<th>{translate('common.format')}</th>
+							<th>{translate('common.isbn')}</th>
+							<th>{translate('pages.entity.releaseDate')}</th>
 							{
-								showAddedAtColumn ? <th>Added at</th> : null
+								showAddedAtColumn ? <th>{translate('pages.entity.addedAt')}</th> : null
 							}
 						</tr>
 					</thead>
@@ -142,7 +156,7 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showAuthorC
 						variant="success"
 					>
 						<FontAwesomeIcon icon={faPlus}/>
-						{'  Add Edition'}
+						{'  '}{translate('pages.entity.addEdition')}
 					</Button>
 				}
 			</React.Fragment>
@@ -158,27 +172,33 @@ function EditionTable({editions, entity, showAddedAtColumn, showAdd, showAuthorC
 					>
 						<FontAwesomeIcon icon={faBook} size="2x"/>
 						<br/>
-						Add Edition
+						{translate('pages.entity.addEdition')}
 					</Button>
 				</span>
 				<span>
-					<h4>There are no Editions yet!</h4>
+					<h4>{translate('pages.entity.noEditionsYet')}</h4>
 					<p>
-						Help us complete BookBrainz
+						{translate('pages.entity.helpUsComplete')}
 						<br/>
 					</p>
-					<br/><small>Not sure what to do? Visit the <a href="/help">help page</a> to get started.</small>
+					<br/>
+					<small>
+						<Trans
+							components={{helpLink: <a href="/help"/>}}
+							i18nKey="pages.callToAction.notSure"
+						/>
+					</small>
 				</span>
 				<hr className="margin-bottom-d0"/>
 			</React.Fragment>
 		);
 	}
 	else {
-		tableContent = <span>No editions</span>;
+		tableContent = <span>{translate('pages.entity.noEditions')}</span>;
 	}
 	return (
 		<div>
-			<h2>Editions</h2>
+			<h2>{translate('common.entityType.edition_plural')}</h2>
 			{tableContent}
 		</div>
 	);
@@ -193,15 +213,6 @@ EditionTable.propTypes = {
 	showAddedAtColumn: PropTypes.bool,
 	showAuthorCreditsColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool
-};
-EditionTable.defaultProps = {
-	entity: null,
-	onToggleRow: null,
-	selectedEntities: [],
-	showAdd: true,
-	showAddedAtColumn: false,
-	showAuthorCreditsColumn: false,
-	showCheckboxes: false
 };
 
 export default EditionTable;

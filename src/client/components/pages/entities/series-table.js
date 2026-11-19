@@ -21,12 +21,14 @@ import * as entityHelper from '../../../helpers/entity';
 import * as utilHelper from '../../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 
 
 const {Table} = bootstrap;
 const {getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-function SeriesTableRow({series, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
+
+function SeriesTableRow({series, showAddedAtColumn, showCheckboxes = false, selectedEntities = [], onToggleRow = null}) {
 	const name = getEntityLabel(series);
 	const disambiguation = getEntityDisambiguation(series);
 	const seriesType = series.entityType || '?';
@@ -65,13 +67,16 @@ SeriesTableRow.propTypes = {
 	showAddedAtColumn: PropTypes.bool.isRequired,
 	showCheckboxes: PropTypes.bool
 };
-SeriesTableRow.defaultProps = {
-	onToggleRow: null,
-	selectedEntities: [],
-	showCheckboxes: false
-};
 
-function SeriesTable({series, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow}) {
+
+function SeriesTable({
+	series,
+	showAddedAtColumn = false,
+	showCheckboxes = false,
+	selectedEntities = [],
+	onToggleRow = null
+}) {
+	const {t: translate} = useTranslation();
 	let tableContent;
 	if (series.length) {
 		tableContent = (
@@ -79,11 +84,11 @@ function SeriesTable({series, showAddedAtColumn, showCheckboxes, selectedEntitie
 				<Table striped>
 					<thead>
 						<tr>
-							<th width="40%">Name</th>
-							<th>Series Type</th>
-							<th>Ordering Type</th>
+							<th width="40%">{translate('common.name')}</th>
+							<th>{translate('pages.entity.seriesType')}</th>
+							<th>{translate('pages.entity.orderingType')}</th>
 							{
-								showAddedAtColumn ? <th>Added at</th> : null
+								showAddedAtColumn ? <th>{translate('pages.entity.addedAt')}</th> : null
 							}
 						</tr>
 					</thead>
@@ -106,11 +111,11 @@ function SeriesTable({series, showAddedAtColumn, showCheckboxes, selectedEntitie
 		);
 	}
 	else {
-		tableContent = <span>No Series</span>;
+		tableContent = <span>{translate('pages.entity.noSeries')}</span>;
 	}
 	return (
 		<div>
-			<h2>Series</h2>
+			<h2>{translate('common.entityType.series_plural')}</h2>
 			{tableContent}
 		</div>
 	);
@@ -122,12 +127,6 @@ SeriesTable.propTypes = {
 	series: PropTypes.array.isRequired,
 	showAddedAtColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool
-};
-SeriesTable.defaultProps = {
-	onToggleRow: null,
-	selectedEntities: [],
-	showAddedAtColumn: false,
-	showCheckboxes: false
 };
 
 export default SeriesTable;

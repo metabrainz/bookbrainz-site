@@ -27,7 +27,6 @@ import {
 
 import _ from 'lodash';
 import type {_IdentifierType} from '../../../types';
-import {labelsForAuthor} from '../../helpers/utils';
 
 
 export function validateAuthorSectionBeginArea(value: any): boolean {
@@ -56,14 +55,16 @@ export function validateAuthorSectionEndDate(
 ) {
 	const {isValid, errorMessage} = validateDate(endValue);
 	const isGroup = authorType === 'Group';
-	const {beginDateLabel, endDateLabel} = labelsForAuthor(isGroup);
 
 	if (isValid) {
 		if (dateIsBefore(beginValue, endValue)) {
 			return {errorMessage: '', isValid: true};
 		}
 
-		return {errorMessage: `${endDateLabel} must be greater than ${beginDateLabel}`, isValid: false};
+		return {
+			errorMessage: isGroup ? 'entityEditor.dateValidation.dissolutionBeforeFounded' : 'entityEditor.dateValidation.deathBeforeBirth',
+			isValid: false
+		};
 	}
 	return {errorMessage, isValid};
 }

@@ -1,6 +1,7 @@
 import {SearchEntityCreateDispatchProps, SearchEntityCreateProps} from '../interface/type';
 import {addAuthor, addPublisher} from '../cover-tab/action';
 import {addSeries, addWork} from '../content-tab/action';
+import {camelCase, defaults} from 'lodash';
 import {checkIfNameExists, searchName, updateNameField, updateSortNameField} from '../../entity-editor/name-section/actions';
 import {closeEntityModal, dumpEdition, loadEdition, openEntityModal} from '../action';
 import AsyncCreatable from 'react-select/async-creatable';
@@ -11,6 +12,7 @@ import {addEditionGroup} from '../detail-tab/action';
 import {connect} from 'react-redux';
 import makeImmutable from '../../entity-editor/common/make-immutable';
 import {submitSingleEntity} from '../../entity-editor/submission-section/actions';
+import {useTranslation} from 'react-i18next';
 
 
 const ImmutableCreatableAsync = makeImmutable(AsyncCreatable);
@@ -21,9 +23,27 @@ const addEntityAction = {
 	series: addSeries,
 	work: addWork
 };
-function SearchEntityCreate(props:SearchEntityCreateProps) {
-	const {type, nextId, onModalOpen, onModalClose, onSubmitEntity, rowId, onOpenCallback, ...rest} = props;
-	const createLabel = React.useCallback((input) => `Create ${type} "${input}"`, [type]);
+const defaultProps = {
+	bbid: null,
+	empty: true,
+	error: false,
+	filters: [],
+	languageOptions: [],
+	rowId: null,
+	tooltipText: null
+};
+function SearchEntityCreate(rawProps:SearchEntityCreateProps) {
+	// Fill in the defaults for props that are missing (or undefined); they are also passed on to the select and the modal
+	const allProps = defaults({}, rawProps, defaultProps);
+	const {type, nextId, onModalOpen, onModalClose, onSubmitEntity, rowId, onOpenCallback, ...rest} = allProps;
+	const {t: translate} = useTranslation();
+	const createLabel = React.useCallback(
+		(input) => translate('entityEditor.unifiedForm.createEntity', {
+			entityType: translate(`common.entityType.${camelCase(type)}`),
+			name: input
+		}),
+		[translate, type]
+	);
 	const [showModal, setShowModal] = React.useState(false);
 	const getNewOptionData = React.useCallback((_, label) => ({
 		__isNew__: true,
@@ -60,20 +80,11 @@ function SearchEntityCreate(props:SearchEntityCreateProps) {
 				getNewOptionData={getNewOptionData}
 				isValidNewOption={isValidNewOption}
 				onCreateOption={openModalHandler}
-				{...props}
+				{...allProps}
 			/>
 			<CreateEntityModal handleClose={closeModalHandler} handleSubmit={submitModalHandler} show={showModal} type={type} {...rest}/>
 		</>);
 }
-SearchEntityCreate.defaultProps = {
-	bbid: null,
-	empty: true,
-	error: false,
-	filters: [],
-	languageOptions: [],
-	rowId: null,
-	tooltipText: null
-};
 
 function mapDispatchToProps(dispatch, {type, submissionUrl, onAddCallback}):SearchEntityCreateDispatchProps {
 	return {
@@ -97,4 +108,3 @@ function mapDispatchToProps(dispatch, {type, submissionUrl, onAddCallback}):Sear
 }
 
 export default connect<null, SearchEntityCreateDispatchProps>(null, mapDispatchToProps)(SearchEntityCreate);
-

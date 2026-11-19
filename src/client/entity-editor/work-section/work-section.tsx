@@ -34,6 +34,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import LanguageField from '../common/language-field';
 import {connect} from 'react-redux';
 import makeImmutable from '../common/make-immutable';
+import {useTranslation} from 'react-i18next';
 
 
 const ImmutableLanguageField = makeImmutable(LanguageField);
@@ -143,10 +144,11 @@ function WorkSection({
 	languageValues,
 	typeValue,
 	workTypes,
-	isUnifiedForm,
+	isUnifiedForm = false,
 	onLanguagesChange,
 	onTypeChange
 }: Props) {
+	const {t: translate} = useTranslation();
 	const languageOptionsForDisplay = languageOptions.map((language) => ({
 		frequency: language.frequency,
 		label: language.name,
@@ -158,10 +160,10 @@ function WorkSection({
 	const selectedTypeOption:WorkType = workTypesForDisplay.find((el) => el.id === typeValue);
 	const tooltip = (
 		<Tooltip id="work-type-tooltip">
-			Literary form or structure of the work
+			{translate('entityEditor.workSection.typeTooltip')}
 		</Tooltip>
 	);
-	const heading = <h2> What else do you know about the Work?</h2>;
+	const heading = <h2>{translate('entityEditor.shared.entityHeading', {entity: translate('common.entityType.work')})}</h2>;
 	const lgCol = {offset: 3, span: 6};
 	if (isUnifiedForm) {
 		lgCol.offset = 0;
@@ -170,14 +172,13 @@ function WorkSection({
 		<div>
 			{!isUnifiedForm && heading}
 			<p className="text-muted">
-				All fields optional — leave something blank if you don&rsquo;t
-				know it
+				{translate('entityEditor.shared.allFieldsOptional')}
 			</p>
 			<Row>
 				<Col lg={lgCol}>
 					<Form.Group>
 						<Form.Label>
-							Type
+							{translate('common.type')}
 							<OverlayTrigger delay={50} overlay={tooltip}>
 								<FontAwesomeIcon
 									className="margin-left-0-5"
@@ -212,7 +213,7 @@ function WorkSection({
 						isMulti
 						instanceId="language"
 						options={languageOptionsForDisplay}
-						tooltipText="Main language used for the content of the work"
+						tooltipText={translate('entityEditor.workSection.languageTooltip')}
 						value={languageValues}
 						onChange={onLanguagesChange}
 					/>
@@ -222,9 +223,6 @@ function WorkSection({
 	);
 }
 WorkSection.displayName = 'WorkSection';
-WorkSection.defaultProps = {
-	isUnifiedForm: false
-};
 type RootState = Map<string, Map<string, any>>;
 function mapStateToProps(rootState: RootState): StateProps {
 	const state: Map<string, any> = rootState.get('workSection');

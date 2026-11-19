@@ -19,6 +19,11 @@
  */
 /* eslint-disable node/no-process-env */
 
+// Must stay the first import so Sentry can instrument the modules loaded after it
+// eslint-disable-next-line import/no-unassigned-import
+import './instrument';
+
+import * as Sentry from '@sentry/node';
 import * as auth from './helpers/auth';
 import * as error from '../common/helpers/error';
 import * as search from '../common/helpers/search';
@@ -33,6 +38,7 @@ import compression from 'compression';
 import config from '../common/helpers/config';
 import express from 'express';
 import favicon from 'serve-favicon';
+import {i18nMiddleware} from './helpers/middleware';
 import initInflux from './influx';
 import logNode from 'log-node';
 import logger from 'morgan';
@@ -114,7 +120,7 @@ else {
 app.use(express.static(path.join(rootDir, 'static')));
 
 app.use(session(process.env.NODE_ENV));
-
+app.use(i18nMiddleware);
 
 if (config.influx) {
 	initInflux(app, config);
@@ -184,6 +190,9 @@ routes(app);
 app.use((req, res, next) => {
 	next(new error.NotFoundError(null, req));
 });
+
+// Report errors to Sentry before the app's own error handler renders them
+Sentry.setupExpressErrorHandler(app);
 
 // Error handler; arity MUST be 4 or express doesn't treat it as such
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

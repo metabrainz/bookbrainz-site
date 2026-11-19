@@ -52,13 +52,13 @@ type Props = {
  * @returns {Object} a React component containing the rendered input
  */
 function MergeField({
-	error,
+	error = false,
 	options,
 	label,
 	currentValue,
-	tooltipText,
+	tooltipText = null,
 	onChange,
-	valueProperty,
+	valueProperty = 'label',
 	...rest
 }: Props) {
 	const labelComponent = <ValidationLabel error={error} >{label}</ValidationLabel>;
@@ -112,11 +112,5 @@ function MergeField({
 	);
 }
 MergeField.displayName = 'MergeField';
-
-MergeField.defaultProps = {
-	error: false,
-	tooltipText: null,
-	valueProperty: 'label'
-};
 
 export default MergeField;

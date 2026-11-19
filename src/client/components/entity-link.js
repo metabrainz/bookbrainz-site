@@ -22,7 +22,7 @@ import React from 'react';
 import {kebabCase as _kebabCase} from 'lodash';
 
 
-function EntityLink({entity, inline}) {
+function EntityLink({entity, inline = false}) {
 	let bbidElement = <div className="small">({entity.bbid})</div>;
 	if (inline) {
 		bbidElement = <span className="small">({entity.bbid})</span>;
@@ -42,9 +42,6 @@ EntityLink.displayName = 'EntityLink';
 EntityLink.propTypes = {
 	entity: PropTypes.object.isRequired,
 	inline: PropTypes.bool
-};
-EntityLink.defaultProps = {
-	inline: false
 };
 
 export default EntityLink;

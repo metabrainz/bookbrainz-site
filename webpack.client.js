@@ -126,6 +126,11 @@ const clientConfig = {
 		new CleanWebpackPlugin(cleanWebpackPluginOpts)
 	],
 	resolve: {
+		alias: {
+			// React 19 removed ReactDOM.findDOMNode, which some UI libraries still use: see the file for details
+			'react-dom$': path.resolve(__dirname, 'src', 'client', 'helpers', 'react-dom-compat.js'),
+			'react-dom-original$': path.resolve(path.dirname(require.resolve('react-dom/package.json')), 'index.js')
+		},
 		extensions: ['.js', '.jsx', '.ts', '.tsx']
 	},
 	target: 'web'
@@ -145,11 +150,15 @@ if (!production) {
 		clientConfig.plugins.push(new BundleAnalyzerPlugin());
 	}
 
-	/* Add webpack HMR middleware to all entry files except for styles */
+	/*
+	 * Add webpack HMR middleware to all entry files except for styles.
+	 * Pages are server-rendered and hydrated by their controllers, so there is no
+	 * component-level hot reloading: reload the page when a rebuild finishes.
+	 */
 	for (const entry in clientConfig.entry) {
 		if (Object.prototype.hasOwnProperty.call(clientConfig.entry, entry)) {
 			if(entry !== "style"){
-				clientConfig.entry[entry].push('webpack-hot-middleware/client');
+				clientConfig.entry[entry].push('webpack-hot-middleware/client?reload=true');
 			}
 		}
 	}

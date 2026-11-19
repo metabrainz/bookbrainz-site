@@ -25,10 +25,10 @@ import * as error from '../../common/helpers/error';
 import * as utils from '../helpers/utils';
 import type {Response as $Response, NextFunction, Request} from 'express';
 import {ENTITY_TYPES, getRelationshipTargetBBIDByTypeId} from '../../client/helpers/entity';
+import {getAcceptedLanguageCodes, getAvailableLocales, loadTranslation} from './i18n';
 import {getWikipediaExtract, selectWikipediaPage} from './wikimedia';
 
 import _ from 'lodash';
-import {getAcceptedLanguageCodes} from './i18n';
 import {getReviewsFromCB} from './critiquebrainz';
 import {getWikidataId} from '../../common/helpers/wikimedia';
 import log from 'log';
@@ -450,4 +450,35 @@ export function validateCollaboratorIdsForCollectionRemove(req, res, next) {
 	}
 
 	return next();
+}
+
+export async function i18nMiddleware(req: $Request, res: $Response, next: NextFunction) {
+	const availableLocales = await getAvailableLocales();
+
+	const rawCookies = req.headers.cookie ?? '';
+	const cookieLang = rawCookies.split('; ')
+		.find(lang => lang.startsWith('bb_lang='))
+		?.split('=')[1];
+	const headerLang = getAcceptedLanguageCodes(req)
+		.find(language => availableLocales.includes(language)) ?? 'en';
+	const preferred = cookieLang ?? headerLang;
+	const locale = availableLocales.includes(preferred) ? preferred : 'en';
+
+	const resources: Record<string, any> = {
+		[locale]: {
+			translation: await loadTranslation(locale)
+		}
+	};
+
+	if (locale !== 'en') {
+		resources.en = {
+			translation: await loadTranslation('en')
+		};
+	}
+
+	res.locals.locale = locale;
+	res.locals.currentLocale = locale;
+	res.locals.i18nResources = resources;
+	res.locals.availableLocales = availableLocales;
+	next();
 }

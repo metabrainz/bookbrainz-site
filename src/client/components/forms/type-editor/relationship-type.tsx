@@ -26,7 +26,11 @@ import classNames from 'classnames';
 import request from 'superagent';
 
 
-function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTypes}: RelationshipTypeEditorPropsT) {
+function RelationshipTypeEditor({
+	relationshipTypeData = defaultRelationshipTypeData,
+	parentTypes,
+	attributeTypes
+}: RelationshipTypeEditorPropsT) {
 	const [formData, setFormData] = useState<RelationshipTypeDataT>(relationshipTypeData);
 
 	// State for the ParentType modal
@@ -503,9 +507,5 @@ function RelationshipTypeEditor({relationshipTypeData, parentTypes, attributeTyp
 		</form>
 	);
 }
-
-RelationshipTypeEditor.defaultProps = {
-	relationshipTypeData: defaultRelationshipTypeData
-};
 
 export default RelationshipTypeEditor;

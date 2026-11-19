@@ -26,11 +26,13 @@ import LinkedEntitySelect from './linked-entity-select';
 import React from 'react';
 import {RecentlyUsed} from '../../unified-form/common/recently-used';
 import SelectAsync from 'react-select/async';
+import type {TFunction} from 'i18next';
 import ValidationLabel from './validation-label';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
 import {isValidBBID} from '../../../common/helpers/utils';
 import makeImmutable from './make-immutable';
 import request from 'superagent';
+import {withTranslation} from 'react-i18next';
 
 
 const ImmutableAsyncSelect = makeImmutable(SelectAsync);
@@ -52,6 +54,8 @@ type Props = {
 	languageOptions?: Array<{value: number, label: string}>,
 	onChange: (value: Record<string, unknown> | Record<string, unknown>[] | null) => void,
 	recentlyUsedEntityType?: SearchEntityTypes | SearchEntityTypes[] | null,
+	// eslint-disable-next-line id-length
+	t: TFunction,
 	tooltipText?: string | null,
 	type: string | string[],
 	value?: Record<string, unknown> | Record<string, unknown>[] | null,
@@ -169,7 +173,7 @@ class EntitySearchFieldOption extends React.Component<Props> {
 			return true;
 		}
 		return [{
-			label: 'Recently Used',
+			label: this.props.t('common.recentlyUsed'),
 			options: recentOptions
 		}];
 	}
@@ -181,7 +185,7 @@ class EntitySearchFieldOption extends React.Component<Props> {
 				return [];
 			}
 			return [{
-				label: 'Recently Used',
+				label: this.props.t('common.recentlyUsed'),
 				options: recentOptions
 			}];
 		}
@@ -226,11 +230,11 @@ class EntitySearchFieldOption extends React.Component<Props> {
 		if (filteredRecent.length > 0) {
 			results = [
 				{
-					label: 'Recently Used',
+					label: this.props.t('common.recentlyUsed'),
 					options: filteredRecent
 				},
 				{
-					label: 'Search Results',
+					label: this.props.t('common.searchResults'),
 					options: searchResults
 				}
 			];
@@ -361,4 +365,4 @@ EntitySearchFieldOption.defaultProps = {
 	value: null
 };
 
-export default EntitySearchFieldOption;
+export default withTranslation()(EntitySearchFieldOption);

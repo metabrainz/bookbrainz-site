@@ -8,6 +8,11 @@
 		"log": "error",
 		"forceExitAfterMs": 5000
 	},
+	"sentry": {
+		"dsn": "{{template "KEY" "sentry/dsn"}}",
+		"environment": "{{template "KEY" "sentry/environment"}}",
+		"tracesSampleRate": {{template "KEY" "sentry/traces_sample_rate"}}
+	},
 	"musicbrainz": {
 		"clientID": "{{template "KEY" "musicbrainz/client_id"}}",
 		"clientSecret": "{{template "KEY" "musicbrainz/client_secret"}}",

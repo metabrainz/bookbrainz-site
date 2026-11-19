@@ -48,10 +48,10 @@ type Props = {
  */
 function NumericField({
 	addonAfter,
-	show,
+	show = true,
 	label,
-	empty,
-	error,
+	empty = false,
+	error = false,
 	...rest
 }: Props) {
 	const labelElement =
@@ -71,10 +71,5 @@ function NumericField({
 	);
 }
 NumericField.displayName = 'NumericField';
-NumericField.defaultProps = {
-	empty: false,
-	error: false,
-	show: true
-};
 
 export default NumericField;

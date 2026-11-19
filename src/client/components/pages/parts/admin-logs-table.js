@@ -21,14 +21,15 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {Table} from 'react-bootstrap';
 import {formatDate} from '../../../helpers/utils';
+import {useTranslation} from 'react-i18next';
 
 
-function AdminLogsTable(props) {
-	const {results, tableHeading} = props;
+function AdminLogsTable({results, tableHeading = null}) {
+	const {t: translate} = useTranslation();
 	return (
 		<div>
 			<div>
-				<h1 className="text-center">{tableHeading}</h1>
+				<h1 className="text-center">{tableHeading ?? translate('common.nav.adminLogs')}</h1>
 			</div>
 			<hr className="thin"/>
 			{
@@ -40,8 +41,8 @@ function AdminLogsTable(props) {
 					>
 						<thead>
 							<tr>
-								<th width="85%">Action</th>
-								<th width="15%">Date</th>
+								<th width="85%">{translate('common.action')}</th>
+								<th width="15%">{translate('common.date')}</th>
 							</tr>
 						</thead>
 
@@ -62,7 +63,7 @@ function AdminLogsTable(props) {
 					</Table> :
 
 					<div>
-						<h4> No logs to show</h4>
+						<h4>{translate('pages.adminLogs.noLogs')}</h4>
 						<hr className="wide"/>
 					</div>
 			}
@@ -75,10 +76,6 @@ AdminLogsTable.propTypes = {
 	results: PropTypes.array.isRequired,
 	tableHeading: PropTypes.node
 };
-AdminLogsTable.defaultProps = {
-	tableHeading: 'Admin Logs'
-};
-
 AdminLogsTable.displayName = 'AdminLogsTable';
 
 export default AdminLogsTable;

@@ -403,6 +403,7 @@ router.get('/submit/:targetBBID?', auth.isAuthenticated, auth.isAuthorized(ENTIT
 		));
 
 		return res.send(targetTemplate({
+			locale: res.locals.locale,
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
