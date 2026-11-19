@@ -139,7 +139,7 @@
     "publisher": "Publisher",
     "recentlyUsed": "Recently Used",
     "relationship": "Relationship",
-    "relationships": "Relationships",
+    "relationship_other": "Relationships",
     "relationshipTypes": "Relationship Types",
     "required": "required",
     "revision": "revision",
