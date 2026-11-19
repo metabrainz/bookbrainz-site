@@ -152,7 +152,7 @@ class SearchPage extends React.Component<Props, State> {
 		const {type, query, results} = this.state;
 		// eslint-disable-next-line id-length
 		const {t: translate} = this.props;
-		const querySearchParams = `q=${query}${type ? `&type=${type}` : ''}`;
+		const querySearchParams = `q=${encodeURIComponent(query)}${type ? `&type=${encodeURIComponent(type)}` : ''}`;  // Encode query's special characters
 		return (
 			<div id="pageWithPagination">
 				<SearchField
