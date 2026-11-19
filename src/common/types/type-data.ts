@@ -32,7 +32,7 @@ export interface AttributeTypeDataT {
 	childOrder: number,
 	description: string,
 	id?: number,
-	lastUpdated: Date,
+	lastUpdated: string,
 	name: string,
 	parent: number | null,
 	root: number

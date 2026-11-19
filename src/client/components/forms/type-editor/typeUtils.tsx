@@ -24,10 +24,10 @@ import React from 'react';
 
 
 export interface RelationshipTypeEditorPropsT {
-	relationshipTypeData: RelationshipTypeDataT;
+	relationshipTypeData?: RelationshipTypeDataT;
 	parentTypes: RelationshipTypeDataT[];
 	attributeTypes: AttributeTypeDataT[];
-	user: any;
+	user?: any;
 }
 
 export interface IdentifierTypeEditorPropsT {

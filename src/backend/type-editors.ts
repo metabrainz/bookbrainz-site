@@ -3,8 +3,8 @@
  * Replace the disables with proper ORM types.
  */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument */
+import type {AttributeTypeDataT, IdentifierTypeDataT, RelationshipTypeDataT} from '../common/types/type-data';
 import {BadRequestError, NotFoundError} from '../common/helpers/error';
-import type {IdentifierTypeDataT} from '../common/types/type-data';
 import type {ORM} from 'bookbrainz-data';
 
 
@@ -36,4 +36,16 @@ export async function getIdentifierTypeEditData(
 		// A type cannot be its own parent
 		parentTypes: allTypes.filter((type) => type.id !== typeId)
 	};
+}
+
+async function getRelationshipTypeLists(orm: ORM): Promise<{attributeTypes: AttributeTypeDataT[], parentTypes: RelationshipTypeDataT[]}> {
+	const [parentTypes, attributeTypes] = await Promise.all([
+		orm.RelationshipType.fetchAll(),
+		orm.RelationshipAttributeType.fetchAll()
+	]);
+	return {attributeTypes: attributeTypes.toJSON(), parentTypes: parentTypes.toJSON()};
+}
+
+export function getRelationshipTypeCreateData(orm: ORM) {
+	return getRelationshipTypeLists(orm);
 }

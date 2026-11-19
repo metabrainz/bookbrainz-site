@@ -35,26 +35,6 @@ const router = express.Router();
 
 const {RELATIONSHIP_TYPE_EDITOR} = PrivilegeType;
 
-router.get('/create', auth.isAuthenticated, auth.isAuthorized(RELATIONSHIP_TYPE_EDITOR),
-	middleware.loadParentRelationshipTypes, middleware.loadRelationshipAttributeTypes, (req, res) => {
-		const {parentTypes, attributeTypes} = res.locals;
-		const props = generateProps(req, res, {
-			attributeTypes, parentTypes
-		});
-		const script = '/js/relationship-type-editor.js';
-		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<RelationshipTypeEditor {...propHelpers.extractChildProps(props)}/>
-			</Layout>
-		);
-		res.send(target({
-			locale: res.locals.locale,
-			markup,
-			props: escapeProps(props),
-			script
-		}));
-	});
-
 router.post('/create/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(RELATIONSHIP_TYPE_EDITOR), relationshipTypeCreateOrEditHandler);
 
 router.param(

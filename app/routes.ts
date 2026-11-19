@@ -23,6 +23,7 @@ export default [
 		route('privacy', 'routes/static/privacy.tsx'),
 		route('register', 'routes/register/register.tsx'),
 		route('register/details', 'routes/register/details.tsx'),
+		route('relationship-type/create', 'routes/type-editors/relationship-type-create.tsx'),
 		route('relationship-types', 'routes/types/relationship-types-matrix.tsx'),
 		route('relationship-types/:types', 'routes/types/relationship-types-list.tsx'),
 		route('revisions', 'routes/browse/revisions.tsx'),

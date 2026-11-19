@@ -1,6 +1,6 @@
 import {getAdminLogsPage, getEditorSearchPage} from './admin';
 import {getGenders, getProfileEditData} from './editors';
-import {getIdentifierTypeCreateData, getIdentifierTypeEditData} from './type-editors';
+import {getIdentifierTypeCreateData, getIdentifierTypeEditData, getRelationshipTypeCreateData} from './type-editors';
 import {getIdentifierTypes, getRelationshipTypesPage} from './types';
 import {getOrderedRevisions, getRevisionsPage} from './revisions';
 import type {Client} from '@elastic/elasticsearch';
@@ -45,7 +45,8 @@ export function createBackend({orm}: BackendDependencies) {
 		},
 		typeEditors: {
 			getIdentifierTypeCreateData: () => getIdentifierTypeCreateData(orm),
-			getIdentifierTypeEditData: (params: {id: string, path: string}) => getIdentifierTypeEditData(orm, params)
+			getIdentifierTypeEditData: (params: {id: string, path: string}) => getIdentifierTypeEditData(orm, params),
+			getRelationshipTypeCreateData: () => getRelationshipTypeCreateData(orm)
 		},
 		types: {
 			getIdentifierTypes: () => getIdentifierTypes(orm),
