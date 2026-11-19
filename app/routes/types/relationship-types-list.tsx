@@ -1,6 +1,6 @@
 import {NotFoundError} from '../../../src/common/helpers/error';
 import React from 'react';
-import type {RelationshipTypeDataT} from '../../../src/client/components/forms/type-editor/typeUtils';
+import type {RelationshipTypeDataT} from '../../../src/common/types/type-data';
 import RelationshipTypesPage from '../../../src/client/components/pages/relationshipTypes';
 import type {Route} from './+types/relationship-types-list';
 import {siteContext} from '../../context';

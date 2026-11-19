@@ -18,47 +18,10 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+import type {AttributeTypeDataT, IdentifierTypeDataT, RelationshipTypeDataT} from '../../../../common/types/type-data';
 import {ENTITY_TYPES} from '../../../helpers/entity';
-import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import React from 'react';
 
-
-export interface RelationshipTypeDataT {
-	attributeTypes: number[];
-	id?: number;
-	label: string;
-	description: string;
-	linkPhrase: string;
-	reverseLinkPhrase: string;
-	deprecated: boolean;
-	parentId: number | null;
-	childOrder: number;
-	sourceEntityType: EntityTypeString;
-	targetEntityType: EntityTypeString;
-}
-
-export interface IdentifierTypeDataT {
-	childOrder: number;
-	deprecated: boolean;
-	description: string;
-	detectionRegex: string | null;
-	displayTemplate: string;
-	entityType: EntityTypeString;
-	id?: number;
-	label: string;
-	parentId: number | null;
-	validationRegex: string;
-}
-
-export interface AttributeTypeDataT {
-	childOrder: number,
-	description: string,
-	id?: number,
-	lastUpdated: Date,
-	name: string,
-	parent: number | null,
-	root: number
-}
 
 export interface RelationshipTypeEditorPropsT {
 	relationshipTypeData: RelationshipTypeDataT;

@@ -21,7 +21,7 @@
 import {Card, Container, Nav, Tab} from 'react-bootstrap';
 import React, {useCallback, useState} from 'react';
 import {ENTITY_TYPES} from '../../helpers/entity';
-import {IdentifierTypeDataT} from '../forms/type-editor/typeUtils';
+import type {IdentifierTypeDataT} from '../../../common/types/type-data';
 import IdentifierTypeTree from './parts/identifier-types-tree';
 import {camelCase as _camelCase} from 'lodash';
 import {useTranslation} from 'react-i18next';

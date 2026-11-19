@@ -16,11 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 import {Alert, Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
-import {IdentifierTypeDataT, IdentifierTypeEditorPropsT,
+import {IdentifierTypeEditorPropsT,
 	defaultIdentifierTypeData, entityTypeOptions, renderSelectedParentIdentifierType} from './typeUtils';
 import React, {ChangeEvent, FormEvent, useCallback, useEffect, useState} from 'react';
 import {faPencilAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import type {IdentifierTypeDataT} from '../../../../common/types/type-data';
 import ReactSelect from 'react-select';
 import classNames from 'classnames';
 import request from 'superagent';

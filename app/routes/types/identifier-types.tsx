@@ -1,4 +1,4 @@
-import type {IdentifierTypeDataT} from '../../../src/client/components/forms/type-editor/typeUtils';
+import type {IdentifierTypeDataT} from '../../../src/common/types/type-data';
 import IdentifierTypesPage from '../../../src/client/components/pages/identifierTypes';
 import React from 'react';
 import type {Route} from './+types/identifier-types';

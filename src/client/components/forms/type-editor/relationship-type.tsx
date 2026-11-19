@@ -17,11 +17,12 @@
  */
 import {Alert, Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
 import React, {ChangeEvent, FormEvent, useCallback, useEffect, useState} from 'react';
-import {RelationshipTypeDataT, RelationshipTypeEditorPropsT,
+import {RelationshipTypeEditorPropsT,
 	defaultRelationshipTypeData, entityTypeOptions, renderSelectedParentRelationshipType} from './typeUtils';
 import {faPencilAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ReactSelect from 'react-select';
+import type {RelationshipTypeDataT} from '../../../../common/types/type-data';
 import classNames from 'classnames';
 import request from 'superagent';
 
