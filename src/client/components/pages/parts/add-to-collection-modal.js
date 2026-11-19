@@ -94,11 +94,9 @@ class AddToCollectionModal extends React.Component {
 				await Promise.all(promiseArray);
 				this.setState({selectedCollections: []}, () => {
 					this.props.closeModalAndShowMessage({
-						text: this.props.t(
-							selectedCollections.length > 1 ?
-								'pages.collection.successAddCollections' :
-								'pages.collection.successAddCollection'
-						),
+						text: this.props.t('pages.collection.successAddCollection', {
+							count: selectedCollections.length
+						}),
 						type: 'success'
 					});
 				});
