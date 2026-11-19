@@ -328,9 +328,9 @@ class AddToCollectionModal extends React.Component {
 								onClick={this.handleAddToCollection}
 							>
 								<FontAwesomeIcon icon={faPlus}/>
-								{this.state.selectedCollections.length > 1 ?
-									translate('pages.collection.addToSelectedCollections') :
-									translate('pages.collection.addToSelectedCollection')}
+								{translate('pages.collection.addToSelectedCollection', {
+									count: this.state.selectedCollections.length
+								})}
 							</Button>
 					}
 					<Button variant="danger" onClick={this.props.handleCloseModal}>
