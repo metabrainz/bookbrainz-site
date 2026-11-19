@@ -520,71 +520,75 @@ async function setAchievementUnlockedField(achievements, unlocks, userId, orm) {
 }
 
 router.get('/:id/achievements', async (req, res, next) => {
-	const {AchievementType, AchievementUnlock} = req.app.locals.orm;
+	try {
+		const {AchievementType, AchievementUnlock} = req.app.locals.orm;
 
-	const userId = parseInt(req.params.id, 10);
-	const isOwner = isCurrentUser(userId, req.user);
+		const userId = parseInt(req.params.id, 10);
+		const isOwner = isCurrentUser(userId, req.user);
 
-	const editorJSONPromise = getIdEditorJSONPromise(userId, req)
-		.catch(next);
+		const editorJSONPromise = getIdEditorJSONPromise(userId, req);
 
-	const unlocksPromise = new AchievementUnlock()
-		.where('editor_id', userId)
-		.fetchAll({require: false});
+		const unlocksPromise = new AchievementUnlock()
+			.where('editor_id', userId)
+			.fetchAll({require: false});
 
-	const achievementColPromise = new AchievementUnlock()
-		.where('editor_id', userId)
-		.where('profile_rank', '<=', '3')
-		.query((qb) => qb.limit(3))
-		.orderBy('profile_rank', 'ASC')
-		.fetchAll({
-			require: false,
-			withRelated: ['achievement']
+		const achievementColPromise = new AchievementUnlock()
+			.where('editor_id', userId)
+			.where('profile_rank', '<=', '3')
+			.query((qb) => qb.limit(3))
+			.orderBy('profile_rank', 'ASC')
+			.fetchAll({
+				require: false,
+				withRelated: ['achievement']
+			});
+
+		const achievementTypesPromise = new AchievementType()
+			.orderBy('id', 'ASC')
+			.fetchAll();
+
+		const [unlocks, editorJSON, achievementTypes, achievementCol] = await Promise.all([
+			unlocksPromise, editorJSONPromise, achievementTypesPromise, achievementColPromise
+		]);
+
+		const achievementJSON =
+			await setAchievementUnlockedField(achievementTypes, unlocks, userId, res.app.locals.orm);
+
+		const currAchievementJSON = achievementColToEditorGetJSON(achievementCol);
+
+		const props = generateProps(req, res, {
+			achievement: achievementJSON,
+			currAchievement: currAchievementJSON,
+			editor: editorJSON,
+			isOwner,
+			tabActive: 2
 		});
 
-	const achievementTypesPromise = new AchievementType()
-		.orderBy('id', 'ASC')
-		.fetchAll();
+		const markup = ReactDOMServer.renderToString(
+			<Layout {...propHelpers.extractLayoutProps(props)}>
+				<EditorContainer
+					{...propHelpers.extractEditorProps(props)}
+				>
+					<AchievementsTab
+						achievement={props.achievement}
+						currAchievement={props.currAchievement}
+						editor={props.editor}
+						isOwner={props.isOwner}
+					/>
+				</EditorContainer>
+			</Layout>
+		);
 
-	const [unlocks, editorJSON, achievementTypes, achievementCol] = await Promise.all([
-		unlocksPromise, editorJSONPromise, achievementTypesPromise, achievementColPromise
-	]);
-
-	const achievementJSON =
-		await setAchievementUnlockedField(achievementTypes, unlocks, userId, res.app.locals.orm);
-
-	const currAchievementJSON = achievementColToEditorGetJSON(achievementCol);
-
-	const props = generateProps(req, res, {
-		achievement: achievementJSON,
-		currAchievement: currAchievementJSON,
-		editor: editorJSON,
-		isOwner,
-		tabActive: 2
-	});
-
-	const markup = ReactDOMServer.renderToString(
-		<Layout {...propHelpers.extractLayoutProps(props)}>
-			<EditorContainer
-				{...propHelpers.extractEditorProps(props)}
-			>
-				<AchievementsTab
-					achievement={props.achievement}
-					currAchievement={props.currAchievement}
-					editor={props.editor}
-					isOwner={props.isOwner}
-				/>
-			</EditorContainer>
-		</Layout>
-	);
-
-	res.send(target({
-		locale: res.locals.locale,
-		markup,
-		props: escapeProps(props),
-		script: '/js/editor/achievement.js',
-		title: `${props.editor.name}'s Achievements`
-	}));
+		return res.send(target({
+			locale: res.locals.locale,
+			markup,
+			props: escapeProps(props),
+			script: '/js/editor/achievement.js',
+			title: `${props.editor.name}'s Achievements`
+		}));
+	}
+	catch (err) {
+		return next(err);
+	}
 });
 
 async function rankUpdate(orm, editorId, bodyRank, rank) {
