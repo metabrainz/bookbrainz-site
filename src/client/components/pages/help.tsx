@@ -139,7 +139,7 @@ function HelpPage(): JSX.Element {
 							</ul>
 						</ListGroup.Item>
 
-						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Style/Artist_Credits">{translate('common.authorCredits')}</a></b>{translate('staticPages.help.glossaryAuthorCreditsDesc')}</ListGroup.Item>
+						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Style/Artist_Credits">{translate('common.authorCredit_other')}</a></b>{translate('staticPages.help.glossaryAuthorCreditsDesc')}</ListGroup.Item>
 
 						<ListGroup.Item><b><a href="https://musicbrainz.org/doc/Disambiguation_Comment">{translate('staticPages.help.glossaryDisambiguation')}</a></b>{translate('staticPages.help.glossaryDisambiguationDesc')}
 							<br/>
