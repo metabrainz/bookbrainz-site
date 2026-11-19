@@ -318,7 +318,7 @@
       "editTitle": "Edit relationship",
       "exampleText": "For example, you can link an author to a work, or a work to another work to show translation or derivation.",
       "introText": "Use this form to add links between this {{entityType}} and other entities.",
-      "noRelationshipsPossible": "{{entityType}}s have no possible relationships with other entities at the moment.",
+      "noRelationshipsPossible": "No relationships are available for the entity type “{{entityType}}” at the moment.",
       "searchPlaceholder": "Search for an entity…",
       "selectTarget": "Please select a target entity",
       "selectType": "Please select a relationship type",
