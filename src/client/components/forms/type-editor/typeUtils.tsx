@@ -31,9 +31,9 @@ export interface RelationshipTypeEditorPropsT {
 }
 
 export interface IdentifierTypeEditorPropsT {
-	identifierTypeData: IdentifierTypeDataT;
+	identifierTypeData?: IdentifierTypeDataT;
 	parentTypes: IdentifierTypeDataT[];
-	user: any;
+	user?: any;
 }
 
 export const defaultRelationshipTypeData: RelationshipTypeDataT = {

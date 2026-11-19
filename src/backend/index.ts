@@ -5,6 +5,7 @@ import {getOrderedRevisions, getRevisionsPage} from './revisions';
 import type {Client} from '@elastic/elasticsearch';
 import type {ORM} from 'bookbrainz-data';
 import {getCritiqueBrainzPermission} from './external-service';
+import {getIdentifierTypeCreateData} from './type-editors';
 import {getPublicCollectionsPage} from './collections';
 import {getSearchPage} from './search';
 import {getStatisticsPage} from './statistics';
@@ -41,6 +42,9 @@ export function createBackend({orm}: BackendDependencies) {
 		},
 		statistics: {
 			getPage: () => getStatisticsPage(orm)
+		},
+		typeEditors: {
+			getIdentifierTypeCreateData: () => getIdentifierTypeCreateData(orm)
 		},
 		types: {
 			getIdentifierTypes: () => getIdentifierTypes(orm),

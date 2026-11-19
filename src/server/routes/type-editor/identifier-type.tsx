@@ -35,26 +35,6 @@ const router = express.Router();
 
 const {IDENTIFIER_TYPE_EDITOR} = PrivilegeType;
 
-router.get('/create', auth.isAuthenticated, auth.isAuthorized(IDENTIFIER_TYPE_EDITOR),
-	middleware.loadParentIdentifierTypes, (req, res) => {
-		const {parentTypes} = res.locals;
-		const props = generateProps(req, res, {
-			parentTypes
-		});
-		const script = '/js/identifier-type-editor.js';
-		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<IdentifierTypeEditor {...propHelpers.extractChildProps(props)}/>
-			</Layout>
-		);
-		res.send(target({
-			locale: res.locals.locale,
-			markup,
-			props: escapeProps(props),
-			script
-		}));
-	});
-
 router.post('/create/handler', auth.isAuthenticatedForHandler, auth.isAuthorized(IDENTIFIER_TYPE_EDITOR), identifierTypeCreateOrEditHandler);
 
 router.param(
