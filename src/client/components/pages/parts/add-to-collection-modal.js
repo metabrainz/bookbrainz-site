@@ -231,7 +231,9 @@ class AddToCollectionModal extends React.Component {
 		else {
 			existingCollections = (
 				<div>
-					{translate('pages.collection.noCollectionsPrompt', {type: this.props.entityType})}
+					{translate('pages.collection.noCollectionsPrompt', {
+						type: translate(`common.entityType.${_.camelCase(this.props.entityType)}_other`)
+					})}
 				</div>
 			);
 		}
