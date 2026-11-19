@@ -623,6 +623,7 @@
         },
         "merge": {
             "cancelMerge": "",
+            "heading": "",
             "mergeButton": "",
             "mergeEntities": "",
             "mergeInstructions": "",
@@ -634,7 +635,8 @@
             "selectEntity": "",
             "selectedEntities_many": "",
             "selectedEntities_one": "",
-            "selectedEntities_other": ""
+            "selectedEntities_other": "",
+            "subheading": ""
         },
         "preview": {
             "explanation": "",

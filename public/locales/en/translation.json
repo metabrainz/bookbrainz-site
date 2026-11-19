@@ -630,6 +630,7 @@
     },
     "merge": {
       "cancelMerge": "Cancel merge",
+      "heading": "Merge {{entityCount}} {{entityType}}",
       "mergeButton": "Merge into selected entity",
       "mergeEntities": "Merge entities",
       "mergeInstructions": "Select the entity you want to merge into, or add more duplicates to merge.<lineBreak />After clicking <italic>Merge into selected entity</italic>, you will be redirected to a page where you can review the data before merging.",
@@ -640,7 +641,8 @@
       "reviewDataNotice": "Select and review the data to merge. For further modifications, edit the resulting merged entity.",
       "selectedEntities_one": "Selected 1 entity for merging",
       "selectedEntities_other": "Selected {{count}} entities for merging",
-      "selectEntity": "Select entity"
+      "selectEntity": "Select entity",
+      "subheading": "You are merging {{entityCount}} existing {{entityType}}:"
     },
     "preview": {
       "explanation": "This confirmation is important to ensure that no malicious actor can use your account to modify data without your knowledge.\nBelow this line, you can review the data being sent and make any modifications if desired.",
