@@ -198,7 +198,7 @@ function EditionTable({
 	}
 	return (
 		<div>
-			<h2>{translate('common.entityType.edition_plural')}</h2>
+			<h2>{translate('common.entityType.edition_other')}</h2>
 			{tableContent}
 		</div>
 	);

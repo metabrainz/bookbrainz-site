@@ -134,7 +134,7 @@ function AuthorTable({
 	}
 	return (
 		<div>
-			<h2>{translate('common.entityType.author_plural')}</h2>
+			<h2>{translate('common.entityType.author_other')}</h2>
 			{tableContent}
 		</div>
 	);

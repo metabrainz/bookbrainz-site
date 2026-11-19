@@ -170,7 +170,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 	return (
 		<>
 			<div>
-				<h3>{translate('common.entityType.work_plural')}</h3>
+				<h3>{translate('common.entityType.work_other')}</h3>
 				{map(works, (_, rowId) => <WorkRow key={rowId} rowId={rowId} onCopyHandler={openModalHandler} {...rest}/>)}
 				<CreateEntityModal handleClose={closeModalHandler} handleSubmit={submitModalHandler} show={showModal} type="work" {...rest}/>
 				<Row>
@@ -198,7 +198,7 @@ export function ContentTab({works, onChange, onModalClose, onModalOpen, onSeries
 			</div>
 			<hr/>
 			<div>
-				<h3>{translate('common.entityType.series')}</h3>
+				<h3>{translate('common.entityType.series_other')}</h3>
 				<p className="text-muted">{translate('entityEditor.unifiedForm.seriesDescription')}</p>
 				<FormCheck
 					className="ml-1 mb-2"
