@@ -41,12 +41,8 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict";
 
-require("core-js/modules/es.symbol.js");
-require("core-js/modules/es.array.filter.js");
 require("core-js/modules/es.array.iterator.js");
 require("core-js/modules/es.object.get-own-property-descriptor.js");
-require("core-js/modules/es.object.get-own-property-descriptors.js");
-require("core-js/modules/es.object.keys.js");
 require("core-js/modules/es.reflect.construct.js");
 require("core-js/modules/es.string.iterator.js");
 require("core-js/modules/es.weak-map.js");
@@ -59,14 +55,12 @@ exports.default = void 0;
 require("core-js/modules/es.array.concat.js");
 require("core-js/modules/es.object.to-string.js");
 require("core-js/modules/web.dom-collections.for-each.js");
-var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
 var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
-var ReactSticky = _interopRequireWildcard(require("react-sticky"));
 var bootstrap = _interopRequireWildcard(require("react-bootstrap"));
 var _achievement = _interopRequireDefault(require("../../forms/parts/achievement"));
 var _dragAndDrop = _interopRequireDefault(require("../../input/drag-and-drop"));
@@ -75,8 +69,6 @@ var _react = _interopRequireDefault(require("react"));
 var _reactI18next = require("react-i18next");
 var cache;
 function _interopRequireWildcard(e, t) { if (!t &amp;&amp; e &amp;&amp; e.__esModule) return e; var r, c, a = Object.defineProperty, n = { __proto__: null, default: e }; if (Object(e) !== e) return n; if (cache || "function" != typeof WeakMap || (cache = new WeakMap()), cache) { if (cache.has(e)) return cache.get(e); cache.set(e, n); } for (c in e) "default" !== c &amp;&amp; {}.hasOwnProperty.call(e, c) &amp;&amp; ((r = a &amp;&amp; Object.getOwnPropertyDescriptor(e, c)) &amp;&amp; (r.get || r.set) ? a(n, c, r) : n[c] = e[c]); return n; }
-function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r &amp;&amp; (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
-function _objectSpread(e) { for (var r = 1; r &lt; arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { (0, _defineProperty2.default)(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _callSuper(t, o, e) { return o = (0, _getPrototypeOf2.default)(o), (0, _possibleConstructorReturn2.default)(t, _isNativeReflectConstruct() ? Reflect.construct(o, e || [], (0, _getPrototypeOf2.default)(t).constructor) : o.apply(t, e)); }
 function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); } catch (t) {} return (_isNativeReflectConstruct = function _isNativeReflectConstruct() { return !!t; })(); } /*
  * Copyright (C) 2016  Daniel Hsing
@@ -101,8 +93,6 @@ var Button = bootstrap.Button,
   Col = bootstrap.Col,
   Form = bootstrap.Form,
   Row = bootstrap.Row;
-var Sticky = ReactSticky.Sticky,
-  StickyContainer = ReactSticky.StickyContainer;
 
 /**
  * Renders the document and displays the 'Editor Achievements Tab'.
@@ -194,7 +184,9 @@ var EditorAchievementTab = /*#__PURE__*/function (_React$Component) {
           className: "margin-left-1"
         }, translate('pages.achievements.unsetInstructions'))));
       }
-      var STICKY_TOP_MARGIN = 64;
+
+      // The height of the navigation bar, under which the rank form stays while scrolling
+      var NAVBAR_HEIGHT = 64;
       return /*#__PURE__*/_react.default.createElement(Row, null, /*#__PURE__*/_react.default.createElement(Col, {
         lg: {
           offset: 1,
@@ -202,21 +194,16 @@ var EditorAchievementTab = /*#__PURE__*/function (_React$Component) {
         }
       }, /*#__PURE__*/_react.default.createElement("div", {
         id: "achievementsForm"
-      }, /*#__PURE__*/_react.default.createElement(StickyContainer, null, /*#__PURE__*/_react.default.createElement(Sticky, {
-        topOffset: -80
-      }, function (_ref) {
-        var style = _ref.style;
-        var updatedStyle = _objectSpread(_objectSpread({}, style), {}, {
+      }, /*#__PURE__*/_react.default.createElement("div", {
+        style: {
           background: 'white',
           borderBottom: '1px solid #ebe2df',
-          flex: '1',
-          marginTop: STICKY_TOP_MARGIN,
+          marginTop: NAVBAR_HEIGHT,
+          position: 'sticky',
+          top: NAVBAR_HEIGHT,
           zIndex: 10
-        });
-        return /*#__PURE__*/_react.default.createElement("div", {
-          style: updatedStyle
-        }, rankUpdate);
-      }), /*#__PURE__*/_react.default.createElement("div", {
+        }
+      }, rankUpdate), /*#__PURE__*/_react.default.createElement("div", {
         style: {
           zIndex: 1
         }
@@ -224,7 +211,7 @@ var EditorAchievementTab = /*#__PURE__*/function (_React$Component) {
         className: "h1"
       }, translate('pages.achievements.unlockedHeading')), achievements, /*#__PURE__*/_react.default.createElement("div", {
         className: "h1"
-      }, translate('pages.achievements.lockedHeading')), locked)))));
+      }, translate('pages.achievements.lockedHeading')), locked))));
     }
   }]);
 }(_react.default.Component);
@@ -257,7 +244,7 @@ var _default = exports.default = (0, _reactI18next.withTranslation)()(EditorAchi
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Thu Nov 19 2026 12:39:55 GMT+0000 (Coordinated Universal Time) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Fri Nov 20 2026 10:49:09 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
