@@ -76,7 +76,7 @@ function CollectionAttributes({collection, t: translate}) {
 					<dd>{translate(`common.entityType.${_.camelCase(collection.entityType)}`)}</dd>
 				</Col>
 				<Col lg={3}>
-					<dt>{translate('pages.collection.numberOfEntities', {type: translate(`common.entityType.${_.camelCase(collection.entityType)}_plural`)})}</dt>
+					<dt>{translate('pages.collection.numberOfEntities', {type: translate(`common.entityType.${_.camelCase(collection.entityType)}_other`)})}</dt>
 					<dd>{collection.items.length}</dd>
 				</Col>
 				<Col lg={3}>
@@ -152,7 +152,7 @@ class CollectionPage extends React.Component {
 				await request.post(submissionUrl).send({bbids});
 				this.setState({
 					message: {
-						text: translate('pages.collection.removedEntities', {count: bbids.length, type: translate(`common.entityType.${_.camelCase(this.props.collection.entityType)}${bbids.length === 1 ? '' : '_plural'}`)}),
+						text: translate('pages.collection.removedEntities', {count: bbids.length, type: translate(`common.entityType.${_.camelCase(this.props.collection.entityType)}`, {count: bbids.length})}),
 						type: 'success'
 					},
 					selectedEntities: []
@@ -278,7 +278,7 @@ class CollectionPage extends React.Component {
 								className="margin-bottom-d5"
 								disabled={!this.state.selectedEntities.length}
 								size="sm"
-								title={translate('pages.collection.removeSelectedTooltip', {type: translate(`common.entityType.${_.camelCase(this.props.collection.entityType)}_plural`)})}
+								title={translate('pages.collection.removeSelectedTooltip', {type: translate(`common.entityType.${_.camelCase(this.props.collection.entityType)}_other`)})}
 								variant="danger"
 								onClick={this.handleRemoveEntities}
 							>
@@ -291,7 +291,7 @@ class CollectionPage extends React.Component {
 									i18nKey="pages.collection.removeSelected"
 									values={{
 										count: this.state.selectedEntities.length,
-										type: translate(`common.entityType.${_.camelCase(this.props.collection.entityType)}${this.state.selectedEntities.length === 1 ? '' : '_plural'}`)
+										type: translate(`common.entityType.${_.camelCase(this.props.collection.entityType)}`, {count: this.state.selectedEntities.length})
 									}}
 								/>
 							</Button> : null

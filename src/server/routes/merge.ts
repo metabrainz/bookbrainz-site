@@ -393,21 +393,22 @@ router.get('/submit/:targetBBID?', auth.isAuthenticated, auth.isAuthorized(ENTIT
 		});
 		res.locals.entity = mergingFetchedEntities[0];
 
-		const {markup, props} = entityMergeMarkup(generateEntityMergeProps(
+		const mergeProps = generateEntityMergeProps(
 			req, res, {
 				entityType: _.camelCase(entityType),
 				mergingEntities: mergingFetchedEntities,
 				title: 'Merge Page'
 			}
 			, entitiesToFormState
-		));
+		);
+		const {markup, props} = entityMergeMarkup(mergeProps);
 
 		return res.send(targetTemplate({
 			locale: res.locals.locale,
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
-			title: `Merge ${mergingFetchedEntities.length} ${_.startCase(entityType)}s`
+			title: mergeProps.heading
 		}));
 	});
 

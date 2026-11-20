@@ -174,7 +174,7 @@ function WorkTable({
 	}
 	return (
 		<div>
-			<h2>{translate('common.entityType.work_plural')}</h2>
+			<h2>{translate('common.entityType.work_other')}</h2>
 			{tableContent}
 		</div>
 	);

@@ -115,7 +115,7 @@ function SeriesTable({
 	}
 	return (
 		<div>
-			<h2>{translate('common.entityType.series_plural')}</h2>
+			<h2>{translate('common.entityType.series_other')}</h2>
 			{tableContent}
 		</div>
 	);

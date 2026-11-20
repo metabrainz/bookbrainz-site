@@ -124,7 +124,7 @@ function PublisherTable({
 	}
 	return (
 		<div>
-			<h2>{translate('common.entityType.publisher_plural')}</h2>
+			<h2>{translate('common.entityType.publisher_other')}</h2>
 			{tableContent}
 		</div>
 	);

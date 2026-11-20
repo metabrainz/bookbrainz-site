@@ -36,6 +36,7 @@ import {Provider} from 'react-redux';
 import ReactDOMServer from 'react-dom/server';
 import UnifiedForm from '../../client/unified-form/unified-form';
 import _ from 'lodash';
+import {createI18n} from '../../common/i18n/i18n';
 import {createStore} from 'redux';
 import {generateProps} from './props';
 
@@ -126,7 +127,9 @@ export function generateEntityMergeProps(
 	initialStateCallback: (entity: any) => any = () => new Object()
 ): any {
 	const {entityType, mergingEntities} = additionalProps;
-	const entityName = _.startCase(entityType);
+	const {t: translate} = createI18n(res.locals.locale, res.locals.i18nResources);
+	const entityCount = mergingEntities.length;
+	const entityName = translate(`common.entityType.${_.camelCase(entityType)}`, {entityCount});
 	const entity = mergingEntities[0];
 
 	const getFilteredIdentifierTypes = _.partialRight(utils.filterIdentifierTypesByEntity, entity);
@@ -138,13 +141,13 @@ export function generateEntityMergeProps(
 
 	const props = Object.assign({
 		entityType,
-		heading: `Merge ${mergingEntities.length} ${entityName}s`,
+		heading: translate('pages.merge.heading', {entityCount, entityType: entityName}),
 		identifierTypes: filteredIdentifierTypes,
 		initialState: initialStateCallback(mergingEntities),
 		isMerge: true,
 		languageOptions: res.locals.languages,
 		requiresJS: true,
-		subheading: `You are merging ${mergingEntities.length} existing ${entityName}s:`,
+		subheading: translate('pages.merge.subheading', {entityCount, entityType: entityName}),
 		submissionUrl
 	}, additionalProps);
 

@@ -100,7 +100,7 @@ class AddEntityToCollectionModal extends React.Component {
 					error: null
 				}, () => {
 					this.props.closeModalAndShowMessage({
-						text: translate('pages.collection.addedEntities', {count: bbids.length, type: translate(`common.entityType.${camelCase(this.props.collectionType)}${bbids.length === 1 ? '' : '_plural'}`)}),
+						text: translate('pages.collection.addedEntities', {count: bbids.length, type: translate(`common.entityType.${camelCase(this.props.collectionType)}`, {count: bbids.length})}),
 						type: 'success'
 					});
 				});
@@ -189,7 +189,7 @@ class AddEntityToCollectionModal extends React.Component {
 			>
 				<Modal.Header closeButton>
 					<Modal.Title>
-						{translate('pages.collection.addEntitiesToCollection', {type: translate(`common.entityType.${camelCase(this.props.collectionType)}_plural`)})}
+						{translate('pages.collection.addEntitiesToCollection', {type: translate(`common.entityType.${camelCase(this.props.collectionType)}_other`)})}
 					</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
@@ -212,7 +212,7 @@ class AddEntityToCollectionModal extends React.Component {
 							onClick={this.handleSubmit}
 						>
 							<FontAwesomeIcon icon={faPlus}/>
-							&nbsp;{translate('pages.collection.addEntitiesToCollectionCount', {count: cleanedEntities.length, type: translate(`common.entityType.${camelCase(this.props.collectionType)}${cleanedEntities.length === 1 ? '' : '_plural'}`)})}
+							&nbsp;{translate('pages.collection.addEntitiesToCollectionCount', {count: cleanedEntities.length, type: translate(`common.entityType.${camelCase(this.props.collectionType)}`, {count: cleanedEntities.length})})}
 						</Button>
 					</ButtonGroup>
 				</Modal.Footer>

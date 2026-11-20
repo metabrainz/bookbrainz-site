@@ -124,7 +124,7 @@ function EditionTable({
 						<tr>
 							{editions[0].displayNumber && <th style={{width: '10%'}}>#</th>}
 							<th>{translate('common.name')}</th>
-							{showAuthorCreditsColumn && <th>{translate('common.authorCredits')}</th>}
+							{showAuthorCreditsColumn && <th>{translate('common.authorCredit_other')}</th>}
 							<th>{translate('common.format')}</th>
 							<th>{translate('common.isbn')}</th>
 							<th>{translate('pages.entity.releaseDate')}</th>
@@ -198,7 +198,7 @@ function EditionTable({
 	}
 	return (
 		<div>
-			<h2>{translate('common.entityType.edition_plural')}</h2>
+			<h2>{translate('common.entityType.edition_other')}</h2>
 			{tableContent}
 		</div>
 	);
