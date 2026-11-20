@@ -17,13 +17,13 @@
         "annotation": "Annotation",
         "area": "Lieu",
         "auth": {
-            "signInRegister": "",
-            "signOut": ""
+            "signInRegister": "Se connecter / Créer un compte",
+            "signOut": "Se déconnecter"
         },
-        "authorCredit": "",
-        "authorCredits": "",
-        "beginArea": "",
-        "beginDate": "",
+        "authorCredit": "Crédit d'auteur",
+        "authorCredits": "Crédits d'auteurs",
+        "beginArea": "Lieu de commencement",
+        "beginDate": "Date de commencement",
         "bio": "Biographie",
         "button": {
             "add": "Ajouter",
@@ -45,6 +45,7 @@
             "submit": "Valider",
             "update": "Mettre à jour"
         },
+        "collaborator_many": "Collaborateurs",
         "collaborator_one": "Collaborateur",
         "collaborator_other": "Collaborateurs",
         "confirmDeletion": "Confirmer la suppression",
@@ -53,11 +54,11 @@
         "details": "Détails",
         "displayName": "Nom d'utilisateur",
         "email": " Email",
-        "endArea": "",
-        "endDate": "",
-        "entities": "",
+        "endArea": "Lieu de dissolution",
+        "endDate": "Date de dissolution",
+        "entities": "Entités",
         "entityType": {
-            "area": "",
+            "area": "Lieu",
             "author": "",
             "author_plural": "",
             "book": "",
