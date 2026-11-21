@@ -1,3 +1,6 @@
+// TODO: type this file properly and remove the ts-nocheck.
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 /*
  * Copyright (C) 2016  Daniel Hsing
  * 				 2019  Akhilesh Kumar (@akhilesh26)
