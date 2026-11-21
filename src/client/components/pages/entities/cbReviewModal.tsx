@@ -28,7 +28,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {IconProp} from '@fortawesome/fontawesome-svg-core';
 import {Rating} from 'react-simple-star-rating';
 import React from 'react';
-import ReactTooltip from 'react-tooltip';
+import {Tooltip} from 'react-tooltip';
 import {camelCase} from 'lodash';
 import {countWords} from '../../../helpers/utils';
 import {faInfoCircle} from '@fortawesome/free-solid-svg-icons';
@@ -95,25 +95,38 @@ class CBReviewModal extends React.Component<
 
 	private CBInfoButton() {
 		const {t: translate} = this.props;
+		const tooltipId = `cb-info-${this.props.entityBBID}`;
 		return (
 			<span>
-				<span
-					className="CBInfoButton"
-					data-event="click focus"
-					data-tip={translate('pages.entity.cbTooltip', {cbUrl: this.CBBaseUrl, mbUrl: this.MBBaseUrl})}
+				<button
+					aria-label={translate('pages.entity.critiqueBrainz')}
+					className="CBInfoButton btn btn-link p-0 border-0 align-baseline"
+					data-tooltip-id={tooltipId}
+					type="button"
 				>
 					<FontAwesomeIcon
 						icon={faInfoCircle as IconProp}
 						style={{color: 'black'}}
 					/>
-				</span>
-				<ReactTooltip
+				</button>
+				<Tooltip
 					clickable
-					html
 					className="cb-data-tip"
-					globalEventOff="click"
+					closeEvents={{}}
+					globalCloseEvents={{clickOutsideAnchor: true, escape: true}}
+					id={tooltipId}
+					openEvents={{click: true, focus: true}}
 					place="bottom"
-				/>
+					role="dialog"
+				>
+					<Trans
+						components={{
+							cbLink: <a href={this.CBBaseUrl}/>,
+							mbLink: <a href={`${this.MBBaseUrl}/projects`}/>
+						}}
+						i18nKey="pages.entity.cbTooltip"
+					/>
+				</Tooltip>
 			</span>
 		);
 	}

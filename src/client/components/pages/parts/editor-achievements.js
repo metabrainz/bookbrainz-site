@@ -17,7 +17,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as ReactSticky from 'react-sticky';
 import * as bootstrap from 'react-bootstrap';
 import Achievement from '../../forms/parts/achievement';
 import DragAndDrop from '../../input/drag-and-drop';
@@ -27,7 +26,6 @@ import {withTranslation} from 'react-i18next';
 
 
 const {Button, CardDeck, Col, Form, Row} = bootstrap;
-const {Sticky, StickyContainer} = ReactSticky;
 
 /**
  * Renders the document and displays the 'Editor Achievements Tab'.
@@ -118,38 +116,30 @@ class EditorAchievementTab extends React.Component {
 			);
 		}
 
-		const STICKY_TOP_MARGIN = 64;
+		// The height of the navigation bar, under which the rank form stays while scrolling
+		const NAVBAR_HEIGHT = 64;
 		return (
 			<Row>
 				<Col lg={{offset: 1, span: 10}}>
 					<div id="achievementsForm">
-						<StickyContainer>
-							<Sticky topOffset={-80}>
-								{
-									({style}) => {
-										const updatedStyle = {
-											...style,
-											background: 'white',
-											borderBottom: '1px solid #ebe2df',
-											flex: '1',
-											marginTop: STICKY_TOP_MARGIN,
-											zIndex: 10
-										};
-										return (
-											<div style={updatedStyle}>
-												{rankUpdate}
-											</div>
-										);
-									}
-								}
-							</Sticky>
-							<div style={{zIndex: 1}}>
-								<div className="h1">{translate('pages.achievements.unlockedHeading')}</div>
-								{achievements}
-								<div className="h1">{translate('pages.achievements.lockedHeading')}</div>
-								{locked}
-							</div>
-						</StickyContainer>
+						<div
+							style={{
+								background: 'white',
+								borderBottom: '1px solid #ebe2df',
+								marginTop: NAVBAR_HEIGHT,
+								position: 'sticky',
+								top: NAVBAR_HEIGHT,
+								zIndex: 10
+							}}
+						>
+							{rankUpdate}
+						</div>
+						<div style={{zIndex: 1}}>
+							<div className="h1">{translate('pages.achievements.unlockedHeading')}</div>
+							{achievements}
+							<div className="h1">{translate('pages.achievements.lockedHeading')}</div>
+							{locked}
+						</div>
 					</div>
 				</Col>
 			</Row>

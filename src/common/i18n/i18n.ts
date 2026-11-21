@@ -47,6 +47,7 @@ export function createI18n(locale = 'en', resources?) {
 		lng: locale,
 		ns: ['translation'],
 		nsSeparator: false,
+		returnEmptyString: false,
 		...hasResources ? {resources} : {backend: {loadPath: '/locales/{{lng}}/translation.json'}}
 	});
 

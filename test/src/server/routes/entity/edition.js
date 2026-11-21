@@ -1,5 +1,5 @@
 import {createEdition, createEditor, getRandomUUID, seedInitialState, truncateEntities} from '../../../../test-helpers/create-entities';
-import app from '../../../../../src/server/app';
+import {app} from '../../../../fixtures/server';
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 
