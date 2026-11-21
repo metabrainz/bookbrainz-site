@@ -19,13 +19,8 @@
 
 import * as React from 'react';
 
-// eslint-disable-next-line import/named
-import {FontAwesomeIconProps as FAProps, FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {Trans, useTranslation} from 'react-i18next';
-import {camelCase as _camelCase, get as _get, isNil as _isNil, kebabCase as _kebabCase, upperFirst} from 'lodash';
-import {
-	faBook, faGlobe, faGripVertical, faLayerGroup, faMagicWandSparkles, faPenNib, faUniversity, faUser, faUserCircle, faWindowRestore
-} from '@fortawesome/free-solid-svg-icons';
+import {camelCase as _camelCase, get as _get, isNil as _isNil, kebabCase as _kebabCase} from 'lodash';
 import {format, isValid, parseISO} from 'date-fns';
 import type {TFunction} from 'i18next';
 import {dateObjectToISOString} from './utils';
@@ -274,33 +269,9 @@ export function getEntityUrl(entity) {
 	return `/${entityType}/${entityId}`;
 }
 
-export const ENTITY_TYPE_ICONS = {
-	Area: faGlobe,
-	Author: faUser,
-	Book: faMagicWandSparkles,
-	Collection: faGripVertical,
-	Edition: faBook,
-	EditionGroup: faWindowRestore,
-	Editor: faUserCircle,
-	Publisher: faUniversity,
-	Series: faLayerGroup,
-	Work: faPenNib
-};
-
 export const ENTITY_TYPES = ['Author', 'Work', 'Series', 'Edition', 'EditionGroup', 'Publisher'];
 
-type FASize = FAProps['size'];
-export function genEntityIconHTMLElement(entityType: string, size: FASize = '1x', margin = true) {
-	const correctCaseEntityType = upperFirst(entityType);
-	if (!ENTITY_TYPE_ICONS[correctCaseEntityType]) { return null; }
-	return (
-		<FontAwesomeIcon
-			className={margin ? 'margin-right-0-3' : ''}
-			icon={ENTITY_TYPE_ICONS[correctCaseEntityType]}
-			size={size}
-			title={correctCaseEntityType}
-		/>);
-}
+export {ENTITY_TYPE_ICONS, genEntityIconHTMLElement} from './entity-icon';
 
 export function getSortNameOfDefaultAlias(entity) {
 	return entity.defaultAlias ? entity.defaultAlias.sortName : '?';

@@ -20,14 +20,8 @@
 
 import * as propHelpers from '../../client/helpers/props';
 import {escapeProps, generateProps} from '../helpers/props';
-import ContributePage from '../../client/components/pages/contribute';
-import DevelopPage from '../../client/components/pages/develop';
-import FAQPage from '../../client/components/pages/faq';
-import HelpPage from '../../client/components/pages/help';
 import Index from '../../client/components/pages/index';
 import Layout from '../../client/containers/layout';
-import LicensingPage from '../../client/components/pages/licensing';
-import PrivacyPage from '../../client/components/pages/privacy';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import express from 'express';
@@ -80,34 +74,5 @@ router.get('/', async (req, res, next) => {
 		return next(err);
 	}
 });
-
-// Helper function to create pages that don't require custom logic
-function _createStaticRoute(route, title, PageComponent) {
-	router.get(route, (req, res) => {
-		const props = generateProps(req, res);
-
-		const markup = ReactDOMServer.renderToString(
-			<Layout {...propHelpers.extractLayoutProps(props)}>
-				<PageComponent/>
-			</Layout>
-		);
-
-		res.send(target({
-			locale: res.locals.locale,
-			markup,
-			page: title,
-			props: escapeProps(props),
-			script: '/js/index.js',
-			title
-		}));
-	});
-}
-
-_createStaticRoute('/contribute', 'Contribute', ContributePage);
-_createStaticRoute('/develop', 'Develop', DevelopPage);
-_createStaticRoute('/help', 'Help', HelpPage);
-_createStaticRoute('/licensing', 'Licensing', LicensingPage);
-_createStaticRoute('/privacy', 'Privacy', PrivacyPage);
-_createStaticRoute('/faq', 'FAQs', FAQPage);
 
 export default router;
