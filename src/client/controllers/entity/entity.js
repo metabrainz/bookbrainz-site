@@ -22,7 +22,6 @@ import {
 	extractLayoutProps
 } from '../../helpers/props';
 
-import {AppContainer} from 'react-hot-loader';
 import AuthorPage from '../../components/pages/entities/author';
 import EditionGroupPage from '../../components/pages/entities/edition-group';
 import EditionPage from '../../components/pages/entities/edition';
@@ -30,9 +29,9 @@ import EntityRevisions from '../../components/pages/entity-revisions';
 import Layout from '../../containers/layout';
 import PublisherPage from '../../components/pages/entities/publisher';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import SeriesPage from '../../components/pages/entities/series';
 import WorkPage from '../../components/pages/entities/work';
+import {hydrateRoot} from 'react-dom/client';
 
 
 const entityComponents = {
@@ -54,34 +53,20 @@ const Child = entityComponents[page] || AuthorPage;
 let markup;
 if (page === 'revisions') {
 	markup = (
-		<AppContainer>
-			<Layout {...extractLayoutProps(props)}>
-				<EntityRevisions
-					entity={props.entity}
-					{...extractChildProps(props)}
-				/>
-			</Layout>
-		</AppContainer>
+		<Layout {...extractLayoutProps(props)}>
+			<EntityRevisions
+				entity={props.entity}
+				{...extractChildProps(props)}
+			/>
+		</Layout>
 	);
 }
 else {
 	markup = (
-		<AppContainer>
-			<Layout {...extractLayoutProps(props)}>
-				<Child {...extractEntityProps(props)}/>
-			</Layout>
-		</AppContainer>
+		<Layout {...extractLayoutProps(props)}>
+			<Child {...extractEntityProps(props)}/>
+		</Layout>
 	);
 }
 
-ReactDOM.hydrate(markup, document.getElementById('target'));
-
-/*
- * As we are not exporting a component,
- * we cannot use the react-hot-loader module wrapper,
- * but instead directly use webpack Hot Module Replacement API
- */
-
-if (module.hot) {
-	module.hot.accept();
-}
+hydrateRoot(document.getElementById('target'), markup);

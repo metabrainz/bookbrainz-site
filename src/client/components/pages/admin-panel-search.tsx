@@ -137,7 +137,7 @@ class AdminPanelSearchPage extends React.Component<Props, State> {
 	 */
 	render() {
 		const {query, results} = this.state;
-		const querySearchParams = `q=${query}&type=editor`;
+		const querySearchParams = `q=${encodeURIComponent(query)}&type=editor`;
 		return (
 			<Card>
 				<Card.Header as="h2">

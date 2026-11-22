@@ -153,7 +153,7 @@ export function createEditor(editorId, privs = 1, metabrainzName = '') {
 		editorAttribs.id = editorId || string.numeric(5);
 		editorAttribs.genderId = gender.id;
 		editorAttribs.typeId = editorType.id;
-		editorAttribs.name = internet.userName();
+		editorAttribs.name = internet.username();
 		editorAttribs.privs = privs;
 		editorAttribs.metabrainzUserId = string.numeric(5);
 		editorAttribs.cachedMetabrainzName = metabrainzName || editorAttribs.name;

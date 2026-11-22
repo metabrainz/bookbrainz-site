@@ -16,6 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import {Trans, useTranslation} from 'react-i18next';
 import React from 'react';
 
 
@@ -24,80 +25,71 @@ import React from 'react';
  * @returns {JSX.Element} a React JSX Element
  */
 function ContributePage(): JSX.Element {
+	const {t: translate} = useTranslation();
 	const IRCLink = 'https://kiwiirc.com/nextclient/irc.libera.chat/?#bookbrainz';
 	const styleLink = 'https://bookbrainz-user-guide.readthedocs.io/';
 
 	return (
 		<div>
 			<div className="page-header">
-				<h1>Contributing to BookBrainz</h1>
+				<h1>{translate('staticPages.contribute.title')}</h1>
 			</div>
 			<p className="lead">
-				There are many ways that you can contribute to the
-				BookBrainz online encyclopedia, depending on where your
-				particular skills lie.
+				{translate('staticPages.contribute.lead')}
 			</p>
 
-			<h2>Editing</h2>
+			<h2>{translate('staticPages.contribute.editingTitle')}</h2>
 			<p>
-				If you come to BookBrainz with new information about a
-				particular book, you&rsquo;ll want to edit the database.<br/>
-				To do that, you&rsquo;ll first need an account, which you
-				can get by&nbsp;
-				<a href="/register">
-					registering
-				</a>. Then, you&rsquo;ll be able to add your new
-				information by editing an entity.<br/>
+				<Trans
+					components={{lineBreak: <br/>, registerLink: <a href="/register"/>}}
+					i18nKey="staticPages.contribute.editingP1"
+				/>
 			</p>
 			<p>
-				Please follow the&nbsp;
-				<a href={styleLink}>
-					BookBrainz style guidelines
-				</a> when adding data.<br/> They are still a work in progress
-				and should they not cover some cases, please refer to the&nbsp;
-				<a href="http://musicbrainz.org/doc/Style">
-					MusicBrainz ones
-				</a>, adapting as necessary.
+				<Trans
+					components={{
+						guidelinesLink: <a href={styleLink}/>,
+						lineBreak: <br/>,
+						musicbrainzStyleLink: <a href="http://musicbrainz.org/doc/Style"/>
+					}}
+					i18nKey="staticPages.contribute.editingP2"
+				/>
 			</p>
 			<p>
-				If you find duplicates, instead of deleting them, please follow&nbsp;
-				<a href="https://bookbrainz-user-guide.readthedocs.io/en/latest/tutorials/merge/">
-					this tutorial
-				</a>
-				&nbsp;to learn how to merge them, so that any resource pointing
-				to a merged item will be redirected properly.
+				<Trans
+					components={{
+						tutorialLink: <a href="https://bookbrainz-user-guide.readthedocs.io/en/latest/tutorials/merging.html"/>
+					}}
+					i18nKey="staticPages.contribute.editingP3"
+				/>
 			</p>
 
-			<h2>Programming</h2>
+			<h2>{translate('staticPages.contribute.programmingTitle')}</h2>
 			<p>
-				If you&rsquo;re someone who&rsquo;s good at using
-				JavaScript, NodeJS, SQL or LESS/SASS, we&rsquo;d love to
-				have your help developing BookBrainz. Take a look at our&nbsp;
-				<a href="https://wiki.musicbrainz.org/Development/Priorities#BookBrainz">
-					 roadmap
-				</a>
-				&nbsp;to see if there are any issues
-				or project that interests you.
-				Our code is all open source and hosted&nbsp;
-				<a href="https://github.com/metabrainz?q=bookbrainz">
-					on GitHub
-				</a>
+				<Trans
+					components={{
+						githubLink: <a href="https://github.com/metabrainz?q=bookbrainz"/>,
+						roadmapLink: <a href="https://wiki.musicbrainz.org/Development/Priorities#BookBrainz"/>
+					}}
+					i18nKey="staticPages.contribute.programmingP1"
+				/>
 			</p>
-			<h2>Community</h2>
+
+			<h2>{translate('staticPages.contribute.communityTitle')}</h2>
 			<p>
-				No matter whether you feel like you fit in one of these
-				categories, think you can contribute in a different area, or
-				just want to chat, feel free to drop in and meet us on the
-				MetaBrainz&nbsp;
-				<a href={IRCLink}>
-					IRC channel
-				</a>!
+				<Trans
+					components={{ircLink: <a href={IRCLink}/>}}
+					i18nKey="staticPages.contribute.communityP1"
+				/>
 			</p>
 			<p>
-				You can also get in touch and discuss with the community
-				<a href="https://community.metabrainz.org/c/bookbrainz"> on our forums,</a>
-				&nbsp;or send us
-				<a href="mailto:bookbrainz@metabrainz.org"> an email.</a>
+				<Trans
+					components={{
+						emailLink: <a href="mailto:bookbrainz@metabrainz.org"/>,
+						forumsLink: <a href="https://community.metabrainz.org/c/bookbrainz"/>
+					}}
+					i18nKey="staticPages.contribute.communityP2"
+				/>
 			</p>
 		</div>
 	);

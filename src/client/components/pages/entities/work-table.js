@@ -21,6 +21,7 @@ import * as bootstrap from 'react-bootstrap';
 import * as entityHelper from '../../../helpers/entity';
 import * as utilHelper from '../../../helpers/utils';
 
+import {Trans, useTranslation} from 'react-i18next';
 import {faPenNib, faPlus} from '@fortawesome/free-solid-svg-icons';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
@@ -37,7 +38,8 @@ function renderAuthors(authorData) {
 	return authorData.map(author => <div key={author.authorbbid}><a href={`/author/${author.authorbbid}`}>{author.authoralias}</a></div>);
 }
 
-function WorkTableRow({showAddedAtColumn, work, showCheckboxes, selectedEntities, onToggleRow}) {
+
+function WorkTableRow({showAddedAtColumn, work, showCheckboxes = false, selectedEntities = [], onToggleRow = null}) {
 	const name = getEntityLabel(work);
 	const authorData = work.authorsData;
 	const number = work.number || '?';
@@ -79,13 +81,18 @@ WorkTableRow.propTypes = {
 	showCheckboxes: PropTypes.bool,
 	work: PropTypes.object.isRequired
 };
-WorkTableRow.defaultProps = {
-	onToggleRow: null,
-	selectedEntities: [],
-	showCheckboxes: false
-};
 
-function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, selectedEntities, onToggleRow}) {
+
+function WorkTable({
+	entity = null,
+	showAddedAtColumn = false,
+	works,
+	showAdd = true,
+	showCheckboxes = false,
+	selectedEntities = [],
+	onToggleRow = null
+}) {
+	const {t: translate} = useTranslation();
 	let tableContent;
 	if (works.length) {
 		const showAuthors = works[0].authorsData;
@@ -95,12 +102,12 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 					<thead>
 						<tr>
 							{works[0].displayNumber && <th style={{width: '10%'}}>#</th>}
-							<th>Name</th>
-							{showAuthors && <th>Author</th>}
-							<th>Languages</th>
-							<th>Type</th>
+							<th>{translate('common.name')}</th>
+							{showAuthors && <th>{translate('common.entityType.author')}</th>}
+							<th>{translate('common.languages')}</th>
+							<th>{translate('common.type')}</th>
 							{
-								showAddedAtColumn ? <th>Added at</th> : null
+								showAddedAtColumn ? <th>{translate('pages.entity.addedAt')}</th> : null
 							}
 						</tr>
 					</thead>
@@ -125,7 +132,7 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 						href={`/work/create?${_kebabCase(entity.type)}=${entity.bbid}`}
 						variant="success"
 					>
-						<FontAwesomeIcon className="margin-right-0-5" icon={faPlus}/>Add Work
+						<FontAwesomeIcon className="margin-right-0-5" icon={faPlus}/>{translate('pages.entity.addWork')}
 					</Button>
 				}
 			</React.Fragment>
@@ -141,27 +148,33 @@ function WorkTable({entity, showAddedAtColumn, works, showAdd, showCheckboxes, s
 					>
 						<FontAwesomeIcon icon={faPenNib} size="2x"/>
 						<br/>
-						Add Work
+						{translate('pages.entity.addWork')}
 					</Button>
 				</span>
 				<span>
-					<h4>There are no Works yet!</h4>
+					<h4>{translate('pages.entity.noWorksYet')}</h4>
 					<p>
-						Help us complete BookBrainz
+						{translate('pages.entity.helpUsComplete')}
 						<br/>
 					</p>
-					<br/><small>Not sure what to do? Visit the <a href="/help">help page</a> to get started.</small>
+					<br/>
+					<small>
+						<Trans
+							components={{helpLink: <a href="/help"/>}}
+							i18nKey="pages.callToAction.notSure"
+						/>
+					</small>
 				</span>
 				<hr className="margin-bottom-d0"/>
 			</React.Fragment>
 		);
 	}
 	else {
-		tableContent = <span>No works</span>;
+		tableContent = <span>{translate('pages.entity.noWorks')}</span>;
 	}
 	return (
 		<div>
-			<h2>Works</h2>
+			<h2>{translate('common.entityType.work_plural')}</h2>
 			{tableContent}
 		</div>
 	);
@@ -175,14 +188,6 @@ WorkTable.propTypes = {
 	showAddedAtColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool,
 	works: PropTypes.array.isRequired
-};
-WorkTable.defaultProps = {
-	entity: null,
-	onToggleRow: null,
-	selectedEntities: [],
-	showAdd: true,
-	showAddedAtColumn: false,
-	showCheckboxes: false
 };
 
 export default WorkTable;

@@ -21,12 +21,21 @@ import * as entityHelper from '../../../helpers/entity';
 import * as utilHelper from '../../../helpers/utils';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 
 
 const {Table} = bootstrap;
 const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-function AuthorTableRow({author, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow, genderOptions}) {
+
+function AuthorTableRow({
+	author,
+	showAddedAtColumn,
+	showCheckboxes = false,
+	selectedEntities = [],
+	onToggleRow = null,
+	genderOptions = []
+}) {
 	const name = getEntityLabel(author);
 	const disambiguation = getEntityDisambiguation(author);
 	const number = author.number || '?';
@@ -72,14 +81,17 @@ AuthorTableRow.propTypes = {
 	showAddedAtColumn: PropTypes.bool.isRequired,
 	showCheckboxes: PropTypes.bool
 };
-AuthorTableRow.defaultProps = {
-	genderOptions: [],
-	onToggleRow: null,
-	selectedEntities: [],
-	showCheckboxes: false
-};
 
-function AuthorTable({authors, showAddedAtColumn, showCheckboxes, selectedEntities, onToggleRow, genderOptions}) {
+
+function AuthorTable({
+	authors,
+	showAddedAtColumn = false,
+	showCheckboxes = false,
+	selectedEntities = [],
+	onToggleRow = null,
+	genderOptions = []
+}) {
+	const {t: translate} = useTranslation();
 	let tableContent;
 	if (authors.length) {
 		tableContent = (
@@ -88,13 +100,13 @@ function AuthorTable({authors, showAddedAtColumn, showCheckboxes, selectedEntiti
 					<thead>
 						<tr>
 							{authors[0].displayNumber && <th style={{width: '10%'}}>#</th>}
-							<th>Name</th>
-							<th>Gender</th>
-							<th>Type</th>
-							<th>Date of birth</th>
-							<th>Date of death</th>
+							<th>{translate('common.name')}</th>
+							<th>{translate('common.gender')}</th>
+							<th>{translate('common.type')}</th>
+							<th>{translate('pages.entity.dateOfBirth')}</th>
+							<th>{translate('pages.entity.dateOfDeath')}</th>
 							{
-								showAddedAtColumn ? <th>Added at</th> : null
+								showAddedAtColumn ? <th>{translate('pages.entity.addedAt')}</th> : null
 							}
 						</tr>
 					</thead>
@@ -118,11 +130,11 @@ function AuthorTable({authors, showAddedAtColumn, showCheckboxes, selectedEntiti
 		);
 	}
 	else {
-		tableContent = <span>No Authors</span>;
+		tableContent = <span>{translate('pages.entity.noAuthors')}</span>;
 	}
 	return (
 		<div>
-			<h2>Authors</h2>
+			<h2>{translate('common.entityType.author_plural')}</h2>
 			{tableContent}
 		</div>
 	);
@@ -135,13 +147,6 @@ AuthorTable.propTypes = {
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool
-};
-AuthorTable.defaultProps = {
-	genderOptions: [],
-	onToggleRow: null,
-	selectedEntities: [],
-	showAddedAtColumn: false,
-	showCheckboxes: false
 };
 
 export default AuthorTable;

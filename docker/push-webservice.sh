@@ -18,7 +18,7 @@ ENV=${1:-beta}
 TAG=${2:-beta}
 
 echo "Building BookBrainz image with env $ENV tag $TAG and docker build target bookbrainz-webservice"
-docker build -t metabrainz/bookbrainz-webservice:$TAG \
+docker build --pull -t metabrainz/bookbrainz-webservice:$TAG \
         --target bookbrainz-webservice \
         --build-arg GIT_COMMIT_SHA=$(git rev-parse --short HEAD) \
         --build-arg DEPLOY_ENV=webservice-$ENV .

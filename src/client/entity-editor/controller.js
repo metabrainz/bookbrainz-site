@@ -27,16 +27,15 @@ import {
 	extractChildProps,
 	extractLayoutProps
 } from '../helpers/props';
-import {AppContainer} from 'react-hot-loader';
 import EntityEditor from './entity-editor';
 import EntityMerge from './entity-merge';
 import Layout from '../containers/layout';
 import {Provider} from 'react-redux';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import ReduxThunk from 'redux-thunk';
 import createDebounce from 'redux-debounce';
 import {fromJS} from 'immutable';
+import {hydrateRoot} from 'react-dom/client';
 
 
 const {
@@ -83,23 +82,11 @@ const store = createStore(
 );
 
 const markup = (
-	<AppContainer>
-		<Layout {...extractLayoutProps(rest)}>
-			<Provider store={store}>
-				{getEntityEditor()}
-			</Provider>
-		</Layout>
-	</AppContainer>
+	<Layout {...extractLayoutProps(rest)}>
+		<Provider store={store}>
+			{getEntityEditor()}
+		</Provider>
+	</Layout>
 );
 
-ReactDOM.hydrate(markup, document.getElementById('target'));
-
-/*
- * As we are not exporting a component,
- * we cannot use the react-hot-loader module wrapper,
- * but instead directly use webpack Hot Module Replacement API
- */
-
-if (module.hot) {
-	module.hot.accept();
-}
+hydrateRoot(document.getElementById('target'), markup);

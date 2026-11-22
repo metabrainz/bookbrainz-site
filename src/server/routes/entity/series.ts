@@ -124,6 +124,7 @@ router.get(
 		props.initialState.nameSection = nameSection;
 
 		return res.send(target({
+			locale: res.locals.locale,
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
@@ -163,6 +164,7 @@ router.post(
 		));
 
 		return res.send(target({
+			locale: res.locals.locale,
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',
@@ -335,6 +337,7 @@ router.get(
 		));
 
 		return res.send(target({
+			locale: res.locals.locale,
 			markup,
 			props: escapeProps(props),
 			script: '/js/entity-editor.js',

@@ -17,31 +17,18 @@
  */
 
 import {extractChildProps, extractLayoutProps} from '../helpers/props';
-import {AppContainer} from 'react-hot-loader';
 import Layout from '../containers/layout';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import RevisionsPage from '../components/pages/revisions';
+import {hydrateRoot} from 'react-dom/client';
 
 
 const propsTarget = document.getElementById('props');
 const props = propsTarget ? JSON.parse(propsTarget.innerHTML) : {};
 const markup = (
-	<AppContainer>
-		<Layout {...extractLayoutProps(props)}>
-			<RevisionsPage {...extractChildProps(props)}/>
-		</Layout>
-	</AppContainer>
+	<Layout {...extractLayoutProps(props)}>
+		<RevisionsPage {...extractChildProps(props)}/>
+	</Layout>
 );
 
-ReactDOM.hydrate(markup, document.getElementById('target'));
-
-/*
- * As we are not exporting a component,
- * we cannot use the react-hot-loader module wrapper,
- * but instead directly use webpack Hot Module Replacement API
- */
-
-if (module.hot) {
-	module.hot.accept();
-}
+hydrateRoot(document.getElementById('target'), markup);

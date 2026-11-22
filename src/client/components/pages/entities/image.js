@@ -26,7 +26,7 @@ import {faSlash} from '@fortawesome/free-solid-svg-icons';
 
 const {Image} = bootstrap;
 
-function EntityImage({backupIcon, deleted, imageUrl}) {
+function EntityImage({backupIcon, deleted = false, imageUrl = ''}) {
 	if (imageUrl) {
 		return (
 			<Image
@@ -71,8 +71,4 @@ EntityImage.propTypes = {
 	imageUrl: PropTypes.string
 };
 
-EntityImage.defaultProps = {
-	deleted: false,
-	imageUrl: ''
-};
 export default EntityImage;

@@ -22,12 +22,14 @@ import * as utilHelper from '../../../helpers/utils';
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 
 
 const {Table} = bootstrap;
 const {transformISODateForDisplay, extractAttribute, getEntityDisambiguation, getEntityLabel} = entityHelper;
 
-function PublisherTableRow({showAddedAtColumn, publisher, showCheckboxes, selectedEntities, onToggleRow}) {
+
+function PublisherTableRow({showAddedAtColumn, publisher, showCheckboxes = false, selectedEntities = [], onToggleRow = null}) {
 	const name = getEntityLabel(publisher);
 	const number = publisher.number || '?';
 	const disambiguation = getEntityDisambiguation(publisher);
@@ -71,13 +73,16 @@ PublisherTableRow.propTypes = {
 	showAddedAtColumn: PropTypes.bool.isRequired,
 	showCheckboxes: PropTypes.bool
 };
-PublisherTableRow.defaultProps = {
-	onToggleRow: null,
-	selectedEntities: [],
-	showCheckboxes: false
-};
 
-function PublisherTable({showAddedAtColumn, publishers, showCheckboxes, selectedEntities, onToggleRow}) {
+
+function PublisherTable({
+	showAddedAtColumn = false,
+	publishers,
+	showCheckboxes = false,
+	selectedEntities = [],
+	onToggleRow = null
+}) {
+	const {t: translate} = useTranslation();
 	let tableContent;
 	if (publishers.length) {
 		tableContent = (
@@ -86,13 +91,13 @@ function PublisherTable({showAddedAtColumn, publishers, showCheckboxes, selected
 					<thead>
 						<tr>
 							{publishers[0].displayNumber && <th style={{width: '10%'}}>#</th>}
-							<th>Name</th>
-							<th>Area</th>
-							<th>Type</th>
-							<th>Date founded</th>
-							<th>Date dissolved</th>
+							<th>{translate('common.name')}</th>
+							<th>{translate('common.area')}</th>
+							<th>{translate('common.type')}</th>
+							<th>{translate('pages.entity.dateFounded')}</th>
+							<th>{translate('pages.entity.dateDissolved')}</th>
 							{
-								showAddedAtColumn ? <th>Added at</th> : null
+								showAddedAtColumn ? <th>{translate('pages.entity.addedAt')}</th> : null
 							}
 						</tr>
 					</thead>
@@ -115,11 +120,11 @@ function PublisherTable({showAddedAtColumn, publishers, showCheckboxes, selected
 		);
 	}
 	else {
-		tableContent = <span>No publishers</span>;
+		tableContent = <span>{translate('pages.entity.noPublishers')}</span>;
 	}
 	return (
 		<div>
-			<h2>Publishers</h2>
+			<h2>{translate('common.entityType.publisher_plural')}</h2>
 			{tableContent}
 		</div>
 	);
@@ -131,12 +136,6 @@ PublisherTable.propTypes = {
 	selectedEntities: PropTypes.array,
 	showAddedAtColumn: PropTypes.bool,
 	showCheckboxes: PropTypes.bool
-};
-PublisherTable.defaultProps = {
-	onToggleRow: null,
-	selectedEntities: [],
-	showAddedAtColumn: false,
-	showCheckboxes: false
 };
 
 export default PublisherTable;

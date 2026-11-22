@@ -22,6 +22,7 @@ import {Form, OverlayTrigger, Tooltip} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ValidationLabel from '../common/validation-label';
 import {faQuestionCircle} from '@fortawesome/free-solid-svg-icons';
+import {useTranslation} from 'react-i18next';
 
 
 type Props = {
@@ -48,16 +49,19 @@ type Props = {
  * @returns {Object} a React component containing the rendered input
  */
 function NameField({
-	empty,
-	error,
-	label,
-	tooltipText,
-	warn,
+	defaultValue = '',
+	empty = false,
+	error = false,
+	label = '',
+	onChange = null,
+	tooltipText = null,
+	warn = false,
 	...rest
 }: Props) {
+	const {t: translate} = useTranslation();
 	const inputLabel = (
 		<ValidationLabel empty={empty} error={error} warn={warn}>
-			{!label ? 'Name' : label}
+			{!label ? translate('common.name') : label}
 		</ValidationLabel>
 	);
 
@@ -79,19 +83,10 @@ function NameField({
 				{inputLabel}
 				{helpIconElement}
 			</Form.Label>
-			<Form.Control type="text" {...rest}/>
+			<Form.Control defaultValue={defaultValue} type="text" onChange={onChange} {...rest}/>
 		</Form.Group>
 	);
 }
 NameField.displayName = 'NameField';
-NameField.defaultProps = {
-	defaultValue: '',
-	empty: false,
-	error: false,
-	label: '',
-	onChange: null,
-	tooltipText: null,
-	warn: false
-};
 
 export default NameField;

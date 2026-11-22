@@ -57,7 +57,7 @@ jobs:
 
       - name: Build ${{ inputs.target}} development image ${{ inputs.tag }}
         run: |
-          docker build \
+          docker build --pull \
             --target $DOCKER_TARGET \
             --tag metabrainz/$DOCKER_IMAGE:"${{ inputs.tag }}" \
             --build-arg GIT_COMMIT_SHA="${{ github.sha }}" .

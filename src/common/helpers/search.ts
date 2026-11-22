@@ -37,6 +37,11 @@ const _maxJitter = 75;
 
 let _client:Client = null;
 
+// The Express entry owns this client and passes its availability to loaders.
+export function getClient(): Client | null {
+	return _client;
+}
+
 function sanitizeEntityType(type:IndexableEntitiesOrAll | IndexableEntities[]) {
 	if (!type) {
 		return null;
@@ -308,7 +313,11 @@ async function _fetchEntityModelsForESResults(orm:ORM, results:SearchHitsMetadat
 		}
 		if (entityStub.type === 'Collection') {
 			const collection = await new UserCollection({id: entityStub.id})
-				.fetch();
+				.fetch({require: false});
+			// Stale index entries for deleted or private collections must not leak
+			if (!collection?.get('public')) {
+				return null;
+			}
 
 			const collectionJSON = collection.toJSON({omitPivot: true});
 			collectionJSON.defaultAlias = {
@@ -336,7 +345,8 @@ async function _fetchEntityModelsForESResults(orm:ORM, results:SearchHitsMetadat
 		}
 		return entityJSON;
 	})).catch(err => log.error(err));
-	return processedResults;
+	// Hidden results (private collections) come back as null
+	return processedResults?.filter(Boolean);
 }
 
 // Returns the results of a search translated to entity objects
