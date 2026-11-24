@@ -32,8 +32,9 @@ import {transformISODateForDisplay} from '../../helpers/entity';
 import {withTranslation} from 'react-i18next';
 
 
-const {Badge, Button, Col, Form, ListGroup, Row} = bootstrap;
+const {Alert, Badge, Button, Col, Form, ListGroup, Row} = bootstrap;
 const {formatDate, stringToHTMLWithLinks} = utilsHelper;
+const NOTE_ERROR_DURATION = 5000;
 
 class RevisionPage extends React.Component {
 	static formatValueList(list, isChangeADate) {
@@ -161,7 +162,26 @@ class RevisionPage extends React.Component {
 
 	constructor(props) {
 		super(props);
+		this.state = {
+			showNoteError: false
+		};
+		this.handleCloseNoteError = this.handleCloseNoteError.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	componentWillUnmount() {
+		clearTimeout(this.noteErrorTimeout);
+	}
+
+	handleCloseNoteError() {
+		clearTimeout(this.noteErrorTimeout);
+		this.setState({showNoteError: false});
+	}
+
+	showNoteError() {
+		clearTimeout(this.noteErrorTimeout);
+		this.setState({showNoteError: true});
+		this.noteErrorTimeout = setTimeout(this.handleCloseNoteError, NOTE_ERROR_DURATION);
 	}
 
 	handleSubmit(event) {
@@ -174,10 +194,8 @@ class RevisionPage extends React.Component {
 			.then(() => {
 				location.reload();
 			})
-			.catch((res) => {
-				// TODO: Add proper error handling.
-				const {error} = res.body;
-				return error;
+			.catch(() => {
+				this.showNoteError();
 			});
 	}
 
@@ -250,6 +268,23 @@ class RevisionPage extends React.Component {
 		return (
 			<Row id="mergePage">
 				<Col lg={12}>
+					{this.state.showNoteError && (
+						<Alert
+							dismissible
+							closeLabel={translate('common.button.close')}
+							style={{
+								maxWidth: 'calc(100% - 2rem)',
+								position: 'fixed',
+								right: '1rem',
+								top: '1rem',
+								zIndex: 1050
+							}}
+							variant="danger"
+							onClose={this.handleCloseNoteError}
+						>
+							{translate('pages.revision.addNoteError')}
+						</Alert>
+					)}
 					<h1>{translate('pages.revision.heading', {id: revision.id})}</h1>
 					{revision.isMerge && (
 						<div className="mergedEntities">

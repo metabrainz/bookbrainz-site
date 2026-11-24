@@ -686,6 +686,7 @@
     },
     "revision": {
       "addNote": "Add Note",
+      "addNoteError": "Could not add note. Please try again.",
       "badgeDeleted": "- Deleted",
       "badgeMerged": "Merged",
       "badgeNew": "+ New",
