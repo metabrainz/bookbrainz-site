@@ -28,7 +28,7 @@ import {BadRequestError} from '../../common/helpers/error';
  * @returns {promise} res.send promise
  * @description
  * Creates a new collection or updates the existing collection
- * If it's a new collection or it's name is changed, ElasticSearch index is also updated
+ * The ElasticSearch index is also updated
  */
 export async function collectionCreateOrEditHandler(req, res, next) {
 	try {
@@ -84,18 +84,8 @@ export async function collectionCreateOrEditHandler(req, res, next) {
 
 		await Promise.all(collaboratorPromises);
 
-		// Only public collections belong in the ElasticSearch index:
-		// (re)index when it's new, renamed or made public, remove it when made private
-		const isPublic = newCollection.get('public');
-		const wasPublic = !isNew && res.locals.collection.public;
-		if (isPublic && (!wasPublic || res.locals.collection.name !== newCollection.get('name'))) {
-			// Type needed for indexing
-			newCollection.set('type', 'Collection');
-			await search.indexEntity(newCollection);
-		}
-		else if (!isPublic && wasPublic) {
-			await search.deleteEntity(newCollection);
-		}
+		// Name, privacy and collaborators all affect search, so always reindex
+		await search.indexCollection(req.app.locals.orm, newCollection.get('id'));
 		return res.status(200).send(newCollection.toJSON());
 	}
 	catch (err) {
