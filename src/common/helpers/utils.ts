@@ -69,17 +69,21 @@ export function getEntityModelByType(orm: any, type: string): any {
 type Unresolved<T> = {
 	[P in keyof T]: Promise<T[P]>;
 };
-export function makePromiseFromObject<T>(obj: Unresolved<T>): Promise<T> {
+export async function makePromiseFromObject<T>(obj: Unresolved<T>): Promise<T> {
 	const keys = Object.keys(obj);
 	const values = Object.values(obj);
-	return Promise.all(values)
-	  .then(resolved => {
-			const res = {};
-			for (let i = 0; i < keys.length; i += 1) {
-				res[keys[i]] = resolved[i];
-			}
-			return res as T;
-	  });
+	try {
+		const resolved = await Promise.all(values);
+		const res = {};
+		for (let i = 0; i < keys.length; i += 1) {
+			res[keys[i]] = resolved[i];
+		}
+		return res as T;
+	}
+	catch (error) {
+		console.error('Error in makePromiseFromObject:', error);
+		throw error;
+	}
 }
 
 /**
@@ -291,34 +295,46 @@ export async function getEntityByBBID(orm, bbid:string, otherRelations:Array<str
 		return null;
 	}
 	const {Entity} = orm;
-	const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, null);
-	const entity = await new Entity({bbid: redirectBbid}).fetch({require: false});
-	if (!entity) {
+	try {
+		const redirectBbid = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid, null);
+		const entity = await new Entity({bbid: redirectBbid}).fetch({require: false});
+		if (!entity) {
+			return null;
+		}
+		const entityType = entity.get('type');
+		const baseRelations = [
+			'annotation',
+			'disambiguation',
+			'defaultAlias',
+			'relationshipSet.relationships.type',
+			'aliasSet.aliases',
+			'identifierSet.identifiers',
+			...otherRelations
+		];
+		const entityData = await orm.func.entity.getEntity(orm, entityType, bbid, baseRelations);
+		return entityData;
+	}
+	catch (error) {
+		console.error('Error fetching entity by BBID:', error);
 		return null;
 	}
-	const entityType = entity.get('type');
-	const baseRelations = [
-		'annotation',
-		'disambiguation',
-		'defaultAlias',
-		'relationshipSet.relationships.type',
-		'aliasSet.aliases',
-		'identifierSet.identifiers',
-		...otherRelations
-	];
-	const entityData = await orm.func.entity.getEntity(orm, entityType, bbid, baseRelations);
-	return entityData;
 }
 
 export async function getEntity(orm, bbid:string, type:EntityType, fetchOptions?:Record<string, any>):Promise<any> {
 	if (!isValidBBID(bbid)) {
 		return null;
 	}
-	const finalBBID = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid);
-	const Model = getEntityModelByType(orm, upperFirst(type));
-	const entity = await new Model({bbid: finalBBID})
-		.fetch({require: true, ...fetchOptions});
-	return entity && entity.toJSON();
+	try {
+		const finalBBID = await orm.func.entity.recursivelyGetRedirectBBID(orm, bbid);
+		const Model = getEntityModelByType(orm, upperFirst(type));
+		const entity = await new Model({bbid: finalBBID})
+			.fetch({require: true, ...fetchOptions});
+		return entity && entity.toJSON();
+	}
+	catch (error) {
+		console.error('Error fetching entity:', error);
+		return null;
+	}
 }
 
 export function getAliasLanguageCodes(entity: LazyLoadedEntityT) {
