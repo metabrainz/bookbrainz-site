@@ -508,7 +508,37 @@ export function getEntityRelationships(entity: any) {
 		};
 }
 
-export function formatSearchResponse(searchResult?: {results:any[], total:number}) {
+/**
+ * formatSearchResponse is a function to format search results into a standardized response object
+ *
+ * @param {object} searchResult - an object containing search results and total count
+ * @param {Array} searchResult.results - array of entity search results
+ * @param {number} searchResult.total - total number of search results available
+ * @returns {object} an object containing the result count, formatted search results, and total count.
+ * if searchResult is null or undefined, returns null.
+ *
+ * @example
+ * 		const searchResult = await search.searchByName(orm, query, type, size, from);
+ *		formatSearchResponse(searchResult);
+ *		/* => {
+			"resultCount": 10,
+			"searchResult": [
+				{
+					"bbid": "2e5f49a8-6a38-4cc7-97c7-8e624e1fc5e1",
+					"defaultAlias": {
+						"language": "eng",
+						"name": "Garv Thakre",
+						"sortName": "Thakre, Garv",
+						"primary": true
+					},
+					"entityType": "Author"
+				}
+			],
+			"totalCount": 42
+		}
+ */
+
+export function formatSearchResponse(searchResult?: {results:any[], total:number}): { resultCount: number; searchResult: { bbid: any; defaultAlias: { language: any; name: any; primary: any; sortName: any; }; entityType: any; }[]; totalCount: number; } {
 	const {results, total} = searchResult;
 	return _.isNil(searchResult) ? null :
 		{
