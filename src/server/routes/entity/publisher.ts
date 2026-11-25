@@ -198,7 +198,7 @@ function _setPublisherTitle(res) {
 }
 
 
-router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, (req, res, next) => {
+router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipediaExtract, async (req, res, next) => {
 	// Fetch editions
 	const {Publisher} = req.app.locals.orm;
 	const editionRelationsToFetch = [
@@ -213,14 +213,16 @@ router.get('/:bbid', middleware.loadEntityRelationships, middleware.loadWikipedi
 		Publisher.forge({bbid: res.locals.entity.bbid})
 			.editions({withRelated: editionRelationsToFetch});
 
-	return editionsPromise
-		.then((editions) => {
-			res.locals.entity.editions = editions.toJSON();
-			_setPublisherTitle(res);
-			res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
-			return entityRoutes.displayEntity(req, res);
-		})
-		.catch(next);
+	try {
+		const editions = await editionsPromise;
+		res.locals.entity.editions = editions.toJSON();
+		_setPublisherTitle(res);
+		res.locals.entity.editions.sort(entityRoutes.compareEntitiesByDate);
+		return entityRoutes.displayEntity(req, res);
+	}
+	catch (err) {
+		return next(err);
+	}
 });
 
 router.get('/:bbid/delete', auth.isAuthenticated, auth.isAuthorized(ENTITY_EDITOR), (req, res, next) => {
