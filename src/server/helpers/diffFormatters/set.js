@@ -20,13 +20,27 @@ import * as base from './base';
 import _ from 'lodash';
 
 
+/**
+ * Formats a change that adds a whole set (kind 'N') or removes a whole set
+ * (kind 'D'). A set is removed when its entity is deleted or merged into
+ * another entity, so the old set is in `change.lhs` and `change.rhs` is empty.
+ * @param {Object} change - The deep-diff change for the set.
+ * @param {string} label - The label to show for the set.
+ * @param {string} itemProp - The property of the set that holds its items.
+ * @param {Function} transformerFunc - Turns a set into the values to display.
+ * @returns {Array} The formatted rows, or an empty array if the set is empty.
+ */
 export function formatNewSet(change, label, itemProp, transformerFunc) {
-	const {rhs} = change;
-	if (rhs[itemProp] && rhs[itemProp].length > 0) {
-		return [base.formatRow('N', label, null, transformerFunc(rhs))];
+	const isDeletion = change.kind === 'D';
+	const setSide = isDeletion ? change.lhs : change.rhs;
+	if (!setSide?.[itemProp]?.length) {
+		return [];
 	}
 
-	return [];
+	const items = transformerFunc(setSide);
+	return isDeletion ?
+		[base.formatRow('D', label, items, null)] :
+		[base.formatRow('N', label, null, items)];
 }
 
 export function formatItemAddOrDelete(change, label, transformerFunc) {
@@ -49,9 +63,14 @@ export function format(
 	change, setProp, itemProp, newSetFormatter, addDeleteFormatter,
 	modifyFormatter
 ) {
-	const setAdded =
-		change.kind === 'N' && _.isEqual(change.path, [setProp]);
-	if (setAdded) {
+	// The whole set was added, or removed (e.g. its entity was merged away).
+	// A removed set must not be treated as a single removed item: it has no
+	// index and its lhs is the set itself, which used to show "Language
+	// undefined" (or crash) on merge revisions (BB-807).
+	const setAddedOrRemoved =
+		(change.kind === 'N' || change.kind === 'D') &&
+		_.isEqual(change.path, [setProp]);
+	if (setAddedOrRemoved) {
 		return newSetFormatter(change);
 	}
 
