@@ -1,6 +1,3 @@
-// TODO: type this file properly and remove the ts-nocheck.
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 /*
  * Copyright (C) 2023 Shivam Awasthi
  *
@@ -19,11 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 import {Alert, Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
-import {IdentifierTypeEditorPropsT, IdentifierTypeFieldsT,
+import {EntityTypeOptionT, IdentifierTypeEditorPropsT, IdentifierTypeFieldsT,
 	defaultIdentifierTypeFields, entityTypeOptions, renderSelectedParentIdentifierType} from './typeUtils';
 import React, {ChangeEvent, FormEvent, useCallback, useState} from 'react';
 import {faPencilAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import type {IdentifierTypeWithIdT} from 'bookbrainz-data/lib/types/identifiers';
 import ReactSelect from 'react-select';
 import classNames from 'classnames';
 import {isEqual} from 'lodash';
@@ -58,7 +56,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 	}, []);
 
 	// Function to handle parent type selection in ParentType modal
-	const handleParentTypeChange = useCallback((selectedOption) => {
+	const handleParentTypeChange = useCallback((selectedOption: IdentifierTypeWithIdT | null) => {
 		if (selectedOption) {
 			setSelectedParentType(selectedOption.id);
 		}
@@ -109,14 +107,14 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 
 	const errorAlertClass = classNames('text-center', 'margin-top-1', {'d-none': !errorMsg.length});
 
-	const getEntityTypeLabel = useCallback(option => option.name, []);
+	const getEntityTypeLabel = useCallback((option: EntityTypeOptionT) => option.name, []);
 
-	const getEntityTypeValue = useCallback(option => option.name, []);
+	const getEntityTypeValue = useCallback((option: EntityTypeOptionT) => option.name, []);
 
-	const getParentTypeValue = useCallback(option => option.id, []);
+	const getParentTypeValue = useCallback((option: IdentifierTypeWithIdT) => String(option.id), []);
 
 	// Callback function to format the option label
-	const formatParentTypeOptionLabel = useCallback(option => (
+	const formatParentTypeOptionLabel = useCallback((option: IdentifierTypeWithIdT) => (
 		<div className="small">
 			<div>
 				<strong>Label:&nbsp;</strong>{option.label}
@@ -127,7 +125,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 		</div>
 	), []);
 
-	const handleEntityTypeChange = useCallback((selectedOption) => {
+	const handleEntityTypeChange = useCallback((selectedOption: EntityTypeOptionT | null) => {
 		const newEntityType = selectedOption ? selectedOption.name : null;
 		setEntityType(newEntityType);
 		// The parent of a type has the same entity type
@@ -224,7 +222,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 									required
 									name="detectionRegex"
 									type="text"
-									value={formData.detectionRegex}
+									value={formData.detectionRegex ?? ''}
 									onChange={handleInputChange}
 								/>
 							</Form.Group>

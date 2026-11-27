@@ -17,6 +17,7 @@
  */
 import type {AttributeTypeDataT, RelationshipTypeDataT} from '../../../../common/types/type-data';
 import {ENTITY_TYPES} from '../../../helpers/entity';
+import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import type {IdentifierTypeWithIdT} from 'bookbrainz-data/lib/types/identifiers';
 import React from 'react';
 
@@ -60,7 +61,9 @@ export const defaultIdentifierTypeFields: IdentifierTypeFieldsT = {
 	validationRegex: ''
 };
 
-export const entityTypeOptions = ENTITY_TYPES.map((entity) => ({
+export type EntityTypeOptionT = {name: EntityTypeString};
+
+export const entityTypeOptions: EntityTypeOptionT[] = ENTITY_TYPES.map((entity) => ({
 	name: entity
 }));
 
