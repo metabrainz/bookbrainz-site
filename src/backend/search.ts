@@ -6,6 +6,7 @@
 import {isNil, snakeCase} from 'lodash';
 import {ENTITY_TYPES} from 'bookbrainz-data/lib/types/entity';
 import type {ORM} from 'bookbrainz-data';
+import type {SearchResult} from '../common/types/search';
 import {getNextEnabledAndResultsArray} from '../common/helpers/utils';
 import {searchByName} from '../common/helpers/search';
 
@@ -13,15 +14,13 @@ import {searchByName} from '../common/helpers/search';
 type SearchParams = {from: number, query: string, size: number, type?: string};
 
 export async function getSearchPage(orm: ORM, {from, query, size, type}: SearchParams) {
-	let initialResults: unknown[] = [];
+	let initialResults: SearchResult[] = [];
 	if (query) {
 		// Fetch one more result than required to know whether there is a next page
 		const {results} = await searchByName(orm, query, snakeCase(type || 'allEntities') as never, size + 1, from);
 		initialResults = results.filter((entity: unknown) => !isNil(entity));
 	}
-	const {newResultsArray, nextEnabled} = getNextEnabledAndResultsArray(initialResults, size) as {
-		newResultsArray: unknown[], nextEnabled: boolean
-	};
+	const {newResultsArray, nextEnabled} = getNextEnabledAndResultsArray(initialResults, size);
 	return {
 		entityTypes: ENTITY_TYPES,
 		initialResults: newResultsArray,

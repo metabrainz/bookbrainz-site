@@ -23,6 +23,7 @@ import type {EntityIconType} from '../../helpers/entity-icon';
 import Pagination from './parts/pagination';
 import React from 'react';
 import SearchField from './parts/search-field';
+import type {SearchResult} from '../../../common/types/search';
 import SearchResults from './parts/search-results';
 import type {SiteUser} from '../../../common/types/site';
 import {useTranslation} from 'react-i18next';
@@ -31,7 +32,7 @@ import {useTranslation} from 'react-i18next';
 type Props = {
 	entityTypes: EntityIconType[],
 	from: number,
-	initialResults: unknown[],
+	initialResults: SearchResult[],
 	nextEnabled: boolean,
 	query: string,
 	resultsPerPage: number,

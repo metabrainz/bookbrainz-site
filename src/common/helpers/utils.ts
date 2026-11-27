@@ -180,7 +180,7 @@ export function getEntityLink(entity: {type: string, bbid: string}): string {
  * @param {number} size - The desired number of items.
  * @returns {Object} - The truncated array and a boolean indicating if more results exist.
  */
-export function getNextEnabledAndResultsArray(array, size) {
+export function getNextEnabledAndResultsArray<T>(array: T[], size: number) {
 	const limit = Math.max(0, size);
 	const nextEnabled = array.length > limit;
 
