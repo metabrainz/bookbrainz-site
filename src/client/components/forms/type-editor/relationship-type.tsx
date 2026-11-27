@@ -27,7 +27,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ReactSelect from 'react-select';
 import classNames from 'classnames';
 import {isEqual} from 'lodash';
-import request from 'superagent';
+import {postJSON} from '../../../helpers/post-json';
 
 
 function RelationshipTypeEditor({
@@ -57,6 +57,9 @@ function RelationshipTypeEditor({
 
 	// This flag is used to check if any field has been updated while editing a type
 	const [noChangesError, setNoChangesError] = useState<boolean>(false);
+
+	// The message of a failed save
+	const [submitError, setSubmitError] = useState<string | null>(null);
 
 	// This flag is used to check whether we have selected source and target entity types
 	const [showIncompleteFormError, setShowIncompleteFormError] = useState<boolean>(false);
@@ -209,15 +212,18 @@ function RelationshipTypeEditor({
 			submissionURL = '/relationship-type/create/handler';
 		}
 
-		try {
-			await request.post(submissionURL)
-				.send({oldAttributeTypes: initialFields.attributeTypes, ...formData, sourceEntityType, targetEntityType});
+		const result = await postJSON(submissionURL, {
+			oldAttributeTypes: initialFields.attributeTypes, ...formData, sourceEntityType, targetEntityType
+		});
+		if (result.ok) {
 			window.location.href = document.referrer;
+			return;
 		}
-		catch (err) {
-			throw new Error(err);
-		}
-	}, [formData, isFormEdited, showIncompleteFormError, sourceEntityType, targetEntityType]);
+		setSubmitError(result.error ?? 'Error: Something went wrong. Please try again.');
+		setTimeout(() => {
+			setSubmitError(null);
+		}, 3000);
+	}, [formData, initialFields.attributeTypes, isFormEdited, sourceEntityType, targetEntityType]);
 
 	const lgCol = {offset: 3, span: 6};
 
@@ -436,6 +442,10 @@ function RelationshipTypeEditor({
 							{
 								noChangesError &&
 								<Alert variant="danger">Error: No updated field.</Alert>
+							}
+							{
+								submitError &&
+								<Alert variant="danger">{submitError}</Alert>
 							}
 						</Col>
 					</Row>
