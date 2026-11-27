@@ -49,13 +49,15 @@ export const defaultRelationshipTypeData: RelationshipTypeDataT = {
 	targetEntityType: null
 };
 
-export const defaultIdentifierTypeData: IdentifierTypeDataT = {
+// The fields of an identifier type that the form edits; the entity type is chosen apart
+export type IdentifierTypeFieldsT = Omit<IdentifierTypeDataT, 'entityType' | 'id'>;
+
+export const defaultIdentifierTypeFields: IdentifierTypeFieldsT = {
 	childOrder: 0,
 	deprecated: false,
 	description: '',
 	detectionRegex: null,
 	displayTemplate: '',
-	entityType: null,
 	label: '',
 	parentId: null,
 	validationRegex: ''

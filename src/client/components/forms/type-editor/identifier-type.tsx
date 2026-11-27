@@ -19,34 +19,39 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 import {Alert, Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
-import {IdentifierTypeEditorPropsT,
-	defaultIdentifierTypeData, entityTypeOptions, renderSelectedParentIdentifierType} from './typeUtils';
+import {IdentifierTypeEditorPropsT, IdentifierTypeFieldsT,
+	defaultIdentifierTypeFields, entityTypeOptions, renderSelectedParentIdentifierType} from './typeUtils';
 import React, {ChangeEvent, FormEvent, useCallback, useEffect, useState} from 'react';
 import {faPencilAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import type {IdentifierTypeDataT} from '../../../../common/types/type-data';
 import ReactSelect from 'react-select';
 import classNames from 'classnames';
+import {isEqual} from 'lodash';
 import request from 'superagent';
 
 
-function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, parentTypes}: IdentifierTypeEditorPropsT) {
-	const [formData, setFormData] = useState<IdentifierTypeDataT>(identifierTypeData);
+function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeEditorPropsT) {
+	const initialFields: IdentifierTypeFieldsT = identifierTypeData ?? defaultIdentifierTypeFields;
+	const initialEntityType = identifierTypeData?.entityType ?? null;
+	const [formData, setFormData] = useState(initialFields);
+	// null until the user picks one (always for a new type)
+	const [entityType, setEntityType] = useState(initialEntityType);
 
 	// State for the ParentType modal
 	const [showModal, setShowModal] = useState<boolean>(false);
-	const [selectedParentType, setSelectedParentType] = useState<number | null>(identifierTypeData.parentId);
+	const [selectedParentType, setSelectedParentType] = useState<number | null>(initialFields.parentId);
 
 	const [filteredParentTypes, setFilteredParentTypes] = useState<IdentifierTypeDataT[]>(parentTypes);
 	useEffect(() => {
-		if (formData.entityType) {
-			const filteredTypes = parentTypes.filter(type => type.entityType === formData.entityType);
+		if (entityType) {
+			const filteredTypes = parentTypes.filter(type => type.entityType === entityType);
 			setFilteredParentTypes(filteredTypes);
 		}
 		else {
 			setFilteredParentTypes(parentTypes);
 		}
-	}, [formData.entityType]);
+	}, [entityType]);
 
 	const [errorMsg, setErrorMsg] = useState<string>('');
 
@@ -132,21 +137,14 @@ function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, p
 	), []);
 
 	const handleEntityTypeChange = useCallback((selectedOption) => {
-		if (selectedOption) {
-			setFormData({...formData, entityType: selectedOption.name});
-		}
-		else {
-			setFormData({...formData, entityType: null});
-		}
-	}, [formData]);
+		setEntityType(selectedOption ? selectedOption.name : null);
+	}, []);
 
 	function isValid() {
-		return Boolean(formData.entityType);
+		return Boolean(entityType);
 	}
 
-	function isFormEdited() {
-		return JSON.stringify(formData) !== JSON.stringify(identifierTypeData);
-	}
+	const isFormEdited = entityType !== initialEntityType || !isEqual(formData, initialFields);
 
 	const handleSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -157,7 +155,7 @@ function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, p
 			  }, 3000);
 			return;
 		}
-		if (!isFormEdited()) {
+		if (!isFormEdited) {
 			setErrorMsg('No updated field!');
 			setTimeout(() => {
 				setErrorMsg('');
@@ -166,7 +164,7 @@ function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, p
 		}
 
 		let submissionURL;
-		if (identifierTypeData.id) {
+		if (identifierTypeData) {
 			submissionURL = `/identifier-type/${identifierTypeData.id}/edit/handler`;
 		}
 		else {
@@ -174,7 +172,7 @@ function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, p
 		}
 
 		try {
-			await request.post(submissionURL).send(formData);
+			await request.post(submissionURL).send({...formData, entityType});
 			window.location.href = document.referrer;
 		}
 		catch (err) {
@@ -184,18 +182,18 @@ function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, p
 				setErrorMsg('');
 			}, 3000);
 		}
-	}, [formData, isFormEdited, errorMsg]);
+	}, [entityType, formData, isFormEdited]);
 
 	// When we change EntityType, then we must check the validity of the parentType
 	// in case it is already selected
 	useEffect(() => {
 		if (formData.parentId) {
 			const parentType = parentTypes.find(type => type.id === formData.parentId);
-			if (formData.entityType && formData.entityType !== parentType?.entityType) {
+			if (entityType && entityType !== parentType?.entityType) {
 				handleRemoveParent();
 			}
 		}
-	}, [formData.entityType]);
+	}, [entityType]);
 
 	const lgCol = {offset: 3, span: 6};
 
@@ -282,7 +280,7 @@ function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, p
 								<Form.Label>Entity Type</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"
-									defaultValue={entityTypeOptions.filter((option) => option.name === identifierTypeData.entityType)}
+									defaultValue={entityTypeOptions.filter((option) => option.name === initialEntityType)}
 									getOptionLabel={getEntityTypeLabel}
 									getOptionValue={getEntityTypeValue}
 									instanceId="entityType"
