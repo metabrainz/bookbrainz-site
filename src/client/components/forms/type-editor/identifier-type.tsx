@@ -97,6 +97,11 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 		  }));
 	}, [formData]);
 
+	const handleChildOrderChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+		const childOrder = Number(event.target.value);
+		setFormData((prevFormData) => ({...prevFormData, childOrder}));
+	}, []);
+
 	const handleDeprecatedChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
 		const {value} = event.target;
 		setFormData((prevFormData) => ({
@@ -333,7 +338,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 									name="childOrder"
 									type="number"
 									value={formData.childOrder}
-									onChange={handleInputChange}
+									onChange={handleChildOrderChange}
 								/>
 							</Form.Group>
 						</Col>
