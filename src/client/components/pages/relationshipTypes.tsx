@@ -18,7 +18,7 @@
 import {Button, Card} from 'react-bootstrap';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import React from 'react';
-import type {RelationshipTypeDataT} from '../../../common/types/type-data';
+import type {RelationshipTypeRowT} from '../../../common/types/type-data';
 import RelationshipTypeTree from './parts/relationship-types-tree';
 import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import {useTranslation} from 'react-i18next';
@@ -26,7 +26,7 @@ import {useTranslation} from 'react-i18next';
 
 type Props = {
 	heading: string,
-	relationshipTypes: RelationshipTypeDataT[]
+	relationshipTypes: RelationshipTypeRowT[]
 };
 
 function RelationshipTypesPage({heading, relationshipTypes}: Props) {

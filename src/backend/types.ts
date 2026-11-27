@@ -8,6 +8,7 @@ import {BadRequestError} from '../common/helpers/error';
 import {ENTITY_TYPES} from 'bookbrainz-data/lib/types/entity';
 import type {IdentifierTypeWithIdT} from 'bookbrainz-data/lib/types/identifiers';
 import type {ORM} from 'bookbrainz-data';
+import type {RelationshipTypeRowT} from '../common/types/type-data';
 
 
 type QueryBuilder = ReturnType<ORM['bookshelf']['knex']['queryBuilder']>;
@@ -36,8 +37,9 @@ export async function getRelationshipTypesPage(orm: ORM, {type1, type2}: {type1:
 		/* eslint-enable camelcase */
 	}).fetchAll();
 
+	const relationshipTypes: RelationshipTypeRowT[] = rows.toJSON();
 	return {
 		heading: `${startCase(type1)}-${startCase(type2)} relationship types`,
-		relationshipTypes: rows.toJSON() as Array<Record<string, unknown>>
+		relationshipTypes
 	};
 }

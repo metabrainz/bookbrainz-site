@@ -15,6 +15,9 @@ export interface RelationshipTypeDataT {
 	targetEntityType: EntityTypeString;
 }
 
+// A relationship type fetched without its attribute types
+export type RelationshipTypeRowT = Omit<RelationshipTypeDataT, 'attributeTypes'>;
+
 export interface AttributeTypeDataT {
 	childOrder: number,
 	description: string | null,

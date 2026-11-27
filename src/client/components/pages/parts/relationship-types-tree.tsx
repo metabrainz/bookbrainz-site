@@ -17,7 +17,7 @@
  */
 import React, {useCallback, useState} from 'react';
 import {Button} from 'react-bootstrap';
-import type {RelationshipTypeDataT} from '../../../../common/types/type-data';
+import type {RelationshipTypeRowT} from '../../../../common/types/type-data';
 import {orderBy as _orderBy} from 'lodash';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 import {sanitize} from 'isomorphic-dompurify';
@@ -25,7 +25,7 @@ import {useTranslation} from 'react-i18next';
 
 
 type RelationshipTypeTreePropsT = {
-	relationshipTypes: RelationshipTypeDataT[],
+	relationshipTypes: RelationshipTypeRowT[],
 	parentId?: number | null,
 	indentLevel?: number
 };
