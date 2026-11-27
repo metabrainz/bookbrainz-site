@@ -19,38 +19,33 @@
 
 import * as bootstrap from 'react-bootstrap';
 
+import {type EntityIconType, genEntityIconHTMLElement} from '../../../helpers/entity-icon';
 import {Trans, useTranslation} from 'react-i18next';
-import {PropTypes} from 'prop-types';
 import React from 'react';
 import {camelCase} from 'lodash';
-import {genEntityIconHTMLElement} from '../../../helpers/entity';
 
 
 const {Button, ButtonGroup} = bootstrap;
 
-/**
- * Renders the document and displays 'CallToAction' component.
- * @returns {ReactElement} a HTML document which displays
- * @param {object} props - Properties passed to the component.
- * the 'CallToAction' component.
- */
-function CallToAction({query = null}) {
+const entityTypes: EntityIconType[] = ['Author', 'Work', 'Edition', 'Series', 'Publisher'];
+
+// Links to the pages that create an entity of each type, seeded with the name that was searched for
+export default function CallToAction({query = ''}: {query?: string}) {
 	const {t: translate} = useTranslation();
 	const seedingParameters = new URLSearchParams({name: query});
-	function renderEntityLink(type) {
+	function renderEntityLink(type: EntityIconType) {
 		return (
-			<a href={`/${camelCase(type)}/create?${seedingParameters}`}>
-				<Button
-					className="padding-bottom-1 padding-sides-2 padding-top-1"
-					variant="secondary"
-				>
-					{genEntityIconHTMLElement(type, '3x', false)}
-					<div className="margin-top-d4">{translate(`common.entityType.${camelCase(type)}`)}</div>
-				</Button>
-			</a>
+			<Button
+				className="padding-bottom-1 padding-sides-2 padding-top-1"
+				href={`/${camelCase(type)}/create?${seedingParameters}`}
+				key={type}
+				variant="secondary"
+			>
+				{genEntityIconHTMLElement(type, '3x', false)}
+				<div className="margin-top-d4">{translate(`common.entityType.${camelCase(type)}`)}</div>
+			</Button>
 		);
 	}
-	const entityTypes = ['Author', 'Work', 'Edition', 'Series', 'Publisher'];
 	return (
 		<div className="text-center">
 			<p>
@@ -71,10 +66,3 @@ function CallToAction({query = null}) {
 		</div>
 	);
 }
-
-CallToAction.displayName = 'CallToAction';
-CallToAction.propTypes = {
-	query: PropTypes.string
-};
-
-export default CallToAction;
