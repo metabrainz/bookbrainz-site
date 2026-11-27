@@ -1,6 +1,3 @@
-// TODO: type this file properly and remove the ts-nocheck.
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 /*
  * Copyright (C) 2023 Shivam Awasthi
  *
@@ -19,10 +16,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 import {Alert, Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
-import React, {ChangeEvent, FormEvent, useCallback, useState} from 'react';
-import {RelationshipTypeEditorPropsT, RelationshipTypeFieldsT,
+import type {AttributeTypeDataT, RelationshipTypeDataT} from '../../../../common/types/type-data';
+import {EntityTypeOptionT, RelationshipTypeEditorPropsT, RelationshipTypeFieldsT,
 	defaultRelationshipTypeFields, entityTypeOptions, renderSelectedParentRelationshipType} from './typeUtils';
+import React, {ChangeEvent, FormEvent, useCallback, useState} from 'react';
 import {faPencilAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
+import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ReactSelect from 'react-select';
 import classNames from 'classnames';
@@ -65,7 +64,7 @@ function RelationshipTypeEditor({
 	const [showIncompleteFormError, setShowIncompleteFormError] = useState<boolean>(false);
 
 	const handleAttributeTypesChange = useCallback(
-		(selectedOptions) => {
+		(selectedOptions: readonly AttributeTypeDataT[]) => {
 			const selectedHouseTypeIds = selectedOptions.map((option) => option.id);
 			setFormData((prevFormData) => ({
 				...prevFormData,
@@ -87,7 +86,7 @@ function RelationshipTypeEditor({
 	}, []);
 
 	// Function to handle parent type selection in ParentType modal
-	const handleParentTypeChange = useCallback((selectedOption) => {
+	const handleParentTypeChange = useCallback((selectedOption: RelationshipTypeDataT | null) => {
 		if (selectedOption) {
 			setSelectedParentType(selectedOption.id);
 		}
@@ -136,27 +135,27 @@ function RelationshipTypeEditor({
 		}));
 	}, [formData]);
 
-	const getEntityTypeLabel = useCallback(option => option.name, []);
+	const getEntityTypeLabel = useCallback((option: EntityTypeOptionT) => option.name, []);
 
-	const getEntityTypeValue = useCallback(option => option.name, []);
+	const getEntityTypeValue = useCallback((option: EntityTypeOptionT) => option.name, []);
 
-	const getParentTypeValue = useCallback(option => option.id, []);
+	const getParentTypeValue = useCallback((option: RelationshipTypeDataT) => String(option.id), []);
 
-	const getAttributeTypeOptionValue = useCallback(option => option.id, []);
-	const getAttributeTypeOptionLabel = useCallback(option => option.name, []);
+	const getAttributeTypeOptionValue = useCallback((option: AttributeTypeDataT) => String(option.id), []);
+	const getAttributeTypeOptionLabel = useCallback((option: AttributeTypeDataT) => option.name, []);
 
 	// Callback function to format the option label to include both forwardStatement and reverseStatement
-	const formatParentTypeOptionLabel = useCallback(option => (
+	const formatParentTypeOptionLabel = useCallback((option: RelationshipTypeDataT) => (
 		<div className="small">
 			<div>{option.sourceEntityType}&nbsp;{option.linkPhrase}&nbsp;{option.targetEntityType}</div>
 			<div>{option.targetEntityType}&nbsp;{option.reverseLinkPhrase}&nbsp;{option.sourceEntityType}</div>
 		</div>
 	), []);
 
-	const formatAttributeTypeOptionLabel = useCallback(option => <div>{option.name}</div>, []);
+	const formatAttributeTypeOptionLabel = useCallback((option: AttributeTypeDataT) => <div>{option.name}</div>, []);
 
 	// The parent of a type relates the same entity types
-	const removeParentOfOtherEntityTypes = useCallback((source, target) => {
+	const removeParentOfOtherEntityTypes = useCallback((source: EntityTypeString | null, target: EntityTypeString | null) => {
 		const parentType = parentTypes.find(type => type.id === formData.parentId);
 		if (formData.parentId && ((source && source !== parentType?.sourceEntityType) ||
 			(target && target !== parentType?.targetEntityType))) {
@@ -164,7 +163,7 @@ function RelationshipTypeEditor({
 		}
 	}, [formData.parentId, handleRemoveParent, parentTypes]);
 
-	const handleSourceEntityTypeChange = useCallback((selectedOption) => {
+	const handleSourceEntityTypeChange = useCallback((selectedOption: EntityTypeOptionT | null) => {
 		const newSourceEntityType = selectedOption ? selectedOption.name : null;
 		setSourceEntityType(newSourceEntityType);
 		removeParentOfOtherEntityTypes(newSourceEntityType, targetEntityType);
@@ -173,7 +172,7 @@ function RelationshipTypeEditor({
 		}
 	}, [removeParentOfOtherEntityTypes, targetEntityType]);
 
-	const handleTargetEntityTypeChange = useCallback((selectedOption) => {
+	const handleTargetEntityTypeChange = useCallback((selectedOption: EntityTypeOptionT | null) => {
 		const newTargetEntityType = selectedOption ? selectedOption.name : null;
 		setTargetEntityType(newTargetEntityType);
 		removeParentOfOtherEntityTypes(sourceEntityType, newTargetEntityType);

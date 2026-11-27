@@ -17,9 +17,9 @@ export interface RelationshipTypeDataT {
 
 export interface AttributeTypeDataT {
 	childOrder: number,
-	description: string,
-	id?: number,
-	lastUpdated: string,
+	description: string | null,
+	id: number,
+	lastUpdated: Date,
 	name: string,
 	parent: number | null,
 	root: number
