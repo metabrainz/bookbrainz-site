@@ -36,7 +36,10 @@ export interface IdentifierTypeEditorPropsT {
 	user?: any;
 }
 
-export const defaultRelationshipTypeData: RelationshipTypeDataT = {
+// The fields of a relationship type that the form edits; the entity types are chosen apart
+export type RelationshipTypeFieldsT = Omit<RelationshipTypeDataT, 'id' | 'sourceEntityType' | 'targetEntityType'>;
+
+export const defaultRelationshipTypeFields: RelationshipTypeFieldsT = {
 	attributeTypes: [],
 	childOrder: 0,
 	deprecated: false,
@@ -44,9 +47,7 @@ export const defaultRelationshipTypeData: RelationshipTypeDataT = {
 	label: '',
 	linkPhrase: '',
 	parentId: null,
-	reverseLinkPhrase: '',
-	sourceEntityType: null,
-	targetEntityType: null
+	reverseLinkPhrase: ''
 };
 
 // The fields of an identifier type that the form edits; the entity type is chosen apart
