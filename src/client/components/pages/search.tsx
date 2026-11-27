@@ -1,6 +1,3 @@
-// TODO: type this file properly and remove the ts-nocheck.
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 /*
  * Copyright (C) 2015  Ohm Patel
  *               2016  Sean Burke
@@ -21,188 +18,86 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as React from 'react';
+import React, {useCallback} from 'react';
 import CallToAction from './parts/call-to-action';
-import PagerElement from './parts/pager';
-import PropTypes from 'prop-types';
+import type {EntityIconType} from '../../helpers/entity-icon';
+import Pagination from './parts/pagination';
 import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
-import {withTranslation} from 'react-i18next';
+import type {SiteUser} from '../../../common/types/site';
+import {useSearchParams} from 'react-router';
+import {useTranslation} from 'react-i18next';
 
 
 type Props = {
-	entityTypes: any[],
-	from?: number,
-	initialResults?: any[],
+	entityTypes: EntityIconType[],
+	from: number,
+	initialResults: unknown[],
 	nextEnabled: boolean,
-	query?: string,
-	resultsPerPage?: number,
-	type?: string,
-	user?: Record<string, unknown>,
-	// eslint-disable-next-line id-length
-	t: any
+	query: string,
+	resultsPerPage: number,
+	type?: string | null,
+	user?: SiteUser | null
 };
 
-type State = {
-	query: string | null | undefined;
-	results: any[];
-	type: string | null | undefined;
-};
+// The query, the entity type and the page are in the address; the route's loader searches for them
+export default function SearchPage({entityTypes, from, initialResults, nextEnabled, query, resultsPerPage, type = null, user = null}: Props) {
+	const {t: translate} = useTranslation();
+	const [, setSearchParams] = useSearchParams();
 
-class SearchPage extends React.Component<Props, State> {
-	static displayName = 'SearchPage';
+	// A new search starts again from the first page
+	const handleSearch = useCallback((newQuery: string, newType: string) => {
+		setSearchParams((params) => {
+			params.set('q', newQuery);
+			if (newType) {
+				params.set('type', newType);
+			}
+			else {
+				params.delete('type');
+			}
+			params.delete('from');
+			return params;
+		});
+	}, [setSearchParams]);
 
-	static propTypes = {
-		entityTypes: PropTypes.array.isRequired,
-		from: PropTypes.number,
-		initialResults: PropTypes.array,
-		nextEnabled: PropTypes.bool.isRequired,
-		query: PropTypes.string,
-		resultsPerPage: PropTypes.number,
-		// eslint-disable-next-line id-length
-		t: PropTypes.func.isRequired,
-		type: PropTypes.string,
-		user: PropTypes.object.isRequired
-	};
+	return (
+		<div id="pageWithPagination">
+			<SearchField
+				entityTypes={entityTypes}
+				query={query}
+				type={type ?? ''}
+				onSearch={handleSearch}
+			/>
+			<SearchResults
+				results={initialResults}
+				user={user}
+			/>
+			<Pagination
+				from={from}
+				nextEnabled={nextEnabled}
+				shown={initialResults.length}
+				size={resultsPerPage}
+			/>
+			<div className="text-center">
+				{initialResults.length === 0 &&
+				<div>
+					<hr className="thin"/>
+					<h2 style={{color: '#754e37'}}>
+						{translate('pages.searchPage.noResults')}
+					</h2>
+				</div>}
 
-	static defaultProps = {
-		from: 0,
-		initialResults: [],
-		query: '',
-		resultsPerPage: 20,
-		type: null
-	};
-
-	/**
-	 * Initializes component state to default values and binds class
-	 * methods to proper context so that they can be directly invoked
-	 * without explicit binding.
-	 *
-	 * @param {object} props - Properties object passed down from parents.
-	 */
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			query: props.query,
-			results: props.initialResults,
-			type: props.type
-		};
-
-		this.paginationUrl = './search/search';
-		this.pagerElementRef = React.createRef();
-	}
-
-	paginationUrl: string;
-
-	pagerElementRef: React.RefObject<PagerElement>;
-
-	/**
-	 * Gets user text query from the browser's URL search parameters and
-	 * sets it in the state to be passed down to SearchField and Pager components
-	 *
-	 * @param {string} query - Query string entered by user.
-	 * @param {string} type - Entity type selected from dropdown
-	 */
-	handleSearch = (query: string, type: string) => {
-		if (query === this.state.query && type === this.state.type && this.pagerElementRef.current) {
-			// if no change in query or type, re-run the search
-			this.pagerElementRef.current.triggerSearch();
-		}
-		else {
-			this.setState({query, type});
-		}
-	};
-
-	/**
-	 * The Pager component deals with fetching the query from the server.
-	 * We use this callback to set the results on this component's state.
-	 *
-	 * @param {array} newResults - The array of results from the  query
-	 */
-	searchResultsCallback = (newResults: any[]) => {
-		this.setState({results: newResults});
-	};
-
-	/**
-	 * The Pager component is set up to react to browser history navigation (prev/next buttons),
-	 * and we use this callback to set the query and type on this component's state.
-	 *
-	 * @param {URLSearchParams} searchParams - The URL search parameters passed up from the pager component
-	 */
-	searchParamsChangeCallback = (searchParams: URLSearchParams) => {
-		let query;
-		let type;
-		if (searchParams.has('q')) {
-			query = searchParams.get('q');
-		}
-		if (searchParams.has('type')) {
-			type = searchParams.get('type');
-		}
-		if (query === this.state.query && type === this.state.type) {
-			return;
-		}
-		this.handleSearch(query, type);
-	};
-
-	/**
-	 * Renders the component: Search bar with results table located vertically
-	 * below it.
-	 *
-	 * @returns {object} - JSX to render.
-	 */
-	render() {
-		const {type, query, results} = this.state;
-		// eslint-disable-next-line id-length
-		const {t: translate} = this.props;
-		const querySearchParams = `q=${query}${type ? `&type=${type}` : ''}`;
-		return (
-			<div id="pageWithPagination">
-				<SearchField
-					entityTypes={this.props.entityTypes}
-					query={query}
-					type={type}
-					onSearch={this.handleSearch}
-				/>
-				<SearchResults
-					results={this.state.results}
-					user={this.props.user}
-				/>
-				<PagerElement
-					from={this.props.from}
-					nextEnabled={this.props.nextEnabled}
-					paginationUrl={this.paginationUrl}
-					querySearchParams={querySearchParams}
-					ref={this.pagerElementRef}
-					results={results}
-					searchParamsChangeCallback={this.searchParamsChangeCallback}
-					searchResultsCallback={this.searchResultsCallback}
-					size={this.props.resultsPerPage}
-				/>
-				<div className="text-center">
-					{results.length === 0 &&
-					<div>
-						<hr className="thin"/>
-						<h2 style={{color: '#754e37'}}>
-							{translate('pages.searchPage.noResults')}
-						</h2>
-					</div>}
-
-					<div>
-						{results.length === 0 &&
-							<small>
-								{translate('pages.searchPage.spellingWarning')}
-							</small>}
-						<hr className="wide"/>
-						<h3>{translate('pages.searchPage.missingEntry')}</h3>
-						<CallToAction query={query}/>
-					</div>
-
+				<div>
+					{initialResults.length === 0 &&
+						<small>
+							{translate('pages.searchPage.spellingWarning')}
+						</small>}
+					<hr className="wide"/>
+					<h3>{translate('pages.searchPage.missingEntry')}</h3>
+					<CallToAction query={query}/>
 				</div>
+
 			</div>
-		);
-	}
+		</div>
+	);
 }
-
-export default withTranslation()(SearchPage);
-

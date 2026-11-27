@@ -3,9 +3,10 @@
  * Replace the disables with proper types.
  */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access */
-import {getEntityModels, getNextEnabledAndResultsArray} from '../common/helpers/utils';
 import {isNil, snakeCase} from 'lodash';
+import {ENTITY_TYPES} from 'bookbrainz-data/lib/types/entity';
 import type {ORM} from 'bookbrainz-data';
+import {getNextEnabledAndResultsArray} from '../common/helpers/utils';
 import {searchByName} from '../common/helpers/search';
 
 
@@ -22,7 +23,7 @@ export async function getSearchPage(orm: ORM, {from, query, size, type}: SearchP
 		newResultsArray: unknown[], nextEnabled: boolean
 	};
 	return {
-		entityTypes: Object.keys(getEntityModels(orm)),
+		entityTypes: ENTITY_TYPES,
 		initialResults: newResultsArray,
 		nextEnabled,
 		total: newResultsArray.length
