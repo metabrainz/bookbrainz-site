@@ -19,7 +19,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 import {Alert, Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
-import React, {ChangeEvent, FormEvent, useCallback, useEffect, useState} from 'react';
+import React, {ChangeEvent, FormEvent, useCallback, useState} from 'react';
 import {RelationshipTypeEditorPropsT, RelationshipTypeFieldsT,
 	defaultRelationshipTypeFields, entityTypeOptions, renderSelectedParentRelationshipType} from './typeUtils';
 import {faPencilAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
@@ -100,7 +100,7 @@ function RelationshipTypeEditor({
 			childOrder: 0, parentId: null
 		}));
 		setSelectedParentType(null);
-	}, [formData]);
+	}, []);
 
 	const handleEditParent = useCallback(() => {
 		setShowModal(true);
@@ -152,19 +152,32 @@ function RelationshipTypeEditor({
 
 	const formatAttributeTypeOptionLabel = useCallback(option => <div>{option.name}</div>, []);
 
+	// The parent of a type relates the same entity types
+	const removeParentOfOtherEntityTypes = useCallback((source, target) => {
+		const parentType = parentTypes.find(type => type.id === formData.parentId);
+		if (formData.parentId && ((source && source !== parentType?.sourceEntityType) ||
+			(target && target !== parentType?.targetEntityType))) {
+			handleRemoveParent();
+		}
+	}, [formData.parentId, handleRemoveParent, parentTypes]);
+
 	const handleSourceEntityTypeChange = useCallback((selectedOption) => {
-		setSourceEntityType(selectedOption ? selectedOption.name : null);
+		const newSourceEntityType = selectedOption ? selectedOption.name : null;
+		setSourceEntityType(newSourceEntityType);
+		removeParentOfOtherEntityTypes(newSourceEntityType, targetEntityType);
 		if (selectedOption && targetEntityType) {
 			setShowIncompleteFormError(false);
 		}
-	}, [targetEntityType]);
+	}, [removeParentOfOtherEntityTypes, targetEntityType]);
 
 	const handleTargetEntityTypeChange = useCallback((selectedOption) => {
-		setTargetEntityType(selectedOption ? selectedOption.name : null);
+		const newTargetEntityType = selectedOption ? selectedOption.name : null;
+		setTargetEntityType(newTargetEntityType);
+		removeParentOfOtherEntityTypes(sourceEntityType, newTargetEntityType);
 		if (selectedOption && sourceEntityType) {
 			setShowIncompleteFormError(false);
 		}
-	}, [sourceEntityType]);
+	}, [removeParentOfOtherEntityTypes, sourceEntityType]);
 
 	const errorAlertClass = classNames('text-center', 'margin-top-1', {'d-none': !showIncompleteFormError});
 
@@ -205,20 +218,6 @@ function RelationshipTypeEditor({
 			throw new Error(err);
 		}
 	}, [formData, isFormEdited, showIncompleteFormError, sourceEntityType, targetEntityType]);
-
-	// When we change sourceEntityType or a parentEntityType, then we must check the validity of the parentType
-	// in case it is already selected
-	useEffect(() => {
-		if (formData.parentId) {
-			const parentType = parentTypes.find(type => type.id === formData.parentId);
-			if (sourceEntityType && sourceEntityType !== parentType.sourceEntityType) {
-				handleRemoveParent();
-			}
-			if (targetEntityType && targetEntityType !== parentType.targetEntityType) {
-				handleRemoveParent();
-			}
-		}
-	}, [sourceEntityType, targetEntityType]);
 
 	const lgCol = {offset: 3, span: 6};
 

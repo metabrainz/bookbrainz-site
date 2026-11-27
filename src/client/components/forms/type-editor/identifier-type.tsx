@@ -21,7 +21,7 @@
 import {Alert, Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
 import {IdentifierTypeEditorPropsT, IdentifierTypeFieldsT,
 	defaultIdentifierTypeFields, entityTypeOptions, renderSelectedParentIdentifierType} from './typeUtils';
-import React, {ChangeEvent, FormEvent, useCallback, useEffect, useState} from 'react';
+import React, {ChangeEvent, FormEvent, useCallback, useState} from 'react';
 import {faPencilAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ReactSelect from 'react-select';
@@ -74,7 +74,7 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 			childOrder: 0, parentId: null
 		}));
 		setSelectedParentType(null);
-	}, [formData]);
+	}, []);
 
 	const handleEditParent = useCallback(() => {
 		setShowModal(true);
@@ -128,8 +128,14 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 	), []);
 
 	const handleEntityTypeChange = useCallback((selectedOption) => {
-		setEntityType(selectedOption ? selectedOption.name : null);
-	}, []);
+		const newEntityType = selectedOption ? selectedOption.name : null;
+		setEntityType(newEntityType);
+		// The parent of a type has the same entity type
+		const parentType = parentTypes.find(type => type.id === formData.parentId);
+		if (formData.parentId && newEntityType && newEntityType !== parentType?.entityType) {
+			handleRemoveParent();
+		}
+	}, [formData.parentId, handleRemoveParent, parentTypes]);
 
 	function isValid() {
 		return Boolean(entityType);
@@ -174,17 +180,6 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 			}, 3000);
 		}
 	}, [entityType, formData, isFormEdited]);
-
-	// When we change EntityType, then we must check the validity of the parentType
-	// in case it is already selected
-	useEffect(() => {
-		if (formData.parentId) {
-			const parentType = parentTypes.find(type => type.id === formData.parentId);
-			if (entityType && entityType !== parentType?.entityType) {
-				handleRemoveParent();
-			}
-		}
-	}, [entityType]);
 
 	const lgCol = {offset: 3, span: 6};
 
