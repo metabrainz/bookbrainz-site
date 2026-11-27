@@ -18,14 +18,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import React, {useCallback} from 'react';
 import CallToAction from './parts/call-to-action';
 import type {EntityIconType} from '../../helpers/entity-icon';
 import Pagination from './parts/pagination';
+import React from 'react';
 import SearchField from './parts/search-field';
 import SearchResults from './parts/search-results';
 import type {SiteUser} from '../../../common/types/site';
-import {useSearchParams} from 'react-router';
 import {useTranslation} from 'react-i18next';
 
 
@@ -43,22 +42,6 @@ type Props = {
 // The query, the entity type and the page are in the address; the route's loader searches for them
 export default function SearchPage({entityTypes, from, initialResults, nextEnabled, query, resultsPerPage, type = null, user = null}: Props) {
 	const {t: translate} = useTranslation();
-	const [, setSearchParams] = useSearchParams();
-
-	// A new search starts again from the first page
-	const handleSearch = useCallback((newQuery: string, newType: string) => {
-		setSearchParams((params) => {
-			params.set('q', newQuery);
-			if (newType) {
-				params.set('type', newType);
-			}
-			else {
-				params.delete('type');
-			}
-			params.delete('from');
-			return params;
-		});
-	}, [setSearchParams]);
 
 	return (
 		<div id="pageWithPagination">
@@ -66,7 +49,6 @@ export default function SearchPage({entityTypes, from, initialResults, nextEnabl
 				entityTypes={entityTypes}
 				query={query}
 				type={type ?? ''}
-				onSearch={handleSearch}
 			/>
 			<SearchResults
 				results={initialResults}
