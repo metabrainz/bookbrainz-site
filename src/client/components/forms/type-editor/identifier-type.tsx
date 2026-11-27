@@ -27,7 +27,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ReactSelect from 'react-select';
 import classNames from 'classnames';
 import {isEqual} from 'lodash';
-import request from 'superagent';
+import {postJSON} from '../../../helpers/post-json';
 
 
 function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeEditorPropsT) {
@@ -168,17 +168,15 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 			submissionURL = '/identifier-type/create/handler';
 		}
 
-		try {
-			await request.post(submissionURL).send({...formData, entityType});
+		const result = await postJSON(submissionURL, {...formData, entityType});
+		if (result.ok) {
 			window.location.href = document.referrer;
+			return;
 		}
-		catch (err) {
-			const errorMessage = err.response.body.error;
-			setErrorMsg(errorMessage);
-			setTimeout(() => {
-				setErrorMsg('');
-			}, 3000);
-		}
+		setErrorMsg(result.error ?? 'Error: Something went wrong. Please try again.');
+		setTimeout(() => {
+			setErrorMsg('');
+		}, 3000);
 	}, [entityType, formData, isFormEdited]);
 
 	const lgCol = {offset: 3, span: 6};
