@@ -25,7 +25,6 @@ import {RelationshipTypeEditorPropsT, RelationshipTypeFieldsT,
 import {faPencilAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import ReactSelect from 'react-select';
-import type {RelationshipTypeDataT} from '../../../../common/types/type-data';
 import classNames from 'classnames';
 import {isEqual} from 'lodash';
 import request from 'superagent';
@@ -48,34 +47,10 @@ function RelationshipTypeEditor({
 	const [showModal, setShowModal] = useState<boolean>(false);
 	const [selectedParentType, setSelectedParentType] = useState<number | null>(initialFields.parentId);
 
-	const [filteredParentTypes, setFilteredParentTypes] = useState<RelationshipTypeDataT[]>(parentTypes);
-	useEffect(() => {
-		if (sourceEntityType && targetEntityType) {
-			const filteredTypes = parentTypes.filter(
-				type =>
-					type.sourceEntityType === sourceEntityType &&
-					type.targetEntityType === targetEntityType
-			);
-			setFilteredParentTypes(filteredTypes);
-		}
-		else if (sourceEntityType) {
-			const filteredTypes = parentTypes.filter(
-				type =>
-				  type.sourceEntityType === sourceEntityType
-			);
-			setFilteredParentTypes(filteredTypes);
-		}
-		else if (targetEntityType) {
-			const filteredTypes = parentTypes.filter(
-				type =>
-				  type.targetEntityType === targetEntityType
-			);
-			setFilteredParentTypes(filteredTypes);
-		}
-		else {
-			setFilteredParentTypes(parentTypes);
-		}
-	}, [targetEntityType, sourceEntityType]);
+	// The parent of a type relates the same entity types
+	const filteredParentTypes = parentTypes.filter((type) =>
+		(!sourceEntityType || type.sourceEntityType === sourceEntityType) &&
+		(!targetEntityType || type.targetEntityType === targetEntityType));
 
 	const isFormEdited = sourceEntityType !== initialSourceEntityType || targetEntityType !== initialTargetEntityType ||
 		!isEqual(formData, initialFields);

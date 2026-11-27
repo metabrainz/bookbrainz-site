@@ -24,7 +24,6 @@ import {IdentifierTypeEditorPropsT, IdentifierTypeFieldsT,
 import React, {ChangeEvent, FormEvent, useCallback, useEffect, useState} from 'react';
 import {faPencilAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import type {IdentifierTypeDataT} from '../../../../common/types/type-data';
 import ReactSelect from 'react-select';
 import classNames from 'classnames';
 import {isEqual} from 'lodash';
@@ -42,16 +41,8 @@ function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeE
 	const [showModal, setShowModal] = useState<boolean>(false);
 	const [selectedParentType, setSelectedParentType] = useState<number | null>(initialFields.parentId);
 
-	const [filteredParentTypes, setFilteredParentTypes] = useState<IdentifierTypeDataT[]>(parentTypes);
-	useEffect(() => {
-		if (entityType) {
-			const filteredTypes = parentTypes.filter(type => type.entityType === entityType);
-			setFilteredParentTypes(filteredTypes);
-		}
-		else {
-			setFilteredParentTypes(parentTypes);
-		}
-	}, [entityType]);
+	// The parent of a type has the same entity type
+	const filteredParentTypes = entityType ? parentTypes.filter((type) => type.entityType === entityType) : parentTypes;
 
 	const [errorMsg, setErrorMsg] = useState<string>('');
 
