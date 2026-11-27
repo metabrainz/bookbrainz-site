@@ -3,7 +3,7 @@ import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 
 export interface RelationshipTypeDataT {
 	attributeTypes: number[];
-	id?: number;
+	id: number;
 	label: string;
 	description: string;
 	linkPhrase: string;
@@ -13,19 +13,6 @@ export interface RelationshipTypeDataT {
 	childOrder: number;
 	sourceEntityType: EntityTypeString;
 	targetEntityType: EntityTypeString;
-}
-
-export interface IdentifierTypeDataT {
-	childOrder: number;
-	deprecated: boolean;
-	description: string;
-	detectionRegex: string | null;
-	displayTemplate: string;
-	entityType: EntityTypeString;
-	id?: number;
-	label: string;
-	parentId: number | null;
-	validationRegex: string;
 }
 
 export interface AttributeTypeDataT {

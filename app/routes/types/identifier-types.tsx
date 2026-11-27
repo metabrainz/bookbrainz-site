@@ -1,4 +1,3 @@
-import type {IdentifierTypeDataT} from '../../../src/common/types/type-data';
 import IdentifierTypesPage from '../../../src/client/components/pages/identifierTypes';
 import React from 'react';
 import type {Route} from './+types/identifier-types';
@@ -11,8 +10,7 @@ export function meta() {
 }
 
 export const loader = siteErrors(async ({context}: Route.LoaderArgs) => ({
-	// The data layer does not type the rows, so the page's own type is used
-	identifierTypes: await context.get(siteContext).backend.types.getIdentifierTypes() as unknown as IdentifierTypeDataT[]
+	identifierTypes: await context.get(siteContext).backend.types.getIdentifierTypes()
 }));
 
 export default function IdentifierTypes({loaderData}: Route.ComponentProps) {

@@ -1,6 +1,3 @@
-// TODO: type this file properly and remove the ts-nocheck.
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 /*
  * Copyright (C) 2023 Shivam Awasthi
  *
@@ -20,22 +17,22 @@
  */
 import React, {useCallback, useState} from 'react';
 import {Button} from 'react-bootstrap';
-import type {IdentifierTypeDataT} from '../../../../common/types/type-data';
+import type {IdentifierTypeWithIdT} from 'bookbrainz-data/lib/types/identifiers';
 import {orderBy as _orderBy} from 'lodash';
 import {useTranslation} from 'react-i18next';
 
 
 type IdentifierTypeTreePropsT = {
-	identifierTypes: IdentifierTypeDataT[],
+	identifierTypes: IdentifierTypeWithIdT[],
 	parentId?: number | null,
 	indentLevel?: number
 };
 
 function IdentifierTypeTree({identifierTypes, parentId = null, indentLevel = 0}: IdentifierTypeTreePropsT) {
 	const {t: translate} = useTranslation();
-	const [expandedIdentifierTypeIds, setExpandedIdentifierTypeIds] = useState([]);
+	const [expandedIdentifierTypeIds, setExpandedIdentifierTypeIds] = useState<number[]>([]);
 
-	function toggleExpand(identifierTypeId) {
+	function toggleExpand(identifierTypeId: number) {
 		setExpandedIdentifierTypeIds((prevExpandedIds) => {
 			if (prevExpandedIds.includes(identifierTypeId)) {
 				return prevExpandedIds.filter((id) => id !== identifierTypeId);
@@ -44,8 +41,8 @@ function IdentifierTypeTree({identifierTypes, parentId = null, indentLevel = 0}:
 		});
 	}
 
-	const handleClick = useCallback((event) => {
-		const identifierTypeId = parseInt(event.target.value, 10);
+	const handleClick = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+		const identifierTypeId = parseInt(event.currentTarget.value, 10);
 		toggleExpand(identifierTypeId);
 	}, []);
 

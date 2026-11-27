@@ -1,6 +1,3 @@
-// TODO: type this file properly and remove the ts-nocheck.
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 /*
  * Copyright (C) 2023 Shivam Awasthi
  *
@@ -18,8 +15,9 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-import type {AttributeTypeDataT, IdentifierTypeDataT, RelationshipTypeDataT} from '../../../../common/types/type-data';
+import type {AttributeTypeDataT, RelationshipTypeDataT} from '../../../../common/types/type-data';
 import {ENTITY_TYPES} from '../../../helpers/entity';
+import type {IdentifierTypeWithIdT} from 'bookbrainz-data/lib/types/identifiers';
 import React from 'react';
 
 
@@ -27,13 +25,11 @@ export interface RelationshipTypeEditorPropsT {
 	relationshipTypeData?: RelationshipTypeDataT;
 	parentTypes: RelationshipTypeDataT[];
 	attributeTypes: AttributeTypeDataT[];
-	user?: any;
 }
 
 export interface IdentifierTypeEditorPropsT {
-	identifierTypeData?: IdentifierTypeDataT;
-	parentTypes: IdentifierTypeDataT[];
-	user?: any;
+	identifierTypeData?: IdentifierTypeWithIdT;
+	parentTypes: IdentifierTypeWithIdT[];
 }
 
 // The fields of a relationship type that the form edits; the entity types are chosen apart
@@ -51,7 +47,7 @@ export const defaultRelationshipTypeFields: RelationshipTypeFieldsT = {
 };
 
 // The fields of an identifier type that the form edits; the entity type is chosen apart
-export type IdentifierTypeFieldsT = Omit<IdentifierTypeDataT, 'entityType' | 'id'>;
+export type IdentifierTypeFieldsT = Omit<IdentifierTypeWithIdT, 'entityType' | 'id'>;
 
 export const defaultIdentifierTypeFields: IdentifierTypeFieldsT = {
 	childOrder: 0,
@@ -86,7 +82,7 @@ export function renderSelectedParentRelationshipType(selectedParentID: number, c
 	return null;
 }
 
-export function renderSelectedParentIdentifierType(selectedParentID: number, childOrder: number, parentTypes: IdentifierTypeDataT[]) {
+export function renderSelectedParentIdentifierType(selectedParentID: number, childOrder: number, parentTypes: IdentifierTypeWithIdT[]) {
 	const parent = parentTypes.find(identifierType => identifierType.id === selectedParentID);
 	if (parent) {
 		return (
