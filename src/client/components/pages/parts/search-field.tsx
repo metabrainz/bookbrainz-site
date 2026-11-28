@@ -1,6 +1,3 @@
-// TODO: type this file properly and remove the ts-nocheck.
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 /*
  * Copyright (C) 2015  Ohm Patel
  *               2016  Sean Burke
@@ -20,192 +17,150 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as React from 'react';
 import * as bootstrap from 'react-bootstrap';
 import {type EntityIconType, genEntityIconHTMLElement} from '../../../helpers/entity-icon';
-
+import React, {useCallback, useRef} from 'react';
+import {Form as RouterForm, useSearchParams, useSubmit} from 'react-router';
+import {camelCase, snakeCase} from 'lodash';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
-import {withTranslation} from 'react-i18next';
+import {useDebouncedCallback} from '../../../hooks/use-debounced-callback';
+import {useEditableValue} from '../../../hooks/use-editable-value';
+import {useTranslation} from 'react-i18next';
 
 
 const {Button, Col, Dropdown, DropdownButton, InputGroup, Form, Row} = bootstrap;
 
+// How long the field waits after typing or choosing a type before it searches
+const SEARCH_DELAY = 2000;
 
-const updateDelay = 2000;
-
-type SearchFieldState = {
-	type: string,
+type Props = {
+	entityTypes: EntityIconType[],
 	query: string,
-};
-type SearchFieldProps = {
-	entityTypes: any[],
-	onSearch: (query: string, type: string) => void,
-	query?: string,
-	type?: string,
-	// eslint-disable-next-line id-length
-	t: any
+	type?: string
 };
 
-class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
-	static displayName = 'SearchField';
+// A search form for /search: pressing enter searches at once, typing or choosing a type searches after a pause
+export default function SearchField({entityTypes, query, type = ''}: Props) {
+	const {t: translate} = useTranslation();
+	const [searchParams] = useSearchParams();
+	const submit = useSubmit();
+	const formRef = useRef<HTMLFormElement>(null);
+	// The text and the type follow the address when it changes, for example on back and forward
+	const [text, setText] = useEditableValue(query);
+	const [selectedType, setSelectedType] = useEditableValue(type);
+	const size = searchParams.get('size');
 
-	static propTypes = {
-		entityTypes: PropTypes.array.isRequired,
-		onSearch: PropTypes.func.isRequired,
-		query: PropTypes.string,
-		// eslint-disable-next-line id-length
-		t: PropTypes.func.isRequired,
-		type: PropTypes.string
-	};
+	const searchLater = useDebouncedCallback(() => {
+		if (formRef.current) {
+			submit(formRef.current);
+		}
+	}, SEARCH_DELAY);
 
-	static defaultProps = {
-		query: '',
-		type: ''
-	};
+	// Pressing enter searches at once, so a pending search is dropped
+	const handleSubmit = useCallback(() => {
+		searchLater.cancel();
+	}, [searchLater]);
 
-	constructor(props: SearchFieldProps) {
-		super(props);
+	const handleTextChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+		const {value} = event.target;
+		if (!value.match(/^ +$/) && value !== text) {
+			setText(value);
+			searchLater();
+		}
+	}, [searchLater, setText, text]);
 
-		this.state = {
-			query: props.query || '',
-			type: props.type || ''
-		};
-		this.debouncedTriggerOnSearch = _.debounce(this.triggerOnSearch, updateDelay, {leading: false});
+	const handleTypeSelect = useCallback((eventKey: string | null) => {
+		setSelectedType(eventKey ?? '');
+		searchLater();
+	}, [searchLater, setSelectedType]);
+
+	let dropdownTitle;
+	if (!selectedType || selectedType === 'all_entities') {
+		dropdownTitle = translate('common.allEntities');
+	}
+	else if (selectedType === 'editor' || selectedType === 'collection') {
+		dropdownTitle = translate(`common.entityType.${selectedType}`);
+	}
+	else {
+		dropdownTitle = translate(`common.entityType.${camelCase(selectedType)}`);
 	}
 
-	// If search term is changed outside this component (for example browser navigation),
-	// reflects those changes
-	componentDidUpdate(prevProps: SearchFieldProps) {
-		if (prevProps.query !== this.props.query) {
-			// eslint-disable-next-line react/no-did-update-set-state
-			this.setState({query: this.props.query});
-		}
-		if (prevProps.type !== this.props.type) {
-			// eslint-disable-next-line react/no-did-update-set-state
-			this.setState({type: this.props.type});
-		}
-	}
-
-	debouncedTriggerOnSearch: () => void;
-
-	triggerOnSearch() {
-		const {query, type} = this.state;
-		this.props.onSearch(query, _.snakeCase(type));
-	}
-
-	handleSubmit = event => {
-		event.preventDefault();
-		event.stopPropagation();
-		this.triggerOnSearch();
-	};
-
-	handleChange = event => {
-		if (!event.target.value.match(/^ +$/) && event.target.value !== this.state.query) {
-			this.setState({query: event.target.value}, this.debouncedTriggerOnSearch);
-		}
-	};
-
-	handleEntitySelect = (eventKey: any) => {
-		this.setState({type: eventKey}, this.debouncedTriggerOnSearch);
-	};
-
-	render() {
-		// eslint-disable-next-line id-length
-		const {t: translate} = this.props;
-		const dropdownTitle = (() => {
-			if (!this.state.type || this.state.type === 'all_entities') {
-				return translate('common.allEntities');
-			}
-			if (this.state.type === 'editor') {
-				return translate('common.entityType.editor');
-			}
-			if (this.state.type === 'collection') {
-				return translate('common.entityType.collection');
-			}
-			return translate(`common.entityType.${_.camelCase(this.state.type)}`);
-		})();
-
-		const entityTypeSelect = Array.isArray(this.props.entityTypes) ? (
-			<DropdownButton
-				as={InputGroup.Append}
-				id="entity-type-select"
-				title={dropdownTitle}
-				variant="secondary"
-				onSelect={this.handleEntitySelect}
-			>
-				{this.props.entityTypes.map((entityType: EntityIconType) => (
-					<Dropdown.Item
-						eventKey={entityType}
-						key={entityType}
-					>
-						{genEntityIconHTMLElement(entityType)}
-						{translate(`common.entityType.${_.camelCase(entityType)}`)}
-					</Dropdown.Item>
-				))}
-				<Dropdown.Divider/>
-				<Dropdown.Item
-					eventKey="all_entities"
-					key="allEntities"
+	return (
+		<Row>
+			<Col lg={{offset: 3, span: 6}}>
+				<RouterForm
+					action="/search"
+					className="form-horizontal whole-page-form"
+					method="get"
+					ref={formRef}
+					role="search"
+					onSubmit={handleSubmit}
 				>
-					{translate('common.allEntities')}
-				</Dropdown.Item>
-
-				<Dropdown.Divider/>
-				<Dropdown.Item
-					eventKey="editor"
-					key="editor"
-				>
-					{genEntityIconHTMLElement('Editor')}
-					{translate('common.entityType.editor')}
-				</Dropdown.Item>
-				<Dropdown.Item
-					eventKey="collection"
-					key="collection"
-				>
-					{genEntityIconHTMLElement('Collection')}
-					{translate('common.entityType.collection')}
-				</Dropdown.Item>
-			</DropdownButton>
-		) : '';
-
-		return (
-			<Row>
-				<Col lg={{offset: 3, span: 6}}>
-					<form
-						action="/search"
-						className="form-horizontal whole-page-form"
-						role="search"
-						onSubmit={this.handleSubmit}
-					>
-						<Form.Group>
-							<InputGroup>
-								<Form.Control
-									name="q"
-									type="text"
-									value={this.state.query}
-									onChange={this.handleChange}
-								/>
-								<InputGroup.Append>
-									{entityTypeSelect}
-									<Button
-										block
-										type="submit"
-										variant="success"
+					<Form.Group>
+						<InputGroup>
+							<Form.Control
+								aria-label={translate('common.button.search')}
+								name="q"
+								type="text"
+								value={text}
+								onChange={handleTextChange}
+							/>
+							<InputGroup.Append>
+								<DropdownButton
+									as={InputGroup.Append}
+									id="entity-type-select"
+									title={dropdownTitle}
+									variant="secondary"
+									onSelect={handleTypeSelect}
+								>
+									{entityTypes.map((entityType) => (
+										<Dropdown.Item
+											eventKey={entityType}
+											key={entityType}
+										>
+											{genEntityIconHTMLElement(entityType)}
+											{translate(`common.entityType.${camelCase(entityType)}`)}
+										</Dropdown.Item>
+									))}
+									<Dropdown.Divider/>
+									<Dropdown.Item
+										eventKey="all_entities"
+										key="allEntities"
 									>
-										<FontAwesomeIcon icon={faSearch}/>&nbsp;{translate('common.button.search')}
-									</Button>
-								</InputGroup.Append>
-							</InputGroup>
-						</Form.Group>
-					</form>
-				</Col>
-			</Row>
-		);
-	}
+										{translate('common.allEntities')}
+									</Dropdown.Item>
+
+									<Dropdown.Divider/>
+									<Dropdown.Item
+										eventKey="editor"
+										key="editor"
+									>
+										{genEntityIconHTMLElement('Editor')}
+										{translate('common.entityType.editor')}
+									</Dropdown.Item>
+									<Dropdown.Item
+										eventKey="collection"
+										key="collection"
+									>
+										{genEntityIconHTMLElement('Collection')}
+										{translate('common.entityType.collection')}
+									</Dropdown.Item>
+								</DropdownButton>
+								<Button
+									block
+									type="submit"
+									variant="success"
+								>
+									<FontAwesomeIcon icon={faSearch}/>&nbsp;{translate('common.button.search')}
+								</Button>
+							</InputGroup.Append>
+						</InputGroup>
+					</Form.Group>
+					{selectedType && <input name="type" type="hidden" value={snakeCase(selectedType)}/>}
+					{size && <input name="size" type="hidden" value={size}/>}
+				</RouterForm>
+			</Col>
+		</Row>
+	);
 }
-
-export default withTranslation()(SearchField);
-
