@@ -30,8 +30,12 @@ export function formatNewSet(change, label, itemProp, transformerFunc) {
 }
 
 export function formatItemAddOrDelete(change, label, transformerFunc) {
+	// deep-diff reports an item added to or removed from an array as one change
+	// of kind 'A', with the added (kind 'N') or removed (kind 'D') item in
+	// change.item. The alias and identifier formatters read it the same way.
+	const itemChange = change.kind === 'A' ? change.item : change;
 	return [
-		base.formatChange(change, label, transformerFunc)
+		base.formatChange(itemChange, label, transformerFunc)
 	];
 }
 
