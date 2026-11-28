@@ -122,7 +122,7 @@ function EditionGroupTable({
 	}
 	return (
 		<div>
-			<h2>{translate('common.entityType.editionGroup_plural')}</h2>
+			<h2>{translate('common.entityType.editionGroup_other')}</h2>
 			{tableContent}
 		</div>
 	);

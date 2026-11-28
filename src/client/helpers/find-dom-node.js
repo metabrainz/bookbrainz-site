@@ -3,7 +3,7 @@
  *
  * React 19 removed ReactDOM.findDOMNode. Several of the UI libraries we depend on
  * (react-bootstrap 1.x through react-transition-group, react-overlays,
- * react-onclickoutside via react-datepicker, react-sortable-hoc, react-sticky, ...)
+ * react-onclickoutside via react-datepicker, react-sortable-hoc, ...)
  * still call it on class component instances, e.g. for every Modal, Tooltip or
  * Collapse transition. Until these libraries are replaced this function is put
  * back for them: in the browser bundle webpack points the bare `react-dom` import

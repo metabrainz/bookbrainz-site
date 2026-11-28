@@ -94,11 +94,9 @@ class AddToCollectionModal extends React.Component {
 				await Promise.all(promiseArray);
 				this.setState({selectedCollections: []}, () => {
 					this.props.closeModalAndShowMessage({
-						text: this.props.t(
-							selectedCollections.length > 1 ?
-								'pages.collection.successAddCollections' :
-								'pages.collection.successAddCollection'
-						),
+						text: this.props.t('pages.collection.successAddCollection', {
+							count: selectedCollections.length
+						}),
 						type: 'success'
 					});
 				});
@@ -233,7 +231,9 @@ class AddToCollectionModal extends React.Component {
 		else {
 			existingCollections = (
 				<div>
-					{translate('pages.collection.noCollectionsPrompt', {type: this.props.entityType})}
+					{translate('pages.collection.noCollectionsPrompt', {
+						type: translate(`common.entityType.${_.camelCase(this.props.entityType)}_other`)
+					})}
 				</div>
 			);
 		}
@@ -328,9 +328,9 @@ class AddToCollectionModal extends React.Component {
 								onClick={this.handleAddToCollection}
 							>
 								<FontAwesomeIcon icon={faPlus}/>
-								{this.state.selectedCollections.length > 1 ?
-									translate('pages.collection.addToSelectedCollections') :
-									translate('pages.collection.addToSelectedCollection')}
+								{translate('pages.collection.addToSelectedCollection', {
+									count: this.state.selectedCollections.length
+								})}
 							</Button>
 					}
 					<Button variant="danger" onClick={this.props.handleCloseModal}>

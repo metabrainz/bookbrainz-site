@@ -303,7 +303,7 @@ class Layout extends React.Component {
 					</NavDropdown.Item>
 					<NavDropdown.Item href={`/editor/${user.id}/collections`}>
 						<FontAwesomeIcon fixedWidth icon={faGripVertical}/>
-						{` ${translate('common.entityType.collection_plural')}`}
+						{` ${translate('common.entityType.collection_other')}`}
 					</NavDropdown.Item>
 					<NavDropdown.Item href="/external-service/">
 						<FontAwesomeIcon fixedWidth icon={faLink}/>
@@ -366,7 +366,7 @@ class Layout extends React.Component {
 					<Nav.Item>
 						<Nav.Link href="/collections">
 							<FontAwesomeIcon icon={faGripVertical}/>
-							{` ${translate('common.entityType.collection_plural')} `}
+							{` ${translate('common.entityType.collection_other')} `}
 						</Nav.Link>
 					</Nav.Item>
 				</Nav>

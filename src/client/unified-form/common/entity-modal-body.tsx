@@ -38,7 +38,7 @@ function EntityModalBody({onModalSubmit, children = null, validate, onAliasClose
 			<SingleAccordion heading={translate('common.identifiers')} onToggle={onIdentifierClose}>
 				<IdentifierModalBody {...rest}/>
 			</SingleAccordion>
-			<SingleAccordion heading={translate('common.relationships')}>
+			<SingleAccordion heading={translate('common.relationship_other')}>
 				<RelationshipSection {...genericProps}/>
 			</SingleAccordion>
 			<SingleAccordion heading={translate('common.annotation')}>
