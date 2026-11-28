@@ -1,6 +1,3 @@
-// TODO: type this file properly and remove the ts-nocheck.
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 /* eslint-disable react/jsx-no-bind */
 
 import {Alert, Button, Card, Spinner} from 'react-bootstrap';
@@ -31,7 +28,7 @@ export default function SearchAdminPage() {
 			setSuccess(true);
 		}
 		catch (error) {
-			setErrorMessage(error.toString());
+			setErrorMessage(String(error));
 		}
 		setLoading(false);
 	}, []);

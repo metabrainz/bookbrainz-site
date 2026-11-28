@@ -18,28 +18,20 @@
 
 import {getBadgeVariantFromBit, getPrivilegeBitsArray, getPrivilegeTitleFromBit} from '../../../../common/helpers/privileges-utils';
 import {Badge} from 'react-bootstrap';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 
-function PrivilegeBadges({privs}) {
-	const privBits = getPrivilegeBitsArray(privs);
-	const privilegeListComp = privBits.map(bit => (
-		<span key={bit}>
-			<Badge pill variant={getBadgeVariantFromBit(bit)}>
-				{getPrivilegeTitleFromBit(bit)}
-			</Badge>
-			{' '}
-		</span>
-	));
+export default function PrivilegeBadges({privs}: {privs: number}) {
 	return (
-		<div>{privilegeListComp}</div>
+		<div>
+			{getPrivilegeBitsArray(privs).map(bit => (
+				<span key={bit}>
+					<Badge pill variant={getBadgeVariantFromBit(bit)}>
+						{getPrivilegeTitleFromBit(bit)}
+					</Badge>
+					{' '}
+				</span>
+			))}
+		</div>
 	);
 }
-
-PrivilegeBadges.displayName = 'PrivilegeBadges';
-PrivilegeBadges.propTypes = {
-	privs: PropTypes.number.isRequired
-};
-
-export default PrivilegeBadges;

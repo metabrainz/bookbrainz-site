@@ -15,8 +15,8 @@ export function meta() {
 }
 
 export const loader = siteErrors(async ({context, request}: Route.LoaderArgs) => {
-	requirePrivilege(PrivilegeType.ADMIN, {context, request});
-	const {backend, user} = context.get(siteContext);
+	const user = requirePrivilege(PrivilegeType.ADMIN, {context, request});
+	const {backend} = context.get(siteContext);
 	const {searchParams} = new URL(request.url);
 	const query = searchParams.get('q') ?? '';
 	const size = intParamOrDefault(searchParams, 'size', 20);

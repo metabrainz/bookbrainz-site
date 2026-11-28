@@ -24,4 +24,5 @@ export function requirePrivilege(privilege: PrivilegeType, {context, request}: {
 		const {pathname, search} = new URL(request.url);
 		throw new NotAuthorizedError('You do not have the privilege to access this route', {originalUrl: `${pathname}${search}`});
 	}
+	return user;
 }
