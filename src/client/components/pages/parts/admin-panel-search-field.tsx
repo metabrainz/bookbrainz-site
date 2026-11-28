@@ -1,6 +1,3 @@
-// TODO: type this file properly and remove the ts-nocheck.
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 /*
  * Copyright (C) 2023 Shivam Awasthi
  *
@@ -19,114 +16,80 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-import * as React from 'react';
-import * as bootstrap from 'react-bootstrap';
-
+import {Button, Col, Form, InputGroup, Row} from 'react-bootstrap';
+import React, {useCallback, useRef} from 'react';
+import {Form as RouterForm, useSearchParams, useSubmit} from 'react-router';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import PropTypes from 'prop-types';
-import _ from 'lodash';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
+import {useDebouncedCallback} from '../../../hooks/use-debounced-callback';
+import {useEditableValue} from '../../../hooks/use-editable-value';
 
 
-const {Button, Col, InputGroup, Form, Row} = bootstrap;
+// How long the field waits after typing before it searches
+const SEARCH_DELAY = 1000;
 
-const SearchButton = (
-	<Button
-		block
-		type="submit"
-		variant="success"
-	>
-		<FontAwesomeIcon icon={faSearch}/>&nbsp;Search
-	</Button>
-);
+// A search form for /admin-panel: pressing enter searches at once, typing searches after a pause
+export default function AdminPanelSearchField({query}: {query: string}) {
+	const [searchParams] = useSearchParams();
+	const submit = useSubmit();
+	const formRef = useRef<HTMLFormElement>(null);
+	// The text follows the address when it changes, for example on back and forward
+	const [text, setText] = useEditableValue(query);
+	const size = searchParams.get('size');
 
-const updateDelay = 1000;
-
-type AdminPanelSearchFieldState = {
-	query: string
-};
-type AdminPanelSearchFieldProps = {
-	onSearch: (query: string) => void,
-	query?: string
-};
-
-class AdminPanelSearchField extends React.Component<AdminPanelSearchFieldProps, AdminPanelSearchFieldState> {
-	static displayName = 'AdminPanelSearchField';
-
-	static propTypes = {
-		onSearch: PropTypes.func.isRequired,
-		query: PropTypes.string
-	};
-
-	static defaultProps = {
-		query: ''
-	};
-
-	constructor(props: AdminPanelSearchFieldProps) {
-		super(props);
-
-		this.state = {
-			query: props.query || ''
-		};
-		this.debouncedTriggerOnSearch = _.debounce(this.triggerOnSearch, updateDelay, {});
-	}
-
-	// If search term is changed outside this component (for example browser navigation),
-	// reflects those changes
-	componentDidUpdate(prevProps: AdminPanelSearchFieldProps) {
-		if (prevProps.query !== this.props.query) {
-			// eslint-disable-next-line react/no-did-update-set-state
-			this.setState({query: this.props.query});
+	const searchLater = useDebouncedCallback(() => {
+		if (formRef.current) {
+			submit(formRef.current);
 		}
-	}
+	}, SEARCH_DELAY);
 
-	debouncedTriggerOnSearch: () => void;
+	// Pressing enter searches at once, so a pending search is dropped
+	const handleSubmit = useCallback(() => {
+		searchLater.cancel();
+	}, [searchLater]);
 
-	triggerOnSearch() {
-		const {query} = this.state;
-		this.props.onSearch(query);
-	}
-
-	handleSubmit = event => {
-		event.preventDefault();
-		event.stopPropagation();
-		this.triggerOnSearch();
-	};
-
-	handleChange = event => {
-		if (!event.target.value.match(/^ +$/) && event.target.value !== this.state.query) {
-			this.setState({query: event.target.value}, this.debouncedTriggerOnSearch);
+	const handleTextChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+		const {value} = event.target;
+		if (!value.match(/^ +$/) && value !== text) {
+			setText(value);
+			searchLater();
 		}
-	};
+	}, [searchLater, setText, text]);
 
-	render() {
-		return (
-			<Row>
-				<Col lg={{offset: 3, span: 6}}>
-					<form
-						action="/admin-panel"
-						className="form-horizontal whole-page-form"
-						role="search"
-						onSubmit={this.handleSubmit}
-					>
-						<Form.Group>
-							<InputGroup>
-								<Form.Control
-									name="q"
-									type="text"
-									value={this.state.query}
-									onChange={this.handleChange}
-								/>
-								<InputGroup.Append>
-									{SearchButton}
-								</InputGroup.Append>
-							</InputGroup>
-						</Form.Group>
-					</form>
-				</Col>
-			</Row>
-		);
-	}
+	return (
+		<Row>
+			<Col lg={{offset: 3, span: 6}}>
+				<RouterForm
+					action="/admin-panel"
+					className="form-horizontal whole-page-form"
+					method="get"
+					ref={formRef}
+					role="search"
+					onSubmit={handleSubmit}
+				>
+					<Form.Group>
+						<InputGroup>
+							<Form.Control
+								aria-label="Search"
+								name="q"
+								type="text"
+								value={text}
+								onChange={handleTextChange}
+							/>
+							<InputGroup.Append>
+								<Button
+									block
+									type="submit"
+									variant="success"
+								>
+									<FontAwesomeIcon icon={faSearch}/>&nbsp;Search
+								</Button>
+							</InputGroup.Append>
+						</InputGroup>
+					</Form.Group>
+					{size && <input name="size" type="hidden" value={size}/>}
+				</RouterForm>
+			</Col>
+		</Row>
+	);
 }
-
-export default AdminPanelSearchField;

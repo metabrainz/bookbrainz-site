@@ -17,13 +17,13 @@
  */
 
 import React, {useCallback} from 'react';
-import {useRevalidator, useSearchParams} from 'react-router';
 import AdminPanelSearchField from './parts/admin-panel-search-field';
 import AdminPanelSearchResults from './parts/admin-panel-search-results';
 import {Card} from 'react-bootstrap';
 import type {EditorSearchResult} from '../../../common/types/search';
 import Pagination from './parts/pagination';
 import type {SiteUser} from '../../../common/types/site';
+import {useRevalidator} from 'react-router';
 
 
 type Props = {
@@ -37,17 +37,7 @@ type Props = {
 
 // The query and the page are in the address; the route's loader searches for them
 export default function AdminPanelSearchPage({from, initialResults, nextEnabled, query, resultsPerPage, user}: Props) {
-	const [, setSearchParams] = useSearchParams();
 	const revalidator = useRevalidator();
-
-	// A new search starts again from the first page
-	const handleSearch = useCallback((newQuery: string) => {
-		setSearchParams((params) => {
-			params.set('q', newQuery);
-			params.delete('from');
-			return params;
-		});
-	}, [setSearchParams]);
 
 	// The privileges of an editor changed, so the results are loaded again
 	const updateResultsOnPrivsChange = useCallback(() => {
@@ -62,10 +52,7 @@ export default function AdminPanelSearchPage({from, initialResults, nextEnabled,
 			<Card.Body>
 				<div id="pageWithPagination">
 					<h3>User search</h3>
-					<AdminPanelSearchField
-						query={query}
-						onSearch={handleSearch}
-					/>
+					<AdminPanelSearchField query={query}/>
 					<AdminPanelSearchResults
 						results={initialResults}
 						updateResultsOnPrivsChange={updateResultsOnPrivsChange}
