@@ -19,7 +19,7 @@
 import {Col, ListGroup, Row} from 'react-bootstrap';
 import {Trans, useTranslation} from 'react-i18next';
 import React from 'react';
-import {genEntityIconHTMLElement} from '../../helpers/entity';
+import {genEntityIconHTMLElement} from '../../helpers/entity-icon';
 
 
 /**

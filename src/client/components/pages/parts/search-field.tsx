@@ -19,12 +19,12 @@
 
 import * as React from 'react';
 import * as bootstrap from 'react-bootstrap';
+import {type EntityIconType, genEntityIconHTMLElement} from '../../../helpers/entity-icon';
 
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {faSearch} from '@fortawesome/free-solid-svg-icons';
-import {genEntityIconHTMLElement} from '../../../helpers/entity';
 import {withTranslation} from 'react-i18next';
 
 
@@ -133,7 +133,7 @@ class SearchField extends React.Component<SearchFieldProps, SearchFieldState> {
 				variant="secondary"
 				onSelect={this.handleEntitySelect}
 			>
-				{this.props.entityTypes.map((entityType: string) => (
+				{this.props.entityTypes.map((entityType: EntityIconType) => (
 					<Dropdown.Item
 						eventKey={entityType}
 						key={entityType}

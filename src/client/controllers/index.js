@@ -21,14 +21,8 @@ import {
 	extractLayoutProps
 } from '../helpers/props';
 
-import ContributePage from '../../client/components/pages/contribute';
-import DevelopPage from '../../client/components/pages/develop';
-import FAQPage from '../components/pages/faq';
-import HelpPage from '../../client/components/pages/help';
 import Index from '../components/pages/index';
 import Layout from '../containers/layout';
-import LicensingPage from '../../client/components/pages/licensing';
-import PrivacyPage from '../../client/components/pages/privacy';
 import React from 'react';
 import {hydrateRoot} from 'react-dom/client';
 
@@ -40,13 +34,7 @@ const pageTarget = document.getElementById('page');
 const page = propsTarget ? pageTarget.innerHTML : '';
 
 const pageMap = {
-	Contribute: ContributePage,
-	Develop: DevelopPage,
-	FAQs: FAQPage,
-	Help: HelpPage,
-	Index,
-	Licensing: LicensingPage,
-	Privacy: PrivacyPage
+	Index
 };
 
 const Child = pageMap[page] || Index;

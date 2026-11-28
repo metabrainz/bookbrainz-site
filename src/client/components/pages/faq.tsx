@@ -19,7 +19,7 @@
 import {Card, ListGroup} from 'react-bootstrap';
 import {Trans, useTranslation} from 'react-i18next';
 import React from 'react';
-import {genEntityIconHTMLElement} from '../../helpers/entity';
+import {genEntityIconHTMLElement} from '../../helpers/entity-icon';
 
 /**
  * Renders the page for the Frequently Asked Questions on Bookbrainz
