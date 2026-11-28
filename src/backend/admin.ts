@@ -5,6 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument */
 import {isNil, snakeCase} from 'lodash';
 import type {AdminLogDataT} from '../server/helpers/adminLogs';
+import type {EditorSearchResult} from '../common/types/search';
 import type {ORM} from 'bookbrainz-data';
 import {searchByName} from '../common/helpers/search';
 
@@ -36,7 +37,7 @@ export async function getAdminLogsPage(orm: ORM, {from, size}: {from: number, si
 }
 
 export async function getEditorSearchPage(orm: ORM, {from, query, size}: {from: number, query: string, size: number}) {
-	let initialResults: unknown[] = [];
+	let initialResults: EditorSearchResult[] = [];
 	if (query) {
 		// Fetch one more result than required to know whether there is a next page
 		const {results} = await searchByName(orm, query, snakeCase('editor') as never, size + 1, from);
