@@ -172,7 +172,11 @@ const nodeAndCommonJSRules = {
 	'node/handle-callback-err': ERROR,
 	'node/no-missing-import': [
 		ERROR,
-		{tryExtensions: ['.js', '.jsx', '.ts', '.tsx']}
+		{
+			// react-router lists its entry points in an exports map, which this rule does not read
+			allowModules: ['react-router'],
+			tryExtensions: ['.js', '.jsx', '.ts', '.tsx']
+		}
 	],
 	'node/no-mixed-requires': ERROR,
 	'node/no-new-require': ERROR,
@@ -544,7 +548,9 @@ const es6ImportRules = {
 	'import/no-named-as-default': ERROR,
 	'import/no-named-as-default-member': ERROR,
 	'import/no-named-default': ERROR,
-	'import/no-unassigned-import': ERROR
+	'import/no-unassigned-import': ERROR,
+	// react-router lists its entry points in an exports map, which this rule does not read
+	'import/no-unresolved': [ERROR, {ignore: ['^react-router$']}]
 };
 
 options.rules = Object.assign(

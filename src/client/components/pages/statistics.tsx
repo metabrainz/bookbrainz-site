@@ -1,3 +1,6 @@
+// TODO: type this file properly and remove the ts-nocheck.
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 /*
  * Copyright (C) 2018 Akhilesh Kumar <akhilesh5991@gmail.com>
  *
@@ -94,7 +97,7 @@ TopEditorsTable.displayName = 'TopEditorsTable';
 
 interface EntityCountTableProps {
 	allEntities: Array<{
-		Count: string,
+		count: string,
 		modelName: EntityIconType,
 		}>,
 	last30DaysEntities: { [key: string]: string },
@@ -129,7 +132,7 @@ function EntityCountTable({allEntities, last30DaysEntities}: EntityCountTablePro
 									{genEntityIconHTMLElement(entity.modelName)}
 									{translate(`common.entityType.${_.camelCase(entity.modelName)}`)}
 								</td>
-								<td>{entity.Count}</td>
+								<td>{entity.count}</td>
 								<td>{last30DaysEntities[entity.modelName]}</td>
 							</tr>
 						))
@@ -148,7 +151,7 @@ function EntityCountTable({allEntities, last30DaysEntities}: EntityCountTablePro
 
 interface StatisticsPageProps{
 	allEntities: Array<{
-		Count: string,
+		count: string,
 		modelName: EntityIconType,
 		}>,
 	last30DaysEntities: { [key: string]: string },

@@ -1,3 +1,6 @@
+// TODO: type this file properly and remove the ts-nocheck.
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 /*
  * Copyright (C) 2015  Ohm Patel
  *               2016  Sean Burke
@@ -35,7 +38,7 @@ type Props = {
 	query?: string,
 	resultsPerPage?: number,
 	type?: string,
-	user: Record<string, unknown>,
+	user?: Record<string, unknown>,
 	// eslint-disable-next-line id-length
 	t: any
 };

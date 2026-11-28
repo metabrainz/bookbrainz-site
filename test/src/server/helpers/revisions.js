@@ -11,10 +11,9 @@ import {
 	createWork,
 	truncateEntities
 } from '../../../test-helpers/create-entities';
+import {getAssociatedEntityRevisions, getOrderedRevisions} from '../../../../src/backend/revisions';
 import {
-	getAssociatedEntityRevisions,
 	getOrderedRevisionForEditorPage,
-	getOrderedRevisions,
 	getOrderedRevisionsForEntityPage
 } from '../../../../src/server/helpers/revisions';
 

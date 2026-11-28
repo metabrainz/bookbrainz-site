@@ -29,7 +29,6 @@ import editorRouter from './routes/editor';
 import externalServiceRouter from './routes/externalService';
 import identifierTypeRouter from './routes/type-editor/identifier-type';
 import identifierTypesRouter from './routes/identifier-types';
-import indexRouter from './routes/index';
 import mergeRouter from './routes/merge';
 import publisherRouter from './routes/entity/publisher';
 import registerRouter from './routes/register';
@@ -41,7 +40,6 @@ import revisionsRouter from './routes/revisions';
 import searchAdminRouter from './routes/searchAdmin';
 import searchRouter from './routes/search';
 import seriesRouter from './routes/entity/series';
-import statisticsRouter from './routes/statistics';
 import unifiedFormRouter from './routes/unifiedform';
 import userRouter from './routes/user';
 import webhooksRouter from './routes/webhooks';
@@ -50,7 +48,6 @@ import workRouter from './routes/entity/work';
 
 
 function initRootRoutes(app) {
-	app.use('/', indexRouter);
 	app.use('/', authRouter);
 	app.use('/', unifiedFormRouter);
 	app.use('/', reviewsRouter);
@@ -59,7 +56,6 @@ function initRootRoutes(app) {
 	app.use('/register', registerRouter);
 	app.use('/revisions', revisionsRouter);
 	app.use('/collections', collectionsRouter);
-	app.use('/statistics', statisticsRouter);
 	app.use('/external-service', externalServiceRouter);
 	app.use('/webhooks', webhooksRouter);
 	app.use('/user', userRouter);

@@ -21,26 +21,29 @@
 
 import * as bootstrap from 'react-bootstrap';
 
-import {Trans, withTranslation} from 'react-i18next';
+import {Trans, useTranslation} from 'react-i18next';
 import {faBluesky, faMastodon} from '@fortawesome/free-brands-svg-icons';
 import {faCircle, faCommentDots, faComments, faEnvelope, faListUl, faSearch, faUser} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import PropTypes from 'prop-types';
+import {Link} from 'react-router';
 import React from 'react';
 import RevisionsTable from './parts/revisions-table';
 
 
 const {Alert, Button, Col, Container, Row} = bootstrap;
 
-class IndexPage extends React.Component {
-	constructor(props) {
-		super(props);
-		this.renderHeader = this.renderHeader.bind(this);
-		this.renderContent = this.renderContent.bind(this);
-	}
+type Props = {
+	disableSignUp?: boolean,
+	isLoggedIn: boolean,
+	recent: unknown[],
+	showEntities?: boolean,
+	showRevisionEditor?: boolean
+};
 
-	renderHeader() {
-		const {t: translate} = this.props;
+export default function IndexPage({disableSignUp = false, isLoggedIn, recent, showEntities = true, showRevisionEditor = true}: Props) {
+	const {t: translate} = useTranslation();
+
+	function renderHeader() {
 		return (
 			<div>
 				<Alert className="text-center" variant="warning">
@@ -65,8 +68,8 @@ class IndexPage extends React.Component {
 								<Col lg={{offset: 2, span: 8}}>
 									<form action="/search" className="input-group input-group-lg margin-top-5" role="search">
 										<input
+											autoFocus
 											required
-											autoFocus="autofocus"
 											className="form-control"
 											name="q"
 											placeholder={translate('common.nav.searchPlaceholder')}
@@ -85,8 +88,9 @@ class IndexPage extends React.Component {
 										<Col md={4}>
 											<Button
 												block
-												href="/about"
+												as={Link}
 												size="lg"
+												to="/about"
 												variant="secondary"
 											>
 												{translate('pages.index.aboutButton')}
@@ -95,8 +99,9 @@ class IndexPage extends React.Component {
 										<Col md={4}>
 											<Button
 												block
-												href="/contribute"
+												as={Link}
 												size="lg"
+												to="/contribute"
 												variant="secondary"
 											>
 												{translate('pages.index.contributeButton')}
@@ -105,8 +110,9 @@ class IndexPage extends React.Component {
 										<Col md={4}>
 											<Button
 												block
-												href="/develop"
+												as={Link}
 												size="lg"
+												to="/develop"
 												variant="secondary"
 											>
 												{translate('pages.index.developButton')}
@@ -199,44 +205,8 @@ class IndexPage extends React.Component {
 		);
 	}
 
-	renderContent() {
-		const {t: translate} = this.props;
-		return (
-			<Container>
-				<Row>
-					<Col lg={{offset: 2, span: 8}}>
-						<h1 className="text-center">{translate('pages.index.openBookDatabase')}</h1>
-						<p className="lead text-justify">
-							{translate('pages.index.openBookDatabaseDescription')}
-						</p>
-					</Col>
-				</Row>
-				<hr/>
-				{!this.props.isLoggedIn && this.renderAboutUs()}
-				<div>
-					<RevisionsTable
-						results={this.props.recent}
-						showEntities={this.props.showEntities}
-						showRevisionEditor={this.props.showRevisionEditor}
-						tableHeading={translate('pages.revisions.recentActivity')}
-					/>
-					<div className="text-center">
-						<Button
-							href="/revisions"
-							variant="primary"
-						>
-							<FontAwesomeIcon className="margin-right-0-5" icon={faListUl}/>
-							{translate('pages.index.seeAllRevisions')}
-						</Button>
-					</div>
-				</div>
-			</Container>
-		);
-	}
-
-	renderAboutUs() {
-		const disableSignUp = this.props.disableSignUp ? {disabled: true} : {};
-		const {t: translate} = this.props;
+	function renderAboutUs() {
+		const signUpProps = disableSignUp ? {disabled: true} : {};
 		return (
 			<React.Fragment>
 				<Row>
@@ -258,7 +228,7 @@ class IndexPage extends React.Component {
 				</Row>
 				<div className="text-center margin-top-1 margin-bottom-3">
 					<Button
-						{...disableSignUp}
+						{...signUpProps}
 						href="/register"
 						size="lg"
 						variant="success"
@@ -270,30 +240,45 @@ class IndexPage extends React.Component {
 		);
 	}
 
-	render() {
+	function renderContent() {
 		return (
-			<div>
-				{this.renderHeader()}
-				{this.renderContent()}
-			</div>
+			<Container>
+				<Row>
+					<Col lg={{offset: 2, span: 8}}>
+						<h1 className="text-center">{translate('pages.index.openBookDatabase')}</h1>
+						<p className="lead text-justify">
+							{translate('pages.index.openBookDatabaseDescription')}
+						</p>
+					</Col>
+				</Row>
+				<hr/>
+				{!isLoggedIn && renderAboutUs()}
+				<div>
+					<RevisionsTable
+						results={recent}
+						showEntities={showEntities}
+						showRevisionEditor={showRevisionEditor}
+						tableHeading={translate('pages.revisions.recentActivity')}
+					/>
+					<div className="text-center">
+						<Button
+							as={Link}
+							to="/revisions"
+							variant="primary"
+						>
+							<FontAwesomeIcon className="margin-right-0-5" icon={faListUl}/>
+							{translate('pages.index.seeAllRevisions')}
+						</Button>
+					</div>
+				</div>
+			</Container>
 		);
 	}
+
+	return (
+		<div>
+			{renderHeader()}
+			{renderContent()}
+		</div>
+	);
 }
-
-IndexPage.displayName = 'IndexPage';
-IndexPage.propTypes = {
-	disableSignUp: PropTypes.bool,
-	isLoggedIn: PropTypes.bool.isRequired,
-	recent: PropTypes.array.isRequired,
-	showEntities: PropTypes.bool,
-	showRevisionEditor: PropTypes.bool,
-	// eslint-disable-next-line id-length
-	t: PropTypes.func.isRequired
-};
-IndexPage.defaultProps = {
-	disableSignUp: false,
-	showEntities: true,
-	showRevisionEditor: true
-};
-
-export default withTranslation()(IndexPage);
