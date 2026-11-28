@@ -21,7 +21,6 @@ import {
 	extractLayoutProps
 } from '../helpers/props';
 
-import AboutPage from '../../client/components/pages/about';
 import ContributePage from '../../client/components/pages/contribute';
 import DevelopPage from '../../client/components/pages/develop';
 import FAQPage from '../components/pages/faq';
@@ -41,7 +40,6 @@ const pageTarget = document.getElementById('page');
 const page = propsTarget ? pageTarget.innerHTML : '';
 
 const pageMap = {
-	About: AboutPage,
 	Contribute: ContributePage,
 	Develop: DevelopPage,
 	FAQs: FAQPage,
