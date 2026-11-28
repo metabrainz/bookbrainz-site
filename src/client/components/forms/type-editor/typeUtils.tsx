@@ -1,6 +1,3 @@
-// TODO: type this file properly and remove the ts-nocheck.
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 /*
  * Copyright (C) 2023 Shivam Awasthi
  *
@@ -18,8 +15,10 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-import type {AttributeTypeDataT, IdentifierTypeDataT, RelationshipTypeDataT} from '../../../../common/types/type-data';
+import type {AttributeTypeDataT, RelationshipTypeDataT} from '../../../../common/types/type-data';
 import {ENTITY_TYPES} from '../../../helpers/entity';
+import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
+import type {IdentifierTypeWithIdT} from 'bookbrainz-data/lib/types/identifiers';
 import React from 'react';
 
 
@@ -27,16 +26,17 @@ export interface RelationshipTypeEditorPropsT {
 	relationshipTypeData?: RelationshipTypeDataT;
 	parentTypes: RelationshipTypeDataT[];
 	attributeTypes: AttributeTypeDataT[];
-	user?: any;
 }
 
 export interface IdentifierTypeEditorPropsT {
-	identifierTypeData?: IdentifierTypeDataT;
-	parentTypes: IdentifierTypeDataT[];
-	user?: any;
+	identifierTypeData?: IdentifierTypeWithIdT;
+	parentTypes: IdentifierTypeWithIdT[];
 }
 
-export const defaultRelationshipTypeData: RelationshipTypeDataT = {
+// The fields of a relationship type that the form edits; the entity types are chosen apart
+export type RelationshipTypeFieldsT = Omit<RelationshipTypeDataT, 'id' | 'sourceEntityType' | 'targetEntityType'>;
+
+export const defaultRelationshipTypeFields: RelationshipTypeFieldsT = {
 	attributeTypes: [],
 	childOrder: 0,
 	deprecated: false,
@@ -44,24 +44,26 @@ export const defaultRelationshipTypeData: RelationshipTypeDataT = {
 	label: '',
 	linkPhrase: '',
 	parentId: null,
-	reverseLinkPhrase: '',
-	sourceEntityType: null,
-	targetEntityType: null
+	reverseLinkPhrase: ''
 };
 
-export const defaultIdentifierTypeData: IdentifierTypeDataT = {
+// The fields of an identifier type that the form edits; the entity type is chosen apart
+export type IdentifierTypeFieldsT = Omit<IdentifierTypeWithIdT, 'entityType' | 'id'>;
+
+export const defaultIdentifierTypeFields: IdentifierTypeFieldsT = {
 	childOrder: 0,
 	deprecated: false,
 	description: '',
 	detectionRegex: null,
 	displayTemplate: '',
-	entityType: null,
 	label: '',
 	parentId: null,
 	validationRegex: ''
 };
 
-export const entityTypeOptions = ENTITY_TYPES.map((entity) => ({
+export type EntityTypeOptionT = {name: EntityTypeString};
+
+export const entityTypeOptions: EntityTypeOptionT[] = ENTITY_TYPES.map((entity) => ({
 	name: entity
 }));
 
@@ -83,7 +85,7 @@ export function renderSelectedParentRelationshipType(selectedParentID: number, c
 	return null;
 }
 
-export function renderSelectedParentIdentifierType(selectedParentID: number, childOrder: number, parentTypes: IdentifierTypeDataT[]) {
+export function renderSelectedParentIdentifierType(selectedParentID: number, childOrder: number, parentTypes: IdentifierTypeWithIdT[]) {
 	const parent = parentTypes.find(identifierType => identifierType.id === selectedParentID);
 	if (parent) {
 		return (

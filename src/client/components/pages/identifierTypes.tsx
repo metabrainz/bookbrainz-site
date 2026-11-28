@@ -1,6 +1,3 @@
-// TODO: type this file properly and remove the ts-nocheck.
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 /*
  * Copyright (C) 2023 Shivam Awasthi
  *
@@ -21,21 +18,23 @@
 import {Card, Container, Nav, Tab} from 'react-bootstrap';
 import React, {useCallback, useState} from 'react';
 import {ENTITY_TYPES} from '../../helpers/entity';
-import type {IdentifierTypeDataT} from '../../../common/types/type-data';
 import IdentifierTypeTree from './parts/identifier-types-tree';
+import type {IdentifierTypeWithIdT} from 'bookbrainz-data/lib/types/identifiers';
 import {camelCase as _camelCase} from 'lodash';
 import {useTranslation} from 'react-i18next';
 
 
 type Props = {
-	identifierTypes: IdentifierTypeDataT[];
+	identifierTypes: IdentifierTypeWithIdT[];
 };
 
 function IdentifierTypesPage({identifierTypes}: Props) {
 	const {t: translate} = useTranslation();
 	const [activeTab, setActiveTab] = useState<string>(ENTITY_TYPES[0]);
-	const handleTabSelect = useCallback((entityType: string) => {
-		setActiveTab(entityType);
+	const handleTabSelect = useCallback((entityType: string | null) => {
+		if (entityType) {
+			setActiveTab(entityType);
+		}
 	}, []);
 
 	const filteredIdentifierTypes = identifierTypes.filter(type => type.entityType === activeTab);

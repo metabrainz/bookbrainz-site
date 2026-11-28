@@ -1,6 +1,3 @@
-// TODO: type this file properly and remove the ts-nocheck.
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 /*
  * Copyright (C) 2023 Shivam Awasthi
  *
@@ -20,7 +17,7 @@
  */
 import React, {useCallback, useState} from 'react';
 import {Button} from 'react-bootstrap';
-import type {RelationshipTypeDataT} from '../../../../common/types/type-data';
+import type {RelationshipTypeRowT} from '../../../../common/types/type-data';
 import {orderBy as _orderBy} from 'lodash';
 import {genEntityIconHTMLElement} from '../../../helpers/entity';
 import {sanitize} from 'isomorphic-dompurify';
@@ -28,16 +25,16 @@ import {useTranslation} from 'react-i18next';
 
 
 type RelationshipTypeTreePropsT = {
-	relationshipTypes: RelationshipTypeDataT[],
+	relationshipTypes: RelationshipTypeRowT[],
 	parentId?: number | null,
 	indentLevel?: number
 };
 
 function RelationshipTypeTree({relationshipTypes, parentId = null, indentLevel = 0}: RelationshipTypeTreePropsT) {
 	const {t: translate} = useTranslation();
-	const [expandedRelationshipTypeIds, setExpandedRelationshipTypeIds] = useState([]);
+	const [expandedRelationshipTypeIds, setExpandedRelationshipTypeIds] = useState<number[]>([]);
 
-	function toggleExpand(relTypeId) {
+	function toggleExpand(relTypeId: number) {
 		setExpandedRelationshipTypeIds((prevExpandedIds) => {
 			if (prevExpandedIds.includes(relTypeId)) {
 				return prevExpandedIds.filter((id) => id !== relTypeId);
@@ -46,8 +43,8 @@ function RelationshipTypeTree({relationshipTypes, parentId = null, indentLevel =
 		});
 	}
 
-	const handleClick = useCallback((event) => {
-		const relationshipTypeId = parseInt(event.target.value, 10);
+	const handleClick = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+		const relationshipTypeId = parseInt(event.currentTarget.value, 10);
 		toggleExpand(relationshipTypeId);
 	}, []);
 

@@ -1,6 +1,5 @@
 import {NotFoundError} from '../../../src/common/helpers/error';
 import React from 'react';
-import type {RelationshipTypeDataT} from '../../../src/common/types/type-data';
 import RelationshipTypesPage from '../../../src/client/components/pages/relationshipTypes';
 import type {Route} from './+types/relationship-types-list';
 import {siteContext} from '../../context';
@@ -22,8 +21,7 @@ export const loader = siteErrors(async ({context, params, request}: Route.Loader
 	const type1 = params.types.slice(0, hyphen);
 	const type2 = params.types.slice(hyphen + 1);
 	const {heading, relationshipTypes} = await context.get(siteContext).backend.types.getRelationshipTypesPage({type1, type2});
-	// The data layer does not type the rows, so the page's own type is used
-	return {heading, relationshipTypes: relationshipTypes as unknown as RelationshipTypeDataT[]};
+	return {heading, relationshipTypes};
 });
 
 export default function RelationshipTypesByEntityTypes({loaderData}: Route.ComponentProps) {

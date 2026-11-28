@@ -3,8 +3,9 @@
  * Replace the disables with proper ORM types.
  */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument */
-import type {AttributeTypeDataT, IdentifierTypeDataT, RelationshipTypeDataT} from '../common/types/type-data';
+import type {AttributeTypeDataT, RelationshipTypeDataT} from '../common/types/type-data';
 import {BadRequestError, NotFoundError} from '../common/helpers/error';
+import type {IdentifierTypeWithIdT} from 'bookbrainz-data/lib/types/identifiers';
 import type {ORM} from 'bookbrainz-data';
 
 
@@ -16,16 +17,16 @@ function checkTypeId(id: string, path: string) {
 	return idToNumber;
 }
 
-export async function getIdentifierTypeCreateData(orm: ORM): Promise<{parentTypes: IdentifierTypeDataT[]}> {
-	const parentTypes: IdentifierTypeDataT[] = (await orm.IdentifierType.fetchAll()).toJSON();
+export async function getIdentifierTypeCreateData(orm: ORM): Promise<{parentTypes: IdentifierTypeWithIdT[]}> {
+	const parentTypes: IdentifierTypeWithIdT[] = (await orm.IdentifierType.fetchAll()).toJSON();
 	return {parentTypes};
 }
 
 export async function getIdentifierTypeEditData(
 	orm: ORM, {id, path}: {id: string, path: string}
-): Promise<{identifierTypeData: IdentifierTypeDataT, parentTypes: IdentifierTypeDataT[]}> {
+): Promise<{identifierTypeData: IdentifierTypeWithIdT, parentTypes: IdentifierTypeWithIdT[]}> {
 	const typeId = checkTypeId(id, path);
-	const allTypes: IdentifierTypeDataT[] = (await orm.IdentifierType.fetchAll()).toJSON();
+	const allTypes: IdentifierTypeWithIdT[] = (await orm.IdentifierType.fetchAll()).toJSON();
 	const identifierType = await new orm.IdentifierType({id: typeId})
 		.fetch({require: false});
 	if (!identifierType) {

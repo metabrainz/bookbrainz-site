@@ -1,6 +1,3 @@
-// TODO: type this file properly and remove the ts-nocheck.
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 /*
  * Copyright (C) 2023 Shivam Awasthi
  *
@@ -19,34 +16,31 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 import {Alert, Button, Card, Col, Form, Modal, Row} from 'react-bootstrap';
-import {IdentifierTypeEditorPropsT,
-	defaultIdentifierTypeData, entityTypeOptions, renderSelectedParentIdentifierType} from './typeUtils';
-import React, {ChangeEvent, FormEvent, useCallback, useEffect, useState} from 'react';
+import {EntityTypeOptionT, IdentifierTypeEditorPropsT, IdentifierTypeFieldsT,
+	defaultIdentifierTypeFields, entityTypeOptions, renderSelectedParentIdentifierType} from './typeUtils';
+import React, {ChangeEvent, FormEvent, useCallback, useState} from 'react';
 import {faPencilAlt, faPlus, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import type {IdentifierTypeDataT} from '../../../../common/types/type-data';
+import type {IdentifierTypeWithIdT} from 'bookbrainz-data/lib/types/identifiers';
 import ReactSelect from 'react-select';
 import classNames from 'classnames';
-import request from 'superagent';
+import {isEqual} from 'lodash';
+import {postJSON} from '../../../helpers/post-json';
 
 
-function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, parentTypes}: IdentifierTypeEditorPropsT) {
-	const [formData, setFormData] = useState<IdentifierTypeDataT>(identifierTypeData);
+function IdentifierTypeEditor({identifierTypeData, parentTypes}: IdentifierTypeEditorPropsT) {
+	const initialFields: IdentifierTypeFieldsT = identifierTypeData ?? defaultIdentifierTypeFields;
+	const initialEntityType = identifierTypeData?.entityType ?? null;
+	const [formData, setFormData] = useState(initialFields);
+	// null until the user picks one (always for a new type)
+	const [entityType, setEntityType] = useState(initialEntityType);
 
 	// State for the ParentType modal
 	const [showModal, setShowModal] = useState<boolean>(false);
-	const [selectedParentType, setSelectedParentType] = useState<number | null>(identifierTypeData.parentId);
+	const [selectedParentType, setSelectedParentType] = useState<number | null>(initialFields.parentId);
 
-	const [filteredParentTypes, setFilteredParentTypes] = useState<IdentifierTypeDataT[]>(parentTypes);
-	useEffect(() => {
-		if (formData.entityType) {
-			const filteredTypes = parentTypes.filter(type => type.entityType === formData.entityType);
-			setFilteredParentTypes(filteredTypes);
-		}
-		else {
-			setFilteredParentTypes(parentTypes);
-		}
-	}, [formData.entityType]);
+	// The parent of a type has the same entity type
+	const filteredParentTypes = entityType ? parentTypes.filter((type) => type.entityType === entityType) : parentTypes;
 
 	const [errorMsg, setErrorMsg] = useState<string>('');
 
@@ -62,7 +56,7 @@ function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, p
 	}, []);
 
 	// Function to handle parent type selection in ParentType modal
-	const handleParentTypeChange = useCallback((selectedOption) => {
+	const handleParentTypeChange = useCallback((selectedOption: IdentifierTypeWithIdT | null) => {
 		if (selectedOption) {
 			setSelectedParentType(selectedOption.id);
 		}
@@ -78,7 +72,7 @@ function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, p
 			childOrder: 0, parentId: null
 		}));
 		setSelectedParentType(null);
-	}, [formData]);
+	}, []);
 
 	const handleEditParent = useCallback(() => {
 		setShowModal(true);
@@ -103,6 +97,11 @@ function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, p
 		  }));
 	}, [formData]);
 
+	const handleChildOrderChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+		const childOrder = Number(event.target.value);
+		setFormData((prevFormData) => ({...prevFormData, childOrder}));
+	}, []);
+
 	const handleDeprecatedChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
 		const {value} = event.target;
 		setFormData((prevFormData) => ({
@@ -113,14 +112,14 @@ function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, p
 
 	const errorAlertClass = classNames('text-center', 'margin-top-1', {'d-none': !errorMsg.length});
 
-	const getEntityTypeLabel = useCallback(option => option.name, []);
+	const getEntityTypeLabel = useCallback((option: EntityTypeOptionT) => option.name, []);
 
-	const getEntityTypeValue = useCallback(option => option.name, []);
+	const getEntityTypeValue = useCallback((option: EntityTypeOptionT) => option.name, []);
 
-	const getParentTypeValue = useCallback(option => option.id, []);
+	const getParentTypeValue = useCallback((option: IdentifierTypeWithIdT) => String(option.id), []);
 
 	// Callback function to format the option label
-	const formatParentTypeOptionLabel = useCallback(option => (
+	const formatParentTypeOptionLabel = useCallback((option: IdentifierTypeWithIdT) => (
 		<div className="small">
 			<div>
 				<strong>Label:&nbsp;</strong>{option.label}
@@ -131,22 +130,21 @@ function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, p
 		</div>
 	), []);
 
-	const handleEntityTypeChange = useCallback((selectedOption) => {
-		if (selectedOption) {
-			setFormData({...formData, entityType: selectedOption.name});
+	const handleEntityTypeChange = useCallback((selectedOption: EntityTypeOptionT | null) => {
+		const newEntityType = selectedOption ? selectedOption.name : null;
+		setEntityType(newEntityType);
+		// The parent of a type has the same entity type
+		const parentType = parentTypes.find(type => type.id === formData.parentId);
+		if (formData.parentId && newEntityType && newEntityType !== parentType?.entityType) {
+			handleRemoveParent();
 		}
-		else {
-			setFormData({...formData, entityType: null});
-		}
-	}, [formData]);
+	}, [formData.parentId, handleRemoveParent, parentTypes]);
 
 	function isValid() {
-		return Boolean(formData.entityType);
+		return Boolean(entityType);
 	}
 
-	function isFormEdited() {
-		return JSON.stringify(formData) !== JSON.stringify(identifierTypeData);
-	}
+	const isFormEdited = entityType !== initialEntityType || !isEqual(formData, initialFields);
 
 	const handleSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -157,7 +155,7 @@ function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, p
 			  }, 3000);
 			return;
 		}
-		if (!isFormEdited()) {
+		if (!isFormEdited) {
 			setErrorMsg('No updated field!');
 			setTimeout(() => {
 				setErrorMsg('');
@@ -166,36 +164,23 @@ function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, p
 		}
 
 		let submissionURL;
-		if (identifierTypeData.id) {
+		if (identifierTypeData) {
 			submissionURL = `/identifier-type/${identifierTypeData.id}/edit/handler`;
 		}
 		else {
 			submissionURL = '/identifier-type/create/handler';
 		}
 
-		try {
-			await request.post(submissionURL).send(formData);
+		const result = await postJSON(submissionURL, {...formData, entityType});
+		if (result.ok) {
 			window.location.href = document.referrer;
+			return;
 		}
-		catch (err) {
-			const errorMessage = err.response.body.error;
-			setErrorMsg(errorMessage);
-			setTimeout(() => {
-				setErrorMsg('');
-			}, 3000);
-		}
-	}, [formData, isFormEdited, errorMsg]);
-
-	// When we change EntityType, then we must check the validity of the parentType
-	// in case it is already selected
-	useEffect(() => {
-		if (formData.parentId) {
-			const parentType = parentTypes.find(type => type.id === formData.parentId);
-			if (formData.entityType && formData.entityType !== parentType?.entityType) {
-				handleRemoveParent();
-			}
-		}
-	}, [formData.entityType]);
+		setErrorMsg(result.error ?? 'Error: Something went wrong. Please try again.');
+		setTimeout(() => {
+			setErrorMsg('');
+		}, 3000);
+	}, [entityType, formData, isFormEdited]);
 
 	const lgCol = {offset: 3, span: 6};
 
@@ -242,7 +227,7 @@ function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, p
 									required
 									name="detectionRegex"
 									type="text"
-									value={formData.detectionRegex}
+									value={formData.detectionRegex ?? ''}
 									onChange={handleInputChange}
 								/>
 							</Form.Group>
@@ -282,7 +267,7 @@ function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, p
 								<Form.Label>Entity Type</Form.Label>
 								<ReactSelect
 									classNamePrefix="react-select"
-									defaultValue={entityTypeOptions.filter((option) => option.name === identifierTypeData.entityType)}
+									defaultValue={entityTypeOptions.filter((option) => option.name === initialEntityType)}
 									getOptionLabel={getEntityTypeLabel}
 									getOptionValue={getEntityTypeValue}
 									instanceId="entityType"
@@ -353,7 +338,7 @@ function IdentifierTypeEditor({identifierTypeData = defaultIdentifierTypeData, p
 									name="childOrder"
 									type="number"
 									value={formData.childOrder}
-									onChange={handleInputChange}
+									onChange={handleChildOrderChange}
 								/>
 							</Form.Group>
 						</Col>

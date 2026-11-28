@@ -6,15 +6,17 @@
 import {camelCase, snakeCase, startCase, upperFirst} from 'lodash';
 import {BadRequestError} from '../common/helpers/error';
 import {ENTITY_TYPES} from 'bookbrainz-data/lib/types/entity';
+import type {IdentifierTypeWithIdT} from 'bookbrainz-data/lib/types/identifiers';
 import type {ORM} from 'bookbrainz-data';
+import type {RelationshipTypeRowT} from '../common/types/type-data';
 
 
 type QueryBuilder = ReturnType<ORM['bookshelf']['knex']['queryBuilder']>;
 
 
 export async function getIdentifierTypes(orm: ORM) {
-	const identifierTypes = await orm.IdentifierType.fetchAll();
-	return identifierTypes.toJSON() as Array<Record<string, unknown>>;
+	const identifierTypes: IdentifierTypeWithIdT[] = (await orm.IdentifierType.fetchAll()).toJSON();
+	return identifierTypes;
 }
 
 // The relationship types between two entity types, given in snake case (for example edition_group)
@@ -35,8 +37,9 @@ export async function getRelationshipTypesPage(orm: ORM, {type1, type2}: {type1:
 		/* eslint-enable camelcase */
 	}).fetchAll();
 
+	const relationshipTypes: RelationshipTypeRowT[] = rows.toJSON();
 	return {
 		heading: `${startCase(type1)}-${startCase(type2)} relationship types`,
-		relationshipTypes: rows.toJSON() as Array<Record<string, unknown>>
+		relationshipTypes
 	};
 }

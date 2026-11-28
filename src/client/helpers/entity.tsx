@@ -25,6 +25,7 @@ import * as React from 'react';
 import {Trans, useTranslation} from 'react-i18next';
 import {camelCase as _camelCase, get as _get, isNil as _isNil, kebabCase as _kebabCase} from 'lodash';
 import {format, isValid, parseISO} from 'date-fns';
+import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 import type {TFunction} from 'i18next';
 import {dateObjectToISOString} from './utils';
 
@@ -272,7 +273,7 @@ export function getEntityUrl(entity) {
 	return `/${entityType}/${entityId}`;
 }
 
-export const ENTITY_TYPES = ['Author', 'Work', 'Series', 'Edition', 'EditionGroup', 'Publisher'];
+export const ENTITY_TYPES: EntityTypeString[] = ['Author', 'Work', 'Series', 'Edition', 'EditionGroup', 'Publisher'];
 
 export {ENTITY_TYPE_ICONS, genEntityIconHTMLElement} from './entity-icon';
 

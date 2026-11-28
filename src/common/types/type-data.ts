@@ -3,7 +3,7 @@ import type {EntityTypeString} from 'bookbrainz-data/lib/types/entity';
 
 export interface RelationshipTypeDataT {
 	attributeTypes: number[];
-	id?: number;
+	id: number;
 	label: string;
 	description: string;
 	linkPhrase: string;
@@ -15,24 +15,14 @@ export interface RelationshipTypeDataT {
 	targetEntityType: EntityTypeString;
 }
 
-export interface IdentifierTypeDataT {
-	childOrder: number;
-	deprecated: boolean;
-	description: string;
-	detectionRegex: string | null;
-	displayTemplate: string;
-	entityType: EntityTypeString;
-	id?: number;
-	label: string;
-	parentId: number | null;
-	validationRegex: string;
-}
+// A relationship type fetched without its attribute types
+export type RelationshipTypeRowT = Omit<RelationshipTypeDataT, 'attributeTypes'>;
 
 export interface AttributeTypeDataT {
 	childOrder: number,
-	description: string,
-	id?: number,
-	lastUpdated: string,
+	description: string | null,
+	id: number,
+	lastUpdated: Date,
 	name: string,
 	parent: number | null,
 	root: number
