@@ -34,11 +34,10 @@ type Props = {
 };
 
 export default function AdminPanelSearchResults({results = [], updateResultsOnPrivsChange, user}: Props) {
-	const [selectedUser, setSelectedUser] = useState<EditorSearchResult>();
-	const [showModal, setShowModal] = useState(false);
+	const [selectedUser, setSelectedUser] = useState<EditorSearchResult | null>(null);
 
 	const closeModal = useCallback(() => {
-		setShowModal(false);
+		setSelectedUser(null);
 	}, []);
 
 	if (results.length === 0) {
@@ -70,7 +69,6 @@ export default function AdminPanelSearchResults({results = [], updateResultsOnPr
 						// eslint-disable-next-line react/jsx-no-bind
 						onClick={() => {
 							setSelectedUser(result);
-							setShowModal(true);
 						}}
 					>
 						Edit
@@ -82,16 +80,13 @@ export default function AdminPanelSearchResults({results = [], updateResultsOnPr
 
 	return (
 		<div>
-			{showModal && (
-				<div>
-					<PrivsEditModal
-						adminId={user.id}
-						handleCloseModal={closeModal}
-						show={showModal}
-						targetUser={selectedUser}
-						updateResultsOnPrivsChange={updateResultsOnPrivsChange}
-					/>
-				</div>
+			{selectedUser && (
+				<PrivsEditModal
+					adminId={user.id}
+					handleCloseModal={closeModal}
+					targetUser={selectedUser}
+					updateResultsOnPrivsChange={updateResultsOnPrivsChange}
+				/>
 			)}
 			<h3 className="search-results-heading">
 				Search Results
