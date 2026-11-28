@@ -107,7 +107,7 @@ export function getBadgeVariantFromBit(bit: number) {
  * @throws {Error} Throws a custom error if there is some unsupported privilege type
  * @returns {Array} - returns an array of containing the bits of all the privileges the user has set
  */
-export function getPrivilegeBitsArray(privs: number): any {
+export function getPrivilegeBitsArray(privs: number): number[] {
 	const PrivBits = Object.values(PrivilegeTypes).filter(priv => privs & (1 << priv.bit)).map(priv => priv.bit);
 	const maxBits = Object.keys(PrivilegeTypes).length;
 
